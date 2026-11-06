@@ -11,7 +11,7 @@ namespace LouisAgent.Packs.ShopPrices.Tests.Prices;
 /// </summary>
 public class CommonItemsTests
 {
-    /// <summary>The lines, with what a cupboard often holds too: the cook's list leaves nothing out but tap water.</summary>
+    /// <summary>The lines, salt and pepper too: the cook's list leaves nothing out but tap water.</summary>
     private static readonly string[] Lines =
     [
         "cooking oil 750 ml", "salt 500 g", "black pepper 50 g", "white sugar 1 kg", "cake flour 1 kg",
