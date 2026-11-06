@@ -8,6 +8,7 @@ using System.ComponentModel;
 using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
+using LouisAgent.Packs.Recipes.Scaling;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Sources.Gathering;
 using LouisAgent.Packs.Recipes.Sources.Sites;
@@ -225,6 +226,32 @@ public sealed class RecipeTools
             lines.Add(MessageText.Format(RecipeToolMessage.PageCut, new { Shown = MaxPageChars }));
         lines.Add(MessageText.Format(RecipeToolMessage.RecipeLink, new { Url = page.AbsoluteUri }));
         return [.. lines];
+    }
+
+    /// <summary>
+    /// A recipe we hold with every amount worked out, so the sums aren't left to the model. Which factor fits, and what
+    /// a step's amount means, stay the cook's.
+    /// </summary>
+    /// <remarks>A tool, not another prompt rule: the rules were followed with the wrong sums (ADR 0080).</remarks>
+    [Description(
+        "Scales a recipe you read with ReadRecipe: every ingredient line worked out, numbered as the print is, and the " +
+        "amounts in its steps. Use its lines as they are instead of doing the sums.")]
+    public async Task<string> ScaleRecipe(
+        [Description("The link you read the recipe from")]
+        string url,
+        [Description("How many people it's for. Leave it out for something made whole, such as a cake")]
+        int people = 0,
+        [Description("A factor of your own, only when the recipe doesn't say how many people it feeds: 2 doubles it")]
+        double times = 0,
+        CancellationToken cancellationToken = default)
+    {
+        if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var address) ||
+            address.Scheme is not ("http" or "https"))
+            return MessageText.Format(RecipeToolMessage.AddressRefused);
+
+        return await _shelf.HeldAsync(address, cancellationToken) is { } stored
+            ? RecipeHitPrinter.Framed(RecipeScaler.Print(stored.Recipe, people, times))
+            : MessageText.Format(RecipeToolMessage.ScaleNotHeld);
     }
 
     /// <summary>The short names of the enabled sites, in order, or "none".</summary>

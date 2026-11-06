@@ -80,7 +80,7 @@ internal static class RecipePrinter
     /// The ingredient lines as written, numbered straight on, with a sub-heading each time the section changes and the
     /// cut said when there are too many.
     /// </summary>
-    private static string Ingredients(Recipe recipe)
+    public static string Ingredients(Recipe recipe)
     {
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.IngredientsHeading) };
         lines.AddRange(Sectioned(recipe.Ingredients.Take(MaxLines).Select(i => (i.Section, i.Text))));

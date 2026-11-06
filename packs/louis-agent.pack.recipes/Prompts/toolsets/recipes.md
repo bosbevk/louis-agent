@@ -14,6 +14,7 @@ method, from a recipe site.
 |------|-----------|
 | `FindRecipes` | Search the enabled recipe sites (`query`, the dish in three or four words; leave `source` out and each search asks a few sites picked at random, or give one site's short name). Returns the pages the sites list, numbered, each with its title and link, in the site's own order. A hit can be a page that isn't a recipe (an article, a round-up, a category), so read the titles. |
 | `ReadRecipe` | Read one recipe page from its address (`url`). It reads any public recipe page, not only the sites `FindRecipes` searches. Returns the recipe with its ingredients and method as numbered lines, how much it makes, the times, the photo, the author and the link. |
+| `ScaleRecipe` | Scale a recipe you read (`url`, the link you read; `people`, or `times` for a factor of your own). Returns every ingredient line worked out, numbered as the print is, and the amounts in the steps. It marks a line it couldn't scale or left a number on, and says when it doesn't hold the page |
 
 ## Workflow
 

@@ -78,6 +78,33 @@ public enum RecipeToolMessage
 
     [Description("Serves {Yield}")] RecipeServes,
 
+    [Description("{Name}, every amount times {Factor}: for {People} from the page's {Yield}.")]
+    ScaledForPeople,
+
+    [Description("{Name}, every amount times {Factor}, as you asked.")]
+    ScaledByTimes,
+
+    [Description("{Name}, kept as the page wrote it, since it doesn't say how many people it feeds. If that plainly won't feed them, call this again with `times`.")]
+    ScaleKept,
+
+    [Description("{Name}, kept as the page wrote it.")]
+    ScaleWhole,
+
+    [Description("{Line} (not scaled)")]
+    ScaleLineNotScaled,
+
+    [Description("{Line} (only the first amount scaled)")]
+    ScaleLinePartly,
+
+    [Description("## Amounts in the steps")]
+    ScaleStepsHeading,
+
+    [Description("Step {Number}: {From} becomes {To}")]
+    ScaleStepAmount,
+
+    [Description("We don't hold that page's recipe, so it can't be scaled here. Do the sums with Calculate.")]
+    ScaleNotHeld,
+
     [Description("{People} servings")] RecipeServings,
 
     [Description("prep {Minutes} min")] RecipePrep,

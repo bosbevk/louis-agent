@@ -373,8 +373,8 @@ public class PulsPromptsTests
                 "A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small " +
                 "budget"));
         Assert.That(cook, Does.Contain("one cheap main ingredient (mince, chicken portions, eggs, beans, a soup)"));
-        Assert.That(cook, Does.Contain("`Calculate`").And.Contain("never in your head"),
-            "the scaling is a tool's job, with every amount in one call");
+        Assert.That(cook, Does.Contain("`ScaleRecipe`").And.Contain("never sums in your head"),
+            "the scaling is a tool's job");
         Assert.That(cook, Does.Match(@"toolsets: [^\r\n]*calculator"), "and the cook has the tool");
     }
 

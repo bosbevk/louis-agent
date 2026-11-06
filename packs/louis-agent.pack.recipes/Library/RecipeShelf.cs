@@ -62,6 +62,11 @@ public sealed class RecipeShelf(
         return recipe;
     }
 
+    /// <summary>The recipe we hold for this address, whether it's our link or the site's own.</summary>
+    public Task<StoredRecipe?> HeldAsync(Uri address, CancellationToken cancellationToken) =>
+        QuietlyAsync(() => library.ReadAsync(library.IdIn(address) ?? RecipeAddress.IdOf(address), cancellationToken), null,
+            cancellationToken);
+
     /// <summary>The ids of the pages we opened and found no recipe on, which nobody needs to open again.</summary>
     public Task<IReadOnlySet<string>> ExcludedIdsAsync(CancellationToken cancellationToken) =>
         QuietlyAsync(() => _excluded.IdsAsync(cancellationToken), new HashSet<string>(), cancellationToken);

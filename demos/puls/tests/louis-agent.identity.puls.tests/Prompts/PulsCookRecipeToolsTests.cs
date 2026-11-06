@@ -53,15 +53,15 @@ public class PulsCookRecipeToolsTests
     }
 
     /// <summary>
-    /// Every sum of the recipe goes in one <c>Calculate</c> call, so the accuracy costs one trip to the model and no
-    /// more: the amounts, the ones in the steps, an ingredient used twice, the packs, the time.
+    /// On a page the tool doesn't hold, every sum goes in one <c>Calculate</c> call, so the accuracy costs one trip to
+    /// the model and no more. The sums the tool doesn't do are <c>Calculate</c>'s on any page.
     /// </summary>
     [Test]
-    public void EverySumOfTheRecipe_GoesInOneCalculateCall()
+    public void WhatScaleRecipeDoesntDo_GoesToCalculate()
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("One call holds every sum of the recipe"));
+        Assert.That(cook, Does.Contain("one `Calculate` call holds every sum of the recipe"));
         Assert.That(cook, Does.Contain("the amounts in the steps"));
         Assert.That(cook, Does.Contain("`(120+133)*6/4`"), "an ingredient used twice");
         Assert.That(cook, Does.Contain("`(120+133)*6/4/250`"), "how many packs");

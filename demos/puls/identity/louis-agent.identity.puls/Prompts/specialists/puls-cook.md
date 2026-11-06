@@ -31,15 +31,17 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   ranking, and a hit can be an article or a category: read the titles, and `ReadRecipe` the hit whose title is the dish.
   A print that says the site *publishes no recipe data* is the page's text: read the recipe from it, once, else the next
   hit. A variant of the dish is the dish, unless the task asks for a particular kind: *chicken bobotie* answers *bobotie*. Never `WebSearch` while a hit that fits is left.
-  (4) A print gives the ingredients and the method as numbered lines, *Makes*, the times, the photo and the link:
-  scale the amounts to the task's people from those lines, with `Calculate`, never in your head. One call holds every
-  sum of the recipe, each with the same factor, the task's people divided by the print's (for 6 from 4, `500*6/4`): every
-  amount, the small ones too (`1*6/4`), and the amounts in the steps; an ingredient used twice, added up (`(120+133)*6/4`);
-  how many packs to buy, rounded up (`(120+133)*6/4/250`); and the total time, which doesn't scale (`20+40`). Use the
-  results, and don't work them out again. Round a result only to a measure a cook can use (0.6667 teaspoon is ⅔ teaspoon),
+  (4) A print gives the ingredients and the method as numbered lines, *Makes*, the times, the photo and the link.
+  Scale it with `ScaleRecipe`: the link you read and the task's people, or no people for something made whole. It gives
+  every ingredient line worked out, water too, and the amounts in the steps: use its lines as they are, never sums in your
+  head. A line it marks *(only the first amount scaled)* has another number to check yourself: a second ingredient or the same amount said again scales too, and a pack's size stays (`2 x 400 g`). A line it marks *(not scaled)* is yours to work out with `Calculate`, and so are an ingredient used twice, added up
+  (`(120+133)*6/4`), how many packs to buy, rounded up (`(120+133)*6/4/250`), and the total time, which doesn't scale
+  (`20+40`). On a page it says it doesn't hold, one `Calculate` call holds every sum of the recipe, each with the same
+  factor, the task's people divided by the print's (for 6 from 4, `500*6/4`): every amount, the small ones too (`1*6/4`),
+  and the amounts in the steps. Use the results, and don't work them out again. Round a result only to a measure a cook can use (0.6667 teaspoon is ⅔ teaspoon),
   and what can't be split, an egg or a roll, to a whole one (2.67 eggs is 3 eggs). The size of one piece doesn't scale (150 g portions, a 20 cm tin): how many there are does. Servings are people, so scale by them
   (`12 servings`, `Serves 6`; for a range such as `6 to 8 servings`, its middle). A *Makes* that counts tarts, pies, slices
-  or pieces isn't people: keep the recipe as it is, a factor of 1, or 2 if that plainly
+  or pieces isn't people: keep the recipe as it is, a factor of 1, or `ScaleRecipe` with `times` 2 if that plainly
   won't feed them. A print that gives neither: keep the recipe as it is and say so under *Unsure*. One recipe comes from
   one page, never parts of two.
   When the page's language differs from the task's, write the

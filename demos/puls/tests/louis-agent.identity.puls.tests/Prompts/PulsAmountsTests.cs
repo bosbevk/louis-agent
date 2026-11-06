@@ -14,6 +14,20 @@ public class PulsAmountsTests
         string.Join(' ', PromptCatalog.Get("specialists/puls-cook.md")!.Body.Split((char[]?)null,
             StringSplitOptions.RemoveEmptyEntries));
 
+    /// <summary>The cook scales with the tool, copies its lines, and does only what the tool marks.</summary>
+    [Test]
+    public void TheCook_ScalesWithTheTool_AndCopiesItsLines()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("Scale it with `ScaleRecipe`"));
+        Assert.That(cook, Does.Contain("use its lines as they are"));
+        Assert.That(cook, Does.Contain("A line it marks *(not scaled)* is yours to work out with `Calculate`"));
+        Assert.That(cook, Does.Contain("*(only the first amount scaled)*"));
+        Assert.That(cook, Does.Contain("a pack's size stays (`2 x 400 g`)"));
+        Assert.That(cook, Does.Contain("On a page it says it doesn't hold"));
+    }
+
     /// <summary>A line with no amount keeps the page's words or a dash, never an amount of the cook's.</summary>
     [Test]
     public void ALineWithNoAmount_GetsNoAmountOfTheCooks()
