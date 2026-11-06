@@ -70,7 +70,8 @@ public class SiteRoutesTests
         var program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/web/louis-agent.puls/Program.cs"));
 
         Assert.That(program, Does.Contain("new SiteFrames(Admin: typeof(AdminLayout))"));
-        Assert.That(program, Does.Contain("AddSingleton(new PackViews())"));
+        Assert.That(program, Does.Contain("RecipeWebViews.AddTo(views)"));
+        Assert.That(program, Does.Contain("AddSingleton(views)"));
     }
 
     /// <summary>The API's answers: one screen, no rows, and nothing running or to review.</summary>

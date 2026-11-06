@@ -1,0 +1,9 @@
+@* The framework's table, with one line of the library's own above the rows. *@
+<ScreenTable Screen="Screen">
+    <Above Context="page">
+        @if (RecipeUsageLine.Of(Screen, page) is { } line)
+        {
+            <p class="muted screen-above">@line</p>
+        }
+    </Above>
+</ScreenTable>

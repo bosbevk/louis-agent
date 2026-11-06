@@ -1,6 +1,7 @@
 using LouisAgent.Puls.Text;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using LouisAgent.Packs.Recipes.Web;
 using LouisAgent.Puls;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Web.Api;
@@ -24,6 +25,10 @@ builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.Queue.ReviewQueueState>
 builder.Services.AddScoped<LouisAgent.Puls.Admin.Notes.RunNotesState>();
 builder.Services.AddSingleton(PulsText.Afrikaans); // Puls speaks Afrikaans
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
-builder.Services.AddSingleton(new PackViews());
+
+// Which component draws each screen: the plain table, then the packs' own, then ours if we ever write one.
+var views = new PackViews();
+RecipeWebViews.AddTo(views);
+builder.Services.AddSingleton(views);
 
 await builder.Build().RunAsync();
