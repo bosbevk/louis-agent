@@ -2,6 +2,7 @@ using System.Globalization;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
+using LouisAgent.Packs.Recipes.Recipes.Tidying;
 using LouisAgent.Packs.Recipes.Tools;
 
 namespace LouisAgent.Packs.Recipes.Scaling;
@@ -21,6 +22,8 @@ internal static class RecipeScaler
     /// <summary>The factor's line, the ingredients scaled and numbered as the print is, the steps' amounts.</summary>
     public static string[] Print(Recipe recipe, int people, double times)
     {
+        // Tidied as the print is, so the lines and the steps carry the same numbers.
+        recipe = RecipeTidy.Of(recipe);
         var (factor, line) = FactorFor(recipe, people, times);
         var scaled = recipe with
         {

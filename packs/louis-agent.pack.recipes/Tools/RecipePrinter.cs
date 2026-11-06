@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
+using LouisAgent.Packs.Recipes.Recipes.Tidying;
 
 namespace LouisAgent.Packs.Recipes.Tools;
 
@@ -22,6 +23,8 @@ internal static class RecipePrinter
     /// <summary>The recipe as the model reads it. The link is the page the recipe was read from.</summary>
     public static string Print(Recipe recipe)
     {
+        recipe = RecipeTidy.Of(recipe);
+
         // The name, and the line under it when the page gave a yield or any time.
         var head = new List<string> { MessageText.Format(RecipeToolMessage.RecipeHeading, new { recipe.Name }) };
         if (HowMuchAndHowLong(recipe) is { Length: > 0 } line) head.Add(line);
