@@ -28,7 +28,7 @@ public enum RecipeToolMessage
     [Description("{Number}. {Name} · {Url}")]
     HitLine,
 
-    [Description("Asked {Sites}. Pages for the search ({Count}), the sites taking turns, not ranked:")]
+    [Description("Asked {Sites}. Pages for the search ({Count}), in a random order, not ranked:")]
     HitsFoundAcrossSites,
 
     [Description("our library")]

@@ -15,8 +15,10 @@ tends to settle on a favourite anyway.
 ## Decision
 
 **With no site named, `FindRecipes` draws the sites in code.** Four at random from the enabled sites with their own search,
-asked at once, with their hits merged taking turns and each hit saying whose page it is. The model chooses between hits by
-their titles, never between sites by their names.
+asked at once, with their hits merged in a random order and each hit saying whose page it is. The model chooses between hits
+by their titles, never between sites by their names. Taking turns came first and was dropped: it only spreads the first few
+places, so one site with copies in the library could still fill the top. A hit holds the dish's whole name, so a shuffle can't
+put a page that only shares a word with the search on top.
 
 - **Four**, because the browser opens at most four pages at once, so a search costs about as long as its slowest site. If
   they miss, another search asks another four.
