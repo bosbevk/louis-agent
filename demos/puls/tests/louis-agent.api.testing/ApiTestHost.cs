@@ -10,6 +10,7 @@ using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -51,10 +52,11 @@ internal static class ApiTestHost
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
-        DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null)
+        DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
+        IReadOnlyList<IAgentPack>? morePacks = null)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
-        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel());
+        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host);
@@ -114,7 +116,8 @@ internal static class ApiTestHost
     /// <summary>An agent with no model, for a test about how the API starts up.</summary>
     public static AgentHostContext BareHost() => HostContext(RepoRoot, new NoModel());
 
-    private static AgentHostContext HostContext(string workspaceRoot, IChatClient model)
+    private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
+        IReadOnlyList<IAgentPack>? morePacks = null)
     {
         var options = new AgentOptions
         {
@@ -124,7 +127,10 @@ internal static class ApiTestHost
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions()), new CalculatorPack()]);
+            [
+                new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+                new RecipesPack(new RecipesOptions()), new CalculatorPack(), .. morePacks ?? []
+            ]);
         var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,
