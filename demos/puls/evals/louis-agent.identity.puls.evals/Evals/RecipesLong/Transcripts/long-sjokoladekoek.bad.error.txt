@@ -1,0 +1,5 @@
+{"event":"mode","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"question","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"task":"long-sjokoladekoek","turn":1,"session":"sess_long_sjokoladekoek","text":"Ek soek 'n lekker sjokoladekoek-resep. Ek is in Malmesbury en dit maak nie saak waar ek koop nie."}
+{"event":"sse","t":"2026-11-04T12:00:01Z","mode":"puls-cook","repeat":1,"task":"long-sjokoladekoek","turn":1,"type":"error","data":{"type":"error","error":{"type":"api_error","message":"overloaded"}}}
+{"event":"sse","t":"2026-11-04T12:00:01Z","mode":"puls-cook","repeat":1,"task":"long-sjokoladekoek","turn":1,"type":"message_stop","data":{"type":"message_stop"}}
+{"event":"turn","t":"2026-11-04T12:00:01Z","mode":"puls-cook","repeat":1,"task":"long-sjokoladekoek","turn":1,"session":"sess_long_sjokoladekoek","question":"Ek soek 'n lekker sjokoladekoek-resep. Ek is in Malmesbury en dit maak nie saak waar ek koop nie.","answer":"","role":null,"continued":null,"agent_calls":0,"specialist_calls":0,"hosts":[],"seconds":1.0,"error":"overloaded","failure":null}

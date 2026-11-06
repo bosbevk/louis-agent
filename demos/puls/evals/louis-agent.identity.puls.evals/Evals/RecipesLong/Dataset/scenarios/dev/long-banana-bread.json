@@ -1,0 +1,23 @@
+{
+  "id": "long-banana-bread",
+  "input": [
+    {
+      "role": "user",
+      "content": "What's a good banana bread recipe? I'm in Pretoria and it doesn't matter where I shop."
+    }
+  ],
+  "metadata": {
+    "place": "Pretoria, Gauteng, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": "as the page makes it",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

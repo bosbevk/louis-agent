@@ -20,6 +20,7 @@ public class EvalManualTests
     [TestCase("puls-cook", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md")]
     [TestCase("puls-routing", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/manual.md")]
     [TestCase("puls-recipes", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Recipes/manual.md")]
+    [TestCase("puls-recipes-long", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/RecipesLong/manual.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {
         var check = new EvalEntry(eval, "An eval", path);

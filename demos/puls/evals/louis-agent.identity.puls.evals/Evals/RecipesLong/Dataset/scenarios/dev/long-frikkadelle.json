@@ -1,0 +1,23 @@
+{
+  "id": "long-frikkadelle",
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek wil frikkadelle maak vir vier mense. Ek is in Malmesbury en dit maak nie saak waar ek koop nie. Wat is die resep?"
+    }
+  ],
+  "metadata": {
+    "place": "Malmesbury, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "kind:dish"
+    ]
+  }
+}

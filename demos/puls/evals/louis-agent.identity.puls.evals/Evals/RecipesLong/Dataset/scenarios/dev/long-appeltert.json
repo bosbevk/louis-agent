@@ -1,0 +1,23 @@
+{
+  "id": "long-appeltert",
+  "input": [
+    {
+      "role": "user",
+      "content": "Gee my 'n resep vir appeltert vir agt mense. Ek is in Paarl en dit maak nie saak waar ek koop nie."
+    }
+  ],
+  "metadata": {
+    "place": "Paarl, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 8,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "kind:baking"
+    ]
+  }
+}

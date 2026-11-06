@@ -1,0 +1,23 @@
+{
+  "id": "long-carrot-cake",
+  "input": [
+    {
+      "role": "user",
+      "content": "I'd like to bake a carrot cake. I'm in Durban and it doesn't matter where I shop. What's a good recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Durban, KwaZulu-Natal, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": "as the page makes it",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

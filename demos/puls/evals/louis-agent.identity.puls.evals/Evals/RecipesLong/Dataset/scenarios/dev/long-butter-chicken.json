@@ -1,0 +1,23 @@
+{
+  "id": "long-butter-chicken",
+  "input": [
+    {
+      "role": "user",
+      "content": "What's a good butter chicken recipe for four people? I'm in Durban and any shop will do."
+    }
+  ],
+  "metadata": {
+    "place": "Durban, KwaZulu-Natal, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:dish"
+    ]
+  }
+}

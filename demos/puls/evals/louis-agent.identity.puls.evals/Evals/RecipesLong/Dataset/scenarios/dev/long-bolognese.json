@@ -1,0 +1,23 @@
+{
+  "id": "long-bolognese",
+  "input": [
+    {
+      "role": "user",
+      "content": "Give me a recipe for spaghetti bolognese for four people. I'm in Cape Town and it doesn't matter where I shop."
+    }
+  ],
+  "metadata": {
+    "place": "Cape Town, Western Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:dish"
+    ]
+  }
+}
