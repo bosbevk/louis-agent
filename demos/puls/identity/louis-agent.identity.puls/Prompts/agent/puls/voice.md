@@ -108,7 +108,8 @@ more than a few files go to `puls-analyst` with `files` and `python` (or `bash`)
 Here a specialist's report goes straight to the user, as the cook wrote it, every table row and every link: you never
 write it out, and you aren't asked to. So all you say is one line before the call:
 
-- **Before the call:** the line your voice gives for it.
+- **Before the call:** one line in your own words, never a set phrase, in the language the user wrote: who it's going
+  to and that they'll be back shortly.
 - **A follow-up:** the report is in your history as your own answer, so you can talk about it. A change to it goes
   back to the cook, whose new report reaches the user the same way.
 - **The footer** the tool adds (`[Sub-session sub-1 on puls (web; puls-cook). It stays open: …]`) is yours alone: its

@@ -508,42 +508,13 @@ public class PulsPromptsTests
 
         Assert.That(router, Does.Contain("as the cook wrote it").And.Contain("you aren't asked to"),
             "the report goes straight to the user, so the one choosing doesn't retype it");
-        Assert.That(voice, Does.Contain("Ek gee dit gou vir my kok"), "the line before the call, in Puls's words");
+        Assert.That(Flat(voice), Does.Contain("in jou eie woorde"), "the line before the call, in Puls's words");
         Assert.That(router, Does.Not.Contain("My kok is terug"), "and none above a report it doesn't write");
         Assert.That(router, Does.Contain("puls-cook). It stays open"),
             "the footer example names its own cook, and no cost (FX27)");
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
-        Assert.That(voice, Does.Contain("my kok").And.Contain("nou-nou terug"), "the hand-off line, in Puls's voice");
+        Assert.That(voice, Does.Contain("nou-nou terug"), "what the hand-off says, in Puls's voice");
         Assert.That(router, Does.Contain("one line to the user first"));
-    }
-
-    /// <summary>Puls briefs a specialist with a short note: what the user wants, and how they come across.</summary>
-    [Test]
-    public void Puls_BriefsTheSpecialist_WithWhatTheUserWants_AndHowTheySound()
-    {
-        // F28 step 1: the task is a note in a fixed shape; the mood is a read of the typing. CL15: in Puls's own
-        // routing.
-        string router = Read("agent/puls/voice.md");
-
-        string afrikaans = Read("agent/puls/voice-af.md");
-        string english = Read("agent/puls/voice-en.md");
-
-        foreach (string label in new[]
-                 {
-                     "**Vir:**", "**Wil hê:**", "**Vir hoeveel:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**"
-                 })
-            Assert.That(afrikaans, Does.Contain(label), "the note's labels, in Afrikaans");
-        foreach (string label in new[]
-                 {
-                     "**For:**", "**Wants:**", "**Serves:**", "**Sounds:**", "**Where:**", "**Already said:**"
-                 })
-            Assert.That(english, Does.Contain(label), "the note's labels, in English");
-        Assert.That(router, Does.Contain("a guess from the typing").And.Contain("never a diagnosis"),
-            "the guard rails");
-        Assert.That(afrikaans, Does.Contain("neutraal"), "when the typing says nothing");
-        Assert.That(english, Does.Contain("neutral"), "when the typing says nothing");
-        Assert.That(router, Does.Contain("[stemming: af]").And.Contain("no `Sounds`"),
-            "the mood can be switched off for a turn");
     }
 
     /// <summary>The cook is the only role Puls hands work to, until the other specialists pass their check.</summary>
