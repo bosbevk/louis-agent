@@ -14,7 +14,12 @@ namespace LouisAgent.Packs.Recipes.Reading.PageText;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 internal static class PageTextLines
 {
-    private static readonly string[] IngredientHeadings = ["ingredients", "bestanddele", "ingredients needed", "what you need"];
+    private static readonly string[] IngredientHeadings =
+    [
+        "ingredients", "bestanddele", "ingredients needed", "what you need", "what you'll need", "here's what you'll need",
+        "you'll need"
+    ];
+
     private static readonly string[] IngredientPartHeadings = ["ingredients for ", "bestanddele vir ", "what you need for "];
     private static readonly string[] IngredientPhrases = ["ingredients needed ", "ingredients: ", "what you need "];
 
@@ -32,6 +37,8 @@ internal static class PageTextLines
 
     /// <summary>How a cook's aside starts, in these exact capitals: "Tip the batter in" is a step.</summary>
     private static readonly string[] Asides = ["TIP ", "TIP:", "Tip:", "NOTE:", "Note:", "NOTES:", "Notes:"];
+
+    private const string CookieNotice = "Please accept cookies";
 
     /// <summary>Words that start an instruction: with no amount on the line, it's a step in the wrong list.</summary>
     private static readonly string[] Instructions =
@@ -53,6 +60,9 @@ internal static class PageTextLines
     /// <summary>A heading is short; a sentence that happens to start the same way isn't one.</summary>
     public const int LongestHeading = 40;
 
+    /// <summary>A numbered part's name can say more than a heading: "Step 1: Activate the yeast and mix".</summary>
+    private const int LongestStepPart = 70;
+
     /// <summary>The page's words as lines to read: no images, no blank lines, nothing after the recipe.</summary>
     public static string[] LinesOf(string words) =>
     [
@@ -67,9 +77,10 @@ internal static class PageTextLines
     /// <summary>Whether the line is an ingredients heading, alone, naming a part, or as a phrase.</summary>
     public static bool IsIngredientsHeading(string line)
     {
-        string words = Words(line).ToLowerInvariant();
+        string words = Words(line).Replace('’', '\'').ToLowerInvariant();
         return words.Length <= LongestHeading && !MethodHeadings.Contains(words) &&
                (IngredientHeadings.Contains(words) ||
+                (line.StartsWith('#') && words.EndsWith(" ingredients", StringComparison.Ordinal)) ||
                 IngredientPartHeadings.Concat(IngredientPhrases).Any(start => words.StartsWith(start, StringComparison.Ordinal)));
     }
 
@@ -78,7 +89,8 @@ internal static class PageTextLines
     {
         string words = Words(line).ToLowerInvariant();
         return MethodHeadings.Contains(words) ||
-               (line.StartsWith('#') && MethodWords.Any(word => words.Split(' ').Contains(word)));
+               (line.StartsWith('#') && (MethodWords.Any(word => words.Split(' ').Contains(word)) ||
+                                         words.StartsWith("how to make ", StringComparison.Ordinal)));
     }
 
     /// <summary>The part an ingredients heading names: "syrup" in "Ingredients for syrup".</summary>
@@ -113,9 +125,20 @@ internal static class PageTextLines
     }
 
     /// <summary>Whether a line names one numbered part of a method: "Step 1: the dough".</summary>
-    public static bool IsStepPart(string line) =>
-        IsPartLine(line) && (Words(line).StartsWith("step ", StringComparison.OrdinalIgnoreCase) ||
-                             Words(line).StartsWith("stap ", StringComparison.OrdinalIgnoreCase));
+    public static bool IsStepPart(string line)
+    {
+        string words = Words(line);
+        bool startsSo = words.StartsWith("step ", StringComparison.OrdinalIgnoreCase) ||
+                        words.StartsWith("stap ", StringComparison.OrdinalIgnoreCase);
+        return startsSo && words.Length is > 5 and <= LongestStepPart && char.IsAsciiDigit(words[5]) && !words.EndsWith('.');
+    }
+
+    /// <summary>The number a line is written under, "12" in "12. Fry it", bullet or not, or nothing.</summary>
+    public static string? WrittenNumber(string line)
+    {
+        string text = WithoutBullet(line);
+        return WrittenNumberLength(text) > 0 ? new string([.. text.TakeWhile(char.IsAsciiDigit)]) : null;
+    }
 
     /// <summary>Whether a plain step is really a label: short, and in capitals or ending in a colon.</summary>
     public static bool IsLabel(string line)
@@ -136,6 +159,9 @@ internal static class PageTextLines
     /// <summary>Whether a line points at another page: "LEES OOK: …".</summary>
     public static bool IsReadAlso(string line) =>
         ReadAlso.Any(start => Words(line).StartsWith(start, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Whether a line is the site asking about cookies, not a step.</summary>
+    public static bool IsCookieNotice(string line) => line.StartsWith(CookieNotice, StringComparison.Ordinal);
 
     /// <summary>Whether a line is the cook's aside, not a step.</summary>
     public static bool IsAside(string line) => Asides.Any(start => line.StartsWith(start, StringComparison.Ordinal));
