@@ -35,6 +35,9 @@ internal static class PageTextRecipe
     /// <summary>More steps than this means the page ran on past the recipe.</summary>
     private const int MostSteps = 40;
 
+    /// <summary>How many items a list needs per instruction among them for that one to be a stray.</summary>
+    private const int LinesPerInstruction = 3;
+
     /// <summary>The recipe on this page, when it's plainly there. It has no photo: the caller checks those.</summary>
     /// <remarks>Guard clauses, one per way a page can fall short (ADR 0051).</remarks>
     public static Recipe? Read(string html, Uri page)
@@ -60,7 +63,12 @@ internal static class PageTextRecipe
         var steps = Steps(lines[(headingAt >= 0 ? methodAt + 1 : methodAt)..], parts);
         if (steps is not { Count: > 0 and <= MostSteps }) return null;
 
-        return new Recipe(name, YieldIn(lines[..methodAt]), null, null, null, ingredients, steps, null, null, page);
+        // A stray instruction left the list, not the recipe: it's how its last part is made.
+        var strays = lines[ingredientsAt..methodAt].Where(IsAnInstruction)
+            .Select(line => new RecipeStep(ingredients[^1].Section, WithoutMarker(line)));
+
+        return new Recipe(name, YieldIn(lines[..methodAt]), null, null, null, ingredients, [.. steps, .. strays], null, null,
+            page);
     }
 
     /// <summary>The ingredients, each under its part, or nothing if a line shows this isn't a plain list.</summary>
@@ -69,9 +77,12 @@ internal static class PageTextRecipe
         // In a list, what's between the items isn't an ingredient, such as Sarah Graham's times. With no list, every
         // line is one.
         bool listed = lines.Any(IsItem);
+
+        // A stray instruction among the items is left out, as Sarah Graham's icing has; more than that isn't a list.
+        bool stray = listed && lines.Count(IsAnInstruction) * LinesPerInstruction <= lines.Count(IsItem);
         var kept = new List<RecipeIngredient>();
         string? part = null;
-        foreach (string line in lines.Where(line => !IsReadAlso(line)))
+        foreach (string line in lines.Where(line => !IsReadAlso(line) && line.Any(char.IsLetterOrDigit)))
         {
             if (IsIngredientsHeading(line))
             {
@@ -79,7 +90,8 @@ internal static class PageTextRecipe
                 continue;
             }
 
-            if ((!IsItem(line) && HasLink(line) && !listed) || IsAnInstruction(line)) return null;
+            if ((!IsItem(line) && HasLink(line) && !listed) || (IsAnInstruction(line) && !stray)) return null;
+            if (IsAnInstruction(line)) continue;
 
             // A heading too long to name a part is the page talking.
             if (line.StartsWith('#') && Words(line).Length > LongestHeading) continue;
@@ -111,7 +123,7 @@ internal static class PageTextRecipe
     /// </summary>
     public static List<RecipeStep>? Steps(string[] lines, HashSet<string> parts)
     {
-        string[] own = NumberedParts(OwnLines(lines, parts));
+        string[] own = NumberedParts(WrapsJoined(OwnLines(lines, parts)));
         bool listed = own.Any(line => IsStepItem(line, 0));
         bool inParts = !listed && own.Any(IsStepPart);
         var steps = new List<RecipeStep>();
@@ -163,7 +175,10 @@ internal static class PageTextRecipe
                 }
 
                 if (line.EndsWith(':') || (at > 0 && IsPartLine(own[at - 1]))) continue;
-                if (steps.Count > 0 || line.Length > LongestFirstLine) return null;
+
+                // A sentence between the items belongs to the method, as a note or a glaze's opening does.
+                bool aSentence = steps.Count > 0 && line.EndsWith('.') && !IsCookieNotice(line);
+                if (!aSentence && (steps.Count > 0 || line.Length > LongestFirstLine)) return null;
             }
 
             // A written "1." always comes off, as a count can start again in each part. A bare number comes off only if
@@ -196,6 +211,21 @@ internal static class PageTextRecipe
         return [.. own.Select(line => WrittenNumber(line) is { } number ? $"Step {number}: {WithoutMarker(WithoutBullet(line))}" : line)];
     }
 
+    /// <summary>A listed step a page wrapped onto the next line, as FinGlobal's "until it resembles crumbs.".</summary>
+    private static string[] WrapsJoined(string[] lines)
+    {
+        var joined = new List<string>();
+        foreach (string line in lines)
+        {
+            bool wrapped = joined.Count > 0 && char.IsLower(line[0]) && IsItem(joined[^1]) &&
+                           joined[^1][^1] is not ('.' or '!' or '?' or ':');
+            if (wrapped) joined[^1] += $" {line}";
+            else joined.Add(line);
+        }
+
+        return [.. joined];
+    }
+
     /// <summary>A last numbered part with one sentence under it, "Step 5: serve", has that step to give.</summary>
     private static RecipeStep[] LastPart(string[] own, int at) =>
         IsStepPart(own[at]) && at + 1 < own.Length ? [new RecipeStep(Words(own[at]), WithoutMarker(own[at + 1]))] : [];
@@ -208,7 +238,8 @@ internal static class PageTextRecipe
     public static string[] OwnLines(string[] lines, HashSet<string> parts)
     {
         string[] own = [.. DashesJoined(lines).Where(line => !IsReadAlso(line))];
-        int end = Array.FindIndex(own, line => (line.StartsWith('#') && !parts.Contains(Words(line))) || line == "-" ||
+        int end = Array.FindIndex(own, line => (line.StartsWith('#') && Words(line).Length > 0 &&
+                                                !parts.Contains(Words(line))) || line == "-" ||
                                                line.StartsWith('<') || HasLink(line) || line.Contains('©') ||
                                                IsAside(line) || IsIngredientsHeading(line));
         if (end < 0) return own;
