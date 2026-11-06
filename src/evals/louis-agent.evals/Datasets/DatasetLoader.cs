@@ -140,7 +140,8 @@ public static class DatasetLoader
                     });
 
         // The question first, then the follow-ups in order: the messages the runner sends.
-        var input = new EvalInput(metadata.Place, metadata.TimeZone, [sample.Input[0].Content, .. metadata.FollowUps]);
+        var input = new EvalInput(metadata.Place, metadata.TimeZone, [sample.Input[0].Content, .. metadata.FollowUps],
+            metadata.Role);
         return new EvalScenario(sample.Id, input, metadata.Expected, metadata.Categories, parsed, sample.Target);
     }
 

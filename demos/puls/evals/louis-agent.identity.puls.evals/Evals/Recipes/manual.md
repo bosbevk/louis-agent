@@ -28,6 +28,8 @@ five in English; of the held-out ones, two are Afrikaans and one English.
 | dev | bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei, koeksisters |
 | held out | umngqusho, sosaties, bredie |
 
+An English question opens in `puls/voice-en` (its scenario's `role`), as a chat in English does; an Afrikaans one in the mode's `puls/voice-af`.
+
 Each scenario's `expected` holds `routes_to` (always `puls-cook`), `serves` (the people asked for, or `as the page makes it` when the question names none, which keeps the judge asked with a factor of 1) and `recipe_image`
 (always true). A dish whose site has no photo is not a fail: see `recipe-image` below.
 

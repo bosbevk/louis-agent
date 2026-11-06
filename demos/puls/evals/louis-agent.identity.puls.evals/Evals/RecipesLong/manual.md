@@ -23,6 +23,8 @@ Thirty scenarios, one session each and one turn, all in the `dev` split. Fifteen
 | Baking and sweet, with a number | apple tart, cupcakes, pumpkin fritters, souskluitjies, roosterkoek |
 | Everyday (bolognese, lasagne, butter chicken, frikkadelle and fish cakes name no number) | bolognese, lasagne, butter chicken, Cape Malay curry, samoosas, frikkadelle, bunny chow, oxtail, pickled fish, butternut soup, cottage pie, roast chicken, macaroni cheese, fish cakes, braaibroodjies |
 
+An English question opens in `puls/voice-en` (its scenario's `role`), as a chat in English does; an Afrikaans one in the mode's `puls/voice-af`.
+
 Each scenario's `expected` holds `routes_to` (always `puls-cook`), `serves` (the people asked for, or `as the page makes it`) and `recipe_image`
 (always true). A dish whose site has no photo is not a fail: see `recipe-image` below.
 

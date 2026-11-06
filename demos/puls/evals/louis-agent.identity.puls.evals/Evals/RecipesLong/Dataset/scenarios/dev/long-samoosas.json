@@ -9,6 +9,7 @@
   "metadata": {
     "place": "Pietermaritzburg, KwaZulu-Natal, South Africa",
     "time_zone": "Africa/Johannesburg",
+    "role": "puls/voice-en",
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",

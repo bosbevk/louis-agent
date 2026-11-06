@@ -42,7 +42,8 @@ public sealed record SampleBodyMessage(string Role, string Content);
 
 /// <summary>
 /// The scenario's own fields: where the user is and their time zone, the follow-ups asked after the first answer, the
-/// expected values the checks read, and the categories that slice the results.
+/// expected values the checks read, the categories that slice the results, and the role it opens in when that isn't
+/// the mode's.
 /// </summary>
 /// <remarks>
 /// The expected values stay a <see cref="JsonElement"/>: a key may hold text, a number, a list or null, and the API
@@ -53,4 +54,6 @@ public sealed record SampleBodyMetadata(
     string TimeZone,
     IReadOnlyList<string> FollowUps,
     JsonElement Expected,
-    IReadOnlyList<string> Categories);
+    IReadOnlyList<string> Categories,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? Role = null);

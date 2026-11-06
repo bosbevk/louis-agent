@@ -62,7 +62,7 @@ public class RecipesEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 9, 2)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 10, 3)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -195,6 +195,15 @@ public class RecipesEvalTests
             Assert.That(Servings.Of(scenario.Input.Messages[0]),
                 Does.Contain(scenario.Expected.GetProperty("serves").GetInt32()), $"{scenario.Id}: the people");
         foreach (var scenario in scenarios) Assert.That(scenario.Input.Messages, Has.Count.EqualTo(1), scenario.Id);
+    }
+
+    /// <summary>A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.</summary>
+    [Test]
+    public void EachQuestion_OpensInItsOwnLanguage()
+    {
+        foreach (var scenario in Load().Scenarios)
+            Assert.That(scenario.Input.Role,
+                Is.EqualTo(scenario.Categories.Contains("language:en") ? "puls/voice-en" : null), scenario.Id);
     }
 
     /// <summary>The held-out questions are for a release check: none is also a question to work on.</summary>

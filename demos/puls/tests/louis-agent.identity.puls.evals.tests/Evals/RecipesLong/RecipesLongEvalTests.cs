@@ -35,7 +35,7 @@ public class RecipesLongEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 2, 2)));
+            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 3, 3)));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
 
@@ -70,6 +70,15 @@ public class RecipesLongEvalTests
         foreach (var scenario in scenarios.Except(whole))
             Assert.That(Servings.Of(scenario.Input.Messages[0]),
                 Does.Contain(scenario.Expected.GetProperty("serves").GetInt32()), scenario.Id);
+    }
+
+    /// <summary>A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.</summary>
+    [Test]
+    public void EachQuestion_OpensInItsOwnLanguage()
+    {
+        foreach (var scenario in Load().Scenarios)
+            Assert.That(scenario.Input.Role,
+                Is.EqualTo(scenario.Categories.Contains("language:en") ? "puls/voice-en" : null), scenario.Id);
     }
 
     /// <summary>The rubric is the recipes eval's: both now ask plain questions, so both hold the line for no number.</summary>

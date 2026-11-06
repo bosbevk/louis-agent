@@ -234,16 +234,27 @@ public class EvalRunnerTests
     /// Runs the stub eval with its sessions answered from that many canned turns, and hands back the client, so you
     /// can see what it was asked to open.
     /// </summary>
-    private static async Task<CannedSessionClient> RunAndOpened(EvalRun run, int turns = 1)
+    private static async Task<CannedSessionClient> RunAndOpened(EvalRun run, int turns = 1, CannedEval? eval = null)
     {
         var client = new CannedSessionClient(Enumerable.Repeat(OneAnswer, turns).ToArray());
         var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)),
             new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
-        await runner.RunAsync(new CannedEval(), run, CancellationToken.None);
+        await runner.RunAsync(eval ?? new CannedEval(), run, CancellationToken.None);
 
         return client;
+    }
+
+    /// <summary>A scenario naming its own role opens in it: an English question in the English voice.</summary>
+    [Test]
+    public async Task AScenarioWithItsOwnRole_OpensInThatRole()
+    {
+        var own = await RunAndOpened(new EvalRun("run_1", 1), eval: new CannedEval(role: SampleRole.Beta));
+        var none = await RunAndOpened(new EvalRun("run_1", 1));
+
+        Assert.That(own.Opened.Single().Mode.Role, Is.EqualTo(SampleRole.Beta));
+        Assert.That(none.Opened.Single().Mode.Role, Is.EqualTo(SampleRole.Alpha), "the mode's own, as before");
     }
 
     /// <summary>A plain run still marks every session as the eval's, with no web replay and no trial named.</summary>
@@ -352,7 +363,8 @@ public class EvalRunnerTests
         TurnFacts? facts = null,
         IReadOnlyList<ICheck>? graders = null,
         int messages = 1,
-        DatasetManifest? dataset = null) : IEval
+        DatasetManifest? dataset = null,
+        string? role = null) : IEval
     {
         /// <inheritdoc />
         public DatasetManifest? Dataset => dataset;
@@ -377,8 +389,8 @@ public class EvalRunnerTests
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [
             new EvalScenario("pannekoek",
-                new EvalInput(null, "Africa/Johannesburg", [.. Enumerable.Repeat("Gee my resep", messages)]), default,
-                [], DatasetSplit.Dev)
+                new EvalInput(null, "Africa/Johannesburg", [.. Enumerable.Repeat("Gee my resep", messages)], role),
+                default, [], DatasetSplit.Dev)
         ];
 
         /// <inheritdoc />

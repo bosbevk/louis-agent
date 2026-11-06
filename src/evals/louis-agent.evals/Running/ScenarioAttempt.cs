@@ -42,8 +42,10 @@ public sealed class ScenarioAttempt(
         TurnFailure? openFailure = null;
         try
         {
+            // A scenario in another language opens in its own role, as a chat in that language would.
+            var opens = mode with { Role = scenario.Input.Role ?? mode.Role };
             session = await sessions.OpenAsync(
-                new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat,
+                new SessionRequest(opens, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat,
                     RunTag(run.RunId, mode, repeat),
                     ReplayFor(run, mode, repeat, scenario)),
                 cancellationToken);

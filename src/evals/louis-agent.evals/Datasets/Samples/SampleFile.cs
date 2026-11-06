@@ -52,6 +52,10 @@ public sealed record SampleMetadata
     /// <summary>The user's time zone.</summary>
     public required string TimeZone { get; init; }
 
+    /// <summary>The role this scenario opens in, when it isn't the mode's: a question in another language.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Role { get; init; }
+
     /// <summary>The questions asked after the first, in order.</summary>
     public IReadOnlyList<string> FollowUps { get; init; } = [];
 
