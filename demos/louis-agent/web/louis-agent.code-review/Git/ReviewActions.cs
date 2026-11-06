@@ -26,5 +26,6 @@ public static class ReviewActions
          "file list bugs, risks and improvements in the changed lines, most important first, and say whether it looks ready to commit.",
          "Review all changes");
 
+    /// <summary>The last part of the path, for the chat's title.</summary>
     private static string FileName(string path) => path[(path.LastIndexOf('/') + 1)..];
 }

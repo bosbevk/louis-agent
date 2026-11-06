@@ -17,13 +17,22 @@ public sealed class GitState(AgentApi api)
 
     public int ChangeCount => Status?.Files.Count ?? 0;
 
+    /// <summary>Fetches the status again.</summary>
     public Task RefreshAsync() => RunAsync(api.GitStatusAsync);
 
+    /// <summary>Stages these files.</summary>
     public Task StageAsync(IEnumerable<string> paths) => RunAsync(() => api.GitChangeAsync("stage", paths.ToList()));
+
+    /// <summary>Takes these files out of the staged group.</summary>
     public Task UnstageAsync(IEnumerable<string> paths) => RunAsync(() => api.GitChangeAsync("unstage", paths.ToList()));
+
+    /// <summary>Throws away the changes to these files.</summary>
     public Task DiscardAsync(IEnumerable<string> paths) => RunAsync(() => api.GitChangeAsync("discard", paths.ToList()));
+
+    /// <summary>Commits what's staged.</summary>
     public Task CommitAsync(string message) => RunAsync(() => api.GitCommitAsync(message));
 
+    /// <summary>Marks us busy, makes the call and keeps the status it hands back, or says what went wrong.</summary>
     private async Task RunAsync(Func<Task<GitStatus>> call)
     {
         Busy = true;

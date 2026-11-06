@@ -27,7 +27,7 @@ public static class FixtureApi
         return new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
     }
 
-    /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on its message).</summary>
+    /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on a message).</summary>
     private static HttpResponseMessage AnswerSessionGone(HttpRequestMessage request) =>
         request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages"
             ? new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -36,6 +36,7 @@ public static class FixtureApi
             }
             : Answer(request);
 
+    /// <summary>What the API answers for each route the pages call; anything else is a 404.</summary>
     public static HttpResponseMessage Answer(HttpRequestMessage request)
     {
         string path = request.RequestUri!.AbsolutePath;
@@ -62,9 +63,11 @@ public static class FixtureApi
         };
     }
 
+    /// <summary>A 200 with this body as JSON.</summary>
     private static HttpResponseMessage Json(string body) =>
         new(HttpStatusCode.OK) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
+    /// <summary>A 200 streaming the recorded turn.</summary>
     private static HttpResponseMessage Stream()
     {
         var content = new StreamContent(File.OpenRead(SessionStreamFixture.StreamFile));

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Components.Git;
 
+/// <summary>One file's diff with its line numbers, and the buttons to stage, discard or review it.</summary>
 public partial class DiffViewer
 {
     [Parameter, EditorRequired] public GitDiff Diff { get; set; } = default!;
@@ -18,6 +19,7 @@ public partial class DiffViewer
     private int _added, _removed;
     private bool _confirmDiscard;
 
+    /// <summary>Parses the diff only when a new one comes in, not on every draw.</summary>
     protected override void OnParametersSet()
     {
         if (ReferenceEquals(_parsed, Diff)) return;
@@ -26,6 +28,7 @@ public partial class DiffViewer
         (_rows, _added, _removed) = UnifiedDiff.Parse(Diff.Diff);
     }
 
+    /// <summary>The discard's second click: closes the question and tells the page.</summary>
     private async Task ConfirmDiscard()
     {
         _confirmDiscard = false;

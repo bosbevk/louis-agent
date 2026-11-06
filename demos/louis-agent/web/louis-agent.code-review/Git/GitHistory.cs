@@ -42,6 +42,7 @@ public sealed class GitHistory(AgentApi api, GitState git)
 
     private string? _running;
 
+    /// <summary>Fetches the branches and the log again, waiting for any merge or delete that's running.</summary>
     public async Task RefreshAsync()
     {
         _refreshing = true;
@@ -65,10 +66,13 @@ public sealed class GitHistory(AgentApi api, GitState git)
         }
     }
 
+    /// <summary>Queues a merge of this branch into the checked-out one.</summary>
     public Task MergeAsync(string branch) => EnqueueAsync(BranchAction.Merge, branch);
 
+    /// <summary>Queues a delete of this merged branch.</summary>
     public Task DeleteAsync(string branch) => EnqueueAsync(BranchAction.Delete, branch);
 
+    /// <summary>Marks the branch busy, waits its turn, does the action, then shows the branches again.</summary>
     private async Task EnqueueAsync(BranchAction action, string branch)
     {
         // A second click on a branch that is already waiting changes nothing.
@@ -108,6 +112,7 @@ public sealed class GitHistory(AgentApi api, GitState git)
         if (_pending.Count == 0) await git.RefreshAsync();
     }
 
+    /// <summary>What to tell the person: a missing key says to enter one, anything else says what went wrong.</summary>
     private static string Describe(Exception ex) =>
         ex is AgentApiException { Status: System.Net.HttpStatusCode.Unauthorized }
             ? "Enter the API key below to see branches."

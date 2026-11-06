@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 
 namespace LouisAgent.CodeReview.Components.Workspace;
 
+/// <summary>One open file with line numbers and highlighting, and the buttons to review or ask about it.</summary>
 public partial class FileViewer
 {
     [Parameter, EditorRequired] public WorkspaceFile File { get; set; } = default!;
@@ -18,6 +19,7 @@ public partial class FileViewer
     private string? _language;
     private int LineCount { get; set; }
 
+    /// <summary>Counts the lines for the gutter, and works out the language from the file's name.</summary>
     protected override void OnParametersSet()
     {
         LineCount = File.Content.Length == 0 ? 0 : File.Content.TrimEnd('\n').Split('\n').Length;
@@ -25,6 +27,7 @@ public partial class FileViewer
         _language = CodeLanguage.For(File.Name);
     }
 
+    /// <summary>Hands a newly opened file to the page's script to highlight; the same file isn't done twice.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (ReferenceEquals(_renderedFile, File)) return;

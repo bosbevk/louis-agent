@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Components.Workspace;
 
+/// <summary>One folder of the file browser. An opened folder shows another of these, one level deeper.</summary>
 public partial class FileTree
 {
     [Parameter] public string Path { get; set; } = "";
@@ -15,6 +16,7 @@ public partial class FileTree
     private string? _error;
     private readonly HashSet<string> _open = [];
 
+    /// <summary>Fetches what's in this folder; with no key, it says to enter one.</summary>
     protected override async Task OnInitializedAsync()
     {
         try
@@ -29,6 +31,7 @@ public partial class FileTree
         }
     }
 
+    /// <summary>Opens a folder, or closes it if it was open.</summary>
     private void Toggle(WorkspaceEntry folder)
     {
         if (!_open.Remove(folder.Path)) _open.Add(folder.Path);

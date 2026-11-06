@@ -2,13 +2,16 @@ using LouisAgent.CodeReview.Git;
 
 namespace LouisAgent.CodeReview.Tests.Git;
 
-// W2b: a unified diff as the viewer's rows: the hunk header sets the line numbers, context lines count on both sides,
-// a removal on the old side, an addition on the new; a binary diff is one note.
+/// <summary>
+/// A unified diff as the viewer's rows: the hunk header sets the line numbers, context lines count on both sides, a
+/// removal on the old side, an addition on the new; a binary diff is one note.
+/// </summary>
 public class UnifiedDiffTests
 {
     private const string Diff =
         "diff --git a/a.txt b/a.txt\nindex 1..2 100644\n--- a/a.txt\n+++ b/a.txt\n@@ -1,3 +1,3 @@\n one\n-two\n+twee\n three\n\\ No newline at end of file\n";
 
+    /// <summary>Each row knows its kind and its line numbers.</summary>
     [Test]
     public void TheRows_CarryTheirKinds_AndLineNumbers()
     {
@@ -22,6 +25,7 @@ public class UnifiedDiffTests
         Assert.That((added, removed), Is.EqualTo((1, 1)));
     }
 
+    /// <summary>The file's header lines aren't rows, but a note that it's binary is.</summary>
     [Test]
     public void TheFileHeaders_AreNotRows_ButABinaryNoteIs()
     {
@@ -31,6 +35,7 @@ public class UnifiedDiffTests
         Assert.That((added, removed), Is.EqualTo((0, 0)));
     }
 
+    /// <summary>A diff from Windows reads the same.</summary>
     [Test]
     public void WindowsLineEndings_AreRead() =>
         Assert.That(UnifiedDiff.Parse(Diff.Replace("\n", "\r\n")).Rows, Has.Count.EqualTo(6));

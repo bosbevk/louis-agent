@@ -2,14 +2,17 @@ using LouisAgent.CodeReview.Git;
 
 namespace LouisAgent.CodeReview.Tests.Git;
 
-// W2b: a multi-file patch (a commit, a branch) split into one section per file, each with its path, its status (new,
-// deleted, renamed) and its parsed hunks.
+/// <summary>
+/// A patch across several files (a commit, a branch) becomes a section per file, each with its path, its status (new,
+/// deleted, renamed) and its parsed hunks.
+/// </summary>
 public class PatchTests
 {
     private const string TwoFiles =
         "diff --git a/src/x.cs b/src/x.cs\nnew file mode 100644\n--- /dev/null\n+++ b/src/x.cs\n@@ -0,0 +1,2 @@\n+a\n+b\n"
         + "diff --git a/y.cs b/y.cs\nindex 1..2 100644\n--- a/y.cs\n+++ b/y.cs\n@@ -1 +1 @@\n-c\n+d\n";
 
+    /// <summary>Each file gets its own section, with its path, status, counts and rows.</summary>
     [Test]
     public void EachFile_IsASection_WithItsPathStatusAndCounts()
     {
@@ -23,6 +26,7 @@ public class PatchTests
         Assert.That(files[1].Rows.Select(r => r.Kind), Is.EqualTo(new[] { "hunk", "del", "add" }));
     }
 
+    /// <summary>A deleted or renamed file says so in its status.</summary>
     [Test]
     public void ADeletedOrRenamedFile_SaysSo()
     {
@@ -32,6 +36,7 @@ public class PatchTests
         Assert.That(files[1].Path, Is.EqualTo("b.cs"));
     }
 
+    /// <summary>With no patch there's nothing to show.</summary>
     [Test]
     public void NoPatch_IsNoFiles() =>
         Assert.That(Patch.Split(""), Is.Empty);

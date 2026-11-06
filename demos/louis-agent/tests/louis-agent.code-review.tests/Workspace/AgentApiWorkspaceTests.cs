@@ -6,16 +6,19 @@ using LouisAgent.Web.Shared.Storage;
 
 namespace LouisAgent.CodeReview.Tests.Workspace;
 
-// CL20 step 5 (ADR 0039): the code-review app's git calls name the API's resources. Each call is recorded as "METHOD path?query",
-// escapes kept (StubHandler.Requests shows them undone).
+/// <summary>
+/// The code-review app's git calls name the API's resources (ADR 0039). Each call is recorded as "METHOD path?query",
+/// escapes kept (StubHandler.Requests shows them undone).
+/// </summary>
 public class AgentApiWorkspaceTests
 {
     private readonly List<string> _calls = [];
 
-    // NUnit builds one instance for the whole fixture, so each test starts from an empty record.
+    /// <summary>NUnit builds one instance for the whole fixture, so each test starts from an empty record.</summary>
     [SetUp]
     public void SetUp() => _calls.Clear();
 
+    /// <summary>The API client over a stub that records each call.</summary>
     private AgentApi Api() => new(
         new HttpClient(new StubHandler(request =>
         {
@@ -25,6 +28,7 @@ public class AgentApiWorkspaceTests
         { BaseAddress = new Uri("http://localhost/") },
         new ChatSettings());
 
+    /// <summary>A commit is a post to the commits.</summary>
     [Test]
     public async Task ACommit_IsAPostToTheCommits()
     {
@@ -33,6 +37,7 @@ public class AgentApiWorkspaceTests
         Assert.That(_calls, Is.EqualTo(new[] { "POST /v1/git/commits" }));
     }
 
+    /// <summary>The log is a read of the commits.</summary>
     [Test]
     public async Task TheLog_IsTheCommits()
     {
@@ -41,6 +46,7 @@ public class AgentApiWorkspaceTests
         Assert.That(_calls, Is.EqualTo(new[] { "GET /v1/git/commits?count=200" }));
     }
 
+    /// <summary>One commit is read by its sha.</summary>
     [Test]
     public async Task ACommit_IsReadByItsSha()
     {
@@ -49,6 +55,7 @@ public class AgentApiWorkspaceTests
         Assert.That(_calls, Is.EqualTo(new[] { "GET /v1/git/commits/abc1234" }));
     }
 
+    /// <summary>A branch is read by its name: slashes stay, and the rest is escaped.</summary>
     [Test]
     public async Task ABranch_IsReadByItsName_SlashKept_AndTheRestEscaped()
     {
@@ -57,6 +64,7 @@ public class AgentApiWorkspaceTests
         Assert.That(_calls, Is.EqualTo(new[] { "GET /v1/git/branches/feature/%2312" }));
     }
 
+    /// <summary>A merge is an action, so it's a post.</summary>
     [Test]
     public async Task AMerge_IsAnAction_APostToMerge()
     {
@@ -65,6 +73,7 @@ public class AgentApiWorkspaceTests
         Assert.That(_calls, Is.EqualTo(new[] { "POST /v1/git/merge" }));
     }
 
+    /// <summary>Deleting a branch is a delete on the branch.</summary>
     [Test]
     public async Task ADeletedBranch_IsADeleteOnTheBranch()
     {

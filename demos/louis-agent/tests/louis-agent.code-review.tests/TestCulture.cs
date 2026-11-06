@@ -1,12 +1,15 @@
 using System.Globalization;
 
-// T1b: the snapshots must never depend on the machine. The code-review app sets no culture of its own, so the tests
-// run invariant.
 namespace LouisAgent.CodeReview.Tests;
 
+/// <summary>
+/// The snapshots must never depend on the machine. The code-review app sets no culture of its own, so the tests run
+/// invariant.
+/// </summary>
 [SetUpFixture]
 public class TestCulture
 {
+    /// <summary>Sets the invariant culture before any test runs.</summary>
     [OneTimeSetUp]
     public void Fix()
     {

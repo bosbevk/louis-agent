@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Components.Git;
 
+/// <summary>An open branch or commit: what's in it, and the buttons to merge or delete a branch.</summary>
 public partial class HistoryViewer
 {
     [Parameter] public GitBranchDetail? Branch { get; set; }

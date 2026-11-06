@@ -12,7 +12,7 @@ using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
 
 namespace LouisAgent.CodeReview.Pages;
 
-/// <summary>The chat page's own state and handlers (W2): what the viewers show, and what each action does to it.</summary>
+/// <summary>The chat page's own state and handlers: what the viewers show, and what each action does to it.</summary>
 public partial class ChatPage : IDisposable
 {
     [Inject] private AgentApi Api { get; set; } = default!;
@@ -26,7 +26,7 @@ public partial class ChatPage : IDisposable
 
     [Parameter] public string? SessionId { get; set; }
 
-    /// <summary>A turn's life (W2): the draft, the session, the stream, the save; the page keeps the layout and its viewers.</summary>
+    /// <summary>A turn's life: the draft, the session, the stream, the save. The page keeps the viewers.</summary>
     private ChatRunner Runner { get; set; } = default!;
 
     private WorkspaceFile? _openFile;
@@ -38,6 +38,7 @@ public partial class ChatPage : IDisposable
 
     private bool ViewerOpen => _openFile is not null || _openDiff is not null || _openBranch is not null || _openCommit is not null;
 
+    /// <summary>Sets up the chat's runner, listens for changes, and fetches the git views.</summary>
     protected override async Task OnInitializedAsync()
     {
         // The code-review app gets every toolset this API can load (F5).
@@ -54,6 +55,7 @@ public partial class ChatPage : IDisposable
         _ = History.RefreshAsync();
     }
 
+    /// <summary>Opens the chat the address names, or says it isn't saved in this browser.</summary>
     protected override void OnParametersSet()
     {
         var chat = Store.Find(SessionId);
@@ -62,6 +64,7 @@ public partial class ChatPage : IDisposable
             Runner.Notice = "That chat isn't saved in this browser.";
     }
 
+    /// <summary>Goes back to an empty chat.</summary>
     private void NewChat()
     {
         Runner.Notice = null;
@@ -69,6 +72,7 @@ public partial class ChatPage : IDisposable
         Nav.NavigateTo("");
     }
 
+    /// <summary>Opens a file in the viewer, closing whichever diff, branch or commit was open.</summary>
     private async Task OpenFile(string path)
     {
         try
@@ -85,7 +89,7 @@ public partial class ChatPage : IDisposable
         }
     }
 
-    // Closing a viewer shows the chat again; the message list scrolls to its end when it comes back into view.
+    /// <summary>Closing a viewer shows the chat again, and the list scrolls to its end as it comes back.</summary>
     private void CloseFile()
     {
         _openFile = null;
@@ -94,6 +98,7 @@ public partial class ChatPage : IDisposable
         CloseHistory();
     }
 
+    /// <summary>Closes the open branch or commit.</summary>
     private void CloseHistory()
     {
         _openBranch = null;
@@ -101,6 +106,7 @@ public partial class ChatPage : IDisposable
         _openHistoryKey = null;
     }
 
+    /// <summary>Opens a branch in the viewer.</summary>
     private async Task OpenBranch(string name)
     {
         try
@@ -117,6 +123,7 @@ public partial class ChatPage : IDisposable
         }
     }
 
+    /// <summary>Opens a commit in the viewer.</summary>
     private async Task OpenCommit(string sha)
     {
         try
@@ -133,9 +140,11 @@ public partial class ChatPage : IDisposable
         }
     }
 
-    // After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged. The action
-    // may wait in the queue behind others, so the outcome is judged by this branch alone, and the viewer only closes if
-    // it still shows this branch.
+    /// <summary>
+    /// After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged. The
+    /// action may wait in the queue behind others, so the outcome is judged by this branch alone, and the viewer only
+    /// closes if it still shows this branch.
+    /// </summary>
     private async Task MergeBranch(string name)
     {
         await History.MergeAsync(name);
@@ -144,6 +153,7 @@ public partial class ChatPage : IDisposable
         else if (_openBranch?.Branch.Name == name) CloseFile();
     }
 
+    /// <summary>Deletes a branch, and closes the viewer if it still shows that branch.</summary>
     private async Task DeleteBranch(string name)
     {
         await History.DeleteAsync(name);
@@ -152,7 +162,7 @@ public partial class ChatPage : IDisposable
         else if (_openBranch?.Branch.Name == name) CloseFile();
     }
 
-    // A review gets its own chat (ReviewActions), so it doesn't mix with whatever the current chat is about.
+    /// <summary>A review gets its own chat, so it doesn't mix with whatever the current chat is about.</summary>
     private async Task ReviewFile()
     {
         if (_openFile is null || Runner.Streaming) return;
@@ -162,6 +172,7 @@ public partial class ChatPage : IDisposable
         await Runner.StartTurnAsync(prompt, [], title);
     }
 
+    /// <summary>Closes the viewer, with the file's name ready in the message box.</summary>
     private async Task AskAboutFile()
     {
         if (_openFile is null) return;
@@ -171,6 +182,7 @@ public partial class ChatPage : IDisposable
         await JS.InvokeVoidAsync("louisChat.focusComposer");
     }
 
+    /// <summary>Opens a file's diff in the viewer, closing whatever else was open.</summary>
     private async Task OpenDiff((GitFile File, bool Staged) change)
     {
         try
@@ -187,8 +199,10 @@ public partial class ChatPage : IDisposable
         }
     }
 
-    // After staging, unstaging or discarding the open file, show what is left of it: the same side if it still has
-    // changes there, otherwise the other side (e.g. staged after Stage), otherwise close the viewer.
+    /// <summary>
+    /// After staging, unstaging or discarding the open file, shows what's left of it: the same side if it still has
+    /// changes there, otherwise the other side (staged after Stage, say), otherwise it closes the viewer.
+    /// </summary>
     private async Task ChangeOpenDiff(Func<IEnumerable<string>, Task> change)
     {
         if (_openDiff is null) return;
@@ -207,6 +221,7 @@ public partial class ChatPage : IDisposable
         else CloseFile();
     }
 
+    /// <summary>Starts a review of the open diff, in its own chat.</summary>
     private async Task ReviewOpenDiff()
     {
         if (_openDiff is null || Runner.Streaming) return;
@@ -216,6 +231,7 @@ public partial class ChatPage : IDisposable
         await Runner.StartTurnAsync(prompt, [], title);
     }
 
+    /// <summary>Starts a review of everything that's changed, in its own chat.</summary>
     private async Task ReviewAllChanges()
     {
         if (Runner.Streaming) return;
@@ -225,8 +241,10 @@ public partial class ChatPage : IDisposable
         await Runner.StartTurnAsync(prompt, [], title);
     }
 
+    /// <summary>Whatever changed, draw the page again.</summary>
     private void OnGitChanged() => InvokeAsync(StateHasChanged);
 
+    /// <summary>Stops listening when the page goes.</summary>
     public void Dispose()
     {
         Runner.Changed -= OnGitChanged;
@@ -235,10 +253,12 @@ public partial class ChatPage : IDisposable
         Currency.Changed -= OnGitChanged;
     }
 
+    /// <summary>Deletes a chat from this browser.</summary>
     private async Task DeleteChat(ChatModel chat)
     {
         if (await Runner.DeleteChatAsync(chat)) Nav.NavigateTo("");
     }
 
+    /// <summary>Keeps the API key the sidebar was given.</summary>
     private async Task SaveApiKey(string? key) => await Runner.SaveApiKeyAsync(key);
 }

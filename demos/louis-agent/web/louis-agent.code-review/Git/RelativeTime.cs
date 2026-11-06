@@ -3,9 +3,10 @@ namespace LouisAgent.CodeReview.Git;
 /// <summary>A commit's date as the panels say it (W2b, from BranchesPanel).</summary>
 public static class RelativeTime
 {
-    /// <summary>"just now", then minutes, hours and days ago up to a month, then the date; what isn't a date as it is.</summary>
+    /// <summary>"just now", then minutes, hours and days ago up to a month, then the date.</summary>
     public static string Ago(string isoDate) => Ago(isoDate, DateTimeOffset.Now);
 
+    /// <summary>The same, against a clock you give it, so a test's answer never moves.</summary>
     public static string Ago(string isoDate, DateTimeOffset now)
     {
         if (!DateTimeOffset.TryParse(isoDate, out var date)) return isoDate;
