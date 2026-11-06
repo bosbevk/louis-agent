@@ -7,8 +7,8 @@ namespace LouisAgent.Puls.Components.Admin.EvalsPage;
 /// <summary>The latest run up top: how it went at a glance, a ring per mode.</summary>
 public partial class EvalScorecard
 {
-    /// <summary>Puls's green for what passed; the rest is left clear so the ring's track shows through.</summary>
-    private static readonly IReadOnlyList<string> RingColours = ["var(--green-light)", "transparent"];
+    /// <summary>The site's green for what passed; the rest is left clear so the ring's track shows through.</summary>
+    private static readonly IReadOnlyList<string> RingColours = ["var(--bs-success-text-emphasis)", "transparent"];
 
     /// <summary>The latest run, as the card's view worked it out.</summary>
     [Parameter, EditorRequired]

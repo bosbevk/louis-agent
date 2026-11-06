@@ -31,7 +31,7 @@ body::before {
 .app { position: relative; z-index: 1; }
 .conversation { background: transparent; }
 /* A gradient, not a colour: at lg Bootstrap sets an offcanvas's background-color to transparent !important. */
-.sidebar { background-image: linear-gradient(color-mix(in srgb, var(--sidebar) 94%, transparent), color-mix(in srgb, var(--sidebar) 94%, transparent)); }
+.sidebar { background-image: linear-gradient(color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent), color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent)); }
 
 /* Type: balanced headline lines, no lone last words in answers, figures that line up. */
 .empty h1 { text-wrap: balance; letter-spacing: -1.6px; font-weight: 800; }
@@ -40,16 +40,16 @@ body::before {
 .markdown { font-variant-numeric: tabular-nums; }
 
 /* Hairlines, not borders: a touch of charcoal mixed into the background, and an inner light on raised surfaces. */
-.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--ink) 10%, var(--bg)); }
-.suggestion { border-radius: 16px; padding: 14px 36px 14px 16px; background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(6px); }
-.suggestion:hover { border-color: color-mix(in srgb, var(--orange) 45%, var(--bg)); }
+.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--bs-emphasis-color) 10%, var(--bs-body-bg)); }
+.suggestion { border-radius: 16px; padding: 14px 36px 14px 16px; background: color-mix(in srgb, var(--bs-secondary-bg) 85%, transparent); backdrop-filter: blur(6px); }
+.suggestion:hover { border-color: color-mix(in srgb, var(--bs-primary) 45%, var(--bs-body-bg)); }
 
 /* The sidebar: a small label over the chats, as in a well-made app. */
-.sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dim); padding: 6px 12px 0; }
+.sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--bs-tertiary-color); padding: 6px 12px 0; }
 
 /* Focus is always visible, in orange, and never a browser default. */
-:focus-visible { outline: 2px solid color-mix(in srgb, var(--orange) 70%, transparent); outline-offset: 3px; }
-.input-row:focus-within { border-color: color-mix(in srgb, var(--orange) 55%, var(--bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 12%, transparent), 0 18px 40px -18px rgba(36, 40, 44, .3); }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--bs-primary) 70%, transparent); outline-offset: 3px; }
+.input-row:focus-within { border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent), 0 18px 40px -18px rgba(36, 40, 44, .3); }
 
 /* Scrolling never shifts the layout. */
 .messages, .chat-list { scrollbar-gutter: stable; }
@@ -57,13 +57,13 @@ body::before {
 /* The tagline under the logo in the sidebar: what the name means (a puls travels out from its source; pulses make a wave). */
 .brand-stack { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
 .sidebar .puls-logo { height: 44px; }
-.tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--muted); text-wrap: balance; animation: rise .7s .9s var(--ease) both; }
+.tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--bs-secondary-color); text-wrap: balance; animation: rise .7s .9s var(--web-ease) both; }
 
 /* ---- The app icon tiles (wwwroot/brand/puls-icon-tile*.svg) ---- */
 
 /* The empty chat: the light tile above the headline, the slow pulse spreading out from it. The chat's scroll area
    clips it (.messages), not the empty state, whose top edge would cut the glow off in a straight line. */
-.hero-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 26px; animation: rise .6s var(--ease) both; }
+.hero-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 26px; animation: rise .6s var(--web-ease) both; }
 .hero-mark img, .hero-mark .puls-tile { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border-radius: 17px; overflow: visible; box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 16px 34px -14px rgba(36, 40, 44, .35), 0 3px 8px rgba(36, 40, 44, .06); }
 .hero-mark .pulse-bg { overflow: visible; z-index: 0; }
 .hero-mark .pulse-bg::before { width: min(300px, 70vw); }
@@ -79,7 +79,7 @@ body {
         radial-gradient(900px 600px at 78% -8%, rgba(245, 130, 32, .13), transparent 62%),
         radial-gradient(800px 600px at 12% 108%, rgba(56, 180, 73, .09), transparent 60%),
         radial-gradient(600px 500px at 50% 45%, rgba(245, 130, 32, .04), transparent 70%),
-        var(--bg);
+        var(--bs-body-bg);
     background-attachment: fixed;
 }
 .conversation { background: transparent; }
@@ -88,5 +88,5 @@ body {
 .hero-mark img, .hero-mark .puls-tile { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 40px -14px rgba(0, 0, 0, .7), 0 0 60px -10px rgba(245, 130, 32, .35); }
 .user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 12px 28px -12px rgba(0, 0, 0, .7); }
 .new-chat { box-shadow: 0 8px 22px -8px rgba(245, 130, 32, .6); }
-.tagline { color: var(--muted); }
+.tagline { color: var(--bs-secondary-color); }
 
