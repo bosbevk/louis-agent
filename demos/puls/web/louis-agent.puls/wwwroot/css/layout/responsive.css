@@ -8,7 +8,7 @@
 /* The resize handle: invisible until hovered, then an orange grip. */
 .resizer { position: relative; cursor: col-resize; z-index: 4; background: transparent; touch-action: none; }
 .resizer::after { content: ""; position: absolute; inset: 0 3px; border-radius: 2px; background: transparent; transition: background .2s var(--web-ease); }
-.resizer:hover::after, .resizing .resizer::after { background: linear-gradient(var(--bs-primary), var(--web-primary-deep)); box-shadow: 0 0 12px rgba(245, 130, 32, .6); }
+.resizer:hover::after, .resizing .resizer::after { background: linear-gradient(var(--bs-primary), var(--web-primary-deep)); box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6); }
 
 /* Hidden sidebar: it folds away, and a floating tab brings it back. */
 .sidebar-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr); }
@@ -20,15 +20,15 @@
     transition: opacity .25s var(--web-ease), transform .3s var(--web-spring);
 }
 .sidebar-hidden .sidebar-tab { opacity: 1; pointer-events: auto; transform: none; }
-.sidebar-tab:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(245, 130, 32, .55); }
+.sidebar-tab:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(var(--bs-primary-rgb), .55); }
 
 /* More depth: layered, tinted shadows that lift on hover. */
-.user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 12px 28px -12px rgba(36, 40, 44, .75), 0 2px 6px rgba(36, 40, 44, .15); }
-.delegation { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 14px 34px -14px rgba(36, 40, 44, .28), 0 3px 8px rgba(36, 40, 44, .06); transition: box-shadow .3s var(--web-ease), transform .3s var(--web-ease); }
-.delegation:not([open]):hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 18px 40px -14px rgba(36, 40, 44, .34), 0 4px 10px rgba(36, 40, 44, .08); }
-.tool:hover, .suggestion:hover { box-shadow: 0 16px 34px -14px rgba(36, 40, 44, .3), 0 3px 8px rgba(36, 40, 44, .06); }
-.input-row { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 18px 40px -18px rgba(36, 40, 44, .35), 0 4px 12px rgba(36, 40, 44, .06); }
-.markdown pre { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 8px 20px -14px rgba(36, 40, 44, .25); }
+.user-message { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .12) inset, 0 12px 28px -12px rgba(var(--web-shadow-rgb), .75), 0 2px 6px rgba(var(--web-shadow-rgb), .15); }
+.delegation { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .05) inset, 0 14px 34px -14px rgba(var(--web-shadow-rgb), .28), 0 3px 8px rgba(var(--web-shadow-rgb), .06); transition: box-shadow .3s var(--web-ease), transform .3s var(--web-ease); }
+.delegation:not([open]):hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .05) inset, 0 18px 40px -14px rgba(var(--web-shadow-rgb), .34), 0 4px 10px rgba(var(--web-shadow-rgb), .08); }
+.tool:hover, .suggestion:hover { box-shadow: 0 16px 34px -14px rgba(var(--web-shadow-rgb), .3), 0 3px 8px rgba(var(--web-shadow-rgb), .06); }
+.input-row { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .05) inset, 0 18px 40px -18px rgba(var(--web-shadow-rgb), .35), 0 4px 12px rgba(var(--web-shadow-rgb), .06); }
+.markdown pre { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .05) inset, 0 8px 20px -14px rgba(var(--web-shadow-rgb), .25); }
 
 /* Below Bootstrap's lg breakpoint: a frosted top bar, and the sidebar slides in as an offcanvas. */
 .topbar { display: none; }
@@ -37,13 +37,13 @@
     .sidebar-hidden .app { grid-template-columns: minmax(0, 1fr); }
     .topbar {
         display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px;
-        background: rgba(22, 25, 27, .86); backdrop-filter: blur(14px); color: var(--bs-emphasis-color); position: sticky; top: 0; z-index: 6;
+        background: rgba(var(--bs-tertiary-bg-rgb), .86); backdrop-filter: blur(14px); color: var(--bs-emphasis-color); position: sticky; top: 0; z-index: 6;
         border-bottom: 1px solid var(--bs-border-color);
     }
     .topbar .brand { padding: 0; }
     .topbar .puls-logo { height: 32px; }
     .topbar .icon { color: var(--bs-body-color); width: 38px; height: 38px; display: grid; place-items: center; font-size: 18px; }
-    .topbar .icon:hover { background: rgba(255, 255, 255, .08); color: var(--bs-emphasis-color); }
+    .topbar .icon:hover { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
     .sidebar.offcanvas-lg { --bs-offcanvas-width: min(320px, 86vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); border-right: 0; }
     .sidebar-hidden .sidebar { visibility: visible; }
 }

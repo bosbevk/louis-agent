@@ -1,7 +1,7 @@
 /* F31: the store's state beside the page's actions, the banner when there is none, and the live table's open row. */
 .store-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--bs-secondary-color); border: 1px solid var(--bs-border-color); border-radius: 999px; padding: 4px 10px; }
 .store-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bs-secondary-color); }
-.store-pill.up .dot { background: var(--success, #3fb950); }
+.store-pill.up .dot { background: var(--web-live-dot); }
 .store-pill.down .dot { background: var(--bs-danger); }
 .store-banner { border-color: var(--bs-danger); }
 .store-banner p { margin: 6px 0 0; color: var(--bs-secondary-color); }
@@ -11,12 +11,12 @@
 .run-panel .run-table th { color: var(--bs-secondary-color); font-weight: 600; border-bottom: 1px solid var(--bs-border-color); }
 .run-panel .run-table td.conv-cell { white-space: normal; min-width: 260px; }
 .run-panel .run-table td.conv-cell small { display: block; color: var(--bs-secondary-color); font-size: 12px; max-width: 520px; }
-.run-table tbody tr.selected td { background: rgba(255, 255, 255, .06); color: var(--bs-emphasis-color); }
+.run-table tbody tr.selected td { background: rgba(var(--web-overlay-rgb), .06); color: var(--bs-emphasis-color); }
 .run-panel .danger { color: var(--bs-danger); }
 .runs-list .run-row-main { color: inherit; text-decoration: none; }
 /* F31 step 10b: a check's manual, from its card into the search dialog's frame, wider and taller for reading. */
 .manual-button { background: none; border: 1px solid var(--bs-border-color); border-radius: 999px; color: var(--bs-secondary-color); font: inherit; font-size: 12px; padding: 2px 10px; margin-right: 6px; transition: color .15s, border-color .15s; }
-.manual-button:hover, .manual-button:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(245, 130, 32, .45); }
+.manual-button:hover, .manual-button:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); }
 .manual-dialog { width: min(820px, calc(100vw - 32px)); max-height: 80vh; top: min(8vh, 72px); outline: 0; }
 .manual-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--bs-border-color); color: var(--bs-emphasis-color); }
 .manual-head kbd { margin-left: auto; }
@@ -29,10 +29,10 @@
    tall as its tallest cell; inside a cell the label, the bar, the cost and the buttons in fixed columns. */
 .compare-grid { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); column-gap: 20px; }
 .compare-grid > .compare-head { margin-bottom: 4px; }
-.compare-cell { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, .05); animation: rise .45s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.compare-cell { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(var(--web-overlay-rgb), .05); animation: rise .45s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
 /* 6a.4d (Louis: "a lot of unused space", "which ones to check"): a card per conversation, the chips in one line across it, a review pill in front, the cost strip under it. */
 .conv-card { width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 12px; transition: border-color .2s, box-shadow .2s, transform .25s var(--web-spring); }
-.conv-card:hover { border-color: rgba(245, 130, 32, .4); box-shadow: var(--web-glow); transform: translateY(-1px); }
+.conv-card:hover { border-color: rgba(var(--bs-primary-rgb), .4); box-shadow: var(--web-glow); transform: translateY(-1px); }
 .conv-card[data-review="to-review"] { border-left: 3px solid var(--bs-primary); }
 .conv-card[data-review="reviewed"] { border-left: 3px solid var(--bs-success-text-emphasis); }
 .conv-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -41,13 +41,13 @@
 .conv-head .row-cost.small { margin-left: auto; }
 .conv-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
 .conv-chips .tree-chips { margin-left: 0; display: contents; }
-.conv-strip { height: 6px; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, .05); cursor: default; }
+.conv-strip { height: 6px; border-radius: 3px; overflow: hidden; background: rgba(var(--web-overlay-rgb), .05); cursor: default; }
 .conv-strip .xbar-fill { border-radius: 3px; }
 .review-pill { font-weight: 700; letter-spacing: .3px; text-transform: uppercase; font-size: 10.5px; }
-.review-pill.to-review { background: rgba(245, 130, 32, .18); color: var(--bs-primary-text-emphasis); box-shadow: 0 0 0 0 rgba(245, 130, 32, .55); animation: pill-pulse 2.2s ease-out infinite; }
+.review-pill.to-review { background: rgba(var(--bs-primary-rgb), .18); color: var(--bs-primary-text-emphasis); box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), .55); animation: pill-pulse 2.2s ease-out infinite; }
 .review-pill.reviewed { background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
 .review-pill.no-review { color: var(--bs-tertiary-color); }
-@keyframes pill-pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 130, 32, .55); } 70% { box-shadow: 0 0 0 6px rgba(245, 130, 32, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 130, 32, 0); } }
+@keyframes pill-pulse { 0% { box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), .55); } 70% { box-shadow: 0 0 0 6px rgba(var(--bs-primary-rgb), 0); } 100% { box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0); } }
 @media (prefers-reduced-motion: reduce) { .review-pill.to-review { animation: none; } .conv-card:hover { transform: none; } }
 .conv-filter { margin-left: 8px; }
 .compare-sub { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--bs-secondary-color); padding-bottom: 4px; }
@@ -76,7 +76,7 @@
 .trend-top { margin-left: auto; font-size: 11.5px; }
 .trend-svg { width: 100%; height: 150px; overflow: visible; }
 .trend-axis { stroke: var(--bs-border-color); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.trend-mark { stroke: rgba(245, 130, 32, .45); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.trend-mark { stroke: rgba(var(--bs-primary-rgb), .45); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .trend-line { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 .trend-reveal { animation: reveal 1.2s var(--web-ease) both; animation-delay: .1s; }
 @keyframes reveal { from { width: 0; } }
@@ -104,7 +104,7 @@
 .mode-rate-name code { font-size: 14px; font-weight: 700; color: var(--bs-emphasis-color); background: none; padding: 0; }
 .mode-rate .rate-bar { display: grid; grid-template-columns: 58px minmax(0, 1fr) 44px; align-items: center; gap: 8px; background: none; border: 0; padding: 0; font-size: 12.5px; border-radius: 0; }
 .mode-rate .rate-label { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
-.mode-rate .rate-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.mode-rate .rate-track { height: 8px; border-radius: 4px; background: rgba(var(--web-overlay-rgb), .06); overflow: hidden; }
 .mode-rate .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--bs-success-text-emphasis); transform-origin: 0 50%; animation: grow .7s var(--web-ease) both; }
 .mode-rate .rate-fill.hat { background: var(--bs-primary); }
 .mode-rate .rate-bar strong { color: var(--bs-emphasis-color); text-align: right; font-variant-numeric: tabular-nums; }
@@ -117,8 +117,8 @@
 .trend-values strong { color: var(--bs-emphasis-color); font-variant-numeric: tabular-nums; }
 .trend-delta { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .trend-delta.up { color: var(--bs-success-text-emphasis); background: var(--bs-success-bg-subtle); }
-.trend-delta.down { color: var(--bs-danger); background: rgba(242, 107, 79, .14); }
-.trend-hover { stroke: rgba(255, 255, 255, .35); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-delta.down { color: var(--bs-danger); background: rgba(var(--bs-danger-rgb), .14); }
+.trend-hover { stroke: rgba(var(--web-overlay-rgb), .35); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .trend-x { display: flex; justify-content: space-between; font-size: 11px; margin-top: -2px; font-variant-numeric: tabular-nums; }
 @media (max-width: 1200px) { .trend-hint { display: none; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) :is(.trend-reveal, .trend-point) { animation: none; } }

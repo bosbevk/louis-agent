@@ -13,7 +13,7 @@
 
 /* The scorecard: a darker panel with a soft glow of Puls's two colours behind the rings. */
 .eval-score { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; border: 1px solid var(--bs-border-color); border-radius: 14px;
-    background: radial-gradient(120% 140% at 0% 0%, rgba(56, 180, 73, .09), transparent 55%), radial-gradient(120% 140% at 100% 100%, rgba(245, 130, 32, .08), transparent 55%), var(--bs-body-bg); }
+    background: radial-gradient(120% 140% at 0% 0%, rgba(var(--web-success-text-rgb), .09), transparent 55%), radial-gradient(120% 140% at 100% 100%, rgba(var(--bs-primary-rgb), .08), transparent 55%), var(--bs-body-bg); }
 .eval-score-head, .eval-tl-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
 .eval-score-label, .eval-section-label { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--bs-tertiary-color); margin: 0; }
 .eval-run-id code { font-size: 12.5px; color: var(--bs-primary-text-emphasis); background: none; padding: 0; }
@@ -30,23 +30,23 @@
 /* Where a run's results came from: a tag, and a link to the run a replay or re-score came from. */
 .run-origin { display: inline-flex; align-items: center; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; text-decoration: none; border: 1px solid transparent; }
 .run-origin.is-recorded { background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
-.run-origin.is-replay { color: var(--bs-primary-text-emphasis); border-color: rgba(245, 130, 32, .45); border-style: dashed; }
+.run-origin.is-replay { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); border-style: dashed; }
 .run-origin.is-rescore { color: var(--bs-secondary-color); border-color: var(--bs-border-color); }
-a.run-origin:hover { background: rgba(255, 255, 255, .05); }
+a.run-origin:hover { background: rgba(var(--web-overlay-rgb), .05); }
 
 /* The timeline: a line down the left, a dot per run in its origin's colour; each run lifts a little on hover. */
 .eval-timeline-wrap { display: flex; flex-direction: column; gap: 8px; }
 .eval-timeline { list-style: none; margin: 0; padding: 0 0 0 20px; position: relative; display: flex; flex-direction: column; gap: 4px; }
 .eval-timeline::before { content: ""; position: absolute; left: 6px; top: 12px; bottom: 12px; width: 2px; border-radius: 1px; background: var(--bs-border-color); }
 .eval-tl-item { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 12px; transition: background .15s; animation: rise .4s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
-.eval-tl-item:hover { background: rgba(255, 255, 255, .04); }
+.eval-tl-item:hover { background: rgba(var(--web-overlay-rgb), .04); }
 .eval-tl-item::before { content: ""; position: absolute; left: -19px; top: 15px; width: 10px; height: 10px; border-radius: 50%; background: var(--bs-success-text-emphasis); box-shadow: 0 0 0 3px var(--bs-secondary-bg); }
 .eval-tl-item.is-replay::before { background: var(--bs-secondary-bg); border: 2px solid var(--bs-primary); }
 .eval-tl-item.is-rescore::before { background: var(--bs-tertiary-color); }
 .eval-tl-modes { display: flex; flex-wrap: wrap; gap: 6px 22px; }
 .eval-tl-mode { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--bs-body-color); }
 .eval-tl-name { font-size: 12px; color: var(--bs-secondary-color); background: none; padding: 0; min-width: 7ch; white-space: nowrap; }
-.eval-tl-mode .rate-track { display: inline-block; width: 84px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.eval-tl-mode .rate-track { display: inline-block; width: 84px; height: 6px; border-radius: 3px; background: rgba(var(--web-overlay-rgb), .06); overflow: hidden; }
 .eval-tl-mode .rate-fill { display: block; height: 100%; border-radius: 3px; background: var(--bs-success-text-emphasis); transform-origin: 0 50%; animation: grow .7s var(--web-ease) both; }
 .eval-tl-mode strong { color: var(--bs-emphasis-color); font-variant-numeric: tabular-nums; min-width: 4ch; }
 .eval-tl-mode .muted { font-size: 11.5px; white-space: nowrap; }
@@ -61,7 +61,7 @@ a.run-origin:hover { background: rgba(255, 255, 255, .05); }
 .eval-kind { font-size: 10.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; min-width: 9ch; text-align: center; }
 .eval-kind.rule { background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
 .eval-kind.model { background: var(--bs-primary-bg-subtle); color: var(--bs-primary-text-emphasis); }
-.eval-kind.person { background: rgba(255, 255, 255, .08); color: var(--bs-emphasis-color); }
+.eval-kind.person { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
 .eval-kind.other { background: var(--bs-body-bg); color: var(--bs-secondary-color); }
 @media (max-width: 575.98px) {
     .eval-card { padding: 16px; }
@@ -80,7 +80,7 @@ a.run-origin:hover { background: rgba(255, 255, 255, .05); }
 .eval-list { gap: 6px; padding: 14px; position: sticky; top: 0; }
 .eval-list-head { padding: 0 6px 4px; }
 .eval-list-item { display: flex; flex-direction: column; gap: 5px; padding: 10px 12px; border-radius: 12px; border: 1px solid transparent; border-left: 3px solid transparent; color: var(--bs-body-color); text-decoration: none; transition: background .15s, border-color .15s; animation: rise .4s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 50ms); }
-.eval-list-item:hover { background: rgba(255, 255, 255, .04); color: var(--bs-body-color); }
+.eval-list-item:hover { background: rgba(var(--web-overlay-rgb), .04); color: var(--bs-body-color); }
 .eval-list-item.selected { background: var(--bs-body-bg); border-color: var(--bs-border-color); border-left-color: var(--bs-primary); }
 .eval-list-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .eval-list-name { font-size: 14px; font-weight: 800; color: var(--bs-emphasis-color); background: none; padding: 0; }
@@ -95,6 +95,6 @@ a.run-origin:hover { background: rgba(255, 255, 255, .05); }
 .eval-list-mode.is-down .eval-list-delta { color: var(--bs-danger); }
 .eval-pane { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .eval-details { gap: 14px; padding: 20px 22px; }
-.eval-run-controls { margin: 0; padding: 10px 12px; border: 1px solid var(--bs-border-color); border-radius: 12px; background: rgba(255, 255, 255, .02); }
+.eval-run-controls { margin: 0; padding: 10px 12px; border: 1px solid var(--bs-border-color); border-radius: 12px; background: rgba(var(--web-overlay-rgb), .02); }
 .eval-trend-fold { border-top: 1px solid var(--bs-border-color); padding-top: 10px; }
 @media (max-width: 991.98px) { .eval-split { grid-template-columns: minmax(0, 1fr); } .eval-list { position: static; } }

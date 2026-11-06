@@ -674,11 +674,16 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   | # | Step | Its test |
   |---|---|---|
   | 1 | **Puls takes Bootstrap's names,** in its tokens, every rule and `EvalScorecard`, with nothing moved | A style test: no rule uses an old name. A look, since Bootstrap's own dropdowns, tables, cards and modal now read these values |
-  | 2 | **The framework's base colours:** the Console theme under the new names, with its red and amber | A style test: every name the rules use is set; a site with no colours of its own opens black and white |
-  | 3 | **The frame and chat styles move,** with the plain elements. Puls's `app.css` stays the list, in the same order, with the framework's tokens first and its own after | The byte-checked move; `PulsStylesheetTests`; a look |
-  | 4 | **The seven admin stylesheets move** | The byte-checked move; a look at the admin's open pages |
-  | 5 | **The scripts move:** `chatUi` and `louisChat`, and the `puls.*` browser settings take a neutral name, with no migration (ADR 0049). The rule's test now covers scripts and styles | Seen failing on a throwaway site word; Puls's page tests stay green |
-  | 6 | **The docs and a look,** at desktop and phone width, beside today's | Links and size tests, then the browser |
+  | 2 | **No fixed colours in the shared rules,** added at Louis's question "can't we use color vairables?": about 250 were written as values, 89 of them Puls's orange, so any site would have come out orange. Each becomes a variable, an `-rgb` one where it's see-through, and white goes by what it's for | A style test: no fixed colour in base, layout, chat or admin. A look, with the old stylesheet swapped in |
+  | 3 | **Sass, set up on Puls** with `AspNetCore.SassCompiler` and a new ADR. The files become `.scss` with their text unchanged, `app.scss` is the ordered list through `@use`, and the generated CSS isn't committed. Each colour is set once and a loop writes both its forms | The generated CSS matches today's, byte for byte where the text is unchanged; the Puls image builds with it; the `Stylesheet` helper, the size test and `.claude/rules/css.md` follow |
+  | 4 | **The framework's base colours:** the Console theme under the new names, with its red and amber | A style test: every name the rules use is set; a site with no colours of its own opens black and white |
+  | 5 | **The frame and chat styles move,** with the plain elements, in the same order, with the framework's colours first and the site's after | The byte-checked move; `PulsStylesheetTests`; a look |
+  | 6 | **The seven admin stylesheets move** | The byte-checked move; a look at the admin's open pages |
+  | 7 | **The scripts move:** `chatUi` and `louisChat`, and the `puls.*` browser settings take a neutral name, with no migration (ADR 0049). The rule's test now covers scripts and styles | Seen failing on a throwaway site word; Puls's page tests stay green |
+  | 8 | **The docs and a look,** at desktop and phone width, beside today's | Links and size tests, then the browser |
+
+  **Sass, Louis's picks.** He asked "maybe we should chnage to less? or something similar" and picked Sass over plain CSS. `AspNetCore.SassCompiler` compiles it, MIT, no Node (1A). Sass covers our own styles, and Bootstrap stays on its CDN (2A). CSS variables stay, since the code-review app swaps themes while it runs and a preprocessor's variables are fixed when it builds. Rules take nesting as they're touched, never in a sweep.
+  **Always reuse,** Louis's words: "while building scss we must make sure to always reuse". Before writing a rule, look for a variable, mixin or partial that already does it; what repeats becomes one shared piece; a site `@use`s the framework's Sass and never copies it. Step 3 writes this into `.claude/rules/css.md`.
 
 ## Verification
 

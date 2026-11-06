@@ -6,7 +6,7 @@
 .note-when { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 12.5px; }
 .note-body { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--bs-emphasis-color); }
 .note-text { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; width: 100%; min-height: 56px; resize: vertical; }
-.note-text:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.note-text:focus { outline: none; border-color: rgba(var(--bs-primary-rgb), .55); }
 .note-add { align-self: flex-start; }
 .note-add:disabled { opacity: .45; cursor: not-allowed; }
 .note-error { color: var(--bs-danger); margin: 0; font-size: 13px; }
@@ -20,7 +20,7 @@
 .review-name, .review-note { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
 .review-name { flex: 1; }
 .review-note { width: 100%; min-height: 56px; resize: vertical; }
-.review-name:focus, .review-note:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.review-name:focus, .review-note:focus { outline: none; border-color: rgba(var(--bs-primary-rgb), .55); }
 .review-buttons { align-self: flex-start; }
 .review-buttons button:disabled { opacity: .45; cursor: not-allowed; }
 .review-error { color: var(--bs-danger); margin: 0; }
@@ -31,7 +31,7 @@
 .agreement-class { display: flex; flex-direction: column; gap: 6px; }
 .agreement-sentence { margin: 0; color: var(--bs-emphasis-color); font-size: 13.5px; }
 .agreement-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
-.agreement-bar .rate-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.agreement-bar .rate-track { height: 8px; border-radius: 4px; background: rgba(var(--web-overlay-rgb), .06); overflow: hidden; }
 .agreement-bar .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--bs-success-text-emphasis); animation: grow .7s var(--web-ease) both; }
 .agreement-bar .rate-fill.hat { background: var(--bs-primary); }
 .agreement-share { color: var(--bs-secondary-color); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }

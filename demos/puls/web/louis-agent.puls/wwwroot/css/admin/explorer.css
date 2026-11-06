@@ -4,7 +4,7 @@
 .explorer { display: flex; flex-direction: column; gap: 14px; margin: 6px 0 10px; }
 .crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
 .crumb { background: none; border: 0; color: var(--bs-primary-text-emphasis); padding: 3px 8px; border-radius: 8px; font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s; }
-.crumb:hover, .crumb:focus-visible { background: rgba(245, 130, 32, .1); text-decoration: underline; text-underline-offset: 3px; }
+.crumb:hover, .crumb:focus-visible { background: rgba(var(--bs-primary-rgb), .1); text-decoration: underline; text-underline-offset: 3px; }
 .crumb.here { color: var(--bs-emphasis-color); font-weight: 700; cursor: default; background: none; text-decoration: none; }
 .crumb code { color: inherit; }
 .crumb-sep { color: var(--bs-tertiary-color); }
@@ -17,7 +17,7 @@
 .tiles.small { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .tile { display: flex; flex-direction: column; gap: 4px; text-align: left; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 14px 16px; color: var(--bs-body-color); font: inherit; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 70ms); transition: transform .25s var(--web-spring), border-color .25s, box-shadow .25s; }
 button.tile { cursor: pointer; }
-button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32, .45); box-shadow: var(--web-glow); }
+button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: var(--web-glow); }
 .tile-label { display: inline-flex; align-items: center; gap: 7px; color: var(--bs-secondary-color); font-size: 12.5px; }
 .tile-value { font-size: 26px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.4px; font-variant-numeric: tabular-nums; }
 .tile-value.model { font-size: 15px; letter-spacing: 0; }
@@ -52,10 +52,10 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 /* F31: a row's ways on are its buttons only (Louis): Speel af opens the chats, the link goes into the costs. */
 .row-actions { display: inline-flex; align-items: center; gap: 8px; }
 .turn-head .row-actions { margin-left: 4px; }
-.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; border: 1px solid rgba(245, 130, 32, .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
-.turn-open:hover, .turn-open:focus-visible { background: rgba(245, 130, 32, .14); }
+.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; border: 1px solid rgba(var(--bs-primary-rgb), .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.turn-open:hover, .turn-open:focus-visible { background: rgba(var(--bs-primary-rgb), .14); }
 .turn-open.quiet { color: var(--bs-body-color); border-color: var(--bs-border-color); }
-.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(245, 130, 32, .45); background: rgba(245, 130, 32, .08); }
+.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--bs-primary-rgb), .08); }
 /* F31: a row's cost pops (Louis), as a tile's figure does: bold, white, its digits in columns, counting up. */
 .row-cost { font-size: 19px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .row-cost.small { font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
@@ -68,7 +68,7 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .timeline { display: flex; flex-direction: column; gap: 6px; }
 .lane { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; gap: 10px; }
 .lane-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--bs-secondary-color); }
-.lane-track { position: relative; height: 22px; border-radius: 6px; background: rgba(255, 255, 255, .04); border-bottom: 1px solid var(--bs-border-color); }
+.lane-track { position: relative; height: 22px; border-radius: 6px; background: rgba(var(--web-overlay-rgb), .04); border-bottom: 1px solid var(--bs-border-color); }
 .lane.axis .lane-track { height: 16px; background: none; border: 0; display: flex; justify-content: space-between; font-size: 11px; color: var(--bs-tertiary-color); }
 .tl-bar { position: absolute; top: 4px; height: 14px; border: 0; padding: 0; border-radius: 4px; cursor: pointer; transform-origin: 0 50%; animation: grow .7s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms + 100ms); transition: filter .15s, transform .2s var(--web-spring); min-width: 3px; }
 .tl-bar:disabled { cursor: default; }
@@ -117,8 +117,8 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .tip-what { color: var(--bs-emphasis-color); }
 .tip-row, .tip-why { display: grid; grid-template-columns: 54px 1fr; gap: 8px; }
 .tip-row b, .tip-why b { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding-top: 1px; }
-.tip-good { color: #38b449; }
-.tip-bad { color: #f26b4f; }
+.tip-good { color: var(--bs-success-text-emphasis); }
+.tip-bad { color: var(--bs-danger); }
 .tip-why b { color: var(--bs-primary-text-emphasis); }
 .tip-better { color: var(--bs-secondary-color); font-style: italic; border-top: 1px solid var(--bs-border-color); padding-top: 6px; }
 @media (prefers-reduced-motion: reduce) { .chart-tip { transition: none; } }
@@ -149,7 +149,7 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .donut-centre strong { font-size: 20px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.3px; font-variant-numeric: tabular-nums; }
 .donut-centre small { font-size: 10.5px; color: var(--bs-secondary-color); }
 .donut circle { fill: none; stroke-width: 5; }
-.donut-track { stroke: rgba(255, 255, 255, .06); }
+.donut-track { stroke: rgba(var(--web-overlay-rgb), .06); }
 .donut-arc { stroke-dasharray: var(--len) calc(100 - var(--len)); animation: sweep .9s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }
 @keyframes sweep { from { stroke-dasharray: 0 100; } }
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }

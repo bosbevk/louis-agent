@@ -32,34 +32,34 @@
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 21px; letter-spacing: -.6px; color: var(--bs-emphasis-color); padding: 2px 8px; }
 .sidebar-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 4px; }
 .sidebar-top .icon { color: var(--bs-secondary-color); width: 32px; height: 32px; place-items: center; }
-.sidebar-top .icon:hover { background: rgba(255, 255, 255, .08); color: var(--bs-emphasis-color); }
+.sidebar-top .icon:hover { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
 .new-chat {
-    position: relative; border: 0; border-radius: 12px; padding: 11px 14px; font-weight: 600; color: #fff; text-align: left;
+    position: relative; border: 0; border-radius: 12px; padding: 11px 14px; font-weight: 600; color: var(--web-on-primary); text-align: left;
     background: var(--web-cta); background-size: 200% 100%; background-position: 0% 0;
-    box-shadow: 0 6px 16px -8px rgba(245, 130, 32, .7);
+    box-shadow: 0 6px 16px -8px rgba(var(--bs-primary-rgb), .7);
     transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease), background-position .6s var(--web-ease);
 }
 .new-chat::before { content: "+"; margin-right: 8px; font-weight: 700; }
-.new-chat:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(245, 130, 32, .85); background-position: 100% 0; }
+.new-chat:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(var(--bs-primary-rgb), .85); background-position: 100% 0; }
 .new-chat:active { transform: translateY(0) scale(.98); }
 .chat-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 0; margin: 0 -4px; padding: 0 4px; }
 .chat-item { display: flex; align-items: center; border-radius: 10px; position: relative; transition: background .2s var(--web-ease); }
 .chat-item a { flex: 1; min-width: 0; padding: 9px 12px; color: var(--bs-body-color); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
-.chat-item:hover { background: rgba(255, 255, 255, .05); }
+.chat-item:hover { background: rgba(var(--web-overlay-rgb), .05); }
 .chat-item.active { background: var(--bs-secondary-bg); box-shadow: var(--bs-box-shadow-sm); }
 .chat-item.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--bs-primary); }
 .chat-item.active a { color: var(--bs-emphasis-color); font-weight: 600; }
 .chat-item .icon { opacity: 0; transition: opacity .15s; color: var(--bs-secondary-color); }
 .chat-item:hover .icon { opacity: 1; }
-.sidebar-settings { color: #e4e4df; font-size: 13px; }
-.sidebar-settings summary { cursor: pointer; color: #c9c9c3; list-style: none; padding: 4px 8px; border-radius: 8px; }
+.sidebar-settings { color: var(--web-settings-text); font-size: 13px; }
+.sidebar-settings summary { cursor: pointer; color: var(--web-soft-text); list-style: none; padding: 4px 8px; border-radius: 8px; }
 .sidebar-settings summary::before { content: "⚙  "; }
-.settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: #c9c9c3; }
-.settings input, .settings select { background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); color: #fff; border-radius: 10px; padding: 8px 10px; font: inherit; transition: border-color .2s, box-shadow .2s; }
-.settings input:focus, .settings select:focus { outline: 0; border-color: var(--bs-primary); box-shadow: 0 0 0 3px rgba(245, 130, 32, .25); }
+.settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: var(--web-soft-text); }
+.settings input, .settings select { background: rgba(var(--web-overlay-rgb), .08); border: 1px solid rgba(var(--web-overlay-rgb), .18); color: var(--web-bright); border-radius: 10px; padding: 8px 10px; font: inherit; transition: border-color .2s, box-shadow .2s; }
+.settings input:focus, .settings select:focus { outline: 0; border-color: var(--bs-primary); box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .25); }
 .settings select option { color: var(--bs-emphasis-color); }
 .icon { background: none; border: 0; color: var(--bs-secondary-color); font-size: 16px; line-height: 1; padding: 5px 9px; border-radius: 8px; transition: background .15s, color .15s; }
-.icon:hover { background: rgba(127, 127, 127, .14); color: var(--bs-emphasis-color); }
+.icon:hover { background: rgba(var(--web-hover-rgb), .14); color: var(--bs-emphasis-color); }
 .sidebar .icon:hover { color: var(--bs-emphasis-color); }
 
 /* Conversation */
@@ -76,7 +76,7 @@
 .empty h1 .w { display: inline-block; animation: word .7s var(--web-ease) both; animation-delay: calc(.1s + var(--i) * 80ms); }
 /* The landing's water (Components/Water.razor), low behind the empty chat: across the conversation column, under the
    messages, rather than over the viewport. */
-.conversation > .wave-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; z-index: 0; mask-image: linear-gradient(transparent, #000 50%); }
+.conversation > .wave-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; z-index: 0; mask-image: linear-gradient(transparent, var(--bs-black) 50%); }
 .conversation > .messages { position: relative; z-index: 1; }
 .empty .hint { color: var(--bs-secondary-color); font-size: 16px; max-width: 460px; margin: 0 0 26px; animation: rise .7s .08s var(--web-ease) both; }
 .suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 10px; perspective: 1200px; }
@@ -90,7 +90,7 @@
 .suggestion:nth-child(3) { animation-delay: .26s; } .suggestion:nth-child(4) { animation-delay: .32s; }
 .suggestion strong { color: var(--bs-emphasis-color); font-size: 14px; }
 .suggestion span { color: var(--bs-secondary-color); font-size: 13px; }
-.suggestion:hover { --ty: -3px; box-shadow: var(--bs-box-shadow); border-color: rgba(245, 130, 32, .55); }
+.suggestion:hover { --ty: -3px; box-shadow: var(--bs-box-shadow); border-color: rgba(var(--bs-primary-rgb), .55); }
 .suggestion:hover strong { color: var(--web-primary-deep); }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 

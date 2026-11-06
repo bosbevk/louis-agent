@@ -18,6 +18,36 @@
     --web-sidebar-foot: #121416;            /* the darkest charcoal: the sidebar's footer */
     --web-sidebar-foot-deep: #0d0f10;
     --bs-link-color: #38b449;
+
+    /* The same colours again as numbers, for the rules that need them see-through: rgba(var(--bs-primary-rgb), .4). */
+    --bs-primary-rgb: 245, 130, 32;
+    --bs-danger-rgb: 242, 107, 79;
+    --bs-body-bg-rgb: 28, 31, 34;
+    --bs-secondary-bg-rgb: 37, 41, 45;
+    --bs-tertiary-bg-rgb: 22, 25, 27;
+    --web-success-text-rgb: 56, 180, 73;
+    --web-overlay-rgb: 255, 255, 255;   /* laid over the dark surfaces to lift them; a light theme sets a dark one */
+    --web-shadow-rgb: 36, 40, 44;
+    --web-failed-rgb: 229, 72, 77;
+    --web-backdrop-rgb: 8, 9, 10;
+    --web-hover-rgb: 127, 127, 127;
+    --web-menu-bg-rgb: 35, 39, 43;
+
+    /* The smaller steps the rules use. */
+    --web-on-primary: #fff;             /* text on an action or on your message */
+    --web-bright: #fff;                 /* the brightest text on the dark */
+    --web-menu-bg: #23272b;
+    --web-soft-text: #c9c9c3;
+    --web-settings-text: #e4e4df;
+    --web-error-text: #f8a08c;
+    --web-photo-text: #333;             /* a caption on a photo's white mat */
+    --web-border-hover: #454b52;
+    --web-scrollbar: #3b4046;
+    --web-dialog-bg: #202428;
+    --web-code-number: #c4a5f5;
+    --web-code-comment: #8b93ad;
+    --web-live-dot: #3fb950;
+
     --bs-emphasis-color: #efefeb;             /* the charcoal-tinted white: headings and strong text */
     --bs-body-color: #d4d4cf;
     --bs-secondary-color: #9ba1a8;

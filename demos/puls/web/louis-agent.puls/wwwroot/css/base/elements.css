@@ -1,10 +1,10 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--bs-body-bg); color: var(--bs-body-color); font: 14.5px/1.7 var(--bs-font-sans-serif); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-::selection { background: rgba(245, 130, 32, .25); color: var(--bs-emphasis-color); }
+::selection { background: rgba(var(--bs-primary-rgb), .25); color: var(--bs-emphasis-color); }
 :focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; border-radius: 6px; }
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .4; }
 a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-* { scrollbar-width: thin; scrollbar-color: #3b4046 transparent; }
+* { scrollbar-width: thin; scrollbar-color: var(--web-scrollbar) transparent; }
 
