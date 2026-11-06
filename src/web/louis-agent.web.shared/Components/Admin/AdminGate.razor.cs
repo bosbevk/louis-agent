@@ -1,7 +1,7 @@
 using LouisAgent.Web.Shared.Storage;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Admin.Head;
+namespace LouisAgent.Web.Shared.Components.Admin;
 
 /// <summary>
 /// Says what went wrong. When the API wants the portal's key, it asks for it and keeps it in this browser, then tells
