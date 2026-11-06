@@ -130,7 +130,7 @@ public sealed class ChatRunner(
         }
     }
 
-    // Text arrives a few words at a time; redrawing every 50 ms is smooth without redrawing on every token.
+    /// <summary>Text arrives a few words at a time; redrawing every 50 ms is smooth, and not on every token.</summary>
     private void RedrawThrottled()
     {
         DateTimeOffset now = _clock.GetUtcNow();
@@ -139,6 +139,7 @@ public sealed class ChatRunner(
         Changed?.Invoke();
     }
 
+    /// <summary>Asks the API to cancel the turn; if it refuses, the notice says why.</summary>
     public async Task StopAsync()
     {
         if (Chat is null) return;
@@ -194,6 +195,7 @@ public sealed class ChatRunner(
         return shown;
     }
 
+    /// <summary>Keeps the API key and clears the notice that asked for it.</summary>
     public async Task SaveApiKeyAsync(string? apiKey)
     {
         await store.SaveApiKeyAsync(apiKey);

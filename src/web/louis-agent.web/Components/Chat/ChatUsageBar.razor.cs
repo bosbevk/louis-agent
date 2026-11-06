@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Chat;
 
+/// <summary>The line under a chat with what it has cost so far.</summary>
 public partial class ChatUsageBar
 {
     [Parameter] public TurnUsage? Usage { get; set; }

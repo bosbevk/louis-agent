@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components;
 
+/// <summary>A specialist's or minion's card: who it went to, what it was asked, its work and its answer.</summary>
 public partial class DelegationCard
 {
     [Parameter, EditorRequired] public Delegation Delegation { get; set; } = default!;
@@ -11,7 +12,7 @@ public partial class DelegationCard
     [Parameter] public bool Streaming { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
-    /// <summary>The images a tool gave in this turn (FX22): the only ones an answer here may show besides a shop's own photos.</summary>
+    /// <summary>The images a tool gave in this turn: all an answer may show, besides a shop's own photos.</summary>
     [Parameter] public IReadOnlySet<string>? Shown { get; set; }
 
     private bool Running => Streaming && Block.ToolResult is null;
@@ -20,10 +21,10 @@ public partial class DelegationCard
 
     private string StatusText => Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done };
 
-    /// <summary>The peer actually used: named in the call, else reported by its stream or its result (an empty name means the only peer).</summary>
+    /// <summary>The peer actually used: named in the call, else reported by its stream or its result.</summary>
     private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
 
-    /// <summary>Who the work went to, as the user thinks of it: the role (F26; Louis: "show oorgedra → role"), else the handle of a continued one, else the peer.</summary>
+    /// <summary>Who the work went to, as the user sees it: the role, else a continued handle, else the peer.</summary>
     private string Who => Delegation.Role ?? Delegation.Handle ?? Agent;
 
     private string Initial => Delegation.Minion ? "m" : Who[..1].ToUpperInvariant();
@@ -31,6 +32,7 @@ public partial class DelegationCard
     /// <summary>The cost shown on the rolled-up line.</summary>
     private string? CostLine => Block.SubTurn?.Usage is { } usage ? UsageFormat.Cost(usage, Currency) : null;
 
+    /// <summary>How many steps the sub-turn has taken, for the card's header.</summary>
     private string Steps(Turn sub) =>
         Text.Steps(sub.Blocks.Count(b => b.Kind == BlockKind.Tool), sub.Blocks.Count(b => b.Kind == BlockKind.Thinking));
 }

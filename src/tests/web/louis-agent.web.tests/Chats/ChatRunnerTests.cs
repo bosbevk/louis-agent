@@ -9,11 +9,14 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace LouisAgent.Web.Tests.Chats;
 
-// W2: a turn's life, lifted out of the two chat pages into ChatRunner, pinned from what the pages did: a message opens
-// a session and streams through TurnStream; the redraw is raised at most every 50 ms on a clock the test holds; stop
-// asks the API; an error's text is the app's; attachments are read, capped at 1 MB; the chat is saved at the end.
+/// <summary>
+/// A turn's life: a message opens a session and streams through TurnStream; the redraw is raised at most every 50 ms
+/// on a clock the test holds; stop asks the API; an error's text is the app's; attachments are read, capped at 1 MB;
+/// the chat is saved at the end.
+/// </summary>
 public class ChatRunnerTests
 {
+    /// <summary>A runner over the stub API, with what each test wants to look at.</summary>
     private sealed class Harness
     {
         public readonly ChatSettings Settings = new();
@@ -25,6 +28,7 @@ public class ChatRunnerTests
         public readonly List<string> Opened = [];
         public int Changed, Ended;
 
+        /// <summary>Builds it all; a gone session answers 404 on its message.</summary>
         public Harness(bool sessionGone = false, ChatText? text = null)
         {
             var api = FixtureApi.Client(Settings, out Handler, sessionGone);
@@ -37,6 +41,7 @@ public class ChatRunnerTests
         }
     }
 
+    /// <summary>A message opens a session, streams the turn and saves the chat.</summary>
     [Test]
     public async Task AMessage_OpensASession_StreamsTheTurn_AndSavesTheChat()
     {
@@ -68,6 +73,7 @@ public class ChatRunnerTests
             }));
     }
 
+    /// <summary>The redraw is raised at most every 50 ms.</summary>
     [Test]
     public async Task TheRedraw_IsRaisedAtMostEveryFiftyMilliseconds()
     {
@@ -83,6 +89,7 @@ public class ChatRunnerTests
         Assert.That(ticking.Changed, Is.EqualTo(events + 2), "every event redraws when 60 ms pass between them");
     }
 
+    /// <summary>Stop asks the API to cancel.</summary>
     [Test]
     public async Task Stop_AsksTheApiToCancel()
     {
@@ -95,6 +102,7 @@ public class ChatRunnerTests
         Assert.That(h.Runner.Notice, Is.Null);
     }
 
+    /// <summary>With no chat, stop does nothing.</summary>
     [Test]
     public async Task Stop_WithoutAChat_DoesNothing()
     {
@@ -103,7 +111,8 @@ public class ChatRunnerTests
         Assert.That(h.Handler.Requests, Is.Empty);
     }
 
-    // FX29: in Puls the stop button sits in the message box, so a failed cancel's notice shows only if the page is told.
+    /// <summary>The stop button is in the message box, so a failed cancel's notice shows only if the page is told.
+    /// </summary>
     [Test]
     public async Task AStopTheApiRefuses_SaysWhy_AndRedrawsThePage()
     {
@@ -115,6 +124,7 @@ public class ChatRunnerTests
         Assert.That(h.Changed, Is.EqualTo(1), "the page redraws, so the notice shows");
     }
 
+    /// <summary>A session the API no longer knows ends the chat, in the app's words.</summary>
     [Test]
     public async Task AGoneSession_EndsTheChat_WithTheAppsWords()
     {
@@ -136,6 +146,7 @@ public class ChatRunnerTests
         Assert.That(h.Js.Calls, Does.Contain("localStorage.setItem"), "saved all the same");
     }
 
+    /// <summary>The errors it knows are said in the app's words.</summary>
     [Test]
     public void Describe_UsesTheAppsWords_ForTheErrorsItKnows()
     {
@@ -156,6 +167,7 @@ public class ChatRunnerTests
         Assert.That(h.Runner.Describe(new InvalidOperationException("boom")), Is.EqualTo("boom"));
     }
 
+    /// <summary>A file attached in a test.</summary>
     private sealed class FakeFile(string name, string content, long? size = null) : IBrowserFile
     {
         public string Name => name;
@@ -163,10 +175,12 @@ public class ChatRunnerTests
         public long Size => size ?? content.Length;
         public string ContentType => "text/plain";
 
+        /// <summary>The file's text as a stream.</summary>
         public Stream OpenReadStream(long maxAllowedSize = 512000, CancellationToken cancellationToken = default) =>
             new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
     }
 
+    /// <summary>Attachments are read, and a large one is refused with a notice.</summary>
     [Test]
     public async Task Attachments_AreRead_AndALargeOneIsRefusedWithANotice()
     {
@@ -183,6 +197,7 @@ public class ChatRunnerTests
         Assert.That(h.Changed, Is.EqualTo(1), "the page redraws, so the notice shows (FX29)");
     }
 
+    /// <summary>An attachment alone names the chat and goes with the turn.</summary>
     [Test]
     public async Task AnAttachmentAlone_NamesTheChat_AndGoesWithTheTurn()
     {
@@ -197,6 +212,7 @@ public class ChatRunnerTests
         Assert.That(h.Handler.Requests.Last().Body, Does.Contain("\"name\":\"notes.md\"").And.Contain("# Notes"));
     }
 
+    /// <summary>A chat's title is the first line, or the attachment, or the app's new chat.</summary>
     [Test]
     public void TitleFor_IsTheFirstLine_OrTheAttachment_OrTheAppsNewChat()
     {
@@ -208,6 +224,7 @@ public class ChatRunnerTests
         Assert.That(h.Runner.TitleFor(new string('x', 60), []), Is.EqualTo(new string('x', 50) + "…"));
     }
 
+    /// <summary>A session that fails to open keeps the draft and says why.</summary>
     [Test]
     public async Task AFailedSessionOpen_KeepsTheDraft_AndSaysWhy()
     {
@@ -227,9 +244,11 @@ public class ChatRunnerTests
         Assert.That(failing.Notice, Is.EqualTo("Can't reach the agent API. Is the api container running?"));
     }
 
-    // FX29: the send button seemed dead when the API refused the key. The session open failed, the notice was set and
-    // the draft put back, but nothing told the page to redraw, so the notice (shown by the page, not the box the click
-    // came from) never appeared. A failed open must say so out loud.
+    /// <summary>
+    /// The send button once seemed dead when the API refused the key. The session open failed, the notice was set and
+    /// the draft put back, but nothing told the page to redraw, so the notice (shown by the page, not the box the click
+    /// came from) never appeared. A failed open must say so out loud.
+    /// </summary>
     [Test]
     public async Task ASessionOpenTheApiRefuses_SaysItNeedsAKey_AndRedrawsThePage()
     {
@@ -249,6 +268,7 @@ public class ChatRunnerTests
         Assert.That(changed, Is.EqualTo(1), "the page redraws, so the notice and the draft show");
     }
 
+    /// <summary>Deleting a chat removes it here and on the API, and says so if it was the one shown.</summary>
     [Test]
     public async Task DeletingAChat_RemovesItHereAndThere_AndSaysWhenItWasTheOneShown()
     {
@@ -267,6 +287,7 @@ public class ChatRunnerTests
             "a 404 for the other is swallowed");
     }
 
+    /// <summary>Saving the API key clears the notice that asked for it.</summary>
     [Test]
     public async Task SavingTheApiKey_ClearsTheNotice()
     {

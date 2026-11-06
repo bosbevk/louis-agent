@@ -4,6 +4,7 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Header;
 
+/// <summary>The top bar: the chat's title and menu, then the work panel, credits, language and profile.</summary>
 public partial class ChatHeader
 {
     /// <summary>Which view the shell shows: the chat, <c>verken</c> or <c>studio</c>.</summary>

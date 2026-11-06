@@ -7,16 +7,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
 
-// T1: the delegation card (F5): the cook's card from the recorded turn, done, pinned to DelegationCard.html; and the
-// states a card goes through (running, done, failed) as the chat draws them.
+/// <summary>
+/// The delegation card: the cook's card from the recorded turn, done, pinned to a golden file; and the states a card
+/// goes through (running, done, failed) as the chat draws them.
+/// </summary>
 public class DelegationCardTests
 {
+    /// <summary>The cook's call in the recorded turn, and what its card reads from it.</summary>
     private static (Block Block, Delegation Delegation) TheCooksCall(Turn turn)
     {
         var block = turn.Blocks.Single(b => b.ToolName == "StartSubSession");
         return (block, Delegation.From(block)!);
     }
 
+    /// <summary>The cook's finished card matches the golden file.</summary>
     [Test]
     public async Task TheCooksCard_Done_MatchesTheGoldenFile()
     {
@@ -32,6 +36,7 @@ public class DelegationCardTests
         Snapshots.Match("Components/DelegationCard.html", cut.Markup);
     }
 
+    /// <summary>A running card is open and says it's working.</summary>
     [Test]
     public async Task ARunningCard_IsOpen_AndSaysItIsWorking()
     {
@@ -50,7 +55,7 @@ public class DelegationCardTests
         Assert.That(cut.FindAll(".delegation-cost"), Is.Empty, "the cost comes with the rolled-up line");
     }
 
-    /// <summary>A follow-up's chip just says it's a follow-up; the handle Puls uses inside stays out of sight.</summary>
+    /// <summary>A follow-up's chip just says it's a follow-up; the handle used inside stays out of sight.</summary>
     [Test]
     public void AFollowUp_ShowsOnlyTheFollowUpChip_NotTheHandle()
     {
@@ -72,6 +77,7 @@ public class DelegationCardTests
         Assert.That(cut.Find(".toolset-chip.follow-up").TextContent, Is.EqualTo("follow-up"));
     }
 
+    /// <summary>A failed call is marked failed, with the error.</summary>
     [Test]
     public void AFailedCall_IsMarkedFailed_WithTheError()
     {

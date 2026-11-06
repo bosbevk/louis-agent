@@ -2,16 +2,22 @@ using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Web.Tests.Chats;
 
-// FX22: the images a turn may show: the union of what its blocks' results gave and what every sub-turn's did, recursively (a minion inside a specialist too).
+/// <summary>
+/// The images a turn may show: the union of what its blocks' results gave and what every sub-turn's did, recursively.
+/// </summary>
 public class ImageSourcesTests
 {
+    /// <summary>A tool call whose result gave these images.</summary>
     private static Block Tool(params string[] images) => new() { Kind = BlockKind.Tool, ToolName = "FetchUrl", Images = [.. images] };
 
+    /// <summary>A delegation call holding this sub-turn.</summary>
     private static Block Delegating(Turn sub) => new() { Kind = BlockKind.Tool, ToolName = "StartSubSession", SubTurn = sub };
 
+    /// <summary>A turn with no images has none.</summary>
     [Test]
     public void ATurnWithNoImages_HasNone() => Assert.That(ImageSources.Of(new Turn()), Is.Empty);
 
+    /// <summary>It's the union of the turn's blocks and every sub-turn's, all the way down.</summary>
     [Test]
     public void ItIsTheUnionOfTheTurnsBlocks_AndEverySubTurnsRecursively()
     {
@@ -22,6 +28,7 @@ public class ImageSourcesTests
         Assert.That(ImageSources.Of(turn), Is.EquivalentTo(new[] { "https://a.example/1.jpg", "https://b.example/2.jpg", "https://c.example/3.jpg" }));
     }
 
+    /// <summary>It's per turn: a later turn can't reuse an earlier one's image.</summary>
     [Test]
     public void ItIsPerTurn_ALaterTurnCannotReuseAnEarlierOnesImage()
     {

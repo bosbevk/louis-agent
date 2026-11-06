@@ -8,11 +8,13 @@ using LouisAgent.Web.Api;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
-// FX17, Louis on a follow-up's card: "Oorgedra aan sub-1 … this must say puls-cook?", with "BESIG" under it where the
-// cook's phase belongs. ContinueSubSession names the handle, not the role, so the card had only the handle until the
-// answer's footer came. Each session's message_start says its role (session_role: "role" is already Claude's speaker).
+/// <summary>
+/// ContinueSubSession names the handle, not the role, so a follow-up's card had only the handle until the answer's
+/// footer came. Each session's message_start says its role (session_role: "role" is already Claude's speaker).
+/// </summary>
 public class ContinuedSpecialistRoleTests
 {
+    /// <summary>A session's stream starts by saying its role.</summary>
     [Test]
     public void ASessionsStream_StartsWithItsRole()
     {
@@ -25,6 +27,7 @@ public class ContinuedSpecialistRoleTests
         Assert.That(message.GetProperty("role").GetString(), Is.EqualTo("assistant"), "Claude's speaker, unchanged");
     }
 
+    /// <summary>A turn with a follow-up that has started and not finished.</summary>
     private static Turn AFollowUpThatStarted()
     {
         var turn = new Turn
@@ -54,10 +57,12 @@ public class ContinuedSpecialistRoleTests
         return turn;
     }
 
+    /// <summary>A follow-up's card names the role while it works.</summary>
     [Test]
     public void AFollowUpsCard_NamesTheRole_WhileItWorks() =>
         Assert.That(Delegation.From(AFollowUpThatStarted().Blocks[0])!.Role, Is.EqualTo(SampleRole.Alpha));
 
+    /// <summary>A follow-up's line says what the cook is doing.</summary>
     [Test]
     public void AFollowUpsLine_SaysWhatTheCookIsDoing()
     {

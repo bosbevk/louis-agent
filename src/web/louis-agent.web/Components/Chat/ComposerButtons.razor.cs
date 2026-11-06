@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Chat;
 
+/// <summary>The Send and Stop buttons, whichever fits the moment.</summary>
 public partial class ComposerButtons
 {
     [Parameter] public bool Streaming { get; set; }

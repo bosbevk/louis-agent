@@ -6,6 +6,7 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Web.Components.Chat;
 
+/// <summary>A chat's turns, or what the site shows instead, scrolled to the end as the answer grows.</summary>
 public partial class MessageList
 {
     [Parameter] public ChatModel? Chat { get; set; }
@@ -30,6 +31,7 @@ public partial class MessageList
     private string? _lastClass;
     private bool _scrollToEnd;
 
+    /// <summary>Notes a new chat or a new turn, so the next draw knows to scroll.</summary>
     protected override void OnParametersSet()
     {
         if (!ReferenceEquals(Chat, _shown)) _scrollToEnd = true;
@@ -40,6 +42,7 @@ public partial class MessageList
         _lastClass = Class;
     }
 
+    /// <summary>Scrolls to the end through the page's script, when something new came in.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Streaming || _scrollToEnd)

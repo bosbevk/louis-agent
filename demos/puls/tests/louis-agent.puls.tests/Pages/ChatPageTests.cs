@@ -9,11 +9,12 @@ using LouisAgent.Web.Api;
 
 namespace LouisAgent.Puls.Tests.Pages;
 
-// T1: Puls's chat page rendered end to end against the stub API (FixtureApi): the API client is the real one, over a
-// stub that answers /v1/model, /v1/roles and /v1/toolsets with fixed JSON, opens one session, and streams the recorded Puls turn
-// for its message. The empty page and the page with the turn are pinned to ChatPage.empty.html and ChatPage.turn.html. The
-// page's JS (pulsUi.*, louisChat.*, localStorage) runs through bUnit's loose interop, which answers every call with
-// nothing; the test lists the calls it made, so a new one is a review point.
+/// <summary>
+/// Puls's chat page rendered end to end against the stub API: the API client is the real one, over a stub that answers
+/// the model, roles and toolsets with fixed JSON, opens one session, and streams the recorded turn for its message. The
+/// empty page and the page with the turn are pinned to golden files. The page's JS runs through bUnit's loose interop,
+/// which answers every call with nothing; the test lists the calls it made, so a new one is a review point.
+/// </summary>
 public class ChatPageTests
 {
     private static readonly string[] StartUpCalls =
@@ -29,6 +30,7 @@ public class ChatPageTests
         "pulsUi.timeZone", "louisChat.scrollToBottom", "louisChat.highlightBlocks", "localStorage.setItem",
     ];
 
+    /// <summary>A bUnit context with everything the page asks for, over the stub API.</summary>
     private static BunitContext Context()
     {
         var ctx = new BunitContext();
@@ -43,9 +45,11 @@ public class ChatPageTests
         return ctx;
     }
 
+    /// <summary>Which scripts the page has called, each once, in order of name.</summary>
     private static string[] Calls(BunitContext ctx) => ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct()
         .Order(StringComparer.Ordinal).ToArray();
 
+    /// <summary>The empty page matches its golden file, and calls only the scripts we expect.</summary>
     [Test]
     public void TheEmptyPage_MatchesTheGoldenFile_AndMakesTheseJsCalls()
     {
@@ -59,6 +63,7 @@ public class ChatPageTests
         Snapshots.Match("Pages/ChatPage.empty.html", cut.Markup);
     }
 
+    /// <summary>A message opens a session and streams the turn, and the page matches its golden file.</summary>
     [Test]
     public void AMessage_OpensASession_StreamsTheTurn_AndMatchesTheGoldenFile()
     {

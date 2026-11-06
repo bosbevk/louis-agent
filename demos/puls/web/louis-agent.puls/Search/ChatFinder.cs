@@ -15,7 +15,7 @@ public static class ChatFinder
     /// <summary>The most a query shows.</summary>
     private const int MaxResults = 20;
 
-    /// <summary>The chats that match, newest first, each with the line that matched (null when the title did).</summary>
+    /// <summary>The chats that match, newest first, each with the line that matched (null if the title did).</summary>
     public static List<(Chat Chat, string? Snippet)> Find(IReadOnlyList<Chat> chats, string query)
     {
         string q = query.Trim();
@@ -32,7 +32,7 @@ public static class ChatFinder
         return found.Take(MaxResults).ToList();
     }
 
-    /// <summary>About 80 characters around the first match in <paramref name="text"/>, or null when it doesn't match.</summary>
+    /// <summary>About 80 characters around the first match in the text, or null if it doesn't match.</summary>
     public static string? Snippet(string text, string query)
     {
         int at = text.IndexOf(query, StringComparison.OrdinalIgnoreCase);

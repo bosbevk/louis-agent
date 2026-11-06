@@ -11,7 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Notes;
 
-/// <summary>The notes panel: it says so when there are none, lists them newest first when there are, and its form posts a note and then says it changed so the run page fetches again. It never adds the note to its own list.</summary>
+/// <summary>
+/// The notes panel: it says so when there are none, lists them newest first when there are, and its form posts a note
+/// and then says it changed so the run page fetches again. It never adds the note to its own list.
+/// </summary>
 public class NotesPanelTests
 {
     /// <summary>The moment the tests count from.</summary>
@@ -20,14 +23,14 @@ public class NotesPanelTests
     /// <summary>A conversation key.</summary>
     private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
 
-    /// <summary>A rendered panel with its stub API and state, and how often the state was told a note was written.</summary>
+    /// <summary>A rendered panel with its stub API and state, and how often it said a note was written.</summary>
     private sealed record Rendered(
         IRenderedComponent<NotesPanel> Cut,
         StubHandler Handler,
         RunNotesState State,
         Func<int> Raised);
 
-    /// <summary>Renders the panel with the given notes and an API that answers the post with the given status.</summary>
+    /// <summary>Renders the panel with these notes and an API that answers the post with this status.</summary>
     private static Rendered Render(IReadOnlyList<RunNoteEntry> notes, ConversationRef? conversation = null,
         HttpStatusCode post = HttpStatusCode.Created)
     {
@@ -98,7 +101,7 @@ public class NotesPanelTests
             Is.EqualTo(new[] { "on the run" }));
     }
 
-    /// <summary>The form posts the text, then tells the state. It clears the box, and doesn't put the note in its own list.</summary>
+    /// <summary>The form posts the text, tells the state and clears the box, and lists no note itself.</summary>
     [Test]
     public void TheForm_PostsTheNote_ThenSaysTheStoreChanged_WithoutAddingItToItsOwnList()
     {
@@ -140,7 +143,7 @@ public class NotesPanelTests
                 key.GetProperty("task").GetString()), Is.EqualTo((SampleMode.Beta, 1, "bobotie")));
     }
 
-    /// <summary>When the API says no, the panel shows why, keeps what was typed, and doesn't say anything changed.</summary>
+    /// <summary>When the API says no, the panel says why, keeps what was typed, and says nothing changed.</summary>
     [Test]
     public void WhenTheApiRefuses_ItShowsTheReason_KeepsTheText_AndDoesNotSayTheStoreChanged()
     {

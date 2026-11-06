@@ -8,9 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Reviews;
 
-// F18 step 6a.5c (Louis: "we needed a gui for calibration in admin"): in a judge's agreement card, a Check the judge button starts the API's calibration of the judge against the
-// answers you graded, follows the run until it ends, then fetches the reports again (ADR 0042) and shows the latest in plain sentences with its disagreements, the earlier checks folded.
-// Written first: the card did not exist.
+/// <summary>
+/// In a judge's agreement card, a Check the judge button starts the API's calibration of the judge against the answers
+/// you graded, follows the run until it ends, then fetches the reports again (ADR 0042) and shows the latest in plain
+/// sentences with its disagreements, the earlier checks folded.
+/// </summary>
 public class CalibrationCardTests
 {
     private const string None = """{"calibrations":[]}""";
@@ -28,6 +30,7 @@ public class CalibrationCardTests
     private const string Started =
         """{"id":"cal1","check":"puls-cook","status":"running","calibration_of":"run1","grader":"meal-for-people","last_line":null}""";
 
+    /// <summary>A 200 with this body as JSON.</summary>
     private static HttpResponseMessage Json(string body) => new(HttpStatusCode.OK)
     { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
@@ -53,6 +56,7 @@ public class CalibrationCardTests
         return (cut, handler);
     }
 
+    /// <summary>The latest report reads as sentences, with its disagreements; earlier checks are folded.</summary>
     [Test]
     public void TheLatestReport_ReadsAsSentences_WithItsDisagreements_AndTheEarlierChecksFolded()
     {
@@ -76,6 +80,7 @@ public class CalibrationCardTests
         Assert.That(cut.Find(".calibration-earlier").TextContent, Does.Contain("32 of 36 · not yet"));
     }
 
+    /// <summary>Never checked says so, and the button is ready.</summary>
     [Test]
     public void NotCheckedYet_SaysSo_AndTheButtonIsReady()
     {
@@ -87,6 +92,7 @@ public class CalibrationCardTests
         Assert.That(cut.FindAll(".calibration-report"), Is.Empty);
     }
 
+    /// <summary>Without labels the button waits and says why.</summary>
     [Test]
     public void WithoutLabels_TheButtonWaits_AndSaysWhy()
     {
@@ -97,6 +103,7 @@ public class CalibrationCardTests
         Assert.That(cut.Find(".calibration-check").HasAttribute("disabled"), Is.True);
     }
 
+    /// <summary>The check posts to the run, follows it to its end, then fetches the reports again.</summary>
     [Test]
     public void TheCheck_PostsToTheRun_FollowsItToItsEnd_ThenFetchesTheReportsAgain()
     {
@@ -118,6 +125,7 @@ public class CalibrationCardTests
             Assert.That(cut.Find(".review-error").TextContent, Does.Contain("no report was kept")));
     }
 
+    /// <summary>A failed check shows the runner's last line.</summary>
     [Test]
     public void AFailedCheck_ShowsTheRunnersLastLine()
     {
@@ -132,7 +140,7 @@ public class CalibrationCardTests
             Assert.That(cut.Find(".review-error").TextContent, Does.Contain("has no grader 'x'")));
     }
 
-    // 6a.5e (the review's nit): a card that is left while a check runs stops following it; the API's run goes on without a listener.
+    /// <summary>A card left while a check runs stops following it; the API's run goes on without a listener.</summary>
     [Test]
     public async Task LeavingThePage_StopsTheFollowing()
     {

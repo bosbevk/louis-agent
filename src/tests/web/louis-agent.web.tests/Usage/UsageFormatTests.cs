@@ -2,9 +2,11 @@ using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Web.Tests.Usage;
 
-// T1 (closes the TODO's "Tests for the web app's UsageFormat"): the usage line under an answer and the chat's total
-// (F3), in the display currency (F14). The same number rules as core's UsageText: k/M tokens, two significant digits
-// below 1, "price unknown" rather than 0 when nothing was priced (ADR 0007), always "." as the decimal mark.
+/// <summary>
+/// The usage line under an answer and the chat's total, in the display currency. The same number rules as core's
+/// UsageText: k/M tokens, two significant digits below 1, "price unknown" rather than 0 when nothing was priced
+/// (ADR 0007), always "." as the decimal mark.
+/// </summary>
 public class UsageFormatTests
 {
     private static readonly TurnUsage Priced = new(1_900, 0, 26_000, 412, 3, 0.004m, "USD", 0);
@@ -12,6 +14,7 @@ public class UsageFormatTests
     private static readonly CurrencyChoice Rand = new("ZAR", "R", 18m, "2026-10-13", "USD");
     private static readonly CurrencyChoice Dollar = new("USD", "$", 1m, null, "USD");
 
+    /// <summary>A priced turn shows its tokens and cost.</summary>
     [Test]
     public void APricedTurn_ShowsItsTokensAndCost()
     {
@@ -20,6 +23,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.Detail(Priced), Is.EqualTo("3 requests: 1,900 input, 0 cache write, 26,000 cache read, 412 output tokens; 0.004 USD charged"));
     }
 
+    /// <summary>An unpriced turn says unknown, never zero.</summary>
     [Test]
     public void AnUnpricedTurn_SaysUnknown_NeverZero()
     {
@@ -30,6 +34,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.Line(Unpriced), Does.Not.Contain("0.00"));
     }
 
+    /// <summary>A partly priced total says how many have no price.</summary>
     [Test]
     public void APartlyPricedTotal_SaysHowManyHaveNoPrice()
     {
@@ -39,6 +44,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.Detail(partly), Does.Contain("0.004 USD charged (1 unpriced)"));
     }
 
+    /// <summary>The display currency converts what was charged in its base.</summary>
     [Test]
     public void TheDisplayCurrency_ConvertsWhatWasChargedInItsBase()
     {
@@ -48,6 +54,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.Line(Priced, Dollar), Is.EqualTo("1.9k in · 26k cached · 412 out · $0.004"), "the base itself converts nothing");
     }
 
+    /// <summary>A cost charged in another currency stays as charged.</summary>
     [Test]
     public void ACostChargedInAnotherCurrency_StaysAsCharged()
     {
@@ -56,6 +63,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.Cost(euros, Rand), Is.EqualTo("0.5 EUR"), "not the rate's base, so no conversion; a code with no symbol goes after");
     }
 
+    /// <summary>Money writes the symbol in front, or the code after.</summary>
     [TestCase(0, "USD", "$0")]
     [TestCase(1.5, "USD", "$1.50")]
     [TestCase(0.00123, "USD", "$0.0012")]
@@ -63,6 +71,7 @@ public class UsageFormatTests
     public void Money_WritesTheSymbolInFront_OrTheCodeAfter(double amount, string currency, string expected) =>
         Assert.That(UsageFormat.Money((decimal)amount, currency), Is.EqualTo(expected));
 
+    /// <summary>Tokens shorten past a thousand.</summary>
     [TestCase(999, "999")]
     [TestCase(1_500, "1.5k")]
     [TestCase(26_000, "26k")]
@@ -71,6 +80,7 @@ public class UsageFormatTests
     public void Tokens_ShortenPastAThousand(long count, string expected) =>
         Assert.That(UsageFormat.Tokens(count), Is.EqualTo(expected));
 
+    /// <summary>A sum is null only when no part has a price.</summary>
     [Test]
     public void KnownSum_IsNullOnlyWhenNoPartHasAPrice()
     {
@@ -79,6 +89,7 @@ public class UsageFormatTests
         Assert.That(UsageFormat.KnownSum([]), Is.Null);
     }
 
+    /// <summary>Turns add up, and a cost is unknown only when neither has one.</summary>
     [Test]
     public void TurnsAddUp_AndACostIsUnknownOnlyWhenNeitherHasOne()
     {

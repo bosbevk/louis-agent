@@ -9,9 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Runs;
 
-// F18 step 5b.2: a stored run's row in the portal. A finished run has a Re-score button that calls POST /v1/admin/benchmarks/runs/{id}/rescore; a re-scored run says
-// which run it re-scored, with a link to it, and shows its cost as $0 (a known 0 from the API, never the dash that means unknown). Written first: the row was
-// inline in the Benchmarks page, with neither.
+/// <summary>
+/// A stored run's row in the portal. A finished run has a Re-score button that calls the run's rescore route; a
+/// re-scored run says which run it re-scored, with a link to it, and shows its cost as $0 (a known 0 from the API,
+/// never the dash that means unknown).
+/// </summary>
 public class RunListItemTests
 {
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
@@ -20,6 +22,7 @@ public class RunListItemTests
         string? replayOf = null, bool recorded = false) =>
         new("abcdef123456", "stub", 2, status, At, total, null, null, rescoreOf, replayOf, recorded);
 
+    /// <summary>A reply with this status and JSON body.</summary>
     private static HttpResponseMessage Answer(HttpStatusCode code, string body) =>
         new(code) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
@@ -74,6 +77,7 @@ public class RunListItemTests
             Is.True, "one run at a time");
     }
 
+    /// <summary>A finished run's button calls the route and reports the new run.</summary>
     [Test]
     public void AFinishedRun_HasAReScoreButton_ThatCallsTheRoute_AndReportsTheNewRun()
     {
@@ -86,6 +90,7 @@ public class RunListItemTests
             Is.EqualTo(new[] { (HttpMethod.Post, "http://localhost/v1/admin/benchmarks/runs/abcdef123456/rescore") }));
     }
 
+    /// <summary>A refused re-score says why and reports nothing.</summary>
     [Test]
     public void ARefusedReScore_SaysWhy_AndReportsNothing()
     {
@@ -100,6 +105,7 @@ public class RunListItemTests
         Assert.That(started, Is.Empty);
     }
 
+    /// <summary>While this run or another is running, no button is enabled.</summary>
     [Test]
     public void ARunStillRunning_OrWhileAnotherDoes_HasNoEnabledButton()
     {
@@ -108,6 +114,7 @@ public class RunListItemTests
             "one run at a time");
     }
 
+    /// <summary>A re-scored run links to the run it re-scored, and costs $0.</summary>
     [Test]
     public void AReScoredRun_SaysWhichRunItReScored_WithALinkToIt_AndCostsDollarZero()
     {
@@ -134,6 +141,7 @@ public class RunListItemTests
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
     }
 
+    /// <summary>An ordinary run has no such note, and an unknown cost is a dash.</summary>
     [Test]
     public void AnOrdinaryRun_HasNoReScoredNote_AndAnUnknownCostIsADash()
     {

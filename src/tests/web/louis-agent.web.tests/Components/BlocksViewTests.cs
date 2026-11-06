@@ -5,10 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
 
-// T1: the blocks of an answer (thinking, text, tool calls, a delegation card for a StartSubSession call), rendered
-// from the cook's own turn inside the recorded one, so every kind of block is in the golden.
+/// <summary>
+/// The blocks of an answer (thinking, text, tool calls, a delegation card for a StartSubSession call), rendered from
+/// the cook's own turn inside the recorded one, so every kind of block is in the golden.
+/// </summary>
 public class BlocksViewTests
 {
+    /// <summary>The cook's blocks match the golden file.</summary>
     [Test]
     public async Task TheCooksBlocks_MatchTheGoldenFile()
     {
@@ -23,6 +26,7 @@ public class BlocksViewTests
         Snapshots.Match("Components/BlocksView.html", cut.Markup);
     }
 
+    /// <summary>A thinking block is open while it thinks, and says how long after.</summary>
     [Test]
     public void AThinkingBlock_IsOpenWhileItThinks_AndSaysHowLongAfter()
     {
@@ -40,6 +44,7 @@ public class BlocksViewTests
         Assert.That(done.Find("summary").TextContent, Is.EqualTo("Thought for 3s"));
     }
 
+    /// <summary>A failed tool is marked failed, with its result.</summary>
     [Test]
     public void AFailedTool_IsMarkedFailed_WithItsResult()
     {

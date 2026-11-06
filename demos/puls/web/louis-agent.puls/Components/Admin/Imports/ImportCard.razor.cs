@@ -53,7 +53,7 @@ public partial class ImportCard
     /// <summary>Keeps the previewed files.</summary>
     private Task SaveAsync() => PostAsync("save");
 
-    /// <summary>Posts the files to one of the upload's routes and keeps the report; a refusal shows its reason.</summary>
+    /// <summary>Posts the files to one of the upload's routes and keeps the report; a refusal says why.</summary>
     private async Task PostAsync(string route)
     {
         _busy = true;

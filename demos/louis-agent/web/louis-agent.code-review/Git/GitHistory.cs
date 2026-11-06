@@ -31,6 +31,7 @@ public sealed class GitHistory(AgentApi api, GitState git)
     /// <summary>Branches with commits not yet in the checked-out branch.</summary>
     public int UnmergedCount => Branches?.Branches.Count(b => !b.Current && !b.Merged) ?? 0;
 
+    /// <summary>What a branch can be waiting for.</summary>
     public enum BranchAction { Merge, Delete }
 
     /// <summary>What the branch is waiting for, and whether it is the one running now (the rest are queued).</summary>

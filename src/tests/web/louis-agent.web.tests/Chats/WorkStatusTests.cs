@@ -4,8 +4,7 @@ using LouisAgent.Testing;
 
 namespace LouisAgent.Web.Tests.Chats;
 
-// T1: the line under a running turn (F34): a role's phases while its specialist works ("Soek bestanddele", then "Bou
-// resep" for Puls's cook), else the app's plain "busy".
+/// <summary>The line under a running turn: a role's phases while its specialist works, else a plain "busy".</summary>
 public class WorkStatusTests
 {
     private static readonly ChatText Text = new()
@@ -14,6 +13,7 @@ public class WorkStatusTests
         RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
     };
 
+    /// <summary>A delegation call still running, under this role.</summary>
     private static Block RunningCall(string role = SampleRole.Alpha) => new()
     {
         Kind = BlockKind.Tool,
@@ -23,10 +23,12 @@ public class WorkStatusTests
         SubTurn = new Turn(),
     };
 
+    /// <summary>Nothing yet is busy.</summary>
     [Test]
     public void NothingYet_IsBusy() =>
         Assert.That(WorkStatus.Label(new Turn(), Text), Is.EqualTo("BESIG"));
 
+    /// <summary>A specialist that's just started is gathering.</summary>
     [Test]
     public void ASpecialistJustStarted_IsGathering()
     {
@@ -35,6 +37,7 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
     }
 
+    /// <summary>A specialist searching is gathering.</summary>
     [Test]
     public void ASpecialistSearching_IsGathering()
     {
@@ -45,6 +48,7 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
     }
 
+    /// <summary>A specialist writing after a result is building.</summary>
     [Test]
     public void ASpecialistWritingAfterAResult_IsBuilding()
     {
@@ -57,6 +61,7 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Bou resep"));
     }
 
+    /// <summary>A specialist searching again goes back to gathering.</summary>
     [Test]
     public void ASpecialistSearchingAgain_IsGatheringAgain()
     {
@@ -68,6 +73,7 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
     }
 
+    /// <summary>A role with no phases is busy.</summary>
     [Test]
     public void ARoleWithoutPhases_IsBusy()
     {
@@ -76,6 +82,7 @@ public class WorkStatusTests
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("BESIG"));
     }
 
+    /// <summary>A finished call is busy, since the page is writing its own answer now.</summary>
     [Test]
     public void AFinishedCall_IsBusy_ThePageWritesItsOwnAnswerNow()
     {

@@ -4,6 +4,7 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Sidebar;
 
+/// <summary>One chat in the sidebar: its link or the rename field, and its menu.</summary>
 public partial class ChatListItem
 {
     [Parameter, EditorRequired] public ChatModel Chat { get; set; } = default!;

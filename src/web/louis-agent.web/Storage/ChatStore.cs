@@ -22,6 +22,7 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
     /// <summary>The saved API key, for the settings field.</summary>
     public string? ApiKeyDraft => settings.ApiKey;
 
+    /// <summary>Reads the chats and the keys this browser saved.</summary>
     public async Task LoadAsync()
     {
         Loaded = true;
@@ -38,8 +39,10 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
         }
     }
 
+    /// <summary>The saved chat with this session, if there is one.</summary>
     public Chat? Find(string? sessionId) => Chats.FirstOrDefault(c => c.SessionId == sessionId);
 
+    /// <summary>Saves the chats in this browser.</summary>
     public async Task SaveAsync()
     {
         foreach (var block in Chats.SelectMany(c => c.Turns).SelectMany(t => t.Blocks))
@@ -77,6 +80,7 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
         else await js.InvokeVoidAsync("localStorage.setItem", AdminKeyKey, settings.AdminKey);
     }
 
+    /// <summary>Keeps the chat's API key in this browser.</summary>
     public async Task SaveApiKeyAsync(string? apiKey)
     {
         settings.ApiKey = string.IsNullOrWhiteSpace(apiKey) ? null : apiKey.Trim();

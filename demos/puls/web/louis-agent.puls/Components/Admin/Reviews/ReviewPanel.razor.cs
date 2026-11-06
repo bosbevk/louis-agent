@@ -57,14 +57,17 @@ public partial class ReviewPanel : IDisposable
 
     private string JudgeText => ReviewText.Judge(JudgeGrade?.Outcome);
 
+    /// <summary>Listens for the reviewer's name changing, then reads the one this browser kept.</summary>
     protected override async Task OnInitializedAsync()
     {
         Reviewer.Changed += Redraw;
         await Reviewer.LoadAsync();
     }
 
+    /// <summary>The reviewer changed, so draw again.</summary>
     private void Redraw() => _ = InvokeAsync(StateHasChanged);
 
+    /// <summary>Keeps the name that was typed.</summary>
     private async Task KeepNameAsync()
     {
         await Reviewer.SetAsync(_typedName);
@@ -108,5 +111,6 @@ public partial class ReviewPanel : IDisposable
         }
     }
 
+    /// <summary>Stops listening when the panel goes.</summary>
     public void Dispose() => Reviewer.Changed -= Redraw;
 }

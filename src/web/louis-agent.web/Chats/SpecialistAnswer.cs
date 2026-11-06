@@ -1,6 +1,6 @@
 namespace LouisAgent.Web.Chats;
 
-/// <summary>A specialist's sub-turn as its card shows it (F5; W2b, from DelegationCard): its work, then its answer.</summary>
+/// <summary>A specialist's sub-turn as its card shows it (F5): its work, then its answer.</summary>
 public static class SpecialistAnswer
 {
     /// <summary>

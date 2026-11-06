@@ -8,14 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
 
-// FX22 (Louis, 2026-10-25: "we need at least an image for the recipe, which we get from the article"): a Puls turn whose cook read a recipe page with an
-// image, and whose answer shows it (the parent's text and the delegation card's answer), renders the image in both places; the same answer with the image
-// in no result renders a link. Written first: the image was a link whatever page it came from.
+/// <summary>
+/// A turn whose cook read a recipe page with an image, and whose answer shows it (the parent's text and the delegation
+/// card's answer), renders the image in both places; the same answer with the image in no result renders a link.
+/// </summary>
 public class TurnViewImageTests
 {
     private const string Url = "https://example.co.za/wp-content/bobotie.jpg";
     private const string Answer = "Bobotie.\n\n![Bobotie](" + Url + ")\n\nSmaaklik.";
 
+    /// <summary>A turn whose cook read a page, with or without the image on it.</summary>
     private static Turn Cooked(bool pageHasImage)
     {
         string page = pageHasImage ? "# Bobotie ![Bobotie](" + Url + ")" : "# Bobotie";
@@ -36,6 +38,7 @@ public class TurnViewImageTests
         return turn;
     }
 
+    /// <summary>How many images the turn draws.</summary>
     private static int ImageCount(Turn turn)
     {
         using var ctx = new BunitContext();
@@ -45,10 +48,12 @@ public class TurnViewImageTests
         return cut.FindAll("img").Count(image => image.GetAttribute("src") == Url);
     }
 
+    /// <summary>The recipe's image renders in the answer and in the card.</summary>
     [Test]
     public void TheRecipesImage_RendersInTheAnswer_AndInTheDelegationCard() =>
         Assert.That(ImageCount(Cooked(pageHasImage: true)), Is.EqualTo(2), "the parent's text and the card's answer");
 
+    /// <summary>The same answer, when no result gave the image, renders a link.</summary>
     [Test]
     public void TheSameAnswer_WhenNoResultGaveTheImage_RendersALink() =>
         Assert.That(ImageCount(Cooked(pageHasImage: false)), Is.Zero);

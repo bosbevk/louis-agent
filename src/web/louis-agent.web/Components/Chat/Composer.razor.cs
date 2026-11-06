@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Chat;
 
+/// <summary>The message box: the attachments, the text, and Send or Stop.</summary>
 public partial class Composer
 {
     [Parameter] public string Draft { get; set; } = "";

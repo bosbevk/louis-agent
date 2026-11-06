@@ -12,7 +12,7 @@ public static class UsageFormat
 {
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
-    /// <summary>The short line: tokens by kind, then the cost. Kinds with no tokens are left out, except in and out.</summary>
+    /// <summary>The short line: tokens by kind, then the cost. Empty kinds are left out, except in and out.</summary>
     public static string Line(TurnUsage usage, CurrencyChoice? currency = null)
     {
         var parts = new List<string> { $"{Tokens(usage.InputTokens)} in" };
@@ -37,7 +37,7 @@ public static class UsageFormat
     public static string Total(TurnUsage usage, CurrencyChoice? currency = null) =>
         $"This chat: {Requests(usage.Requests)} · {Tokens(usage.TotalTokens)} tokens · {Cost(usage, currency)}";
 
-    /// <summary>The cost; a partly priced total says how many requests have no price, so it isn't read as the whole.</summary>
+    /// <summary>The cost; a partly priced total says how many requests have no price, so it isn't misread.</summary>
     public static string Cost(TurnUsage usage, CurrencyChoice? currency = null) => usage.Cost switch
     {
         null => "price unknown",
@@ -76,6 +76,7 @@ public static class UsageFormat
         return known.Count == 0 ? null : known.Sum();
     }
 
+    /// <summary>A token count, shortened past a thousand.</summary>
     public static string Tokens(long count) => count switch
     {
         < 1_000 => count.ToString(Invariant),
@@ -83,18 +84,22 @@ public static class UsageFormat
         _ => Short(count / 1_000_000m) + "M",
     };
 
+    /// <summary>A cost converts only when it was charged in the rates' base, and a currency is chosen.</summary>
     private static bool Converts(string? currency, CurrencyChoice? choice) =>
         choice is { Converts: true } && (currency ?? "USD") == choice.Base;
 
+    /// <summary>A number as the line writes it, always with "." as the decimal mark.</summary>
     private static string Short(decimal value) =>
         value < 10 ? Math.Round(value, 1, MidpointRounding.AwayFromZero).ToString("0.#", Invariant)
             : Math.Round(value, 0, MidpointRounding.AwayFromZero).ToString("0", Invariant);
 
+    /// <summary>A small amount to so many significant digits.</summary>
     private static string SignificantDigits(decimal amount, int digits)
     {
         int decimals = Math.Clamp(digits - 1 - (int)Math.Floor(Math.Log10((double)Math.Abs(amount))), 0, 6);
         return Math.Round(amount, decimals, MidpointRounding.AwayFromZero).ToString("0.######", Invariant);
     }
 
+    /// <summary>"1 request" or "2 requests".</summary>
     private static string Requests(int count) => count == 1 ? "1 request" : $"{count} requests";
 }

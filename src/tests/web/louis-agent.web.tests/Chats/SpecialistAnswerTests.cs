@@ -2,14 +2,22 @@ using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Web.Tests.Chats;
 
-// W2b: a specialist's sub-turn split for its card: its answer is the text after its last thinking or tool call, and
-// the notes it wrote between tool calls belong to its work.
+/// <summary>
+/// A specialist's sub-turn split for its card: its answer is the text after its last thinking or tool call, and the
+/// notes it wrote between tool calls belong to its work.
+/// </summary>
 public class SpecialistAnswerTests
 {
+    /// <summary>A thinking block.</summary>
     private static Block Thinking() => new() { Kind = BlockKind.Thinking, Text = "hmm" };
+
+    /// <summary>A finished tool call.</summary>
     private static Block Tool(string name) => new() { Kind = BlockKind.Tool, ToolName = name, ToolResult = "ok" };
+
+    /// <summary>A text block.</summary>
     private static Block Text(string text) => new() { Kind = BlockKind.Text, Text = text };
 
+    /// <summary>The answer is the text after the last call; notes between calls are work.</summary>
     [Test]
     public void TheAnswer_IsTheTextAfterTheLastCall_TheNotesBetweenCallsAreWork()
     {
@@ -22,6 +30,7 @@ public class SpecialistAnswerTests
         Assert.That(answer, Is.EqualTo("Die antwoord."));
     }
 
+    /// <summary>Only text is all answer, as paragraphs, with empty pieces skipped.</summary>
     [Test]
     public void OnlyText_IsAllAnswer_JoinedAsParagraphs_EmptyPiecesSkipped()
     {
@@ -33,6 +42,7 @@ public class SpecialistAnswerTests
         Assert.That(answer, Is.EqualTo("Een.\n\nTwee."));
     }
 
+    /// <summary>No text after the last call means no answer yet.</summary>
     [Test]
     public void NoTextAfterTheLastCall_IsNoAnswerYet()
     {

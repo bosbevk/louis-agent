@@ -16,7 +16,7 @@ public sealed class CurrencyState(AgentApi api, IJSRuntime js)
     private RatesDisplay? _display;
     private bool _loading;
 
-    /// <summary>The currency costs are shown in; null until the rates have loaded (then costs show as charged).</summary>
+    /// <summary>The currency costs are shown in; null until the rates load, and costs then show as charged.</summary>
     public CurrencyChoice? Current { get; private set; }
 
     /// <summary>The currencies to choose from: the charged one, the server's, then the rest by code.</summary>
@@ -25,6 +25,7 @@ public sealed class CurrencyState(AgentApi api, IJSRuntime js)
     /// <summary>Raised when the currency changes, so every view re-draws its costs.</summary>
     public event Action? Changed;
 
+    /// <summary>Loads the rates once, then picks the currency; with no rates, costs stay as charged.</summary>
     public async Task LoadAsync()
     {
         if (_loading || _rates is not null) return;
@@ -67,8 +68,10 @@ public sealed class CurrencyState(AgentApi api, IJSRuntime js)
         catch (JSException) { }
     }
 
+    /// <summary>We have a rate for this currency.</summary>
     private bool IsKnown(string code) => _rates is not null && (code == _rates.Base || _rates.Rates.ContainsKey(code));
 
+    /// <summary>Makes this the currency costs are shown in.</summary>
     private void Select(string code)
     {
         if (_rates is null) return;
@@ -79,5 +82,6 @@ public sealed class CurrencyState(AgentApi api, IJSRuntime js)
         Changed?.Invoke();
     }
 
+    /// <summary>The currency's symbol, else its code.</summary>
     private string SymbolOf(string code) => _display?.Symbols.GetValueOrDefault(code) ?? code;
 }

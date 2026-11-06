@@ -8,11 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
 
-// T1: the currency switcher (F14): the choices the API's rates give, the server's region first, pinned to
-// CurrencySwitcher.html; a choice converts every cost from then on. The API is a stub answering /v1/rates and
-// /v1/rates/display; the saved choice comes from JS (localStorage), which the loose interop answers with nothing.
+/// <summary>
+/// The currency switcher: the choices the API's rates give, the server's region first, pinned to a golden file; a
+/// choice converts every cost from then on. The API is a stub answering the rates; the saved choice comes from JS,
+/// which the loose interop answers with nothing.
+/// </summary>
 public class CurrencySwitcherTests
 {
+    /// <summary>The currency state over the stub API.</summary>
     private static CurrencyState State(BunitContext ctx)
     {
         var http = new HttpClient(new StubHandler(request => request.RequestUri!.AbsolutePath switch
@@ -25,9 +28,11 @@ public class CurrencySwitcherTests
         return new CurrencyState(new AgentApi(http, new ChatSettings()), ctx.JSInterop.JSRuntime);
     }
 
+    /// <summary>A 200 with this body as JSON.</summary>
     private static HttpResponseMessage Json(string body) =>
         new(HttpStatusCode.OK) { Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json") };
 
+    /// <summary>The choices match the golden file.</summary>
     [Test]
     public void TheChoices_MatchTheGoldenFile()
     {
@@ -45,6 +50,7 @@ public class CurrencySwitcherTests
         Snapshots.Match("Components/CurrencySwitcher.html", cut.Markup);
     }
 
+    /// <summary>Choosing a currency converts from then on, and is kept in this browser.</summary>
     [Test]
     public void ChoosingACurrency_ConvertsFromThenOn_AndIsKeptInThisBrowser()
     {

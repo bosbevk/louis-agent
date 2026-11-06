@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Text;
 
+/// <summary>Turns an answer's markdown into safe HTML: raw HTML stays text, and only trusted images load.</summary>
 public static class Markdown
 {
     // Raw HTML is shown as text, never rendered: answers can quote web pages or files, and that must not run as markup.
@@ -14,11 +15,11 @@ public static class Markdown
         .DisableHtml()
         .Build();
 
-    /// <summary>Parses with the pipeline the answers are rendered with, so <see cref="ImageLinks"/> reads "an image" the way the page draws it.</summary>
+    /// <summary>Parses as the answers are rendered, so "an image" means what the page draws.</summary>
     internal static MarkdownDocument Parse(string markdown) => Markdig.Markdown.Parse(markdown, Pipeline);
 
     /// <param name="markdown">The text to show.</param>
-    /// <param name="shown">The exact URLs of the images a tool gave in this turn (<c>ImageSources</c>, FX22); none by default.</param>
+    /// <param name="shown">The exact URLs of the images a tool gave in this turn (FX22); none by default.</param>
     public static MarkupString ToHtml(string markdown, IReadOnlySet<string>? shown = null)
     {
         MarkdownDocument document = Parse(markdown);
@@ -52,9 +53,11 @@ public static class Markdown
     public static readonly IReadOnlyList<string> ImageHosts =
         ["catalog.sixty60.co.za", ".pnp.co.za", "assets.woolworthsstatic.co.za"];
 
+    /// <summary>A tool gave this exact address in this turn.</summary>
     private static bool IsToolImage(string? url, IReadOnlySet<string>? shown) =>
         url is not null && shown is not null && shown.Contains(url);
 
+    /// <summary>The address is on one of the shops' own image hosts.</summary>
     private static bool IsShopImage(string? url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps &&
         ImageHosts.Any(host => host.StartsWith('.')
@@ -74,6 +77,7 @@ public static class Markdown
         return builder.Uri.AbsoluteUri;
     }
 
+    /// <summary>Only plain web and mail links survive.</summary>
     private static bool IsSafeUrl(string? url) =>
         string.IsNullOrEmpty(url) ||
         url.StartsWith('#') ||

@@ -13,7 +13,8 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Pages;
 
-/// <summary>The chat page's own state and handlers (W2); the layout is in ChatPage.razor, a turn's life in <see cref="ChatRunner"/>.</summary>
+/// <summary>The chat page's own state and handlers; its layout is in the Razor file, a turn's life in the runner.
+/// </summary>
 public partial class ChatPage : IDisposable
 {
     [Inject] private AgentApi Api { get; set; } = default!;
@@ -62,6 +63,7 @@ public partial class ChatPage : IDisposable
         _ => "chat",
     };
 
+    /// <summary>Sets up the runner, listens for changes, and loads what the page needs.</summary>
     protected override async Task OnInitializedAsync()
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
@@ -87,8 +89,8 @@ public partial class ChatPage : IDisposable
     }
 
     /// <summary>
-    /// A new chat's session: Puls answers the web itself and hands cooking to the cook (F29; before it, F5: agents only,
-    /// every task to a specialist). An API without a peer offers no specialists toolset; the chat then gets every
+    /// A new chat's session: Puls answers the web itself and hands cooking to the cook (F29; before it, F5: agents
+    /// only, every task to a specialist). An API without a peer offers no specialists toolset; the chat then gets every
     /// toolset there is. The time zone always (GetToday in the user's own time; it names a region, not a place); the
     /// location only when set.
     /// </summary>
@@ -102,7 +104,7 @@ public partial class ChatPage : IDisposable
             Role, _location, timeZone);
     }
 
-    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /v1/roles, so the menu and the API agree.</summary>
+    /// <summary>The languages Puls can speak: a voice for each in the API's roles, so the two agree.</summary>
     private async Task LoadLanguagesAsync()
     {
         try
@@ -123,6 +125,7 @@ public partial class ChatPage : IDisposable
             _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
     }
 
+    /// <summary>Opens the chat the address names; an old <c>/chat/{id}</c> link lands at its new address.</summary>
     protected override void OnParametersSet()
     {
         // The chat moved to /gesels (F20); an old /chat/{id} link lands on the same chat at its new address.
@@ -138,6 +141,7 @@ public partial class ChatPage : IDisposable
             Runner.Notice = "Daardie gesprek is nie in hierdie blaaier gestoor nie.";
     }
 
+    /// <summary>Does what had to wait for the draw, such as putting the cursor in the message box.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_focusDraft)
@@ -156,10 +160,13 @@ public partial class ChatPage : IDisposable
         await JS.InvokeVoidAsync("pulsUi.countCosts");
     }
 
+    /// <summary>Something the page shows changed, so draw again.</summary>
     private void Redraw() => InvokeAsync(StateHasChanged);
 
+    /// <summary>The address changed, so draw again.</summary>
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e) => InvokeAsync(StateHasChanged);
 
+    /// <summary>Stops listening when the page goes.</summary>
     public void Dispose()
     {
         Runner.Changed -= Redraw;
@@ -167,12 +174,14 @@ public partial class ChatPage : IDisposable
         Nav.LocationChanged -= OnLocationChanged;
     }
 
+    /// <summary>Goes back to an empty chat.</summary>
     private void NewChat()
     {
         Runner.Notice = null;
         Nav.NavigateTo("gesels");
     }
 
+    /// <summary>Sends a suggested question, unless a turn is already running.</summary>
     private async Task Suggest(string prompt)
     {
         if (Runner.Streaming) return;
@@ -196,20 +205,21 @@ public partial class ChatPage : IDisposable
         return Task.CompletedTask;
     }
 
-    /// <summary>Kept in this browser; the next chat opens in it, the open one keeps its voice (its prompt stays cached).</summary>
+    /// <summary>Kept in this browser; the next chat opens in it, and the open one keeps its voice.</summary>
     private async Task ChooseLanguage(string code)
     {
         _language = code;
         await JS.InvokeVoidAsync("pulsUi.saveLanguage", code);
     }
 
+    /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
     {
         bool copied = await JS.InvokeAsync<bool>("pulsUi.copy", text);
         _ = ShowToast(copied ? "Gekopieer." : "Kon nie kopieer nie.");
     }
 
-    /// <summary>A chat's whole cost: Puls's own requests and its specialists' (the chat's usage doesn't hold them yet: F5 roll-up).</summary>
+    /// <summary>A chat's whole cost: Puls's own requests and its specialists', which its usage lacks.</summary>
     private static TurnUsage? ChatTotal(ChatModel chat) =>
         chat.Turns.SelectMany(t => t.Blocks.Select(b => b.SubTurn?.Usage).Prepend(t.Usage)).OfType<TurnUsage>()
             .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
@@ -225,10 +235,12 @@ public partial class ChatPage : IDisposable
 
     private string ChatCost => Runner.Chat is null ? "—" : Money(ChatTotal(Runner.Chat));
 
+    /// <summary>A usage record's cost in the chosen currency; none counts as nothing spent.</summary>
     private string Money(TurnUsage? usage) => usage is null
         ? UsageFormat.Money(0, null, Currency.Current)
         : UsageFormat.Cost(usage, Currency.Current);
 
+    /// <summary>A model's id as a name: <c>claude-opus-5-5</c> reads Claude Opus 5.5.</summary>
     private static string? Pretty(string? id)
     {
         if (string.IsNullOrWhiteSpace(id)) return null;
@@ -238,6 +250,7 @@ public partial class ChatPage : IDisposable
         return string.Join(" ", named) + (version.Length > 0 ? " " + version : "");
     }
 
+    /// <summary>Keeps the place the person typed.</summary>
     private async Task SaveLocation(string? value)
     {
         value = value?.Trim();
@@ -245,12 +258,14 @@ public partial class ChatPage : IDisposable
         await JS.InvokeVoidAsync("pulsUi.saveLocation", _location);
     }
 
+    /// <summary>Keeps whether the page may move.</summary>
     private async Task SaveMotion(bool motion)
     {
         _motion = motion;
         await JS.InvokeVoidAsync("pulsUi.setMotion", _motion);
     }
 
+    /// <summary>Asks the browser where we are and keeps the place, or says why it can't.</summary>
     private async Task UseMyLocation()
     {
         _locating = true;
@@ -274,8 +289,10 @@ public partial class ChatPage : IDisposable
         }
     }
 
+    /// <summary>What the page's script answers about the location.</summary>
     private sealed record LocateResult(string? Place, string? Error);
 
+    /// <summary>Shows a short message, then takes it away.</summary>
     private async Task ShowToast(string text)
     {
         _toast = text;
@@ -298,6 +315,7 @@ public partial class ChatPage : IDisposable
         if (_toast == toast) _toast = null;
     }
 
+    /// <summary>Opens the rename field, in the sidebar or the header.</summary>
     private void StartRename((ChatModel Chat, bool InHeader) rename)
     {
         _renameInHeader = rename.InHeader;
@@ -306,12 +324,14 @@ public partial class ChatPage : IDisposable
         _focusRename = true;
     }
 
+    /// <summary>Enter keeps the new name, and Escape drops it.</summary>
     private async Task RenameKey((KeyboardEventArgs Key, ChatModel Chat) e)
     {
         if (e.Key.Key == "Enter") await FinishRename(e.Chat);
         else if (e.Key.Key == "Escape") _renaming = null;
     }
 
+    /// <summary>Keeps the new name and closes the field.</summary>
     private async Task FinishRename(ChatModel chat)
     {
         if (_renaming != chat.SessionId) return;
@@ -322,12 +342,14 @@ public partial class ChatPage : IDisposable
         await Store.SaveAsync();
     }
 
+    /// <summary>Pins the chat to the favourites, or takes it off.</summary>
     private async Task ToggleFavourite(ChatModel chat)
     {
         chat.Favourite = !chat.Favourite;
         await Store.SaveAsync();
     }
 
+    /// <summary>Moves the chat out of the recent ones, or back.</summary>
     private async Task ToggleArchive(ChatModel chat)
     {
         chat.Archived = !chat.Archived;
@@ -335,10 +357,12 @@ public partial class ChatPage : IDisposable
         await Store.SaveAsync();
     }
 
+    /// <summary>Deletes the chat, here and on the API.</summary>
     private async Task DeleteChat(ChatModel chat)
     {
         if (await Runner.DeleteChatAsync(chat)) Nav.NavigateTo("gesels");
     }
 
+    /// <summary>Keeps the API key the sidebar was given.</summary>
     private Task SaveApiKey(string? apiKey) => Runner.SaveApiKeyAsync(apiKey);
 }

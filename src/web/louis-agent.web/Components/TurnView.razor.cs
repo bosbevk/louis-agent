@@ -5,6 +5,7 @@ using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components;
 
+/// <summary>One turn as the chat shows it: the message, the answer and their actions.</summary>
 public partial class TurnView
 {
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
@@ -24,8 +25,10 @@ public partial class TurnView
     private bool _shouldRender = true;
     private CurrencyChoice? _renderedCurrency;
 
-    // Finished turns don't change, so only the streaming one (and its final render) is redrawn; markdown isn't
-    // re-parsed for the whole conversation on every streamed word.
+    /// <summary>
+    /// Finished turns don't change, so only the streaming one (and its final render) is redrawn; markdown isn't
+    /// re-parsed for the whole conversation on every streamed word.
+    /// </summary>
     protected override void OnParametersSet()
     {
         _shouldRender = Streaming || _wasStreaming || !ReferenceEquals(Turn, _renderedTurn) || Currency != _renderedCurrency;
@@ -34,6 +37,7 @@ public partial class TurnView
         _wasStreaming = Streaming;
     }
 
+    /// <summary>Only a turn still streaming draws again; a finished one keeps what it drew.</summary>
     protected override bool ShouldRender() => _shouldRender;
 
     /// <summary>
@@ -44,7 +48,7 @@ public partial class TurnView
 
     private ElementReference _answer;
 
-    // Only runs after this turn actually re-rendered (see ShouldRender), so finished turns aren't rescanned.
+    /// <summary>Only runs after this turn actually re-rendered, so finished turns aren't rescanned.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender) =>
         await JS.InvokeVoidAsync("louisChat.highlightBlocks", _answer);
 }

@@ -75,6 +75,6 @@ public static class AgentApiWorkspace
         return (await response.Content.ReadFromJsonAsync<GitBranches>())!;
     }
 
-    // A branch name holds slashes (feature/x): each part is escaped, the slashes stay, as the route's catch-all reads them.
+    /// <summary>A branch name holds slashes: each part is escaped, and the slashes stay for the route.</summary>
     private static string BranchPath(string name) => string.Join('/', name.Split('/').Select(Uri.EscapeDataString));
 }

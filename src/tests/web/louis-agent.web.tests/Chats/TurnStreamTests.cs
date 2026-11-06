@@ -8,8 +8,8 @@ using LouisAgent.Web.Api;
 namespace LouisAgent.Web.Tests.Chats;
 
 /// <summary>
-/// One recorded Puls turn (src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse) is the contract between
-/// the session stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
+/// One recorded Puls turn (session-stream.sse in the session-stream tests' fixtures) is the contract between the
+/// session stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
 /// session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way
 /// the app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail
 /// until both readers follow. Below that, one case per event the stream folds.

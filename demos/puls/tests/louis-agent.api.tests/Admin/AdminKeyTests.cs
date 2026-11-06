@@ -3,12 +3,16 @@ using LouisAgent.Web.Storage;
 
 namespace LouisAgent.Api.Tests.Admin;
 
-// F31 review of PR #55: saving the admin key in the portal overwrote Puls's chat key, so the chat got 401s whenever
-// ADMIN_API_KEY differs from AGENT_API_KEY. The browser keeps two keys, and each request carries the one its path needs.
+/// <summary>
+/// Saving the admin key in the portal once overwrote the chat's key, so the chat got 401s whenever the two differed.
+/// The browser keeps two keys, and each request carries the one its path needs.
+/// </summary>
 public class AdminKeyTests
 {
+    /// <summary>Settings holding both keys.</summary>
     private static ChatSettings Both() => new() { ApiKey = "chat-key", AdminKey = "admin-key" };
 
+    /// <summary>Saving an admin key leaves the chat's alone.</summary>
     [Test]
     public void TheChat_KeepsItsOwnKey_WhenAnAdminKeyIsSaved()
     {
@@ -16,6 +20,7 @@ public class AdminKeyTests
         Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/v1/sessions/abc/messages")), Is.EqualTo("chat-key"));
     }
 
+    /// <summary>The admin routes carry the admin key.</summary>
     [Test]
     public void TheAdminPortal_SendsTheAdminKey()
     {
@@ -24,6 +29,7 @@ public class AdminKeyTests
         Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/v1/admin/benchmarks")), Is.EqualTo("admin-key"));
     }
 
+    /// <summary>With no admin key, the portal falls back on the chat's.</summary>
     [Test]
     public void WithoutAnAdminKey_ThePortalSendsTheChatKey()
     {
@@ -32,6 +38,7 @@ public class AdminKeyTests
         Assert.That(chatOnly.KeyFor(new Uri("v1/admin/benchmarks", UriKind.Relative)), Is.EqualTo("chat-key"));
     }
 
+    /// <summary>A path that only starts like the admin's still carries the chat's key.</summary>
     [Test]
     public void APathThatOnlyStartsLikeAdmin_IsNotTheAdminPortal() =>
         Assert.That(Both().KeyFor(new Uri("v1/administer", UriKind.Relative)), Is.EqualTo("chat-key"));

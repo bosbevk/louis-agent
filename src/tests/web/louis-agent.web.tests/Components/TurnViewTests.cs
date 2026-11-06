@@ -7,11 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
 
-// T1: one turn as the chat shows it, rendered with bUnit from the recorded Puls turn and pinned to TurnView.html. The
-// component highlights code through JS after each render (louisChat.highlightBlocks); the loose JS interop answers
-// that call with nothing, as a browser without the script would.
+/// <summary>
+/// One turn as the chat shows it, rendered with bUnit from the recorded turn and pinned to a golden file. The component
+/// highlights code through JS after each render; the loose JS interop answers that call with nothing, as a browser
+/// without the script would.
+/// </summary>
 public class TurnViewTests
 {
+    /// <summary>A finished turn matches the golden file.</summary>
     [Test]
     public async Task AFinishedTurn_MatchesTheGoldenFile()
     {
@@ -27,6 +30,7 @@ public class TurnViewTests
         Snapshots.Match("Components/TurnView.html", cut.Markup);
     }
 
+    /// <summary>A streaming turn shows what the specialist is doing.</summary>
     [Test]
     public async Task AStreamingTurn_ShowsWhatTheSpecialistIsDoing()
     {

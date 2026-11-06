@@ -7,14 +7,19 @@ using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Tests.Storage;
 
-// FX22: the saved chat cuts a long tool result to 4 000 characters, in memory too; the image link beyond that is gone from the text, but the turn still
-// renders the image, because the list was taken when the result arrived, and it round-trips through the store's JSON.
+/// <summary>
+/// The saved chat cuts a long tool result to 4 000 characters, in memory too; the image link beyond that is gone from
+/// the text, but the turn still renders the image, because the list was taken when the result arrived, and it
+/// round-trips through the store's JSON.
+/// </summary>
 public class ChatStoreImageTests
 {
+    /// <summary>A browser's scripts that keep what they're asked to save.</summary>
     private sealed class CapturingJs : IJSRuntime
     {
         public string? Saved;
 
+        /// <summary>Keeps what's saved, and answers anything else with nothing.</summary>
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
         {
             if (identifier == "localStorage.setItem" && args is [string key, string value] &&
@@ -26,6 +31,7 @@ public class ChatStoreImageTests
             object?[]? args) => InvokeAsync<TValue>(identifier, args);
     }
 
+    /// <summary>An image past the cut stays in the turn's set, after a save and after the JSON round trip.</summary>
     [Test]
     public async Task AnImageBeyondTheCut_IsStillInTheTurnsSet_AfterSave_AndAfterTheJsonRoundTrip()
     {

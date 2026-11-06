@@ -5,10 +5,10 @@ public sealed class ChatSettings
 {
     public string? ApiKey { get; set; }
 
-    /// <summary>The admin portal's key (ADMIN_API_KEY), kept apart so saving it never replaces the chat's (F31).</summary>
+    /// <summary>The admin portal's key, kept apart so saving it never replaces the chat's (F31).</summary>
     public string? AdminKey { get; set; }
 
-    /// <summary>The key a request to <paramref name="uri"/> carries: the admin key under <c>v1/admin/</c>, else the chat's.</summary>
+    /// <summary>The key a request to this address carries: the admin key on admin routes, else the chat's.</summary>
     public string? KeyFor(Uri? uri)
     {
         string path = uri is null ? "" : uri.IsAbsoluteUri ? uri.AbsolutePath : uri.OriginalString;

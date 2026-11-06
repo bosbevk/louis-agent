@@ -4,13 +4,15 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.CodeReview.Components.Workspace;
 
+/// <summary>The app's sidebar: its tabs for the chats, the files, the changes and the branches.</summary>
 public partial class WorkspaceSidebar
 {
+    /// <summary>The sidebar's tabs.</summary>
     private enum SidebarTab { Chats, Files, Changes, Branches }
 
     private SidebarTab _tab = SidebarTab.Chats;
 
-    /// <summary>The saved chats, newest first; the list is the store's, so a chat added during a turn shows at once.</summary>
+    /// <summary>The saved chats, newest first; the list is the store's, so a new chat shows at once.</summary>
     [Parameter, EditorRequired] public IReadOnlyList<ChatModel> Chats { get; set; } = default!;
 
     /// <summary>The chat the page shows, to mark it in the list.</summary>

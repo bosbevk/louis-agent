@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Runs;
 
-/// <summary>The Re-score button of one stored run: it posts to the run's rescore route and reports the new run's id.</summary>
+/// <summary>A stored run's Re-score button: it posts to the run's rescore route and reports the new run's id.</summary>
 public partial class RescoreButton
 {
     [Inject] private AgentApi Api { get; set; } = null!;
@@ -23,6 +23,7 @@ public partial class RescoreButton
     private bool _starting;
     private string? _error;
 
+    /// <summary>Starts the re-score; a refusal says why.</summary>
     private async Task StartAsync()
     {
         _starting = true;

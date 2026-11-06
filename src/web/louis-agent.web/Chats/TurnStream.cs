@@ -9,6 +9,7 @@ namespace LouisAgent.Web.Chats;
 /// <see cref="Turn"/>, for every chat page.</summary>
 public static class TurnStream
 {
+    /// <summary>Folds one event of the stream into the turn.</summary>
     public static void Apply(Turn turn, SessionEvent streamEvent)
     {
         switch (streamEvent)
@@ -56,6 +57,7 @@ public static class TurnStream
         }
     }
 
+    /// <summary>Adds the block a <c>content_block_start</c> opened.</summary>
     private static void StartBlock(Turn turn, JsonElement block)
     {
         switch (block.GetProperty("type").GetString())
@@ -91,8 +93,10 @@ public static class TurnStream
         }
     }
 
-    /// <summary>F5: an event of a sub-session a StartSubSession call opened, folded into that call's own turn the same way.
-    /// F30: a minion's events arrive inside the specialist's as a nested sub_session, so this recurses a level.</summary>
+    /// <summary>
+    /// An event of a sub-session a StartSubSession call opened, folded into that call's own turn the same way. A
+    /// minion's events arrive inside the specialist's as a nested sub_session, so this recurses a level.
+    /// </summary>
     private static void ApplySubSession(Turn turn, SubSessionStreamed sub)
     {
         string? callId = sub.ToolUseId.Length > 0 ? sub.ToolUseId : null;
@@ -106,6 +110,7 @@ public static class TurnStream
         Apply(call.SubTurn, sub.Inner);
     }
 
+    /// <summary>Reads the usage record a <c>message_delta</c> carries.</summary>
     private static TurnUsage ReadUsage(JsonElement usage)
     {
         long Count(string name) => usage.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number
@@ -125,6 +130,7 @@ public static class TurnStream
             (int)Count("unpriced"));
     }
 
+    /// <summary>A tool call's input as the indented JSON the card shows.</summary>
     private static string? FormatInput(JsonElement input) =>
         input.ValueKind == JsonValueKind.Object && !input.EnumerateObject().Any()
             ? null
