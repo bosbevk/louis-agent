@@ -5,8 +5,8 @@ using LouisAgent.Web.Storage;
 namespace LouisAgent.Web.Tests.Shell;
 
 /// <summary>
-/// Renaming a chat, in the sidebar or the top bar: which chat, where the field is, what's typed, and what happens on Enter,
-/// Escape or leaving the field.
+/// Renaming a chat, in the sidebar or the top bar: which chat, where the field is, what's typed, and what happens on
+/// Enter, Escape or leaving the field.
 /// </summary>
 public class ChatRenamingTests
 {

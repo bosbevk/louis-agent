@@ -32,8 +32,7 @@ public partial class ChatPage : IDisposable
     /// <summary>Puls speaks Afrikaans unless this browser chose another language the API offers.</summary>
     private const string DefaultLanguage = "af";
 
-    private string _language = DefaultLanguage;
-    private IReadOnlyList<string> _languages = [DefaultLanguage];
+    private ChatLanguages _languages = null!;
     private string? _model;
     private bool _searchOpen;
     private ChatRenaming _renaming = null!;
@@ -47,7 +46,7 @@ public partial class ChatPage : IDisposable
     /// Puls's mode for a new chat (F21, CL9): <c>puls/voice-{code}</c>, its voice in the chosen language, then Puls's
     /// shared routing (Puls's <c>Prompts/agent/puls/</c>). A running chat keeps the voice it opened with.
     /// </summary>
-    private string Role => $"puls/voice-{_language}";
+    private string Role => _languages.Role;
 
     /// <summary>The header's title for a view that isn't the chat.</summary>
     private string? ViewTitle => View switch
@@ -72,6 +71,7 @@ public partial class ChatPage : IDisposable
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
         _renaming = new ChatRenaming(Store);
         _preferences = new ChatPreferences(JS, Text);
+        _languages = new ChatLanguages(Api, JS, "puls/voice-", DefaultLanguage);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"gesels/{id}");
         Currency.Changed += Redraw;
@@ -79,7 +79,7 @@ public partial class ChatPage : IDisposable
         Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         await _preferences.LoadAsync();
-        await LoadLanguagesAsync();
+        await _languages.LoadAsync();
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
@@ -105,27 +105,6 @@ public partial class ChatPage : IDisposable
         return await Api.CreateSessionAsync(
             available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available,
             Role, _preferences.Location, timeZone);
-    }
-
-    /// <summary>The languages Puls can speak: a voice for each in the API's roles, so the two agree.</summary>
-    private async Task LoadLanguagesAsync()
-    {
-        try
-        {
-            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("v1/roles");
-            var codes = roles.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
-                .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal))
-                .Select(p => p["puls/voice-".Length..]).ToList();
-            if (codes.Count > 0) _languages = codes;
-        }
-        catch (Exception)
-        {
-            // An API without /v1/roles or its levels: Afrikaans, as before CL9.
-        }
-
-        string? saved = await JS.InvokeAsync<string?>("chatUi.loadLanguage");
-        _language = saved is not null && _languages.Contains(saved) ? saved :
-            _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
     }
 
     /// <summary>Opens the chat the address names; an old <c>/chat/{id}</c> link lands at its new address.</summary>
@@ -208,11 +187,7 @@ public partial class ChatPage : IDisposable
     }
 
     /// <summary>Kept in this browser; the next chat opens in it, and the open one keeps its voice.</summary>
-    private async Task ChooseLanguage(string code)
-    {
-        _language = code;
-        await JS.InvokeVoidAsync("chatUi.saveLanguage", code);
-    }
+    private Task ChooseLanguage(string code) => _languages.ChooseAsync(code);
 
     /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
