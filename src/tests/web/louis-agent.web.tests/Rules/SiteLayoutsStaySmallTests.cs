@@ -13,7 +13,6 @@ public class SiteLayoutsStaySmallTests
     /// <summary>Repo-relative, forward slashes; remove a layout's line in the commit that makes it small.</summary>
     private static readonly HashSet<string> Pending =
     [
-        "demos/puls/web/louis-agent.puls/Layout/AdminLayout.razor",
     ];
 
     /// <summary>Every layout of a site on the framework stays under the limit, unless it's still pending.</summary>

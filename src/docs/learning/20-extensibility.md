@@ -217,5 +217,24 @@ built for screens inside a chat, so it doesn't fit our admin. The idea we kept i
 
 Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md); pattern: Composition Root (Seemann).
 
+## The admin's frame (F59.2, 2026-11-06)
+
+The admin's frame moved to the framework, and Puls's layout shrank to what's its own. Two patterns carry it, and both solve the same
+problem from different sides: the framework needs a site's things, but can't name them.
+
+- **Template Method, for the frame.** `AdminShell` keeps the sidebar and the column, and a site fills the parts that differ as slots. The
+  other option was a settings object listing the logo and links, which gives a site nothing to write, but checks its types only when the
+  page runs. Slots cost a demo fifteen lines and the compiler checks them.
+- **Bridge, for the layout.** A Blazor page's layout is an attribute, fixed when it's compiled, so a page in the framework can't name a
+  layout in a site. And a page naming none gets the router's default, which on Puls is the chat's. So a framework page names `AdminFrame`,
+  whose only job is to draw inside the layout the site chose. The first test runs through the real `RouteView`, because the trap is in
+  the router: a test of `AdminFrame` alone would pass and the page would still sit inside the chat's layout.
+
+**Pin before you move.** The golden file for Puls's layout was written from the old layout, before anyone touched it, and the new one had
+to match. That's a stronger claim than "it looks right", and it's cheap. It proves the markup is the same; it doesn't cover states the
+test didn't draw, such as the live strip showing a run, so those lean on their own tests.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method and Bridge (Gang of Four).
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

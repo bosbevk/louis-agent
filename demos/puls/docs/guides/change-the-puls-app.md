@@ -47,7 +47,8 @@ its copy as a C# array in its `.razor.cs`. The motion (the progress line, the re
 
 ## Change the admin portal
 
-The portal is English, for the builders: `Layout/AdminLayout.razor`, `Pages/Admin/` and `Components/Admin/`
+The portal's frame is the framework's `AdminShell`, and `Layout/AdminLayout.razor` only fills it with what's Puls's own, so a link goes
+there and a change to the frame goes in `louis-agent.web`. The portal is English, for the builders: `Layout/AdminLayout.razor`, `Pages/Admin/` and `Components/Admin/`
 (`RunExplorer`, `TrendChart`, `ChartInfo`). It shows the evals and their stored runs through the API's admin
 endpoints, which need the admin key. `ChartInfo` and `RunExplorer` still carry an `@code` block
 (`RazorHasNoCodeTests`' pending list): move it to a `.razor.cs` when you change them.
