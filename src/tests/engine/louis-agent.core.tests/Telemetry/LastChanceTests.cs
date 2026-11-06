@@ -74,6 +74,24 @@ public class LastChanceTests
         Assert.That(written, Does.Contain("lost").And.Not.Contain("[FATAL]"));
     }
 
+    /// <summary>A failure someone said to expect is seen and left out of the errors; any other still counts.</summary>
+    [Test]
+    public void AnExpectedFailure_IsSeen_ButIsNoError()
+    {
+        LastChance.Expect(failure => failure.Message == "expected, in this test");
+        var expected = new UnobservedTaskExceptionEventArgs(new AggregateException(Thrown("expected, in this test")));
+        var mixed = new UnobservedTaskExceptionEventArgs(
+            new AggregateException(Thrown("expected, in this test"), Thrown("something else")));
+
+        LastChance.OnUnobserved(null, expected);
+        string afterExpected = _stderr.ToString();
+        LastChance.OnUnobserved(null, mixed);
+
+        Assert.That(expected.Observed, Is.True);
+        Assert.That(Lines(afterExpected, "[ERROR]"), Is.Empty);
+        Assert.That(Lines(_stderr.ToString(), "[ERROR]"), Has.Length.EqualTo(1), "one that isn't expected still counts");
+    }
+
     /// <summary>
     /// With a collector, the crash's line reaches it with no flush from anyone else: the process is about to end.
     /// </summary>

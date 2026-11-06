@@ -7,6 +7,7 @@ using LouisAgent.Composition.Web.Browsing;
 using System.Net;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Web.Browsing.Policy;
 using LouisAgent.Core.Web.Messages;
 using Microsoft.Extensions.Logging;
@@ -31,6 +32,9 @@ public sealed class ChromeWebBrowser(
     TimeSpan? budget = null,
     string? userAgent = null) : IWebBrowser
 {
+    /// <summary>The one failure the library loses on every page that goes early (FX57): no error for that one.</summary>
+    static ChromeWebBrowser() => LastChance.Expect(LostContexts.Are);
+
     /// <summary>What every page this browser opens tells the site it is (FX21); null leaves Chrome's own.</summary>
     internal string? UserAgent => userAgent;
 
