@@ -24,7 +24,6 @@ public sealed class ChatRunner(
     private static readonly TimeSpan RedrawEvery = TimeSpan.FromMilliseconds(50);
 
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
-    private DateTimeOffset _lastRedraw;
 
     /// <summary>
     /// The chat the page shows; the page sets it from its route, the runner sets it when a session opens.
@@ -104,12 +103,14 @@ public sealed class ChatRunner(
         Streaming = true;
         Changed?.Invoke();
 
+        // Text arrives a few words at a time; redrawing every 50 ms is smooth, and not on every token.
+        var redraw = new RedrawThrottle(_clock, RedrawEvery, () => Changed?.Invoke());
         try
         {
             await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments))
             {
                 TurnStream.Apply(turn, streamEvent);
-                RedrawThrottled();
+                redraw.Request();
             }
         }
         catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
@@ -123,20 +124,12 @@ public sealed class ChatRunner(
         }
         finally
         {
+            redraw.Stop();
             Streaming = false;
             TurnEnded?.Invoke();
             await store.SaveAsync();
             Changed?.Invoke();
         }
-    }
-
-    /// <summary>Text arrives a few words at a time; redrawing every 50 ms is smooth, and not on every token.</summary>
-    private void RedrawThrottled()
-    {
-        DateTimeOffset now = _clock.GetUtcNow();
-        if (now - _lastRedraw < RedrawEvery) return;
-        _lastRedraw = now;
-        Changed?.Invoke();
     }
 
     /// <summary>Asks the API to cancel the turn; if it refuses, the notice says why.</summary>

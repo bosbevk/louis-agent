@@ -353,6 +353,8 @@ as a failure. An Unknown that never goes away is a failure nobody sees. Then the
 over water, salt and a serving line, so the rubric said those don't change a recipe. Skill 12 (evaluation: calibrate
 on both classes) and skill 1 (models and providers: a provider's limits are the factory's business).
 
+**FX58: a limit on how often you act has to finish the job.** The chat redraws at most every 50 ms, and an update inside that window was simply dropped, trusting the next event to carry it. That holds while tokens pour in and fails exactly when it matters: the last update before a long tool call stayed hidden for the whole wait, so the page looked stuck and then seemed to dump everything at once. A throttle needs a trailing call. The test had to move time by hand, because the bug is what doesn't happen when nothing else arrives. It's only part of the stall, though: a search that takes 20 seconds still takes 20 seconds, and the fix only makes the screen honest about it. Skill 6 (the agent loop: what the reader sees is part of the stream).
+
 **FX57: an error can be somebody else's, and still be yours to name.** The dashboard filled with *A task failed and
 nothing awaited it*, in clumps of four, long after the page that caused them. PuppeteerSharp fails a private task whenever a
 page or an iframe goes before its script context exists, and the runtime only reports it when the garbage collector gets
