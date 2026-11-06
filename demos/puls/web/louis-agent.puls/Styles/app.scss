@@ -6,19 +6,27 @@
 
 @forward "web/settings/colours";
 @forward "settings/tokens";
-@forward "base/elements";
+@forward "web/base/elements";
 
+@forward "web/layout/shell";
 @forward "layout/shell";
+@forward "web/chat/conversation";
 @forward "chat/conversation";
+@forward "web/layout/responsive";
 @forward "layout/responsive";
+@forward "web/chat/interaction";
 @forward "chat/interaction";
+@forward "web/chat/finish";
 @forward "chat/finish";
 
 @forward "landing/hero";
 @forward "landing/sections";
 
+@forward "web/layout/panels";
 @forward "layout/panels";
+@forward "web/chat/bars";
 @forward "chat/bars";
+@forward "web/chat/pages";
 @forward "chat/pages";
 
 @forward "admin/shell";

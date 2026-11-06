@@ -57,9 +57,12 @@ public partial class SiteColoursTests
     public void EveryColourTheSharedRulesRead_HasAFrameworkValue()
     {
         string[] shared = ["base/", "layout/", "chat/", "admin/"];
-        var read = Css.AreaFiles()
+        var own = Css.AreaFiles()
             .Where(file => shared.Any(folder => file.StartsWith(folder, StringComparison.Ordinal)))
-            .SelectMany(file => Reads().Matches(Css.Source(file)).Select(m => m.Groups[1].Value)).Distinct();
+            .Select(Css.Source);
+        var frameworks = Css.FrameworkForwards().Select(partial => File.ReadAllText(Css.FrameworkPartial(partial)));
+        var read = own.Concat(frameworks)
+            .SelectMany(text => Reads().Matches(text).Select(m => m.Groups[1].Value)).Distinct();
 
         Assert.That(read.Except(Names(Blocks().Framework)).Except(BootstrapsOwn), Is.Empty);
     }

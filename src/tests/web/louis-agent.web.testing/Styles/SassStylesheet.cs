@@ -39,6 +39,14 @@ public sealed partial record SassStylesheet(string Project)
     private IEnumerable<string> Listed() =>
         Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value);
 
+    /// <summary>Where one of the framework's partials sits, by the name a site's list gives it.</summary>
+    public string FrameworkPartial(string partial)
+    {
+        string folder = Path.GetDirectoryName(partial) ?? "";
+        return Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles", folder,
+            $"_{Path.GetFileName(partial)}.scss");
+    }
+
     /// <summary>The framework's Sass is all under <c>web/</c>, so a name says whose it is.</summary>
     private static bool IsFrameworks(string name) => name.StartsWith("web/", StringComparison.Ordinal);
 

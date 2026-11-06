@@ -29,23 +29,6 @@
 .project-card small { color: var(--bs-tertiary-color); font-size: 12px; margin-top: auto; }
 .project-new { align-items: center; justify-content: center; border-style: dashed; background: none; }
 .project-new .ic { width: 22px; height: 22px; }
-.side-link.active { background: rgba(var(--web-overlay-rgb), .07); color: var(--bs-emphasis-color); }
-.side-link.active .ic { color: var(--bs-primary); }
-
-/* ---- Pay as you go (F20): the top bar's usage meter, and the landing's about. ---- */
-.usage-meter { display: inline-flex; align-items: baseline; gap: 6px; height: 36px; padding: 0 14px; border-radius: 11px; font-size: 13px; font-weight: 800; color: var(--bs-emphasis-color); background: rgba(var(--bs-primary-rgb), .1); border: 1px solid rgba(var(--bs-primary-rgb), .35); align-items: center; font-variant-numeric: tabular-nums; transition: background .2s, border-color .2s; }
-.usage-meter:hover, .usage-meter[aria-expanded="true"] { background: rgba(var(--bs-primary-rgb), .18); border-color: var(--bs-primary); }
-.usage-meter .ic { color: var(--bs-primary); }
-.usage-meter small { font-size: 11px; font-weight: 600; color: var(--bs-secondary-color); }
-.usage-menu { min-width: 280px; padding: 8px; }
-.usage-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 10px; font-size: 13.5px; color: var(--bs-body-color); font-variant-numeric: tabular-nums; }
-.usage-row small { color: var(--bs-tertiary-color); font-size: 11.5px; margin-left: 4px; }
-.usage-row strong { color: var(--bs-emphasis-color); }
-.usage-note { margin: 4px 10px 6px; font-size: 12px; color: var(--bs-secondary-color); line-height: 1.5; }
-.about { max-width: 640px; margin: 0 auto 22px !important; text-wrap: balance; }
 .i-github { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21'/></svg>"); }
 .pill .ic { width: 16px; height: 16px; }
 @media (max-width: 900px) { .pricing, .stats-band, .stats-grid { grid-template-columns: minmax(0, 1fr); } .stats-band .pulse-bg { left: 50%; top: 70%; } }
-@media (max-width: 1300px) and (min-width: 992px) { .usage-meter small { display: none; } }
-
-

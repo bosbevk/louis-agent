@@ -17,6 +17,15 @@ public class PulsStylesheetTests
     public void EveryPartial_IsOnTheList_AndEveryNameOnTheListIsThere() =>
         Assert.That(Css.Forwards().Order(), Is.EqualTo(Css.AreaFiles().Order()));
 
+    /// <summary>Puls lists the framework's rules rather than keeping a copy, and each one is really there.</summary>
+    [Test]
+    public void Puls_ListsTheFrameworksRules()
+    {
+        Assert.That(Css.FrameworkForwards(), Does.Contain("web/layout/shell").And.Contain("web/chat/conversation")
+            .And.Contain("web/chat/bars").And.Contain("web/admin/shell").And.Contain("web/admin/studio"));
+        Assert.That(Css.FrameworkForwards().Where(partial => !File.Exists(Css.FrameworkPartial(partial))), Is.Empty);
+    }
+
     /// <summary>
     /// Every file a rule points at is one the app serves (FX30): the delegation card's Puls tile went missing once when
     /// its rule moved and kept its old path.
@@ -30,10 +39,13 @@ public class PulsStylesheetTests
         Assert.That(urls.Where(u => !File.Exists(u.Target)).Select(u => $"{u.File}: {u.Url}"), Is.Empty);
     }
 
-    /// <summary>The colours are first on the list, then the plain elements: the rest build on them.</summary>
+    /// <summary>The colours are first on the list, Puls's first of its own, and the plain elements next.</summary>
     [Test]
-    public void TheColoursComeFirst_ThenThePlainElements() =>
-        Assert.That(Css.Forwards().Take(2), Is.EqualTo(new[] { "settings/tokens", "base/elements" }));
+    public void TheColoursComeFirst_ThenThePlainElements()
+    {
+        Assert.That(Css.Forwards().First(), Is.EqualTo("settings/tokens"));
+        Assert.That(Css.FrameworkForwards().Take(2), Is.EqualTo(new[] { "web/settings/colours", "web/base/elements" }));
+    }
 
     /// <summary>The CSS holds every partial's rules in the list's order, since that decides which rule wins.</summary>
     [Test]

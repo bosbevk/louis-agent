@@ -1,28 +1,3 @@
-/* ---- Hover and interaction ---- */
-
-/* Spotlight: cards carry a soft orange light where the mouse is (--mx/--my set by js/chat.js). */
-.suggestion, .delegation, .tool { position: relative; isolation: isolate; }
-.suggestion::after, .delegation::after, .tool::after {
-    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; opacity: 0;
-    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--bs-primary-rgb), .14), transparent 60%);
-    transition: opacity .3s var(--web-ease);
-}
-.suggestion:hover::after, .delegation:hover::after, .tool:hover::after { opacity: 1; }
-
-/* Sidebar: items slide a little and show an orange marker; New chat gets a light sweep. */
-.chat-item { transition: background .2s var(--web-ease), transform .25s var(--web-spring); }
-.chat-item:hover { transform: translateX(3px); }
-.chat-item:hover::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 2px; border-radius: 2px; background: rgba(var(--bs-primary-rgb), .7); }
-.chat-item .icon:hover { background: rgba(var(--bs-danger-rgb), .18); color: var(--bs-danger); }
-.new-chat { overflow: hidden; }
-.new-chat::after {
-    content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
-    background: linear-gradient(90deg, transparent, rgba(var(--web-overlay-rgb), .45), transparent);
-}
-.new-chat:hover::after { transition: transform .7s var(--web-ease); transform: translateX(120%) skewX(-20deg); }
-.sidebar-settings summary { transition: background .2s, color .2s; }
-.sidebar-settings summary:hover { color: var(--web-bright); background: rgba(var(--web-overlay-rgb), .08); }
-
 /* Suggestions: an icon each, and an arrow that slides in. */
 .suggestion { padding-right: 34px; }
 .suggestion strong { display: flex; align-items: center; gap: 9px; }
@@ -40,41 +15,5 @@
 }
 .suggestion:hover > span::after { transform: translate(0, -50%); opacity: 1; }
 .suggestion:active { transform: translateY(-1px) scale(.98); }
-
-/* Messages */
-.user-message { transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease); }
-.user-message:hover { transform: translateY(-1px); }
-.markdown a { color: var(--bs-success-text-emphasis); font-weight: 600; text-decoration: none; background: linear-gradient(var(--bs-primary), var(--bs-primary)) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--web-ease), color .2s; }
-.markdown a:hover { background-size: 100% 2px; color: var(--bs-emphasis-color); }
-.markdown tr { transition: background .15s; }
-.markdown tbody tr:hover { background: var(--bs-primary-bg-subtle); }
-.markdown pre { transition: border-color .2s, box-shadow .2s; }
-.markdown pre:hover { border-color: var(--web-border-hover); }
-.thinking summary { transition: background .2s, color .2s; }
-.thinking summary:hover { color: var(--bs-emphasis-color); }
-
-/* Delegation cards and tools */
-.delegation:hover { border-color: rgba(var(--bs-primary-rgb), .35); }
-.delegation-head:hover .delegation-chevron { transform: scale(1.08); }
-.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(135deg) scale(1.08); }
-.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(90deg) translateX(2px); }
-.toolset-chip { transition: transform .2s var(--web-spring), background .2s, color .2s; }
-.toolset-chip:hover { transform: translateY(-1px); background: var(--bs-success); color: var(--web-on-primary); }
-.tool { transition: border-color .2s, box-shadow .2s, transform .25s var(--web-ease); }
-.tool:hover { transform: translateX(2px); border-left-color: var(--bs-primary); }
-.delegation-task summary, .delegation-work summary { transition: color .2s; }
-.delegation-task summary:hover, .delegation-work summary:hover { color: var(--web-primary-deep); }
-
-/* Composer: the send button breathes once there's something to send. */
-.input-row:hover { border-color: var(--web-border-hover); }
-.send:not(:disabled) { animation: breathe 2.4s var(--web-ease) infinite; }
-@keyframes breathe { 0%, 100% { box-shadow: 0 8px 18px -6px rgba(var(--bs-primary-rgb), .8); } 50% { box-shadow: 0 8px 26px -4px rgba(var(--bs-primary-rgb), 1); } }
-.chat-usage { transition: color .2s; }
-.chat-usage:hover { color: var(--bs-secondary-color); }
-
-
-/* The pulse and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
-.messages { overflow-x: hidden; }
 .suggestions { width: min(540px, 100%); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 600px) { .suggestions { grid-template-columns: minmax(0, 1fr); } }
-
