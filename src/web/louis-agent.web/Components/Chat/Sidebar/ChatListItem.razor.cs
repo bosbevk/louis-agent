@@ -1,13 +1,19 @@
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
-namespace LouisAgent.Puls.Components.Chat.Sidebar;
+namespace LouisAgent.Web.Components.Chat.Sidebar;
 
 /// <summary>One chat in the sidebar: its link or the rename field, and its menu.</summary>
 public partial class ChatListItem
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     [Parameter, EditorRequired] public ChatModel Chat { get; set; } = default!;
+
+    /// <summary>Where this site keeps its chats, such as <c>chat</c> for <c>chat/{id}</c>.</summary>
+    [Parameter] public string ChatPath { get; set; } = "chat";
 
     /// <summary>The chat the page shows.</summary>
     [Parameter] public bool Active { get; set; }

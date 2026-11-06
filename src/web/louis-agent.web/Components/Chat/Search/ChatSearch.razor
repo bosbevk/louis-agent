@@ -1,26 +1,25 @@
-@* F20: search the chats saved in this browser (Ctrl/⌘ K): their titles, your messages and the answers. Arrow keys
-   move, Enter opens, Escape closes. Nothing leaves the browser. *@
+@* Search the chats saved in this browser: their titles, your messages and the answers. Arrow keys move, Enter opens,
+   Escape closes. Nothing leaves the browser. *@
 @inject NavigationManager Nav
-@inject IJSRuntime JS
 
 @if (Open)
 {
     <div class="search-backdrop" @onclick="Close"></div>
-    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="Soek gesprekke">
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="@Text.SearchChats">
         <div class="search-input">
             <span class="ic i-search" aria-hidden="true"></span>
-            <input id="search-input" placeholder="Soek gesprekke…" autocomplete="off"
+            <input id="search-input" placeholder="@Text.SearchPlaceholder" autocomplete="off" @ref="_input"
                    @bind="_query" @bind:event="oninput" @bind:after="Reset" @onkeydown="Key" @onkeydown:preventDefault="_handled" />
             <kbd>Esc</kbd>
         </div>
         <div class="search-results">
             @if (Results.Count == 0)
             {
-                <div class="search-none">Geen gesprekke vir "@_query" nie.</div>
+                <div class="search-none">@string.Format(Text.NoChatsFor, _query)</div>
             }
             else
             {
-                <div class="search-group">@(_query.Trim().Length == 0 ? "Onlangs" : "Gesprekke")</div>
+                <div class="search-group">@(_query.Trim().Length == 0 ? Text.Recent : Text.Chats)</div>
                 @for (int i = 0; i < Results.Count; i++)
                 {
                     var (chat, snippet) = Results[i];
@@ -36,12 +35,12 @@
                         </span>
                         @if (chat.Archived)
                         {
-                            <span class="search-tag">Geargiveer</span>
+                            <span class="search-tag">@Text.Archived</span>
                         }
                     </button>
                 }
             }
         </div>
-        <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> kies · <kbd>Enter</kbd> maak oop</div>
+        <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> @Text.SearchChoose · <kbd>Enter</kbd> @Text.SearchOpen</div>
     </div>
 }

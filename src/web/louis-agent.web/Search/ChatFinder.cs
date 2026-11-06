@@ -1,6 +1,6 @@
 using LouisAgent.Web.Chats;
 
-namespace LouisAgent.Puls.Search;
+namespace LouisAgent.Web.Search;
 
 
 /// <summary>

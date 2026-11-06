@@ -44,6 +44,28 @@ public sealed record ChatText
     /// <summary>A chat's title when its first message is empty and no attachment names it (W2: ChatRunner).</summary>
     public string NewChat { get; init; } = "New chat";
 
+    public string AddFavourite { get; init; } = "Add to favourites";
+    public string RemoveFavourite { get; init; } = "Remove from favourites";
+    public string Share { get; init; } = "Share";
+    public string Rename { get; init; } = "Rename";
+    public string Archive { get; init; } = "Archive";
+    public string Unarchive { get; init; } = "Take out of archive";
+    public string Delete { get; init; } = "Delete";
+    public string NewName { get; init; } = "New name";
+    /// <summary>{0} is the chat's title.</summary>
+    public string MoreFor { get; init; } = "More for {0}";
+
+    public string SearchChats { get; init; } = "Search chats";
+    public string SearchPlaceholder { get; init; } = "Search chats…";
+    /// <summary>{0} is what was typed.</summary>
+    public string NoChatsFor { get; init; } = "No chats for \"{0}\".";
+    public string Recent { get; init; } = "Recent";
+    public string Chats { get; init; } = "Chats";
+    public string Archived { get; init; } = "Archived";
+    public string SearchChoose { get; init; } = "choose";
+    public string SearchOpen { get; init; } = "open";
+
+
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";
     public string SessionGone { get; init; } = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";

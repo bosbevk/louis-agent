@@ -1,8 +1,8 @@
-using LouisAgent.Puls.Search;
+using LouisAgent.Web.Search;
 using LouisAgent.Web.Chats;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
-namespace LouisAgent.Puls.Tests.Search;
+namespace LouisAgent.Web.Tests.Search;
 
 /// <summary>
 /// The search over the chats saved in this browser, by rule: an empty query is the recent chats, a title match shows no

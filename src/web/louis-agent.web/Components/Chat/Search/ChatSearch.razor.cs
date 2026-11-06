@@ -1,19 +1,25 @@
-using LouisAgent.Puls.Search;
+using LouisAgent.Web.Search;
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
-namespace LouisAgent.Puls.Components.Chat.Search;
+namespace LouisAgent.Web.Components.Chat.Search;
 
 /// <summary>Searches the chats saved in this browser: their titles, your messages and the answers.</summary>
 public partial class ChatSearch
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     [Parameter] public bool Open { get; set; }
     [Parameter] public EventCallback<bool> OpenChanged { get; set; }
     [Parameter, EditorRequired] public List<ChatModel> Chats { get; set; } = [];
 
+    /// <summary>Where this site keeps its chats, such as <c>chat</c> for <c>chat/{id}</c>.</summary>
+    [Parameter] public string ChatPath { get; set; } = "chat";
+
     private string _query = "";
+    private ElementReference _input;
     private int _selected;
     private bool _handled;
     private bool _wasOpen;
@@ -24,7 +30,7 @@ public partial class ChatSearch
     /// <summary>Puts the cursor in the search box when it opens.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Open && !_wasOpen) await JS.InvokeVoidAsync("pulsUi.focus", "#search-input");
+        if (Open && !_wasOpen) await _input.FocusAsync();
         _wasOpen = Open;
     }
 
@@ -55,7 +61,7 @@ public partial class ChatSearch
     private async Task Go(ChatModel chat)
     {
         await Close();
-        Nav.NavigateTo($"gesels/{chat.SessionId}");
+        Nav.NavigateTo($"{ChatPath}/{chat.SessionId}");
     }
 
     /// <summary>Closes the search.</summary>

@@ -3,7 +3,7 @@
 @{
     // One chat in the list (W2b): the markup once, as a template, for the favourites, the recent and the archived.
     RenderFragment<Chat> Item = chat =>
-        @<ChatListItem @key="chat.SessionId" Chat="chat" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
+        @<ChatListItem @key="chat.SessionId" Chat="chat" ChatPath="gesels" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
                       RenameDraft="@RenameDraft" RenameDraftChanged="RenameDraftChanged" OnRenameKey="OnRenameKey" OnRenameBlur="OnRenameBlur"
                       OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" />;
 }

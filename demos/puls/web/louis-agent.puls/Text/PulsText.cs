@@ -36,6 +36,26 @@ public static class PulsText
         ThoughtMany = "gedagtes",
 
         NewChat = "Nuwe gesprek",
+
+        AddFavourite = "Merk as gunsteling",
+        RemoveFavourite = "Haal uit gunstelinge",
+        Share = "Deel",
+        Rename = "Hernoem",
+        Archive = "Argiveer",
+        Unarchive = "Haal uit argief",
+        Delete = "Vee uit",
+        NewName = "Nuwe naam",
+        MoreFor = "Meer vir {0}",
+
+        SearchChats = "Soek gesprekke",
+        SearchPlaceholder = "Soek gesprekke…",
+        NoChatsFor = "Geen gesprekke vir \"{0}\" nie.",
+        Recent = "Onlangs",
+        Chats = "Gesprekke",
+        Archived = "Geargiveer",
+        SearchChoose = "kies",
+        SearchOpen = "maak oop",
+
         SessionGone =
             "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
         NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",
