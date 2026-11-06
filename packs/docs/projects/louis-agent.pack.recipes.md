@@ -149,6 +149,14 @@ listing and the settings).
 - Puls names the pack from F35.2 step 1, so the cook's session holds its tools; the cook's prompt starts using them in
   step 2, until then it still reads pages the old way.
 
+## The library's counter
+
+`Library/Usage/` keeps one record per UTC day in `library_usage`, on the library's database: *Kept* (a page we didn't hold
+yet), *Offered* (hits of ours a search showed, not what it held), *Served* (`ReadRecipe` from us) and *Failed* (a read we
+couldn't serve). `RecipeShelf` and `RecipeScatter` count inside the shelf's guard, so a counter that's down only logs and a
+trial that leaves the library alone counts nothing. `RecipesUsageReport` shows it behind the admin key as `recipe-library`,
+listed only with a database ([ADR 0083](../../../src/docs/adr/0083-packs-keep-reports-behind-the-admin-key.md)).
+
 ## A recipe on its way out
 
 `Recipes/Tidying/RecipeTidy` is what the print and `ScaleRecipe` both start with, so their numbers match, and what the library already holds is tidied with nothing to migrate. `StepParts` cuts one step into the steps it holds: the page's own numbers first (in order, after a sentence, so *3 cups* is never step three), then paragraphs glued with no space, then the sentences of what's still over 400 characters, every word kept. Taste's data keeps a whole method in one step, and that's where answers dropped a clause. `IngredientHeadings` turns a heading among the ingredient lines into the section of the lines under it, unless most lines are in capitals, and drops what a page's buttons and dates left there. The stored recipe stays as it was read.

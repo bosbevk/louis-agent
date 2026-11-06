@@ -122,6 +122,44 @@ by grep in the run files against a click in the dashboard, is the two blanks in 
 - **Measure with the model out of the picture.** A replay made the cost of the exporters visible at all: live, the
   model's own seconds and their spread would have buried a 0.7 s difference in the turns.
 
+## The library's counter (F35.7, 2026-11-06)
+
+Louis asked two things F52 couldn't answer: "the recipes is not saving?" and "so how would we know if our source is
+working?" Traces show one request at a time. This is the other half of the skill: **what a system does in real use, as
+opposed to what an eval proves once.** An eval says it can work; a counter says it does.
+
+| | Before | After |
+|---|---|---|
+| Is the library being used? | Run an eval, or read log lines one by one | The *Reports* page, a row a day |
+| Where it's kept | Docker's logs, gone with the container | `library_usage`, one small record per UTC day |
+| Who can read it | Whoever has the logs | Behind the admin key |
+
+**The picks.** One record per day, added to with `$inc` (MongoDB's Computed Pattern): a little work on each write so reading
+is a short list, instead of one row per event that grows forever. A new plug-in behind the admin key, as uploads are, because
+a feed is public and Puls's endpoint is sold. A general table, so the API and the page know no pack.
+
+**Through the real stack,** with one chat asking for melktert, the report's numbers moved: *Offered* 10, *Served* 1, stored in
+Mongo. With no key and with a wrong key the route answers 401, and the page in a browser shows the box for a key. The numbers on the page itself wait for a person with the key to look. That chat kept nothing,
+since the recipe was already ours, so *Kept* has only been seen moving in tests, on a real Mongo for the store's half.
+A counter that's down costing a chat nothing is proved by a test, not on the running stack.
+
+**What was learned**
+
+- **Try removing what you were sure of.** I expected two adds starting a new day to clash, and wrote a retry. With the retry
+  switched off, 50 adds at once still all counted, six runs out of six, on MongoDB 8. So it went, since it was code nothing
+  needed. A test that passes with and without your code isn't proving that code.
+- **Four of nine tests passed on a stub** in the counting step: the ones saying something is *not* counted. That's fine as
+  long as you notice; they only mean something once the counting exists.
+- **Decide what a number means before counting it.** *Offered* counts what a search showed, not what it held. *Served* leaves
+  out `ScaleRecipe`, or one answer would serve a recipe twice. A failed keep isn't *Failed*, since the cook loses nothing.
+- **Measured runs need their own database.** With `RECIPE_LIBRARY_IN_EVALS=true` on the real database, a run adds to the
+  real totals.
+- **The size tests shaped the design twice:** `Library/Usage` went over the folder limit, so the Mongo record sits beside its
+  store, and `Pages/Admin` did too, so the page got a `Data` folder.
+
+**What it can't tell you:** whether an answer used a recipe, since the pack never sees answers, or how often someone reads the
+open feed directly. Those stay with the eval's saved events and aren't counted.
+
 ## Sources
 
 OpenTelemetry, *.NET getting started* and the *GenAI semantic conventions* (`invoke_agent`) · W3C, *Trace Context*
