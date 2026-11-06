@@ -1,9 +1,10 @@
 using LouisAgent.Puls.Content;
 using Microsoft.AspNetCore.Components;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Panels;
 
+/// <summary>The Verken or Studio view, in place of the turns.</summary>
 public partial class ChatViews
 {
     /// <summary>Which view the shell shows: <c>verken</c> or <c>studio</c>; anything else draws nothing.</summary>

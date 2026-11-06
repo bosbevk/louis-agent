@@ -5,11 +5,11 @@ using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Pages.Admin;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
+using LouisAgent.Web.Usage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Pages.Admin;

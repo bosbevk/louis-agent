@@ -1,5 +1,5 @@
 using System.Globalization;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Puls.Admin.Trends;
 

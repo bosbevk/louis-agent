@@ -121,7 +121,7 @@ and Paymo. It can write new skills and build its own tools, and those wait for y
 | Host | Project | What it is |
 |---|---|---|
 | **Rider** | `src/hosts/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
-| **Web app** | `demos/louis-agent/web/louis-agent.web` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
+| **Web app** | `demos/louis-agent/web/louis-agent.code-review` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
 | **HTTP API** | `src/hosts/louis-agent.api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
 | **CLI** | `src/hosts/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
 | **MCP server** | `src/hosts/louis-agent.mcp-server` | Hands the tools to any MCP client, which brings its own model |

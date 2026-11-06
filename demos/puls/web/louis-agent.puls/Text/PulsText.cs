@@ -1,11 +1,10 @@
 using LouisAgent.Choices;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Text;
-using LouisAgent.Web.Shared;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Text;
 
 namespace LouisAgent.Puls.Text;
 
-/// <summary>Puls speaks Afrikaans: the shared chat components' words, in Afrikaans (the page's own are in ChatPage).</summary>
+/// <summary>Puls speaks Afrikaans: the shared chat components' words, in Afrikaans.</summary>
 public static class PulsText
 {
     public static readonly ChatText Afrikaans = new()

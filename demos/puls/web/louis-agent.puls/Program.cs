@@ -1,10 +1,10 @@
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Usage;
-using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Puls.Text;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Puls;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Usage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.RunPage;
 using LouisAgent.Puls.Admin.Summary;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Summary;

@@ -1,6 +1,6 @@
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Admin.Starting;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Runs;

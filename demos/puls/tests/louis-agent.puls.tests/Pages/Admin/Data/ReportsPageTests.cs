@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
-using LouisAgent.Puls.Components.Admin.Head;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using ReportsPage = LouisAgent.Puls.Pages.Admin.Data.Reports;
 

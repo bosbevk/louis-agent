@@ -1,8 +1,8 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.SessionStream;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Puls.Admin.Explorer.Replay;
 

@@ -1,9 +1,10 @@
 using LouisAgent.Puls.Content;
 using Microsoft.AspNetCore.Components;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Panels;
 
+/// <summary>Studio: your recent chats as projects, and the starters as templates, with a category filter.</summary>
 public partial class StudioView
 {
     [Parameter, EditorRequired] public IReadOnlyList<ChatModel> Recent { get; set; } = [];

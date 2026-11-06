@@ -2,7 +2,7 @@ using LouisAgent.Puls.Admin.Charts;
 using LouisAgent.Puls.Admin.Explorer.Legends;
 using LouisAgent.Puls.Admin.Explorer.Text;
 using LouisAgent.Puls.Admin.Explorer.Tree;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using static LouisAgent.Puls.Admin.Explorer.Legends.ExplorerColours;
 
 namespace LouisAgent.Puls.Admin.Explorer.Rings;

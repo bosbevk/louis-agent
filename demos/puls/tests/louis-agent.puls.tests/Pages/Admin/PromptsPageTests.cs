@@ -1,9 +1,9 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using PromptsPage = LouisAgent.Puls.Pages.Admin.Prompts;
 

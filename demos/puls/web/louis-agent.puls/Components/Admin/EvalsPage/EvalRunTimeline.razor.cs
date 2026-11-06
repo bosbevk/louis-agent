@@ -1,5 +1,5 @@
 using LouisAgent.Puls.Admin.Evals;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.EvalsPage;

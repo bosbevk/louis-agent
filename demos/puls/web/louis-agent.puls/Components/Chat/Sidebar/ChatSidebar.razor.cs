@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Sidebar;
 
+/// <summary>The sidebar: the brand, a new chat, search, the views and the chats.</summary>
 public partial class ChatSidebar
 {
     [Parameter, EditorRequired] public IReadOnlyList<ChatModel> Chats { get; set; } = default!;

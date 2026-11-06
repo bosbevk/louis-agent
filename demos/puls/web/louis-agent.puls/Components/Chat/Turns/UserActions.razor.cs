@@ -1,8 +1,9 @@
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Chat.Turns;
 
+/// <summary>Under the user's message: copy it, or edit it.</summary>
 public partial class UserActions
 {
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;

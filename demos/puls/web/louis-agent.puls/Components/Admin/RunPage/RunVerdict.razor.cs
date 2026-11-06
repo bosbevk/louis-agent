@@ -1,5 +1,5 @@
 using LouisAgent.Puls.Admin.Verdict;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.RunPage;

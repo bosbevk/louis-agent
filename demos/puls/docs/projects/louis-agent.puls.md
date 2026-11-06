@@ -2,7 +2,7 @@
 
 > **Kind:** Blazor WebAssembly app · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
 > `louis-agent.puls-api` (`demos/puls/docker/images/Dockerfile.puls`, `demos/puls/docker/docker-compose.puls.yml`, port 5070) · **References:**
-> louis-agent.web.shared, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
+> louis-agent.web, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
 
 ## Purpose
 
@@ -86,7 +86,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Layout/AdminLayout.razor` | The admin portal's sidebar by job (*Measure*: Evals, Review with its count; *Build*: Studio, Prompts; F53.2, F53.3), the live-run strip and the content column |
 | `Pages/Admin/Review.razor`, `Review.razor.cs` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
 | `Pages/Admin/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles at the end of `css/admin/shell.css` |
-| `Pages/Admin/Data/Reports.razor` | The packs' reports (F35.7, ADR 0083), from `GET /v1/admin/reports`: a `ReportCard` (from `louis-agent.web.shared`) for each, under *Data* in the sidebar |
+| `Pages/Admin/Data/Reports.razor` | The packs' reports (F35.7, ADR 0083), from `GET /v1/admin/reports`: a `ReportCard` (from `louis-agent.web`) for each, under *Data* in the sidebar |
 | `Pages/Admin/Imports.razor`, `Components/Admin/Imports/ImportCard.razor`, `Admin/Imports/ImportForm.cs` | The packs' uploads (F55, ADR 0071), from `GET /v1/admin/imports`: a card each with a file box per slot, Preview and the report's facts and problems, and Save only after a clean preview that changes something (`ImportForm` holds those rules); the sidebar's Data section; styles at the end of `css/admin/shell.css` |
 | `Text/PulsWebRole.cs` | The roles the web app has words for (the cook's work phases), as an enum of its own (ADR 0043) |
 | `Pages/Admin/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
@@ -174,7 +174,7 @@ the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.emp
 
 ## Related docs
 
-[louis-agent.identity.puls](louis-agent.identity.puls.md) (who Puls is) · [louis-agent.web](../../../louis-agent/docs/projects/louis-agent.web.md) ·
+[louis-agent.identity.puls](louis-agent.identity.puls.md) (who Puls is) · [louis-agent.code-review](../../../louis-agent/docs/projects/louis-agent.code-review.md) ·
 [api](../../../../src/docs/projects/louis-agent.api.md) · [evals](../../../../src/docs/projects/louis-agent.evals.md) · [Multi-agent write-up](../../../../src/docs/learning/10-multi-agent-orchestration.md)
 
 ---

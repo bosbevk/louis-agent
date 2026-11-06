@@ -158,7 +158,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{E2
 	ProjectSection(SolutionItems) = preProject
 		demos\louis-agent\docs\projects\louis-agent.orchestrator.md = demos\louis-agent\docs\projects\louis-agent.orchestrator.md
 		demos\louis-agent\docs\projects\louis-agent.site.md = demos\louis-agent\docs\projects\louis-agent.site.md
-		demos\louis-agent\docs\projects\louis-agent.web.md = demos\louis-agent\docs\projects\louis-agent.web.md
+		demos\louis-agent\docs\projects\louis-agent.code-review.md = demos\louis-agent\docs\projects\louis-agent.code-review.md
 		demos\louis-agent\docs\projects\orchestrator-runbooks.md = demos\louis-agent\docs\projects\orchestrator-runbooks.md
 	EndProjectSection
 EndProject
@@ -356,7 +356,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 		src\docs\guides\change-the-engine.md = src\docs\guides\change-the-engine.md
 		src\docs\guides\change-the-mcp-server.md = src\docs\guides\change-the-mcp-server.md
 		src\docs\guides\change-the-usage-probe.md = src\docs\guides\change-the-usage-probe.md
-		src\docs\guides\change-the-web-shared.md = src\docs\guides\change-the-web-shared.md
+		src\docs\guides\change-the-web.md = src\docs\guides\change-the-web.md
 		src\docs\guides\common-errors.md = src\docs\guides\common-errors.md
 		src\docs\guides\debug-and-logs.md = src\docs\guides\debug-and-logs.md
 		src\docs\guides\finish-a-step.md = src\docs\guides\finish-a-step.md
@@ -402,7 +402,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B
 		src\docs\projects\louis-agent.evals.runner.md = src\docs\projects\louis-agent.evals.runner.md
 		src\docs\projects\louis-agent.mcp-server.md = src\docs\projects\louis-agent.mcp-server.md
 		src\docs\projects\louis-agent.usage-probe.md = src\docs\projects\louis-agent.usage-probe.md
-		src\docs\projects\louis-agent.web.shared.md = src\docs\projects\louis-agent.web.shared.md
+		src\docs\projects\louis-agent.web.md = src\docs\projects\louis-agent.web.md
 		src\docs\projects\tests.md = src\docs\projects\tests.md
 	EndProjectSection
 EndProject
@@ -450,7 +450,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "demos\louis-agent\web\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review", "demos\louis-agent\web\louis-agent.code-review\louis-agent.code-review.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "demos\louis-agent\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
 EndProject
@@ -464,7 +464,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "demos\puls\tests\louis-agent.api.tests\louis-agent.api.tests.csproj", "{25003D68-7FA2-4C3E-B862-13791FCE8D4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared", "src\web\louis-agent.web.shared\louis-agent.web.shared.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\web\louis-agent.web\louis-agent.web.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "demos\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
 EndProject
@@ -488,13 +488,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.calculator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.testing", "src\tests\shared\louis-agent.testing\louis-agent.testing.csproj", "{57E3BAD7-2851-4611-9D17-97D957ED1E74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared.tests", "src\tests\web\louis-agent.web.shared.tests\louis-agent.web.shared.tests.csproj", "{58DD87D4-4C08-4C58-8E0A-888771B72642}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "src\tests\web\louis-agent.web.tests\louis-agent.web.tests.csproj", "{58DD87D4-4C08-4C58-8E0A-888771B72642}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls.tests", "demos\puls\tests\louis-agent.puls.tests\louis-agent.puls.tests.csproj", "{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.testing", "src\tests\web\louis-agent.web.testing\louis-agent.web.testing.csproj", "{B6B1BB26-4D84-4825-B807-3ED6D46E31D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "demos\louis-agent\tests\louis-agent.web.tests\louis-agent.web.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review.tests", "demos\louis-agent\tests\louis-agent.code-review.tests\louis-agent.code-review.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server.tests", "src\tests\hosts\louis-agent.acp-server.tests\louis-agent.acp-server.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
 EndProject

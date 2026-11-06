@@ -4,9 +4,9 @@ using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Puls.Components.Admin.EvalsPage.Details;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.EvalsPage.Details;

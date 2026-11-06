@@ -1,22 +1,26 @@
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Api.Tests;
 
-// CL14 step 3: a delegation card shows the role the model passed, StartSubSession's "role"; a chat recorded before CL14
-// (its calls said "personality") still shows it.
+/// <summary>
+/// A delegation card shows the role the model passed to StartSubSession; a chat recorded when calls said "personality"
+/// still shows it.
+/// </summary>
 public class DelegationRoleTests
 {
+    /// <summary>The card for a call with this input.</summary>
     private static Delegation? Card(string input) =>
         Delegation.From(new Block { Kind = BlockKind.Tool, ToolName = Delegation.ToolName, ToolInput = input });
 
+    /// <summary>A call shows its role.</summary>
     [Test]
     public void ACall_ShowsItsRole() =>
         Assert.That(
             Card(SampleRole.Fill("""{"toolsets":["web"],"message":"Wat kook ek?","role":"<RoleAlpha>"}"""))!.Role,
             Is.EqualTo(SampleRole.Alpha));
 
+    /// <summary>An old call shows its "personality" as the role.</summary>
     [Test]
     public void ACallRecordedBeforeCL14_ShowsItsPersonality() =>
         Assert.That(

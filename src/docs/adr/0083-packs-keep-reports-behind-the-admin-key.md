@@ -50,7 +50,7 @@ adding up every day kept, then the last 30. It's listed only with a database.
 - *Served* means `ReadRecipe` from our library; `ScaleRecipe`'s look at a recipe already read isn't counted again.
 - A run with `RECIPE_LIBRARY_IN_EVALS=true` on the real database adds to the real totals. A run that measures should have
   its own database.
-- `ReportCard` is generic, so it lives in `louis-agent.web.shared`. The page is still Puls's, as it uses Puls's `AdminGate`.
+- `ReportCard` is generic, so it lives in `louis-agent.web`. The page is still Puls's, as it uses Puls's `AdminGate`.
   Customising a report's look, a pack's own view that a demo can override, is the next feature in the [TODO](../../../TODO.md).
 
 ## Links

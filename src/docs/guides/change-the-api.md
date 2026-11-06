@@ -62,7 +62,7 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
    `AgentSessionsTests` with the fake model client.
 4. If it is a choice of a fixed set, it is an enum parsed once with `SettingChoice`
    ([ADR 0024](../adr/0024-choices-are-enums.md)). Add the field to `AgentApi.CreateSessionAsync` in
-   `src/web/louis-agent.web.shared` if the web apps send it.
+   `src/web/louis-agent.web` if the web apps send it.
 
 ## Change the event stream
 

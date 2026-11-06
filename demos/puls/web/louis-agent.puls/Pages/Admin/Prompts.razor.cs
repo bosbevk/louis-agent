@@ -1,8 +1,8 @@
 using System.Net;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Prompts;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Pages.Admin;

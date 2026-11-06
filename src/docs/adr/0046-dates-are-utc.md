@@ -83,7 +83,7 @@ These were considered:
 - **Protocol v2's `t` is an ISO 8601 UTC string**, a `DateTimeOffset` on the base record, which System.Text.Json
   writes and reads with no converter (F18 step 7c).
 - **Existing code isn't swept.** The eight uses of `DateTime.Now` and `DateTimeOffset.Now` (the chat views in
-  `web.shared` and Puls, the orchestrator's comms log, the web app's relative-time text) change when a step touches
+  `louis-agent.web` and Puls, the orchestrator's comms log, the web app's relative-time text) change when a step touches
   their file, as the summaries rule does; a display-only use becomes a conversion of a UTC value for the reader.
 - **Review holds the rule** (docs/CLAUDE.md, *Dates are UTC*) until a test does: a `DateTime.Now`, a `DateTimeOffset.Now`, a local time in a golden or
   a stored document, or an offset-less time on a wire is a finding. A ratchet test over the sources (as

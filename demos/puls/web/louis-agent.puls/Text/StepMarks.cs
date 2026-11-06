@@ -1,4 +1,4 @@
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Puls.Text;
 

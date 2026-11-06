@@ -23,7 +23,7 @@
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <!-- What the browser side shares, which these tests check against the API; it no longer comes through the API. -->
-    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />

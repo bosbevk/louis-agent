@@ -4,17 +4,18 @@ using System.Text;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Pages.Admin;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Pages.Admin;
 
 /// <summary>
-/// The run page shows what it last fetched, and after a grade or a note it fetches the run again, so the chips, the review panel, the notes and the judge-against-people card show what the store holds, not the copy the page opened with.
+/// The run page shows what it last fetched, and after a grade or a note it fetches the run again, so the chips, the
+/// review panel, the notes and the judge-against-people card show what the store holds, not the copy it opened with.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public class BenchmarkRunTests

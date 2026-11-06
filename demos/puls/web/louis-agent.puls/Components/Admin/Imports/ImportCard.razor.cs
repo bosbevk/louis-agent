@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Puls.Admin.Imports;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -53,7 +53,7 @@ public partial class ImportCard
     /// <summary>Keeps the previewed files.</summary>
     private Task SaveAsync() => PostAsync("save");
 
-    /// <summary>Posts the files to one of the upload's routes and keeps the report; a refusal shows its reason.</summary>
+    /// <summary>Posts the files to one of the upload's routes and keeps the report; a refusal says why.</summary>
     private async Task PostAsync(string route)
     {
         _busy = true;

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <!-- Puls: the general assistant's web app (chat only). louis-agent.api serves it instead of louis-agent.web when built
+  <!-- Puls: the general assistant's web app (chat only). louis-agent.api serves it instead of louis-agent.code-review when built
        with -p:WebApp=puls (demos/puls/docker/images/Dockerfile.puls). -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Puls</RootNamespace>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
   </ItemGroup>
 

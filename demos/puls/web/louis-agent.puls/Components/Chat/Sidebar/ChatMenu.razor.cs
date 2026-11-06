@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Components;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Sidebar;
 
+/// <summary>A chat's actions: favourite, share, rename, archive, delete.</summary>
 public partial class ChatMenu
 {
     [Parameter, EditorRequired] public ChatModel Chat { get; set; } = default!;

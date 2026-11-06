@@ -1,7 +1,6 @@
-using LouisAgent.Web.Shared.Chats;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using LouisAgent.Web.Shared;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Puls.Content;
 
@@ -38,6 +37,7 @@ public static partial class Sources
         return found;
     }
 
+    /// <summary>The address in a tool call's input, if it has one.</summary>
     private static string? Url(string? json)
     {
         if (string.IsNullOrWhiteSpace(json)) return null;

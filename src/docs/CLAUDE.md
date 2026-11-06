@@ -143,6 +143,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 **The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
 
+- **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
+  site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses.
+  [ADR 0084](adr/0084-every-site-is-built-on-the-frameworks-web.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
   [ADR 0034](adr/0034-code-a-person-can-maintain.md), [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
 - **One type per doc**; plans, feature and fix docs have a lifecycle and a done plan is deleted.
@@ -156,7 +159,7 @@ in [Project layout](../engine/louis-agent.core/CLAUDE.md#project-layout).
 ```
 src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
-src/web/                 # louis-agent.web.shared: what any web app shares
+src/web/                 # louis-agent.web: the framework's web, what every site shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, calculator, where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these

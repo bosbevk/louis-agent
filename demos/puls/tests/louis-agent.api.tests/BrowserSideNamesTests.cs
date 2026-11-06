@@ -1,16 +1,20 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using CoreScriptLanguage = LouisAgent.Core.Skills.Languages.ScriptLanguage;
-using WebScriptLanguage = LouisAgent.Web.Shared.Api.ScriptLanguage;
+using WebScriptLanguage = LouisAgent.Web.Api.ScriptLanguage;
 
 namespace LouisAgent.Api.Tests;
 
-// F18 step 7.5.3 (ADR 0043, Louis's card 3): the browser can't reference core, so the web apps keep their own small enums of the names they use (`AskedToolset`, `ScriptLanguage` in web.shared).
-// This test sits where both sides are visible and checks them against core's, so the two copies cannot drift: a name the browser asks for that core does not have, or a language core gained that the browser lacks.
+/// <summary>
+/// The browser can't reference core, so the web apps keep their own small enums of the names they use (ADR 0043). This
+/// test sits where both sides are visible and checks them against core's, so the two copies can't drift: a name the
+/// browser asks for that core doesn't have, or a language core gained that the browser lacks.
+/// </summary>
 public class BrowserSideNamesTests
 {
+    /// <summary>Every toolset the browser asks for is one core has, under the same name.</summary>
     [Test]
     public void EveryToolsetTheAppsAsk_IsAToolset_UnderTheSameName()
     {
@@ -20,6 +24,7 @@ public class BrowserSideNamesTests
             Assert.That(known, Does.Contain(asked.Wire()), $"{asked}: no toolset has that name");
     }
 
+    /// <summary>The browser's script languages are core's, name for name.</summary>
     [Test]
     public void TheBrowsersScriptLanguages_AreCoresScriptLanguages_NameForName() =>
         Assert.That(Enum.GetValues<WebScriptLanguage>().Select(m => m.Wire()).Order(),

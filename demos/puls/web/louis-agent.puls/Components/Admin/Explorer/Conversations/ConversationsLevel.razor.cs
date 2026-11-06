@@ -1,7 +1,7 @@
 using LouisAgent.Puls.Admin.Explorer.Tree;
 using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Reviews;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Explorer.Conversations;

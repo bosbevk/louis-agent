@@ -2,8 +2,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 
 namespace LouisAgent.Web.Testing;
 
@@ -27,7 +27,7 @@ public static class FixtureApi
         return new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
     }
 
-    /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on its message).</summary>
+    /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on a message).</summary>
     private static HttpResponseMessage AnswerSessionGone(HttpRequestMessage request) =>
         request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages"
             ? new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -36,6 +36,7 @@ public static class FixtureApi
             }
             : Answer(request);
 
+    /// <summary>What the API answers for each route the pages call; anything else is a 404.</summary>
     public static HttpResponseMessage Answer(HttpRequestMessage request)
     {
         string path = request.RequestUri!.AbsolutePath;
@@ -54,7 +55,7 @@ public static class FixtureApi
             ("/v1/git/commits", true, _) => Json("""{"commits":[]}"""),
             ("/v1/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
             // The code-review app's theme list, as its wwwroot ships it.
-            ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/web/louis-agent.web", "wwwroot", "css", "themes", "themes.json"))),
+            ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/web/louis-agent.code-review", "wwwroot", "css", "themes", "themes.json"))),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
             {
                 Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"not in the fixture"}}""", Encoding.UTF8, "application/json"),
@@ -62,9 +63,11 @@ public static class FixtureApi
         };
     }
 
+    /// <summary>A 200 with this body as JSON.</summary>
     private static HttpResponseMessage Json(string body) =>
         new(HttpStatusCode.OK) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
+    /// <summary>A 200 streaming the recorded turn.</summary>
     private static HttpResponseMessage Stream()
     {
         var content = new StreamContent(File.OpenRead(SessionStreamFixture.StreamFile));

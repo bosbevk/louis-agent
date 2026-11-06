@@ -37,8 +37,8 @@ public class FolderSizeTests
         "demos/puls/web/louis-agent.puls/Admin/Grades",
         "demos/puls/web/louis-agent.puls/Admin/Reviews",
         "demos/puls/web/louis-agent.puls/Components/Landing",
-        "src/web/louis-agent.web.shared/Chats",
-        "demos/louis-agent/web/louis-agent.web/Git",
+        "src/web/louis-agent.web/Chats",
+        "demos/louis-agent/web/louis-agent.code-review/Git",
         "demos/puls/tests/louis-agent.api.tests",
         "demos/puls/tests/louis-agent.api.tests/Endpoints",
         "demos/puls/tests/louis-agent.api.tests/Sessions",
@@ -49,7 +49,7 @@ public class FolderSizeTests
         "demos/puls/tests/louis-agent.identity.puls.evals.tests/Evals/Checks",
         "demos/puls/tests/louis-agent.puls.tests/Admin/Reviews",
         "src/tests/shared/louis-agent.testing",
-        "src/tests/web/louis-agent.web.shared.tests/Chats",
+        "src/tests/web/louis-agent.web.tests/Chats",
     ];
 
     /// <summary>

@@ -80,4 +80,4 @@ tools it publishes are tested where they live. Checked with an MCP client and, f
 [Architecture § MCP server](../architecture/05-building-block-view.md#mcp-server) · [Setup](../SETUP.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.web.shared](louis-agent.web.shared.md) · Next: [louis-agent.orchestrator](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md)
+[Projects](README.md) · Previous: [louis-agent.web](louis-agent.web.md) · Next: [louis-agent.orchestrator](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md)

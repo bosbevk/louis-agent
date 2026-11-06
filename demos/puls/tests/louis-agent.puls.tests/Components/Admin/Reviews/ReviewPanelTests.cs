@@ -5,15 +5,19 @@ using System.Text.Json;
 using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin.Reviews;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Reviews;
 
-// F18 step 6a.3: the review panel of a conversation. It shows the question the person answers (read from the run's first line), the ask, the answer, three buttons (pass, fail, unsure)
-// and a note, and is BLIND: before this reviewer has graded the conversation the judge's verdict and reason are not in the markup at all (not hidden by style: absent); after, they are,
-// with whether the person agreed. The reviewer's name is asked once and kept in the browser; without it the buttons are disabled and a line says why. Written first: none of it existed.
+/// <summary>
+/// The review panel of a conversation. It shows the question the person answers (read from the run's first line), the
+/// ask, the answer, three buttons (pass, fail, unsure) and a note, and is BLIND: before this reviewer has graded the
+/// conversation the judge's verdict and reason are not in the markup at all (not hidden by style: absent); after, they
+/// are, with whether the person agreed. The reviewer's name is asked once and kept in the browser; without it the
+/// buttons are disabled and a line says why.
+/// </summary>
 public class ReviewPanelTests
 {
     private const string Question = "Is this a meal for the people asked for?";
@@ -22,6 +26,7 @@ public class ReviewPanelTests
     private static readonly GraderRow Review = new("meal-for-people.human", 1, "Human", Question);
     private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
 
+    /// <summary>The grades of a conversation: the judge's, and any people's.</summary>
     private static ConversationGrades Grades(GradeOutcome judge = GradeOutcome.Pass, params HumanGradeRow[] humans) =>
         new([
             new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"),
@@ -29,8 +34,10 @@ public class ReviewPanelTests
             new GradeRow("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits")
         ], GradeOutcome.Pass, humans);
 
+    /// <summary>A rendered panel with its stub API and reviewer state.</summary>
     private sealed record Rendered(IRenderedComponent<ReviewPanel> Cut, StubHandler Handler, ReviewerState State);
 
+    /// <summary>Renders the panel for this reviewer and these grades; a grade is answered with this status.</summary>
     private static Rendered Render(string? reviewer, ConversationGrades grades, HttpStatusCode put = HttpStatusCode.OK)
     {
         var ctx = new BunitContext();
@@ -56,6 +63,7 @@ public class ReviewPanelTests
         return new Rendered(cut, handler, state);
     }
 
+    /// <summary>It shows the question, the ask and the answer, with three buttons and a note.</summary>
     [Test]
     public void ItShowsTheQuestion_TheAsk_AndTheAnswer_WithThreeButtonsAndANote()
     {
@@ -73,6 +81,7 @@ public class ReviewPanelTests
             "the limit the API holds a note to (6a.3c: ReviewNote.MaxLength)");
     }
 
+    /// <summary>Before the person grades, the judge's verdict and reason aren't in the markup at all.</summary>
     [Test]
     public void BeforeThePersonGrades_TheJudgesVerdictAndReasonAreNotInTheMarkup_AtAll()
     {
@@ -83,6 +92,7 @@ public class ReviewPanelTests
         Assert.That(cut.FindAll(".review-result"), Is.Empty);
     }
 
+    /// <summary>With no name the buttons are disabled, a line says why, and the judge stays hidden.</summary>
     [Test]
     public void WithNoName_TheButtonsAreDisabled_AndALineSaysWhy_AndTheJudgeStaysHidden()
     {
@@ -95,6 +105,7 @@ public class ReviewPanelTests
         Assert.That(cut.Markup, Does.Not.Contain(JudgeReason));
     }
 
+    /// <summary>Typing a name once enables the buttons and keeps it in the browser.</summary>
     [Test]
     public void TypingANameOnce_EnablesTheButtons_AndKeepsItInTheBrowser()
     {
@@ -108,6 +119,7 @@ public class ReviewPanelTests
         Assert.That(cut.FindAll(".review-need-name"), Is.Empty);
     }
 
+    /// <summary>A pass is a PUT to the reviews route, with the verdict, the note and the name.</summary>
     [Test]
     public void APass_IsSentAsAPut_ToTheReviewsRoute_WithTheVerdictTheNoteAndTheName()
     {
@@ -128,6 +140,7 @@ public class ReviewPanelTests
             Is.EqualTo(("pass", "a main dish, feeds six", "Louis")));
     }
 
+    /// <summary>After grading, the judge's verdict and reason appear, saying you agreed.</summary>
     [Test]
     public void AfterGrading_TheJudgesVerdictAndReasonAppear_WithYouAgreed()
     {
@@ -140,6 +153,7 @@ public class ReviewPanelTests
         Assert.That(state.Graded(Bobotie, "meal-for-people"), Is.True, "so the judge's chip shows again everywhere");
     }
 
+    /// <summary>A different verdict from the judge's says you disagreed.</summary>
     [Test]
     public void AfterGrading_ADifferentVerdictFromTheJudge_ReadsYouDisagreed()
     {
@@ -150,6 +164,7 @@ public class ReviewPanelTests
         cut.WaitForAssertion(() => Assert.That(cut.Find(".review-result").TextContent, Does.Contain("You disagreed")));
     }
 
+    /// <summary>An unsure shows the judge too, and says you were unsure.</summary>
     [Test]
     public void AnUnsure_ShowsTheJudgeToo_AndSaysYouWereUnsure()
     {
@@ -161,6 +176,7 @@ public class ReviewPanelTests
         Assert.That(cut.Find(".review-judge").TextContent, Does.Contain(JudgeReason));
     }
 
+    /// <summary>A conversation this reviewer graded shows the judge at once; another reviewer's doesn't.</summary>
     [Test]
     public void AConversationThisReviewerAlreadyGraded_ShowsTheJudgeAtOnce_ThoughNotAnotherReviewers()
     {
@@ -173,6 +189,7 @@ public class ReviewPanelTests
         Assert.That(Render("Louis", Grades(GradeOutcome.Pass, anna)).Cut.Markup, Does.Not.Contain(JudgeReason));
     }
 
+    /// <summary>A grade the API refuses shows why, and the judge stays hidden.</summary>
     [Test]
     public void AGradeTheAPIRefuses_ShowsItsMessage_AndTheJudgeStaysHidden()
     {
@@ -186,8 +203,10 @@ public class ReviewPanelTests
         Assert.That(state.Graded(Bobotie, "meal-for-people"), Is.False);
     }
 
-    // Louis, 2026-10-26: the pick must stay pressed. The three buttons are one segmented radio group, as the explorer's repeat picker is, and the chosen one is aria-checked:
-    // right after the click, and again on a reload from the stored grade.
+    /// <summary>
+    /// The pick stays pressed. The three buttons are one segmented radio group, as the explorer's repeat picker is, and
+    /// the chosen one is aria-checked: right after the click, and again on a reload from the stored grade.
+    /// </summary>
     [Test]
     public void ThePickStaysPressed_AsTheCheckedOneOfASegmentedGroup_AfterTheClickAndFromAStoredGrade()
     {
@@ -209,7 +228,10 @@ public class ReviewPanelTests
             Is.EqualTo("true"));
     }
 
-    // 6a.4 (Louis: the grades went out under a name typed in another tab): with a name kept, the panel says whose grades these are and offers "not you?", which lets the name go.
+    /// <summary>
+    /// Grades once went out under a name typed in another tab: with a name kept, the panel says whose grades these are
+    /// and offers "not you?", which lets the name go.
+    /// </summary>
     [Test]
     public void WithANameKept_ThePanelSaysWhoIsGrading_AndNotYouLetsTheNameGo()
     {
@@ -223,6 +245,7 @@ public class ReviewPanelTests
         Assert.That(cut.Find(".review-pass").HasAttribute("disabled"), Is.True);
     }
 
+    /// <summary>A run with no question on its first line still asks something: the grader's name.</summary>
     [Test]
     public void ARunWithNoQuestionOnItsFirstLine_StillAsksSomething_TheGradersName()
     {

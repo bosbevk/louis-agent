@@ -4,8 +4,8 @@ using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Puls.Admin.Imports;
 using LouisAgent.Puls.Components.Admin.Imports;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 

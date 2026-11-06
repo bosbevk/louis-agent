@@ -4,8 +4,8 @@ using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Evals;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Admin.Starting;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.EvalsPage.Details;

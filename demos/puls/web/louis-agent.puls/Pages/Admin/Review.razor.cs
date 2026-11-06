@@ -4,9 +4,9 @@ using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Reviews.Queue;
-using LouisAgent.Web.Shared.Api;
 using LouisAgent.Puls.Components.Admin.Reviews;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Puls.Admin.Explorer.Tree;
 

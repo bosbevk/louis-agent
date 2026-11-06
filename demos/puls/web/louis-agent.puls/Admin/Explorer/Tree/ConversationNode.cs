@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Grades;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Puls.Admin.Explorer.Tree;
 

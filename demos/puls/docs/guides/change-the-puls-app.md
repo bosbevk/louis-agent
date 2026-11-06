@@ -3,7 +3,7 @@
 > **How-to.** Change `demos/puls/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
 > or the admin portal, add a starter, place its words, and test it. **Elsewhere:** how it works in
 > [louis-agent.puls](../projects/louis-agent.puls.md); what it shares with the code-review app in
-> [Change the shared web library](../../../../src/docs/guides/change-the-web-shared.md); Puls's voice, roles and packs in
+> [Change the framework's web](../../../../src/docs/guides/change-the-web.md); Puls's voice, roles and packs in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 
 Puls is a Blazor WebAssembly app, served by Puls's program, `louis-agent.puls-api`, which references it. It has three parts: the
@@ -79,7 +79,7 @@ costs no read.
 **A new eval's grades show with nothing to add.** The run page reads only the standard records the API sends (the run's eval,
 version, commit and graders; each conversation's grades and outcome), so an eval added beside any identity shows its grades
 the way every other does: `GraderList` above the explorer, `GradeChips` on each conversation's row (F18 step 4.5c). Don't
-read an eval's own score key in a view: `PortalReadsNoScoreKeyTests` (in `src/tests/web/louis-agent.web.shared.tests`) fails on a
+read an eval's own score key in a view: `PortalReadsNoScoreKeyTests` (in `src/tests/web/louis-agent.web.tests`) fails on a
 new read of `scores` or a test on a task's name; the three files still doing so are listed there and only come off. The
 grades code lives in `Admin/Grades/` (the records and their words in `GradesText`; `Reading/` the readers and the outcome parsed
 once; `Chips/` the chip list and an outcome's chip class) and `Components/Admin/Grades/`, and names nothing of Puls (no `PulsText`, no `Components.Brand`; the same test holds it), so the

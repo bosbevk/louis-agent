@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\web\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <ProjectReference Include="..\..\..\web\louis-agent.web\louis-agent.web.csproj" />
     <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 

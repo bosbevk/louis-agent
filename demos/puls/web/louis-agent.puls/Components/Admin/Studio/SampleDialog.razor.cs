@@ -3,7 +3,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Drafts;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Studio;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Studio;

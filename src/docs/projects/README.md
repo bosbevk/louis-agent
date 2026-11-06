@@ -24,7 +24,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
 | `src/hosts/louis-agent.acp-server` | Library (stdio); a demo's program starts it | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/hosts/louis-agent.api` | Library (ASP.NET Core); a demo's program starts it | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
-| `demos/louis-agent/web/louis-agent.web` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) |
+| `demos/louis-agent/web/louis-agent.code-review` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) |
 | `demos/puls/web/louis-agent.puls` | Blazor WebAssembly | Puls: the general assistant in Afrikaans; a landing page and a three-panel chat that delegates every task | [puls](../../../demos/puls/docs/projects/louis-agent.puls.md) |
 | `demos/louis-agent/web/louis-agent.site` | ASP.NET Core app (static Razor) | The engine's public website: the Console theme and two CSS films of how the engine works; references nothing of ours | [site](../../../demos/louis-agent/docs/projects/louis-agent.site.md) |
 | `src/hosts/louis-agent.mcp-server` | Library (stdio or ASP.NET Core); a demo's program starts it | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
@@ -37,7 +37,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `louis-agent.choices` | Class library | `SettingChoice` and `[WireName]`: the one parser for a name that is an enum member; references nothing ([ADR 0043](../adr/0043-repeated-names-are-enums.md)) | — (to write) |
 | `louis-agent.session-stream` | Class library | Reads a session's server-sent events into records, for core's sub-sessions, the web apps and the eval runner | — (to write) |
 | `src/hosts/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
-| `src/web/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
+| `src/web/louis-agent.web` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [louis-agent.web](louis-agent.web.md) |
 | `src/tests`, `demos/*/tests`, `packs-tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `src/tests/shared/louis-agent.testing` and `src/tests/web/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
@@ -48,9 +48,9 @@ flowchart BT
     CLI["louis-agent.cli"] --> Core
     ACP["louis-agent.acp-server"] --> Core
     API["louis-agent.api"] --> Core
-    API --> Web["louis-agent.web<br/>(served by the API)"]
+    API --> Web["louis-agent.code-review<br/>(served by the API)"]
     API --> Puls["louis-agent.puls<br/>(served by the API built with -p:WebApp=puls)"]
-    Web --> Shared["louis-agent.web.shared"]
+    Web --> Shared["louis-agent.web"]
     Puls --> Shared
     API -. "HTTP + SSE<br/>(sub-sessions on a peer)" .-> API
     MCP["louis-agent.mcp-server"] --> Core
