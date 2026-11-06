@@ -1,0 +1,58 @@
+@* One piece of work a chat handed out: who did it, with which toolsets, the task, its steps as they happen, and what it cost. *@
+<section class="work-item @Status">
+    <div class="work-item-head">
+        @if (Avatar is not null)
+        {
+            <img src="@Avatar" alt="" class="work-avatar" />
+        }
+        <div class="work-who">
+            <small>@Text.DelegatedTo</small>
+            <strong>@Who</strong>
+        </div>
+        <span class="work-status">@(Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done })</span>
+    </div>
+
+    @if (Delegation.Toolsets.Count > 0 || Delegation.Continued)
+    {
+        <div class="work-chips">
+            @if (Delegation.Continued)
+            {
+                <span class="toolset-chip follow-up">@Text.FollowUp</span>
+            }
+            @foreach (string toolset in Delegation.Toolsets)
+            {
+                <span class="toolset-chip">@toolset</span>
+            }
+        </div>
+    }
+
+    @if (Delegation.Task is { Length: > 0 } task)
+    {
+        <p class="work-task" title="@task">@task</p>
+    }
+
+    <div class="work-label">@Text.StepsLabel</div>
+    @if (Steps.Count == 0 && Thoughts == 0)
+    {
+        <div class="work-step waiting">@(Status == "running" ? Text.Starting + "…" : "—")</div>
+    }
+    <ol class="work-steps">
+        @foreach (var step in Steps)
+        {
+            <WorkStep Step="step" Currency="Currency" />
+        }
+    </ol>
+    @if (Thoughts > 0)
+    {
+        <div class="work-thoughts">@Text.Steps(Steps.Count, Thoughts)</div>
+    }
+
+    @if (Block.SubTurn?.Usage is { } usage)
+    {
+        <div class="work-cost" title="@UsageFormat.Detail(usage, Currency)">
+            <span>@Text.Cost</span>
+            <strong data-count="@UsageFormat.Cost(usage, Currency)">@UsageFormat.Cost(usage, Currency)</strong>
+            <span>@usage.Requests @Text.Requests</span>
+        </div>
+    }
+</section>

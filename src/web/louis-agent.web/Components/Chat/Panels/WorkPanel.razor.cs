@@ -58,11 +58,4 @@ public partial class WorkPanel
     private TurnUsage? SpecialistUsage =>
         Items.Select(i => i.Block.SubTurn?.Usage).OfType<TurnUsage>().Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
 
-    /// <summary>A tool call's input on one line, without its braces.</summary>
-    private static string Summarise(string? json)
-    {
-        if (string.IsNullOrWhiteSpace(json)) return "";
-        string flat = string.Join(" ", json.Split('\n', StringSplitOptions.TrimEntries)).Trim('{', '}', ' ');
-        return flat.Length > 60 ? flat[..60] + "…" : flat;
-    }
 }
