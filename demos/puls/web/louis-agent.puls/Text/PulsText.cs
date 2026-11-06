@@ -56,6 +56,22 @@ public static class PulsText
         SearchChoose = "kies",
         SearchOpen = "maak oop",
 
+        HideSidebar = "Versteek die kantbalk",
+        CloseMenu = "Maak die kieslys toe",
+        Favourites = "Gunstelinge",
+        Projects = "Projekte",
+        NewProject = "Nuwe projek",
+        Settings = "Instellings",
+        ApiKey = "API-sleutel",
+        ApiKeyHint = "net as AGENT_API_KEY gestel is",
+        Location = "Ligging",
+        LocationExample = "bv. Pretoria",
+        Locating = "Soek…",
+        UseMyLocation = "Gebruik my ligging",
+        Names = "Name",
+        ShowMotion = "Wys animasies al vra my stelsel minder",
+        SystemAsksNoLess = " (jou stelsel vra nie minder nie)",
+
         SessionGone =
             "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
         NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",

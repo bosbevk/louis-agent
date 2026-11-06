@@ -1,0 +1,76 @@
+@* The chat's sidebar: the brand, a new chat, search, the site's views, the chats (favourites, projects to come, recent,
+   archived) and, at the foot, the profile and the settings. Below Bootstrap's lg breakpoint it is an offcanvas. *@
+@{
+    // One chat in the list: the markup once, as a template, for the favourites, the recent and the archived.
+    RenderFragment<LouisAgent.Web.Chats.Chat> Item = chat =>
+        @<ChatListItem @key="chat.SessionId" Chat="chat" ChatPath="@ChatPath" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
+                      RenameDraft="@RenameDraft" RenameDraftChanged="RenameDraftChanged" OnRenameKey="OnRenameKey" OnRenameBlur="OnRenameBlur"
+                      OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" />;
+}
+<aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="@Text.Chats">
+    <div class="sidebar-top">
+        <a class="brand brand-stack" href="./" title="@BrandTitle">@Brand</a>
+        <button class="icon d-none d-lg-inline-grid" type="button" onclick="chatUi.toggleSidebar()" title="@Text.HideSidebar" aria-label="@Text.HideSidebar">⇤</button>
+        <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="@Text.CloseMenu">×</button>
+    </div>
+    <button class="new-chat" @onclick="OnNewChat">@Text.NewChat</button>
+    <button class="side-search" id="search-button" type="button" @onclick="OnSearch">
+        <span class="ic i-search" aria-hidden="true"></span>@Text.SearchChats<kbd>Ctrl K</kbd>
+    </button>
+    @if (Views is not null)
+    {
+        <nav class="side-nav">
+            @Views
+        </nav>
+    }
+
+    <div class="chat-list">
+        @if (Chats.Any(c => c.Favourite && !c.Archived))
+        {
+            <div class="sidebar-label">@Text.Favourites</div>
+            @foreach (var chat in Chats.Where(c => c.Favourite && !c.Archived))
+            {
+                @Item(chat)
+            }
+        }
+
+        <div class="sidebar-label sidebar-label-row">@Text.Projects
+            <button class="icon" type="button" title="@Text.NewProject" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)">+</button>
+        </div>
+        <button class="side-link side-link-quiet" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)"><span class="ic i-folder" aria-hidden="true"></span>@Text.NewProject</button>
+
+        @if (Chats.Any(c => !c.Favourite && !c.Archived))
+        {
+            <div class="sidebar-label">@Text.Recent</div>
+            @foreach (var chat in Chats.Where(c => !c.Favourite && !c.Archived))
+            {
+                @Item(chat)
+            }
+        }
+
+        @if (Chats.Count(c => c.Archived) is > 0 and var archived)
+        {
+            <details class="side-archive">
+                <summary><span class="ic i-archive" aria-hidden="true"></span>@Text.Archived <span class="side-count">@archived</span></summary>
+                @foreach (var chat in Chats.Where(c => c.Archived))
+                {
+                    @Item(chat)
+                }
+            </details>
+        }
+    </div>
+
+    <div class="side-footer">
+        @Profile
+        <details class="sidebar-settings">
+            <summary>@Text.Settings</summary>
+            <CurrencySwitcher />
+            <LocationPicker Location="@Location" Locating="Locating" OnSave="OnSaveLocation" OnLocate="OnLocate" />
+            <MotionToggle Motion="Motion" ReducedMotion="ReducedMotion" OnChange="OnSaveMotion" />
+            <label class="settings">
+                @Text.ApiKey
+                <input type="password" value="@ApiKeyDraft" @onchange="e => OnSaveApiKey.InvokeAsync(e.Value?.ToString())" placeholder="@Text.ApiKeyHint" />
+            </label>
+        </details>
+    </div>
+</aside>

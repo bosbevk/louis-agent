@@ -102,7 +102,7 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests    # a
 
 - `Pages/ChatPageTests` renders the chat page with bUnit against `FixtureApi` and streams a recorded Puls turn (a
   pancake recipe handed to the cook). The empty page and the turn are pinned to `ChatPage.empty.html` and
-  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (`pulsUi.*`, `louisChat.*`), so a new call is a
+  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (`chatUi.*`, `louisChat.*`), so a new call is a
   review point.
 - `Pages/LandingPageTests` pins the landing page (`LandingPage.html`). `Components/` pins `WorkPanel`,
   `TemplateCard` and `PulsTile`, and `Search/ChatFinderTests` tests the search.

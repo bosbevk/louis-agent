@@ -28,7 +28,7 @@ public partial class ManualDialog
         // The page's script may not be there (a test, a page still loading): the dialog works without the focus.
         try
         {
-            await JS.InvokeVoidAsync("pulsUi.focus", "#manual-dialog");
+            await JS.InvokeVoidAsync("chatUi.focus", "#manual-dialog");
         }
         catch (JSException)
         {

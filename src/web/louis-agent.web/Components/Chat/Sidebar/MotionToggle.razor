@@ -1,0 +1,5 @@
+@* Animations although the system asks for less: this browser's choice, applied at once. *@
+<label class="settings-check">
+    <input type="checkbox" checked="@Motion" @onchange="e => OnChange.InvokeAsync(e.Value is true)" />
+    <span>@Text.ShowMotion@(ReducedMotion ? "" : Text.SystemAsksNoLess)</span>
+</label>

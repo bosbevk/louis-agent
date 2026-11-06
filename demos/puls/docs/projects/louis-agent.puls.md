@@ -123,7 +123,7 @@ What the look (F20) and the motion (F24) settled, so a change keeps it:
 - **The loading count is Blazor's own** (`--blazor-load-percentage-text` on `<html>`, shown in a `::after`); no script
   counts files.
 - **One motion switch:** `data-motion="on"` on `<html>`, set by `index.html` before the first paint and changed by
-  `pulsUi.setMotion` (the sidebar's checkbox and the landing's pill both call it); the stylesheets guard their reduced-motion
+  `chatUi.setMotion` (the sidebar's checkbox and the landing's pill both call it); the stylesheets guard their reduced-motion
   blocks with `:root:not([data-motion="on"])`. Text arriving in order is content, not motion, so a reader who asked
   for less motion still sees the demo play at a reading pace; only the loop stops. Moving content that lasts over five
   seconds has a *Stop* or *Pouse* button (WCAG 2.2.2), and a closed FAQ answer is `inert`.

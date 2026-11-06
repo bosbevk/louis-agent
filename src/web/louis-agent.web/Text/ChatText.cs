@@ -65,6 +65,22 @@ public sealed record ChatText
     public string SearchChoose { get; init; } = "choose";
     public string SearchOpen { get; init; } = "open";
 
+    public string HideSidebar { get; init; } = "Hide the sidebar";
+    public string CloseMenu { get; init; } = "Close the menu";
+    public string Favourites { get; init; } = "Favourites";
+    public string Projects { get; init; } = "Projects";
+    public string NewProject { get; init; } = "New project";
+    public string Settings { get; init; } = "Settings";
+    public string ApiKey { get; init; } = "API key";
+    public string ApiKeyHint { get; init; } = "only if AGENT_API_KEY is set";
+    public string Location { get; init; } = "Location";
+    public string LocationExample { get; init; } = "e.g. Cape Town";
+    public string Locating { get; init; } = "Finding…";
+    public string UseMyLocation { get; init; } = "Use my location";
+    public string Names { get; init; } = "Names";
+    public string ShowMotion { get; init; } = "Show animations although my system asks for less";
+    public string SystemAsksNoLess { get; init; } = " (your system doesn't ask for less)";
+
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";

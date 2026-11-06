@@ -1,9 +1,13 @@
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Chat.Sidebar;
+namespace LouisAgent.Web.Components.Chat.Sidebar;
 
+/// <summary>Where the user is: typed, or found by the browser.</summary>
 public partial class LocationPicker
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     [Parameter] public string? Location { get; set; }
     [Parameter] public bool Locating { get; set; }
 

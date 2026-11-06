@@ -1,19 +1,34 @@
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
-namespace LouisAgent.Puls.Components.Chat.Sidebar;
+namespace LouisAgent.Web.Components.Chat.Sidebar;
 
-/// <summary>The sidebar: the brand, a new chat, search, the views and the chats.</summary>
+/// <summary>The chat's sidebar: the brand, a new chat, search, the site's views, the chats, and the settings.</summary>
 public partial class ChatSidebar
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     [Parameter, EditorRequired] public IReadOnlyList<ChatModel> Chats { get; set; } = default!;
+
+    /// <summary>Where this site keeps its chats, such as <c>chat</c> for <c>chat/{id}</c>.</summary>
+    [Parameter] public string ChatPath { get; set; } = "chat";
+
+    /// <summary>The site's logo and anything beside it.</summary>
+    [Parameter] public RenderFragment? Brand { get; set; }
+
+    /// <summary>What the logo says when you hover over it.</summary>
+    [Parameter] public string? BrandTitle { get; set; }
+
+    /// <summary>The site's own links under search, such as its other views.</summary>
+    [Parameter] public RenderFragment? Views { get; set; }
+
+    /// <summary>Who's signed in, above the settings.</summary>
+    [Parameter] public RenderFragment? Profile { get; set; }
 
     /// <summary>The chat the page shows, by its session; null for none.</summary>
     [Parameter] public string? SessionId { get; set; }
-
-    /// <summary>Which view the shell shows: the chat, <c>verken</c> or <c>studio</c>.</summary>
-    [Parameter] public string View { get; set; } = "chat";
 
     [Parameter] public EventCallback OnNewChat { get; set; }
     [Parameter] public EventCallback OnSearch { get; set; }

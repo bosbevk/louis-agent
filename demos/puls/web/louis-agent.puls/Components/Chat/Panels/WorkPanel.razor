@@ -9,7 +9,7 @@
     {
         <span class="work-count">@Items.Count</span>
     }
-    <button class="icon d-none d-xl-inline-grid" type="button" onclick="pulsUi.toggleWork()" title="Versteek die werkpaneel" aria-label="Versteek die werkpaneel">⇥</button>
+    <button class="icon d-none d-xl-inline-grid" type="button" onclick="chatUi.toggleWork()" title="Versteek die werkpaneel" aria-label="Versteek die werkpaneel">⇥</button>
     <button class="icon d-xl-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#work" aria-label="Maak die werkpaneel toe">×</button>
 </div>
 
@@ -164,7 +164,7 @@
 @if (Chat?.Usage() is { } own)
 {
     <div class="work-foot">
-        @* data-count: a changed cost counts up to its value (F24, pulsUi.countCosts). *@
+        @* data-count: a changed cost counts up to its value (F24, chatUi.countCosts). *@
         <span title="@UsageFormat.Detail(own, Currency)">Puls <strong data-count="@UsageFormat.Cost(own, Currency)">@UsageFormat.Cost(own, Currency)</strong></span>
         @if (SpecialistUsage is { } specialists)
         {

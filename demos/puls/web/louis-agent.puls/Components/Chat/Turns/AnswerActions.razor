@@ -6,7 +6,7 @@
 <button class="action" type="button" title="Deel" @onclick='() => OnComingSoon.InvokeAsync("Deel")'><span class="ic i-share" aria-hidden="true"></span></button>
 @if (Sources.Of(Turn) is { Count: > 0 } sources)
 {
-    <button class="action action-sources" type="button" onclick="pulsUi.showWork()" title="Wys die bronne in die werkpaneel">
+    <button class="action action-sources" type="button" onclick="chatUi.showWork()" title="Wys die bronne in die werkpaneel">
         @foreach (var site in sources.Select(s => s.Site).Distinct().Take(3))
         {
             <span class="source-dot">@site[..1].ToUpperInvariant()</span>

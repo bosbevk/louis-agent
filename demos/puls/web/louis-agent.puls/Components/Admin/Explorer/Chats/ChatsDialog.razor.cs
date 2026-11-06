@@ -76,7 +76,7 @@ public partial class ChatsDialog : IDisposable
         // The page's script may not be there (a test): the dialog works without the focus.
         try
         {
-            await Js.InvokeVoidAsync("pulsUi.focus", "#chats-dialog");
+            await Js.InvokeVoidAsync("chatUi.focus", "#chats-dialog");
         }
         catch (JSException)
         {

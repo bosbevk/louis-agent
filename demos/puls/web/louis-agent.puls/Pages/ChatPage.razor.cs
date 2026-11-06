@@ -73,10 +73,10 @@ public partial class ChatPage : IDisposable
         // /gesels, /verken and /studio are this page with the same (empty) parameters, so Blazor wouldn't redraw on its own.
         Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
-        _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
-        _motion = await JS.InvokeAsync<bool>("pulsUi.motion");
+        _location = await JS.InvokeAsync<string?>("chatUi.loadLocation");
+        _motion = await JS.InvokeAsync<bool>("chatUi.motion");
         await LoadLanguagesAsync();
-        _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
+        _reducedMotion = await JS.InvokeAsync<bool>("chatUi.reducedMotion");
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
@@ -98,7 +98,7 @@ public partial class ChatPage : IDisposable
     {
         string[] available = await Api.AvailableToolsetsAsync();
         string[] own = [AskedToolset.Specialists.Wire(), AskedToolset.Web.Wire()];
-        string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
+        string? timeZone = await JS.InvokeAsync<string?>("chatUi.timeZone");
         return await Api.CreateSessionAsync(
             available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available,
             Role, _location, timeZone);
@@ -120,7 +120,7 @@ public partial class ChatPage : IDisposable
             // An API without /v1/roles or its levels: Afrikaans, as before CL9.
         }
 
-        string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
+        string? saved = await JS.InvokeAsync<string?>("chatUi.loadLanguage");
         _language = saved is not null && _languages.Contains(saved) ? saved :
             _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
     }
@@ -147,17 +147,17 @@ public partial class ChatPage : IDisposable
         if (_focusDraft)
         {
             _focusDraft = false;
-            await JS.InvokeVoidAsync("pulsUi.focusEnd", "#composer-input");
+            await JS.InvokeVoidAsync("chatUi.focusEnd", "#composer-input");
         }
 
         if (_focusRename)
         {
             _focusRename = false;
-            await JS.InvokeVoidAsync("pulsUi.focus", "#rename-input", true);
+            await JS.InvokeVoidAsync("chatUi.focus", "#rename-input", true);
         }
 
         // A cost that changed since the last render counts up to its new value (F24; data-count elements, js/chat.js).
-        await JS.InvokeVoidAsync("pulsUi.countCosts");
+        await JS.InvokeVoidAsync("chatUi.countCosts");
     }
 
     /// <summary>Something the page shows changed, so draw again.</summary>
@@ -209,13 +209,13 @@ public partial class ChatPage : IDisposable
     private async Task ChooseLanguage(string code)
     {
         _language = code;
-        await JS.InvokeVoidAsync("pulsUi.saveLanguage", code);
+        await JS.InvokeVoidAsync("chatUi.saveLanguage", code);
     }
 
     /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
     {
-        bool copied = await JS.InvokeAsync<bool>("pulsUi.copy", text);
+        bool copied = await JS.InvokeAsync<bool>("chatUi.copy", text);
         _ = ShowToast(copied ? "Gekopieer." : "Kon nie kopieer nie.");
     }
 
@@ -255,14 +255,14 @@ public partial class ChatPage : IDisposable
     {
         value = value?.Trim();
         _location = string.IsNullOrEmpty(value) ? null : value;
-        await JS.InvokeVoidAsync("pulsUi.saveLocation", _location);
+        await JS.InvokeVoidAsync("chatUi.saveLocation", _location);
     }
 
     /// <summary>Keeps whether the page may move.</summary>
     private async Task SaveMotion(bool motion)
     {
         _motion = motion;
-        await JS.InvokeVoidAsync("pulsUi.setMotion", _motion);
+        await JS.InvokeVoidAsync("chatUi.setMotion", _motion);
     }
 
     /// <summary>Asks the browser where we are and keeps the place, or says why it can't.</summary>
@@ -271,11 +271,11 @@ public partial class ChatPage : IDisposable
         _locating = true;
         try
         {
-            var found = await JS.InvokeAsync<LocateResult>("pulsUi.locate");
+            var found = await JS.InvokeAsync<LocateResult>("chatUi.locate");
             if (found.Place is { Length: > 0 } place)
             {
                 _location = place;
-                await JS.InvokeVoidAsync("pulsUi.saveLocation", place);
+                await JS.InvokeVoidAsync("chatUi.saveLocation", place);
                 _ = ShowToast($"Ligging: {place}");
             }
             else
