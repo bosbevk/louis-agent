@@ -111,7 +111,7 @@ Each: what it is, why, how it fits, and what it costs. *Steps* are commits of ab
 
 ### Wave 1: with F48 (cheap, high value)
 
-Decided (Louis, 2026-10-30): built in F48, as F48.3 ([its steps](../plans/F48-cook-and-teacher.md)).
+Decided (Louis, 2026-10-30): built in F48, as F48.4 ([its steps](../plans/F48-cook-and-teacher.md)).
 
 | # | Idea | Why | How it fits | Cost |
 |---|---|---|---|---|
