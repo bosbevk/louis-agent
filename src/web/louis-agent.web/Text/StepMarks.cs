@@ -1,6 +1,6 @@
 using LouisAgent.Web.Chats;
 
-namespace LouisAgent.Puls.Text;
+namespace LouisAgent.Web.Text;
 
 /// <summary>
 /// How the work panel marks one step of a specialist or minion: still waiting, failed, or done, as a class name for

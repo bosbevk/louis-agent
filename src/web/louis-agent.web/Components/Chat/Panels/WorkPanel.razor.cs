@@ -4,12 +4,19 @@ using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
-namespace LouisAgent.Puls.Components.Chat.Panels;
+namespace LouisAgent.Web.Components.Chat.Panels;
 
-/// <summary>The work panel: the work Puls handed out in this chat, newest first.</summary>
+/// <summary>The work panel: the work this chat handed out, newest first.</summary>
 public partial class WorkPanel
 {
     [Parameter] public ChatModel? Chat { get; set; }
+
+    /// <summary>The site's picture for an empty panel; with none, there isn't one.</summary>
+    [Parameter] public string? EmptyImage { get; set; }
+
+    /// <summary>The site's picture beside each piece of work; with none, there isn't one.</summary>
+    [Parameter] public string? Avatar { get; set; }
+
     [Parameter] public bool Streaming { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 

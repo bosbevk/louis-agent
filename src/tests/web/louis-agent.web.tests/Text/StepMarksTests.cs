@@ -1,7 +1,7 @@
-using LouisAgent.Puls.Text;
+using LouisAgent.Web.Text;
 using LouisAgent.Web.Chats;
 
-namespace LouisAgent.Puls.Tests.Text;
+namespace LouisAgent.Web.Tests.Text;
 
 /// <summary>A step in the work panel is waiting until its result arrives, then failed or done.</summary>
 public class StepMarksTests
