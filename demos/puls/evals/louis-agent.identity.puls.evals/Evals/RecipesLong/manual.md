@@ -81,9 +81,10 @@ and the time (the ledger's, not a check's).
 
 ## No recordings yet
 
-This eval has never run: its `Transcripts/` hold hand-written conversations that prove the checks (a reference that
-passes every required check and known-bads that each fail one), not recordings of the cook. The first real run is
-step 5's, and records afresh. Its answers are then the ones to label for the judge.
+Its `Transcripts/` hold hand-written conversations that prove the checks (a reference that passes every required check
+and known-bads that each fail one), not recordings of the cook. Its only real run, `53e4d1a38674`, was stopped at 96 of 150
+answers, and came before plain questions and before English questions opened in the English voice, so its answers no longer
+match these scenarios. The next whole run replaces these, and its answers are then the ones to label for the judge.
 
 ## What to do when it fails
 

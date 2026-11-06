@@ -352,3 +352,11 @@ Anthropic refuses that for this model, and the grade came back Unknown, which an
 as a failure. An Unknown that never goes away is a failure nobody sees. Then the strict judge failed good recipes
 over water, salt and a serving line, so the rubric said those don't change a recipe. Skill 12 (evaluation: calibrate
 on both classes) and skill 1 (models and providers: a provider's limits are the factory's business).
+
+**FX57: an error can be somebody else's, and still be yours to name.** The dashboard filled with *A task failed and
+nothing awaited it*, in clumps of four, long after the page that caused them. PuppeteerSharp fails a private task whenever a
+page or an iframe goes before its script context exists, and the runtime only reports it when the garbage collector gets
+there, which is why the errors never lined up with anything. FX36 could await the failing task for redirects; this task is
+private to the library, so the only choice was to say what's expected. The filter holds the exception's type and its exact
+words, so a timeout from the same library is still an Error. An error log you've learned to ignore is the expensive part:
+Louis asked about it, and nothing had been lost. Skill 17 (observability: a log line has to mean something).
