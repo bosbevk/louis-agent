@@ -5,6 +5,7 @@ using LouisAgent.Api.Endpoints.Admin.Imports;
 using LouisAgent.Api.Endpoints.Admin.Prompts;
 using LouisAgent.Api.Endpoints.Admin.Reports;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
+using LouisAgent.Api.Endpoints.Admin.Screens;
 using LouisAgent.Api.Endpoints.Admin.Studio;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
@@ -65,6 +66,9 @@ internal static class AdminEndpoints
 
         // The numbers the packs keep about themselves (F35.7).
         admin.MapReports();
+
+        // The screens the packs describe, drawn by one generic page.
+        admin.MapScreens();
 
         // The studio (F49.5): the runner's catalogue, its check and promptfoo in and out, which say the runner isn't
         // there when none was given, and the evals being composed, kept beside the other drafts.

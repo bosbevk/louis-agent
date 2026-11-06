@@ -3,7 +3,7 @@ using LouisAgent.Composition.Packs.Screens.Reading;
 
 namespace LouisAgent.Testing;
 
-/// <summary>A screen for the catalogue's and the API's tests: a name, its rows, and the last query it was asked.</summary>
+/// <summary>A screen for the catalogue's and the API's tests: a name, its rows, and the last query it got.</summary>
 public sealed class FakeScreen(string name, params ScreenRow[] rows) : IDataScreen
 {
     /// <summary>What the page last asked for.</summary>

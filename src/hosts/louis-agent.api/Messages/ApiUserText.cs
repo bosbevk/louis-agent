@@ -39,6 +39,9 @@ public enum ApiUserText
     [Description("No upload '{Name}' here; GET /v1/admin/imports lists the ones there are.")]
     UnknownImport,
 
+    [Description("No screen '{Name}' here; GET /v1/admin/screens lists the ones there are.")]
+    UnknownScreen,
+
     [Description("Send the files to upload: 'files', each with its 'slot', 'file_name' and 'content'.")]
     ImportNoFiles,
 
