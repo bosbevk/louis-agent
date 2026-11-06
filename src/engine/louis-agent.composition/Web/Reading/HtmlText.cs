@@ -68,10 +68,27 @@ public static partial class HtmlText
     /// <remarks>Guard clauses, one per case (ADR 0051).</remarks>
     private static string MainContent(string html)
     {
-        bool cards = !MainTag().IsMatch(html) && ArticleTag().Count(html) > 1;
+        bool cards = TagCount(html, "<main") == 0 && TagCount(html, "<article") > 1;
         if (!cards && MainOrArticle().Match(html) is { Success: true } main) return main.Groups["body"].Value;
 
         return BodyTag().Match(html) is { Success: true } body ? body.Groups[1].Value : html;
+    }
+
+    /// <summary>
+    /// How many times a tag opens, by plain search (ADR 0057): "&lt;article" counts in "&lt;article class=card&gt;" and
+    /// "&lt;ARTICLE&gt;", never in "&lt;articles&gt;".
+    /// </summary>
+    private static int TagCount(string html, string open)
+    {
+        int count = 0;
+        for (int at = html.IndexOf(open, StringComparison.OrdinalIgnoreCase); at >= 0;
+             at = html.IndexOf(open, at + open.Length, StringComparison.OrdinalIgnoreCase))
+        {
+            int after = at + open.Length;
+            if (after == html.Length || !char.IsLetterOrDigit(html[after])) count++;
+        }
+
+        return count;
     }
 
     private static string UrlOf(string imageMarkdown) =>
@@ -121,12 +138,6 @@ public static partial class HtmlText
 
     [GeneratedRegex(@"<(main|article)\b[^>]*>(?<body>.*)</\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex MainOrArticle();
-
-    [GeneratedRegex(@"<main\b", RegexOptions.IgnoreCase)]
-    private static partial Regex MainTag();
-
-    [GeneratedRegex(@"<article\b", RegexOptions.IgnoreCase)]
-    private static partial Regex ArticleTag();
 
     [GeneratedRegex(@"<body[^>]*>(.*)</body>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex BodyTag();
