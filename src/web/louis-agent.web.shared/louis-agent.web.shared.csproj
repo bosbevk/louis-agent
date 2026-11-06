@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <!-- What both web apps share (louis-agent.web for code review, louis-agent.puls for the general assistant): the chat
+  <!-- What both web apps share (louis-agent.code-review for code review, louis-agent.puls for the general assistant): the chat
        models, the API client's core, the turn view (with the delegation card), markdown, usage and currency. Each app keeps
        its own pages, look (CSS) and JavaScript; the shared components only emit class names. -->
   <PropertyGroup>

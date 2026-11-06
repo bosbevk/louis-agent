@@ -1484,8 +1484,8 @@ reopening it.
 | No demo identity, no customers pack and no F40 doc: the feature docs stop at F34, and no TODO line names F40 | `docs/features/`, `TODO.md` |
 | The admin portal (F27, F31), which the control room grows from, lives in Puls's web app: the page of checks and the live run (routes `/admin` and `/admin/benchmarks`, 671 lines) and one stored run (138 lines). It already follows a running check live: a row per turn, the open turn streaming in the chat's own `TurnView`, and a reloaded page picks the run up again | `src/louis-agent.puls/Pages/Admin/Benchmarks.razor:1-2,16-19`, `BenchmarkRun.razor` |
 | What ties the portal to Puls: `@layout AdminLayout` (with `PulsLogo` and "Back to Puls"); `RunExplorer` (986 lines), `TrendChart` (135) and `ChartInfo` (76), which are Puls's own components; the focus helper `pulsUi.focus`; the "· Puls Admin" titles; its styles in Puls's `css/admin/`, and Bootstrap's offcanvas, which only Puls's app loads. 47 lines across these six files name Puls, 27 of them in `RunExplorer`'s charts and legends ("Puls itself" beside the specialist) | `src/louis-agent.puls/Layout/AdminLayout.razor:11,17`; `src/louis-agent.puls/Components/`; `Benchmarks.razor:21,658`; `src/louis-agent.puls/wwwroot/js/chat.js:162`, `wwwroot/css/admin/shell.css:1-4`, `wwwroot/index.html:17,52` (counted with `grep -c Puls`) |
-| The shared web project holds no pages: "Each app keeps its own pages, look (CSS) and JavaScript; the shared components only emit class names". Both apps' routers know only their own assembly | `src/louis-agent.web.shared/louis-agent.web.shared.csproj:3-5`; `src/louis-agent.puls/App.razor:1`, `src/louis-agent.web/App.razor:1` |
-| Neither web app opens another identity's mode: Puls's app always opens `puls/voice-{language}`, and the code-review app passes no role, so it gets the API's default mode; the shared API client already takes a role | `src/louis-agent.puls/Pages/ChatPage.razor:326,769`; `src/louis-agent.web/Pages/ChatPage.razor:415`; `src/louis-agent.web.shared/Services/AgentApi.cs:26` |
+| The shared web project holds no pages: "Each app keeps its own pages, look (CSS) and JavaScript; the shared components only emit class names". Both apps' routers know only their own assembly | `src/louis-agent.web.shared/louis-agent.web.shared.csproj:3-5`; `src/louis-agent.puls/App.razor:1`, `src/louis-agent.code-review/App.razor:1` |
+| Neither web app opens another identity's mode: Puls's app always opens `puls/voice-{language}`, and the code-review app passes no role, so it gets the API's default mode; the shared API client already takes a role | `src/louis-agent.puls/Pages/ChatPage.razor:326,769`; `src/louis-agent.code-review/Pages/ChatPage.razor:415`; `src/louis-agent.web.shared/Services/AgentApi.cs:26` |
 | The checks the portal offers are stub, cook and routing. A run needs the run store ("without a store no run starts"), and only Puls's stack runs one: the code-review stack has no MongoDB | `src/louis-agent.api/Services/BenchmarkCatalog.cs:12-21`; `src/louis-agent.api/Program.cs:108-109,114`; `docker/docker-compose.yml` |
 | No stack runs a demo: CL10 deleted the old order-service `docker/docker-compose.demo.yml` (commit `592e4e4`), though `docs/CLAUDE.md:175` still lists a demo compose. Puls's stack turns on only Puls's roles, and its two agent containers' workspace is the whole repository | `docker/`; `docker/docker-compose.puls.yml:40,82` (`ROLES_ENABLED`), `:51,94` (`${PULS_WORKSPACE:-../}:/workspace`) |
 | Reading a document: `ReadDocument` and `ReadTable` are tools of the `files` toolset, beside its write, copy, rename and delete tools; no toolset reads documents only. `FetchUrl` already reaches OpenStreetMap's Nominatim: the cook uses it to find a shop's branch | `louis-agent.core/Tools/Workspace/WorkspaceTools.cs:89,126,233-391`; `louis-agent.core/Agent/ToolsetCatalog.cs:28-32`; `louis-agent.core/Prompts/specialists/puls-cook.md:24-25,65` |
@@ -1819,7 +1819,7 @@ sequenceDiagram
 | The portal's two pages (`Benchmarks`, `BenchmarkRun` on `main`) | `src/louis-agent.web.shared/Pages/Admin/` | `LouisAgent.Web.Shared.Pages.Admin` | 5, moved from `LouisAgent.Puls.Pages.Admin` |
 | `AdminLayout` | `src/louis-agent.web.shared/Layout/` | `LouisAgent.Web.Shared.Layout` | 5, moved from `LouisAgent.Puls.Layout` |
 | `RunExplorer`, `TrendChart`, `ChartInfo` | `src/louis-agent.web.shared/Components/` | `LouisAgent.Web.Shared.Components` | 5, moved from `LouisAgent.Puls.Components`; 6, changed |
-| The two routers (`AdditionalAssemblies`) | `src/louis-agent.puls/App.razor`, `src/louis-agent.web/App.razor` | as now | 5, changed |
+| The two routers (`AdditionalAssemblies`) | `src/louis-agent.puls/App.razor`, `src/louis-agent.code-review/App.razor` | as now | 5, changed |
 | The room's page tests (bUnit) | `tests/louis-agent.web.shared.tests/` | `LouisAgent.Web.Shared.Tests` | 5-7, new |
 | `TryIt` (`/admin/try`) | `src/louis-agent.web.shared/Pages/Admin/` | `LouisAgent.Web.Shared.Pages.Admin` | 7, new |
 
@@ -1844,7 +1844,7 @@ louis-agent/
 │   │   ├── Components/                    RunExplorer (986), TrendChart (135), ChartInfo (76), PulsLogo, …
 │   │   └── wwwroot/                       the admin's styles in css/admin/; pulsUi.focus in js/chat.js;
 │   │                                      Bootstrap from index.html
-│   ├── louis-agent.web/App.razor          the code-review app: a router over its own assembly only; no /admin
+│   ├── louis-agent.code-review/App.razor          the code-review app: a router over its own assembly only; no /admin
 │   └── louis-agent.web.shared/            components and services only: "each app keeps its own pages, look (CSS)
 │                                          and JavaScript"
 └── tests/                                 core, API and orchestrator tests; no web tests
@@ -1880,7 +1880,7 @@ louis-agent/
 │   ├── louis-agent.api/Services/Benchmarks/BenchmarkTrends.cs   step 3: a cost per conversation
 │   ├── louis-agent.puls/                  step 5: Pages/Admin/, AdminLayout, RunExplorer, TrendChart, ChartInfo gone;
 │   │                                      App.razor gains AdditionalAssemblies; its own logo and chat stay
-│   ├── louis-agent.web/App.razor          step 5: AdditionalAssemblies, so the code-review app serves /admin
+│   ├── louis-agent.code-review/App.razor          step 5: AdditionalAssemblies, so the code-review app serves /admin
 │   └── louis-agent.web.shared/            step 5: Pages/Admin/, Layout/AdminLayout.razor, Components/RunExplorer,
 │                                          TrendChart, ChartInfo, wwwroot/ (the admin's styles and focus helper);
 │                                          step 7: Pages/Admin/TryIt.razor

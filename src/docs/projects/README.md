@@ -24,7 +24,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
 | `src/hosts/louis-agent.acp-server` | Library (stdio); a demo's program starts it | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/hosts/louis-agent.api` | Library (ASP.NET Core); a demo's program starts it | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
-| `demos/louis-agent/web/louis-agent.web` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) |
+| `demos/louis-agent/web/louis-agent.code-review` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) |
 | `demos/puls/web/louis-agent.puls` | Blazor WebAssembly | Puls: the general assistant in Afrikaans; a landing page and a three-panel chat that delegates every task | [puls](../../../demos/puls/docs/projects/louis-agent.puls.md) |
 | `demos/louis-agent/web/louis-agent.site` | ASP.NET Core app (static Razor) | The engine's public website: the Console theme and two CSS films of how the engine works; references nothing of ours | [site](../../../demos/louis-agent/docs/projects/louis-agent.site.md) |
 | `src/hosts/louis-agent.mcp-server` | Library (stdio or ASP.NET Core); a demo's program starts it | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
@@ -48,7 +48,7 @@ flowchart BT
     CLI["louis-agent.cli"] --> Core
     ACP["louis-agent.acp-server"] --> Core
     API["louis-agent.api"] --> Core
-    API --> Web["louis-agent.web<br/>(served by the API)"]
+    API --> Web["louis-agent.code-review<br/>(served by the API)"]
     API --> Puls["louis-agent.puls<br/>(served by the API built with -p:WebApp=puls)"]
     Web --> Shared["louis-agent.web.shared"]
     Puls --> Shared

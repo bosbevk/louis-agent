@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <!-- Puls: the general assistant's web app (chat only). louis-agent.api serves it instead of louis-agent.web when built
+  <!-- Puls: the general assistant's web app (chat only). louis-agent.api serves it instead of louis-agent.code-review when built
        with -p:WebApp=puls (demos/puls/docker/images/Dockerfile.puls). -->
   <PropertyGroup>
     <RootNamespace>LouisAgent.Puls</RootNamespace>

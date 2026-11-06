@@ -181,8 +181,8 @@ resources in a temporary repository (`GitResourceTests`). A streamed turn is sti
 
 ## Related docs
 
-[How the agents and endpoints talk](../AGENT_COMMUNICATION.md) · [louis-agent.web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) ·
+[How the agents and endpoints talk](../AGENT_COMMUNICATION.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) ·
 [Architecture § HTTP API](../architecture/05-building-block-view.md#http-api-and-web-app)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.acp-server](louis-agent.acp-server.md) · Next: [louis-agent.web](../../../demos/louis-agent/docs/projects/louis-agent.web.md)
+[Projects](README.md) · Previous: [louis-agent.acp-server](louis-agent.acp-server.md) · Next: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

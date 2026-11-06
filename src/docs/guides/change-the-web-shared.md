@@ -53,7 +53,7 @@ elsewhere. Widen any of these only with a test in `MarkdownTests` that shows the
 ```bash
 dotnet test src/tests/web/louis-agent.web.shared.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.shared.tests   # after a deliberate markup change
-dotnet test demos/louis-agent/tests/louis-agent.web.tests demos/puls/tests/louis-agent.puls.tests  # both apps render through it
+dotnet test demos/louis-agent/tests/louis-agent.code-review.tests demos/puls/tests/louis-agent.puls.tests  # both apps render through it
 ```
 
 The tests mirror the folders: `Chats/` (the stream, the runner, delegations, a specialist's status and answer),

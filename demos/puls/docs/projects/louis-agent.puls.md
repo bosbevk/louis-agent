@@ -174,7 +174,7 @@ the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.emp
 
 ## Related docs
 
-[louis-agent.identity.puls](louis-agent.identity.puls.md) (who Puls is) · [louis-agent.web](../../../louis-agent/docs/projects/louis-agent.web.md) ·
+[louis-agent.identity.puls](louis-agent.identity.puls.md) (who Puls is) · [louis-agent.code-review](../../../louis-agent/docs/projects/louis-agent.code-review.md) ·
 [api](../../../../src/docs/projects/louis-agent.api.md) · [evals](../../../../src/docs/projects/louis-agent.evals.md) · [Multi-agent write-up](../../../../src/docs/learning/10-multi-agent-orchestration.md)
 
 ---

@@ -1,7 +1,7 @@
 # louis-agent.web.shared — design
 
 > **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.shared/` ·
-> **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** louis-agent.web (code
+> **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** louis-agent.code-review (code
 > review) and louis-agent.puls (the general assistant)
 
 ## Purpose
@@ -73,11 +73,11 @@ web test projects share.
   [ADR 0034](../adr/0034-code-a-person-can-maintain.md): split them by concern (the records apart from the stream's
   folding) the next time they change.
 - `UsageFormat` repeats core's `UsageText` number rules, so a change to one must be made in both (see
-  [louis-agent.web](../../../demos/louis-agent/docs/projects/louis-agent.web.md)).
+  [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)).
 
 ## Related docs
 
-[louis-agent.web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md)
+[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) · Next: [louis-agent.mcp-server](louis-agent.mcp-server.md)
+[Projects](README.md) · Previous: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · Next: [louis-agent.mcp-server](louis-agent.mcp-server.md)

@@ -26,7 +26,7 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner", "louis-agent.puls-api")]
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
-    [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
+    [TestCase("demos/louis-agent/web", "louis-agent.code-review", "louis-agent.site")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
         "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",
         "louis-agent.coding-api", "louis-agent.coding-catalog")]
@@ -42,7 +42,7 @@ public class SolutionLayoutTests
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
-    [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests", "louis-agent.web.tests", "louis-agent.site.tests",
+    [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests", "louis-agent.code-review.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
     [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.recipes.integration-tests", "louis-agent.pack.calculator.tests", "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",

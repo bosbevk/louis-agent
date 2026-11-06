@@ -1,8 +1,8 @@
 # Change the code-review web app
 
-> **How-to.** Change `demos/louis-agent/web/louis-agent.web`, the browser app for chatting with the coding agent, browsing the workspace
+> **How-to.** Change `demos/louis-agent/web/louis-agent.code-review`, the browser app for chatting with the coding agent, browsing the workspace
 > and reviewing changes: run it, add a tab, call a new endpoint, add a theme, place its words, and test it.
-> **Elsewhere:** how it works in [louis-agent.web](../projects/louis-agent.web.md); what it shares with Puls in
+> **Elsewhere:** how it works in [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
 > [Change the shared web library](../../../../src/docs/guides/change-the-web-shared.md); the folder rules in [src/CLAUDE.md](../../../../src/CLAUDE.md).
 
 The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. One page,
@@ -55,8 +55,8 @@ class of the app's words rather than inline, as Puls keeps its own in `Text/`
 ## Test it
 
 ```bash
-dotnet test demos/louis-agent/tests/louis-agent.web.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.web.tests     # after a deliberate markup change: then read the diff
+dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests     # after a deliberate markup change: then read the diff
 ```
 
 - `Git/` and `Workspace/` test the plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `ReviewActions`,

@@ -38,7 +38,7 @@ public class FolderSizeTests
         "demos/puls/web/louis-agent.puls/Admin/Reviews",
         "demos/puls/web/louis-agent.puls/Components/Landing",
         "src/web/louis-agent.web.shared/Chats",
-        "demos/louis-agent/web/louis-agent.web/Git",
+        "demos/louis-agent/web/louis-agent.code-review/Git",
         "demos/puls/tests/louis-agent.api.tests",
         "demos/puls/tests/louis-agent.api.tests/Endpoints",
         "demos/puls/tests/louis-agent.api.tests/Sessions",
