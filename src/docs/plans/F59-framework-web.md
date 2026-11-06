@@ -620,6 +620,66 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   two records, a folder each for the sidebar, header, search, composing, turns and panels, and the state classes in `Shell/`, not all in
   `Components/Chat/` as the namespace map says. F59.3 took twelve steps with the state classes, each its own commit.
 
+- **2026-11-06, the code-review app moves last of the three, and its git and file controls go straight to admin screens.** Louis's picks
+  on the code-review move. The frame needs scripts and styles that only Puls has, so base styles and scripts come first (1A). Files, Changes
+  and Branches go straight to admin screens with no stop in the chat's sidebar (2C), so they come before the app's chat page moves, and the
+  app keeps its old frame and tabs until then. A site's page drives the chat through a few public methods on `ChatShell`, a Facade (3A). What
+  doesn't suit a site is turned off with settings and slots that are on by default, Template Method hooks, and the theme picker gets a
+  settings slot (4B). The children's numbers from here: F59.4 base styles and scripts, **F59.5 described screens, F59.6 the git and file
+  controls, F59.7 the code-review app on the frame**, F59.8 recipe management, F59.9 Uploads, F59.10 the eval pages, F59.11 spawning a site.
+  Where earlier text uses other numbers, these win.
+  Two things follow. F59.4 is done when Puls looks as it does today from the framework's files; the code-review app can't load them yet, since
+  its own frame uses the same class names, so its own copies are deleted in F59.7, and `retro` and `paper` move then too. And a Review button on
+  an admin screen is on another page from `ChatShell`, so 3A's methods can't reach it from there: how it gets to the chat is put to Louis when
+  F59.6 starts.
+
+- **2026-11-06, the static site becomes the coding agent's landing page.** Louis: "the static site must become the landing page for the coding
+  agent, it will be it's demo". So `louis-agent.site` stops being outside the rule, and ADR 0084 changes when it moves. The Console colours live
+  in the framework as the one copy, and the site loads them when it moves; until then its own file stays as it is, with no test between the two,
+  since that copy is going. It's its own child, **F59.12**, with its own plan, including whether it stays server-rendered and where its address sits
+  beside the chat's.
+
+- **2026-11-06, the base theme's errors and warnings, and the admin's styles.** Louis's picks on F59.4. The Console theme gains one muted red and
+  one amber, used only for errors and warnings (1A), in the framework's copy. All seven admin stylesheets move in F59.4, as this plan first
+  said (4B), so the framework holds the styles of the eval pages before their pages arrive in F59.10.
+
+- **2026-11-06, Bootstrap's own variables are the colour contract.** Louis's pick A on "we must bootstrap it". Every site loads Bootstrap, and rules
+  use its names. This replaces what decision 10 and the first note above say about the code-review app's names being the contract, so `retro` and
+  `paper` are rewritten in F59.7. What Bootstrap has no name for takes a `--web-` name. The landing's rules take the same names, so Puls keeps one
+  list. The names, checked against Bootstrap 5.3.3's `:root`:
+
+  | Puls today | What it is | From here |
+  |---|---|---|
+  | `--bg`, `--text` | The page and its text | `--bs-body-bg`, `--bs-body-color` |
+  | `--ink`, `--muted`, `--dim` | Strong, quieter and quietest text | `--bs-emphasis-color`, `--bs-secondary-color`, `--bs-tertiary-color` |
+  | `--surface`, `--sidebar` | Cards, and the menu | `--bs-secondary-bg`, `--bs-tertiary-bg` |
+  | `--border` | Lines | `--bs-border-color` |
+  | `--orange`, `--orange-text`, `--orange-soft` | Actions, their text, their tint | `--bs-primary`, `--bs-primary-text-emphasis`, `--bs-primary-bg-subtle` |
+  | `--green`, `--green-light`, `--green-soft` | Your messages, done, their tint | `--bs-success`, `--bs-success-text-emphasis`, `--bs-success-bg-subtle` |
+  | `--blue`, `--blue-soft` | Links and their tint, already the same values as the two greens | `--bs-link-color`, `--bs-success-bg-subtle` |
+  | `--danger` | Errors | `--bs-danger` |
+  | `--shadow-sm`, `--shadow-md` | Shadows | `--bs-box-shadow-sm`, `--bs-box-shadow` |
+  | `--radius` | The big corner, 16 px | `--bs-border-radius-xl`, Bootstrap's own 1rem |
+  | `--font`, `--font-code` | Type | `--bs-font-sans-serif`, `--bs-font-monospace` |
+  | `--orange-deep`, `--green-deep`, `--navy`, `--navy-deep` | Darker steps, and the sidebar's foot | `--web-primary-deep`, `--web-success-deep`, `--web-sidebar-foot`, `--web-sidebar-foot-deep` |
+  | `--cta`, `--shadow-glow`, `--code-bg` | The button's gradient, its glow, code blocks | `--web-cta`, `--web-glow`, `--web-code-bg` |
+  | `--ease`, `--spring` | Motion curves | `--web-ease`, `--web-spring` |
+  | `--cream` | Nothing uses it | Deleted |
+
+  Layout values such as `--sidebar-w` stay. `--success` and `--mono` are never set, so those rules always use their fallbacks, and they stay as
+  they are rather than change the look.
+
+  F59.4's steps replace the section above, each its own commit:
+
+  | # | Step | Its test |
+  |---|---|---|
+  | 1 | **Puls takes Bootstrap's names,** in its tokens, every rule and `EvalScorecard`, with nothing moved | A style test: no rule uses an old name. A look, since Bootstrap's own dropdowns, tables, cards and modal now read these values |
+  | 2 | **The framework's base colours:** the Console theme under the new names, with its red and amber | A style test: every name the rules use is set; a site with no colours of its own opens black and white |
+  | 3 | **The frame and chat styles move,** with the plain elements. Puls's `app.css` stays the list, in the same order, with the framework's tokens first and its own after | The byte-checked move; `PulsStylesheetTests`; a look |
+  | 4 | **The seven admin stylesheets move** | The byte-checked move; a look at the admin's open pages |
+  | 5 | **The scripts move:** `chatUi` and `louisChat`, and the `puls.*` browser settings take a neutral name, with no migration (ADR 0049). The rule's test now covers scripts and styles | Seen failing on a throwaway site word; Puls's page tests stay green |
+  | 6 | **The docs and a look,** at desktop and phone width, beside today's | Links and size tests, then the browser |
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
