@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Telemetry.Messages;
@@ -25,6 +26,9 @@ internal static class LastChance
     /// <summary>Whether this process is subscribed already.</summary>
     private static bool _installed;
 
+    /// <summary>What its users said to expect: added at their start, read on the finalizer thread.</summary>
+    private static readonly ConcurrentBag<Func<Exception, bool>> Expected = [];
+
     /// <summary>The handler's own lines.</summary>
     private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger(typeof(LastChance));
 
@@ -40,6 +44,9 @@ internal static class LastChance
         }
     }
 
+    /// <summary>A failure a library leaves lost by design, that its user knows costs nothing: not worth an Error.</summary>
+    public static void Expect(Func<Exception, bool> isExpected) => Expected.Add(isExpected);
+
     /// <summary>Logs the crash once, then sends the logs and the spans: the line first, the spans after.</summary>
     public static void Handle(Exception exception)
     {
@@ -49,13 +56,15 @@ internal static class LastChance
     }
 
     /// <summary>
-    /// Marks the lost task seen and logs it as an Error. No flush: this runs on the finalizer thread, and the process
-    /// goes on, so the line leaves with the next batch.
+    /// Marks the lost task seen and logs it as an Error, or as Debug when all it holds was expected. No flush: this runs
+    /// on the finalizer thread, and the process goes on, so the line leaves with the next batch.
     /// </summary>
     public static void OnUnobserved(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         e.SetObserved();
-        Log.Log(LogLevel.Error, TelemetryLogMessage.UnobservedTaskException, exception: e.Exception);
+        bool expected = e.Exception.InnerExceptions.All(failure => Expected.Any(isExpected => isExpected(failure)));
+        Log.Log(expected ? LogLevel.Debug : LogLevel.Error, TelemetryLogMessage.UnobservedTaskException,
+            exception: e.Exception);
     }
 
     /// <summary>The runtime's last call before the process ends on an exception nothing caught.</summary>
