@@ -686,6 +686,12 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   **Always reuse,** Louis's words: "while building scss we must make sure to always reuse". Before writing a rule, look for a variable, mixin or partial that already does it; what repeats becomes one shared piece; a site `@use`s the framework's Sass and never copies it. Step 3 writes this into `.claude/rules/css.md`.
   **A site compiles the framework's Sass,** so there's no `_content/` stylesheet as this plan first said: a site lists the framework's partials under `web/` in its own `app.scss`, found through `IncludePaths`, and gets one CSS file with the order it always had.
 
+- **2026-11-07, finished unattended on one branch.** Louis: "finish f59 unattended", with these answers. One branch and one PR at the end,
+  `feature/F59-framework-web`, in place of a branch and PR per child. No Docker at all: each child is checked with `dotnet publish`, and Louis
+  builds the images at the end. A Review or Ask button on an admin screen opens a new chat with the prompt as a draft, never sent by itself. The
+  static site stays server-rendered, on the framework's colours and Sass, with the app at `/chat`. What the build chooses beyond this is recorded below
+  as it comes, for Louis to read at the end. FX59, the mouse wheel stopping short after a chat, stays open and must be fixed before release.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

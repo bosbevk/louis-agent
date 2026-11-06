@@ -66,18 +66,18 @@ window.chatUi = {
     setWidth(width) {
         const clamped = Math.round(Math.min(this.maxWidth, Math.max(this.minWidth, width)));
         document.documentElement.style.setProperty("--sidebar-w", clamped + "px");
-        try { localStorage.setItem("puls.sidebarWidth", clamped); } catch { }
+        try { localStorage.setItem("chat.sidebarWidth", clamped); } catch { }
     },
 
     toggleSidebar() {
         const hidden = document.documentElement.classList.toggle("sidebar-hidden");
-        try { localStorage.setItem("puls.sidebarHidden", hidden ? "1" : "0"); } catch { }
+        try { localStorage.setItem("chat.sidebarHidden", hidden ? "1" : "0"); } catch { }
     },
 
-    // The Werk panel on a wide screen (F20): hidden or shown, remembered.
+    // The work panel on a wide screen: hidden or shown, remembered.
     toggleWork() {
         const hidden = document.documentElement.classList.toggle("work-hidden");
-        try { localStorage.setItem("puls.workHidden", hidden ? "1" : "0"); } catch { }
+        try { localStorage.setItem("chat.workHidden", hidden ? "1" : "0"); } catch { }
     },
 };
 
@@ -174,7 +174,7 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// The profile menu's Instellings: show the sidebar if it's hidden, then open its settings.
+// The profile menu's settings: show the sidebar if it's hidden, then open its settings.
 chatUi.openSettings = () => {
     if (document.documentElement.classList.contains("sidebar-hidden")) chatUi.toggleSidebar();
     const settings = document.querySelector(".sidebar-settings");
@@ -184,46 +184,46 @@ chatUi.openSettings = () => {
 };
 
 // Animations although the system asks for less (F24): data-motion="on" on <html> (app.css lifts its reduced-motion
-// rules under it; index.html applies it before the first paint), remembered in this browser as puls.motion.
+// rules under it; index.html applies it before the first paint), remembered in this browser.
 chatUi.motion = () => document.documentElement.dataset.motion === "on";
 chatUi.reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 chatUi.setMotion = (on) => {
     if (on) document.documentElement.dataset.motion = "on"; else delete document.documentElement.dataset.motion;
-    try { if (on) localStorage.setItem("puls.motion", "on"); else localStorage.removeItem("puls.motion"); } catch { }
+    try { if (on) localStorage.setItem("chat.motion", "on"); else localStorage.removeItem("chat.motion"); } catch { }
 };
 
 // Where the user is (F22): kept in this browser only.
-chatUi.loadLocation = () => { try { return localStorage.getItem("puls.location"); } catch { return null; } };
+chatUi.loadLocation = () => { try { return localStorage.getItem("chat.location"); } catch { return null; } };
 chatUi.saveLocation = (place) => {
-    try { if (place) localStorage.setItem("puls.location", place); else localStorage.removeItem("puls.location"); } catch { }
+    try { if (place) localStorage.setItem("chat.location", place); else localStorage.removeItem("chat.location"); } catch { }
 };
-// Puls's language (CL9): the voice a new chat opens with, remembered in this browser as puls.language.
-chatUi.loadLanguage = () => { try { return localStorage.getItem("puls.language"); } catch { return null; } };
-chatUi.saveLanguage = (code) => { try { localStorage.setItem("puls.language", code); } catch { } };
+// The language: the voice a new chat opens with, remembered in this browser.
+chatUi.loadLanguage = () => { try { return localStorage.getItem("chat.language"); } catch { return null; } };
+chatUi.saveLanguage = (code) => { try { localStorage.setItem("chat.language", code); } catch { } };
 chatUi.timeZone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { return null; } };
 
-// "Gebruik my ligging": the browser's position (it asks the user once), named by OpenStreetMap's Nominatim at town level.
+// The location button: the browser's position (it asks the user once), named by OpenStreetMap's Nominatim at town level.
 // One request per press, as Nominatim's usage policy asks; the browser sends its own Referer and User-Agent. The position
 // goes to two decimals (about 1 km), all a town needs.
-chatUi.locate = () => new Promise((resolve) => {
-    if (!navigator.geolocation) return resolve({ place: null, error: "Hierdie blaaier kan nie jou ligging gee nie." });
+chatUi.locate = (languages) => new Promise((resolve) => {
+    if (!navigator.geolocation) return resolve({ place: null, error: "no-browser" });
     navigator.geolocation.getCurrentPosition(async (position) => {
         try {
             const { latitude, longitude } = position.coords;
-            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&accept-language=af,en`
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&accept-language=${encodeURIComponent(languages)}`
                 + `&lat=${latitude.toFixed(2)}&lon=${longitude.toFixed(2)}`;   // ~1 km: a town, not a street
             const response = await fetch(url, { headers: { "Accept": "application/json" } });
-            if (!response.ok) return resolve({ place: null, error: "OpenStreetMap kon nie die plek benoem nie." });
+            if (!response.ok) return resolve({ place: null, error: "not-named" });
             const address = (await response.json()).address || {};
             const town = address.city || address.town || address.village || address.municipality || address.suburb || address.county;
             const place = [town, address.state || address.province, address.country].filter(Boolean).join(", ");
-            resolve(place ? { place, error: null } : { place: null, error: "OpenStreetMap kon nie die plek benoem nie." });
+            resolve(place ? { place, error: null } : { place: null, error: "not-named" });
         } catch {
-            resolve({ place: null, error: "Kon nie OpenStreetMap bereik nie." });
+            resolve({ place: null, error: "unreachable" });
         }
     }, (error) => resolve({
         place: null,
-        error: error.code === 1 ? "Jy het nie toestemming gegee vir jou ligging nie." : "Kon nie jou ligging kry nie.",
+        error: error.code === 1 ? "denied" : "not-found",
     }), { timeout: 10000, maximumAge: 600000 });
 });
 
@@ -242,7 +242,7 @@ chatUi.copy = async (text) => {
     try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 };
 
-// Show the Werk panel (an answer's sources): unhide it on a wide screen, slide it in on a smaller one.
+// Show the work panel (an answer's sources): unhide it on a wide screen, slide it in on a smaller one.
 chatUi.showWork = () => {
     if (window.matchMedia("(min-width: 1200px)").matches) {
         if (document.documentElement.classList.contains("work-hidden")) chatUi.toggleWork();

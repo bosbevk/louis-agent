@@ -2,7 +2,7 @@
 // section centred, reveals when blocks enter, counters, labels that decode from glyphs, the magnetic pill, the pinned
 // tour and the demo that plays a turn. Started by LandingPage.razor after its first render and stopped when the page is
 // left, since the page is a Blazor route: nothing here runs on DOMContentLoaded. Everything honours the system's
-// "less motion" setting unless the viewer switched motion on (puls.motion in this browser, read by index.html too).
+// "less motion" setting unless the viewer switched motion on (chat.motion in this browser, read by index.html too).
 window.pulsLanding = (() => {
     const $ = (s, r = document) => r.querySelector(s);
     const $$ = (s, r = document) => [...r.querySelectorAll(s)];

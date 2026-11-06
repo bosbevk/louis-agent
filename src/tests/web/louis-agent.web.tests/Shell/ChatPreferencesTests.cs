@@ -76,7 +76,7 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate").SetResult(new LocatedPlace("Worcester", null));
+        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace("Worcester", null));
         var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
 
         string said = await preferences.UseMyLocationAsync();
@@ -86,20 +86,44 @@ public class ChatPreferencesTests
         Assert.That(said, Is.EqualTo("Location: Worcester"));
     }
 
-    /// <summary>When the browser gives a reason, that's what it says, and the place stays.</summary>
-    [Test]
-    public async Task AReason_IsSaid_AndThePlaceStays()
+    /// <summary>When the script names a problem, the site's words say it, and the place stays.</summary>
+    [TestCase("denied", "You didn't give permission for your location.")]
+    [TestCase("no-browser", "This browser can't give your location.")]
+    [TestCase("not-named", "OpenStreetMap couldn't name the place.")]
+    [TestCase("unreachable", "Couldn't reach OpenStreetMap.")]
+    [TestCase("not-found", "Couldn't find your location.")]
+    public async Task AProblem_IsSaidInTheSitesWords_AndThePlaceStays(string problem, string words)
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate").SetResult(new LocatedPlace(null, "Permission denied"));
+        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace(null, problem));
         var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
         await preferences.SaveLocationAsync("Paarl");
 
         string said = await preferences.UseMyLocationAsync();
 
         Assert.That(preferences.Location, Is.EqualTo("Paarl"));
-        Assert.That(said, Is.EqualTo("Permission denied"));
+        Assert.That(said, Is.EqualTo(words));
+    }
+
+    /// <summary>The site says which languages the place is named in.</summary>
+    [Test]
+    public async Task TheSitesLanguages_GoToTheScript()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText { PlaceLanguages = "xx,en" });
+
+        try
+        {
+            await preferences.UseMyLocationAsync();
+        }
+        catch (NullReferenceException)
+        {
+            // Loose interop answers with nothing; only the call matters here.
+        }
+
+        Assert.That(ctx.JSInterop.Invocations["chatUi.locate"].Single().Arguments, Is.EqualTo(new object[] { "xx,en" }));
     }
 
     /// <summary>With no place and no reason, it says it couldn't find one.</summary>
@@ -108,7 +132,7 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate").SetResult(new LocatedPlace(null, null));
+        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace(null, null));
         var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
 
         string said = await preferences.UseMyLocationAsync();
