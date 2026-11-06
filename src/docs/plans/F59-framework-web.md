@@ -596,6 +596,13 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
 - **2026-11-06, the summaries the rename's files lacked come in their own commit straight after it,** Louis's pick A, so the rename stays
   easy to review. It adds one step to F59.1.
 
+- **2026-11-06, the code-review app gets the admin frame too, from F59.5.** Louis's pick A: "because the git things must live there". So it
+  gets a small `AdminLayout`, the `SiteFrames` setting and the admin pages as they move in, and the git pack's controls live in that admin.
+  How they appear there is put to Louis when F59.3 starts.
+
+- **2026-11-06, everything in `louis-agent.web` is in English; only Puls is in Afrikaans.** Louis's words. So `ChatWords` in F59.3 is English
+  in the framework, and Puls fills its own in. The admin stays English on every site.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
