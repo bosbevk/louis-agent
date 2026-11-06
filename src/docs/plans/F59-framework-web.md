@@ -569,6 +569,15 @@ It starts by proving nothing in them is Puls's own, then moves them in small gro
 this plan, once its lasting parts are in the ADRs and the write-up. Steps: the starter site in `demos/starter/`; `.template.config`;
 a test that creates one and builds it; and `guides/spawn-a-site.md`.
 
+## Approved during the build
+
+- **2026-11-06, the base colours are the site's Console theme, not `retro`.** Louis: the base stylesheet's colour scheme is that of the
+  static website, `louis-agent.site`. So a site with no colours of its own is black and white with metallic grays, set in Geist, as
+  `settings/tokens.css` there has it. This replaces what decision 10, *The look* and F59.4 say about `retro` and `paper` being the
+  framework's: those two stay the code-review app's own themes, as a site's colours do. The variable names stay the code-review app's
+  contract, because its rules already use only them. Two points are put to Louis when F59.4 starts: the Console theme has no colour for an
+  error or a warning, and how the site and the framework share its values.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
