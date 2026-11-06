@@ -65,7 +65,7 @@ public class PulsLanguageFilesTests
             "the mood can be switched off for a turn");
     }
 
-    /// <summary>No file holds a hand-off line to copy, in either language: Puls words it itself each time.</summary>
+    /// <summary>No file holds the old set hand-off lines, in either language: Puls words it itself each time.</summary>
     [TestCase("agent/puls/voice.md")]
     [TestCase("agent/puls/voice-af.md")]
     [TestCase("agent/puls/voice-en.md")]
@@ -73,11 +73,32 @@ public class PulsLanguageFilesTests
     {
         foreach (string line in new[]
                  {
-                     "Ek gee dit gou", "hy's nou-nou terug", "My kok is terug", "I'm handing this", "he'll be back",
+                     "Ek gee dit gou vir my kok", "My kok is terug", "I'm handing this to my cook", "he'll be back",
                      "My cook is back"
                  })
             Assert.That(Prompt(file), Does.Not.Contain(line), file);
     }
+
+    /// <summary>
+    /// Each voice shows several hand-offs to learn from. With none, the Afrikaans came out wrong ("Jy is so terug", a
+    /// Vietnamese word); with one, it was copied word for word.
+    /// </summary>
+    [TestCase("agent/puls/voice-af.md")]
+    [TestCase("agent/puls/voice-en.md")]
+    public void EachVoice_ShowsSeveralHandOffs(string file)
+    {
+        string[] lines = Prompt(file).Split('\n');
+
+        Assert.That(lines.Count(line => line.TrimEnd().StartsWith("  - \"", StringComparison.Ordinal)),
+            Is.GreaterThanOrEqualTo(4));
+    }
+
+    /// <summary>The report comes by itself, so the user is asked to do nothing: it's the cook who comes back.</summary>
+    [TestCase("agent/puls/voice-af.md", "so vra die gebruiker om niks te doen of terug te kom nie")]
+    [TestCase("agent/puls/voice-en.md", "so never ask the user to do anything or come back")]
+    public void TheHandOff_AsksTheUserToDoNothing(string file, string words) =>
+        Assert.That(string.Join(' ', Prompt(file).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)),
+            Does.Contain(words));
 
     /// <summary>Each voice says what the hand-off holds, and that the words are Puls's own.</summary>
     [TestCase("agent/puls/voice-af.md", "in jou eie woorde, nooit 'n vaste sin nie")]
