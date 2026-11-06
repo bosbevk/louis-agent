@@ -3,8 +3,8 @@ using LouisAgent.Core.Skills.Headers;
 namespace LouisAgent.Identities.Puls.Tests.Prompts;
 
 /// <summary>
-/// A recipe or a meal. Someone asking for a recipe wants the recipe, as the page wrote it, not a question back; a number
-/// only matters when they name one or want a meal planned. And a cake is per cake: more people means another cake.
+/// A recipe or a meal. Someone asking for a recipe wants the recipe, as the page wrote it, not a question back; a
+/// number only matters when they name one or want a meal planned. And a cake is per cake: more people, another cake.
 /// </summary>
 public class PulsMadeWholeTests
 {
@@ -12,7 +12,7 @@ public class PulsMadeWholeTests
     private static string Prompt(string path) =>
         string.Join(' ', PromptCatalog.Get(path)!.Body.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
-    /// <summary>A recipe or a named dish goes straight on, with no number; only a meal to plan is asked about.</summary>
+    /// <summary>A recipe or a named dish goes straight on, with no number; only a meal to plan is asked.</summary>
     [Test]
     public void Puls_GivesARecipe_WithoutAskingHowMany()
     {
@@ -29,7 +29,7 @@ public class PulsMadeWholeTests
     public void ABudgetPerPerson_StillAsksHowMany() =>
         Assert.That(Prompt("agent/puls/voice.md"), Does.Contain("a budget per person with no number"));
 
-    /// <summary>What Puls hands on keeps the user's own words for the dish: "butternut" became butter beans once.</summary>
+    /// <summary>What Puls hands on keeps the user's words for the dish: "butternut" became butter beans once.</summary>
     [Test]
     public void TheBrief_KeepsTheDishInTheUsersOwnWords()
     {
@@ -53,7 +53,7 @@ public class PulsMadeWholeTests
         Assert.That(cook, Does.Contain("leave `serves` out"));
     }
 
-    /// <summary>Something made whole comes in whole ones, rounded up, as running short is worse than leftovers.</summary>
+    /// <summary>Something made whole comes in whole ones, rounded up: running short is worse than leftovers.</summary>
     [Test]
     public void SomethingMadeWhole_ComesInWholeOnes_RoundedUp()
     {
@@ -64,7 +64,7 @@ public class PulsMadeWholeTests
         Assert.That(cook, Does.Contain("a stew or a batch of biscuits scales as usual"));
     }
 
-    /// <summary>When someone names a number the tool's lines stand: a fifth of a batch of samoosas came back whole once.</summary>
+    /// <summary>A number named means the tool's lines stand: a fifth of a samoosa batch came back whole once.</summary>
     [Test]
     public void TheCook_DoesntOverrideTheTool() =>
         Assert.That(Prompt("specialists/puls-cook.md"), Does.Contain("don't go back to the page's amounts"));

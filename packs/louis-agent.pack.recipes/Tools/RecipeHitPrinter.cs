@@ -38,7 +38,7 @@ internal static class RecipeHitPrinter
                         Sites = asked,
                         Query = query
                     }),
-                .. OtherNames(query)
+                .. OtherNamesLine(QueryWords.OtherNames(query))
             ]);
 
         // Every site asked, those with no hits too, so a next try can skip them.
@@ -56,11 +56,11 @@ internal static class RecipeHitPrinter
                 Site = hit.Site.Name,
                 Url = hit.Hit.Url.AbsoluteUri
             }));
-        return Framed([heading, .. lines, .. OtherNames(query)]);
+        return Framed([heading, .. lines, .. OtherNamesLine(QueryWords.AlsoCalled(query))]);
     }
 
-    /// <summary>The line naming what else the dish is called, when most sites call it something else.</summary>
-    private static string[] OtherNames(string query) => QueryWords.AlsoCalled(query) is { Count: > 0 } names
+    /// <summary>The line naming what else the dish is called, when there's anything to name.</summary>
+    private static string[] OtherNamesLine(IReadOnlyList<string> names) => names.Count > 0
         ? [MessageText.Format(RecipeToolMessage.DishAlsoCalled, new { Names = string.Join(", ", names) })]
         : [];
 

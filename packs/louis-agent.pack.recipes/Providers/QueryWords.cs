@@ -37,11 +37,19 @@ internal static class QueryWords
     private static readonly string[] PapEnSousToTry = ["pap and sheba", "ushatini", "tomato and onion gravy"];
 
     /// <summary>
-    /// Dishes with names that share no word: a site printing <c>Milk tart</c> has a melktert, and without these it was
-    /// dropped, which took melktert from ten sites to six.
+    /// Dishes with names that share no word, in the other language or another spelling: a site printing
+    /// <c>Milk tart</c> has a melktert, and without these it was dropped, which took melktert from ten sites to six.
     /// </summary>
     private static readonly string[][] TwoNames =
-        [["melktert", "milk tart"], ["hoenderpastei", "chicken pie"], PapEnSous];
+    [
+        ["melktert", "milk tart"], ["hoenderpastei", "chicken pie"], ["appeltert", "apple tart"],
+        ["ingelegde vis", "pickled fish"], ["karringmelkbeskuit", "karringmelk beskuit", "buttermilk rusks"],
+        ["pampoenkoekies", "pumpkin fritters"], ["beesstert", "oxtail"], ["sjokoladekoek", "chocolate cake"],
+        ["wortelkoek", "carrot cake"], ["botterskorsiesop", "butternut soup"], ["bananabrood", "banana bread"],
+        ["malvapoeding", "malva pudding"], ["souskluitjies", "cinnamon dumplings"], ["skons", "scones"],
+        ["frikkadelle", "frikkadels"], ["hertzoggies", "herzoggies"], ["samoosas", "samosas", "samoosa", "samosa"],
+        ["macaroni and cheese", "macaroni cheese", "mac and cheese", "macaroni kaas"], PapEnSous
+    ];
 
     /// <summary>
     /// Other names to try for a dish most sites call something else. A site's own search only finds the word it's
@@ -53,6 +61,17 @@ internal static class QueryWords
         return PapEnSous.Any(name => Holds(words, name))
             ? [.. PapEnSousToTry.Where(name => !Holds(words, name))]
             : [];
+    }
+
+    /// <summary>
+    /// What else to search for when a search found nothing: the dish's other names, so the empty result gives the next
+    /// search a word. A result with hits only gets <see cref="AlsoCalled"/>, as it has something to read already.
+    /// </summary>
+    public static IReadOnlyList<string> OtherNames(string query)
+    {
+        string[] words = Words(query);
+        var names = TwoNames.FirstOrDefault(names => names.Any(name => Holds(words, name))) ?? [];
+        return names == PapEnSous ? AlsoCalled(query) : [.. names.Where(name => !Holds(words, name))];
     }
 
     /// <summary>
