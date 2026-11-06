@@ -1,24 +1,11 @@
 @inherits LayoutComponentBase
-@* F27: the admin portal's own layout, built in-house on the chat's pieces (its sidebar, links and offcanvas): a fixed
-   sidebar of sections and a content column; a page puts its header and cards in @Body. Reference: the page anatomy
-   AdminLTE and Tabler share (sidebar, page header with actions, cards); none of their files. In English (Louis,
-   F31): the admin screens are the builder's, the chat stays in Puls's languages. *@
+@* The framework's admin frame, filled with what's Puls's own: its logo, its live strip, its links and the way back to the chat. *@
 
-@* Its own root class, not .app: the chat's grid rules (the saved sidebar width, .sidebar-hidden) must not reach here. *@
-<div class="admin-shell">
-    <header class="topbar d-lg-none">
-        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar" aria-controls="admin-sidebar" aria-label="Open the menu">☰</button>
-        <div class="brand"><PulsLogo /></div>
-        <a class="icon" href="gesels" title="Back to Puls" aria-label="Back to Puls">←</a>
-    </header>
-
-    <aside class="sidebar offcanvas-lg offcanvas-start" id="admin-sidebar" tabindex="-1" aria-label="Admin">
-        <div class="sidebar-top">
-            <a class="brand brand-stack" href="./" title="Puls home"><PulsLogo /><span class="tagline">Admin</span></a>
-            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Close the menu">×</button>
-        </div>
-
-        @* F53.2: the sidebar by job: Measure holds the evals and their runs, and the answers to grade (F53.3); Build what makes them better. *@
+<AdminShell BrandTitle="Puls home" BackHref="gesels" BackLabel="Back to Puls">
+    <Brand><PulsLogo /></Brand>
+    <Top><LiveRunStrip /></Top>
+    <Links>
+        @* The sidebar by job: Measure holds the evals and their runs, and the answers to grade; Build what makes them better. *@
         <div class="sidebar-label">Measure</div>
         <nav class="side-nav">
             <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-check" aria-hidden="true"></span>Evals</NavLink>
@@ -31,22 +18,12 @@
             <NavLink class="side-link" href="admin/prompts"><span class="ic i-file" aria-hidden="true"></span>Prompts</NavLink>
         </nav>
 
-        @* F55: data the packs take from a file, such as Stats SA's average prices. *@
+        @* Data the packs take from a file, such as Stats SA's average prices. *@
         <div class="sidebar-label">Data</div>
         <nav class="side-nav">
             <NavLink class="side-link" href="admin/imports"><span class="ic i-archive" aria-hidden="true"></span>Uploads</NavLink>
             <NavLink class="side-link" href="admin/reports"><span class="ic i-file" aria-hidden="true"></span>Reports</NavLink>
         </nav>
-
-        <div class="side-footer">
-            <nav class="side-nav admin-side-back">
-                <a class="side-link" href="gesels"><span class="ic i-chat" aria-hidden="true"></span>Back to Puls</a>
-            </nav>
-        </div>
-    </aside>
-
-    <main class="admin-main">
-        <LiveRunStrip />
-        @Body
-    </main>
-</div>
+    </Links>
+    <ChildContent>@Body</ChildContent>
+</AdminShell>
