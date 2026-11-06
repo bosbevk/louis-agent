@@ -692,6 +692,18 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   static site stays server-rendered, on the framework's colours and Sass, with the app at `/chat`. What the build chooses beyond this is recorded below
   as it comes, for Louis to read at the end. FX59, the mouse wheel stopping short after a chat, stays open and must be fixed before release.
 
+- **2026-11-07, what F59.5 chose, unattended.** Each is the recommended option, for Louis to read at the end.
+  - `ScreenTable` sits in `Components/Screens/Table/` with its cells, since the folder limit is six files. This differs from the namespace map.
+  - `Above` is a `RenderFragment<ScreenPageReply>`, because a view's line has to read the rows, and it isn't drawn when there are no rows. So
+    a view can't add something above an empty table, which nothing needs yet.
+  - A page reply carries `PageSize`, so the browser doesn't repeat the number.
+  - Only `http` and `https` values become links, since a value can come from a page we read. A column kind the browser doesn't know draws as text.
+  - The search asks when you press its button, not as you type, so no pack is read per keystroke.
+  - `FrameworkPages.Assemblies` is the one list a site's router takes, so a site doesn't name a framework type.
+  - `ChatStore` gained an `AdminKeySaved` event, so `PackMenu` fills again after a key is saved.
+  - The code-review app has its small `AdminLayout` and the framework's page from here, but its screens look unstyled until F59.7 moves its CSS.
+  - `RecipeLibraryView` wraps the table (Decorator), and the screen's id and column names are duplicated on each side of the wire, held by a test.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

@@ -1,6 +1,6 @@
 # 0083. Packs keep reports behind the admin key
 
-**Status:** Accepted · **Date:** 2026-11-05 (Louis: "the recipes is not saving?", "so how would we know if our source is
+**Status:** Replaced by [ADR 0086](0086-a-packs-screens-are-described.md) for how the numbers reach the page; what it decided about counting stands · **Date:** 2026-11-05 (Louis: "the recipes is not saving?", "so how would we know if our source is
 working?"; picked *one small record per day* and *a new plug-in behind the admin key*) · **Recorded:** 2026-11-06
 
 ## Context

@@ -188,11 +188,17 @@ pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's
 an address of their own also writes `ReadItemJsonAsync`, served at `/v1/feeds/{name}/{id}`. Publish only what anyone may
 read. The shop-prices pack's `ShopPricesFeed` is the example; the recipes pack's `RecipesFeed` has items.
 
-`Reports` (optional, empty unless you list some) is numbers the pack keeps about itself, for whoever runs it: an
-`IDataReport` with a name, a description and `ReadAsync`, answering a `ReportTable` of column names and rows. The API
-serves them at `/v1/admin/reports`, behind the admin key, without knowing the pack, and a card shows each
-([ADR 0083](../adr/0083-packs-keep-reports-behind-the-admin-key.md)). A store that can't be read gives an empty table and
-never throws. What anyone may read belongs in a feed instead.
+`Screens` (optional, empty unless you list some) is what the pack shows whoever runs it, behind the admin key: an
+`IDataScreen` with a `ScreenSpec` (a name, a title, a sentence, its columns, whether it searches) and `ReadAsync`,
+answering a page of rows and the total. You write no web code: the sidebar lists it on every site and one generic page
+draws it at `/admin/screens/{name}` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)). A store that can't be read
+gives an empty page and never throws. What anyone may read belongs in a feed instead. The recipes pack's
+`RecipesUsageScreen` is the example.
+
+When a description can't say what you want, a real component replaces it by name. It goes in its own project under
+`packs-web/`, never in the pack: `louis-agent.pack.recipes.web` holds `RecipeLibraryView`, which wraps the plain table and adds a
+line above it, and a site adds it with `RecipeWebViews.AddTo(views)`. The pack and its web project can't reference each other,
+so a test project under `packs-tests/` sees both and holds the names they share.
 
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and

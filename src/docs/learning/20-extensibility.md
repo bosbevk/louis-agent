@@ -217,6 +217,36 @@ built for screens inside a chat, so it doesn't fit our admin. The idea we kept i
 
 Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md); pattern: Composition Root (Seemann).
 
+## Described screens (F59.5, 2026-11-07)
+
+A pack can now show whoever runs it a screen without writing any web code. It says what the screen is, as plain data: a title, a sentence,
+its columns, whether it searches. One generic page in the framework draws that. So a new screen appears on every site, sidebar link
+included, with no change to any of them. This is called *metadata-driven UI*, and the Django admin is the famous example.
+
+**The catch is the vocabulary.** A description can only say what its words allow. Give it enough words and you've slowly written a worse
+programming language. So there's a rule for growing it: a new kind of column or field enters only when a *second* screen needs it, and until
+then that screen uses a real component.
+
+**The way out is a list with an order.** `PackViews` maps a screen's name to a component, and the plain table is what you get if nobody
+registered one. The last to register wins, so the order of the lines in `Program.cs` *is* the order of precedence: the framework's
+default, then a pack's view, then a demo's. Fowler calls a shared lookup like this a Registry. A component found by name also means the
+generic page names no pack, which is the Plugin pattern, and it's why a pack's view can live in a project the framework has never heard of.
+
+**Two projects that can't see each other still share facts.** The recipes pack runs on the server with its database. Its view runs in the
+browser, and must never carry a database driver. So neither references the other, and `PackWebBoundaryTests` holds that. But the view has to
+know the screen's name and two column headings. Those are written twice, and the only thing stopping them drifting is one test project
+that's allowed to see both. When you split two things apart, ask what facts they still share, and give those facts a test.
+
+**A value from outside is still outside.** The table turns a link column into a link, and those values can come from pages we read. A
+`javascript:` address in an `href` runs in the admin's tab, which holds the admin key. So only `http` and `https` become links, and the rest
+stays text. It's the same habit as treating a tool's result as data: where a value came from decides how far you trust it.
+
+**A wrong proof looks like a right one.** The boundary test first "passed on a throwaway bad reference". It hadn't: the edit adding that
+reference never applied, so the test had only passed on the unchanged project. A test seen passing tells you little until you've seen it
+fail, and "seen it fail" needs checking too.
+
+Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
+
 ## The admin's frame (F59.2, 2026-11-06)
 
 The admin's frame moved to the framework, and Puls's layout shrank to what's its own. Two patterns carry it, and both solve the same
