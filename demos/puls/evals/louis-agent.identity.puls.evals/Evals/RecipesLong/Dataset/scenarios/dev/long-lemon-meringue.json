@@ -1,0 +1,23 @@
+{
+  "id": "long-lemon-meringue",
+  "input": [
+    {
+      "role": "user",
+      "content": "Give me a recipe for a lemon meringue tart. I'm in Gqeberha and any shop will do."
+    }
+  ],
+  "metadata": {
+    "place": "Gqeberha, Eastern Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": "as the page makes it",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

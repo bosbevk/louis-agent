@@ -27,6 +27,7 @@ public class UnpricedMarkTests
     /// <summary>Both rows the tool can't price end in the mark the evals look for, in the tool they name.</summary>
     [TestCase("Cook")]
     [TestCase("Recipes")]
+    [TestCase("RecipesLong")]
     public void TheEvalsMark_IsTheOneTheToolWrites(string eval)
     {
         var settings = UnpricedItems(eval);

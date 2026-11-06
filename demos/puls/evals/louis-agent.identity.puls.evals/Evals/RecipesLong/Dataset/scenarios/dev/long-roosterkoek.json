@@ -1,0 +1,23 @@
+{
+  "id": "long-roosterkoek",
+  "input": [
+    {
+      "role": "user",
+      "content": "I'd like to make roosterkoek for eight people at a braai. I'm in Nelspruit and it doesn't matter where I shop. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Nelspruit, Mpumalanga, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 8,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

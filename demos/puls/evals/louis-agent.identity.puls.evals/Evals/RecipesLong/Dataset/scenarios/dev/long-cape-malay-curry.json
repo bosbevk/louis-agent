@@ -1,0 +1,23 @@
+{
+  "id": "long-cape-malay-curry",
+  "input": [
+    {
+      "role": "user",
+      "content": "I want to make a Cape Malay chicken curry for six people. I'm in Cape Town and it doesn't matter where I shop. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Cape Town, Western Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 6,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:dish"
+    ]
+  }
+}

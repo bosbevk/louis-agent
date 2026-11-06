@@ -1,0 +1,23 @@
+{
+  "id": "long-fish-cakes",
+  "input": [
+    {
+      "role": "user",
+      "content": "I'd like to make fish cakes for four people. I'm in Knysna and any shop will do. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Knysna, Western Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:dish"
+    ]
+  }
+}

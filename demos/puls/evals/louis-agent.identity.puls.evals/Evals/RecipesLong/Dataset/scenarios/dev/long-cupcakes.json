@@ -1,0 +1,23 @@
+{
+  "id": "long-cupcakes",
+  "input": [
+    {
+      "role": "user",
+      "content": "I need vanilla cupcakes for twelve people. I'm in Hermanus and any shop will do. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Hermanus, Western Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 12,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

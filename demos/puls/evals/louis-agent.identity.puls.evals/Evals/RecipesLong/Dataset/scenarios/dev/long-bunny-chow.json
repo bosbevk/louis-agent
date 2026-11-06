@@ -1,0 +1,23 @@
+{
+  "id": "long-bunny-chow",
+  "input": [
+    {
+      "role": "user",
+      "content": "I'd like to make bunny chow for four people. I'm in Durban and it doesn't matter where I shop. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Durban, KwaZulu-Natal, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:dish"
+    ]
+  }
+}

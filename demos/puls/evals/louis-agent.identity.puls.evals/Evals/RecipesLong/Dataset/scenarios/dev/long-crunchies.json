@@ -1,0 +1,23 @@
+{
+  "id": "long-crunchies",
+  "input": [
+    {
+      "role": "user",
+      "content": "What's a good recipe for crunchies? I'm in Johannesburg and it doesn't matter where I shop."
+    }
+  ],
+  "metadata": {
+    "place": "Johannesburg, Gauteng, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": "as the page makes it",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "kind:baking"
+    ]
+  }
+}

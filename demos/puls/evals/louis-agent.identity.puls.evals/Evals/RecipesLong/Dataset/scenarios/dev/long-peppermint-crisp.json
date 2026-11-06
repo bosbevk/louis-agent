@@ -1,0 +1,23 @@
+{
+  "id": "long-peppermint-crisp",
+  "input": [
+    {
+      "role": "user",
+      "content": "Gee my 'n resep vir peppermint crisp-tert. Ek is in Stellenbosch en dit maak nie saak waar ek koop nie."
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": "as the page makes it",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "kind:baking"
+    ]
+  }
+}
