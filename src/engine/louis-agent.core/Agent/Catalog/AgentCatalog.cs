@@ -1,6 +1,7 @@
 
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs.Reports;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
@@ -69,6 +70,9 @@ public sealed class AgentCatalog
         Imports = packs.SelectMany(p => p.Imports).ToList();
         CheckUnique(Imports.Select(i => i.Name), "import");
 
+        Reports = packs.SelectMany(p => p.Reports).ToList();
+        CheckUnique(Reports.Select(r => r.Name), "report");
+
         Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).ToList();
         CheckUnique(SkillFileSource.CoreFiles.Concat(Prompts.SelectMany(SkillFileSource.FilesOf)), "prompt path");
 
@@ -108,6 +112,9 @@ public sealed class AgentCatalog
     /// <summary>The import by that name, case ignored; null when no pack takes one.</summary>
     public IDataImport? Import(string name) =>
         Imports.FirstOrDefault(import => string.Equals(import.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>The numbers the packs keep about themselves, each pack's in its order.</summary>
+    public IReadOnlyList<IDataReport> Reports { get; }
 
     /// <summary>The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).</summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }
