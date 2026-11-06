@@ -48,7 +48,9 @@ factor is the same amount: `500 g` for four is `750 g` for six, and an amount ro
 (`250 ml`, `1 cup`) is the same amount. An amount the print gives and the answer changes by another factor, or one
 the answer states that the print does not give, is `false`. An ingredient the print gives no amount for may show the print's
 words, a dash or `to taste`, which state no amount. The size of one piece (a 150 g portion, a 20 cm tin) does not scale: half the
-recipe as half as many pieces of the same size is the same recipe.
+recipe as half as many pieces of the same size is the same recipe. Something made whole (a cake, a tart, a loaf, a whole
+roast or chicken) may be multiplied by a whole number, rounded up: two cakes for twelve from a cake that serves ten is the
+right amount.
 
 **4. Are the steps the print's?** Every step of the print is a step of the answer, in the same order, and the
 answer adds none the print does not have. A step written in the task's language, step for step, with every number,

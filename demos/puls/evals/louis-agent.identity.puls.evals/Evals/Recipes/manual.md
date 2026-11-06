@@ -2,10 +2,10 @@
 
 ## What it measures
 
-Does Puls's cook write the recipe a real page gave? Each conversation asks for a recipe for one South African dish
-and some people, in Afrikaans or English, and says any shop will do, so the answer's work is the recipe (the cook still names the supermarkets nearest them). The cook
-should find the dish on a recipe site, read the page with `ReadRecipe`, and write its ingredients and method scaled to
-the people, with the page's photo and link. What is counted is what the cook *did* (which tool it read the page with,
+Does Puls's cook write the recipe a real page gave? Each conversation asks for a recipe for one South African dish,
+in Afrikaans or English, half of the dev ones naming how many people and half just asking for the recipe, and says any shop will do, so the answer's work is the recipe (the cook still names the supermarkets nearest them). The cook
+should find the dish on a recipe site, read the page with `ReadRecipe`, and write its ingredients and method, scaled when a number was named and as the page wrote them when none was,
+with the page's photo and link. What is counted is what the cook *did* (which tool it read the page with,
 which site its link is on, whether its photo came from the page) and then, with a model's help, whether its amounts
 and steps are the page's.
 
@@ -28,7 +28,9 @@ five in English; of the held-out ones, two are Afrikaans and one English.
 | dev | bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei, koeksisters |
 | held out | umngqusho, sosaties, bredie |
 
-Each scenario's `expected` holds `routes_to` (always `puls-cook`), `serves` (the people asked for) and `recipe_image`
+An English question opens in `puls/voice-en` (its scenario's `role`), as a chat in English does; an Afrikaans one in the mode's `puls/voice-af`.
+
+Each scenario's `expected` holds `routes_to` (always `puls-cook`), `serves` (the people asked for, or `as the page makes it` when the question names none, which keeps the judge asked with a factor of 1) and `recipe_image`
 (always true). A dish whose site has no photo is not a fail: see `recipe-image` below.
 
 ## The checks

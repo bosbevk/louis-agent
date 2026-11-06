@@ -3,16 +3,17 @@
   "input": [
     {
       "role": "user",
-      "content": "Give me a recipe for koeksisters for ten people. I'm in Cape Town and it doesn't matter where I shop."
+      "content": "Give me a recipe for koeksisters. I'm in Cape Town and it doesn't matter where I shop."
     }
   ],
   "metadata": {
     "place": "Cape Town, Western Cape, South Africa",
     "time_zone": "Africa/Johannesburg",
+    "role": "puls/voice-en",
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 10,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

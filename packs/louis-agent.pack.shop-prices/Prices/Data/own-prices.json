@@ -21,15 +21,17 @@
     {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 89.99}}
   ]},
   {"product": "Chillies - fresh", "names": ["chillies", "chilli", "chili", "green chillies", "red chillies", "rissies"], "packs": [
-    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 16.99}}
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 16.99}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 3.99}}
   ]},
   {"product": "Coriander - fresh", "names": ["coriander", "fresh coriander", "dhania", "cilantro", "koljander"], "packs": [
-    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 14.99}}
+    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 14.99}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 14.99}}
   ]},
   {"product": "Parsley - fresh", "names": ["parsley", "fresh parsley", "pietersielie"], "packs": [
     {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 14.99}}
   ]},
-  {"product": "Lemons - fresh", "names": ["lemons", "lemon", "lemon juice", "suurlemoen"], "packs": [
+  {"product": "Lemons - fresh", "names": ["lemons", "lemon", "suurlemoen"], "packs": [
     {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 32.99}},
     {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 5.99}}
   ]},
@@ -55,7 +57,8 @@
     {"size": "410 Gram", "amount": 410, "unit": "g", "prices": {"national": 19.99}}
   ]},
   {"product": "Chicken stock", "names": ["chicken stock", "beef stock", "vegetable stock"], "packs": [
-    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4}}
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4}},
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 49.99}}
   ]},
   {"product": "Black pepper", "names": ["black pepper", "ground pepper", "swartpeper"], "packs": [
     {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 39.99}}
@@ -113,6 +116,146 @@
   ]},
   {"product": "Sour cream", "names": ["sour cream", "suurroom"], "packs": [
     {"size": "250 Millilitre", "amount": 250, "unit": "ml", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Bicarbonate of soda", "names": ["bicarbonate of soda", "bicarb", "baking soda", "koeksoda"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Desiccated coconut", "names": ["desiccated coconut", "klapper"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 44.99}}
+  ]},
+  {"product": "Cocoa powder", "names": ["cocoa powder", "cocoa", "kakao"], "packs": [
+    {"size": "125 Gram", "amount": 125, "unit": "g", "prices": {"national": 64.99}}
+  ]},
+  {"product": "Pecan nuts", "names": ["pecan nuts", "pecans", "pekanneute"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 54.99}}
+  ]},
+  {"product": "Cardamom", "names": ["cardamom", "cardamom pods", "ground cardamom", "kardemom"], "packs": [
+    {"size": "25 Gram", "amount": 25, "unit": "g", "prices": {"national": 54.99}}
+  ]},
+  {"product": "Cloves", "names": ["cloves", "whole cloves", "ground cloves", "naeltjies"], "packs": [
+    {"size": "25 Gram", "amount": 25, "unit": "g", "prices": {"national": 32.99}}
+  ]},
+  {"product": "Lasagne sheets", "names": ["lasagne sheets", "lasagna sheets", "lasagne"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 49.99}}
+  ]},
+  {"product": "Tennis biscuits", "names": ["tennis biscuits", "tennis biscuit"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 27.99}}
+  ]},
+  {"product": "Digestive biscuits", "names": ["digestive biscuits", "marie biscuits"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 32.99}}
+  ]},
+  {"product": "Buttermilk", "names": ["buttermilk", "karringmelk"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 36.99}}
+  ]},
+  {"product": "Oxtail", "names": ["oxtail", "beef oxtail", "beesstert"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 179.99}}
+  ]},
+  {"product": "Dark chocolate", "names": ["dark chocolate", "chocolate", "milk chocolate", "white chocolate", "cooking chocolate", "sjokolade"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 39.99}}
+  ]},
+  {"product": "White pepper", "names": ["white pepper", "witpeper"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 44.99}}
+  ]},
+  {"product": "Peppercorns", "names": ["peppercorns", "black peppercorns", "peperkorrels"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 44.99}}
+  ]},
+  {"product": "Rolled oats", "names": ["rolled oats", "oats", "oatmeal", "hawermout"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 44.99}}
+  ]},
+  {"product": "Breadcrumbs", "names": ["breadcrumbs", "bread crumbs", "broodkrummels"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Marmite", "names": ["marmite", "bovril"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 94.99}}
+  ]},
+  {"product": "Lemon juice", "names": ["lemon juice", "suurlemoensap"], "packs": [
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Ghee", "names": ["ghee"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 139.99}}
+  ]},
+  {"product": "Cream of tartar", "names": ["cream of tartar", "kremetart"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Garlic bulb", "names": ["garlic bulb", "garlic bulbs", "garlic each"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 9.99}}
+  ]},
+  {"product": "Red onion", "names": ["red onion", "red onions", "rooi ui"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 26.99}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 5.99}}
+  ]},
+  {"product": "Baby marrow", "names": ["zucchini", "baby marrow", "baby marrows", "courgette", "murgpampoentjies"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Patty pans", "names": ["patty pans", "patty pan"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Chocolate spread", "names": ["chocolate spread", "chocolate hazelnut spread", "nutella"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 74.99}}
+  ]},
+  {"product": "Curry leaves", "names": ["curry leaves", "fresh curry leaves", "dried curry leaves", "kerrieblare"], "packs": [
+    {"size": "10 Gram", "amount": 10, "unit": "g", "prices": {"national": 14.99}}
+  ]},
+  {"product": "Maple syrup", "names": ["maple syrup"], "packs": [
+    {"size": "250 Millilitre", "amount": 250, "unit": "ml", "prices": {"national": 119.99}}
+  ]},
+  {"product": "Cooking spray", "names": ["cooking spray", "non-stick spray", "spray and cook"], "packs": [
+    {"size": "300 Millilitre", "amount": 300, "unit": "ml", "prices": {"national": 54.99}}
+  ]},
+  {"product": "Limes", "names": ["lime", "limes", "lemmetjie"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 9.99}}
+  ]},
+  {"product": "Pineapple", "names": ["pineapple", "pynappel"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 24.99}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Mustard seeds", "names": ["mustard seeds", "yellow mustard seeds", "black mustard seeds", "mosterdsaad"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Allspice", "names": ["allspice", "allspice berries", "pimento", "wonderpeper"], "packs": [
+    {"size": "25 Gram", "amount": 25, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Pecorino", "names": ["pecorino"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 64.99}}
+  ]},
+  {"product": "Leeks", "names": ["leeks", "leek", "prei"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 36.99}}
+  ]},
+  {"product": "Caramel treat", "names": ["caramel treat", "caramelised condensed milk", "caramel condensed milk"], "packs": [
+    {"size": "360 Gram", "amount": 360, "unit": "g", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Peppermint Crisp", "names": ["peppermint crisp"], "packs": [
+    {"size": "49 Gram", "amount": 49, "unit": "g", "prices": {"national": 19.99}}
+  ]},
+  {"product": "Basil - fresh", "names": ["basil", "fresh basil", "basiliekruid"], "packs": [
+    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Dried cranberries", "names": ["cranberries", "dried cranberries"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 59.99}}
+  ]},
+  {"product": "Cashew nuts", "names": ["cashews", "cashew nuts"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 74.99}}
+  ]},
+  {"product": "Almonds", "names": ["almonds", "whole almonds", "amandels"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 54.99}}
+  ]},
+  {"product": "Pistachios", "names": ["pistachios", "pistachio nuts"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 69.99}}
+  ]},
+  {"product": "Hazelnuts", "names": ["hazelnuts", "hazelnut"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 59.99}}
+  ]},
+  {"product": "Fennel seeds", "names": ["fennel seeds", "vinkelsaad"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Cayenne pepper", "names": ["cayenne pepper", "cayenne"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Dates", "names": ["dates", "dadels"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Tomato passata", "names": ["tomato passata", "passata", "tomato puree"], "packs": [
+    {"size": "700 Gram", "amount": 700, "unit": "g", "prices": {"national": 39.99}}
   ]}
  ]
 }

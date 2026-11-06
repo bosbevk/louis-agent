@@ -87,6 +87,9 @@ public enum RecipeToolMessage
     [Description("{Name}, kept as the page wrote it, since it doesn't say how many people it feeds. If that plainly won't feed them, call this again with `times`.")]
     ScaleKept,
 
+    [Description("{Name}: the page doesn't say how many it feeds. {Line} feeds about {Feeds}, so every amount times {Factor}, for {People}. That's our estimate: say so under *Unsure*.")]
+    ScaleEstimated,
+
     [Description("{Name}, kept as the page wrote it.")]
     ScaleWhole,
 

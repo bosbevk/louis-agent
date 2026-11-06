@@ -110,7 +110,7 @@ public class PulsPromptsTests
         string puls = Read("agent/puls/voice.md");
 
         Assert.That(puls,
-            Does.Contain("`web`").And.Contain("`specialists`").And.Contain("`puls-cook`").And.Contain("**Vir:**"));
+            Does.Contain("`web`").And.Contain("`specialists`").And.Contain("`puls-cook`").And.Contain("`Wants`"));
         // Its routing table (the rows) names no coding toolset; the analyst's counting rule, moved here, may name
         // files and python.
         string rows = string.Join("\n", puls.Split('\n').Where(r => r.StartsWith('|')));
@@ -288,7 +288,7 @@ public class PulsPromptsTests
         // priced by the shop-prices pack, written first and estimated once.
         string cook = Flat(Read("specialists/puls-cook.md"));
         string prices = Flat(Read("toolsets/shop-prices.md"));
-        string router = Read("agent/puls/voice.md");
+        string afrikaans = Read("agent/puls/voice-af.md");
 
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
@@ -296,9 +296,9 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("Your first tool calls, together in one round, are `GetToday`, `FindRecipes`"));
         Assert.That(prices, Does.Contain("Write the list first,"), "the pack's guide prices a written list");
         Assert.That(cook, Does.Contain("Once the list is written, call `EstimatePrices` once"));
-        Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
-            "its own line in every meal's brief");
-        Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
+        Assert.That(afrikaans, Does.Contain("**Vir hoeveel:**"), "its own line in a brief with a number");
+        Assert.That(Read("agent/puls/voice-en.md"), Does.Contain("**Serves:**"), "and in English");
+        Assert.That(afrikaans, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
@@ -388,7 +388,7 @@ public class PulsPromptsTests
         string voice = Flat(Read("agent/puls/voice.md"));
 
         Assert.That(voice, Does.Not.Contain("where they'll shop: ask first"));
-        Assert.That(voice, Does.Contain("brief the cook with `enige` / `any` and never ask"));
+        Assert.That(voice, Does.Contain("brief the cook with *any* and never ask"));
     }
 
     /// <summary>
@@ -508,34 +508,13 @@ public class PulsPromptsTests
 
         Assert.That(router, Does.Contain("as the cook wrote it").And.Contain("you aren't asked to"),
             "the report goes straight to the user, so the one choosing doesn't retype it");
-        Assert.That(router, Does.Contain("Ek gee dit gou vir my kok").And.Not.Contain("My kok is terug"),
-            "the line before the call, in Puls's words, and none above a report it doesn't write");
+        Assert.That(Flat(voice), Does.Contain("in jou eie woorde"), "the line before the call, in Puls's words");
+        Assert.That(router, Does.Not.Contain("My kok is terug"), "and none above a report it doesn't write");
         Assert.That(router, Does.Contain("puls-cook). It stays open"),
             "the footer example names its own cook, and no cost (FX27)");
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
-        Assert.That(voice, Does.Contain("my kok").And.Contain("nou-nou terug"), "the hand-off line, in Puls's voice");
+        Assert.That(voice, Does.Contain("nou-nou terug"), "what the hand-off says, in Puls's voice");
         Assert.That(router, Does.Contain("one line to the user first"));
-    }
-
-    /// <summary>Puls briefs a specialist with a short note: what the user wants, and how they come across.</summary>
-    [Test]
-    public void Puls_BriefsTheSpecialist_WithWhatTheUserWants_AndHowTheySound()
-    {
-        // F28 step 1: the task is a note in a fixed shape; the mood is a read of the typing. CL15: in Puls's own
-        // routing.
-        string router = Read("agent/puls/voice.md");
-
-        foreach (string label in new[]
-                 {
-                     "**Vir:**", "**Wil hê:**", "**Vir hoeveel:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**",
-                     "**For:**", "**Wants:**", "**Serves:**", "**Sounds:**", "**Where:**", "**Already said:**"
-                 })
-            Assert.That(router, Does.Contain(label), "the note's labels, in both languages");
-        Assert.That(router, Does.Contain("a guess from the typing").And.Contain("never a diagnosis"),
-            "the guard rails");
-        Assert.That(router, Does.Contain("neutraal"), "when the typing says nothing");
-        Assert.That(router, Does.Contain("[stemming: af]").And.Contain("no `Klink`"),
-            "the mood can be switched off for a turn");
     }
 
     /// <summary>The cook is the only role Puls hands work to, until the other specialists pass their check.</summary>

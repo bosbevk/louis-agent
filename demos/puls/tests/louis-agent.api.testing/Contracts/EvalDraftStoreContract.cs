@@ -45,7 +45,8 @@ public abstract class EvalDraftStoreContract
 
     /// <summary>
     /// A sample draft for the eval, some seconds after the start: a bobotie for four in Malmesbury, asked in
-    /// Afrikaans, with a follow-up and no ideal answer. Its expected values hold text, a number, true and null.
+    /// Afrikaans, with a follow-up and no ideal answer, opening in its own role. Its expected values hold text, a number,
+    /// true and null.
     /// </summary>
     private static SampleDraft Sample(string eval, int seconds, string? target = null, string? place = "Malmesbury") =>
         new(NewId(), eval, Identity, "run123456789", CookAf,
@@ -55,7 +56,7 @@ public abstract class EvalDraftStoreContract
                     JsonDocument.Parse(
                             """{"routes_to":"puls-cook","serves":4,"budget":250.5,"recipe_image":true,"shop":null}""")
                         .RootElement.Clone(),
-                    ["language:af", "kind:cook"]), target),
+                    ["language:af", "kind:cook"], "puls/voice-af"), target),
             "Louis", T0.AddSeconds(seconds));
 
     /// <summary>A known-bad transcript draft for the eval, some seconds after the start, holding these lines.</summary>

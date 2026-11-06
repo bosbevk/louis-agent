@@ -305,20 +305,25 @@ public class PageTextRecipeTests
         Assert.That(recipe?.Name, Is.EqualTo("Pie"));
     }
 
-    /// <summary>A short line in the middle of the steps could be anything, and guessing could lose a step.</summary>
+    /// <summary>A line among the steps that's no sentence could be anything, and guessing could lose a step.</summary>
     [Test]
-    public void AShortLineInTheMiddleOfTheSteps_IsNothing()
+    public void ALineInTheMiddleOfTheStepsThatIsNoSentence_IsNothing()
     {
         Assert.That(Read("<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3>" +
-                         "<ul><li>Mix it.</li></ul><p>Then rest it.</p><ul><li>Bake it.</li></ul>"), Is.Null);
+                         "<ul><li>Mix it.</li></ul><p>Subscribe to our newsletter for more like this one today</p>" +
+                         "<ul><li>Bake it.</li></ul>"), Is.Null);
     }
 
-    /// <summary>Sarah Graham's sambal: an instruction in the list shows it isn't plain, so the page's out.</summary>
+    /// <summary>Sarah Graham's sambal: one instruction in a list moves to the method, and the page stays.</summary>
     [TestCase("Mix together and check for seasoning")]
     [TestCase("Meng alles saam")]
-    public void AnInstructionAmongTheIngredients_IsNothing(string line)
+    public void AnInstructionAmongTheIngredients_MovesToTheMethod(string line)
     {
-        Assert.That(Read($"<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li><li>{line}</li></ul><h3>Method</h3><ul><li>Bake it.</li></ul>"), Is.Null);
+        var recipe = Read($"<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li><li>{line}</li></ul>" +
+                          "<h3>Method</h3><ul><li>Bake it.</li></ul>");
+
+        Assert.That(recipe!.Ingredients, Has.Count.EqualTo(2));
+        Assert.That(recipe.Steps.Select(step => step.Text), Is.EqualTo(new[] { "Bake it.", line }));
     }
 
     /// <summary>An ingredient that only starts like an instruction stays, by its other word or its amount.</summary>

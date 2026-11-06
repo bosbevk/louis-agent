@@ -89,7 +89,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("Servings are people, so scale by them"));
         Assert.That(cook, Does.Contain("`6 to 8 servings`, its middle"));
         Assert.That(cook, Does.Contain("A *Makes* that counts tarts, pies, slices or pieces"));
-        Assert.That(cook, Does.Contain("A print that gives neither: keep the recipe as it is and say so under *Unsure*"));
+        Assert.That(cook, Does.Contain("otherwise keeps the recipe as it is, which you say there too"));
     }
 
     /// <summary>The shop lookup needs only the town, so it runs with the first calls and saves a trip.</summary>

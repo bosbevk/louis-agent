@@ -90,6 +90,33 @@ public class ScaleRecipeTests
         Assert.That(result, Does.Not.Contain("40 minutes becomes"));
     }
 
+    /// <summary>
+    /// With no yield at all, the main ingredient gives a factor, and the line says it's an estimate and what it rests
+    /// on, so the answer can say so too.
+    /// </summary>
+    [Test]
+    public async Task NoYield_IsEstimatedFromTheMainIngredient_AndSaysSo()
+    {
+        var (tools, link) = Holding(null);
+
+        string result = await tools.ScaleRecipe(link, people: 3);
+
+        Assert.That(result, Does.Contain("1 kg mince feeds about 6").And.Contain("estimate"));
+        Assert.That(result, Does.Contain("1. 0.5 kg mince"));
+    }
+
+    /// <summary>Six people on a page for six to eight is the recipe as written, and no line is marked.</summary>
+    [Test]
+    public async Task PeopleInsideThePagesRange_KeepTheRecipe()
+    {
+        var (tools, link) = Holding("6-8 servings");
+
+        string result = await tools.ScaleRecipe(link, people: 6);
+
+        Assert.That(result, Does.Contain("1. 1 kg mince"));
+        Assert.That(result, Does.Not.Contain("scaled)"));
+    }
+
     /// <summary>A yield that isn't people keeps the recipe as written, and says how to ask for more.</summary>
     [Test]
     public async Task AYieldThatIsntPeople_KeepsTheRecipe_AndSaysSo()

@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "Ek wil frikkadelle maak vir vier mense. Ek is in Malmesbury en dit maak nie saak waar ek koop nie. Wat is die resep?"
+      "content": "Ek wil frikkadelle maak. Ek is in Malmesbury en dit maak nie saak waar ek koop nie. Wat is die resep?"
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 4,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

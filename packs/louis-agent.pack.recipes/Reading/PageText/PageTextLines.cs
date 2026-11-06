@@ -63,13 +63,29 @@ internal static class PageTextLines
     /// <summary>A numbered part's name can say more than a heading: "Step 1: Activate the yeast and mix".</summary>
     private const int LongestStepPart = 70;
 
+    /// <summary>The words a heading can start with on a line of their own, with the rest on the next.</summary>
+    private static readonly string[] BrokenStarts = ["What", "To"];
+
     /// <summary>The page's words as lines to read: no images, no blank lines, nothing after the recipe.</summary>
-    public static string[] LinesOf(string words) =>
+    public static string[] LinesOf(string words) => BrokenHeadingsJoined(
     [
         .. PrintedRecipeText.Cut(PagePhotos.WithoutImages(words)).Replace(' ', ' ').Split('\n')
             .Select(line => line.Trim())
             .Where(line => line.Length > 0)
-    ];
+    ]);
+
+    /// <summary>A heading a page broke after its first word, as FinGlobal's "What" over "you need:".</summary>
+    private static string[] BrokenHeadingsJoined(string[] lines)
+    {
+        var joined = new List<string>();
+        for (int at = 0; at < lines.Length; at++)
+        {
+            bool broken = BrokenStarts.Contains(lines[at]) && at + 1 < lines.Length && char.IsLower(lines[at + 1][0]);
+            joined.Add(broken ? $"{lines[at]} {lines[++at]}" : lines[at]);
+        }
+
+        return [.. joined];
+    }
 
     /// <summary>Whether the line holds a link.</summary>
     public static bool HasLink(string line) => line.Contains(Link, StringComparison.Ordinal);
@@ -77,7 +93,9 @@ internal static class PageTextLines
     /// <summary>Whether the line is an ingredients heading, alone, naming a part, or as a phrase.</summary>
     public static bool IsIngredientsHeading(string line)
     {
-        string words = Words(line).Replace('’', '\'').ToLowerInvariant();
+        // A long aside in brackets is no part of the heading: "Ingredients: (makes 1, adjust for more)".
+        string spoken = Words(line).Split('(')[0];
+        string words = (spoken.Length > 0 ? Words(spoken) : Words(line)).Replace('’', '\'').ToLowerInvariant();
         return words.Length <= LongestHeading && !MethodHeadings.Contains(words) &&
                (IngredientHeadings.Contains(words) ||
                 (line.StartsWith('#') && words.EndsWith(" ingredients", StringComparison.Ordinal)) ||
@@ -164,7 +182,8 @@ internal static class PageTextLines
     public static bool IsCookieNotice(string line) => line.StartsWith(CookieNotice, StringComparison.Ordinal);
 
     /// <summary>Whether a line is the cook's aside, not a step.</summary>
-    public static bool IsAside(string line) => Asides.Any(start => line.StartsWith(start, StringComparison.Ordinal));
+    public static bool IsAside(string line) =>
+        Asides.Any(start => line.TrimStart('*').StartsWith(start, StringComparison.Ordinal));
 
     /// <summary>Whether a line among the ingredients is an instruction: it starts like one, with no amount.</summary>
     public static bool IsAnInstruction(string line) =>

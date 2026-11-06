@@ -196,7 +196,8 @@ public sealed class RecipeTools
 
         // A proper recipe goes in the library, from the page's data or from headings that plainly show one. The cook
         // still reads a page with no data as its text, so what it sees doesn't depend on what we could keep.
-        if (whole is not null) await _shelf.KeepAsync(whole with { Image = photo }, cancellationToken);
+        if (whole is not null)
+            await _shelf.KeepAsync(PageYield.Checked(whole, visit.Html, page) with { Image = photo }, cancellationToken);
 
         return recipe is null
             ? RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo))
@@ -239,9 +240,10 @@ public sealed class RecipeTools
     public async Task<string> ScaleRecipe(
         [Description("The link you read the recipe from")]
         string url,
-        [Description("How many people it's for. Leave it out for something made whole, such as a cake")]
+        [Description("How many people it's for, when a number was named")]
         int people = 0,
-        [Description("A factor of your own, only when the recipe doesn't say how many people it feeds: 2 doubles it")]
+        [Description("How many of it to make, for something made whole such as a cake (2 makes two), or a factor of " +
+                     "your own when the recipe doesn't say how many people it feeds")]
         double times = 0,
         CancellationToken cancellationToken = default)
     {

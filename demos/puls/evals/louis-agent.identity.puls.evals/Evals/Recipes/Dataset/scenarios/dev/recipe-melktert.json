@@ -3,16 +3,17 @@
   "input": [
     {
       "role": "user",
-      "content": "Give me a recipe for melktert for eight people. I'm in Paarl and it doesn't matter where I shop."
+      "content": "Give me a recipe for melktert. I'm in Paarl and it doesn't matter where I shop."
     }
   ],
   "metadata": {
     "place": "Paarl, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
+    "role": "puls/voice-en",
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 8,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

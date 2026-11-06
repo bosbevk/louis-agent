@@ -35,7 +35,7 @@ public class RecipesLongEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 1, 1)));
+            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 3, 3)));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
 
@@ -56,8 +56,8 @@ public class RecipesLongEvalTests
     }
 
     /// <summary>
-    /// Ten questions say no number, the rest name the number their scenario says. A missing key would skip the judge,
-    /// so a question with no number still sets <c>serves</c>, in words.
+    /// Fifteen questions say no number, the rest name the number their scenario says. A missing key would skip the
+    /// judge, so a question with no number still sets <c>serves</c>, in words.
     /// </summary>
     [Test]
     public void AQuestion_NamesItsPeople_OrSaysNoNumberAtAll()
@@ -65,26 +65,33 @@ public class RecipesLongEvalTests
         var scenarios = Load().Scenarios;
         var whole = scenarios.Where(s => s.Expected.GetProperty("serves").ToString() == Whole).ToList();
 
-        Assert.That(whole, Has.Count.EqualTo(10));
+        Assert.That(whole, Has.Count.EqualTo(15));
         foreach (var scenario in whole) Assert.That(Servings.Of(scenario.Input.Messages[0]), Is.Empty, scenario.Id);
         foreach (var scenario in scenarios.Except(whole))
             Assert.That(Servings.Of(scenario.Input.Messages[0]),
                 Does.Contain(scenario.Expected.GetProperty("serves").GetInt32()), scenario.Id);
     }
 
-    /// <summary>The rubric is the recipes eval's, plus one line on what a question with no number means.</summary>
+    /// <summary>A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.</summary>
     [Test]
-    public void ItsRubric_IsTheRecipesEvals_PlusTheLineForNoNumber()
+    public void EachQuestion_OpensInItsOwnLanguage()
     {
-        string line = $"When `serves` says `{Whole}`, nobody asked for a number, so the factor is 1 and every amount is " +
-                      "the print's. ";
+        foreach (var scenario in Load().Scenarios)
+            Assert.That(scenario.Input.Role,
+                Is.EqualTo(scenario.Categories.Contains("language:en") ? "puls/voice-en" : null), scenario.Id);
+    }
+
+    /// <summary>The rubric is the recipes eval's: both now ask plain questions, so both hold the line for no number.</summary>
+    [Test]
+    public void ItsRubric_IsTheRecipesEvals_WithTheLineForNoNumber()
+    {
         string other = Path.Combine(AppContext.BaseDirectory, "EvalFiles",
             "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Recipes/Rubrics/recipe-as-source.md");
 
         string rubric = File.ReadAllText(Path.Combine(Folder, "Rubrics", "recipe-as-source.md"));
 
-        Assert.That(rubric, Does.Contain(line));
-        Assert.That(rubric.Replace(line, "").ReplaceLineEndings(), Is.EqualTo(File.ReadAllText(other).ReplaceLineEndings()));
+        Assert.That(rubric, Does.Contain($"When `serves` says `{Whole}`, nobody asked for a number"));
+        Assert.That(rubric.ReplaceLineEndings(), Is.EqualTo(File.ReadAllText(other).ReplaceLineEndings()));
     }
 
     /// <summary>Its references and known-bads hold up against its checks.</summary>

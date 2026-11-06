@@ -40,7 +40,7 @@ of prices. Judge the ingredient and the amount the recipe needs. Do not judge wh
 - Something the print lists that isn't food (a plastic bag, baking paper) may be left off the list, and is not dropped.
 
 **3. Are the amounts the print's, scaled?** Every amount in the list and in the steps is the print's amount multiplied
-by one factor for the whole recipe. When the print says how many people or servings it makes, the factor is `serves`
+by one factor for the whole recipe. When `serves` says `as the page makes it`, nobody asked for a number, so the factor is 1 and every amount is the print's. When the print says how many people or servings it makes, the factor is `serves`
 divided by that number, and for a range (`6 to 8 servings`) any number in it; when what it makes isn't people (`Makes 10 pies`) or it says nothing, any
 one factor that is the same for every amount is fine, and amounts that do not follow one factor are `false`. An amount scaled by the right
 factor is the same amount: `500 g` for four is `750 g` for six, and an amount rounded to a measure a cook can use
@@ -48,7 +48,9 @@ factor is the same amount: `500 g` for four is `750 g` for six, and an amount ro
 (`250 ml`, `1 cup`) is the same amount. An amount the print gives and the answer changes by another factor, or one
 the answer states that the print does not give, is `false`. An ingredient the print gives no amount for may show the print's
 words, a dash or `to taste`, which state no amount. The size of one piece (a 150 g portion, a 20 cm tin) does not scale: half the
-recipe as half as many pieces of the same size is the same recipe.
+recipe as half as many pieces of the same size is the same recipe. Something made whole (a cake, a tart, a loaf, a whole
+roast or chicken) may be multiplied by a whole number, rounded up: two cakes for twelve from a cake that serves ten is the
+right amount.
 
 **4. Are the steps the print's?** Every step of the print is a step of the answer, in the same order, and the
 answer adds none the print does not have. A step written in the task's language, step for step, with every number,

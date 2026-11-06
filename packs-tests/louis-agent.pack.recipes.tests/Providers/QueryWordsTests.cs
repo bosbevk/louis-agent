@@ -65,6 +65,36 @@ public class QueryWordsTests
     public void OtherDishes_HaveNoOtherNamesToTry(string query) =>
         Assert.That(QueryWords.AlsoCalled(query), Is.Empty);
 
+    /// <summary>A search that found nothing hears the dish's other name, in the other language or spelling.</summary>
+    [TestCase("appeltert", "apple tart")]
+    [TestCase("apple tart", "appeltert")]
+    [TestCase("ingelegde vis", "pickled fish")]
+    [TestCase("karringmelkbeskuit", "buttermilk rusks")]
+    [TestCase("pampoenkoekies", "pumpkin fritters")]
+    [TestCase("oxtail stew", "beesstert")]
+    [TestCase("sjokoladekoek", "chocolate cake")]
+    [TestCase("samoosas", "samosas")]
+    [TestCase("macaroni and cheese", "mac and cheese")]
+    [TestCase("melktert", "milk tart")]
+    public void ASearchThatFoundNothing_HearsTheOtherName(string query, string other) =>
+        Assert.That(QueryWords.OtherNames(query), Does.Contain(other));
+
+    /// <summary>A dish with one name has nothing to say, and pap en sous only the names worth another search.</summary>
+    [Test]
+    public void OtherNames_AreOnlyTheOnesWorthASearch()
+    {
+        Assert.That(QueryWords.OtherNames("bobotie"), Is.Empty);
+        Assert.That(QueryWords.OtherNames("pap en sous"), Is.EqualTo(QueryWords.AlsoCalled("pap en sous")));
+    }
+
+    /// <summary>A page printing the dish in the other language answers the search, both ways round.</summary>
+    [TestCase("Apple tart", "appeltert")]
+    [TestCase("Appeltert", "apple tart")]
+    [TestCase("Pickled fish", "ingelegde vis")]
+    [TestCase("Beesstert in rooiwyn", "oxtail")]
+    public void ThePageInTheOtherLanguage_IsAnAnswer(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
+
     /// <summary>The other name counts whole: a tart that isn't milk tart is no melktert.</summary>
     [TestCase("Apple tart", "melktert")]
     [TestCase("Chicken curry", "hoenderpastei")]

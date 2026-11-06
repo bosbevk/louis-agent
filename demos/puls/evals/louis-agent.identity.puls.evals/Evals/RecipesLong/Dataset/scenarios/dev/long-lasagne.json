@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "Ek wil lasagne maak vir ses mense. Ek is in Paarl en dit maak nie saak waar ek koop nie. Gee my die resep."
+      "content": "Ek wil lasagne maak. Ek is in Paarl en dit maak nie saak waar ek koop nie. Gee my die resep."
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 6,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

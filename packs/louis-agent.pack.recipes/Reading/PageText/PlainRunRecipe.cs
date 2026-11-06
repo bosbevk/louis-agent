@@ -64,7 +64,8 @@ internal static class PlainRunRecipe
         {
             at = ReadRun(lines, at, part, ingredients);
 
-            // A run with no heading can still have one over its method, which isn't a step.
+            // A run with no heading can still have one over its method, which isn't a step, and links before it.
+            at = PastLinksToAMethod(lines, at);
             if (at < lines.Length && IsMethodHeading(lines[at])) at++;
 
             int end = NextRun(lines, at);
@@ -85,6 +86,21 @@ internal static class PlainRunRecipe
         return new Recipe(name, YieldAbove(lines, start), null, null, null, ingredients, steps, null, null, page);
     }
 
+    /// <summary>
+    /// Past what sits between the lines and the method and is no step: a heading with no words, as Bibby's, or link
+    /// lines straight above a method heading, as Vrouekeur's "Klik hier". Links anywhere else stay.
+    /// </summary>
+    private static int PastLinksToAMethod(string[] lines, int at)
+    {
+        int words = at;
+        while (words < lines.Length && lines[words].StartsWith('#') && Words(lines[words]).Length == 0) words++;
+        if (words > at) return words;
+
+        int next = at;
+        while (next < lines.Length && HasLink(lines[next]) && !IsItem(lines[next])) next++;
+        return next < lines.Length && IsMethodHeading(lines[next]) ? next : at;
+    }
+
     /// <summary>Whether one paragraph is long enough, and has sentences enough, to be the whole method.</summary>
     private static bool IsAWholeMethod(string text) =>
         text.Length >= ShortestWholeMethod &&
@@ -102,7 +118,8 @@ internal static class PlainRunRecipe
             var run = new List<RecipeIngredient>();
             int end = ReadRun(lines, at, null, run);
             bool mostlyAmounts = run.Count(line => StartsWithAmount(line.Text)) * 5 >= run.Count * 3;
-            if (run.Count >= FewestLines && mostlyAmounts && end < lines.Length && StartsAStep(lines[end])) return at;
+            int next = PastLinksToAMethod(lines, end);
+            if (run.Count >= FewestLines && mostlyAmounts && next < lines.Length && StartsAStep(lines[next])) return at;
         }
 
         return -1;

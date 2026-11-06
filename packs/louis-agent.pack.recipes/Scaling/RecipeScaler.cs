@@ -2,6 +2,7 @@ using System.Globalization;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
+using LouisAgent.Packs.Recipes.Recipes.Tidying;
 using LouisAgent.Packs.Recipes.Tools;
 
 namespace LouisAgent.Packs.Recipes.Scaling;
@@ -21,6 +22,8 @@ internal static class RecipeScaler
     /// <summary>The factor's line, the ingredients scaled and numbered as the print is, the steps' amounts.</summary>
     public static string[] Print(Recipe recipe, int people, double times)
     {
+        // Tidied as the print is, so the lines and the steps carry the same numbers.
+        recipe = RecipeTidy.Of(recipe);
         var (factor, line) = FactorFor(recipe, people, times);
         var scaled = recipe with
         {
@@ -64,10 +67,20 @@ internal static class RecipeScaler
         if (times > 0)
             return (times, MessageText.Format(RecipeToolMessage.ScaledByTimes, new { recipe.Name, Factor = Written(times) }));
         if (people <= 0) return (1, MessageText.Format(RecipeToolMessage.ScaleWhole, new { recipe.Name }));
+        if (string.IsNullOrWhiteSpace(recipe.Yield) && ServingsEstimate.Of(recipe) is { } estimate)
+            return (people / estimate.People, MessageText.Format(RecipeToolMessage.ScaleEstimated,
+                new
+                {
+                    recipe.Name,
+                    estimate.Line,
+                    Feeds = estimate.People,
+                    Factor = Written(people / estimate.People),
+                    People = people
+                }));
         if (RecipeAmount.PeopleIn(recipe.Yield) is not { } served)
             return (1, MessageText.Format(RecipeToolMessage.ScaleKept, new { recipe.Name }));
 
-        double factor = people / served;
+        double factor = RecipeAmount.InTheRange(recipe.Yield, people) ? 1 : people / served;
         return (factor, MessageText.Format(RecipeToolMessage.ScaledForPeople,
             new
             {

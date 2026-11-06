@@ -42,7 +42,8 @@ public static class SampleDrafts
         // The questions in the order they were asked: the first opens the sample, the rest follow up.
         var questions = turns.OrderBy(t => t.Key.Turn).Select(t => t.Question).ToList();
         var metadata = new SampleBodyMetadata(scenario.Metadata.Place, scenario.Metadata.TimeZone, questions[1..],
-            Expected(scenario, choices.Expected), choices.Categories ?? scenario.Metadata.Categories);
+            Expected(scenario, choices.Expected), choices.Categories ?? scenario.Metadata.Categories,
+            scenario.Metadata.Role);
         var sample = new SampleBody(choices.SampleId, [new SampleBodyMessage("user", questions[0])], metadata,
             choices.Target);
         return new SampleDraft(id, eval, identity, run, conversation, sample, choices.Author, at);

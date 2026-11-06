@@ -71,7 +71,7 @@
   {"code": "01145005", "product": "Parmesan Cheese", "names": ["parmesan cheese", "parmesan"]},
   {"code": "01146001", "product": "Plain yogurt", "names": ["plain yogurt", "yoghurt", "yogurt", "plain yoghurt"]},
   {"code": "01146002", "product": "Flavoured yogurt", "names": ["flavoured yogurt"]},
-  {"code": "01146003", "product": "Sour milk", "names": ["sour milk", "buttermilk", "maas", "amasi"]},
+  {"code": "01146003", "product": "Sour milk", "names": ["sour milk", "maas", "amasi"]},
   {"code": "01147001", "product": "Maize based food drinks - Amageu", "names": ["maize based food drinks"]},
   {"code": "01147002", "product": "Custard - prepared", "names": ["custard"]},
   {"code": "01148101", "product": "Eggs", "names": ["eggs", "egg", "eiers", "eier"]},

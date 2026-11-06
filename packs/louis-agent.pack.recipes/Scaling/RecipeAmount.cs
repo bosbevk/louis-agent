@@ -16,7 +16,7 @@ namespace LouisAgent.Packs.Recipes.Scaling;
 internal static class RecipeAmount
 {
     private static readonly HashSet<string> Weights = new(
-        "g gram grams kg kilogram kilograms ml millilitre millilitres l litre litres liter liters".Split(' '),
+        "g gram grams kg kilogram kilograms ml mℓ millilitre millilitres l ℓ litre litres liter liters".Split(' '),
         StringComparer.OrdinalIgnoreCase);
 
     private static readonly HashSet<string> Measures = new(
@@ -36,7 +36,8 @@ internal static class RecipeAmount
     private static readonly string[] RangeMarks = [" - ", " – ", " to ", "-", "–"];
 
     /// <summary>Words that only hedge the amount after them.</summary>
-    private static readonly string[] Hedges = ["about ", "approx. ", "approx ", "approximately ", "roughly ", "circa ", "ongeveer "];
+    private static readonly string[] Hedges =
+        ["about ", "approx. ", "approx ", "approximately ", "roughly ", "circa ", "ongeveer ", "up to ", "tot "];
 
     /// <summary>A number written out, which this doesn't scale but mustn't pass over in silence.</summary>
     private static readonly HashSet<string> NumberWords = new(
@@ -114,6 +115,24 @@ internal static class RecipeAmount
             : rest.Any(c => char.IsAsciiDigit(c) || FractionOf(c) is not null);
     }
 
+    /// <summary>The weight a line starts with, in grams, a range's middle, or nothing if it isn't weighed.</summary>
+    public static double? GramsIn(string line)
+    {
+        if (HedgeOn(line) is { } hedge) return GramsIn(line[hedge.Length..]);
+        if (ReadAmount(line, 0) is not { } amount) return null;
+
+        double value = amount.High is { } high ? (amount.Low + high) / 2 : amount.Low;
+        return FirstWord(line[amount.Length..]).ToLowerInvariant() switch
+        {
+            "g" or "gram" or "grams" => value,
+            "kg" or "kilogram" or "kilograms" => value * 1000,
+            _ => null
+        };
+    }
+
+    /// <summary>The number a line starts with, or nothing.</summary>
+    public static double? CountIn(string line) => ReadAmount(line, 0)?.Low;
+
     /// <summary>How many people a yield is for: a range's middle, and nothing when it counts something else.</summary>
     public static double? PeopleIn(string? yield)
     {
@@ -125,6 +144,10 @@ internal static class RecipeAmount
 
         return amount.High is { } high ? (amount.Low + high) / 2 : amount.Low;
     }
+
+    /// <summary>Six people on a page for six to eight are what the page feeds: there's nothing to scale.</summary>
+    public static bool InTheRange(string? yield, int people) =>
+        ReadAmount((yield ?? "").Trim(), 0) is { High: { } high } amount && people >= amount.Low && people <= high;
 
     /// <summary>A step's amounts of food and what they become. Times, temperatures and sizes have no unit.</summary>
     public static IReadOnlyList<(string From, string To)> InStep(string step, double factor)
@@ -271,6 +294,6 @@ internal static class RecipeAmount
     private static string FirstWord(string text) => Words(text).FirstOrDefault() ?? "";
 
     /// <summary>The runs of letters in a text.</summary>
-    private static string[] Words(string text) =>
+    public static string[] Words(string text) =>
         new string([.. text.Select(c => char.IsLetter(c) ? c : ' ')]).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 }

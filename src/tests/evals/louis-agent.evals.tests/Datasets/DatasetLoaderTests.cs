@@ -59,6 +59,21 @@ public class DatasetLoaderTests
         Assert.That(scenario.Target, Is.EqualTo("a meal for six"));
     }
 
+    /// <summary>A scenario can name the role it opens in; with none, it has none of its own.</summary>
+    [Test]
+    public void AScenariosRole_IsReadWhenItHasOne()
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a", followUps: "[], \"role\": \"sample/voice-en\""))
+            .Write("scenarios/dev/b.json", DatasetFolder.Scenario("b"))
+            .WithManifest();
+
+        var scenarios = DatasetLoader.Load(folder.Root, Graders).Scenarios;
+
+        Assert.That(scenarios.Single(s => s.Id == "a").Input.Role, Is.EqualTo("sample/voice-en"));
+        Assert.That(scenarios.Single(s => s.Id == "b").Input.Role, Is.Null);
+    }
+
     /// <summary>A file still in the old scenario shape (an input object, criteria at the top) is refused.</summary>
     [Test]
     public void RefusesAFileInTheOldScenarioShape()

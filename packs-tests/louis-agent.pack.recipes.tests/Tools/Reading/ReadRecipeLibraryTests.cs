@@ -80,6 +80,17 @@ public class ReadRecipeLibraryTests
         Assert.That(result, Does.Contain("pap and sheba").And.Contain("ushatini"));
     }
 
+    /// <summary>A search that finds nothing says what else the dish is called: a word for the next search.</summary>
+    [Test]
+    public async Task ASearchThatFindsNothing_SaysTheOtherName()
+    {
+        var sources = new Dictionary<string, IRecipeSource> { ["foodandhome"] = new FakeRecipeSource("foodandhome") };
+
+        string result = await new RecipeTools(sources, new FakeSiteBrowser(), new FakePhotoFetcher()).FindRecipes("appeltert");
+
+        Assert.That(result, Does.Contain("apple tart"));
+    }
+
     /// <summary>What's kept is the recipe itself, line by line, not the words we printed about it.</summary>
     [Test]
     public async Task WhatIsKept_IsAProperRecipe()

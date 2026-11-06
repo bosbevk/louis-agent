@@ -20,13 +20,23 @@ public class PulsAmountsTests
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("Scale it with `ScaleRecipe`"));
+        Assert.That(cook, Does.Contain("scale it with `ScaleRecipe`"));
         Assert.That(cook, Does.Contain("use its lines as they are"));
         Assert.That(cook, Does.Contain("A line it marks *(not scaled)* is yours to work out with `Calculate`"));
         Assert.That(cook, Does.Contain("*(only the first amount scaled)*"));
         Assert.That(cook, Does.Contain("a pack's size stays (`2 x 400 g`)"));
         Assert.That(cook, Does.Contain("On a page it says it doesn't hold"));
     }
+
+    /// <summary>A page with no yield still goes to the tool, and its estimate is said under *Unsure*.</summary>
+    [Test]
+    public void APageWithNoYield_StillGoesToTheTool() =>
+        Assert.That(Cook(), Does.Contain("A print that gives neither still goes to `ScaleRecipe`"));
+
+    /// <summary>An ingredient used twice shows both amounts and their sum: the sum isn't read as a third.</summary>
+    [Test]
+    public void AnIngredientUsedTwice_ShowsItsSum() =>
+        Assert.That(Cook(), Does.Contain("`250 ml + 1 koppie = 500 ml`"));
 
     /// <summary>A line with no amount keeps the page's words or a dash, never an amount of the cook's.</summary>
     [Test]

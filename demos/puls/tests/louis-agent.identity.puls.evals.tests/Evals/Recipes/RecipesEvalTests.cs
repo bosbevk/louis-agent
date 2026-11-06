@@ -43,7 +43,7 @@ public class RecipesEvalTests
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF),
     /// of the body after the header, so a change to the rubric's words shows here.
     /// </summary>
-    private const string PinnedRubricHash = "21be20d3f55a";
+    private const string PinnedRubricHash = "7388df4efe24";
 
     /// <summary>The dishes to work on, as their scenarios' ids.</summary>
     private static readonly string[] Dev =
@@ -62,7 +62,7 @@ public class RecipesEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 8, 1)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 10, 3)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -89,7 +89,7 @@ public class RecipesEvalTests
                 ("no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("tool-used", 1, true, CheckKind.FixedRule), ("recipe-from-source", 2, true, CheckKind.FixedRule),
                 ("recipe-image", 3, true, CheckKind.FixedRule), ("unpriced-items", 1, false, CheckKind.FixedRule),
-                ("recipe-as-source", 5, false, CheckKind.Model),
+                ("recipe-as-source", 6, false, CheckKind.Model),
                 ("recipe-as-source.human", 2, false, CheckKind.Human)
             }));
 
@@ -180,18 +180,30 @@ public class RecipesEvalTests
     }
 
     /// <summary>
-    /// Each question names the people the scenario says (read as the cook's checks read them, in words too), and
-    /// asks in one message with no follow-up.
+    /// Five dev questions ask for a recipe and name no number, so the recipe stays as the page wrote it. The rest name
+    /// the people the scenario says (read as the cook's checks read them, in words too). Each asks in one message.
     /// </summary>
     [Test]
-    public void EachQuestion_NamesItsPeople_AndAsksOnce()
+    public void EachQuestion_NamesItsPeople_OrNoNumberAtAll_AndAsksOnce()
     {
-        foreach (var scenario in Load().Scenarios)
-        {
+        var scenarios = Load().Scenarios;
+        var plain = scenarios.Where(s => s.Expected.GetProperty("serves").ToString() == "as the page makes it").ToList();
+
+        Assert.That(plain, Has.Count.EqualTo(5));
+        foreach (var scenario in plain) Assert.That(Servings.Of(scenario.Input.Messages[0]), Is.Empty, scenario.Id);
+        foreach (var scenario in scenarios.Except(plain))
             Assert.That(Servings.Of(scenario.Input.Messages[0]),
                 Does.Contain(scenario.Expected.GetProperty("serves").GetInt32()), $"{scenario.Id}: the people");
-            Assert.That(scenario.Input.Messages, Has.Count.EqualTo(1), scenario.Id);
-        }
+        foreach (var scenario in scenarios) Assert.That(scenario.Input.Messages, Has.Count.EqualTo(1), scenario.Id);
+    }
+
+    /// <summary>A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.</summary>
+    [Test]
+    public void EachQuestion_OpensInItsOwnLanguage()
+    {
+        foreach (var scenario in Load().Scenarios)
+            Assert.That(scenario.Input.Role,
+                Is.EqualTo(scenario.Categories.Contains("language:en") ? "puls/voice-en" : null), scenario.Id);
     }
 
     /// <summary>The held-out questions are for a release check: none is also a question to work on.</summary>

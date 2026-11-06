@@ -64,8 +64,33 @@ public class RecipeScalerTests
     [TestCase("about 200g of puff pastry", 2, "about 400g of puff pastry")]
     [TestCase("Approx. 2 cups lukewarm water", 1.5, "Approx. 3 cups lukewarm water")]
     [TestCase("roughly 1 kg lamb", 2, "roughly 2 kg lamb")]
+    [TestCase("up to 2 cups water", 2, "up to 4 cups water")]
+    [TestCase("up to 60 ml oil", 0.5, "up to 30 ml oil")]
+    [TestCase("tot 2 koppies water", 2, "tot 4 koppies water")]
     public void AHedgingWord_StaysAndTheAmountScales(string line, double factor, string scaled) =>
         Assert.That(RecipeAmount.Scale(line, factor), Is.EqualTo(scaled));
+
+    /// <summary>South African pages write a litre with its own sign, and it's a measure like any other.</summary>
+    [TestCase("500 mℓ milk", 2, "1000 mℓ milk")]
+    [TestCase("1 ℓ water", 2, "2 ℓ water")]
+    public void TheLitreSign_IsAMeasure(string line, double factor, string scaled) =>
+        Assert.That(RecipeAmount.Scale(line, factor), Is.EqualTo(scaled));
+
+    /// <summary>In a step too, where only an amount with a unit is food.</summary>
+    [Test]
+    public void TheLitreSign_InAStep_IsAnAmount() =>
+        Assert.That(RecipeAmount.InStep("Add 250 mℓ milk and stir.", 2), Has.Count.EqualTo(1));
+
+    /// <summary>People inside the page's own range are what the page feeds: nothing to scale.</summary>
+    [TestCase("6-8 servings", 6, true)]
+    [TestCase("6-8 servings", 7, true)]
+    [TestCase("6-8 servings", 8, true)]
+    [TestCase("6 to 8 people", 8, true)]
+    [TestCase("6-8 servings", 4, false)]
+    [TestCase("6-8 servings", 10, false)]
+    [TestCase("6 servings", 6, false)]
+    public void PeopleInsideTheRange_AreWhatThePageFeeds(string yield, int people, bool inside) =>
+        Assert.That(RecipeAmount.InTheRange(yield, people), Is.EqualTo(inside));
 
     /// <summary>
     /// A line that holds an amount this can't scale has to be told apart from one with none, or the cook would copy it
