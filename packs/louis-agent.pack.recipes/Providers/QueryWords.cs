@@ -2,23 +2,29 @@ namespace LouisAgent.Packs.Recipes.Providers;
 
 /// <summary>
 /// Tells a real search result from a site's suggestions. Three sites answer a search with no results by listing other
-/// recipes, and those read like hits: Jan Braai gave <c>Puttanesca</c> for "pap and sous". A hit that shares no word
-/// with the search, in its title or its address, isn't an answer to it.
+/// recipes, and those read like hits: Jan Braai gave <c>Puttanesca</c> for "pap and sous". And one word of a dish's
+/// name isn't the dish: "sous vide" is no pap en sous, and offering it sent the cook searching again. A hit answers a
+/// search when its title or its address holds the dish's whole name.
 /// </summary>
 /// <remarks>
-/// A plain word walk before a regex (ADR 0057). It's deliberately generous, since the model still reads the titles:
-/// its job is to drop what plainly has nothing to do with the search, and a plural or a longer name still counts.
+/// A plain word walk before a regex (ADR 0057). A plural or a longer name still counts, a search of three words or more
+/// can miss one, since the cook may add a word no page has, and a dish's other names count whole. A real recipe with
+/// another title can still be missed, which is what the line of other names to try is for.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static class QueryWords
 {
-    /// <summary>Words that only join others or say where a dish is from, which would match half of any site.</summary>
+    /// <summary>Words that only join others, say where a dish is from, or praise it: no title need hold them.</summary>
     private static readonly HashSet<string> Joining = new(
-        "and the with for recipe recipes south african met vir die resep resepte suid afrikaanse".Split(' '),
+        ("and the with for recipe recipes south african en met vir die resep resepte suid afrikaanse " +
+         "traditional tradisionele easy maklike quick vinnige best beste classic klassieke homemade lekker").Split(' '),
         StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Under this length a word must match whole: <c>pap</c> is no <c>paprika</c>.</summary>
     private const int ShortestPart = 4;
+
+    /// <summary>A search of up to this many real words is the dish's name, so a hit holds them all.</summary>
+    private const int WordsInAName = 2;
 
     /// <summary>Pap en sous by every name it goes by: a page may print any of them and none of the others.</summary>
     private static readonly string[] PapEnSous =
@@ -59,7 +65,9 @@ internal static class QueryWords
         if (wanted.Count == 0) return true;
 
         var found = Words(title).Concat(Words(Uri.UnescapeDataString(page.AbsolutePath))).ToList();
-        return wanted.Any(word => found.Any(other => Same(word, other))) || IsTheOtherName(Words(query), found);
+        int held = wanted.Count(word => found.Any(other => Same(word, other)));
+        int enough = wanted.Count <= WordsInAName ? wanted.Count : wanted.Count - 1;
+        return held >= enough || IsTheOtherName(Words(query), found);
     }
 
     /// <summary>The search names a dish and the hit its other name, whole: an apple tart is no melktert.</summary>
@@ -70,12 +78,15 @@ internal static class QueryWords
     private static bool Holds(IEnumerable<string> words, string name) =>
         $" {string.Join(' ', words)} ".Contains($" {name} ", StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>The same word, or one holding the other when the shorter is long enough: potjie, potjiekos.</summary>
+    /// <summary>
+    /// The same word, its plural, or one holding the other when the shorter is long enough: pie, pies; potjie,
+    /// potjiekos.
+    /// </summary>
     private static bool Same(string one, string other)
     {
         var (shorter, longer) = one.Length <= other.Length ? (one, other) : (other, one);
         return shorter.Length < ShortestPart
-            ? shorter.Equals(longer, StringComparison.OrdinalIgnoreCase)
+            ? shorter.TrimEnd('s', 'S').Equals(longer.TrimEnd('s', 'S'), StringComparison.OrdinalIgnoreCase)
             : longer.Contains(shorter, StringComparison.OrdinalIgnoreCase);
     }
 

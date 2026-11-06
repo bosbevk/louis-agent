@@ -14,8 +14,6 @@ public class QueryWordsTests
     /// <summary>A title holding a word of the search counts, whatever its case or its other words.</summary>
     [TestCase("Pork bobotie", "bobotie")]
     [TestCase("TRADITIONAL BOBOTIE", "bobotie")]
-    [TestCase("A simple Stywe Pap recipe", "pap en sous")]
-    [TestCase("Orange Chicken Marinade", "braai chicken marinade")]
     public void ATitleWithAWordOfTheSearch_IsAnAnswer(string title, string query) =>
         Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
 
@@ -73,6 +71,32 @@ public class QueryWordsTests
     [TestCase("Pork pie", "hoenderpastei")]
     public void HalfOfTheOtherName_IsNoAnswer(string title, string query) =>
         Assert.That(QueryWords.Answers(title, Plain, query), Is.False);
+
+    /// <summary>A hit holds the whole name of the dish, a plural or a longer form counting.</summary>
+    [TestCase("Traditional Pap en Sous", "pap en sous")]
+    [TestCase("Pap and sous", "pap en sous")]
+    [TestCase("Creamy chicken and mushroom pot pies", "chicken pie")]
+    [TestCase("Boerewors Roll", "boerewors rolls")]
+    [TestCase("Boerewors Sausage Rolls", "boerewors rolls")]
+    public void TheWholeNameOfTheDish_IsAnAnswer(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
+
+    /// <summary>One word of the dish's name isn't the dish: these are what the search used to offer for it.</summary>
+    [TestCase("A simple Stywe Pap recipe", "pap en sous")]
+    [TestCase("Krummel Pap Recipe", "pap en sous")]
+    [TestCase("Bone-in rib-eye steak sous vide with a pepper sauce", "pap en sous")]
+    [TestCase("Romerige macaroni-en-kaas", "pap en sous")]
+    [TestCase("Boerewors Braai Pie", "boerewors rolls")]
+    [TestCase("Chicken curry", "chicken pie")]
+    public void OneWordOfTheName_IsNoAnswer(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.False);
+
+    /// <summary>A longer search can miss one word, and a word that only praises the dish doesn't count.</summary>
+    [TestCase("Orange Chicken Marinade", "braai chicken marinade")]
+    [TestCase("Chicken pie", "easy chicken pie")]
+    [TestCase("Bobotie", "lekker tradisionele bobotie")]
+    public void ALongerSearch_CanMissAWord(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
 
     /// <summary>The address counts too: <c>Milk tart</c> at <c>/melktert/</c> is a melktert.</summary>
     [Test]

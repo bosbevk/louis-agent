@@ -6,7 +6,8 @@ namespace LouisAgent.Packs.Recipes.Reading.PageText;
 /// <summary>
 /// Finds the recipe on a page with no headings to go by: a run of short lines, most starting with an amount, then
 /// sentences. Five sites in our table lay their recipes out this way. It only says yes to the plain shape, because what
-/// we keep is served for good: enough lines, mostly amounts, and at least two steps straight after them.
+/// we keep is served for good: enough lines, mostly amounts, and straight after them at least two steps, or one long
+/// paragraph that holds the whole method.
 /// </summary>
 /// <remarks>
 /// The last link of a Chain of Responsibility: the page's data, then <see cref="PageTextRecipe"/>'s headings, then
@@ -28,6 +29,12 @@ internal static class PlainRunRecipe
 
     /// <summary>One step could be a sentence that happens to follow a list; two is a method.</summary>
     private const int FewestSteps = 2;
+
+    /// <summary>How long a lone paragraph must be to count as a whole method.</summary>
+    private const int ShortestWholeMethod = 300;
+
+    /// <summary>Fewer sentences than this in a long paragraph is the page talking, not a method.</summary>
+    private const int FewestSentencesInAWholeMethod = 3;
 
     /// <summary>More steps than this means the page ran on past the recipe.</summary>
     private const int MostSteps = 40;
@@ -72,10 +79,16 @@ internal static class PlainRunRecipe
             at = end;
         }
 
-        if (steps.Count is < FewestSteps or > MostSteps) return null;
+        bool hasAMethod = steps.Count is >= FewestSteps and <= MostSteps || (steps is [var only] && IsAWholeMethod(only.Text));
+        if (!hasAMethod) return null;
 
         return new Recipe(name, YieldAbove(lines, start), null, null, null, ingredients, steps, null, null, page);
     }
+
+    /// <summary>Whether one paragraph is long enough, and has sentences enough, to be the whole method.</summary>
+    private static bool IsAWholeMethod(string text) =>
+        text.Length >= ShortestWholeMethod &&
+        text.Split(". ", StringSplitOptions.RemoveEmptyEntries).Length >= FewestSentencesInAWholeMethod;
 
     /// <summary>Where the first run starts: enough lines, mostly amounts, with a step straight after them.</summary>
     private static int FirstRun(string[] lines)

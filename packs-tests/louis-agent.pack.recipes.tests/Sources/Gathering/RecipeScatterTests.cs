@@ -6,7 +6,7 @@ using LouisAgent.Packs.Recipes.Tests.Tools;
 namespace LouisAgent.Packs.Recipes.Tests.Sources.Gathering;
 
 /// <summary>
-/// One search goes to a few sites picked at random, all at once, and their hits come back taking turns, so no site
+/// One search goes to a few sites picked at random, all at once, and their hits come back in a random order, so no site
 /// gets to be the first answer every time and one failing site doesn't sink the search.
 /// </summary>
 public class RecipeScatterTests
@@ -91,42 +91,38 @@ public class RecipeScatterTests
         Assert.That(firsts, Is.EquivalentTo(Slugs));
     }
 
-    /// <summary>Each site's first hit comes before any site's second, so its best guess stays near the top.</summary>
-    [Test]
-    public async Task Hits_TakeTurns_SiteBySite()
-    {
-        var sites = Slugs.Take(3).Select(slug => Site(slug, hits: 3)).ToList();
-
-        var gather = await new RecipeScatter(sites, new Random(1)).FindAsync("bobotie", 8);
-
-        var bySlug = gather.Asked.Select(site => site.Slug).ToList();
-        string[] expected =
-        [
-            bySlug[0], bySlug[1], bySlug[2],
-            bySlug[0], bySlug[1], bySlug[2],
-            bySlug[0], bySlug[1]
-        ];
-        Assert.That(gather.Hits.Select(hit => hit.Site.Slug), Is.EqualTo(expected));
-    }
-
     /// <summary>
-    /// The light random: a site's first place goes to any of its top three, so the same site doesn't give the same page
-    /// every time. Nothing is remembered for this, and a hit further down the site's list stays further down.
+    /// The list is in a random order, whole: the first place can go to any hit of any site, and two hits of one site
+    /// can sit together. The cook tends to read from the top, so the top mustn't favour anyone.
     /// </summary>
     [Test]
-    public async Task ASitesFirstHit_IsAnyOfItsTopThree_NeverOneFurtherDown()
+    public async Task TheFirstPlace_CanGoToAnyHit()
     {
         var sites = new[] { Site("taste", hits: 6) };
         var random = new Random(1);
         var firsts = new HashSet<string>();
 
-        foreach (int _ in Enumerable.Range(0, 60))
+        foreach (int _ in Enumerable.Range(0, 100))
             firsts.Add((await new RecipeScatter(sites, random).FindAsync("bobotie", 8)).Hits[0].Hit.Name);
 
-        Assert.That(firsts, Is.EquivalentTo(new[] { "taste 1", "taste 2", "taste 3" }));
+        Assert.That(firsts, Has.Count.EqualTo(6));
     }
 
-    /// <summary>The sites a search has already asked for this dish aren't asked again, by short name or by name.</summary>
+    /// <summary>Which hits make the list is random too: a page far down a site's list gets its chance.</summary>
+    [Test]
+    public async Task WhichHitsMakeTheList_IsRandomToo()
+    {
+        var sites = new[] { Site("taste", hits: 20) };
+        var random = new Random(1);
+        var shown = new HashSet<string>();
+
+        foreach (int _ in Enumerable.Range(0, 100))
+            shown.UnionWith((await new RecipeScatter(sites, random).FindAsync("bobotie", 8)).Hits.Select(hit => hit.Hit.Name));
+
+        Assert.That(shown, Has.Count.EqualTo(20));
+    }
+
+    /// <summary>The sites a search has already asked for this dish aren't asked again, by either name.</summary>
     [Test]
     public async Task TheSitesToSkip_AreNotAsked_ByNameOrShortName()
     {
@@ -150,9 +146,9 @@ public class RecipeScatterTests
         Assert.That(gather.Asked, Has.Count.EqualTo(2));
     }
 
-    /// <summary>A site that has fewer hits just drops out of the later turns.</summary>
+    /// <summary>A site that has fewer hits just has fewer in the list.</summary>
     [Test]
-    public async Task ASiteWithFewerHits_DropsOutOfTheLaterTurns()
+    public async Task ASiteWithFewerHits_JustHasFewerInTheList()
     {
         var sites = new[] { Site("taste", hits: 1), Site("foodandhome", hits: 3) };
 
