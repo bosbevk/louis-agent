@@ -1,6 +1,6 @@
 using LouisAgent.Web.Testing;
 using LouisAgent.Testing;
-using LouisAgent.Puls.Components.Chat.Panels;
+using LouisAgent.Web.Components.Chat.Panels;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Chats;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,10 @@ public class WorkPanelTests
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(PulsText.Afrikaans);
 
-        var cut = ctx.Render<WorkPanel>(p => p.Add(x => x.Chat, chat));
+        var cut = ctx.Render<WorkPanel>(p => p
+            .Add(x => x.Chat, chat)
+            .Add(x => x.EmptyImage, "brand/puls-mark.svg")
+            .Add(x => x.Avatar, "brand/puls-icon-tile.svg"));
 
         Assert.That(cut.Find(".work-count").TextContent, Is.EqualTo("1"));
         Assert.That(cut.Find(".work-who strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole));

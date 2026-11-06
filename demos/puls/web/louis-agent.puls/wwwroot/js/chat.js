@@ -58,7 +58,7 @@ document.addEventListener("click", (e) => {
 });
 
 // The sidebar: drag its edge to resize (220-480px, remembered), double-click the edge to reset, hide and show it.
-window.pulsUi = {
+window.chatUi = {
     minWidth: 220,
     maxWidth: 480,
     defaultWidth: 280,
@@ -87,7 +87,7 @@ document.addEventListener("pointerdown", (e) => {
     e.preventDefault();
     handle.setPointerCapture(e.pointerId);
     document.documentElement.classList.add("resizing");
-    const move = (ev) => pulsUi.setWidth(ev.clientX);
+    const move = (ev) => chatUi.setWidth(ev.clientX);
     const up = () => {
         document.documentElement.classList.remove("resizing");
         handle.removeEventListener("pointermove", move);
@@ -98,7 +98,7 @@ document.addEventListener("pointerdown", (e) => {
 });
 
 document.addEventListener("dblclick", (e) => {
-    if (e.target.closest?.(".resizer")) pulsUi.setWidth(pulsUi.defaultWidth);
+    if (e.target.closest?.(".resizer")) chatUi.setWidth(chatUi.defaultWidth);
 });
 
 // On a phone the sidebar is an offcanvas: close it once a chat is picked or a new one started.
@@ -136,7 +136,7 @@ document.addEventListener("pointerout", (e) => {
 // written here stay. The frames go into Blazor's own text node (its value, not the element's textContent), so the node
 // Blazor holds is the one on screen and its next write lands there. Called after each render of the chat page; a
 // reduced-motion browser jumps straight to the value.
-pulsUi.countCosts = () => {
+chatUi.countCosts = () => {
     const write = (el, text) => { const node = el.firstChild; if (node && node.nodeType === 3 && node === el.lastChild) node.nodeValue = text; else el.textContent = text; };
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches && document.documentElement.dataset.motion !== "on";
     for (const el of document.querySelectorAll("[data-count]")) {
@@ -159,7 +159,7 @@ pulsUi.countCosts = () => {
 };
 
 // Focus a field once Blazor has drawn it (the chat search, the rename field); select its text when asked.
-pulsUi.focus = (selector, select) => {
+chatUi.focus = (selector, select) => {
     const field = document.querySelector(selector);
     if (!field) return;
     field.focus();
@@ -175,8 +175,8 @@ document.addEventListener("keydown", (e) => {
 });
 
 // The profile menu's Instellings: show the sidebar if it's hidden, then open its settings.
-pulsUi.openSettings = () => {
-    if (document.documentElement.classList.contains("sidebar-hidden")) pulsUi.toggleSidebar();
+chatUi.openSettings = () => {
+    if (document.documentElement.classList.contains("sidebar-hidden")) chatUi.toggleSidebar();
     const settings = document.querySelector(".sidebar-settings");
     if (!settings) return;
     settings.open = true;
@@ -185,27 +185,27 @@ pulsUi.openSettings = () => {
 
 // Animations although the system asks for less (F24): data-motion="on" on <html> (app.css lifts its reduced-motion
 // rules under it; index.html applies it before the first paint), remembered in this browser as puls.motion.
-pulsUi.motion = () => document.documentElement.dataset.motion === "on";
-pulsUi.reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-pulsUi.setMotion = (on) => {
+chatUi.motion = () => document.documentElement.dataset.motion === "on";
+chatUi.reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+chatUi.setMotion = (on) => {
     if (on) document.documentElement.dataset.motion = "on"; else delete document.documentElement.dataset.motion;
     try { if (on) localStorage.setItem("puls.motion", "on"); else localStorage.removeItem("puls.motion"); } catch { }
 };
 
 // Where the user is (F22): kept in this browser only.
-pulsUi.loadLocation = () => { try { return localStorage.getItem("puls.location"); } catch { return null; } };
-pulsUi.saveLocation = (place) => {
+chatUi.loadLocation = () => { try { return localStorage.getItem("puls.location"); } catch { return null; } };
+chatUi.saveLocation = (place) => {
     try { if (place) localStorage.setItem("puls.location", place); else localStorage.removeItem("puls.location"); } catch { }
 };
 // Puls's language (CL9): the voice a new chat opens with, remembered in this browser as puls.language.
-pulsUi.loadLanguage = () => { try { return localStorage.getItem("puls.language"); } catch { return null; } };
-pulsUi.saveLanguage = (code) => { try { localStorage.setItem("puls.language", code); } catch { } };
-pulsUi.timeZone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { return null; } };
+chatUi.loadLanguage = () => { try { return localStorage.getItem("puls.language"); } catch { return null; } };
+chatUi.saveLanguage = (code) => { try { localStorage.setItem("puls.language", code); } catch { } };
+chatUi.timeZone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { return null; } };
 
 // "Gebruik my ligging": the browser's position (it asks the user once), named by OpenStreetMap's Nominatim at town level.
 // One request per press, as Nominatim's usage policy asks; the browser sends its own Referer and User-Agent. The position
 // goes to two decimals (about 1 km), all a town needs.
-pulsUi.locate = () => new Promise((resolve) => {
+chatUi.locate = () => new Promise((resolve) => {
     if (!navigator.geolocation) return resolve({ place: null, error: "Hierdie blaaier kan nie jou ligging gee nie." });
     navigator.geolocation.getCurrentPosition(async (position) => {
         try {
@@ -228,7 +228,7 @@ pulsUi.locate = () => new Promise((resolve) => {
 });
 
 // A starter in the message box (F20): focus it with the cursor at the end, and grow the box to fit.
-pulsUi.focusEnd = (selector) => {
+chatUi.focusEnd = (selector) => {
     const box = document.querySelector(selector);
     if (!box) return;
     box.focus();
@@ -238,14 +238,14 @@ pulsUi.focusEnd = (selector) => {
 };
 
 // Copy a message (F20): true when the browser allowed it.
-pulsUi.copy = async (text) => {
+chatUi.copy = async (text) => {
     try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 };
 
 // Show the Werk panel (an answer's sources): unhide it on a wide screen, slide it in on a smaller one.
-pulsUi.showWork = () => {
+chatUi.showWork = () => {
     if (window.matchMedia("(min-width: 1200px)").matches) {
-        if (document.documentElement.classList.contains("work-hidden")) pulsUi.toggleWork();
+        if (document.documentElement.classList.contains("work-hidden")) chatUi.toggleWork();
         document.querySelector(".work-sources")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     } else if (window.bootstrap) {
         window.bootstrap.Offcanvas.getOrCreateInstance(document.getElementById("work")).show();

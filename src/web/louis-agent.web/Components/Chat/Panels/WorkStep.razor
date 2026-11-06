@@ -1,0 +1,62 @@
+@* One step of a specialist's work: a tool call, or a minion it handed one page to, with the minion's role, tool and model, its
+   own steps and what it cost, nested under the specialist's steps. *@
+@if (Delegation.From(Step) is { Minion: true } minion)
+{
+    var minionSteps = Step.SubTurn?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
+    <li class="work-step minion @StepMarks.StateOf(Step)">
+        <span class="work-step-mark">@StepMarks.MarkOf(Step)</span>
+        <div class="work-minion">
+            <div class="work-minion-head">
+                <span class="work-step-name">@Text.MinionLabel</span>
+                <span class="work-minion-role">@(minion.Role ?? Step.ToolName)</span>
+                @if (minion.Continued)
+                {
+                    <span class="toolset-chip follow-up">@Text.FollowUp</span>
+                }
+                @foreach (string tool in minion.Toolsets)
+                {
+                    <span class="toolset-chip">@tool</span>
+                }
+                @if (minion.Llm is { } llm)
+                {
+                    <span class="toolset-chip model">@Text.OnModel @llm</span>
+                }
+            </div>
+            @if (minion.Task is { Length: > 0 } minionTask)
+            {
+                <div class="work-minion-task" title="@minionTask">@minionTask</div>
+            }
+            @if (minionSteps.Count > 0)
+            {
+                <ol class="work-steps nested">
+                    @foreach (var inner in minionSteps)
+                    {
+                        <li class="work-step @StepMarks.StateOf(inner)">
+                            <span class="work-step-mark">@StepMarks.MarkOf(inner)</span>
+                            <span class="work-step-name">@inner.ToolName</span>
+                            @if (Summarise(inner.ToolInput) is { Length: > 0 } innerArgs)
+                            {
+                                <span class="work-step-args">@innerArgs</span>
+                            }
+                        </li>
+                    }
+                </ol>
+            }
+            @if (Step.SubTurn?.Usage is { } minionUsage)
+            {
+                <div class="work-minion-cost" title="@UsageFormat.Detail(minionUsage, Currency)">@UsageFormat.Cost(minionUsage, Currency) · @minionUsage.Requests @Text.Requests</div>
+            }
+        </div>
+    </li>
+}
+else
+{
+    <li class="work-step @StepMarks.StateOf(Step)">
+        <span class="work-step-mark">@StepMarks.MarkOf(Step)</span>
+        <span class="work-step-name">@Step.ToolName</span>
+        @if (Summarise(Step.ToolInput) is { Length: > 0 } args)
+        {
+            <span class="work-step-args">@args</span>
+        }
+    </li>
+}

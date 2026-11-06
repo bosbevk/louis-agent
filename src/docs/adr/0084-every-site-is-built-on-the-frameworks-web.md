@@ -33,6 +33,8 @@ no site.**
   that writes about fifteen lines is a fair price.
 - **A framework page names a framework layout, which hands over to the site's** (Bridge). A page's layout is fixed when it's compiled,
   and a page naming none gets the site's default, so a framework page names `AdminFrame`, which draws inside what `SiteFrames` says.
+- **Every pack brings its controls the same way:** it names its screens through one seam, and a real component comes from its own
+  project under `packs-web/`, found by name. No pack puts a panel in the chat.
 - **Where two sites differ, one shape goes into the framework and the other adapts,** rather than the framework growing a
   switch. For today's two, Puls's shape is the one that goes in.
 
@@ -42,7 +44,7 @@ ratchet: what's still too long is listed, and the list can only shrink.
 
 ## Consequences
 
-- **The rule is ahead of the code.** Most of Puls's frame, chat, styles and admin are still in Puls, and F59.2 to F59.8 move them.
+- **The rule is ahead of the code.** Most of Puls's styles and admin pages are still in Puls, and F59's children move them.
   Until then the old sentence "each app keeps its own pages and look" stays true in places, and those docs say *for now*.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.

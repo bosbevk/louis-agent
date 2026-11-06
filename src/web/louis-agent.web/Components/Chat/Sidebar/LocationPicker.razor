@@ -1,0 +1,12 @@
+@* Where the user is: typed, or found by the browser (to ~1 km) and named by OpenStreetMap's Nominatim.
+   Kept in this browser; sent with a new chat only when set (the time zone is sent always). *@
+<label class="settings">
+    @Text.Location
+    <input type="text" value="@Location" @onchange="e => OnSave.InvokeAsync(e.Value?.ToString())" placeholder="@Text.LocationExample" maxlength="120" />
+</label>
+<div class="locate">
+    <button class="locate-button" type="button" @onclick="OnLocate" disabled="@Locating">
+        <span class="ic i-pin" aria-hidden="true"></span>@(Locating ? Text.Locating : Text.UseMyLocation)
+    </button>
+    <small>@Text.Names: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small>
+</div>

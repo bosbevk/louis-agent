@@ -223,9 +223,9 @@ window.pulsLanding = (() => {
             headline(); links(); reveals(); magnetic(); pinned(); demo(); faq();
             const onScroll = scrolling(); onScroll();
             // The system asks for less motion and the viewer hasn't chosen: offer the animations; a yes applies at once
-            // (pulsUi.setMotion in chat.js remembers it) and this page starts over with them.
+            // (chatUi.setMotion in chat.js remembers it) and this page starts over with them.
             const pill = $("#motion-pill");
-            if (pill) { pill.hidden = !still; if (still) on(pill, "click", () => { window.pulsUi?.setMotion(true); pill.hidden = true; this.start(); }); }
+            if (pill) { pill.hidden = !still; if (still) on(pill, "click", () => { window.chatUi?.setMotion(true); pill.hidden = true; this.start(); }); }
         },
         stop() {
             cleanup.forEach(f => f()); cleanup = [];

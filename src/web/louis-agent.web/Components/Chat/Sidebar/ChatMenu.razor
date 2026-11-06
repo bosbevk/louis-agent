@@ -1,0 +1,7 @@
+@* A chat's actions, in the sidebar's menu and the top bar's: favourite, share (to come), rename, archive, delete. *@
+<li><button class="dropdown-item" type="button" @onclick="() => OnFavourite.InvokeAsync(Chat)"><span class="ic i-star" aria-hidden="true"></span>@(Chat.Favourite ? Text.RemoveFavourite : Text.AddFavourite)</button></li>
+<li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Share)"><span class="ic i-share" aria-hidden="true"></span>@Text.Share</button></li>
+<li><button class="dropdown-item" type="button" @onclick="() => OnRename.InvokeAsync((Chat, InHeader))"><span class="ic i-pencil" aria-hidden="true"></span>@Text.Rename</button></li>
+<li><button class="dropdown-item" type="button" @onclick="() => OnArchive.InvokeAsync(Chat)"><span class="ic i-archive" aria-hidden="true"></span>@(Chat.Archived ? Text.Unarchive : Text.Archive)</button></li>
+<li><hr class="dropdown-divider" /></li>
+<li><button class="dropdown-item danger" type="button" @onclick="() => OnDelete.InvokeAsync(Chat)"><span class="ic i-trash" aria-hidden="true"></span>@Text.Delete</button></li>

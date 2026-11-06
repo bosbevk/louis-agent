@@ -1,0 +1,15 @@
+@* The credits (pay as you go): what this chat and this month cost, from the chats in this browser; buying credits comes
+   with accounts. No plans. *@
+<div class="dropdown">
+    <button class="usage-meter" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="@string.Format(Text.CreditsTitle, MonthCost)">
+        <span class="ic i-coin" aria-hidden="true"></span>@Text.Credits
+    </button>
+    <div class="dropdown-menu dropdown-menu-end usage-menu">
+        <h6 class="dropdown-header">@Text.CreditsHeading</h6>
+        <div class="usage-row"><span>@Text.ThisChat</span><strong data-count="@ChatCost">@ChatCost</strong></div>
+        <div class="usage-row"><span>@Text.ThisMonth <small>@MonthChats @(MonthChats == 1 ? Text.ChatOne : Text.ChatMany)</small></span><strong data-count="@MonthCost">@MonthCost</strong></div>
+        <p class="usage-note">@Text.CreditsNote</p>
+        <hr class="dropdown-divider" />
+        <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Credits)"><span class="ic i-coin" aria-hidden="true"></span>@Text.BuyCredits</button>
+    </div>
+</div>

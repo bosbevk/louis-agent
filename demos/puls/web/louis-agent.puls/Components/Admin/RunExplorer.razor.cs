@@ -166,10 +166,10 @@ public partial class RunExplorer : IDisposable
     /// <summary>After each draw, makes the cost numbers count up.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // The landing page's pulsUi.countCosts, keyed on data-count; without the page's script nothing counts.
+        // The landing page's chatUi.countCosts, keyed on data-count; without the page's script nothing counts.
         try
         {
-            await Js.InvokeVoidAsync("pulsUi.countCosts");
+            await Js.InvokeVoidAsync("chatUi.countCosts");
         }
         catch (JSException)
         {

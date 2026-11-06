@@ -21,13 +21,13 @@ public class ChatPageTests
     [
         // The attachment picker is Blazor's InputFile, which registers itself through JS on its first render.
         "Blazor._internal.InputFile.init",
-        "localStorage.getItem", "pulsUi.loadLocation", "pulsUi.motion", "pulsUi.loadLanguage", "pulsUi.reducedMotion",
-        "pulsUi.countCosts",
+        "localStorage.getItem", "chatUi.loadLocation", "chatUi.motion", "chatUi.loadLanguage", "chatUi.reducedMotion",
+        "chatUi.countCosts",
     ];
 
     private static readonly string[] TurnCalls =
     [
-        "pulsUi.timeZone", "louisChat.scrollToBottom", "louisChat.highlightBlocks", "localStorage.setItem",
+        "chatUi.timeZone", "louisChat.scrollToBottom", "louisChat.highlightBlocks", "localStorage.setItem",
     ];
 
     /// <summary>A bUnit context with everything the page asks for, over the stub API.</summary>

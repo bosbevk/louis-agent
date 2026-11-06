@@ -24,11 +24,12 @@ the headless browser (`puls-browser`) that the specialists use.
 
 ## Change the chat
 
-- **The page** is `Pages/ChatPage.razor`, a layout; its state and handlers are in `ChatPage.razor.cs`, and a turn's
-  life (draft, session, stream, save) is the shared `ChatRunner`. A new piece is a component under
-  `Components/Chat/` in the folder of its concern (`Sidebar/`, `Header/`, `Turns/`, `Panels/`, `Search/`,
-  `Composing/`), with its C# in its `.razor.cs` ([src/CLAUDE.md](../../../../src/CLAUDE.md)).
-- **Logic** that needs no component goes in a plain class with its test, as `Search/ChatFinder` matches the search.
+- **The page** is `Pages/ChatPage.razor`, which only fills the framework's `ChatShell`: the logo, the links, the profile, the water, the
+  empty chat and the cost line's words. `ChatPage.razor.cs` says which view shows and which toolsets a session asks for.
+- **A change to the frame** (the sidebar, the top bar, the message box, the work panel, renaming, search) goes in `louis-agent.web`, since
+  every site gets it ([Change the framework's web](../../../../src/docs/guides/change-the-web.md)). Only what's Puls's own is a component under
+  `Components/Chat/`, with its C# in its `.razor.cs` ([src/CLAUDE.md](../../../../src/CLAUDE.md)).
+- **Logic** that needs no component goes in a plain class with its test.
 - **The session** opens with `["specialists", "web"]` where the instance has them, the role `puls/voice-af` (or the
   chosen language's mode), and the user's place and time zone. A new session option is the API's first
   ([Change the API](../../../../src/docs/guides/change-the-api.md#add-a-session-option)), then `AgentApi.CreateSessionAsync` in the shared library.
@@ -90,8 +91,8 @@ admin can later move out as a folder. A new class there uses the theme's CSS var
 
 Puls speaks Afrikaans. The shared components' words are `Text/PulsText.cs` (`PulsText.Afrikaans`, a `ChatText`). A
 label in a `.razor` is markup and stays there. A text built in C# goes in `PulsText` rather than inline
-([ADR 0009](../../../../src/docs/adr/0009-message-text-as-enum-templates.md)); a few of the page's toasts are still inline in
-`ChatPage.razor.cs`, so move one when you touch it.
+([ADR 0009](../../../../src/docs/adr/0009-message-text-as-enum-templates.md)). A word the framework's frame shows is a property of
+`ChatText` in English, and its Afrikaans goes in `PulsText`.
 
 ## Test it
 
@@ -102,10 +103,10 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests    # a
 
 - `Pages/ChatPageTests` renders the chat page with bUnit against `FixtureApi` and streams a recorded Puls turn (a
   pancake recipe handed to the cook). The empty page and the turn are pinned to `ChatPage.empty.html` and
-  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (`pulsUi.*`, `louisChat.*`), so a new call is a
+  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (`chatUi.*`, `louisChat.*`), so a new call is a
   review point.
 - `Pages/LandingPageTests` pins the landing page (`LandingPage.html`). `Components/` pins `WorkPanel`,
-  `TemplateCard` and `PulsTile`, and `Search/ChatFinderTests` tests the search.
+  `TemplateCard` and `PulsTile`.
 
 Then check it in a browser at a wide, a medium and a phone width (1440, 1100 and 420 px): the Werk panel slides in
 below 1200 px and the sidebar below 992 px.

@@ -1,0 +1,60 @@
+@* The work panel, the page's right column. The work this chat handed out, newest first, kept beside the chat so the answer
+   stays readable: the same data as the delegation card in the answer (Block.SubTurn). *@
+@inject ChatText Text
+
+<div class="work-head">
+    <span class="work-title">@Text.Work</span>
+    @if (Items.Count > 0)
+    {
+        <span class="work-count">@Items.Count</span>
+    }
+    <button class="icon d-none d-xl-inline-grid" type="button" onclick="chatUi.toggleWork()" title="@Text.HideWork" aria-label="@Text.HideWork">⇥</button>
+    <button class="icon d-xl-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#work" aria-label="@Text.CloseWork">×</button>
+</div>
+
+<div class="work-body">
+    @if (Items.Count == 0)
+    {
+        <div class="work-empty">
+            @if (EmptyImage is not null)
+            {
+                <img src="@EmptyImage" alt="" width="56" height="56" />
+            }
+            <strong>@Text.NoWorkYet</strong>
+            <p>@Text.WorkEmpty</p>
+        </div>
+    }
+    @foreach (var item in Items)
+    {
+        <WorkItem Delegation="item.Delegation" Block="item.Block" Who="@item.Who" Status="@item.Status" Avatar="@Avatar" Currency="Currency" />
+    }
+</div>
+
+@* The pages this chat used or cited: the answers' links and the pages the specialists read, newest turn first. *@
+@if (ChatSources.Count > 0)
+{
+    <div class="work-sources">
+        <div class="work-label">@Text.Sources <span class="work-count">@ChatSources.Count</span></div>
+        @foreach (var source in ChatSources)
+        {
+            <a class="work-source" href="@source.Url" target="_blank" rel="noopener noreferrer" title="@source.Url">
+                <span class="source-dot">@source.Site[..1].ToUpperInvariant()</span>
+                <span class="work-source-text"><strong>@source.Title</strong><small>@Address(source.Url)</small></span>
+            </a>
+        }
+    </div>
+}
+
+@* What the chat cost so far: its own requests and its specialists', side by side. Not added up: the chat's usage doesn't
+   include the specialists' yet, and once it does, a sum here would count them twice. *@
+@if (Chat?.Usage() is { } own)
+{
+    <div class="work-foot">
+        @* data-count: a changed cost counts up to its value. *@
+        <span title="@UsageFormat.Detail(own, Currency)">@Text.OwnCost <strong data-count="@UsageFormat.Cost(own, Currency)">@UsageFormat.Cost(own, Currency)</strong></span>
+        @if (SpecialistUsage is { } specialists)
+        {
+            <span title="@UsageFormat.Detail(specialists, Currency)">@Text.Specialists <strong data-count="@UsageFormat.Cost(specialists, Currency)">@UsageFormat.Cost(specialists, Currency)</strong></span>
+        }
+    </div>
+}
