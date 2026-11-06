@@ -179,7 +179,7 @@ public sealed class RecipeTools
         // Where the browser ended is the page's address, after any redirect.
         var page = Uri.TryCreate(visit.Url, UriKind.Absolute, out var ended) ? ended : address;
         var recipe = SchemaOrgRecipe.Read(visit.Html, page);
-        var whole = recipe ?? PageTextRecipe.Read(visit.Html, page);
+        var whole = recipe ?? PageTextRecipe.Read(visit.Html, page) ?? PlainRunRecipe.Read(visit.Html, page);
 
         // Words but no recipe: nobody needs to open this page again. An empty page is more likely our trouble than
         // the page's, so it says so below and stays off the list.

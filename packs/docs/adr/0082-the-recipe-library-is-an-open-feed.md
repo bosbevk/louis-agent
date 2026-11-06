@@ -49,8 +49,8 @@ search would stop at the few kinds of melktert it already had.
 ## Consequences
 
 - A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.
-- **Some pages with no recipe data can't enter:** those with no headings, or with their steps among the ingredients. They're
-  excluded, which costs the cook those pages, though answers from a page's text did no worse on the judge than answers from
+- **Some pages with no recipe data can't enter:** those that are plainly no list of ingredients and steps, such as a recipe told
+  in an article. They're excluded, which costs the cook those pages, though answers from a page's text did no worse on the judge than answers from
   recipe data. Louis's call: every answer should be a proper recipe that gets saved. A check of 123 pages across our sites, 3 a
   site, kept 80 after the reader's fixes; Recipes from South Africa gave no text on any page and left the table.
 - **A page read this way has no times and no author, and a reading mistake lasts.** Real pages showed a cookie notice kept as a
@@ -69,9 +69,10 @@ search would stop at the few kinds of melktert it already had.
   the win test on time and cost and missed accuracy by one answer, with no push towards the library: the cook built 31 of 50
   answers from a copy, at 47.5 s against 60.3 s for answers that read none. It kept 21 new recipes, and new pages fell by repeat
   from 10 to 3, since only 10 dishes are searched. Pap en sous went from about 68 s and outside sites to 39 s on Best Recipes.
-- **Excluding costs real recipes.** Of the 16 pages on the list after that run, about 11 are real recipes in shapes the reader
-  doesn't handle, such as a "What you need" heading or plain lines with no headings at all. A better reader, then clearing the list,
-  brings them back.
+- **Excluding cost real recipes, so the list can be corrected.** Of the 22 pages on the list by then, 17 were real recipes, most in
+  shapes the reader didn't handle, such as a "What you need" heading or plain lines with no headings at all. A second reader
+  (FX50) reads 16 of them, and those came off the list by hand. FinGlobal's 2026 curry, told as an article, and the 5 that aren't
+  recipes stay on. A reader that improves doesn't clear the list by itself: someone reads what's on it.
 - `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.

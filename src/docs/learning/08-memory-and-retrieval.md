@@ -78,7 +78,8 @@ mostly measures the filling.
 
 ## What's left
 
-- About 11 of the 16 excluded pages are real recipes the reader can't see, so they want a better reader, and the list cleared.
+- 17 of the first 22 excluded pages were real recipes, so a second reader went in and 16 came off the list. A list of "never read
+  this again" needs someone reading it, because it hides its own mistakes.
 - New pages fell from 10 to 3 a repeat: 10 dishes run out, and real chats are what will grow it.
 - The cook's scaling, which is its most serious accuracy problem and has nothing to do with the library.
 
