@@ -125,7 +125,7 @@ public class AgentCatalogTests
         Assert.That(AgentCatalog.CoreOnly.Imports, Is.Empty);
     }
 
-    /// <summary>Two imports with one name, in one pack or two, can't both be registered: an import has one URL.</summary>
+    /// <summary>Two imports with one name, in one pack or two, can't both register: an import has one URL.</summary>
     [Test]
     public void AnImportNamedTwice_IsRefused()
     {
@@ -136,6 +136,34 @@ public class AgentCatalogTests
             ]))!;
 
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("import"));
+    }
+
+    /// <summary>Each pack's reports are gathered in order; a pack with none changes nothing; core has none.</summary>
+    [Test]
+    public void ThePacksReports_AreGathered()
+    {
+        var catalog = Catalog(packs:
+        [
+            new FakePack("first", toolsets: [], reports: [new FakeReport("usage"), new FakeReport("errors")]),
+            new FakePack("second", toolsets: []),
+            new FakePack("third", toolsets: [], reports: [new FakeReport("visits")])
+        ]);
+
+        Assert.That(catalog.Reports.Select(r => r.Name), Is.EqualTo(new[] { "usage", "errors", "visits" }));
+        Assert.That(AgentCatalog.CoreOnly.Reports, Is.Empty);
+    }
+
+    /// <summary>Two reports with one name, in one pack or two, can't both be listed: a name means one report.</summary>
+    [Test]
+    public void AReportNamedTwice_IsRefused()
+    {
+        var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
+            [
+                new FakePack("first", toolsets: [], reports: [new FakeReport("usage")]),
+                new FakePack("second", toolsets: [], reports: [new FakeReport("Usage")])
+            ]))!;
+
+        Assert.That(error.Message, Does.Contain("Usage").And.Contain("report"));
     }
 
     /// <summary>A pack can't take the name of one of core's toolsets.</summary>
@@ -150,7 +178,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain(CoreToolset.Skills.Wire()).And.Contain("toolset"));
     }
 
-    /// <summary>General tools come before the engine's and a product's after, so the prefix the model reads stays fixed.</summary>
+    /// <summary>General tools come before the engine's and a product's after: the model's prefix stays fixed.</summary>
     [Test]
     public void APackThatComesBeforeTheEngine_ListsFirst()
     {

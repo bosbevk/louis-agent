@@ -1,0 +1,38 @@
+@page "/admin/reports"
+@layout AdminLayout
+
+@* F35.7: the numbers the packs keep about themselves, from GET /v1/admin/reports: a card for each, such as how the
+   recipe library is being used. *@
+
+<PageTitle>Reports · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Reports</h1>
+        <p>What the packs count as they work, read when this page opens.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+}
+
+@if (_loading && _reports is null)
+{
+    <section class="card-p"><span class="muted">Loading…</span></section>
+}
+else if (_reports is { Count: 0 })
+{
+    <section class="card-p"><span class="muted">No pack on this instance keeps a report.</span></section>
+}
+else if (_reports is { } reports)
+{
+    @foreach (var report in reports)
+    {
+        <ReportCard @key="report.Name" Report="report" />
+    }
+}

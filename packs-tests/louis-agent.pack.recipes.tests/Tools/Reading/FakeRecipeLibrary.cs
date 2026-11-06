@@ -23,12 +23,14 @@ internal sealed class FakeRecipeLibrary(bool fails = false) : IRecipeStore, IRec
     public Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken) =>
         Task.FromResult(Kept.FirstOrDefault(recipe => recipe.Id == id));
 
-    /// <summary>Keeps a page it doesn't have yet, or fails.</summary>
-    public Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
+    /// <summary>Keeps a page it doesn't have yet and says if it was new, or fails.</summary>
+    public Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
     {
         if (fails) throw new TimeoutException("no Mongo");
-        if (Kept.All(kept => kept.Id != recipe.Id)) Kept.Add(recipe);
-        return Task.CompletedTask;
+        if (Kept.Any(kept => kept.Id == recipe.Id)) return Task.FromResult(false);
+
+        Kept.Add(recipe);
+        return Task.FromResult(true);
     }
 
     /// <inheritdoc />

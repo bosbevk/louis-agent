@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs.Reports;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Composition.Packs;
@@ -16,7 +17,8 @@ namespace LouisAgent.Composition.Packs;
 /// identity.</item>
 /// <item>It frames the outside data it returns and bounds its own output: calls served over MCP skip the engine's
 /// guards.</item>
-/// <item>Its guides are prose with no <c>## Skill:</c> procedures, so one can travel as an MCP server's instructions.</item>
+/// <item>Its guides are prose with no <c>## Skill:</c> procedures, so one can travel as an MCP server's
+/// instructions.</item>
 /// <item>It reads its own settings and core's shared services, names the packs it needs, and never references their
 /// code.</item>
 /// </list>
@@ -36,8 +38,8 @@ public interface IAgentPack
     bool ComesBeforeTheEngine => false;
 
     /// <summary>
-    /// Its guides (<c>toolsets/{name}.md</c>) and, from CL16, its roles (the cook); over MCP only its tools convert, and a
-    /// role runs with the identity that loads it (ADR 0028, rule 8).
+    /// Its guides (<c>toolsets/{name}.md</c>) and, from CL16, its roles (the cook); over MCP only its tools convert, and
+    /// a role runs with the identity that loads it (ADR 0028, rule 8).
     /// </summary>
     IFileProvider Prompts { get; }
 
@@ -53,4 +55,9 @@ public interface IAgentPack
     /// The data a person may upload into it from the admin portal (F55): none unless it says so.
     /// </summary>
     IReadOnlyList<IDataImport> Imports => [];
+
+    /// <summary>
+    /// The numbers it keeps about itself, for whoever runs it to read behind the admin key: none unless it says so.
+    /// </summary>
+    IReadOnlyList<IDataReport> Reports => [];
 }

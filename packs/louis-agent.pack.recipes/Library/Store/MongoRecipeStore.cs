@@ -46,15 +46,17 @@ public sealed class MongoRecipeStore(IMongoCollection<StoredRecipeDocument> reci
     }
 
     /// <inheritdoc />
-    public async Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
+    public async Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
     {
         try
         {
             await recipes.InsertOneAsync(StoredRecipeDocument.Of(recipe), cancellationToken: cancellationToken);
+            return true;
         }
         catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
             // We already hold this page, so the first copy stays. That's the point, not a failure.
+            return false;
         }
     }
 

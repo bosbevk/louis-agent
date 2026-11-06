@@ -188,6 +188,12 @@ pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's
 an address of their own also writes `ReadItemJsonAsync`, served at `/v1/feeds/{name}/{id}`. Publish only what anyone may
 read. The shop-prices pack's `ShopPricesFeed` is the example; the recipes pack's `RecipesFeed` has items.
 
+`Reports` (optional, empty unless you list some) is numbers the pack keeps about itself, for whoever runs it: an
+`IDataReport` with a name, a description and `ReadAsync`, answering a `ReportTable` of column names and rows. The API
+serves them at `/v1/admin/reports`, behind the admin key, without knowing the pack, and a card shows each
+([ADR 0083](../adr/0083-packs-keep-reports-behind-the-admin-key.md)). A store that can't be read gives an empty table and
+never throws. What anyone may read belongs in a feed instead.
+
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
 would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The portal lists every upload at

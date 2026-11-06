@@ -2,6 +2,7 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Packs.Recipes.Library.Excluded;
 using LouisAgent.Packs.Recipes.Library.Feed;
 using LouisAgent.Packs.Recipes.Library.Store;
+using LouisAgent.Packs.Recipes.Library.Usage;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
 using LouisAgent.Packs.Recipes.Sources.Sites;
@@ -30,9 +31,12 @@ public sealed class RecipeShelf(
     IReadOnlyList<RecipeSite> enabled,
     TimeProvider clock,
     Func<bool>? skip = null,
-    IExcludedPages? excluded = null)
+    IExcludedPages? excluded = null,
+    IRecipeUsage? usage = null)
 {
     private readonly IExcludedPages _excluded = excluded ?? new NoExcludedPages();
+
+    private readonly IRecipeUsage _usage = usage ?? new NoRecipeUsage();
 
     private static readonly ILogger Log = PackLog.For<RecipeShelf>();
 
@@ -59,8 +63,14 @@ public sealed class RecipeShelf(
             Log.Log(LogLevel.Warning, RecipeLogMessage.LibraryCantServe, new { Id = id });
         else
             Log.Log(LogLevel.Information, RecipeLogMessage.LibraryServed, new { Id = id, Site = recipe.SiteSlug });
+
+        await CountAsync(recipe is null ? RecipeUsageKind.Failed : RecipeUsageKind.Served, 1, cancellationToken);
         return recipe;
     }
+
+    /// <summary>Counts the hits of ours a search showed: one it held but never showed wasn't offered.</summary>
+    public Task OfferedAsync(int count, CancellationToken cancellationToken) =>
+        CountAsync(RecipeUsageKind.Offered, count, cancellationToken);
 
     /// <summary>The recipe we hold for this address, whether it's our link or the site's own.</summary>
     public Task<StoredRecipe?> HeldAsync(Uri address, CancellationToken cancellationToken) =>
@@ -96,9 +106,21 @@ public sealed class RecipeShelf(
         if (SiteOf(recipe.Source) is not { } site) return;
 
         var stored = new StoredRecipe(recipe, site.Slug, clock.GetUtcNow());
+        bool isNew = await QuietlyAsync(() => store.KeepAsync(stored, cancellationToken), false, cancellationToken);
+        if (isNew) await CountAsync(RecipeUsageKind.Kept, 1, cancellationToken);
+    }
+
+    /// <summary>
+    /// Adds to today's number, as a small write beside the work: under the same rules, so a counter that's down only
+    /// logs and a trial leaves it alone. Awaited, so a test can see the number straight after; if Mongo is down, this
+    /// costs that call its timeout. Days are UTC (ADR 0046).
+    /// </summary>
+    private async Task CountAsync(RecipeUsageKind kind, long by, CancellationToken cancellationToken)
+    {
+        var day = DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime);
         await QuietlyAsync<object?>(async () =>
         {
-            await store.KeepAsync(stored, cancellationToken);
+            await _usage.AddAsync(kind, by, day, cancellationToken);
             return null;
         }, null, cancellationToken);
     }

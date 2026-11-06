@@ -21,7 +21,7 @@ public class RecipesFeedTests
         public Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken) =>
             fails ? throw new TimeoutException("no Mongo") : Task.FromResult(recipes.FirstOrDefault(recipe => recipe.Id == id));
 
-        public Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.FromResult(false);
 
         public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) => Task.CompletedTask;
     }

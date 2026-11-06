@@ -3,6 +3,7 @@ using LouisAgent.Api.Endpoints.Admin.Drafts;
 using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Imports;
 using LouisAgent.Api.Endpoints.Admin.Prompts;
+using LouisAgent.Api.Endpoints.Admin.Reports;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Admin.Studio;
 using LouisAgent.Api.Endpoints.Routing;
@@ -61,6 +62,9 @@ internal static class AdminEndpoints
 
         // The data a person uploads into the packs, previewed, then saved (F55).
         admin.MapImports();
+
+        // The numbers the packs keep about themselves (F35.7).
+        admin.MapReports();
 
         // The studio (F49.5): the runner's catalogue, its check and promptfoo in and out, which say the runner isn't
         // there when none was given, and the evals being composed, kept beside the other drafts.
