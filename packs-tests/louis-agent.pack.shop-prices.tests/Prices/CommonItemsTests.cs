@@ -28,7 +28,7 @@ public class CommonItemsTests
         "cornflour 500 g",
         "bicarbonate of soda 100 g", "baking soda 200 g", "desiccated coconut 250 g", "cocoa powder 125 g", "cocoa 250 g",
         "pecan nuts 100 g", "pecans 100 g", "cardamom pods 25 g", "whole cloves 25 g", "lasagne sheets 500 g",
-        "tennis biscuits 200 g", "digestive biscuits 250 g", "buttermilk 1 l", "sour milk 2 l", "chicken stock 1 l",
+        "tennis biscuits 200 g", "digestive biscuits 250 g", "buttermilk 1 l", "sour milk 2 kg", "chicken stock 1 l",
         "beef stock 1 l", "beef oxtail 1 kg", "dark chocolate 200 g", "white pepper 50 g", "peppercorns 50 g",
         "rolled oats 500 g", "breadcrumbs 250 g", "fresh coriander 1 bunch", "marmite 250 g", "lemon juice 200 ml",
         "ghee 500 g", "cream of tartar 40 g", "garlic 1 bulb", "garlic 1 each", "red onion 1 each", "zucchini 500 g",

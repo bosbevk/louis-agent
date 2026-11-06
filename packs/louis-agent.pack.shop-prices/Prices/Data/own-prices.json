@@ -144,11 +144,8 @@
   {"product": "Digestive biscuits", "names": ["digestive biscuits", "marie biscuits"], "packs": [
     {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 32.99}}
   ]},
-  {"product": "Buttermilk", "names": ["buttermilk l", "buttermilk litre", "buttermilk ml", "karringmelk"], "packs": [
+  {"product": "Buttermilk", "names": ["buttermilk", "karringmelk"], "packs": [
     {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 36.99}}
-  ]},
-  {"product": "Sour milk", "names": ["sour milk l", "sour milk litre", "sour milk ml", "amasi l", "amasi litre", "amasi ml", "suurmelk"], "packs": [
-    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 29.99}}
   ]},
   {"product": "Oxtail", "names": ["oxtail", "beef oxtail", "beesstert"], "packs": [
     {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 179.99}}

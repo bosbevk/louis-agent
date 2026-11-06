@@ -284,7 +284,7 @@
     {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 45.53, "western-cape": 44.35, "eastern-cape": 45.49, "northern-cape": 43.28, "free-state": 41.4, "kwazulu-natal": 46.22, "north-west": 47.42, "gauteng": 46.75, "mpumalanga": 48.06}},
     {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"kwazulu-natal": 42.79, "gauteng": 40.85, "mpumalanga": 42.32}}
   ]},
-  {"product": "Sour milk", "names": ["sour milk", "buttermilk", "maas", "amasi"], "packs": [
+  {"product": "Sour milk", "names": ["sour milk", "maas", "amasi"], "packs": [
     {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 23.59, "gauteng": 23.72}},
     {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 36.83, "western-cape": 37.86, "eastern-cape": 34.63, "northern-cape": 35.55, "free-state": 36.4, "kwazulu-natal": 37.49, "north-west": 35.69, "gauteng": 37.41, "mpumalanga": 37.32, "limpopo": 37.37}},
     {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"eastern-cape": 37.44}}
