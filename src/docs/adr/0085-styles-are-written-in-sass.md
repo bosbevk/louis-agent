@@ -21,6 +21,12 @@ every build, with no Node. `app.scss` is the ordered list of partials, and that 
 **CSS variables stay.** A Sass variable is fixed when the build runs, and the code-review app swaps themes while it runs, so what a rule
 reads at run time is a CSS variable. Sass writes those variables from one value, through the framework's `web/tools/_colours.scss`.
 
+**Colours go by Bootstrap's names,** `--bs-primary` and so on, and a `--web-` name where it has none, so a site learns no list of ours. No
+shared rule writes a colour as a value.
+
+**A site compiles the framework's Sass:** it lists the partials under `web/` in its `app.scss`, found through `IncludePaths`, and its own
+colours come after the framework's and win.
+
 **Sass covers our own styles.** Bootstrap stays on its CDN and reads the same variables, so we don't own its source or its upgrades.
 
 **Always reuse.** Before writing a rule, look for a variable, mixin or partial that already does it. What repeats becomes one shared piece

@@ -70,7 +70,7 @@ as you go: every answer shows what it cost, specialists included.
   theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
 - **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
   the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
-  (`puls.motion`, F24).
+  (`chat.motion`, F24).
 
 ## Structure
 
@@ -102,8 +102,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState`; `Reviews/Queue/` (F53.3): `ReviewQueueView` (the Review page's model), `ReviewQueueText` (its words), `ReviewKeys` (1, 2, 3 as verdicts), `ReviewQueueState` (how many wait, shared with the badge) |
 | `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
 | `Content/` | `Template` and `Templates` (the starters on Verken and Studio) |
-| `Styles/` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat), in Sass ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)): `app.scss` is the list of partials in cascade order, the rules in partials at most 200 lines each (`settings/_tokens.scss`, `base/`, `layout/`, `chat/`, `landing/`, `admin/`; CL26, [ADR 0053](../../../../src/docs/adr/0053-stylesheets-by-concern.md)), and `tools/` holds what they share. The build makes `wwwroot/css/app.css`, which isn't in git |
-| `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus, the pointer spotlight and tilt, the motion switch, costs counting up |
+| `Styles/` | Puls's look, in Sass ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)): `app.scss` lists the framework's partials under `web/` and Puls's own in cascade order. Puls's own are its colours (`settings/_tokens.scss`: orange, green, charcoal, a charcoal-tinted white; Montserrat), the landing, and what's only its own in `layout/` and `chat/`: the logo, the water, the empty chat, Verken and Studio. The build makes `wwwroot/css/app.css`, which isn't in git |
 | `wwwroot/js/landing.js` | The landing page's motion (F24): progress line, section index, centred links, reveals, counters, the pinned tour, the demo, the accordion; started and stopped by `LandingPage.razor` |
 | `wwwroot/index.html` | The start screen with Blazor's real loading count; the saved layout and the motion choice applied before the first paint |
 | `wwwroot/brand/` | The logo set: mark, logo, stacked, icon tiles, colour versions |

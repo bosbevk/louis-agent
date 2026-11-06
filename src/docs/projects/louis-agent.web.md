@@ -9,8 +9,8 @@
 The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). So far that's the
 admin's frame, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
 the first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each site
-keeps its look (CSS) and JavaScript, which F59 moves here; the components only emit class names, and their words come from a `ChatText`,
-English by default, that a site can replace.
+keeps its colours and brand; the rules and scripts of the frames are here. The components only emit class names, and their words come from a
+`ChatText`, English by default, that a site can replace.
 
 ## How it works
 
@@ -22,6 +22,12 @@ English by default, that a site can replace.
   `ViewContent` and `UsageLine`. An empty slot leaves no gap, and with no `Empty` a new chat is just the message box. The site also says how a
   session opens (`OpenSession`), since the toolsets it asks for are its own; the frame hands it the voice, the place and the time zone as
   a `ChatOpening`. A site can reach in for two things through `@ref`: put a draft in the message box, and say something's coming soon.
+- **The look.** The rules are Sass under `Styles/web/`, and a site lists them in its own `app.scss`, found through `IncludePaths`, so it
+  gets one CSS file with the order it chose. Colours go by Bootstrap's names, or a `--web-` name where it has none, and no rule holds a fixed
+  one. `web/settings/_colours.scss` is what a site with none of its own gets: the Console theme, black and white with metallic greys, plus a
+  muted red and an amber. A site's colours come after it and win.
+- **The scripts.** `wwwroot/js/chat.js` is what the frame calls, and `first-paint.js` applies what the browser remembers before the first
+  paint; a site loads both from `_content/louis-agent.web/js/`. A script names a problem, and the site's `ChatText` says it.
 - **Small state classes.** What the frame keeps that can be tested without drawing it is a plain class in `Shell/`: renaming a chat,
   this browser's settings, choosing a language, a chat's costs. `ChatShell` holds them and only passes them on.
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
@@ -60,6 +66,8 @@ English by default, that a site can replace.
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
+| `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
+| `wwwroot/js/` | `chat.js`, `first-paint.js` |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |

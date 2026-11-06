@@ -13,7 +13,7 @@ currency (`Usage/`), and what the browser keeps (`Storage/`). Each app keeps its
 
 Ask whether it would be the same on every site. If so it belongs here, even if only one site uses it today; what differs comes
 in from the site, and the framework names no site ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). For
-now a component still emits class names and no CSS of its own: each site styles it in its `app.css`.
+now a component still emits class names; its rules are the framework's Sass under `Styles/web/`, and a site lists them in its `app.scss`.
 
 ## Change the chat's frame
 
@@ -22,6 +22,13 @@ should get is a change here. Something that differs per site is a slot or a para
 of which site this is. A new word goes in `ChatText` in English. State the frame keeps goes in a small plain class in `Shell/`, with its
 own test. A site's page redraws for its own reasons, which sets the frame's parameters again, so `OnParametersSet` there can't assume
 the address changed.
+
+## Change the styles or scripts
+
+A rule every site should get goes in a partial under `Styles/web/`, with colours from variables only (`FixedColourTests` and
+`FrameworkStylesTests` hold it). What repeats becomes one piece under `web/tools/` ([the rules](../../../.claude/rules/css.md)). A script a
+component calls goes in `wwwroot/js/chat.js`, and `FrameworkScriptsTests` holds that it's there. A script holds no words for the
+person: it names the problem, and `ChatText` says it.
 
 ## Add an API call
 

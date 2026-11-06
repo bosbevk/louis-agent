@@ -264,5 +264,17 @@ width. Sending a message needs the API key and costs money, so the turn itself l
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Presentation Model (Fowler).
 
+## Styles anyone can reuse (F59.4, 2026-11-07)
+
+Moving stylesheets into a framework sounds like moving files. It wasn't, for one reason you spotted when you asked "can't we use color vairables?": 89 rules had Puls's orange written straight in, so any new site would have come out orange. A framework's rules can't hold one site's values, so the first job was getting the values out.
+
+**Use names someone else already defined.** The colour names became Bootstrap's own, so a site's author learns no list of ours, and only what Bootstrap has no word for gets a `--web-` name. It had a cost: Bootstrap's own parts read those names too, so text in its dropdowns took Puls's colour. Look for that kind of side effect whenever two things share a name.
+
+**Sass doesn't replace CSS variables.** A Sass variable is gone once the build has run, and a theme that swaps while the page runs needs a variable the browser can read. So Sass writes the variables. The real win is one mixin writing both forms of a colour from one value, so `--bs-primary` and `--bs-primary-rgb` can't disagree.
+
+**Prove a move by comparing what the browser gets.** Each file was split by whose classes its rules use, and the checks compared the whole compiled CSS, rule by rule: 1,591 before and after. Then the browser compared every element on every page with the old stylesheet swapped in. One run gave nonsense because the old sheet hadn't loaded, which is worth remembering: check that your comparison compared something.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Mixin.
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

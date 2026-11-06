@@ -44,7 +44,7 @@ A line in `Content/Templates.cs`: Verken and Studio show it as a card (`Template
 `Pages/LandingPage.razor` lays out the sections in order. Each section is a component in `Components/Landing/` with
 its copy as a C# array in its `.razor.cs`. The motion (the progress line, the reveals, the pinned tour, the demo) is
 `wwwroot/js/landing.js`, started and stopped by the page. Keep a new animation behind the motion switch
-(`puls.motion`), so a user who asks for less motion gets none.
+(`chat.motion`), so a user who asks for less motion gets none.
 
 ## Change the admin portal
 
