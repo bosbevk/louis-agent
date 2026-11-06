@@ -168,34 +168,6 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("Usage").And.Contain("screen"));
     }
 
-    /// <summary>Each pack's reports are gathered in order; a pack with none changes nothing; core has none.</summary>
-    [Test]
-    public void ThePacksReports_AreGathered()
-    {
-        var catalog = Catalog(packs:
-        [
-            new FakePack("first", toolsets: [], reports: [new FakeReport("usage"), new FakeReport("errors")]),
-            new FakePack("second", toolsets: []),
-            new FakePack("third", toolsets: [], reports: [new FakeReport("visits")])
-        ]);
-
-        Assert.That(catalog.Reports.Select(r => r.Name), Is.EqualTo(new[] { "usage", "errors", "visits" }));
-        Assert.That(AgentCatalog.CoreOnly.Reports, Is.Empty);
-    }
-
-    /// <summary>Two reports with one name, in one pack or two, can't both be listed: a name means one report.</summary>
-    [Test]
-    public void AReportNamedTwice_IsRefused()
-    {
-        var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
-            [
-                new FakePack("first", toolsets: [], reports: [new FakeReport("usage")]),
-                new FakePack("second", toolsets: [], reports: [new FakeReport("Usage")])
-            ]))!;
-
-        Assert.That(error.Message, Does.Contain("Usage").And.Contain("report"));
-    }
-
     /// <summary>A pack can't take the name of one of core's toolsets.</summary>
     [Test]
     public void AToolsetNamedLikeCores_IsRefused()

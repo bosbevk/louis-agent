@@ -15,7 +15,7 @@ using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Puls.Tests.Pages.Admin;
+namespace LouisAgent.Puls.Tests.Pages;
 
 /// <summary>
 /// The framework's admin pages reach this site through its router, inside its admin frame, and share its addresses: a

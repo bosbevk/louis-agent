@@ -1,7 +1,6 @@
 
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
-using LouisAgent.Composition.Packs.Reports;
 using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
@@ -71,9 +70,6 @@ public sealed class AgentCatalog
         Imports = packs.SelectMany(p => p.Imports).ToList();
         CheckUnique(Imports.Select(i => i.Name), "import");
 
-        Reports = packs.SelectMany(p => p.Reports).ToList();
-        CheckUnique(Reports.Select(r => r.Name), "report");
-
         Screens = packs.SelectMany(p => p.Screens).ToList();
         CheckUnique(Screens.Select(s => s.Spec.Name), "screen");
 
@@ -117,9 +113,6 @@ public sealed class AgentCatalog
     public IDataImport? Import(string name) =>
         Imports.FirstOrDefault(import => string.Equals(import.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The numbers the packs keep about themselves, each pack's in its order.</summary>
-    public IReadOnlyList<IDataReport> Reports { get; }
-
     /// <summary>The screens the packs offer, each pack's in its order.</summary>
     public IReadOnlyList<IDataScreen> Screens { get; }
 
@@ -141,13 +134,15 @@ public sealed class AgentCatalog
         ToolsetCatalog.Resolve(names, context, Toolsets);
 
     /// <summary>
-    /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a minion's
-    /// one tool may be chosen from (F30).
+    /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a
+    /// minion's one tool may be chosen from (F30).
     /// </summary>
     public IReadOnlySet<string> ToolNamesOf(IEnumerable<ToolsetDefinition> resolved) =>
         resolved.SelectMany(NamesOf).ToHashSet(StringComparer.Ordinal);
 
-    /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
+    /// <summary>
+    /// The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.
+    /// </summary>
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
 
     /// <summary>The same for a pack's toolset, before the engine holds it.</summary>
@@ -160,7 +155,10 @@ public sealed class AgentCatalog
     public static IEnumerable<MethodInfo> ToolMethodsOf(ToolsetDefinition toolset) =>
         toolset.ToolTypes is null ? [] : toolset.ToolTypes.SelectMany(ToolMethodsOfType);
 
-    /// <summary>How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever the checkout.</summary>
+    /// <summary>
+    /// How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever the
+    /// checkout.
+    /// </summary>
     public static AIFunction FunctionOf(MethodInfo method, Func<AIFunctionArguments, object> createInstance) =>
         AIFunctionFactory.Create(method, createInstance, new AIFunctionFactoryOptions
         {
@@ -172,7 +170,7 @@ public sealed class AgentCatalog
     internal static IEnumerable<MethodInfo> ToolMethodsOfType(Type type) =>
         type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-    /// <summary>The one place tool names come from: the tool methods' names today; F36 adds a listed server's names.</summary>
+    /// <summary>The one place tool names come from: the tool methods' names today; F36 adds a server's names.</summary>
     private static IEnumerable<string> NamesOf(ToolsetDefinition toolset) => ToolMethodsOf(toolset).Select(m => m.Name);
 
     private static void CheckUnique(IEnumerable<string> names, string kind)

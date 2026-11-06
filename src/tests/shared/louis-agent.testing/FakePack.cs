@@ -1,5 +1,4 @@
 using LouisAgent.Composition.Packs.Imports;
-using LouisAgent.Composition.Packs.Reports;
 using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
@@ -8,8 +7,9 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Testing;
 
 /// <summary>
-/// A pack for the catalogue's tests (CL15 step 1): one toolset built from <see cref="FakeShopTools"/> by default, prompts
-/// held in memory, and whatever names and requirements a test gives it. No global state: each test builds its own.
+/// A pack for the catalogue's tests (CL15 step 1): one toolset built from <see cref="FakeShopTools"/> by default,
+/// prompts held in memory, and whatever names and requirements a test gives it. No global state: each test builds its
+/// own.
 /// </summary>
 public sealed class FakePack(
     string name = "fakeshop",
@@ -19,7 +19,6 @@ public sealed class FakePack(
     IReadOnlyList<IDataFeed>? feeds = null,
     IReadOnlyList<IDataImport>? imports = null,
     bool comesBeforeTheEngine = false,
-    IReadOnlyList<IDataReport>? reports = null,
     IReadOnlyList<IDataScreen>? screens = null) : IAgentPack
 {
     public string Name => name;
@@ -29,7 +28,6 @@ public sealed class FakePack(
     public IReadOnlyList<string> Requires => requires ?? [];
     public IReadOnlyList<IDataFeed> Feeds => feeds ?? [];
     public IReadOnlyList<IDataImport> Imports => imports ?? [];
-    public IReadOnlyList<IDataReport> Reports => reports ?? [];
     public IReadOnlyList<IDataScreen> Screens => screens ?? [];
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>

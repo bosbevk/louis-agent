@@ -1,9 +1,10 @@
 using LouisAgent.Composition.Packs;
-using LouisAgent.Composition.Packs.Reports;
+using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Choices;
 using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Library.Excluded;
 using LouisAgent.Packs.Recipes.Library.Feed;
+using LouisAgent.Packs.Recipes.Library.Screens;
 using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Library.Usage;
 using LouisAgent.Packs.Recipes.Sources;
@@ -39,9 +40,9 @@ public sealed class RecipesPack : IAgentPack
             ? MongoRecipeUsage.Open(usageUrl, options.MongoDatabase)
             : new NoRecipeUsage();
         var enabled = RecipeSourceFactory.Enabled(options.RecipeSources);
-        // With no database there's nothing to publish and nothing to count, so no feed and no report to list.
+        // With no database there's nothing to publish and nothing to count, so no feed and no screen to list.
         Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, enabled)];
-        Reports = options.MongoUrl is null ? [] : [new RecipesUsageReport(usage)];
+        Screens = options.MongoUrl is null ? [] : [new RecipesUsageScreen(usage)];
         // The cook reads the library the way anyone would: over HTTP, from the open feed.
         IRecipeLibrary library = options.LibraryUrl is { } api
             ? new FeedRecipeLibrary(new HttpClient(), api, TimeProvider.System)
@@ -88,5 +89,5 @@ public sealed class RecipesPack : IAgentPack
     public IReadOnlyList<IDataFeed> Feeds { get; }
 
     /// <inheritdoc />
-    public IReadOnlyList<IDataReport> Reports { get; }
+    public IReadOnlyList<IDataScreen> Screens { get; }
 }

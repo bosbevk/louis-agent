@@ -38,7 +38,7 @@ public class AdminLayoutTests
 
         Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")), Is.EqualTo(new[]
         {
-            "admin", "admin/review", "admin/studio", "admin/prompts", "admin/imports", "admin/reports", "gesels"
+            "admin", "admin/review", "admin/studio", "admin/prompts", "admin/imports", "gesels"
         }));
     }
 

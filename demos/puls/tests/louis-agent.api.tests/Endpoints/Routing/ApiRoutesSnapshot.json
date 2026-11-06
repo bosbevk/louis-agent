@@ -44,7 +44,6 @@
   "GET /v1/admin/evals/{eval}/drafts (AdminKey)",
   "GET /v1/admin/imports (AdminKey)",
   "GET /v1/admin/prompts (AdminKey)",
-  "GET /v1/admin/reports (AdminKey)",
   "GET /v1/admin/screens (AdminKey)",
   "GET /v1/admin/screens/{name}/rows (AdminKey)",
   "GET /v1/feeds (Open)",

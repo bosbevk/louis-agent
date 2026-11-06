@@ -1,5 +1,4 @@
 using LouisAgent.Composition.Packs.Imports;
-using LouisAgent.Composition.Packs.Reports;
 using LouisAgent.Composition.Packs.Screens;
 using Microsoft.Extensions.FileProviders;
 
@@ -56,11 +55,6 @@ public interface IAgentPack
     /// The data a person may upload into it from the admin portal (F55): none unless it says so.
     /// </summary>
     IReadOnlyList<IDataImport> Imports => [];
-
-    /// <summary>
-    /// The numbers it keeps about itself, for whoever runs it to read behind the admin key: none unless it says so.
-    /// </summary>
-    IReadOnlyList<IDataReport> Reports => [];
 
     /// <summary>
     /// The screens it offers whoever runs it, behind the admin key, as plain data: none unless it says so.

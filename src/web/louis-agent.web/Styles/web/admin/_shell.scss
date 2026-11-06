@@ -86,10 +86,6 @@
 .prompts-table tr + tr td { border-top: 1px solid var(--bs-border-color); }
 .prompt-path { display: block; font-family: var(--bs-font-monospace); font-size: 12px; }
 
-/* F35.7: a report's table: the same table, its counts lined up on the right and the all-days row first and bold. */
-.report-table th + th, .report-table td + td { text-align: right; font-variant-numeric: tabular-nums; }
-.report-table .report-row:first-child td { font-weight: 600; }
-
 /* F53.2: the strip that says a run is going, on every admin page; the whole line is the link to where it is followed. */
 .admin-main .live-run-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; padding: 8px 14px; border: 1px solid rgba(var(--bs-primary-rgb), .35); border-radius: 12px; background: var(--bs-primary-bg-subtle); color: var(--bs-body-color); font-size: 13px; text-decoration: none; }
 .admin-main .live-run-strip:hover { color: var(--bs-emphasis-color); border-color: rgba(var(--bs-primary-rgb), .65); }
