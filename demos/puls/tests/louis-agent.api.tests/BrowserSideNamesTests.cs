@@ -1,7 +1,9 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Screens.Table;
 using CoreScriptLanguage = LouisAgent.Core.Skills.Languages.ScriptLanguage;
 using WebScriptLanguage = LouisAgent.Web.Api.ScriptLanguage;
 
@@ -29,4 +31,10 @@ public class BrowserSideNamesTests
     public void TheBrowsersScriptLanguages_AreCoresScriptLanguages_NameForName() =>
         Assert.That(Enum.GetValues<WebScriptLanguage>().Select(m => m.Wire()).Order(),
             Is.EqualTo(Enum.GetValues<CoreScriptLanguage>().Select(m => m.Wire()).Order()));
+
+    /// <summary>The kinds of column the browser can draw are the ones a pack can say, name for name.</summary>
+    [Test]
+    public void TheBrowsersCellKinds_AreThePacksCellKinds_NameForName() =>
+        Assert.That(Enum.GetValues<ScreenCellKind>().Select(kind => kind.Wire()).Order(),
+            Is.EqualTo(Enum.GetValues<ScreenCell>().Select(kind => kind.Wire()).Order()));
 }

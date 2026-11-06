@@ -1,0 +1,13 @@
+@* One cell's value: what's unknown says so, only a web address is a link, and the rest reads as its kind says. *@
+@if (Value is null)
+{
+    <span class="muted">unknown</span>
+}
+else if (Kind is ScreenCellKind.Link && ScreenCells.IsWebAddress(Value))
+{
+    <a href="@Value" target="_blank" rel="noopener noreferrer">@Value</a>
+}
+else
+{
+    @ScreenCells.Show(Kind, Value)
+}
