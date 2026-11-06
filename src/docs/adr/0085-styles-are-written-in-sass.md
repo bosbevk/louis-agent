@@ -19,7 +19,7 @@ each colour.
 every build, with no Node. `app.scss` is the ordered list of partials, and that order is the cascade. The CSS isn't in git.
 
 **CSS variables stay.** A Sass variable is fixed when the build runs, and the code-review app swaps themes while it runs, so what a rule
-reads at run time is a CSS variable. Sass writes those variables from one value, through `tools/_colours.scss`.
+reads at run time is a CSS variable. Sass writes those variables from one value, through the framework's `web/tools/_colours.scss`.
 
 **Sass covers our own styles.** Bootstrap stays on its CDN and reads the same variables, so we don't own its source or its upgrades.
 

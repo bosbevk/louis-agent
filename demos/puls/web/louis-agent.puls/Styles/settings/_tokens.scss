@@ -4,7 +4,7 @@
    purposeful, and turned off for people who ask their system for less motion. The colours go by Bootstrap's names, and by
    a --web- name where it has none, and this file only sets Puls's values for them. */
 
-@use "../tools/colours";
+@use "web/tools/colours";
 
 @property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
 
@@ -12,6 +12,7 @@
     // Written once each: the build makes the number form from the same value.
     @include colours.both(bs-primary, #f58220);          // the lead colour: actions, accents, active states
     @include colours.both(bs-danger, #f26b4f);
+    @include colours.both(bs-warning, #ffc107);
     @include colours.both(bs-body-bg, #1c1f22);          // the chat: deep charcoal
     @include colours.both(bs-secondary-bg, #25292d);     // cards and the composer: a step lighter
     @include colours.both(bs-tertiary-bg, #16191b);      // the menu: a step darker than the chat

@@ -684,6 +684,7 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
 
   **Sass, Louis's picks.** He asked "maybe we should chnage to less? or something similar" and picked Sass over plain CSS. `AspNetCore.SassCompiler` compiles it, MIT, no Node (1A). Sass covers our own styles, and Bootstrap stays on its CDN (2A). CSS variables stay, since the code-review app swaps themes while it runs and a preprocessor's variables are fixed when it builds. Rules take nesting as they're touched, never in a sweep.
   **Always reuse,** Louis's words: "while building scss we must make sure to always reuse". Before writing a rule, look for a variable, mixin or partial that already does it; what repeats becomes one shared piece; a site `@use`s the framework's Sass and never copies it. Step 3 writes this into `.claude/rules/css.md`.
+  **A site compiles the framework's Sass,** so there's no `_content/` stylesheet as this plan first said: a site lists the framework's partials under `web/` in its own `app.scss`, found through `IncludePaths`, and gets one CSS file with the order it always had.
 
 ## Verification
 

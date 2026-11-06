@@ -11,7 +11,7 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
 [ADR 0054](../../src/docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line ranges).
 
 - **Always reuse.** Before writing a rule, look for a variable, mixin or partial that already does it. What repeats
-  becomes one shared piece under `tools/` that both places use, and a site `@use`s the framework's Sass and never copies
+  becomes one shared piece under the framework's `web/tools/` that both places use, and a site `@use`s the framework's Sass and never copies
   it. A step says what it reused and what new piece it added.
 - **Styles are Sass, under `Styles/`** (Puls; the code-review app and its themes stay on plain CSS under `wwwroot/css/`
   until F59.7, the same rules with `@import`). The build makes `wwwroot/css/app.css`, which isn't in git, so edit the
@@ -21,12 +21,12 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
 - **`app.scss` is the list**, one `@forward` a line, of partials in folders by concern (`settings/`, `base/`, `layout/`,
   `chat/`, `landing/`, `admin/`; the code-review app: `base/`, `layout/`, `workspace/`, `git/`, `chat/`). **Its order is
   the cascade**: the colours and the plain elements first, the rest in the order its rules always came, so a later rule
-  still wins where it did. `tools/` writes no CSS of its own, so it isn't on the list.
+  still wins where it did. A name under `web/` is the framework's Sass, found through `IncludePaths` in `sasscompiler.json`, and its `tools/` writes no CSS, so it isn't on the list.
 - **A new rule goes in the partial of its concern.** One that grows past 200 lines is split, its new partial listed where
   its lines were; a move between partials that would change which rule wins is checked in the browser.
 - **A colour is a variable, never a value, outside the tokens** (`settings/_tokens.scss`, a code-review theme in
   `themes/`): a rule reads Bootstrap's name, or a `--web-` name where it has none, and `FixedColourTests` holds the shared
-  rules to it. A see-through colour reads the numbers, `rgba(var(--bs-primary-rgb), .4)`; `tools/_colours.scss` writes both
+  rules to it. A see-through colour reads the numbers, `rgba(var(--bs-primary-rgb), .4)`; `web/tools/_colours.scss` writes both
   forms from one value, so a colour is written once. What a rule reads at run time stays a CSS variable, since a Sass
   variable is fixed when the build runs. A theme stays a file of its own, loaded by the page.
 - **A path in `url(…)` is from where the CSS ends up,** `wwwroot/css/app.css`, whichever partial holds the rule.

@@ -29,9 +29,18 @@ public sealed partial record SassStylesheet(string Project)
     /// <summary>The CSS the build made, all of it, as the browser gets it.</summary>
     public string Read() => File.ReadAllText(Compiled);
 
-    /// <summary>The partials <c>app.scss</c> names, in its order, such as <c>chat/bars</c>.</summary>
-    public IReadOnlyList<string> Forwards() =>
-        [.. Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value)];
+    /// <summary>The site's own partials on <c>app.scss</c>'s list, in its order, such as <c>chat/bars</c>.</summary>
+    public IReadOnlyList<string> Forwards() => [.. Listed().Where(name => !IsFrameworks(name))];
+
+    /// <summary>The framework's partials on that list, in its order, such as <c>web/settings/colours</c>.</summary>
+    public IReadOnlyList<string> FrameworkForwards() => [.. Listed().Where(IsFrameworks)];
+
+    /// <summary>Everything on the list, in its order.</summary>
+    private IEnumerable<string> Listed() =>
+        Forward().Matches(File.ReadAllText(Path.Combine(Styles, "app.scss"))).Select(m => m.Groups[1].Value);
+
+    /// <summary>The framework's Sass is all under <c>web/</c>, so a name says whose it is.</summary>
+    private static bool IsFrameworks(string name) => name.StartsWith("web/", StringComparison.Ordinal);
 
     /// <summary>The partials on disk that write CSS, named the way <c>app.scss</c> names them.</summary>
     public IReadOnlyList<string> AreaFiles() =>

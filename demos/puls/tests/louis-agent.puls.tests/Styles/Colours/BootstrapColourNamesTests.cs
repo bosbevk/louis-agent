@@ -1,6 +1,6 @@
 using LouisAgent.Testing;
 
-namespace LouisAgent.Puls.Tests.Styles;
+namespace LouisAgent.Puls.Tests.Styles.Colours;
 
 /// <summary>
 /// Puls's colours go by Bootstrap's names, and by a <c>--web-</c> name where Bootstrap has none, so the framework's

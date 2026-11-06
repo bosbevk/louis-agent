@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Puls.Tests.Styles;
+namespace LouisAgent.Puls.Tests.Styles.Colours;
 
 /// <summary>
 /// The rules every site will share hold no fixed colour, or a new site would come out with Puls's orange glows whatever
