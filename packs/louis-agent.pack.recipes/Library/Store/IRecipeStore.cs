@@ -17,8 +17,10 @@ public interface IRecipeStore
     /// <summary>The one recipe with this id, for its own address on the feed.</summary>
     Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken);
 
-    /// <summary>Keeps a page we don't have yet; one we already hold stays exactly as it was.</summary>
-    Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken);
+    /// <summary>
+    /// Keeps a page we don't have yet, and says whether it was new; one we already hold stays exactly as it was.
+    /// </summary>
+    Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken);
 
     /// <summary>Takes out every page of a site: the one way a kept recipe ever leaves.</summary>
     Task PurgeSiteAsync(string slug, CancellationToken cancellationToken);

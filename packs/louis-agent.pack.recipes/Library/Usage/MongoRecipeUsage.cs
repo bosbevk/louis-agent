@@ -17,7 +17,7 @@ public sealed class MongoRecipeUsage(IMongoCollection<RecipeUsageDocument> days)
     /// <summary>The collection the counter is kept in.</summary>
     public const string Collection = "library_usage";
 
-    /// <summary>How long a call waits for the server before giving up, so a count never holds up a tool for long.</summary>
+    /// <summary>How long a call waits for the server before giving up, so a count never holds up a tool.</summary>
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
 
     /// <summary>The counter on the server at the address. Nothing is contacted yet.</summary>

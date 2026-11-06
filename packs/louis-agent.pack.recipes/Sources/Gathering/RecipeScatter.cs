@@ -68,7 +68,11 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
 
         // How many the cook was offered from us: a count only, since the search's words are the user's.
         int offered = hits.Count(hit => shelf?.IsOurs(hit.Hit.Url) == true);
-        if (offered > 0) Log.Log(LogLevel.Information, RecipeLogMessage.LibraryOffered, new { Count = offered });
+        if (offered > 0)
+        {
+            Log.Log(LogLevel.Information, RecipeLogMessage.LibraryOffered, new { Count = offered });
+            await shelf!.OfferedAsync(offered, cancellationToken);
+        }
 
         return new RecipeGather(hits, [.. drawn.Select(site => site.Site)],
             [.. answers.Select(answer => answer.Refusal).OfType<string>()], shelf is not null);

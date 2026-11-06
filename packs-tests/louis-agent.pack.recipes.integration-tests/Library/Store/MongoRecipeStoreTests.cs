@@ -101,6 +101,18 @@ public class MongoRecipeStoreTests
             Is.EqualTo(new[] { "first" }));
     }
 
+    /// <summary>Keeping says whether the page was new, however its link is spelled: the counter needs that.</summary>
+    [Test]
+    public async Task Keeping_SaysWhetherThePageWasNew()
+    {
+        var store = MongoRecipeStore.Open(Url!, _database);
+
+        bool first = await store.KeepAsync(Recipe("https://www.taste.co.za/recipes/bobotie/"), CancellationToken.None);
+        bool again = await store.KeepAsync(Recipe("http://taste.co.za/recipes/bobotie"), CancellationToken.None);
+
+        Assert.That((first, again), Is.EqualTo((true, false)));
+    }
+
     /// <summary>A site's owner can ask us to stop: its pages go, and the others stay.</summary>
     [Test]
     public async Task PurgingASite_TakesOutOnlyItsPages()
