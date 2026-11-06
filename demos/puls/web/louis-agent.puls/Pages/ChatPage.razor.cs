@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Puls.Content;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Shell;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -35,10 +36,7 @@ public partial class ChatPage : IDisposable
     private IReadOnlyList<string> _languages = [DefaultLanguage];
     private string? _model;
     private bool _searchOpen;
-    private bool _renameInHeader;
-    private string? _renaming;
-    private string _renameDraft = "";
-    private bool _focusRename;
+    private ChatRenaming _renaming = null!;
     private bool _focusDraft;
     private string? _toast;
 
@@ -76,6 +74,7 @@ public partial class ChatPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
+        _renaming = new ChatRenaming(Store);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"gesels/{id}");
         Currency.Changed += Redraw;
@@ -159,9 +158,8 @@ public partial class ChatPage : IDisposable
             await JS.InvokeVoidAsync("chatUi.focusEnd", "#composer-input");
         }
 
-        if (_focusRename)
+        if (_renaming.TakeFocus())
         {
-            _focusRename = false;
             await JS.InvokeVoidAsync("chatUi.focus", "#rename-input", true);
         }
 
@@ -325,31 +323,13 @@ public partial class ChatPage : IDisposable
     }
 
     /// <summary>Opens the rename field, in the sidebar or the header.</summary>
-    private void StartRename((ChatModel Chat, bool InHeader) rename)
-    {
-        _renameInHeader = rename.InHeader;
-        _renaming = rename.Chat.SessionId;
-        _renameDraft = rename.Chat.Title;
-        _focusRename = true;
-    }
+    private void StartRename((ChatModel Chat, bool InHeader) rename) => _renaming.Start(rename.Chat, rename.InHeader);
 
     /// <summary>Enter keeps the new name, and Escape drops it.</summary>
-    private async Task RenameKey((KeyboardEventArgs Key, ChatModel Chat) e)
-    {
-        if (e.Key.Key == "Enter") await FinishRename(e.Chat);
-        else if (e.Key.Key == "Escape") _renaming = null;
-    }
+    private Task RenameKey((KeyboardEventArgs Key, ChatModel Chat) e) => _renaming.KeyAsync(e.Key.Key, e.Chat);
 
     /// <summary>Keeps the new name and closes the field.</summary>
-    private async Task FinishRename(ChatModel chat)
-    {
-        if (_renaming != chat.SessionId) return;
-        _renaming = null;
-        string title = _renameDraft.Trim();
-        if (title.Length == 0 || title == chat.Title) return;
-        chat.Title = title.Length > 80 ? title[..80] : title;
-        await Store.SaveAsync();
-    }
+    private Task FinishRename(ChatModel chat) => _renaming.FinishAsync(chat);
 
     /// <summary>Pins the chat to the favourites, or takes it off.</summary>
     private async Task ToggleFavourite(ChatModel chat)

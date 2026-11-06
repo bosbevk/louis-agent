@@ -28,7 +28,7 @@
     </header>
 
     <ChatSidebar Chats="Store.Chats" SessionId="@SessionId" OnNewChat="NewChat" OnSearch="() => _searchOpen = true" OnComingSoon="ComingSoon"
-                 Renaming="@_renaming" RenameInHeader="_renameInHeader" @bind-RenameDraft="_renameDraft" OnRenameKey="RenameKey" OnRenameBlur="FinishRename"
+                 Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft" OnRenameKey="RenameKey" OnRenameBlur="FinishRename"
                  OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive" OnDelete="DeleteChat"
                  Location="@_location" Locating="_locating" OnSaveLocation="SaveLocation" OnLocate="UseMyLocation"
                  Motion="_motion" ReducedMotion="_reducedMotion" OnSaveMotion="SaveMotion"
@@ -46,7 +46,7 @@
     <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="Sleep om die breedte te verander · dubbelklik om terug te stel"></div>
 
     <main class="conversation">
-        <ChatHeader ViewTitle="@ViewTitle" Chat="Runner.Chat" Renaming="@_renaming" RenameInHeader="_renameInHeader" @bind-RenameDraft="_renameDraft"
+        <ChatHeader ViewTitle="@ViewTitle" Chat="Runner.Chat" Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft"
                     OnRenameKey="RenameKey" OnRenameBlur="FinishRename" OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive"
                     OnDelete="DeleteChat" OnComingSoon="ComingSoon" ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats.Count"
                     Language="@_language" Languages="_languages" OnChooseLanguage="ChooseLanguage" />
