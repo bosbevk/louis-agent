@@ -10,17 +10,17 @@ namespace LouisAgent.Api.IntegrationTests.Evals.List;
 [Category("Integration")]
 public class EvalListingIntegrationTests
 {
-    /// <summary>The runner's own listing reads as the stub and Puls's three evals, each with its graders.</summary>
+    /// <summary>The runner's own listing reads as the stub and Puls's four evals, each with its graders.</summary>
     [Test]
     public void TheRunnersOwnListingReadsAsEvalLines()
     {
-        // The stub, and Puls's three evals: cook, routing and recipes (the runner loads their datasets from its own
-        // output folder).
+        // The stub, and Puls's four evals: cook, routing, recipes and recipes-long (the runner loads their datasets
+        // from its own output folder).
         var result = EvalListing.ForRunner(RunnerBuild.Dll).Read();
 
         Assert.That(result.Failure, Is.Null);
-        Assert.That(result.Evals.Select(e => e.Name).ToList(), Has.Count.EqualTo(4).And.Contain("stub"),
-            "the stub and the three Puls evals; the Puls eval set's tests hold their names");
+        Assert.That(result.Evals.Select(e => e.Name).ToList(), Has.Count.EqualTo(5).And.Contain("stub"),
+            "the stub and the four Puls evals; the Puls eval set's tests hold their names");
         var stub = result.Evals.Single(e => e.Name == "stub");
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));
