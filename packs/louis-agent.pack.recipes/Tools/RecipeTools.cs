@@ -129,7 +129,7 @@ public sealed class RecipeTools
             new
             {
                 Number = index + 1,
-                hit.Name,
+                Name = HitTitle.Shown(hit.Name),
                 Url = hit.Url.AbsoluteUri
             }));
         return RecipeHitPrinter.Framed([heading, .. lines]);

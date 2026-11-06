@@ -20,7 +20,7 @@ any identity can use it, and it could be served as an MCP server unchanged
   `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.
 - **A search.** `RecipeTools.FindRecipes(query, source, maxResults)` with no `source` hands the search to `RecipeScatter`:
   four enabled sites with their own search, at random, asked at once, their hits in a random order and printed
-  `1. {title} · {site} · {link}` ([ADR 0078](../adr/0078-a-recipe-search-asks-several-sites.md)). Every hit is shuffled before the list is chosen, so no site or page settles on top; `skip` leaves out sites already asked for this dish. A named `source` looks the
+  `1. {title} · {site} · {link}` ([ADR 0078](../adr/0078-a-recipe-search-asks-several-sites.md)). Every hit is shuffled before the list is chosen, so no site or page settles on top, and a title shows without the country (`HitTitle`), since every site is South African; `skip` leaves out sites already asked for this dish. A named `source` looks the
   site up by its short name (any case), asks that site's `IRecipeSource` and prints `1. {title} · {link}`. At most 10, and
   eight by default. The result is framed `--- untrusted recipe data … ---`. A hit can be a page
   that is not a recipe (an article, a round-up), and the description and the guide say so.
