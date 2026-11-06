@@ -65,7 +65,7 @@
         <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
 
         @* The whole cost, specialists included (pay as you go: what's shown is what's paid). *@
-        <ChatUsageBar Usage="@(View == "chat" && Runner.Chat is not null ? ChatTotal(Runner.Chat) : null)" Currency="Currency.Current" Context="chatUsage">Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current), spesialiste ingesluit</ChatUsageBar>
+        <ChatUsageBar Usage="@(View == "chat" && Runner.Chat is not null ? ChatCosts.Total(Runner.Chat) : null)" Currency="Currency.Current" Context="chatUsage">Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current), spesialiste ingesluit</ChatUsageBar>
 
         @if (View == "chat" && Runner.Chat is { Turns.Count: > 0 })
         {

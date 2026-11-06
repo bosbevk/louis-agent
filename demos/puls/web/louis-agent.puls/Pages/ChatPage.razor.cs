@@ -196,26 +196,12 @@ public partial class ChatPage : IDisposable
         _ = ShowToast(copied ? "Gekopieer." : "Kon nie kopieer nie.");
     }
 
-    /// <summary>A chat's whole cost: Puls's own requests and its specialists', which its usage lacks.</summary>
-    private static TurnUsage? ChatTotal(ChatModel chat) =>
-        chat.Turns.SelectMany(t => t.Blocks.Select(b => b.SubTurn?.Usage).Prepend(t.Usage)).OfType<TurnUsage>()
-            .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
-
     /// <summary>The chats used this calendar month, in this browser.</summary>
-    private List<ChatModel> MonthChats =>
-        Store.Chats.Where(c =>
-            c.UpdatedAt.LocalDateTime.Year == DateTime.Now.Year &&
-            c.UpdatedAt.LocalDateTime.Month == DateTime.Now.Month).ToList();
+    private List<ChatModel> MonthChats => ChatCosts.InMonth(Store.Chats, TimeProvider.System.GetLocalNow());
 
-    private string MonthCost => Money(MonthChats.Select(ChatTotal).OfType<TurnUsage>()
-        .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u));
+    private string MonthCost => ChatCosts.Say(ChatCosts.Total(MonthChats), Currency.Current);
 
-    private string ChatCost => Runner.Chat is null ? "—" : Money(ChatTotal(Runner.Chat));
-
-    /// <summary>A usage record's cost in the chosen currency; none counts as nothing spent.</summary>
-    private string Money(TurnUsage? usage) => usage is null
-        ? UsageFormat.Money(0, null, Currency.Current)
-        : UsageFormat.Cost(usage, Currency.Current);
+    private string ChatCost => Runner.Chat is null ? "—" : ChatCosts.Say(ChatCosts.Total(Runner.Chat), Currency.Current);
 
     /// <summary>A model's id as a name: <c>claude-opus-5-5</c> reads Claude Opus 5.5.</summary>
     private static string? Pretty(string? id)
