@@ -1,6 +1,6 @@
-# Change the shared web library
+# Change the framework's web
 
-> **How-to.** Change `src/web/louis-agent.web`, the Razor class library both web apps use: decide what belongs here,
+> **How-to.** Change `src/web/louis-agent.web`, the Razor class library every site is built on: decide what belongs here,
 > add an API call, follow a new event in the stream, add a component, give it words, and test it. **Elsewhere:** how
 > it works in [louis-agent.web](../projects/louis-agent.web.md); the two apps in
 > [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) and [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md).
@@ -11,8 +11,9 @@ currency (`Usage/`), and what the browser keeps (`Storage/`). Each app keeps its
 
 ## Does it belong here?
 
-Only when both apps need it. A piece one app needs stays in that app, even if the other might want it one day. A
-shared component emits class names and no CSS of its own: each app styles it in its `app.css`.
+Ask whether it would be the same on every site. If so it belongs here, even if only one site uses it today; what differs comes
+in from the site, and the framework names no site ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). For
+now a component still emits class names and no CSS of its own: each site styles it in its `app.css`.
 
 ## Add an API call
 

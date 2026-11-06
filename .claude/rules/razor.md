@@ -10,6 +10,10 @@ Loaded when a `.razor` or `.razor.cs` file is read or edited. The why: [ADR 0034
 (code a person can maintain) and [ADR 0042](../../src/docs/adr/0042-the-web-shows-the-live-results.md) (the web shows the
 live results). The C# rules in `csharp.md` apply to the code-behind.
 
+- **Every site is built on the framework's web** ([ADR 0084](../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md)):
+  a file that would be the same on every site belongs in `louis-agent.web`, even if one site uses it today. What differs comes in
+  from the site through a slot, a parameter or a setting, never a branch on which site this is. The framework names no site, in
+  comments too, and a site's layout stays about 40 lines. `FrameworkNamesNoSiteTests` and `SiteLayoutsStaySmallTests` hold it.
 - **A `.razor` holds markup only, no `@code` block:** a component's C# goes in its `.razor.cs` code-behind, and logic
   that needs no component (text, search, formatting) goes in a plain class with NUnit tests. `RazorHasNoCodeTests`
   holds it.

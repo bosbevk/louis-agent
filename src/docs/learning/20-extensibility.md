@@ -188,5 +188,34 @@ order of a Puls session's guides, the test caught it. The order looks cosmetic, 
 keys on, so it became a rule in the code. Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md);
 pattern: Separated Interface (Fowler, *PoEAA*), Composition Root (Seemann).
 
+## The framework's web (F59.1, 2026-11-06)
+
+The engine has been a framework for a while, but the web wasn't. A new site would have started as a copy of Puls. F59.1 makes the
+split official without moving much: the shared library takes the framework's name, the rule is written, and tests hold it. The moves
+come in the children after it. Doing the name first means nothing later moves twice.
+
+**A rule you can run beats a rule you can read.** The framework named a site on 24 lines and its project file, all of them comments,
+and nobody had noticed, because nothing checked. Now a test reads every file, and it finds the sites on disk, so a new site comes
+under the rule with nobody listing it. The second test is a *ratchet*: what's still too long sits on a list, and the list can only
+shrink. It's how you adopt a rule the code doesn't meet yet without pretending it does.
+
+**A tool that says it worked may not have.** Rider's namespace tool did the rename, and the build and most tests stayed green while:
+
+- it dropped `@using` lines from `_Imports.razor`. Razor treats a component it can't find as a plain HTML tag, so that's a warning, not
+  an error, and only the page tests noticed;
+- it rewrote markup such as `Chat` into `Chats.Chat`, in 16 files;
+- it removed `using` lines that were still needed, and left old ones behind.
+
+What caught it was reading the diff with a question in mind: *which lines changed that aren't a namespace or a `using`?* In a rename
+that should be almost nothing, so anything there is the bug. No golden file moved at the end, which is the evidence that the pages
+still draw what they did.
+
+**MCP Apps, which you asked about.** MCP lets an AI app use tools from a server, and a tool normally sends back text or data. MCP Apps
+adds screens: a tool's description names a `ui://` address, the chat app fetches the HTML page held there and runs it in a sandboxed
+frame, and the page can only act by asking the chat app to call the server's tools. It's the one formal standard in this area, and it's
+built for screens inside a chat, so it doesn't fit our admin. The idea we kept is that a screen can do only what the server named.
+
+Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md); pattern: Composition Root (Seemann).
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

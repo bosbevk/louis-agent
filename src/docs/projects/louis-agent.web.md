@@ -6,10 +6,10 @@
 
 ## Purpose
 
-What both web apps share, so a chat works the same in each: the chat as data, the API client, a turn's life from the
-first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. Each
-app keeps its own pages, words, look (CSS) and JavaScript; the shared components only emit class names, and their words
-come from a `ChatText` each app fills in.
+The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). So far that's what a chat needs to work the same on each: the chat as data, the API client, a turn's life from the
+first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each
+site keeps its own pages, look (CSS) and JavaScript, which F59 moves here; the components only emit class names, and their
+words come from a `ChatText` each site fills in.
 
 ## How it works
 
@@ -54,7 +54,7 @@ and kept in that browser.
 
 ## Extending it
 
-The steps are in [Change the shared web library](../guides/change-the-web.md). In short: a piece belongs here
+The steps are in [Change the framework's web](../guides/change-the-web.md). In short: a piece belongs here
 only when both apps need it; a new API call goes in `AgentApi`; a component's words go in `ChatText` (English
 default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain class with tests
 ([ADR 0034](../adr/0034-code-a-person-can-maintain.md)). Then rebuild the image of each app that uses it.

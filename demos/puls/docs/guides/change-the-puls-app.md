@@ -3,7 +3,7 @@
 > **How-to.** Change `demos/puls/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
 > or the admin portal, add a starter, place its words, and test it. **Elsewhere:** how it works in
 > [louis-agent.puls](../projects/louis-agent.puls.md); what it shares with the code-review app in
-> [Change the shared web library](../../../../src/docs/guides/change-the-web.md); Puls's voice, roles and packs in
+> [Change the framework's web](../../../../src/docs/guides/change-the-web.md); Puls's voice, roles and packs in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 
 Puls is a Blazor WebAssembly app, served by Puls's program, `louis-agent.puls-api`, which references it. It has three parts: the
