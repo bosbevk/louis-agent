@@ -77,7 +77,7 @@ internal static class RecipeScaler
         if (RecipeAmount.PeopleIn(recipe.Yield) is not { } served)
             return (1, MessageText.Format(RecipeToolMessage.ScaleKept, new { recipe.Name }));
 
-        double factor = people / served;
+        double factor = RecipeAmount.InTheRange(recipe.Yield, people) ? 1 : people / served;
         return (factor, MessageText.Format(RecipeToolMessage.ScaledForPeople,
             new
             {

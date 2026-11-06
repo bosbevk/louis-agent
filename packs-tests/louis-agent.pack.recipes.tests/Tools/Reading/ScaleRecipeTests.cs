@@ -105,6 +105,18 @@ public class ScaleRecipeTests
         Assert.That(result, Does.Contain("1. 0.5 kg mince"));
     }
 
+    /// <summary>Six people on a page for six to eight is the recipe as written, and no line is marked.</summary>
+    [Test]
+    public async Task PeopleInsideThePagesRange_KeepTheRecipe()
+    {
+        var (tools, link) = Holding("6-8 servings");
+
+        string result = await tools.ScaleRecipe(link, people: 6);
+
+        Assert.That(result, Does.Contain("1. 1 kg mince"));
+        Assert.That(result, Does.Not.Contain("scaled)"));
+    }
+
     /// <summary>A yield that isn't people keeps the recipe as written, and says how to ask for more.</summary>
     [Test]
     public async Task AYieldThatIsntPeople_KeepsTheRecipe_AndSaysSo()

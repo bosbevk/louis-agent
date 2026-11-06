@@ -80,7 +80,7 @@ public class ReadRecipeLibraryTests
         Assert.That(result, Does.Contain("pap and sheba").And.Contain("ushatini"));
     }
 
-    /// <summary>A search that finds nothing says what else the dish is called, so the next search has a word to try.</summary>
+    /// <summary>A search that finds nothing says what else the dish is called: the next search has a word to try.</summary>
     [Test]
     public async Task ASearchThatFindsNothing_SaysTheOtherName()
     {

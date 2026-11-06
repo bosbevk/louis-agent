@@ -16,7 +16,7 @@ namespace LouisAgent.Packs.Recipes.Scaling;
 internal static class RecipeAmount
 {
     private static readonly HashSet<string> Weights = new(
-        "g gram grams kg kilogram kilograms ml millilitre millilitres l litre litres liter liters".Split(' '),
+        "g gram grams kg kilogram kilograms ml mℓ millilitre millilitres l ℓ litre litres liter liters".Split(' '),
         StringComparer.OrdinalIgnoreCase);
 
     private static readonly HashSet<string> Measures = new(
@@ -36,7 +36,8 @@ internal static class RecipeAmount
     private static readonly string[] RangeMarks = [" - ", " – ", " to ", "-", "–"];
 
     /// <summary>Words that only hedge the amount after them.</summary>
-    private static readonly string[] Hedges = ["about ", "approx. ", "approx ", "approximately ", "roughly ", "circa ", "ongeveer "];
+    private static readonly string[] Hedges =
+        ["about ", "approx. ", "approx ", "approximately ", "roughly ", "circa ", "ongeveer ", "up to ", "tot "];
 
     /// <summary>A number written out, which this doesn't scale but mustn't pass over in silence.</summary>
     private static readonly HashSet<string> NumberWords = new(
@@ -143,6 +144,10 @@ internal static class RecipeAmount
 
         return amount.High is { } high ? (amount.Low + high) / 2 : amount.Low;
     }
+
+    /// <summary>Six people on a page for six to eight are what the page feeds: there's nothing to scale.</summary>
+    public static bool InTheRange(string? yield, int people) =>
+        ReadAmount((yield ?? "").Trim(), 0) is { High: { } high } amount && people >= amount.Low && people <= high;
 
     /// <summary>A step's amounts of food and what they become. Times, temperatures and sizes have no unit.</summary>
     public static IReadOnlyList<(string From, string To)> InStep(string step, double factor)
