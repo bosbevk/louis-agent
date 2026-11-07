@@ -23,7 +23,11 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   about who is signed in (the menu, the pages and Blazor's `AuthorizeView` follow it), and every call to the API says
   it is the app's own (`X-Requested-With`), which is what lets a signed-in person's cookie count in place of a key. The
   words are `AccountText`, English by default; a site registers its own copy before `AddLouisAgentAccounts()`. A site
-  whose API has no `ACCOUNTS_SQL_URL` draws the pages, which say so, and the menu stays the guest's.
+  whose API has no `ACCOUNTS_SQL_URL` draws the pages, which say so, and the menu stays the guest's. The profile
+  adds a passkey and turns two-factor on (F61.5): the browser's WebAuthn part is `wwwroot/js/passkeys.js`, three
+  functions a site's `index.html` loads that pass the API's options to `navigator.credentials` and the credential
+  back untouched; the sign-in page has the passkey button, and the sign-in form's second box takes the app's code or
+  a recovery code.
 - **The eval pages.** The evals, their runs, the answers to grade, the studio and the prompts are on every site at `/admin`, and a site makes
   one call for them. They have [their own doc](eval-pages.md).
 - **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
@@ -121,7 +125,8 @@ sequenceDiagram
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame` and `AccountFrame`, the layouts that hand over to the site's |
 | `Accounts/` | `AccountApi` (the `/account` routes), `AccountState`, `CookieAuthenticationStateProvider` (Blazor's view of it), `AccountProblem` (what a route said), `AccountServices`; in `Errors/`, `AccountErrors` (Identity's codes as the site's words); in `Navigation/`, `SafeReturn` (only our pages are followed) |
-| `Components/Account/`, `Components/Account/Profile/` | `AccountShell`, `LoginForm`, `RegisterForm`, `PasswordField`, `ProviderButtons`, `AccountNotice`; `ProfileDetails`, `ChangeEmail`, `ChangePassword`, `SetPassword`, `LinkedLogins` (link and unlink, F61.3), `DeleteAccount` |
+| `Components/Account/`, `Components/Account/Profile/`, `Passkeys/`, `TwoFactor/` | `AccountShell`, `LoginForm` (with the second-factor box), `RegisterForm`, `PasswordField`, `ProviderButtons`, `AccountNotice`; `ProfileDetails`, `ChangeEmail`, `ChangePassword`, `SetPassword`, `LinkedLogins` (link and unlink, F61.3), `DeleteAccount`; `PasskeyList`, `PasskeySignIn` (F61.5, over `wwwroot/js/passkeys.js`); `TwoFactorSection` |
+| `Accounts/TwoFactor/` | `OtpAuth` (the key as a link for the app and as readable text), `SecondStep` (digits are the app's code, the rest a recovery code) |
 | `Pages/Account/` | `LoginPage`, `RegisterPage`, `ConfirmEmailPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `ProfilePage` |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |

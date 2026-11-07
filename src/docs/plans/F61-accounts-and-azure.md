@@ -25,6 +25,15 @@
   unattended: the callback is tested on a scripted provider (a route the test host alone maps writes the external
   cookie as a handler would); the three providers sit in `External/Providers/` for the folder rule; every answer the
   callback gives a browser is a redirect to a path of ours, checked on the server as the web checks its own.
+- **2026-11-07, F61.5 built** on `feature/F61.5-passkeys`, from F61.3's tip; its plan is deleted, its picks are in
+  the project doc's *What the build decided*. Picks taken unattended: one migration written again under Identity's
+  schema version 3 (nothing stored yet, ADR 0049); a passkey section on the profile rather than a page of its own;
+  the authenticator key as text and an `otpauth://` link, the QR code a TODO; one box for the sign-in's second step,
+  digits as the app's code and the rest as a recovery code; no route of ours for two-factor, Identity's does it.
+- **2026-11-07, the account client gets its own library** (Louis: "A, finish step 5 first then do the move"): after
+  F61.5, the account pages, client, words, styles and script move from `louis-agent.web` to
+  `louis-agent.web.accounts`, a Razor class library on top of it that a site opts into, with the chat header's
+  lookup of `AccountState` made a named seam; its own plan as CL30, before F61.4.
 
 ## Context
 

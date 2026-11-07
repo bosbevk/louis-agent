@@ -31,7 +31,9 @@ every site, and a site changes three things only: **its words**, a copy of `Acco
 with its brand in the slot, named in `SiteFrames`; and **whether it has accounts at all**, which is the API's
 `ACCOUNTS_SQL_URL`, not the site's. A new field or section goes in the framework: a component under
 `Components/Account/` with its bUnit test, its call in `AccountApi`, and its words in `AccountText`. The server side
-is `louis-agent.accounts` ([its doc](../projects/louis-agent.accounts.md)).
+is `louis-agent.accounts` ([its doc](../projects/louis-agent.accounts.md)). Passkeys need the browser's part: a
+site's `wwwroot/index.html` loads `_content/louis-agent.web/js/passkeys.js` beside `chat.js`; without it the
+profile's passkey section says the browser can't do passkeys.
 
 ## Change the styles or scripts
 

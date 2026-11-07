@@ -157,3 +157,30 @@ password is refused, or the account would be unreachable.
 
 **The server checks the return address too.** The web's `SafeReturn` guards the pages; the callback is a server
 route a browser lands on, so `LocalPath` guards it the same way. Two copies of one rule, each tested, on purpose.
+
+## A secret the server never holds (F61.5, 2026-11-07)
+
+**What was built.** Passkeys (a fingerprint, a face, a security key) to add on the profile and sign in with, and
+two-factor with an authenticator app, both on what Identity ships in .NET 10. Skill 15.
+
+**A passkey is a key pair, and we keep the public half.** The browser asks the device to make a key pair for this
+site; the private key never leaves the device, and what reaches us is the public key with a signature over a
+challenge we issued. Signing in is the same in reverse: we issue a challenge, the device signs it, we check the
+signature against the public key we kept. There's no password to steal from us, nothing to phish, and a credential
+made for one site can't be used on another, because the browser binds it to the origin and Identity checks that
+origin on every call. Our code hands JSON between the API and `navigator.credentials` and touches none of it.
+
+**Proving it without a device.** The tests hold a software authenticator: an ES256 key, a "none" attestation, the
+CBOR written by hand. It does exactly what a fingerprint reader does at the protocol level, which is the point: the
+protocol is what we trust, not the hardware. The same for two-factor: a six-digit code is HMAC-SHA1 of the half-minute
+counter under the shared key (RFC 6238), so a forty-line `Totp` proves the whole flow on the real SQL Server.
+
+**Two-factor shares a secret, a passkey doesn't.** The authenticator key is known to the phone and to us, so a leak
+of our table would let someone mint codes; a passkey's private half is only ever on the device. That's why the
+passkey is the better sign-in and two-factor is the fallback for a password. A recovery code is a one-time password
+stored hashed, spent on use, for the day the phone is gone.
+
+**Where the key is shown, it's shown once.** The recovery codes come back only on the call that made them and the
+page shows them then; after that only the count. The authenticator key goes to the person as text and as an
+`otpauth://` link the phone opens straight into the app; the QR code is a later step, since every app takes the key
+typed or the link tapped.

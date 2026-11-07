@@ -56,6 +56,19 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
   `DELETE /account/external/{provider}` unlinks, refused for the last way in without a password; `POST
   /account/password` is a first password. Every answer to a browser is a redirect to a path of ours (`LocalPath`).
   Registering the apps is [a guide](../guides/register-a-sign-in-provider.md).
+- **A passkey** (F61.5) is a key pair the person's device holds (a fingerprint, a face, a security key): the server
+  keeps the public half and never sees a secret. Identity does the WebAuthn part (schema version 3 adds its table);
+  our routes under `/account/passkeys` (`Endpoints/Passkeys/PasskeyHandlers`) hand the browser Identity's creation
+  or request options as JSON, take the credential the browser made back, and keep it under the name the person gave;
+  the list, a delete, and `POST /account/passkeys/login` sign in with one. Identity checks the browser's `Origin`
+  against the request, so a credential made for another site is refused; an attestation sent with no options under
+  way is a 400 with Identity's reason.
+- **Two-factor** (F61.5) is Identity's own `POST /account/manage/2fa`: an empty body reads the state (the shared
+  key, whether it's on, how many recovery codes are left), `enable` with the app's first code turns it on and answers
+  the ten recovery codes once, `enable: false` turns it off, `resetRecoveryCodes` makes a new set. After that the
+  password alone answers 401 `RequiresTwoFactor`, and `login` takes `twoFactorCode` or `twoFactorRecoveryCode`
+  beside it; a recovery code works once. The key goes to the person as text and as an `otpauth://` link; no QR code
+  yet.
 - **Mail** goes through Identity's `IEmailSender<AccountUser>`; `Mail/LogEmailSender` writes the link to the log,
   decoded from Identity's HTML form, hashed unless `LOG_CONTENT=full`. A real sender is one class behind the seam.
 - **Storage** is EF Core on SQL Server: `Store/AccountsDbContext` is Identity's context plus `Tenants`, with the
@@ -97,15 +110,16 @@ src/hosts/louis-agent.accounts/
 ├── AccountsStartup.cs   # AddLouisAgentAccounts, UseLouisAgentAccounts, MapLouisAgentAccounts
 ├── Config/              # AccountsOptions (the settings), AccountCookies (the cookie's rules)
 ├── Endpoints/           # AccountHandlers (named static methods), AccountRoutes (the map), AccountProblems (a refusal in Identity's shape);
-│                        # Confirmation/ (the link's landing), External/ (the challenge, the callback, unlink, a first password, LocalPath)
+│                        # Confirmation/ (the link's landing), External/ (the challenge, the callback, unlink, a first password, LocalPath),
+│                        # Passkeys/ (the options, add, list, remove, sign in)
 ├── External/            # IExternalProvider, ExternalProvider (the wire names), ProviderKeys, ExternalProviders; Providers/ (Google, Microsoft, LinkedIn)
 ├── Mail/                # LogEmailSender behind Identity's IEmailSender
 ├── Messages/            # AccountErrorMessage, AccountLogMessage, AccountUserText (ADR 0009)
 ├── Migrations/          # what `dotnet ef migrations add` wrote; a tool's record, not sized by the file rule
-├── Store/               # AccountsDbContext, AccountUserStore, AccountsMigrator, the design-time factory
+├── Store/               # AccountsDbContext, AccountUserStore, AccountsMigrator, the design-time factory (names Identity's schema version 3)
 ├── Tenants/             # TenantHost, ITenantResolver, HostTenantResolver, CurrentTenant, TenantMiddleware
 └── Users/               # AccountUser, Tenant
-src/hosts/louis-agent.accounts.contracts/   # AccountInfo, ProfileBody, ProviderInfo, the Identity bodies, AccountJson
+src/hosts/louis-agent.accounts.contracts/   # AccountInfo, ProfileBody, ProviderInfo, the Identity bodies (two-factor's too), the passkey bodies, AccountNames, AccountJson
 src/tests/hosts/louis-agent.accounts.tests/             # pure: the host rule, the options, the cookie, the JSON pins
 src/tests/hosts/louis-agent.accounts.integration-tests/ # against the Docker SQL Server (ACCOUNTS_SQL_TEST_URL)
 ```
@@ -137,7 +151,10 @@ integration tests reach it at `ACCOUNTS_SQL_TEST_URL` and each fixture makes and
 refusal, the mail sender, the JSON pins to Identity's request types) and `louis-agent.accounts.integration-tests`
 (the migrations on a real server and the per-tenant rule, the resolver, the store, and a test host that does what a
 program does: register, confirm from the mail, sign in with the cookie, read `/account/me`, change the name, sign
-out, delete; the route table pinned). CI runs the second against a SQL Server service container.
+out, delete; the route table pinned). The passkey routes are proved with a software authenticator the tests write
+(`SoftwareAuthenticator`: an ES256 key, a "none" attestation, the CBOR by hand on `System.Formats.Cbor`), and
+two-factor with a TOTP of the tests' own (`Endpoints/TwoFactor/Totp`, RFC 6238), so neither needs a device. CI runs
+the second project against a SQL Server service container.
 
 ## What the build decided (F61.1, 2026-11-07, unattended)
 
@@ -150,10 +167,21 @@ out, delete; the route table pinned). CI runs the second against a SQL Server se
   cookie as a provider's handler would, so the callback runs unchanged on the cookie it reads in production.
 - (F61.3) A query parameter a route may be called without is a parameter with a default (`bool link = false`);
   without one, minimal APIs answer 400 for the missing value.
+- (F61.5) One migration, written again under Identity's schema version 3: the first was written under the default
+  schema, since the design-time factory gave the model no Identity options, and version 3 shortens key columns SQL
+  Server won't alter in place. Nothing was stored yet (ADR 0049), so the migration was deleted and made again; the
+  factory now names the version, and `AccountsStartup` sets the same one.
+- (F61.5) `MakePasskeyCreationOptionsAsync` and `MakePasskeyRequestOptionsAsync` answer JSON strings, passed to the
+  browser as they are; `PerformPasskeyAttestationAsync` throws when no options are under way, caught into a 400.
+  The tests send `Origin: http://localhost`, since Identity refuses a credential whose origin isn't the request's.
+- (F61.5) Two-factor needed no route of ours: Identity's `manage/2fa` does it, and our records mirror its request
+  and response, pinned by tests like the other bodies.
 
 ## Limits and plans
 
-Passkeys and two-factor are F61.5; a real mail sender, Facebook and X, and the business site are later. The three
+A real mail sender, Facebook and X, the QR code for the authenticator key (today the key as text and an `otpauth://`
+link; a QR encoder of our own is a step of its own), a passkey's name edited after the fact, and the business site are
+later. The three
 providers are built and tested on a scripted one; a sign-in through the real Google, Microsoft or LinkedIn waits for
 Louis to register the apps. One Google
 account links in one tenant only. A tenant has at most one host. Identity's own validation messages (a password too
