@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Messages;
@@ -9,6 +8,7 @@ using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting;
+
 /// <summary>Where a host's usage records go (ADR 0007; S, CL15, from AgentHost).</summary>
 public static class UsageLedger
 {
@@ -19,7 +19,7 @@ public static class UsageLedger
     /// USAGE_LEDGER=off or there is no LOG_DIRECTORY (with a warning, since the ledger was wanted). A malformed price table
     /// throws, so a host doesn't start on wrong prices.
     /// </summary>
-    /// <param name="prices">Already loaded prices (<see cref="AgentHost.Build(LlmOptions, AgentOptions, ILlmClientFactory, AgentCatalog)"/> loads them once); null loads them here.</param>
+    /// <param name="prices">Already loaded prices (<see cref="AgentHost.Build(LlmOptions, AgentOptions, ILlmClientFactory, AgentCatalog, HostServices)"/> loads them once); null loads them here.</param>
     public static IUsageSink? Open(AgentOptions agent, PriceTable? prices = null)
     {
         if (!agent.UsageLedger) return null;

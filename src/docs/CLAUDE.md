@@ -157,7 +157,7 @@ Where things are. What's inside each project is in its design doc in [projects/]
 in [Project layout](../engine/louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
+src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on); louis-agent.core.web (the browser, search, robots, rendering, the recorders) and .core.telemetry (the tracer, the collector's sink), each on core behind a seam, a host opts in (CL33)
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
 src/web/                 # louis-agent.web: the framework's web, what every site shares; louis-agent.web.accounts: the account pages, a site opts in
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder

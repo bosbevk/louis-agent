@@ -10,12 +10,15 @@
 
 <section class="band">
     <span class="kicker">The whole program</span>
-    <pre class="listing"><code>using LouisAgent.Cli;
+    <pre class="listing"><code>using LouisAgent.Core.Web;
+using LouisAgent.Core.Telemetry;
+using LouisAgent.Core.Hosting;
+using LouisAgent.Cli;
 using LouisAgent.Coding;
 
 // Usage: louis-agent.coding-cli [prompt]. It loads what this demo's catalogue names.
-await CliHost.RunAsync(args, CodingCatalog.Create());</code></pre>
-    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own.</p>
+await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance));</code></pre>
+    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own. The last argument is what the host gets besides the catalogue: the web for its agent and a tracer for its turns; leave it out and the agent runs without either.</p>
 </section>
 
 <section class="band">

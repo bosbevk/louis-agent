@@ -52,7 +52,7 @@ public static class AgentHost
         SkillFileSource.Use(catalog.Prompts);
         agent.DefaultVoice ??= catalog.DefaultVoice;
         RoleFiles.Check(agent, agent.DefaultVoice);
-        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, catalog: catalog);
+        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, services: services, catalog: catalog);
         return engines.GetOrCreate(engines.Available);
     }
 
@@ -84,7 +84,7 @@ public static class AgentHost
         AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent), telemetry.AddSinks);
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
         telemetry.Start();
-        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog);
+        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog, services);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public static class AgentHost
     /// process. The API builds each session's engine from <see cref="AgentHostContext.Engines"/>.
     /// </summary>
     public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory,
-        AgentCatalog? catalog = null)
+        AgentCatalog? catalog = null, HostServices? services = null)
     {
         catalog ??= AgentCatalog.CoreOnly;
         // The identities' and packs' prompts, before any is read (CL15); then every ROLES_ENABLED name and the default
@@ -116,7 +116,7 @@ public static class AgentHost
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(),
             UsageLedger.Open(agent, prices),
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates,
-            sessionLlms: sessionLlms, catalog: catalog);
+            sessionLlms: sessionLlms, catalog: catalog, services: services);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen,
             new

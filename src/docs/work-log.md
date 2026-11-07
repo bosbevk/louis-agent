@@ -14,15 +14,14 @@
 |---|---|---|
 | Features (`F`) | 58 | 76 |
 | Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 23 | 28 |
+| Cleanups (`CL`) | 24 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (107 in the TODO)
+## Open (106 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| CL33 | Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry` | Now |
 | F62 | Validate demand | Now |
 | F18 | F18's leftovers, before F49.1 | Now |
 | F63 | The reference transcripts in git | Now |
@@ -253,10 +252,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (23 done)
+## Cleanups (24 done)
 
 | Id | When | What |
 |---|---|---|
+| CL33 | 2026-11-07 | Core's Web/ and Telemetry/ as louis-agent.core.web and louis-agent.core.telemetry, on core behind a seam each; a host composes through HostServices |
 | CL56 | 2026-11-07 | One roadmap: the platform plan and its summary became ROADMAP.md, the feature plans inside it drafts |
 | CL32 | 2026-11-07 | The packs as one area |
 | CL30 | 2026-11-07 | The account client as its own library |
