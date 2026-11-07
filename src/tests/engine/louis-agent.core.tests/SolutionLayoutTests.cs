@@ -15,7 +15,7 @@ public class SolutionLayoutTests
         "louis-agent.composition")]
     [TestCase("src/hosts", "louis-agent.acp-server", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
         "louis-agent.mcp-server", "louis-agent.accounts", "louis-agent.accounts.contracts")]
-    [TestCase("src/web", "louis-agent.web")]
+    [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
     [TestCase("packs", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
@@ -40,7 +40,7 @@ public class SolutionLayoutTests
         "louis-agent.choices.tests", "louis-agent.session-stream.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests",
         "louis-agent.accounts.tests", "louis-agent.accounts.integration-tests")]
-    [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing")]
+    [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests")]
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]

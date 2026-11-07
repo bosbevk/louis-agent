@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The account client (CL30): the sign-in, registration, confirmation, reset and profile pages, their forms, the
+       client of the API's /account routes, the words, the styles and the passkey script. A site that has accounts
+       references this and calls AddLouisAgentAccounts(); a site that doesn't ships none of it. It sits on
+       louis-agent.web, which knows accounts only through the chat header's seam (IAccountMenu). -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Accounts</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+    <!-- F61.2: AuthorizeView and [Authorize] on the pages, over who the API says is signed in. -->
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: the frames the pages draw inside, the API client's header, the chat's seam. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+    <!-- F61.2: the account routes' bodies and replies, and the claim names, as records the browser sends and reads. -->
+    <ProjectReference Include="..\..\hosts\louis-agent.accounts.contracts\louis-agent.accounts.contracts.csproj" />
+
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.web.accounts.md" Link="docs\louis-agent.web.accounts.md" />
+  </ItemGroup>
+
+</Project>
