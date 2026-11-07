@@ -56,6 +56,12 @@ What that reading changes here:
   **hand-off**, one agent handing a conversation to another (F39 Part A's hand-off to a named peer), and
   **conversations saved to Mongo so a person can restart them** (F43's durable sessions). Both are what Microsoft's
   framework calls workflows, sessions and checkpointing, and F106.4 compares them.
+- **The rungs to a workflow**, one small PR with its eval each: (1) one agent calls another and gets text back
+  (built: specialists and minions); (2) a conversation is saved and picked up again, F43; (3) the result is typed, a C#
+  record checked in code; (4) the parent decides on it in code: accept, retry, hand to a person; (5) hand-off, the
+  whole conversation to a named peer, the person keeps talking; (6) one policy per turn tree: depth, rounds, money;
+  (7) several of those in a row, saved at each step, is a workflow; a named type only if the chain repeats one shape.
+  Rungs 3 to 6 are F39 Part A.
 - **What to study in Microsoft's framework** before F106.4 (its own docs, not a summary): its agent loop, session state
   and persistence, middleware pipeline, workflow execution, human-in-the-loop, checkpointing and tool permissions.
   Each maps to a phase of ours (F43, F41, F42, F39), so the comparison also tells us where our phases stand.
