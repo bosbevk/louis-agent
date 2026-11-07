@@ -35,7 +35,8 @@ the rewritten benchmarks; `Dockerfile.orchestrator` still builds the orchestrato
 Puls's `config/azure/main.bicep` is the record of what Azure holds for it, deployed by `deploy/azure/deploy.ps1 infra`;
 the app itself is a yaml the script's `release` deploys as a new revision. Live since 2026-11-07 on `mypuls.co.za`; the
 CL19 deploy (Puls reaching the PC's browser and Mongo through a Tailscale sidecar) and the F58 tunnel (a placeholder
-served from the PC) are gone. The diagrams are in [Puls's architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md).
+served from the PC) are gone. The diagrams are in [Puls's architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md). A release runs from GitHub too (`.github/workflows/deploy-puls.yml`, F109): after green CI on `main` or from a
+button, signed in by OpenID Connect ([ADR 0097](../adr/0097-puls-deploys-from-github-without-a-password.md)).
 
 | Where | What runs | Reaches |
 |---|---|---|

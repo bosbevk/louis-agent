@@ -78,6 +78,46 @@ commit it ran; commit before you build. `release` is `build` then `update` with 
 each sign-in provider whose two secrets are set, and creates or updates the app. The running revision is in
 `az containerapp revision list -n puls-app -g rg-puls-za -o table`; the app is up when `/health` answers 200.
 
+## Deploying from GitHub (F109)
+
+A merge to `main` deploys by itself once CI passes on it, and *Actions → Deploy Puls → Run workflow* deploys `main`
+any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the PC. It signs in
+to Azure by OpenID Connect: GitHub signs a short-lived token for the run, and Azure trusts it only for this repo's
+`main` branch, so GitHub stores no password. The identity it signs in as, `github-puls-deploy`, may build in the
+registry and update the app (Contributor on `rg-puls-za`) and read the vault's secret *names* (Key Vault Reader on
+`puls-keys`), never a secret's value. `infra`, `vm`, `secrets` and `domain` stay on the PC: they read files kept off
+git. The why is [ADR 0097](../../../../src/docs/adr/0097-puls-deploys-from-github-without-a-password.md).
+
+**Once, from the PC** (signed in with `az login` as the subscription's owner), in PowerShell from `demos\puls`:
+
+```powershell
+$sub = az account show --query id -o tsv
+$tenant = az account show --query tenantId -o tsv
+$appId = az ad app create --display-name github-puls-deploy --query appId -o tsv
+az ad sp create --id $appId -o none
+# The trust: tokens GitHub signs for bosbevk/louis-agent's main branch, and nothing else. A file, since az is a
+# batch file on Windows and cmd mangles quotes in JSON on a command line.
+$fic = Join-Path $env:TEMP 'github-puls-deploy.json'
+'{"name":"louis-agent-main","issuer":"https://token.actions.githubusercontent.com","subject":"repo:bosbevk/louis-agent:ref:refs/heads/main","audiences":["api://AzureADTokenExchange"]}' |
+    Set-Content $fic -Encoding ascii
+az ad app federated-credential create --id $appId --parameters "@$fic" -o none
+Remove-Item $fic
+az role assignment create --assignee $appId --role Contributor --scope "/subscriptions/$sub/resourceGroups/rg-puls-za" -o none
+az role assignment create --assignee $appId --role 'Key Vault Reader' --scope (az keyvault show -n puls-keys --query id -o tsv) -o none
+"AZURE_CLIENT_ID=$appId"; "AZURE_TENANT_ID=$tenant"; "AZURE_SUBSCRIPTION_ID=$sub"
+```
+
+Then in GitHub, *Settings → Secrets and variables → Actions → Variables*, add the three printed values as
+repository **variables** (they are ids, not secrets). Press *Run workflow* once to check: the run's summary lists the
+active revision. Until the variables are set, a run stops at its first step and says which are missing.
+
+**Rolling back:** activate the revision before (`az containerapp revision list -n puls-app -g rg-puls-za -o table`
+names them), or re-run an older *Deploy Puls* run, which deploys the commit it ran:
+
+```powershell
+az containerapp revision activate -n puls-app -g rg-puls-za --revision puls-app--v020
+```
+
 ## Secrets
 
 Every value is in the vault `puls-keys` (Louis's pick, 2026-11-08): `deploy.ps1 secrets` writes it there, the app's

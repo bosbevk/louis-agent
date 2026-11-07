@@ -12,6 +12,10 @@
 - **2026-11-07, actions pinned by major tag**, as `ci.yml` does (`actions/checkout@v7`, `azure/login@v2`), not by
   commit SHA: this session could not read the actions' release SHAs, and one way across the repo's workflows is simpler.
 
+- **2026-11-07, built** (steps 1 to 3 on `feature/F109-deploy-from-github`); ADR 0097 holds the why, the deploy README
+  the setup. The plan and its TODO row stay until Louis's one-time setup is done and the first run is green; then
+  the plan goes and the work-log gets its row.
+
 ## Context
 
 **What exists:** `demos/puls/deploy/azure/deploy.ps1 release` builds the Puls image in the registry `acrpulsza`
