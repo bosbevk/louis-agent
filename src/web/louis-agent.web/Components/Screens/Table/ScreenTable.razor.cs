@@ -24,6 +24,7 @@ public partial class ScreenTable : IScreenView
     private int _pageNumber = 1;
     private bool _needsKey, _loading;
     private ScreenPageReply? _page;
+    private ScreenAnswerReply? _answer;
 
     [Inject] private AgentApi Api { get; set; } = null!;
 
@@ -36,6 +37,23 @@ public partial class ScreenTable : IScreenView
     /// <summary>How many pages there are, for the line between the buttons.</summary>
     private long PageCount => _page is { } page ? (page.Total + page.PageSize - 1) / page.PageSize : 0;
 
+    /// <summary>What sits above the rows, acting on the whole screen.</summary>
+    private List<ScreenActionReply> ScreenActions => [.. Screen.Actions.Where(action => action.On == "screen")];
+
+    /// <summary>What sits on each row.</summary>
+    private List<ScreenActionReply> RowActions => [.. Screen.Actions.Where(action => action.On == "row")];
+
+    /// <summary>Where a row's form is.</summary>
+    private string RowAddress(string rowId) =>
+        $"admin/screens/{Uri.EscapeDataString(Screen.Name)}/rows/{Uri.EscapeDataString(rowId)}";
+
+    /// <summary>Says what came of an action, and reads the rows again rather than guessing what changed (ADR 0042).</summary>
+    private async Task AfterActionAsync(ScreenAnswerReply answer)
+    {
+        _answer = answer;
+        await LoadAsync();
+    }
+
     /// <summary>A new screen starts over: the page reuses this component when you open the next one.</summary>
     protected override async Task OnParametersSetAsync()
     {
@@ -46,6 +64,7 @@ public partial class ScreenTable : IScreenView
         _searchDraft = _search = "";
         _pageNumber = 1;
         _page = null;
+        _answer = null;
         await LoadAsync();
     }
 

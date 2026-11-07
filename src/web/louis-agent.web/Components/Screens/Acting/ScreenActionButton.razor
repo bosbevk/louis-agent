@@ -1,0 +1,13 @@
+@* One of a screen's actions: its button, or the question it asks first, with a yes and a no. *@
+@if (_asking)
+{
+    <span class="screen-confirm">
+        @Action.Confirm
+        <button class="header-button screen-confirm-yes" type="button" @onclick="DoAsync">Yes, @Action.Label.ToLowerInvariant()</button>
+        <button class="header-button screen-confirm-no" type="button" @onclick="SayNo">No</button>
+    </span>
+}
+else
+{
+    <button class="header-button screen-action" type="button" disabled="@_busy" @onclick="ClickAsync">@Action.Label</button>
+}

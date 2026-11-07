@@ -5,6 +5,12 @@
 .screen-table .admin-table tbody tr { cursor: default; }
 .screen-table p { margin: 0; }
 .screen-table .screen-above { margin-bottom: 12px; }
+.screen-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.screen-row-actions { text-align: right; white-space: nowrap; }
+.screen-confirm { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; white-space: normal; color: var(--bs-warning); font-size: 13px; }
+.screen-table .screen-answer { margin-bottom: 12px; font-size: 13.5px; }
+.screen-answer.is-done { color: var(--bs-success-text-emphasis); }
+.screen-answer.is-refused { color: var(--bs-danger); }
 .screen-paging { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 13px; }
 /* A pack's own view: its list beside what's open, one above the other on a phone. */
 .pack-split { display: grid; grid-template-columns: minmax(240px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }

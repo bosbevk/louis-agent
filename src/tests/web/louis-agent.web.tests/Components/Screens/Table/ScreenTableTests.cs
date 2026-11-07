@@ -43,6 +43,15 @@ public class ScreenTableTests
             if (Status != HttpStatusCode.OK)
                 return new HttpResponseMessage(Status) { Content = JsonContent.Create(new { }) };
 
+            if (request.Method == HttpMethod.Post)
+            {
+                var answer = new ScreenAnswerReply(true, "Done it.", new Dictionary<string, string>());
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = JsonContent.Create(answer, options: AdminJson.SnakeCase)
+                };
+            }
+
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = JsonContent.Create(new ScreenPageReply(rows, Total, PageSize: 50), options: AdminJson.SnakeCase)
@@ -273,6 +282,64 @@ public class ScreenTableTests
         table.WaitForState(() => api.Asked.Count == 3, TimeSpan.FromSeconds(10));
 
         Assert.That(api.Asked[^1], Is.EqualTo("/v1/admin/screens/visits/rows?page=1"));
+    }
+
+    /// <summary>A row's action sits on each row, and a screen's above them; a read-only screen has neither.</summary>
+    [Test]
+    public void Actions_SitWhereTheyActOn()
+    {
+        using var ctx = new BunitContext();
+        var screen = EveryKind with
+        {
+            Actions = [new ScreenActionReply("remove", "Remove", "row", "Sure?"), new ScreenActionReply("clear", "Clear", "screen", null)]
+        };
+
+        var table = Render(ctx, new FakeRows(new ScreenRowReply("a", ["x", "1", null, null])), screen);
+
+        Assert.That(table.Find("tbody .screen-row-actions .screen-action").TextContent, Is.EqualTo("Remove"));
+        Assert.That(table.Find(".screen-actions .screen-action").TextContent, Is.EqualTo("Clear"));
+    }
+
+    /// <summary>A read-only screen has no buttons and no empty column.</summary>
+    [Test]
+    public void AReadOnlyScreen_HasNoButtons()
+    {
+        using var ctx = new BunitContext();
+
+        var table = Render(ctx, new FakeRows(new ScreenRowReply("a", ["x", "1", null, null])));
+
+        Assert.That(table.FindAll(".screen-action"), Is.Empty);
+        Assert.That(table.FindAll("th"), Has.Count.EqualTo(EveryKind.Columns.Count));
+    }
+
+    /// <summary>After an action its answer shows, and the rows are read again.</summary>
+    [Test]
+    public void AfterAnAction_ItsAnswerShows_AndTheRowsAreReadAgain()
+    {
+        using var ctx = new BunitContext();
+        var api = new FakeRows(new ScreenRowReply("a", ["x", "1", null, null]));
+        var screen = EveryKind with { Actions = [new ScreenActionReply("clear", "Clear", "screen", null)] };
+        var table = Render(ctx, api, screen);
+        var readsBefore = api.Asked.Count(asked => asked.Contains("/rows"));
+
+        table.Find(".screen-actions .screen-action").Click();
+
+        table.WaitForAssertion(() => Assert.That(table.Find(".screen-answer").TextContent, Is.EqualTo("Done it.")),
+            TimeSpan.FromSeconds(10));
+        Assert.That(api.Asked.Count(asked => asked.Contains("/rows")), Is.GreaterThan(readsBefore));
+    }
+
+    /// <summary>A row of an editable screen opens as a form, from its first cell; a read-only one has no link.</summary>
+    [Test]
+    public void AnEditableRow_LinksToItsForm()
+    {
+        using var ctx = new BunitContext();
+
+        var table = Render(ctx, new FakeRows(new ScreenRowReply("a b", ["Apple", "1", null, null])), EveryKind with { Editable = true });
+
+        var link = table.Find("tbody td a.screen-open");
+        Assert.That(link.TextContent, Is.EqualTo("Apple"));
+        Assert.That(link.GetAttribute("href"), Is.EqualTo("admin/screens/usage/rows/a%20b"));
     }
 
     /// <summary>A refused key shows the box to enter one, and no table.</summary>

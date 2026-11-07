@@ -15,7 +15,7 @@ public sealed record ScreenFieldReply(
     IReadOnlyList<string> RowColumns,
     IReadOnlyList<IReadOnlyList<string>> Rows);
 
-/// <summary>Saving a form: <c>PUT /v1/admin/screens/{name}/rows/{id}</c>, the plain fields and the fields of rows.</summary>
+/// <summary>Saving a form: the plain fields, and the fields of rows.</summary>
 public sealed record ScreenSaveRequest(
     IReadOnlyDictionary<string, string?>? Values,
     IReadOnlyDictionary<string, IReadOnlyList<IReadOnlyList<string>>>? Rows);

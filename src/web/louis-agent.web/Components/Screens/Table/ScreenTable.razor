@@ -8,6 +8,21 @@
         </form>
     }
 
+    @if (ScreenActions.Count > 0)
+    {
+        <div class="screen-actions">
+            @foreach (var action in ScreenActions)
+            {
+                <ScreenActionButton @key="action.Name" ScreenName="@Screen.Name" Action="action" OnAnswer="AfterActionAsync" />
+            }
+        </div>
+    }
+
+    @if (_answer is { } answer)
+    {
+        <p class="screen-answer @(answer.Done ? "is-done" : "is-refused")" role="status">@answer.Message</p>
+    }
+
     @if (_error is { } error)
     {
         <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
@@ -32,6 +47,10 @@
                         {
                             <th class="@(ScreenCells.KindOf(column.Kind) is ScreenCellKind.Number ? "num" : null)">@column.Title</th>
                         }
+                        @if (RowActions.Count > 0)
+                        {
+                            <th></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -41,7 +60,24 @@
                             @for (var at = 0; at < Screen.Columns.Count; at++)
                             {
                                 var kind = ScreenCells.KindOf(Screen.Columns[at].Kind);
-                                <td class="@(kind is ScreenCellKind.Number ? "num" : null)"><ScreenCellView Kind="kind" Value="@row.Cells.ElementAtOrDefault(at)" /></td>
+                                var value = row.Cells.ElementAtOrDefault(at);
+                                @if (at == 0 && Screen.Editable)
+                                {
+                                    <td><a class="screen-open" href="@RowAddress(row.Id)"><ScreenCellView Kind="ScreenCellKind.Text" Value="@value" /></a></td>
+                                }
+                                else
+                                {
+                                    <td class="@(kind is ScreenCellKind.Number ? "num" : null)"><ScreenCellView Kind="kind" Value="@value" /></td>
+                                }
+                            }
+                            @if (RowActions.Count > 0)
+                            {
+                                <td class="screen-row-actions">
+                                    @foreach (var action in RowActions)
+                                    {
+                                        <ScreenActionButton @key="action.Name" ScreenName="@Screen.Name" Action="action" RowId="@row.Id" OnAnswer="AfterActionAsync" />
+                                    }
+                                </td>
                             }
                         </tr>
                     }

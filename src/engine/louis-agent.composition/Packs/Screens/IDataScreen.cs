@@ -31,7 +31,7 @@ public interface IDataScreen
     Task<ScreenAnswer> ActAsync(string action, string? rowId, CancellationToken cancellationToken) =>
         Task.FromResult(ScreenAnswer.NotOffered);
 
-    /// <summary>One row as a form, if its <see cref="Spec"/> says rows can be edited; null for a row it doesn't have.</summary>
+    /// <summary>One row as a form, if its <see cref="Spec"/> says rows can be edited; null for no such row.</summary>
     Task<ScreenRecord?> ReadRowAsync(string rowId, CancellationToken cancellationToken) =>
         Task.FromResult<ScreenRecord?>(null);
 
