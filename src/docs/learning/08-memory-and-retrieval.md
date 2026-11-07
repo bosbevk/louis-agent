@@ -1,7 +1,7 @@
 # 8 · Memory and retrieval: what the recipe library taught
 
 > **Skill:** #8 in the [goal](../GOAL.md)'s map · **Stage:** F35.3 The recipe library (2026-11-05) · **Next:** search by
-> meaning (F35.6), and a counter on the admin page (F35.7)
+> meaning (parked as F60), and a counter on the admin page (F35.7)
 
 This skill is usually about embeddings and vector stores. The first lesson came before any of that: what you keep, and
 whether anyone uses it. We built the simplest memory there is, a list of recipes and keyword search, and measured it.

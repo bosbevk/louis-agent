@@ -83,7 +83,7 @@ serve a removed recipe for up to five minutes, and the answer says so.
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.
 - Search is `QueryWords` over the feed in memory. That's fine for thousands of recipes, and the whole feed comes over on each
-  refresh, so it will want paging when it's several MB. Search by meaning is F35.6.
+  refresh, so it will want paging when it's several MB. Search by meaning is parked as F60.
 - **Publishing whole copies goes further on the sites' terms than reading them.** Some name commercial copying, Food & Home's
   clause 2.9.1 for one. Louis made this call knowing that, on 2026-11-05, for the 45 sites then in the table, and for Best Recipes, added after, whose terms claim ownership and are silent on reuse. Afrifood Network stays out of the table: its terms bar republishing substantial parts without written permission, with each site credited and linked
   and removed on request. It isn't legal advice, and a qualified check is worth having before customers depend on it.
