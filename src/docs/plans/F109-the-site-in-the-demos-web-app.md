@@ -258,8 +258,9 @@ should update the films with what it looks like now, explaining the whole archit
 - **The shape, to plan with a storyboard Louis approves first:** the pages and films are written from the
   architecture docs (`src/docs/architecture/`), the ADRs and the project docs, so the site and the expert share one
   source and cannot drift; a test pins each page's claims to the code or the docs the way `BuildYourOwnTests` pins
-  the program. Which film tells what (the short film the map and the detailed one the turn, or both the
-  architecture) is the first pick of that plan.
+  the program. **Which film tells what, picked** (Louis, 2026-11-08, option 1 of three): the short film on the
+  landing becomes the map of the whole architecture, in six scenes; the detailed film on How it works stays the
+  turn through core, with today's names fixed. Each film keeps one job, and the turn's story stays on the site.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
