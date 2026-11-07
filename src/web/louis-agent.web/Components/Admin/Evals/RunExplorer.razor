@@ -1,0 +1,46 @@
+@* F31 step 10: a stored run as charts you drill into, ported from F27's explorer onto the benchmark store. The modes are
+   the columns at every level, in the run's order, so the same conversation, turn and transcript sit side by side
+   (Louis, F27): the run (tiles that count up: cost, requests, tokens, seconds, score; cost per conversation as bars
+   that grow in a cascade; each mode's token mix as a donut that sweeps); the conversations of each mode (cost split
+   between the agent and the specialist, their scores); a conversation's turns on a timeline of model requests; a turn's
+   requests and its transcript, replayed from the stored events through the chat's TurnStream, every mode at once; one
+   request's record. One repeat at a time. Motion is off for people who ask for less (the explorer's CSS). Each level
+   is a component in Components/Admin/Evals/Explorer/. *@
+<div class="explorer">
+    @if (_repeats > 1)
+    {
+        <RepeatPicker Repeats="_repeats" Repeat="_repeat" OnPick="ShowRepeat" />
+    }
+
+    <ExplorerCrumbs Level="_level" OpenTask="@_task" Turn="_turn" Request="_request" RequestMode="@_requestMode?.Name" OnGo="GoTo" OnChats="OpenChats" />
+
+    @if (_chatOpen)
+    {
+        <ChatsDialog Tree="_tree" RunId="@_runId" Repeat="_repeat" StartTask="@_chatTask" Play="_chatPlay" Currency="Currency" OnClose="CloseChats" />
+    }
+
+    <div class="lvl @(_dir)" @key="LevelKey">
+    @if (_level == 0)
+    {
+        <OverviewTiles Tree="_tree" Currency="Currency" OnOpen="OpenConversations" />
+        <CostBars Tree="_tree" Currency="Currency" OnReplay="OpenChats" OnOpenConversation="OpenConversation" />
+        <ModeCharts Tree="_tree" Currency="Currency" />
+    }
+    else if (_level == 1)
+    {
+        <ConversationsLevel Tree="_tree" RunId="@_runId" Repeat="_repeat" Graders="_graders" OnlyToReview="_onlyToReview" Currency="Currency" OnFilter="Filter" OnReplay="OpenChats" OnOpenConversation="OpenConversation" />
+    }
+    else if (_level == 2)
+    {
+        <ConversationTurns Tree="_tree" TaskId="@(_task!)"RunId="@_runId" Repeat="_repeat" Graders="_graders" Notes="_notes" Currency="Currency" OnReplay="OpenChats" OnOpenTurn="OpenTurn" />
+    }
+    else if (_level == 3)
+    {
+        <TurnCompare Tree="_tree" TaskId="@(_task!)" TurnNumber="_turn!.Value" Replays="_replays" Replaying="_replaying" Currency="Currency" OnReplay="ReplayAsync" OnStop="StopReplay" OnOpenRequest="OpenRequest" />
+    }
+    else if (_request is { } r && _requestMode is { } mode)
+    {
+        <RequestDetail Request="r" Mode="mode" Currency="Currency" />
+    }
+    </div>
+</div>

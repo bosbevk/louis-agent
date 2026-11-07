@@ -1,5 +1,6 @@
 using LouisAgent.Starter;
 using LouisAgent.Starter.Layout;
+using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Chat.Shell;
@@ -23,6 +24,7 @@ builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText());   // the frame's words, in English; a site can fill in its own
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
 builder.Services.AddSingleton(new ChatHandoff("chat"));
+EvalPages.AddTo(builder.Services);
 
 // Which component draws each screen: the plain table, then a pack's own, then yours. A pack's view is added here.
 builder.Services.AddSingleton(new PackViews());

@@ -22,7 +22,7 @@ public class PulsStylesheetTests
     public void Puls_ListsTheFrameworksRules()
     {
         Assert.That(Css.FrameworkForwards(), Does.Contain("web/layout/shell").And.Contain("web/chat/conversation")
-            .And.Contain("web/chat/bars").And.Contain("web/admin/shell").And.Contain("web/admin/studio"));
+            .And.Contain("web/chat/bars").And.Contain("web/admin/shell").And.Contain("web/admin/eval-pages"));
         Assert.That(Css.FrameworkForwards().Where(partial => !File.Exists(Css.FrameworkPartial(partial))), Is.Empty);
     }
 

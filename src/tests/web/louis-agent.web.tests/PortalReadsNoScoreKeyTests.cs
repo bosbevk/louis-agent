@@ -26,17 +26,17 @@ public class PortalReadsNoScoreKeyTests
     /// <summary>The folders checked: the admin pages, and what the API reports to them.</summary>
     private static readonly string[] Scanned =
     [
-        "demos/puls/web/louis-agent.puls/Pages/Admin",
-        "demos/puls/web/louis-agent.puls/Components/Admin",
-        "demos/puls/web/louis-agent.puls/Admin",
+        "src/web/louis-agent.web/Pages/Admin",
+        "src/web/louis-agent.web/Components/Admin/Evals",
+        "src/web/louis-agent.web/Admin",
         "src/hosts/louis-agent.api/Evals/Reports",
     ];
 
     /// <summary>The admin's grades folders, which must be able to move out as they are.</summary>
     private static readonly string[] BuiltToMove =
     [
-        "demos/puls/web/louis-agent.puls/Admin/Grades",
-        "demos/puls/web/louis-agent.puls/Components/Admin/Grades",
+        "src/web/louis-agent.web/Admin/Grades",
+        "src/web/louis-agent.web/Components/Admin/Evals/Grades",
     ];
 
     /// <summary>

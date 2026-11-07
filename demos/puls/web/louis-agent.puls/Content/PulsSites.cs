@@ -1,4 +1,4 @@
-using LouisAgent.Puls.Admin.Explorer.Sites;
+using LouisAgent.Web.Admin.Explorer.Sites;
 
 namespace LouisAgent.Puls.Content;
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Packs.Recipes.Web;
 using LouisAgent.Puls;
-using LouisAgent.Puls.Admin;
+using LouisAgent.Web.Admin;
 using LouisAgent.Puls.Content;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Web.Api;
