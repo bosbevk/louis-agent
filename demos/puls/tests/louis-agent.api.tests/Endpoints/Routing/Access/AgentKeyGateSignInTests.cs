@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 
-namespace LouisAgent.Api.Tests.Endpoints.Routing;
+namespace LouisAgent.Api.Tests.Endpoints.Routing.Access;
 
 /// <summary>
 /// The gate takes a signed-in person in place of the key (F61.2), but only on a call that carries the browser app's

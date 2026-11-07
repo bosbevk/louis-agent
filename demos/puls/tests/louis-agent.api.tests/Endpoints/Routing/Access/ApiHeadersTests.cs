@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts;
 using LouisAgent.Core.Guardrails.Auth;
 
-namespace LouisAgent.Api.Tests.Endpoints.Routing;
+namespace LouisAgent.Api.Tests.Endpoints.Routing.Access;
 
 /// <summary>
 /// The contract's header names are the engine's: the engine references no contract, so the two copies are held
