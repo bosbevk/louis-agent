@@ -93,6 +93,8 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0079](0079-show-a-specialists-report.md) | An instance can show a specialist's report as it is and end the turn there, so its model never retypes it (`SHOW_SPECIALIST_REPORTS`); off by default, since an agent that checks the work has to read it | Accepted |
 | [0080](0080-a-tool-when-it-improves-the-prompt.md) | If a tool would make a prompt's job work better or more accurately, make the tool instead of another prompt rule; judgement stays in the prompt | Accepted |
 | [0081](../../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md) | Puls's cook searches for itself, and a minion stays only if it beats no minion: the same accuracy and time for less cost | Accepted |
+| [0087](0087-identity-is-the-identity-server.md) | ASP.NET Core Identity is the identity server, in `louis-agent.accounts`, signing in with an HttpOnly cookie that answers 401, never a redirect; what it lacks is ours beside it; the log is the mail until a sender is picked | Accepted |
+| [0088](0088-a-tenant-on-every-account.md) | Every account is in a tenant, resolved from the request's host name; an email is unique within a tenant; the store refuses without one; tenancy is data, a second tenant is a row | Accepted |
 
 ## When to write one
 

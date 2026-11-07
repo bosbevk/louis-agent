@@ -13,6 +13,8 @@
   Louis. The first four run without the review stop after each step; a finding takes the recommended pick, recorded
   in the child's plan under this heading. Nothing is pushed, merged or run against a paid model; since nothing is
   pushed, each child's branch starts from the previous child's tip.
+- **2026-11-07, F61.1 built** on `feature/F61.1-accounts-library`; its plan is deleted, its picks are in the project
+  doc's *What the build decided* and in ADRs 0087 and 0088.
 
 ## Context
 

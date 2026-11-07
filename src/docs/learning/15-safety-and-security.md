@@ -84,3 +84,29 @@ Phase 7); tenants, a sandbox per tenant and POPIA (F43, Phase 9).
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)
+
+## A credential the page can't read (F61.1, 2026-11-07)
+
+**What was built.** The framework's accounts: ASP.NET Core Identity in `louis-agent.accounts`, signing in with a
+cookie, a tenant on every account from the host name, SQL Server behind EF Core ([ADR 0087](../adr/0087-identity-is-the-identity-server.md),
+[ADR 0088](../adr/0088-a-tenant-on-every-account.md)). Skill 15, and skill 9's first half: who a session belongs to.
+
+**Where the credential lives is the whole question.** A bearer token the browser keeps in its storage is readable by
+any script on the page, including one an attacker slips into a markdown answer. A cookie marked HttpOnly never
+reaches a script at all; the browser sends it, and only the browser. The price is that the browser also sends it on a
+form another site posts to us. Two rules close that: the cookie is SameSite Lax (a cross-site POST doesn't carry it),
+and the agent's routes will take the cookie only with a header a cross-site form can't set (F61.2). A cookie that
+isn't there gets a 401, never a redirect to a login page: the API answers JSON and the page draws itself.
+
+**Fail closed, twice.** The user store refuses to look anyone up when the request's tenant isn't set, so a route
+mapped before the tenant middleware fails loudly rather than landing in the wrong tenant; and the routes refuse to
+map until the middleware is in, the same shape as the API's key check. Both are the same lesson as FX18: a host that
+can't be sure says no.
+
+**The log is the mail, carefully.** Until a mail sender is picked, a confirmation link goes to the log. On a hosted
+instance that line would be a sign-in anyone could use, so it goes through `LogContent` like every personal value:
+a keyed hash unless `LOG_CONTENT=full` on a developer's own machine.
+
+**What the tests taught.** Identity writes a link for an HTML mail, `&amp;` and all; following it raw gave a 400 with
+no body, the kind of failure only a test that follows the real link finds. And `puls` can't be a tenant in a test:
+it's an identity's wire name, and the names rule (ADR 0043) is right to flag it.

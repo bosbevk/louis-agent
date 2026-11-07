@@ -355,3 +355,17 @@ Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method
 
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
+
+## Adapters over Identity's seams (F61.1, 2026-11-07)
+
+Identity is built to be extended at three seams, and the accounts library uses exactly those and no more: the user
+type (`AccountUser : IdentityUser`, a tenant and a name on Identity's columns), the user store
+(`AccountUserStore : UserStore<AccountUser>`, three methods overridden so a lookup is within the request's tenant,
+Template Method), and the mail sender (`IEmailSender<AccountUser>`, the log today, a service tomorrow, Null Object).
+Its managers, its routes and its migrations machinery stay Microsoft's. The one thing Identity has no seam for,
+which tenant a request is in, is a seam of ours: `ITenantResolver` (Strategy), by host today, by a path or a header
+on a business site later, with `CurrentTenant` as the scoped answer every part reads.
+
+The lesson for the goal's skill 20 is the same as the renderers' and the search providers': find where the library
+expects to be extended, extend it there, and put a seam of your own only where it has none. The alternative, our own
+user tables over every Identity interface, would have been Identity again for one column.
