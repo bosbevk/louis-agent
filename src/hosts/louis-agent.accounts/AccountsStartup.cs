@@ -68,6 +68,8 @@ public static class AccountsStartup
             {
                 identity.User.RequireUniqueEmail = true;
                 identity.SignIn.RequireConfirmedEmail = true;
+                // Schema version 3 brings the passkey table (F61.5); the design-time factory names the same one.
+                identity.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
             })
             .AddUserStore<AccountUserStore>()
             .AddSignInManager()

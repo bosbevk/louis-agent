@@ -43,6 +43,16 @@ public class AccountsModelTests
             .And.Not.Contain(nameof(AccountUser.NormalizedEmail)));
     }
 
+    /// <summary>The model is Identity's schema version 3, which has the passkey table (F61.5).</summary>
+    [Test]
+    public void TheModel_HasThePasskeyTable()
+    {
+        using var context = new AccountsDbContext(AccountsDbContextFactory.Options("Server=nowhere;Encrypt=true"));
+
+        Assert.That(context.Model.FindEntityType(typeof(Microsoft.AspNetCore.Identity.IdentityUserPasskey<string>)),
+            Is.Not.Null);
+    }
+
     /// <summary>A user points at a tenant row, so an account can't name a tenant that doesn't exist.</summary>
     [Test]
     public void AUser_BelongsToATenantRow()
