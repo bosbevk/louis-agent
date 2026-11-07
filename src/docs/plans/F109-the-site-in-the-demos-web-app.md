@@ -258,7 +258,14 @@ will be the workflow triage example"; "like we have to be able to also inject a 
 
 ## Approved during the build
 
-(none yet)
+- **The site's frame is the framework's** (Louis, 2026-11-08, on step 1: "that custom layout can be reused, it should
+  be in the framework, with the chat in the lower right corner; it is only now used in the agent site"). Step 1 gains
+  `SiteShell` in `louis-agent.web`'s `Components/Site/`: the frame (header with brand, menu and actions; the page; a
+  footer; a `Corner` slot fixed lower right, where F109.3's chat widget goes), Template Method in Razor as
+  `AdminShell` is, with its own scoped styles (`SiteShell.razor.scss`, the site's `layout/_shell.scss` and its phone
+  rules, on `--bs-border-color` and a `--site-gutter` the site sets in step 4). The demo's `SiteLayout` only fills
+  the slots, under the 40-line rule; `louis-agent.site` keeps its own copy until step 6 deletes it. Louis also asked
+  (2026-11-08) that the chat sit in the corner of this layout: the slot is here, the widget is F109.3.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

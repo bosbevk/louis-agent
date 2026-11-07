@@ -1,27 +1,21 @@
 @inherits LayoutComponentBase
-@* The site's frame (F109.1, from louis-agent.site): the header with the nav and the way to the chat, the page, the
-   footer. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
+@* The framework's site frame, filled with what's this site's own: its name, its pages, the way to the chat and its
+   footer lines. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
 
-<div class="site">
-    <header class="site-header">
-        <a class="site-brand" href="/">louis-agent</a>
-        <nav class="site-nav">
-            <a href="/how-it-works">How it works</a>
-            <a href="/packs">Packs</a>
-            <a href="/build-your-own">Build your own</a>
-            <a href="/proof">Measured</a>
-            <a href="/built-on-it">Built on it</a>
-            <a href="/contact">Contact</a>
-        </nav>
-        <ChatLink Class="btn btn-line btn-small">Try it</ChatLink>
-    </header>
-
-    <main class="site-main">
-        @Body
-    </main>
-
-    <footer class="site-footer">
+<SiteShell>
+    <Brand>louis-agent</Brand>
+    <Links>
+        <a href="/how-it-works">How it works</a>
+        <a href="/packs">Packs</a>
+        <a href="/build-your-own">Build your own</a>
+        <a href="/proof">Measured</a>
+        <a href="/built-on-it">Built on it</a>
+        <a href="/contact">Contact</a>
+    </Links>
+    <Actions><ChatLink Class="btn btn-line btn-small">Try it</ChatLink></Actions>
+    <Footer>
         <span>louis-agent · all rights reserved</span>
         <span>100% C#, on purpose</span>
-    </footer>
-</div>
+    </Footer>
+    <ChildContent>@Body</ChildContent>
+</SiteShell>

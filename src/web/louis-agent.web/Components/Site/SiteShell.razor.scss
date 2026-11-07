@@ -1,0 +1,43 @@
+/* ---- A site's public frame (F109.1, from the framework's static site): a header with the brand, the menu and the
+   actions, the main column, a footer, and a corner that floats over every page. Scoped: what a site puts in a slot
+   is reached under ::deep. A site sets --site-gutter in its own settings; without it the frame keeps a plain one. ---- */
+.site { min-height: 100vh; display: flex; flex-direction: column; }
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px var(--site-gutter, 24px);
+    border-bottom: 1px solid var(--bs-border-color);
+    flex-wrap: wrap;
+}
+
+.site-brand { font: 600 16px var(--bs-font-monospace); text-decoration: none; }
+
+.site-nav { display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
+.site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
+.site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
+
+.site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; }
+
+.site-footer {
+    margin-top: auto;
+    padding: 20px var(--site-gutter, 24px);
+    border-top: 1px solid var(--bs-border-color);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font: 13px var(--bs-font-monospace);
+    color: var(--bs-tertiary-color);
+}
+
+/* The corner floats over the page, clear of the footer; what a site puts in it sizes itself. */
+.site-corner { position: fixed; right: 24px; bottom: 24px; z-index: 10; }
+
+@media (max-width: 720px) {
+    .site-header { gap: 12px; }
+    .site-nav { gap: 16px; width: 100%; order: 3; }
+    .site-corner { right: 16px; bottom: 16px; }
+}
