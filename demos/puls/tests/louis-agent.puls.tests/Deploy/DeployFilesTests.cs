@@ -22,17 +22,35 @@ public class DeployFilesTests
     [Test]
     public void EveryPort_BindsThePrivateAddress()
     {
-        var ports = Compose.Select(line => line.Trim()).Where(line => line.StartsWith("- \"", StringComparison.Ordinal));
+        var ports = Compose.Select(line => line.Trim())
+            .Where(line => line.StartsWith("- \"", StringComparison.Ordinal));
 
         Assert.That(ports, Is.Not.Empty);
         Assert.That(ports, Is.All.StartsWith("- \"${PRIVATE_IP}:"));
     }
 
+    /// <summary>The Azure build, one file for both apps (F109.2: the demo's app beside Puls, split later).</summary>
+    private static readonly string[] Build = File.ReadAllLines(
+        Path.Combine(TestPaths.RepoRoot, "demos/puls/config/azure/main.bicep"));
+
+    /// <summary>
+    /// The second app has what the first has in the build: its own identity to read the vault, its own file share
+    /// on the storage account, mounted on the environment under its own name, and the outputs the verbs read back.
+    /// </summary>
+    [TestCase("name: 'louis-agent-app-identity'")]
+    [TestCase("name: 'louis-agent-workspace'")]
+    [TestCase("shareName: 'louis-agent-workspace'")]
+    [TestCase("name: 'louis-agent-vol'")]
+    [TestCase("output codingAppIdentityId string")]
+    public void TheBuild_GivesTheSecondApp_ItsOwnIdentityAndShare(string line) =>
+        Assert.That(Build, Has.Some.Contains(line));
+
     /// <summary>An image by tag alone can change under us between two boots; a digest can't.</summary>
     [Test]
     public void EveryImage_IsPinnedByDigest()
     {
-        var images = Compose.Select(line => line.Trim()).Where(line => line.StartsWith("image:", StringComparison.Ordinal));
+        var images = Compose.Select(line => line.Trim())
+            .Where(line => line.StartsWith("image:", StringComparison.Ordinal));
 
         Assert.That(images, Is.Not.Empty);
         Assert.That(images, Is.All.Contains("@sha256:"));

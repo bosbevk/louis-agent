@@ -291,6 +291,9 @@ should update the films with what it looks like now, explaining the whole archit
   all as files under its own project, ADR 0017 to 0020 and 0027), the two that exist (Puls with its specialists,
   the coding agent) and how a customer's is a folder of markdown of their own, the way the expert in the corner is
   this site's (F109.3); the test of F109.4 counts `identity/` folders under `demos/` as it counts the packs.
+- **The branding arrives with the next merge** (Louis, 2026-11-08: "when you are done, on the next merge the branding
+  will be available"): the site takes it (the brand slot, the icon, the colours it names) in the first step after
+  it lands, before F109.4's rewrite, so the pages and films are written on the brand.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
