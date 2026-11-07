@@ -48,9 +48,9 @@ public class RecipesPackTests
         Assert.That(Pack().Feeds, Is.Empty);
     }
 
-    /// <summary>With a database the pack lists the library's screen; without one there's nothing to count.</summary>
+    /// <summary>With a database the pack lists the library's screens; without one there's nothing to show.</summary>
     [Test]
-    public void TheScreen_IsThereOnlyWithADatabase()
+    public void TheScreens_AreThereOnlyWithADatabase()
     {
         var withOne = new RecipesPack(new RecipesOptions
         {
@@ -58,7 +58,7 @@ public class RecipesPackTests
             MongoUrl = "mongodb://127.0.0.1:1"
         });
 
-        Assert.That(withOne.Screens.Select(screen => screen.Spec.Name), Is.EqualTo(new[] { "recipe-library" }));
+        Assert.That(withOne.Screens.Select(screen => screen.Spec.Name), Is.EqualTo(new[] { "recipe-library", "kept-recipes", "excluded-pages" }));
         Assert.That(Pack().Screens, Is.Empty);
     }
 

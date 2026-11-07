@@ -48,7 +48,7 @@ public class ScreenRowTests
         ctx.Services.AddSingleton(new AgentApi(
             new HttpClient(new StubHandler(api.Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
 
-        var page = ctx.Render<ScreenRow>(p => p.Add(c => c.Name, "recipes").Add(c => c.Id, "row-1"));
+        var page = ctx.Render<ScreenRow>(p => p.Add(c => c.Name, "dishes").Add(c => c.Id, "row-1"));
         page.WaitForState(() => page.FindAll(".screen-page-loading").Count == 0, TimeSpan.FromSeconds(10));
         return page;
     }
@@ -63,7 +63,7 @@ public class ScreenRowTests
 
         Assert.That(page.Find("h1").TextContent, Is.EqualTo("Melktert"));
         Assert.That(page.FindAll(".screen-form .screen-field"), Has.Count.EqualTo(1));
-        Assert.That(page.Find(".screen-back").GetAttribute("href"), Is.EqualTo("admin/screens/recipes"));
+        Assert.That(page.Find(".screen-back").GetAttribute("href"), Is.EqualTo("admin/screens/dishes"));
     }
 
     /// <summary>Once saved it reads the row again, rather than trusting what was typed.</summary>

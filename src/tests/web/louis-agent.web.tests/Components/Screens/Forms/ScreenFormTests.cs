@@ -58,7 +58,7 @@ public class ScreenFormTests
             new HttpClient(new StubHandler(api.Answer)) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
 
         var form = ctx.Render<ScreenForm>(p => p
-            .Add(c => c.ScreenName, "recipes")
+            .Add(c => c.ScreenName, "dishes")
             .Add(c => c.RowId, "row 1")
             .Add(c => c.Record, Form)
             .Add(c => c.OnSaved, EventCallback.Factory.Create(new object(), () => saved.Add(1))));
@@ -106,7 +106,7 @@ public class ScreenFormTests
         form.Find(".screen-form").Submit();
 
         form.WaitForAssertion(() => Assert.That(api.Sent, Has.Count.EqualTo(1)), TimeSpan.FromSeconds(10));
-        Assert.That(api.Address, Is.EqualTo("/v1/admin/screens/recipes/rows/row%201"));
+        Assert.That(api.Address, Is.EqualTo("/v1/admin/screens/dishes/rows/row%201"));
         Assert.That(api.Sent[0].Values!["name"], Is.EqualTo("Melktert 2"));
         Assert.That(api.Sent[0].Values!["minutes"], Is.EqualTo("45"));
         Assert.That(api.Sent[0].Values!.ContainsKey("page"), Is.False);

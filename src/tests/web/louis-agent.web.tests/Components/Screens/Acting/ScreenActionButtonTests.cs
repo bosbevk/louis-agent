@@ -50,7 +50,7 @@ public class ScreenActionButtonTests
             new HttpClient(new StubHandler(api.Answer)) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
 
         var button = ctx.Render<ScreenActionButton>(p => p
-            .Add(c => c.ScreenName, "recipes")
+            .Add(c => c.ScreenName, "dishes")
             .Add(c => c.Action, action)
             .Add(c => c.RowId, rowId)
             .Add(c => c.OnAnswer, EventCallback.Factory.Create<ScreenAnswerReply>(new object(), answers.Add)));
@@ -84,7 +84,7 @@ public class ScreenActionButtonTests
         button.Find(".screen-confirm-yes").Click();
 
         button.WaitForAssertion(() => Assert.That(answers, Has.Count.EqualTo(1)), TimeSpan.FromSeconds(10));
-        Assert.That(api.Asked.Single(), Does.StartWith("/v1/admin/screens/recipes/actions/remove").And.Contain("row-1"));
+        Assert.That(api.Asked.Single(), Does.StartWith("/v1/admin/screens/dishes/actions/remove").And.Contain("row-1"));
         Assert.That(answers[0].Message, Is.EqualTo("Removed."));
     }
 
@@ -115,7 +115,7 @@ public class ScreenActionButtonTests
         button.Find(".screen-action").Click();
 
         button.WaitForAssertion(() => Assert.That(answers, Has.Count.EqualTo(1)), TimeSpan.FromSeconds(10));
-        Assert.That(api.Asked.Single(), Does.StartWith("/v1/admin/screens/recipes/actions/refresh"));
+        Assert.That(api.Asked.Single(), Does.StartWith("/v1/admin/screens/dishes/actions/refresh"));
     }
 
     /// <summary>When the API says no, the answer says why rather than the page breaking.</summary>

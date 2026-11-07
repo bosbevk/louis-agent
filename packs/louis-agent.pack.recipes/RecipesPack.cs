@@ -42,7 +42,9 @@ public sealed class RecipesPack : IAgentPack
         var enabled = RecipeSourceFactory.Enabled(options.RecipeSources);
         // With no database there's nothing to publish and nothing to count, so no feed and no screen to list.
         Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, enabled)];
-        Screens = options.MongoUrl is null ? [] : [new RecipesUsageScreen(usage)];
+        Screens = options.MongoUrl is null
+            ? []
+            : [new RecipesUsageScreen(usage), new RecipesScreen(store, excluded, TimeProvider.System), new ExcludedPagesScreen(excluded)];
         // The cook reads the library the way anyone would: over HTTP, from the open feed.
         IRecipeLibrary library = options.LibraryUrl is { } api
             ? new FeedRecipeLibrary(new HttpClient(), api, TimeProvider.System)
