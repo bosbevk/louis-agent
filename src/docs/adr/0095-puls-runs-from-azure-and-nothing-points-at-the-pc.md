@@ -37,8 +37,9 @@ move to where the app is.
    tunnels and their keys were deleted, in Azure and in the repo, only after both domains served from Azure.
 5. **The framework's static site is not a deployment of its own** (Louis, 2026-11-08): it merges into the
    louis-agent demo's web app as its layout page, keeping the site's theme, and that app is then deployed as a
-   second Container App on the same environment and the same VM as Puls, to save the cost of a second set ("we
-   will have to deploy louis-agent to the same VM, to save money; can be split later"). `louis-agent.dev` points
+   second Container App on the same environment and the same VM as Puls, declared in the same Bicep file and
+   deployed from the same folder, to save the cost of a second set ("we will have to deploy louis-agent to the
+   same VM, to save money; can be split later"; "louis-agent goes into the same directory"). `louis-agent.dev` points
    wherever that lands.
 
 ## Consequences
