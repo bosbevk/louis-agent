@@ -101,6 +101,9 @@ web test projects share.
 
 ## Limits and plans
 
+- **Left out on purpose:** a landing page, as it's what makes a site itself; a NuGet package for the framework or the template, as the template works
+  inside this repo until packages exist; a screen served as an MCP App, as no plan names it; bulk selection, and field kinds such as dropdowns or dates,
+  until a second screen needs them; swapping a view without a rebuild, since a custom component is built in, though a description isn't.
 - `Chats/` holds eleven files and `Components/Chat/` ten, over the "about six" of
   [ADR 0034](../adr/0034-code-a-person-can-maintain.md): split them by concern (the records apart from the stream's
   folding) the next time they change.
