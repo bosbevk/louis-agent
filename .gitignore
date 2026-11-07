@@ -59,4 +59,5 @@ demos/puls/web/louis-agent.puls/wwwroot/css/
 demos/louis-agent/web/louis-agent.code-review/wwwroot/css/*.css
 demos/louis-agent/web/louis-agent.code-review/wwwroot/css/themes/*.css
 demos/starter/web/louis-agent.starter/wwwroot/css/
+demos/louis-agent/web/louis-agent.site/wwwroot/css/
 demos/.spawn-*/

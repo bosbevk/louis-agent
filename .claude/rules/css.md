@@ -13,7 +13,7 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
 - **Always reuse.** Before writing a rule, look for a variable, mixin or partial that already does it. What repeats
   becomes one shared piece under the framework's `web/tools/` that both places use, and a site `@use`s the framework's Sass and never copies
   it. A step says what it reused and what new piece it added.
-- **Styles are Sass, under `Styles/`,** on every site with a chat (the static site stays on plain CSS until F59.12). The build makes `wwwroot/css/app.css`, which isn't in git, so edit the
+- **Styles are Sass, under `Styles/`,** on every site. The build makes `wwwroot/css/app.css`, which isn't in git, so edit the
   partial, never that file. Existing rules take nesting as they're touched, never in a sweep.
 - **A partial or `.css` file holds at most 200 lines of rules**; a comment line (`/* … */`, one line or many) and a blank
   line don't count, a rule with a comment beside it does. `FileSizeTests` holds it.
@@ -35,7 +35,7 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
   then proves it: the new files joined in their order are `cmp`-identical to the old one, and the step says so. Any
   change to the text itself is an edit.
 - **Every partial is on the list and everything on the list is there:** `PulsStylesheetTests` checks it through
-  `SassStylesheet`, and the code-review app's `StylesheetTests` the same way, the static site's through `Stylesheet`, in
+  `SassStylesheet`, and each other site's stylesheet tests the same way, in
   `src/tests/web/louis-agent.web.testing`. A style test finds its rule through `.Read()`, never by opening one file; on
   Sass, that's the CSS the build made.
 - **Checked in the browser:** a step that changes a style looks at the page, at desktop and at phone width (390 px,

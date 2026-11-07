@@ -12,11 +12,11 @@
     flex-wrap: wrap;
 }
 
-.site-brand { font: 600 16px var(--mono); text-decoration: none; }
+.site-brand { font: 600 16px var(--bs-font-monospace); text-decoration: none; }
 
 .site-nav { display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
-.site-nav a { color: var(--muted); text-decoration: none; }
-.site-nav a:hover { color: var(--ink); }
+.site-nav a { color: var(--bs-secondary-color); text-decoration: none; }
+.site-nav a:hover { color: var(--bs-emphasis-color); }
 
 .site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; }
 
@@ -28,6 +28,6 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
-    font: 13px var(--mono);
-    color: var(--dim);
+    font: 13px var(--bs-font-monospace);
+    color: var(--bs-tertiary-color);
 }

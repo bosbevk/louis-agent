@@ -66,8 +66,8 @@ public class FilmExportTests
     }
 
     /// <summary>The tool's length is the stylesheet's loop, or the export would cut a film short.</summary>
-    [TestCase(FilmName.Short, "short.css", "--loop: 36s")]
-    [TestCase(FilmName.Detail, "detail.css", "--loop: 60s")]
+    [TestCase(FilmName.Short, "_short.scss", "--loop: 36s")]
+    [TestCase(FilmName.Detail, "_detail.scss", "--loop: 60s")]
     public void AFilmsLength_IsItsStylesheetsLoop(FilmName name, string sheet, string loop)
     {
         var film = FilmSource.All.Single(f => f.Name == name);

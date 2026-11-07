@@ -9,8 +9,8 @@
     gap: 24px;
 }
 .band-movie { gap: 18px; }
-.band-note { font-size: 14px; color: var(--dim); }
-.band-note a { color: var(--muted); }
+.band-note { font-size: 14px; color: var(--bs-tertiary-color); }
+.band-note a { color: var(--bs-secondary-color); }
 
 .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -20,31 +20,31 @@
     margin: 0;
     padding: 16px 18px;
     overflow-x: auto;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--bs-border-color);
     border-radius: 10px;
     font-size: 14px;
     line-height: 1.6;
 }
 
 .stat { gap: 8px; }
-.stat-value { font: 700 44px/1 var(--mono); letter-spacing: -.03em; }
-.stat-note { font-size: 14px; line-height: 1.5; color: var(--muted); }
+.stat-value { font: 700 44px/1 var(--bs-font-monospace); letter-spacing: -.03em; }
+.stat-note { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
 
-.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--line-strong); max-width: 72ch; }
-.rules li { padding: 14px 0; border-bottom: 1px solid var(--line-strong); font-size: 15px; line-height: 1.6; color: var(--muted); }
-.rules strong { color: var(--ink); font-weight: 600; }
+.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--bs-border-color); max-width: 72ch; }
+.rules li { padding: 14px 0; border-bottom: 1px solid var(--bs-border-color); font-size: 15px; line-height: 1.6; color: var(--bs-secondary-color); }
+.rules strong { color: var(--bs-emphasis-color); font-weight: 600; }
 
 .strip-contact {
     margin: 0 var(--gutter) 72px;
     padding: 48px;
     border-radius: 14px;
     background: var(--steel);
-    color: var(--bg);
+    color: var(--bs-body-bg);
     display: flex;
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
 }
-.strip-contact h2 { color: var(--bg); font-size: 32px; }
+.strip-contact h2 { color: var(--bs-body-bg); font-size: 32px; }
 .strip-contact p { color: #3d4148; max-width: var(--measure); }
 .strip-contact .btn { margin-top: 6px; }

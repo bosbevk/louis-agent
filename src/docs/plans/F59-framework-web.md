@@ -742,6 +742,14 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - The template replaces `LouisAgent.Starter` with the name, and `louis-agent.starter` with the name in lowercase. A site goes in `demos/{site}/web/{site}/`, since its project points at the framework by relative path.
   - The test uses `dotnet new`'s custom hive, so running it never touches this machine's template list.
 
+- **2026-11-07, what F59.12 chose, unattended.** This stands in for its own plan, as Louis's answers settled the shape: server-rendered, the framework's colours and Sass, the app at `/chat`.
+  - The site reads the framework's colours through `IncludePaths` and references no project of ours, so it still runs nothing of the engine. Its image copies the framework's `Styles` folder.
+  - It loads no Bootstrap stylesheet, which departs from "every site loads Bootstrap": it reads the names, but a page with no script and no Bootstrap component only gets a reset that would move its layout. For Louis to overrule.
+  - `CHAT_ADDRESS` says where the chat lives, `/chat` by default, since the site and the app are separate programs today.
+  - Only the buttons changed: *Try the coding agent* leads the hero and *Try it* replaces *Early access* in the header. The rest of the words still speak about the framework, and they're Louis's to choose.
+  - The films' fingerprint now covers the framework's colours too. It's red until they're exported, which needs Docker.
+  - `Stylesheet`, the test helper for plain CSS, goes, as no site is on plain CSS any more.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

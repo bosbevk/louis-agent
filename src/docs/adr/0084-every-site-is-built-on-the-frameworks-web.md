@@ -48,8 +48,10 @@ ratchet: what's still too long is listed, and the list can only shrink.
   Until then the old sentence "each app keeps its own pages and look" stays true in places, and those docs say *for now*.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.
-- **`louis-agent.site` is outside the rule:** it's a server-rendered site with no chat or admin, and it doesn't reference the
-  framework. Its Console theme is what the framework's base colours will be.
+- **`louis-agent.site` is the coding agent's landing page, on the framework's colours and Sass.** It stays server-rendered, with no chat or
+  admin of its own and no reference to the framework's project: it reads the framework's colours when it builds, so there's one copy of them, and
+  it links to the app at `/chat`. A framework's frames and scripts would add nothing to a page that runs no script. Louis: "the static site must
+  become the landing page for the coding agent, it will be it's demo".
 - **Old commits and docs mean the other project** when they say `louis-agent.web`. The changelog, write-ups and fix docs stay as
   they were written.
 - **The framework needs a stylesheet of its own,** which reverses "the shared components only emit class names" once F59.4 is built.

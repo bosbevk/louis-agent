@@ -279,6 +279,11 @@ makes it easy to break without noticing: nothing compiles what it makes until so
 site called Acme in a throwaway folder, checks the old name is gone everywhere, and builds it. That's slow for a test, so it's an integration test, but it's the only one that can
 say the template works. It's also the fairest test of the whole framework: if a site really is this small, the framework must hold the rest.
 
+**A guard that fires on a harmless change is still doing its job (F59.12).** The static site's films are exported to files, and a test holds a fingerprint of the stylesheets they're
+made from. Moving those stylesheets to Sass changed no colour, so the films surely look the same, and it would be easy to update the fingerprint and move on. But *surely* is the very
+thing the guard is there to replace. The film has to be exported again, which needs Docker, so the test stays red until someone does. A red test with a known, written-down reason is honest;
+a green one you edited by hand isn't.
+
 Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
 
 ## The admin's frame (F59.2, 2026-11-06)

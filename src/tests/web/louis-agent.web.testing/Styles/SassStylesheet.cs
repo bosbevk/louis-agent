@@ -5,13 +5,9 @@ namespace LouisAgent.Web.Testing.Styles;
 
 /// <summary>
 /// A web app's stylesheet when it's written in Sass: the partials under <c>Styles/</c>, the list in <c>app.scss</c>,
-/// and the CSS the build makes from them, which is what the browser gets. A style test reads that CSS, so it holds what
-/// the page really loads and not what a partial happens to say.
+/// and the CSS the build makes from them, which is what the browser gets. A style test reads that CSS, so it holds
+/// what the page really loads and not what a partial happens to say.
 /// </summary>
-/// <remarks>
-/// It stands beside <see cref="Stylesheet"/> rather than inside it, since the two read different things: that one
-/// follows a CSS import list, for the apps that aren't on Sass yet, and it goes when they are.
-/// </remarks>
 public sealed partial record SassStylesheet(string Project)
 {
     /// <summary>Shared Sass helpers that write no CSS of their own, so the list doesn't name them.</summary>
@@ -68,12 +64,12 @@ public sealed partial record SassStylesheet(string Project)
     }
 
     /// <summary>
-    /// Every file the CSS points at with <c>url(…)</c>, which the browser finds from where the CSS sits. Web addresses,
-    /// data and fragments are left out, since they don't depend on that.
+    /// Every file the CSS points at with <c>url(…)</c>, which the browser finds from where the CSS sits. Web
+    /// addresses, data and fragments are left out, since they don't depend on that.
     /// </summary>
     public IReadOnlyList<StylesheetUrl> Urls() =>
     [
-        .. new Stylesheet(Path.GetDirectoryName(Compiled)!).PathsOf(Read())
+        .. CssUrls.RelativeIn(Read())
             .Select(url => new StylesheetUrl("app.css", url,
                 Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Compiled)!, url))))
     ];

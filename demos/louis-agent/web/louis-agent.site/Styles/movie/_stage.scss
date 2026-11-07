@@ -3,7 +3,7 @@
    detail card, the caption strip. Each film's own positions, camera and timing are in short.css and detail.css. */
 
 /* The stage keeps its 16:9 drawing size and scales down with its container: tan(atan2(a, b)) is a / b as a number. */
-.movie { width: 100%; aspect-ratio: 16 / 9; container-type: inline-size; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--line-strong); }
+.movie { width: 100%; aspect-ratio: 16 / 9; container-type: inline-size; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--bs-border-color); }
 .stage {
     position: relative;
     width: 1280px;
@@ -11,8 +11,8 @@
     overflow: hidden;
     transform-origin: 0 0;
     transform: scale(tan(atan2(100cqw, 1280px)));
-    background: radial-gradient(ellipse at 50% 30%, #121316 0%, var(--bg) 70%);
-    font-family: var(--sans);
+    background: radial-gradient(ellipse at 50% 30%, #121316 0%, var(--bs-body-bg) 70%);
+    font-family: var(--bs-font-sans-serif);
 }
 
 /* The scene paints under the flat layer: a slab raised off the floor would otherwise show through the caption strip. */
@@ -35,9 +35,9 @@
 /* A part: a slab 26px above the floor; the stack of 1px shadows draws its side. */
 .part {
     position: absolute;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--bs-border-color);
     border-radius: var(--radius-small);
-    background: linear-gradient(180deg, var(--bg-slab), #0f1013);
+    background: linear-gradient(180deg, var(--bs-tertiary-bg), #0f1013);
     color: #b4b8be;
     display: flex;
     flex-direction: column;
@@ -46,12 +46,12 @@
     gap: 4px;
     text-align: center;
     padding: 0 12px;
-    font: 600 16px/1.25 var(--sans);
+    font: 600 16px/1.25 var(--bs-font-sans-serif);
     transform: translateZ(26px);
     box-shadow: 0 1px 0 #1d2024, 0 2px 0 #1b1e22, 0 3px 0 #191c20, 0 4px 0 #17191d, 0 5px 0 #15171b, 0 6px 0 #131519, 0 7px 0 #111316, 0 8px 0 #0f1114, 0 24px 40px rgba(0, 0, 0, .7);
     animation: var(--loop) linear infinite;
 }
-.part small { font: 12px/1.3 var(--mono); color: var(--dim); font-weight: 400; }
+.part small { font: 12px/1.3 var(--bs-font-monospace); color: var(--bs-tertiary-color); font-weight: 400; }
 .part i {
     position: absolute;
     left: -10px;
@@ -59,9 +59,9 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: var(--text);
-    color: var(--bg);
-    font: 600 12px/24px var(--mono);
+    background: var(--bs-body-color);
+    color: var(--bs-body-bg);
+    font: 600 12px/24px var(--bs-font-monospace);
     font-style: normal;
     text-align: center;
 }
@@ -71,7 +71,7 @@
 
 /* The plate core's slabs sit on, in the detailed film. */
 .plate { position: absolute; left: 470px; top: 80px; width: 440px; height: 560px; border: 1px solid var(--line); border-radius: 12px; background: rgba(20, 22, 26, .6); transform: translateZ(8px); }
-.plate span { position: absolute; left: 14px; top: 10px; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.plate span { position: absolute; left: 14px; top: 10px; font: 500 11px/1 var(--bs-font-monospace); letter-spacing: .14em; text-transform: uppercase; color: var(--bs-tertiary-color); }
 
 /* A pool of light on the floor under the part at work. */
 .pool { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0)); opacity: 0; animation: var(--loop) linear infinite; }
@@ -80,12 +80,12 @@
 .wire { position: absolute; background: var(--line); transform: translateZ(2px); }
 
 /* The turn: a light flying above the slabs, and its shadow on the floor. */
-.dot { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 18px var(--ink), 0 0 40px rgba(255, 255, 255, .5); transform: translateZ(90px); animation: travel var(--loop) linear infinite; }
+.dot { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--bs-emphasis-color); box-shadow: 0 0 18px var(--bs-emphasis-color), 0 0 40px rgba(255, 255, 255, .5); transform: translateZ(90px); animation: travel var(--loop) linear infinite; }
 .shadow { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: rgba(0, 0, 0, .6); filter: blur(3px); animation: travel var(--loop) linear infinite; }
 
 /* Flat on the screen, in front of the scene: the title, the detail card, the caption strip, the progress. */
 .title { position: absolute; left: 60px; top: 40px; display: flex; flex-direction: column; gap: 6px; }
-.title-text { font: 700 28px/1.1 var(--sans); color: var(--ink); letter-spacing: -.02em; }
+.title-text { font: 700 28px/1.1 var(--bs-font-sans-serif); color: var(--bs-emphasis-color); letter-spacing: -.02em; }
 
 .cards { position: absolute; right: 48px; top: 40px; width: 400px; }
 .card {
@@ -94,7 +94,7 @@
     top: 0;
     width: 400px;
     padding: 16px 18px;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--bs-border-color);
     border-radius: var(--radius);
     background: rgba(10, 11, 13, .92);
     opacity: 0;
@@ -103,18 +103,18 @@
     flex-direction: column;
     gap: 8px;
 }
-.card b { font: 600 18px/1.2 var(--sans); color: var(--ink); }
-.card code { font: 12px/1.4 var(--mono); color: var(--dim); }
-.card ul { margin: 4px 0 0; padding-left: 16px; font: 14px/1.55 var(--sans); color: var(--text-soft); }
-.card em { font: 12px/1.4 var(--mono); font-style: normal; color: var(--ink); background: var(--line); border-radius: 4px; padding: 4px 8px; margin-top: 4px; display: inline-block; }
+.card b { font: 600 18px/1.2 var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
+.card code { font: 12px/1.4 var(--bs-font-monospace); color: var(--bs-tertiary-color); }
+.card ul { margin: 4px 0 0; padding-left: 16px; font: 14px/1.55 var(--bs-font-sans-serif); color: var(--web-soft-text); }
+.card em { font: 12px/1.4 var(--bs-font-monospace); font-style: normal; color: var(--bs-emphasis-color); background: var(--line); border-radius: 4px; padding: 4px 8px; margin-top: 4px; display: inline-block; }
 
-.strip { position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: linear-gradient(180deg, rgba(7, 7, 8, 0), var(--bg) 40%); }
+.strip { position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: linear-gradient(180deg, rgba(7, 7, 8, 0), var(--bs-body-bg) 40%); }
 .cap { position: absolute; left: 60px; right: 60px; top: 650px; display: flex; align-items: baseline; gap: 16px; opacity: 0; animation: var(--loop) linear infinite; }
-.cap b { font: 600 12px/1 var(--mono); letter-spacing: .14em; color: var(--dim); white-space: nowrap; }
-.cap span { font: 500 18px/1.3 var(--sans); color: var(--ink); }
+.cap b { font: 600 12px/1 var(--bs-font-monospace); letter-spacing: .14em; color: var(--bs-tertiary-color); white-space: nowrap; }
+.cap span { font: 500 18px/1.3 var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
 .bar { position: absolute; left: 60px; right: 60px; top: 636px; height: 2px; background: var(--line); }
-.bar i { display: block; height: 100%; background: var(--ink); animation: bar var(--loop) linear infinite; }
+.bar i { display: block; height: 100%; background: var(--bs-emphasis-color); animation: bar var(--loop) linear infinite; }
 .steps { position: absolute; left: 60px; top: 618px; display: flex; gap: 6px; }
-.steps i { height: 3px; background: var(--line-strong); animation: var(--loop) linear infinite; }
+.steps i { height: 3px; background: var(--bs-border-color); animation: var(--loop) linear infinite; }
 
 @keyframes bar { 0% { width: 0; } 100% { width: 100%; } }

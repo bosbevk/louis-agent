@@ -17,22 +17,22 @@ docker build -f demos/louis-agent/docker/images/Dockerfile.site -t louis-agent-s
 2. Its link in `Components/Layout/SiteLayout.razor`'s menu.
 3. A row in `SitePagesTests.APage_Answers_WithItsTitle` with the route and the title. Code or a list that mirrors the repo gets a
    test holding it to the repo, as `BuildYourOwnTests` and `PacksPageTests` do.
-4. A new section's styles go in the file of their concern under `wwwroot/css/` (a landing part in `landing/`, a
-   layout rule in `layout/`); a new file is added to `app.css`'s import list where it belongs in the cascade, and
+4. A new section's styles go in the partial of their concern under `Styles/` (a landing part in `landing/`, a
+   layout rule in `layout/`); a new partial is added to `app.scss`'s list where it belongs in the cascade, and
    `SiteStylesheetTests` checks the two match.
 
 ## Change the theme
 
-Colours, fonts and corners are tokens in `wwwroot/css/settings/tokens.css`; a new colour is a token first. The
-chrome headline is `.chrome` in `base/elements.css`. Check a change at 1440 px and at 390 px (no sideways scroll).
+The colours and fonts are the framework's, in `src/web/louis-agent.web/Styles/web/settings/_colours.scss`, so a change there reaches every site with none of its own
+(and means exporting the films). What's only this site's, such as its corners, is in `Styles/settings/_tokens.scss`. The chrome headline is `.chrome` in `base/_elements.scss`. Check a change at 1440 px and at 390 px (no sideways scroll).
 
 ## Change a film
 
 A film is markup (`Components/Movies/*.razor`) and three stylesheets:
 
-- `movie/stage.css`: what both films share (the stage, a part, the light, the card, the strip). A change here
+- `movie/_stage.scss`: what both films share (the stage, a part, the light, the card, the strip). A change here
   changes both.
-- `movie/short.css` and `movie/detail.css`: one film each. Where a part stands (`.p-host { left; top; width;
+- `movie/_short.scss` and `movie/_detail.scss`: one film each. Where a part stands (`.p-host { left; top; width;
   height }` on a 1280×720 floor whose centre is 640×380), the camera (`@keyframes camera-s` / `camera-d`: wide at
   the start and the end; to fly in on a part, `translate(640 − its centre x, 380 − its centre y)` and a `scale`),
   when a part lights up (`lit-*`), the light's path (`travel-*`), and when each card and caption shows (`show-*`,
