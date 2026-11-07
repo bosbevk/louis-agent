@@ -64,8 +64,10 @@ sequenceDiagram
 
 | Path | What's in it |
 |---|---|
-| `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/`, `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | This site's admin frame, on `AdminShell`; the chat's layout |
+| `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
+| `Pages/Site/` | The site's pages (F109.1): packs, build your own, proof, built on it, contact; the landing and how it works come with the films |
+| `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
+| `Components/Landing/` | The landing's parts: the hero with its animated turn, the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
 | `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this site's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
@@ -86,7 +88,8 @@ A control for a pack goes in that pack's web project as a screen ([Build a pack]
 
 `demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
 pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
-`Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
+`Pages/Site/*Tests` render the site's pages (the packs page lists every pack folder, Build your own shows the real program) and
+`Layout/SiteLayoutTests` the frame's links; `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
 

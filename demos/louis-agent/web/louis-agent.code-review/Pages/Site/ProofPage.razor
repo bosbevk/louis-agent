@@ -1,0 +1,44 @@
+@page "/proof"
+
+<PageTitle>Measured, not assumed · louis-agent</PageTitle>
+
+<section class="band">
+    <span class="kicker">Measured, not assumed</span>
+    <h2 class="chrome">Every number here comes from the ledger or an eval run.</h2>
+    <div class="grid-3">
+        <div class="panel stat">
+            <span class="stat-value chrome">$0.66 → $0.13</span>
+            <span class="stat-note">a 10-fix benchmark run before and after prompt caching, on Claude Haiku; all 10 fixes still confirmed; input cost −87%</span>
+        </div>
+        <div class="panel stat">
+            <span class="stat-value chrome">72 / 72</span>
+            <span class="stat-note">Puls's routing eval on the first baseline; the cook 23 of 24; $0.37 for both, live</span>
+        </div>
+        <div class="panel stat">
+            <span class="stat-value chrome">$0</span>
+            <span class="stat-note">to replay an eval run: it records the model's answers and the pages it read, so it re-scores for nothing</span>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <span class="kicker">How it is checked</span>
+    <div class="grid-2">
+        <article class="panel">
+            <h3>Code graders first</h3>
+            <p>Fixed rules are free and give the same score every time. A model judge comes in only where code can't decide, and only after it agrees with human labels: 35 of 36 on the cook's labels before it was trusted.</p>
+        </article>
+        <article class="panel">
+            <h3>pass@k and pass^k</h3>
+            <p>Run a task k times: did it pass at least once, and did it pass every time? An agent you sell needs the second.</p>
+        </article>
+        <article class="panel">
+            <h3>One harness, every check</h3>
+            <p>Every check, regression and demo is a C# eval on one harness, kept beside the identity or pack it proves. An eval is a folder of files: the samples, the rubric, the checks.</p>
+        </article>
+        <article class="panel">
+            <h3>Cost from the ledger, never a grader</h3>
+            <p>A run's cost is the sum of its priced ledger records. A turn's line keeps the four kinds of token apart (in, cache write, cached, out), since each is priced differently.</p>
+        </article>
+    </div>
+</section>

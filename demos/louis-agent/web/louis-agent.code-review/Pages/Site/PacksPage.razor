@@ -1,0 +1,44 @@
+@page "/packs"
+
+<PageTitle>Packs · louis-agent</PageTitle>
+
+<section class="band">
+    <span class="kicker">Packs</span>
+    <h2 class="chrome">What an agent can do is a package.</h2>
+    <p class="lede">A pack is tools and their guide. An agent has only the packs its program names, and a session only the toolsets it asks for, so its prompt never describes a tool it can't use.</p>
+</section>
+
+<section class="band">
+    <span class="kicker">General tools</span>
+    <ul class="rules">
+        <li><strong><code>louis-agent.pack.files</code></strong> Read, write, search, copy, rename and delete in the workspace, and read PDF, Word and Excel as text.</li>
+        <li><strong><code>louis-agent.pack.git</code></strong> Status, diffs, branches, commits, merges and history. Pushing stays with you.</li>
+        <li><strong><code>louis-agent.pack.dotnet</code></strong> Build, test, run and restore .NET projects, and list their packages.</li>
+        <li><strong><code>louis-agent.pack.shell</code></strong> Run Python, PowerShell and bash, a toolset each, so a session loads only the one it needs.</li>
+        <li><strong><code>louis-agent.pack.web</code></strong> Search, read a page, read one a browser has to draw, check a quote is really on its page, and convert money.</li>
+        <li><strong><code>louis-agent.pack.paymo</code></strong> Paymo time tracking: time entries, tasks, projects and summaries.</li>
+        <li><strong><code>louis-agent.pack.devops</code></strong> Azure DevOps work items, sprints and team queries.</li>
+    </ul>
+</section>
+
+<section class="band">
+    <span class="kicker">The packs behind Puls's cook</span>
+    <div class="grid-3">
+        <div class="panel small"><h4><code>louis-agent.pack.where-to-buy</code></h4><p>Finds a shop's branches near you from OpenStreetMap, and hands the model a short table instead of a map to guess at.</p></div>
+        <div class="panel small"><h4><code>louis-agent.pack.shop-prices</code></h4><p>Estimates a shopping list from Stats SA's public averages, in your province, and always says it's an estimate.</p></div>
+        <div class="panel small"><h4><code>louis-agent.pack.recipes</code></h4><p>Reads recipes from 45 South African sites that allow readers, and reads a page's own recipe data before its text.</p></div>
+        <div class="panel small"><h4><code>louis-agent.pack.calculator</code></h4><p>Works out sums in code, so a model hands over its arithmetic instead of doing it in its head.</p></div>
+    </div>
+</section>
+
+<section class="band">
+    <span class="kicker">The rules a pack keeps</span>
+    <ul class="rules">
+        <li><strong>Only the contracts.</strong> A pack references the small contracts package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>
+        <li><strong>No other pack.</strong> A pack never knows about another pack or an identity. Only a demo's own program knows them all.</li>
+        <li><strong>The engine's guards, not its own.</strong> It asks the engine for a browser, a search and a fetcher, so every request stays inside the rules: no internal addresses, and a site's <code>robots.txt</code> obeyed.</li>
+        <li><strong>What proves it sits apart.</strong> A pack's evals are in a project of their own, so you can take the tools without them.</li>
+        <li><strong>Ready for MCP.</strong> A pack's tools and guide keep a shape that can be served over MCP as they are.</li>
+    </ul>
+    <p class="band-note"><a href="/how-it-works">How a turn uses them</a></p>
+</section>
