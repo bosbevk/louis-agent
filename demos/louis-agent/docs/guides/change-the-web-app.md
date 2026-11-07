@@ -37,7 +37,7 @@ in `AgentApi` itself ([Change the framework's web](../../../../src/docs/guides/c
 
 ## Add a theme
 
-Copy `Styles/themes/paper.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists them), and
+Copy `Styles/themes/retro.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists them), and
 add `{ "id": "{id}", "name": "…" }` to `themes/themes.json`. Ids are lowercase letters, digits and dashes.
 
 ## Words

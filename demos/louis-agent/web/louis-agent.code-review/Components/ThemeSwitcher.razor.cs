@@ -11,7 +11,7 @@ public partial class ThemeSwitcher
     private sealed record Theme(string Id, string Name);
 
     private List<Theme> _themes = [];
-    private string _current = "retro";
+    private string _current = "console";
 
     /// <summary>Reads the list of themes and the browser's saved choice.</summary>
     protected override async Task OnInitializedAsync()

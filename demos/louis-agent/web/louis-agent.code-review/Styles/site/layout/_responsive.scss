@@ -1,0 +1,21 @@
+/* The site's pages at phone and tablet widths: one column, a 16px gutter, no sideways scroll. The frame's own phone
+   rules (the menu wrapping) sit beside SiteShell in the framework. The films keep their 16:9 stage and scale down with
+   it (movie/stage); on a phone they stay legible at the card's size, so a page offers them full-width. */
+
+@media (max-width: 900px) {
+    :root { --site-gutter: 24px; }
+    .site h1 { font-size: 44px; }
+    .site h2 { font-size: 30px; }
+    .hero { grid-template-columns: minmax(0, 1fr); padding-top: 48px; }
+    .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    :root { --site-gutter: 16px; }
+    .site h1 { font-size: 36px; }
+    .site h2 { font-size: 26px; }
+    .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
+    .stat-value { font-size: 34px; }
+    .strip-contact { margin: 0 var(--site-gutter) 48px; padding: 28px; }
+    .turn-body { min-height: 0; font-size: 12px; }
+}

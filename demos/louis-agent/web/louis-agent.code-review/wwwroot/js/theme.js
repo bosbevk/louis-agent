@@ -11,7 +11,7 @@
 
     window.siteTheme = {
         get() {
-            return document.documentElement.dataset.theme || "retro";
+            return document.documentElement.dataset.theme || "console";
         },
 
         set(id) {

@@ -261,6 +261,10 @@ should update the films with what it looks like now, explaining the whole archit
   the program. **Which film tells what, picked** (Louis, 2026-11-08, option 1 of three): the short film on the
   landing becomes the map of the whole architecture, in six scenes; the detailed film on How it works stays the
   turn through core, with today's names fixed. Each film keeps one job, and the turn's story stays on the site.
+- **What it's built on, and 100% C#** (Louis, 2026-11-08: "it should also have a built on section and advertisement
+  that 100% C#, like Microsoft Extensions"): a section on what the framework stands on (Microsoft.Extensions.AI,
+  ASP.NET Core, Blazor, ASP.NET Core Identity, EF Core, Bootstrap; nothing paid, licences named), apart from
+  *Built on it* (what runs on the framework); and "100% C#" said up front on the landing, not only in the footer.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -293,6 +297,14 @@ should update the films with what it looks like now, explaining the whole archit
 - **F61.6 is F109** (Louis, 2026-11-08, pick 1 of three). PR #221 trimmed the F61 plan to a child F61.6 "The framework's site beside Puls": the same work as F109.1 and F109.2. F109 stays, the F61 plan is deleted (its full text at commit `20f28c9f`) and the TODO's F61 row closes in the work log. F61.6's notes already sit here: the site project goes in F109.1 step 6 (not kept as a library), the second app's accounts are a tenant on the same database (F109.2), the TODO's F54 row closes with step 6.
 - **Step 2 takes five pages, step 3 the other two** (2026-11-08, a sequencing call): `Home` and `HowItWorks` embed the films, so they move with them in step 3. The pages are copied, not moved, until step 6 deletes the site project. They are named `…Page` as `ChatPage` is, since a class `Packs` collides with the packs' `LouisAgent.Packs` namespace. The site's HTTP tests become bUnit renders; its plain-HTML and `/health` tests have no counterpart in a WebAssembly app and are dropped.
 - **A fourth child, F109.4** (Louis, 2026-11-08: "the whole website should explain the whole architecture, and the identity running on our landing page must be able to answer in detail everything mentioned on the website"). The films' rewrite Louis asked for first is part of it. Its section is above; F109.1 moves the films as they are.
+- **Step 4: the site's look stays inside the frame** (Louis, 2026-11-08, pick 1 of three). The site's element and
+  utility rules (`site/base/_elements.scss`) hang off the frame's root `.site`, so the chat and the admin keep the
+  framework's elements; the tokens stay on `:root`, with `--gutter` renamed `--site-gutter`, the name the
+  framework's `SiteShell` reads. The default theme is `console`, a theme file that forwards the framework's
+  colours as they are (the site's Console look), `retro` the one to switch to, `paper` gone; the picker's list is
+  the tracked `wwwroot/css/themes/themes.json`. The site's stylesheet tests moved in, two narrowed to the site's
+  partials (the whole app's CSS reads names Bootstrap and the scripts set); the chat goldens changed only in
+  the theme options.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

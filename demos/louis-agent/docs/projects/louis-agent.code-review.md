@@ -70,7 +70,7 @@ sequenceDiagram
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Landing/` | The landing's parts: the hero with its animated turn, the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
-| `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this site's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
+| `Styles/app.scss`, `Styles/site/`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, then the site's look (F109.1: its values and elements right after the framework's, hung off the frame's root `.site` so the chat keeps the framework's; the landing, the films and its phone rules after the packs'), this site's few rules, and the two themes: `console`, the default, the framework's colours as they are, and `retro` to switch to; the picker's list is `wwwroot/css/themes/themes.json` ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
 | `packs/web/louis-agent.pack.files.web`, `packs/web/louis-agent.pack.git.web` | Not in this project: the views it registers, with their records, calls and Sass |
 

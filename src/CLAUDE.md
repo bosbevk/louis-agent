@@ -36,4 +36,4 @@ profile too, so a debug run sees what the container sees ([Setup](docs/SETUP.md#
 
 ## Adding a web theme
 
-Copy `demos/louis-agent/web/louis-agent.code-review/Styles/themes/paper.scss` to `{id}.scss`, set the framework's colour names ([the list](web/louis-agent.web/Styles/web/settings/_colours.scss)), and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
+Copy `demos/louis-agent/web/louis-agent.code-review/Styles/themes/retro.scss` to `{id}.scss`, set the framework's colour names ([the list](web/louis-agent.web/Styles/web/settings/_colours.scss)), and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
