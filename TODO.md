@@ -25,6 +25,8 @@ known limitations below are facts about today, not tasks.
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
+| F39 | Orchestration | Now | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
+| F43 | Accounts, tenants and durable sessions | Now | — |
 | F62 | Validate demand | Now | — |
 | F18 | F18's leftovers, before F49.1 | Now | — |
 | F63 | The reference transcripts in git | Now | — |
@@ -46,12 +48,10 @@ known limitations below are facts about today, not tasks.
 | F50 | Puls's local specialists | Next | — |
 | F40 | The sales playground | Next | — |
 | F7 | Cost you can see and stop | Next | [feature doc](src/docs/features/F07-budgets.md) |
-| F39 | Orchestration | Next | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
 | FX4 | Append-only history | Next | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
 | F41 | Drafts and approvals | Next | — |
 | F42 | Safety and audit | Next | — |
 | F36 | MCP servers as packs | Next | — |
-| F43 | Accounts, tenants and durable sessions | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
 | F58 | The two sites go live from this PC | Next | [plan](src/docs/plans/F58-sites-from-this-pc.md) |

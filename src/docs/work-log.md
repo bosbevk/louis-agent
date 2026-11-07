@@ -25,6 +25,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
+| F39 | Orchestration | Now |
+| F43 | Accounts, tenants and durable sessions | Now |
 | F62 | Validate demand | Now |
 | F18 | F18's leftovers, before F49.1 | Now |
 | F63 | The reference transcripts in git | Now |
@@ -46,12 +48,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F50 | Puls's local specialists | Next |
 | F40 | The sales playground | Next |
 | F7 | Cost you can see and stop | Next |
-| F39 | Orchestration | Next |
 | FX4 | Append-only history | Next |
 | F41 | Drafts and approvals | Next |
 | F42 | Safety and audit | Next |
 | F36 | MCP servers as packs | Next |
-| F43 | Accounts, tenants and durable sessions | Next |
 | F8 | Reliability | Next |
 | F15 | Model limits and local models | Next |
 | F58 | The two sites go live from this PC | Next |

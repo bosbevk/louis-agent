@@ -88,10 +88,10 @@ done when Louis has written its learning write-up himself, without the code open
 | 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | F50 |
 | 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Next, after the framework | F40 |
 | 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Next | F7 |
-| 6 | Orchestration: one delegation function, typed results checked in code, the orchestrator as an identity | Checked, not trusted | Next | F39 |
+| 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains | F43, F8, F15, F44, F51, F61 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains; F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
 | Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F44, F47 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
@@ -114,10 +114,11 @@ that warn, ask or stop, the room's cost view, the ledger checked against the bil
 standard.
 
 **6, orchestration** ([draft plan](src/docs/plans/F39-orchestration.md)), which builds the framework's fourth concept, the
-**workflow**: how steps and agents coordinate, as a thing a developer composes beside an identity and its packs
-(Louis, 2026-11-07). Part A: one delegation function in the engine,
-transport, credentials per peer, policy and limiter, typed results checked in code. Part B: the `voorman` identity on a
-thin host, triaging a service's errors and confirming each fix with git, a replay and the tests.
+**workflow**: how one agent delegates to another, hands off, and decides on what comes back, an engine capability, never
+an identity (Louis, 2026-11-07: "abandon the workflow identity idea"). Part A: one delegation function in the engine,
+transport, credentials per peer, policy and limiter, hand-off to a named peer, typed results checked in code. Part B's
+`voorman` orchestrator as an identity is dropped; what remains is a demo of the engine's workflow, triaging a
+service's errors. With F43's saved conversations it is pulled up the TODO to right after the builder.
 
 **7, checked and guarded** ([draft plan](src/docs/plans/phase-7-checked-and-guarded.md)). FX4 first: each
 conversation's prompt and tools frozen, so an approval no longer breaks an open chat. Then F41, drafts validated in code
@@ -137,7 +138,7 @@ and packages, F51's gateway and uptime remain.
 **The framework's track** ([draft](src/docs/plans/F106-framework-track.md)). Louis, 2026-11-07: "focus on the framework
 first then build the agents", so this track runs now, and the configured agents of Phases 4 to 9 are built on it. The
 positioning: the application framework for AI agents in .NET, in four concepts (the engine is how an agent runs, an
-identity is who it is, a pack is what it can do, a workflow is how steps and agents coordinate; Louis, 2026-11-07),
+identity is who it is, a pack is what it can do, a workflow is how one agent delegates to another and decides on the result; Louis, 2026-11-07),
 judged by one question, does it make an agent application easier to build, extend, test or operate. Its first children: a
 builder so a first agent takes a few lines (F106.1), the framework's own docs (F106.2), an example outside Puls
 (F106.3), the same application built in Microsoft Agent Framework and compared (F106.4), and packaging in place

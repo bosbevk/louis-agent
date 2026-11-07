@@ -45,12 +45,17 @@ both frameworks.
 
 What that reading changes here:
 
-- **Workflow is the fourth concept** (Louis, 2026-11-07: "workflow to me means how multiple steps and agents
-  coordinate"; named now, built in Phase 6). The four: the **engine** is how an agent runs, an **identity** is who it
-  is, a **pack** is what it can do, a **workflow** is how steps and agents coordinate. F39 builds it (one delegation
-  function, typed results checked in code, one policy per turn tree, ADR 0031) as a thing a developer composes
-  beside the other three; its plan says what a workflow is in code and what a pack or identity may reference of it
-  (ADR 0027 is amended there, not before).
+- **Workflow is the fourth concept, and it is an engine capability** (Louis, 2026-11-07: "workflow to me means how
+  multiple steps and agents coordinate", then: "how one agent can delegate to another, make decisions on that";
+  "abandon the workflow identity idea"). The four: the **engine** is how an agent runs, an **identity** is who it is,
+  a **pack** is what it can do, a **workflow** is how one agent delegates to another, hands off, and decides on what
+  comes back. It is built into the engine (F39 Part A: one delegation function, typed results checked in code, one
+  policy per turn tree, ADR 0031), never as an identity: F39's Part B, the `voorman` orchestrator as an identity, is
+  dropped, and what remains of it is a demo of the engine's workflow.
+- **Two things the framework must have** (Louis, 2026-11-07), pulled up the list to right after the builder:
+  **hand-off**, one agent handing a conversation to another (F39 Part A's hand-off to a named peer), and
+  **conversations saved to Mongo so a person can restart them** (F43's durable sessions). Both are what Microsoft's
+  framework calls workflows, sessions and checkpointing, and F106.4 compares them.
 - **What to study in Microsoft's framework** before F106.4 (its own docs, not a summary): its agent loop, session state
   and persistence, middleware pipeline, workflow execution, human-in-the-loop, checkpointing and tool permissions.
   Each maps to a phase of ours (F43, F41, F42, F39), so the comparison also tells us where our phases stand.
@@ -84,6 +89,8 @@ Each its own plan, branch and pull request, about ten steps at most; the order i
 | F106.2 | The framework's own docs: "your first agent in ten minutes", then "write a pack" and "write an identity", on the engine's site | Someone who isn't Louis follows the first guide to a working agent, timed |
 | F106.3 | A second example outside Puls: a small agent of another kind (for example the practice's invoice clerk from Phase 4), built only from the framework's public parts | It builds without referencing any Puls project, and an eval proves it |
 | F106.4 | The side-by-side: the same small application built in louis-agent and in Microsoft Agent Framework, same model, tools, delegation case and eval set | A results page compares lines of code, setup, time to build, eval scores, cost, and what debugging was like; a paid run only on Louis's go |
+| F39 | The workflow in the engine: delegation, hand-off to a named peer, the decision on a typed result (Part A; Part B's identity dropped) | A hand-off between two agents in one conversation, checked by an eval; see its [draft](F39-orchestration.md) |
+| F43 | Conversations saved to Mongo, so a person can restart one after a restart or on another device | A session survives the API restarting and continues where it was |
 | F74 | Packaging in place (the Phase 10 draft's Stage A): public surface declared, reproducible build, a package and a consumer test built from it | Moves into this track; Stage B (its own repo) stays after the engine features |
 
 ## Open choices, one at a time
