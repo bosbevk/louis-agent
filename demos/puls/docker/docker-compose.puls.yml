@@ -77,6 +77,9 @@ services:
       # The eval store's database (F18 step 7b (iii)): the API's default is `evals` now, so Puls names the one its runs
       # have always been in. BENCHMARKS_MONGO_DATABASE, its name before, is still honoured when set in config/.env.
       EVALS_MONGO_DATABASE: ${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}
+      # The accounts (F61, ADR 0088): every account on a host no tenant row names is Puls's. The database itself is
+      # ACCOUNTS_SQL_URL in config/.env.secrets, pointing at puls-sql below; unset, Puls has no accounts.
+      ACCOUNTS_TENANT: ${ACCOUNTS_TENANT-puls}
     # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it the container refuses to
     # start, unless AGENT_AUTH=off in config/.env says so on purpose. puls sends the same key to its peer, itself.
     ports:

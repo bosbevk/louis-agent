@@ -1,5 +1,6 @@
 using LouisAgent.Starter;
 using LouisAgent.Starter.Layout;
+using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
@@ -23,6 +24,7 @@ builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText()); // the frame's words, in English; a site can fill in its own
+builder.Services.AddLouisAgentAccounts(); // sign in, register and the profile, when the API has ACCOUNTS_SQL_URL
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
 builder.Services.AddSingleton(new ChatHandoff("chat"));
 EvalPages.AddTo(builder.Services);

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.CodeReview;
 using LouisAgent.CodeReview.Layout;
+using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
@@ -29,6 +30,7 @@ builder.Services.AddScoped<GitState>();
 builder.Services.AddScoped<GitHistory>();
 builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText()); // the shared components' words, in English
+builder.Services.AddLouisAgentAccounts(); // sign in, register and the profile, when the API has ACCOUNTS_SQL_URL
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
 EvalPages.AddTo(builder.Services);
 

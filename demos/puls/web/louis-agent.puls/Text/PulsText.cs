@@ -15,10 +15,9 @@ public static class PulsText
         Result = "Resultaat",
         Processing = "BESIG",
         // F34, Louis: "it must actually say soek bestanddele en dan bou resep".
-        RolePhases = new Dictionary<string, RolePhases>
-        { [PulsWebRole.Cook.Wire()] = new("Soek bestanddele", "Bou resep") },
+        RolePhases =
+            new Dictionary<string, RolePhases> { [PulsWebRole.Cook.Wire()] = new("Soek bestanddele", "Bou resep") },
         Stopped = "Gestop",
-
         DelegatedTo = "Oorgedra aan",
         MinionLabel = "Minion",
         OnModel = "op",
@@ -34,9 +33,7 @@ public static class PulsText
         ToolCallMany = "gereedskapoproepe",
         ThoughtOne = "gedagte",
         ThoughtMany = "gedagtes",
-
         NewChat = "Nuwe gesprek",
-
         AddFavourite = "Merk as gunsteling",
         RemoveFavourite = "Haal uit gunstelinge",
         Share = "Deel",
@@ -46,7 +43,6 @@ public static class PulsText
         Delete = "Vee uit",
         NewName = "Nuwe naam",
         MoreFor = "Meer vir {0}",
-
         SearchChats = "Soek gesprekke",
         SearchPlaceholder = "Soek gesprekke…",
         NoChatsFor = "Geen gesprekke vir \"{0}\" nie.",
@@ -55,7 +51,6 @@ public static class PulsText
         Archived = "Geargiveer",
         SearchChoose = "kies",
         SearchOpen = "maak oop",
-
         HideSidebar = "Versteek die kantbalk",
         CloseMenu = "Maak die kieslys toe",
         OpenMenu = "Maak die kieslys oop",
@@ -84,12 +79,10 @@ public static class PulsText
         Names = "Name",
         ShowMotion = "Wys animasies al vra my stelsel minder",
         SystemAsksNoLess = " (jou stelsel vra nie minder nie)",
-
         ShowSidebar = "Wys die kantbalk",
         MoreForThisChat = "Meer vir hierdie gesprek",
         ToggleWork = "Wys of versteek die werkpaneel",
         ShowWork = "Wys die werkpaneel",
-
         Credits = "Krediete",
         CreditsTitle = "Krediete en gebruik: {0} hierdie maand",
         CreditsHeading = "Krediete · betaal soos jy gebruik",
@@ -97,11 +90,10 @@ public static class PulsText
         ThisMonth = "Hierdie maand",
         ChatOne = "gesprek",
         ChatMany = "gesprekke",
-        CreditsNote = "Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.",
+        CreditsNote =
+            "Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.",
         BuyCredits = "Koop krediete",
-
         Language = "Taal",
-
         Profile = "Profiel",
         GuestInitial = "G",
         Guest = "Gas",
@@ -113,7 +105,6 @@ public static class PulsText
         ThemeAuto = "Outomaties (stelsel)",
         ThemeAutoSoon = "Outomatiese tema",
         SignOut = "Teken uit",
-
         ChatEnded = "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek",
         AskAnything = "Vra enigiets…",
         SendTitle = "Stuur (Enter)",
@@ -136,7 +127,6 @@ public static class PulsText
         OtherModelsSoon = "Ander modelle",
         VoiceMessage = "Stemboodskap",
         VoiceMessagesSoon = "Stemboodskappe",
-
         Copy = "Kopieer",
         EditMessage = "Wysig die boodskap",
         EditSoon = "Wysig",
@@ -148,24 +138,22 @@ public static class PulsText
         ShowSources = "Wys die bronne in die werkpaneel",
         SourceOne = "bron",
         SourceMany = "bronne",
-
         HideWork = "Versteek die werkpaneel",
         CloseWork = "Maak die werkpaneel toe",
         NoWorkYet = "Nog geen werk nie",
-        WorkEmpty = "Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.",
+        WorkEmpty =
+            "Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.",
         StepsLabel = "Stappe",
         Requests = "versoeke",
         Cost = "Koste",
         Sources = "Bronne",
         OwnCost = "Puls",
         Specialists = "Spesialiste",
-
         SessionGone =
             "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
-        NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",
+        NeedsKey = "Die API het nee gesê: teken in, of maak Instellings oop en vul AGENT_API_KEY in.",
         StillAnswering = "Hierdie gesprek antwoord nog; wag daarvoor of druk Stop.",
         ApiUnreachable = "Kan nie Puls se API bereik nie. Loop die puls-houer?",
-
         Currency = "Geldeenheid",
         AsCharged = "Soos gehef",
         ConvertedAt = "1 {0} = {1} {2} op {3}; die grootboek hou wat gehef is",

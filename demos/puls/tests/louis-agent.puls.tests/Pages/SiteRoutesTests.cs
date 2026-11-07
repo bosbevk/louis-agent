@@ -71,6 +71,9 @@ public class SiteRoutesTests
 
         Assert.That(program,
             Does.Contain("new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout))"));
+        // F61.2: the account pages, in Puls's words.
+        Assert.That(program,
+            Does.Contain("AddSingleton(PulsAccountText.Afrikaans)").And.Contain("AddLouisAgentAccounts()"));
         Assert.That(program, Does.Contain("RecipeWebViews.AddTo(views)"));
         Assert.That(program, Does.Contain("AddSingleton(views)"));
     }

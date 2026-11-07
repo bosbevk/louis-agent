@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Packs.Recipes.Web;
 using LouisAgent.Puls;
+using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Admin;
 using LouisAgent.Puls.Content;
 using LouisAgent.Puls.Layout;
@@ -25,6 +26,8 @@ builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
 EvalPages.AddTo(builder.Services, PulsSites.Kinds);
 builder.Services.AddSingleton(PulsText.Afrikaans); // Puls speaks Afrikaans
+builder.Services.AddSingleton(PulsAccountText.Afrikaans); // and so do its sign-in and profile pages (F61.2)
+builder.Services.AddLouisAgentAccounts();
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
 
 // Which component draws each screen: the plain table, then the packs' own, then ours if we ever write one.
