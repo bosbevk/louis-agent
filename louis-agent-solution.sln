@@ -77,7 +77,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C
 		demos\louis-agent\docker\images\Dockerfile.api = demos\louis-agent\docker\images\Dockerfile.api
 		demos\louis-agent\docker\images\Dockerfile.mcp-server = demos\louis-agent\docker\images\Dockerfile.mcp-server
 		demos\louis-agent\docker\images\Dockerfile.orchestrator = demos\louis-agent\docker\images\Dockerfile.orchestrator
-		demos\louis-agent\docker\images\Dockerfile.site = demos\louis-agent\docker\images\Dockerfile.site
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
@@ -165,14 +164,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{D505C3C5-ADE9-5577-ABD3-D119436FEE43}"
 	ProjectSection(SolutionItems) = preProject
 		demos\louis-agent\docs\guides\change-the-orchestrator.md = demos\louis-agent\docs\guides\change-the-orchestrator.md
-		demos\louis-agent\docs\guides\change-the-site.md = demos\louis-agent\docs\guides\change-the-site.md
 		demos\louis-agent\docs\guides\change-the-web-app.md = demos\louis-agent\docs\guides\change-the-web-app.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{E284BDE8-0318-590D-8B82-47C355EC0D92}"
 	ProjectSection(SolutionItems) = preProject
 		demos\louis-agent\docs\projects\louis-agent.orchestrator.md = demos\louis-agent\docs\projects\louis-agent.orchestrator.md
-		demos\louis-agent\docs\projects\louis-agent.site.md = demos\louis-agent\docs\projects\louis-agent.site.md
 		demos\louis-agent\docs\projects\louis-agent.code-review.md = demos\louis-agent\docs\projects\louis-agent.code-review.md
 		demos\louis-agent\docs\projects\orchestrator-runbooks.md = demos\louis-agent\docs\projects\orchestrator-runbooks.md
 	EndProjectSection
@@ -592,10 +589,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges", "demos\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj", "{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges.tests", "demos\puls\tests\louis-agent.identity.puls.judges.tests\louis-agent.identity.puls.judges.tests.csproj", "{44951A66-A812-46C2-982F-78B4B9B60CE3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "demos\louis-agent\web\louis-agent.site\louis-agent.site.csproj", "{2AF9206D-FA47-452E-BFB5-909E16B0B283}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site.tests", "demos\louis-agent\tests\louis-agent.site.tests\louis-agent.site.tests.csproj", "{019CBDE7-1B72-4A30-8722-EA790CB43F1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes", "packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", "{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}"
 EndProject
@@ -1999,30 +1992,6 @@ Global
 		{44951A66-A812-46C2-982F-78B4B9B60CE3}.Release|x64.Build.0 = Release|Any CPU
 		{44951A66-A812-46C2-982F-78B4B9B60CE3}.Release|x86.ActiveCfg = Release|Any CPU
 		{44951A66-A812-46C2-982F-78B4B9B60CE3}.Release|x86.Build.0 = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|x64.Build.0 = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Debug|x86.Build.0 = Debug|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|x64.ActiveCfg = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|x64.Build.0 = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|x86.ActiveCfg = Release|Any CPU
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283}.Release|x86.Build.0 = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|x64.Build.0 = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Debug|x86.Build.0 = Debug|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|x64.ActiveCfg = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|x64.Build.0 = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|x86.ActiveCfg = Release|Any CPU
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D}.Release|x86.Build.0 = Release|Any CPU
 		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -2338,7 +2307,6 @@ Global
 		{ED87A0A6-93F8-4F3B-B3B9-9BB3DFA78A3A} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
 		{4E129E05-751C-41CF-87CE-9A2E232B707D} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
 		{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147}
 		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{2FCE5E63-43C3-4FE1-9711-17C0AE33A639} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{D17ECC33-4647-413E-AB3C-E56C38278590} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}
@@ -2371,7 +2339,6 @@ Global
 		{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
 		{847B52E1-8CAE-4974-99D3-D47EBF359C20} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
 		{D85F0454-8101-4372-A7EE-A7A4032B92A8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
 		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
 		{FB99853A-0EF9-4D72-81C1-05643195B937} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
 		{0A63FD85-04F5-4A18-AC61-BC7C9B319791} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}

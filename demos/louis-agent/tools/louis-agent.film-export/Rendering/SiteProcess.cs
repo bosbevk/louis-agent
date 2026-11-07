@@ -6,7 +6,10 @@ using LouisAgent.FilmExport.Messages;
 
 namespace LouisAgent.FilmExport.Rendering;
 
-/// <summary>The site, running on a spare port for as long as an export needs it, from the code as it is now.</summary>
+/// <summary>
+/// The site, running on a spare port for as long as an export needs it, from the code as it is now: since F109.1 its
+/// pages are the code-review app's, served by the coding API host.
+/// </summary>
 public sealed class SiteProcess : IDisposable
 {
     private static readonly TimeSpan Limit = TimeSpan.FromMinutes(3);
@@ -22,14 +25,14 @@ public sealed class SiteProcess : IDisposable
     /// <summary>Where it answers.</summary>
     public Uri Address { get; }
 
-    /// <summary>Starts the site and waits until it answers, or throws if it stops or takes too long.</summary>
+    /// <summary>Starts the host and waits until it answers, or throws if it stops or takes too long.</summary>
     public static async Task<SiteProcess> StartAsync(string repoRoot)
     {
         var address = new Uri($"http://127.0.0.1:{SparePort()}/");
         var start = new ProcessStartInfo("dotnet")
         {
             UseShellExecute = false,
-            // Development, because that's where a site run from its build folder finds its stylesheets.
+            // Development, because that's where a host run from its build folder finds the app's stylesheets.
             Environment =
             {
                 ["ASPNETCORE_ENVIRONMENT"] = "Development",
@@ -39,7 +42,7 @@ public sealed class SiteProcess : IDisposable
         foreach (string argument in new[]
                  {
                      "run", "--no-launch-profile", "--project",
-                     Path.Combine(repoRoot, "demos/louis-agent/web/louis-agent.site"),
+                     Path.Combine(repoRoot, "demos/louis-agent/hosts/louis-agent.coding-api"),
                  })
             start.ArgumentList.Add(argument);
 

@@ -40,8 +40,8 @@ scripts from markdown. We measured the short film (36 s, 12 frames a second, 960
 
 ## Links
 
-[ADR 0066](0066-the-site-is-static-razor.md) · [Change the site](../guides/change-the-site.md) ·
-[louis-agent.site](../projects/louis-agent.site.md) · [ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)
+[ADR 0066](0066-the-site-is-static-razor.md) · [Change a film](../guides/change-the-web-app.md#change-a-film) ·
+[louis-agent.code-review](../projects/louis-agent.code-review.md) · [ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [ADRs](../../../../src/docs/adr/README.md)

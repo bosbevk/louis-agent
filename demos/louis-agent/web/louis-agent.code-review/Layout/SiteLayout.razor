@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+@* The framework's site frame, filled with what's this site's own: its name, its pages, the way to the chat and its
+   footer lines. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
+
+<SiteShell>
+    <Brand>louis-agent</Brand>
+    <Links>
+        <a href="/how-it-works">How it works</a>
+        <a href="/packs">Packs</a>
+        <a href="/build-your-own">Build your own</a>
+        <a href="/proof">Measured</a>
+        <a href="/built-on-it">Built on it</a>
+        <a href="/contact">Contact</a>
+    </Links>
+    <Actions><ChatLink Class="btn btn-line btn-small">Try it</ChatLink></Actions>
+    <Footer>
+        <span>louis-agent · all rights reserved</span>
+        <span>100% C#, on purpose</span>
+    </Footer>
+    <ChildContent>@Body</ChildContent>
+</SiteShell>

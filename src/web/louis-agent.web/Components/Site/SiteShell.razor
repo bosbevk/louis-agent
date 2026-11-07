@@ -1,0 +1,33 @@
+@* A site's frame: a header with the brand, the menu and the actions, the page, a footer, and a corner that floats
+   over every page (a site's chat widget goes there). A slot left empty leaves no gap. Its own root class, not .app:
+   a chat's grid rules must not reach here. *@
+<div class="site">
+    <header class="site-header">
+        @if (Brand is not null)
+        {
+            <a class="site-brand" href="@BrandHref">@Brand</a>
+        }
+        @if (Links is not null)
+        {
+            <nav class="site-nav">@Links</nav>
+        }
+        @if (Actions is not null)
+        {
+            <div class="site-actions">@Actions</div>
+        }
+    </header>
+
+    <main class="site-main">
+        @ChildContent
+    </main>
+
+    @if (Footer is not null)
+    {
+        <footer class="site-footer">@Footer</footer>
+    }
+
+    @if (Corner is not null)
+    {
+        <div class="site-corner">@Corner</div>
+    }
+</div>

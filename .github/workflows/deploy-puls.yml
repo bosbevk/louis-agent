@@ -1,4 +1,4 @@
-# Deploys Puls to Azure (F109): the same `deploy.ps1 release` Louis runs on his PC, from GitHub, so a merge reaches
+# Deploys Puls to Azure (F109.5): the same `deploy.ps1 release` Louis runs on his PC, from GitHub, so a merge reaches
 # mypuls.co.za without anyone's machine. By itself only after CI passes on main (Louis's pick, 2026-11-07), so a red
 # merge never ships; any time from the Actions tab's "Run workflow" button. The how-to, Louis's one-time Azure setup
 # and the roll-back are in demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.

@@ -1,0 +1,24 @@
+/* ---- A film's frame (F109.1, step 7): the film as it is, and a pause button in the frame's corner. Scoped: the
+   film inside is reached under ::deep. ---- */
+.film-frame { position: relative; }
+
+/* Paused: every animation under the film's stage stands where it is. !important, because each part sets its
+   play state through its animation shorthand and this must win over all of them. */
+.film-frame.is-paused ::deep .stage,
+.film-frame.is-paused ::deep .stage * { animation-play-state: paused !important; }
+
+.film-pause {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 50%;
+    background: rgba(var(--bs-body-bg-rgb), .7);
+    color: var(--bs-body-color);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+}
+.film-pause:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }

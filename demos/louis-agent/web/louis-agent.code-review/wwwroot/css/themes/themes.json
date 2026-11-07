@@ -1,4 +1,4 @@
 [
-  { "id": "retro", "name": "Retro terminal" },
-  { "id": "paper", "name": "Paper (soft light)" }
+  { "id": "console", "name": "Console (the site's)" },
+  { "id": "retro", "name": "Retro terminal" }
 ]

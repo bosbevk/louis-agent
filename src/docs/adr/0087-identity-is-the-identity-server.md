@@ -48,7 +48,7 @@ storage does. The cost of a cookie is that a cross-site form could send it.
 
 ## Links
 
-[F61](../plans/F61-accounts-and-azure.md) · [0088](0088-a-tenant-on-every-account.md) · [0045](0045-typed-answers-and-a-shared-contract.md) ·
+[F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md) · [0088](0088-a-tenant-on-every-account.md) · [0045](0045-typed-answers-and-a-shared-contract.md) ·
 [louis-agent.accounts](../projects/louis-agent.accounts.md) · [Identity API endpoints](https://learn.microsoft.com/aspnet/core/security/authentication/identity-api-authorization)
 
 ---

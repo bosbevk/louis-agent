@@ -78,7 +78,7 @@ commit it ran; commit before you build. `release` is `build` then `update` with 
 each sign-in provider whose two secrets are set, and creates or updates the app. The running revision is in
 `az containerapp revision list -n puls-app -g rg-puls-za -o table`; the app is up when `/health` answers 200.
 
-## Deploying from GitHub (F109)
+## Deploying from GitHub (F109.5)
 
 A merge to `main` deploys by itself once CI passes on it, and *Actions → Deploy Puls → Run workflow* deploys `main`
 any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the PC. It signs in

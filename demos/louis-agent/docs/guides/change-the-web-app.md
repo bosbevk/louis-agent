@@ -1,7 +1,8 @@
 # Change the code-review web app
 
 > **How-to.** Change `demos/louis-agent/web/louis-agent.code-review`, the browser app for chatting with the coding agent, browsing the workspace
-> and reviewing changes: run it, add a tab, call a new endpoint, add a theme, place its words, and test it.
+> and reviewing changes, and since F109.1 the framework's site as well: run it, add a tab, call a new endpoint, add a
+> theme, place its words, add a site page, change the site's look, change and export a film, and test it.
 > **Elsewhere:** how it works in [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); the folder rules in [src/CLAUDE.md](../../../../src/CLAUDE.md).
 
@@ -37,7 +38,7 @@ in `AgentApi` itself ([Change the framework's web](../../../../src/docs/guides/c
 
 ## Add a theme
 
-Copy `Styles/themes/paper.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists them), and
+Copy `Styles/themes/retro.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists them), and
 add `{ "id": "{id}", "name": "…" }` to `themes/themes.json`. Ids are lowercase letters, digits and dashes.
 
 ## Words
@@ -46,6 +47,59 @@ The shared components' words come from `ChatText`, whose defaults are this app's
 `new ChatText()`). A label in a `.razor` is markup and stays there. A text built in C# (a notice, an error) goes in a
 class of the app's words rather than inline, as Puls keeps its own in `Text/`
 ([ADR 0009](../../../../src/docs/adr/0009-message-text-as-enum-templates.md)).
+
+## Add a site page
+
+1. A `.razor` under `Pages/Site/` with `@page "/its-route"` and a `<PageTitle>`; markup only, no `@code`. It draws in
+   the site's frame by default; a page that shouldn't names its layout, as `ChatPage` does.
+2. Its link in `Layout/SiteLayout.razor`'s menu.
+3. A row in `SitePagesTests.APage_IsAtItsAddress_WithItsHeading` with the route and the heading, and one in
+   `SiteLayoutTests.TheMenu_LeadsToThePage`. Code or a list that mirrors the repo gets a test holding it to the repo,
+   as `BuildYourOwnTests` and `PacksPageTests` do.
+4. A new section's styles go in the partial of their concern under `Styles/site/` (a landing part in `landing/`); a
+   new partial is added to `app.scss`'s list where it belongs in the cascade, and `StylesheetTests` checks the two
+   match. The site's element rules hang off `.site`, the frame's root, so they never reach the chat.
+
+## Change the site's look
+
+The colours and fonts are the framework's, in `src/web/louis-agent.web/Styles/web/settings/_colours.scss`, so a change
+there reaches every site with none of its own (and means exporting the films). What's only the site's, such as its
+corners and gutter, is in `Styles/site/settings/_tokens.scss`; the chrome headline is `.chrome` in
+`Styles/site/base/_elements.scss`. `console`, the default theme, is those colours as they are; `retro` is the one the
+chat's picker switches to. Check a change at 1440 px and at 390 px: no sideways scroll, the menu wrapped.
+
+## Change a film
+
+A film is markup (`Components/Movies/*.razor`) and three stylesheets under `Styles/site/movie/`:
+
+- `_stage.scss`: what both films share (the stage, a part, the light, the card, the strip). A change here changes both.
+- `_short.scss` and `_detail.scss`: one film each. Where a part stands (`.p-host { left; top; width; height }` on a
+  1280×720 floor whose centre is 640×380), the camera (`@keyframes camera-s` / `camera-d`: wide at the start and the
+  end; to fly in on a part, `translate(640 − its centre x, 380 − its centre y)` and a `scale`), when a part lights up
+  (`lit-*`), the light's path (`travel-*`), and when each card and caption shows (`show-*`, `step-*`). A scene's
+  window is its share of the loop; keep a transition at 2 to 3% of the loop so the camera doesn't snap.
+- A keyframe name ends in the film's letter (`-s`, `-d`, or `-s3`, `-d10`); `StylesheetTests` refuses a name the two
+  could share.
+
+To add a scene: its card and caption in the markup (`c7`, `7 / 7`), a step mark (`k7`), the windows re-cut in the
+film's stylesheet, the counts in `ShortMovieTests` or `DetailedMovieTests`, and the golden rewritten with
+`LOUIS_UPDATE_GOLDEN=1`. Then export the films (below). To see the result frame by frame without waiting, pause the
+page's animations in the browser's console and set their time:
+`document.getAnimations().forEach(a => { a.pause(); a.currentTime = 12000 })`.
+
+## Export the films
+
+After changing a film, run the tool and commit what it writes, or `FilmExportTests.TheExports_MatchTheFilms` fails:
+
+```bash
+dotnet run --project demos/louis-agent/tools/louis-agent.film-export          # both, into demos/louis-agent/docs/films
+dotnet run --project demos/louis-agent/tools/louis-agent.film-export -- short # one
+```
+
+It needs Docker running, for the encoder. `CHROME_PATH` names the browser; without it, a Chrome for Testing is
+downloaded once into the temp folder. It starts `louis-agent.coding-api` itself, from the code as it is, and takes
+several minutes a film. Each re-export adds the films' size to git history, so group changes.
+[ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md) says why it works this way.
 
 ## Test it
 

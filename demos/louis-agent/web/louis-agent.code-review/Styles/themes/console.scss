@@ -1,0 +1,5 @@
+/* Console: the site's look, and the framework's colours as they are (web/settings/_colours.scss, the one copy): black
+   and white with metallic greys. The default theme. It exists as a file so the picker can switch back to it and so the
+   saved choice is always a file in this folder; it sets nothing of its own, so it changes nothing app.css already says. */
+
+@forward "web/settings/colours";

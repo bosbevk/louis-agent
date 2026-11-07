@@ -13,19 +13,19 @@ public sealed class FilmRenderer(IBrowser browser, Uri site)
     private const string FontsReady = "() => document.fonts.ready.then(() => true)";
 
     private const string SizeTheFilm = """
-        (selector, width) => {
-            const film = document.querySelector(selector);
-            film.style.width = `${width}px`;
-            film.style.maxWidth = `${width}px`;
-        }
-        """;
+                                       (selector, width) => {
+                                           const film = document.querySelector(selector);
+                                           film.style.width = `${width}px`;
+                                           film.style.maxWidth = `${width}px`;
+                                       }
+                                       """;
 
     private const string Seek = """
-        (selector, ms) => document.querySelector(selector).getAnimations({ subtree: true }).forEach(animation => {
-            animation.pause();
-            animation.currentTime = ms;
-        })
-        """;
+                                (selector, ms) => document.querySelector(selector).getAnimations({ subtree: true }).forEach(animation => {
+                                    animation.pause();
+                                    animation.currentTime = ms;
+                                })
+                                """;
 
     /// <summary>How many frames one loop of a film takes.</summary>
     public static int FrameCount(FilmSource film, int fps) => (int)(film.Length.TotalSeconds * fps);
@@ -37,8 +37,16 @@ public sealed class FilmRenderer(IBrowser browser, Uri site)
     public async Task RenderAsync(FilmSource film, string framesFolder, int fps, int width)
     {
         await using var page = await browser.NewPageAsync();
-        await page.SetViewportAsync(new ViewPortOptions { Width = width + 200, Height = width, DeviceScaleFactor = 1 });
+        await page.SetViewportAsync(new ViewPortOptions
+        {
+            Width = width + 200,
+            Height = width,
+            DeviceScaleFactor = 1
+        });
         await page.GoToAsync(new Uri(site, film.Route).AbsoluteUri, WaitUntilNavigation.Networkidle0);
+
+        // The app draws the page after it boots, a moment after the network goes quiet: wait for the film itself.
+        await page.WaitForSelectorAsync(film.Selector);
 
         // The right fonts before the first picture, or the first frames would show the fallback.
         await page.EvaluateFunctionAsync<bool>(FontsReady);

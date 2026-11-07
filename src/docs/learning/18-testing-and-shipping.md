@@ -130,7 +130,7 @@ request ([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)).
 
 ## A host that is only content (F54)
 
-The engine's website is the first host with no engine in it: `src/louis-agent.site` references nothing of ours and
+The engine's website was the first host with no engine in it (until F109.1 folded it into the coding agent's web app): `louis-agent.site` referenced nothing of ours and
 runs no model. It is ASP.NET Core with **static server rendering**: a Razor component is rendered once on the server
 into plain HTML and sent, no WebAssembly, no interactivity, no script. A page is its markup and one stylesheet, and
 the two films of how the engine works are CSS keyframes over CSS 3D transforms. What that gave the tests:
@@ -173,9 +173,27 @@ signs in and the gate takes a signed-in person. Three things to keep from buildi
 - **The old stays until the new answers.** Nothing of the CL19 deploy or the F58 tunnels is deleted before both
   domains serve from Azure; the READMEs describe both until then, and the retirement is one listed step.
 
-## A merge that ships itself (F109)
+## The site moves into its app (F109.1)
 
-Until F109 a release needed Louis's PC, because that's where Azure trusted him. The fix was not to give GitHub a
+The static site of F54 had one job, content, and one rule, no script. Six steps later it is the landing of the
+coding agent's web app, and nothing about the content changed. What made the move cheap is worth keeping:
+
+- **A frame with slots, in the framework.** The site's header, menu, footer and a corner for a chat widget are one
+  component, `SiteShell`, with the same shape as the admin's frame: the demo's layout fills six slots in twenty lines.
+  Louis's rule was the reason ("that custom layout can be reused, it should be in the framework"); ADR 0084 was already
+  the rule, and a test keeps a site's layout under forty lines.
+- **Goldens prove a move.** The films' markup was pinned before the move; copying the components across projects and
+  seeing the same goldens pass is the whole proof that no pixel of markup changed. The films' export hash does the
+  same for the rendered WebP: it fails on the moved files until the films are re-exported from the app.
+- **A look stays where it belongs with one selector.** The site's element rules hang off `.site`, the frame's root,
+  so the chat and the admin keep the framework's. The alternative, ordering a list so the right rule wins, works until
+  the next partial is added in the wrong place.
+- **Tests pin behaviour, not transport.** The site's tests fetched HTML from a server; the app is WebAssembly, so the
+  same assertions became bUnit renders. What went: the two tests about the transport itself (plain HTML, `/health`).
+
+## A merge that ships itself (F109.5)
+
+Until F109.5 a release needed Louis's PC, because that's where Azure trusted him. The fix was not to give GitHub a
 password but to teach Azure to trust GitHub: **workload identity federation**. Each workflow run gets a token GitHub
 signs, saying "this is `bosbevk/louis-agent`, on `main`"; Azure was told once to accept exactly that and swaps it for
 an Azure token that lasts the run. Nothing secret is stored, so there is nothing to leak or rotate. Two habits come
@@ -226,4 +244,4 @@ settled a choice that opinion wouldn't have. Concept: *18 Testing and shipping* 
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
-[Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site](../../../demos/louis-agent/docs/projects/louis-agent.site.md)
+[Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
