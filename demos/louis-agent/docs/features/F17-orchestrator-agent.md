@@ -107,7 +107,7 @@ cases, so that the change is kept only when decisions hold and cost falls.
 
 - Stories' criteria pass; tests added; suites pass.
 - Triage suite: decisions right ≥ baseline, cost per error lower; demo 10/10 confirmed; numbers recorded here.
-- **Then finish up** (see [Finishing a feature](../../../../src/docs/features/README.md#finishing-a-feature)): move **F17** to the CHANGELOG, set
+- **Then finish up** (see [Finishing a feature](../../../../src/docs/features/README.md#finishing-a-feature)): move **F17** to the work log, set
   *Status* to done here and in the features table, update skill 10 in the goal map and its write-up.
 
 ---

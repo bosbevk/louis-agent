@@ -224,7 +224,7 @@ function at a time (ADR 0054), with `export` added and the `chatUi.` prefix drop
    `JsModule` with the accounts library's path; the sites lose its line; the component tests on `SetupModule`.
 9. **Docs.** `louis-agent.web.md` and `louis-agent.web.accounts.md` (the scripts), `change-the-web.md` (a component
    that needs the browser: a module beside it, `JsModule`, the rule), `spawn-a-site.md` (`index.html` lists
-   `first-paint.js` and the third-party scripts), ADR 0090 *A script is a module beside its component*, CHANGELOG,
+   `first-paint.js` and the third-party scripts), ADR 0091 *A script is a module beside its component*, the work log,
    TODO (CL31 closed); this plan deleted. Full unit suite.
 
 ## Verification

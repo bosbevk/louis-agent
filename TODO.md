@@ -16,7 +16,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
   in from older lines is named on its line, so nothing appears twice.
 - **Planned work is a feature.** Each feature has a design doc in [src/docs/features/](src/docs/features/README.md) with user
   stories and steps, or its phase in [the platform plan](src/docs/plans/platform.md) until it gets one. When a feature's
-  *Done when* is met, delete its line and add its entry to the [CHANGELOG](CHANGELOG.md); the feature doc says what else
+  *Done when* is met, delete its line and add its entry to the [work log](src/docs/work-log.md); the feature doc says what else
   to update.
 - **A feature holds about ten steps.** A bigger one is a parent whose line lists its children (`F49.1`, `F49.2`, …)
   in order, each with its done-when; each child is its own plan, branch and pull request
@@ -24,12 +24,12 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - **Bigger designs live in [src/docs/specs/](src/docs/specs/).** This list keeps only their open items.
 - **Bugs are fixes.** Each has a doc in [src/docs/fixes/](src/docs/fixes/README.md) (symptom, cause, fix, how it was confirmed);
   an open one has one line here that links to it.
-- **When something is finished**, it leaves this list: one line at the top of the [CHANGELOG](CHANGELOG.md) (newest
+- **When something is finished**, it leaves this list: one line at the top of the [work log](src/docs/work-log.md) (newest
   first), so everything here is still open.
 
 ## Now: after F18, evals as content, the cook, localisation, Puls's specialists and the sales playground (Phases 3b to 4)
 
-Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a time:
+Phases 0 to 3 are done (the work log has each one). In this order, one at a time:
 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
 - [ ] **F18's leftovers, before F49.1** (Louis, 2026-10-29): Louis labels the judge's 36 answers himself (the 31 of 36 was a blind agent's labels)

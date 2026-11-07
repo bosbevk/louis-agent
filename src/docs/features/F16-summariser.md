@@ -84,7 +84,7 @@ instructions, so that there is one summariser, one place to tune it, and one eva
 - Stories' criteria pass; tests added; suites pass.
 - The suite's baseline and the kept changes are recorded with pass rate and cost per summary; quality held.
 - The demo still confirms 10/10 fixes.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F16** to the CHANGELOG, set
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F16** to the work log, set
   *Status* to done here and in the features table, and update skills 7 and 12 in the goal map.
 
 ---

@@ -75,7 +75,7 @@ Uses:
 
 - Stories' criteria pass; tests added; suites pass.
 - After two benchmark runs, the second run's estimate comes from history and the run's actual cost falls within its range.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F6** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F6** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

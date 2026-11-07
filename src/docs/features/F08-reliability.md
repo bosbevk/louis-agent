@@ -82,7 +82,7 @@ structured data, so that a malformed text line never costs a "continue" round-tr
 - Stories' criteria pass; tests added; suites pass.
 - Acceptance: with the account's limit artificially low (a test key or stub), the run stops at the first refusal with
   the message, and `-Resume` completes it after.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F8** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F8** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

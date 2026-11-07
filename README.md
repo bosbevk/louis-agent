@@ -39,7 +39,7 @@ own agents.
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](src/docs/plans/platform.md); what's finished is in the
-[CHANGELOG](CHANGELOG.md).
+[work log](src/docs/work-log.md).
 
 ## How it's built
 

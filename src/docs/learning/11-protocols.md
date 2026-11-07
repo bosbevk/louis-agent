@@ -101,7 +101,7 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
   without `/v1` gets that page, and the host stops at start-up on a price table that isn't one, which is loud. An
   alias is a second table to keep: CL14's aliases are still not all gone, a deploy later.
 - **A wrong method answers 404, not 405** (above).
-- **The docs of the past keep their routes.** Plans, ADRs, fix and feature docs and the CHANGELOG record what was true
+- **The docs of the past keep their routes.** Plans, ADRs, fix and feature docs and the work log record what was true
   when they were written; only the living docs moved to `/v1`.
 
 ## What didn't work (and what it taught)

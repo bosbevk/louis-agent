@@ -62,7 +62,7 @@ provider's own usage and cost reports, so that I trust the numbers.
 
 - Stories' criteria pass; tests added; suites pass.
 - Where an admin key exists: a benchmark day's ledger is within 5% of the provider's report (spec §9).
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F11** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F11** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
