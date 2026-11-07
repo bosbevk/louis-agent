@@ -2,6 +2,20 @@
 
 > **Plan draft, not yet approved.** Moved whole out of the old platform plan on 2026-11-07 (CL56), lines 2005 to 3006 of `platform.md` at the tag `pre-roadmap`; the body below is as it was. When the work starts, this is rewritten into the plan Louis approves (the development guide, rule 3) and its TODO row names it. The sub-feature split of 2026-10-28 is the TODO's rows.
 
+> **Added 2026-11-07** (Louis: a workflow is "how one agent can delegate to another, make decisions on that";
+> "abandon the workflow identity idea"). F39 builds the framework's **fourth concept**, the workflow, as an engine
+> capability ([F106](F106-framework-track.md)): Part A stays (delegation, hand-off to a named peer, typed results checked
+> in code); **Part B's `voorman` identity is dropped**, and the triage case below survives only as a demo of Part A.
+> Hand-off, with F43's conversations saved to Mongo, is a must the framework track takes right after the builder
+> (F106.1). When this draft is rewritten into the approved plan, Part B is cut and ADR 0031's "the orchestrator is an
+> identity" is amended. **The shape Louis gave on 2026-11-07:** a job polls a log or feed and *code* collects the
+> errors; a *manager* identity decides which to investigate; an *investigator* identity reports back a typed result;
+> the manager decides human intervention (an endpoint) or auto-handling, and delegates a fix to the *coder* (the
+> coding identity), validates the changes and hands them to a *reviewer* identity; an unhappy review goes back to the
+> coder *through the manager* until the reviewer is happy or the cap stops it; every result passes through the
+> manager, who checks everyone (a hub, never agent to agent); a branch is left with the fix, **never a PR**. Code for the fixed steps, an agent only where the next step depends
+> on what was found. This is F106.3, the framework's workflow demo.
+
 ### Phase 6 · F39 Orchestration: one delegation function, and the orchestrator as an identity
 
 Branches `feature/F39-orchestration` (Part A) and `feature/F39-voorman-identity` (Part B). Before step A0 this section is

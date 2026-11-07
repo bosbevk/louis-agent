@@ -12,16 +12,21 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 58 | 76 |
+| Features (`F`) | 58 | 77 |
 | Fixes (`FX`) | 55 | 4 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (106 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| F106 | The framework's track, before the agents | Now |
+| F74 | Packaging the engine in place, then its own repo after the engine features | Now |
+| F44 | The engine as a product | Now |
+| F39 | Orchestration | Now |
+| F43 | Accounts, tenants and durable sessions | Now |
 | F62 | Validate demand | Now |
 | F18 | F18's leftovers, before F49.1 | Now |
 | F63 | The reference transcripts in git | Now |
@@ -35,27 +40,23 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F71 | At the next run, read the hand-off lines | Now |
 | F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
-| F48 | Recipe maths and a teaching cook | Now |
-| F46 | Localisation | Now |
-| F50 | Puls's local specialists | Now |
-| F40 | The sales playground | Now |
+| F54 | F54's leftovers | Now |
+| F57 | The site tells the new structure | Now |
+| F59 | The framework's web | Now |
+| F48 | Recipe maths and a teaching cook | Next |
+| F46 | Localisation | Next |
+| F50 | Puls's local specialists | Next |
+| F40 | The sales playground | Next |
 | F7 | Cost you can see and stop | Next |
-| F39 | Orchestration | Next |
 | FX4 | Append-only history | Next |
 | F41 | Drafts and approvals | Next |
 | F42 | Safety and audit | Next |
 | F36 | MCP servers as packs | Next |
-| F43 | Accounts, tenants and durable sessions | Next |
 | F8 | Reliability | Next |
 | F15 | Model limits and local models | Next |
-| F57 | The site tells the new structure | Next |
 | F58 | The two sites go live from this PC | Next |
-| F59 | The framework's web | Next |
 | F61 | Accounts, tenants and the two sites in Azure | Next |
-| F54 | F54's leftovers | Next |
-| F44 | The engine as a product | Next |
 | F51 | Hosting for public traffic | Next |
-| F74 | Phase 10, the engine as a developer package, after every engine feature | Next |
 | F75 | Puls local spec | Puls |
 | F76 | Cook for the week | Puls |
 | CL16 | Reusable roles | Puls |

@@ -4,10 +4,13 @@
 > lives. **Elsewhere:** what was finished in the [work log](src/docs/work-log.md); the why of the order in
 > [the roadmap](ROADMAP.md); the goal it all works toward in [GOAL.md](src/docs/GOAL.md).
 
-**The end product:** three offers on one engine, in [the roadmap](ROADMAP.md): **Puls**, the public
-South African assistant; **a configured agent**, an identity and its packs hosted for a business; and **the engine
-itself**, for teams that build their own. The plan's phases set the order here: *Now*, *Next*, *Puls*, *Later*, and
-the *Cleanups* each done when its code is next touched.
+**The end product:** three offers on one engine, in [the roadmap](ROADMAP.md): **the engine itself**, the application
+framework for AI agents in .NET, for teams that build their own; **a configured agent**, an identity and its packs
+hosted for a business; and **Puls**, the public South African assistant. **The rows are in build order** (Louis,
+2026-11-07: "focus on the framework first then build the agents"): the framework's track, the demand check that runs
+meanwhile and the small leftovers under *Now*; then the configured agents' phases under *Next*; then *Puls*, *Later*,
+and the *Cleanups* each done when its code is next touched. The work log's open table keeps the same order
+(`WorkLogTests`).
 
 **How this list works.** Every open item is one row with an id (`F` a feature, `FX` a fix, `CL` a cleanup); a child
 (`F61.4`) is named in its parent's plan. The detail of an item lives in its plan or feature doc, written before its
@@ -15,10 +18,15 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (106)
+## Open (107)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
+| F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
+| F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
+| F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
+| F39 | Orchestration | Now | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
+| F43 | Accounts, tenants and durable sessions | Now | — |
 | F62 | Validate demand | Now | — |
 | F18 | F18's leftovers, before F49.1 | Now | — |
 | F63 | The reference transcripts in git | Now | — |
@@ -32,27 +40,23 @@ known limitations below are facts about today, not tasks.
 | F71 | At the next run, read the hand-off lines | Now | — |
 | F72 | Open from the recipes evals | Now | — |
 | F73 | Check the 47 new own-prices rows | Now | — |
-| F48 | Recipe maths and a teaching cook | Now | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
-| F46 | Localisation | Now | — |
-| F50 | Puls's local specialists | Now | — |
-| F40 | The sales playground | Now | — |
+| F54 | F54's leftovers | Now | — |
+| F57 | The site tells the new structure | Now | — |
+| F59 | The framework's web | Now | [doc](src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md) |
+| F48 | Recipe maths and a teaching cook | Next | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
+| F46 | Localisation | Next | — |
+| F50 | Puls's local specialists | Next | — |
+| F40 | The sales playground | Next | — |
 | F7 | Cost you can see and stop | Next | [feature doc](src/docs/features/F07-budgets.md) |
-| F39 | Orchestration | Next | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
 | FX4 | Append-only history | Next | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
 | F41 | Drafts and approvals | Next | — |
 | F42 | Safety and audit | Next | — |
 | F36 | MCP servers as packs | Next | — |
-| F43 | Accounts, tenants and durable sessions | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
-| F57 | The site tells the new structure | Next | — |
 | F58 | The two sites go live from this PC | Next | [plan](src/docs/plans/F58-sites-from-this-pc.md) |
-| F59 | The framework's web | Next | [doc](src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md) |
 | F61 | Accounts, tenants and the two sites in Azure | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
-| F54 | F54's leftovers | Next | — |
-| F44 | The engine as a product | Next | [feature doc](src/docs/features/F12-response-speed.md) |
 | F51 | Hosting for public traffic | Next | — |
-| F74 | Phase 10, the engine as a developer package, after every engine feature | Next | — |
 | F75 | Puls local spec | Puls | — |
 | F76 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
 | CL16 | Reusable roles | Puls | — |
