@@ -6,7 +6,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Usage.Records;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
@@ -50,8 +50,8 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         {
             // Running it would act on partial input, e.g. half a script or a file missing its content.
             Log.Log(LogLevel.Information, AgentLogMessage.ToolCallSkipped,
-                new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
-            ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmClientFactory.MaxOutputTokens);
+                new { Tool = context.Function.Name, LlmLimits.MaxOutputTokens }, tag: Tag);
+            ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmLimits.MaxOutputTokens);
             return TruncatedCallMessage;
         }
 
@@ -211,7 +211,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
             // Its own scope: recorded as "summary", numbered apart from the turn's rounds.
             using (UsageScope.Begin(UsagePurpose.Summary))
                 response = await summaryClient.GetResponseAsync(
-                    messages, new ChatOptions { MaxOutputTokens = LlmClientFactory.MaxOutputTokens },
+                    messages, new ChatOptions { MaxOutputTokens = LlmLimits.MaxOutputTokens },
                     cancellationToken);
             if (!string.IsNullOrWhiteSpace(response.Text))
             {

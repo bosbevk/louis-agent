@@ -11,6 +11,12 @@
     <ItemGroup>
         <!-- The framework's eval runner; this program only says what the coding agent's evals can name. -->
         <ProjectReference Include="..\..\..\..\src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+        <!-- CL57: the program, not the runner library, decides the telemetry. -->
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+        <!-- CL57: the model providers this program composes; core ships no SDK. -->
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj" />
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj" />
     </ItemGroup>
 
 </Project>

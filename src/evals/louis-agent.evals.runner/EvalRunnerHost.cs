@@ -1,6 +1,6 @@
 using System.Text.Json;
+using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Telemetry;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Files;
@@ -31,10 +31,13 @@ public static class EvalRunnerHost
     /// Does what the command line asks and gives back the exit code. stdout carries only the protocol and the --list
     /// lines; refusals and logs go to stderr.
     /// </summary>
-    public static async Task<int> RunAsync(string[] args, RunnerCatalogs catalogs)
+    public static async Task<int> RunAsync(string[] args, RunnerCatalogs catalogs, HostServices? services = null)
     {
-        // It loads no .env and isn't built through AgentHost, so it starts its traces first, from what it was given.
-        OtlpTelemetry.Instance.Start();
+        // It loads no .env and isn't built through AgentHost, so it starts the telemetry its program gave (CL57) first.
+        services ??= HostServices.None;
+        services.TelemetryOrNone.Start();
+        // The judges build their clients through the providers the program composed.
+        catalogs = catalogs with { Models = services.ClientFactory() };
         try
         {
             var request = CommandLine.Parse(args);
@@ -43,7 +46,8 @@ public static class EvalRunnerHost
             // EVALS= then chooses them by the identity each one proves.
             var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
                 .Select(folder =>
-                    FileEval.Load(folder.Folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, folder.Source))
+                    FileEval.Load(folder.Folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, folder.Source,
+                        catalogs.Models))
                 .ToList();
             var chosen = EvalFolders.Choose(files, Environment.GetEnvironmentVariable("EVALS"));
             var catalog = new EvalCatalog(chosen, new StubEval());

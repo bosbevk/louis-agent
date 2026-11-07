@@ -37,4 +37,7 @@ public sealed class NoWebAccess : IWebAccess
 
     /// <summary>A fetcher that fails every fetch with the reason.</summary>
     public IPageFetcher NewFetcher() => new UnavailablePageFetcher(Reason);
+
+    /// <summary>Nothing named, nothing ready.</summary>
+    public WebSetup Setup => WebSetup.None;
 }

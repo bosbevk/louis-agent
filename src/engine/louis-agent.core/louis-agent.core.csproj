@@ -15,7 +15,6 @@
       <!-- F18 step 7.5.2: the one parser for a name that is an enum member (SettingChoice); packs, identities and eval sets get it through core. -->
       <ProjectReference Include="..\louis-agent.choices\louis-agent.choices.csproj" />
       <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
-      <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
     </ItemGroup>
 
   <ItemGroup>
@@ -24,22 +23,33 @@
       <InternalsVisibleTo Include="louis-agent.core.telemetry" />
       <InternalsVisibleTo Include="louis-agent.core.web.tests" />
       <InternalsVisibleTo Include="louis-agent.core.telemetry.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.anthropic" />
+      <InternalsVisibleTo Include="louis-agent.core.ollama" />
+      <InternalsVisibleTo Include="louis-agent.core.openai" />
+      <InternalsVisibleTo Include="louis-agent.core.anthropic.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.ollama.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.openai.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.anthropic" />
+      <InternalsVisibleTo Include="louis-agent.core.ollama" />
+      <InternalsVisibleTo Include="louis-agent.core.openai" />
+      <InternalsVisibleTo Include="louis-agent.core.anthropic.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.ollama.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.openai.tests" />
     <InternalsVisibleTo Include="louis-agent.pack.web.tests" />
       <InternalsVisibleTo Include="louis-agent.coding-catalog.tests" />
       <InternalsVisibleTo Include="louis-agent.core.integration-tests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->
       <InternalsVisibleTo Include="louis-agent.api" />
+      <InternalsVisibleTo Include="louis-agent.api.evals" />
+      <InternalsVisibleTo Include="louis-agent.api.evals.tests" />
       <!-- The orchestrator runs git and dotnet against the service it watches without a shell, like the tools do. -->
       <InternalsVisibleTo Include="louis-agent.orchestrator" />
       <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
       <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
-      <PackageReference Include="Anthropic" Version="12.53.0" />
       <PackageReference Include="dotenv.net" Version="4.2.0" />
       <PackageReference Include="Microsoft.Extensions.AI" Version="10.10.0" />
-      <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
       <PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="10.0.13" />
       <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
-      <PackageReference Include="OllamaSharp" Version="5.5.0" />
       <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
       <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />

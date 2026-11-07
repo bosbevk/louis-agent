@@ -1,7 +1,7 @@
 using LouisAgent.Starter;
 using LouisAgent.Starter.Layout;
 using LouisAgent.Web.Accounts.Client;
-using LouisAgent.Web.Admin;
+using LouisAgent.Web.Evals;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Frames;
@@ -27,7 +27,7 @@ builder.Services.AddSingleton(new ChatText()); // the frame's words, in English;
 builder.Services.AddLouisAgentAccounts(); // sign in, register and the profile, when the API has ACCOUNTS_SQL_URL
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
 builder.Services.AddSingleton(new ChatHandoff("chat"));
-EvalPages.AddTo(builder.Services);
+builder.Services.AddLouisAgentEvals();
 
 // Which component draws each screen: the plain table, then a pack's own, then yours. A pack's view is added here.
 builder.Services.AddSingleton(new PackViews());

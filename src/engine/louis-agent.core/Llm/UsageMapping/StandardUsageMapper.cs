@@ -1,9 +1,8 @@
-namespace LouisAgent.Core.Llm.UsageMapping;
 
 using LouisAgent.Core.Usage.Records;
-using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.UsageMapping;
 /// <summary>
 /// The Microsoft.Extensions.AI contract, used for any provider without its own mapper: cached tokens are part of
 /// <see cref="UsageDetails.InputTokenCount"/>, so the uncached input is the input minus cache reads and writes.

@@ -1,8 +1,8 @@
 # Change the MCP server
 
-> **How-to.** Change `src/hosts/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool or a
+> **How-to.** Change `src/hosts/louis-agent.mcp`, which hands the agent's tools to any MCP client: publish a tool or a
 > feed, add an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
-> [louis-agent.mcp-server](../projects/louis-agent.mcp-server.md); why it has no model in
+> [louis-agent.mcp](../projects/louis-agent.mcp.md); why it has no model in
 > [MCP exposes tools, not a model](../CLAUDE.md#rules-that-always-apply).
 
 The MCP server has no model of its own: an outside client's model calls the agent's tools, one call at a time. It
@@ -32,7 +32,7 @@ A tool only MCP clients need (today: the three read-only skill tools, `list_skil
    `[McpServerTool]` and `[Description]`s.
 2. Register the class with `.WithTools<YourTools>()` in **both** transports, `RunStdioAsync` and `RunHttpAsync`, or it
    exists in one only.
-3. Its texts are `Messages/McpServerText` and its log lines `McpServerLogMessage`
+3. Its texts are `Messages/McpText` and its log lines `McpLogMessage`
    ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
 4. Never expose a step that is the user's to take: approving agent-built tools or skill files stays in a chat
    ([ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md)).
@@ -59,7 +59,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:5090/         
 For stdio, add the server to a client from `config/rider/rider-mcp-servers.example.json` and ask it to list the tools.
 Over stdio by hand: pipe `initialize`, `notifications/initialized`, `resources/list` and `resources/read` (with
 `{"uri":"feed://shop-prices"}`) as JSON-RPC lines into the built server with `PACKS=shop-prices`. In code,
-`src/tests/hosts/louis-agent.mcp-server.tests` runs a real client against the server over in-memory pipes (`InMemoryMcp`); its
+`src/tests/hosts/louis-agent.mcp.tests` runs a real client against the server over in-memory pipes (`InMemoryMcp`); its
 auth is core's `HostAuth` (`HostAuthTests`), and the tools are tested where they live.
 
 ## Before you ask for a review

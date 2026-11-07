@@ -38,8 +38,8 @@ call, because the SDK has no timeout per request.
 await yet). F36 adds a second, async source of packs, `Plugins.LoadAsync(IDENTITIES, PACKS, MCP_PACKS)`, which connects
 every named server before the catalogue is built and owns the connections. Each host holds what it returns with
 `await using`, so a stdio child ends when the host stops. The CLI, ACP and MCP hosts already await
-(`src/louis-agent.cli/Program.cs:9,13`, `src/louis-agent.acp-server/Program.cs:11`,
-`src/louis-agent.mcp-server/Program.cs:28,32`), and the API calls `app.Run()` (`src/louis-agent.api/Program.cs:221`),
+(`src/louis-agent.cli/Program.cs:9,13`, `src/louis-agent.acp/Program.cs:11`,
+`src/louis-agent.mcp/Program.cs:28,32`), and the API calls `app.Run()` (`src/louis-agent.api/Program.cs:221`),
 so the API either awaits `app.RunAsync()` or disposes the packs when it stops (*inferred*; the plan picks). A name that
 is both a `PackKind` and an `MCP_PACKS` entry stops start-up. The pack's guide is ours (`config/mcp/{name}.md`),
 reviewed like any prompt; only a trusted server's own instructions may stand in for it. The guide reaches

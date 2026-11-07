@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Packs.Recipes.Web;
 using LouisAgent.Puls;
 using LouisAgent.Web.Accounts.Client;
-using LouisAgent.Web.Admin;
+using LouisAgent.Web.Evals;
 using LouisAgent.Puls.Content;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Web.Api;
@@ -24,7 +24,7 @@ builder.Services.AddSingleton<ChatSettings>();
 builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
-EvalPages.AddTo(builder.Services, PulsSites.Kinds);
+builder.Services.AddLouisAgentEvals(PulsSites.Kinds);
 builder.Services.AddSingleton(PulsText.Afrikaans); // Puls speaks Afrikaans
 builder.Services.AddSingleton(PulsAccountText.Afrikaans); // and so do its sign-in and profile pages (F61.2)
 builder.Services.AddLouisAgentAccounts();

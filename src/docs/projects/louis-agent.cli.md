@@ -103,4 +103,4 @@ No CLI-specific tests; the loop and commands are covered through `AgentEngine` i
 [Quick start](../../../demos/louis-agent/docs/QUICK_START_AGENT.md) · [louis-agent.core](louis-agent.core.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md) · Next: [louis-agent.acp-server](louis-agent.acp-server.md)
+[Projects](README.md) · Previous: [louis-agent.host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md) · Next: [louis-agent.acp](louis-agent.acp.md)

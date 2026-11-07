@@ -35,9 +35,9 @@ public partial class HostMessageEnumTests
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
             Is.SupersetOf(new[]
             {
-                "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage",
+                "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpLogMessage",
                 "CliUserText", "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
-                "ApiModelText", "ApiUserText", "McpServerText", "HostPacksErrorMessage", "WhereToBuyToolMessage",
+                "ApiModelText", "ApiUserText", "McpText", "HostPacksErrorMessage", "WhereToBuyToolMessage",
                 "WhereToBuyLogMessage", "ShopPriceToolMessage", "ShopPriceLogMessage", "EvalLogMessage",
                 "GradeMessage", "EvalErrorMessage", "RunnerMessage", "StubMessage", "CommonGradeMessage",
                 "ConformanceMessage", "ApiErrorMessage"

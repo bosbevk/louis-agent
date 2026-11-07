@@ -19,9 +19,9 @@ public static class JudgeClients
         Func<IUsageSink?> ledger) =>
         JudgeSettings.FromEnvironment(getVariable) is { } settings ? Create(settings, factory, ledger()) : null;
 
-    /// <summary>The judge this process's environment names, with the real client factory and the ledger the process writes (<c>LOG_DIRECTORY</c>); null when it names none.</summary>
-    public static ConfiguredJudge? FromEnvironment() =>
-        FromEnvironment(Environment.GetEnvironmentVariable, new LlmClientFactory(),
+    /// <summary>The judge this process's environment names, through the providers the runner's program composed (CL57) and the ledger the process writes (<c>LOG_DIRECTORY</c>); null when it names none.</summary>
+    public static ConfiguredJudge? FromEnvironment(ILlmClientFactory? models) =>
+        FromEnvironment(Environment.GetEnvironmentVariable, models ?? new LlmClientFactory([]),
             () => UsageLedger.Open(AgentOptions.FromEnvironment()));
 
     public static ConfiguredJudge Create(JudgeSettings settings, ILlmClientFactory factory, IUsageSink? sink)

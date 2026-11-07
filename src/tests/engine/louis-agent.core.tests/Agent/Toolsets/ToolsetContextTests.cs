@@ -68,6 +68,14 @@ public class ToolsetContextWebTests
         });
     }
 
+    /// <summary>The setup is what the parts say, and none without a web library (CL57).</summary>
+    [Test]
+    public void TheSetup_IsWhatThePartsSay_AndNoneWithoutAWebLibrary() =>
+        Assert.That((new ToolsetContext(new AgentOptions(), NoWebAccess.Instance).Web.Setup,
+                new ToolsetContext(new AgentOptions(),
+                    new WebParts(new NoSearch(), Setup: new WebSetup("none", false, null, false))).Web.Setup),
+            Is.EqualTo((WebSetup.None, new WebSetup("none", false, null, false))));
+
     [Test]
     public void WithoutAWebLibrary_EveryPartSaysItIsNotSetUp()
     {

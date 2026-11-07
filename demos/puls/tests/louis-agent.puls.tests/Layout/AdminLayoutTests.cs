@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text;
-using LouisAgent.Web.Admin.Reviews;
-using LouisAgent.Web.Admin.Reviews.Queue;
+using LouisAgent.Web.Evals.Admin.Reviews;
+using LouisAgent.Web.Evals.Admin.Reviews.Queue;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;

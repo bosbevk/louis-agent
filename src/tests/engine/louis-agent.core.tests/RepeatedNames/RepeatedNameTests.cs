@@ -75,7 +75,7 @@ public class RepeatedNameTests
             + "recorded data stays as recorded"),
         ("src/tests/web/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole",
             "the role of the recorded turn, named once: the goldens and the replay tests read it"),
-        ("demos/puls/tests/louis-agent.api.tests/Evals/Reports/EvalManualTests.cs", "",
+        ("demos/puls/tests/louis-agent.api.evals.tests/Reports/EvalManualTests.cs", "",
             "each real eval beside its manual: the names the real runner offers"),
         ("demos/puls/tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub",
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: "

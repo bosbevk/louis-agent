@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- OpenAI-compatible servers on core (CL57): the provider strategy for anything that speaks OpenAI's chat API at an
+       endpoint you name (LM Studio, vLLM, OpenAI itself), through Microsoft's adapter over the OpenAI SDK. A program
+       hands OpenAiCompatibleProvider.Instance to AgentHost.Build in its HostServices. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Core.OpenAi</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\louis-agent.core\louis-agent.core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.core.openai.tests" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.core.openai.md" Link="docs\louis-agent.core.openai.md" />
+  </ItemGroup>
+
+</Project>

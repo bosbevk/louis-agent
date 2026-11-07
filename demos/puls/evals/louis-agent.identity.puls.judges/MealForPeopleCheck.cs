@@ -92,7 +92,7 @@ public sealed class MealForPeopleCheck : IRubricCheck
             if (!File.Exists(file))
                 throw new InvalidDataException(MessageText.Format(EvalErrorMessage.RubricMissing, new { File = file }));
             string rubric = PromptHeaders.Split(settings.Rubric, File.ReadAllText(file)).Body;
-            return MealForPeopleCheck.Create(rubric, () => JudgeClients.FromEnvironment());
+            return MealForPeopleCheck.Create(rubric, () => JudgeClients.FromEnvironment(context.Models));
         }
     }
 }

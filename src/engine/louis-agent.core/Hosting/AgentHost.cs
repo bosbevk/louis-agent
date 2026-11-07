@@ -6,7 +6,6 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Hosting.Messages;
-using LouisAgent.Core.Hosting.Rider;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
@@ -22,9 +21,9 @@ namespace LouisAgent.Core.Hosting;
 /// Single bootstrap shared by the CLI, ACP, API and MCP entry points: the flow only (S, CL15). The .env files are
 /// <see cref="HostEnvironment"/>, the roles <see cref="RoleFiles"/>, the session models
 /// <see cref="SessionLlmLoader"/>, the tables <see cref="PriceTableLoader"/> and <see cref="ExchangeRatesLoader"/>,
-/// the ledger <see cref="UsageLedger"/>, the prompt <c>SkillLoader</c> (through the engine factory), Rider's tools
-/// <see cref="RiderMcpToolDiscovery"/> and the traces whatever <see cref="HostServices.Telemetry"/> the host gave
-/// (CL33; none means no tracer).
+/// the ledger <see cref="UsageLedger"/>, the prompt <c>SkillLoader</c> (through the engine factory), and whatever
+/// <see cref="HostServices"/> the host gave: its web, its traces and its tool discovery (CL33, CL57; none means
+/// none).
 /// </summary>
 public static class AgentHost
 {
@@ -84,7 +83,7 @@ public static class AgentHost
         AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent), telemetry.AddSinks);
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
         telemetry.Start();
-        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog, services);
+        return Build(llm, agent, clientFactory ?? services.ClientFactory(), catalog, services);
     }
 
     /// <summary>
@@ -126,7 +125,8 @@ public static class AgentHost
                 Thinking = engine.Thinking?.Wire() ?? "off"
             });
 
-        RiderMcpToolDiscovery.StartInBackground(engine, agent);
+        // What the host's program finds tools with (Rider's discovery under the ACP server); none looks nowhere.
+        (services ?? HostServices.None).DiscoveryOrNone.Start(engine);
 
         return new AgentHostContext(engine, llm, agent, prices, rates, display, engines);
     }

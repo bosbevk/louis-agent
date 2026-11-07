@@ -738,7 +738,7 @@ louis-agent.core/
 └── Tools/Agents/        SpecialistTools and MinionTools, now thin callers
 src/louis-agent.api/     AgentSessions asks DelegationPolicy and checks the callers' list; Program.cs opens one
                          TurnContext instead of 6 values
-src/louis-agent.cli/, src/louis-agent.acp-server/   open a TurnContext with a registry per chat (A4)
+src/louis-agent.cli/, src/louis-agent.acp/   open a TurnContext with a registry per chat (A4)
 tests/louis-agent.core.tests/Delegation/   FakeChildTransport, ChildAgentClientTests, DelegationLimiterTests, …
 ```
 

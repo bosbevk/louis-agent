@@ -1,30 +1,37 @@
 # Change the eval pages
 
 > **How-to.** Change the framework's eval pages: the Evals page, one run's page, the Review page, the studio and the prompts; and give a
-> site the pages. **Elsewhere:** how they work in [The eval pages](../projects/eval-pages.md); the rest of the framework's web in
+> site the pages. **Elsewhere:** how they work in [The eval pages](../projects/louis-agent.web.evals.md); the rest of the framework's web in
 > [Change the framework's web](change-the-web.md).
 
 ## Give a site the pages
 
-Every site has the addresses, so every site makes the one call in `Program.cs` and lists the one name in `Styles/app.scss`:
+The studio is a library a site opts into (CL57, `src/web/louis-agent.web.evals`): a project reference, one call in
+`Program.cs`, the library's assembly in the router, one name in `Styles/app.scss` with the library's `Styles` on
+`sasscompiler.json`'s include paths, and `@using LouisAgent.Web.Evals` in `_Imports.razor`; the starter has all of it.
 
 ```csharp
-EvalPages.AddTo(builder.Services);
+builder.Services.AddLouisAgentEvals();
+```
+
+```razor
+<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="FrameworkPages.With(AccountLibrary.Assembly, EvalLibrary.Assembly)" …>
 ```
 
 ```scss
-@forward "web/admin/eval-pages";
+@forward "evals/pages";
 ```
 
 A site that has evals also puts the links in its frame, `<Links><EvalLinks /></Links>`. A site that wants its sources chart sorted hands the
 call its kinds of website:
 
 ```csharp
-EvalPages.AddTo(builder.Services, new SiteKinds([new SiteKind("shops", "shop.example"), new SiteKind("nearby", ".example")]));
+builder.Services.AddLouisAgentEvals(new SiteKinds([new SiteKind("shops", "shop.example"), new SiteKind("nearby", ".example")]));
 ```
 
 An address on its own takes itself and what's under it, and one starting with a dot takes every address that ends that way. A website counts
-under the first kind it fits, and the chart draws the first kind in green.
+under the first kind it fits, and the chart draws the first kind in green. The API side is `MapLouisAgentEvals` in the site's program
+([louis-agent.api.evals](../projects/louis-agent.api.evals.md)).
 
 ## Change a page
 

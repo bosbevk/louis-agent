@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "starter": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://127.0.0.1:5101",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "WORKSPACE_ROOT": "../../../..",
+        "LOG_DIRECTORY": "../../logs",
+        "AGENT_AUTH": "off"
+      }
+    }
+  }
+}

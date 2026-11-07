@@ -7,7 +7,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.Providers.AnthropicProvider;
+using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Usage.Sinks;
@@ -199,9 +199,17 @@ public class JsonlUsageSinkTests
     public void CreateUsageSink_FollowsUsageLedgerAndLogDirectory()
     {
         string noPrices = Path.Combine(_directory, "no-prices.json");
-        Assert.That(UsageLedger.Open(new AgentOptions { LogDirectory = _directory, PricesFile = noPrices }),
+        Assert.That(UsageLedger.Open(new AgentOptions
+        {
+            LogDirectory = _directory,
+            PricesFile = noPrices
+        }),
             Is.TypeOf<PricingUsageSink>().With.Property(nameof(PricingUsageSink.Inner)).TypeOf<JsonlUsageSink>());
-        Assert.That(UsageLedger.Open(new AgentOptions { LogDirectory = _directory, UsageLedger = false }), Is.Null);
+        Assert.That(UsageLedger.Open(new AgentOptions
+        {
+            LogDirectory = _directory,
+            UsageLedger = false
+        }), Is.Null);
         Assert.That(UsageLedger.Open(new AgentOptions { LogDirectory = null }), Is.Null);
     }
 

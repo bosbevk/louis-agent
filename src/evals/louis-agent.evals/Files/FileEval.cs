@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Messages;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Llm;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Datasets;
@@ -51,10 +52,11 @@ public sealed class FileEval : IEval
     /// <paramref name="readers"/> for a check that names a reader; <paramref name="source"/> is where the folder
     /// sits in the repository, which the manual's path starts from.
     /// </summary>
-    public static FileEval Load(string folder, CheckCatalog catalog, ReaderCatalog readers, string source)
+    public static FileEval Load(string folder, CheckCatalog catalog, ReaderCatalog readers, string source,
+        ILlmClientFactory? models = null)
     {
         var file = EvalFileReader.Read(folder);
-        var checks = Build(file, folder, catalog, readers);
+        var checks = Build(file, folder, catalog, readers, models);
         var dataset = DatasetLoader.Load(Path.Combine(folder, DatasetFolder), checks);
         return new FileEval(file, dataset, checks, file.Manual is null ? null : $"{source}/{file.Manual}")
         {
@@ -110,7 +112,7 @@ public sealed class FileEval : IEval
     /// the catalogue doesn't have is refused, naming the file and the types it does have.
     /// </summary>
     private static IReadOnlyList<ICheck> Build(EvalFile file, string folder, CheckCatalog catalog,
-        ReaderCatalog readers)
+        ReaderCatalog readers, ILlmClientFactory? models)
     {
         var built = new List<ICheck>();
         foreach (var entry in file.Checks)
@@ -122,7 +124,8 @@ public sealed class FileEval : IEval
                     entry.Type,
                     Supported = string.Join(", ", catalog.Listing().Select(line => line.Type))
                 }));
-            var check = type.Create(entry.Parameters ?? NoParameters, new CheckContext(folder, [.. built], readers));
+            var check = type.Create(entry.Parameters ?? NoParameters,
+                new CheckContext(folder, [.. built], readers, models));
             built.Add(entry.Name is { } name ? new NamedCheck(name, check) : check);
         }
 

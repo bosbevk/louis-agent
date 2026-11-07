@@ -8,7 +8,7 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm.Providers.AnthropicProvider;
+using LouisAgent.Core.Anthropic;
 
 namespace LouisAgent.Core.Tests.Agent;
 
@@ -26,7 +26,11 @@ public class AgentEngineUsageTests
         new(new ChatMessage(ChatRole.Assistant,
         [
             new FunctionCallContent(callId, "ExecuteSkill",
-                new Dictionary<string, object?> { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
+                new Dictionary<string, object?>
+                {
+                    ["skillName"] = "SayHello",
+                    ["jsonArgs"] = "{\"name\":\"Agent\"}"
+                })
         ]));
 
     [Test]
@@ -88,8 +92,7 @@ public class AgentEngineUsageTests
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
             {
-                (UsagePurpose.Turn, 1),
-                (UsagePurpose.Summary, 1),
+                (UsagePurpose.Turn, 1), (UsagePurpose.Summary, 1),
                 // The summary has its own scope, so the turn's next request is still round 2.
                 (UsagePurpose.Turn, 2),
             }));
@@ -112,7 +115,9 @@ public class AgentEngineUsageTests
         var sink = new ListUsageSink();
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Now I'll append the rest:"))
-            { FinishReason = ChatFinishReason.Length },
+            {
+                FinishReason = ChatFinishReason.Length
+            },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done in smaller chunks.")));
         var engine = Engine(client, sink);
 
@@ -121,11 +126,8 @@ public class AgentEngineUsageTests
             {
             }
 
-        Assert.That(sink.Records.Select(r => (r.Purpose, r.Round, r.Stop)), Is.EqualTo(new[]
-        {
-            (UsagePurpose.Turn, 1, "length"),
-            (UsagePurpose.Continue, 2, "stop"),
-        }));
+        Assert.That(sink.Records.Select(r => (r.Purpose, r.Round, r.Stop)),
+            Is.EqualTo(new[] { (UsagePurpose.Turn, 1, "length"), (UsagePurpose.Continue, 2, "stop"), }));
     }
 
     [Test]
@@ -139,8 +141,8 @@ public class AgentEngineUsageTests
             OutputTokenCount = 144,
             AdditionalCounts = new AdditionalPropertiesDictionary<long> { ["CacheCreationInputTokens"] = 10_227 },
         };
-        var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi"))
-        { Usage = usage });
+        var client = new FakeChatClient(_ =>
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")) { Usage = usage });
         var engine = Engine(client, sink, new AnthropicUsageMapper());
 
         await engine.ProcessPromptAsync(engine.NewHistory(), "hi");

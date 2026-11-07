@@ -7,7 +7,7 @@
 ## Purpose
 
 The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). That's the
-admin's frame, the eval pages, a pack's screens, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
+admin's frame, a pack's screens, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
 the first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each site
 keeps its colours and brand; the rules and scripts of the frames are here. The components only emit class names, and their words come from a
 `ChatText`, English by default, that a site can replace.
@@ -25,8 +25,8 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   draws with no branch for the case. Every call to the API still says it is the app's own (`X-Requested-With`), which
   is what lets a signed-in person's cookie count in place of a key; `SiteFrames.Account` names the layout the account
   pages draw inside.
-- **The eval pages.** The evals, their runs, the answers to grade, the studio and the prompts are on every site at `/admin`, and a site makes
-  one call for them. They have [their own doc](eval-pages.md).
+- **The eval studio** is [louis-agent.web.evals](louis-agent.web.evals.md), a library on this one a site opts into (CL57); the
+  router lists what a site opted into through `FrameworkPages.With(AccountLibrary.Assembly, EvalLibrary.Assembly)`.
 - **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
   and the work panel. A site writes a small page with its addresses and fills the slots: `Logo`, `Views`, `Profile`, `Background`, `Empty`,
   `ViewContent` and `UsageLine`. An empty slot leaves no gap, and with no `Empty` a new chat is just the message box. The site also says how a
@@ -63,7 +63,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 
 ## Diagrams
 
-**Architecture:** a site is a small program on top of this library. It says who it is and what it uses, and the framework does the rest. The [eval pages](eval-pages.md) have
+**Architecture:** a site is a small program on top of this library. It says who it is and what it uses, and the framework does the rest. The [eval pages](louis-agent.web.evals.md) have
 diagrams of their own.
 
 ```mermaid
@@ -124,7 +124,6 @@ sequenceDiagram
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
-| `Admin/`, `Components/Admin/Evals/` | The eval pages' plain classes and their components ([The eval pages](eval-pages.md)) |
 | `Components/Imports/` | `ImportCard`, an upload by default, and `ImportForm`, the rules of when a preview or a save may run |
 | `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |
 | `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site, and `ChatHandoff`, how a screen's button opens the chat with a draft |
@@ -154,7 +153,7 @@ default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain c
 
 `src/tests/web/louis-agent.web.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
 `TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
-`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the eval pages' under `Admin/`, `Components/Admin/Evals/` and `Pages/Admin/`;
+`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the studio's in `louis-agent.web.evals.tests` (CL57); `Pages/Admin/`;
 `MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
 `RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
 web test projects share.
@@ -172,7 +171,7 @@ web test projects share.
 
 ## Related docs
 
-[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md) · [The eval pages](eval-pages.md)
+[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md) · [The eval pages](louis-agent.web.evals.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · Next: [louis-agent.mcp-server](louis-agent.mcp-server.md)
+[Projects](README.md) · Previous: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · Next: [louis-agent.mcp](louis-agent.mcp.md)

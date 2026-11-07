@@ -28,7 +28,8 @@ the address changed.
 The sign-in, registration, confirmation, reset and profile pages are the account library's
 (`src/web/louis-agent.web.accounts`, [its doc](../projects/louis-agent.web.accounts.md)), the same on every site that
 opts in. **Opting in** is a project reference, `@using LouisAgent.Web.Accounts.Components` in `_Imports.razor`,
-`AddLouisAgentAccounts()` in `Program.cs`, `@forward "accounts/shell"` in `app.scss` with the library's `Styles` on
+`AddLouisAgentAccounts()` in `Program.cs`, `AccountLibrary.Assembly` in the router's `FrameworkPages.With(...)` (CL57: a
+library a site adds services for is in its router, or its pages answer nothing; `SiteRouterTests` holds it), `@forward "accounts/shell"` in `app.scss` with the library's `Styles` on
 `sasscompiler.json`'s include paths, and `_content/louis-agent.web.accounts/js/passkeys.js` in `index.html` (without
 it the profile's passkey section says the browser can't do passkeys); the starter has all of it. A site then changes
 three things only: **its words**, a copy of `AccountText` registered before `AddLouisAgentAccounts()` (Puls:

@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
@@ -16,11 +15,6 @@ public enum LlmErrorMessage
     [Description("Unknown LLM_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownProvider,
 
-    [Description("ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'.")]
-    AnthropicKeyRequired,
-
-    [Description("LLM_ENDPOINT is required for provider 'openai-compatible'.")]
-    OpenAiEndpointRequired,
 
     // The model's answers replayed (F18 step 4e). A miss never calls the model; these say what changed in the request.
     [Description("No recorded model answer for this request in trial '{Trial}': {Change}. The model was not called.")]

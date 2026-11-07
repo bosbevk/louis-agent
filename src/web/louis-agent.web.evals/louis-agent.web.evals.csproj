@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The eval studio's pages (CL57): the Evals page, a run's page, the review, the studio and the prompts, their
+       components, readers and words, and their styles. A site that has the studio references this, calls
+       AddLouisAgentEvals() and lists EvalLibrary.Assembly in its router; a site that doesn't downloads none of it. It
+       sits on louis-agent.web, which knows nothing of the studio. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Web.Evals</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The framework's web: the frames, the API client, the chat's parts the studio draws with. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+    <!-- F18 step 7c.3 (decision A): the eval protocol's kinds, so the portal reads a grader's kind by its wire name. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.web.evals.md" Link="docs\louis-agent.web.evals.md" />
+    <None Include="..\..\docs\guides\change-the-eval-pages.md" Link="docs\change-the-eval-pages.md" />
+  </ItemGroup>
+
+</Project>

@@ -6,6 +6,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.web", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.telemetry", "src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.anthropic", "src\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.ollama", "src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.openai", "src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D3}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCC1CE0E-F809-478D-B076-F2C64A71CDFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}"
@@ -402,7 +408,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\projects\README.md = src\docs\projects\README.md
-		src\docs\projects\louis-agent.acp-server.md = src\docs\projects\louis-agent.acp-server.md
+		src\docs\projects\louis-agent.acp.md = src\docs\projects\louis-agent.acp.md
 		src\docs\projects\louis-agent.api.md = src\docs\projects\louis-agent.api.md
 		src\docs\projects\louis-agent.cli.md = src\docs\projects\louis-agent.cli.md
 		src\docs\projects\louis-agent.core.md = src\docs\projects\louis-agent.core.md
@@ -410,7 +416,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B
 		src\docs\projects\louis-agent.evals.md = src\docs\projects\louis-agent.evals.md
 		src\docs\projects\louis-agent.evals.protocol.md = src\docs\projects\louis-agent.evals.protocol.md
 		src\docs\projects\louis-agent.evals.runner.md = src\docs\projects\louis-agent.evals.runner.md
-		src\docs\projects\louis-agent.mcp-server.md = src\docs\projects\louis-agent.mcp-server.md
+		src\docs\projects\louis-agent.mcp.md = src\docs\projects\louis-agent.mcp.md
 		src\docs\projects\louis-agent.usage-probe.md = src\docs\projects\louis-agent.usage-probe.md
 		src\docs\projects\louis-agent.web.md = src\docs\projects\louis-agent.web.md
 		src\docs\projects\tests.md = src\docs\projects\tests.md
@@ -458,11 +464,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.web.tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.telemetry.tests", "src\tests\engine\louis-agent.core.telemetry.tests\louis-agent.core.telemetry.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server", "src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj", "{A2CB6834-DB10-4DD8-817F-12377FD055E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.anthropic.tests", "src\tests\engine\louis-agent.core.anthropic.tests\louis-agent.core.anthropic.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server", "src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj", "{5377CA27-525C-4228-ABAB-88D1C63C2A46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.ollama.tests", "src\tests\engine\louis-agent.core.ollama.tests\louis-agent.core.ollama.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.openai.tests", "src\tests\engine\louis-agent.core.openai.tests\louis-agent.core.openai.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp", "src\hosts\louis-agent.mcp\louis-agent.mcp.csproj", "{A2CB6834-DB10-4DD8-817F-12377FD055E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp", "src\hosts\louis-agent.acp\louis-agent.acp.csproj", "{5377CA27-525C-4228-ABAB-88D1C63C2A46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.evals", "src\hosts\louis-agent.api.evals\louis-agent.api.evals.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review", "demos\louis-agent\web\louis-agent.code-review\louis-agent.code-review.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
 EndProject
@@ -478,9 +492,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "demos\puls\tests\louis-agent.api.tests\louis-agent.api.tests.csproj", "{25003D68-7FA2-4C3E-B862-13791FCE8D4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.evals.tests", "demos\puls\tests\louis-agent.api.evals.tests\louis-agent.api.evals.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\web\louis-agent.web\louis-agent.web.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.accounts", "src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj", "{C3000A30-7E1B-4C9A-9F7D-2026110700A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.evals", "src\web\louis-agent.web.evals\louis-agent.web.evals.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "demos\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
 EndProject
@@ -510,13 +528,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.accounts.tests", "src\tests\web\louis-agent.web.accounts.tests\louis-agent.web.accounts.tests.csproj", "{C3000A30-7E1B-4C9A-9F7D-2026110700A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.evals.tests", "src\tests\web\louis-agent.web.evals.tests\louis-agent.web.evals.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700E2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls.tests", "demos\puls\tests\louis-agent.puls.tests\louis-agent.puls.tests.csproj", "{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.testing", "src\tests\web\louis-agent.web.testing\louis-agent.web.testing.csproj", "{B6B1BB26-4D84-4825-B807-3ED6D46E31D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review.tests", "demos\louis-agent\tests\louis-agent.code-review.tests\louis-agent.code-review.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server.tests", "src\tests\hosts\louis-agent.acp-server.tests\louis-agent.acp-server.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp.tests", "src\tests\hosts\louis-agent.acp.tests\louis-agent.acp.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.session-stream", "src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj", "{BCB772FE-E1BB-492A-BCCF-3BFC61C732AB}"
 EndProject
@@ -584,7 +604,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-price
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.integration-tests", "packs\tests\louis-agent.pack.recipes.integration-tests\louis-agent.pack.recipes.integration-tests.csproj", "{000CF338-1D40-44D0-9F8A-EE8F2A0D56B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server.tests", "src\tests\hosts\louis-agent.mcp-server.tests\louis-agent.mcp-server.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp.tests", "src\tests\hosts\louis-agent.mcp.tests\louis-agent.mcp.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "packs\evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
 EndProject
@@ -682,6 +702,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{8A9D3D62-FBA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter", "demos\starter\web\louis-agent.starter\louis-agent.starter.csproj", "{F766E1E9-0D87-41FD-B0CC-E78D32B2BB37}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{C3300A33-7E1B-4C9A-9F7D-2026110700E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter-api", "demos\starter\hosts\louis-agent.starter-api\louis-agent.starter-api.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D9}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A04A4DEC-3151-4DE0-8BB5-BB313D7138E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter.tests", "demos\starter\tests\louis-agent.starter.tests\louis-agent.starter.tests.csproj", "{ECCA3E37-7FBC-4887-8DAF-9254F3E31BFA}"
@@ -698,6 +722,138 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6}.Release|x86.Build.0 = Release|Any CPU
 		{E785286B-43E9-44A4-8E29-689641504149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E785286B-43E9-44A4-8E29-689641504149}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E785286B-43E9-44A4-8E29-689641504149}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -2035,6 +2191,18 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9} = {C3300A33-7E1B-4C9A-9F7D-2026110700E0}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E0} = {1D74F711-3395-4F67-81CC-FEADC314DB25}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D1} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D2} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D3} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D4} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D5} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D6} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
 		{E785286B-43E9-44A4-8E29-689641504149} = {A04A4DEC-3151-4DE0-8BB5-BB313D7138E9}
 		{ECCA3E37-7FBC-4887-8DAF-9254F3E31BFA} = {A04A4DEC-3151-4DE0-8BB5-BB313D7138E9}
 		{A04A4DEC-3151-4DE0-8BB5-BB313D7138E9} = {1D74F711-3395-4F67-81CC-FEADC314DB25}

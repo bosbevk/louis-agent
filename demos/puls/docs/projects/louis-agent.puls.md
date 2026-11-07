@@ -43,7 +43,7 @@ flowchart TD
     api["louis-agent.puls-api: serves this app"] --> program["Program.cs"]
     program -->|"PulsText.Afrikaans"| text["ChatText"]
     program -->|"RecipeWebViews.AddTo"| views["PackViews"]
-    program -->|"EvalPages.AddTo, PulsSites.Kinds"| evals["The framework's eval pages"]
+    program -->|"AddLouisAgentEvals(PulsSites.Kinds)"| evals["louis-agent.web.evals, the studio's pages"]
     program -->|"SiteFrames"| layout["AdminLayout"]
     landing["LandingPage"] --> sections["Components/Landing, Components/Brand"]
     chat["ChatPage"] -->|"its slots: logo, views, profile, water, EmptyChat"| shell["ChatShell (framework)"]

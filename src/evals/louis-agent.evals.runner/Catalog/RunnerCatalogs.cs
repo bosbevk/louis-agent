@@ -1,3 +1,4 @@
+using LouisAgent.Core.Llm;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Common.Compare.Readers;
@@ -26,4 +27,7 @@ public sealed record RunnerCatalogs(IReadOnlyList<ICheckType> Checks, IReadOnlyL
 
     /// <summary>Every reader your evals' checks can name: the general ones first, then yours.</summary>
     public ReaderCatalog ReaderCatalog { get; } = new([.. GeneralReaders.All, .. Readers]);
+
+    /// <summary>The model providers the program composed, which a judge builds its client through (CL57); the host sets it.</summary>
+    public ILlmClientFactory? Models { get; init; }
 }

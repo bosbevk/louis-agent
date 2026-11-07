@@ -44,12 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- F18 step 7c.3: the runner's own golden of the stub's run and the contract's golden, which the API records and
-         exports back line for line; linked from their projects, never copied. -->
-    <None Include="..\..\..\..\src\tests\evals\louis-agent.evals.runner.tests\Fixtures\stub-run.txt" Link="Fixtures\stub-run.txt"
-          CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\..\..\src\tests\evals\louis-agent.evals.protocol.tests\Fixtures\eval-protocol.jsonl"
-          Link="Fixtures\eval-protocol.jsonl" CopyToOutputDirectory="PreserveNewest" />
     <!-- F55: the trimmed Stats SA release the shop-prices pack's tests read, for the upload's routes. -->
     <None Include="..\..\..\..\packs\tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-all-urban.xlsx"
           Link="Fixtures\statssa-all-urban.xlsx" CopyToOutputDirectory="PreserveNewest" />

@@ -12,6 +12,7 @@ public class FrameworkNamesNoSiteTests
     /// <summary>Every file in the framework's web, and in the account library on it (CL30), is read, and no line may hold a site's name.</summary>
     [TestCase("louis-agent.web")]
     [TestCase("louis-agent.web.accounts")]
+    [TestCase("louis-agent.web.evals")]
     public void TheFramework_NamesNoSite(string library)
     {
         string[] names = [.. FrameworkWebSites.Folders().Select(FrameworkWebSites.NameOf).SelectMany(Spellings)];

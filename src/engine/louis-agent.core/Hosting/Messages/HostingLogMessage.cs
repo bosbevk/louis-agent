@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
@@ -22,15 +21,6 @@ public enum HostingLogMessage
     [Description("A session may also name LLM profile '{Name}': {Llm}; tools={Tools}; thinking={Thinking}")]
     SessionLlmLoaded,
 
-    [Description("Starting MCP tool discovery from {Endpoint}")]
-    McpDiscoveryStarting,
-
-    [Description("Startup task exception: {Error}")]
-    McpStartupFailed,
-
-    [Description("MCP discovery disabled or not configured")]
-    McpDiscoveryDisabled,
-
     [Description(
         "Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.")]
     LedgerOff,
@@ -51,16 +41,4 @@ public enum HostingLogMessage
 
     [Description("Discovered skills file: {File}")]
     SkillsFileDiscovered,
-
-    [Description("No tools discovered from Rider MCP server")]
-    McpNoToolsDiscovered,
-
-    [Description("Failed to register tool '{Name}': {Reason}")]
-    McpRegisterFailed,
-
-    [Description("Discovered and registered {Registered}/{Count} tools from Rider")]
-    McpRegistered,
-
-    [Description("Tool discovery failed: {Reason}")]
-    McpDiscoveryFailed,
 }

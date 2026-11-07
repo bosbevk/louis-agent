@@ -13,6 +13,9 @@ public partial class FrameworkScriptsTests
     /// <summary>The account library (CL30), whose components call its own script.</summary>
     private static readonly string Accounts = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.accounts");
 
+    /// <summary>The studio's components (CL57) call the framework's scripts too.</summary>
+    private static readonly string Evals = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.evals");
+
     private static string Script(string name) => File.ReadAllText(Path.Combine(Web, "wwwroot/js", name));
 
     /// <summary>A script being called by name: matches <c>"chatUi.copy"</c> and gives <c>chatUi.copy</c>.</summary>
@@ -43,6 +46,7 @@ public partial class FrameworkScriptsTests
     {
         string script = Script("chat.js");
         var called = Directory.EnumerateFiles(Web, "*.*", SearchOption.AllDirectories)
+            .Concat(Directory.EnumerateFiles(Evals, "*.*", SearchOption.AllDirectories))
             .Where(file => file.EndsWith(".cs", StringComparison.Ordinal) ||
                            file.EndsWith(".razor", StringComparison.Ordinal))
             .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))

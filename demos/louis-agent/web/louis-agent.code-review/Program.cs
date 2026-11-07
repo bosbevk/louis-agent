@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.CodeReview;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.Web.Accounts.Client;
-using LouisAgent.Web.Admin;
+using LouisAgent.Web.Evals;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Frames;
@@ -32,7 +32,7 @@ builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText()); // the shared components' words, in English
 builder.Services.AddLouisAgentAccounts(); // sign in, register and the profile, when the API has ACCOUNTS_SQL_URL
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
-EvalPages.AddTo(builder.Services);
+builder.Services.AddLouisAgentEvals();
 
 // Which component draws each screen: the plain table, then the packs' own, then ours if we ever write one.
 var views = new PackViews();

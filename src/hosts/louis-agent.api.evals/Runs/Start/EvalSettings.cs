@@ -1,0 +1,112 @@
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Choices;
+using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Core.Web;
+
+namespace LouisAgent.Api.Evals.Runs.Start;
+
+/// <summary>
+/// Writes down what a run ran with, so a later run can be compared with it knowing what changed: the model and roles,
+/// the eval and its runner, the search engine and page renderer, how the web was handled, and which prompts were
+/// used. There's no commit yet: the container has the workspace but no reason to run git for it.
+/// </summary>
+/// <remarks>
+/// Information Expert (GRASP), chosen in CL26: the class that writes a setting also reads it back
+/// (<see cref="ReplayOf"/>, <see cref="Recorded"/>), so its name lives in one place and the run row and the trend
+/// can't spell it differently.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+public static class EvalSettings
+{
+    /// <summary>Where a replay keeps the run it replayed.</summary>
+    private const string ReplayOfKey = "replay_of";
+
+    /// <summary>
+    /// Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page
+    /// renderer it used and whether each was set up.
+    /// </summary>
+    /// <param name="web">
+    /// What the web access is (CL57, from the seam): the search engine and renderer by name, each left out when
+    /// nothing is picked, and whether each was set up, only written beside its name.
+    /// </param>
+    /// <param name="evalRunner">
+    /// The runner's path the API starts an eval from. Required, so a caller can't leave it out.
+    /// </param>
+    public static IReadOnlyDictionary<string, string> Of(EvalEntry check, string provider, string model,
+        IReadOnlyList<string> roles, string evalRunner, WebSetup web)
+    {
+        var settings = new Dictionary<string, string>
+        {
+            ["provider"] = provider,
+            ["model"] = model,
+            // An empty list means every role is on, so it is written as "(all)". Runs from before roles were called
+            // roles kept this as personalities_enabled.
+            ["roles_enabled"] = roles.Count == 0 ? "(all)" : string.Join(",", roles),
+        };
+        settings["eval"] = check.Id;
+        settings["eval_runner"] = evalRunner;
+
+        // The search engine and renderer the instance resolved to, so a run on SearXNG and one on Tavily can be told
+        // apart. Beside each name goes whether it was set up: a named tool without its settings was only a stand-in,
+        // and the run should say so. With no engine or renderer there is nothing to write, so the keys are left out
+        // rather than written empty.
+        if (web.SearchProvider is { } search)
+        {
+            settings["web_search_provider"] = search;
+            settings["web_search_provider_ready"] = web.SearchReady ? "true" : "false";
+        }
+
+        if (web.PageRenderer is { } renderer)
+        {
+            settings["page_renderer"] = renderer;
+            settings["page_renderer_ready"] = web.RendererReady ? "true" : "false";
+        }
+
+        return settings;
+    }
+
+    /// <summary>
+    /// Adds how the run's web was handled: whether it asked for one, and whether it replays an earlier run. The trend
+    /// leaves replays out, since a replay costs nothing and measures nothing new.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> WithOptions(IReadOnlyDictionary<string, string> settings,
+        EvalRunOptions options)
+    {
+        // Nothing asked for: the settings stay exactly as they were.
+        if (options.Web is null && options.Replay is null) return settings;
+
+        // Copy them, then add how the web was handled.
+        var withOptions = new Dictionary<string, string>(settings);
+        if (options.Web is { } web) withOptions["web"] = web.Wire();
+        if (options.Replay is { } replayOf) withOptions[ReplayOfKey] = replayOf;
+        return withOptions;
+    }
+
+    /// <summary>The run a replay replayed, read back from its settings; a run that wasn't a replay has none.</summary>
+    public static string? ReplayOf(IReadOnlyDictionary<string, string>? settings) =>
+        settings?.GetValueOrDefault(ReplayOfKey);
+
+    /// <summary>
+    /// Whether the run recorded its web and model answers, so it can be replayed (FX28). The mode is parsed once here
+    /// (ADR 0024); a run with another mode, or from before the setting, wasn't a recording. The key is the "web" that
+    /// <see cref="WithOptions"/> writes: a key, not the toolset of that name.
+    /// </summary>
+    public static bool Recorded(IReadOnlyDictionary<string, string>? settings) =>
+        settings?.GetValueOrDefault("web") is { } web
+        && SettingChoice.TryParse(web, out WebReplayMode? mode)
+        && mode == WebReplayMode.Record;
+
+    /// <summary>
+    /// Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may
+    /// only mean a different path through the eval and not a changed prompt.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string>? WithPromptHashes(IReadOnlyDictionary<string, string>? settings,
+        IReadOnlyList<string> hashes) =>
+        hashes.Count == 0
+            ? settings
+            : new Dictionary<string, string>(settings ?? new Dictionary<string, string>())
+            {
+                ["prompt_hashes"] = string.Join(",", hashes)
+            };
+}

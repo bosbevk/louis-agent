@@ -1,27 +1,13 @@
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Config;
-using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Endpoints.Admin;
 using LouisAgent.Api.Endpoints.Routing;
-using LouisAgent.Api.Evals.Calibrations;
-using LouisAgent.Api.Evals.Calibrations.Store;
-using LouisAgent.Api.Evals.List;
-using LouisAgent.Api.Evals.Drafts.Store;
-using LouisAgent.Api.Evals.Reviews.Store;
-using LouisAgent.Api.Evals.Runs;
-using LouisAgent.Api.Evals.Runs.Start;
-using LouisAgent.Api.Evals.Store;
-using LouisAgent.Api.Evals.Store.Deletion;
-using LouisAgent.Api.Evals.Store.Mongo;
-using LouisAgent.Api.Evals.Store.Recording;
-using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Web.Rendering;
-using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Api;
 
@@ -78,88 +64,19 @@ public static class ApiStartup
     /// </summary>
     public static WebApplication MapLouisAgentApi(this WebApplication app, AgentHostContext host)
     {
-        // Fail closed: a program that forgot the key check must not come up with these routes open.
-        if (!((IApplicationBuilder)app).Properties.ContainsKey(KeyChecked))
-            throw new InvalidOperationException(MessageText.Format(ApiLogMessage.KeyCheckMissing));
+        RequireKeyChecked(app);
 
-        // Every route of the agent's API is mapped by ApiMap, so the route tests build what runs; the admin portal's
-        // parts are built below and mapped on what it returns.
-        var api = app.MapApi(host);
-
-        // The admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings are
-        // in AdminOptions. A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by
-        // default). Each run is recorded into the store (EVALS_MONGO_URL), its cost joined from this instance's ledger;
-        // without a store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
-        var admin = AdminOptions.FromEnvironment();
-        var evalLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Evals");
-
-        // The evals the runner lists, read on first use.
-        var evals = EvalList.From(EvalListing.ForRunner(admin.EvalRunner), evalLog);
-
-        // The stores for runs and for the people's grades share one Mongo; with no address there are none.
-        IEvalStore? evalStore = admin.EvalsMongoUrl is { } mongoUrl
-            ? new MongoEvalStore(mongoUrl, admin.EvalsDatabase)
-            : null;
-        IHumanReviewStore? reviewStore = admin.EvalsMongoUrl is { } reviewsUrl
-            ? new MongoHumanReviewStore(reviewsUrl, admin.EvalsDatabase)
-            : null;
-
-        // The drafts made from stored runs wait beside the grades until F49.5 publishes them; without Mongo they live
-        // in memory.
-        IEvalDraftStore draftStore = admin.EvalsMongoUrl is { } draftsUrl
-            ? new MongoEvalDraftStore(draftsUrl, admin.EvalsDatabase)
-            : new InMemoryEvalDraftStore();
-
-        // The judge checks sit beside the grades; a check's report is kept by its own recorder, never by the runs'
-        // store.
-        ICalibrationStore? calibrationStore = admin.EvalsMongoUrl is { } calibrationsUrl
-            ? new MongoCalibrationStore(calibrationsUrl, admin.EvalsDatabase)
-            : null;
-        CalibrationRecorder? calibrationRecorder =
-            calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, evalLog);
-
-        // A run's recorder writes it into the store, its cost read from this instance's ledger.
-        EvalRecorder? recorder = evalStore is null
-            ? null
-            : new EvalRecorder(evalStore, evalLog, host.Agent.LogDirectory);
-
-        // Delete what an older build stored (ADR 0049), then close the runs a restart cut off, in the background so
-        // start-up doesn't wait on Mongo; a store that doesn't answer is only a warning.
-        if (evalStore is not null)
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var deletion = new RunDeletion(evalStore, reviewStore, calibrationStore);
-                    await new OldRunsCleanup(evalStore, deletion, evalLog).RunAsync();
-
-                    int closed = await evalStore.CloseOrphansAsync(TimeProvider.System.GetUtcNow());
-                    if (closed > 0)
-                        evalLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },
-                            tag: "API");
-                }
-                catch (Exception ex)
-                {
-                    evalLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
-                }
-            });
-
-        // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would
-        // wait for it).
-        _ = Task.Run(evals.Warm);
-
-        // Map the admin routes: the runner, the stores and the settings each run reports.
-        api.MapAdmin(evals,
-            new EvalProcess(evals, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
-            admin.AdminKey, evalStore, recorder,
-            check => EvalSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled,
-                admin.EvalRunner,
-                WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
-                WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
-            host.Engine.WorkspaceRoot, reviewStore,
-            calibrationStore, calibrationRecorder, drafts: draftStore,
-            studio: StudioRunner.ForRunner(admin.EvalRunner));
+        // Every route of the agent's API is mapped by ApiMap, so the route tests build what runs, and the API's own
+        // admin routes on the gated group. The eval studio is louis-agent.api.evals's, mapped by MapLouisAgentEvals (CL57).
+        app.MapApi(host).MapAdmin(AdminOptions.FromEnvironment().AdminKey);
 
         return app;
+    }
+
+    /// <summary>Fail closed: a program that forgot the key check must not come up with these routes open; the studio asks too (CL57).</summary>
+    internal static void RequireKeyChecked(WebApplication app)
+    {
+        if (!((IApplicationBuilder)app).Properties.ContainsKey(KeyChecked))
+            throw new InvalidOperationException(MessageText.Format(ApiLogMessage.KeyCheckMissing));
     }
 }

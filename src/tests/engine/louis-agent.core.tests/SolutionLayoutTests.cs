@@ -12,10 +12,11 @@ public class SolutionLayoutTests
 
     /// <summary>Each group holds the projects whose folder on disk has that name.</summary>
     [TestCase("src/engine", "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream",
-        "louis-agent.composition", "louis-agent.core.web", "louis-agent.core.telemetry")]
-    [TestCase("src/hosts", "louis-agent.acp-server", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
-        "louis-agent.mcp-server", "louis-agent.accounts", "louis-agent.accounts.contracts")]
-    [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts")]
+        "louis-agent.composition", "louis-agent.core.web", "louis-agent.core.telemetry", "louis-agent.core.anthropic",
+        "louis-agent.core.ollama", "louis-agent.core.openai")]
+    [TestCase("src/hosts", "louis-agent.acp", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
+        "louis-agent.mcp", "louis-agent.accounts", "louis-agent.accounts.contracts", "louis-agent.api.evals")]
+    [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts", "louis-agent.web.evals")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
     [TestCase("packs/tools", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
@@ -29,6 +30,7 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/web", "louis-agent.puls")]
     [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner", "louis-agent.puls-api")]
     [TestCase("demos/starter/web", "louis-agent.starter")]
+    [TestCase("demos/starter/hosts", "louis-agent.starter-api")]
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
@@ -38,15 +40,18 @@ public class SolutionLayoutTests
         "louis-agent.coding-api", "louis-agent.coding-catalog")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests", "louis-agent.core.web.tests",
-        "louis-agent.core.telemetry.tests")]
-    [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests",
+        "louis-agent.core.telemetry.tests", "louis-agent.core.anthropic.tests", "louis-agent.core.ollama.tests",
+        "louis-agent.core.openai.tests")]
+    [TestCase("src/tests/hosts", "louis-agent.acp.tests", "louis-agent.mcp.tests",
         "louis-agent.accounts.tests", "louis-agent.accounts.integration-tests")]
-    [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests")]
+    [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests",
+        "louis-agent.web.evals.tests")]
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]
     [TestCase("src/tools", "louis-agent.usage-probe")]
     [TestCase("demos/puls/tests", "louis-agent.api.tests", "louis-agent.api.integration-tests",
+        "louis-agent.api.evals.tests",
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]

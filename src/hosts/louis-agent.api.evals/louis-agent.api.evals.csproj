@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The eval studio on the API (CL57): the runner process, the stores for runs, grades, drafts and judge checks
+       (MongoDB), the recorders, the reports and every admin route for them. A program that wants the studio calls
+       MapLouisAgentEvals after MapLouisAgentApi; one that doesn't ships none of it, and no MongoDB driver. -->
+  <ItemGroup>
+    <!-- A library, so ASP.NET comes as a framework reference, with the usings the web SDK gives an app. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.AspNetCore.Builder" />
+    <Using Include="Microsoft.AspNetCore.Hosting" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Routing" />
+    <Using Include="Microsoft.Extensions.Configuration" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Hosting" />
+    <Using Include="Microsoft.Extensions.Logging" />
+    <Using Include="System.Net.Http.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The API it sits on: its admin group and gate, its contracts, its errors. -->
+    <ProjectReference Include="..\louis-agent.api\louis-agent.api.csproj" />
+    <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
+    <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+    <!-- The kinds of reader the studio lists from the runner's catalogue; the check contract only, no check. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.api.evals.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.integration-tests" />
+    <InternalsVisibleTo Include="louis-agent.api.testing" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.Evals</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.api.evals.md" Link="docs\louis-agent.api.evals.md" />
+  </ItemGroup>
+
+</Project>

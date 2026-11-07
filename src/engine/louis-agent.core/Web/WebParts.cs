@@ -18,8 +18,11 @@ public sealed record WebParts(
     IWebSearchProvider Search,
     IWebBrowser? Browser = null,
     IPageRenderer? Renderer = null,
-    Func<IPageFetcher>? Fetcher = null) : IWebAccess
+    Func<IPageFetcher>? Fetcher = null,
+    WebSetup? Setup = null) : IWebAccess
 {
+    WebSetup IWebAccess.Setup => Setup ?? WebSetup.None;
+
     /// <summary>The renderer given, else the one that says web access isn't set up.</summary>
     IPageRenderer IWebAccess.Renderer => Renderer ?? NoWebAccess.Instance.Renderer;
 
