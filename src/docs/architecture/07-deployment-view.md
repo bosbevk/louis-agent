@@ -42,8 +42,8 @@ tunnels (both domains served from the PC) keep running, and go when the new buil
 | `rg-puls-za`, `puls-env` (a Container Apps environment on `puls-vnet`) | `puls-app`: the Puls image, one container, behind its key and its sign-in | the VM on private IPs; Azure SQL over TLS; `puls-insights` through the environment's OpenTelemetry agent |
 | `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:8` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
 | `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
-| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-site`: the static site, scales to zero | nothing: it spends and keeps nothing |
 
-The domains point at the environments' static IPs with Container Apps' managed certificates, DNS-only in Cloudflare.
-The how-to for each is its deploy README: [Puls](../../../demos/puls/deploy/azure/README.md),
-[the site](../../../demos/louis-agent/deploy/azure/README.md).
+The domain points at the environment's static IP with a Container Apps managed certificate, DNS-only in Cloudflare;
+the how-to is [Puls's deploy README](../../../demos/puls/deploy/azure/README.md). The framework's static site is not a
+deployment of its own: it merges into the louis-agent demo's web app as its layout page (Louis, 2026-11-08), a later
+feature, and that app is then deployed the way Puls is.

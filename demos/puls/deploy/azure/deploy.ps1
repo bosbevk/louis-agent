@@ -167,12 +167,15 @@ switch ($Verb) {
             '/data/env/.env.searxng' = Join-Path $Config '.env.searxng'
         }
         foreach ($source in $files.Values) { if (-not (Test-Path $source)) { throw "Missing $source (the env files are copied from their .example)." } }
-        $script = ConvertTo-UploadScript $files
+        # The script goes to az as a file (@path), whole: on a command line its lines came apart (2026-11-08).
+        $script = Join-Path ([System.IO.Path]::GetTempPath()) 'puls-services-upload.sh'
+        [System.IO.File]::WriteAllText($script, (ConvertTo-UploadScript $files) + "`n", [System.Text.UTF8Encoding]::new($false))
         Write-Host "Copying the compose, SearXNG's settings and the two env files to $Vm and restarting its services..."
         # run-command runs as root on the VM through Azure's agent: no port on the VM opens for this. The script,
         # env files included, passes through Azure's control plane, which keeps the last script in the VM's
         # run-command history; the values are the same ones the vault holds.
-        Invoke-Az vm run-command invoke -n $Vm -g $ResourceGroup --command-id RunShellScript --scripts $script --query 'value[0].message' -o tsv
+        try { Invoke-Az vm run-command invoke -n $Vm -g $ResourceGroup --command-id RunShellScript --scripts "@$script" --query 'value[0].message' -o tsv }
+        finally { Remove-Item $script -ErrorAction SilentlyContinue }
     }
     'build' {
         # The commit the eval runner stamps on a run (F18): this checkout's, or "unknown" where git can't say.
