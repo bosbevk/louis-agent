@@ -44,4 +44,21 @@ public class AccountPageStyleTests
     [Test]
     public void PulsAccountButton_IsAPill() =>
         Assert.That(RuleOf(".puls-account .account-button"), Does.Contain("border-radius: 999px"));
+
+    /// <summary>
+    /// A provider's button keeps the provider's own colours on Puls too (FX67, Louis: "google have their own button
+    /// look and feel, we must comply"): its rule reads the brand's variable, and the variable holds the guideline's
+    /// colour.
+    /// </summary>
+    [TestCase(".provider-button.is-google", "--web-google-bg", "#131314")]
+    [TestCase(".provider-button.is-microsoft", "--web-microsoft-bg", "#2f2f2f")]
+    [TestCase(".provider-button.is-linkedin", "--web-linkedin-bg", "#0a66c2")]
+    public void EachProvidersButton_IsInItsOwnColours(string selector, string colour, string value)
+    {
+        var rule = Regex.Match(Css, Regex.Escape(selector) + @"(\[b-[^\]]+\])?\s*\{([^}]*)\}");
+
+        Assert.That(rule.Success, Is.True, $"no rule for {selector}");
+        Assert.That(rule.Groups[2].Value, Does.Contain($"background: var({colour})"));
+        Assert.That(Css, Does.Contain($"{colour}: {value}"));
+    }
 }
