@@ -65,7 +65,8 @@ sequenceDiagram
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Pages/Site/` | The site's pages (F109.1): packs, build your own, proof, built on it, contact; the landing and how it works come with the films |
+| `Pages/Site/` | The site's pages (F109.1): the landing, how it works, packs, build your own, proof, built on it, contact |
+| `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works; each pinned to a golden |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Landing/` | The landing's parts: the hero with its animated turn, the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
@@ -89,7 +90,7 @@ A control for a pack goes in that pack's web project as a screen ([Build a pack]
 `demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
 pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
 `Pages/Site/*Tests` render the site's pages (the packs page lists every pack folder, Build your own shows the real program) and
-`Layout/SiteLayoutTests` the frame's links; `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
+`Layout/SiteLayoutTests` the frame's links; `Movies/*Tests` pin each film's scenes, its names against the code, and its markup to a golden; `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
 

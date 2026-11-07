@@ -1,5 +1,6 @@
 using System.Net;
 using LouisAgent.CodeReview.Pages.Site;
+using LouisAgent.CodeReview.Pages.Site.Framework;
 
 namespace LouisAgent.CodeReview.Tests.Pages.Site;
 
