@@ -1,6 +1,6 @@
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Styles;
 
 /// <summary>
 /// The Sass compiler's settings file is read at build time only. A project that has one marks it as never published
