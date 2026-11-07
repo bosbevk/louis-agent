@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 58 | 76 |
 | Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 22 | 28 |
+| Cleanups (`CL`) | 23 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -23,19 +23,19 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | Id | What | Phase |
 |---|---|---|
 | CL33 | Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry` | Now |
-| F106 | Validate demand | Now |
+| F62 | Validate demand | Now |
 | F18 | F18's leftovers, before F49.1 | Now |
-| F107 | The reference transcripts in git | Now |
-| F108 | The judge check can't see pages | Now |
-| F109 | After F35, the cook's answer | Now |
-| F110 | Each pack declares what it needs | Now |
-| F111 | A whole menu | Now |
-| F112 | The cook scales wrongly | Now |
-| F113 | The framework's `_Imports.razor` is about 90 lines | Now |
-| F114 | Long comment lines in the eval pages | Now |
-| F115 | At the next run, read the hand-off lines | Now |
-| F116 | Open from the recipes evals | Now |
-| F117 | Check the 47 new own-prices rows | Now |
+| F63 | The reference transcripts in git | Now |
+| F64 | The judge check can't see pages | Now |
+| F65 | After F35, the cook's answer | Now |
+| F66 | Each pack declares what it needs | Now |
+| F67 | A whole menu | Now |
+| F68 | The cook scales wrongly | Now |
+| F69 | The framework's `_Imports.razor` is about 90 lines | Now |
+| F70 | Long comment lines in the eval pages | Now |
+| F71 | At the next run, read the hand-off lines | Now |
+| F72 | Open from the recipes evals | Now |
+| F73 | Check the 47 new own-prices rows | Now |
 | F48 | Recipe maths and a teaching cook | Now |
 | F46 | Localisation | Now |
 | F50 | Puls's local specialists | Now |
@@ -56,55 +56,55 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F54 | F54's leftovers | Next |
 | F44 | The engine as a product | Next |
 | F51 | Hosting for public traffic | Next |
-| F118 | Phase 10, the engine as a developer package, after every engine feature | Next |
-| F119 | Puls local spec | Puls |
-| F120 | Cook for the week | Puls |
+| F74 | Phase 10, the engine as a developer package, after every engine feature | Next |
+| F75 | Puls local spec | Puls |
+| F76 | Cook for the week | Puls |
 | CL16 | Reusable roles | Puls |
-| F121 | A domain stop-list for the browser | Puls |
-| F122 | Sources as data | Puls |
-| F123 | Places | Puls |
-| F124 | Local businesses | Puls |
-| F125 | Vision: `ScreenshotPage(url)` and images as input | Puls |
-| F126 | Local lookups | Puls |
+| F77 | A domain stop-list for the browser | Puls |
+| F78 | Sources as data | Puls |
+| F79 | Places | Puls |
+| F80 | Local businesses | Puls |
+| F81 | Vision: `ScreenshotPage(url)` and images as input | Puls |
+| F82 | Local lookups | Puls |
 | F23 | Credits | Puls |
-| F127 | The cook's unconfirmed prices | Puls |
-| F128 | A shorter cook report | Puls |
+| F83 | The cook's unconfirmed prices | Puls |
+| F84 | A shorter cook report | Puls |
 | FX59 | binary attachments sent as files, not text | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
-| F129 | A retailer's own prices, only with its permission or feed | Puls |
-| F130 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls |
-| F131 | The open feeds have no key and no limit | Puls |
+| F85 | A retailer's own prices, only with its permission or feed | Puls |
+| F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls |
+| F87 | The open feeds have no key and no limit | Puls |
 | F60 | Search by meaning | Puls, later |
-| F132 | The cook's wave 3 | Puls, later |
-| F133 | A Puls-owned set of a few hundred South African recipes | Puls, later |
-| F134 | WhatsApp as a host | Puls, later |
-| F135 | The eleven official languages, measured | Puls, later |
-| F136 | Voice | Puls, later |
-| F137 | The `similar` check, when an eval asks for closeness of meaning | Later |
+| F88 | The cook's wave 3 | Puls, later |
+| F89 | A Puls-owned set of a few hundred South African recipes | Puls, later |
+| F90 | WhatsApp as a host | Puls, later |
+| F91 | The eleven official languages, measured | Puls, later |
+| F92 | Voice | Puls, later |
+| F93 | The `similar` check, when an eval asks for closeness of meaning | Later |
 | F45 | Knowledge and retrieval | Later |
-| F138 | Searching PDFs, investigate much later | Later |
+| F94 | Searching PDFs, investigate much later | Later |
 | F47 | The CLI and Rider's host on the agent API | Later |
 | F9 | Long chats | Later |
 | F10 | Settings per role and per session | Later |
 | CL31 | Scripts as ES modules beside their components | Later |
-| F139 | What's left of CL29 | Later |
+| F95 | What's left of CL29 | Later |
 | CL17 | what's left of the coding identity | Later |
-| F140 | The browser's user agent names the user's town per visit | Later |
-| F141 | A tool added mid-chat, after FX4 | Later |
+| F96 | The browser's user agent names the user's town per visit | Later |
+| F97 | A tool added mid-chat, after FX4 | Later |
 | F38 | Tool search, when a measured need comes | Later |
-| F142 | Planning and a self-check before answering, tried on a simulation first | Later |
-| F143 | An error tracker behind `IErrorFeed`, after F39 | Later |
-| F144 | A webhook trigger beside polling, after F39 | Later |
-| F145 | Computer use, when a simulation needs it | Later |
-| F146 | An Inspect AI log export for a run | Later |
+| F98 | Planning and a self-check before answering, tried on a simulation first | Later |
+| F99 | An error tracker behind `IErrorFeed`, after F39 | Later |
+| F100 | A webhook trigger beside polling, after F39 | Later |
+| F101 | Computer use, when a simulation needs it | Later |
+| F102 | An Inspect AI log export for a run | Later |
 | CL21 | Mutation testing with Stryker.NET | Later |
-| F147 | Function skills in the Agent Skills format | Later |
+| F103 | Function skills in the Agent Skills format | Later |
 | CL23 | Explore a Roslyn analyzer for the names rule | Later |
 | F30 | F30's minions tested | Later |
-| F148 | Build mode, a side note | Later |
-| F149 | The Azure app behind a key | Later |
+| F104 | Build mode, a side note | Later |
+| F105 | The Azure app behind a key | Later |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
 | CL36 | Design docs for the three projects that have none | Cleanups |
@@ -253,10 +253,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (22 done)
+## Cleanups (23 done)
 
 | Id | When | What |
 |---|---|---|
+| CL56 | 2026-11-07 | One roadmap: the platform plan and its summary became ROADMAP.md, the feature plans inside it drafts |
 | CL32 | 2026-11-07 | The packs as one area |
 | CL30 | 2026-11-07 | The account client as its own library |
 | CL28 | 2026-11-04 | The folders mirror the solution |
