@@ -81,9 +81,15 @@ function Set-BuildParameters {
     $password = Get-EnvValue (Join-Path $Config '.env.sql') 'MSSQL_SA_PASSWORD'
     if (-not $password) { throw 'MSSQL_SA_PASSWORD is missing in demos/puls/config/.env.sql (copy .env.sql.example); it is the SQL server''s admin password too.' }
     $keyFile = Join-Path $env:USERPROFILE '.ssh\id_ed25519.pub'
-    if (-not (Test-Path $keyFile)) { throw "No SSH key at ${keyFile}: run ssh-keygen -t ed25519 once; the VM takes its public half." }
+    if (Test-Path $keyFile) { $key = (Get-Content $keyFile -Raw).Trim() }
+    elseif ($WhatIfPreference) {
+        # A preview may run before the key exists; the placeholder is plainly one, and a real deploy refuses it.
+        Write-Host "No SSH key at ${keyFile} yet: the what-if uses a placeholder key; run ssh-keygen -t ed25519 before deploy.ps1 infra."
+        $key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPlaceholderKeyForWhatIfOnly0000000000000000 what-if'
+    }
+    else { throw "No SSH key at ${keyFile}: run ssh-keygen -t ed25519 once; the VM takes its public half." }
     $env:PULS_SQL_ADMIN_PASSWORD = $password
-    $env:PULS_SSH_PUBLIC_KEY = (Get-Content $keyFile -Raw).Trim()
+    $env:PULS_SSH_PUBLIC_KEY = $key
     $env:PULS_SSH_FROM_IP = if ($Ip) { $Ip } else { '' }
 }
 
