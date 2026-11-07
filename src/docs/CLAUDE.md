@@ -44,7 +44,7 @@ implement until it passes and tidy with the tests green. Docs-only and configura
 
 **Finishing a step** ([the how-to](guides/finish-a-step.md)), before rule 5's stop:
 
-1. Build and test the projects the step touches; the whole solution before a PR.
+1. Build and test only what the step touches (`core.tests` too if it moves files or adds names); the full suite only once the feature is built.
 2. If tools, their descriptions, the tool texts or the prompts changed, regenerate the golden files and review their diff.
 3. Update the feature or fix doc with what the step learned; on the last step, *Finishing a feature* or *Finishing a
    fix* in their READMEs.
@@ -139,7 +139,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Edit, never a script; layout only through the formatter; a rename through Rider; Rider's tools first.**
   [ADR 0052](adr/0052-edit-never-script.md).
 - **Test first**, and tests are platform-neutral (they run on Linux in the agent's containers).
-  [ADR 0014](adr/0014-test-first.md). **Test what you touch**; the whole solution before a PR. [ADR 0075](adr/0075-test-what-you-touch.md).
+  [ADR 0014](adr/0014-test-first.md). **Test what you touch** while coding; the full suite once, when the feature is built. [ADR 0075](adr/0075-test-what-you-touch.md).
 
 **The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
 
