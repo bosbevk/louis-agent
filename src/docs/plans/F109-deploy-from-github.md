@@ -3,7 +3,14 @@
 > **Plan.** How a merge to `main` puts Puls on mypuls.co.za without Louis's PC: a GitHub Actions workflow that signs
 > in to Azure with no stored password and runs the same `deploy.ps1 release` Louis runs today. Drafted 2026-11-07 in
 > the thread "Review fix merge" (Louis: "let's do a git hub action then", after FX63 had to wait for his PC to
-> deploy). **Not yet approved.** Deleted when the work is done (its why moves to an ADR, its how to the deploy README).
+> deploy). **Approved by Louis 2026-11-07**, built unattended (his pick). Deleted when the work is done (its why moves to an ADR, its how to the deploy README).
+
+## Approved during the build
+
+- **2026-11-07, the three picks and the way of working** (Louis, one card each): after green CI on `main` plus a
+  button; OpenID Connect; `deploy.ps1 release` as it is; the three steps built unattended, merged when CI is green.
+- **2026-11-07, actions pinned by major tag**, as `ci.yml` does (`actions/checkout@v7`, `azure/login@v2`), not by
+  commit SHA: this session could not read the actions' release SHAs, and one way across the repo's workflows is simpler.
 
 ## Context
 
@@ -196,14 +203,14 @@ Actions → *Deploy Puls* → *Run workflow*.
   instead of a shared secret; nothing to leak, nothing to rotate.
 - **Least privilege** (skill 15): the deploy identity can build and roll the app, never read a secret's value.
 
-## Decisions for Louis (one card each)
+## Decisions (Louis, 2026-11-07, one card each)
 
-1. **When it deploys:** after green CI on `main` plus a button (recommended), the button only, or every push to
-   `main` without waiting for CI.
-2. **How it signs in:** OpenID Connect, no password (recommended); a client secret stored in GitHub; or a
-   self-hosted runner on the PC using Louis's own `az` sign-in.
-3. **What it runs:** `deploy.ps1 release` as it is (recommended); the release steps rewritten as `az` lines in the
-   workflow; or Microsoft's `azure/container-apps-deploy-action`.
+1. **When it deploys:** after green CI on `main`, plus a button (his pick; not the button alone, not every push
+   without waiting for CI).
+2. **How it signs in:** OpenID Connect, no password (his pick; not a client secret in GitHub, not a self-hosted
+   runner on the PC).
+3. **What it runs:** `deploy.ps1 release` as it is (his pick; not the steps rewritten as `az` lines, not Microsoft's
+   `azure/container-apps-deploy-action`).
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [Puls on Azure](../../../demos/puls/deploy/azure/README.md)
