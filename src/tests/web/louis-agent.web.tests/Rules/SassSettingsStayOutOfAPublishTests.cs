@@ -12,6 +12,10 @@ public class SassSettingsStayOutOfAPublishTests
 {
     private static readonly string[] Areas = ["src/web", "packs/web", "demos"];
 
+    /// <summary>The item a project writes to keep the file out of its output and its publish, as a site does.</summary>
+    private const string NeverPublished =
+        "<Content Update=\"sasscompiler.json\" CopyToOutputDirectory=\"Never\" CopyToPublishDirectory=\"Never\"";
+
     /// <summary>Every project file that sits beside a <c>sasscompiler.json</c>.</summary>
     private static IEnumerable<string> ProjectsWithSassSettings() =>
         Areas.Select(area => Path.Combine(TestPaths.RepoRoot, area))
@@ -24,9 +28,7 @@ public class SassSettingsStayOutOfAPublishTests
     public void AProjectWithSassSettings_KeepsThemOutOfAPublish()
     {
         var missing = ProjectsWithSassSettings()
-            .Where(project => !File.ReadAllText(project).Contains(
-                "<Content Update=\"sasscompiler.json\" CopyToOutputDirectory=\"Never\" CopyToPublishDirectory=\"Never\"",
-                StringComparison.Ordinal))
+            .Where(project => !File.ReadAllText(project).Contains(NeverPublished, StringComparison.Ordinal))
             .Select(Path.GetFileName)
             .ToList();
 
