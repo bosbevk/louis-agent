@@ -1,0 +1,13 @@
+/* The sign-in providers' own colours (FX66), from their brand guidelines: Google's dark theme, Microsoft's dark theme,
+   LinkedIn's blue. A provider's button must look like the provider's, so these are not the site's colours and a site
+   doesn't set them; they sit apart from _colours.scss, which holds only the site's own greys. */
+
+:root {
+    --web-google-bg: #131314;
+    --web-google-stroke: #8e918f;
+    --web-google-text: #e3e3e3;
+    --web-microsoft-bg: #2f2f2f;
+    --web-microsoft-text: #ffffff;
+    --web-linkedin-bg: #0a66c2;
+    --web-linkedin-text: #ffffff;
+}

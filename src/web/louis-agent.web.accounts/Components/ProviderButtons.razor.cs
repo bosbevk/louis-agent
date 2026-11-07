@@ -1,6 +1,8 @@
 using LouisAgent.Accounts.Contracts;
+using LouisAgent.Choices;
 using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Accounts.Client.Navigation;
+using LouisAgent.Web.Accounts.Components.Providers;
 using LouisAgent.Web.Accounts.Text;
 using Microsoft.AspNetCore.Components;
 
@@ -34,4 +36,11 @@ public partial class ProviderButtons
     /// <summary>The API's challenge route for this provider, with a safe place to come back to.</summary>
     private string LinkFor(string provider) =>
         $"account/external/{Uri.EscapeDataString(provider)}?returnUrl={Uri.EscapeDataString(SafeReturn.Of(ReturnUrl))}";
+
+    /// <summary>
+    /// The button's classes (FX66): the brand's own look, which its guidelines fix, or the site's plain button for a
+    /// provider we have no look for.
+    /// </summary>
+    private static string Look(ProviderBrand? brand) =>
+        brand is { } known ? $"provider-button is-{known.Wire()}" : "account-button is-plain";
 }
