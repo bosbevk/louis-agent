@@ -1,6 +1,7 @@
 using LouisAgent.Accounts.Config;
 using LouisAgent.Accounts.Endpoints;
 using LouisAgent.Accounts.Endpoints.Confirmation;
+using LouisAgent.Accounts.External;
 using LouisAgent.Accounts.Mail;
 using LouisAgent.Accounts.Messages;
 using LouisAgent.Accounts.Store;
@@ -55,9 +56,13 @@ public static class AccountsStartup
         services.AddScoped<ITenantResolver>(sp =>
             new HostTenantResolver(sp.GetRequiredService<AccountsDbContext>(), options.DefaultTenant));
 
-        // Identity: the cookie it signs in with, its managers over our tenant-aware store, and its JSON routes.
+        // Identity: the cookie it signs in with, its managers over our tenant-aware store, and its JSON routes; then
+        // every sign-in provider this instance has keys for (F61.3), each under its own name.
         services.AddAuthorization();
-        services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
+        var auth = services.AddAuthentication(IdentityConstants.ApplicationScheme);
+        auth.AddIdentityCookies();
+        foreach (var provider in ExternalProviders.Configured(options)) provider.AddTo(auth);
+        services.AddSingleton(ExternalProviders.Of(options));
         services.ConfigureApplicationCookie(cookie => AccountCookies.Configure(cookie, options));
         services.AddIdentityCore<AccountUser>(identity =>
             {

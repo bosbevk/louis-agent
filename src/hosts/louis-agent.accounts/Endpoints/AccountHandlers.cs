@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using LouisAgent.Accounts.Contracts;
+using LouisAgent.Accounts.External;
 using LouisAgent.Accounts.Messages;
+using LouisAgent.Choices;
 using LouisAgent.Accounts.Users;
 using LouisAgent.Composition.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -82,9 +84,12 @@ public static class AccountHandlers
         return TypedResults.NoContent();
     }
 
-    /// <summary>The providers a button may show: none until F61.3 brings them.</summary>
-    public static JsonHttpResult<ProvidersReply> Providers() =>
-        TypedResults.Json(new ProvidersReply([]), AccountJson.Web);
+    /// <summary>Every provider the library knows, and whether this instance has its keys, so a button shows only when it does.</summary>
+    public static JsonHttpResult<ProvidersReply> Providers(IReadOnlyList<IExternalProvider> providers) =>
+        TypedResults.Json(
+            new ProvidersReply(providers.Select(p => new ProviderInfo(p.Name.Wire(), p.Label, p.IsConfigured))
+                .ToList()),
+            AccountJson.Web);
 
     /// <summary>The account as the browser sees it.</summary>
     private static async Task<AccountInfo> InfoOf(AccountUser user, UserManager<AccountUser> users) => new(
