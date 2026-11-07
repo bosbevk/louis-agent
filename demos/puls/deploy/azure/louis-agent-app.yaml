@@ -1,0 +1,151 @@
+# louis-agent-app: the louis-agent demo's web app (the framework's site, the code-review chat behind it) on Azure
+# Container Apps, beside Puls in the same environment puls-env the Bicep build made (F109.2; split from Puls's
+# folder later, Louis's pick), deployed with deploy.ps1 -App louis-agent-app (the how-to is README.md here).
+#   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
+# One container: the coding API serving the app, on the image demos/louis-agent/docker/images/Dockerfile.api builds.
+# Its browser and search are on the VM puls-services at its private address (VM_IP), its accounts on Azure SQL in
+# the same database as Puls's under its own tenant. No secret value lives here: every value is in the vault
+# puls-keys, the app's secrets are references to it by URL, read with the identity the Bicep build made for this
+# app, and deploy.ps1 update writes the `secrets:` block from the names the vault holds. What is shared with Puls
+# (the model key, the VM's Mongo, the accounts' SQL) is referenced by the same name; what is this app's own
+# (its API keys, its sign-in providers) carries the suffix -louis-agent.
+name: louis-agent-app
+resourceGroup: rg-puls-za
+location: South Africa North
+type: Microsoft.App/containerApps
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    'APP_IDENTITY_ID': {}
+properties:
+  environmentId: ENVIRONMENT_ID
+  workloadProfileName: Consumption
+  configuration:
+    # SECRETS
+    activeRevisionsMode: Single
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: Auto
+      allowInsecure: false
+      traffic:
+        - latestRevision: true
+          weight: 100
+    registries:
+      - server: acrpulsza.azurecr.io
+        identity: system-environment
+  template:
+    revisionSuffix: 'REVISION'
+    containers:
+      # The app. Its settings mirror the api service in demos/louis-agent/docker/docker-compose.yml, less what only
+      # a PC needs (the repositories mount, the git line-ending config for a Windows checkout); its workspace is the
+      # share, not a checkout, and its web is the VM's.
+      - name: louis-agent-app
+        image: acrpulsza.azurecr.io/louis-agent-coding:TAG
+        env:
+          # Its name in Application Insights (F52): the collector's address and protocol come from the environment's
+          # OpenTelemetry agent (the Bicep build), never from here.
+          - name: OTEL_SERVICE_NAME
+            value: louis-agent
+          - name: HOST_TIME_ZONE
+            value: Africa/Johannesburg
+          - name: HOST_CULTURE
+            value: en-ZA
+          - name: WORKSPACE_ROOT
+            value: /workspace
+          - name: CONFIG_DIRECTORY
+            value: /workspace/config
+          - name: SKILLS_DIRECTORY
+            value: /workspace/skills
+          - name: LOG_DIRECTORY
+            value: /logs
+          - name: PRICES_FILE
+            value: /workspace/config/prices.json
+          - name: RATES_FILE
+            value: /workspace/config/rates.json
+          - name: USAGE_IN_CHAT
+            value: 'true'
+          - name: LLM_PROVIDER
+            value: anthropic
+          - name: LLM_MODEL
+            value: claude-haiku-5-5
+          # The model key is the one Puls uses: one account, one secret.
+          - name: ANTHROPIC_API_KEY
+            secretRef: anthropic-api-key
+          # The key every /v1 call needs unless a signed-in person makes it (F61.2), and the admin's: this app's own.
+          - name: AGENT_API_KEY
+            secretRef: agent-api-key-louis-agent
+          - name: ADMIN_API_KEY
+            secretRef: admin-api-key-louis-agent
+          # The web it reads: SearXNG and the headless browser on the VM, at its private address.
+          - name: WEB_SEARCH_PROVIDER
+            value: searxng
+          - name: SEARXNG_URL
+            value: http://VM_IP:8080
+          - name: BROWSER_URL
+            value: http://VM_IP:9222
+          # What the browser tells the sites it reads for a user: who reads and why; never a person.
+          - name: BROWSER_USER_AGENT
+            value: "louis-agent/1.0 (+https://louis-agent.dev; reads a page on a user's behalf)"
+          # The eval store: the VM's Mongo, this app's own database on it; the URL carries the password, so it is a
+          # secret (the same one Puls references).
+          - name: EVALS_MONGO_URL
+            secretRef: mongo-url
+          - name: EVALS_MONGO_DATABASE
+            value: louis_agent_benchmarks
+          # The accounts (F61): the same Azure SQL database as Puls's, every account on this host this app's tenant,
+          # the cookie on the domain.
+          - name: ACCOUNTS_SQL_URL
+            secretRef: accounts-sql-url
+          - name: ACCOUNTS_TENANT
+            value: louis-agent
+          - name: ACCOUNTS_COOKIE_DOMAIN
+            value: louis-agent.dev
+          # The sign-in providers (F61.3): deploy.ps1 update puts one pair of lines here for each provider whose two
+          # secrets are set for this app (auth-google-client-id-louis-agent and -secret-louis-agent, and so on); a
+          # provider with no keys names no secret the app lacks and stays off.
+          # PROVIDERS
+        resources:
+          cpu: 1
+          memory: 2Gi
+          ephemeralStorage: 4Gi
+        # The share louis-agent-workspace (storage louis-agent-vol on the environment, from the Bicep build): config/
+        # with the price tables at the paths above, skills/ for what the agent writes, logs/ for the run files and the
+        # usage ledger, data/ for what an eval run saves.
+        volumeMounts:
+          - volumeName: louis-agent-vol
+            mountPath: /workspace
+          - volumeName: louis-agent-vol
+            subPath: logs
+            mountPath: /logs
+          - volumeName: louis-agent-vol
+            subPath: data
+            mountPath: /data
+        probes:
+          - type: Startup
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            failureThreshold: 120
+            timeoutSeconds: 3
+          - type: Readiness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 48
+            timeoutSeconds: 5
+          - type: Liveness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+    scale:
+      # Nothing runs while nobody is on it, as Puls: the first visitor waits for a cold start of some seconds.
+      minReplicas: 0
+      maxReplicas: 1
+    volumes:
+      - name: louis-agent-vol
+        storageType: AzureFile
+        storageName: louis-agent-vol
