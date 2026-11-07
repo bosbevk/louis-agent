@@ -210,8 +210,9 @@ for something opens the chat with a draft through `ChatHandoff`, and never sends
 
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
-would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The portal lists every upload at
-`/admin/imports` without knowing the pack ([ADR 0071](../adr/0071-packs-take-data-uploads.md)). Make the preview say
+would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The framework's page lists every upload at
+`/admin/imports` without knowing the pack, on every site, with a link in the sidebar ([ADR 0071](../adr/0071-packs-take-data-uploads.md)). A
+component of your own can replace the card with `views.UseImport<TView>(name)`. Make the preview say
 exactly what Save will do. The shop-prices pack's `StatsSaImport` is the example.
 
 ### Your names are an enum

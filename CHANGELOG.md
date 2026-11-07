@@ -4,6 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-07 — **F59.9 Uploads the same way**: the Uploads page moved to the framework, reached from the sidebar when a pack takes a file, and a pack's or a demo's own view can replace a card by name, as with screens.
 - 2026-11-07 — **F59.8 Recipe management**: a recipe can be searched, opened, changed field by field and removed from an admin screen, and an excluded page cleared, with no script. A screen can now name actions, with a second click for what destroys, and open a row as a form. An edit is marked, and a later read can't overwrite it.
 - 2026-11-07 — **F59.7 The code-review app on the frame**: it now has a thin chat page on `ChatShell`, its styles are Sass on the framework's, and `retro` and `paper` use the framework's colour names, so its own copies are gone. A site can turn off the frame's credits, language, place, projects and unfinished parts. A reply that isn't JSON is now an error a page can show, instead of crashing the app.
 - 2026-11-07 — **F59.6 The git and file controls**: Changes, Branches and Files moved out of the code-review app to `packs-web/`, each pack's own, and open as admin screens. A Review or Ask button there opens the chat with the prompt as a draft and sends nothing. A site shows such a screen only if it carries its view, so Puls's sidebar doesn't change.

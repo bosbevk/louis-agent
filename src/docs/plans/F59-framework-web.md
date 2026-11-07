@@ -733,6 +733,8 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - Both lists read everything and page in memory, as a few hundred recipes don't need a database query, and the feed already reads them all (ADR 0055).
   - `RecipeForm` is a plain class apart from the screen, so the recipe's rules test without a store. Steps 4 and 5 are one commit, as are 7 to 9, as they only work together.
 
+- **2026-11-07, what F59.9 chose, unattended.** `ImportForm` moved beside `ImportCard` in `Components/Imports/`, not in a folder of its own. Puls's *Data* heading went with its only link, so Uploads now sits under the sidebar's *Packs*. The four steps are one commit plus the docs, as the page, the override and the link only work together.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
