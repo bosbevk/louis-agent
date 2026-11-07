@@ -134,3 +134,26 @@ has an account, on the server and on the page, so neither can be used to find ou
 filter that switches on the answer's type must unwrap `INestedHttpResult` first; the redirect never fired until it
 did. And a query parameter in a Blazor page can't be passed as a parameter in a test; the test navigates with the
 query, as a browser would.
+
+## What a provider tells us, and what we keep (F61.3, 2026-11-07)
+
+**What was built.** Sign in through Google, Microsoft and LinkedIn: OAuth 2.0 for the first two on Microsoft's own
+handlers, OpenID Connect for LinkedIn on the generic handler. Skill 15 with skill 11's protocols.
+
+**Two cookies, one short-lived.** A provider sends the browser back to `/signin-google` with a code; the handler
+trades it for the provider's word on who this is, and writes that into Identity's *external* cookie, not the sign-in
+cookie. Our callback reads the external cookie, decides (a known login, a known email, a newcomer), writes the real
+sign-in cookie, and clears the external one. Nothing from the provider is kept but its name and its id for the person
+(`AspNetUserLogins`); no token is saved (`SaveTokens = false`), since nothing of ours calls a provider's API.
+
+**A newcomer's email is confirmed because the provider said so.** The person just proved they own the account at the
+provider, and the provider says which email it is; that's a stronger confirmation than our own mailed link. One
+Google account links in one tenant only, since Identity keys a login by provider and id across the table.
+
+**Linking checks it's still you.** The challenge for a link carries the signed-in person's id in the state the
+provider echoes back (`XsrfId`), and the callback refuses a link whose state names someone else: otherwise a page
+could make a signed-in person link an attacker's provider account to theirs. Unlinking the last way in without a
+password is refused, or the account would be unreachable.
+
+**The server checks the return address too.** The web's `SafeReturn` guards the pages; the callback is a server
+route a browser lands on, so `LocalPath` guards it the same way. Two copies of one rule, each tested, on purpose.

@@ -382,3 +382,16 @@ One place deliberately breaks the injection rule: the profile menu looks the acc
 (`IServiceProvider.GetService`) instead of injecting them, because accounts are a site's choice and the menu is drawn
 on every site, and in every chat test, with or without them. Rather than make every site and every test register
 services they don't use, the one component that cares asks whether they're there.
+
+## A provider is one class, and a test can play one (F61.3, 2026-11-07)
+
+`IExternalProvider` is the seam: which provider, its label, whether this instance has its keys, and how it joins the
+authentication pipeline. Google, Microsoft and LinkedIn are one class each, Facebook and X are names in the enum
+waiting for theirs. The toolsets' rule holds here as everywhere: `?` only where the instance has it, so a button
+appears the moment the keys do and never before. LinkedIn taught the other lesson of the skill: before reaching for a
+third-party package, ask what the standard handler already does. LinkedIn is OpenID Connect, so the generic handler
+and a discovery document were the whole of it.
+
+The callback route runs the real `SignInManager` on the real external cookie, so the test needed a provider that
+isn't there. `ScriptedProvider` is a route the test host alone maps, which writes that cookie exactly as a handler
+would; the callback can't tell the difference, which is the point.

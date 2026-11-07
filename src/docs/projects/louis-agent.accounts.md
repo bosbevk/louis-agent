@@ -47,6 +47,15 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
 - **A browser following the confirmation link lands on the web's page** (`Endpoints/Confirmation/ConfirmationRedirect`,
   an endpoint filter on Identity's routes): `/confirm-email?done=true`, or `?failed=true`; a client that asks for JSON
   gets Identity's own text.
+- **Through a provider** (F61.3): `External/IExternalProvider` is one way to sign in through someone else (Strategy),
+  on only with both its keys; `External/Providers/` holds Google and Microsoft on Microsoft's own handlers and LinkedIn
+  on the generic OpenID Connect handler against LinkedIn's discovery document. `GET /account/external/{provider}`
+  sends the browser to the provider, `GET /account/external/callback` reads what it said from Identity's external
+  cookie: a known login straight in, a known email onto its account, a first-timer made in the current tenant,
+  confirmed and named as the provider names them; `?link=true` attaches the provider to the signed-in account.
+  `DELETE /account/external/{provider}` unlinks, refused for the last way in without a password; `POST
+  /account/password` is a first password. Every answer to a browser is a redirect to a path of ours (`LocalPath`).
+  Registering the apps is [a guide](../guides/register-a-sign-in-provider.md).
 - **Mail** goes through Identity's `IEmailSender<AccountUser>`; `Mail/LogEmailSender` writes the link to the log,
   decoded from Identity's HTML form, hashed unless `LOG_CONTENT=full`. A real sender is one class behind the seam.
 - **Storage** is EF Core on SQL Server: `Store/AccountsDbContext` is Identity's context plus `Tenants`, with the
@@ -87,7 +96,9 @@ sequenceDiagram
 src/hosts/louis-agent.accounts/
 ├── AccountsStartup.cs   # AddLouisAgentAccounts, UseLouisAgentAccounts, MapLouisAgentAccounts
 ├── Config/              # AccountsOptions (the settings), AccountCookies (the cookie's rules)
-├── Endpoints/           # AccountHandlers (named static methods), AccountRoutes (the map)
+├── Endpoints/           # AccountHandlers (named static methods), AccountRoutes (the map), AccountProblems (a refusal in Identity's shape);
+│                        # Confirmation/ (the link's landing), External/ (the challenge, the callback, unlink, a first password, LocalPath)
+├── External/            # IExternalProvider, ExternalProvider (the wire names), ProviderKeys, ExternalProviders; Providers/ (Google, Microsoft, LinkedIn)
 ├── Mail/                # LogEmailSender behind Identity's IEmailSender
 ├── Messages/            # AccountErrorMessage, AccountLogMessage, AccountUserText (ADR 0009)
 ├── Migrations/          # what `dotnet ef migrations add` wrote; a tool's record, not sized by the file rule
@@ -114,6 +125,7 @@ model from the code. If it writes the model snapshot under `LouisAgent/Accounts/
 | `ACCOUNTS_COOKIE_DOMAIN` | `.env` | The cookie's domain; unset, the request's host |
 | `MSSQL_SA_PASSWORD` | `.env.sql` | The PC's SQL Server, read only by `puls-sql` |
 | `ACCOUNTS_SQL_TEST_URL` | shell, CI | The integration tests' server |
+| `AUTH_{GOOGLE,MICROSOFT,LINKEDIN}_CLIENT_ID` and `_CLIENT_SECRET` | `.env.secrets` | A provider's keys; on only with both ([the guide](../guides/register-a-sign-in-provider.md)) |
 
 **On the PC** the server is `puls-sql` in the Puls compose: SQL Server Developer edition on a Docker volume (a
 Windows bind mount makes the non-root server crash at start-up), its sa password in `config/.env.sql`. The
@@ -134,11 +146,16 @@ out, delete; the route table pinned). CI runs the second against a SQL Server se
   Windows bind mount it can't own (`Failed to load LSA`).
 - A tenant in a test is never `puls`: it's an identity's wire name, and the names rule flags the string.
 - Identity writes a link for an HTML mail (`&amp;`); the log sender and the test sender decode it.
+- (F61.3) The callback is tested on a scripted provider: a route the test host alone maps writes Identity's external
+  cookie as a provider's handler would, so the callback runs unchanged on the cookie it reads in production.
+- (F61.3) A query parameter a route may be called without is a parameter with a default (`bool link = false`);
+  without one, minimal APIs answer 400 for the missing value.
 
 ## Limits and plans
 
-Google, Microsoft and LinkedIn are F61.3 (with linking, unlinking, and setting a password on an account that has none);
-passkeys and two-factor F61.5; a real mail sender, Facebook and X, and the business site are later. One Google
+Passkeys and two-factor are F61.5; a real mail sender, Facebook and X, and the business site are later. The three
+providers are built and tested on a scripted one; a sign-in through the real Google, Microsoft or LinkedIn waits for
+Louis to register the apps. One Google
 account links in one tenant only. A tenant has at most one host. Identity's own validation messages (a password too
 short) come in English whatever the site's language. The cookie's `/account/refresh` (bearer tokens) is mapped and
 unused.

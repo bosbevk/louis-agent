@@ -35,6 +35,7 @@
 | [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md) | `demos/puls/web/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
 | [Change the site](../../../demos/louis-agent/docs/guides/change-the-site.md) | `demos/louis-agent/web/louis-agent.site` | Run it, add a page, change the theme, change a film, export a film as a video |
 | [Change the framework's web](change-the-web.md) | `src/web/louis-agent.web` | Decide what is shared, add an API call, follow a new event, add a component |
+| [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/louis-agent.accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set (F61.3) |
 | [Change the eval pages](change-the-eval-pages.md) | `src/web/louis-agent.web` | Give a site the pages, sort its sources chart, change a page |
 | [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Change Puls](../../../demos/puls/docs/guides/change-puls.md) | `demos/puls/identity/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |

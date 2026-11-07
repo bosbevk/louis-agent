@@ -21,6 +21,10 @@
   nothing of accounts; the profile menu looks the account services up rather than injecting them, so a site or a
   test without them still draws the guest's menu; the two site-independent sites (the starter, the code-review app)
   got the account pages too, since they're sites on the framework.
+- **2026-11-07, F61.3 built** on `feature/F61.3-social-logins`, from F61.2's tip; its plan is deleted. Picks taken
+  unattended: the callback is tested on a scripted provider (a route the test host alone maps writes the external
+  cookie as a handler would); the three providers sit in `External/Providers/` for the folder rule; every answer the
+  callback gives a browser is a redirect to a path of ours, checked on the server as the web checks its own.
 
 ## Context
 
