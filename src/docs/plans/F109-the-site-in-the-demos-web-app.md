@@ -232,6 +232,11 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   wants it, nothing configured twice; another demo wraps `ChatWidget` with its own identity the same way.
 - **The guide's knowledge** is open: a tool that searches the docs in the mounted workspace (Claude's pick), an
   index built at build time, or a digest in the prompt; Louis to pick.
+- **It follows the framework, and extends it where needed** (Louis, 2026-11-08: "it must follow the framework set in
+  place, extend the framework if/where needed"): the expert is an identity like Puls's (its voice, modes and
+  toolsets as files under the demo's `identity/`), what it reads is a pack's tool (ADR 0080), the widget is a
+  framework component opening an ordinary API session, and where the framework lacks a seam (a session that takes
+  its identity from the widget, a smaller frame) the framework gets it, never the demo a way around it.
 - **The demos section** shows the triage workflow (F106) once that is built; until then the review chat at `/chat`
   is the demo the site leads to.
 
