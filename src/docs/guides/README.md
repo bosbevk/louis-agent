@@ -26,9 +26,9 @@
 | Guide | Project | Read it to… |
 |---|---|---|
 | [Change the CLI](change-the-cli.md) | `src/hosts/louis-agent.cli` | Change how the terminal shows a turn, add a chat command |
-| [Change the ACP server](change-the-acp-server.md) | `src/hosts/louis-agent.acp-server` | Run it in Rider, add a protocol method or a `session/update` kind |
+| [Change the ACP server](change-the-acp-server.md) | `src/hosts/louis-agent.acp` | Run it in Rider, add a protocol method or a `session/update` kind |
 | [Change the API](change-the-api.md) | `src/hosts/louis-agent.api` | Add an endpoint (and protect it), a session option, an event; serve the other web app |
-| [Change the MCP server](change-the-mcp-server.md) | `src/hosts/louis-agent.mcp-server` | Publish a tool, add an MCP-only tool, pick the transport, check it with a client |
+| [Change the MCP server](change-the-mcp-server.md) | `src/hosts/louis-agent.mcp` | Publish a tool, add an MCP-only tool, pick the transport, check it with a client |
 | [Change the orchestrator](../../../demos/louis-agent/docs/guides/change-the-orchestrator.md) | `demos/louis-agent/hosts/louis-agent.orchestrator` | Change a runbook, add a tool or a setting, test and run it |
 | [Change the usage probe](change-the-usage-probe.md) | `src/tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
 | [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) | `demos/louis-agent/web/louis-agent.code-review` | Add a tab, call a new endpoint, add a theme, test the page |

@@ -25,13 +25,13 @@ may act), **resources** (data the application or the user chooses to put in fron
 *The MCP server publishes every feed in the catalogue as a resource, `feed://{name}`, `application/json`, read whole
 by `ReadJsonAsync` when a client asks; over HTTP it sits behind the server's key.*
 
-- **`FeedResources.From(feeds)`** (`src/hosts/louis-agent.mcp-server/Resources/`, an Adapter) makes one SDK resource per
+- **`FeedResources.From(feeds)`** (`src/hosts/louis-agent.mcp/Resources/`, an Adapter) makes one SDK resource per
   feed, with the feed's name and description; the SDK answers `resources/list` and `resources/read` and refuses a URI
   nobody publishes. The scheme is `ResourceScheme.Feed` ([ADR 0043](0043-repeated-names-are-enums.md)).
 - **One setup for both transports:** `McpPrimitives.Add(options, engine, catalog)` (a Facade) puts the engine's tools
   and the feeds into the server's options; stdio and HTTP each call it once.
 - **Built once at start-up:** feeds don't change while the server runs, unlike the agent's tools (`EngineToolSync`).
-- **Tested over the protocol:** `tests/louis-agent.mcp-server.tests` runs the SDK's client against its server through
+- **Tested over the protocol:** `tests/louis-agent.mcp.tests` runs the SDK's client against its server through
   two in-memory pipes, so a test sees what a client on stdio or HTTP sees.
 
 ## Consequences

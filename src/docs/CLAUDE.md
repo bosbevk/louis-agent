@@ -88,7 +88,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
-  model**: `louis-agent.mcp-server` hands an external client the raw tools; to have the agent do a whole task, call
+  model**: `louis-agent.mcp` hands an external client the raw tools; to have the agent do a whole task, call
   the API's sessions. [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 - **Provider strategies** — where providers differ, one interface with an implementation per provider, picked in
   `LlmClientFactory`; never branch on the provider's name elsewhere. [ADR 0003](adr/0003-provider-strategies.md).

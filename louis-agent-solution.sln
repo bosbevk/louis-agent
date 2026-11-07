@@ -408,7 +408,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\projects\README.md = src\docs\projects\README.md
-		src\docs\projects\louis-agent.acp-server.md = src\docs\projects\louis-agent.acp-server.md
+		src\docs\projects\louis-agent.acp.md = src\docs\projects\louis-agent.acp.md
 		src\docs\projects\louis-agent.api.md = src\docs\projects\louis-agent.api.md
 		src\docs\projects\louis-agent.cli.md = src\docs\projects\louis-agent.cli.md
 		src\docs\projects\louis-agent.core.md = src\docs\projects\louis-agent.core.md
@@ -416,7 +416,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B
 		src\docs\projects\louis-agent.evals.md = src\docs\projects\louis-agent.evals.md
 		src\docs\projects\louis-agent.evals.protocol.md = src\docs\projects\louis-agent.evals.protocol.md
 		src\docs\projects\louis-agent.evals.runner.md = src\docs\projects\louis-agent.evals.runner.md
-		src\docs\projects\louis-agent.mcp-server.md = src\docs\projects\louis-agent.mcp-server.md
+		src\docs\projects\louis-agent.mcp.md = src\docs\projects\louis-agent.mcp.md
 		src\docs\projects\louis-agent.usage-probe.md = src\docs\projects\louis-agent.usage-probe.md
 		src\docs\projects\louis-agent.web.md = src\docs\projects\louis-agent.web.md
 		src\docs\projects\tests.md = src\docs\projects\tests.md
@@ -470,9 +470,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.ollama.tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.openai.tests", "src\tests\engine\louis-agent.core.openai.tests\louis-agent.core.openai.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server", "src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj", "{A2CB6834-DB10-4DD8-817F-12377FD055E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp", "src\hosts\louis-agent.mcp\louis-agent.mcp.csproj", "{A2CB6834-DB10-4DD8-817F-12377FD055E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server", "src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj", "{5377CA27-525C-4228-ABAB-88D1C63C2A46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp", "src\hosts\louis-agent.acp\louis-agent.acp.csproj", "{5377CA27-525C-4228-ABAB-88D1C63C2A46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
@@ -528,7 +528,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.testing", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review.tests", "demos\louis-agent\tests\louis-agent.code-review.tests\louis-agent.code-review.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server.tests", "src\tests\hosts\louis-agent.acp-server.tests\louis-agent.acp-server.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp.tests", "src\tests\hosts\louis-agent.acp.tests\louis-agent.acp.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.session-stream", "src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj", "{BCB772FE-E1BB-492A-BCCF-3BFC61C732AB}"
 EndProject
@@ -596,7 +596,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-price
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.integration-tests", "packs\tests\louis-agent.pack.recipes.integration-tests\louis-agent.pack.recipes.integration-tests.csproj", "{000CF338-1D40-44D0-9F8A-EE8F2A0D56B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server.tests", "src\tests\hosts\louis-agent.mcp-server.tests\louis-agent.mcp-server.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp.tests", "src\tests\hosts\louis-agent.mcp.tests\louis-agent.mcp.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "packs\evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
 EndProject

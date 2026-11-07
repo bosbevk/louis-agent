@@ -22,8 +22,8 @@ flowchart LR
 
     subgraph hosts["louis-agent hosts"]
         Api["louis-agent.api<br/>HTTP + SSE, serves the web app"]
-        Acp["louis-agent.acp-server<br/>JSON-RPC over stdio"]
-        Mcp["louis-agent.mcp-server<br/>MCP over stdio or HTTP"]
+        Acp["louis-agent.acp<br/>JSON-RPC over stdio"]
+        Mcp["louis-agent.mcp<br/>MCP over stdio or HTTP"]
         Cli["louis-agent.cli<br/>terminal"]
     end
 
@@ -56,9 +56,9 @@ exception: it has no model of its own and only hands out the tools.
 | You want… | Use | Why |
 |---|---|---|
 | To chat with the agent in a browser, review its changes, merge branches | Web app (served by **louis-agent.api**) | Chats, Files, Changes and Branches tabs on top of the API |
-| To chat inside Rider | **louis-agent.acp-server** | Rider's AI chat speaks the Agent Client Protocol |
+| To chat inside Rider | **louis-agent.acp** | Rider's AI chat speaks the Agent Client Protocol |
 | A program (or another agent) to hand louis-agent a whole task and get the result back | **louis-agent.api** sessions | louis-agent runs its own tool loop server-side and streams what it does; the caller only reads the outcome |
-| Another agent to use louis-agent's *tools* with its own model, one call at a time | **louis-agent.mcp-server** | MCP hands out raw tools; the calling agent does all the reasoning |
+| Another agent to use louis-agent's *tools* with its own model, one call at a time | **louis-agent.mcp** | MCP hands out raw tools; the calling agent does all the reasoning |
 | Quick prompts in a terminal | **louis-agent.cli** | No network at all |
 
 The difference between the last two matters for agent-to-agent setups. Through the **API**, the other agent delegates:
@@ -261,7 +261,7 @@ deletes are queued: every click is kept and they run one at a time, in order, wi
 
 ## Rider and the ACP server
 
-Rider starts `louis-agent.acp-server` (one container per chat) and talks [Agent Client Protocol](https://agentclientprotocol.com)
+Rider starts `louis-agent.acp` (one container per chat) and talks [Agent Client Protocol](https://agentclientprotocol.com)
 JSON-RPC over its stdin/stdout:
 
 | Direction | Message | Meaning |
@@ -281,7 +281,7 @@ Because stdout carries the protocol, all logging goes to stderr.
 
 ## MCP clients and the MCP server
 
-`louis-agent.mcp-server` publishes the engine's tools — files, git, `DotNet*`, scripts, web, skills, agent-built tools
+`louis-agent.mcp` publishes the engine's tools — files, git, `DotNet*`, scripts, web, skills, agent-built tools
 — plus `list_skills`, `get_skill_info` and `get_skill_documentation`. It has no model: the client's own model decides
 which tool to call (`tools/list`, `tools/call`), and the tool list updates live (`notifications/tools/list_changed`).
 It also publishes every pack's data feed as a resource, `feed://{name}` (`resources/list`, `resources/read`): the same

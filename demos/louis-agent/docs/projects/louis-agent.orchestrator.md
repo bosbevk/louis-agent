@@ -110,4 +110,4 @@ ran in the demo, removed in CL10; it returns with the evals.
 [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md)
 
 ---
-[Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.mcp-server](../../../../src/docs/projects/louis-agent.mcp-server.md) · Next: [louis-agent.usage-probe](../../../../src/docs/projects/louis-agent.usage-probe.md)
+[Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.mcp](../../../../src/docs/projects/louis-agent.mcp.md) · Next: [louis-agent.usage-probe](../../../../src/docs/projects/louis-agent.usage-probe.md)

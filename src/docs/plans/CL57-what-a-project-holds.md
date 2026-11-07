@@ -61,9 +61,9 @@ defaults (`claude*` is Anthropic; a setting's value, not an SDK); CL31 (scripts 
 - **The runner's programs hand in the telemetry.** `EvalRunnerHost.RunAsync(args, catalogs, services)`; the
   providers reach the judge through the same handle, so the evals library builds no SDK client itself.
 - **Rider's host owns Rider.** `RiderToolDiscovery : IToolDiscovery` and `RiderMcpClient` move to
-  `louis-agent.acp-server/Rider/`, with `RiderOptions.FromEnvironment()` (`RIDER_MCP_*`) and their log messages in
+  `louis-agent.acp/Rider/`, with `RiderOptions.FromEnvironment()` (`RIDER_MCP_*`) and their log messages in
   the ACP server's own enum; the coding-acp program hands it in. `McpTransport` and its setting move to
-  `louis-agent.mcp-server`, the only reader of `MCP_TRANSPORT`. Core's `Protocols/` folder goes; the engine keeps
+  `louis-agent.mcp`, the only reader of `MCP_TRANSPORT`. Core's `Protocols/` folder goes; the engine keeps
   `RegisterDiscoveredTool`, the one thing discovery needs from it.
 
 ### Interface design
@@ -119,8 +119,8 @@ public static class LlmLimits { public const int MaxOutputTokens = 16_000; }    
 // src/engine/louis-agent.core.anthropic (new): AnthropicProvider.Instance, AnthropicUsageMapper, AnthropicPromptCaching (moved)
 // src/engine/louis-agent.core.ollama (new): OllamaProvider.Instance (the ten-minute HttpClient)
 // src/engine/louis-agent.core.openai (new): OpenAiCompatibleProvider.Instance
-// src/hosts/louis-agent.acp-server/Rider (new): RiderOptions, RiderToolDiscovery, RiderMcpClient, DiscoveredTool, RiderLogMessage
-// src/hosts/louis-agent.mcp-server/Transport (new): McpTransport, McpTransportSetting (moved)
+// src/hosts/louis-agent.acp/Rider (new): RiderOptions, RiderToolDiscovery, RiderMcpClient, DiscoveredTool, RiderLogMessage
+// src/hosts/louis-agent.mcp/Transport (new): McpTransport, McpTransportSetting (moved)
 // src/evals/louis-agent.evals.runner (changed)
 public static Task<int> RunAsync(string[] args, RunnerCatalogs catalogs, HostServices? services = null);
 // src/hosts/louis-agent.api.evals (new)
@@ -149,8 +149,8 @@ flowchart LR
     subgraph hosts["Hosts on core"]
         apilib["louis-agent.api: sessions, workspace, git, info, screens, prompts, the gate"]
         apievals["louis-agent.api.evals: the studio's routes, stores, runner (MongoDB)"]
-        acplib["louis-agent.acp-server: + Rider/"]
-        mcplib["louis-agent.mcp-server: + Transport/"]
+        acplib["louis-agent.acp: + Rider/"]
+        mcplib["louis-agent.mcp: + Transport/"]
     end
     subgraph webs["The framework's web"]
         weblib["louis-agent.web"]; webacc["web.accounts"]; webevals["web.evals"]
@@ -192,8 +192,8 @@ sequenceDiagram
 | `EvalSettings` | `src/hosts/louis-agent.api/Evals/Runs/Start/` → `louis-agent.api.evals/Runs/Start/` | `LouisAgent.Api.Evals.Runs.Start` | 2 changed (takes `WebSetup`), 6 moved |
 | `EvalRunnerHost.RunAsync(args, catalogs, services)` | `src/evals/louis-agent.evals.runner/` | `LouisAgent.Evals.Runner` | 2 changed |
 | `IToolDiscovery`, `NoToolDiscovery` | `src/engine/louis-agent.core/Hosting/Discovery/` | `LouisAgent.Core.Hosting.Discovery` | 3 new |
-| `RiderOptions`, `RiderToolDiscovery`, `RiderMcpClient`, `DiscoveredTool`, `RiderLogMessage` | `src/hosts/louis-agent.acp-server/Rider/` (+ `Messages/`) | `LouisAgent.Acp.Rider` | 3 moved from core's `Hosting/Rider`, `Protocols/Mcp` |
-| `McpTransport`, `McpTransportSetting` | `src/hosts/louis-agent.mcp-server/Transport/` | `LouisAgent.Mcp.Transport` | 3 moved |
+| `RiderOptions`, `RiderToolDiscovery`, `RiderMcpClient`, `DiscoveredTool`, `RiderLogMessage` | `src/hosts/louis-agent.acp/Rider/` (+ `Messages/`) | `LouisAgent.Acp.Rider` | 3 moved from core's `Hosting/Rider`, `Protocols/Mcp` |
+| `McpTransport`, `McpTransportSetting` | `src/hosts/louis-agent.mcp/Transport/` | `LouisAgent.Mcp.Transport` | 3 moved |
 | `ILlmProvider`, `LlmLimits` | `src/engine/louis-agent.core/Llm/Providers/` | `LouisAgent.Core.Llm.Providers` | 4 new |
 | `LlmClientFactory` | `src/engine/louis-agent.core/Llm/` | `LouisAgent.Core.Llm` | 4 changed (a registry) |
 | `AnthropicProvider`, `AnthropicUsageMapper`, `AnthropicPromptCaching` | `src/engine/louis-agent.core.anthropic/` | `LouisAgent.Core.Anthropic` | 5 new / moved |
@@ -219,8 +219,8 @@ src/engine/
 src/hosts/
 ├── louis-agent.api/             # − Evals/, Endpoints/Admin/{Runs,Drafts,Evals,Imports,Reviews,Studio}, Admin/Replies, MongoDB, evals.*; − core.web
 ├── louis-agent.api.evals/       # EvalsStartup, Config/EvalOptions, Evals/…, Endpoints/…, Replies/
-├── louis-agent.acp-server/      # + Rider/
-└── louis-agent.mcp-server/      # + Transport/
+├── louis-agent.acp/      # + Rider/
+└── louis-agent.mcp/      # + Transport/
 src/web/
 ├── louis-agent.web/             # − Admin/, Components/Admin/Evals, Pages/Admin/{Building,Reviewing,Running}, Styles/web/admin/_eval-pages.scss
 ├── louis-agent.web.accounts/    # + AccountPages.Assembly
@@ -291,6 +291,12 @@ Picks made unattended, each with its why, for Louis's review:
 - **A starter API program joins the plan** (Louis, 2026-11-07, pointing at `demos/starter`: "we must also add a
   starter api"): `demos/starter/hosts/louis-agent.starter-api`, the smallest program that serves the starter
   site with the framework's API, accounts and the eval studio opted in, built in step 7 with the API's studio.
+- **The two hosts lose `-server`** (Louis, 2026-11-07, pointing at the hosts list: "remove -server it is
+  explanatory"): `louis-agent.acp`, `louis-agent.mcp`, namespaces `LouisAgent.Acp` and `LouisAgent.Mcp`, their
+  tests and design docs, and the MCP server's message enums (`McpLogMessage`, `McpText`, `McpErrorMessage`).
+  Rider's rename did the enums; it can't rename a namespace, so the namespace and the paths were an exact
+  token replacement across the repo. The docker service and image names (`acp-server`, `mcp-server`) and the
+  two guides' file names keep the word: they name a running thing, not a project.
 - **Test first, where the test could compile:** the seam tests of steps 2 to 4 reference members that did not
   exist before the step, so they could not be run red first; each was written before its code and seen green after.
 

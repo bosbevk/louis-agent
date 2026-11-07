@@ -14,8 +14,8 @@ public class SolutionLayoutTests
     [TestCase("src/engine", "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream",
         "louis-agent.composition", "louis-agent.core.web", "louis-agent.core.telemetry", "louis-agent.core.anthropic",
         "louis-agent.core.ollama", "louis-agent.core.openai")]
-    [TestCase("src/hosts", "louis-agent.acp-server", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
-        "louis-agent.mcp-server", "louis-agent.accounts", "louis-agent.accounts.contracts")]
+    [TestCase("src/hosts", "louis-agent.acp", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
+        "louis-agent.mcp", "louis-agent.accounts", "louis-agent.accounts.contracts")]
     [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
@@ -41,7 +41,7 @@ public class SolutionLayoutTests
         "louis-agent.choices.tests", "louis-agent.session-stream.tests", "louis-agent.core.web.tests",
         "louis-agent.core.telemetry.tests", "louis-agent.core.anthropic.tests", "louis-agent.core.ollama.tests",
         "louis-agent.core.openai.tests")]
-    [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests",
+    [TestCase("src/tests/hosts", "louis-agent.acp.tests", "louis-agent.mcp.tests",
         "louis-agent.accounts.tests", "louis-agent.accounts.integration-tests")]
     [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests")]
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",

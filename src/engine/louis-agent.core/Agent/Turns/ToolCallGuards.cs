@@ -1,3 +1,4 @@
+
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Logging;
@@ -5,7 +6,6 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Usage.Records;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.AI;
@@ -15,7 +15,6 @@ using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Agent.Messages;
 
 namespace LouisAgent.Core.Agent.Turns;
-
 /// <summary>
 /// The guards around each tool call in the loop: every call is logged; a call the model was still writing when it hit
 /// the output limit is never run; an oversized result is summarised (with a separate, tool-less model call) before it
@@ -45,21 +44,13 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     {
         string arguments = JsonSerializer.Serialize(context.Arguments);
         Log.Log(LogLevel.Information, AgentLogMessage.ToolCall,
-            new
-            {
-                Tool = context.Function.Name,
-                Arguments = LogContent.OfArguments(context.Arguments)
-            }, tag: Tag);
+            new { Tool = context.Function.Name, Arguments = LogContent.OfArguments(context.Arguments) }, tag: Tag);
 
         if (context.CallContent.AdditionalProperties?.ContainsKey(TruncatedCallKey) == true)
         {
             // Running it would act on partial input, e.g. half a script or a file missing its content.
             Log.Log(LogLevel.Information, AgentLogMessage.ToolCallSkipped,
-                new
-                {
-                    Tool = context.Function.Name,
-                    LlmLimits.MaxOutputTokens
-                }, tag: Tag);
+                new { Tool = context.Function.Name, LlmLimits.MaxOutputTokens }, tag: Tag);
             ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmLimits.MaxOutputTokens);
             return TruncatedCallMessage;
         }
@@ -72,23 +63,14 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed,
-                new
-                {
-                    Tool = context.Function.Name,
-                    ErrorType = ex.GetType().Name,
-                    Reason = LogContent.Of(ex.Message)
-                },
+                new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = LogContent.Of(ex.Message) },
                 tag: Tag);
             throw;
         }
 
         string text = result?.ToString() ?? string.Empty;
         Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult,
-            new
-            {
-                Tool = context.Function.Name,
-                Result = LogContent.Of(text, cut: 300)
-            }, tag: Tag);
+            new { Tool = context.Function.Name, Result = LogContent.Of(text, cut: 300) }, tag: Tag);
         if (text.Length <= MaxToolResultChars) return result;
 
         // An oversized result (e.g. a huge diff) would blow the model's context window on the next request.
@@ -204,11 +186,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         CancellationToken cancellationToken = default)
     {
         string note = MessageText.Format(AgentToolMessage.OversizedResultNote,
-            new
-            {
-                Tool = toolName,
-                Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture)
-            });
+            new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) });
         string input = output.Length <= MaxSummaryInputChars
             ? output
             : output[..MaxSummaryInputChars] + MessageText.Format(AgentToolMessage.SummaryInputCut,
@@ -217,11 +195,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         try
         {
             Log.Log(LogLevel.Information, AgentLogMessage.ToolResultSummarising,
-                new
-                {
-                    Tool = toolName,
-                    Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture)
-                }, tag: Tag);
+                new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) }, tag: Tag);
             var messages = new List<ChatMessage>
             {
                 new(ChatRole.System,
@@ -230,10 +204,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
                     MessageText.Format(AgentToolMessage.SummaryRequest,
                         new
                         {
-                            Request = userRequest ?? "(unknown)",
-                            Tool = toolName,
-                            Arguments = arguments,
-                            Output = input
+                            Request = userRequest ?? "(unknown)", Tool = toolName, Arguments = arguments, Output = input
                         })),
             };
             ChatResponse response;
@@ -245,11 +216,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
                 string summary = MessageText.Format(AgentToolMessage.SummarisedResult,
-                    new
-                    {
-                        Note = note,
-                        Summary = response.Text
-                    });
+                    new { Note = note, Summary = response.Text });
                 ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised",
                     summary.Length);
                 return summary;
@@ -258,11 +225,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             Log.Log(LogLevel.Warning, AgentLogMessage.SummaryFailed,
-                new
-                {
-                    Tool = toolName,
-                    Reason = LogContent.Of(ex.Message)
-                });
+                new { Tool = toolName, Reason = LogContent.Of(ex.Message) });
         }
 
         string truncated = $"{note}\n{ProcessRunner.Truncate(output, MaxToolResultChars)}";

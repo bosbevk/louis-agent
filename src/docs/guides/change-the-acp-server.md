@@ -1,8 +1,8 @@
 # Change the ACP server
 
-> **How-to.** Change the Rider host, `src/hosts/louis-agent.acp-server`: run it in Rider, add a protocol method or a
+> **How-to.** Change the Rider host, `src/hosts/louis-agent.acp`: run it in Rider, add a protocol method or a
 > `session/update` kind, its texts and its tests. **Elsewhere:** how it works in
-> [louis-agent.acp-server](../projects/louis-agent.acp-server.md); the protocol at
+> [louis-agent.acp](../projects/louis-agent.acp.md); the protocol at
 > [agentclientprotocol.com](https://agentclientprotocol.com).
 
 The ACP server puts the agent in JetBrains Rider's AI chat. It speaks the Agent Client Protocol, JSON-RPC over stdin and
@@ -45,8 +45,8 @@ Log lines are `Messages/AcpLogMessage`, what the user sees `AcpUserText`, what t
 ## Test it
 
 ```bash
-dotnet test src/tests/hosts/louis-agent.acp-server.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.acp-server.tests   # after a deliberate change: then read the diff
+dotnet test src/tests/hosts/louis-agent.acp.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.acp.tests   # after a deliberate change: then read the diff
 ```
 
 The tests mirror the folders: `Paths/`, `Prompting/`, `Protocol/`, `Turns/`, and the transcript at the root. Then check

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- S (CL15): the transcript test drives AcpServer, which is internal, as Rider does. -->
+    <InternalsVisibleTo Include="louis-agent.acp.tests" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Acp</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.acp.md" Link="docs\louis-agent.acp.md" />
+    <None Include="..\..\docs\guides\change-the-acp-server.md" Link="docs\change-the-acp-server.md" />
+  </ItemGroup>
+
+</Project>

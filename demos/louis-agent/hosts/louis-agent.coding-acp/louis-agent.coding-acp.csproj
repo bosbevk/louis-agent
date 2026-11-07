@@ -16,7 +16,7 @@
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj" />
-<ProjectReference Include="..\..\..\..\src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj" />
+<ProjectReference Include="..\..\..\..\src\hosts\louis-agent.acp\louis-agent.acp.csproj" />
         <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />
     </ItemGroup>
 

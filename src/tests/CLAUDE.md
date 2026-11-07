@@ -13,7 +13,7 @@ dotnet test src/tests/engine/louis-agent.core.tests
 dotnet test src/tests/engine/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
 dotnet test demos/puls/tests/louis-agent.api.tests
 dotnet test demos/louis-agent/tests/louis-agent.orchestrator.tests
-dotnet test src/tests/hosts/louis-agent.acp-server.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
+dotnet test src/tests/hosts/louis-agent.acp.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
 dotnet test louis-agent-solution.sln          # everything
 dotnet test louis-agent-solution.sln --filter "Category!=Integration"   # the unit tests: no process, no tool, no Mongo
 dotnet test louis-agent-solution.sln --filter "Category=Integration"    # the integration tests (*.integration-tests projects); a missing tool skips, or fails with INTEGRATION_REQUIRED=1

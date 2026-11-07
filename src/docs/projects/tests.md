@@ -2,7 +2,7 @@
 
 > **Kind:** NUnit test projects · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
 > `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs/tests/louis-agent.pack.where-to-buy.tests/`, `packs/tests/louis-agent.pack.shop-prices.tests/`,
-> `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp-server.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
+> `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
 > `demos/louis-agent/tests/louis-agent.code-review.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,
 > `src/tests/web/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -102,7 +102,7 @@ an `AgentEngineFactory` with a client that throws if called.
 | `LouisAgentClientTests.cs` | Parsing the SSE stream (text, tool calls with inputs and results, stop reason, errors, separate text blocks) and `FIX-RESULT` lines |
 | `OrchestratorTests.cs` | The error feed (processed ids survive restarts, unsafe ids ignored), decisions, runbook loading, the fix prompt, tool guards, the comms log, returning to `main`, and `VerifyFixCommit` against a throwaway git repository |
 
-## louis-agent.mcp-server.tests
+## louis-agent.mcp.tests
 
 | File | Covers |
 |---|---|
@@ -153,7 +153,7 @@ under `src/` for an `@code` block (*Separate by concern*), a ratchet whose `Pend
 has to move and can only shrink; when it is empty the list goes and the test is a plain rule. The eval pages' tests moved here with the pages
 in F59.10, so Puls's are now only what's its own: its pages, its layout, its words and its styles.
 
-## louis-agent.acp-server.tests
+## louis-agent.acp.tests
 
 The ACP server's first tests (S, CL15). `AcpTranscriptTests` plays a recorded Rider conversation through `AcpServer`
 (a bad line, an unknown method, `initialize`, `session/new`, one prompt with a file attached and one open in the IDE, which
@@ -184,7 +184,7 @@ a test: CI grades only recorded transcripts.
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
-  hand (curl, Rider). The ACP server has its transcript (`src/tests/hosts/louis-agent.acp-server.tests`) and no more yet. Nothing has exercised the
+  hand (curl, Rider). The ACP server has its transcript (`src/tests/hosts/louis-agent.acp.tests`) and no more yet. Nothing has exercised the
   API and git endpoints end to end against a real model since CL10 removed the orchestrator demo.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 

@@ -221,4 +221,4 @@ resources in a temporary repository (`GitResourceTests`). A streamed turn is sti
 [Architecture § HTTP API](../architecture/05-building-block-view.md#http-api-and-web-app)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.acp-server](louis-agent.acp-server.md) · Next: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
+[Projects](README.md) · Previous: [louis-agent.acp](louis-agent.acp.md) · Next: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

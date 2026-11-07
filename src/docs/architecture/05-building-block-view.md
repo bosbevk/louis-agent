@@ -57,9 +57,9 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 | Host | Project | Bootstrap | Transport |
 |---|---|---|---|
 | CLI | `src/hosts/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
-| ACP server | `src/hosts/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
+| ACP server | `src/hosts/louis-agent.acp` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
 | HTTP API + web app | `src/hosts/louis-agent.api`, `demos/louis-agent/web/louis-agent.code-review` or `demos/puls/web/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
-| MCP server | `src/hosts/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
+| MCP server | `src/hosts/louis-agent.mcp` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
 | Orchestrator (POC) | `demos/louis-agent/hosts/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
 ### CLI

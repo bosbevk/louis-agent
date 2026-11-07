@@ -93,7 +93,7 @@ public enum ConfigErrorMessage
 
 throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other }));
 Log.Log(LogLevel.Warning, PricingLogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });   // holes kept as fields
-Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");   // [MCP] …
+Log.Log(LogLevel.Information, McpLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");   // [MCP] …
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
