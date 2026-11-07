@@ -16,6 +16,8 @@
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj" />
 <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
+        <!-- CL57: the eval studio, a library on the API a program opts into. -->
+        <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api.evals\louis-agent.api.evals.csproj" />
         <!-- The framework's accounts (F61): sign-in, registration and profiles, on when ACCOUNTS_SQL_URL is set. -->
         <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.accounts\louis-agent.accounts.csproj" />
         <!-- Puls's list of identities and packs, chosen by IDENTITIES and PACKS at start-up. -->

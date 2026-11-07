@@ -1,6 +1,7 @@
 using LouisAgent.Core.Web;
 using LouisAgent.Packs.Web;
-using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Endpoints.Admin;
+using LouisAgent.Api.Evals.Endpoints.Runs;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
@@ -54,7 +55,7 @@ internal static class ApiTestHost
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
         DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
-        IReadOnlyList<IAgentPack>? morePacks = null)
+        IReadOnlyList<IAgentPack>? morePacks = null, bool evals = true)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks);
@@ -65,12 +66,14 @@ internal static class ApiTestHost
 
         if (apiKey is not null) app.UseAgentKey(apiKey);
         var api = app.MapApi(host);
+        api.MapAdmin(adminKey);
+        if (!evals) return app;
 
         // The admin parts, with whatever the test handed in. The runner points at a port nothing listens on, so a
         // test that forgets to give its own can't reach a real agent.
         var benchmarks = catalog ?? new EvalList();
-        api.MapAdmin(benchmarks,
-            runner ?? new EvalProcess(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
+        api.MapAdminGroup(adminKey).MapEvalAdmin(benchmarks,
+            runner ?? new EvalProcess(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"),
             store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
             calibrationRecorder, time, drafts ?? new InMemoryEvalDraftStore(),
@@ -128,11 +131,12 @@ internal static class ApiTestHost
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [
-                new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
-                new RecipesPack(new RecipesOptions()), new CalculatorPack(), .. morePacks ?? []
-            ]);
-        var engines = new AgentEngineFactory(model, options, services: new HostServices(WebAccess.Create), catalog: catalog);
+        [
+            new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+            new RecipesPack(new RecipesOptions()), new CalculatorPack(), .. morePacks ?? []
+        ]);
+        var engines = new AgentEngineFactory(model, options, services: new HostServices(WebAccess.Create),
+            catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,
             DisplayCurrency.Charged("USD"), engines);

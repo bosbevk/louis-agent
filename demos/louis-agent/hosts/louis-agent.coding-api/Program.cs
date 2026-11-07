@@ -6,6 +6,7 @@ using LouisAgent.Core.Telemetry;
 using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
+using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
 
@@ -29,4 +30,5 @@ app.MapFallbackToFile("index.html");
 
 app.MapLouisAgentAccounts();
 app.MapLouisAgentApi(host);
+app.MapLouisAgentEvals(host);
 app.Run();

@@ -21,6 +21,8 @@
     <ProjectReference Include="..\..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
     <!-- The protocol's reader is the API's BenchmarkProtocol: the lines the harness writes must parse as the API reads them. -->
     <ProjectReference Include="..\..\..\hosts\louis-agent.api\louis-agent.api.csproj" />
+    <!-- CL57: the studio's side of the sample's shape, out of the API. -->
+    <ProjectReference Include="..\..\..\hosts\louis-agent.api.evals\louis-agent.api.evals.csproj" />
     <ProjectReference Include="..\..\..\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />
     <!-- F18 step 5.1: the HTTP session client is tested over the shared HTTP stub. -->
     <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />

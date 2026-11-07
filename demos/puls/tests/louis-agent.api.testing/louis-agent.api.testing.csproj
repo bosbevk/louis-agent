@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
+    <!-- CL57: the studio, mapped for the tests that ask for it. -->
+    <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api.evals\louis-agent.api.evals.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
@@ -31,6 +33,7 @@
   <ItemGroup>
     <!-- ApiTestHost builds on internals of the API, so it stays internal and is shown to the two API test projects. -->
     <InternalsVisibleTo Include="louis-agent.api.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.evals.tests" />
     <InternalsVisibleTo Include="louis-agent.api.integration-tests" />
   </ItemGroup>
 

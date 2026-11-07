@@ -16,11 +16,14 @@ public partial class ApiRoutesSnapshotTests
             "ApiRoutesSnapshot.json");
 
     private static readonly string[] AllowedInProgram =
-        ["MapStaticAssets", "MapFallbackToFile", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts"];
+    [
+        "MapStaticAssets", "MapFallbackToFile", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
+        "MapLouisAgentEvals"
+    ];
 
     private static string Snapshot()
     {
-        using var app = ApiTestHost.Build();
+        using var app = ApiTestHost.Build(evals: false);
         var routes = ApiTestHost.Routes(app)
             .Select(endpoint => $"{ApiTestHost.Line(endpoint)} ({ApiTestHost.Access(endpoint)})")
             .Order(StringComparer.Ordinal).ToList();
@@ -49,6 +52,7 @@ public partial class ApiRoutesSnapshotTests
     [TestCase("src/hosts/louis-agent.api/ApiStartup.cs")]
     [TestCase("demos/puls/hosts/louis-agent.puls-api/Program.cs")]
     [TestCase("demos/louis-agent/hosts/louis-agent.coding-api/Program.cs")]
+    [TestCase("demos/starter/hosts/louis-agent.starter-api/Program.cs")]
     public void TheStartUp_MapsNoRouteOfItsOwn(string file)
     {
         // The tests' table is the one that runs only while nothing adds a route beside ApiMap's and the admin portal's.

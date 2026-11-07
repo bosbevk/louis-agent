@@ -297,6 +297,19 @@ Picks made unattended, each with its why, for Louis's review:
   Rider's rename did the enums; it can't rename a namespace, so the namespace and the paths were an exact
   token replacement across the repo. The docker service and image names (`acp-server`, `mcp-server`) and the
   two guides' file names keep the word: they name a running thing, not a project.
+- **Steps 6 and 7 are one commit** (step 6): the studio's code and its tests moved together, since the tests
+  could not compile against half a move; the starter API landed in it too, as the first program that opts in
+  from nothing.
+- **The admin group is the API's to hand out:** `AdminGroup.MapAdminGroup(adminKey)` gives any library a gated
+  `/admin` group with the one `AdminGateFilter`, so the API's own admin routes (prompts, imports, screens) and the
+  studio's each map on their own group and the route table still says who may call what. The studio's
+  `EvalAdminEndpoints.MapEvalAdmin` takes the group; `AdminOptions` keeps only the key, `EvalOptions` the rest.
+- **The studio's texts are its own enums** (`EvalApiLogMessage`, `EvalApiUserText`, and the draft, listing, note
+  and review texts moved whole); `InvalidApiKey` and `AdminClosed` stayed with the gate. The library takes the
+  API's internals (`InternalsVisibleTo`) for the gate, the errors and the route access, as the tests do.
+- **The test host maps both:** `ApiTestHost.Build(evals: false)` builds the API alone for its route snapshot;
+  the default maps the studio too, so the moved tests run unchanged, and `EvalRoutesSnapshot.json` pins the
+  whole table with the studio in.
 - **Test first, where the test could compile:** the seam tests of steps 2 to 4 reference members that did not
   exist before the step, so they could not be run red first; each was written before its code and seen green after.
 

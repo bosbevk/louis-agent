@@ -476,6 +476,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp", "src\host
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.evals", "src\hosts\louis-agent.api.evals\louis-agent.api.evals.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D7}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.code-review", "demos\louis-agent\web\louis-agent.code-review\louis-agent.code-review.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "demos\louis-agent\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
@@ -489,6 +491,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "demos\puls\tests\louis-agent.api.tests\louis-agent.api.tests.csproj", "{25003D68-7FA2-4C3E-B862-13791FCE8D4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.evals.tests", "demos\puls\tests\louis-agent.api.evals.tests\louis-agent.api.evals.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\web\louis-agent.web\louis-agent.web.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
 EndProject
@@ -694,6 +698,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{8A9D3D62-FBA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter", "demos\starter\web\louis-agent.starter\louis-agent.starter.csproj", "{F766E1E9-0D87-41FD-B0CC-E78D32B2BB37}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{C3300A33-7E1B-4C9A-9F7D-2026110700E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter-api", "demos\starter\hosts\louis-agent.starter-api\louis-agent.starter-api.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700D9}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A04A4DEC-3151-4DE0-8BB5-BB313D7138E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.starter.tests", "demos\starter\tests\louis-agent.starter.tests\louis-agent.starter.tests.csproj", "{ECCA3E37-7FBC-4887-8DAF-9254F3E31BFA}"
@@ -710,6 +718,42 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9}.Release|x86.Build.0 = Release|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D1}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -2119,6 +2163,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D7} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700D9} = {C3300A33-7E1B-4C9A-9F7D-2026110700E0}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E0} = {1D74F711-3395-4F67-81CC-FEADC314DB25}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D1} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D2} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D3} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}

@@ -24,7 +24,7 @@ public class PortalReadsNoScoreKeyTests
         "src/web/louis-agent.web/Pages/Admin",
         "src/web/louis-agent.web/Components/Admin/Evals",
         "src/web/louis-agent.web/Admin",
-        "src/hosts/louis-agent.api/Evals/Reports",
+        "src/hosts/louis-agent.api.evals/Reports",
     ];
 
     /// <summary>
