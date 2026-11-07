@@ -9,7 +9,8 @@ public static class ExternalProviders
     public static IReadOnlyList<IExternalProvider> Of(AccountsOptions options) =>
     [
         new GoogleProvider(options.Google ?? ProviderKeys.None),
-        new MicrosoftProvider(options.Microsoft ?? ProviderKeys.None)
+        new MicrosoftProvider(options.Microsoft ?? ProviderKeys.None),
+        new LinkedInProvider(options.LinkedIn ?? ProviderKeys.None)
     ];
 
     /// <summary>The ones this instance has keys for.</summary>

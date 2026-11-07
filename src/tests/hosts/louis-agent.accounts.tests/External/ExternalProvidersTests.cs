@@ -4,6 +4,7 @@ using LouisAgent.Choices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -36,7 +37,7 @@ public class ExternalProvidersTests
         Assert.Multiple(() =>
         {
             Assert.That(ExternalProviders.Of(options).Select(p => p.Name),
-                Is.EqualTo(new[] { ExternalProvider.Google, ExternalProvider.Microsoft }));
+                Is.EqualTo(new[] { ExternalProvider.Google, ExternalProvider.Microsoft, ExternalProvider.LinkedIn }));
             Assert.That(ExternalProviders.Configured(options).Select(p => p.Name),
                 Is.EqualTo(new[] { ExternalProvider.Google }));
         });
@@ -52,6 +53,24 @@ public class ExternalProvidersTests
             Assert.That(google.ClientId, Is.EqualTo("id"));
             Assert.That(google.SignInScheme, Is.EqualTo(IdentityConstants.ExternalScheme));
             Assert.That(google.CallbackPath.Value, Is.EqualTo("/signin-google"));
+        });
+    }
+
+    /// <summary>LinkedIn is OpenID Connect on the generic handler: its issuer, the code flow in the query, its three scopes.</summary>
+    [Test]
+    public void LinkedIn_IsOpenIdConnect_OnLinkedInsIssuer()
+    {
+        var linkedin = OptionsOf<OpenIdConnectOptions>(new LinkedInProvider(Keys));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(linkedin.Authority, Is.EqualTo("https://www.linkedin.com/oauth"));
+            Assert.That(linkedin.ResponseType, Is.EqualTo("code"));
+            Assert.That(linkedin.ResponseMode, Is.EqualTo("query"));
+            Assert.That(linkedin.Scope, Is.EqualTo(new[] { "openid", "profile", "email" }));
+            Assert.That(linkedin.SignInScheme, Is.EqualTo(IdentityConstants.ExternalScheme));
+            Assert.That(linkedin.CallbackPath.Value, Is.EqualTo("/signin-linkedin"));
+            Assert.That(linkedin.GetClaimsFromUserInfoEndpoint, Is.True);
         });
     }
 
