@@ -109,14 +109,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ts-forwarder", "ts-forwarde
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0190}"
 	ProjectSection(SolutionItems) = preProject
-		demos\puls\configzure\main.bicep = demos\puls\configzure\main.bicep
-		demos\puls\configzure\main.bicepparam = demos\puls\configzure\main.bicepparam
+		demos\puls\config\azure\main.bicep = demos\puls\config\azure\main.bicep
+		demos\puls\config\azure\main.bicepparam = demos\puls\config\azure\main.bicepparam
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vm", "vm", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0191}"
 	ProjectSection(SolutionItems) = preProject
-		demos\puls\deployzurem\cloud-init.yaml = demos\puls\deployzurem\cloud-init.yaml
-		demos\puls\deployzurem\docker-compose.services.yml = demos\puls\deployzurem\docker-compose.services.yml
+		demos\puls\deploy\azure\vm\cloud-init.yaml = demos\puls\deploy\azure\vm\cloud-init.yaml
+		demos\puls\deploy\azure\vm\docker-compose.services.yml = demos\puls\deploy\azure\vm\docker-compose.services.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}"
