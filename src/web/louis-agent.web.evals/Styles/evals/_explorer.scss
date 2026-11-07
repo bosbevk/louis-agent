@@ -23,6 +23,9 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-pri
 .explorer-calls { font-size: 12.5px; padding-left: 20px; }
 /* Taller cards (Louis), all the same: the rings in the middle of the room under the card's head. */
 .chart-pair > .chart { min-height: 320px; padding: 16px 18px 20px; }
+/* A chart's title explains itself on hover or focus (Louis): what it shows, good, bad and why. The card it sits in rises
+   above its neighbours while the note is open (a grid item takes a z-index), so the next card can't cover it. */
+.chart-title { position: relative; display: inline-flex; align-items: center; gap: 7px; cursor: help; border-radius: 6px; outline: none; }
 .chart:has(.chart-title:hover, .chart-title:focus-visible) { z-index: 5; }
 /* A section that rolls up (Louis): its head, a chevron that turns, folds it. */
 .fold { display: flex; flex-direction: column; gap: 10px; }

@@ -11,7 +11,7 @@
 .studio-step > p { margin: 0; }
 .studio-step-n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--bs-primary); color: var(--web-on-primary); font-size: 12px; font-weight: 700; }
 ::deep .compose-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--bs-secondary-color); }
-.compose-field ::deep input, .compose-field ::deep select, .compose-mode ::deep input, .compose-check-head ::deep input, .compose-add ::deep select, .compose-rubric ::deep input, .compose-rubric ::deep textarea { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+::deep .compose-field input, ::deep .compose-field select, ::deep .compose-mode input, ::deep .compose-check-head input, ::deep .compose-add select, ::deep .compose-rubric input, ::deep .compose-rubric textarea { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
 ::deep .compose-mode, ::deep .compose-check-head, ::deep .compose-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
 ::deep .compose-check, ::deep .compose-rubric { border-top: 1px solid var(--bs-border-color); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
 .studio-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }

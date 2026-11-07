@@ -1,7 +1,4 @@
 /* ChartInfo's own styles, moved beside it from the studio's partials (CL58, step 4). */
-/* A chart's title explains itself on hover or focus (Louis): what it shows, good, bad and why. The card it sits in rises
-   above its neighbours while the note is open (a grid item takes a z-index), so the next card can't cover it. */
-.chart-title { position: relative; display: inline-flex; align-items: center; gap: 7px; cursor: help; border-radius: 6px; outline: none; }
 .chart-title > strong { color: var(--bs-emphasis-color); }
 /* The info icon (the mask set's stroke and caps), muted until the title is hovered or focused. */
 .info-icon { width: 15px; height: 15px; color: var(--bs-tertiary-color); transition: color .15s; }
