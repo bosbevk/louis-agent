@@ -1,6 +1,6 @@
 # F109 The site in the louis-agent demo's web app, deployed beside Puls
 
-> **Plan** (a parent with four children). How the framework's static site becomes the layout page of the louis-agent
+> **Plan** (a parent with five children). How the framework's static site becomes the layout page of the louis-agent
 > demo's web app, keeping the site's theme, and how that app goes live beside Puls on the same environment and VM.
 > Drafted 2026-11-08, **approved by Louis the same day** with two picks (below); committed on
 > `feature/F109.1-the-site-in-the-web-app`. Deleted when the work is done: its why goes to an ADR, its what to the
@@ -213,6 +213,10 @@ its own tenant, a review session reaches the VM's services, and the month's cost
 5. **Docs.** The deploy README and the architecture doc gain the second app; `ARCHITECTURE.md`'s diagrams; the
    ADR *The demo's app runs beside Puls, split later*; the TODO (F51's hosting row, F59's leftovers); the work
    log; the write-up (skill 18); this plan deleted.
+6. **The app deploys from GitHub as Puls does** (Louis, 2026-11-08: "this agent must also deploy like this"):
+   the deploy workflow (F109.5) gains the second app, after green CI on `main` and from the button, signed in by
+   the same OpenID Connect identity, running `deploy.ps1 release -App louis-agent`; `DeployWorkflowTests` holds it;
+   the deploy README's *Deploying from GitHub* names both apps.
 
 ## F109.3 The guide in the corner (`feature/F109.3-the-guide-in-the-corner`, after F109.1; drafted, its steps to come)
 
@@ -285,6 +289,17 @@ should update the films with what it looks like now, explaining the whole archit
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
+## F109.5 Puls deploys from GitHub (`feature/F109-deploy-from-github`, built 2026-11-07, merged in PR #223)
+
+Planned and built in another thread under the same id, folded in here as the fifth child at Louis's word
+(2026-11-08: "merge these 2, the work is done and working"). What it is: a GitHub Actions workflow,
+`.github/workflows/deploy-puls.yml`, that after green CI on `main` (and from a button) signs in to Azure by OpenID
+Connect with no stored password and runs the same `deploy.ps1 release` Louis runs from his PC, so a merge puts a
+new `puls-app` revision live. Louis's three picks (after green CI plus a button; OpenID Connect; the script as it
+is) and the why are [ADR 0097](../adr/0097-puls-deploys-from-github.md); the how, with his one-time Azure setup, is
+the deploy README's *Deploying from GitHub*; the rule test is `DeployWorkflowTests`. Its own plan file is deleted,
+as a done plan is. The second app (F109.2) deploys the same way once it exists.
+
 ## Verification
 
 - F109.1: each step's tests; the three stylesheet tests of the demo; the full suite before the PR; the browser at
@@ -337,6 +352,9 @@ should update the films with what it looks like now, explaining the whole archit
   the film's markup, golden and export stay as they are; paused is a class on the frame that its scoped stylesheet
   turns into `animation-play-state: paused` on everything under the stage. The export tool is untouched: it seeks
   the animations itself and photographs the film's element, never the frame.
+- **One F109, five children** (Louis, 2026-11-08: "merge these 2, the work is done and working"). Another thread
+  had planned and built *Puls deploys from GitHub* as F109 (PR #223); it is this plan's F109.5, its plan file
+  deleted, ADR 0097 and the deploy README its lasting parts, and the TODO carries one F109 row.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

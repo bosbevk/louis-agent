@@ -15,7 +15,6 @@
 /* The run explorer (F27 steps 8-10): charts you drill into. Marks follow the dataviz specs (bars <= 24px, 4px rounded
    data-end, a 2px surface gap between stacked segments, recessive hairlines); motion follows the landing page (rise,
    grow, count-up, a spring), and stops for people who ask for less. */
-.explorer { display: flex; flex-direction: column; gap: 14px; margin: 6px 0 10px; }
 ::deep .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: 0 0 auto; }
 ::deep .legend { display: inline-flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--bs-secondary-color); margin-left: auto; }
 ::deep .legend > span { display: inline-flex; align-items: center; gap: 6px; }

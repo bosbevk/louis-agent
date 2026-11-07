@@ -17,7 +17,10 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
   draw goes in their nearest common ancestor's file under `::deep` (after the compound the ancestor draws, or first
   when it draws none). A rule stays a global partial when a site's own page draws its class, a site's Sass or a theme
   overrides it with no more weight (the scope adds a class of weight), it is a variant over a base that stays, a
-  keyframe, or a part many components draw (`.card-p`, `.page-head`, `.muted`). `ScopedStylesTests` holds it.
+  keyframe, or a part many components draw (`.card-p`, `.page-head`, `.muted`). **The file is the component that
+  draws the element** a rule lands on, not the one that asks for it: a class passed down as a parameter is styled
+  in the child that draws it, and a component that draws no element of its own holds no rules (FX63).
+  `ScopedStylesTests` holds it.
 
 - **Always reuse.** Before writing a rule, look for a variable, mixin or partial that already does it. What repeats
   becomes one shared piece under the framework's `web/tools/` that both places use, and a site `@use`s the framework's Sass and never copies

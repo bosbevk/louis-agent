@@ -7,3 +7,5 @@
 .donut-centre small { font-size: 10.5px; color: var(--bs-secondary-color); }
 .donut-track { stroke: rgba(var(--web-overlay-rgb), .06); }
 .donut-arc { stroke-dasharray: var(--len) calc(100 - var(--len)); animation: sweep .9s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }
+/* Moved from RunExplorer, where its scope reached nothing: Ring draws the donut (FX63). */
+.donut circle { fill: none; stroke-width: 5; }

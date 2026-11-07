@@ -1,0 +1,73 @@
+# Deploys Puls to Azure (F109.5): the same `deploy.ps1 release` Louis runs on his PC, from GitHub, so a merge reaches
+# mypuls.co.za without anyone's machine. By itself only after CI passes on main (Louis's pick, 2026-11-07), so a red
+# merge never ships; any time from the Actions tab's "Run workflow" button. The how-to, Louis's one-time Azure setup
+# and the roll-back are in demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
+name: Deploy Puls
+
+on:
+  workflow_run:
+    workflows: [ CI ]
+    types: [ completed ]
+    branches: [ main ]
+  workflow_dispatch:
+
+# OpenID Connect: GitHub signs a short-lived token for this run, Azure trusts it for this repo's main branch only and
+# swaps it for an Azure token. No password is stored anywhere; the three ids below are repository variables.
+permissions:
+  id-token: write
+  contents: read
+
+# One deploy at a time: a second waits for the first, never stops it half-way through a revision.
+concurrency:
+  group: deploy-puls
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # The automatic run only when CI on main passed (and never for a CI run on a pull request's branch); the button
+    # runs from main, the only branch the federated credential trusts.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the Azure ids are set
+        env:
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          missing=""
+          [ -n "$AZURE_CLIENT_ID" ] || missing="$missing AZURE_CLIENT_ID"
+          [ -n "$AZURE_TENANT_ID" ] || missing="$missing AZURE_TENANT_ID"
+          [ -n "$AZURE_SUBSCRIPTION_ID" ] || missing="$missing AZURE_SUBSCRIPTION_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::Set the repository variables$missing (Settings, Secrets and variables, Actions, Variables); the setup is in demos/puls/deploy/azure/README.md, 'Deploying from GitHub'."
+            exit 1
+          fi
+
+      # The commit CI passed, not whatever main holds by now; the button deploys main as it is.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # The image builds in the registry (az acr build), so the runner needs no Docker; the revision is the next one.
+      - name: Release
+        shell: pwsh
+        run: ./demos/puls/deploy/azure/deploy.ps1 release
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Deploy Puls"
+            echo "Commit: \`$(git rev-parse --short HEAD)\`"
+            echo "Running revisions:"
+            echo '```'
+            az containerapp revision list -n puls-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

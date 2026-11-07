@@ -9,3 +9,5 @@
 .tl-tip { display: none; position: absolute; left: 0; top: 20px; background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); border-radius: 10px; padding: 6px 10px; font-size: 12px; color: var(--bs-body-color); white-space: nowrap; box-shadow: var(--bs-box-shadow); z-index: 5; }
 .tl-tip strong { color: var(--bs-emphasis-color); }
 .tl-bar:hover .tl-tip, .tl-bar:focus-visible .tl-tip { display: block; }
+/* Moved from RunExplorer, where its scope reached nothing: TurnTimeline draws the timeline (FX63). */
+.timeline { display: flex; flex-direction: column; gap: 6px; }

@@ -41,8 +41,8 @@ moves taught what scoping does to the cascade, which this record keeps.
 4. **A move is checked three ways before it is shown:** the libraries' goldens change by the scope attribute alone
    (the snapshot helper normalises it to `b-SCOPE`), no scoped rule and global rule style the same element with the
    same weight (a scan over the compiled CSS, run once while the rules moved), and the page in the browser.
-5. **The rules hold it:** `ScopedStylesTests` (a style file sits beside its component, holds a rule, a site's list
-   names no account or admin partial), `FrameworkStylesTests` (the libraries' rules, partials and `.razor.scss`
+5. **The rules hold it:** `ScopedStylesTests` (a style file sits beside its component, holds a rule, lands on an
+   element its component draws (FX63), a site's list names no account or admin partial), `FrameworkStylesTests` (the libraries' rules, partials and `.razor.scss`
    alike, hold no fixed colour), and `SassStylesheet.Read()` gives a style test `app.css` and the bundle together,
    scope marks off, so a test finds a rule by the selector its file wrote.
 
@@ -58,6 +58,10 @@ moves taught what scoping does to the cascade, which this record keeps.
   size rule skips the first; a style test reads the second from `obj/`, so the site must have been built.
 - Deleting an `X.razor.scss` leaves its `X.razor.css` behind, and Blazor keeps scoping the component by it until the
   stale file goes; the rule test catches a style file with no component, not a stale generated one.
+- A rule's scope lands on the elements its own component renders, so the file that holds it is the component that
+  draws the element, not the one that names the class: the message box's rules moved with CL58 into `MessageBox`,
+  which only passes `input-box` to `Composer` and draws nothing, and Puls's box lost its look on mypuls.co.za until
+  FX63 moved them into `Composer`; four of the studio's rules had the same mistake.
 - Found and left for a TODO: the studio's partials hold rules nothing names any more (`.run-report`, `.tree-node`,
   `.live-chat`, `.eval-card` and more), dead since the orchestrator demo went.
 

@@ -191,6 +191,16 @@ coding agent's web app, and nothing about the content changed. What made the mov
 - **Tests pin behaviour, not transport.** The site's tests fetched HTML from a server; the app is WebAssembly, so the
   same assertions became bUnit renders. What went: the two tests about the transport itself (plain HTML, `/health`).
 
+## A merge that ships itself (F109.5)
+
+Until F109.5 a release needed Louis's PC, because that's where Azure trusted him. The fix was not to give GitHub a
+password but to teach Azure to trust GitHub: **workload identity federation**. Each workflow run gets a token GitHub
+signs, saying "this is `bosbevk/louis-agent`, on `main`"; Azure was told once to accept exactly that and swaps it for
+an Azure token that lasts the run. Nothing secret is stored, so there is nothing to leak or rotate. Two habits come
+with it: **least privilege** (the deploy identity can build and roll the app, never read a secret's value) and
+**gating on the checks** (the deploy starts only when CI passed on `main`, so merging early can't ship a red build).
+The workflow runs the very script the PC runs, so there is one way to deploy, tested in two places.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made
