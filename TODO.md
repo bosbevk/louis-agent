@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (109)
+## Open (107)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -54,7 +54,6 @@ known limitations below are facts about today, not tasks.
 | F36 | MCP servers as packs | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
-| F58 | The two sites go live from this PC | Next | [plan](src/docs/plans/F58-sites-from-this-pc.md) |
 | F61 | Accounts, tenants and the two sites in Azure | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
@@ -106,7 +105,6 @@ known limitations below are facts about today, not tasks.
 | CL23 | Explore a Roslyn analyzer for the names rule | Later | [doc](src/docs/adr/0043-repeated-names-are-enums.md) |
 | F30 | F30's minions tested | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md) |
 | F104 | Build mode, a side note | Later | — |
-| F105 | The Azure app behind a key | Later | — |
 | CL34 | The work email out of git history | Cleanups | — |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups | — |
 | CL36 | Design docs for the three projects that have none | Cleanups | [doc](src/docs/projects/README.md) |

@@ -2,7 +2,7 @@
 
 > **Explanation.** What runs where for `mypuls.co.za`, how the parts reach each other, where a secret travels and
 > where a request goes, in diagrams. **Elsewhere:** the how-to in [README.md](README.md), the build's record in
-> `demos/puls/config/azure/main.bicep`, the why in ADR 0096, the whole system's deployment view in
+> `demos/puls/config/azure/main.bicep`, the why in ADR 0095, the whole system's deployment view in
 > [07-deployment-view](../../../../src/docs/architecture/07-deployment-view.md). Live since 2026-11-07 (F61.4).
 
 ## What runs where
