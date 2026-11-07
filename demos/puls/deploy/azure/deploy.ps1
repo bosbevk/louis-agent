@@ -70,9 +70,19 @@ function Invoke-Az {
     if ($LASTEXITCODE -ne 0) { throw "az $($args[0]) $($args[1]) failed ($LASTEXITCODE)" }
 }
 
+function Read-Az {
+    # A read that may come back empty (an app that doesn't exist yet): az's "not found" goes to stderr, which Windows
+    # PowerShell turns into a terminating error under 'Stop' when it is redirected, so the read runs under 'Continue'
+    # with stderr dropped, and the caller judges by $LASTEXITCODE and the value.
+    $ErrorActionPreference = 'Continue'
+    $value = (& az @args 2>$null)
+    $ErrorActionPreference = 'Stop'
+    return $value
+}
+
 function Get-Output([string]$Name) {
     # One output of the last Bicep deployment: the VM's address, the environment's id, the SQL server's name, the identity.
-    $value = (& az deployment group show -n $Deployment -g $ResourceGroup --query "properties.outputs.$Name.value" -o tsv)
+    $value = Read-Az deployment group show -n $Deployment -g $ResourceGroup --query "properties.outputs.$Name.value" -o tsv
     if ($LASTEXITCODE -ne 0 -or -not $value) { throw "The deployment $Deployment has no output $Name yet: run deploy.ps1 infra first." }
     return $value
 }
@@ -206,7 +216,7 @@ switch ($Verb) {
         $environmentId = Get-Output 'environmentId'
         $identityId = Get-Output 'appIdentityId'
         $vaultUri = (Get-Output 'vaultUri').TrimEnd('/')
-        $exists = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.environmentId' -o tsv 2>$null)
+        $exists = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.environmentId' -o tsv
         $inPlace = ($LASTEXITCODE -eq 0 -and $exists -eq $environmentId)
         if ($LASTEXITCODE -eq 0 -and $exists -and -not $inPlace) {
             # A Container App's name is unique in its resource group, and an app can't move between environments.
@@ -214,7 +224,7 @@ switch ($Verb) {
         }
         # The secrets block: one reference per secret the vault holds among the names the app may use; a reference to
         # a secret the vault lacks would stop the revision, so what the vault lacks stays out, the providers' lines too.
-        $inVault = @(& az keyvault secret list --vault-name $Vault --query '[].name' -o tsv)
+        $inVault = @(Read-Az keyvault secret list --vault-name $Vault --query '[].name' -o tsv)
         if ($LASTEXITCODE -ne 0) { throw "Could not list ${Vault}: deploy.ps1 secrets first, and check your role on the vault." }
         $names = @('anthropic-api-key', 'agent-api-key', 'admin-api-key', 'mongo-url', 'accounts-sql-url')
         foreach ($provider in $Providers) { $names += "auth-$provider-client-id"; $names += "auth-$provider-client-secret" }
@@ -254,7 +264,7 @@ switch ($Verb) {
         Write-Host "Watch it come up with: deploy.ps1 logs"
     }
     'release' {
-        $latest = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.latestRevisionName' -o tsv 2>$null)
+        $latest = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.latestRevisionName' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $latest) { $next = 'v001' }
         elseif ($latest -match '--v(\d+)$') { $next = 'v{0:D3}' -f ([int]$Matches[1] + 1) }
         else { throw "Could not read $App's latest revision ($latest)." }
@@ -266,8 +276,8 @@ switch ($Verb) {
         # The records Cloudflare needs, DNS-only (a proxied record blocks the certificate): the apex points at the
         # environment's address, the TXT proves the domain is ours, www is a CNAME to the app's own address.
         $staticIp = Get-Output 'environmentStaticIp'
-        $fqdn = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.configuration.ingress.fqdn' -o tsv)
-        $verification = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.customDomainVerificationId' -o tsv)
+        $fqdn = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.configuration.ingress.fqdn' -o tsv
+        $verification = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.customDomainVerificationId' -o tsv
         if ($LASTEXITCODE -ne 0 -or -not $fqdn) { throw "$App is not deployed yet: deploy.ps1 release first." }
         $apex = $Hostname -notmatch '^www\.'
         Write-Host "In Cloudflare, DNS-only, for ${Hostname}:"
