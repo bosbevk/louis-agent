@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Telemetry on core (CL33): the OpenTelemetry tracer that listens to core's turn spans and exports them over OTLP,
+       the log sink that sends the log lines the same way, the own-traffic filter and the crash handler. A host
+       opts in by handing AgentHost.Build an OtlpTelemetry in its HostServices; core alone runs on NoTelemetry. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Core.Telemetry</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\louis-agent.core\louis-agent.core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.core.telemetry.tests" />
+    <PackageReference Include="OpenTelemetry" Version="1.20.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.core.telemetry.md" Link="docs\louis-agent.core.telemetry.md" />
+  </ItemGroup>
+
+</Project>

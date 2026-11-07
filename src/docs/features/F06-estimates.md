@@ -1,6 +1,6 @@
 # F6 · Cost estimates before a run
 
-> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../plans/platform.md) makes
+> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../../../ROADMAP.md) makes
 > estimates F7's step 2 in Phase 5, *Cost you can see and stop*, since an estimate is the first half of a budget that
 > asks; this doc stays as its design · **Milestone:** M3 · **Depends on:** F1, F2
 >

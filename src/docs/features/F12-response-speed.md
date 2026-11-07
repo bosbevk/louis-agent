@@ -1,6 +1,6 @@
 # F12 · Response speed: time to first token and tokens per second, for every provider
 
-> **Status:** merged into F44 *The engine as a product* (2026-10-19): in [the platform plan](../plans/platform.md)'s
+> **Status:** merged into F44 *The engine as a product* (2026-10-19): in [the platform plan](../../../ROADMAP.md)'s
 > Phase 9, F12-S1 (`ttft_ms` and tokens per second on every ledger record) is F44's first step, and the traces carry
 > speed too; this doc stays as its design · **Milestone:** M5 · **Depends on:** F1 (F3 and F11 to show it)
 >

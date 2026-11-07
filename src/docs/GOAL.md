@@ -15,7 +15,7 @@ changes only when what I want to learn changes. (The same text, as plain text, i
 The map below covers every layer of a production AI agent, not just what the TODO plans today. For each skill it says
 what louis-agent already has, what the TODO plans, and what is **missing**: a missing skill is still part of the goal,
 and gets a line in the TODO's *Later* until it is planned. *Planned* names each item's place: its phase in
-[the platform plan](plans/platform.md), Puls's track, or a feature in *Later*. When the TODO changes, update the
+[the platform plan](../../ROADMAP.md), Puls's track, or a feature in *Later*. When the TODO changes, update the
 *Planned* and *Missing* columns, not the skill.
 
 | # | Skill | Have today | Planned (TODO) | Missing |

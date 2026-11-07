@@ -20,6 +20,10 @@
 
   <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.core.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.web" />
+      <InternalsVisibleTo Include="louis-agent.core.telemetry" />
+      <InternalsVisibleTo Include="louis-agent.core.web.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.telemetry.tests" />
     <InternalsVisibleTo Include="louis-agent.pack.web.tests" />
       <InternalsVisibleTo Include="louis-agent.coding-catalog.tests" />
       <InternalsVisibleTo Include="louis-agent.core.integration-tests" />

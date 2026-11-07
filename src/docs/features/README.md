@@ -13,7 +13,7 @@ Work through them in milestone order: each milestone is useful on its own, and l
 
 Each planned feature is **one line in the [TODO](../../../TODO.md), in its phase's section** — deleted there when the
 feature is done. Where a feature replaces older backlog wording, that wording no longer appears anywhere else in the
-TODO. [The platform plan](../plans/platform.md) (2026-10-19) merged six features into others; each merged doc says
+TODO. [The platform plan](../../../ROADMAP.md) (2026-10-19) merged six features into others; each merged doc says
 where its work went and stays as its design.
 
 | ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |

@@ -1,6 +1,6 @@
 # 0027. The engine, identities and packs: core names no product
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../plans/platform.md), Phase 2 CL15) ·
+**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md), Phase 2 CL15) ·
 **Recorded:** 2026-10-19
 
 ## Context
@@ -35,7 +35,7 @@ Considered: a copy of the engine per product (two engines drift apart); packs lo
 
 ## Links
 
-[Platform plan](../plans/platform.md) (Part 2, Phase 2) · [0028](0028-packs-stay-convertible-to-mcp.md) ·
+[Platform plan](../../../ROADMAP.md) (Part 2, Phase 2) · [0028](0028-packs-stay-convertible-to-mcp.md) ·
 [0011](0011-prompts-are-content.md) · [0019](0019-modes-one-file-per-product.md)
 
 ---

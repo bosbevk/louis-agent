@@ -7,7 +7,7 @@
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
 > **In the TODO:** **F9 Long chats** under *Later*, taking in [F16](F16-summariser.md) and the context-building step
-> ([TODO](../../../TODO.md); [the platform plan](../plans/platform.md)) · **Replaces:** "Consider context editing and
+> ([TODO](../../../TODO.md); [the platform plan](../../../ROADMAP.md)) · **Replaces:** "Consider context editing and
 > compaction"
 
 History only grows: every file read and test output stays in the conversation and is re-sent every round until the

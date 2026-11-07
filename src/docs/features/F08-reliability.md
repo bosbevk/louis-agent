@@ -1,6 +1,6 @@
 # F8 · Reliability: retries, account limits, fallback, structured results
 
-> **Status:** planned; [the platform plan](../plans/platform.md) (2026-10-19) puts it in Phase 9, taking in timeouts,
+> **Status:** planned; [the platform plan](../../../ROADMAP.md) (2026-10-19) puts it in Phase 9, taking in timeouts,
 > idempotency and the exception strategy, and moves **F8-S4** (implementation step 6: results as tool calls,
 > `ReportFixResult` and `RecordDecision`) into F39 *Orchestration* (Phase 6, A5 and B5), since typed results are
 > delegation's · **Milestone:** M3 · **Depends on:** F1
@@ -36,7 +36,7 @@ failing, so that work continues during an outage.
 - *And* account limits (S2) don't fall back to the same account; a different provider may.
 
 **F8-S4 — Structured results between agents** (moved into F39 *Orchestration*, Phase 6 A5 and B5, by
-[the platform plan](../plans/platform.md); kept here as its design). As the *orchestrator*, I want louis-agent's result and my own decision as
+[the platform plan](../../../ROADMAP.md); kept here as its design). As the *orchestrator*, I want louis-agent's result and my own decision as
 structured data, so that a malformed text line never costs a "continue" round-trip or a wrong decision.
 - *Given* a fix session *then* louis-agent reports its result by calling a `ReportFixResult` tool (status, commit,
   branch, tests, summary, reason); the orchestrator reads it from the `tool_use` block in the stream.

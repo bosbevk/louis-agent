@@ -1,6 +1,6 @@
 # 0028. Packs stay convertible to MCP; MCP plugs in at the toolset
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../plans/platform.md)) ·
+**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md)) ·
 **Recorded:** 2026-10-19
 
 ## Context
@@ -48,7 +48,7 @@ when a session opens; doing nothing.
 
 ## Links
 
-[Platform plan](../plans/platform.md) (Part 2, Phases 2 and 8) · [0027](0027-engine-identities-and-packs.md) ·
+[Platform plan](../../../ROADMAP.md) (Part 2, Phases 2 and 8) · [0027](0027-engine-identities-and-packs.md) ·
 [0006](0006-toolsets-per-session.md) · [0008](0008-history-is-append-only.md)
 
 ---
