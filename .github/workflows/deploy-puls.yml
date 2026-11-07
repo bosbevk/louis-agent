@@ -1,8 +1,10 @@
-# Deploys Puls to Azure (F109.5): the same `deploy.ps1 release` Louis runs on his PC, from GitHub, so a merge reaches
-# mypuls.co.za without anyone's machine. By itself only after CI passes on main (Louis's pick, 2026-11-07), so a red
-# merge never ships; any time from the Actions tab's "Run workflow" button. The how-to, Louis's one-time Azure setup
-# and the roll-back are in demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
-name: Deploy Puls
+# Deploys Puls and the louis-agent demo's app to Azure (F109.5, F109.2): the same `deploy.ps1 release` Louis runs on
+# his PC, from GitHub, so a merge reaches mypuls.co.za and louis-agent.dev without anyone's machine. By itself only
+# after CI passes on main (Louis's pick, 2026-11-07), so a red merge never ships; any time from the Actions tab's
+# "Run workflow" button. Each app is released even when the other's release failed: they are two apps on one
+# environment, and one's bad day is not the other's. The how-to, Louis's one-time Azure setup and the roll-back are in
+# demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
+name: Deploy the apps
 
 on:
   workflow_run:
@@ -19,7 +21,7 @@ permissions:
 
 # One deploy at a time: a second waits for the first, never stops it half-way through a revision.
 concurrency:
-  group: deploy-puls
+  group: deploy-the-apps
   cancel-in-progress: false
 
 jobs:
@@ -55,19 +57,28 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # The image builds in the registry (az acr build), so the runner needs no Docker; the revision is the next one.
-      - name: Release
+      # The images build in the registry (az acr build), so the runner needs no Docker; each revision is the next one.
+      - name: Release Puls
         shell: pwsh
-        run: ./demos/puls/deploy/azure/deploy.ps1 release
+        run: ./demos/puls/deploy/azure/deploy.ps1 release -App puls-app
+
+      - name: Release the louis-agent app
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-app
 
       - name: Summary
         if: always()
         run: |
           {
-            echo "### Deploy Puls"
+            echo "### Deploy the apps"
             echo "Commit: \`$(git rev-parse --short HEAD)\`"
-            echo "Running revisions:"
+            echo "Running revisions of puls-app:"
             echo '```'
             az containerapp revision list -n puls-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
+            echo '```'
+            echo "Running revisions of louis-agent-app:"
+            echo '```'
+            az containerapp revision list -n louis-agent-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

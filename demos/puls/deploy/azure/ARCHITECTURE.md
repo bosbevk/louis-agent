@@ -1,36 +1,42 @@
-# Puls in Azure: the architecture
+# Puls and the louis-agent app in Azure: the architecture
 
-> **Explanation.** What runs where for `mypuls.co.za`, how the parts reach each other, where a secret travels and
+> **Explanation.** What runs where for `mypuls.co.za` and `louis-agent.dev`, how the parts reach each other, where a secret travels and
 > where a request goes, in diagrams. **Elsewhere:** the how-to in [README.md](README.md), the build's record in
 > `demos/puls/config/azure/main.bicep`, the why in [ADR 0095](../../../../src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md), the whole system's deployment view in
 > [07-deployment-view](../../../../src/docs/architecture/07-deployment-view.md). Live since 2026-11-07 (F61.4).
 
 ## What runs where
 
-One resource group, `rg-puls-za` in South Africa North. The app is the only thing with a public address; the three
-services sit on a VM that nothing outside the network can reach; the accounts are on Azure SQL's free offer; every
-secret value is in the vault.
+One resource group, `rg-puls-za` in South Africa North. The two apps are the only things with a public address
+(F109.2: the louis-agent demo's app beside Puls, split later, [ADR 0098](../../../../src/docs/adr/0098-the-demos-app-runs-beside-puls-split-later.md));
+the three services sit on a VM that nothing outside the network can reach; the accounts are on Azure SQL's free offer,
+one database, a tenant per app; every secret value is in the vault.
 
 ```mermaid
 flowchart LR
     person["A person's browser"] -->|"HTTPS mypuls.co.za, www (managed certificates)"| app
+    person -->|"HTTPS louis-agent.dev, www"| app2
     subgraph rg["rg-puls-za"]
         subgraph vnet["puls-vnet 10.0.0.0/16"]
             subgraph apps["apps subnet 10.0.0.0/23, delegated to Container Apps"]
                 env["puls-env (Consumption profile, static IP 4.253.73.61)"]
                 app["puls-app: the Puls image, one container, revision vNNN"]
+                app2["louis-agent-app: the coding API serving the site and the chat, revision vNNN"]
                 env --- app
+                env --- app2
             end
             subgraph services["services subnet 10.0.2.0/24, NSG: 27017, 9222, 8080 from the apps subnet only"]
                 vm["VM puls-services (Ubuntu 24.04, Standard_B2s, no public IP)\nDocker: mongo:9 :27017, headless-shell :9222, searxng :8080\ndata disk, XFS at /data"]
             end
         end
-        sql["Azure SQL puls-sql-za: puls_accounts (free offer, pauses when idle)"]
+        sql["Azure SQL puls-sql-za: puls_accounts, tenants puls and louis-agent (free offer, pauses when idle)"]
         vault["Key Vault puls-keys: every secret value"]
         identity["puls-app-identity: Key Vault Secrets User"]
+        identity2["louis-agent-app-identity: Key Vault Secrets User"]
         insights["Application Insights puls-insights, on puls-logs"]
-        registry["Registry acrpulsza: louis-agent-puls images"]
+        registry["Registry acrpulsza: louis-agent-puls and louis-agent-coding images"]
         share["pulsstorage: the share puls-app-workspace (config/, logs/, data/)"]
+        share2["pulsstorage: the share louis-agent-workspace (config/, skills/, logs/, data/)"]
     end
     app -->|"private IP 10.0.2.4"| vm
     app -->|"TLS, Allow Azure services"| sql
@@ -39,6 +45,12 @@ flowchart LR
     app -->|"OpenTelemetry agent"| insights
     env -->|"AcrPull"| registry
     app -->|"mounted at /workspace"| share
+    app2 -->|"private IP 10.0.2.4"| vm
+    app2 -->|"TLS, tenant louis-agent"| sql
+    app2 -.->|"reads with"| identity2
+    identity2 -.-> vault
+    app2 -->|"OpenTelemetry agent"| insights
+    app2 -->|"mounted at /workspace"| share2
 ```
 
 ## The build and the verbs
@@ -48,13 +60,14 @@ verbs do what a template can't.
 
 ```mermaid
 flowchart TB
-    bicep["config/azure/main.bicep + main.bicepparam"] -->|"deploy.ps1 infra (what-if first)"| deployment["deployment puls-build: the network, the VM, the environment, insights, SQL, the identity"]
-    deployment -->|"outputs: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, vaultUri"| verbs
+    bicep["config/azure/main.bicep + main.bicepparam"] -->|"deploy.ps1 infra (what-if first)"| deployment["deployment puls-build: the network, the VM, the environment, insights, SQL, the two identities, the second share"]
+    deployment -->|"outputs: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, codingAppIdentityId, vaultUri"| verbs
     subgraph verbs["the verbs read the outputs back"]
         vm["vm: the compose, SearXNG's settings and the env files to the VM through run-command"]
-        secrets["secrets: the values into the vault"]
+        workspace["workspace: the price tables into the app's share"]
+        secrets["secrets: the values into the vault (the shared ones with Puls's config, an app's own with its, suffixed)"]
         release["release: build the image in the registry, then update"]
-        update["update: puls-app.yaml filled (tag, revision, the VM's IP, the environment, the identity, the vault's secrets, the providers), create or update"]
+        update["update: the app's yaml (-App) filled (tag, revision, the VM's IP, the environment, the app's identity, the vault's secrets, the providers), create or update"]
         domain["domain: the DNS records printed, the hostname added, the certificate asked for"]
     end
 ```
@@ -105,11 +118,11 @@ sequenceDiagram
 
 | From | To | Port | Allowed by |
 |---|---|---|---|
-| The internet | `puls-app` | 443 | the environment's ingress, with the managed certificates |
+| The internet | `puls-app`, `louis-agent-app` | 443 | the environment's ingress, with each app's managed certificates |
 | The internet | the VM | any | nothing: no public IP, and the NSG denies all inbound but the rule below |
-| The apps' subnet | the VM | 27017, 9222, 8080 | the NSG rule `apps-to-services` |
+| The apps' subnet (both apps) | the VM | 27017, 9222, 8080 | the NSG rule `apps-to-services` |
 | Louis's IPv4 | the VM | 22 | only while `infra -Ip` set it; `infra` without `-Ip` removes it |
-| `puls-app` | Azure SQL | 1433 | the server's "Allow Azure services" rule, TLS 1.2 |
+| `puls-app`, `louis-agent-app` | Azure SQL | 1433 | the server's "Allow Azure services" rule, TLS 1.2 |
 | Louis's IPv4 | Azure SQL | 1433 | the server's rule `home`, from `deploy.ps1 sql-access` |
 
 ---

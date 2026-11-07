@@ -201,6 +201,26 @@ with it: **least privilege** (the deploy identity can build and roll the app, ne
 **gating on the checks** (the deploy starts only when CI passed on `main`, so merging early can't ship a red build).
 The workflow runs the very script the PC runs, so there is one way to deploy, tested in two places.
 
+## Two apps on one build (F109.2)
+
+The louis-agent app went to Azure in an afternoon because nothing had to be invented: it is Puls's build with a
+second name in it. What the day taught:
+
+- **A table beats a copy.** One script with `-App` and a table of what is each app's (image, config, yaml, identity,
+  share, domain, the suffix on its own secrets) is twenty lines; a second script would have been three hundred that
+  drift. The shared parts (the VM, the environment, the database with a tenant per app) are shared on purpose, to
+  keep the month's bill at one VM, and ADR 0098 says how they split when they must.
+- **Infrastructure as a file is a diff you can read.** The Bicep what-if named four creates and the same six
+  reference-only modifies as the first deploy; that is the whole review of a change to production, before anything
+  is written.
+- **Keep a verb honest about what it can't finish.** The domain verb bound Puls's apex in one run; here the
+  certificate's token was where Azure no longer returns it, and a bind on a pending certificate fails. The verb now
+  reads the token from the one API version that still carries it, stops with a message while the certificate is
+  pending, and does nothing twice on a second run. A deploy script's job is to be re-runnable.
+- **DNS has a memory and so does the browser.** Cloudflare imports the old host's records when a zone is added, so
+  the first thing to do on a domain is delete what you did not add; and Chrome remembered the old proxy's HTTP/3,
+  which a reload cleared.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made

@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (105)
+## Open (104)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -40,7 +40,6 @@ known limitations below are facts about today, not tasks.
 | F71 | At the next run, read the hand-off lines | Now | — |
 | F72 | Open from the recipes evals | Now | — |
 | F73 | Check the 47 new own-prices rows | Now | — |
-| F59 | The framework's web | Now | [doc](src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md) |
 | F48 | Recipe maths and a teaching cook | Next | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
 | F46 | Localisation | Next | — |
 | F50 | Puls's local specialists | Next | — |

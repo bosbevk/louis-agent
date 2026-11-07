@@ -376,6 +376,11 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   refuses a pending one) and doesn't re-add a hostname it added. The apex validated after nine checks and is bound
   with its padlock; `www` validates by its CNAME on Azure's clock. Chrome showed ERR_QUIC_PROTOCOL_ERROR once: it
   remembered the old proxy's HTTP/3, a reload clears it.
+- **F109.2 steps 5 and 6** (2026-11-08): the deploy README, the architecture doc and the deployment view carry the
+  second app; ADR 0098 *The demo's app runs beside Puls, split later*; the workflow releases both apps from one
+  merge, each tried even when the other fails (`DeployWorkflowTests`); the TODO's F59 row closes (the site is on the
+  framework's web and deployed); F51 stays, since it is about public traffic, not where the apps run. The
+  data-protection keys finding (both apps sign everyone out on a cold start) is a fix of its own, FX64, to open.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
