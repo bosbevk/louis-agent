@@ -128,7 +128,7 @@ The runs so far, with their numbers, are in [BENCHMARKS.md](https://github.com/b
 When a feature's *Done when* is met, do all of this in the same commit, so the TODO, the specs and these docs never
 drift apart:
 
-1. **TODO and the work log:** delete the feature's line in the TODO, and add its row (id, date, what in a few
+1. **TODO and the work log:** delete the feature's row in the TODO, and add its row (id, date, what in a few
    words) under *Features* (or *Cleanups* for a `CL`) in the [work log](../work-log.md), newest first, with the
    count above (`WorkLogTests` holds the counts and that nothing open is listed as done).
 2. **This folder:** set *Status* to **done** at the top of the feature's doc and in the table above.

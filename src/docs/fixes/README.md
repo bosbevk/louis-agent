@@ -87,7 +87,7 @@ In the commit that fixes it, or the one right after:
 
 1. **This folder:** *Status* to **done** here and in the doc; fill in *Fix*, *Tests* (the test that reproduced the bug,
    written and seen failing before the fix) and *Confirmed*; add the commit.
-2. **TODO and the work log:** remove its TODO line, and add its row (id, date, what in a few words) under *Fixes*
+2. **TODO and the work log:** remove its TODO row, and add its row (id, date, what in a few words) under *Fixes*
    in the [work log](../work-log.md), newest first, with the count above (`WorkLogTests` holds the counts and that
    every fix in the table above has a row).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's

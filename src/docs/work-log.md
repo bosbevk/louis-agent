@@ -12,30 +12,123 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 58 | 12 |
-| Fixes (`FX`) | 55 | 0 |
-| Cleanups (`CL`) | 22 | 1 |
+| Features (`F`) | 58 | 76 |
+| Fixes (`FX`) | 55 | 3 |
+| Cleanups (`CL`) | 22 | 28 |
 
-A child (`F59.3`) counts as its own row. "Open" counts the TODO's unticked lines that start with an id, so a parent
-and its children each count once.
+A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (13 in the TODO)
+## Open (107 in the TODO)
 
-| Id | What |
-|---|---|
-| CL31 | Scripts as ES modules beside their components |
-| F18 | F18's leftovers, before F49.1 |
-| F40 | The sales playground |
-| F46 | Localisation |
-| F48 | Recipe maths and a teaching cook |
-| F50 | Puls's local specialists |
-| F51 | Hosting for public traffic |
-| F54 | F54's leftovers |
-| F57 | The site tells the new structure |
-| F58 | The two sites go live from this PC |
-| F59 | The framework's web |
-| F60 | Search by meaning |
-| F61 | Accounts, tenants and the two sites in Azure |
+| Id | What | Phase |
+|---|---|---|
+| CL33 | Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry` | Now |
+| F106 | Validate demand | Now |
+| F18 | F18's leftovers, before F49.1 | Now |
+| F107 | The reference transcripts in git | Now |
+| F108 | The judge check can't see pages | Now |
+| F109 | After F35, the cook's answer | Now |
+| F110 | Each pack declares what it needs | Now |
+| F111 | A whole menu | Now |
+| F112 | The cook scales wrongly | Now |
+| F113 | The framework's `_Imports.razor` is about 90 lines | Now |
+| F114 | Long comment lines in the eval pages | Now |
+| F115 | At the next run, read the hand-off lines | Now |
+| F116 | Open from the recipes evals | Now |
+| F117 | Check the 47 new own-prices rows | Now |
+| F48 | Recipe maths and a teaching cook | Now |
+| F46 | Localisation | Now |
+| F50 | Puls's local specialists | Now |
+| F40 | The sales playground | Now |
+| F7 | Cost you can see and stop | Next |
+| F39 | Orchestration | Next |
+| FX4 | Append-only history | Next |
+| F41 | Drafts and approvals | Next |
+| F42 | Safety and audit | Next |
+| F36 | MCP servers as packs | Next |
+| F43 | Accounts, tenants and durable sessions | Next |
+| F8 | Reliability | Next |
+| F15 | Model limits and local models | Next |
+| F57 | The site tells the new structure | Next |
+| F58 | The two sites go live from this PC | Next |
+| F59 | The framework's web | Next |
+| F61 | Accounts, tenants and the two sites in Azure | Next |
+| F54 | F54's leftovers | Next |
+| F44 | The engine as a product | Next |
+| F51 | Hosting for public traffic | Next |
+| F118 | Phase 10, the engine as a developer package, after every engine feature | Next |
+| F119 | Puls local spec | Puls |
+| F120 | Cook for the week | Puls |
+| CL16 | Reusable roles | Puls |
+| F121 | A domain stop-list for the browser | Puls |
+| F122 | Sources as data | Puls |
+| F123 | Places | Puls |
+| F124 | Local businesses | Puls |
+| F125 | Vision: `ScreenshotPage(url)` and images as input | Puls |
+| F126 | Local lookups | Puls |
+| F23 | Credits | Puls |
+| F127 | The cook's unconfirmed prices | Puls |
+| F128 | A shorter cook report | Puls |
+| FX59 | binary attachments sent as files, not text | Puls |
+| FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
+| F21 | Louis's corrections to the Afrikaans | Puls |
+| F28 | Team talk, the rest | Puls |
+| F129 | A retailer's own prices, only with its permission or feed | Puls |
+| F130 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls |
+| F131 | The open feeds have no key and no limit | Puls |
+| F60 | Search by meaning | Puls, later |
+| F132 | The cook's wave 3 | Puls, later |
+| F133 | A Puls-owned set of a few hundred South African recipes | Puls, later |
+| F134 | WhatsApp as a host | Puls, later |
+| F135 | The eleven official languages, measured | Puls, later |
+| F136 | Voice | Puls, later |
+| F137 | The `similar` check, when an eval asks for closeness of meaning | Later |
+| F45 | Knowledge and retrieval | Later |
+| F138 | Searching PDFs, investigate much later | Later |
+| F47 | The CLI and Rider's host on the agent API | Later |
+| F9 | Long chats | Later |
+| F10 | Settings per role and per session | Later |
+| CL31 | Scripts as ES modules beside their components | Later |
+| F139 | What's left of CL29 | Later |
+| CL17 | what's left of the coding identity | Later |
+| F140 | The browser's user agent names the user's town per visit | Later |
+| F141 | A tool added mid-chat, after FX4 | Later |
+| F38 | Tool search, when a measured need comes | Later |
+| F142 | Planning and a self-check before answering, tried on a simulation first | Later |
+| F143 | An error tracker behind `IErrorFeed`, after F39 | Later |
+| F144 | A webhook trigger beside polling, after F39 | Later |
+| F145 | Computer use, when a simulation needs it | Later |
+| F146 | An Inspect AI log export for a run | Later |
+| CL21 | Mutation testing with Stryker.NET | Later |
+| F147 | Function skills in the Agent Skills format | Later |
+| CL23 | Explore a Roslyn analyzer for the names rule | Later |
+| F30 | F30's minions tested | Later |
+| F148 | Build mode, a side note | Later |
+| F149 | The Azure app behind a key | Later |
+| CL34 | The work email out of git history | Cleanups |
+| CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
+| CL36 | Design docs for the three projects that have none | Cleanups |
+| CL37 | The orchestrator's `Program.cs` up to the rules | Cleanups |
+| F16 | F16-S1: the oversized-results report, and the worst offenders paged | Cleanups |
+| CL38 | `VerifyQuote`'s prices in the host's currency | Cleanups |
+| CL39 | Remove CL14's last aliases now, with no deploy to wait for | Cleanups |
+| CL40 | Typed peer bodies | Cleanups |
+| CL41 | Choices still made by string, the LLM provider first | Cleanups |
+| CL42 | The session request bodies | Cleanups |
+| CL43 | An OpenAPI document for the agent API | Cleanups |
+| CL44 | SearXNG on only on purpose | Cleanups |
+| CL45 | SearXNG's results filtered to the site asked for | Cleanups |
+| F31 | F31's review follow-ups | Cleanups |
+| CL46 | Web tests | Cleanups |
+| CL47 | The portal's old benchmark routes and words removed, after Phase 3 | Cleanups |
+| CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups |
+| CL49 | Remove the eval store's old setting names | Cleanups |
+| CL50 | Remove `PULS_API`, the eval runner's old name for the API's address | Cleanups |
+| CL51 | Rider out of core | Cleanups |
+| CL52 | The rest of the size list | Cleanups |
+| CL53 | A price format per country | Cleanups |
+| CL54 | A pack can't add itself to a router | Cleanups |
+| CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 
 ## Features (58 done)
 

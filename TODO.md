@@ -1,174 +1,131 @@
 # TODO
 
-What's planned, what's next, and the ideas not planned yet — in that order.
-
-**The goal it all works toward:** [src/docs/GOAL.md](src/docs/GOAL.md) — become an AI engineer by building louis-agent. This
-list is the current plan for getting there and will change as I learn; the goal names the skills it should cover.
+> **Plan.** What is still open, one row per item, with its id, a few words on what, its phase and where its detail
+> lives. **Elsewhere:** what was finished in the [work log](src/docs/work-log.md); the why of the order in
+> [the platform plan](src/docs/plans/platform.md); the goal it all works toward in [GOAL.md](src/docs/GOAL.md).
 
 **The end product:** three offers on one engine, in [the platform plan](src/docs/plans/platform.md): **Puls**, the public
-South African assistant, a local guide that knows where its users are (SAST, rands, local context) and looks up what
-changes instead of relying on training; **a configured agent**, an identity and its packs hosted for a business; and
-**the engine itself**, for teams that build their own. The plan's phases set the order of this list.
+South African assistant; **a configured agent**, an identity and its packs hosted for a business; and **the engine
+itself**, for teams that build their own. The plan's phases set the order here: *Now*, *Next*, *Puls*, *Later*, and
+the *Cleanups* each done when its code is next touched.
 
-**How this list works**
+**How this list works.** Every open item is one row with an id (`F` a feature, `FX` a fix, `CL` a cleanup); a child
+(`F61.4`) is named in its parent's plan. The detail of an item lives in its plan or feature doc, written before its
+first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the notes the old list carried are at the
+tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
+known limitations below are facts about today, not tasks.
 
-- **One item per line.** Every planned feature or fix has exactly one line, in its phase's section; what an item takes
-  in from older lines is named on its line, so nothing appears twice.
-- **Planned work is a feature.** Each feature has a design doc in [src/docs/features/](src/docs/features/README.md) with user
-  stories and steps, or its phase in [the platform plan](src/docs/plans/platform.md) until it gets one. When a feature's
-  *Done when* is met, delete its line and add its entry to the [work log](src/docs/work-log.md); the feature doc says what else
-  to update.
-- **A feature holds about ten steps.** A bigger one is a parent whose line lists its children (`F49.1`, `F49.2`, …)
-  in order, each with its done-when; each child is its own plan, branch and pull request
-  ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 2). A child leaves the parent's line when it is done.
-- **Bigger designs live in [src/docs/specs/](src/docs/specs/).** This list keeps only their open items.
-- **Bugs are fixes.** Each has a doc in [src/docs/fixes/](src/docs/fixes/README.md) (symptom, cause, fix, how it was confirmed);
-  an open one has one line here that links to it.
-- **When something is finished**, it leaves this list: one line at the top of the [work log](src/docs/work-log.md) (newest
-  first), so everything here is still open.
+## Open (107)
 
-## Now: after F18, evals as content, the cook, localisation, Puls's specialists and the sales playground (Phases 3b to 4)
-
-Phases 0 to 3 are done (the work log has each one). In this order, one at a time:
-
-- [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
-- [ ] **F18's leftovers, before F49.1** (Louis, 2026-10-29): Louis labels the judge's 36 answers himself (the 31 of 36 was a blind agent's labels)
-- [ ] The reference transcripts in git: a TODO of its own if they grow (some are over 200 KB today, F18)
-- [ ] **The judge check can't see pages** (FX45): `--calibrate` and *Check the judge now* build a trial from a label's questions and answers only, so a judge with `sources` is asked with no page and fails everything. A label should hold what the tools gave back. Until then, re-score. Also recheck `meal-for-people`: it shares the judge settings, so it moved to the paid model too and was calibrated on the local one.
-- [ ] **After F35, the cook's answer** (Louis, in the app, 2026-11-05; F35 closed on his call with the final code unmeasured, so the next paid recipes run is the first on it: read its accuracy, time, cost, how often `Calculate` is used, and how many images really load): the extra branch-name line in `puls-cook.md` comes out if rows stop reading as a shop plus a place (5 to 8% in the last two runs); look at `within-budget`, 2 failures in the last 16 cook answers against 1 in 40 at the baseline; does *Makes 12* mean people or slices (the judge flips on it); does FinGlobal, a financial firm's blog and the biggest source, belong in the table; does a page's `Makes` hold up as the eval's bar for 90%: re-check `meal-for-people` on the paid judge.
-- [ ] **Each pack declares what it needs** (Louis's pick, 2026-11-05, option C of three; needs its own plan, after F35): `IPackContext` shows every pack all six things, though each uses one to three, and `CurrencyRates` and `Renderer` are there for the web pack alone. Each pack names what it needs and the demo's program, as Composition Root, joins them (Interface Segregation), which fits packs being just tools. Its one implementation, `ToolsetContext`, is also named differently from the contract. The guards stay the engine's to give: a pack never builds its own fetcher or browser.
-- [ ] **A whole menu** (Louis, in the app, 2026-11-05: "I asked for a whole braai menu, that should include salad and a pudding, 3 recipes. It should also have known to look for drinks"; needs its plan): one search per course, run together, one recipe each, one combined list and total; drinks on the list with estimates and no recipe, beer and wine included. Today the cook, `recipe-from-source` and the judge all assume one recipe, and no eval scenario has a menu.
-- [ ] **The cook scales wrongly** (from F35.3's measure, 2026-11-05): "Makes 3" for 4 people was doubled in 2 of 50 answers, with curry powder at 4 times, and earlier runs kept 150 g portions and separated a third egg. It's the mistake a user would actually cook with, and it has nothing to do with the library. FX56 fixed the part that was our own rules, and 150 g portions turned out to be right: half the dough is half as many of the same size. F48.1's `ScaleRecipe` now does the sums in code; see the runs for whether that ended it.
-- [ ] **The framework's `_Imports.razor` is about 90 lines** (Louis, 2026-11-06, option A; a small refactor after F59, and the lines moved here from Puls with the eval pages): most of them only the eval pages need. Blazor applies an `_Imports.razor` to its folder and below, so those lines move to `Pages/Admin/` and `Components/Admin/Evals/`, the root drops to about 30, and what's really unused goes.
-- [ ] **Long comment lines in the eval pages** (F59.10 left them, so its diff stayed a pure move): many `///` lines in `src/web/louis-agent.web/Admin/` and `Components/Admin/Evals/` run past 120, and they wrap by hand as the files are touched.
-- [ ] **At the next run, read the hand-off lines** (F48.3, 2026-11-06): the five examples in each voice file and the cut that starts at the recipe (`be969a7c`, `a8a30530`) have passed their tests but no run. The judge doesn't read the hand-off line, so a person has to.
-- [ ] **Open from the recipes evals** (F48.3, 2026-11-06), each waiting for a run to judge it: should the cook get our clean print when we parsed a recipe, instead of the page's text (39 of 130 reads in the long run came back as text); should a chat pick its voice from the first message, for someone on the Afrikaans menu who types English; and should the Cook and Routing evals open English questions in `voice-en`, as the recipe evals now do. The long eval's written transcripts also wait for its next whole run.
-- [ ] **Check the 47 new own-prices rows** (F48.3, 2026-11-06): `own-prices.json` promises a person checked each row when it was added, and these are hand estimates for what the long run left unpriced, waiting on that check. Rows marked as our own estimate in every answer until then.
-- [ ] **F48 Recipe maths and a teaching cook** (Phase 3c, after F35.1; plan [F48-cook-and-teacher.md](demos/puls/docs/plans/F48-cook-and-teacher.md), decisions settled 2026-10-26; our own C# ingredient-line reader, no Cooklang; F48.1 to F48.3 went to `ScaleRecipe`, yields and a recipe or a meal, so the plan's parts are F48.4 to F48.6): **F48.4** `WriteRecipe`: the ingredient-line reader, scaling, the shopping list and the prices, Stats SA's average prices first, our own rows for the gaps (a scaled recipe and its priced list come from code, never the model) · **F48.5** the pantry (a global catalogue, stock per browser id, Mongo in the recipes pack, paste a list now, a photo later) and the teaching, cues and whys in every answer (the cook knows what's in the pantry and teaches, in its eval run) · **F48.6** wave 1 of [PULS_COOK.md](demos/puls/docs/specs/PULS_COOK.md), in F48 (Louis, 2026-10-30): the food-safety guard in code, the cheaper pack size, SA dietary-guideline nudges, cook mode in the Puls app, copy the list, "how did it go?"
-- [ ] **F46 Localisation** (Phase 3d; Louis, 2026-10-25: "all text should come from a localisation file", "keep the enums"; branch `feature/F46-localisation`, plan when asked): **F46.1** core and the API: the text out of `[Description]` into `.resx` beside each message enum, the loader, its ADR (no message text left in an attribute) · **F46.2** the web apps: `ChatText`, Puls's page text, Afrikaans (Puls switches language from the files alone)
-- [ ] **F50 Puls's local specialists** (Phase 3e; Louis, 2026-10-26: "the next after F18 is 10 local personalities to configure for puls", then "we can add hiker, weatherman"), eval-first (scenarios and graders as F49's files, then the role until a live run passes), each new source a pack named for what it does, never for Puls (ADR 0028), its robots.txt and licence checked first (ADR 0038). **Every specialist answers for the user's municipality** (Louis: "the specialist must focus on local in which municipality the person is in. Or is currently in"): where the user is now when they share it (with consent, POPIA), else where they live, resolved once to its local municipality (a reverse geocode, OSM's boundary) and handed to the specialist in its task, and the answer says which one it used; this needs the municipality lookup out of *Puls local spec* and *Places* below. In order: **F50.1** the `weather` pack (Open-Meteo; its free tier is non-commercial, so public Puls needs the paid plan or its own instance) · **F50.3** gardener, braaimaster, weerman · **F50.4** farmer, sonkrag (home solar, PVGIS), stapper (hiker: OSM trails, permits) · **F50.5** stargazer, padreis (road trip: route, SANRAL tolls, the DMRE fuel price), hengelaar (angler: Open-Meteo Marine and DFFE's rules; SA tide tables are copyrighted) · **F50.6** voëlkyker (birder, SABAP2), hanyman (home DIY, estimates), and the cook on the new packs (each role child: three role files, each with its eval, run before it is shown) · **F50.7** the front end shows them: the landing page and the chat say what each one does with an example question, and **a user can chat to a specialist directly** (Louis: "I want the users to also chat to the specialists directly"): its card opens a new chat as a level-0 mode of Puls (`puls/{specialist}`, ADR 0019) fixed when the chat opens (ADR 0006), its function shared by the mode and the role without a copy (a layout question for `SkillsLayoutTests`, ADR 0017, decided in the plan); every "kom binnekort" placeholder hidden, not shown disabled (21 buttons in 8 components today; `OnComingSoon`, `ChatPage.ComingSoon`) (no not-implemented marker left on Puls). A hand-off from a Puls chat to a specialist mid-conversation is F39's (Phase 6). The brainstorm is `plans/puls-ten-specialists-brainstorm.md` in the Claude project
-- [ ] **F40 The sales playground** (Phase 4, on its own compose, `docker/docker-compose.demo.yml`): **F40.1** the demo identity, the customers pack and the invoice clerk with its simulation (`demo-invoice-batch` passes its bar on a recorded run) · **F40.2** the area guide and its simulation (`demo-area-guide` graded) · **F40.3** the control room in `louis-agent.web`, any simulation's grades, *Try it*, docs (a pitch is given from the room)
-
-## Next: the control layer, then what a sale needs (Phases 5 to 10)
-
-- [ ] [F7](src/docs/features/F07-budgets.md) Cost you can see and stop (Phase 5; takes in [F6](src/docs/features/F06-estimates.md), [F11](src/docs/features/F11-usage-tab-and-reconciliation.md)): **F7.1** a customer on every row and estimates (an estimate with its basis before a run) · **F7.2** budgets that warn, ask or stop, the room's cost view, the bill check, docs (a budget stops a run cleanly and the ledger matches the bill)
-- [ ] F39 Orchestration (Phase 6; takes in [F17](demos/louis-agent/docs/features/F17-orchestrator-agent.md), [F8-S4](src/docs/features/F08-reliability.md)'s structured results between agents, the orchestrator's end-to-end test, F7's deferral, workflows, multi-agent, the recovery contract for bad data; **and hand-offs** (Louis, 2026-10-24: "say I want to do handoffs?", approved with the one-agent-API answer): beside delegation, where the caller keeps the user, a hand-off gives the conversation to another agent: a typed `HandOff(Peer, Role, Summary, Reason)` in `src/engine/louis-agent.core/Delegation/` and a `HandOffTo` tool checked against the turn's `DelegationPolicy` (peer allowed, role offered there, summary within its cap) that ends the turn with a `hand_off` stream event (CL18's format); the agent only asks and the gateway moves the chat (Phase 9), so a model never sends a person to a server of its choosing (OWASP Agentic ASI07); until Phase 9 the harness plays the gateway; a simulation compares delegation and hand-off on the same place questions (cost per turn, tokens, the grade), GOAL skill 10's *handoff patterns compared*; it goes into F39's plan when that is written). In order: **F39.1** the delegation function: transport, credentials per peer, policy and limiter, `TurnContext`, the town as a turn input (every host delegates through one function) · **F39.2** typed results and the route classifier (a child's answer is a typed, checked result) · **F39.3** the voorman identity, its packs, the fix call and `ConfirmFix` (voorman runs on core with no code of its own in core) · **F39.4** the triage workflow, the exceptions agent, the recovery contract, the seeded service, the measure and docs (`voorman-triage` passes on the seeded service)
-- [ ] [FX4 Append-only history](src/docs/fixes/FX04-append-only-history.md) (first in Phase 7; the prerequisite of F36 and of F43's durable sessions; a written or approved skill arrives as a tool result, not a system prompt reload, [ADR 0033](src/docs/adr/0033-what-the-agent-writes-has-a-scope.md); removes known limitation 9)
-- [ ] F41 Drafts and approvals (Phase 7; takes in drafts, human in the loop, structured outputs, every problem listed at once, `ToolEffect`, the approvals screen with FX20's skill files and a page of the skills)
-- [ ] F42 Safety and audit (Phase 7; takes in the safety gaps, abuse handling and moderation, output guardrails, the untrusted-content frame, `IncludeDetailedErrors` reviewed, the egress proxy, repository mounts, branch protection, merges by person; removes known limitation 5): **F42.1** the untrusted-content frame, the audit log and rate limits (every outside text arrives framed and every effect is logged) · **F42.2** moderation and output guardrails, the egress proxy, mounts and branch protection, the injection simulations, docs (the injection suite passes)
-- [ ] F36 MCP servers as packs (Phase 8; takes in "MCP servers as a session toolset", a full MCP client, annotations and output schemas on our MCP server, our guards on every path; removes known limitation 1): **F36.1** guarded functions and the MCP export with annotations (our server publishes guarded tools) · **F36.2** `McpPack`, names, the start-up boundary, approval and trust (a server plugs in as a pack with our guards on every call) · **F36.3** `RiderMcpClient` replaced, new chats pick up new packs, the simulation, docs (no hand-written MCP client left)
-- [ ] F43 Accounts, tenants and durable sessions (Phase 9; takes in accounts, a sandbox per tenant, POPIA, durable sessions, the MongoDB layer, storage by access pattern and lifecycle states, sync across devices, CLI resume; removes known limitation 2): **F43.1** sign-in and a tenant on every session, row and sandbox (nothing runs without a tenant) · **F43.2** durable sessions and the storage layer by access pattern (a session survives a restart) · **F43.3** sync across devices, CLI resume, the tenant's POPIA report (a chat continues on another device). **From the security read of the eval runner (2026-10-26, with FX25):** the runner as its own job with its own small identity (an Azure Container Apps job, or a Kubernetes Job), not the API's container and user; sign-in (SSO) with roles and a log of who started which run, instead of one shared admin key and a typed name; and how long a run's transcripts (customer data) are kept and where (POPIA, data residency)
-- [ ] [F8 Reliability](src/docs/features/F08-reliability.md) (Phase 9; takes in timeouts and idempotency, the exception strategy)
-- [ ] [F15](src/docs/features/F15-model-limits.md) Model limits and local models (Phase 9; takes in [F13](src/docs/features/F13-local-models.md), the capability check per model; removes known limitations 3 and 8)
-- [ ] **F57 The site tells the new structure** (Louis, 2026-11-05): built unattended, merged. Left for Louis: check that **Firefox and Safari** play the README's film, and the 15 MB detailed film in the runtime view
-- [ ] **F58 The two sites go live from this PC** ([plan](src/docs/plans/F58-sites-from-this-pc.md), approved 2026-11-05; steps 1 to 3 built, PR #175): `louis-agent.dev` and a static Puls placeholder on `mypuls.co.za`, from Docker through Cloudflare Tunnels, groups `louis-agent-production` and `mypuls-production` (both sites open over HTTPS from a phone on mobile data; nothing that spends money is public)
-- [ ] **F59 The framework's web** (approved 2026-11-06; what it decided is in [ADR 0084](src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md), [0085](src/docs/adr/0085-styles-are-written-in-sass.md) and [0086](src/docs/adr/0086-a-packs-screens-are-described.md)): `web.shared` becomes `louis-agent.web`, holding what every site shares, and a site is a small program on top. **F59.1** the two renames and the rule: done (#202). **F59.2** the admin frame: done (#203). **F59.3** the chat frame: done (#204), Puls has a thin page on `ChatShell`. **F59.4** base styles and scripts: built, Puls looks as today from the framework's styles and scripts. **F59.5** described screens: built, the recipes counter opens through the generic page and `IDataReport` is gone. **F59.6** the git and file controls: built, they work as admin screens from their packs' web projects, not yet seen in a browser. **F59.7** the code-review app on the frame: built, a thin page on `ChatShell` with the framework's styles; its empty chat and themes seen in a browser, its screens with real data not yet. **F59.8** recipe management: built, a recipe can be found, edited, removed and cleared on screen; not yet seen with real data, and the store's Mongo tests are for CI. **F59.9** Uploads: built, it works from the framework through `PackMenu`. **F59.10** the eval pages: built, every site has them at `/admin`; seen on the starter with no API behind it, each page draws and says so, not yet seen with real runs. **F59.11** spawning a site: built, a test makes one and builds it; done when `dotnet new louis-site` makes a site that builds and opens. **F59.12** the static site as the coding agent's landing page: built, on the framework's colours and Sass, leading to `/chat`. **Louis:** export the films with Docker running (`dotnet run --project demos/louis-agent/tools/louis-agent.film-export`), or `TheExports_MatchTheFilms` stays red; say what the page should really say about the coding agent, as only the buttons changed.
-- [ ] **F61 Accounts, tenants and the two sites in Azure** ([plan](src/docs/plans/F61-accounts-and-azure.md), approved 2026-11-07; built F61.1, F61.2, F61.3, F61.5 unattended, F61.4 last with Louis): sign-in, registration and profiles on the framework's web, on ASP.NET Core Identity with a tenant on every account from the host name, SQL Server in Docker now and Azure SQL's free offer later; Puls on `mypuls.co.za` and the site on `louis-agent.dev` from Azure Container Apps, Mongo and the browser on a small Azure VM, nothing pointing at the PC. No paid product: what has no free option is ours. **F61.1** the accounts library: built (a host registers, confirms, signs in and reads `/account/me` against the Docker SQL Server; two tenants can hold one email; [ADR 0087](src/docs/adr/0087-identity-is-the-identity-server.md), [0088](src/docs/adr/0088-a-tenant-on-every-account.md)) · **F61.2** the pages, and the gate takes a signed-in person: built (the whole flow walked with curl against the local API on the Docker SQL Server: a session refused without a key, register, the mail's link to `/confirm-email`, sign in, `/account/me` in tenant `puls`, a session on the cookie with the header and refused without it, the profile, sign out; the pages themselves are pinned by bUnit, not yet seen in a browser) · **F61.3** Google, Microsoft and LinkedIn: built (each one class behind `IExternalProvider`, on only with both its keys; the callback, linking, unlinking and a first password proved on a scripted provider; a sign-in through the real three waits for Louis to register the apps, [the guide](src/docs/guides/register-a-sign-in-provider.md)) · **F61.4** everything in Azure (both domains from Container Apps, the VM, Azure SQL; SearXNG on the VM too; the sidecar, the lock, `AGENT_AUTH=off` and the SearXNG app gone) · **F61.5** passkeys and a second factor: built (a passkey added on the profile and signed in with, proved on a software authenticator; two-factor on Identity's own route, proved with a TOTP of the tests' own on the Docker SQL Server; the QR code for the authenticator key waits, the key goes as text and an `otpauth://` link; neither yet seen in a browser). Left as TODO: Facebook (Meta Business Verification) and X (its free tier closed 2026-02-06; "Login with X" reported free, unconfirmed), a real mail sender, `business.mypuls.co.za`. Takes F43.1's sign-in half, F51.2's "where Puls runs", "The Azure app behind a key" and F54's "where the site runs"
-- [ ] **F54's leftovers** (the site is on `main`, PR #133): the contact page's email address, pointing **louis-agent.dev** at the site, and where the site runs (`Dockerfile.site` is built; a compose or Azure entry once Louis picks the place). Domains bought 2026-11-05 at Afrihost (both parked, renew yearly in November: louis-agent.dev R330, mypuls.co.za R109)
-- [ ] F44 The engine as a product (Phase 9; takes in [F12](src/docs/features/F12-response-speed.md), its S1 first, shipping, notices and the container's licences, split packages, `AddLouisAgent`, OpenTelemetry metrics; the exporters and dashboards were F52, [ADR 0064](src/docs/adr/0064-observability-through-opentelemetry.md)): **F44.1** speed (`ttft_ms`, tokens per second) and OpenTelemetry metrics (every request's speed is on its ledger record and a metric) · **F44.2** split packages, `AddLouisAgent`, notices and licences (a host is one package reference and one call); F44.3 and F44.4 are Phase 10's, below
-- [ ] **F51 Hosting for public traffic** (Phase 9, with F44): **F51.1** the Puls gateway in front of the one agent API, hand-offs applied there (Puls's front door is the gateway) · **F51.2** where Puls and the configured agents run (Puls's domain is **mypuls.co.za**, bought 2026-11-05; specialists as paths such as `/cook`), uptime and alerting on the traces, the monthly cost beside the ledger (an outage pages someone and the month's bill is on the admin page)
-- [ ] **Phase 10, the engine as a developer package**, after every engine feature (Louis, 2026-10-20: "make the engine its own repo with package"): CL17 widened (*Later*), then **F44.3** Stage A, packaged in place: no internals granted to hosts, a public API baseline, deterministic builds, lock files, a consumer test and a replayed simulation, published behind a release gate (the package builds the same twice and a consumer test uses it) · **F44.4** Stage B, its own repo with its history and the engine guide pack (`louis-agent-engine` is the source of the package); then F47 (*Later*)
-
-## Puls (between the phases, one at a time, in this order)
-
-- [ ] Puls local spec (`docs/specs/puls-local.md`: the place registry, the business registry and its tiers, the municipality theme, POPIA for location)
-- [ ] Cook for the week (wave 2 of [PULS_COOK.md](demos/puls/docs/specs/PULS_COOK.md), after F48): a week on a budget, using up leftovers, cheap this month from Stats SA's series, diet and allergy rules in code, swaps that fit the dish, fixing what went wrong with a confidence check
-- [ ] CL16 Reusable roles (the cook into `packs/tools/louis-agent.pack.cooking`, under the identity's frame)
-- [ ] A domain stop-list for the browser: `RenderPolicy` refuses a listed domain, read from a setting or a file, so a site that asks us to stop ([SITE_OWNERS.md](demos/puls/docs/SITE_OWNERS.md)) is honoured without a release (FX21's review)
-- [ ] Sources as data (ADR 0032; `ShopKind` becomes the platform; shops and recipe sites as rows; robots.txt and sitemap indexing)
-- [ ] Places (`packs/tools/louis-agent.pack.places`; takes in municipal services; the geocoder behind `IGeocoder`; the area guide moves into Puls)
-- [ ] Local businesses (listed, always marked as an ad; providers through their platform, a price list or their MCP server)
-- [ ] Vision: `ScreenshotPage(url)` and images as input (question 15)
-- [ ] Local lookups: scores, SARS dates, load-shedding, "the game" means the Springboks or Bafana, each a pack when a simulation shows demand
-- [ ] F23 Credits (takes in rand pricing and billing)
-- [ ] The cook's unconfirmed prices: *geskat* or *unknown*, decided, then measured ([F25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md)'s open item)
-- [ ] A shorter cook report
-- [ ] FX: binary attachments sent as files, not text ([F22](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md)'s open item)
-- [ ] FX: a continued specialist's ledger rows name the turn that continued it ([F26](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md)'s open item)
-- [ ] [F21](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md): Louis's corrections to the Afrikaans
-- [ ] [F28 Team talk](demos/puls/docs/features/F28-team-talk.md), the rest: the mood switch, off by default (question 4: switch), the card as a thread and the Werk chip, the briefing and the mood graded by Puls's simulations
-- [ ] A retailer's own prices, only with its permission or feed (emails to PnP, Woolworths and Checkers sent 2026-10-25, no answer by 2026-11-04): a new price source in the `shop-prices` store beside Stats SA's (ADR 0069), never a scraper
-- [ ] Our own Nominatim, or a paid geocoder, before Puls is public: the public service allows one request a second (F50.2's `where-to-buy`)
-- [ ] The open feeds have no key and no limit ("for now", Louis 2026-11-04): before a feed costs us to serve or holds data we may not give away, a key or a rate limit (ADR 0070)
-
-### Later for Puls
-
-- [ ] **F60 Search by meaning** (parked, Louis, 2026-11-07; it was F35.6, and F35 is done without it): embeddings for the recipe library's search (skill 8). Not needed today: a search asks the sites whatever the library holds, the cook sends short dish names, and `QueryWords` holds the Afrikaans and English name pairs. Comes back if keyword misses are measured: about 30 labelled searches against the library, English and Afrikaans, need no package and no paid run. For its plan: a model and a package or provider to choose, Azure has no local model, whether a model really knows Afrikaans dish names, and *pork pie* sitting close to *chicken pie*, as a wrong dish is worse than a miss. Better places to learn embeddings may be the cook's pantry or searching inside recipes.
-- [ ] The cook's wave 3 ([PULS_COOK.md](demos/puls/docs/specs/PULS_COOK.md)): ask about the step you're on and hands-free voice (after cook mode), a photo check (after vision), voice notes in and WhatsApp out (Phase 9's front door), the dishes you've mastered (after accounts)
-- [ ] A Puls-owned set of a few hundred South African recipes (its licence decided in an ADR first)
-- [ ] WhatsApp as a host
-- [ ] The eleven official languages, measured
-- [ ] Voice
-
-## Later (and every GOAL Missing item no phase plans yet)
-
-- [ ] The `similar` check, when an eval asks for closeness of meaning (Louis, 2026-10-31, F49.2b finding H): a model-kind check over Microsoft.Extensions.AI's `IEmbeddingGenerator` (cosine similarity at or above a threshold), with `EVAL_EMBEDDING_*` settings for a provider that has embeddings (Ollama locally, or OpenAI; Anthropic has none), costed in the ledger as the judge is; until then `near` covers a short fixed text and `judge` a meaning
-- [ ] F45 Knowledge and retrieval (likely the first after Phase 9, if the conversations confirm it; takes in knowledge on demand, grounding's retrieval, long-term memory and retrieval)
-- [ ] Searching PDFs, investigate much later (Louis, 2026-10-26): the engine or a pack takes in PDFs and searches them by meaning and by keyword (contextual chunks, hybrid search fused by rank, a reranker), each result citing its page; part of F45. The standard pipeline and the open questions: [Design: searching PDFs](src/docs/specs/PDF_SEARCH.md)
-- [ ] F47 The CLI and Rider's host on the agent API (Phase 10, after the engine package; **F47.1** Rider's ACP host as a thin translator · **F47.2** the CLI, each speaking only HTTP and SSE to the API; Louis, 2026-10-25: "after the engine package we refactor the acp fully", "the cli must also", "make it one Feature"): both become thin clients of the one agent API (`POST /v1/sessions` and its SSE stream), so the engine, its logs and the ledger live in one host; open: how the API reaches Rider's own tools (Rider's MCP server on the developer's machine) and the repository each chat has open
-- [ ] [F9](src/docs/features/F09-context-management.md) Long chats (takes in [F16](src/docs/features/F16-summariser.md) and the context-building step)
-- [ ] [F10](src/docs/features/F10-route-settings.md) Settings per role and per session (takes in `max_tool_rounds` per session, thinking measured per level and interleaved thinking, stop conditions beyond a round count, the model per role; removes known limitation 6)
-- [ ] **CL31 Scripts as ES modules beside their components** (Louis, 2026-11-07, pick A of three, after CL30): `chat.js` and `passkeys.js` become a `X.razor.js` beside each component that needs the browser, imported on demand through `IJSRuntime` (Microsoft's JS isolation), so a site's `index.html` lists nothing of ours, no `window.chatUi`/`window.passkeys` global remains, and `FrameworkScriptsTests` checks a module beside its component; its own plan. Picked over C# wrappers from NuGet (MudBlazor or Blazorise, a WebAuthn wrapper: packages to vet, a second look fighting Bootstrap's) and over leaving the three scripts listed by every site
-- [ ] **What's left of CL29** ([ADR 0076](src/docs/adr/0076-core-ships-no-agent.md)): **web access as its own package**, **CL29.2 step 6** (the API's tests back to `src/tests`), the web app chosen by `IDENTITIES`
-- [ ] CL17 what's left of the coding identity (the identity and its packs are built, CL29.3): CL12, a pull-request tool
-- [ ] The browser's user agent names the user's town per visit (FX21's later step: the visit receives the user's place as the shop tools receive `area`; never the person)
-- [ ] A tool added mid-chat, after FX4 (`tool_addition` behind `LlmClientFactory`)
-- [ ] F38 Tool search, when a measured need comes
-- [ ] Planning and a self-check before answering, tried on a simulation first
-- [ ] An error tracker behind `IErrorFeed`, after F39
-- [ ] A webhook trigger beside polling, after F39
-- [ ] Computer use, when a simulation needs it
-- [ ] An Inspect AI log export for a run (F18 step 6b; Louis, 2026-10-26): Inspect AI's log format is not in F18; when a run must be read by other tools, the runner writes one beside its protocol
-- [ ] CL21 Mutation testing with Stryker.NET (`dotnet-stryker` 5.0.0, Apache 2.0, a dotnet local tool in `.config/dotnet-tools.json`; Louis, 2026-10-25): it breaks the code one change at a time and runs the tests, so a line no test guards shows up as a mutant that survived; run by hand on the files a step changed (`dotnet stryker --mutate …`), its report kept out of the repo. It replaces the throwaway mutation probes in reviews; a library fact our code relies on (MEAI reads the content-capture variable once per process) stays a learning test beside that code, so CI runs it. Its own branch off `main`, with its plan
-- [ ] Function skills in the Agent Skills format (Louis, 2026-10-26; with Phase 7, its own ADR): `demos/louis-agent/skills/agent/functions/` become `SKILL.md` folders with the front matter every built-in prompt has opened with since CL27 ([ADR 0063](src/docs/adr/0063-a-prompt-says-what-it-is.md): `PromptHeaders` reads it already, and a function file without one is read whole until then) (Louis, 2026-10-28, F18 step 7c's card H; the header itself done in CL27, 2026-11-03); the built-in prompts stay embedded ("for safety we embed", [ADR 0018](src/docs/adr/0018-built-in-prompts-embedded.md) holds) ([F48's plan](demos/puls/docs/plans/F48-cook-and-teacher.md))
-- [ ] CL23 Explore a Roslyn analyzer for the names rule (Louis, 2026-10-27: "add it as something to explore"; not planned): F18 step 7.5's `RepeatedNameTests` reads the sources as text with its own lexer and a growing list of skip rules (a key, a razor comment, an enum's body); an analyzer runs inside the compiler, knows what each literal is, underlines `"puls-cook"` in Rider as you type and can offer the fix (`PulsRole.Cook.Wire()`). Its own small project and tests; look at it if the ratchet starts getting in the way. [ADR 0043](src/docs/adr/0043-repeated-names-are-enums.md) (on F18)
-- [ ] [F30](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md)'s minions tested: the cook measured with and without minions, after this plan (Louis, 2026-10-19)
-- [ ] Build mode, a side note: an idea to look into after this plan, not planned (question 5, Louis, 2026-10-19)
-- [ ] The Azure app behind a key: `puls-app` serves a public ingress with `AGENT_AUTH=off` (CL19 kept it, loudly commented, and locked the ingress to Louis's home IP with `deploy.ps1 lock`), so the Puls web app must send `AGENT_API_KEY` (or a sign-in) before the lock can come off
-
-## Small cleanups (each when its code is next touched)
-
-- [ ] **The work email out of git history** (Louis, 2026-11-04: "remove any work email"): no file in the repo holds
-  it any more, but 31 commits on `main` (2026-10-06 to 2026-10-12) carry the employer's address as author and
-  committer. Taking it out means rewriting history (`git filter-repo --mailmap`) and force-pushing `main`: every
-  commit after them gets a new hash, so open branches and clones must be rebased. Louis's call; until then, the
-  licence review's finding 5 stands (a note from the employer that louis-agent is his settles who owns that code)
-
-- [ ] `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body task (FX36; `NetworkManager.HandleRequestRedirect` sets it failed and nothing awaits it at 25.14 and 25.16; reported there as [#3659](https://github.com/hardkoded/puppeteer-sharp/issues/3659) (Louis, 2026-11-04; the earlier [#891](https://github.com/hardkoded/puppeteer-sharp/issues/891) and [#2642](https://github.com/hardkoded/puppeteer-sharp/issues/2642) were closed without a fix, "PRs are welcome"): the one-line fix is in the report, and as a patch in `/mnt/project-files/upstream/`)
-- [ ] Design docs for the three projects that have none: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` (CL24 found them; [projects](src/docs/projects/README.md))
-- [ ] The orchestrator's `Program.cs` up to the rules (F52 step 2 found it, Louis's pick A, 2026-11-03): `Decision.ToRecord` writes decisions.jsonl from an anonymous object (ADR 0041: a record), `Decision.Parse` has a nested `?:` (ADR 0051), several members have no summary (ADR 0050), and the file holds four types besides the program (one per file)
-- [ ] F16-S1: the oversized-results report, and the worst offenders paged
-- [ ] `VerifyQuote`'s prices in the host's currency (`HOST_CULTURE`)
-- [ ] Remove CL14's last aliases now, with no deploy to wait for ([ADR 0049](src/docs/adr/0049-nothing-is-compatible-before-a-sale.md)): `PERSONALITIES_ENABLED` (core's `AgentOptions` and Puls's compose), and `personality` read from what was recorded before CL14 (a chat's delegation card, a stored run, the benchmark protocol and its fixture). CL20 removed the route and the session field
-- [ ] Typed peer bodies (FX27, Louis's pick): the sub-session tools send their create and message bodies to the peer as anonymous objects (`SpecialistTools`, `MinionTools`, `SubSessionMessenger`, `SessionReplay.ForSubSession`); ideally one shape both sides read, the API's `CreateSessionRequest` and `SendMessageRequest` in `louis-agent.api.contracts` (ADR 0041, ADR 0045), under its own plan
-- [ ] Choices still made by string, the LLM provider first; the web app's `GitChangeAsync("stage" | "unstage" | "discard")` too (CL20 review)
-- [ ] The session request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `ReplayRequest`) into `louis-agent.api.contracts`, their parsing as extension members in the API, when a change touches them or a client (the eval runner's `HttpSessionClient`, the orchestrator) switches to the contract (F18's unattended run, finding 3: the runner and the orchestrator still build these bodies themselves)
-- [ ] An OpenAPI document for the agent API (`Microsoft.AspNetCore.OpenApi`, the handlers on `TypedResults` so it knows each answer), for the engine package's `Hosts.Api` (CL20, [ADR 0039](src/docs/adr/0039-api-routes-under-v1.md))
-- [ ] SearXNG on only on purpose
-- [ ] SearXNG's results filtered to the site asked for
-- [ ] F31's review follow-ups
-- [ ] Web tests: the Branches queue, on Phase 4's bUnit project
-- [ ] The portal's old benchmark routes and words removed, after Phase 3
-- [ ] Remove the `/v1/admin/benchmarks/…` route aliases (F18 step 7b (iii)): every eval route also answers under
-  `/v1/admin/evals/…` (`AdminEndpoints.Prefixes`, and the trend's old `/benchmarks/checks/{check}/trend`), so once the
-  Puls admin pages call only the new names and a deploy has passed, drop `"/benchmarks"` from `Prefixes`, the old
-  trend line and `GET /admin/benchmarks` (with the page that reads it), and regenerate `ApiRoutesSnapshot.json`;
-  `EvalRouteAliasTests` goes with them
-- [ ] Remove the eval store's old setting names (F18 step 7b (iii)): `AdminOptions` reads `BENCHMARKS_MONGO_URL` and
-  `BENCHMARKS_MONGO_DATABASE` after `EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE`. First move what still sets the old
-  ones: `config/.env.secrets` on each machine, the CI workflow's `BENCHMARKS_MONGO_URL`, the Mongo contract tests
-  (`EvalStoreSubjects`, `HumanReviewStoreMongo`, `CalibrationStoreMongo`, which read only the old name) and the
-  Azure secret's name (`benchmarks-mongo-url`); then drop the two fallbacks, the compose's
-  `${BENCHMARKS_MONGO_DATABASE-…}` and the alias test in `AdminOptionsTests`
-- [ ] Remove `PULS_API`, the eval runner's old name for the API's address (F18 step 7b (iii)): the API sets
-  `AGENT_API` now, and `HttpSessionClient.ApiFrom` reads `PULS_API` after it so a shell or a script that still sets
-  the old name keeps working; once none does, drop it there, from `RunnerEnvironmentTests`' handled list and from
-  `ApiAddressTests`
-- [ ] Rider out of core (core layout review, 2026-10-19): `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/hosts/louis-agent.acp-server`
-- [ ] The rest of the size list (CL15, 2026-10-20): 33 files over 200 lines (400 for tests), held by `FileSizeTests`' `Oversized`; split by responsibility a group at a time, on its own branch
-- [ ] A price format per country (CL15 review, 2026-10-20): the web pack's `Quotes/QuoteMatch` knows the rand sign, yet a general pack names no country; an `IPriceFormat` seam in the composition, the South African one from Puls or the shop-prices pack
-- [ ] A pack can't add itself to a router (CL15 step 4): the where-to-buy and shop-prices routing lines live in their guides, which load only in a session that already has the toolset, so the coding agent never learns those packs exist. Costs nothing today; with F36 the routing rows come from each toolset's description
-- [ ] Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 tokens, unpriced, counted as one request today (the stream golden pins it, F18 step 1e); decide before the ledger's rules are written down.
+| Id | What | Phase | Detail |
+|---|---|---|---|
+| CL33 | Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry` | Now | — |
+| F106 | Validate demand | Now | — |
+| F18 | F18's leftovers, before F49.1 | Now | — |
+| F107 | The reference transcripts in git | Now | — |
+| F108 | The judge check can't see pages | Now | — |
+| F109 | After F35, the cook's answer | Now | — |
+| F110 | Each pack declares what it needs | Now | — |
+| F111 | A whole menu | Now | — |
+| F112 | The cook scales wrongly | Now | — |
+| F113 | The framework's `_Imports.razor` is about 90 lines | Now | — |
+| F114 | Long comment lines in the eval pages | Now | — |
+| F115 | At the next run, read the hand-off lines | Now | — |
+| F116 | Open from the recipes evals | Now | — |
+| F117 | Check the 47 new own-prices rows | Now | — |
+| F48 | Recipe maths and a teaching cook | Now | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
+| F46 | Localisation | Now | — |
+| F50 | Puls's local specialists | Now | — |
+| F40 | The sales playground | Now | — |
+| F7 | Cost you can see and stop | Next | [feature doc](src/docs/features/F07-budgets.md) |
+| F39 | Orchestration | Next | [feature doc](demos/louis-agent/docs/features/F17-orchestrator-agent.md) |
+| FX4 | Append-only history | Next | [fix doc](src/docs/fixes/FX04-append-only-history.md) |
+| F41 | Drafts and approvals | Next | — |
+| F42 | Safety and audit | Next | — |
+| F36 | MCP servers as packs | Next | — |
+| F43 | Accounts, tenants and durable sessions | Next | — |
+| F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
+| F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
+| F57 | The site tells the new structure | Next | — |
+| F58 | The two sites go live from this PC | Next | [plan](src/docs/plans/F58-sites-from-this-pc.md) |
+| F59 | The framework's web | Next | [doc](src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md) |
+| F61 | Accounts, tenants and the two sites in Azure | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
+| F54 | F54's leftovers | Next | — |
+| F44 | The engine as a product | Next | [feature doc](src/docs/features/F12-response-speed.md) |
+| F51 | Hosting for public traffic | Next | — |
+| F118 | Phase 10, the engine as a developer package, after every engine feature | Next | — |
+| F119 | Puls local spec | Puls | — |
+| F120 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
+| CL16 | Reusable roles | Puls | — |
+| F121 | A domain stop-list for the browser | Puls | [doc](demos/puls/docs/SITE_OWNERS.md) |
+| F122 | Sources as data | Puls | — |
+| F123 | Places | Puls | — |
+| F124 | Local businesses | Puls | — |
+| F125 | Vision: `ScreenshotPage(url)` and images as input | Puls | — |
+| F126 | Local lookups | Puls | — |
+| F23 | Credits | Puls | — |
+| F127 | The cook's unconfirmed prices | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md) |
+| F128 | A shorter cook report | Puls | — |
+| FX59 | binary attachments sent as files, not text | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
+| FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
+| F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
+| F28 | Team talk, the rest | Puls | [feature doc](demos/puls/docs/features/F28-team-talk.md) |
+| F129 | A retailer's own prices, only with its permission or feed | Puls | — |
+| F130 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls | — |
+| F131 | The open feeds have no key and no limit | Puls | — |
+| F60 | Search by meaning | Puls, later | — |
+| F132 | The cook's wave 3 | Puls, later | [spec](demos/puls/docs/specs/PULS_COOK.md) |
+| F133 | A Puls-owned set of a few hundred South African recipes | Puls, later | — |
+| F134 | WhatsApp as a host | Puls, later | — |
+| F135 | The eleven official languages, measured | Puls, later | — |
+| F136 | Voice | Puls, later | — |
+| F137 | The `similar` check, when an eval asks for closeness of meaning | Later | — |
+| F45 | Knowledge and retrieval | Later | — |
+| F138 | Searching PDFs, investigate much later | Later | [spec](src/docs/specs/PDF_SEARCH.md) |
+| F47 | The CLI and Rider's host on the agent API | Later | — |
+| F9 | Long chats | Later | [feature doc](src/docs/features/F09-context-management.md) |
+| F10 | Settings per role and per session | Later | [feature doc](src/docs/features/F10-route-settings.md) |
+| CL31 | Scripts as ES modules beside their components | Later | — |
+| F139 | What's left of CL29 | Later | [doc](src/docs/adr/0076-core-ships-no-agent.md) |
+| CL17 | what's left of the coding identity | Later | — |
+| F140 | The browser's user agent names the user's town per visit | Later | — |
+| F141 | A tool added mid-chat, after FX4 | Later | — |
+| F38 | Tool search, when a measured need comes | Later | — |
+| F142 | Planning and a self-check before answering, tried on a simulation first | Later | — |
+| F143 | An error tracker behind `IErrorFeed`, after F39 | Later | — |
+| F144 | A webhook trigger beside polling, after F39 | Later | — |
+| F145 | Computer use, when a simulation needs it | Later | — |
+| F146 | An Inspect AI log export for a run | Later | — |
+| CL21 | Mutation testing with Stryker.NET | Later | — |
+| F147 | Function skills in the Agent Skills format | Later | [doc](src/docs/adr/0063-a-prompt-says-what-it-is.md) |
+| CL23 | Explore a Roslyn analyzer for the names rule | Later | [doc](src/docs/adr/0043-repeated-names-are-enums.md) |
+| F30 | F30's minions tested | Later | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md) |
+| F148 | Build mode, a side note | Later | — |
+| F149 | The Azure app behind a key | Later | — |
+| CL34 | The work email out of git history | Cleanups | — |
+| CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups | — |
+| CL36 | Design docs for the three projects that have none | Cleanups | [doc](src/docs/projects/README.md) |
+| CL37 | The orchestrator's `Program.cs` up to the rules | Cleanups | — |
+| F16 | F16-S1: the oversized-results report, and the worst offenders paged | Cleanups | — |
+| CL38 | `VerifyQuote`'s prices in the host's currency | Cleanups | — |
+| CL39 | Remove CL14's last aliases now, with no deploy to wait for | Cleanups | [doc](src/docs/adr/0049-nothing-is-compatible-before-a-sale.md) |
+| CL40 | Typed peer bodies | Cleanups | — |
+| CL41 | Choices still made by string, the LLM provider first | Cleanups | — |
+| CL42 | The session request bodies | Cleanups | — |
+| CL43 | An OpenAPI document for the agent API | Cleanups | [doc](src/docs/adr/0039-api-routes-under-v1.md) |
+| CL44 | SearXNG on only on purpose | Cleanups | — |
+| CL45 | SearXNG's results filtered to the site asked for | Cleanups | — |
+| F31 | F31's review follow-ups | Cleanups | — |
+| CL46 | Web tests | Cleanups | — |
+| CL47 | The portal's old benchmark routes and words removed, after Phase 3 | Cleanups | — |
+| CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups | — |
+| CL49 | Remove the eval store's old setting names | Cleanups | — |
+| CL50 | Remove `PULS_API`, the eval runner's old name for the API's address | Cleanups | — |
+| CL51 | Rider out of core | Cleanups | — |
+| CL52 | The rest of the size list | Cleanups | — |
+| CL53 | A price format per country | Cleanups | — |
+| CL54 | A pack can't add itself to a router | Cleanups | — |
+| CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
 
 ## Known limitations
 

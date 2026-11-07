@@ -69,7 +69,7 @@ planned, next and in the backlog, and links to the rest.
 | Doc | Type | Read it to… |
 |---|---|---|
 | [Goal](GOAL.md) | Explanation | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
-| [TODO](../../TODO.md) | Plan | See what's still open, one item per line: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
+| [TODO](../../TODO.md) | Plan | See what's still open, one row per item: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
 | [Work log](work-log.md) | Reference | See every feature, fix and cleanup as a table: when and what, the counts done and open, and what is still open in the TODO |
 | [Features](features/README.md) | Plan | Follow the features still to build: each with user stories, design and steps; a built feature keeps one row, its doc folded into its project's design doc (CL24) |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
