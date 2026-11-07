@@ -2,8 +2,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Discovery;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.Providers;
-using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Web;
