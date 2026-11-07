@@ -20,7 +20,8 @@ and the placeholder) go when the new one answers on `mypuls.co.za`.
 |---|---|---|
 | Network | `puls-vnet` | `10.0.0.0/16`: the apps' subnet `10.0.0.0/23`, delegated to Container Apps, and the services' subnet `10.0.2.0/24` |
 | Security group | `puls-services-nsg` | On the services' subnet: 27017, 9222 and 8080 from the apps' subnet, everything else denied; SSH from one address only with `infra -Ip` |
-| VM | `puls-services` | Ubuntu 24.04, `Standard_B2s`, no public IP, a 32 GB Standard SSD data disk as XFS at `/data`; cloud-init from `vm/cloud-init.yaml` installs Docker and a unit that runs `vm/docker-compose.services.yml`: `mongo:8` on 27017, `headless-shell` on 9222, `searxng` on 8080, all on the private IP |
+| VM | `puls-services` | Ubuntu 24.04, `Standard_B2s`, no public IP, a 32 GB Standard SSD data disk as XFS at `/data`; cloud-init from `vm/cloud-init.yaml` installs Docker and a unit that runs `vm/docker-compose.services.yml`: `mongo:9` on 27017 (not the PC's 8: the image's 7.0 kernel refuses MongoDB 8, SERVER-121912), `headless-shell` on 9222, `searxng` on 8080, all on the private IP |
+| App identity | `puls-app-identity` | A user-assigned identity with Key Vault Secrets User on `puls-keys`; the app reads its secrets with it |
 | Environment | `puls-env` | A Container Apps environment on the apps' subnet with a Consumption profile; logs to `puls-logs`, traces and logs to `puls-insights` through its OpenTelemetry agent; its identity pulls from `acrpulsza`; the app's share `puls-app-workspace` as storage `puls-app-vol` |
 | Application Insights | `puls-insights` | Puls's logs and traces (F52), on `puls-logs` |
 | SQL | `puls-sql-za`, database `puls_accounts` | Azure SQL's free offer: serverless General Purpose, 32 GB, 100,000 vCore-seconds a month, paused when idle and when the month's seconds run out, never billed; "Allow Azure services" on, TLS 1.2 |
@@ -65,6 +66,7 @@ deploy\azure\deploy.ps1 release     # build (tagged date and time) and deploy th
 deploy\azure\deploy.ps1 logs        # -Follow to tail
 deploy\azure\deploy.ps1 vm          # after a change to the VM's compose or SearXNG's settings
 deploy\azure\deploy.ps1 infra       # after a change to main.bicep (what-if first)
+deploy\azure\deploy.ps1 sql-access  # once per home IP, for Management Studio
 ```
 
 `build` passes this checkout's commit to the Puls image as `EVAL_COMMIT`, so an eval run in the cloud says which
@@ -75,7 +77,11 @@ each sign-in provider whose two secrets are set, and creates or updates the app.
 
 ## Secrets
 
-| App secret | From | Read by |
+Every value is in the vault `puls-keys` (Louis's pick, 2026-11-08): `deploy.ps1 secrets` writes it there, the app's
+secrets are references to it by URL read with `puls-app-identity`, and `update` writes the yaml's `secrets:` block
+from the names the vault holds, so no value is ever on the app or in a file under git.
+
+| Vault secret | From | Read by |
 |---|---|---|
 | `anthropic-api-key` | `config/.env.secrets` `ANTHROPIC_API_KEY` | the model |
 | `agent-api-key` | `config/.env.secrets` `AGENT_API_KEY` | the key gate: a `/v1` call needs it or a signed-in person (F61.2); the peer call sends it |
@@ -104,6 +110,17 @@ az containerapp exec -n puls-app -g rg-puls-za --command "curl -s -m 10 http://<
 az containerapp exec -n puls-app -g rg-puls-za --command "curl -s -m 10 http://<vm-ip>:8080/healthz"         # SearXNG
 az vm run-command invoke -n puls-services -g rg-puls-za --command-id RunShellScript --scripts "docker ps"   # the three containers
 ```
+
+**A look at the collections** (the VM is private, so no Studio 3T; Louis, 2026-11-08: "fine for now"): `mongosh`
+inside the container, with the user from `config/.env.mongo`, lists what each database holds:
+
+```powershell
+az vm run-command invoke -n puls-services -g rg-puls-za --command-id RunShellScript --scripts "docker exec puls_mongo mongosh -u <user> -p <password> --quiet --eval 'db.adminCommand({listDatabases:1}).databases.forEach(d => print(d.name, db.getSiblingDB(d.name).getCollectionNames()))'" --query "value[0].message" -o tsv
+```
+
+**SQL Server Management Studio** reaches Azure SQL once `deploy.ps1 sql-access` has let this PC's IPv4 through the
+server's firewall: server `puls-sql-za.database.windows.net`, port 1433, login `pulsadmin` with `config/.env.sql`'s
+password, database `puls_accounts`, encryption on. A new home IP means `sql-access` again.
 
 ## The share's layout
 
