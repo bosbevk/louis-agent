@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
@@ -19,12 +18,8 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Web.Browsing;
-using LouisAgent.Core.Web.Replay;
-using LouisAgent.Core.Web.Fetching;
-using LouisAgent.Core.Web.Robots;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
 
 namespace LouisAgent.Core.Hosting;
@@ -91,7 +86,7 @@ public sealed class AgentEngineFactory
     /// </summary>
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
-        ReasoningEffort? thinking = null, IWebSearchProvider? webSearch = null, int capacity = DefaultCapacity,
+        ReasoningEffort? thinking = null, HostServices? services = null, int capacity = DefaultCapacity,
         ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null)
     {
         Catalog = catalog ?? AgentCatalog.CoreOnly;
@@ -105,17 +100,13 @@ public sealed class AgentEngineFactory
         _thinking = thinking;
         _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
-        // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and
-        // 4b): the shops and the page renderer read through them. One clock per process, so a trial's frozen time is
-        // shared by every engine and sub-session.
+        // One store where recordings are kept for every engine of this process (F18 step 4b), and one clock, so a
+        // trial's frozen time is shared by every engine and sub-session. The web (one browser, one robots policy, the
+        // search provider) is the host's to build from them (CL33); without a host's web library it isn't set up.
         var replay = _replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);
-        // One robots.txt policy too (F35, ADR 0068), reading the file through a fetcher of its own that has no policy.
-        var robots = new RobotsPolicy(RobotsFileFetch.Through(new PageFetcher(replay: replay)));
-        Context = new ToolsetContext(agent,
-            RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates,
-            usageSink,
-            WebBrowser: WebBrowserFactory.Create(agent, replay, robots), Replay: replay, Robots: robots);
+        Context = new ToolsetContext(agent, (services ?? HostServices.None).WebOrNone(agent, replay), rates,
+            usageSink, replay);
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>

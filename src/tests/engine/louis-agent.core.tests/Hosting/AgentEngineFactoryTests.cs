@@ -8,7 +8,7 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tests.Web.Replay;
+using LouisAgent.Testing.Replay;
 using LouisAgent.Core.Web.Replay;
 
 namespace LouisAgent.Core.Tests.Hosting;
@@ -104,27 +104,6 @@ public class AgentEngineFactoryTests
 
         Assert.That(without.Context.Replay, Is.Null);
         Assert.That(with.Context.Replay, Is.Not.Null);
-    }
-
-    /// <summary>The search provider is recorded only where a store is kept, a host's own provider included.</summary>
-    [Test]
-    public void TheSearchProvider_IsRecordedAroundOnlyWhereAStoreIsKept_AHostsOwnIncluded()
-    {
-        // F18 step 4b.2: a fake given by a host records like a real provider, so a test can prove a replay with one.
-        var own = new CountingSearch(name: "Own");
-        var options = new AgentOptions
-        {
-            WorkspaceRoot = TestPaths.RepoRoot,
-            RatesUrl = null,
-            ReplayDirectory = "/data/replay"
-        };
-
-        var recorded = new AgentEngineFactory(new FakeChatClient(), options, webSearch: own).Context.WebSearch;
-        var plain = new AgentEngineFactory(new FakeChatClient(), Options(), webSearch: own).Context.WebSearch;
-
-        Assert.That(recorded, Is.TypeOf<RecordedSearchProvider>());
-        Assert.That(recorded.Name, Is.EqualTo("Own"));
-        Assert.That(plain, Is.SameAs(own));
     }
 
     /// <summary>An engine's GetToday is recorded and replayed through the factory's one clock.</summary>
@@ -263,10 +242,7 @@ public class AgentEngineFactoryTests
         var factory = FactoryEnabling([]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent),
-            Is.EqualTo(new[]
-            {
-                "testprod/voice-af", "testprod/voice-en"
-            }));
+            Is.EqualTo(new[] { "testprod/voice-af", "testprod/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("testprod/voice-en"), "GET /v1/roles' default");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("testprod-specialist"));
     }
@@ -402,7 +378,8 @@ public class AgentEngineFactoryTests
     {
         Assert.That(Factory().Available,
             Does.Contain(TestToolset.Files.Wire()).And.Not.Contain(CoreToolset.Specialists.Wire()));
-        Assert.That(Factory(peer: new Uri("http://coder.test/")).Available, Does.Contain(CoreToolset.Specialists.Wire()));
+        Assert.That(Factory(peer: new Uri("http://coder.test/")).Available,
+            Does.Contain(CoreToolset.Specialists.Wire()));
     }
 
     /// <summary>With no toolsets an engine has only the tools every session gets.</summary>

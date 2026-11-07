@@ -5,7 +5,7 @@ using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Tests.Web.Replay;
+using LouisAgent.Testing.Replay;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 

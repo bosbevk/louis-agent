@@ -174,4 +174,8 @@ public enum WebToolMessage
 
     [Description("{Host} says no to AI readers ({Signal}); not read.")]
     PageRefusesAiReaders,
+
+    [Description(
+        "Error: web access isn't set up on this host: it runs core alone, without the web library. Nothing on the web can be searched, fetched or read here.")]
+    WebAccessNotSetUp,
 }

@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Testing;
@@ -31,15 +32,20 @@ public class ToolsetCatalogTests
         var shops = new ToolsetDefinition(SampleToolset.Beta, "a pack's", GuideFile: null, MissingSettings: _ => [],
             CreateTools: _ => [], ParallelSafe: true);
         Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe), Is.Empty, "core's own hand work on");
-        Assert.That(ToolsetCatalog.RunsInParallel([TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire()), shops]), Is.True,
+        Assert.That(
+            ToolsetCatalog.RunsInParallel([
+                TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire()), shops
+            ]), Is.True,
             "the cook");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!, TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
+                ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!,
+                TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
             ]), Is.False, "Puls");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Skills.Wire())!, TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
+                ToolsetCatalog.Find(CoreToolset.Skills.Wire())!,
+                TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
             ]), Is.False);
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
     }
@@ -59,7 +65,7 @@ public class ToolsetCatalogTests
             MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
             BrowserUrl = "http://browser.test:9222",
         };
-        var context = new ToolsetContext(options, new NoSearch());
+        var context = new ToolsetContext(options, new WebParts(new NoSearch()));
 
         Assert.Multiple(() =>
         {
@@ -82,8 +88,11 @@ public class ToolsetCatalogTests
     }
 
     // CL15: the shops are a pack, so core's own optional toolset here is specialists, which needs a peer the same way.
-    private static readonly ToolsetContext WithoutPeers = new(new AgentOptions(), new NoSearch());
-    private static readonly ToolsetContext WithPeers = new(new AgentOptions { AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") } }, new NoSearch());
+    private static readonly ToolsetContext WithoutPeers = new(new AgentOptions(), new WebParts(new NoSearch()));
+
+    private static readonly ToolsetContext WithPeers =
+        new(new AgentOptions { AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") } },
+            new WebParts(new NoSearch()));
 
     private static string[] Resolved(IEnumerable<string> names, ToolsetContext context) =>
         TestTools.Catalog.Resolve(names, context).Select(t => t.Name).ToArray();

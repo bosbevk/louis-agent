@@ -11,7 +11,7 @@ public partial class RoadmapTests
     private static readonly string Root = TestPaths.RepoRoot;
 
     /// <summary>A phase row's ids, the last cell: matches <c>| 7 | … | Next | FX4, F41, F42 |</c> and gives the cell.</summary>
-    [GeneratedRegex(@"^\| [^|]+ \| [^|]+ \| [^|]+ \| [^|]+ \| ([^|]+) \|$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\| [^|]+ \| [^|]+ \| [^|]+ \| [^|]+ \| ([^|]+) \|\r?$", RegexOptions.Multiline)]
     private static partial Regex PhaseRows();
 
     /// <summary>An id: <c>F49</c>, <c>FX4</c>, <c>F61.4</c>, <c>CL17</c>.</summary>

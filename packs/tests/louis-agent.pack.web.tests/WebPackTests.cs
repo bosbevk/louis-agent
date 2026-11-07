@@ -1,3 +1,5 @@
+using LouisAgent.Core.Web.Fetching;
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -14,7 +16,10 @@ public class WebPackTests
     public async Task TheFetcher_ComesFromTheContext_WithItsStore()
     {
         string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
-        var context = new ToolsetContext(new AgentOptions(), new NoSearch(), Replay: new ReplayStore(folder));
+        // A fetcher on the store alone, with no robots policy, so the miss is the store's and not robots.txt's.
+        var store = new ReplayStore(folder);
+        var context = new ToolsetContext(new AgentOptions(),
+            new WebParts(new NoSearch(), Fetcher: () => new PageFetcher(replay: store)), Replay: store);
         var web = new WebPack().Toolsets.Single().CreateTools(context).OfType<WebTools>().Single();
 
         using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, "t", Model: false)))

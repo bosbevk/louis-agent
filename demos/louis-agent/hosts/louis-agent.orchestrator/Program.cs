@@ -45,7 +45,7 @@ var agentOptions = AgentOptions.FromEnvironment();
 agentOptions.WorkspaceRoot = options.ServiceRoot;
 AgentLogging.Configure(agentOptions.LogDirectory, LogContent.ModeOf(agentOptions.LogContent));
 // It isn't built through AgentHost, so it starts its own traces; after the .env load above, so OTEL_* there count.
-AgentTelemetry.Start();
+OtlpTelemetry.Instance.Start();
 var log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Orchestrator");
 
 void Log(OrchestratorLogMessage message, object? values = null) =>

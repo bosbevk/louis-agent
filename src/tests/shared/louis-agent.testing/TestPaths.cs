@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -57,7 +58,8 @@ public static class TestPaths
     public static IReadOnlyList<object> Toolsets(AgentOptions options, IEnumerable<string> names,
         IWebSearchProvider? webSearch = null)
     {
-        var context = new ToolsetContext(options, webSearch ?? WebSearchProviderFactory.Create(options));
+        var context = new ToolsetContext(options,
+            webSearch is null ? WebAccess.Create(options) : WebAccess.Create(options, null, webSearch));
         return ToolsetCatalog.BuildTools(TestTools.Catalog.Resolve(names, context), context);
     }
 }

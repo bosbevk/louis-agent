@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
@@ -77,7 +78,8 @@ public class PulsSessionSnapshotTests
             new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new CalculatorPack(),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" })
         ]);
-        return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
+        return new AgentEngineFactory(new FakeChatClient(), options, services: new HostServices(WebAccess.Create),
+            catalog: catalog);
     }
 
     /// <summary>What the model is sent from an engine: its tools with their schemas, and its system prompt.</summary>

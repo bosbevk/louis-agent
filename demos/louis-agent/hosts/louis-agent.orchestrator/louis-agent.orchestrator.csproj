@@ -11,7 +11,8 @@
     <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
       <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
-      <ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
+          <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+<ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
       <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
       <!-- F18 step 1d: the orchestrator reads a session's stream through the reader itself, so it references it directly. -->
       <ProjectReference Include="..\..\..\..\src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />

@@ -14,7 +14,6 @@ using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Telemetry;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting;
@@ -24,7 +23,8 @@ namespace LouisAgent.Core.Hosting;
 /// <see cref="HostEnvironment"/>, the roles <see cref="RoleFiles"/>, the session models
 /// <see cref="SessionLlmLoader"/>, the tables <see cref="PriceTableLoader"/> and <see cref="ExchangeRatesLoader"/>,
 /// the ledger <see cref="UsageLedger"/>, the prompt <c>SkillLoader</c> (through the engine factory), Rider's tools
-/// <see cref="RiderMcpToolDiscovery"/> and the traces <see cref="AgentTelemetry"/>.
+/// <see cref="RiderMcpToolDiscovery"/> and the traces whatever <see cref="HostServices.Telemetry"/> the host gave
+/// (CL33; none means no tracer).
 /// </summary>
 public static class AgentHost
 {
@@ -41,17 +41,18 @@ public static class AgentHost
     /// <summary>
     /// The same, with the identities and packs the host was given (CL15): their prompts registered, the roles checked.
     /// </summary>
-    public static AgentEngine BuildToolHost(AgentCatalog catalog)
+    public static AgentEngine BuildToolHost(AgentCatalog catalog, HostServices? services = null)
     {
         HostEnvironment.Load();
         var agent = AgentOptions.FromEnvironment();
-        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent));
+        var telemetry = (services ?? HostServices.None).TelemetryOrNone;
+        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent), telemetry.AddSinks);
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
-        AgentTelemetry.Start();
+        telemetry.Start();
         SkillFileSource.Use(catalog.Prompts);
         agent.DefaultVoice ??= catalog.DefaultVoice;
         RoleFiles.Check(agent, agent.DefaultVoice);
-        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, catalog: catalog);
+        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, services: services, catalog: catalog);
         return engines.GetOrCreate(engines.Available);
     }
 
@@ -65,16 +66,25 @@ public static class AgentHost
     /// <summary>
     /// The same, with the identities and packs the host was given (CL15): their prompts registered, the roles checked.
     /// </summary>
-    public static AgentHostContext Build(AgentCatalog catalog, ILlmClientFactory? clientFactory = null)
+    public static AgentHostContext Build(AgentCatalog catalog, ILlmClientFactory? clientFactory = null) =>
+        Build(catalog, HostServices.None, clientFactory);
+
+    /// <summary>
+    /// The same, with what the host's program composes besides the catalogue (CL33): its telemetry, started once the
+    /// .env files have loaded.
+    /// </summary>
+    public static AgentHostContext Build(AgentCatalog catalog, HostServices services,
+        ILlmClientFactory? clientFactory = null)
     {
         HostEnvironment.Load();
 
         var llm = LlmOptions.FromEnvironment();
         var agent = AgentOptions.FromEnvironment();
-        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent));
+        var telemetry = services.TelemetryOrNone;
+        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent), telemetry.AddSinks);
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
-        AgentTelemetry.Start();
-        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog);
+        telemetry.Start();
+        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog, services);
     }
 
     /// <summary>
@@ -84,7 +94,7 @@ public static class AgentHost
     /// process. The API builds each session's engine from <see cref="AgentHostContext.Engines"/>.
     /// </summary>
     public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory,
-        AgentCatalog? catalog = null)
+        AgentCatalog? catalog = null, HostServices? services = null)
     {
         catalog ??= AgentCatalog.CoreOnly;
         // The identities' and packs' prompts, before any is read (CL15); then every ROLES_ENABLED name and the default
@@ -106,7 +116,7 @@ public static class AgentHost
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(),
             UsageLedger.Open(agent, prices),
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates,
-            sessionLlms: sessionLlms, catalog: catalog);
+            sessionLlms: sessionLlms, catalog: catalog, services: services);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen,
             new

@@ -66,7 +66,8 @@ public class WebSearchTests
     {
         var fake = new FakeSearch(new WebSearchResult("Injected", "https://injected.example", ""));
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(),
-            toolsets: new WebPack().Toolsets.Single().CreateTools(new ToolsetContext(TestPaths.Agent(), fake)));
+            toolsets: new WebPack().Toolsets.Single()
+                .CreateTools(new ToolsetContext(TestPaths.Agent(), new WebParts(fake))));
         var webSearch = engine.Tools.OfType<AIFunction>().Single(t => t.Name == "WebSearch");
 
         var result = await webSearch.InvokeAsync(new AIFunctionArguments { ["query"] = "anything" });
@@ -86,7 +87,11 @@ public class WebSearchTests
     public void Factory_PicksProviderFromConfiguration(string? provider, string? key, string? cx, Type expected)
     {
         var options = new AgentOptions
-        { WebSearchProvider = provider, GoogleSearchApiKey = key, GoogleSearchEngineId = cx };
+        {
+            WebSearchProvider = provider,
+            GoogleSearchApiKey = key,
+            GoogleSearchEngineId = cx
+        };
         Assert.That(WebSearchProviderFactory.Create(options), Is.TypeOf(expected));
     }
 

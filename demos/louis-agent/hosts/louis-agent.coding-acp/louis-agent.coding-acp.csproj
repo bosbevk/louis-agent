@@ -10,7 +10,9 @@
 
     <ItemGroup>
         <!-- The framework's Rider host; this program only says what it loads. -->
-        <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj" />
+            <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
+            <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+<ProjectReference Include="..\..\..\..\src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj" />
         <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />
     </ItemGroup>
 

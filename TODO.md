@@ -19,7 +19,6 @@ known limitations below are facts about today, not tasks.
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
-| CL33 | Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry` | Now | — |
 | F62 | Validate demand | Now | — |
 | F18 | F18's leftovers, before F49.1 | Now | — |
 | F63 | The reference transcripts in git | Now | — |

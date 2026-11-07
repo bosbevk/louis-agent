@@ -18,6 +18,12 @@ namespace LouisAgent.Core.Telemetry;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 public static class TurnSpans
 {
+    /// <summary>
+    /// Our own spans' source: a turn opens its span here, and the tracer in <c>louis-agent.core.telemetry</c> listens
+    /// to it by name. With nobody listening there is no span at all, so core alone pays nothing.
+    /// </summary>
+    public static readonly ActivitySource Source = new("louis-agent");
+
     /// <summary>The GenAI operation a turn is.</summary>
     private const string InvokeAgent = "invoke_agent";
 
@@ -27,7 +33,7 @@ public static class TurnSpans
     /// </summary>
     public static Activity? Start(string agent)
     {
-        var span = AgentTelemetry.Source.StartActivity($"{InvokeAgent} {agent}");
+        var span = Source.StartActivity($"{InvokeAgent} {agent}");
         if (span is null) return null;
 
         span.SetTag(SpanTag.OperationName.Wire(), InvokeAgent);

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="louis-agent.core.tests" />
+    <InternalsVisibleTo Include="louis-agent.core.web.tests" />
     <InternalsVisibleTo Include="louis-agent.pack.web.tests" />
   </ItemGroup>
 

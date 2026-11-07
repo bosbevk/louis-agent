@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
@@ -32,7 +33,7 @@ public class RecipesPackTests
 
     /// <summary>A context that has a browser, or does not.</summary>
     private static ToolsetContext Context(bool withBrowser) =>
-        new(new AgentOptions(), new NoSearch(), WebBrowser: withBrowser ? new FakeSiteBrowser() : null);
+        new(new AgentOptions(), new WebParts(new NoSearch(), Browser: withBrowser ? new FakeSiteBrowser() : null));
 
     /// <summary>With a database the library is a feed under the pack's name; without one, nothing to publish.</summary>
     [Test]
@@ -58,7 +59,8 @@ public class RecipesPackTests
             MongoUrl = "mongodb://127.0.0.1:1"
         });
 
-        Assert.That(withOne.Screens.Select(screen => screen.Spec.Name), Is.EqualTo(new[] { "recipe-library", "kept-recipes", "excluded-pages" }));
+        Assert.That(withOne.Screens.Select(screen => screen.Spec.Name),
+            Is.EqualTo(new[] { "recipe-library", "kept-recipes", "excluded-pages" }));
         Assert.That(Pack().Screens, Is.Empty);
     }
 
@@ -81,7 +83,8 @@ public class RecipesPackTests
         Assert.That(options.MongoDatabase, Is.EqualTo("mine"));
         Assert.That(options.LibraryUrl, Is.EqualTo(new Uri("http://127.0.0.1:8080/")));
         Assert.That(options.LibraryInEvals, Is.True);
-        Assert.That((none.MongoUrl, none.LibraryUrl, none.LibraryInEvals), Is.EqualTo(((string?)null, (Uri?)null, false)));
+        Assert.That((none.MongoUrl, none.LibraryUrl, none.LibraryInEvals),
+            Is.EqualTo(((string?)null, (Uri?)null, false)));
         Assert.That(none.MongoDatabase, Is.EqualTo(RecipesOptions.DefaultDatabase));
     }
 

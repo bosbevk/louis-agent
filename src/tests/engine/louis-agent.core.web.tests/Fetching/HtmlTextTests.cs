@@ -1,0 +1,128 @@
+using LouisAgent.Composition.Web.Reading;
+using LouisAgent.Core.Web.Fetching;
+
+namespace LouisAgent.Core.Web.Tests.Fetching;
+
+// S (CL15): HTML as the readable text FetchUrl, the page renderer and the search providers show: the main content as
+// markdown-like text, an inline fragment as one line, a whole body with every tag a space (VerifyQuote, FX16).
+public class HtmlTextTests
+{
+    private const string ArticleHtml = """
+        <html><head><title>Guide &amp; Notes</title><script>alert('x')</script></head>
+        <body>
+          <nav><a href="/home">Home</a></nav>
+          <main>
+            <h1>Install</h1>
+            <p>Run the <code>dotnet</code> CLI. See <a href="/docs/setup">setup docs</a> or <a href="#top">top</a>.</p>
+            <ul><li>First</li><li>Second</li></ul>
+            <pre><code>dotnet new console
+        dotnet run</code></pre>
+            <style>.x{color:red}</style>
+          </main>
+          <footer>Copyright</footer>
+        </body></html>
+        """;
+
+    [Test]
+    public void TheMainContent_AsMarkdown()
+    {
+        var (title, text) = HtmlText.ToText(ArticleHtml, new Uri("https://example.com/guide/page"));
+
+        Assert.That(title, Is.EqualTo("Guide & Notes"));
+        Assert.That(text, Does.Contain("# Install"));
+        Assert.That(text, Does.Contain("Run the `dotnet` CLI. See [setup docs](https://example.com/docs/setup) or top."));
+        Assert.That(text, Does.Contain("- First\n- Second"));
+        Assert.That(text, Does.Contain("```\ndotnet new console\ndotnet run\n```"));
+        Assert.That(text, Does.Not.Contain("alert").And.Not.Contain("color:red").And.Not.Contain("Home").And.Not.Contain("Copyright"));
+    }
+
+    /// <summary>Several articles and no main are cards: the page's own words are outside them.</summary>
+    [Test]
+    public void SeveralArticles_AndNoMain_AreCards_SoTheBodyIsRead()
+    {
+        var (_, text) = HtmlText.ToText("<html><body><p>The recipe.</p><article>Card one</article>" +
+                                        "<article>Card two</article></body></html>", new Uri("https://example.com/"));
+
+        Assert.That(text, Does.Contain("The recipe.").And.Contain("Card one"));
+    }
+
+    /// <summary>One article is the page, and a main still wins over any articles.</summary>
+    [TestCase("<body><p>The menu.</p><article>The recipe.</article></body>", TestName = "one article")]
+    [TestCase("<body><p>The menu.</p><main>The recipe.<article>Card</article><article>Card</article></main></body>",
+        TestName = "a main with articles")]
+    public void ThePagesOwnPart_StillWins(string body)
+    {
+        var (_, text) = HtmlText.ToText($"<html>{body}</html>", new Uri("https://example.com/"));
+
+        Assert.That(text, Does.Contain("The recipe.").And.Not.Contain("The menu."));
+    }
+
+    // A shop's product tile (the cook, F33): its photo is an image, often the only content of the link to the product,
+    // and lazy-loaded, so the real file is in data-src or srcset while src holds a placeholder.
+    private const string ProductTileHtml = """
+        <html><body><main>
+          <a href="/prod/Food/Onions/Brown-Onions-1-kg/_/A-20008215"><img src="data:image/gif;base64,R0lGOD" data-src="/images/onions.jpg" alt="Brown Onions 1 kg"></a>
+          <a href="/prod/Food/Carrots/_/A-20008300">Carrots 1 kg <img srcset="//img.example.com/carrots-200.webp 200w, //img.example.com/carrots-400.webp 400w" alt="Carrots 1 kg"></a>
+          <p><img src="/images/chakalaka.png" alt="KOO Chakalaka Mild 410 g"> R24,99</p>
+          <img src="/icons/cart.svg" alt="Add to cart"><img src="/spacer.gif"><img src="/logo.png" alt="">
+        </main></body></html>
+        """;
+
+    /// <summary>A real page wrote an attribute twice on one tag: the first counts, and the page still reads.</summary>
+    [Test]
+    public void ATagWithAnAttributeTwice_StillReads()
+    {
+        const string page = "<html><head><meta property=\"og:image\" property=\"og:image\" content=\"/lead.jpg\"></head><body><main>" +
+                            "<img alt=\"Bobotie\" fetchpriority=\"high\" fetchpriority=\"low\" src=\"/pie.jpg\"><p>Words</p></main></body></html>";
+
+        var (_, text) = HtmlText.ToText(page, new Uri("https://www.example.com/a"));
+
+        Assert.That(text, Does.Contain("Words").And.Contain("https://www.example.com/pie.jpg"));
+    }
+
+    [Test]
+    public void AnImage_WithAltText_BecomesAMarkdownImage()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("![KOO Chakalaka Mild 410 g](https://www.example.com/images/chakalaka.png) R24,99"));
+    }
+
+    [Test]
+    public void AnImageOnlyLink_KeepsItsHref_AndItsImage()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("[![Brown Onions 1 kg](https://www.example.com/images/onions.jpg)](https://www.example.com/prod/Food/Onions/Brown-Onions-1-kg/_/A-20008215)"));
+    }
+
+    [Test]
+    public void ALazyLoadedImage_UsesItsRealFile_FromDataSrcOrSrcset()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("Carrots 1 kg ![Carrots 1 kg](https://img.example.com/carrots-200.webp)"));
+        Assert.That(text, Does.Not.Contain("data:image"));
+    }
+
+    [Test]
+    public void AnIcon_ASpacer_OrAnImageWithoutAlt_IsLeftOut()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Not.Contain("cart.svg").And.Not.Contain("spacer.gif").And.Not.Contain("logo.png"));
+    }
+
+    [Test]
+    public void AnInlineFragment_LosesItsTags_AndSpacing_WithEntitiesDecoded() =>
+        Assert.That(HtmlText.CleanInline(" <b>Beef</b>   &amp; \t <i>mince</i> "), Is.EqualTo("Beef & mince"));
+
+    [Test]
+    public void AWholeBody_WithEveryTagASpace_KeepsABadgeApartFromItsPrice()
+    {
+        // FX16: stripped with nothing between, a badge joined its price ("newr54.99"), and wasn't seen as a price.
+        string all = HtmlText.TagsAsSpaces("<style>.a{}</style><footer><span>new</span><b>R54.99</b> per kg</footer>");
+
+        Assert.That(all, Does.Contain("new").And.Contain("R54.99").And.Not.Contain("newR54").And.Not.Contain(".a{}"));
+    }
+}

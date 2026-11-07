@@ -9,7 +9,9 @@
 
     <ItemGroup>
         <!-- The framework's API; this program says what it loads, and serves what this project references. -->
-        <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
+            <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
+            <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+<ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
         <!-- The framework's accounts (F61): sign-in, registration and profiles, on when ACCOUNTS_SQL_URL is set. -->
         <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.accounts\louis-agent.accounts.csproj" />
         <!-- Puls's list of identities and packs, chosen by IDENTITIES and PACKS at start-up. -->

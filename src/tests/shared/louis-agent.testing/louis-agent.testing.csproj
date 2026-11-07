@@ -15,10 +15,12 @@
 
   <ItemGroup>
     <!-- TestPaths reads the test directory from NUnit's TestContext. -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.10.0" />
     <PackageReference Include="NUnit" Version="4.3.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
     <ProjectReference Include="..\..\..\engine\louis-agent.core\louis-agent.core.csproj" />
   </ItemGroup>
 

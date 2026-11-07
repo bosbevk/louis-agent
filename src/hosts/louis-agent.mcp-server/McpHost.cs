@@ -31,9 +31,9 @@ namespace LouisAgent.McpServer;
 public static class McpHost
 {
     /// <summary>Serves the tools from your catalogue, over whichever transport the settings name.</summary>
-    public static async Task RunAsync(string[] args, AgentCatalog catalog)
+    public static async Task RunAsync(string[] args, AgentCatalog catalog, HostServices? services = null)
     {
-        var engine = AgentHost.BuildToolHost(catalog);
+        var engine = AgentHost.BuildToolHost(catalog, services);
 
         // Unset is stdio, for a client that launches this as a local subprocess (Rider, Claude Desktop). Http serves
         // Streamable HTTP instead, for a remote client (an agent built with another SDK, connecting over the network).

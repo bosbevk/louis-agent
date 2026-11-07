@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
+        <ProjectReference Include="..\..\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+<ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
     <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- F61.2: the claim names the sign-in cookie carries, so who opened a session is read by the accounts' name for

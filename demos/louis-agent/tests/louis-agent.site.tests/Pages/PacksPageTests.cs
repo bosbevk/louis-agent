@@ -17,13 +17,13 @@ public class PacksPageTests
     [OneTimeTearDown]
     public void StopTheSite() => _site.Dispose();
 
-    /// <summary>Every folder under <c>packs/tools/</c> has its place on the page.</summary>
+    /// <summary>Every pack under <c>packs/tools/</c> has its place on the page.</summary>
     [Test]
     public async Task EveryPack_IsOnThePage()
     {
         string html = await _site.CreateClient().GetStringAsync("/packs");
 
-        var packs = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "packs/tools"), "louis-agent.pack.*")
+        var packs = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "packs", "tools"), "louis-agent.pack.*")
             .Select(folder => Path.GetFileName(folder)!).ToList();
 
         Assert.That(packs, Has.Count.GreaterThanOrEqualTo(10), "the search found the packs");

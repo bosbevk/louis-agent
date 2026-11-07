@@ -97,6 +97,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0088](0088-a-tenant-on-every-account.md) | Every account is in a tenant, resolved from the request's host name; an email is unique within a tenant; the store refuses without one; tenancy is data, a second tenant is a row | Accepted |
 | [0089](0089-the-account-client-is-a-library-a-site-opts-into.md) | The account pages and client are `louis-agent.web.accounts`, a library on top of the framework's web that a site opts into; the chat's menu knows accounts through one seam, `IAccountMenu`, with a Null Object when there are none | Accepted |
 | [0090](0090-the-packs-are-one-area.md) | The packs are one area, `packs/`, with the same inner names as `src/` and a demo: `tools/`, `evals/`, `tests/`, `web/`, `docs/`; the rules of 0073 and 0086 stand on the new prefixes; a new kind beside the packs is a folder under it, never a new root | Accepted |
+| [0091](0091-web-access-and-telemetry-are-libraries-on-core.md) | The web (browser, fetcher, robots, search, rendering, recorders) and the telemetry (tracer, exporter, the collector's sink) are `louis-agent.core.web` and `louis-agent.core.telemetry`, on core behind `IWebAccess` and `IHostTelemetry` with a Null Object each; a host composes them through `HostServices`; core names neither PuppeteerSharp nor OpenTelemetry | Accepted |
 
 ## When to write one
 

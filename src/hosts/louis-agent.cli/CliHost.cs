@@ -14,9 +14,9 @@ namespace LouisAgent.Cli;
 public static class CliHost
 {
     /// <summary>Answers the prompt you gave and stops, or opens a chat if you gave none.</summary>
-    public static async Task RunAsync(string[] args, AgentCatalog catalog)
+    public static async Task RunAsync(string[] args, AgentCatalog catalog, HostServices? services = null)
     {
-        var host = AgentHost.Build(catalog);
+        var host = AgentHost.Build(catalog, services ?? HostServices.None);
         var chat = new ConsoleChat(host.Engine);
 
         if (args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))

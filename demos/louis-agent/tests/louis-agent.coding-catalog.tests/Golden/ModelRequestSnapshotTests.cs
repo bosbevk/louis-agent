@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
@@ -18,7 +19,8 @@ namespace LouisAgent.Coding.Tests.Golden;
 public class ModelRequestSnapshotTests
 {
     private static readonly string GoldenFile =
-        Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/tests/louis-agent.coding-catalog.tests/Golden", "ModelRequestSnapshot.json");
+        Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/tests/louis-agent.coding-catalog.tests/Golden",
+            "ModelRequestSnapshot.json");
 
     private static readonly JsonSerializerOptions Json = new()
     {
@@ -54,7 +56,7 @@ public class ModelRequestSnapshotTests
             BrowserUrl = "http://browser.test:9222",
         };
         // Every toolset (F5: an engine has only what it's given), in the catalogue's order, which is the file's.
-        var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
+        var context = new ToolsetContext(options, WebAccess.Create(options));
         var toolsets = CodingPrompts.Catalog.Resolve(CodingPrompts.Catalog.Toolsets.Select(t => t.Name), context);
         return new AgentEngine(SkillLoader.Load(options, toolsets), new FakeChatClient(), options, supportsTools,
             toolsets: ToolsetCatalog.BuildTools(toolsets, context), selfExtension: true)
@@ -70,9 +72,18 @@ public class ModelRequestSnapshotTests
         var snapshot = new
         {
             Tools = engine.Tools.OfType<AIFunction>()
-                .Select(t => new { t.Name, t.Description, Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement }),
+                .Select(t => new
+                {
+                    t.Name,
+                    t.Description,
+                    Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement
+                }),
             SystemPrompt = engine.SkillDocumentation,
-            NoToolsHistory = Engine(supportsTools: false).NewHistory().Select(m => new { Role = m.Role.Value, m.Text }),
+            NoToolsHistory = Engine(supportsTools: false).NewHistory().Select(m => new
+            {
+                Role = m.Role.Value,
+                m.Text
+            }),
             ToolCallGuards.TruncatedCallMessage,
             TurnRunner.ContinueAfterCutOffMessage,
         };

@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Testing;
@@ -426,14 +427,14 @@ public class MinionToolsTests
     public void TheMinionsToolset_NeedsPeersAndModels_AndATool_NamesItsToolset()
     {
         var minions = ToolsetCatalog.Find(CoreToolset.Minions.Wire())!;
-        var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new NoSearch());
+        var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new WebParts(new NoSearch()));
         var with = new ToolsetContext(new AgentOptions
         {
             RatesUrl = null,
             AgentPeers = Self,
             MinionLlms = Cascade
         },
-            new NoSearch());
+            new WebParts(new NoSearch()));
 
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
         Assert.That(minions.IsAvailable(with), Is.True);

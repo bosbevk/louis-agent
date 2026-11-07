@@ -389,6 +389,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\plans\README.md = src\docs\plans\README.md
+		src\docs\plans\F07-budgets.md = src\docs\plans\F07-budgets.md
+		src\docs\plans\F36-mcp-packs.md = src\docs\plans\F36-mcp-packs.md
+		src\docs\plans\F39-orchestration.md = src\docs\plans\F39-orchestration.md
+		src\docs\plans\F40-sales-playground.md = src\docs\plans\F40-sales-playground.md
+		src\docs\plans\phase-10-engine-package.md = src\docs\plans\phase-10-engine-package.md
+		src\docs\plans\phase-7-checked-and-guarded.md = src\docs\plans\phase-7-checked-and-guarded.md
+		src\docs\plans\phase-9-what-a-sale-needs.md = src\docs\plans\phase-9-what-a-sale-needs.md
+		src\docs\plans\puls-track.md = src\docs\plans\puls-track.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"

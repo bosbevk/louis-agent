@@ -34,7 +34,7 @@ public static class EvalRunnerHost
     public static async Task<int> RunAsync(string[] args, RunnerCatalogs catalogs)
     {
         // It loads no .env and isn't built through AgentHost, so it starts its traces first, from what it was given.
-        AgentTelemetry.Start();
+        OtlpTelemetry.Instance.Start();
         try
         {
             var request = CommandLine.Parse(args);
