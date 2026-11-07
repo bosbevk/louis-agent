@@ -36,8 +36,10 @@ move to where the app is.
 4. **The old stays until the new answers, then goes in one step.** The sidecar, the SearXNG app, the placeholder, the
    tunnels and their keys were deleted, in Azure and in the repo, only after both domains served from Azure.
 5. **The framework's static site is not a deployment of its own** (Louis, 2026-11-08): it merges into the
-   louis-agent demo's web app as its layout page, keeping the site's theme, and that app is then deployed the way
-   Puls is. `louis-agent.dev` points wherever that lands.
+   louis-agent demo's web app as its layout page, keeping the site's theme, and that app is then deployed as a
+   second Container App on the same environment and the same VM as Puls, to save the cost of a second set ("we
+   will have to deploy louis-agent to the same VM, to save money; can be split later"). `louis-agent.dev` points
+   wherever that lands.
 
 ## Consequences
 
