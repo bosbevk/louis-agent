@@ -23,7 +23,7 @@ public static class TestPaths
 
     /// <summary>
     /// Whether a repo-relative path lies in a test project. Tests sit with what they prove, under <c>src/tests</c>, a
-    /// demo or <c>packs-tests</c>, so it's the project's name that says so and not a top-level folder.
+    /// demo or <c>packs/tests</c>, so it's the project's name that says so and not a top-level folder.
     /// </summary>
     public static bool InTestProject(string relativePath) =>
         relativePath.Split('/').SkipLast(1).Any(folder => folder.EndsWith(".tests", StringComparison.Ordinal)
