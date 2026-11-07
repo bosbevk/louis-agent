@@ -14,6 +14,8 @@
     <ProfileDetails Me="me" />
     <ChangeEmail />
     <ChangePassword Me="me" />
+    <SetPassword Me="me" />
+    <AccountNotice Message="@(Failed == "link" ? Text.LinkFailed : null)" IsError="true" />
     <LinkedLogins Me="me" />
     <DeleteAccount Me="me" OnDeleted="GoHome" />
     <div class="account-section account-actions">

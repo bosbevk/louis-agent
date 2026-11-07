@@ -7,5 +7,6 @@
 
 <h1>@Text.SignIn</h1>
 <p>@Text.SignInIntro</p>
+<AccountNotice Message="@(Failed == "external" ? Text.ExternalFailed : null)" IsError="true" />
 <LoginForm OnSignedIn="GoOn" />
 <ProviderButtons ReturnUrl="@ReturnUrl" />

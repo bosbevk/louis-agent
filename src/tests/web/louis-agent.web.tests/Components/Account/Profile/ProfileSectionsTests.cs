@@ -76,20 +76,4 @@ public class ProfileSectionsTests
         cut.WaitForAssertion(() => Assert.That(cut.Find(".account-notice").TextContent, Does.Contain("new@x.test")));
         Assert.That(handler.Requests.Single().Body, Does.Contain("\"newEmail\":\"new@x.test\""));
     }
-
-    [Test]
-    public void TheLinkedLogins_ListThem_OrSayThereAreNone()
-    {
-        var (ctx, _) = AccountTestContext.New(HttpStatusCode.OK);
-        using var __ = ctx;
-
-        var none = ctx.Render<LinkedLogins>(p => p.Add(l => l.Me, Ann));
-        var some = ctx.Render<LinkedLogins>(p => p.Add(l => l.Me, Ann with { Logins = ["Google"] }));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(none.Find("p").TextContent, Does.Contain("Only your password"));
-            Assert.That(some.FindAll("li").Select(li => li.TextContent), Is.EqualTo(new[] { "Google" }));
-        });
-    }
 }

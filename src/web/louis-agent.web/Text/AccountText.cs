@@ -76,6 +76,18 @@ public sealed record AccountText
     public string PasswordChanged { get; init; } = "Your password is changed.";
     public string LinkedLogins { get; init; } = "Ways to sign in";
     public string NoLinkedLogins { get; init; } = "Only your password, so far.";
+    public string LinkProvider { get; init; } = "Link {0}";
+    public string Unlink { get; init; } = "Unlink";
+
+    public string ExternalFailed { get; init; } =
+        "Signing in through the provider didn't work. Try again, or use your password.";
+
+    public string LinkFailed { get; init; } = "That provider couldn't be linked; it may already be on another account.";
+
+    public string SetPasswordIntro { get; init; } =
+        "You sign in through a provider. A password of your own is a second way in.";
+
+    public string PasswordSet { get; init; } = "Your password is set.";
     public string DeleteAccount { get; init; } = "Delete your account";
 
     public string DeleteIntro { get; init; } =

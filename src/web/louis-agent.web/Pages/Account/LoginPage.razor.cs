@@ -16,6 +16,10 @@ public partial class LoginPage
     [Parameter, SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
 
+    /// <summary>The API sends the browser here with <c>?failed=external</c> when a provider's sign-in didn't work.</summary>
+    [Parameter, SupplyParameterFromQuery]
+    public string? Failed { get; set; }
+
     /// <summary>Someone already signed in has no business here.</summary>
     protected override async Task OnInitializedAsync()
     {

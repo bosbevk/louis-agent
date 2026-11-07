@@ -71,6 +71,15 @@ public sealed class AccountApi(HttpClient http)
         using var _ = await SendAsync(HttpMethod.Delete, "account");
     }
 
+    /// <summary>Takes a provider off the account (F61.3); the last way in is refused without a password.</summary>
+    public async Task UnlinkAsync(string provider)
+    {
+        using var _ = await SendAsync(HttpMethod.Delete, $"account/external/{Uri.EscapeDataString(provider)}");
+    }
+
+    /// <summary>A first password for an account that came in through a provider (F61.3).</summary>
+    public Task SetPasswordAsync(SetPasswordBody body) => PostAsync("account/password", body);
+
     public async Task<ProvidersReply> ProvidersAsync()
     {
         using var response = await SendAsync(HttpMethod.Get, "account/providers");

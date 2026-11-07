@@ -17,6 +17,10 @@ public partial class ProfilePage
     [Inject] private AccountText Text { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
 
+    /// <summary>The API sends the browser back here with <c>?failed=link</c> when a provider couldn't be linked.</summary>
+    [Parameter, SupplyParameterFromQuery]
+    public string? Failed { get; set; }
+
     /// <summary>Reads who is signed in; a guest goes to the sign-in page and comes back here.</summary>
     protected override async Task OnInitializedAsync()
     {
