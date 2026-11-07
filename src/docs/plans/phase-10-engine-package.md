@@ -1,6 +1,10 @@
 # Draft: Phase 10: the engine as a developer package
 
 > **Plan draft, not yet approved.** Moved whole out of the old platform plan on 2026-11-07 (CL56), lines 3801 to 3883 of `platform.md` at the tag `pre-roadmap`; the body below is as it was. When the work starts, this is rewritten into the plan Louis approves (the development guide, rule 3) and its TODO row names it. The sub-feature split of 2026-10-28 is the TODO's rows.
+>
+> **Changed 2026-11-07** (Louis: configured agents and the framework "must run in parallel"): *When* below no longer
+> holds for Stage A. Packaging in place (F74) is part of [the framework's track](F106-framework-track.md) and can start
+> before the engine features are done; Stage B, the engine's own repo, still waits for them.
 
 ### Phase 10 · The engine as a developer package, after every engine feature (Louis, 2026-10-20)
 

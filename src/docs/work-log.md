@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 58 | 76 |
+| Features (`F`) | 58 | 77 |
 | Fixes (`FX`) | 55 | 3 |
 | Cleanups (`CL`) | 26 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -55,7 +55,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F54 | F54's leftovers | Next |
 | F44 | The engine as a product | Next |
 | F51 | Hosting for public traffic | Next |
-| F74 | Phase 10, the engine as a developer package, after every engine feature | Next |
+| F106 | The framework's track, alongside configured agents | Next |
+| F74 | Packaging the engine in place, then its own repo after the engine features | Next |
 | F75 | Puls local spec | Puls |
 | F76 | Cook for the week | Puls |
 | CL16 | Reusable roles | Puls |
