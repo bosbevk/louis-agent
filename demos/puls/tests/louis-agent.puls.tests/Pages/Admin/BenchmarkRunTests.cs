@@ -1,6 +1,7 @@
 using LouisAgent.Testing;
 using System.Net;
 using System.Text;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Pages.Admin;
@@ -72,6 +73,7 @@ public class BenchmarkRunTests
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         // Open the page on the conversations tab with a conversation to focus, and wait until it has drawn the review
         // panel, having read the run once.

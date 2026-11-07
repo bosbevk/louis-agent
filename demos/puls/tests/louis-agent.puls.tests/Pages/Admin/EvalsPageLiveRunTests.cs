@@ -8,11 +8,11 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
-using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Storage;
+using LouisAgent.Web.Text;
 using LouisAgent.Web.Testing;
 using LouisAgent.Web.Usage;
 using EvalsPage = LouisAgent.Puls.Pages.Admin.Evals;
@@ -192,7 +192,7 @@ public partial class EvalsPageLiveRunTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         // The open turn's view speaks as the app does.
-        ctx.Services.AddSingleton(PulsText.Afrikaans);
+        ctx.Services.AddSingleton(new ChatText());
         return served;
     }
 

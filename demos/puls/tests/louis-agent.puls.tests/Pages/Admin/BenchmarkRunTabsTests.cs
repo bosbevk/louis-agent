@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Pages.Admin;
@@ -59,6 +60,7 @@ public class BenchmarkRunTabsTests
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
         return (ctx, () => runReads);
     }
 

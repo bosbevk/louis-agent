@@ -40,14 +40,13 @@ public static class ChartGuides
         ChartTopic.Tools => new("Tool calls that worked against those refused or failed, with the biggest reason.",
             "All green.",
             "Red: the model searched and got nothing back.",
-            "A failed call costs a round, and the answer then rests on guessing (as when Tavily's limit was reached).",
+            "A failed call costs a round, and the answer then rests on guessing (as when a search's limit was reached).",
             "Lower is better."),
-        ChartTopic.Sources => new("The websites read: South African shops (their catalogues searched, or their "
-                                  + "pages), other SA sites, maps (where a branch was looked up) and elsewhere.",
-            "Green: SA shops, where the price is one you can pay.",
-            "Grey: foreign sites for an SA price.",
-            "A price from an SA shop is the answer; a site from elsewhere is background at best.",
-            "More SA shops is better; more sites on their own is not."),
+        ChartTopic.Sources => new("The websites read, under the kinds this site names, and those elsewhere.",
+            "Green: the kind of site that matters most here.",
+            "Grey: sites from elsewhere.",
+            "Where an answer comes from says how far to trust it; a site from elsewhere is background at best.",
+            "More of the green kind is better; more sites on their own is not."),
         ChartTopic.Passed => new("The share of the run's conversations whose required graders all passed. A "
                                  + "conversation that failed for the infrastructure is left out, not counted as a "
                                  + "fail.",

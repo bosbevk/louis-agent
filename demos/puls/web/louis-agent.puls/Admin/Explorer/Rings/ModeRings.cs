@@ -1,5 +1,6 @@
 using LouisAgent.Puls.Admin.Charts;
 using LouisAgent.Puls.Admin.Explorer.Legends;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Explorer.Text;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 using LouisAgent.Web.Usage;
@@ -83,11 +84,14 @@ public static class ModeRings
     }
 
     /// <summary>The sites read by kind, how many different ones in the middle.</summary>
-    public static RingFigure Sources(SiteCounts sites) =>
-        new([sites.Shops, sites.Za, sites.Maps, sites.Rest],
-            [Right, ChartPalette.Series(0), ChartPalette.Series(1), Other],
-            [$"SA shops {sites.Shops}", $"other SA {sites.Za}", $"maps {sites.Maps}", $"elsewhere {sites.Rest}"],
+    public static RingFigure Sources(SiteCounts sites, SiteKinds kinds)
+    {
+        var legend = ExplorerLegends.Sources(kinds);
+        int[] counts = [.. sites.Kinds, sites.Rest];
+        return new RingFigure([.. counts.Select(count => (double)count)], [.. legend.Select(entry => entry.Colour)],
+            [.. legend.Zip(counts, (entry, count) => $"{entry.Label} {count}")],
             sites.Hosts.Count.ToString(), sites.Hosts.Count == 1 ? "site" : "sites");
+    }
 
     /// <summary>
     /// The cost of the conversations that passed (a real answer) against those that didn't, what one passed

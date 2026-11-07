@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Packs.Recipes.Web;
 using LouisAgent.Puls;
+using LouisAgent.Puls.Admin;
+using LouisAgent.Puls.Content;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
@@ -20,9 +22,7 @@ builder.Services.AddSingleton<ChatSettings>();
 builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
-builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.ReviewerState>();
-builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.Queue.ReviewQueueState>();
-builder.Services.AddScoped<LouisAgent.Puls.Admin.Notes.RunNotesState>();
+EvalPages.AddTo(builder.Services, PulsSites.Kinds);
 builder.Services.AddSingleton(PulsText.Afrikaans); // Puls speaks Afrikaans
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
 

@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
 using LouisAgent.Web.Api;
@@ -61,6 +62,7 @@ public class ConversationListTests
             }, new ChatSettings()));
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         // Render it on the run as the page reads it from the API, then click through from the run's tiles to the list.
         var run = JsonSerializer.Deserialize<StoredRunReply>(Run, AdminJson.SnakeCase)!;

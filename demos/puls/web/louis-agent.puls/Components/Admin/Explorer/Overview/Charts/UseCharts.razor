@@ -21,13 +21,13 @@
     }
 </RingChart>
 
-@* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (Puls's and the specialist's),
-   South African shops, other South African sites and the rest, how many different ones in its middle. *@
-<RingChart Topic="sources" Title="Sources per mode" Legend="ExplorerLegends.Sources">
+@* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (the agent's and the specialist's),
+   under the kinds the site names and the rest, how many different ones in its middle. *@
+<RingChart Topic="sources" Title="Sources per mode" Legend="ExplorerLegends.Sources(Kinds)">
     @foreach (var (m, i) in Tree.Columns)
     {
         var sites = Sites(m);
-        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Sources(sites)">
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Sources(sites, Kinds)">
             @if (sites.Hosts.Count > 0) { <small class="muted" title="@string.Join(", ", sites.Hosts)">@ExplorerText.Blurb(string.Join(", ", sites.Hosts))</small> }
         </ModeDonut>
     }

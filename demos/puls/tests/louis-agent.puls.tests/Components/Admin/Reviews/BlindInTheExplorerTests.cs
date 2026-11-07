@@ -3,6 +3,7 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Explorer.Place;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -57,6 +58,7 @@ public class BlindInTheExplorerTests
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         // Render it on the run. With no task to open we are at the run's tiles, so click through to the list of
         // conversations.
@@ -130,6 +132,7 @@ public class BlindInTheExplorerTests
             }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.Place, ExplorerPlace.Conversation("bobotie")));
 
@@ -152,6 +155,7 @@ public class BlindInTheExplorerTests
             }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.Place, null));
         cut.Find(".tile").Click();

@@ -7,10 +7,10 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Components.Admin.LiveRun;
-using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Storage;
+using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.LiveRun;
@@ -77,7 +77,7 @@ public class LiveRunPanelTests
         ctx.Services.AddSingleton(
             new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings));
         // The open turn's view speaks as the app does.
-        ctx.Services.AddSingleton(PulsText.Afrikaans);
+        ctx.Services.AddSingleton(new ChatText());
     }
 
     /// <summary>The run's two turns, each asked and ended, as server-sent events.</summary>

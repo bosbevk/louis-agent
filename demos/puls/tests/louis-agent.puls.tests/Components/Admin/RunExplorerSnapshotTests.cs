@@ -5,14 +5,15 @@ using System.Text.RegularExpressions;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Explorer.Place;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
-using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
+using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin;
@@ -201,7 +202,11 @@ public partial class RunExplorerSnapshotTests
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
-        ctx.Services.AddSingleton(PulsText.Afrikaans);
+        ctx.Services.AddSingleton(new ChatText());
+        ctx.Services.AddSingleton(new SiteKinds([
+            new SiteKind("shops", "checkers.co.za", "pnp.co.za", "woolworths.co.za"), new SiteKind("near", ".za"),
+            new SiteKind("maps", "openstreetmap.org")
+        ]));
 
         // The run as the page reads it from the API: the contract's stored run reply.
         var run = JsonSerializer.Deserialize<StoredRunReply>(Run, AdminJson.SnakeCase)!;

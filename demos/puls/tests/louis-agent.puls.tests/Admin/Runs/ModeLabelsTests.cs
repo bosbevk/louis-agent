@@ -12,7 +12,7 @@ public class ModeLabelsTests
     private static TurnRow Turn(string mode, string? role) =>
         new(new TurnToolsRow(0, 0, []), mode, 1, "task", 1, "s", "q", "a", role, null, 0, 0, [], 1, null);
 
-    /// <summary>A mode whose turns handed work on names each role once; one that never did is the agent alone.</summary>
+    /// <summary>A mode whose turns handed work on names each role once; if none did, it's the agent alone.</summary>
     [Test]
     public void AModeIsNamedByTheRolesItsTurnsUsed()
     {

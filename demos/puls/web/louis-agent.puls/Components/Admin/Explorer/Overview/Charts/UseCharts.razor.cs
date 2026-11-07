@@ -1,4 +1,4 @@
-using LouisAgent.Puls.Admin.Explorer.Rings;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
@@ -16,6 +16,9 @@ public partial class UseCharts
     [Parameter]
     public CurrencyChoice? Currency { get; set; }
 
+    /// <summary>How this site sorts the websites its agent reads.</summary>
+    [Inject] private SiteKinds Kinds { get; set; } = null!;
+
     /// <summary>The sites a mode's turns read, sorted by kind.</summary>
-    private static SiteCounts Sites(ModeNode m) => SiteCounts.Of(m.Turns.SelectMany(t => t.Hosts));
+    private SiteCounts Sites(ModeNode m) => SiteCounts.Of(m.Turns.SelectMany(t => t.Hosts), Kinds);
 }

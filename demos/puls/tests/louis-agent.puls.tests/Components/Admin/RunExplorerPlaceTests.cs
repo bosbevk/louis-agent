@@ -3,6 +3,7 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Explorer.Place;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -51,6 +52,7 @@ public class RunExplorerPlaceTests
             }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
+        ctx.Services.AddSingleton(SiteKinds.None);
 
         // The run as the page reads it from the API: the contract's stored run reply.
         var run = JsonSerializer.Deserialize<StoredRunReply>(Run(repeats), AdminJson.SnakeCase)!;

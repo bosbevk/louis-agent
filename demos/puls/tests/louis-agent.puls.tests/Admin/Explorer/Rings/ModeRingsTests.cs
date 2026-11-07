@@ -3,6 +3,7 @@ using LouisAgent.Puls.Admin.Charts;
 using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Explorer.Legends;
 using LouisAgent.Puls.Admin.Explorer.Rings;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 
 namespace LouisAgent.Puls.Tests.Admin.Explorer.Rings;
@@ -108,9 +109,18 @@ public class ModeRingsTests
     /// <summary>The sites by kind, how many in the middle.</summary>
     [Test]
     public void TheSources_AreTheSitesByKind() =>
-        AssertRing(ModeRings.Sources(new SiteCounts(["a.co.za"], 0, 1, 0, 0)), [0, 1, 0, 0],
+        AssertRing(
+            ModeRings.Sources(new SiteCounts(["a.near"], [0, 1, 0], 0),
+                new SiteKinds([new SiteKind("shops", "shop.near"), new SiteKind("near", ".near"), new SiteKind("maps")])),
+            [0, 1, 0, 0],
             [ExplorerColours.Right, ChartPalette.Series(0), ChartPalette.Series(1), ExplorerColours.Other],
-            ["SA shops 0", "other SA 1", "maps 0", "elsewhere 0"], "1", "site");
+            ["shops 0", "near 1", "maps 0", "elsewhere 0"], "1", "site");
+
+    /// <summary>A site that names no kinds sees one slice, in grey.</summary>
+    [Test]
+    public void WithNoKinds_TheSourcesAreOneSlice() =>
+        AssertRing(ModeRings.Sources(new SiteCounts(["a.near", "b.near"], [], 2), SiteKinds.None), [2],
+            [ExplorerColours.Other], ["elsewhere 2"], "2", "sites");
 
     /// <summary>
     /// What the conversations that passed cost against the rest, one passed conversation's cost in the middle.

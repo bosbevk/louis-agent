@@ -1,4 +1,5 @@
 using LouisAgent.Puls.Admin.Charts;
+using LouisAgent.Puls.Admin.Explorer.Sites;
 using LouisAgent.Puls.Admin.Explorer.Text;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 
@@ -27,11 +28,12 @@ public static class ExplorerLegends
     public static readonly IReadOnlyList<LegendEntry> Tools =
         [new(ExplorerColours.Right, "worked"), new(ExplorerColours.Wrong, "refused or failed")];
 
-    /// <summary>The sites read: South African shops, other South African sites, maps, and the rest.</summary>
-    public static readonly IReadOnlyList<LegendEntry> Sources =
+    /// <summary>The sites read: the kinds the site names, the one that matters most in green, and the rest in grey.</summary>
+    public static IReadOnlyList<LegendEntry> Sources(SiteKinds sites) =>
     [
-        new(ExplorerColours.Right, "SA shops"), new(ChartPalette.Series(0), "other SA"),
-        new(ChartPalette.Series(1), "maps"), new(ExplorerColours.Other, "elsewhere")
+        .. sites.Kinds.Select((kind, i) =>
+            new LegendEntry(i == 0 ? ExplorerColours.Right : ChartPalette.Series(i - 1), kind.Name)),
+        new(ExplorerColours.Other, "elsewhere")
     ];
 
     /// <summary>The cost of the conversations that passed (a real answer) against those that didn't.</summary>
