@@ -214,6 +214,25 @@ its own tenant, a review session reaches the VM's services, and the month's cost
    ADR *The demo's app runs beside Puls, split later*; the TODO (F51's hosting row, F59's leftovers); the work
    log; the write-up (skill 18); this plan deleted.
 
+## F109.3 The guide in the corner (`feature/F109.3-the-guide-in-the-corner`, after F109.1; drafted, its steps to come)
+
+**Louis (2026-11-08):** "for this layout we need something like a chatbot in the lower right corner, for the
+layout and he will know everything about louis-agent and will have all the knowledge on the framework. then demos
+will be the workflow triage example"; "like we have to be able to also inject a chat bot on a page".
+
+- **A framework component, `ChatWidget`, in `louis-agent.web`:** a small chat panel any page or layout drops in
+  with one tag and a parameter for who it talks as (`<ChatWidget Identity="guide" />`), folded to a button in the
+  lower-right corner, built from the chat frame's own parts (the message list, the composer, the turn view), not a
+  second chat; its own session on the API with that identity and its toolsets; the same gate as the chat.
+- **The site's layout places it** configured with the louis-agent expert (Louis: "our layout page will have a
+  louis-agent expert configured"): an identity of this demo under `demos/louis-agent/identity`, beside the coding
+  one, whose whole knowledge is the framework, its voice and toolsets its own files; a demo places the widget where
+  it likes, with whichever identity it names.
+- **The guide's knowledge** is open: a tool that searches the docs in the mounted workspace (Claude's pick), an
+  index built at build time, or a digest in the prompt; Louis to pick.
+- **The demos section** shows the triage workflow (F106) once that is built; until then the review chat at `/chat`
+  is the demo the site leads to.
+
 ## Verification
 
 - F109.1: each step's tests; the three stylesheet tests of the demo; the full suite before the PR; the browser at
