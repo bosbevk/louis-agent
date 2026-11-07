@@ -6,6 +6,3 @@
 .trend-values > span { display: inline-flex; align-items: center; gap: 5px; }
 .trend-values strong { color: var(--bs-emphasis-color); font-variant-numeric: tabular-nums; }
 .trend-delta { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.trend-delta.up { color: var(--bs-success-text-emphasis); background: var(--bs-success-bg-subtle); }
-.trend-delta.down { color: var(--bs-danger); background: rgba(var(--bs-danger-rgb), .14); }
-.trend.compact .trend-top { display: none; }

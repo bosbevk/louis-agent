@@ -1,10 +1,14 @@
+.lvl.in { animation: zoom-in .4s var(--web-ease) both; }
 @keyframes zoom-in { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
 @keyframes zoom-out { from { opacity: 0; transform: translateY(-6px) scale(1.01); } to { opacity: 1; transform: none; } }
+.tiles.small { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .tile { display: flex; flex-direction: column; gap: 4px; text-align: left; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 14px 16px; color: var(--bs-body-color); font: inherit; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 70ms); transition: transform .25s var(--web-spring), border-color .25s, box-shadow .25s; }
 button.tile { cursor: pointer; }
 button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: var(--web-glow); }
+.tile-value.model { font-size: 15px; letter-spacing: 0; }
 .chart { display: flex; flex-direction: column; gap: 8px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 12px 16px 14px; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
 .chart-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.chart-head.lead strong { font-size: 16px; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .turn-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; background: none; border: 0; padding: 4px 2px 8px; color: var(--bs-body-color); font: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
 .turn-head { cursor: default; padding: 6px 8px 8px; }
@@ -12,6 +16,12 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-pri
 /* F31: a row's ways on are its buttons only (Louis): Speel af opens the chats, the link goes into the costs. */
 .row-actions { display: inline-flex; align-items: center; gap: 8px; }
 .turn-head .row-actions { margin-left: 4px; }
+.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; border: 1px solid rgba(var(--bs-primary-rgb), .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.turn-open:hover, .turn-open:focus-visible { background: rgba(var(--bs-primary-rgb), .14); }
+.turn-open.quiet { color: var(--bs-body-color); border-color: var(--bs-border-color); }
+.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--bs-primary-rgb), .08); }
+.row-cost.small { font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
+.turn-head .turn-cost { margin-left: auto; }
 .explorer-q { padding: 8px 12px; border-radius: 12px; background: var(--bs-success-bg-subtle); color: var(--bs-emphasis-color); }
 .explorer-q .muted { margin-right: 8px; font-size: 12px; }
 .xreplay .turn { margin-bottom: 0; }
@@ -23,6 +33,7 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(var(--bs-pri
 .explorer-calls { font-size: 12.5px; padding-left: 20px; }
 /* Taller cards (Louis), all the same: the rings in the middle of the room under the card's head. */
 .chart-pair > .chart { min-height: 320px; padding: 16px 18px 20px; }
+.chart-pair > .chart > .donuts { flex: 1; align-items: center; padding: 14px 0 6px; }
 /* A chart's title explains itself on hover or focus (Louis): what it shows, good, bad and why. The card it sits in rises
    above its neighbours while the note is open (a grid item takes a z-index), so the next card can't cover it. */
 .chart-title { position: relative; display: inline-flex; align-items: center; gap: 7px; cursor: help; border-radius: 6px; outline: none; }

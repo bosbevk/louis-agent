@@ -2,3 +2,4 @@
 .note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; font-size: 13.5px; }
 .link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--bs-primary-text-emphasis); cursor: pointer; text-decoration: underline; }
 .agreement-bar .rate-track { height: 8px; border-radius: 4px; background: rgba(var(--web-overlay-rgb), .06); overflow: hidden; }
+.calibration-verdict.short { color: var(--bs-primary-text-emphasis); }

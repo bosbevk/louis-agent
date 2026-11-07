@@ -2,13 +2,10 @@
 /* F31 step 11a: a check's trend; each line draws itself in (a path of length 1, its dash offset to 0), then its points. */
 ::deep .compare-head .mode-name { font-size: 12px; font-weight: 400; color: var(--bs-tertiary-color); }
 .lvl { display: flex; flex-direction: column; gap: 14px; transform-origin: 0 0; }
-.lvl.in { animation: zoom-in .4s var(--web-ease) both; }
 .lvl.out { animation: zoom-out .35s var(--web-ease) both; }
 .tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.tiles.small { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 ::deep .tile-label { display: inline-flex; align-items: center; gap: 7px; color: var(--bs-secondary-color); font-size: 12.5px; }
 ::deep .tile-value { font-size: 26px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.4px; font-variant-numeric: tabular-nums; }
-::deep .tile-value.model { font-size: 15px; letter-spacing: 0; }
 ::deep .tile-meta, ::deep .tile-split { color: var(--bs-secondary-color); font-size: 12px; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 ::deep .xbars { display: flex; flex-direction: column; gap: 6px; }
 ::deep .xbar-row { display: grid; grid-template-columns: minmax(120px, 180px) minmax(0, 1fr) 90px; align-items: center; gap: 12px; animation: rise .45s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
@@ -23,7 +20,6 @@
 ::deep .xstack-wrap { display: flex; align-items: center; }
 /* F31: a row's cost pops (Louis), as a tile's figure does: bold, white, its digits in columns, counting up. */
 ::deep .row-cost { font-size: 19px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-::deep .row-cost.small { font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
 /* F31: a conversation's whole row drills in (Louis), lit on hover like a turn's, its pill saying what it does. */
 ::deep .xbar-row.drill { grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) auto auto; gap: 16px; padding: 4px 0; }
 ::deep .xbar-row.drill .xbar { cursor: default; }
