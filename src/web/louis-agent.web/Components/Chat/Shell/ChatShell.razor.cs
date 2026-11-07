@@ -4,6 +4,7 @@ using LouisAgent.Web.Shell;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -22,12 +23,17 @@ namespace LouisAgent.Web.Components.Chat.Shell;
 /// </remarks>
 /// <seealso href="https://refactoring.guru/design-patterns/template-method">Template Method (Refactoring.Guru)</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
-public partial class ChatShell : IDisposable
+public partial class ChatShell : IAsyncDisposable
 {
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private ChatStore Store { get; set; } = default!;
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    /// <summary>The framework's dialogs module, for the rename box's focus (CL31).</summary>
+    private JsModule Dialogs => _dialogs ??= new JsModule(JS, FrameworkScripts.Dialogs);
+
+    private JsModule? _dialogs;
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
 
@@ -184,18 +190,19 @@ public partial class ChatShell : IDisposable
 
         if (_renaming.TakeFocus())
         {
-            await JS.InvokeVoidAsync("chatUi.focus", "#rename-input", true);
+            await Dialogs.InvokeVoidAsync("focus", "#rename-input", true);
         }
 
         // A cost that changed since the last draw counts up to its new value (data-count elements, chatUi).
         await JS.InvokeVoidAsync("chatUi.countCosts");
     }
 
-    /// <summary>Stops listening when the frame goes.</summary>
-    public void Dispose()
+    /// <summary>Stops listening when the frame goes, and lets the modules go if they were ever loaded.</summary>
+    public ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
+        return _dialogs?.DisposeAsync() ?? ValueTask.CompletedTask;
     }
 
     /// <summary>A placeholder's answer: a short word saying what's coming.</summary>

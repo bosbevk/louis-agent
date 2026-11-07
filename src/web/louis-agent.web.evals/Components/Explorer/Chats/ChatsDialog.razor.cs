@@ -5,6 +5,7 @@ using LouisAgent.Web.Evals.Admin.Explorer.Tree;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Usage;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -21,16 +22,20 @@ namespace LouisAgent.Web.Evals.Components.Explorer.Chats;
 /// (the unattended run's findings 8 and 12).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-public partial class ChatsDialog : IDisposable
+public partial class ChatsDialog : IAsyncDisposable
 {
     private readonly Dictionary<string, List<Turn>> _chats = [];
     private int _played;
     private string? _task;
     private bool _playing;
     private CancellationTokenSource? _stop;
+    private JsModule? _dialogs;
 
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    /// <summary>The framework's dialogs module, which puts the focus where Blazor just drew (CL31).</summary>
+    private JsModule Dialogs => _dialogs ??= new JsModule(Js, FrameworkScripts.Dialogs);
 
     /// <summary>The repeat's tree.</summary>
     [Parameter, EditorRequired]
@@ -73,10 +78,10 @@ public partial class ChatsDialog : IDisposable
     {
         if (!firstRender) return;
 
-        // The page's script may not be there (a test): the dialog works without the focus.
+        // The module may not load (a test): the dialog works without the focus.
         try
         {
-            await Js.InvokeVoidAsync("chatUi.focus", "#chats-dialog");
+            await Dialogs.InvokeVoidAsync("focus", "#chats-dialog");
         }
         catch (JSException)
         {
@@ -84,7 +89,11 @@ public partial class ChatsDialog : IDisposable
     }
 
     /// <summary>Stops the chats that are playing.</summary>
-    public void Dispose() => _stop?.Cancel();
+    public ValueTask DisposeAsync()
+    {
+        _stop?.Cancel();
+        return _dialogs?.DisposeAsync() ?? ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Plays a conversation (the first one if none is given): fetches every turn's stored events for every mode,
