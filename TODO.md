@@ -120,11 +120,11 @@ known limitations below are facts about today, not tasks.
 | CL48 | Remove the `/v1/admin/benchmarks/…` route aliases | Cleanups | — |
 | CL49 | Remove the eval store's old setting names | Cleanups | — |
 | CL50 | Remove `PULS_API`, the eval runner's old name for the API's address | Cleanups | — |
-| CL51 | Rider out of core | Cleanups | — |
 | CL52 | The rest of the size list | Cleanups | — |
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
+| CL57 | What a project holds: the six moves under ADR 0092 (the API lets go of core.web, the runner's programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals); CL51 folds in | Cleanups | [plan](src/docs/plans/CL57-what-a-project-holds.md) |
 
 ## Known limitations
 
