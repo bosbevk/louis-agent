@@ -65,7 +65,7 @@ sequenceDiagram
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/`, `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Layout/AdminLayout.razor`, `Layout/MainLayout.razor` | This site's admin frame, on `AdminShell`; the chat's layout |
+| `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | This site's admin frame, on `AdminShell`; the chat's layout |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
 | `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this site's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |

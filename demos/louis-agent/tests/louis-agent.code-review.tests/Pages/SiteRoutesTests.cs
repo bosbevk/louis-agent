@@ -4,6 +4,7 @@ using System.Reflection;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.CodeReview.Layout;
+using LouisAgent.CodeReview.Pages;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Frames;
@@ -36,6 +37,29 @@ public class SiteRoutesTests
         var claimedTwice = routes.GroupBy(route => route, StringComparer.OrdinalIgnoreCase)
             .Where(group => group.Count() > 1).Select(group => group.Key);
         Assert.That(claimedTwice, Is.Empty);
+    }
+
+    /// <summary>
+    /// The site's landing page is the root and the chat lives at /chat, each in its own layout (F109.1): the site's
+    /// pages in the site's frame, which the router draws by default, the chat in a bare one.
+    /// </summary>
+    [Test]
+    public void TheRoot_IsTheLanding_AndTheChatIsAtChat()
+    {
+        var chatRoutes = typeof(ChatPage).GetCustomAttributes<RouteAttribute>().Select(route => route.Template)
+            .ToList();
+        var chatLayout = typeof(ChatPage).GetCustomAttribute<LayoutAttribute>()?.LayoutType;
+        string router = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "demos/louis-agent/web/louis-agent.code-review/App.razor"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(chatRoutes, Does.Not.Contain("/"), "the root is the landing page's");
+            Assert.That(chatRoutes, Does.Contain("/chat"));
+            Assert.That(chatLayout, Is.EqualTo(typeof(ChatLayout)), "the chat draws without the site's frame");
+            Assert.That(router, Does.Contain("DefaultLayout=\"@typeof(SiteLayout)\""),
+                "every other page is in the site's frame");
+        });
     }
 
     /// <summary>Opening a screen's address draws the framework's page, in this site's admin frame.</summary>
