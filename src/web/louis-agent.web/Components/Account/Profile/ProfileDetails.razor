@@ -1,0 +1,17 @@
+@* Who the person is to the site: the email and whether it's confirmed, and the name they go by, which they can change. *@
+<section class="account-section profile-details">
+    <dl class="account-facts">
+        <dt>@Text.Email</dt>
+        <dd>@Me.Email <small class="muted">(@(Me.EmailConfirmed ? Text.EmailConfirmedYes : Text.EmailConfirmedNo))</small></dd>
+    </dl>
+    <form class="account-form" @onsubmit="SaveAsync">
+        <AccountNotice Message="@_notice?.Message" Details="_notice?.Details ?? []" IsError="@_isError" />
+        <label class="account-field">
+            @Text.DisplayName
+            <input type="text" autocomplete="name" maxlength="256" @bind="_name" />
+        </label>
+        <div class="account-actions">
+            <button class="account-button" type="submit" disabled="@_busy">@Text.Save</button>
+        </div>
+    </form>
+</section>

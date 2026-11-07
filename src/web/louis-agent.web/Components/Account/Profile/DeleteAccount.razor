@@ -1,0 +1,15 @@
+@* The person deletes their own account: they type their email to confirm, and everything about them goes. *@
+<section class="account-section">
+    <h2>@Text.DeleteAccount</h2>
+    <p>@Text.DeleteIntro</p>
+    <form class="account-form" @onsubmit="DeleteAsync">
+        <AccountNotice Message="@_error" IsError="true" />
+        <label class="account-field">
+            @Text.DeleteConfirmField
+            <input type="email" autocomplete="off" required @bind="_typed" />
+        </label>
+        <div class="account-actions">
+            <button class="account-button is-danger" type="submit" disabled="@(_busy || !Matches)">@Text.Delete</button>
+        </div>
+    </form>
+</section>

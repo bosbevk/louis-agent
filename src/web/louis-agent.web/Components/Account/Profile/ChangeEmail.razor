@@ -1,0 +1,14 @@
+@* A new email: Identity mails a link to it, and the change is made when the link is opened. *@
+<section class="account-section">
+    <h2>@Text.ChangeEmail</h2>
+    <form class="account-form" @onsubmit="SendAsync">
+        <AccountNotice Message="@_notice?.Message" Details="_notice?.Details ?? []" IsError="@_isError" />
+        <label class="account-field">
+            @Text.NewEmail
+            <input type="email" autocomplete="email" required @bind="_email" />
+        </label>
+        <div class="account-actions">
+            <button class="account-button is-plain" type="submit" disabled="@_busy">@Text.Save</button>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,17 @@
+@* The ways this account signs in through someone else; linking and unlinking come with the providers. *@
+<section class="account-section">
+    <h2>@Text.LinkedLogins</h2>
+    @if (Me.Logins.Count == 0)
+    {
+        <p>@Text.NoLinkedLogins</p>
+    }
+    else
+    {
+        <ul class="account-logins">
+            @foreach (string login in Me.Logins)
+            {
+                <li>@login</li>
+            }
+        </ul>
+    }
+</section>

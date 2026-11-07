@@ -68,6 +68,9 @@ public sealed record AccountText
     public string Saved { get; init; } = "Saved.";
     public string EmailConfirmedYes { get; init; } = "confirmed";
     public string EmailConfirmedNo { get; init; } = "not confirmed yet";
+    public string ChangeEmail { get; init; } = "Change your email";
+    public string NewEmail { get; init; } = "New email";
+    public string EmailChangeSent { get; init; } = "We mailed a link to {0}; open it and the change is made.";
     public string ChangePassword { get; init; } = "Change your password";
     public string SetPassword { get; init; } = "Set a password";
     public string PasswordChanged { get; init; } = "Your password is changed.";
