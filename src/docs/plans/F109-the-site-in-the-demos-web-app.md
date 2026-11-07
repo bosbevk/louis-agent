@@ -363,6 +363,12 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
 - **One F109, five children** (Louis, 2026-11-08: "merge these 2, the work is done and working"). Another thread
   had planned and built *Puls deploys from GitHub* as F109 (PR #223); it is this plan's F109.5, its plan file
   deleted, ADR 0097 and the deploy README its lasting parts, and the TODO carries one F109 row.
+- **F109.2 steps 1 to 3 run** (2026-11-08, each on Louis's "go"): `infra` made the second identity, its vault role,
+  the share and the environment storage (four creates, the what-if's reference-only modifies); `workspace -App
+  louis-agent-app` put the price tables in the share; `secrets` put the app's two keys in the vault, no provider
+  keys yet (sign-in by password only until Louis registers providers for `louis-agent.dev`); `release` built
+  `louis-agent-coding:2026-11-08-0050` in four minutes and created the app as `v001`, live at its Azure address
+  with health 200 and the landing page.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
