@@ -29,10 +29,13 @@ measured, their data on their own model, their systems plugged in without code, 
 |---|---|---|---|---|
 | **Puls** | The public in South Africa; local businesses listed beside its answers | A local guide on cloud models, with sources and dates | Credits per question (F23), to be decided | After hosting; a hobby and the showpiece (Louis, 2026-10-30) |
 | **A configured agent, hosted** | A business with no developers | Its own identity and packs, hosted and measured; every request priced by the usage ledger | A monthly fee per agent plus usage | First sale after Phase 9 |
-| **The engine** | A team building its own agents on .NET | The package, the two contracts, the control layer, the eval harness | A licence per instance per year | After Phase 10 |
+| **The engine** | A team building its own agents on .NET | The application framework for AI agents in .NET: the package, the two contracts, the control layer, the eval harness | A licence per instance per year | First: the framework before the agents (Louis, 2026-11-07) |
 
-Configured agents first (we run them, so we see every failure), the engine licence after Phase 9. No pilot or sale
-starts before Phase 9: until then an agent is only shown (the playground's simulations) and priced (the ten
+**The framework first, then the agents** (Louis, 2026-11-07: "focus on the framework first then build the agents").
+The framework's track ([draft](src/docs/plans/F106-framework-track.md)) comes before the configured agents: a builder
+for the common path, its own docs, an example outside Puls, a measured side-by-side with Microsoft Agent Framework and
+the package. Configured agents (we run them, so we see every failure) are then built on that framework, as a
+developer would. No pilot or sale starts before Phase 9: until then an agent is only shown (the playground's simulations) and priced (the ten
 conversations). A buyer compares us with free, so the loop is not the reason to buy; the control layer, on .NET,
 fitted to South African buyers (POPIA, rand, local models), with simulations that show after every change whether an
 agent still does its task, is.
@@ -73,23 +76,23 @@ from Azure (F61.4); the final cook's paid measure is still owed.
 
 ## The phases
 
-One at a time, in this order; Puls's own track takes its turns between them. An id links the TODO's row; a phase is
+One at a time, in this order; Puls's own track takes its turns between them. Since 2026-11-07 the framework's track comes first, and the [TODO](TODO.md)'s rows are the build order. An id links the TODO's row; a phase is
 done when Louis has written its learning write-up himself, without the code open.
 
 | Phase | What | The selling point | Status | Ids |
 |---|---|---|---|---|
 | 0 to 3 | Docs and ADRs; three doors closed; the cut into engine, identities and packs; evals in C# | Measured | Done | — |
 | 3b | Evals as content: an eval is files beside its identity, a pack ships its checks, a studio in the admin portal | Measured | Done | F49 |
-| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | F35 done; F48.1 to F48.3 done, F48.4 to F48.6 remain | F48 |
-| 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Now | F46 |
-| 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Now; F50.2 done | F50 |
-| 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Now | F40 |
+| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | Next, after the framework's first children; F48.1 to F48.3 done | F48 |
+| 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Next, after the framework | F46 |
+| 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | F50 |
+| 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Next, after the framework | F40 |
 | 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Next | F7 |
-| 6 | Orchestration: one delegation function, typed results checked in code, the orchestrator as an identity | Checked, not trusted | Next | F39 |
+| 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains | F43, F8, F15, F44, F51, F61 |
-| 10 | The engine as a developer package, after every engine feature | The engine | Later | F74, F47 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains; F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
+| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F44, F47 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
 
@@ -110,9 +113,12 @@ moves to a real identity or pack in its own feature. It never touches the engine
 that warn, ask or stop, the room's cost view, the ledger checked against the bill (F7.2). OWASP LLM10:2025 is the
 standard.
 
-**6, orchestration** ([draft plan](src/docs/plans/F39-orchestration.md)). Part A: one delegation function in the engine,
-transport, credentials per peer, policy and limiter, typed results checked in code. Part B: the `voorman` identity on a
-thin host, triaging a service's errors and confirming each fix with git, a replay and the tests.
+**6, orchestration** ([draft plan](src/docs/plans/F39-orchestration.md)), which builds the framework's fourth concept, the
+**workflow**: how one agent delegates to another, hands off, and decides on what comes back, an engine capability, never
+an identity (Louis, 2026-11-07: "abandon the workflow identity idea"). Part A: one delegation function in the engine,
+transport, credentials per peer, policy and limiter, hand-off to a named peer, typed results checked in code. Part B's
+`voorman` orchestrator as an identity is dropped; what remains is a demo of the engine's workflow, triaging a
+service's errors. With F43's saved conversations it is pulled up the TODO to right after the builder.
 
 **7, checked and guarded** ([draft plan](src/docs/plans/phase-7-checked-and-guarded.md)). FX4 first: each
 conversation's prompt and tools frozen, so an approval no longer breaks an open chat. Then F41, drafts validated in code
@@ -129,8 +135,15 @@ before it the two sites go live from this PC (F58). F43's durable sessions and t
 reliability (retries, a fallback model, timeouts), F15's local models given their whole prompt, F44's speed, metrics
 and packages, F51's gateway and uptime remain.
 
-**10, the engine as a package** ([draft](src/docs/plans/phase-10-engine-package.md)). Louis, 2026-10-20: "make the
-engine its own repo with package", after every engine feature; a developer's product, never a business's.
+**The framework's track** ([draft](src/docs/plans/F106-framework-track.md)). Louis, 2026-11-07: "focus on the framework
+first then build the agents", so this track runs now, and the configured agents of Phases 4 to 9 are built on it. The
+positioning: the application framework for AI agents in .NET, in four concepts (the engine is how an agent runs, an
+identity is who it is, a pack is what it can do, a workflow is how one agent delegates to another and decides on the result; Louis, 2026-11-07),
+judged by one question, does it make an agent application easier to build, extend, test or operate. Its first children: a
+builder so a first agent takes a few lines (F106.1), the framework's own docs (F106.2), an example outside Puls
+(F106.3), the same application built in Microsoft Agent Framework and compared (F106.4), and packaging in place
+(F74, the [Phase 10 draft](src/docs/plans/phase-10-engine-package.md)'s Stage A). The engine's own repo (Stage B) still
+waits for the engine features; a developer's product, never a business's.
 
 **Puls's track** ([draft](src/docs/plans/puls-track.md)). Every source that knows the place answers through a few tools
 whose sites are data: businesses that join, open place data, a site's own JSON-LD, a few hand-built readers where terms
@@ -196,6 +209,7 @@ signs; health data not before a partner carries the compliance; (Pty) Ltd before
 | Wrong answers | Checked in code; every agent measured before release |
 | Nobody pays what we hoped | The 20 emails and ten conversations first; a pilot price first; services carry the bills |
 | Xero or Sage builds it in | Sell the work between systems, outside their product |
+| The framework comes before the agents that earn money | The framework's children are small and measured (a builder, docs, an example, the side-by-side); the demand check (F62) runs meanwhile, and its replies decide how long the framework goes first |
 | One person | Ten clients is the first ceiling; checks, budgets and audit keep support under four hours a client; services capped at two days a week; no phase hurried for a sale |
 | A data breach or a POPIA complaint | No hosting for a client before Phase 9's tenants and Phase 7's audit |
 | The pace | One commit a step, reviewed; a phase is done only when Louis has written its write-up himself |
