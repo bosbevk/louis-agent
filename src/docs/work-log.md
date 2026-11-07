@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 58 | 77 |
-| Fixes (`FX`) | 55 | 4 |
+| Fixes (`FX`) | 56 | 4 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -193,10 +193,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (55 done)
+## Fixes (56 done)
 
 | Id | When | What |
 |---|---|---|
+| FX62 | 2026-11-07 | The libraries' `sasscompiler.json` stays out of a publish |
 | FX58 | 2026-11-07 | The last update of a burst reaches the screen |
 | FX57 | 2026-11-06 | A context lost by Chrome's library is no error |
 | FX56 | 2026-11-06 | Our own rules for amounts |
