@@ -6,7 +6,8 @@
     .work-hidden .app { grid-template-columns: var(--sidebar-w, 280px) 8px minmax(0, 1fr) 0; }
     .sidebar-hidden.work-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr) 0; }
     .work.offcanvas-xl { display: flex; flex-direction: column; visibility: visible; }
-    .work-hidden .work { visibility: hidden; }
+    /* Its column is 0 wide when folded, so its border would stick out by 1px and give the whole page scrollbars. */
+    .work-hidden .work { visibility: hidden; border: 0; }
 }
 .work {
     display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden; color: var(--bs-body-color);

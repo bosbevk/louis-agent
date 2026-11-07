@@ -239,7 +239,7 @@ chatUi.locate = (languages) => new Promise((resolve) => {
     }), { timeout: 10000, maximumAge: 600000 });
 });
 
-// A starter in the message box (F20): focus it with the cursor at the end, and grow the box to fit.
+// Text placed in the message box (F20): focus it with the cursor at the end, and grow the box to fit.
 chatUi.focusEnd = (selector) => {
     const box = document.querySelector(selector);
     if (!box) return;

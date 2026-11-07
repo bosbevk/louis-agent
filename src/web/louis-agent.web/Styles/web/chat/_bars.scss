@@ -73,6 +73,9 @@
 .input-box:focus-within { border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg)); box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), .12), 0 18px 40px -18px rgba(var(--bs-black-rgb), .6); }
 .input-box textarea { width: 100%; border: 0; outline: 0; resize: none; font: inherit; color: var(--bs-emphasis-color); background: none; padding: 4px 2px; max-height: 240px; min-height: 28px; }
 .input-box textarea::placeholder { color: var(--bs-tertiary-color); }
+/* The message box in the middle of an empty chat, at a width of its own. */
+.composer-centred { width: min(680px, 100%); padding: 6px 0 0; background: none; animation: rise .6s .1s var(--web-ease) both; }
+.composer-centred > * { max-width: none; }
 .composer-tools { display: flex; align-items: center; gap: 6px; }
 .composer-spacer { flex: 1; }
 .tool-button {

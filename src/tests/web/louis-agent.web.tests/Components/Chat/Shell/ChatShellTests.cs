@@ -37,7 +37,7 @@ public class ChatShellTests
         Assert.That(cut.FindAll(".tagline"), Is.Empty);
     }
 
-    /// <summary>With no empty slot from the site, a new chat is still a message box.</summary>
+    /// <summary>With no empty slot from the site, a new chat is still a message box, centred as any empty chat is.</summary>
     [Test]
     public void WithNoEmptySlot_ANewChat_IsStillAMessageBox()
     {
@@ -45,7 +45,7 @@ public class ChatShellTests
 
         var cut = Render(ctx);
 
-        Assert.That(cut.FindAll(".messages .composer #composer-input"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".messages .empty .composer #composer-input"), Has.Count.EqualTo(1));
     }
 
     /// <summary>A site's logo, tagline, views and profile go in their slots.</summary>

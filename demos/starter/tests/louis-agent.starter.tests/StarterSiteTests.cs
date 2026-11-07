@@ -91,13 +91,14 @@ public class StarterSiteTests
         Assert.That(claimedTwice, Is.Empty);
     }
 
-    /// <summary>It keeps no copy of the framework's rules, and with no colours of its own it has the framework's.</summary>
+    /// <summary>It copies none of the framework's rules, and with no colours of its own it has the framework's.</summary>
     [Test]
     public void ItsStyles_AreTheFrameworks()
     {
         var css = SassStylesheet.Of("louis-agent.starter");
 
-        Assert.That(css.Forwards(), Is.Empty);
+        Assert.That(css.Forwards().Order(), Is.EqualTo(css.AreaFiles().Order()));
+        Assert.That(css.Forwards(), Is.EqualTo(new[] { "landing/start" }));
         Assert.That(css.FrameworkForwards()[0], Is.EqualTo("web/settings/colours"));
         Assert.That(css.Read(), Does.Contain("--bs-primary: #ffffff"));
     }

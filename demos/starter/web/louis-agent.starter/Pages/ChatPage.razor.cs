@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Starter.Pages;
 
 /// <summary>
-/// What only this site knows about its chat: which toolsets it asks for, and what it turns off. It starts with what needs
-/// nothing more set up; turn a part back on when your site has what it needs.
+/// What only this site knows about its chat: which toolsets it asks for, and what it turns off. It starts with what
+/// needs nothing more set up; turn a part back on when your site has what it needs.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 public partial class ChatPage
