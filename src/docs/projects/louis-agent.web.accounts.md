@@ -124,9 +124,7 @@ its styles hold no fixed colour, and every passkey call is in its script (`louis
 
 ## Limits and plans
 
-The scripts (`chat.js`, `passkeys.js`) are listed by every site's `index.html`; the next cleanup makes each an ES
-module beside its component, loaded on demand (Louis, 2026-11-07, pick A). The QR code for the authenticator key, a
-passkey's name edited after the fact, and the pages seen in a browser wait.
+The QR code for the authenticator key, a passkey's name edited after the fact, and the pages seen in a browser wait.
 
 ## Related docs
 

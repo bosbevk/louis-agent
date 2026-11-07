@@ -15,6 +15,8 @@ namespace LouisAgent.Web.Shell;
 /// <seealso href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model (Fowler)</seealso>
 public sealed class ChatLanguages(AgentApi api, JsModule preferences, string voicePrefix, string defaultLanguage)
 {
+    private readonly string _default = defaultLanguage;
+
     /// <summary>The languages on offer.</summary>
     public IReadOnlyList<string> Available { get; private set; } = [defaultLanguage];
 
@@ -40,7 +42,7 @@ public sealed class ChatLanguages(AgentApi api, JsModule preferences, string voi
         }
 
         string? saved = await preferences.InvokeAsync<string?>("loadLanguage");
-        Current = FirstOffered(saved, defaultLanguage) ?? Available[0];
+        Current = FirstOffered(saved, _default) ?? Available[0];
     }
 
     /// <summary>Keeps the language, and this browser remembers it.</summary>

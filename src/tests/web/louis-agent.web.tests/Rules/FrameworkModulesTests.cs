@@ -5,9 +5,10 @@ namespace LouisAgent.Web.Tests.Rules;
 
 /// <summary>
 /// The framework's scripts are modules beside their components (CL31): every path a framework class imports is a file
-/// on disk, every function it invokes on a module is exported there, no framework script but first-paint.js writes
-/// to the window, and a site's page lists nothing of ours but first-paint.js. The rule it replaces only looked for
-/// two globals, and missed the download that one site defined for everyone.
+/// on disk, every function it invokes on a module is exported there, no class in the framework's web or a pack's calls
+/// a global, no framework script but first-paint.js writes to the window, and a site's page lists nothing of ours but
+/// first-paint.js. The rule it replaces only looked for two globals, and missed the download that one site defined
+/// for everyone and the file viewer that kept calling a function the modules had dropped.
 /// </summary>
 public partial class FrameworkModulesTests
 {
@@ -17,6 +18,12 @@ public partial class FrameworkModulesTests
     private static readonly string[] Libraries =
         ["louis-agent.web", "louis-agent.web.evals", "louis-agent.web.accounts"];
 
+    /// <summary>Every class that may call the browser: the libraries' and the packs' web views (ADR 0086).</summary>
+    private static IEnumerable<string> Callers() =>
+        Libraries.Select(library => Path.Combine(Web, library))
+            .Concat(Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "packs/web")))
+            .SelectMany(Sources);
+
     /// <summary>A module's path as a class names it: <c>./_content/louis-agent.web/js/dialogs.js</c>.</summary>
     [GeneratedRegex("\"\\./_content/(louis-agent\\.web(?:\\.\\w+)?)/([A-Za-z0-9_./-]+\\.js)\"",
         RegexOptions.NonBacktracking)]
@@ -25,6 +32,10 @@ public partial class FrameworkModulesTests
     /// <summary>A function being invoked on a module: matches <c>InvokeVoidAsync("focus"</c> and gives <c>focus</c>.</summary>
     [GeneratedRegex("Invoke(?:Void)?Async(?:<[^>]+>)?\\(\"([A-Za-z]+)\"", RegexOptions.NonBacktracking)]
     private static partial Regex Invoked();
+
+    /// <summary>A global being invoked, as the old scripts were: matches <c>InvokeVoidAsync("louisChat.renderCode"</c>.</summary>
+    [GeneratedRegex("Invoke(?:Void)?Async(?:<[^>]+>)?\\(\"([A-Za-z]+\\.[A-Za-z]+)\"", RegexOptions.NonBacktracking)]
+    private static partial Regex InvokedGlobal();
 
     /// <summary>A module's export: matches <c>export function focus(</c> and <c>export const focus =</c>.</summary>
     [GeneratedRegex("export (?:async )?(?:function|const|let) ([A-Za-z]+)", RegexOptions.NonBacktracking)]
@@ -38,15 +49,16 @@ public partial class FrameworkModulesTests
     private static string OnDisk(string library, string path) => Path.Combine(Web, library,
         path.StartsWith("js/", StringComparison.Ordinal) ? "wwwroot/" + path : path);
 
-    private static IEnumerable<string> Sources(string library) =>
-        Directory.EnumerateFiles(Path.Combine(Web, library), "*.cs", SearchOption.AllDirectories)
+    /// <summary>A project's C# files, the build's own left out.</summary>
+    private static IEnumerable<string> Sources(string project) =>
+        Directory.EnumerateFiles(project, "*.cs", SearchOption.AllDirectories)
             .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"));
 
     /// <summary>Every module a class names is a file on disk.</summary>
     [Test]
     public void EveryModuleAClassNames_IsOnDisk()
     {
-        var missing = Libraries.SelectMany(Sources)
+        var missing = Callers()
             .SelectMany(file =>
                 ModulePath().Matches(File.ReadAllText(file)).Select(m => (m.Groups[1].Value, m.Groups[2].Value)))
             .Distinct()
@@ -66,7 +78,7 @@ public partial class FrameworkModulesTests
     {
         var paths = PathsByName();
         var problems = new List<string>();
-        foreach (string file in Libraries.SelectMany(Sources))
+        foreach (string file in Callers())
         {
             string source = File.ReadAllText(file);
             var modules = ModulesNamed(source, paths).ToList();
@@ -81,6 +93,23 @@ public partial class FrameworkModulesTests
         }
 
         Assert.That(problems, Is.Empty);
+    }
+
+    /// <summary>
+    /// No class calls a global of ours on the window, as the old scripts were called: a module beside it, or the
+    /// framework's. The browser's own storage is the browser's, not a script, and a class may call it as it is.
+    /// </summary>
+    [Test]
+    public void NoClassInTheWebOrAPack_CallsAGlobal()
+    {
+        var callers = Callers()
+            .SelectMany(file => InvokedGlobal().Matches(File.ReadAllText(file))
+                .Select(m => m.Groups[1].Value)
+                .Where(name => !name.StartsWith("localStorage.", StringComparison.Ordinal))
+                .Select(name => $"{Path.GetRelativePath(TestPaths.RepoRoot, file)}: {name}"))
+            .ToList();
+
+        Assert.That(callers, Is.Empty);
     }
 
     /// <summary>Only first-paint.js, which runs before anything draws, writes to the window.</summary>
@@ -139,7 +168,7 @@ public partial class FrameworkModulesTests
     private static Dictionary<string, string> PathsByName()
     {
         var paths = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (string file in Libraries.SelectMany(Sources)
+        foreach (string file in Libraries.Select(library => Path.Combine(Web, library)).SelectMany(Sources)
                      .Where(file => Path.GetFileName(file).EndsWith("Scripts.cs", StringComparison.Ordinal)))
         {
             // A constant built on the library's Content prefix names no library: it is the file's own.
@@ -158,9 +187,24 @@ public partial class FrameworkModulesTests
         RegexOptions.NonBacktracking)]
     private static partial Regex ConstantPath();
 
-    /// <summary>The modules a source names, by constant (<c>FrameworkScripts.Dialogs</c>) or by path.</summary>
+    /// <summary>
+    /// The modules a source names, by constant (<c>FrameworkScripts.Dialogs</c>) or by path; a class that holds
+    /// several for another (<c>ChatModules</c>) lends it the ones it names.
+    /// </summary>
     private static IEnumerable<string> ModulesNamed(string source, Dictionary<string, string> paths) =>
-        paths.Where(p => source.Contains(p.Key, StringComparison.Ordinal)).Select(p => p.Value)
-            .Concat(ModulePath().Matches(source).Select(m => OnDisk(m.Groups[1].Value, m.Groups[2].Value)))
+        NamedDirectly(source, paths)
+            .Concat(Holders().Where(h => source.Contains(h.Key, StringComparison.Ordinal))
+                .SelectMany(h => NamedDirectly(h.Value, paths)))
             .Distinct();
+
+    /// <summary>The modules a source names itself, by constant or by path; a holder's own are read this way, once.</summary>
+    private static IEnumerable<string> NamedDirectly(string source, Dictionary<string, string> paths) =>
+        paths.Where(p => source.Contains(p.Key, StringComparison.Ordinal)).Select(p => p.Value)
+            .Concat(ModulePath().Matches(source).Select(m => OnDisk(m.Groups[1].Value, m.Groups[2].Value)));
+
+    /// <summary>The classes that hold modules for another, by name (<c>ChatModules</c>), with their source.</summary>
+    private static Dictionary<string, string> Holders() =>
+        Libraries.Select(library => Path.Combine(Web, library)).SelectMany(Sources)
+            .Where(file => Path.GetFileName(file).EndsWith("Modules.cs", StringComparison.Ordinal))
+            .ToDictionary(file => Path.GetFileNameWithoutExtension(file), File.ReadAllText, StringComparer.Ordinal);
 }
