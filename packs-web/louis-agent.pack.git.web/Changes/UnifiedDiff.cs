@@ -2,7 +2,10 @@ using System.Text.RegularExpressions;
 
 namespace LouisAgent.Packs.Git.Web.Changes;
 
-/// <summary>One row of a diff as the viewers draw it: its kind (hunk, ctx, add, del, note), its old and new line numbers, its text.</summary>
+/// <summary>
+/// One row of a diff as the viewers draw it: its kind (hunk, ctx, add, del, note), its old and new line numbers, its
+/// text.
+/// </summary>
 public sealed record DiffRow(string Kind, string Old, string New, string Text);
 
 /// <summary>A unified diff read into rows (W2b, from DiffViewer).</summary>

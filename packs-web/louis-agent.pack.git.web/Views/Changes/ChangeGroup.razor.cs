@@ -11,7 +11,7 @@ public partial class ChangeGroup
     [Parameter] public bool Staged { get; set; }
     [Parameter, EditorRequired] public List<GitFile> Files { get; set; } = default!;
 
-    /// <summary>The panel's selection, by <see cref="ChangesPanel.Key"/>; read here, changed through the callbacks.</summary>
+    /// <summary>The panel's selection, by <see cref="ChangesPanel.Key"/>; read here, changed by callback.</summary>
     [Parameter, EditorRequired] public IReadOnlySet<string> Selected { get; set; } = default!;
 
     /// <summary>The key of the diff open in the viewer, to mark its row.</summary>

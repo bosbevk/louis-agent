@@ -1,0 +1,17 @@
+@* Every branch and the commit log on an admin screen: the list beside the branch or commit that's open. *@
+<div class="pack-split">
+    <nav class="file-tree">
+        <BranchesPanel OpenKey="@_openKey" OnOpenBranch="OpenBranchAsync" OnOpenCommit="OpenCommitAsync" />
+    </nav>
+    <div class="pack-detail">
+        @if (_error is not null)
+        {
+            <div class="tree-error">@_error</div>
+        }
+        @if (_branch is not null || _commit is not null)
+        {
+            <HistoryViewer Branch="_branch" Commit="_commit" Busy="OpenIsBusy" OnMerge="MergeAsync" OnDelete="DeleteAsync"
+                           OnOpenCommit="OpenCommitAsync" OnClose="Close" />
+        }
+    </div>
+</div>

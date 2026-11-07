@@ -6,11 +6,6 @@ namespace LouisAgent.Packs.Git.Web;
 /// </summary>
 public static class ReviewActions
 {
-    /// <summary>A workspace file, read with the agent's tools.</summary>
-    public static (string Prompt, string Title) File(string path) =>
-        ($"Review `{path}` from the workspace. Read it with your tools, then list bugs, risks and improvements, most important first, with line numbers.",
-         $"Review {FileName(path)}");
-
     /// <summary>One file's staged or unstaged changes, or a new untracked file, read with the git tools.</summary>
     public static (string Prompt, string Title) Diff(string path, bool staged, bool untracked)
     {

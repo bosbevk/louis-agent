@@ -1,0 +1,16 @@
+@* The workspace's files on an admin screen: the tree beside the file that's open. *@
+<div class="pack-split">
+    <nav class="file-tree">
+        <FileTree SelectedPath="@_file?.Path" OnOpenFile="OpenAsync" />
+    </nav>
+    <div class="pack-detail">
+        @if (_error is not null)
+        {
+            <div class="tree-error">@_error</div>
+        }
+        @if (_file is { } file)
+        {
+            <FileViewer File="file" OnReview="Review" OnAsk="Ask" OnClose="Close" />
+        }
+    </div>
+</div>

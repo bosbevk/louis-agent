@@ -3,16 +3,6 @@ namespace LouisAgent.Packs.Git.Web.Tests;
 /// <summary>The prompts the page sends when a viewer asks for a review, each with the chat title it gets.</summary>
 public class ReviewActionsTests
 {
-    /// <summary>A file's review names the file, and the chat is titled by its name.</summary>
-    [Test]
-    public void AFileReview_NamesTheFile_AndTitlesTheChatByItsName()
-    {
-        var (prompt, title) = ReviewActions.File("src/louis-agent.web/Pages/ChatPage.razor");
-
-        Assert.That(prompt, Does.StartWith("Review `src/louis-agent.web/Pages/ChatPage.razor` from the workspace."));
-        Assert.That(title, Is.EqualTo("Review ChatPage.razor"));
-    }
-
     /// <summary>A diff's review says whether it's staged, uncommitted or a new file.</summary>
     [TestCase(true, false, "staged changes to")]
     [TestCase(false, false, "uncommitted changes to")]

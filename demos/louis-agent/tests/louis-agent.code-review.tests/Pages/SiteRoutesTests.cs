@@ -67,7 +67,9 @@ public class SiteRoutesTests
             "demos/louis-agent/web/louis-agent.code-review/Program.cs"));
 
         Assert.That(program, Does.Contain("new SiteFrames(Admin: typeof(AdminLayout))"));
-        Assert.That(program, Does.Contain("AddSingleton(new PackViews())"));
+        Assert.That(program, Does.Contain("GitWebViews.AddTo(views)"));
+        Assert.That(program, Does.Contain("FilesWebViews.AddTo(views)"));
+        Assert.That(program, Does.Contain("AddSingleton(views)"));
     }
 
     /// <summary>The API's answers: one screen, and no rows.</summary>

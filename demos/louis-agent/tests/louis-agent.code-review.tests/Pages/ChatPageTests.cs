@@ -69,7 +69,7 @@ public class ChatPageTests
         Snapshots.Match("Pages/ChatPage.empty.html", cut.Markup);
     }
 
-    /// <summary>A prompt from an admin screen waits in the box, and nothing is sent until the person sends it.</summary>
+    /// <summary>A prompt from an admin screen waits in the box, and nothing goes until the person sends it.</summary>
     [Test]
     public void APromptFromAScreen_WaitsInTheBox_Unsent()
     {

@@ -2,7 +2,10 @@ using System.Text.RegularExpressions;
 
 namespace LouisAgent.Packs.Git.Web.Changes;
 
-/// <summary>One file's part of a patch: its path, its status (new file, deleted, renamed; null for a change), its rows and counts.</summary>
+/// <summary>
+/// One file's part of a patch: its path, its status (new file, deleted, renamed; null for a change), its rows and
+/// counts.
+/// </summary>
 public sealed record PatchFile(string Path, string? Status, List<DiffRow> Rows, int Added, int Removed);
 
 /// <summary>A multi-file patch (a commit or a branch) split per file (W2b, from PatchView).</summary>

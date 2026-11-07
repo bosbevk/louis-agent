@@ -1,3 +1,5 @@
+using LouisAgent.Packs.Files.Web;
+using LouisAgent.Packs.Git.Web;
 using LouisAgent.Packs.Git.Web.Branches;
 using LouisAgent.Packs.Git.Web.Changes;
 using Microsoft.AspNetCore.Components.Web;
@@ -26,7 +28,13 @@ builder.Services.AddScoped<GitHistory>();
 builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText());   // the shared components' words, in English
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
-builder.Services.AddSingleton(new PackViews());
+
+// Which component draws each screen: the plain table, then the packs' own, then ours if we ever write one.
+var views = new PackViews();
+GitWebViews.AddTo(views);
+FilesWebViews.AddTo(views);
+builder.Services.AddSingleton(views);
+
 builder.Services.AddSingleton(new ChatHandoff(""));   // a screen's Review button opens the chat here, with a draft
 
 await builder.Build().RunAsync();

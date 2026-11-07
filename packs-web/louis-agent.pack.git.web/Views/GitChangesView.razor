@@ -1,0 +1,18 @@
+@* What's changed on an admin screen: the list beside the diff that's open. *@
+<div class="pack-split">
+    <nav class="file-tree">
+        <ChangesPanel OpenKey="@_openKey" OnOpenDiff="OpenAsync" OnReviewAll="ReviewAll" />
+    </nav>
+    <div class="pack-detail">
+        @if (_error is not null)
+        {
+            <div class="tree-error">@_error</div>
+        }
+        @if (_diff is { } diff)
+        {
+            <DiffViewer Diff="diff" Busy="Git.Busy" OnStage="() => ChangeOpenAsync(Git.StageAsync)"
+                        OnUnstage="() => ChangeOpenAsync(Git.UnstageAsync)" OnDiscard="() => ChangeOpenAsync(Git.DiscardAsync)"
+                        OnReview="ReviewOpen" OnClose="Close" />
+        }
+    </div>
+</div>

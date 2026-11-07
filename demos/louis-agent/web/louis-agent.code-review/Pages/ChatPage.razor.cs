@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Files.Web;
 using LouisAgent.Packs.Files.Web.Reading;
 using LouisAgent.Packs.Git.Web;
 using LouisAgent.Packs.Git.Web.Branches;
@@ -174,7 +175,7 @@ public partial class ChatPage : IDisposable
     private async Task ReviewFile()
     {
         if (_openFile is null || Runner.Streaming) return;
-        var (prompt, title) = ReviewActions.File(_openFile.Path);
+        var (prompt, title) = (FilePrompts.Review(_openFile.Path), $"Review {_openFile.Name}");
         CloseFile();
         Runner.Chat = null;
         await Runner.StartTurnAsync(prompt, [], title);
@@ -184,7 +185,7 @@ public partial class ChatPage : IDisposable
     private async Task AskAboutFile()
     {
         if (_openFile is null) return;
-        Runner.Draft = $"About `{_openFile.Path}`: ";
+        Runner.Draft = FilePrompts.Ask(_openFile.Path);
         CloseFile();
         StateHasChanged();
         await JS.InvokeVoidAsync("louisChat.focusComposer");
