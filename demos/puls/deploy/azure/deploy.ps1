@@ -19,13 +19,15 @@ few az commands with the names filled in (CL19, F61.4).
   deploy.ps1 release [-Tag ...]                   build, then update as the next revision after the one Azure runs
   deploy.ps1 domain  [-Hostname mypuls.co.za]     prints the DNS records Cloudflare needs, then adds the hostname with a
                                                   managed certificate once they resolve
+  deploy.ps1 sql-access [-Ip 1.2.3.4]             lets this PC's public IPv4 (or -Ip) through the SQL server's firewall, for
+                                                  SQL Server Management Studio
   deploy.ps1 logs    [-Follow]
 The how-to, and what each piece is, is README.md beside this file. Run `az login` first; `az bicep install` once.
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('infra', 'vm', 'build', 'secrets', 'update', 'release', 'domain', 'logs')]
+    [ValidateSet('infra', 'vm', 'build', 'secrets', 'update', 'release', 'domain', 'sql-access', 'logs')]
     [string]$Verb,
     [string]$Ip,
     # build and release make one from the date and time when none is given, so two releases on one day keep both images
@@ -294,6 +296,15 @@ switch ($Verb) {
             Invoke-Az containerapp hostname add -n $App -g $ResourceGroup --hostname $Hostname -o none
             Invoke-Az containerapp hostname bind -n $App -g $ResourceGroup --hostname $Hostname --environment $Environment --validation-method $method --query '[].{name:name, state:bindingType}' -o table
         }
+    }
+    'sql-access' {
+        # SQL Server Management Studio from this PC: the server's firewall takes one IPv4 address (the rule 'home';
+        # a new home IP, the ISP's doing, means running this again). The server is puls-sql-za.database.windows.net,
+        # the login pulsadmin with config/.env.sql's password, the database puls_accounts, encryption on.
+        if (-not $Ip) { $Ip = (Invoke-RestMethod -Uri 'https://ipv4.icanhazip.com' -TimeoutSec 10).Trim() }
+        if ($Ip -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { throw "Not an IPv4 address: $Ip. Pass -Ip." }
+        Write-Host "Allowing $Ip on puls-sql-za's firewall (rule 'home')..."
+        Invoke-Az sql server firewall-rule create -g $ResourceGroup -s 'puls-sql-za' -n 'home' --start-ip-address $Ip --end-ip-address $Ip --query '{name:name, from:startIpAddress, to:endIpAddress}' -o table
     }
     'logs' {
         $followArgs = @()
