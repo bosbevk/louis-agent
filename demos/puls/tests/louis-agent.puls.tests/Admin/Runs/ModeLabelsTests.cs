@@ -4,7 +4,7 @@ using LouisAgent.Puls.Admin.Runs;
 namespace LouisAgent.Puls.Tests.Admin.Runs;
 
 /// <summary>
-/// A mode is named in the legend by who did its work: Puls with the roles it handed work to, or Puls alone.
+/// A mode is named in the legend by who did its work: the agent with the roles it handed work to, or the agent alone.
 /// </summary>
 public class ModeLabelsTests
 {
@@ -12,7 +12,7 @@ public class ModeLabelsTests
     private static TurnRow Turn(string mode, string? role) =>
         new(new TurnToolsRow(0, 0, []), mode, 1, "task", 1, "s", "q", "a", role, null, 0, 0, [], 1, null);
 
-    /// <summary>A mode whose turns handed work on names each role once; a mode that never did is Puls alone.</summary>
+    /// <summary>A mode whose turns handed work on names each role once; one that never did is the agent alone.</summary>
     [Test]
     public void AModeIsNamedByTheRolesItsTurnsUsed()
     {
@@ -23,8 +23,8 @@ public class ModeLabelsTests
 
         Assert.That(labels, Is.EqualTo(new Dictionary<string, string>
         {
-            ["with-cook"] = "Puls with cook and shopper",
-            ["alone"] = "Puls alone"
+            ["with-cook"] = "The agent with cook and shopper",
+            ["alone"] = "The agent alone"
         }));
     }
 }

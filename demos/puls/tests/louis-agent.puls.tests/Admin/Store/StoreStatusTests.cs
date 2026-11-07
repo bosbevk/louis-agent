@@ -15,7 +15,7 @@ public class StoreStatusTests
         var none = new StoreRow(false, null);
 
         Assert.That((StoreStatus.Up(up), StoreStatus.Label(up), StoreStatus.Title(up)),
-            Is.EqualTo((true, "store", "puls-mongo answers")));
+            Is.EqualTo((true, "store", "The store answers")));
         Assert.That((StoreStatus.Up(down), StoreStatus.Label(down), StoreStatus.Title(down)),
             Is.EqualTo((false, "store down", "timed out")));
         Assert.That((StoreStatus.Up(none), StoreStatus.Label(none), StoreStatus.Title(none)),

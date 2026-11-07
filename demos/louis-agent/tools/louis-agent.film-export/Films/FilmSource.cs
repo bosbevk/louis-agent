@@ -5,7 +5,7 @@ namespace LouisAgent.FilmExport.Films;
 /// <param name="Route">The site's page that plays it.</param>
 /// <param name="Selector">The film's element on that page.</param>
 /// <param name="Length">One loop of the film.</param>
-/// <param name="Files">What decides how it looks, from the repo's root; a change to any of them means re-exporting.</param>
+/// <param name="Files">What decides how it looks, from the repo's root; a change to one means re-exporting.</param>
 public sealed record FilmSource(
     FilmName Name,
     string Route,

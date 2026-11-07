@@ -9,7 +9,7 @@ namespace LouisAgent.Puls.Components.Admin.Explorer.Conversations;
 
 /// <summary>
 /// One mode's conversation of a task as a card: its question and cost, its review pill, chips and grades, and a strip
-/// of its cost split between Puls and the specialist.
+/// of its cost split between the agent and the specialist.
 /// </summary>
 public partial class ConversationCard
 {
@@ -59,7 +59,7 @@ public partial class ConversationCard
     /// <summary>Opens the sample dialog, or closes it (F49.4).</summary>
     private void ToggleSample() => _sampling = !_sampling;
 
-    /// <summary>What Puls's own requests cost.</summary>
+    /// <summary>What the agent's own requests cost.</summary>
     private decimal? Own => RequestSums.Cost(Conversation.Rows, specialist: false);
 
     /// <summary>What the specialist's requests cost.</summary>
@@ -67,7 +67,7 @@ public partial class ConversationCard
 
     /// <summary>The strip's hover: the task, and each side's cost.</summary>
     private string StripTitle =>
-        $"{Conversation.Task}: Puls {Money(Own)}, {ModeNames.Roles([Mode])} {Money(Spec)}";
+        $"{Conversation.Task}: Agent {Money(Own)}, {ModeNames.Roles([Mode])} {Money(Spec)}";
 
     /// <summary>A cost in the chosen currency, or a dash.</summary>
     private string Money(decimal? usd) => ExplorerText.Money(usd, Currency);

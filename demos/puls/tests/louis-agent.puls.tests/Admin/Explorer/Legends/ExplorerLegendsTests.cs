@@ -24,18 +24,18 @@ public class ExplorerLegendsTests
         Assert.That(ExplorerLegends.Modes(RunTree.Of(run, 1)),
             Is.EqualTo(new[]
             {
-                new LegendEntry(ChartPalette.Series(0), "Puls alone"),
-                new LegendEntry(ChartPalette.Series(1), "Puls alone")
+                new LegendEntry(ChartPalette.Series(0), "The agent alone"),
+                new LegendEntry(ChartPalette.Series(1), "The agent alone")
             }));
     }
 
-    /// <summary>Puls's own part, then the specialists' under their roles' name.</summary>
+    /// <summary>The agent's own part, then the specialists' under their roles' name.</summary>
     [Test]
-    public void TheParts_ArePulsThenTheSpecialists() =>
+    public void TheParts_AreTheAgentThenTheSpecialists() =>
         Assert.That(ExplorerLegends.Parts(SampleRole.Alpha),
             Is.EqualTo(new[]
             {
-                new LegendEntry(ExplorerColours.Own, "Puls itself"),
+                new LegendEntry(ExplorerColours.Own, "The agent itself"),
                 new LegendEntry(ExplorerColours.Spec, SampleRole.Alpha)
             }));
 }

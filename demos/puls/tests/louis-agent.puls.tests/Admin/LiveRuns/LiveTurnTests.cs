@@ -25,7 +25,7 @@ public class LiveTurnTests
             Done = true,
             Continued = "sub-1"
         }.RoleText, Is.EqualTo("continued · sub-1"));
-        Assert.That(new LiveTurn(key) { Done = true }.RoleText, Is.EqualTo("Puls itself"));
+        Assert.That(new LiveTurn(key) { Done = true }.RoleText, Is.EqualTo("The agent itself"));
     }
 
     /// <summary>The seconds with one decimal, the same on any machine; nothing while the turn goes on.</summary>

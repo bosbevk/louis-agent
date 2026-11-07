@@ -59,7 +59,7 @@ public partial class TrendChart
     public bool ShowTitle { get; set; } = true;
 
     /// <summary>
-    /// A name per mode for the legend (Puls with puls-cook), when the page knows them; else the mode's name.
+    /// A name per mode for the legend (the agent with a specialist), when the page knows them; else the mode's name.
     /// </summary>
     [Parameter]
     public IReadOnlyDictionary<string, string>? Labels { get; set; }

@@ -11,9 +11,9 @@ public static class ExplorerLegends
     public static IReadOnlyList<LegendEntry> Modes(RunTree tree) =>
         [.. tree.Columns.Select(c => new LegendEntry(ChartPalette.Series(c.I), ModeNames.Who(c.Mode)))];
 
-    /// <summary>Puls's own part against the specialists', named for the roles.</summary>
+    /// <summary>The agent's own part against the specialists', named for the roles.</summary>
     public static IReadOnlyList<LegendEntry> Parts(string roles) =>
-        [new(ExplorerColours.Own, "Puls itself"), new(ExplorerColours.Spec, roles)];
+        [new(ExplorerColours.Own, "The agent itself"), new(ExplorerColours.Spec, roles)];
 
     /// <summary>The conversations that passed against those that didn't.</summary>
     public static readonly IReadOnlyList<LegendEntry> Passed =

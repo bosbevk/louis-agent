@@ -13,7 +13,7 @@
     {
         <div class="compose-mode">
             <input class="compose-mode-name" placeholder="name" @bind="mode.Name" />
-            <input class="compose-mode-role" placeholder="role, such as puls/voice-af" @bind="mode.Role" />
+            <input class="compose-mode-role" placeholder="role, such as agent/voice" @bind="mode.Role" />
             <input class="compose-mode-toolsets" placeholder="toolsets, commas between" @bind="mode.Toolsets" />
             <button type="button" class="compose-remove-mode link-button" @onclick="() => Eval.Modes.Remove(mode)">Remove</button>
         </div>

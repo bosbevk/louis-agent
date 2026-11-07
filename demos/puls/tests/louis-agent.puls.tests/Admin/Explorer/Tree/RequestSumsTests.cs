@@ -2,12 +2,12 @@ using LouisAgent.Puls.Admin.Explorer.Tree;
 
 namespace LouisAgent.Puls.Tests.Admin.Explorer.Tree;
 
-/// <summary>Requests added up as the charts split them: Puls's part against the specialists', the tokens.</summary>
+/// <summary>Requests added up as the charts split them: the agent's against the specialists', the tokens.</summary>
 public class RequestSumsTests
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 10, 0, 0, TimeSpan.Zero);
 
-    /// <summary>Puls's own request and a specialist's, one with no known price.</summary>
+    /// <summary>The agent's own request and a specialist's, one with no known price.</summary>
     private static readonly RequestNode[] Rows =
     [
         new(T0, "turn", "s1", null, "m", 100, 20, 400, 50, 0.01m, 1500),

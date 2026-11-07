@@ -50,7 +50,7 @@ public sealed class LiveTurn(TurnKey key)
     /// <summary>Why the turn failed, if it did.</summary>
     public string? Error { get; set; }
 
-    /// <summary>How many tools the mode's agent (Puls) called itself.</summary>
+    /// <summary>How many tools the mode's agent called itself.</summary>
     public int AgentCalls { get; set; }
 
     /// <summary>How many tools the specialist called.</summary>
@@ -60,7 +60,7 @@ public sealed class LiveTurn(TurnKey key)
     public double Seconds { get; set; }
 
     /// <summary>
-    /// Who answered: the specialist, the sub-session it went on with, or Puls itself. Blank until it's done.
+    /// Who answered: the specialist, the sub-session it went on with, or the agent itself. Blank until it's done.
     /// </summary>
     /// <remarks>A switch on the row's shape, one arm per case, instead of nested ternaries.</remarks>
     public string RoleText => this switch
@@ -68,7 +68,7 @@ public sealed class LiveTurn(TurnKey key)
         { Done: false } => "",
         { Role: { } role } => role,
         { Continued: { } sub } => $"continued · {sub}",
-        _ => "Puls itself"
+        _ => "The agent itself"
     };
 
     /// <summary>How long it took, with one decimal and a point on any machine. Blank until it's done.</summary>

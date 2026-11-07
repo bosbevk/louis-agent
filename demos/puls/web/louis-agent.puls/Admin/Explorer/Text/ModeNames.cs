@@ -5,9 +5,9 @@ namespace LouisAgent.Puls.Admin.Explorer.Text;
 /// <summary>What the explorer calls a mode and its specialists, from the roles its turns handed work to.</summary>
 public static class ModeNames
 {
-    /// <summary>Who a mode is: Puls with the roles it handed work to, or Puls alone if it handed none.</summary>
+    /// <summary>Who a mode is: the agent with the roles it handed work to, or alone if it handed none.</summary>
     public static string Who(ModeNode m) =>
-        RolesOf(m) is { Count: > 0 } roles ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone";
+        RolesOf(m) is { Count: > 0 } roles ? $"The agent with {string.Join(" and ", roles)}" : "The agent alone";
 
     /// <summary>
     /// The specialists' name for a legend: the roles in one mode, or in every mode, or just "specialist" if there are
@@ -19,13 +19,13 @@ public static class ModeNames
         return roles.Count == 0 ? "specialist" : string.Join(" / ", roles);
     }
 
-    /// <summary>Who answered a turn: its specialist, the specialist's session it carried on, or Puls itself.</summary>
+    /// <summary>Who answered a turn: its specialist, the specialist's session it carried on, or the agent.</summary>
     /// <remarks>A switch on the turn's shape, one arm per case, instead of a ternary inside a <c>??</c>.</remarks>
     public static string Answerer(TurnNode turn) => turn switch
     {
         { Role: { } role } => role,
         { Continued: { } session } => $"continued · {session}",
-        _ => "Puls itself"
+        _ => "The agent itself"
     };
 
     /// <summary>The roles a mode handed work to, from its own turns.</summary>

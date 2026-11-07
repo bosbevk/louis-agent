@@ -3,7 +3,7 @@ using LouisAgent.Puls.Admin.Explorer.Tree;
 
 namespace LouisAgent.Puls.Tests.Admin.Explorer.Timeline;
 
-/// <summary>A turn's requests laid out on a time axis, Puls's lane then the specialist's.</summary>
+/// <summary>A turn's requests laid out on a time axis, the agent's lane then the specialist's.</summary>
 public class TimelineLayoutTests
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 10, 0, 0, TimeSpan.Zero);
@@ -24,7 +24,7 @@ public class TimelineLayoutTests
 
         Assert.That(layout.SpanMs, Is.EqualTo(4000));
         Assert.That(layout.Lanes.Select(l => (l.Label, l.Specialist)),
-            Is.EqualTo(new[] { ("Puls", false), (SampleRole.Alpha, true) }));
+            Is.EqualTo(new[] { ("Agent", false), (SampleRole.Alpha, true) }));
         Assert.That(layout.Lanes[0].Bars.Select(b => (b.I, b.Left, b.Width)),
             Is.EqualTo(new[] { (0, "0", "37.5"), (1, "49.75", "0.6") }));
         Assert.That(layout.Lanes[1].Bars.Select(b => (b.I, b.Left, b.Width)), Is.EqualTo(new[] { (0, "50", "50") }));

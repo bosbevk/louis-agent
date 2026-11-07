@@ -23,6 +23,6 @@ public partial class RequestDetail
     /// <summary>What it cost in the chosen currency, or a dash.</summary>
     private string Money => ExplorerText.Money(Request.Cost, Currency);
 
-    /// <summary>Whose lane it ran in: Puls's, or the mode's specialists'.</summary>
-    private string Lane => Request.Specialist ? ModeNames.Roles([Mode]) : "Puls";
+    /// <summary>Whose lane it ran in: the agent's, or the mode's specialists'.</summary>
+    private string Lane => Request.Specialist ? ModeNames.Roles([Mode]) : "Agent";
 }

@@ -25,7 +25,7 @@ public partial class TurnTimeline
     /// <summary>The bars laid out on the axis; none for a turn with no request in the ledger.</summary>
     private TimelineLayout? Layout => Turn.Rows.Count == 0 ? null : TimelineLayout.Of(Turn);
 
-    /// <summary>Puls's colour, or the specialist's.</summary>
+    /// <summary>The agent's colour, or the specialist's.</summary>
     private static string Colour(TimelineLane lane) => lane.Specialist ? ExplorerColours.Spec : ExplorerColours.Own;
 
     /// <summary>A cost in the chosen currency, or a dash.</summary>

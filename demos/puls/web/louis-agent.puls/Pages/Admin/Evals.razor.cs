@@ -78,7 +78,7 @@ public partial class Evals : IDisposable
     protected override async Task OnInitializedAsync()
     {
         if (!Store.Loaded) await Store.LoadAsync();
-        // Costs in the browser's currency (F14), as everywhere in Puls; the ledger's are USD.
+        // Costs in the browser's currency (F14), as everywhere in the app; the ledger's are USD.
         Currency.Changed += StateHasChanged;
         await Currency.LoadAsync();
         await LoadAsync();

@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 namespace LouisAgent.Site.Components.Landing;
 
 /// <summary>
-/// A link to the coding agent's chat. This site is its landing page and references no engine project, so all it knows of
-/// the app is where it lives: <c>/chat</c>, unless <c>CHAT_ADDRESS</c> says it runs somewhere else.
+/// A link to the coding agent's chat. This site is its landing page and references no engine project, so all it knows
+/// of the app is where it lives: <c>/chat</c>, unless <c>CHAT_ADDRESS</c> says it runs somewhere else.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 public partial class ChatLink

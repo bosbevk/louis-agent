@@ -5,16 +5,16 @@ namespace LouisAgent.Puls.Admin.Charts.Guides;
 /// measure, shared by the explorer's rings and the trend's lines, so both say the same.
 /// </summary>
 /// <remarks>
-/// A table of texts, the way Puls keeps its words (<c>PulsText</c>): the browser app can't reach core's message enums,
-/// so its words live in a plain class it owns (the unattended run's finding 4). A switch expression on the measure
-/// keeps one arm per measure and lets the build say when a new measure has no note.
+/// A table of texts: the browser app can't reach core's message enums, so its words live in a plain class it owns
+/// (the unattended run's finding 4). A switch expression on the measure keeps one arm per measure and lets the build
+/// say when a new measure has no note.
 /// </remarks>
 public static class ChartGuides
 {
     /// <summary>The note for one measure.</summary>
     public static ChartGuide For(ChartTopic topic) => topic switch
     {
-        ChartTopic.Cost => new("What one repeat of the mode cost: Puls's own requests and the specialist's.",
+        ChartTopic.Cost => new("What one repeat of the mode cost: the agent's own requests and the specialist's.",
             "Lower, with the same or a better score.",
             "A dearer mode that doesn't give better answers.",
             "Delegating pays only when the specialist does something better or cheaper; otherwise it's just another "
@@ -25,7 +25,8 @@ public static class ChartGuides
             "Much fresh input or cache written: every request starts almost from scratch.",
             "Tokens are the cost and the wait; a token from the cache costs a tenth of a fresh one.",
             "Lower is better."),
-        ChartTopic.Time => new("Seconds per turn; the ring splits the model's time between Puls and the specialist.",
+        ChartTopic.Time => new("Seconds per turn; the ring splits the model's time between the agent and the "
+                               + "specialist.",
             "Short turns.",
             "Long turns waiting on a specialist or on tools.",
             "The user waits every second; a specialist adds a whole model round.",

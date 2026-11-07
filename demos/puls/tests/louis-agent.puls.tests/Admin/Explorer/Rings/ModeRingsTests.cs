@@ -14,8 +14,8 @@ public class ModeRingsTests
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 10, 0, 0, TimeSpan.Zero);
 
     /// <summary>
-    /// A mode with two conversations: a cook that passed (Puls's request and a specialist's, two turns), and a chat
-    /// that failed, whose only request has no price.
+    /// A mode with two conversations: a cook that passed (the agent's request and a specialist's, two turns), and a
+    /// chat that failed, whose only request has no price.
     /// </summary>
     private static ModeNode Mode()
     {
@@ -60,11 +60,11 @@ public class ModeRingsTests
         return mode;
     }
 
-    /// <summary>Puls's cost against the specialist's, the known total in the middle.</summary>
+    /// <summary>The agent's cost against the specialist's, the known total in the middle.</summary>
     [Test]
-    public void TheCost_SplitsPulsFromTheSpecialist() =>
+    public void TheCost_SplitsTheAgentFromTheSpecialist() =>
         AssertRing(ModeRings.Cost(Mode(), null), [0.01, 0.03], [ExplorerColours.Own, ExplorerColours.Spec],
-            ["Puls $0.01", $"{SampleRole.Alpha} $0.03"], "$0.04", "3 requests");
+            ["Agent $0.01", $"{SampleRole.Alpha} $0.03"], "$0.04", "3 requests");
 
     /// <summary>The four kinds of token, their total in the middle.</summary>
     [Test]
@@ -77,7 +77,7 @@ public class ModeRingsTests
     public void TheTime_IsTheModelsSeconds_AndATurnsAverage()
     {
         AssertRing(ModeRings.Time(Mode()), [2, 2.5], [ExplorerColours.Own, ExplorerColours.Spec],
-            ["Puls 2.0 s", $"{SampleRole.Alpha} 2.5 s"], "3.0 s", "per turn");
+            ["Agent 2.0 s", $"{SampleRole.Alpha} 2.5 s"], "3.0 s", "per turn");
         Assert.That(ModeRings.ModelSeconds(Mode()), Is.EqualTo(4.5));
     }
 

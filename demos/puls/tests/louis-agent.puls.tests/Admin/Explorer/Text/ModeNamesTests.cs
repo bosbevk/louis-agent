@@ -6,13 +6,13 @@ namespace LouisAgent.Puls.Tests.Admin.Explorer.Text;
 /// <summary>What the explorer calls a mode and its specialists.</summary>
 public class ModeNamesTests
 {
-    /// <summary>A mode is Puls with the roles it handed work to, or Puls alone.</summary>
+    /// <summary>A mode is the agent with the roles it handed work to, or the agent alone.</summary>
     [Test]
     public void AMode_IsNamedForItsRoles()
     {
         Assert.That(ModeNames.Who(Mode(SampleRole.Alpha, null, SampleRole.Beta, SampleRole.Alpha)),
-            Is.EqualTo($"Puls with {SampleRole.Alpha} and {SampleRole.Beta}"));
-        Assert.That(ModeNames.Who(Mode(null, "")), Is.EqualTo("Puls alone"));
+            Is.EqualTo($"The agent with {SampleRole.Alpha} and {SampleRole.Beta}"));
+        Assert.That(ModeNames.Who(Mode(null, "")), Is.EqualTo("The agent alone"));
     }
 
     /// <summary>The specialists' name is the roles across the modes, each once, or "specialist" with none.</summary>
@@ -24,9 +24,9 @@ public class ModeNamesTests
         Assert.That(ModeNames.Roles([Mode((string?)null)]), Is.EqualTo("specialist"));
     }
 
-    /// <summary>A turn was answered by its role, or carried on a specialist's session, or by Puls itself.</summary>
+    /// <summary>A turn was answered by its role, or carried on a specialist's session, or by the agent.</summary>
     [Test]
-    public void ATurnsAnswerer_IsItsRole_ThenTheSessionItCarriedOn_ThenPuls()
+    public void ATurnsAnswerer_IsItsRole_ThenTheSessionItCarriedOn_ThenTheAgent()
     {
         Assert.That(ModeNames.Answerer(new TurnNode
         {
@@ -35,7 +35,7 @@ public class ModeNamesTests
         }),
             Is.EqualTo(SampleRole.Alpha));
         Assert.That(ModeNames.Answerer(new TurnNode { Continued = "s1" }), Is.EqualTo("continued · s1"));
-        Assert.That(ModeNames.Answerer(new TurnNode()), Is.EqualTo("Puls itself"));
+        Assert.That(ModeNames.Answerer(new TurnNode()), Is.EqualTo("The agent itself"));
     }
 
     /// <summary>A mode with one conversation whose turns were answered by these roles.</summary>

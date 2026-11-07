@@ -24,7 +24,7 @@ public static class StoreStatus
     public static string Title(StoreRow store) => store switch
     {
         { Error: { } error } => error,
-        { Configured: true } => "puls-mongo answers",
+        { Configured: true } => "The store answers",
         _ => "No store"
     };
 }

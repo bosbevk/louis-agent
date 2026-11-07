@@ -20,7 +20,7 @@ public sealed class TurnNode
     /// <summary>What the person asked.</summary>
     public string Question { get; init; } = "";
 
-    /// <summary>What Puls answered, if it did.</summary>
+    /// <summary>What the agent answered, if it did.</summary>
     public string? Answer { get; init; }
 
     /// <summary>The specialist that answered, if one did.</summary>

@@ -37,7 +37,7 @@ public class ChatShellTests
         Assert.That(cut.FindAll(".tagline"), Is.Empty);
     }
 
-    /// <summary>With no empty slot from the site, a new chat is still a message box, centred as any empty chat is.</summary>
+    /// <summary>With no empty slot from the site, a new chat is still a centred message box.</summary>
     [Test]
     public void WithNoEmptySlot_ANewChat_IsStillAMessageBox()
     {

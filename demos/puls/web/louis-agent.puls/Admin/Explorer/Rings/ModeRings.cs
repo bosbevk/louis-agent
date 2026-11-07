@@ -8,7 +8,7 @@ using static LouisAgent.Puls.Admin.Explorer.Legends.ExplorerColours;
 namespace LouisAgent.Puls.Admin.Explorer.Rings;
 
 /// <summary>
-/// The donut each "per mode" chart draws for one mode: what it cost and how long it took (Puls's part against the
+/// The donut each "per mode" chart draws for one mode: what it cost and how long it took (the agent's part against the
 /// specialist's), its tokens, the conversations that passed, the cache, its tools, the sites it read, and what a
 /// passed conversation cost.
 /// </summary>
@@ -19,14 +19,14 @@ namespace LouisAgent.Puls.Admin.Explorer.Rings;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class ModeRings
 {
-    /// <summary>What Puls's own requests cost against the specialist's, the mode's cost in the middle.</summary>
+    /// <summary>What the agent's own requests cost against the specialist's, the mode's cost in the middle.</summary>
     public static RingFigure Cost(ModeNode m, CurrencyChoice? currency)
     {
         var rows = m.Rows;
         decimal? own = RequestSums.Cost(rows, specialist: false), spec = RequestSums.Cost(rows, specialist: true);
         return new RingFigure([(double)(own ?? 0), (double)(spec ?? 0)], [Own, Spec],
             [
-                $"Puls {ExplorerText.Money(own, currency)}",
+                $"Agent {ExplorerText.Money(own, currency)}",
                 $"{ModeNames.Roles([m])} {ExplorerText.Money(spec, currency)}"
             ],
             ExplorerText.Money(m.Cost, currency), $"{rows.Count} requests");
@@ -40,7 +40,7 @@ public static class ModeRings
             UsageFormat.Tokens(parts.Sum()), "tokens");
     }
 
-    /// <summary>The model's seconds, Puls's against the specialist's, a turn's average time in the middle.</summary>
+    /// <summary>The model's seconds, the agent's against the specialist's, a turn's average in the middle.</summary>
     public static RingFigure Time(ModeNode m)
     {
         double own = RequestSums.Seconds(m.Rows, specialist: false),
@@ -48,7 +48,7 @@ public static class ModeRings
         var turns = m.Turns;
         string perTurn = turns.Count == 0 ? "—" : $"{ExplorerText.Secs(turns.Average(t => t.Seconds))} s";
         return new RingFigure([own, spec], [Own, Spec],
-            [$"Puls {ExplorerText.Secs(own)} s", $"{ModeNames.Roles([m])} {ExplorerText.Secs(spec)} s"], perTurn,
+            [$"Agent {ExplorerText.Secs(own)} s", $"{ModeNames.Roles([m])} {ExplorerText.Secs(spec)} s"], perTurn,
             "per turn");
     }
 
@@ -106,7 +106,7 @@ public static class ModeRings
             ValueTitles(good, bad, currency), ExplorerText.Money(good / answered.Count, currency), "per answer");
     }
 
-    /// <summary>The model's seconds on all a mode's requests, Puls's and the specialist's.</summary>
+    /// <summary>The model's seconds on all a mode's requests, the agent's and the specialist's.</summary>
     public static double ModelSeconds(ModeNode m) =>
         RequestSums.Seconds(m.Rows, specialist: false) + RequestSums.Seconds(m.Rows, specialist: true);
 

@@ -4,7 +4,7 @@ using LouisAgent.Puls.Admin.Explorer.Tree;
 namespace LouisAgent.Puls.Admin.Explorer.Timeline;
 
 /// <summary>
-/// A turn's requests on a time axis from the first request's start to the last one's end: Puls's lane, then the
+/// A turn's requests on a time axis from the first request's start to the last one's end: the agent's lane, then the
 /// specialist's, each request a bar from its start to its end.
 /// </summary>
 public sealed record TimelineLayout(IReadOnlyList<TimelineLane> Lanes, double SpanMs)
@@ -25,6 +25,6 @@ public sealed record TimelineLayout(IReadOnlyList<TimelineLane> Lanes, double Sp
                 ChartNumbers.Format(Math.Max(0.6, r.DurationMs / span * 100))))
         ]);
 
-        return new TimelineLayout([Lane("Puls", false), Lane(turn.Role ?? "specialist", true)], span);
+        return new TimelineLayout([Lane("Agent", false), Lane(turn.Role ?? "specialist", true)], span);
     }
 }
