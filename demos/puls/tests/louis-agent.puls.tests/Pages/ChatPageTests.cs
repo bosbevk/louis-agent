@@ -27,7 +27,8 @@ public class ChatPageTests
 
     private static readonly string[] TurnCalls =
     [
-        "chatUi.timeZone", "louisChat.scrollToBottom", "louisChat.highlightBlocks", "localStorage.setItem",
+        // The list's and the turn's own modules (CL31) are imported, and their calls go to the modules.
+        "chatUi.timeZone", "import", "scrollToBottom", "highlightBlocks", "localStorage.setItem",
     ];
 
     /// <summary>A bUnit context with everything the page asks for, over the stub API.</summary>
