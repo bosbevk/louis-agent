@@ -1,0 +1,9 @@
+/* LiveRunPanel's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.run-panel.running { border: 1px solid transparent; background: linear-gradient(var(--bs-secondary-bg), var(--bs-secondary-bg)) padding-box, conic-gradient(from var(--angle), var(--bs-primary), var(--bs-success-text-emphasis), var(--bs-primary)) border-box; animation: rise .4s var(--web-ease) both, spin 2.6s linear infinite; }
+.run-panel ::deep .table-wrap { overflow-x: auto; }
+.run-panel ::deep .run-table { width: 100%; border-collapse: collapse; }
+.run-panel ::deep .run-table th, .run-panel ::deep .run-table td { padding: 5px 12px 5px 0; text-align: left; white-space: nowrap; }
+.run-panel ::deep .run-table th { color: var(--bs-secondary-color); font-weight: 600; border-bottom: 1px solid var(--bs-border-color); }
+.run-panel ::deep .run-table td.conv-cell { white-space: normal; min-width: 260px; }
+.run-panel ::deep .run-table td.conv-cell small { display: block; color: var(--bs-secondary-color); font-size: 12px; max-width: 520px; }
+.tree-turn-body { padding: 6px 0 10px 14px; display: flex; flex-direction: column; gap: 12px; }

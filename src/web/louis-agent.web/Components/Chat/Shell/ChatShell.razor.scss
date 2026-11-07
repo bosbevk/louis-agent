@@ -1,0 +1,19 @@
+/* ChatShell's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+/* The tab that brings the Werk panel back (wide screens, when hidden) or slides it in (smaller screens). */
+.work-tab {
+    position: absolute; top: 14px; right: 14px; z-index: 5; height: 36px; padding: 0 14px; border-radius: 12px; place-items: center;
+    font-weight: 700; font-size: 13px; color: var(--bs-emphasis-color); background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); box-shadow: var(--bs-box-shadow);
+    transition: opacity .25s var(--web-ease), transform .3s var(--web-spring), border-color .2s;
+}
+.work-tab:hover { border-color: rgba(var(--bs-primary-rgb), .5); transform: translateY(-2px); }
+@media (min-width: 1200px) { .work-tab { opacity: 0; pointer-events: none; } .work-hidden .work-tab { opacity: 1; pointer-events: auto; } }
+::deep .rename-input { flex: 1; min-width: 0; margin: 3px 4px; padding: 6px 9px; font: inherit; font-size: 14px; color: var(--bs-emphasis-color); background: var(--bs-secondary-bg); border: 1px solid var(--bs-primary); border-radius: 8px; outline: 0; box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .2); }
+::deep .i-share { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><path d='m8.6 13.5 6.8 4M15.4 6.5l-6.8 4'/></svg>"); }
+::deep .i-pencil { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20h4L20 8l-4-4L4 16z'/><path d='m14 6 4 4'/></svg>"); }
+::deep .dropdown-header { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--bs-tertiary-color); padding: 8px 10px 4px; }
+/* The Werk tab floats only below lg now; the header has the button above it. */
+.work-tab { top: 14px; }
+::deep .i-sliders { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0'/><circle cx='16' cy='6' r='2'/><circle cx='10' cy='12' r='2'/><circle cx='18' cy='18' r='2'/></svg>"); }
+::deep .source-dot { width: 20px; height: 20px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: 10px; font-weight: 800; color: var(--web-on-primary); background: linear-gradient(135deg, var(--bs-primary), var(--bs-success-text-emphasis)); box-shadow: 0 0 0 2px var(--bs-body-bg); }
+/* The actions' icons. */
+::deep .i-copy { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='12' height='12' rx='2'/><path d='M5 15V5a2 2 0 0 1 2-2h8'/></svg>"); }

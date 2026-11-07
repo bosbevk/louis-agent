@@ -1,0 +1,6 @@
+/* Prompts's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.prompts-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.prompts-table th, .prompts-table td { padding: 7px 12px 7px 0; text-align: left; vertical-align: top; }
+.prompts-table th { color: var(--bs-secondary-color); font-weight: 600; border-bottom: 1px solid var(--bs-border-color); }
+.prompts-table tr + tr td { border-top: 1px solid var(--bs-border-color); }
+.prompt-path { display: block; font-family: var(--bs-font-monospace); font-size: 12px; }

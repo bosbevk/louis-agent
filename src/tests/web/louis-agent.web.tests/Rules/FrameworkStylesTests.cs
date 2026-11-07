@@ -11,10 +11,6 @@ public partial class FrameworkStylesTests
 {
     private static readonly string Styles = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles/web");
 
-    /// <summary>The account library's rules (CL30), under the same rules as the framework's.</summary>
-    private static readonly string AccountStyles =
-        Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.accounts/Styles/accounts");
-
     /// <summary>The studio's rules (CL57), under the same rules as the framework's.</summary>
     private static readonly string EvalStyles =
         Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.evals/Styles/evals");
@@ -24,13 +20,22 @@ public partial class FrameworkStylesTests
     [GeneratedRegex(@"#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d", RegexOptions.NonBacktracking)]
     private static partial Regex FixedColour();
 
-    /// <summary>The framework's rules and the account library's, without the colours, which are where the values belong.</summary>
+    /// <summary>The three libraries, whose components may carry their own styles beside them (CL58).</summary>
+    private static readonly string[] Libraries =
+        ["src/web/louis-agent.web", "src/web/louis-agent.web.accounts", "src/web/louis-agent.web.evals"];
+
+    /// <summary>
+    /// The framework's rules and the two libraries', the partials a site forwards and the styles a component carries
+    /// beside it (the account library has only the latter since CL58), without the colours, which are where the
+    /// values belong.
+    /// </summary>
     private static IEnumerable<string> Rules() =>
         Directory.EnumerateFiles(Styles, "_*.scss", SearchOption.AllDirectories)
             .Where(file => !Path.GetRelativePath(Styles, file).Replace('\\', '/')
                 .StartsWith("settings/", StringComparison.Ordinal))
-            .Concat(Directory.EnumerateFiles(AccountStyles, "_*.scss", SearchOption.AllDirectories))
-            .Concat(Directory.EnumerateFiles(EvalStyles, "_*.scss", SearchOption.AllDirectories));
+            .Concat(Directory.EnumerateFiles(EvalStyles, "_*.scss", SearchOption.AllDirectories))
+            .Concat(Libraries.SelectMany(library => Directory.EnumerateFiles(
+                Path.Combine(TestPaths.RepoRoot, library), "*.razor.scss", SearchOption.AllDirectories)));
 
     /// <summary>The parts the framework draws have their rules in the framework.</summary>
     [TestCase(".sidebar")]

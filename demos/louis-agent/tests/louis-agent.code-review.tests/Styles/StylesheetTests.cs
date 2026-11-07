@@ -1,8 +1,8 @@
 namespace LouisAgent.CodeReview.Tests.Styles;
 
 /// <summary>
-/// The code-review app's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and its packs', and its own few
-/// after them, so it keeps no copy. What's checked is what the build really made, its themes included.
+/// The code-review app's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and its packs', and its
+/// own few after them, so it keeps no copy. What's checked is what the build really made, its themes included.
 /// </summary>
 public class StylesheetTests
 {
@@ -19,7 +19,7 @@ public class StylesheetTests
     public void ItListsTheFrameworksRules_ColoursFirst()
     {
         Assert.That(Css.FrameworkForwards()[0], Is.EqualTo("web/settings/colours"));
-        Assert.That(Css.FrameworkForwards(), Does.Contain("web/layout/shell").And.Contain("web/admin/screens"));
+        Assert.That(Css.FrameworkForwards(), Does.Contain("web/layout/shell").And.Contain("web/base/elements"));
         Assert.That(Css.FrameworkForwards().Where(partial => !File.Exists(Css.FrameworkPartial(partial))), Is.Empty);
     }
 

@@ -1,0 +1,6 @@
+/* WorkStep's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.work-minion { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; padding: 6px 8px; border-radius: 10px; background: var(--bs-success-bg-subtle, rgba(var(--bs-black-rgb), .04)); }
+.work-minion-head { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.work-minion-role { font-family: var(--bs-font-monospace); font-size: 11px; color: var(--bs-secondary-color); }
+.work-minion-task { font-size: 11.5px; color: var(--bs-tertiary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.work-minion-cost { font-size: 11px; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }

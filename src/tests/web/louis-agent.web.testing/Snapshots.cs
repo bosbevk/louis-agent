@@ -6,11 +6,12 @@ namespace LouisAgent.Web.Testing;
 
 /// <summary>
 /// A component's rendered markup pinned to a golden file beside its test, the way the model's request and the tool
-/// texts are pinned (src/tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run compares,
-/// and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the diff can be
-/// read. Normalised, since none is the component's doing: per-instance SVG ids, <c>@ref</c> element references, the
-/// renderer's event-handler numbers, the seconds a thinking block took, and the line breaks beside tags (a page split
-/// into components keeps its markup but not its indentation).
+/// texts are pinned (src/tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run
+/// compares, and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the
+/// diff can be read. Normalised, since none is the component's doing: per-instance SVG ids, <c>@ref</c> element references, the
+/// renderer's event-handler numbers, the seconds a thinking block took, the scope attribute of a component with its
+/// own styles (CL58), and the line breaks beside tags (a page split into components keeps its markup but not its
+/// indentation).
 /// </summary>
 public static partial class Snapshots
 {
@@ -21,6 +22,7 @@ public static partial class Snapshots
         text = ElementReferences().Replace(text, "blazor:elementReference=\"ID\"");
         text = ThoughtFor().Replace(text, "$1Ns");
         text = EventHandlers().Replace(text, "$1=\"N\"");
+        text = ScopeAttributes().Replace(text, "b-SCOPE");
         text = LineBreaksAtTags().Replace(text, "");
         return text.TrimEnd() + "\n";
     }
@@ -59,9 +61,20 @@ public static partial class Snapshots
     [GeneratedRegex(@"(Thought for |Gedink vir )\d+s")]
     private static partial Regex ThoughtFor();
 
-    /// <summary>bUnit numbers event handlers in the order the renderer meets them, which a component boundary changes.</summary>
+    /// <summary>
+    /// bUnit numbers event handlers in the order the renderer meets them, which a component boundary changes.
+    /// </summary>
     [GeneratedRegex(@"(blazor:on[a-z]+)=""\d+""")]
     private static partial Regex EventHandlers();
+
+    /// <summary>
+    /// Blazor's scope attribute on every element a component with its own styles draws: a hash of the file's path,
+    /// so it would change the golden when the file moves. Matches <c>&lt;div b-k3x9z2m1qa class="x"&gt;</c> and
+    /// <c>&lt;div b-k3x9z2m1qa=""&gt;</c> (bUnit writes an empty value on a few elements) inside a tag, not the
+    /// same letters in a text.
+    /// </summary>
+    [GeneratedRegex(@"(?<=<[^<>]*\s)b-[a-z0-9]{10}\b(="""")?")]
+    private static partial Regex ScopeAttributes();
 
     /// <summary>A line break and its indentation next to a tag, inside text: indentation, not markup.</summary>
     [GeneratedRegex(@"\s*\n\s*(?=<)|(?<=>)\s*\n\s*")]

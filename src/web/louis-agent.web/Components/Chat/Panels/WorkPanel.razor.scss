@@ -1,0 +1,16 @@
+/* WorkPanel's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.work-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 40px 12px; color: var(--bs-secondary-color); font-size: 13.5px; }
+.work-empty img { opacity: .85; filter: drop-shadow(0 10px 24px rgba(var(--bs-primary-rgb), .3)); }
+.work-empty strong { color: var(--bs-emphasis-color); font-size: 15px; }
+.work-empty p { margin: 0; }
+.work-label { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--bs-tertiary-color); margin-top: 4px; }
+.work-foot { display: flex; justify-content: space-between; gap: 8px; padding: 12px 20px 16px; border-top: 1px solid var(--bs-border-color); font-size: 12px; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+.work-foot strong { color: var(--bs-emphasis-color); font-weight: 700; margin-left: 4px; }
+/* The Werk panel's sources. */
+.work-sources { display: flex; flex-direction: column; gap: 4px; padding: 4px 16px 14px; animation: rise .4s var(--web-ease) both; }
+.work-sources ::deep .work-label { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.work-source { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; text-decoration: none; transition: background .2s; }
+.work-source:hover { background: rgba(var(--web-overlay-rgb), .05); }
+.work-source-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.work-source-text strong { color: var(--bs-emphasis-color); font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.work-source-text small { color: var(--bs-success-text-emphasis); font-size: 11.5px; }

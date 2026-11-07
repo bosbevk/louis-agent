@@ -1,0 +1,6 @@
+/* ChatsDialog's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.chats-dialog { width: min(1500px, calc(100vw - 32px)); max-height: 88vh; top: min(5vh, 40px); outline: 0; }
+.chats-dialog ::deep .manual-head { flex-wrap: wrap; }
+.chats-dialog ::deep .manual-head kbd { margin-left: auto; }
+.chats-body { overflow-y: auto; padding: 14px 20px 22px; }
+.chats-body ::deep .xreplay { display: flex; flex-direction: column; gap: 6px; }

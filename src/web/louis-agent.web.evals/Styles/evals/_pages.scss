@@ -1,5 +1,6 @@
-/* The eval pages' styles, in their cascade order, so a site lists this one name and not six. The pages' addresses are
-   on every site, so every site lists it, after the admin's shell. */
+/* The eval pages' shared styles, in their cascade order, so a site lists this one name and not six: what several of
+   the studio's components draw and no one component holds, and what a site draws too. A component's own rules sit
+   beside it, in its X.razor.scss (CL58). The pages' addresses are on every site, so every site lists it. */
 
 @forward "benchmarks";
 @forward "evals";

@@ -62,4 +62,30 @@
 .empty h1 .w { display: inline-block; animation: word .7s var(--web-ease) both; animation-delay: calc(.1s + var(--i) * 80ms); }
 .conversation > .messages { position: relative; z-index: 1; }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* The ways in, shared by the packs' views and the sites: a fade, a slide, a soft blink (from the admin's screens, CL58). */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes blink-soft { 50% { opacity: .55; } }
+/* A page's header, on the admin's pages and the chat's panels alike: the title and its line on the left, the
+   actions on the right. */
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.page-head h1 { font-size: 24px; font-weight: 800; letter-spacing: -.4px; color: var(--bs-emphasis-color); margin: 0; }
+.page-head p { margin: 4px 0 0; color: var(--bs-secondary-color); }
+.page-actions { display: flex; gap: 8px; align-items: center; }
+/* The cards and the table the admin's pages, the studio and a pack's screen are built from (from the admin's
+   shell, CL58): parts many components draw and override, so they stay global. */
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); align-items: start; }
+.card-p { background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-xl); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; animation: rise .4s var(--web-ease) both; }
+.card-p > p { margin: 0; }
+/* A card that holds a modal doesn't rise in: its filled transform animation would trap the modal inside it (F31). */
+.card-p.holds-modal { animation: none; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--bs-emphasis-color); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.admin-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--bs-tertiary-color); padding: 6px 10px; border-bottom: 1px solid var(--bs-border-color); }
+.admin-table td { padding: 9px 10px; border-bottom: 1px solid rgba(var(--web-overlay-rgb), .05); vertical-align: top; }
+.admin-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.admin-table tbody tr { cursor: pointer; transition: background .15s; }
+.admin-table tbody tr:hover { background: rgba(var(--web-overlay-rgb), .04); }
+.admin-table tbody tr.selected { background: var(--bs-primary-bg-subtle); }
+.admin-table code { font-size: 12.5px; }
 

@@ -1,0 +1,7 @@
+/* PromptfooPanel's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.promptfoo-panel { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--bs-border-color); padding-top: 10px; margin-top: 8px; }
+.promptfoo-yaml { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: 12px/1.45 var(--mono, monospace); resize: vertical; width: 100%; }
+.promptfoo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.promptfoo-left-out { margin: 0; padding-left: 16px; color: var(--bs-secondary-color); }
+.promptfoo-error { margin: 0; color: var(--bs-danger); }
+.promptfoo-exported { margin: 0; }

@@ -1,0 +1,6 @@
+/* The colours of a screen's answer, what an action or a save said: green when done, red when refused. The table and
+   the form both draw one, and a scoped rule reaches only its own file's elements, so each includes this (CL58). */
+@mixin answer-states {
+    .screen-answer.is-done { color: var(--bs-success-text-emphasis); }
+    .screen-answer.is-refused { color: var(--bs-danger); }
+}

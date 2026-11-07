@@ -1,0 +1,15 @@
+/* ModeRatesList's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mode-rate { display: grid; grid-template-columns: 150px minmax(180px, 1fr) minmax(180px, 1fr) auto; align-items: center; gap: 14px; padding: 10px 14px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 12px; animation: rise .45s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
+.mode-rate-name code { font-size: 14px; font-weight: 700; color: var(--bs-emphasis-color); background: none; padding: 0; }
+.mode-rate .rate-bar { display: grid; grid-template-columns: 58px minmax(0, 1fr) 44px; align-items: center; gap: 8px; background: none; border: 0; padding: 0; font-size: 12.5px; border-radius: 0; }
+.mode-rate .rate-label { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+.mode-rate ::deep .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--bs-success-text-emphasis); transform-origin: 0 50%; animation: grow .7s var(--web-ease) both; }
+.mode-rate ::deep .rate-fill.hat { background: var(--bs-primary); }
+.mode-rate .rate-bar strong { color: var(--bs-emphasis-color); text-align: right; font-variant-numeric: tabular-nums; }
+.mode-rate-notes { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 991.98px) { .mode-rate { grid-template-columns: 1fr; gap: 8px; } }
+/* F18 step 5a: a run's pass rates, one line per mode. */
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mode-rate { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mode-rate-name { font-weight: 600; margin-right: 4px; }

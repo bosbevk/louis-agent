@@ -1,0 +1,4 @@
+/* ReplayedFrom's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* FX28: a replay's note, dashed orange like the Evals page's replay tag (.run-origin.is-replay). */
+.replayed-from { font-size: 12px; color: var(--bs-primary-text-emphasis); text-decoration: none; border: 1px dashed rgba(var(--bs-primary-rgb), .45); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: background .15s; }
+.replayed-from:hover { background: rgba(var(--web-overlay-rgb), .05); }

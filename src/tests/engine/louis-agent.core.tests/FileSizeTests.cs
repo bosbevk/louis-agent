@@ -118,9 +118,13 @@ public class FileSizeTests
         return count;
     }
 
-    /// <summary>A web app on Sass gets its CSS from the build, themes too; its Sass is what's sized.</summary>
+    /// <summary>
+    /// A web app on Sass gets its CSS from the build, themes too, and a component's own <c>X.razor.css</c> from its
+    /// <c>X.razor.scss</c> beside it (CL58); its Sass is what's sized.
+    /// </summary>
     private static bool IsMadeFromSass(string path)
     {
+        if (path.EndsWith(".razor.css", StringComparison.Ordinal)) return File.Exists(path[..^4] + ".scss");
         int css = path.IndexOf(
             $"{Path.DirectorySeparatorChar}wwwroot{Path.DirectorySeparatorChar}css{Path.DirectorySeparatorChar}",
             StringComparison.Ordinal);

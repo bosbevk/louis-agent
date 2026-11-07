@@ -1,0 +1,4 @@
+/* UseCharts's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.ring-note { display: flex; flex-direction: column; gap: 2px; }
+.ring-note strong { color: var(--bs-danger); font-weight: 600; }
+.ring-note .clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

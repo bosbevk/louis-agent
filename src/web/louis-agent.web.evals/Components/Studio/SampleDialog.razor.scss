@@ -1,0 +1,9 @@
+/* SampleDialog's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F49.4: the studio's drafts in the portal's own parts (card-p, header-button, muted): the sample dialog under a
+   conversation's card, the keep buttons under a review, and an eval's drafts on its card. */
+.sample-dialog { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.sample-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sample-head h4 { margin: 0; font-size: 15px; color: var(--bs-emphasis-color); }
+.sample-place { margin: 0; font-size: 13px; }
+.sample-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--bs-secondary-color); }
+.sample-field textarea { resize: vertical; font-family: var(--mono, monospace); }

@@ -19,7 +19,9 @@ Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-o
 
 - **One call in `Program.cs`:** `EvalPages.AddTo(builder.Services)`. Every site has these addresses, as a router finds every page in the
   framework, so without the call `/admin` would crash on a missing service.
-- **One name in `app.scss`:** `@forward "evals/pages";`, which forwards the six partials in their order.
+- **One name in `app.scss`:** `@forward "evals/pages";`, which forwards the six partials of shared rules in their order;
+  what one component draws alone sits beside it in its `X.razor.scss` and travels in the site's styles bundle (CL58,
+  [ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md)).
 - **Its links, if it has evals:** `<EvalLinks />` in its frame's `Links` slot, and `<LiveRunStrip />` in `Top` if it wants the strip. A site with
   no evals leaves them out, so the pages are there but nothing leads to them. Today only Puls shows them.
 - **Which websites matter, if it wants the sources chart to sort them:** a `SiteKinds` list handed to the same call. Each `SiteKind` is a name
@@ -127,7 +129,7 @@ Paths are from `src/web/louis-agent.web/`.
 | `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState`; `Reviews/Queue/` (F53.3): `ReviewQueueView` (the Review page's model), `ReviewQueueText` (its words), `ReviewKeys` (1, 2, 3 as verdicts), `ReviewQueueState` (how many wait, shared with the badge) |
 | `Admin/EvalPages.cs` | The one call a site makes |
 | `Admin/Explorer/Sites/` | `SiteKind`, `SiteKinds`, `SiteCounts`: how a site sorts the websites its agent read, and the counts for the sources chart |
-| `Styles/evals/_pages.scss` | The one name a site lists (`evals/pages`), which forwards the pages' six partials |
+| `Styles/evals/_pages.scss` | The one name a site lists (`evals/pages`), which forwards the pages' six partials of shared rules; a component's own rules are beside it, `Components/Summary/SummaryTable.razor.scss` and 63 more (CL58) |
 
 ## Tests
 

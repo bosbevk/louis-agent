@@ -13,12 +13,12 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 58 | 77 |
-| Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 26 | 25 |
+| Fixes (`FX`) | 55 | 4 |
+| Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -71,6 +71,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F84 | A shorter cook report | Puls |
 | FX59 | binary attachments sent as files, not text | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
+| FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
@@ -127,6 +128,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
+| CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
 ## Features (58 done)
 
@@ -251,10 +253,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (26 done)
+## Cleanups (27 done)
 
 | Id | When | What |
 |---|---|---|
+| CL58 | 2026-11-07 | A component's styles sit beside it (ADR 0094): `X.razor.scss` scoped and bundled by Blazor's CSS isolation for the accounts, the admin, the studio (64 files) and the chat (21); the globals a site's own pages draw or a theme overrides stay partials; accounts/, web/admin/ and their forwards gone; the snapshot helper and the stylesheet helper know the scope and the bundle |
 | CL31 | 2026-11-07 | The framework's scripts as ES modules beside their components, imported through JsModule (ADR 0093); chat.js and passkeys.js gone from every site's head; the download the framework owns |
 | CL57 | 2026-11-07 | What a project holds (ADR 0092): the API off core.web, the runners' programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals, the hosts lose -server, a starter API; CL51 with it |
 | CL33 | 2026-11-07 | Core's Web/ and Telemetry/ as louis-agent.core.web and louis-agent.core.telemetry, on core behind a seam each; a host composes through HostServices |

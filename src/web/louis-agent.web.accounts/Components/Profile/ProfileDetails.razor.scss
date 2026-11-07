@@ -1,0 +1,4 @@
+/* The line of facts above the profile's form. */
+.account-facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13.5px; }
+.account-facts dt { color: var(--bs-tertiary-color); font-weight: 600; }
+.account-facts dd { margin: 0; color: var(--bs-body-color); word-break: break-all; }

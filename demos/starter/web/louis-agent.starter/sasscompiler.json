@@ -2,6 +2,6 @@
   "Source": "Styles",
   "Target": "wwwroot/css",
   "Arguments": "--style=expanded --no-error-css --no-source-map",
-  "GenerateScopedCss": false,
+  "GenerateScopedCss": true,
   "IncludePaths": [ "../../../../src/web/louis-agent.web/Styles", "../../../../src/web/louis-agent.web.accounts/Styles", "../../../../src/web/louis-agent.web.evals/Styles" ]
 }

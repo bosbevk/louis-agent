@@ -1,0 +1,13 @@
+/* TrendPanel's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.trend-svg { width: 100%; height: 150px; overflow: visible; }
+.trend-axis { stroke: var(--bs-border-color); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-mark { stroke: rgba(var(--bs-primary-rgb), .45); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.trend-line { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.trend-reveal { animation: reveal 1.2s var(--web-ease) both; animation-delay: .1s; }
+/* Step 7a.3: a dashed line where a prompt changed, a dot at the top where a run has notes; each reads out on hover. */
+.trend-prompt { stroke: var(--bs-secondary-color); stroke-width: 1.5; stroke-dasharray: 6 3; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-prompt:hover { stroke: var(--bs-body-color); stroke-width: 3; }
+.trend-note { stroke: var(--bs-body-color); stroke-width: 8; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-note:hover { stroke-width: 11; }
+.trend-hover { stroke: rgba(var(--web-overlay-rgb), .35); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-x { display: flex; justify-content: space-between; font-size: 11px; margin-top: -2px; font-variant-numeric: tabular-nums; }

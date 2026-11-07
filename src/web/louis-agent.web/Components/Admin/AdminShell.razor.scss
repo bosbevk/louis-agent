@@ -1,0 +1,33 @@
+/* ---- Admin portal (F27, beside AdminShell since CL58): our own management layout on the chat's pieces. A fixed
+   sidebar of sections (the chat's .sidebar and .side-link) and a content column of a page header over cards;
+   reference, not copy, of the page anatomy admin kits share. Scoped: the first rules reach only what this component
+   draws. ---- */
+.admin-shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); height: 100vh; height: 100dvh; position: relative; z-index: 1; }
+/* The chat's sidebar-hidden state and saved width live on <html>; the portal's sidebar ignores both. */
+.admin-shell .sidebar { visibility: visible; padding: 20px 14px 16px; min-width: 0; }
+.admin-main { overflow: auto; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 18px; }
+/* The page scrolls as one: a section that scrolls itself (the runs list) would otherwise shrink to a sliver under a
+   tall live run (Louis, 2026-10-29). */
+.admin-main > ::deep * { flex-shrink: 0; }
+.admin-side-back { padding: 10px 14px 14px; }
+@media (max-width: 991.98px) {
+    .admin-shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+    .admin-main { padding: 18px 16px 40px; }
+}
+
+/* ---- What a pack's own view draws in the column, under ::deep: the frame is the one ancestor every pack's view
+   has, so its file holds the rules once (CL58, step 3). The page header, the cards and the table every page is
+   built from are the page grid's, in layout/shell: a part many components draw and override is a global, not a
+   parent's rule, or the frame's scope would outweigh each override. ---- */
+/* A pack's own view: its list beside what's open, one above the other on a phone. */
+::deep .pack-split { display: grid; grid-template-columns: minmax(240px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }
+::deep .pack-detail { min-width: 0; }
+@media (max-width: 860px) { ::deep .pack-split { grid-template-columns: minmax(0, 1fr); } }
+
+/* A pack's own view keeps its text buttons on the frame's colours; the chat's round send button doesn't apply here. */
+::deep .pack-split .send, ::deep .pack-split .secondary, ::deep .pack-split .danger { width: auto; height: auto; padding: 6px 12px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--bs-secondary-bg); box-shadow: none; animation: none; color: var(--bs-body-color); font-size: 13px; font-weight: 500; }
+::deep .pack-split .send { background: var(--bs-primary); border-color: var(--bs-primary); color: var(--web-on-primary); }
+::deep .pack-split .danger { background: var(--bs-danger); border-color: var(--bs-danger); color: var(--web-on-primary); }
+::deep .pack-split .secondary:not(:disabled):hover { background: rgba(var(--web-overlay-rgb), .05); border-color: var(--bs-tertiary-color); }
+::deep .pack-split .commit-box textarea { padding: 6px 8px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--web-code-bg); color: var(--bs-body-color); font: inherit; font-size: 13px; }
+::deep .pack-split .icon { border: none; background: none; color: var(--bs-tertiary-color); padding: 2px 8px; font-size: 16px; line-height: 1; }

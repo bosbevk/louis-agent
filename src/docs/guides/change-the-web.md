@@ -12,8 +12,9 @@ currency (`Usage/`), and what the browser keeps (`Storage/`). Each app keeps its
 ## Does it belong here?
 
 Ask whether it would be the same on every site. If so it belongs here, even if only one site uses it today; what differs comes
-in from the site, and the framework names no site ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). For
-now a component still emits class names; its rules are the framework's Sass under `Styles/web/`, and a site lists them in its `app.scss`.
+in from the site, and the framework names no site ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). A
+component's own rules sit beside it in `X.razor.scss` and travel with it ([ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md));
+the globals are the framework's Sass under `Styles/web/`, which a site lists in its `app.scss`.
 
 ## Change the chat's frame
 
@@ -29,8 +30,8 @@ The sign-in, registration, confirmation, reset and profile pages are the account
 (`src/web/louis-agent.web.accounts`, [its doc](../projects/louis-agent.web.accounts.md)), the same on every site that
 opts in. **Opting in** is a project reference, `@using LouisAgent.Web.Accounts.Components` in `_Imports.razor`,
 `AddLouisAgentAccounts()` in `Program.cs`, `AccountLibrary.Assembly` in the router's `FrameworkPages.With(...)` (CL57: a
-library a site adds services for is in its router, or its pages answer nothing; `SiteRouterTests` holds it), `@forward "accounts/shell"` in `app.scss` with the library's `Styles` on
-`sasscompiler.json`'s include paths; the starter has all of it. The passkeys script is a module the components import
+library a site adds services for is in its router, or its pages answer nothing; `SiteRouterTests` holds it); its styles travel in the site's
+bundle, so `app.scss` lists nothing for it (CL58); the starter has all of it. The passkeys script is a module the components import
 themselves (CL31), so `index.html` lists nothing for it. A site then changes
 three things only: **its words**, a copy of `AccountText` registered before `AddLouisAgentAccounts()` (Puls:
 `PulsAccountText.Afrikaans`); **its frame**, a small `AccountLayout` on `AccountShell` with its brand in the slot,
@@ -42,8 +43,11 @@ needs from accounts comes through `IAccountMenu` in the framework's web, and not
 
 ## Change the styles or scripts
 
-A rule every site should get goes in a partial under `Styles/web/`, with colours from variables only (`FixedColourTests` and
-`FrameworkStylesTests` hold it). What repeats becomes one piece under `web/tools/` ([the rules](../../../.claude/rules/css.md)). A component that needs the browser gets an ES module beside it, `X.razor.js` with `export function`s and no global
+A rule one component draws goes beside it, in `X.razor.scss` next to `X.razor`: the build compiles it scoped and bundles it, and
+nothing is listed anywhere ([ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md)). A rule several components draw goes in their
+nearest common ancestor's file under `::deep`. A rule every page shares, one a site's own pages draw too, or one a theme overrides goes
+in a partial under `Styles/web/`, with colours from variables only (`FixedColourTests` and `FrameworkStylesTests` hold it). What
+repeats becomes one piece under `web/tools/` ([the rules](../../../.claude/rules/css.md)). A component that needs the browser gets an ES module beside it, `X.razor.js` with `export function`s and no global
 ([ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md)); what several components share is a module under
 `wwwroot/js/`, its path named once in `Scripts/FrameworkScripts`. The component holds a `JsModule` on that path, calls its
 functions and lets it go in `DisposeAsync`; a button calls a method with `@onclick`, never a global inline. A test plans

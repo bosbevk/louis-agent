@@ -37,8 +37,11 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
   and an `otpauth://` link with the site's host as the issuer (`OtpAuth`), and the sign-in form's one second box,
   digits as the app's code and the rest as a recovery code (`SecondStep`).
 - **The words** are `AccountText` (`Text/`), English; a site registers its own copy before `AddLouisAgentAccounts()`
-  (Puls: `PulsAccountText.Afrikaans`). **The styles** are `Styles/accounts/_shell.scss`, forwarded by a site as
-  `accounts/shell` with this library's `Styles` on its Sass include path; colours from variables only.
+  (Puls: `PulsAccountText.Afrikaans`). **The styles** sit beside their components since CL58
+  ([ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md)): the card and, under `::deep`, what every page draws
+  inside it in `AccountShell.razor.scss`, the notice's, the password field's, the providers' divider's, the facts' and
+  the key's in their own files; scoped and bundled by the build, so a site lists nothing of them; colours from
+  variables only.
 
 ## Diagrams
 
@@ -47,7 +50,7 @@ flowchart LR
     subgraph site["A site"]
         program["Program.cs: AddLouisAgentAccounts()"]
         layout["AccountLayout.razor"]
-        css["app.scss: @forward accounts/shell"]
+        css["index.html: the site's styles bundle"]
     end
     subgraph wa["louis-agent.web.accounts"]
         client["Client/: AccountApi, AccountState, AccountMenu"]
@@ -97,7 +100,6 @@ src/web/louis-agent.web.accounts/
 │                        # Profile/ (details, email, password, set password, linked logins, delete), Passkeys/ (list, sign in), TwoFactor/ (section)
 ├── Layout/              # AccountFrame, on SiteFrames.Account
 ├── Pages/               # login, register, confirm-email, forgot-password, reset-password, profile
-├── Styles/accounts/     # _shell.scss
 ├── Text/                # AccountText
 ├── _Imports.razor
 └── wwwroot/js/          # passkeys.js, a module served at _content/louis-agent.web.accounts/js/passkeys.js; no site lists it
@@ -119,8 +121,8 @@ its styles hold no fixed colour, and every passkey call is in its script (`louis
 - The seam's real side was built with the seam, so the sites kept their menus through the move.
 - Rider's adjust-namespaces set the namespaces from the folders; it reports a razor code-behind as a conflict and
   changes it all the same.
-- A site's stylesheet helper (`SassStylesheet`) treats a name under `accounts/` as a library's, as `web/` is the
-  framework's.
+- A site's stylesheet helper (`SassStylesheet`) reads the site's styles bundle with `app.css`, so a style test finds
+  an account rule by its selector although no site lists a partial for it (CL58).
 
 ## Limits and plans
 

@@ -1,0 +1,5 @@
+/* ChatUsageBar's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.chat-usage { text-align: center; font-size: 12px; color: var(--bs-tertiary-color); padding: 2px; font-variant-numeric: tabular-nums; }
+.chat-usage { transition: color .2s; }
+.chat-usage:hover { color: var(--bs-secondary-color); }
+.chat-usage { font-variant-numeric: tabular-nums; }

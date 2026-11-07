@@ -1,0 +1,9 @@
+/* AgreementPanel's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.agreement-class { display: flex; flex-direction: column; gap: 6px; }
+.agreement-sentence { margin: 0; color: var(--bs-emphasis-color); font-size: 13.5px; }
+.agreement-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.agreement-bar ::deep .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--bs-success-text-emphasis); animation: grow .7s var(--web-ease) both; }
+.agreement-bar ::deep .rate-fill.hat { background: var(--bs-primary); }
+.agreement-share { color: var(--bs-secondary-color); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.agreement-download { align-self: flex-start; }
+.agreement-none { margin: 0; font-size: 13px; }

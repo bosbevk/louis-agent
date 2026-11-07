@@ -1,0 +1,6 @@
+/* TryStep's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.studio-try { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.studio-try input, .studio-try select { flex: 1; min-width: 160px; background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+.studio-try-none, .studio-try-error { flex-basis: 100%; margin: 0; }
+.studio-try-error { color: var(--bs-danger); }
+.studio-try-start:disabled { opacity: .45; cursor: not-allowed; }

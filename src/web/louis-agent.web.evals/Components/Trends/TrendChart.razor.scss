@@ -1,0 +1,11 @@
+/* TrendChart's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* The nine lines three to a row (Louis), as the rings above them; two, then one, on narrower screens. */
+.trend-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 1200px) { .trend-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 767.98px) { .trend-grid { grid-template-columns: 1fr; } }
+/* The trend reworked (2026-10-26): the run being read, its value per mode in each panel's head with the change since the run before, a guide line under the mouse, dates under the axis. */
+.trend-shown { font-size: 12.5px; }
+.trend-shown a { color: var(--bs-primary-text-emphasis); text-decoration: none; }
+.trend-shown a:hover code { text-decoration: underline; }
+.trend-hint { color: var(--bs-tertiary-color); }
+@media (max-width: 1200px) { .trend-hint { display: none; } }

@@ -1,0 +1,19 @@
+/* DelegationCard's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.delegation-task summary, .delegation-work summary { cursor: pointer; font-size: 13px; color: var(--bs-secondary-color); list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+.delegation-task summary::-webkit-details-marker, .delegation-work summary::-webkit-details-marker { display: none; }
+.delegation-task summary::before, .delegation-work summary::before { content: "›"; font-size: 16px; line-height: 1; color: var(--bs-primary); transition: transform .25s var(--web-ease); }
+.delegation-task[open] summary::before, .delegation-work[open] summary::before { transform: rotate(90deg); }
+.delegation-task-text { white-space: pre-wrap; font-size: 13px; color: var(--bs-body-color); background: var(--web-code-bg); border-radius: 12px; padding: 10px 12px; margin-top: 8px; animation: rise .3s var(--web-ease) both; }
+.delegation-blocks { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; padding-left: 14px; position: relative; }
+.delegation-blocks::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 2px; border-radius: 2px; background: linear-gradient(var(--bs-primary), var(--bs-success)); opacity: .55; }
+.delegation-blocks > * { animation: rise .35s var(--web-ease) both; }
+.delegation-answer { border-top: 1px solid var(--bs-border-color); padding-top: 12px; }
+.delegation-waiting { color: var(--bs-secondary-color); font-size: 13px; }
+.delegation-usage { margin-top: 0; }
+.dots { display: inline-flex; gap: 3px; margin-left: 4px; }
+.dots::after { content: "•••"; letter-spacing: 2px; background: linear-gradient(90deg, var(--bs-primary), var(--bs-success)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: blink 1.2s ease-in-out infinite; }
+/* The card rolls up to its header when the specialist is done; a chevron and the cost show on that line. */
+.delegation-body { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; animation: rise .35s var(--web-ease) both; }
+.delegation-cost { font-size: 12px; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+.delegation-task summary, .delegation-work summary { transition: color .2s; }
+.delegation-task summary:hover, .delegation-work summary:hover { color: var(--web-primary-deep); }

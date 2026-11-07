@@ -1,0 +1,6 @@
+/* A field of rows: a line per row, its first box narrower, and the button that adds one under them. */
+.screen-rows { display: flex; flex-direction: column; gap: 6px; }
+.screen-row { display: flex; gap: 6px; align-items: center; }
+.screen-row input { flex: 1; }
+.screen-row input:first-child { flex: 0 1 28%; }
+.screen-row-add { align-self: flex-start; }
