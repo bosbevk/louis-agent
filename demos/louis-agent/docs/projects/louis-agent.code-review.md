@@ -105,7 +105,7 @@ sequenceDiagram
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
 | `Pages/Site/` | The site's pages (F109.1): the landing, how it works, packs, build your own, proof, built on it, contact |
-| `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works; each pinned to a golden |
+| `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Landing/` | The landing's parts: the hero with its animated turn, the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
@@ -136,7 +136,7 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 - Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
 - The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address; *Build your own* says the
-  packages aren't on NuGet yet, and has to change the day they are. The films have no pause yet.
+  packages aren't on NuGet yet, and has to change the day they are.
 
 ## Related docs
 

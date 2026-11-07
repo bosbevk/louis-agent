@@ -1,0 +1,9 @@
+@* A film's frame: the film as it is, and one control to pause it and play it again. The control sits beside the
+   film, never inside it, so the film's markup, its golden and its export don't change. *@
+<div class="film-frame @(_paused ? "is-paused" : "")">
+    @ChildContent
+    <button class="film-pause" type="button" @onclick="Toggle" aria-pressed="@(_paused ? "true" : "false")"
+            aria-label="@(_paused ? "Play the film" : "Pause the film")" title="@(_paused ? "Play" : "Pause")">
+        @(_paused ? "▶" : "❚❚")
+    </button>
+</div>

@@ -278,6 +278,10 @@ should update the films with what it looks like now, explaining the whole archit
   from [the roadmap](../../../ROADMAP.md) and the TODO, each marked as planned and dated, with a test that every
   feature it names has a TODO row, so the list can't outlive the plan. ADR 0066's "what's planned is at most one
   honest line" is superseded by the F109 ADR: planned work is shown, labelled, never as shipped.
+- **The repository is private** (Louis, 2026-11-08: "I have made the repo private"): *Build your own* and *Contact* link
+  to github.com/bosbevk/louis-agent, which a visitor can't open now; the links go, or point at what is public (the
+  packages once on NuGet, the docs if they are published), and the words "the architecture, every design decision and
+  the learning write-ups are public" change with them.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -328,6 +332,11 @@ should update the films with what it looks like now, explaining the whole archit
   two items; ADR 0066 is superseded in part (the pages are the app's, the films stay CSS) and ADR 0084's bullet on the
   site says so; the TODO's F54 and F57 rows close. The films' pause Louis asked for (2026-11-08: "can we pause these
   films?") is a step of its own after this one, his pick pending.
+- **Step 7: a pause on each film** (Louis, 2026-11-08: "can we pause these films?", pick 1 of three, "1 now"). A
+  `FilmFrame` component (Decorator) wraps a film on its page with one button, outside the film's own element, so
+  the film's markup, golden and export stay as they are; paused is a class on the frame that its scoped stylesheet
+  turns into `animation-play-state: paused` on everything under the stage. The export tool is untouched: it seeks
+  the animations itself and photographs the film's element, never the frame.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
