@@ -4,10 +4,11 @@ namespace LouisAgent.Api.Endpoints.Admin.Screens;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: API routes under /v1</seealso>
 internal static class ScreenEndpoints
 {
-    /// <summary>Adds <c>GET /screens</c> and <c>GET /screens/{name}/rows</c>.</summary>
+    /// <summary>Adds the list, a screen's rows, and asking it to act.</summary>
     public static void MapScreens(this RouteGroupBuilder admin)
     {
         admin.MapGet("/screens", ScreenHandlers.GetScreens);
         admin.MapGet("/screens/{name}/rows", ScreenHandlers.GetRows);
+        admin.MapPost("/screens/{name}/actions/{action}", ScreenActionHandlers.PostAction);
     }
 }

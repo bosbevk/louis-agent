@@ -10,7 +10,11 @@ public sealed record ScreenReply(
     string Title,
     string Description,
     IReadOnlyList<ScreenColumnReply> Columns,
-    bool Searchable);
+    bool Searchable)
+{
+    /// <summary>What can be done from the screen, so the page can draw its buttons.</summary>
+    public IReadOnlyList<ScreenActionReply> Actions { get; init; } = [];
+}
 
 /// <summary>One column: its heading, and the wire name of the kind of value it holds.</summary>
 public sealed record ScreenColumnReply(string Title, string Kind);

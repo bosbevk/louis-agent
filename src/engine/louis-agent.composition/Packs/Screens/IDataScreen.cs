@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs.Screens.Acting;
 using LouisAgent.Composition.Packs.Screens.Reading;
 
 namespace LouisAgent.Composition.Packs.Screens;
@@ -21,4 +22,11 @@ public interface IDataScreen
 
     /// <summary>One page of its rows, or an empty page when its store can't be read.</summary>
     Task<ScreenPage> ReadAsync(ScreenQuery query, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Does one of the actions its <see cref="Spec"/> names, on this row if it's a row's. A screen is read-only until it
+    /// says otherwise, so one that offers nothing writes none of this.
+    /// </summary>
+    Task<ScreenAnswer> ActAsync(string action, string? rowId, CancellationToken cancellationToken) =>
+        Task.FromResult(ScreenAnswer.NotOffered);
 }

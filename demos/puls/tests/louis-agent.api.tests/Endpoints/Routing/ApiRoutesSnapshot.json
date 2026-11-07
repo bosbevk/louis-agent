@@ -84,6 +84,7 @@
   "POST /v1/admin/evals/{check}/runs (AdminKey)",
   "POST /v1/admin/imports/{name}/preview (AdminKey)",
   "POST /v1/admin/imports/{name}/save (AdminKey)",
+  "POST /v1/admin/screens/{name}/actions/{action} (AdminKey)",
   "POST /v1/git/commits (Key)",
   "POST /v1/git/discard (Key)",
   "POST /v1/git/merge (Key)",

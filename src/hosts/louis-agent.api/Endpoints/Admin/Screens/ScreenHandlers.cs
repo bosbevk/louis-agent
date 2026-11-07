@@ -44,5 +44,12 @@ internal static class ScreenHandlers
     private static ScreenReply ReplyOf(ScreenSpec spec) =>
         new(spec.Name, spec.Title, spec.Description,
             [.. spec.Columns.Select(column => new ScreenColumnReply(column.Title, column.Kind.Wire()))],
-            spec.Searchable);
+            spec.Searchable)
+        {
+            Actions =
+            [
+                .. spec.Actions.Select(action =>
+                    new ScreenActionReply(action.Name, action.Label, action.On.Wire(), action.Confirm))
+            ]
+        };
 }
