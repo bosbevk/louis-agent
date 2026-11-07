@@ -9,13 +9,19 @@ namespace LouisAgent.Web.Tests.Pages.Account;
 /// <summary>The profile draws the signed-in person's sections, and sends a guest to sign in with the way back.</summary>
 public class ProfilePageTests
 {
+    /// <summary>The lists the profile's sections read, each empty: no passkeys yet, no providers set up.</summary>
+    private static HttpResponseMessage Empty(HttpRequestMessage request) =>
+        request.RequestUri!.AbsolutePath.EndsWith("/passkeys", StringComparison.Ordinal)
+            ? AccountTestContext.Reply(HttpStatusCode.OK, """{"passkeys":[]}""")
+            : AccountTestContext.Reply(HttpStatusCode.OK, """{"providers":[]}""");
+
     [Test]
     public void ASignedInPerson_SeesEverySection()
     {
         var (ctx, _) = AccountTestContext.New(request =>
             request.RequestUri!.AbsolutePath.EndsWith("/me", StringComparison.Ordinal)
                 ? AccountTestContext.Reply(HttpStatusCode.OK, AccountTestContext.Ann)
-                : AccountTestContext.Reply(HttpStatusCode.OK, """{"providers":[]}"""));
+                : Empty(request));
         using var __ = ctx;
 
         var cut = ctx.Render<ProfilePage>();
@@ -23,8 +29,8 @@ public class ProfilePageTests
         cut.WaitForAssertion(() =>
         {
             Assert.That(cut.Find("h1").TextContent, Is.EqualTo("Your profile"));
-            Assert.That(cut.FindAll(".account-section"), Has.Count.EqualTo(6),
-                "name, email, password, logins, delete, and the way out");
+            Assert.That(cut.FindAll(".account-section"), Has.Count.EqualTo(7),
+                "name, email, password, logins, passkeys, delete, and the way out");
             Assert.That(cut.FindAll("button").Last().TextContent, Is.EqualTo("Sign out"));
         });
     }
@@ -35,7 +41,7 @@ public class ProfilePageTests
         var (ctx, _) = AccountTestContext.New(request =>
             request.RequestUri!.AbsolutePath.EndsWith("/me", StringComparison.Ordinal)
                 ? AccountTestContext.Reply(HttpStatusCode.Unauthorized)
-                : AccountTestContext.Reply(HttpStatusCode.OK, """{"providers":[]}"""));
+                : Empty(request));
         using var __ = ctx;
         var navigation = ctx.Services.GetRequiredService<NavigationManager>();
 

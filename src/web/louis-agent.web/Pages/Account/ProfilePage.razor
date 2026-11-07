@@ -17,6 +17,7 @@
     <SetPassword Me="me" />
     <AccountNotice Message="@(Failed == "link" ? Text.LinkFailed : null)" IsError="true" />
     <LinkedLogins Me="me" />
+    <PasskeyList />
     <DeleteAccount Me="me" OnDeleted="GoHome" />
     <div class="account-section account-actions">
         <button class="account-button is-plain" type="button" @onclick="SignOutAsync">@Text.SignOut</button>

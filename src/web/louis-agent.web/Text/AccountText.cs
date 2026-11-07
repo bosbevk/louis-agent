@@ -88,6 +88,22 @@ public sealed record AccountText
         "You sign in through a provider. A password of your own is a second way in.";
 
     public string PasswordSet { get; init; } = "Your password is set.";
+
+    // Passkeys (F61.5).
+    public string Passkeys { get; init; } = "Passkeys";
+
+    public string PasskeysIntro { get; init; } =
+        "Sign in with your fingerprint, your face or a security key, no password to type.";
+
+    public string NoPasskeys { get; init; } = "None yet.";
+    public string PasskeyName { get; init; } = "A name for it (this laptop, my phone)";
+    public string AddPasskey { get; init; } = "Add a passkey";
+    public string PasskeyAdded { get; init; } = "The passkey is added.";
+    public string RemovePasskey { get; init; } = "Remove";
+    public string SignInWithPasskey { get; init; } = "Sign in with a passkey";
+    public string PasskeysUnsupported { get; init; } = "This browser can't do passkeys.";
+    public string PasskeyCancelled { get; init; } = "No passkey was given.";
+
     public string DeleteAccount { get; init; } = "Delete your account";
 
     public string DeleteIntro { get; init; } =

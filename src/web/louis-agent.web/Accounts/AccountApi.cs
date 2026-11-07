@@ -80,6 +80,38 @@ public sealed class AccountApi(HttpClient http)
     /// <summary>A first password for an account that came in through a provider (F61.3).</summary>
     public Task SetPasswordAsync(SetPasswordBody body) => PostAsync("account/password", body);
 
+    /// <summary>The options the browser needs to make a passkey (F61.5), as Identity wrote them.</summary>
+    public async Task<string> PasskeyCreationOptionsAsync()
+    {
+        using var response = await SendAsync(HttpMethod.Post, "account/passkeys/options");
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public Task AddPasskeyAsync(PasskeyBody body) => PostAsync("account/passkeys", body);
+
+    public async Task<PasskeysReply> PasskeysAsync()
+    {
+        using var response = await SendAsync(HttpMethod.Get, "account/passkeys");
+        return await response.Content.ReadFromJsonAsync<PasskeysReply>(AccountJson.Web) ?? new PasskeysReply([]);
+    }
+
+    public async Task RemovePasskeyAsync(string id)
+    {
+        using var _ = await SendAsync(HttpMethod.Delete, $"account/passkeys/{Uri.EscapeDataString(id)}");
+    }
+
+    /// <summary>The options the browser needs to sign in with a passkey; the email narrows them to one person's.</summary>
+    public async Task<string> PasskeyRequestOptionsAsync(string? email)
+    {
+        string url = "account/passkeys/request-options";
+        if (!string.IsNullOrWhiteSpace(email)) url += $"?email={Uri.EscapeDataString(email.Trim())}";
+        using var response = await SendAsync(HttpMethod.Post, url);
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    /// <summary>Signs in with the credential the browser got; a refusal carries Identity's code.</summary>
+    public Task PasskeyLoginAsync(PasskeyLoginBody body) => PostAsync("account/passkeys/login", body);
+
     public async Task<ProvidersReply> ProvidersAsync()
     {
         using var response = await SendAsync(HttpMethod.Get, "account/providers");

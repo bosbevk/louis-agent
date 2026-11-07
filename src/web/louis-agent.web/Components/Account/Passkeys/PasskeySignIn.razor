@@ -1,0 +1,9 @@
+@* Sign in with a passkey: one button, and the browser's own dialog does the rest; nothing in a browser that can't. *@
+@if (_supported)
+{
+    <div class="account-actions">
+        <AccountNotice Message="@_error?.Message" Details="_error?.Details ?? []" IsError="true"/>
+        <button class="account-button is-plain" type="button" @onclick="SignInAsync"
+                disabled="@_busy">@Text.SignInWithPasskey</button>
+    </div>
+}
