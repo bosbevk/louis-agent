@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Accounts.Client;
+namespace LouisAgent.Web.Accounts.Scripts;
 
 /// <summary>
 /// Where the account library's modules are, named once (CL31), as the framework's <c>FrameworkScripts</c> names its

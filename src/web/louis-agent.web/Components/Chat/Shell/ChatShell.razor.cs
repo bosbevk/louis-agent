@@ -30,15 +30,8 @@ public partial class ChatShell : IAsyncDisposable
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
-    /// <summary>The framework's dialogs module, for the rename box's focus (CL31).</summary>
-    private JsModule Dialogs => _dialogs ??= new JsModule(JS, FrameworkScripts.Dialogs);
-
-    private JsModule? _dialogs;
-    private JsModule? _preferencesModule;
-    private JsModule? _shell;
-
-    /// <summary>The shell's own module (CL31): the page-wide behaviour, attached while the shell is drawn.</summary>
-    private JsModule Shell => _shell ??= new JsModule(JS, FrameworkScripts.Shell);
+    /// <summary>The frame's modules (CL31): the shell's, the dialogs', the preferences'.</summary>
+    private ChatModules _modules = null!;
 
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
@@ -152,10 +145,9 @@ public partial class ChatShell : IAsyncDisposable
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
         _renaming = new ChatRenaming(Store);
-        // One preferences module for both (CL31): what this browser remembers for the person.
-        _preferencesModule = new JsModule(JS, FrameworkScripts.Preferences);
-        _preferences = new ChatPreferences(_preferencesModule, Text);
-        _languages = new ChatLanguages(Api, _preferencesModule, VoicePrefix, DefaultLanguage);
+        _modules = new ChatModules(JS);
+        _preferences = new ChatPreferences(_modules.Preferences, Text);
+        _languages = new ChatLanguages(Api, _modules.Preferences, VoicePrefix, DefaultLanguage);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"{ChatPath}/{id}");
         Currency.Changed += Redraw;
@@ -167,7 +159,7 @@ public partial class ChatShell : IAsyncDisposable
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
-            _model = Pretty(model.GetProperty("model").GetString());
+            _model = ModelNames.Pretty(model.GetProperty("model").GetString());
         }
         catch (Exception)
         {
@@ -191,46 +183,29 @@ public partial class ChatShell : IAsyncDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // The listeners the page hangs on the document, while the shell is drawn.
-        if (firstRender) await Shell.InvokeVoidAsync("attach");
+        if (firstRender) await _modules.Shell.InvokeVoidAsync("attach");
 
         if (_focusDraft)
         {
             _focusDraft = false;
-            await Shell.InvokeVoidAsync("focusEnd", "#composer-input");
+            await _modules.Shell.InvokeVoidAsync("focusEnd", "#composer-input");
         }
 
         if (_renaming.TakeFocus())
         {
-            await Dialogs.InvokeVoidAsync("focus", "#rename-input", true);
+            await _modules.Dialogs.InvokeVoidAsync("focus", "#rename-input", true);
         }
 
         // A cost that changed since the last draw counts up to its new value (data-count elements).
-        await Shell.InvokeVoidAsync("countCosts");
+        await _modules.Shell.InvokeVoidAsync("countCosts");
     }
 
-    /// <summary>Stops listening when the frame goes, takes the page's listeners down, and lets the modules go if they were ever loaded.</summary>
+    /// <summary>Stops listening when the frame goes, and lets the modules go, the page's listeners first.</summary>
     public async ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
-        // A closed browser tab has no JS runtime to tell.
-        try
-        {
-            if (_shell is not null) await _shell.InvokeVoidAsync("detach");
-        }
-        catch (JSDisconnectedException)
-        {
-        }
-
-        await Release(_dialogs, _preferencesModule, _shell);
-    }
-
-    /// <summary>Lets every module go that was ever loaded.</summary>
-    private static async ValueTask Release(params JsModule?[] modules)
-    {
-        foreach (var module in modules)
-            if (module is not null)
-                await module.DisposeAsync();
+        await _modules.DisposeAsync();
     }
 
     /// <summary>A placeholder's answer: a short word saying what's coming.</summary>
@@ -249,7 +224,7 @@ public partial class ChatShell : IAsyncDisposable
     /// <summary>A new chat's session, the site's way, with what only the frame knows.</summary>
     private async Task<string> OpenSessionAsync()
     {
-        string? timeZone = await Shell.InvokeAsync<string?>("timeZone");
+        string? timeZone = await _modules.Shell.InvokeAsync<string?>("timeZone");
         return await OpenSession(new ChatOpening(_languages.Role, _preferences.Location, timeZone));
     }
 
@@ -283,18 +258,8 @@ public partial class ChatShell : IAsyncDisposable
     /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
     {
-        bool copied = await Shell.InvokeAsync<bool>("copy", text);
+        bool copied = await _modules.Shell.InvokeAsync<bool>("copy", text);
         _ = ShowToast(copied ? Text.Copied : Text.CopyFailed);
-    }
-
-    /// <summary>A model's id as a name: <c>claude-opus-5-5</c> reads Claude Opus 5.5.</summary>
-    private static string? Pretty(string? id)
-    {
-        if (string.IsNullOrWhiteSpace(id)) return null;
-        var words = id.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        var named = words.TakeWhile(w => !char.IsDigit(w[0])).Select(w => char.ToUpperInvariant(w[0]) + w[1..]);
-        string version = string.Join(".", words.SkipWhile(w => !char.IsDigit(w[0])));
-        return string.Join(" ", named) + (version.Length > 0 ? " " + version : "");
     }
 
     /// <summary>Keeps the place the person typed.</summary>

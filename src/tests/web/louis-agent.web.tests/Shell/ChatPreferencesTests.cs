@@ -1,3 +1,4 @@
+using LouisAgent.Web.Shell.Location;
 using System.Runtime.CompilerServices;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Shell;

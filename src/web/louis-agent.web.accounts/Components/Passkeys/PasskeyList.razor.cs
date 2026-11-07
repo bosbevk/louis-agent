@@ -2,6 +2,7 @@ using LouisAgent.Accounts.Contracts;
 using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Accounts.Client.Errors;
 using LouisAgent.Web.Accounts.Text;
+using LouisAgent.Web.Accounts.Scripts;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;

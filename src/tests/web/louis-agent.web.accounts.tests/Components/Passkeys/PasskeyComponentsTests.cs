@@ -1,3 +1,4 @@
+using LouisAgent.Web.Accounts.Scripts;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Accounts.Contracts;

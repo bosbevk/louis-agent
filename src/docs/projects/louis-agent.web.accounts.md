@@ -32,7 +32,7 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
   `TwoFactor/`) each do one thing over the client, show what went wrong in the site's words (`AccountErrors`, a
   switch on Identity's codes), and read again after every write (ADR 0042).
 - **Passkeys** (`Components/Passkeys/`, `wwwroot/js/passkeys.js`): a module (CL31) with three functions the two components import
-  through `JsModule` (`Client/AccountScripts` names its path), which hand the API's options to `navigator.credentials` and the browser's credential back, untouched; a browser without
+  through `JsModule` (`Scripts/AccountScripts` names its path), which hand the API's options to `navigator.credentials` and the browser's credential back, untouched; a browser without
   the parsing helpers sees no form. **Two-factor** (`Components/TwoFactor/`, `Client/TwoFactor/`): the key as text
   and an `otpauth://` link with the site's host as the issuer (`OtpAuth`), and the sign-in form's one second box,
   digits as the app's code and the rest as a recovery code (`SecondStep`).
