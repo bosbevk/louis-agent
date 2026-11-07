@@ -212,7 +212,7 @@ public partial class ArchitectureTests
                 @"..\..\identities\louis-agent.identity.an\louis-agent.identity.an.csproj"
             }));
 
-        string packs = Path.Combine(TestPaths.RepoRoot, "packs");
+        string packs = Path.Combine(TestPaths.RepoRoot, "packs/tools");
         var found = PackProjects()
             .SelectMany(f =>
                 ForbiddenReferences(File.ReadAllText(f)).Select(r => $"{Path.GetRelativePath(packs, f)}: {r}"))
@@ -241,7 +241,7 @@ public partial class ArchitectureTests
     [Test]
     public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
     {
-        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs-evals"), "*.checks.csproj",
+        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs/evals"), "*.checks.csproj",
             SearchOption.AllDirectories).ToList();
 
         Assert.That(projects.Select(Path.GetFileName),
@@ -287,13 +287,13 @@ public partial class ArchitectureTests
 
     /// <summary>
     /// Someone can take the tools without the evals, or not own the evals at all, so what proves a pack is never in the
-    /// packs' folder: it sits in <c>packs-evals/</c>.
+    /// packs' folder: it sits in <c>packs/evals/</c>.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void ThePacksFolder_HoldsNoEvalsProject()
     {
-        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj",
+        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs/tools"), "*.csproj",
                 SearchOption.AllDirectories)
             .Select(Path.GetFileName)
             .Where(name => name!.EndsWith(".checks.csproj") || name.EndsWith(".evals.csproj") ||
@@ -304,7 +304,8 @@ public partial class ArchitectureTests
 
     /// <summary>Every project that is a pack.</summary>
     private static IEnumerable<string> PackProjects() =>
-        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj", SearchOption.AllDirectories);
+        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs/tools"), "*.csproj",
+            SearchOption.AllDirectories);
 
     /// <summary>
     /// The project files a csproj references, by file name, so a test reads the same on Linux, where a backslash isn't
@@ -432,7 +433,7 @@ public partial class ArchitectureTests
         return plain.Contains("<ProjectReference", StringComparison.Ordinal)
                && (plain.Contains("/demos/", StringComparison.Ordinal)
                    || plain.Contains("/packs/", StringComparison.Ordinal)
-                   || plain.Contains("/packs-evals/", StringComparison.Ordinal));
+                   || plain.Contains("/packs/evals/", StringComparison.Ordinal));
     }
 
     /// <summary>
@@ -442,7 +443,7 @@ public partial class ArchitectureTests
     [Test]
     public void APack_ReferencesTheContracts_NotTheEngine()
     {
-        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj",
+        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs/tools"), "*.csproj",
                 SearchOption.AllDirectories)
             .Where(file => File.ReadAllText(file).Contains("louis-agent.core.csproj", StringComparison.Ordinal))
             .Select(file => Path.GetFileName(file));

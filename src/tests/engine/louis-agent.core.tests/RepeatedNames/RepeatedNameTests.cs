@@ -27,10 +27,10 @@ public class RepeatedNameTests
     [
         "src/engine/louis-agent.core/Agent/Toolsets/CoreToolset.cs",
         "src/engine/louis-agent.core/Skills/Languages/ScriptLanguage.cs",
-        "packs/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
-        "packs/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
-        "packs/louis-agent.pack.recipes/RecipesToolset.cs",
-        "packs/louis-agent.pack.calculator/CalculatorToolset.cs",
+        "packs/tools/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
+        "packs/tools/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
+        "packs/tools/louis-agent.pack.recipes/RecipesToolset.cs",
+        "packs/tools/louis-agent.pack.calculator/CalculatorToolset.cs",
         "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsToolset.cs",
         "src/evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/web/louis-agent.web/Api/AskedToolset.cs",
@@ -58,7 +58,8 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
     [
-        ("demos/puls/tests/louis-agent.identity.puls.evals.tests/Evals/Checks/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
+        ("demos/puls/tests/louis-agent.identity.puls.evals.tests/Evals/Checks/PulsCookScenarioIds.cs",
+            "PulsCookScenarioIds"),
     ];
 
     /// <summary>
