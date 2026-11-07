@@ -16,7 +16,7 @@ after this track's first children, and the demand check (F62) keeps running mean
 
 What changes is *when* the framework work starts, not what the engine is. The split ChatGPT describes (the engine is
 how, an identity is who, a pack is what, a composition root brings them together) is the split we already have
-(ADR 0027, ADR 0076, ADR 0092).
+(ADR 0027, ADR 0076, ADR 0092), plus a fourth concept Louis named on 2026-11-07, the workflow (below).
 
 ## The positioning
 
@@ -45,9 +45,12 @@ both frameworks.
 
 What that reading changes here:
 
-- **"Workflow" as a fourth concept** is not added now. Orchestration is already planned as an engine function with
-  typed results checked in code (Phase 6, F39, ADR 0031); F39's plan decides whether a workflow is a named thing a
-  developer composes or stays a delegation the engine runs. Until it is measured, three concepts.
+- **Workflow is the fourth concept** (Louis, 2026-11-07: "workflow to me means how multiple steps and agents
+  coordinate"; named now, built in Phase 6). The four: the **engine** is how an agent runs, an **identity** is who it
+  is, a **pack** is what it can do, a **workflow** is how steps and agents coordinate. F39 builds it (one delegation
+  function, typed results checked in code, one policy per turn tree, ADR 0031) as a thing a developer composes
+  beside the other three; its plan says what a workflow is in code and what a pack or identity may reference of it
+  (ADR 0027 is amended there, not before).
 - **What to study in Microsoft's framework** before F106.4 (its own docs, not a summary): its agent loop, session state
   and persistence, middleware pipeline, workflow execution, human-in-the-loop, checkpointing and tool permissions.
   Each maps to a phase of ours (F43, F41, F42, F39), so the comparison also tells us where our phases stand.
