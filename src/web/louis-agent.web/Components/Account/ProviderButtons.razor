@@ -1,0 +1,12 @@
+@* The other ways to sign in, one button per provider this instance has keys for; none draws nothing. The link leaves
+   the app for the API's challenge route, which sends the person to the provider and back. *@
+@if (_providers.Count > 0)
+{
+    <div class="account-divider">@Text.Or</div>
+    <div class="account-providers">
+        @foreach (var provider in _providers)
+        {
+            <a class="account-button is-plain" href="@LinkFor(provider.Name)">@string.Format(Text.SignInWith, provider.Label)</a>
+        }
+    </div>
+}

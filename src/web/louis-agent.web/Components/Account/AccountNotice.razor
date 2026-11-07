@@ -1,0 +1,20 @@
+@* What just happened, or what went wrong: a line, and the messages under it when there are several. Nothing to say
+   draws nothing. *@
+@if (Message is not null || Details.Count > 0)
+{
+    <div class="account-notice @(IsError ? "is-error" : "")" role="@(IsError ? "alert" : "status")">
+        @if (Message is not null)
+        {
+            <span>@Message</span>
+        }
+        @if (Details.Count > 0)
+        {
+            <ul>
+                @foreach (string detail in Details)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        }
+    </div>
+}

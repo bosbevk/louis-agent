@@ -1,0 +1,27 @@
+@page "/register"
+@layout AccountFrame
+
+@* Create an account, the same on every site: the form, then, once it's made, where the confirmation link went and a
+   way to send it again. *@
+
+<PageTitle>@Text.Register</PageTitle>
+
+@if (_registered is null)
+{
+    <h1>@Text.Register</h1>
+    <p>@Text.RegisterIntro</p>
+    <RegisterForm OnRegistered="Registered" />
+    <ProviderButtons />
+}
+else
+{
+    <h1>@Text.Register</h1>
+    <AccountNotice Message="@string.Format(Text.Registered, _registered)" />
+    <AccountNotice Message="@_resent" />
+    <div class="account-actions">
+        <button class="account-button is-plain" type="button" @onclick="ResendAsync" disabled="@_busy">@Text.ResendConfirmation</button>
+    </div>
+    <div class="account-links">
+        <a href="login">@Text.BackToSignIn</a>
+    </div>
+}

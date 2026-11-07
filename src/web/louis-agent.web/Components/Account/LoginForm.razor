@@ -1,0 +1,16 @@
+@* The sign-in form: an email and a password, the links to register and to reset, and what went wrong. *@
+<form class="account-form" @onsubmit="SignInAsync">
+    <AccountNotice Message="@_error?.Message" Details="_error?.Details ?? []" IsError="true" />
+    <label class="account-field">
+        @Text.Email
+        <input type="email" autocomplete="username" required @bind="_email" />
+    </label>
+    <PasswordField Label="@Text.Password" @bind-Value="_password" />
+    <div class="account-actions">
+        <button class="account-button" type="submit" disabled="@_busy">@Text.SignIn</button>
+    </div>
+    <div class="account-links">
+        <a href="forgot-password">@Text.ForgotPassword</a>
+        <a href="register">@Text.NoAccountYet @Text.Register</a>
+    </div>
+</form>

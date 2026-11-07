@@ -1,0 +1,11 @@
+@page "/login"
+@layout AccountFrame
+
+@* Sign in, the same on every site: the form, then the other ways in. A person already signed in is sent on. *@
+
+<PageTitle>@Text.SignIn</PageTitle>
+
+<h1>@Text.SignIn</h1>
+<p>@Text.SignInIntro</p>
+<LoginForm OnSignedIn="GoOn" />
+<ProviderButtons ReturnUrl="@ReturnUrl" />
