@@ -41,6 +41,7 @@ button, signed in by OpenID Connect ([ADR 0097](../adr/0097-puls-deploys-from-gi
 | Where | What runs | Reaches |
 |---|---|---|
 | `rg-puls-za`, `puls-env` (a Container Apps environment on `puls-vnet`) | `puls-app`: the Puls image, one container, behind its key and its sign-in | the VM on private IPs; Azure SQL over TLS; `puls-insights` through the environment's OpenTelemetry agent |
+| `rg-puls-za`, `puls-env`, the second app (F109.2, [ADR 0098](../adr/0098-the-demos-app-runs-beside-puls-split-later.md)) | `louis-agent-app`: the coding API serving the framework's site and the code-review chat, on `louis-agent.dev`, its own identity, share, keys and tenant; deployed by the same script with `-App` and by the same workflow | the same VM and SQL server as Puls |
 | `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:9` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
 | `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
 

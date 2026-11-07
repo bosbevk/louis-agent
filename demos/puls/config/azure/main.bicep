@@ -1,5 +1,5 @@
-// Puls's Azure build (F61.4): everything in rg-puls-za that isn't an app revision, as one deployment that creates what
-// is missing and updates what exists. deploy.ps1 infra runs it (-WhatIf shows Azure's own what-if first); this file
+// Puls's Azure build (F61.4), and since F109.2 the louis-agent demo's app beside it: everything in rg-puls-za that
+// isn't an app revision, as one deployment that creates what is missing and updates what exists. deploy.ps1 infra runs it (-WhatIf shows Azure's own what-if first); this file
 // is the record of what Azure holds. No secret value is here: the SQL admin password and the SSH key come in as
 // parameters the verb reads from the git-ignored config files beside this folder.
 //
@@ -66,6 +66,23 @@ resource vaultReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: vault
   properties: {
     principalId: appIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+  }
+}
+
+// ---- The second app's identity (F109.2): the louis-agent demo's app beside Puls, in the same build, split later ----
+
+resource codingAppIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'louis-agent-app-identity'
+  location: location
+}
+
+resource codingVaultReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(vault.id, codingAppIdentity.id, 'KeyVaultSecretsUser')
+  scope: vault
+  properties: {
+    principalId: codingAppIdentity.properties.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
   }
@@ -310,6 +327,35 @@ resource appStorage 'Microsoft.App/managedEnvironments/storages@2024-10-02-previ
   }
 }
 
+// The second app's file share (F109.2), made here since nothing older made it: config/, logs/ and data/ for the
+// louis-agent demo's app, on the same storage account, mounted on the environment under its own name.
+resource storageFiles 'Microsoft.Storage/storageAccounts/fileServices@2023-05-01' existing = {
+  parent: storage
+  name: 'default'
+}
+
+resource codingShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
+  parent: storageFiles
+  name: 'louis-agent-workspace'
+  properties: {
+    shareQuota: 5
+  }
+}
+
+resource codingAppStorage 'Microsoft.App/managedEnvironments/storages@2024-10-02-preview' = {
+  parent: environment
+  name: 'louis-agent-vol'
+  dependsOn: [codingShare]
+  properties: {
+    azureFile: {
+      accountName: storage.name
+      accountKey: storage.listKeys().keys[0].value
+      shareName: 'louis-agent-workspace'
+      accessMode: 'ReadWrite'
+    }
+  }
+}
+
 // AcrPull for the environment on the registry; the role's id is Azure's fixed one for AcrPull.
 resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(registry.id, environment.id, 'AcrPull')
@@ -386,6 +432,9 @@ output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
 
 @description('The identity the app reads the vault with; the yaml names it.')
 output appIdentityId string = appIdentity.id
+
+@description('The identity the second app, the louis-agent demo\'s, reads the vault with (F109.2); its yaml names it.')
+output codingAppIdentityId string = codingAppIdentity.id
 
 @description('The vault the app\'s secrets reference, by URL.')
 output vaultUri string = vault.properties.vaultUri

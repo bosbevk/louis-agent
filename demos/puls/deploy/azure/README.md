@@ -1,4 +1,4 @@
-# Deploying Puls to Azure Container Apps
+# Deploying Puls and the louis-agent app to Azure Container Apps
 
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches its
 > stores, its browser and its search. **Elsewhere:** the local stacks in [docker/](../../docker/README.md), every
@@ -6,10 +6,14 @@
 > the layout is what it is in [ADR 0095](../../../../src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md),
 > the diagrams in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the app's definition, the VM's
-files and one script; the Bicep build in `config/azure/` is everything else. No secret value is in any file here.
+Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the two apps' definitions
+(`puls-app.yaml`, `louis-agent-app.yaml`), the VM's files and one script; the Bicep build in `config/azure/` is
+everything else. No secret value is in any file here. The louis-agent demo's app lives beside Puls on purpose, to be
+split later ([ADR 0098](../../../../src/docs/adr/0098-the-demos-app-runs-beside-puls-split-later.md)): every verb
+that touches an app takes `-App puls-app` (the default) or `-App louis-agent-app`.
 
-Live since 2026-11-07 on `https://mypuls.co.za` and `https://www.mypuls.co.za`. It replaced the CL19 deploy, which
+Puls is live since 2026-11-07 on `https://mypuls.co.za` and `https://www.mypuls.co.za`; the louis-agent app since
+2026-11-08 on `https://louis-agent.dev` and `www` (F109.2). It replaced the CL19 deploy, which
 reached the PC's browser and Mongo through a Tailscale sidecar with SearXNG as its own app and the ingress locked to
 one IP, and the F58 tunnel that served a placeholder from the PC; both are gone, in Azure and in the repo.
 
@@ -21,6 +25,7 @@ one IP, and the F58 tunnel that served a placeholder from the PC; both are gone,
 | Security group | `puls-services-nsg` | On the services' subnet: 27017, 9222 and 8080 from the apps' subnet, everything else denied; SSH from one address only with `infra -Ip` |
 | VM | `puls-services` | Ubuntu 24.04, `Standard_B2s`, no public IP, a 32 GB Standard SSD data disk as XFS at `/data`; cloud-init from `vm/cloud-init.yaml` installs Docker and a unit that runs `vm/docker-compose.services.yml`: `mongo:9` on 27017 (not the PC's 8: the image's 7.0 kernel refuses MongoDB 8, SERVER-121912), `headless-shell` on 9222, `searxng` on 8080, all on the private IP |
 | App identity | `puls-app-identity` | A user-assigned identity with Key Vault Secrets User on `puls-keys`; the app reads its secrets with it |
+| Second app's identity and share | `louis-agent-app-identity`, the share `louis-agent-workspace` as storage `louis-agent-vol` | The same for the louis-agent app (F109.2): its own identity on the vault, its own share on `pulsstorage` mounted on the environment |
 | Environment | `puls-env` | A Container Apps environment on the apps' subnet with a Consumption profile; logs to `puls-logs`, traces and logs to `puls-insights` through its OpenTelemetry agent; its identity pulls from `acrpulsza`; the app's share `puls-app-workspace` as storage `puls-app-vol` |
 | Application Insights | `puls-insights` | Puls's logs and traces (F52), on `puls-logs` |
 | SQL | `puls-sql-za`, database `puls_accounts` | Azure SQL's free offer: serverless General Purpose, 32 GB, 100,000 vCore-seconds a month, paused when idle and when the month's seconds run out, never billed; "Allow Azure services" on, TLS 1.2 |
@@ -28,7 +33,8 @@ one IP, and the F58 tunnel that served a placeholder from the PC; both are gone,
 
 The deployment is `puls-build`; it creates what is missing and updates what exists, and its outputs (the VM's private
 IP, the environment's id and static IP, the SQL server's address) are what the verbs read back, never a value copied
-by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` into `puls-env`.
+by hand. The apps themselves are `puls-app.yaml` and `louis-agent-app.yaml`, deployed by `deploy.ps1 release` and
+`deploy.ps1 release -App louis-agent-app` into `puls-env`.
 
 ## First time
 
@@ -54,7 +60,13 @@ by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` int
    | CNAME | `www` | the app's own address (`puls-app.<env>.southafricanorth.azurecontainerapps.io`) |
    | TXT | `asuid.www` | the same verification id (`www` validates by its CNAME, no token) |
 
-8. Done on 2026-11-07, for the record: the old environment `puls-container-env` with its `puls-app` and
+8. The louis-agent app, once Puls's secrets are in the vault (F109.2): `deploy.ps1 workspace -App louis-agent-app`
+   (its price tables into its share), `deploy.ps1 secrets -App louis-agent-app` (its two keys from
+   `demos/louis-agent/config/.env.secrets`, and its providers once registered for `louis-agent.dev`),
+   `deploy.ps1 release -App louis-agent-app`, then `deploy.ps1 domain -App louis-agent-app` and the same for
+   `-Hostname www.louis-agent.dev`, with the records above on `louis-agent.dev`. Cloudflare imports the old host's
+   records when a zone is added: a proxied wildcard and apex and a mail setup had to go first (2026-11-08).
+9. Done on 2026-11-07, for the record: the old environment `puls-container-env` with its `puls-app` and
    `puls-searxng`, the `ts-forwarder` and `searxng` images in the registry and the `searxng-config` and `mongo-data`
    shares were deleted, with the earlier design's `mongo`, `headless-shell` and `searxng` images and the backups of
    the two shares in the recovery vault `vault-mvihj8bq`; that vault keeps its soft-deleted backups 14 days and
@@ -65,7 +77,8 @@ by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` int
 ## Every-day deploy
 
 ```powershell
-deploy\azure\deploy.ps1 release     # build (tagged date and time) and deploy the next revision, in one go
+deploy\azure\deploy.ps1 release     # build (tagged date and time) and deploy Puls's next revision, in one go
+deploy\azure\deploy.ps1 release -App louis-agent-app   # the same for the louis-agent app; logs and domain take -App too
 deploy\azure\deploy.ps1 logs        # -Follow to tail
 deploy\azure\deploy.ps1 vm          # after a change to the VM's compose or SearXNG's settings
 deploy\azure\deploy.ps1 infra       # after a change to main.bicep (what-if first)
@@ -80,8 +93,9 @@ each sign-in provider whose two secrets are set, and creates or updates the app.
 
 ## Deploying from GitHub (F109.5)
 
-A merge to `main` deploys by itself once CI passes on it, and *Actions → Deploy Puls → Run workflow* deploys `main`
-any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the PC. It signs in
+A merge to `main` deploys both apps by itself once CI passes on it, and *Actions → Deploy the apps → Run workflow*
+deploys `main` any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the
+PC, once per app, each tried even when the other's release failed. It signs in
 to Azure by OpenID Connect: GitHub signs a short-lived token for the run, and Azure trusts it only for this repo's
 `main` branch, so GitHub stores no password. The identity it signs in as, `github-puls-deploy`, may build in the
 registry and update the app (Contributor on `rg-puls-za`) and read the vault's secret *names* (Key Vault Reader on
@@ -112,7 +126,7 @@ repository **variables** (they are ids, not secrets). Press *Run workflow* once 
 active revision. Until the variables are set, a run stops at its first step and says which are missing.
 
 **Rolling back:** activate the revision before (`az containerapp revision list -n puls-app -g rg-puls-za -o table`
-names them), or re-run an older *Deploy Puls* run, which deploys the commit it ran:
+names them), or re-run an older *Deploy the apps* run, which deploys the commit it ran:
 
 ```powershell
 az containerapp revision activate -n puls-app -g rg-puls-za --revision puls-app--v020
@@ -131,6 +145,7 @@ from the names the vault holds, so no value is ever on the app or in a file unde
 | `admin-api-key` | `config/.env.secrets` `ADMIN_API_KEY` | the admin portal |
 | `mongo-url` | `config/.env.mongo`'s user and password at the VM's private IP | the eval store, the shop prices, the recipe library |
 | `accounts-sql-url` | `config/.env.sql`'s password, the admin `pulsadmin`, the server from the outputs | the accounts (Identity's tables, F61.1) |
+| `agent-api-key-louis-agent`, `admin-api-key-louis-agent`, `auth-…-louis-agent` | `demos/louis-agent/config/.env.secrets`, by `secrets -App louis-agent-app` | the louis-agent app's own keys and providers; it references `anthropic-api-key`, `mongo-url` and `accounts-sql-url` by the same names as Puls (F109.2) |
 | `auth-google-client-id` and `-secret`, `auth-microsoft-…`, `auth-linkedin-…` | `config/.env.secrets` `AUTH_*` | the sign-in providers (F61.3); a pair is set together or not at all |
 
 `deploy.ps1 secrets` copies them all, prints only their names, and skips one whose value is missing. No value may hold
@@ -167,11 +182,13 @@ password, database `puls_accounts`, encryption on. A new home IP means `sql-acce
 
 ## The share's layout
 
-`puls-app-workspace` is mounted at `/workspace`, with `logs/` also at `/logs` and `data/` at `/data`:
+`puls-app-workspace` is mounted at `/workspace`, with `logs/` also at `/logs` and `data/` at `/data`; the louis-agent
+app's `louis-agent-workspace` the same way, with `skills/` for what the agent writes. `deploy.ps1 workspace -App …`
+copies the price tables into an app's share:
 
 | Folder | Holds |
 |---|---|
-| `config/` | `prices.json` and `rates.json`, as `PRICES_FILE` and `RATES_FILE` expect; copy them from the repo's `config/` when they change |
+| `config/` | `prices.json` and `rates.json`, as `PRICES_FILE` and `RATES_FILE` expect; `deploy.ps1 workspace` copies them from the app's `config/` when they change |
 | `logs/` | The run files (`agent-api-*.log`), the usage ledger (`usage-YYYY-MM.jsonl`) and the tool-result records |
 | `data/` | `shop-stores.json`, the shops' store-per-town cache (F34), the pages an eval run saves |
 
@@ -187,7 +204,8 @@ Written here after the first month, against the parent plan's estimate: the VM a
 (a `Standard_B2s` and two Standard SSDs), the environment bills by the second while the one replica runs (the app
 scales to zero when nobody is on it, so the first visitor waits a few seconds), the database is
 free within its offer, the registry's Basic tier and the workspace's first 5 GB a month are the rest. A spend cap on
-the Anthropic key, in the console, is the other half of the bill.
+the Anthropic key, in the console, is the other half of the bill. The louis-agent app adds a share of 5 GB and a
+replica only while someone is on it; its month is written here too, after the first.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Setup](../../../../src/docs/SETUP.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md) · [The site on Azure](../../../louis-agent/deploy/azure/README.md)

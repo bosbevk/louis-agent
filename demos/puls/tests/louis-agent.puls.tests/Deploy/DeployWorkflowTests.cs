@@ -36,6 +36,22 @@ public class DeployWorkflowTests
         Assert.That(calls, Is.All.Contains("deploy.ps1 release"));
     }
 
+    /// <summary>
+    /// Both apps deploy from the same merge (F109.2, Louis: "this agent must also deploy like this"): a release of
+    /// Puls, a release of the louis-agent app, each tried even when the other fails, and the summary lists both.
+    /// </summary>
+    [Test]
+    public void TheWorkflow_ReleasesBothApps()
+    {
+        var calls = Trimmed().Where(line => line.Contains("deploy.ps1 release", StringComparison.Ordinal)).ToList();
+
+        Assert.That(calls, Has.Exactly(1).Contains("-App puls-app"));
+        Assert.That(calls, Has.Exactly(1).Contains("-App louis-agent-app"));
+        Assert.That(Trimmed(), Has.Some.Contains("-n puls-app -g rg-puls-za"));
+        Assert.That(Trimmed(), Has.Some.Contains("-n louis-agent-app -g rg-puls-za"));
+        Assert.That(Trimmed(), Has.Some.Contains("if: ${{ !cancelled() }}"), "the second app is tried when the first fails");
+    }
+
     /// <summary>Automatic only after green CI on main (Louis's pick), and a button for any time.</summary>
     [Test]
     public void TheWorkflow_DeploysOnlyAfterGreenCiOnMain()
