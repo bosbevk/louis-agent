@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Composition.Guardrails.Messages;
@@ -18,7 +19,9 @@ public class MessageEnumTests
 {
     /// <summary>Every enum of a <c>Messages</c> namespace in core.</summary>
     private static readonly Type[] MessageEnums =
-        typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes()).Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
+        typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
+            .Concat(typeof(WebAccess).Assembly.GetTypes())
+            .Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
             .ToArray();
 
     /// <summary>Every member of every message enum.</summary>
@@ -33,13 +36,12 @@ public class MessageEnumTests
             Is.EquivalentTo(new[]
             {
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
-                "ConfigErrorMessage", "ConfigLogMessage",
-                "ErrorMessage", "ScreenMessage",
-                "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
-                "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage",
-                "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",
-                "ProtocolLogMessage", "ScriptToolMessage", "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage",
-                "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",
+                "ConfigErrorMessage", "ConfigLogMessage", "ErrorMessage", "ScreenMessage", "GuardrailErrorMessage",
+                "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
+                "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
+                "PromptHeaderMessage", "ProtocolErrorMessage", "ProtocolLogMessage", "ScriptToolMessage",
+                "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage", "SkillLogMessage",
+                "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",
                 "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage",
             }));
     }
@@ -51,6 +53,7 @@ public class MessageEnumTests
         // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails
         // here.
         var stray = typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
+            .Concat(typeof(WebAccess).Assembly.GetTypes())
             .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) ||
                                      t.Name.EndsWith("Text", StringComparison.Ordinal)))
             .Where(t => t.Namespace?.Split('.').Last() != "Messages")

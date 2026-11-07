@@ -31,7 +31,7 @@ public class FileSizeTests
         "packs/tools/louis-agent.pack.dotnet/DotNetTools.cs",
         "packs/tools/louis-agent.pack.devops/DevOpsTools.cs",
         "packs/tools/louis-agent.pack.paymo/PaymoTools.cs",
-        "src/engine/louis-agent.core/Web/Browsing/ChromeWebBrowser.cs",
+        "src/engine/louis-agent.core.web/Browsing/ChromeWebBrowser.cs",
         "packs/tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
         "packs/tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
         "src/tools/louis-agent.usage-probe/Program.cs",

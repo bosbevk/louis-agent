@@ -247,6 +247,20 @@ Picks taken unattended (Louis, 2026-11-07: "go with the CL33 plan unattended"), 
   prove lines reach the collector, which is now the library's sink, so they moved to `core.telemetry.tests` with the
   shared `OtlpReceiver` in `louis-agent.testing`; core's own `HostTelemetryTests` prove the seam.
 
+- **Steps 4, 5 and the web half of 6 in one commit**, for the same reason as the telemetry's: with the seam in and
+  the web still core's, or the web out and no host handing it in, a commit between would run every web tool on
+  "not set up".
+- **`WebParts` beside the Null Object** (step 4). The tests built contexts from a search provider and, at times, a
+  fake browser; `WebAccess.Create` needs the settings. Options: a test helper in the shared test library; keep a
+  search-provider constructor on `ToolsetContext` that wraps the parts; **a small record in core, `WebParts`, that
+  is web access from whatever parts are given, the rest "not set up"** (picked: a host that brings its own parts has
+  the same door as a test, and the context has one constructor).
+- **The engine's browser is the guarded one** (step 5). Before, a context built in a test without a robots policy
+  got the bare Chrome; the library always builds the policy, so the browser the engine gets is `RobotsWebBrowser`
+  around it (what production always had); the tests say so, and the user-agent tests ask the browser factory.
+- **The replay fixtures and the OTLP receiver are the shared test library's** (`louis-agent.testing`, with
+  `core.web` and the time-provider package), since core's, the web's and the pack's tests all read them.
+
 ## Verification
 
 Per step: the project's tests and `core.tests`; the whole solution builds after steps 3 and 5. By hand, free, after

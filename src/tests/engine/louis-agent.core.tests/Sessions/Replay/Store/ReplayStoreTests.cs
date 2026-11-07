@@ -1,6 +1,6 @@
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Web.Browsing;
-using LouisAgent.Core.Tests.Web.Replay;
+using LouisAgent.Testing.Replay;
 using LouisAgent.Core.Web.Replay.Answers;
 using LouisAgent.Core.Sessions.Replay.Store;
 

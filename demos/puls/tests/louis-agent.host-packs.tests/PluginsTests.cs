@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
@@ -30,8 +31,8 @@ public class PluginsTests
         Assert.That(puls.Packs.Select(p => p.Name),
             Is.EqualTo(new[]
             {
-                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(),
-                PackKind.Calculator.Wire()
+                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
+                RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(), PackKind.Calculator.Wire()
             }),
             "Puls names the where-to-buy and shop-prices packs (F50.2) and the recipes pack (F35.2 step 1)");
 
@@ -72,9 +73,12 @@ public class PluginsTests
             $"{WhereToBuyToolset.WhereToBuy.Wire()},{ShopPricesToolset.ShopPrices.Wire()}");
 
         Assert.That(catalog.Identities, Is.Empty);
-        Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire() }));
-        var bare = new ToolsetContext(new AgentOptions(), new NoSearch());
-        Assert.That(catalog.Resolve([WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire()], bare).Select(t => t.Name),
+        Assert.That(catalog.Packs.Select(p => p.Name),
+            Is.EqualTo(new[] { WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire() }));
+        var bare = new ToolsetContext(new AgentOptions(), new WebParts(new NoSearch()));
+        Assert.That(
+            catalog.Resolve([WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire()], bare)
+                .Select(t => t.Name),
             Is.EqualTo(new[] { WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire() }));
     }
 
@@ -94,12 +98,11 @@ public class PluginsTests
             Assert.That(catalog.Identities, Is.Empty);
             Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
 
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
-                new NoSearch());
+            var withBrowser = WithBrowser();
             Assert.That(catalog.Resolve([RecipesToolset.Recipes.Wire()], withBrowser).Select(t => t.Name),
                 Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
 
-            var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
+            var withoutBrowser = new ToolsetContext(new AgentOptions(), new WebParts(new NoSearch()));
             var refused = Assert.Throws<ToolsetException>(() =>
                 catalog.Resolve([RecipesToolset.Recipes.Wire()], withoutBrowser))!;
             Assert.That(refused.Message, Does.Contain(RecipesToolset.Recipes.Wire()).And.Contain("BROWSER_URL"));
@@ -133,8 +136,7 @@ public class PluginsTests
 
             // The cook's header names its four toolsets; with the browser, as a Puls stack has it, the catalogue resolves
             // them all. No minion model is needed: the cook uses no minion (ADR 0081).
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
-                new NoSearch());
+            var withBrowser = WithBrowser();
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
                 Is.EquivalentTo(new[]
                 {
@@ -161,6 +163,13 @@ public class PluginsTests
     }
 
     /// <summary>A search provider that finds nothing; these tests only need one to hand over.</summary>
+    /// <summary>A context on a Puls stack: the browser BROWSER_URL names, through the web library (CL33).</summary>
+    private static ToolsetContext WithBrowser()
+    {
+        var options = new AgentOptions { BrowserUrl = "http://puls-browser:9222" };
+        return new ToolsetContext(options, WebAccess.Create(options, null, new NoSearch()));
+    }
+
     private sealed class NoSearch : IWebSearchProvider
     {
         /// <summary>What it calls itself.</summary>

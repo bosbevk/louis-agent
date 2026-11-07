@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Packs.Web;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
@@ -131,7 +132,7 @@ internal static class ApiTestHost
                 new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
                 new RecipesPack(new RecipesOptions()), new CalculatorPack(), .. morePacks ?? []
             ]);
-        var engines = new AgentEngineFactory(model, options, catalog: catalog);
+        var engines = new AgentEngineFactory(model, options, services: new HostServices(WebAccess.Create), catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,
             DisplayCurrency.Charged("USD"), engines);

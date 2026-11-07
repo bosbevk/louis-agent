@@ -1,16 +1,17 @@
+using LouisAgent.Composition.Web.Fetching;
+using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Web.Search;
-using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Web.Browsing;
+using LouisAgent.Core.Web;
 
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
 
 /// <summary>A pack can tell an eval's trial from a real chat: only recording or replaying the web counts.</summary>
 public class ToolsetContextTrialTests
 {
-    private static ToolsetContext Context() => new(new AgentOptions(), new TrialNoSearch());
+    private static ToolsetContext Context() => new(new AgentOptions(), new WebParts(new TrialNoSearch()));
 
     /// <summary>What counts as a trial, by how the session's web is set.</summary>
     [TestCase(WebReplayMode.Record, true)]
@@ -39,76 +40,47 @@ public class ToolsetContextTrialTests
     }
 }
 
-// F33 step 1: a toolset gets the guarded browser from its context, as it gets the search and the renderer: the one given
-// (a test's fake), else the Chrome BROWSER_URL names, else none (a toolset that needs one is then unavailable).
-public class ToolsetContextTests
+/// <summary>
+/// The context reads the web through the seam (CL33): what the parts given say, and the "not set up" answers for
+/// what a host gave none of, so a tool says why instead of failing on a null.
+/// </summary>
+public class ToolsetContextWebTests
 {
-    private sealed class NoSearch : LouisAgent.Composition.Web.Search.IWebSearchProvider
+    private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";
 
-        public Task<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>> SearchAsync(
-            LouisAgent.Composition.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>>([]);
+        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+            CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
-    private sealed class FakeBrowser : IWebBrowser
+    [Test]
+    public void ThePartsGiven_AreWhatTheToolsGet()
     {
-        public int Calls { get; private set; }
+        var search = new NoSearch();
 
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
-            string? script = null,
-            string? readySelector = null, CancellationToken cancellationToken = default)
+        var context = new ToolsetContext(new AgentOptions(), new WebParts(search));
+
+        Assert.Multiple(() =>
         {
-            Calls++;
-            return Task.FromResult(new BrowserVisit(url.ToString(), "", []));
-        }
+            Assert.That(context.WebSearch, Is.SameAs(search));
+            Assert.That(context.Browser, Is.Null);
+        });
     }
 
     [Test]
-    public async Task TheRendererAndTheShops_ReadThroughTheSameBrowser()
+    public void WithoutAWebLibrary_EveryPartSaysItIsNotSetUp()
     {
-        // F18 step 4a: one browser per process, so a recorded run holds every page, whichever tool read it; the renderer had built its own.
-        var fake = new FakeBrowser();
-        var context = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch(),
-            WebBrowser: fake);
+        var context = new ToolsetContext(new AgentOptions(), NoWebAccess.Instance);
 
-        await context.Renderer.RenderAsync(new Uri("https://example.com/recipe"));
-
-        Assert.That(context.Browser, Is.SameAs(fake));
-        Assert.That(fake.Calls, Is.EqualTo(1), "the page the renderer read went through the browser the shops get");
+        Assert.Multiple(() =>
+        {
+            Assert.That(context.Browser, Is.Null);
+            Assert.ThrowsAsync<WebSearchException>(() => context.WebSearch.SearchAsync(new WebSearchQuery("x", 1)));
+            Assert.ThrowsAsync<PageRenderException>(() =>
+                context.Renderer.RenderAsync(new Uri("https://example.test/")));
+            Assert.ThrowsAsync<BlockedAddressException>(() =>
+                context.NewFetcher().EnsurePublicAsync(new Uri("https://example.test/")));
+        });
     }
-
-    [Test]
-    public void TheBrowserGiven_IsTheOneUsed()
-    {
-        var fake = new FakeBrowser();
-        Assert.That(new ToolsetContext(new AgentOptions(), new NoSearch(), WebBrowser: fake).Browser, Is.SameAs(fake));
-    }
-
-    [Test]
-    public void TheChromeItNames_SaysWhatTheOptionsSay_ToEverySite()
-    {
-        // FX21: the user agent travels from the setting to the browser; unset, the browser keeps Chrome's own.
-        var named = new ToolsetContext(
-            new AgentOptions
-            { BrowserUrl = "http://browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" },
-            new NoSearch());
-        var plain = new ToolsetContext(new AgentOptions { BrowserUrl = "http://browser:9222" }, new NoSearch());
-
-        Assert.That(((ChromeWebBrowser)named.Browser!).UserAgent, Is.EqualTo("Puls/1.0 (+https://example.test)"));
-        Assert.That(((ChromeWebBrowser)plain.Browser!).UserAgent, Is.Null);
-    }
-
-    [Test]
-    public void BrowserUrl_GivesTheChromeItNames() =>
-        Assert.That(
-            new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch()).Browser,
-            Is.TypeOf<ChromeWebBrowser>());
-
-    [TestCase(null)]
-    [TestCase("")]
-    [TestCase("not a url")]
-    public void WithoutAUsableBrowserUrl_ThereIsNoBrowser(string? url) =>
-        Assert.That(new ToolsetContext(new AgentOptions { BrowserUrl = url }, new NoSearch()).Browser, Is.Null);
 }

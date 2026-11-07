@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Packs.Web;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Calculator;
@@ -63,7 +64,8 @@ public class AgentSessionsTests
     /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
     /// </summary>
     private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) =>
-        new(new AgentEngineFactory(new NoModel(), PulsOptions(), sessionLlms: llms, catalog: PulsCatalog()));
+        new(new AgentEngineFactory(new NoModel(), PulsOptions(), services: new HostServices(WebAccess.Create),
+            sessionLlms: llms, catalog: PulsCatalog()));
 
     /// <summary>
     /// The settings a Puls stack gives the cook: the browser the recipes toolset reads through, a peer for its minions
@@ -382,7 +384,7 @@ public class AgentSessionsTests
                 WorkspaceRoot = RepoRoot,
                 SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
                 RatesUrl = null
-            }, catalog: PulsCatalog());
+            }, services: new HostServices(WebAccess.Create), catalog: PulsCatalog());
 
         string roles = System.Text.Json.JsonSerializer.Serialize(RolesReply.Of(engines), InfoJson.SnakeCase);
 

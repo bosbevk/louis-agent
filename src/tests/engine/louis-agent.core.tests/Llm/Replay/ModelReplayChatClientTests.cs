@@ -1,6 +1,6 @@
 using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Tests.Web.Replay;
+using LouisAgent.Testing.Replay;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Llm.Replay;

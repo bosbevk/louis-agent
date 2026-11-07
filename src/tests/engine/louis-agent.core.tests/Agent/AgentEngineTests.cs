@@ -1,3 +1,4 @@
+using LouisAgent.Core.Web;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Turns;
@@ -44,7 +45,7 @@ public class AgentEngineTests
         {
             WorkspaceRoot = Path.GetTempPath(),
         };
-        var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
+        var context = new ToolsetContext(options, WebAccess.Create(options));
         var toolsets = ToolsetCatalog.BuildTools(TestTools.Catalog.Toolsets, context);
 
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), options,
@@ -120,7 +121,10 @@ public class AgentEngineTests
             [
                 new FunctionCallContent("call_1", "ExecuteSkill",
                     new Dictionary<string, object?>
-                        { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
+                    {
+                        ["skillName"] = "SayHello",
+                        ["jsonArgs"] = "{\"name\":\"Agent\"}"
+                    })
             ])),
             messages =>
             {
@@ -294,7 +298,10 @@ public class AgentEngineTests
                 new TextContent("Let me run it. "),
                 new FunctionCallContent("call_1", "ExecuteSkill",
                     new Dictionary<string, object?>
-                        { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
+                    {
+                        ["skillName"] = "SayHello",
+                        ["jsonArgs"] = "{\"name\":\"Agent\"}"
+                    })
             ])),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "All done.")));
         var engine = Engine(client);
@@ -341,7 +348,9 @@ public class AgentEngineTests
         // A streamed tool call cut off mid-arguments is dropped, leaving only the text before it.
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Now I'll append the rest:"))
-            { FinishReason = ChatFinishReason.Length },
+            {
+                FinishReason = ChatFinishReason.Length
+            },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done in smaller chunks.")));
         var engine = Engine(client);
         var history = engine.NewHistory();

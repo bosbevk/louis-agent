@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
     <ProjectReference Include="..\..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />

@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <!-- The framework's MCP host; this program only says what it loads. -->
+            <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
             <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
 <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj" />
         <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />

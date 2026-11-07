@@ -257,6 +257,7 @@
   "VenvCreated": "created",
   "VenvNotCreated": "Error: could not create the virtual environment at <Directory> (on Debian/Ubuntu install the 'python3-venv' package).\n<Output>",
   "VenvNotCreatedYet": "not created yet; PythonInstallPackages creates it",
+  "WebAccessNotSetUp": "Error: web access isn't set up on this host: it runs core alone, without the web library. Nothing on the web can be searched, fetched or read here.",
   "WorkItemCreated": "Created <Type> #<Id> - <Title>",
   "WorkItemCreatedRaw": "Created work item: <Response>",
   "WorkItemUpdated": "Updated work item #<Id>: <Field> = <Value>",
