@@ -95,6 +95,14 @@ public partial class ChatShell : IDisposable
     [Parameter]
     public RenderFragment<TurnUsage>? UsageLine { get; set; }
 
+    /// <summary>The parts this site turns off; every one is on unless it says otherwise.</summary>
+    [Parameter]
+    public ChatFeatures Features { get; set; } = new();
+
+    /// <summary>The site's own settings, with the frame's.</summary>
+    [Parameter]
+    public RenderFragment? Settings { get; set; }
+
     /// <summary>The site's picture for an empty work panel.</summary>
     [Parameter]
     public string? EmptyWorkImage { get; set; }
@@ -139,7 +147,8 @@ public partial class ChatShell : IDisposable
         Currency.Changed += Redraw;
         if (!Store.Loaded) await Store.LoadAsync();
         await _preferences.LoadAsync();
-        await _languages.LoadAsync();
+        // With no language menu there's no list to read, and no choice to read back.
+        if (Features.Language) await _languages.LoadAsync();
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");

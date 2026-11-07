@@ -16,4 +16,7 @@ public partial class MessageBox
     [Parameter] public string? Model { get; set; }
     [Parameter] public EventCallback<string> OnDraft { get; set; }
     [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+
+    /// <summary>Whether what only says it's coming shows too.</summary>
+    [Parameter] public bool Unfinished { get; set; } = true;
 }

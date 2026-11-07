@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -9,6 +10,9 @@ namespace LouisAgent.Web.Components.Chat.Header;
 public partial class ChatHeader
 {
     [Inject] private ChatText Text { get; set; } = null!;
+
+    /// <summary>The parts this site turns off.</summary>
+    [Parameter] public ChatFeatures Features { get; set; } = new();
 
     /// <summary>The title of a view a site shows instead of the chat; with none, the chat's own shows.</summary>
     [Parameter] public string? ViewTitle { get; set; }

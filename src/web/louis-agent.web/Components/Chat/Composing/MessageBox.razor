@@ -3,5 +3,5 @@
 <Composer @bind-Draft="Runner.Draft" Attachments="Runner.Attachments" Streaming="Runner.Streaming" CanSend="Runner.CanSend" Disabled="@(Runner.Chat?.Ended == true)"
           Placeholder="@(Runner.Chat?.Ended == true ? Text.ChatEnded : Text.AskAnything)"
           OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" BoxClass="input-box" SendLabel="↑" StopLabel="■" SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle">
-    <Tools><ComposerTools Model="@Model" OnFiles="Runner.AddFilesAsync" OnDraft="OnDraft" OnComingSoon="OnComingSoon" /></Tools>
+    <Tools><ComposerTools Model="@Model" OnFiles="Runner.AddFilesAsync" OnDraft="OnDraft" OnComingSoon="OnComingSoon" Unfinished="Unfinished" /></Tools>
 </Composer>

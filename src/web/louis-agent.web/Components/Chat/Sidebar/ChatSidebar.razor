@@ -34,10 +34,13 @@
             }
         }
 
-        <div class="sidebar-label sidebar-label-row">@Text.Projects
-            <button class="icon" type="button" title="@Text.NewProject" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)">+</button>
-        </div>
-        <button class="side-link side-link-quiet" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)"><span class="ic i-folder" aria-hidden="true"></span>@Text.NewProject</button>
+        @if (Features.Projects)
+        {
+            <div class="sidebar-label sidebar-label-row">@Text.Projects
+                <button class="icon" type="button" title="@Text.NewProject" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)">+</button>
+            </div>
+            <button class="side-link side-link-quiet" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Projects)"><span class="ic i-folder" aria-hidden="true"></span>@Text.NewProject</button>
+        }
 
         @if (Chats.Any(c => !c.Favourite && !c.Archived))
         {
@@ -64,8 +67,12 @@
         @Profile
         <details class="sidebar-settings">
             <summary>@Text.Settings</summary>
+            @Settings
             <CurrencySwitcher />
-            <LocationPicker Location="@Location" Locating="Locating" OnSave="OnSaveLocation" OnLocate="OnLocate" />
+            @if (Features.Location)
+            {
+                <LocationPicker Location="@Location" Locating="Locating" OnSave="OnSaveLocation" OnLocate="OnLocate" />
+            }
             <MotionToggle Motion="Motion" ReducedMotion="ReducedMotion" OnChange="OnSaveMotion" />
             <label class="settings">
                 @Text.ApiKey
