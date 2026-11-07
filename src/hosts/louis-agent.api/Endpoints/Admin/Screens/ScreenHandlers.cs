@@ -46,6 +46,7 @@ internal static class ScreenHandlers
             [.. spec.Columns.Select(column => new ScreenColumnReply(column.Title, column.Kind.Wire()))],
             spec.Searchable)
         {
+            Editable = spec.Editable,
             Actions =
             [
                 .. spec.Actions.Select(action =>

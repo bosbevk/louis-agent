@@ -14,6 +14,9 @@ public sealed record ScreenReply(
 {
     /// <summary>What can be done from the screen, so the page can draw its buttons.</summary>
     public IReadOnlyList<ScreenActionReply> Actions { get; init; } = [];
+
+    /// <summary>Whether a row opens as a form.</summary>
+    public bool Editable { get; init; }
 }
 
 /// <summary>One column: its heading, and the wire name of the kind of value it holds.</summary>

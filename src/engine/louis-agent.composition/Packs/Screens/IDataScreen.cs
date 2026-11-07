@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs.Screens.Acting;
+using LouisAgent.Composition.Packs.Screens.Editing;
 using LouisAgent.Composition.Packs.Screens.Reading;
 
 namespace LouisAgent.Composition.Packs.Screens;
@@ -28,5 +29,13 @@ public interface IDataScreen
     /// says otherwise, so one that offers nothing writes none of this.
     /// </summary>
     Task<ScreenAnswer> ActAsync(string action, string? rowId, CancellationToken cancellationToken) =>
+        Task.FromResult(ScreenAnswer.NotOffered);
+
+    /// <summary>One row as a form, if its <see cref="Spec"/> says rows can be edited; null for a row it doesn't have.</summary>
+    Task<ScreenRecord?> ReadRowAsync(string rowId, CancellationToken cancellationToken) =>
+        Task.FromResult<ScreenRecord?>(null);
+
+    /// <summary>Saves a form, or says which fields it refused.</summary>
+    Task<ScreenAnswer> SaveRowAsync(string rowId, ScreenValues values, CancellationToken cancellationToken) =>
         Task.FromResult(ScreenAnswer.NotOffered);
 }

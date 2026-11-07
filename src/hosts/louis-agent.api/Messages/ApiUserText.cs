@@ -48,6 +48,9 @@ public enum ApiUserText
     [Description("'{Action}' acts on a row, so it needs a row_id.")]
     ScreenActionNeedsRow,
 
+    [Description("The screen '{Name}' has no row '{Row}'.")]
+    UnknownScreenRow,
+
     [Description("Send the files to upload: 'files', each with its 'slot', 'file_name' and 'content'.")]
     ImportNoFiles,
 

@@ -34,7 +34,7 @@ public class MessageEnumTests
             {
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
                 "ConfigErrorMessage", "ConfigLogMessage",
-                "ErrorMessage",
+                "ErrorMessage", "ScreenMessage",
                 "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
                 "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage",
                 "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",

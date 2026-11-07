@@ -17,4 +17,7 @@ public sealed record ScreenSpec(
 {
     /// <summary>What can be done from the screen. With none, it's read-only.</summary>
     public IReadOnlyList<ScreenAction> Actions { get; init; } = [];
+
+    /// <summary>Whether a row opens as a form.</summary>
+    public bool Editable { get; init; }
 }
