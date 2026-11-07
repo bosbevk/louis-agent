@@ -725,6 +725,14 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - A reply that isn't JSON is now an `AgentApiException`, found on the first look: the dev server's web page crashed every admin page. Not in the plan, and it helps every site.
   - `SiteColoursTests` lists `--bs-border-radius` as Bootstrap's own, which the packs' small corners read.
 
+- **2026-11-07, what F59.8 chose, unattended.** Each is the recommended option, for Louis to read at the end.
+  - The spec gains `Actions` and `Editable` as properties with defaults, so a read-only screen says nothing about them.
+  - The screens are called `kept-recipes` and `excluded-pages`, as `recipes` is the toolset's name.
+  - A row's form opens from a link on its first cell. *Not edited* shows empty, since that's known, and an unknown yield says so.
+  - Removing excludes the page first, then removes the recipe, so a failure can't leave it gone and ready to come back.
+  - Both lists read everything and page in memory, as a few hundred recipes don't need a database query, and the feed already reads them all (ADR 0055).
+  - `RecipeForm` is a plain class apart from the screen, so the recipe's rules test without a store. Steps 4 and 5 are one commit, as are 7 to 9, as they only work together.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

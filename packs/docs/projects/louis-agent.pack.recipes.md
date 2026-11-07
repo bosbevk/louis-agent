@@ -159,6 +159,12 @@ trial that leaves the library alone counts nothing ([ADR 0083](../../../src/docs
 ([ADR 0086](../../../src/docs/adr/0086-a-packs-screens-are-described.md)). Its own view, `RecipeLibraryView` in
 `packs-web/louis-agent.pack.recipes.web`, adds the line *Of 10 offered, 1 served* above the table.
 
+`Library/Screens/` also holds what someone running the library manages it with, listed only with a database. `RecipesScreen` (`kept-recipes`) lists and searches
+what's kept, opens one as a form, and removes it; `RecipeForm` turns a recipe into its fields and back and holds its rules: a name, an ingredient and a step are
+required, and the page and the site can't change. A save marks the copy edited, and a later read can't overwrite it, since keeping only inserts. Removing also
+excludes the page. `ExcludedPagesScreen` (`excluded-pages`) lists the excluded pages and clears one, so the next read looks again
+([ADR 0082](../adr/0082-the-recipe-library-is-an-open-feed.md)).
+
 ## A recipe on its way out
 
 `Recipes/Tidying/RecipeTidy` is what the print and `ScaleRecipe` both start with, so their numbers match, and what the library already holds is tidied with nothing to migrate. `StepParts` cuts one step into the steps it holds: the page's own numbers first (in order, after a sentence, so *3 cups* is never step three), then paragraphs glued with no space, then the sentences of what's still over 400 characters, every word kept. Taste's data keeps a whole method in one step, and that's where answers dropped a clause. `IngredientHeadings` turns a heading among the ingredient lines into the section of the lines under it, unless most lines are in capitals, and drops what a page's buttons and dates left there. The stored recipe stays as it was read.

@@ -265,6 +265,15 @@ since the frame's empty chat takes the full height and expects the box inside it
 the dev server, the reply was a web page, reading it as JSON threw, and nothing caught that kind of error. The menu on every admin page made it
 worse. The fix went in the one place replies are read, so every page gets it. Tests answer the questions you thought to ask.
 
+**A form in the vocabulary is a line we crossed on purpose (F59.8).** Recipes can now be found, fixed and removed on screen, with no script. A list of columns is cheap to
+describe, but a form has to say what each field is, whether it can change, and what a refusal means, and that's how a description turns into a programming language. So it
+stops at four kinds: text, number, link and rows. The rules stay in the pack: `RecipeForm` says a name is required and where a recipe came from can't change, and the page only
+draws what it's told. A value for a read-only field has nowhere to land, because the save starts from the kept recipe rather than from what was sent.
+
+**Destroying something should cost a second thought, in code.** Removing a recipe does two writes, and their order matters. The page goes on the excluded list first, so if the
+second write fails the recipe is still there. The other way round, a failure would leave it gone from the library and free to be kept again on the next read. Being able to say
+which half-finished state you'd rather be in is most of what makes a two-step write safe when you have no transaction.
+
 Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
 
 ## The admin's frame (F59.2, 2026-11-06)

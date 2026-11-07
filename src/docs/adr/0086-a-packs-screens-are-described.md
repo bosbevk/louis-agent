@@ -45,7 +45,11 @@ component replaces it by name, and the last to register wins.*
   host can load a pack without its site showing the pack's controls.
 - **A screen's button never sends anything to the model.** A Review or Ask button opens the site's chat with the prompt as a draft
   (`ChatHandoff`), and the person reads it and sends it.
-- **A new kind of column, field or control enters only when a second screen needs it;** until then it's a custom component.
+- **A screen is read-only until it says otherwise.** It can name actions, where one that destroys something carries a question and takes two clicks, never a
+  browser dialog, and it can say its rows open as a form. The pack checks what's saved, and a refusal names its field. Only what a description names can be
+  asked for, an unknown action or row is a 404, and every action and save is logged.
+- **A new kind of column, field or control enters only when a second screen needs it;** until then it's a custom component. The form is the one exception, picked
+  knowingly, and it stays at text, number, link and rows.
 - **Only a web address becomes a link.** A value can come from a page we read, and a `javascript:` address would run in the admin's
   tab, with its key.
 
