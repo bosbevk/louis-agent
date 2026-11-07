@@ -4,6 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-07 — **F35 is done**: search by meaning, which was F35.6, is parked as F60, since a search asks the sites whatever the library holds and keywords haven't been shown to fall short. What's left about the cook's answer stays on the TODO until the next paid run.
 - 2026-11-07 — **Project diagrams**: every project's design doc now shows an architecture diagram and a flow diagram, under *Diagrams* or beside the one it already had. Every code name in them is checked against the source, and Mermaid parsed all 52.
 - 2026-11-07 — **F59.10 The eval pages**: the evals, runs, review queue, studio and prompts moved from Puls to `louis-agent.web`, 402 files with their tests, so every site has them at `/admin` with one call and one Sass name. They say *the agent* where they said *Puls*, and a site hands the sources chart its own kinds of website, as Puls does with its shops. Moved by a one-off script, and a checker proved only namespaces, usings and paths changed.
 - 2026-11-07 — **F59.12 The coding agent's landing page**: the static site now leads to the agent at `/chat`, and its styles are Sass on the framework's colours, the one copy. It stays server-rendered with no script. Its films' fingerprint changed with their stylesheets, so they need exporting again, which takes Docker.
