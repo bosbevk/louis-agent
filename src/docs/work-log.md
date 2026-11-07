@@ -54,7 +54,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F36 | MCP servers as packs | Next |
 | F8 | Reliability | Next |
 | F15 | Model limits and local models | Next |
-| F61 | Accounts, tenants and the two sites in Azure | Next |
+| F61 | The framework's site in Azure: the five children are built, what is left is the site's pages into the louis-agent demo's web app, deployed beside Puls on `louis-agent.dev` (F61.6) | Next |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
 | F51 | Hosting for public traffic | Next |
