@@ -23,6 +23,6 @@ stays on core ([0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-
 
 With `RIDER_MCP_AUTO_DISCOVER=true`, `AgentHost.Build()` starts a background task that asks Rider's MCP server
 (`RIDER_MCP_ENDPOINT`) for its tools (`RiderMcpClient`) and passes each to `AgentEngine.RegisterDiscoveredTool` as
-`rider_{name}` (`RiderMcpToolDiscovery`). **Today this only logs the discovered tools; they are not added to the
+`rider_{name}` (`RiderToolDiscovery`, the ACP server's since CL57). **Today this only logs the discovered tools; they are not added to the
 model's tool list**, because calling them needs a full MCP client. Discovery is off in `config/.env`. It never blocks
 startup and failures only log.

@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Sites;
 
 /// <summary>
 /// A site's layout only fills the framework's frame with what's its own, so it stays small. A ratchet, as

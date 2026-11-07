@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 58 | 76 |
 | Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 24 | 27 |
+| Cleanups (`CL`) | 25 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (106 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -127,7 +127,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
-| CL57 | What a project holds: the six moves under ADR 0092 (the API lets go of core.web, the runner's programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals); CL51 folds in | Cleanups |
 
 ## Features (58 done)
 
@@ -252,10 +251,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (24 done)
+## Cleanups (25 done)
 
 | Id | When | What |
 |---|---|---|
+| CL57 | 2026-11-07 | What a project holds (ADR 0092): the API off core.web, the runners' programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals, the hosts lose -server, a starter API; CL51 with it |
 | CL33 | 2026-11-07 | Core's Web/ and Telemetry/ as louis-agent.core.web and louis-agent.core.telemetry, on core behind a seam each; a host composes through HostServices |
 | CL56 | 2026-11-07 | One roadmap: the platform plan and its summary became ROADMAP.md, the feature plans inside it drafts |
 | CL32 | 2026-11-07 | The packs as one area |

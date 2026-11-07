@@ -135,6 +135,13 @@ Paths are from `src/web/louis-agent.web/`.
 goldens beside them. `PortalReadsNoScoreKeyTests` holds that a view reads only the standard records, and `PortalAddressesTests` that no file
 spells a retired address.
 
+## What the build decided (CL57, 2026-11-07, unattended)
+
+- The library keeps the folders' names (`Admin/`, `Components/`, `Pages/`) and its Sass under `evals/`, listed by a site
+  as `evals/pages`; `EvalLibrary.Assembly` is what the router takes, `AddLouisAgentEvals()` what the services take.
+- Found on the way: the account pages answered "not found" on every site, since no router listed their assembly;
+  `AccountLibrary.Assembly`, `FrameworkPages.With` and `SiteRouterTests` fix and hold it.
+
 ## Related docs
 
 [louis-agent.web](louis-agent.web.md) · [louis-agent.api](louis-agent.api.md) · [Evals](../architecture/evals.md) · [ADR 0065](../adr/0065-the-view-is-in-the-address.md)

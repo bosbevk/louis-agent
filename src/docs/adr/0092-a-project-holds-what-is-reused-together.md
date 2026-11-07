@@ -39,6 +39,9 @@ of it, so a package holds nothing a user of it would not want. Its three rules:
    model's SDK, MongoDB, Rider: each is a library on the thing it serves. Core knows a provider's *name* (a setting's
    value, `LLM_PROVIDER=anthropic`) but not its SDK.
 
+A project is named for what it is, not what it runs as: `louis-agent.acp` and `louis-agent.mcp`, not
+`-server` (Louis: "remove -server it is explanatory"); the docker service keeps the word.
+
 CL57 applies the rule to the six places: the API reads what the web is from the seam; the runner's programs hand in
 the telemetry; Rider's discovery becomes the ACP server's behind a discovery seam; the SDKs become three libraries
 on core behind a provider seam; the eval studio becomes `louis-agent.api.evals` and `louis-agent.web.evals`, a site

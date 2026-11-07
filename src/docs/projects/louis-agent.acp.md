@@ -35,6 +35,9 @@ sequenceDiagram
 - **Prompt building:** `text` blocks are used as-is; embedded `resource` blocks are inlined; a `resource_link` is read
   from disk **only when the user attached it** (the file merely open in the editor is not sent). Attachments are capped
   at 100,000 characters.
+- **Rider's tools** (CL57, out of core): `RiderToolDiscovery` asks Rider's MCP server for its tools in the background
+  when the host starts and registers each on the engine as `rider_{name}`; `RiderOptions` reads `RIDER_MCP_*`. The
+  coding-acp program hands it in through `HostServices.Discovery`; no other host asks Rider for anything.
 - **Windows paths** from Rider are mapped to the container's mounts with `ACP_MOUNT_MAPPINGS`
   (`C:\Users\you\RiderProjects=/repositories`), falling back to a search under `/repositories`; a file that still isn't
   found is passed to the model as "could not be read — not inside a mounted folder", never guessed.
@@ -100,6 +103,12 @@ Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-serve
 The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a method is a `case` in
 `AcpServer.HandleRequestAsync` with its handler in its concern's folder; an update kind a case in `TurnRelay`; the
 server only translates.
+
+## What the build decided (CL57, 2026-11-07, unattended)
+
+- Rider's discovery, its MCP client and their settings live here, Rider's host, behind core's `IToolDiscovery` seam;
+  before, core started them for every host. The project lost `-server` (`louis-agent.acp`): a project is named for
+  what it is, not what it runs as; the docker service keeps the word.
 
 ## Limits and plans
 

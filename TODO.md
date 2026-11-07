@@ -15,7 +15,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (107)
+## Open (106)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -124,7 +124,6 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
-| CL57 | What a project holds: the six moves under ADR 0092 (the API lets go of core.web, the runner's programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals); CL51 folds in | Cleanups | [plan](src/docs/plans/CL57-what-a-project-holds.md) |
 
 ## Known limitations
 

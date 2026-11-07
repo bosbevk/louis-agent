@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Sites;
 
 /// <summary>
 /// A site's router lists what the site opted into (CL57): a library a site adds services for in its program is in

@@ -126,16 +126,15 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 flowchart TB
     hosting["Hosting<br/>AgentHost, AgentEngineFactory"]
     agent["Agent<br/>AgentEngine, ToolRegistry, ToolCallGuards, ToolsetCatalog"]
-    llm["Llm<br/>LlmClientFactory, middleware, {Name}Provider"]
+    llm["Llm<br/>LlmClientFactory (a registry), middleware, the ILlmProvider seam"]
     tools["Tools<br/>one folder per toolset"]
     skills["Skills<br/>markdown loaders"]
     usage["Usage · Pricing<br/>ledger, prices, rates"]
-    proto["Protocols/Mcp"]
     guard["Guardrails<br/>workspace boundary, secrets, SSRF"]
     base["Config · Messages · Logging"]
     hosting --> agent
-    agent --> llm & tools & skills & usage & proto
-    llm & tools & skills & usage & proto --> guard
+    agent --> llm & tools & skills & usage
+    llm & tools & skills & usage --> guard
     guard --> base
 ```
 
@@ -159,20 +158,21 @@ Dependencies point one way, down this picture; `ArchitectureTests` fails on one 
 - Keys: `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `WEB_SEARCH_PROVIDER`, `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`.
 - Sub-sessions (F5): `AGENT_PEERS` (`name=url` pairs) and `AGENT_API_KEY`, sent to the peers.
 - Azure DevOps: `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, optional `DEVOPS_TEAM` (sprints live under the team).
-- Rider MCP: `RIDER_MCP_ENDPOINT` (default `http://127.0.0.1:64482`), `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`.
+- Rider MCP (read by the ACP server since CL57): `RIDER_MCP_ENDPOINT` (default `http://127.0.0.1:64482`), `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`.
 
 ### `LlmClientFactory` (`Llm/LlmClientFactory.cs`)
-Maps `LlmOptions` to an `IChatClient`:
-- **Anthropic:** `AnthropicClient.AsIChatClient(model, 16000)`. For models before Claude 4.6 (including Haiku 4.5),
-  which reject adaptive thinking, a small wrapper turns `ChatOptions.Reasoning` into a fixed thinking budget
+The registry of the providers a program composed (CL57): it finds the `ILlmProvider` that `LLM_PROVIDER` names, wraps its
+client for prompt caching and asks it for its usage mapper and markers. Each provider is a library on core:
+- **`louis-agent.core.anthropic`:** `AnthropicClient.AsIChatClient(model, 16000)`. For models before Claude 4.6 (including Haiku 4.5),
+  which reject adaptive thinking, `ThinkingBudget` turns `ChatOptions.Reasoning` into a fixed thinking budget
   (low 2,048 / medium 4,096 / high 8,192 tokens).
-- **Ollama:** `OllamaApiClient`. **OpenAI-compatible:** `OpenAIClient(...).GetChatClient(model).AsIChatClient()`.
+- **`louis-agent.core.ollama`:** `OllamaApiClient` with a ten-minute timeout. **`louis-agent.core.openai`:** `OpenAIClient(...).GetChatClient(model).AsIChatClient()`.
 
 ### Provider strategies
 
 When Anthropic, OpenAI-compatible endpoints and Ollama each need different logic for the same concern, that concern is
 a **strategy**: one interface, one implementation per provider that differs (plus a default for the rest, often a
-no-op), chosen once by `LlmClientFactory` from `LLM_PROVIDER`. Callers depend only on the interface, so `AgentEngine`,
+no-op), chosen once by the provider `LlmClientFactory` finds from `LLM_PROVIDER` (CL57: the provider is the strategy's home). Callers depend only on the interface, so `AgentEngine`,
 the tools and the hosts never branch on a provider's name, and adding a provider means adding implementations, not
 editing callers. Use one only when providers really differ; a concern every provider handles the same way needs none.
 
@@ -180,7 +180,7 @@ editing callers. Use one only when providers really differ; a concern every prov
 |---|---|---|---|
 | How usage is reported | `IUsageMapper` | `StandardUsageMapper` (default), `AnthropicUsageMapper` (cache writes, and their split by lifetime from the raw response, F4) | Built (F1) |
 | Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md)) |
-| Thinking settings | to be extracted | Anthropic's fixed budget for pre-4.6 models is an inline wrapper in `LlmClientFactory` today | Candidate ([F10](../features/F10-route-settings.md) S4) |
+| Thinking settings | `ThinkingBudget` (core.anthropic) | Anthropic's fixed budget for pre-4.6 models, wrapped on the client by `AnthropicProvider` | Built (CL57) |
 | Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](../features/F15-model-limits.md)) |
 | Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](../features/F08-reliability.md)) |
 

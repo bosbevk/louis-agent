@@ -36,7 +36,7 @@ component replaces it by name, and the last to register wins.*
   gathers them and refuses a name twice. A store that's down gives an empty page and never throws.
 - **Two routes on the admin group,** `GET /v1/admin/screens` and `GET /v1/admin/screens/{name}/rows`, which name no pack.
 - **One page, `/admin/screens/{name}`, in the framework.** A site writes no page and no link: `PackMenu` in `AdminShell` lists the
-  screens, and each site's router finds the framework's pages through `FrameworkPages.Assemblies`.
+  screens, and each site's router finds the framework's pages through `FrameworkPages.With(...)` (CL57: the libraries it opted into too).
 - **`PackViews` is the override list** (Registry, Fowler): a name to a component, the plain `ScreenTable` by default. A site fills it
   at start, and order is precedence: the framework's default, a pack's view, a demo's.
 - **A pack's real components live in `packs-web/`,** never in the pack. A pack references no web and its web project references no

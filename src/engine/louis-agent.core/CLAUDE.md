@@ -42,7 +42,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | Folder (core) | Concern |
 |---|---|
 | `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, the tool-call guards that call the model, a call's text for displays), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools, the agent-built tools with their `Scripts/`, and the `Clock/`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
-| `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, with the thinking middleware); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider under `Providers/`, `{Name}Provider/` (`Providers/AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
+| `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, the registry of the providers a host gave) and `Providers/` (the `ILlmProvider` seam and `LlmLimits`; each SDK is a library on core, CL57); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider under `Providers/`, `{Name}Provider/` (`Providers/AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
 | `Delegation/` | Handing work to a specialist or a minion: their tools, the sub-sessions and the usage they roll up. The engine's own (ADR 0031) |
 | `Web/` | The seam for what the engine needs from the web (CL33): `IWebAccess` (the search provider, the browser if any, the renderer, a fetcher per call), `NoWebAccess` (every part says it isn't set up) and `WebParts` (web access from parts given). The browser, search, rendering, robots and the recorders are `louis-agent.core.web`'s, which a host hands in through `HostServices` |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
@@ -56,7 +56,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 The rules:
 
-1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.AnthropicProvider`), one top-level type per file, the file
+1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.Providers`), one top-level type per file, the file
    named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
    implementations, a helper beside its one user.
 2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Delegation`, `Web`, `Skills`, `Usage`, `Pricing`,
@@ -70,7 +70,7 @@ The rules:
    `Program.cs` is start-up only; its routes are in `Endpoints/`, one file per group, and the rest sits in a folder per
    concern (the API: `Sessions/`, `Admin/`, `Evals/`, `Config/`, `Messages/`), never a `Services/` folder, which
    names a kind of thing, not a concern; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
-5. **Tests mirror the source:** `src/tests/engine/louis-agent.core.tests/Llm/Providers/AnthropicProvider/…` tests `Llm/Providers/AnthropicProvider/…`.
+5. **Tests mirror the source:** `src/tests/engine/louis-agent.core.tests/Llm/Caching/…` tests `Llm/Caching/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
 
 **Held by a test:** `src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs` reads core's source and fails on a file whose
@@ -146,8 +146,10 @@ has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the 
 Configuration only — see [MODELS.md](../../docs/MODELS.md): `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`.
 A new model also needs its prices in each demo's `config/prices.json` (else its cost is recorded as unknown); run
 `src/tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
-`LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
+the provider's own library on core (`louis-agent.core.anthropic`, `.core.ollama`, `.core.openai`: an `ILlmProvider` with the
+client, the usage mapper and the prompt caching, CL57), never in core, `AgentEngine` or the tools; a program composes
+the providers it wants in its `HostServices`.
 Where providers need different logic for the same concern, write it as a **strategy**: an interface, one implementation
-per provider that differs (plus a default), chosen once in `LlmClientFactory`, as `IUsageMapper` is
+per provider that differs (plus a default), chosen once by the provider's `ILlmProvider`, as `IUsageMapper` is
 ([Architecture: Provider strategies](../../docs/architecture/05-building-block-view.md#provider-strategies)). Never branch on the provider's name
 anywhere else.
