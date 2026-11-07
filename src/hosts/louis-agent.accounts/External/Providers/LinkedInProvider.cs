@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace LouisAgent.Accounts.External;
+namespace LouisAgent.Accounts.External.Providers;
 
 /// <summary>
 /// Sign in with LinkedIn, which is OpenID Connect ("Sign In with LinkedIn using OpenID Connect"): Microsoft's generic

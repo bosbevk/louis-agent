@@ -1,4 +1,5 @@
 using LouisAgent.Accounts.Config;
+using LouisAgent.Accounts.External.Providers;
 
 namespace LouisAgent.Accounts.External;
 

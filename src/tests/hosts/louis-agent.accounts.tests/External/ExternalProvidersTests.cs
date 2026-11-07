@@ -1,5 +1,6 @@
 using LouisAgent.Accounts.Config;
 using LouisAgent.Accounts.External;
+using LouisAgent.Accounts.External.Providers;
 using LouisAgent.Choices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;

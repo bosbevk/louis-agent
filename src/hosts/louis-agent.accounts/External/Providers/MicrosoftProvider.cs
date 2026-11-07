@@ -2,7 +2,7 @@ using LouisAgent.Choices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace LouisAgent.Accounts.External;
+namespace LouisAgent.Accounts.External.Providers;
 
 /// <summary>
 /// Sign in with a Microsoft account, personal or work, on Microsoft's own handler (an Entra app registration that

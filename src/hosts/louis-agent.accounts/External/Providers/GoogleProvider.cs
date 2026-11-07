@@ -2,7 +2,7 @@ using LouisAgent.Choices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace LouisAgent.Accounts.External;
+namespace LouisAgent.Accounts.External.Providers;
 
 /// <summary>Sign in with Google, on Microsoft's own handler; the person's email and name come with the sign-in.</summary>
 public sealed class GoogleProvider(ProviderKeys keys) : IExternalProvider
