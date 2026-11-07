@@ -1,0 +1,5 @@
+/* ---- The animations checkbox in the sidebar's settings (FX65): the box beside its words, at the same side margins as
+   the settings above it (.settings), so it lines up on every site. It lived in one site's stylesheet alone, so on
+   every other site it sat flush against the edge. ---- */
+.settings-check { display: flex; align-items: flex-start; gap: 9px; margin: 10px 8px 0; color: var(--web-soft-text); font-size: 12.5px; line-height: 1.4; cursor: pointer; }
+.settings-check input { flex: none; margin-top: 2px; accent-color: var(--bs-primary); }
