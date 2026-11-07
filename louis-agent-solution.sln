@@ -389,8 +389,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\plans\README.md = src\docs\plans\README.md
-		src\docs\plans\platform-summary.md = src\docs\plans\platform-summary.md
-		src\docs\plans\platform.md = src\docs\plans\platform.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"

@@ -38,7 +38,7 @@ own agents.
 | A website for the engine itself (`demos/louis-agent/web/louis-agent.site`) | |
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
-The full order is in the [TODO](TODO.md) and the [platform plan](ROADMAP.md); what's finished is in the
+The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's finished is in the
 [work log](src/docs/work-log.md).
 
 ## How it's built
