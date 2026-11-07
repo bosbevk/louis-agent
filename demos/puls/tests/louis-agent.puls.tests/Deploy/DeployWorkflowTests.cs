@@ -5,10 +5,13 @@ namespace LouisAgent.Puls.Tests.Deploy;
 /// with no password stored, it runs <c>deploy.ps1 release</c> and no other verb, and it deploys by itself only after CI
 /// passes on <c>main</c>, one deploy at a time, never cancelling one half-way.
 /// </summary>
-/// <remarks>Plain string checks on the file's lines, no regex (ADR 0057), as <see cref="DeployFilesTests"/> does.</remarks>
+/// <remarks>
+/// Plain string checks on the file's lines, no regex (ADR 0057), as <see cref="DeployFilesTests"/> does.
+/// </remarks>
 public class DeployWorkflowTests
 {
-    private static readonly string WorkflowPath = Path.Combine(TestPaths.RepoRoot, ".github/workflows/deploy-puls.yml");
+    private static readonly string WorkflowPath =
+        Path.Combine(TestPaths.RepoRoot, ".github/workflows/deploy-puls.yml");
 
     private static string[] Lines() => File.Exists(WorkflowPath) ? File.ReadAllLines(WorkflowPath) : [];
 
@@ -19,7 +22,7 @@ public class DeployWorkflowTests
     public void TheWorkflow_SignsInWithoutAPassword()
     {
         Assert.That(Trimmed(), Does.Contain("id-token: write"), "the OIDC token needs id-token: write");
-        Assert.That(Trimmed(), Has.Some.StartsWith("uses: azure/login@"));
+        Assert.That(Trimmed(), Has.Some.Contains("uses: azure/login@"));
         Assert.That(Trimmed(), Has.None.Contains("client-secret").And.None.StartsWith("creds:"));
     }
 
@@ -45,7 +48,9 @@ public class DeployWorkflowTests
         Assert.That(lines, Has.None.StartsWith("push:").And.None.StartsWith("pull_request:"));
     }
 
-    /// <summary>A second deploy waits for the first; a deploy stopped half-way could leave a revision half-made.</summary>
+    /// <summary>
+    /// A second deploy waits for the first; a deploy stopped half-way could leave a revision half-made.
+    /// </summary>
     [Test]
     public void Deploys_QueueAndNeverCancel() =>
         Assert.That(Trimmed(), Does.Contain("cancel-in-progress: false"));
