@@ -153,6 +153,26 @@ the two films of how the engine works are CSS keyframes over CSS 3D transforms. 
   that refuses two ADR files with one number on merge is cheap.
 - **Measured: $0.** The site calls no model; the only spend was the time to render frames.
 
+## Everything in Azure, as one file (F61.4)
+
+The CL19 deploy reached the PC for its browser and its store through a Tailscale sidecar, because a Container App can't
+hold Mongo (its disk is a file share, and Mongo's engine fails on it) and the browser's DevTools port must never be
+public. F61.4 turned that round: the services moved to where the app is, on a small VM in a private network that the
+apps' subnet alone can reach, and the sidecar, the ingress lock and the open key went with it, since the web app now
+signs in and the gate takes a signed-in person. Three things to keep from building it:
+
+- **A build is a file, not a sequence of commands.** Louis asked for every `az` write to be recorded in config as a
+  build step, then for scripts that check for a resource and create or update it; a Bicep deployment is exactly
+  that for every resource it declares, so the template became the record, and the script's verbs are only what a
+  template can't do: copying files to the VM, building images, the app's revisions, the domain's certificate once
+  the DNS records exist. A verb reads what it needs (the VM's address) back from the deployment's outputs, never
+  from a value someone copied.
+- **A secret never travels in a definition.** The SQL password and the SSH key reach the template as parameters read
+  from environment variables the verb sets from the git-ignored files; the VM's env files go up through run-command
+  after the first boot, because cloud-init is readable on the VM for good.
+- **The old stays until the new answers.** Nothing of the CL19 deploy or the F58 tunnels is deleted before both
+  domains serve from Azure; the READMEs describe both until then, and the retirement is one listed step.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made

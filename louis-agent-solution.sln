@@ -98,13 +98,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10
 		demos\puls\deploy\azure\README.md = demos\puls\deploy\azure\README.md
 		demos\puls\deploy\azure\deploy.ps1 = demos\puls\deploy\azure\deploy.ps1
 		demos\puls\deploy\azure\puls-app.yaml = demos\puls\deploy\azure\puls-app.yaml
-		demos\puls\deploy\azure\puls-searxng.yaml = demos\puls\deploy\azure\puls-searxng.yaml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ts-forwarder", "ts-forwarder", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0190}"
 	ProjectSection(SolutionItems) = preProject
-		demos\puls\deploy\azure\ts-forwarder\Dockerfile = demos\puls\deploy\azure\ts-forwarder\Dockerfile
-		demos\puls\deploy\azure\ts-forwarder\start.sh = demos\puls\deploy\azure\ts-forwarder\start.sh
+		demos\puls\config\azure\main.bicep = demos\puls\config\azure\main.bicep
+		demos\puls\config\azure\main.bicepparam = demos\puls\config\azure\main.bicepparam
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vm", "vm", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0191}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\deploy\azure\vm\cloud-init.yaml = demos\puls\deploy\azure\vm\cloud-init.yaml
+		demos\puls\deploy\azure\vm\docker-compose.services.yml = demos\puls\deploy\azure\vm\docker-compose.services.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}"
@@ -2272,7 +2277,8 @@ Global
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0164} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0165} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0190} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0191} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}

@@ -1,0 +1,72 @@
+# The services Puls needs beside it in Azure (F61.4), on the VM puls-services in puls-vnet: the benchmark store, the
+# headless browser and the search, the same images and settings as the PC's stack (demos/puls/docker/docker-compose.puls.yml),
+# every port bound to the VM's private IP only, so nothing here has a public address and only the apps' subnet (the
+# network security group) reaches them. deploy.ps1 vm copies this file, SearXNG's settings and the two env files to
+# /data/compose and /data/env on the VM and restarts the puls-services unit that cloud-init installed, which runs:
+#   docker compose --env-file /data/env/.env -f /data/compose/docker-compose.services.yml up -d
+# PRIVATE_IP is written to /data/env/.env by cloud-init from the VM's own address. No secret value is in this file.
+name: puls-services
+
+services:
+  # The benchmark store, the shop prices and the recipe library (F31, F50.2, ADR 0082): one server, three databases.
+  # Its data is the XFS data disk at /data (cloud-init.yaml), so a rebuilt VM keeps the runs. The root user is in
+  # .env.mongo (copied up by deploy.ps1 vm), read the first time the data folder is empty; the apps' URLs carry it.
+  mongo:
+    # Mongo 9, not the PC's 8: Azure's Ubuntu 24.04 image runs a 7.0 kernel, on which MongoDB 8 refuses to start
+    # (SERVER-121912, its allocator and glibc both claim the kernel's rseq); 9.0.4 starts on it (tried 2026-11-07).
+    image: mongo:9@sha256:452bdaf2127b8ff851e31410a267809b9829eded219979f2210e7c7efb85a058   # 9.0.4
+    container_name: puls_mongo
+    restart: unless-stopped
+    env_file:
+      - path: /data/env/.env.mongo
+        required: true
+    ports:
+      - "${PRIVATE_IP}:27017:27017"
+    volumes:
+      - /data/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # The headless Chrome that renders pages drawn with JavaScript (F32), the same digest as the PC's stack. Its DevTools
+  # port has no authentication of its own: the private IP and the security group are what keep it to the apps.
+  browser:
+    image: chromedp/headless-shell@sha256:53cc0f33c0598ff244f6e45458f6dfaf0ae4206d388ae7364903afd1d9d14f0a   # Chrome 156.0.8078.36
+    container_name: puls_browser
+    restart: unless-stopped
+    ports:
+      - "${PRIVATE_IP}:9222:9222"
+    command:
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --no-sandbox
+      - --mute-audio
+      - --disable-background-networking
+      - --disable-default-apps
+      - --disable-extensions
+      - --disable-sync
+      - --disable-translate
+      - --enable-unsafe-swiftshader
+      - --disable-webgl
+      - --log-level=0
+
+  # SearXNG (AGPL-3.0, run unchanged beside us, ADR 0023): development and benchmarks only, the sold endpoint keeps a
+  # licensed search API. The same settings file as the PC's stack, copied up by deploy.ps1 vm; its secret in
+  # .env.searxng, so it signs its cookies with no placeholder.
+  searxng:
+    image: searxng/searxng@sha256:79180616c984f39524f6f27f19625a46f82c8ad4aa6a2e553db52b14e1b4a768   # 2026.10.17-2a6fc07be
+    container_name: puls_searxng
+    restart: unless-stopped
+    env_file:
+      - path: /data/env/.env.searxng
+        required: true
+    environment:
+      SEARXNG_BASE_URL: http://${PRIVATE_IP}:8080/
+      BIND_ADDRESS: 0.0.0.0:8080
+      USE_ONLY_HTTPS: "false"
+    ports:
+      - "${PRIVATE_IP}:8080:8080"
+    volumes:
+      - /data/compose/settings.yml:/etc/searxng/settings.yml:ro

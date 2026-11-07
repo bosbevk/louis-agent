@@ -8,9 +8,9 @@
 
 | File | What it is |
 |---|---|
-| `docker-compose.puls.yml` | The Puls stack: `puls` (5070), `puls-mongo` (the benchmark store), `puls-sql` (the accounts database, F61; needs `config/.env.sql`), `puls-searxng` and `puls-browser` (the web it reads, on their own network). Its browser and Mongo also serve the Azure app, through `tailscale serve` on this PC ([the tunnel](../deploy/azure/README.md#the-tunnel)) |
+| `docker-compose.puls.yml` | The Puls stack: `puls` (5070), `puls-mongo` (the benchmark store), `puls-sql` (the accounts database, F61; needs `config/.env.sql`), `puls-searxng` and `puls-browser` (the web it reads, on their own network). The Azure app has its own browser and Mongo on a VM since F61.4 ([deploy/azure](../deploy/azure/README.md)) |
 | `images/Dockerfile.puls` | The API serving Puls's web app. Builds from the repo root |
-| `searxng/settings.yml` | The SearXNG settings, mounted read-only into `puls-searxng` here and uploaded to the Azure one |
+| `searxng/settings.yml` | The SearXNG settings, mounted read-only into `puls-searxng` here and copied to the Azure VM's SearXNG by `deploy.ps1 vm` (F61.4) |
 
 Every compose command takes `--env-file demos/puls/config/.env`, and every port binds to `127.0.0.1`:
 

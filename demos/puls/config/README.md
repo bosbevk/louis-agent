@@ -9,7 +9,7 @@ the env files stay at its root.
 | File | In git | What it is |
 |---|---|---|
 | `.env.example` → `.env` | template / yours | Your non-secret settings; every setting explained in the template |
-| `.env.secrets.example` → `.env.secrets` | template / yours | Your API keys; also `TS_AUTHKEY`, used only to deploy to Azure |
+| `.env.secrets.example` → `.env.secrets` | template / yours | Your API keys; `deploy.ps1 secrets` copies them into the vault for Azure (F61.4) |
 | `.env.mongo.example` → `.env.mongo` | template / yours | The benchmark store's root user, read only by `puls-mongo` |
 | `.env.sql.example` → `.env.sql` | template / yours | The accounts database's sa password, read only by `puls-sql` (F61) |
 | `.env.searxng.example` → `.env.searxng` | template / yours | The SearXNG secret, read only by `puls-searxng` |
