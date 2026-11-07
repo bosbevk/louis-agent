@@ -102,6 +102,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0093](0093-a-script-is-a-module-beside-its-component.md) | A script is an ES module beside the component that needs it, imported through `JsModule` and let go on dispose; a site lists nothing of ours but `first-paint.js`; the rule reads the modules and the calls | Accepted |
 | [0094](0094-a-components-styles-sit-beside-it.md) | A rule one component draws sits beside it in `X.razor.scss`, scoped and bundled by the build; several components' in their ancestor's under `::deep`; what a site's own pages draw, a theme overrides or many components share stays a global a site forwards; a move is checked by the goldens, a weight scan and the browser | Accepted |
 | [0095](0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) | Puls runs from Azure in its own private network (a VM for Mongo, the browser and SearXNG; Azure SQL's free offer for the accounts); the build is one Bicep file in config whose outputs the verbs read back; every secret a Key Vault reference; the old deploy and the F58 tunnel retired once the domain answered; the framework's site merges into the louis-agent demo's web app rather than deploying on its own | Accepted |
+| [0097](0097-puls-deploys-from-github-without-a-password.md) | Puls deploys from GitHub after green CI on `main` and from a button, signed in by OpenID Connect with no password, running `deploy.ps1 release` as it is, with Contributor on its resource group and Key Vault Reader only | Accepted |
 
 ## When to write one
 
