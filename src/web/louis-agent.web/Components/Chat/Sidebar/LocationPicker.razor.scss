@@ -1,0 +1,8 @@
+/* LocationPicker's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+/* Ligging (F22): the 'use my location' button and OpenStreetMap's credit, in the sidebar's settings. */
+.locate { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 2px 8px 8px; }
+.locate-button { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: var(--web-bright); background: rgba(var(--web-overlay-rgb), .08); border: 1px solid rgba(var(--web-overlay-rgb), .16); transition: border-color .2s, background .2s; }
+.locate-button:hover:not(:disabled) { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .14); }
+.locate small { color: var(--bs-secondary-color); font-size: 11px; }
+.locate small a { color: var(--web-soft-text); }
+.i-pin { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z'/><circle cx='12' cy='10' r='2.5'/></svg>"); }

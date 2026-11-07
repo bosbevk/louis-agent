@@ -252,6 +252,22 @@ and why. Each step ends with the three sites built and their goldens green.
   `.run-transcript`, `.admin-cols`, `.eval-card`, `.eval-trend`, `.explorer-q`, `.explorer-think`,
   `.explorer-calls`, `.check-script`, `.live-chat`, `.tree-node`, `.tree-mode`, `.tree-meta`, `.conv-row`): dead
   since CL10 by the look of them; left in place for Louis to confirm and delete (a TODO row).
+- **Steps 5 and 6, the chat (2026-11-07, unattended; one commit for both, since the placement is one computation
+  over the six partials and a rule's fate depends on the others').** The same script and rules as the studio's,
+  with two corrections found on the way and applied to the studio first (two commits on step 4): `::deep` goes at
+  the very start when the file's component draws none of the selector's compounds (an ancestor's file; the scope
+  lands on the compound before `::deep`, and `.run-row[b] .num` in RunsList's file matched nothing), and a class a
+  razor file outside the library draws *anywhere* in the selector keeps the rule global, since Puls's landing
+  demo copies the chat's markup (`MiniChat`, `LiveTurn`, `LandingDemo`, `EmptyChat`) and the louis-agent site's
+  pages draw the work panel's classes. Also: a variant in any global stylesheet (the partials that stay, a site's
+  Sass, a theme) keeps its subject's base global, not only one in the partials being moved. So most of the chat
+  stays global, honestly: of the six partials' rules, those of 21 components moved (the shell's, the sidebar's,
+  the header's menus, the composer's tools, the work panel's, the search's, the turn's actions, the delegation
+  card's own), and `chat/_conversation`, `_interaction`, `_finish`, `_bars`, `_pages` and `layout/_panels` stay
+  on the list with what a site's own components draw too (`.turn`, `.user-message`, `.delegation`, `.send`,
+  `.composer`, `.messages`, `.chip`, `.work-step`, the icons). Step 7's "five forwards" becomes "the globals":
+  what a theme overrides and what a site's own pages draw. A scan of every scoped rule against each site's CSS
+  and the code-review themes finds no two on the same element with the same weight.
 - **Step 3, the admin (2026-11-07, unattended; Claude's picks, for Louis to confirm).** The two admin partials held
   four kinds of rule, not one. (a) The frame's own (`.admin-shell`, its sidebar, the column) are `AdminShell`'s file.
   (b) What a pack's own view draws in the column (`.pack-split` and its buttons) sits under `::deep` in the same

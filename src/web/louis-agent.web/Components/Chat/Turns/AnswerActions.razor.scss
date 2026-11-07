@@ -1,0 +1,6 @@
+/* AnswerActions's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.action-sources { margin-left: 6px; padding: 0 10px 0 6px; border: 1px solid var(--bs-border-color); border-radius: 999px; }
+.action-sources:hover { border-color: rgba(var(--bs-primary-rgb), .45); }
+.action-sources ::deep .source-dot + .source-dot { margin-left: -8px; }
+.i-thumb-up { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 11v9H4v-9zM7 11l4-8a2 2 0 0 1 2 2v4h5.5a2 2 0 0 1 2 2.3l-1.2 6.5a2 2 0 0 1-2 1.7H7'/></svg>"); }
+.i-thumb-down { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 13V4H4v9zM7 13l4 8a2 2 0 0 0 2-2v-4h5.5a2 2 0 0 0 2-2.3l-1.2-6.5a2 2 0 0 0-2-1.7H7'/></svg>"); }

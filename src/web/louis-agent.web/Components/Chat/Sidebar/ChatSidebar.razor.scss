@@ -1,0 +1,17 @@
+/* ChatSidebar's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+.sidebar-settings summary { transition: background .2s, color .2s; }
+.sidebar-settings summary:hover { color: var(--web-bright); background: rgba(var(--web-overlay-rgb), .08); }
+.side-search {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border-radius: 12px; font-size: 14px; color: var(--bs-secondary-color);
+    background: rgba(var(--web-overlay-rgb), .04); border: 1px solid var(--bs-border-color); transition: border-color .2s, color .2s, background .2s;
+}
+.side-search:hover { color: var(--bs-emphasis-color); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--web-overlay-rgb), .06); }
+.side-link-quiet { color: var(--bs-secondary-color); font-size: 13.5px; }
+.sidebar-label-row { display: flex; align-items: center; justify-content: space-between; padding-right: 4px; }
+.chat-list { gap: 1px; }
+.side-archive { margin-top: 10px; }
+.side-archive summary { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; list-style: none; cursor: pointer; color: var(--bs-secondary-color); font-size: 13.5px; }
+.side-archive summary::-webkit-details-marker { display: none; }
+.side-archive summary:hover { background: rgba(var(--web-overlay-rgb), .05); color: var(--bs-emphasis-color); }
+.side-count { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--bs-secondary-color); background: rgba(var(--web-overlay-rgb), .06); border-radius: 999px; padding: 0 8px; }
+.side-footer .sidebar-settings { margin: 0; padding: 4px 18px 14px; }

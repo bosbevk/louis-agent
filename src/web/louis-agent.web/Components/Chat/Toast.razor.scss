@@ -1,0 +1,9 @@
+/* Toast's own styles, moved beside it from the chat's partials (CL58, steps 5 and 6). */
+/* The "Kom binnekort" toast. */
+.toast-pill {
+    position: fixed; left: 50%; bottom: 110px; z-index: 1060; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 9px;
+    padding: 11px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--bs-emphasis-color);
+    background: rgba(var(--web-menu-bg-rgb), .92); backdrop-filter: blur(12px); border: 1px solid rgba(var(--bs-primary-rgb), .35);
+    box-shadow: 0 18px 40px -14px rgba(var(--bs-black-rgb), .8), 0 0 30px -10px rgba(var(--bs-primary-rgb), .45);
+    animation: toast-in .35s var(--web-spring) both, toast-out .4s ease 2.4s forwards;
+}

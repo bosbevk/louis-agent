@@ -1,5 +1,3 @@
-/* ---- Finish: the details that make it feel made. ---- */
-
 /* A faint paper grain over the soft background, so large areas never look flat or digital (fixed, under everything). */
 body::before {
     content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .05; mix-blend-mode: overlay;
@@ -9,29 +7,22 @@ body::before {
 .conversation { background: transparent; }
 /* A gradient, not a colour: at lg Bootstrap sets an offcanvas's background-color to transparent !important. */
 .sidebar { background-image: linear-gradient(color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent), color-mix(in srgb, var(--bs-tertiary-bg) 94%, transparent)); }
-
 /* Type: balanced headline lines, no lone last words in answers, figures that line up. */
 .empty h1 { text-wrap: balance; letter-spacing: -1.6px; font-weight: 800; }
 .markdown p, .markdown li { text-wrap: pretty; }
 .markdown { font-variant-numeric: tabular-nums; }
-
 /* Hairlines, not borders: a touch of charcoal mixed into the background, and an inner light on raised surfaces. */
 .suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--bs-emphasis-color) 10%, var(--bs-body-bg)); }
-
 /* The sidebar: a small label over the chats, as in a well-made app. */
 .sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--bs-tertiary-color); padding: 6px 12px 0; }
-
 /* Focus is always visible, in orange, and never a browser default. */
 :focus-visible { outline: 2px solid color-mix(in srgb, var(--bs-primary) 70%, transparent); outline-offset: 3px; }
 .input-row:focus-within { border-color: color-mix(in srgb, var(--bs-primary) 55%, var(--bs-body-bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bs-primary) 12%, transparent), 0 18px 40px -18px rgba(var(--web-shadow-rgb), .3); }
-
 /* Scrolling never shifts the layout. */
 .messages, .chat-list { scrollbar-gutter: stable; }
-
 /* The tagline under the logo in the sidebar. */
 .brand-stack { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
 .tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--bs-secondary-color); text-wrap: balance; animation: rise .7s .9s var(--web-ease) both; }
-
 /* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
    the sidebar, the chat and the composer's fade all sit over the same light. ---- */
 body {
@@ -47,4 +38,3 @@ body {
 .user-message { box-shadow: 0 1px 0 rgba(var(--web-overlay-rgb), .08) inset, 0 12px 28px -12px rgba(var(--bs-black-rgb), .7); }
 .new-chat { box-shadow: 0 8px 22px -8px rgba(var(--bs-primary-rgb), .6); }
 .tagline { color: var(--bs-secondary-color); }
-
