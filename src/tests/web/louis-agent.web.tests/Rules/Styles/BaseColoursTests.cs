@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Styles;
 
 /// <summary>
 /// A site with no colours of its own comes out in the framework's: black and white with metallic greys, the static

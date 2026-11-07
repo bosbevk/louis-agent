@@ -1,6 +1,6 @@
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Styles;
 
 /// <summary>
 /// A component's own styles sit beside it (CL58): an <c>X.razor.scss</c> belongs to an <c>X.razor</c> in the same
