@@ -1,9 +1,8 @@
 namespace LouisAgent.CodeReview.Tests.Styles;
 
 /// <summary>
-/// The code-review app's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and its packs', and its own
-/// few
-/// after them, so it keeps no copy. What's checked is what the build really made, its themes included.
+/// The code-review app's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and its packs', and its
+/// own few after them, so it keeps no copy. What's checked is what the build really made, its themes included.
 /// </summary>
 public class StylesheetTests
 {

@@ -40,7 +40,7 @@ moves taught what scoping does to the cascade, which this record keeps.
      grid's, in `web/layout/_shell.scss` and `web/base/_elements.scss`.
 4. **A move is checked three ways before it is shown:** the libraries' goldens change by the scope attribute alone
    (the snapshot helper normalises it to `b-SCOPE`), no scoped rule and global rule style the same element with the
-   same weight (the scan in the build's record), and the page in the browser.
+   same weight (a scan over the compiled CSS, run once while the rules moved), and the page in the browser.
 5. **The rules hold it:** `ScopedStylesTests` (a style file sits beside its component, holds a rule, a site's list
    names no account or admin partial), `FrameworkStylesTests` (the libraries' rules, partials and `.razor.scss`
    alike, hold no fixed colour), and `SassStylesheet.Read()` gives a style test `app.css` and the bundle together,

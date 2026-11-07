@@ -14,6 +14,9 @@ live results). The C# rules in `csharp.md` apply to the code-behind.
   a file that would be the same on every site belongs in `louis-agent.web`, even if one site uses it today. What differs comes in
   from the site through a slot, a parameter or a setting, never a branch on which site this is. The framework names no site, in
   comments too, and everything in it is in English: another language is a site's own. A site's layout stays about 40 lines. `FrameworkNamesNoSiteTests` and `SiteLayoutsStaySmallTests` hold it.
+- **A component's own styles sit beside it** ([ADR 0094](../../src/docs/adr/0094-a-components-styles-sit-beside-it.md)):
+  a rule only this component draws goes in `X.razor.scss` next to `X.razor`, scoped and bundled by the build; a rule
+  a site's own page draws or a theme overrides stays a global partial. The how is in `css.md`; `ScopedStylesTests` holds it.
 - **A `.razor` holds markup only, no `@code` block:** a component's C# goes in its `.razor.cs` code-behind, and logic
   that needs no component (text, search, formatting) goes in a plain class with NUnit tests. `RazorHasNoCodeTests`
   holds it.
