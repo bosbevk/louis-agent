@@ -5,7 +5,7 @@
 
 | Folder | Place | Read |
 |---|---|---|
-| [azure/](azure/README.md) | Puls on Azure Container Apps (`rg-puls-za`): the app yamls, the Tailscale sidecar, `deploy.ps1` | [Deploying Puls to Azure](azure/README.md) |
+| [azure/](azure/README.md) | Puls on Azure Container Apps (`rg-puls-za`): the app yaml, the VM's files, `deploy.ps1`; the build itself is `config/azure/main.bicep` (F61.4). The CL19 files (the Tailscale sidecar, the SearXNG app) stay until the new build is live | [Deploying Puls to Azure](azure/README.md) |
 
 What runs on this PC is in [docker/](../docker/README.md); what the app reads wherever it runs is in
 [config/](../config/README.md).

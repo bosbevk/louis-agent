@@ -29,3 +29,21 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 
 The orchestrator demo (its own compose file, a demo service with ten bugs) was removed in CL10 and comes back with
 the rewritten benchmarks; `Dockerfile.orchestrator` still builds the orchestrator.
+
+## In Azure (F61.4)
+
+Each demo's `config/azure/main.bicep` is the record of what Azure holds for it, deployed by its `deploy/azure/deploy.ps1
+infra`; the app itself is a yaml the script's `release` deploys as a new revision. Built on 2026-11-08, live once Louis
+runs it; until then the CL19 deploy (Puls reaching the PC's browser and Mongo through a Tailscale sidecar) and the F58
+tunnels (both domains served from the PC) keep running, and go when the new build answers.
+
+| Where | What runs | Reaches |
+|---|---|---|
+| `rg-puls-za`, `puls-env` (a Container Apps environment on `puls-vnet`) | `puls-app`: the Puls image, one container, behind its key and its sign-in | the VM on private IPs; Azure SQL over TLS; `puls-insights` through the environment's OpenTelemetry agent |
+| `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:8` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
+| `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
+| `rg-louis-agent-za`, `louis-agent-env` | `louis-agent-site`: the static site, scales to zero | nothing: it spends and keeps nothing |
+
+The domains point at the environments' static IPs with Container Apps' managed certificates, DNS-only in Cloudflare.
+The how-to for each is its deploy README: [Puls](../../../demos/puls/deploy/azure/README.md),
+[the site](../../../demos/louis-agent/deploy/azure/README.md).
