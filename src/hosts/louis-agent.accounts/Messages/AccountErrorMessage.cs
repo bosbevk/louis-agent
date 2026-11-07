@@ -8,4 +8,7 @@ public enum AccountErrorMessage
 {
     [Description("An account needs a tenant: nothing runs without one.")]
     TenantRequired,
+
+    [Description("The request's tenant isn't set: UseTenant must run before the account routes and the store.")]
+    TenantNotResolved,
 }
