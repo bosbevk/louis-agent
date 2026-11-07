@@ -95,6 +95,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0081](../../../demos/puls/docs/adr/0081-the-cook-searches-for-itself.md) | Puls's cook searches for itself, and a minion stays only if it beats no minion: the same accuracy and time for less cost | Accepted |
 | [0087](0087-identity-is-the-identity-server.md) | ASP.NET Core Identity is the identity server, in `louis-agent.accounts`, signing in with an HttpOnly cookie that answers 401, never a redirect; what it lacks is ours beside it; the log is the mail until a sender is picked | Accepted |
 | [0088](0088-a-tenant-on-every-account.md) | Every account is in a tenant, resolved from the request's host name; an email is unique within a tenant; the store refuses without one; tenancy is data, a second tenant is a row | Accepted |
+| [0089](0089-the-account-client-is-a-library-a-site-opts-into.md) | The account pages and client are `louis-agent.web.accounts`, a library on top of the framework's web that a site opts into; the chat's menu knows accounts through one seam, `IAccountMenu`, with a Null Object when there are none | Accepted |
 
 ## When to write one
 

@@ -17,17 +17,14 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
-- **The account pages** (F61.2). Sign in, register, confirm, forgot, reset and the profile are framework pages on
-  `AccountFrame`, which draws inside the site's account layout (`SiteFrames.Account`); `AccountShell` is that frame, one
-  centred card with the site's brand. `AccountApi` talks to the API's `/account` routes, `AccountState` is the one truth
-  about who is signed in (the menu, the pages and Blazor's `AuthorizeView` follow it), and every call to the API says
-  it is the app's own (`X-Requested-With`), which is what lets a signed-in person's cookie count in place of a key. The
-  words are `AccountText`, English by default; a site registers its own copy before `AddLouisAgentAccounts()`. A site
-  whose API has no `ACCOUNTS_SQL_URL` draws the pages, which say so, and the menu stays the guest's. The profile
-  adds a passkey and turns two-factor on (F61.5): the browser's WebAuthn part is `wwwroot/js/passkeys.js`, three
-  functions a site's `index.html` loads that pass the API's options to `navigator.credentials` and the credential
-  back untouched; the sign-in page has the passkey button, and the sign-in form's second box takes the app's code or
-  a recovery code.
+- **Accounts, through one seam** (CL30, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md)).
+  The account pages and their client are [louis-agent.web.accounts](louis-agent.web.accounts.md), a library on top of
+  this one that a site opts into. All this library knows of accounts is `IAccountMenu`, declared beside the chat's
+  profile menu: are there accounts, who is signed in, the two labels, load, changed, sign out. The menu asks the
+  provider for it once and holds `NoAccounts`, a Null Object, when a site registered nothing, so the guest's menu
+  draws with no branch for the case. Every call to the API still says it is the app's own (`X-Requested-With`), which
+  is what lets a signed-in person's cookie count in place of a key; `SiteFrames.Account` names the layout the account
+  pages draw inside.
 - **The eval pages.** The evals, their runs, the answers to grade, the studio and the prompts are on every site at `/admin`, and a site makes
   one call for them. They have [their own doc](eval-pages.md).
 - **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
@@ -123,11 +120,8 @@ sequenceDiagram
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
-| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame` and `AccountFrame`, the layouts that hand over to the site's |
-| `Accounts/` | `AccountApi` (the `/account` routes), `AccountState`, `CookieAuthenticationStateProvider` (Blazor's view of it), `AccountProblem` (what a route said), `AccountServices`; in `Errors/`, `AccountErrors` (Identity's codes as the site's words); in `Navigation/`, `SafeReturn` (only our pages are followed) |
-| `Components/Account/`, `Components/Account/Profile/`, `Passkeys/`, `TwoFactor/` | `AccountShell`, `LoginForm` (with the second-factor box), `RegisterForm`, `PasswordField`, `ProviderButtons`, `AccountNotice`; `ProfileDetails`, `ChangeEmail`, `ChangePassword`, `SetPassword`, `LinkedLogins` (link and unlink, F61.3), `DeleteAccount`; `PasskeyList`, `PasskeySignIn` (F61.5, over `wwwroot/js/passkeys.js`); `TwoFactorSection` |
-| `Accounts/TwoFactor/` | `OtpAuth` (the key as a link for the app and as readable text), `SecondStep` (digits are the app's code, the rest a recovery code) |
-| `Pages/Account/` | `LoginPage`, `RegisterPage`, `ConfirmEmailPage`, `ForgotPasswordPage`, `ResetPasswordPage`, `ProfilePage` |
+| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
 | `Admin/`, `Components/Admin/Evals/` | The eval pages' plain classes and their components ([The eval pages](eval-pages.md)) |
@@ -138,9 +132,9 @@ sequenceDiagram
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
-| `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/`, `account/` |
+| `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
 | `wwwroot/js/` | `chat.js` (with `renderCode` for a pack's file viewer), `first-paint.js` |
-| `Text/` | `ChatText` (the components' words, English by default), `AccountText` (the account pages' words), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
+| `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
 

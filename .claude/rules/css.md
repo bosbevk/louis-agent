@@ -20,7 +20,7 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
 - **`app.scss` is the list**, one `@forward` a line, of partials in folders by concern (`settings/`, `base/`, `layout/`,
   `chat/`, `landing/`, `admin/`). **Its order is
   the cascade**: the colours and the plain elements first, the rest in the order its rules always came, so a later rule
-  still wins where it did. A name under `web/` is the framework's Sass and one under `pack-` a pack's, found through `IncludePaths` in `sasscompiler.json`; `tools/` writes no CSS, so it isn't on the list.
+  still wins where it did. A name under `web/` is the framework's Sass, one under `accounts/` the account library's and one under `pack-` a pack's, found through `IncludePaths` in `sasscompiler.json`; `tools/` writes no CSS, so it isn't on the list.
 - **A new rule goes in the partial of its concern.** One that grows past 200 lines is split, its new partial listed where
   its lines were; a move between partials that would change which rule wins is checked in the browser.
 - **A colour is a variable, never a value, outside the tokens** (`settings/_tokens.scss`, a theme in

@@ -25,15 +25,19 @@ the address changed.
 
 ## Change the account pages
 
-The sign-in, registration, confirmation, reset and profile pages are the framework's (`Pages/Account/`), the same on
-every site, and a site changes three things only: **its words**, a copy of `AccountText` registered before
-`AddLouisAgentAccounts()` (Puls: `PulsAccountText.Afrikaans`); **its frame**, a small `AccountLayout` on `AccountShell`
-with its brand in the slot, named in `SiteFrames`; and **whether it has accounts at all**, which is the API's
-`ACCOUNTS_SQL_URL`, not the site's. A new field or section goes in the framework: a component under
-`Components/Account/` with its bUnit test, its call in `AccountApi`, and its words in `AccountText`. The server side
-is `louis-agent.accounts` ([its doc](../projects/louis-agent.accounts.md)). Passkeys need the browser's part: a
-site's `wwwroot/index.html` loads `_content/louis-agent.web/js/passkeys.js` beside `chat.js`; without it the
-profile's passkey section says the browser can't do passkeys.
+The sign-in, registration, confirmation, reset and profile pages are the account library's
+(`src/web/louis-agent.web.accounts`, [its doc](../projects/louis-agent.web.accounts.md)), the same on every site that
+opts in. **Opting in** is a project reference, `@using LouisAgent.Web.Accounts.Components` in `_Imports.razor`,
+`AddLouisAgentAccounts()` in `Program.cs`, `@forward "accounts/shell"` in `app.scss` with the library's `Styles` on
+`sasscompiler.json`'s include paths, and `_content/louis-agent.web.accounts/js/passkeys.js` in `index.html` (without
+it the profile's passkey section says the browser can't do passkeys); the starter has all of it. A site then changes
+three things only: **its words**, a copy of `AccountText` registered before `AddLouisAgentAccounts()` (Puls:
+`PulsAccountText.Afrikaans`); **its frame**, a small `AccountLayout` on `AccountShell` with its brand in the slot,
+named in `SiteFrames`; and **whether it has accounts at all**, which is the API's `ACCOUNTS_SQL_URL`, not the site's.
+A new field or section goes in the library: a component under `Components/` with its bUnit test in
+`louis-agent.web.accounts.tests`, its call in `Client/AccountApi`, and its words in `Text/AccountText`. What the chat
+needs from accounts comes through `IAccountMenu` in the framework's web, and nothing else does. The server side is
+`louis-agent.accounts` ([its doc](../projects/louis-agent.accounts.md)).
 
 ## Change the styles or scripts
 
