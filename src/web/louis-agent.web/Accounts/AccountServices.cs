@@ -1,3 +1,5 @@
+using LouisAgent.Web.Accounts.Menu;
+using LouisAgent.Web.Components.Chat.Header.Menu;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,8 @@ public static class AccountServices
         services.AddScoped<AccountApi>();
         services.AddScoped<AccountState>();
         services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
+        // The chat's menu asks this seam who's here (CL30); without it the menu draws the guest's.
+        services.AddScoped<IAccountMenu, AccountMenu>();
         services.AddAuthorizationCore();
         services.TryAddSingleton(new AccountText());
         return services;

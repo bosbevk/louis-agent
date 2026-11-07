@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Web.Accounts;
+using LouisAgent.Web.Accounts.Menu;
+using LouisAgent.Web.Components.Chat.Header.Menu;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,7 @@ internal static class AccountTestContext
             new AccountApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }));
         ctx.Services.AddSingleton(sp => new AccountState(sp.GetRequiredService<AccountApi>()));
         ctx.Services.AddSingleton(new AccountText());
+        ctx.Services.AddSingleton<IAccountMenu, AccountMenu>();
         return (ctx, handler);
     }
 

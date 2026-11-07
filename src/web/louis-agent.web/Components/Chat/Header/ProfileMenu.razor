@@ -1,42 +1,77 @@
 @* The profile: who is signed in (or a guest), credits, the theme (dark; the others to come), the profile page, settings,
    admin, and sign in, register or sign out as fits. On an instance with no accounts it's the guest's menu as before. *@
 <div class="dropdown">
-    <button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="@Text.Profile">@Initial</button>
+    <button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+            aria-label="@Text.Profile">@Initial</button>
     <ul class="dropdown-menu dropdown-menu-end profile-menu">
         <li class="profile-menu-head">
             <span class="profile-avatar">@Initial</span>
             <span class="profile-who"><strong>@Who</strong><small>@Detail</small></span>
         </li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Credits)"><span class="ic i-coin" aria-hidden="true"></span>@Text.BuyCredits</button></li>
-        <li><hr class="dropdown-divider" /></li>
+        <li>
+            <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Credits)"><span
+                    class="ic i-coin" aria-hidden="true"></span>@Text.BuyCredits</button>
+        </li>
+        <li>
+            <hr class="dropdown-divider"/>
+        </li>
         <li><h6 class="dropdown-header">@Text.Theme</h6></li>
-        <li><button class="dropdown-item active" type="button"><span class="ic i-moon" aria-hidden="true"></span>@Text.ThemeDark <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThemeLightSoon)"><span class="ic i-sun" aria-hidden="true"></span>@Text.ThemeLight</button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThemeAutoSoon)"><span class="ic i-auto" aria-hidden="true"></span>@Text.ThemeAuto</button></li>
-        <li><hr class="dropdown-divider" /></li>
+        <li>
+            <button class="dropdown-item active" type="button"><span class="ic i-moon"
+                                                                     aria-hidden="true"></span>@Text.ThemeDark <span
+                    class="ic i-check ms-auto" aria-hidden="true"></span></button>
+        </li>
+        <li>
+            <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThemeLightSoon)">
+                <span class="ic i-sun" aria-hidden="true"></span>@Text.ThemeLight</button>
+        </li>
+        <li>
+            <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThemeAutoSoon)">
+                <span class="ic i-auto" aria-hidden="true"></span>@Text.ThemeAuto</button>
+        </li>
+        <li>
+            <hr class="dropdown-divider"/>
+        </li>
         @if (SignedIn)
         {
-            <li><a class="dropdown-item" href="profile"><span class="ic i-user" aria-hidden="true"></span>@Text.Profile</a></li>
+            <li><a class="dropdown-item" href="profile"><span class="ic i-user" aria-hidden="true"></span>@Text.Profile
+                </a></li>
         }
         else if (Accounts)
         {
-            <li><a class="dropdown-item" href="login"><span class="ic i-user" aria-hidden="true"></span>@Words.SignIn</a></li>
-            <li><a class="dropdown-item" href="register"><span class="ic i-user" aria-hidden="true"></span>@Words.Register</a></li>
+            <li><a class="dropdown-item" href="login"><span class="ic i-user"
+                                                            aria-hidden="true"></span>@_menu.SignInLabel</a></li>
+            <li><a class="dropdown-item" href="register"><span class="ic i-user"
+                                                               aria-hidden="true"></span>@_menu.RegisterLabel</a></li>
         }
         else
         {
-            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Profile)"><span class="ic i-user" aria-hidden="true"></span>@Text.Profile</button></li>
+            <li>
+                <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.Profile)">
+                    <span class="ic i-user" aria-hidden="true"></span>@Text.Profile</button>
+            </li>
         }
-        <li><button class="dropdown-item" type="button" onclick="chatUi.openSettings()"><span class="ic i-cog" aria-hidden="true"></span>@Text.Settings</button></li>
+        <li>
+            <button class="dropdown-item" type="button" onclick="chatUi.openSettings()"><span class="ic i-cog"
+                                                                                              aria-hidden="true"></span>@Text.Settings
+            </button>
+        </li>
         @* The admin portal; the API's admin key gates it, not this menu. *@
         <li><a class="dropdown-item" href="admin"><span class="ic i-sliders" aria-hidden="true"></span>Admin</a></li>
         @if (SignedIn)
         {
-            <li><button class="dropdown-item" type="button" @onclick="SignOutAsync"><span class="ic i-logout" aria-hidden="true"></span>@Text.SignOut</button></li>
+            <li>
+                <button class="dropdown-item" type="button" @onclick="SignOutAsync"><span class="ic i-logout"
+                                                                                          aria-hidden="true"></span>@Text.SignOut
+                </button>
+            </li>
         }
         else if (!Accounts)
         {
-            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.SignOut)"><span class="ic i-logout" aria-hidden="true"></span>@Text.SignOut</button></li>
+            <li>
+                <button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.SignOut)">
+                    <span class="ic i-logout" aria-hidden="true"></span>@Text.SignOut</button>
+            </li>
         }
     </ul>
 </div>

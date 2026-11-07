@@ -217,6 +217,19 @@ One commit each; a move is `git mv` and Rider's adjust-namespaces, proved by the
    `src/docs/CLAUDE.md`'s structure line, ADR 0089 *The account client is a library a site opts into* (why on top
    of `web`, why a seam and not a lookup), CHANGELOG, TODO's CL30 line closed; this plan deleted. Full unit suite.
 
+## Approved during the build
+
+Picks taken while finishing it (Louis, 2026-11-07: "go finish it"), the recommended one of three each:
+
+- **The Null Object is a fallback, not a registration** (step 2). The plan had `AddLouisAgentWeb()` register
+  `NoAccounts`; there is no such call, a site registers the web's services line by line. Options: add
+  `AddLouisAgentWeb()` now (a change to every site and every chat test, outside this plan); every site and test
+  registers `NoAccounts` itself (the same, by hand); **the menu asks the provider for `IAccountMenu` once and holds
+  `NoAccounts.Instance` when there is none** (picked: one line, and the sites and the chat's tests stay as they are).
+- **The seam's real side is built with the seam** (step 2, taking step 6). `AccountMenu` is written and tested in
+  step 2, beside the client it wraps, so the sites keep their menus through the move; step 3 moves it with the
+  client and step 6 has nothing left to build.
+
 ## Verification
 
 Per step: the moved project's tests, `louis-agent.web.tests` for the rules, `core.tests` for the layout and size
