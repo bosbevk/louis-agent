@@ -369,6 +369,13 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   keys yet (sign-in by password only until Louis registers providers for `louis-agent.dev`); `release` built
   `louis-agent-coding:2026-11-08-0050` in four minutes and created the app as `v001`, live at its Azure address
   with health 200 and the landing page.
+- **F109.2 step 4: the domain** (2026-11-08). Cloudflare had imported the old host's records (a proxied wildcard and
+  apex, Afrihost's mail records); Louis replaced them with the four DNS-only records and the `_dnsauth` TXT. The
+  verb's token fallback found nothing: the certificate list and the newer API versions leave the token out, the
+  2023-05-01 version still returns it, so the verb reads it there, stops while the certificate is pending (the bind
+  refuses a pending one) and doesn't re-add a hostname it added. The apex validated after nine checks and is bound
+  with its padlock; `www` validates by its CNAME on Azure's clock. Chrome showed ERR_QUIC_PROTOCOL_ERROR once: it
+  remembered the old proxy's HTTP/3, a reload clears it.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
