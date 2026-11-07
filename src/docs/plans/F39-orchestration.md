@@ -8,7 +8,11 @@
 > in code); **Part B's `voorman` identity is dropped**, and the triage case below survives only as a demo of Part A.
 > Hand-off, with F43's conversations saved to Mongo, is a must the framework track takes right after the builder
 > (F106.1). When this draft is rewritten into the approved plan, Part B is cut and ADR 0031's "the orchestrator is an
-> identity" is amended.
+> identity" is amended. **The shape Louis gave on 2026-11-07:** a job polls a log or feed; the orchestrator is *code*
+> and collects the errors; a *sorting agent* (its own identity) sends some kinds for auto-fixing and raises the others
+> to humans at an endpoint; a *fixer agent* fixes on a branch; the sorter confirms the fix (git, a replay, the tests);
+> a branch is left with the fix, **never a PR**. Code for the fixed steps, an agent only where the next step depends
+> on what was found. This is F106.3, the framework's workflow demo.
 
 ### Phase 6 · F39 Orchestration: one delegation function, and the orchestrator as an identity
 
