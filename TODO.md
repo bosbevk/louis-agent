@@ -15,7 +15,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (105)
+## Open (106)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -123,6 +123,7 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
+| CL58 | A component's styles sit beside it: `X.razor.scss` scoped and bundled by Blazor's CSS isolation; a site forwards only the globals (settings, base, layout) and its own | Cleanups | [plan](src/docs/plans/CL58-styles-beside-their-components.md) |
 
 ## Known limitations
 

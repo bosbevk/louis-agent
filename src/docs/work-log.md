@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 58 | 76 |
 | Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 26 | 25 |
+| Cleanups (`CL`) | 26 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -126,6 +126,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
+| CL58 | A component's styles sit beside it: `X.razor.scss` scoped and bundled by Blazor's CSS isolation; a site forwards only the globals (settings, base, layout) and its own | Cleanups |
 
 ## Features (58 done)
 
