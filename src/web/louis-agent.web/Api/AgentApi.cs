@@ -154,8 +154,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     }
 
     /// <summary>
-    /// A reply as its record. A web page from a dev server or a proxy isn't JSON, and as an API error a page can show it,
-    /// where a thrown JsonException nobody expects would take the whole app down.
+    /// A reply as its record. A web page from a dev server or a proxy isn't JSON, and as an API error a page can show
+    /// it, where a thrown JsonException nobody expects would take the whole app down.
     /// </summary>
     private static async Task<T> ReadAsync<T>(HttpResponseMessage response, JsonSerializerOptions options)
     {

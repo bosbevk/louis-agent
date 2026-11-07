@@ -58,7 +58,7 @@ internal static class RecipeForm
         ]);
     }
 
-    /// <summary>The recipe with what was typed, or why a field was refused. The page and the site stay as they were.</summary>
+    /// <summary>The recipe with what was typed, or why a field was refused. The page and the site stay.</summary>
     public static (Recipe? Recipe, IReadOnlyDictionary<string, string> Errors) Read(StoredRecipe stored, ScreenValues values)
     {
         var errors = new Dictionary<string, string>();

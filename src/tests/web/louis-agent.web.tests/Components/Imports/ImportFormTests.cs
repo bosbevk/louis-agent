@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts.Admin.Imports;
-using LouisAgent.Puls.Admin.Imports;
+using LouisAgent.Web.Components.Imports;
 
-namespace LouisAgent.Puls.Tests.Admin.Imports;
+namespace LouisAgent.Web.Tests.Components.Imports;
 
 /// <summary>
 /// The uploads page's form (F55): it holds the file chosen for each of an upload's slots and the last report. A

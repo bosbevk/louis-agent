@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Imports;
 
-namespace LouisAgent.Puls.Admin.Imports;
+namespace LouisAgent.Web.Components.Imports;
 
 /// <summary>
 /// One upload on the uploads page (F55): the file the person chose for each of its slots, and the report of the last

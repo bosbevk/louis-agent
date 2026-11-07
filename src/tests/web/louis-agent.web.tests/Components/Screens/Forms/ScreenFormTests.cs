@@ -12,8 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Tests.Components.Screens.Forms;
 
 /// <summary>
-/// One row as a form, drawn from what its pack described. The pack has the last word on what's saved, so a refusal shows
-/// beside its field, and a field that can't change is never sent.
+/// One row as a form, drawn from what its pack described. The pack has the last word on what's saved, so a refusal
+/// shows beside its field, and a field that can't change is never sent.
 /// </summary>
 public class ScreenFormTests
 {

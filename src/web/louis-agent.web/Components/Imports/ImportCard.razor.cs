@@ -1,22 +1,22 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
-using LouisAgent.Puls.Admin.Imports;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Packs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace LouisAgent.Puls.Components.Admin.Imports;
+namespace LouisAgent.Web.Components.Imports;
 
 /// <summary>
-/// One pack's upload on the uploads page (F55): it reads the chosen files into its <see cref="ImportForm"/>, and posts
-/// them to the upload's preview and save routes, showing the report each gives back.
+/// One pack's upload on the uploads page, by default: it reads the chosen files into its <see cref="ImportForm"/>, and
+/// posts them to the upload's preview and save routes, showing the report each gives back.
 /// </summary>
 /// <remarks>
 /// Presentation Model (Fowler): the rules of when a preview or a save may run live in <see cref="ImportForm"/>; this
 /// component only reads files and calls the API.
 /// </remarks>
 /// <seealso href="https://martinfowler.com/eaaDev/PresentationModel.html">Fowler: Presentation Model</seealso>
-public partial class ImportCard
+public partial class ImportCard : IImportView
 {
     /// <summary>The largest file the browser reads, the same cap the API keeps for a whole upload.</summary>
     private const long MaxBytes = 20 * 1024 * 1024;

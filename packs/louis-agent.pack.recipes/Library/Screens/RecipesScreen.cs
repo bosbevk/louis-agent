@@ -105,7 +105,7 @@ internal sealed class RecipesScreen(IRecipeStore store, IExcludedPages excluded,
         || recipe.Title.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase)
         || recipe.SiteSlug.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>One recipe's line. Not edited is empty, as it's known; an unknown yield stays null and says so.</summary>
+    /// <summary>One recipe's line. Not edited is empty, as it's known; an unknown yield stays null.</summary>
     private static ScreenRow RowOf(StoredRecipe recipe) => new(recipe.Id,
     [
         recipe.Title,

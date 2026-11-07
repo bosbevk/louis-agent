@@ -1,15 +1,14 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Api.Contracts.Admin.Imports;
-using LouisAgent.Puls.Admin.Imports;
-using LouisAgent.Puls.Components.Admin.Imports;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Imports;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Puls.Tests.Components.Admin.Imports;
+namespace LouisAgent.Web.Tests.Components.Imports;
 
 /// <summary>
 /// F55: an upload's card takes a file for each slot, posts them to the preview route, shows the report's facts, and

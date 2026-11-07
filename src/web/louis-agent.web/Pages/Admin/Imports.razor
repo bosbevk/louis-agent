@@ -1,10 +1,10 @@
 @page "/admin/imports"
-@layout AdminLayout
+@layout AdminFrame
 
-@* F55: the packs' data uploads, from GET /v1/admin/imports: a card for each, such as Stats SA's average prices for
-   the shop-prices pack. Preview shows what the files hold and what they would change; Save keeps them. *@
+@* The packs' data uploads, from GET /v1/admin/imports: a card for each, or a view of a pack's own where one is
+   registered. Preview shows what the files hold and what they would change; Save keeps them. *@
 
-<PageTitle>Uploads · Puls Admin</PageTitle>
+<PageTitle>Uploads · Admin</PageTitle>
 
 <div class="page-head">
     <div>
@@ -23,7 +23,7 @@
 
 @if (_loading && _forms is null)
 {
-    <section class="card-p"><span class="muted">Loading…</span></section>
+    <section class="card-p imports-loading"><span class="muted">Loading…</span></section>
 }
 else if (_forms is { Count: 0 })
 {
@@ -33,6 +33,6 @@ else if (_forms is { } forms)
 {
     @foreach (var form in forms)
     {
-        <ImportCard @key="form.Upload.Name" Form="form" />
+        <DynamicComponent @key="form.Upload.Name" Type="Views.ImportView(form.Upload.Name)" Parameters="ParametersFor(form)" />
     }
 }

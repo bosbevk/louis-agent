@@ -1,19 +1,22 @@
 using System.Net;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
-using LouisAgent.Puls.Admin.Imports;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Imports;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Pages.Admin;
+namespace LouisAgent.Web.Pages.Admin;
 
 /// <summary>
-/// The Uploads page (F55): every data upload the instance's packs take, as the contract's <c>ImportsReply</c>, each
-/// in its own card.
+/// The Uploads page, the same on every site: every data upload the instance's packs take, each in its own card, or in a
+/// component of a pack's own where one is registered.
 /// </summary>
 /// <remarks>
-/// ADR 0042: the page shows what it last fetched, and Reload fetches again, starting each upload afresh.
+/// A file, a preview and a save make a process rather than a table, so uploads keep their own seam, but they share the
+/// frame and the override list with a pack's screens. ADR 0042: the page shows what it last fetched, and Reload fetches
+/// again, starting each upload afresh.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class Imports
@@ -24,6 +27,10 @@ public partial class Imports
 
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
+    [Inject] private PackViews Views { get; set; } = null!;
+
+    /// <summary>What an upload's component is handed.</summary>
+    private static Dictionary<string, object> ParametersFor(ImportForm form) => new() { [nameof(IImportView.Form)] = form };
 
     /// <summary>Loads the admin key, then the list.</summary>
     protected override async Task OnInitializedAsync()

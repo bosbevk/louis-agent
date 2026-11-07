@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Packs;
@@ -15,6 +16,7 @@ namespace LouisAgent.Web.Components.Screens;
 public partial class PackMenu : IDisposable
 {
     private IReadOnlyList<ScreenReply> _screens = [];
+    private bool _takesUploads;
 
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
@@ -52,14 +54,18 @@ public partial class PackMenu : IDisposable
         {
             var reply = await Api.GetAsync<ScreensReply>("v1/admin/screens", AdminJson.SnakeCase);
             _screens = [.. reply.Screens.Where(Views.CanDraw)];
+            var uploads = await Api.GetAsync<ImportsReply>("v1/admin/imports", AdminJson.SnakeCase);
+            _takesUploads = uploads.Imports is { Count: > 0 };
         }
         catch (AgentApiException)
         {
             _screens = [];
+            _takesUploads = false;
         }
         catch (HttpRequestException)
         {
             _screens = [];
+            _takesUploads = false;
         }
     }
 }

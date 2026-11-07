@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin.Screens;
+using LouisAgent.Web.Components.Imports;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Screens.Table;
 using Microsoft.AspNetCore.Components;
@@ -61,6 +62,33 @@ public class PackViewsTests
         var views = new PackViews().UseScreen<ThePacksView>("usage");
 
         Assert.That(views.ScreenView("USAGE"), Is.EqualTo(typeof(ThePacksView)));
+    }
+
+    /// <summary>An upload nobody registered gets the card, a registered one its view, and the last wins.</summary>
+    [Test]
+    public void AnUpload_GetsTheCard_UnlessSomeoneRegisteredOne()
+    {
+        var views = new PackViews();
+        Assert.That(views.ImportView("prices"), Is.EqualTo(typeof(ImportCard)));
+
+        views.UseImport<ThePacksUpload>("prices");
+        Assert.That(views.ImportView("prices"), Is.EqualTo(typeof(ThePacksUpload)));
+        Assert.That(views.ImportView("rates"), Is.EqualTo(typeof(ImportCard)));
+
+        views.UseImport<TheDemosUpload>("PRICES");
+        Assert.That(views.ImportView("prices"), Is.EqualTo(typeof(TheDemosUpload)));
+    }
+
+    /// <summary>A pack's own view of an upload.</summary>
+    private sealed class ThePacksUpload : ComponentBase, IImportView
+    {
+        [Parameter] public ImportForm Form { get; set; } = null!;
+    }
+
+    /// <summary>A demo's view of the same upload.</summary>
+    private sealed class TheDemosUpload : ComponentBase, IImportView
+    {
+        [Parameter] public ImportForm Form { get; set; } = null!;
     }
 
     /// <summary>A screen with columns can always be drawn; one without needs its own view.</summary>

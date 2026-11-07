@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
@@ -31,13 +32,23 @@ public class PackMenuTests
     {
         public bool Refuses { get; set; }
 
-        /// <summary>Answers the list.</summary>
-        public HttpResponseMessage Answer(HttpRequestMessage request) => Refuses
-            ? new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = JsonContent.Create(new { }) }
-            : new HttpResponseMessage(HttpStatusCode.OK)
+        /// <summary>How many uploads the packs take.</summary>
+        public int Uploads { get; init; }
+
+        /// <summary>Answers the list of screens or of uploads.</summary>
+        public HttpResponseMessage Answer(HttpRequestMessage request)
+        {
+            if (Refuses)
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = JsonContent.Create(new { }) };
+
+            return new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = JsonContent.Create(reply, options: AdminJson.SnakeCase)
+                Content = request.RequestUri!.AbsolutePath.EndsWith("/imports")
+                    ? JsonContent.Create(new ImportsReply([.. Enumerable.Repeat(new ImportRow("prices", "", []), Uploads)]),
+                        options: AdminJson.SnakeCase)
+                    : JsonContent.Create(reply, options: AdminJson.SnakeCase)
             };
+        }
     }
 
     /// <summary>The menu over that API, and the store a key is saved through.</summary>
@@ -68,6 +79,21 @@ public class PackMenuTests
         Assert.That(links.Select(link => link.GetAttribute("href")),
             Is.EqualTo(new[] { "admin/screens/usage", "admin/screens/visits" }));
         Assert.That(links.Select(link => link.TextContent), Is.EqualTo(new[] { "Usage", "Visits" }));
+    }
+
+    /// <summary>Uploads gets its link when a pack takes one, and none when no pack does.</summary>
+    [Test]
+    public void Uploads_ShowsOnlyWhenAPackTakesOne()
+    {
+        using var with = new BunitContext();
+        using var without = new BunitContext();
+
+        var (taking, _) = Render(with, new FakeScreensApi(TwoScreens) { Uploads = 1 });
+        var (none, _) = Render(without, new FakeScreensApi(TwoScreens));
+
+        taking.WaitForAssertion(() => Assert.That(taking.FindAll("a.side-link").Select(link => link.GetAttribute("href")),
+            Is.EqualTo(new[] { "admin/screens/usage", "admin/screens/visits", "admin/imports" })), TimeSpan.FromSeconds(10));
+        none.WaitForAssertion(() => Assert.That(none.FindAll("a.side-link"), Has.Count.EqualTo(2)), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>A pack's own-view screen is listed only by a site that carries the view.</summary>

@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin.Screens;
+using LouisAgent.Web.Components.Imports;
 using LouisAgent.Web.Components.Screens.Table;
 using Microsoft.AspNetCore.Components;
 
@@ -15,6 +16,7 @@ namespace LouisAgent.Web.Components.Packs;
 public sealed class PackViews
 {
     private readonly Dictionary<string, Type> _screens = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, Type> _imports = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>This component draws that screen from here on.</summary>
     public PackViews UseScreen<TView>(string screenName) where TView : ComponentBase, IScreenView
@@ -22,6 +24,16 @@ public sealed class PackViews
         _screens[screenName] = typeof(TView);
         return this;
     }
+
+    /// <summary>This component draws that upload from here on.</summary>
+    public PackViews UseImport<TView>(string importName) where TView : ComponentBase, IImportView
+    {
+        _imports[importName] = typeof(TView);
+        return this;
+    }
+
+    /// <summary>The component that draws this upload.</summary>
+    public Type ImportView(string importName) => _imports.GetValueOrDefault(importName, typeof(ImportCard));
 
     /// <summary>
     /// Whether this site can draw the screen. One with no columns can only be drawn by its own view, so a site that
