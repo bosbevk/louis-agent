@@ -188,16 +188,31 @@ pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's
 an address of their own also writes `ReadItemJsonAsync`, served at `/v1/feeds/{name}/{id}`. Publish only what anyone may
 read. The shop-prices pack's `ShopPricesFeed` is the example; the recipes pack's `RecipesFeed` has items.
 
-`Reports` (optional, empty unless you list some) is numbers the pack keeps about itself, for whoever runs it: an
-`IDataReport` with a name, a description and `ReadAsync`, answering a `ReportTable` of column names and rows. The API
-serves them at `/v1/admin/reports`, behind the admin key, without knowing the pack, and a card shows each
-([ADR 0083](../adr/0083-packs-keep-reports-behind-the-admin-key.md)). A store that can't be read gives an empty table and
-never throws. What anyone may read belongs in a feed instead.
+`Screens` (optional, empty unless you list some) is what the pack shows whoever runs it, behind the admin key: an
+`IDataScreen` with a `ScreenSpec` (a name, a title, a sentence, its columns, whether it searches) and `ReadAsync`,
+answering a page of rows and the total. You write no web code: the sidebar lists it on every site and one generic page
+draws it at `/admin/screens/{name}` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)). A store that can't be read
+gives an empty page and never throws. What anyone may read belongs in a feed instead. The recipes pack's
+`RecipesUsageScreen` is the example.
+
+When a description can't say what you want, a real component replaces it by name. It goes in its own project under
+`packs-web/`, never in the pack: `louis-agent.pack.recipes.web` holds `RecipeLibraryView`, which wraps the plain table and adds a
+line above it, and a site adds it with `RecipeWebViews.AddTo(views)`. The pack and its web project can't reference each other,
+so a test project under `packs-tests/` sees both and holds the names they share.
+
+A screen is read-only until it says otherwise. To add a button, name a `ScreenAction` in the spec and write `ActAsync`; give one that destroys something a
+`Confirm` question, and it takes two clicks. To let a row open as a form, set `Editable` and write `ReadRowAsync` and `SaveRowAsync`: the fields are text, number,
+link or rows, and you check what's saved and name any field you refuse. The recipes pack's `RecipesScreen` and `RecipeForm` are the example.
+
+A control with no rows to describe, such as the git pack's Changes, is an `OwnViewScreen`: a name and a heading, and its view does
+the rest, calling whatever routes it needs. A site that doesn't carry the view doesn't list the screen. A button that asks the agent
+for something opens the chat with a draft through `ChatHandoff`, and never sends it.
 
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
-would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The portal lists every upload at
-`/admin/imports` without knowing the pack ([ADR 0071](../adr/0071-packs-take-data-uploads.md)). Make the preview say
+would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The framework's page lists every upload at
+`/admin/imports` without knowing the pack, on every site, with a link in the sidebar ([ADR 0071](../adr/0071-packs-take-data-uploads.md)). A
+component of your own can replace the card with `views.UseImport<TView>(name)`. Make the preview say
 exactly what Save will do. The shop-prices pack's `StatsSaImport` is the example.
 
 ### Your names are an enum

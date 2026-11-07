@@ -11,7 +11,10 @@
                 <InputFile OnChange="OnFiles" multiple />
             </label>
         </li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ScreenshotsSoon)"><span class="ic i-screen" aria-hidden="true"></span>@Text.AddScreenshot</button></li>
+        @if (Unfinished)
+        {
+            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ScreenshotsSoon)"><span class="ic i-screen" aria-hidden="true"></span>@Text.AddScreenshot</button></li>
+        }
     </ul>
 </div>
 <div class="dropdown dropup">
@@ -21,9 +24,12 @@
     <ul class="dropdown-menu">
         <li><button class="dropdown-item" type="button" @onclick="() => OnDraft.InvokeAsync(Text.SearchWebDraft)"><span class="ic i-search" aria-hidden="true"></span>@Text.SearchWeb</button></li>
         <li><button class="dropdown-item" type="button" @onclick="() => OnDraft.InvokeAsync(Text.ReadFileDraft)"><span class="ic i-file" aria-hidden="true"></span>@Text.ReadFile</button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.CreateImage)"><span class="ic i-image" aria-hidden="true"></span>@Text.CreateImage</button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.DeepResearch)"><span class="ic i-compass" aria-hidden="true"></span>@Text.DeepResearch</button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThinkLonger)"><span class="ic i-sparkle" aria-hidden="true"></span>@Text.ThinkLonger</button></li>
+        @if (Unfinished)
+        {
+            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.CreateImage)"><span class="ic i-image" aria-hidden="true"></span>@Text.CreateImage</button></li>
+            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.DeepResearch)"><span class="ic i-compass" aria-hidden="true"></span>@Text.DeepResearch</button></li>
+            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThinkLonger)"><span class="ic i-sparkle" aria-hidden="true"></span>@Text.ThinkLonger</button></li>
+        }
     </ul>
 </div>
 <span class="composer-spacer"></span>
@@ -34,7 +40,13 @@
     <ul class="dropdown-menu dropdown-menu-end">
         <li><h6 class="dropdown-header">@Text.Model</h6></li>
         <li><button class="dropdown-item active" type="button">@(Model ?? Text.ServerModel) <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
-        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.OtherModelsSoon)">@Text.OtherModels</button></li>
+        @if (Unfinished)
+        {
+            <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.OtherModelsSoon)">@Text.OtherModels</button></li>
+        }
     </ul>
 </div>
-<button class="tool-button" type="button" title="@Text.VoiceMessage" @onclick="() => OnComingSoon.InvokeAsync(Text.VoiceMessagesSoon)"><span class="ic i-mic" aria-hidden="true"></span></button>
+@if (Unfinished)
+{
+    <button class="tool-button" type="button" title="@Text.VoiceMessage" @onclick="() => OnComingSoon.InvokeAsync(Text.VoiceMessagesSoon)"><span class="ic i-mic" aria-hidden="true"></span></button>
+}

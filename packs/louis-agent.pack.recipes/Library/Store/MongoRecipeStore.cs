@@ -63,4 +63,19 @@ public sealed class MongoRecipeStore(IMongoCollection<StoredRecipeDocument> reci
     /// <inheritdoc />
     public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) =>
         recipes.DeleteManyAsync(document => document.Site == slug, cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<bool> ReplaceAsync(StoredRecipe recipe, CancellationToken cancellationToken)
+    {
+        var result = await recipes.ReplaceOneAsync(document => document.Id == recipe.Id,
+            StoredRecipeDocument.Of(recipe), cancellationToken: cancellationToken);
+        return result.MatchedCount > 0;
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> RemoveAsync(string id, CancellationToken cancellationToken)
+    {
+        var result = await recipes.DeleteOneAsync(document => document.Id == id, cancellationToken);
+        return result.DeletedCount > 0;
+    }
 }

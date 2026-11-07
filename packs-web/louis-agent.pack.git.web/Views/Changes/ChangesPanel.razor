@@ -1,0 +1,60 @@
+@* Source-control view: review each changed file, tick the ones you want, then stage, unstage, discard or commit. *@
+@inject GitState Git
+
+<div class="changes-panel">
+    <div class="changes-head">
+        <span class="branch" title="Current branch">⎇ @(Git.Status?.Branch ?? "…")</span>
+        <button class="icon" title="Refresh" disabled="@Git.Busy" @onclick="Git.RefreshAsync">⟳</button>
+    </div>
+
+    @if (Git.Error is not null)
+    {
+        <div class="tree-error">@Git.Error</div>
+    }
+
+    @if (Git.Status is { } status)
+    {
+        <div class="commit-box">
+            <textarea rows="2" placeholder="Commit message" @bind="_message" @bind:event="oninput"></textarea>
+            <button class="send" disabled="@(Git.Busy || string.IsNullOrWhiteSpace(_message) || !status.Files.Any(f => f.Staged))" @onclick="Commit">
+                Commit @status.Files.Count(f => f.Staged) staged
+            </button>
+            @if (status.Committed is not null)
+            {
+                <div class="committed">Committed @status.Committed</div>
+            }
+        </div>
+
+        @if (status.Files.Count == 0)
+        {
+            <div class="tree-loading">No changes.</div>
+        }
+        else
+        {
+            <div class="selection-bar">
+                @if (_confirmDiscard)
+                {
+                    <span class="confirm">Discard changes to @SelectedUnstaged.Count file(s)? This can't be undone.</span>
+                    <button class="danger" disabled="@Git.Busy" @onclick="Discard">Discard</button>
+                    <button class="secondary" @onclick="() => _confirmDiscard = false">Cancel</button>
+                }
+                else
+                {
+                    <button class="secondary" disabled="@(Git.Busy || SelectedUnstaged.Count == 0)" @onclick="Stage">Stage</button>
+                    <button class="secondary" disabled="@(Git.Busy || SelectedStaged.Count == 0)" @onclick="Unstage">Unstage</button>
+                    <button class="secondary" disabled="@(Git.Busy || SelectedUnstaged.Count == 0)" @onclick="() => _confirmDiscard = true">Discard</button>
+                    <button class="secondary" disabled="@Git.Busy" title="Ask the agent to review all uncommitted changes" @onclick="OnReviewAll">Review all</button>
+                }
+            </div>
+
+            var stagedFiles = status.Files.Where(f => f.Staged).ToList();
+            var unstagedFiles = status.Files.Where(f => f.Unstaged).ToList();
+            <ChangeGroup Title="Staged" Staged="true" Files="stagedFiles" Selected="_selected" OpenKey="@OpenKey" OnOpenDiff="OnOpenDiff" OnToggle="Toggle" OnToggleAll="select => ToggleAll(stagedFiles, staged: true, select)" />
+            <ChangeGroup Title="Changes" Staged="false" Files="unstagedFiles" Selected="_selected" OpenKey="@OpenKey" OnOpenDiff="OnOpenDiff" OnToggle="Toggle" OnToggleAll="select => ToggleAll(unstagedFiles, staged: false, select)" />
+        }
+    }
+    else if (Git.Error is null)
+    {
+        <div class="tree-loading">Loading…</div>
+    }
+</div>

@@ -1,5 +1,8 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Packs.Screens;
+using LouisAgent.Packs.Git.Messages;
 using LouisAgent.Packs.Git.Running;
 using Microsoft.Extensions.FileProviders;
 
@@ -43,6 +46,15 @@ public sealed class GitPack : IAgentPack
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];
+
+    /// <inheritdoc/>
+    public IReadOnlyList<IDataScreen> Screens { get; } =
+    [
+        new OwnViewScreen("git-changes", MessageText.Format(GitScreenMessage.ChangesTitle),
+            MessageText.Format(GitScreenMessage.ChangesDescription)),
+        new OwnViewScreen("git-branches", MessageText.Format(GitScreenMessage.BranchesTitle),
+            MessageText.Format(GitScreenMessage.BranchesDescription))
+    ];
 }
 
 /// <summary>The name this pack's toolset goes by (ADR 0043).</summary>

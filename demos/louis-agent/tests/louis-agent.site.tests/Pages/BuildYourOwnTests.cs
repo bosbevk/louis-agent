@@ -68,7 +68,7 @@ public class BuildYourOwnTests
     {
         string home = await _site.CreateClient().GetStringAsync("/");
 
-        Assert.That(home, Does.Contain("<a class=\"btn btn-fill\" href=\"/build-your-own\">"));
+        Assert.That(home, Does.Contain("<a class=\"btn btn-line\" href=\"/build-your-own\">"));
         Assert.That(home, Does.Contain("<a href=\"/build-your-own\">"));
     }
 }

@@ -11,8 +11,8 @@ namespace LouisAgent.Puls.Tests.Styles;
 /// </summary>
 public class AdminPageStyleTests
 {
-    /// <summary>The Puls stylesheet, every file it imports.</summary>
-    private static string Css => Stylesheet.Of("louis-agent.puls").Read();
+    /// <summary>The CSS the build makes for Puls.</summary>
+    private static string Css => SassStylesheet.Of("louis-agent.puls").Read();
 
     /// <summary>The declarations of the rule whose selector is exactly this, or a failure naming it.</summary>
     private static string RuleOf(string selector)

@@ -1,0 +1,97 @@
+@* One screen's rows, drawn from what its pack described: a search box if it can search, the table, and the paging. *@
+<section class="card-p screen-table">
+    @if (Screen.Searchable)
+    {
+        <form class="screen-search" @onsubmit="SearchAsync">
+            <input type="search" placeholder="Search" aria-label="Search" @bind="_searchDraft" />
+            <button class="header-button" type="submit" disabled="@_loading">Search</button>
+        </form>
+    }
+
+    @if (ScreenActions.Count > 0)
+    {
+        <div class="screen-actions">
+            @foreach (var action in ScreenActions)
+            {
+                <ScreenActionButton @key="action.Name" ScreenName="@Screen.Name" Action="action" OnAnswer="AfterActionAsync" />
+            }
+        </div>
+    }
+
+    @if (_answer is { } answer)
+    {
+        <p class="screen-answer @(answer.Done ? "is-done" : "is-refused")" role="status">@answer.Message</p>
+    }
+
+    @if (_error is { } error)
+    {
+        <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+    }
+    else if (_page is null)
+    {
+        <p class="muted screen-loading">Loading…</p>
+    }
+    else if (_page.Rows.Count == 0)
+    {
+        <p class="muted screen-empty">@(_search.Length == 0 ? "Nothing here yet." : "Nothing matches that search.")</p>
+    }
+    else
+    {
+        @Above?.Invoke(_page)
+
+        <div class="prompts">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        @foreach (var column in Screen.Columns)
+                        {
+                            <th class="@(ScreenCells.KindOf(column.Kind) is ScreenCellKind.Number ? "num" : null)">@column.Title</th>
+                        }
+                        @if (RowActions.Count > 0)
+                        {
+                            <th></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in _page.Rows)
+                    {
+                        <tr @key="row.Id">
+                            @for (var at = 0; at < Screen.Columns.Count; at++)
+                            {
+                                var kind = ScreenCells.KindOf(Screen.Columns[at].Kind);
+                                var value = row.Cells.ElementAtOrDefault(at);
+                                @if (at == 0 && Screen.Editable)
+                                {
+                                    <td><a class="screen-open" href="@RowAddress(row.Id)"><ScreenCellView Kind="ScreenCellKind.Text" Value="@value" /></a></td>
+                                }
+                                else
+                                {
+                                    <td class="@(kind is ScreenCellKind.Number ? "num" : null)"><ScreenCellView Kind="kind" Value="@value" /></td>
+                                }
+                            }
+                            @if (RowActions.Count > 0)
+                            {
+                                <td class="screen-row-actions">
+                                    @foreach (var action in RowActions)
+                                    {
+                                        <ScreenActionButton @key="action.Name" ScreenName="@Screen.Name" Action="action" RowId="@row.Id" OnAnswer="AfterActionAsync" />
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (PageCount > 1)
+        {
+            <div class="screen-paging">
+                <button class="header-button screen-previous" type="button" disabled="@(_loading || _pageNumber <= 1)" @onclick="() => TurnAsync(-1)">Previous</button>
+                <span class="muted">Page @_pageNumber of @PageCount, @_page.Total rows</span>
+                <button class="header-button screen-next" type="button" disabled="@(_loading || _pageNumber >= PageCount)" @onclick="() => TurnAsync(1)">Next</button>
+            </div>
+        }
+    }
+</section>

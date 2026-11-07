@@ -110,7 +110,8 @@ empty and with the turn, before W2 splits it; its components get tests when Phas
 for what the apps read at start-up, one session, the recorded turn streamed, the workspace and git reads empty) and the
 snapshot helper. The shared library's tests also hold the web layer's rule: `RazorHasNoCodeTests` scans every `.razor`
 under `src/` for an `@code` block (*Separate by concern*), a ratchet whose `PendingCode` list names the files W2b still
-has to move and can only shrink; when it is empty the list goes and the test is a plain rule.
+has to move and can only shrink; when it is empty the list goes and the test is a plain rule. The eval pages' tests moved here with the pages
+in F59.10, so Puls's are now only what's its own: its pages, its layout, its words and its styles.
 
 ## louis-agent.acp-server.tests
 

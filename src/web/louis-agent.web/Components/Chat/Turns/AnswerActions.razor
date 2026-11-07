@@ -1,9 +1,12 @@
 @* Under a finished answer: copy, regenerate, good and bad, share (to come), and its sources in the work panel. *@
 <button class="action" type="button" title="@Text.CopyAnswer" @onclick="() => OnCopy.InvokeAsync(AnswerText(Turn))"><span class="ic i-copy" aria-hidden="true"></span></button>
-<button class="action" type="button" title="@Text.TryAgain" @onclick="() => OnComingSoon.InvokeAsync(Text.TryAgain)"><span class="ic i-refresh" aria-hidden="true"></span></button>
-<button class="action" type="button" title="@Text.GoodAnswer" @onclick="() => OnComingSoon.InvokeAsync(Text.FeedbackSoon)"><span class="ic i-thumb-up" aria-hidden="true"></span></button>
-<button class="action" type="button" title="@Text.BadAnswer" @onclick="() => OnComingSoon.InvokeAsync(Text.FeedbackSoon)"><span class="ic i-thumb-down" aria-hidden="true"></span></button>
-<button class="action" type="button" title="@Text.Share" @onclick="() => OnComingSoon.InvokeAsync(Text.Share)"><span class="ic i-share" aria-hidden="true"></span></button>
+@if (Unfinished)
+{
+    <button class="action" type="button" title="@Text.TryAgain" @onclick="() => OnComingSoon.InvokeAsync(Text.TryAgain)"><span class="ic i-refresh" aria-hidden="true"></span></button>
+    <button class="action" type="button" title="@Text.GoodAnswer" @onclick="() => OnComingSoon.InvokeAsync(Text.FeedbackSoon)"><span class="ic i-thumb-up" aria-hidden="true"></span></button>
+    <button class="action" type="button" title="@Text.BadAnswer" @onclick="() => OnComingSoon.InvokeAsync(Text.FeedbackSoon)"><span class="ic i-thumb-down" aria-hidden="true"></span></button>
+    <button class="action" type="button" title="@Text.Share" @onclick="() => OnComingSoon.InvokeAsync(Text.Share)"><span class="ic i-share" aria-hidden="true"></span></button>
+}
 @if (Sources.Of(Turn) is { Count: > 0 } sources)
 {
     <button class="action action-sources" type="button" onclick="chatUi.showWork()" title="@Text.ShowSources">

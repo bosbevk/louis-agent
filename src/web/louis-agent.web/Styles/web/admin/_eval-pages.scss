@@ -1,0 +1,9 @@
+/* The eval pages' styles, in their cascade order, so a site lists this one name and not six. The pages' addresses are
+   on every site, so every site lists it, after the admin's shell. */
+
+@forward "benchmarks";
+@forward "evals";
+@forward "run-page";
+@forward "explorer";
+@forward "reviews";
+@forward "studio";

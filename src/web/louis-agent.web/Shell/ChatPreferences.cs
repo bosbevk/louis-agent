@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Web.Text;
 using Microsoft.JSInterop;
 
@@ -52,8 +53,8 @@ public sealed class ChatPreferences(IJSRuntime js, ChatText text)
         Locating = true;
         try
         {
-            var found = await js.InvokeAsync<LocatedPlace>("chatUi.locate");
-            if (found.Place is not { Length: > 0 } place) return found.Error ?? text.LocationUnknown;
+            var found = await js.InvokeAsync<LocatedPlace>("chatUi.locate", text.PlaceLanguages);
+            if (found.Place is not { Length: > 0 } place) return Say(found.Error);
 
             Location = place;
             await js.InvokeVoidAsync("chatUi.saveLocation", place);
@@ -63,5 +64,20 @@ public sealed class ChatPreferences(IJSRuntime js, ChatText text)
         {
             Locating = false;
         }
+    }
+
+    /// <summary>The site's words for the problem the script named, or the plain one when it named none.</summary>
+    private string Say(string? problem)
+    {
+        if (!SettingChoice.TryParse(problem, out LocationProblem? named)) return text.LocationUnknown;
+
+        return named switch
+        {
+            LocationProblem.NoBrowser => text.LocationNoBrowser,
+            LocationProblem.Denied => text.LocationDenied,
+            LocationProblem.NotNamed => text.LocationNotNamed,
+            LocationProblem.Unreachable => text.LocationUnreachable,
+            _ => text.LocationUnknown,
+        };
     }
 }

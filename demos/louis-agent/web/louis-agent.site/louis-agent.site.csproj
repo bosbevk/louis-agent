@@ -10,7 +10,16 @@
     <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- The Sass package's watcher runs inside a web host; the build alone compiles, as on the sites in the browser. -->
+    <SassCompilerEnableWatcher>false</SassCompilerEnableWatcher>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compiles Styles/ into wwwroot/css on every build. Build time only: nothing of it reaches the browser. Its colours
+         come from the framework's Sass, read through sasscompiler.json; the site references no project of ours. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is

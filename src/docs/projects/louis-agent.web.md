@@ -1,27 +1,35 @@
 # louis-agent.web — design
 
 > **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
-> **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** louis-agent.code-review (code
-> review) and louis-agent.puls (the general assistant)
+> **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
+> louis-agent.code-review, louis-agent.puls and louis-agent.starter
 
 ## Purpose
 
-The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). So far that's the
-admin's frame, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
+The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). That's the
+admin's frame, the eval pages, a pack's screens, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
 the first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each site
-keeps its look (CSS) and JavaScript, which F59 moves here; the components only emit class names, and their words come from a `ChatText`,
-English by default, that a site can replace.
+keeps its colours and brand; the rules and scripts of the frames are here. The components only emit class names, and their words come from a
+`ChatText`, English by default, that a site can replace.
 
 ## How it works
 
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
+- **The eval pages.** The evals, their runs, the answers to grade, the studio and the prompts are on every site at `/admin`, and a site makes
+  one call for them. They have [their own doc](eval-pages.md).
 - **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
   and the work panel. A site writes a small page with its addresses and fills the slots: `Logo`, `Views`, `Profile`, `Background`, `Empty`,
   `ViewContent` and `UsageLine`. An empty slot leaves no gap, and with no `Empty` a new chat is just the message box. The site also says how a
   session opens (`OpenSession`), since the toolsets it asks for are its own; the frame hands it the voice, the place and the time zone as
   a `ChatOpening`. A site can reach in for two things through `@ref`: put a draft in the message box, and say something's coming soon.
+- **The look.** The rules are Sass under `Styles/web/`, and a site lists them in its own `app.scss`, found through `IncludePaths`, so it
+  gets one CSS file with the order it chose. Colours go by Bootstrap's names, or a `--web-` name where it has none, and no rule holds a fixed
+  one. `web/settings/_colours.scss` is what a site with none of its own gets: the Console theme, black and white with metallic greys, plus a
+  muted red and an amber. A site's colours come after it and win.
+- **The scripts.** `wwwroot/js/chat.js` is what the frame calls, and `first-paint.js` applies what the browser remembers before the first
+  paint; a site loads both from `_content/louis-agent.web/js/`. A script names a problem, and the site's `ChatText` says it.
 - **Small state classes.** What the frame keeps that can be tested without drawing it is a plain class in `Shell/`: renaming a chat,
   this browser's settings, choosing a language, a chat's costs. `ChatShell` holds them and only passes them on.
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
@@ -54,12 +62,18 @@ English by default, that a site can replace.
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
 | `Components/Admin/`, `Layout/` | `AdminShell`, `AdminGate` and `SiteFrames`; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
+| `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
+| `Admin/`, `Components/Admin/Evals/` | The eval pages' plain classes and their components ([The eval pages](eval-pages.md)) |
+| `Components/Imports/` | `ImportCard`, an upload by default, and `ImportForm`, the rules of when a preview or a save may run |
 | `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |
-| `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site |
+| `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site, and `ChatHandoff`, how a screen's button opens the chat with a draft |
 | `Components/Chat/Sidebar/`, `Header/`, `Search/` | `ChatSidebar`, `ChatListItem`, `ChatMenu`, `LocationPicker`, `MotionToggle`; `ChatHeader`, `CreditsMenu`, `LanguageMenu`, `ProfileMenu`; `ChatSearch` |
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
+| `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
+| `wwwroot/js/` | `chat.js` (with `renderCode` for a pack's file viewer), `first-paint.js` |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
@@ -72,7 +86,7 @@ and kept in that browser.
 ## Extending it
 
 The steps are in [Change the framework's web](../guides/change-the-web.md). In short: a piece belongs here
-only when both apps need it; a new API call goes in `AgentApi`; a component's words go in `ChatText` (English
+when it would be the same on every site; a new API call goes in `AgentApi`; a component's words go in `ChatText` (English
 default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain class with tests
 ([ADR 0034](../adr/0034-code-a-person-can-maintain.md)). Then rebuild the image of each app that uses it.
 
@@ -80,13 +94,16 @@ default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain c
 
 `src/tests/web/louis-agent.web.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
 `TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
-`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame;
+`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the eval pages' under `Admin/`, `Components/Admin/Evals/` and `Pages/Admin/`;
 `MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
 `RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
 web test projects share.
 
 ## Limits and plans
 
+- **Left out on purpose:** a landing page, as it's what makes a site itself; a NuGet package for the framework or the template, as the template works
+  inside this repo until packages exist; a screen served as an MCP App, as no plan names it; bulk selection, and field kinds such as dropdowns or dates,
+  until a second screen needs them; swapping a view without a rebuild, since a custom component is built in, though a description isn't.
 - `Chats/` holds eleven files and `Components/Chat/` ten, over the "about six" of
   [ADR 0034](../adr/0034-code-a-person-can-maintain.md): split them by concern (the records apart from the stream's
   folding) the next time they change.
@@ -95,7 +112,7 @@ web test projects share.
 
 ## Related docs
 
-[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md)
+[louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [louis-agent.puls](../../../demos/puls/docs/projects/louis-agent.puls.md) · [louis-agent.api](louis-agent.api.md) · [The eval pages](eval-pages.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · Next: [louis-agent.mcp-server](louis-agent.mcp-server.md)

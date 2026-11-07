@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -26,6 +27,12 @@ public partial class ChatSidebar
 
     /// <summary>Who's signed in, above the settings.</summary>
     [Parameter] public RenderFragment? Profile { get; set; }
+
+    /// <summary>The site's own settings, with the frame's.</summary>
+    [Parameter] public RenderFragment? Settings { get; set; }
+
+    /// <summary>The parts this site turns off.</summary>
+    [Parameter] public ChatFeatures Features { get; set; } = new();
 
     /// <summary>The chat the page shows, by its session; null for none.</summary>
     [Parameter] public string? SessionId { get; set; }

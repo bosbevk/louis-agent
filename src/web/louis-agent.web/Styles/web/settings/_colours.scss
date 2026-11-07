@@ -1,0 +1,65 @@
+/* The framework's colours: what a site with none of its own looks like. Black and white with metallic greys, set in Geist,
+   the static site's Console theme. The only colours in it are a muted red for errors and an amber for warnings. A site
+   lists this first and its own colours after, so the same name set twice gives the site's. The names are Bootstrap's, and
+   a --web- name where it has none; a site that sets some of them keeps these for the rest. */
+
+@use "../tools/colours";
+
+:root {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #ffffff);          // what matters: actions, accents, active states
+    @include colours.both(bs-danger, #d9675f);
+    @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-body-bg, #070708);          // the page
+    @include colours.both(bs-secondary-bg, #0d0e10);     // a panel
+    @include colours.both(bs-tertiary-bg, #15171a);      // the menu
+    @include colours.both(bs-success-text-emphasis, #c9ccd1, web-success-text); // links, and what's done
+    @include colours.both(web-menu-bg, #15171a);
+
+    // Only ever see-through.
+    @include colours.numbers(web-overlay, #ffffff);      // laid over the dark surfaces to lift them; a light theme sets a dark one
+    @include colours.numbers(web-shadow, #000000);
+    @include colours.numbers(web-failed, #d9675f);
+    @include colours.numbers(web-backdrop, #000000);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #c9ccd1;
+    --bs-primary-bg-subtle: #1b1d21;     /* a tint of what matters */
+    --bs-primary-text-emphasis: #e6e8eb; /* what matters, as text */
+    --bs-success: #c9ccd1;               /* your messages */
+    --web-success-deep: #9aa0a8;
+    --bs-success-bg-subtle: #15171a;
+    --web-sidebar-foot: #0d0e10;         /* the sidebar's footer */
+    --web-sidebar-foot-deep: #070708;
+    --bs-link-color: #e6e8eb;
+
+    /* The smaller steps the rules use. */
+    --web-on-primary: #070708;           /* text on an action or on your message */
+    --web-bright: #ffffff;               /* the brightest text on the dark */
+    --web-soft-text: #c9ccd1;
+    --web-settings-text: #c9ccd1;
+    --web-error-text: #e8a39c;
+    --web-photo-text: #333333;           /* a caption on a photo's white mat */
+    --web-border-hover: #3a3e45;
+    --web-scrollbar: #2c2f35;
+    --web-dialog-bg: #0d0e10;
+    --web-code-number: #c9ccd1;
+    --web-code-comment: #7c828a;
+    --web-live-dot: #e6e8eb;
+
+    --bs-emphasis-color: #ffffff;        /* headings, what's lit */
+    --bs-body-color: #e6e8eb;
+    --bs-secondary-color: #9aa0a8;
+    --bs-tertiary-color: #7c828a;
+    --bs-border-color: #2c2f35;
+    --web-code-bg: #15171a;
+    --web-cta: linear-gradient(180deg, #ffffff 0%, #b9bec6 100%);
+    --bs-box-shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
+    --bs-box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .7);
+    --web-glow: 0 0 0 4px rgba(var(--bs-primary-rgb), .12), 0 10px 30px -10px rgba(var(--bs-primary-rgb), .25);
+    --bs-font-sans-serif: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+    color-scheme: dark;
+}

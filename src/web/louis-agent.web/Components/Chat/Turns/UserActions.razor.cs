@@ -12,4 +12,7 @@ public partial class UserActions
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
     [Parameter] public EventCallback<string> OnCopy { get; set; }
     [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+
+    /// <summary>Whether what only says it's coming shows too.</summary>
+    [Parameter] public bool Unfinished { get; set; } = true;
 }

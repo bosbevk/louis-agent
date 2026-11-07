@@ -1,0 +1,69 @@
+/* Puls: dark and calm in its four colours, set in Montserrat (F20): deep charcoal to rest the eyes on, a charcoal-tinted
+   white for text, orange for actions, green for your messages and what's done, and soft orange and green glows. One theme; the shared components only emit
+   class names (TurnView, BlocksView, DelegationCard, CurrencySwitcher), and this file styles them. Motion is smooth and
+   purposeful, and turned off for people who ask their system for less motion. The colours go by Bootstrap's names, and by
+   a --web- name where it has none, and this file only sets Puls's values for them. */
+
+@use "web/tools/colours";
+
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+:root {
+    // Written once each: the build makes the number form from the same value.
+    @include colours.both(bs-primary, #f58220);          // the lead colour: actions, accents, active states
+    @include colours.both(bs-danger, #f26b4f);
+    @include colours.both(bs-warning, #ffc107);
+    @include colours.both(bs-body-bg, #1c1f22);          // the chat: deep charcoal
+    @include colours.both(bs-secondary-bg, #25292d);     // cards and the composer: a step lighter
+    @include colours.both(bs-tertiary-bg, #16191b);      // the menu: a step darker than the chat
+    @include colours.both(bs-success-text-emphasis, #38b449, web-success-text); // green that reads on dark: links, done
+    @include colours.both(web-menu-bg, #23272b);
+
+    // Only ever see-through.
+    @include colours.numbers(web-overlay, #fff);         // laid over the dark surfaces to lift them; a light theme sets a dark one
+    @include colours.numbers(web-shadow, #24282c);
+    @include colours.numbers(web-failed, #e5484d);
+    @include colours.numbers(web-backdrop, #08090a);
+    @include colours.numbers(web-hover, #7f7f7f);
+
+    --web-primary-deep: #e5731a;
+    --bs-primary-bg-subtle: #3a2a1d;     /* orange tint on dark */
+    --bs-primary-text-emphasis: #f7a55a; /* orange that reads as text on dark */
+    --bs-success: #00723a;               /* your messages */
+    --web-success-deep: #00592d;
+    --bs-success-bg-subtle: #1b3326;
+    --web-sidebar-foot: #121416;         /* the darkest charcoal: the sidebar's footer */
+    --web-sidebar-foot-deep: #0d0f10;
+    --bs-link-color: #38b449;
+
+    /* The smaller steps the rules use. */
+    --web-on-primary: #fff;              /* text on an action or on your message */
+    --web-bright: #fff;                  /* the brightest text on the dark */
+    --web-soft-text: #c9c9c3;
+    --web-settings-text: #e4e4df;
+    --web-error-text: #f8a08c;
+    --web-photo-text: #333;              /* a caption on a photo's white mat */
+    --web-border-hover: #454b52;
+    --web-scrollbar: #3b4046;
+    --web-dialog-bg: #202428;
+    --web-code-number: #c4a5f5;
+    --web-code-comment: #8b93ad;
+    --web-live-dot: #3fb950;
+
+    --bs-emphasis-color: #efefeb;        /* the charcoal-tinted white: headings and strong text */
+    --bs-body-color: #d4d4cf;
+    --bs-secondary-color: #9ba1a8;
+    --bs-tertiary-color: #6c727a;
+    --bs-border-color: #33383d;
+    --web-code-bg: #2a2e33;
+    --web-cta: linear-gradient(135deg, #f7952f 0%, var(--bs-primary) 45%, #d9660b 100%);
+    --bs-box-shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 1px 1px rgba(0, 0, 0, .2);
+    --bs-box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .25);
+    --web-glow: 0 0 0 4px rgba(var(--bs-primary-rgb), .18), 0 10px 30px -10px rgba(var(--bs-primary-rgb), .45);
+    --bs-font-sans-serif: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-font-monospace: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --web-ease: cubic-bezier(.2, .8, .2, 1);
+    --web-spring: cubic-bezier(.34, 1.56, .64, 1);
+    color-scheme: dark;
+}
+

@@ -1,0 +1,9 @@
+@page "/chat"
+@page "/chat/{SessionId}"
+
+@* The framework's chat frame, with this site's name. A site's views, its empty chat and its settings go in the frame's slots. *@
+
+<ChatShell @ref="_shell" SessionId="@SessionId" ChatPath="chat" Title="LouisAgent.Starter" OpenSession="OpenSessionAsync" VoicePrefix="" DefaultLanguage="en"
+           BrandTitle="LouisAgent.Starter" Features="Features">
+    <Logo>LouisAgent.Starter</Logo>
+</ChatShell>

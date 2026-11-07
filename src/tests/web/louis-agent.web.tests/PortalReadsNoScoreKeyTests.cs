@@ -4,8 +4,7 @@ namespace LouisAgent.Web.Tests;
 
 /// <summary>
 /// The portal shows every eval the same way, from the standard records: no view reads a conversation's
-/// scores (an eval's own keys) or tests a task's name. And the admin's grades code names nothing of Puls, so the admin
-/// can become a package by a folder move.
+/// scores (an eval's own keys) or tests a task's name.
 /// </summary>
 /// <remarks>
 /// A ratchet, as <see cref="RazorHasNoCodeTests"/> is: a file that reads scores fails the test unless it is listed in
@@ -19,24 +18,13 @@ public class PortalReadsNoScoreKeyTests
     private static readonly Regex ScoreRead = new("\"scores\"|\\.Scores\\b|Task\\.StartsWith\\(|Task == \"",
         RegexOptions.CultureInvariant);
 
-    /// <summary>Anything of Puls: its texts, their namespace, or its brand components.</summary>
-    private static readonly Regex NamesPuls = new("PulsText|LouisAgent\\.Puls\\.Text|Components\\.Brand",
-        RegexOptions.CultureInvariant);
-
     /// <summary>The folders checked: the admin pages, and what the API reports to them.</summary>
     private static readonly string[] Scanned =
     [
-        "demos/puls/web/louis-agent.puls/Pages/Admin",
-        "demos/puls/web/louis-agent.puls/Components/Admin",
-        "demos/puls/web/louis-agent.puls/Admin",
+        "src/web/louis-agent.web/Pages/Admin",
+        "src/web/louis-agent.web/Components/Admin/Evals",
+        "src/web/louis-agent.web/Admin",
         "src/hosts/louis-agent.api/Evals/Reports",
-    ];
-
-    /// <summary>The admin's grades folders, which must be able to move out as they are.</summary>
-    private static readonly string[] BuiltToMove =
-    [
-        "demos/puls/web/louis-agent.puls/Admin/Grades",
-        "demos/puls/web/louis-agent.puls/Components/Admin/Grades",
     ];
 
     /// <summary>
@@ -65,19 +53,6 @@ public class PortalReadsNoScoreKeyTests
             Assert.That(done, Is.Empty,
                 "Reads no scores any more: remove it, so the list only shrinks:\n  " + string.Join("\n  ", done));
         });
-    }
-
-    /// <summary>The admin's grades code names nothing of Puls, so it can move out as a folder.</summary>
-    [Test]
-    public void TheGradesFolders_NameNothingOfPuls()
-    {
-        var naming = BuiltToMove.SelectMany(Files).Where(f => NamesPuls.IsMatch(File.ReadAllText(f))).Select(Relative)
-            .Order().ToList();
-
-        Assert.That(naming, Is.Empty,
-            "The admin's grades code names nothing of Puls (no PulsText, no Components.Brand), so the admin can move "
-            + "out as a folder:\n  "
-            + string.Join("\n  ", naming));
     }
 
     /// <summary>

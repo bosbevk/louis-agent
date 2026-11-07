@@ -1,6 +1,9 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Packs.Files.Documents;
+using LouisAgent.Packs.Files.Messages;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Packs.Files;
@@ -42,6 +45,13 @@ public sealed class FilesPack : IAgentPack
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];
+
+    /// <inheritdoc/>
+    public IReadOnlyList<IDataScreen> Screens { get; } =
+    [
+        new OwnViewScreen("workspace-files", MessageText.Format(FilesScreenMessage.Title),
+            MessageText.Format(FilesScreenMessage.Description))
+    ];
 }
 
 /// <summary>The name this pack's toolset goes by (ADR 0043).</summary>

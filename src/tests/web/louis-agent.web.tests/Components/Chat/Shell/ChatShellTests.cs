@@ -1,5 +1,9 @@
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Chat.Header;
 using LouisAgent.Web.Components.Chat.Shell;
+using LouisAgent.Web.Components.Chat.Sidebar;
+using LouisAgent.Web.Components.Chat.Turns;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
 using LouisAgent.Web.Text;
@@ -33,7 +37,7 @@ public class ChatShellTests
         Assert.That(cut.FindAll(".tagline"), Is.Empty);
     }
 
-    /// <summary>With no empty slot from the site, a new chat is still a message box.</summary>
+    /// <summary>With no empty slot from the site, a new chat is still a centred message box.</summary>
     [Test]
     public void WithNoEmptySlot_ANewChat_IsStillAMessageBox()
     {
@@ -41,7 +45,7 @@ public class ChatShellTests
 
         var cut = Render(ctx);
 
-        Assert.That(cut.FindAll(".messages .composer #composer-input"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".messages .empty .composer #composer-input"), Has.Count.EqualTo(1));
     }
 
     /// <summary>A site's logo, tagline, views and profile go in their slots.</summary>
@@ -168,6 +172,66 @@ public class ChatShellTests
         _ = cut.InvokeAsync(() => cut.Instance.ComingSoonAsync("Voice"));
 
         cut.WaitForAssertion(() => Assert.That(cut.Find(".toast-pill").TextContent, Is.EqualTo("Voice: coming soon.")));
+    }
+
+    /// <summary>Every part is on unless a site says otherwise.</summary>
+    [Test]
+    public void ByDefault_EveryPartShows()
+    {
+        using var ctx = Context(out _);
+
+        var cut = Render(ctx);
+
+        cut.WaitForState(() => cut.FindAll("#composer-input").Count > 0);
+        Assert.That(cut.FindComponents<CreditsMenu>(), Has.Count.EqualTo(1));
+        Assert.That(cut.FindComponents<LanguageMenu>(), Has.Count.EqualTo(1));
+        Assert.That(cut.FindComponents<ProfileMenu>(), Has.Count.EqualTo(1));
+        Assert.That(cut.FindComponents<LocationPicker>(), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".sidebar-label-row"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".i-mic"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>A site can turn off what doesn't suit it, and each part takes its gap with it.</summary>
+    [Test]
+    public void ASite_CanTurnPartsOff()
+    {
+        using var ctx = Context(out _);
+
+        var cut = Render(ctx, parameters => parameters.Add(shell => shell.Features,
+            new ChatFeatures(Credits: false, Language: false, Location: false, Projects: false, Unfinished: false)));
+
+        cut.WaitForState(() => cut.FindAll("#composer-input").Count > 0);
+        Assert.That(cut.FindComponents<CreditsMenu>(), Is.Empty);
+        Assert.That(cut.FindComponents<LanguageMenu>(), Is.Empty);
+        Assert.That(cut.FindComponents<ProfileMenu>(), Is.Empty);
+        Assert.That(cut.FindComponents<LocationPicker>(), Is.Empty);
+        Assert.That(cut.FindAll(".sidebar-label-row"), Is.Empty);
+        Assert.That(cut.FindAll(".i-mic, .i-screen, .i-image"), Is.Empty);
+    }
+
+    /// <summary>What's unfinished goes from under the messages too, and copying stays.</summary>
+    [Test]
+    public void WithUnfinishedOff_OnlyCopyStaysUnderAMessage()
+    {
+        using var ctx = Context(out _);
+        var turn = new Turn { UserText = "Hello" };
+
+        var user = ctx.Render<UserActions>(p => p.Add(c => c.Turn, turn).Add(c => c.Unfinished, false));
+        var answer = ctx.Render<AnswerActions>(p => p.Add(c => c.Turn, turn).Add(c => c.Unfinished, false));
+
+        Assert.That(user.FindAll(".action"), Has.Count.EqualTo(1));
+        Assert.That(answer.FindAll(".action"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>A site's own settings sit with the frame's.</summary>
+    [Test]
+    public void ASitesSettings_SitWithTheFrames()
+    {
+        using var ctx = Context(out _);
+
+        var cut = Render(ctx, parameters => parameters.Add(shell => shell.Settings, "<label class=\"my-setting\">Mine</label>"));
+
+        Assert.That(cut.FindAll(".sidebar-settings .my-setting"), Has.Count.EqualTo(1));
     }
 
     /// <summary>Sends the recorded question and waits for its turn to finish.</summary>

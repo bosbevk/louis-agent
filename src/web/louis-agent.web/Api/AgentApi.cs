@@ -76,11 +76,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("v1/rates/display");
 
     /// <summary>Reads JSON from one of a site's own routes.</summary>
-    public async Task<T> GetAsync<T>(string url)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
-        return (await response.Content.ReadFromJsonAsync<T>())!;
-    }
+    public Task<T> GetAsync<T>(string url) => GetAsync<T>(url, JsonSerializerOptions.Web);
 
     /// <summary>
     /// Reads a route's reply as its record, with the options of the wire it's on (the admin portal's snake_case).
@@ -88,7 +84,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     public async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
-        return (await response.Content.ReadFromJsonAsync<T>(options))!;
+        return await ReadAsync<T>(response, options);
     }
 
     /// <summary>Sends a message and hands back the answer's events as they arrive.</summary>
@@ -140,13 +136,37 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// Posts a record to one of an app's own routes and reads the reply as its record, both on the wire's options
     /// (the admin portal's snake_case, such as an upload's preview, F55).
     /// </summary>
-    public async Task<T> PostAsync<T>(string url, object body, JsonSerializerOptions options)
+    public Task<T> PostAsync<T>(string url, object body, JsonSerializerOptions options) =>
+        SendJsonAsync<T>(HttpMethod.Post, url, body, options);
+
+    /// <summary>Replaces what's at one of an app's own routes, such as a form being saved, the same way.</summary>
+    public Task<T> PutAsync<T>(string url, object body, JsonSerializerOptions options) =>
+        SendJsonAsync<T>(HttpMethod.Put, url, body, options);
+
+    /// <summary>Sends a record and reads the reply as its record, both on the wire's options.</summary>
+    private async Task<T> SendJsonAsync<T>(HttpMethod method, string url, object body, JsonSerializerOptions options)
     {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
+        using var response = await SendAsync(new HttpRequestMessage(method, url)
         {
             Content = JsonContent.Create(body, body.GetType(), options: options)
         });
-        return (await response.Content.ReadFromJsonAsync<T>(options))!;
+        return await ReadAsync<T>(response, options);
+    }
+
+    /// <summary>
+    /// A reply as its record. A web page from a dev server or a proxy isn't JSON, and as an API error a page can show
+    /// it, where a thrown JsonException nobody expects would take the whole app down.
+    /// </summary>
+    private static async Task<T> ReadAsync<T>(HttpResponseMessage response, JsonSerializerOptions options)
+    {
+        try
+        {
+            return (await response.Content.ReadFromJsonAsync<T>(options))!;
+        }
+        catch (JsonException)
+        {
+            throw new AgentApiException(response.StatusCode, "The API's reply couldn't be read. Is the API running?");
+        }
     }
 
     /// <summary>

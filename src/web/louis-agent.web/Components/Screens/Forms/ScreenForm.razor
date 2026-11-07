@@ -1,0 +1,37 @@
+@* One row as a form: a field per thing its pack described, and a refusal beside the field it's about. *@
+<form class="screen-form" @onsubmit="SaveAsync">
+    @foreach (var field in Record.Fields)
+    {
+        var kind = ScreenFieldKinds.Of(field.Kind);
+        @if (kind is ScreenFieldKind.Rows)
+        {
+            <div class="screen-field-rows" @key="field.Name">
+                <span class="screen-field-label">@field.Label</span>
+                <ScreenRowsEditor Columns="field.RowColumns" Rows="_rows[field.Name]" />
+                @if (ErrorOf(field) is { } rowsError)
+                {
+                    <span class="screen-field-error">@rowsError</span>
+                }
+            </div>
+        }
+        else
+        {
+            <label class="screen-field" @key="field.Name">
+                <span class="screen-field-label">@field.Label</span>
+                <input type="@ScreenFieldKinds.InputType(kind)" value="@_values[field.Name]" readonly="@field.ReadOnly" required="@field.Required"
+                       @onchange="e => _values[field.Name] = e.Value?.ToString()" />
+                @if (ErrorOf(field) is { } error)
+                {
+                    <span class="screen-field-error">@error</span>
+                }
+            </label>
+        }
+    }
+
+    @if (_answer is { } answer)
+    {
+        <p class="screen-answer @(answer.Done ? "is-done" : "is-refused")" role="status">@answer.Message</p>
+    }
+
+    <button class="header-button screen-save" type="submit" disabled="@_saving">Save</button>
+</form>

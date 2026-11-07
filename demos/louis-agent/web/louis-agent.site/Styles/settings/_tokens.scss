@@ -1,0 +1,21 @@
+/* What only this site needs. Its colours are the framework's own Console theme, the one copy, listed before this file:
+   black and white with metallic grays, and "chrome", a white-to-steel gradient, on what matters. It's not a theme here on
+   purpose: the films are drawn for a dark floor. */
+
+:root {
+    --line: #1b1d21;            /* a hairline */
+    --faint: #5c6168;           /* a slab's small print */
+    --steel: linear-gradient(180deg, #e9ebee 0%, #c9ccd1 100%);
+    --glow: rgba(255, 255, 255, .12);
+
+    --radius: 10px;
+    --radius-small: 8px;
+    --gutter: 48px;
+    --measure: 56ch;
+}
+
+/* Animations off on the PC stills the decoration (the hero's typing), never a film: the films are the content and
+   play as a video would (FX35). */
+@media (prefers-reduced-motion: reduce) {
+    *:not(.stage *), *:not(.stage *)::before, *:not(.stage *)::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+}

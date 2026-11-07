@@ -1,0 +1,13 @@
+/* ---- The empty chat and the message box (F20 step 6). ---- */
+.news-pill {
+    display: inline-flex; align-items: center; gap: 9px; margin-bottom: 18px; padding: 5px 14px 5px 5px; border-radius: 999px;
+    font-size: 13px; font-weight: 600; color: var(--bs-body-color); background: rgba(var(--web-overlay-rgb), .04); border: 1px solid var(--bs-border-color);
+    transition: border-color .2s, color .2s; animation: rise .6s var(--web-ease) both;
+}
+.news-pill:hover { color: var(--bs-emphasis-color); border-color: rgba(var(--bs-primary-rgb), .5); }
+.news-tag { font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--web-on-primary); background: var(--web-cta); border-radius: 999px; padding: 3px 9px; }
+
+/* The composer in the middle of an empty chat. */
+.topics { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 16px 0 26px; animation: rise .6s .16s var(--web-ease) both; }
+.topic { padding: 7px 15px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--bs-body-color); background: rgba(var(--web-overlay-rgb), .04); border: 1px solid var(--bs-border-color); transition: border-color .2s, color .2s, background .2s, transform .25s var(--web-spring); }
+.topic:hover { color: var(--bs-emphasis-color); border-color: rgba(var(--bs-primary-rgb), .5); background: rgba(var(--bs-primary-rgb), .08); transform: translateY(-1px); }

@@ -1,0 +1,61 @@
+/* Paper: a soft, low-glare light theme: warm linen greys instead of white, dark-grey text instead of black, a terracotta
+   accent. Text, links, status colours and button labels all clear WCAG AA contrast (4.5:1) on every surface; only the
+   faintest hints are lighter. It sets the framework's colour names, and loads after app.css so these win. */
+
+@use "web/tools/colours";
+
+:root {
+    color-scheme: light;
+
+    @include colours.both(bs-primary, #7f4c36);
+    @include colours.both(bs-danger, #8c3f3a);
+    @include colours.both(bs-warning, #7a531c);
+    @include colours.both(bs-body-bg, #e8e4dc);
+    @include colours.both(bs-secondary-bg, #eeebe4);
+    @include colours.both(bs-tertiary-bg, #e1ddd4);
+    @include colours.both(bs-success-text-emphasis, #335e6a, web-success-text);
+    @include colours.both(web-menu-bg, #e1ddd4);
+    @include colours.numbers(web-overlay, #3d3a35);
+    @include colours.numbers(web-shadow, #3d3a35);
+    @include colours.numbers(web-failed, #8c3f3a);
+    @include colours.numbers(web-backdrop, #3d3a35);
+    @include colours.numbers(web-hover, #8c867c);
+
+    --web-primary-deep: #6b3f2c;
+    --bs-primary-bg-subtle: #ddd2c6;
+    --bs-primary-text-emphasis: #7f4c36;
+    --bs-success: #7f4c36;
+    --web-success-deep: #6b3f2c;
+    --bs-success-bg-subtle: #d9d4ca;
+    --web-sidebar-foot: #d9d4ca;
+    --web-sidebar-foot-deep: #cfc9be;
+    --bs-link-color: #335e6a;
+
+    --web-on-primary: #f4f1ea;
+    --web-bright: #2c2a26;
+    --web-soft-text: #5f5a53;
+    --web-settings-text: #5f5a53;
+    --web-error-text: #8c3f3a;
+    --web-border-hover: #8c867c;
+    --web-scrollbar: #cfc9be;
+    --web-dialog-bg: #eeebe4;
+    --web-code-number: #7a5a14;
+    --web-code-comment: #5f5a53;
+    --web-live-dot: #7f4c36;
+
+    --bs-emphasis-color: #2c2a26;
+    --bs-body-color: #3d3a35;
+    --bs-secondary-color: #5f5a53;
+    --bs-tertiary-color: #8c867c;
+    --bs-border-color: #cfc9be;
+    --web-code-bg: #e3dfd6;
+    --web-cta: #7f4c36;
+    --bs-box-shadow-sm: 0 1px 2px rgba(61, 58, 53, .15);
+    --bs-box-shadow: 0 10px 28px -10px rgba(61, 58, 53, .3);
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --bs-font-monospace: ui-monospace, "Cascadia Code", Consolas, monospace;
+    --bs-border-radius: 8px;
+}
+
+.user-text { background: rgba(var(--web-overlay-rgb), .08); }
+.file-header { background: var(--bs-secondary-bg); }

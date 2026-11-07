@@ -1,0 +1,157 @@
+/* Retro terminal: soft mint on dark green-grey, monospace type, a hint of scanlines, a boot screen and a CRT power-on.
+   Glow is limited to the title and the cursor so body text stays crisp. It sets the framework's colour names, and loads
+   after app.css so these win. */
+
+@use "web/tools/colours";
+
+:root {
+    color-scheme: dark;
+
+    @include colours.both(bs-primary, #8fd6a4);
+    @include colours.both(bs-danger, #e08c8c);
+    @include colours.both(bs-warning, #d9b26f);
+    @include colours.both(bs-body-bg, #111714);
+    @include colours.both(bs-secondary-bg, #1a241f);
+    @include colours.both(bs-tertiary-bg, #151d19);
+    @include colours.both(bs-success-text-emphasis, #82c8cc, web-success-text);
+    @include colours.both(web-menu-bg, #151d19);
+    @include colours.numbers(web-overlay, #a8d8b4);
+    @include colours.numbers(web-shadow, #000000);
+    @include colours.numbers(web-failed, #e08c8c);
+    @include colours.numbers(web-backdrop, #000000);
+    @include colours.numbers(web-hover, #5c7a67);
+
+    --web-primary-deep: #6fb384;
+    --bs-primary-bg-subtle: #1f2b25;
+    --bs-primary-text-emphasis: #8fd6a4;
+    --bs-success: #8fd6a4;
+    --web-success-deep: #6fb384;
+    --bs-success-bg-subtle: #1f2b25;
+    --web-sidebar-foot: #151d19;
+    --web-sidebar-foot-deep: #111714;
+    --bs-link-color: #82c8cc;
+
+    --web-on-primary: #111714;
+    --web-bright: #dcefe2;
+    --web-soft-text: #a8d8b4;
+    --web-settings-text: #7fa48c;
+    --web-error-text: #e08c8c;
+    --web-border-hover: #5c7a67;
+    --web-scrollbar: #2a3a32;
+    --web-dialog-bg: #151d19;
+    --web-code-number: #d6cf8f;
+    --web-code-comment: #5c7a67;
+    --web-live-dot: #8fd6a4;
+
+    --bs-emphasis-color: #dcefe2;
+    --bs-body-color: #a8d8b4;
+    --bs-secondary-color: #7fa48c;
+    --bs-tertiary-color: #5c7a67;
+    --bs-border-color: #2a3a32;
+    --web-code-bg: #0d1210;
+    --web-cta: #8fd6a4;
+    --bs-font-sans-serif: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --bs-font-monospace: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --web-font-display: "VT323", "IBM Plex Mono", ui-monospace, monospace;
+    --bs-border-radius: 4px;
+    --web-terminal-glow: 0 0 6px rgba(143, 214, 164, .35);
+}
+
+/* A faint hint of scanlines and a light vignette over everything; they never catch clicks. */
+body::before, body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2000;
+}
+body::before { background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .07) 0 1px, transparent 1px 3px); }
+body::after { background: radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, .3) 100%); }
+
+.app { animation: crt-on .55s var(--web-ease) both; }
+
+.turn.streaming .markdown:last-child > :last-child::after { content: "█"; text-shadow: var(--web-terminal-glow); }
+
+/* Bracketed, uppercase terminal buttons on a pack's screen, which fill on hover. */
+.pack-split {
+    .send, .secondary, .danger {
+        background: transparent;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .03em;
+        text-transform: uppercase;
+        &::before { content: "[ "; }
+        &::after { content: " ]"; }
+    }
+    .send { border-color: var(--bs-primary); color: var(--bs-primary); }
+    .secondary { border-color: var(--bs-tertiary-color); color: var(--bs-secondary-color); }
+    .danger { border-color: var(--bs-danger); color: var(--bs-danger); }
+    .send:not(:disabled):hover, .secondary:not(:disabled):hover {
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: var(--web-on-primary);
+        filter: none;
+        box-shadow: 0 0 10px rgba(143, 214, 164, .25);
+    }
+    .danger:not(:disabled):hover { background: var(--bs-danger); color: var(--web-on-primary); filter: none; }
+}
+
+.chat-item a::before { content: "> "; color: var(--bs-tertiary-color); }
+.chat-item.active a::before { color: var(--bs-primary); }
+
+.file-path::before { content: "FILE: "; color: var(--bs-tertiary-color); font-weight: 400; }
+.tool-name::before { content: "RUN "; color: var(--bs-tertiary-color); font-weight: 400; }
+.thinking summary::before { content: "[+] "; }
+.thinking[open] summary::before { content: "[-] "; }
+.stopped { font-style: normal; text-transform: uppercase; letter-spacing: .08em; }
+.stopped::before { content: "^C "; }
+.error::before { content: "ERROR: "; font-weight: 600; }
+.working { letter-spacing: .1em; }
+
+/* Your messages read like typed commands, the answer is indented beneath. */
+.user-message { align-items: stretch; }
+.user-text { max-width: none; padding: 0; border-radius: 0; background: none; }
+.user-text::before { content: "C:\\LOUIS> "; color: var(--bs-secondary-color); }
+.assistant-message { padding-left: 14px; border-left: 2px solid var(--bs-border-color); }
+
+/* Boot screen: the title glows and each line types out after the previous one (--i staggers them). */
+.empty { text-align: left; }
+.empty h1 {
+    margin-bottom: 16px;
+    font: 72px/1 var(--web-font-display);
+    letter-spacing: .06em;
+    text-shadow: 0 0 10px rgba(143, 214, 164, .35);
+    animation-duration: .6s;
+}
+.boot { display: block; }
+.boot p {
+    margin: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: type-line .5s steps(32, end) forwards;
+    animation-delay: calc(.2s + var(--i) * .45s);
+}
+.boot p:last-child { color: var(--bs-emphasis-color); }
+.hint { margin-top: 24px; color: var(--bs-tertiary-color); opacity: 0; animation: fade-in .5s 2.6s forwards; }
+
+.markdown h1, .markdown h2, .markdown h3 { font-size: 28px; line-height: 1.1; font-weight: 400; letter-spacing: .04em; }
+.markdown h1 { font-size: 34px; }
+
+@keyframes crt-on {
+    0% { transform: scale(1, .004); filter: brightness(4); opacity: .4; }
+    45% { transform: scale(1, .004); filter: brightness(4); opacity: 1; }
+    75% { transform: scale(1, 1.02); filter: brightness(1.6); }
+    100% { transform: none; filter: none; }
+}
+@keyframes type-line { to { width: 100%; } }
+
+@media (max-width: 720px) {
+    .empty h1 { font-size: 48px; }
+}
+
+/* With motion reduced the boot text can't type out, so show it straight away. */
+@media (prefers-reduced-motion: reduce) {
+    .boot p { width: auto; }
+    .hint { opacity: 1; }
+}

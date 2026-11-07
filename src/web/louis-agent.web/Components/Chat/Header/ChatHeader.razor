@@ -31,8 +31,17 @@
         <button class="header-button d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="@Text.ShowWork">
             <span class="ic i-pulse" aria-hidden="true"></span>@Text.Work
         </button>
-        <CreditsMenu ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats" OnComingSoon="OnComingSoon" />
-        <LanguageMenu Language="@Language" Languages="Languages" OnChoose="OnChooseLanguage" />
-        <ProfileMenu OnComingSoon="OnComingSoon" />
+        @if (Features.Credits)
+        {
+            <CreditsMenu ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats" OnComingSoon="OnComingSoon" />
+        }
+        @if (Features.Language)
+        {
+            <LanguageMenu Language="@Language" Languages="Languages" OnChoose="OnChooseLanguage" />
+        }
+        @if (Features.Unfinished)
+        {
+            <ProfileMenu OnComingSoon="OnComingSoon" />
+        }
     </div>
 </header>

@@ -217,6 +217,83 @@ built for screens inside a chat, so it doesn't fit our admin. The idea we kept i
 
 Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md); pattern: Composition Root (Seemann).
 
+## Described screens (F59.5, 2026-11-07)
+
+A pack can now show whoever runs it a screen without writing any web code. It says what the screen is, as plain data: a title, a sentence,
+its columns, whether it searches. One generic page in the framework draws that. So a new screen appears on every site, sidebar link
+included, with no change to any of them. This is called *metadata-driven UI*, and the Django admin is the famous example.
+
+**The catch is the vocabulary.** A description can only say what its words allow. Give it enough words and you've slowly written a worse
+programming language. So there's a rule for growing it: a new kind of column or field enters only when a *second* screen needs it, and until
+then that screen uses a real component.
+
+**The way out is a list with an order.** `PackViews` maps a screen's name to a component, and the plain table is what you get if nobody
+registered one. The last to register wins, so the order of the lines in `Program.cs` *is* the order of precedence: the framework's
+default, then a pack's view, then a demo's. Fowler calls a shared lookup like this a Registry. A component found by name also means the
+generic page names no pack, which is the Plugin pattern, and it's why a pack's view can live in a project the framework has never heard of.
+
+**Two projects that can't see each other still share facts.** The recipes pack runs on the server with its database. Its view runs in the
+browser, and must never carry a database driver. So neither references the other, and `PackWebBoundaryTests` holds that. But the view has to
+know the screen's name and two column headings. Those are written twice, and the only thing stopping them drifting is one test project
+that's allowed to see both. When you split two things apart, ask what facts they still share, and give those facts a test.
+
+**A value from outside is still outside.** The table turns a link column into a link, and those values can come from pages we read. A
+`javascript:` address in an `href` runs in the admin's tab, which holds the admin key. So only `http` and `https` become links, and the rest
+stays text. It's the same habit as treating a tool's result as data: where a value came from decides how far you trust it.
+
+**A wrong proof looks like a right one.** The boundary test first "passed on a throwaway bad reference". It hadn't: the edit adding that
+reference never applied, so the test had only passed on the unchanged project. A test seen passing tells you little until you've seen it
+fail, and "seen it fail" needs checking too.
+
+**A button that asks a model is a place to slow down (F59.6).** The git and file controls moved out of one site and into their packs' web
+projects, and became admin screens. On the old page their Review button started the turn at once. A screen is on a different page from the
+chat, so it had to change anyway, and it now opens the chat with the prompt waiting in the box. Nothing costs money or runs a tool until
+the person reads it and presses send. The small `ChatHandoff` object holds the words for the moment between the two pages, in memory, because
+a long prompt in a web address would end up in the browser's history.
+
+**One seam still has to fit what doesn't look like a table.** The git panels have no rows, so a described screen seems wrong for them. They
+became `OwnViewScreen`s, which are a name and a heading and nothing else. That keeps one list of screens rather than a second list of panels,
+but it raised a real question: Puls's host loads the git pack too, for its model, so its sidebar would have offered an empty *Changes*. The
+rule that came out is that a screen with no columns can only be drawn by its own view, so a site that doesn't carry the view doesn't list it.
+
+**Sharing a frame means saying what it isn't (F59.7).** The code-review app moved onto the same chat frame as Puls, and lost about 300 lines of
+page code and all its copies of the frame's styles. But a coding agent has no use for a place, a language menu or buying credits. Those are
+hooks now, all on by default, in one record a site can pass: Template Method's other half. A site names only what doesn't suit it.
+
+**Look at it, even when the tests are green.** Every test passed and the first look still found two bugs. The message box sat below the window,
+since the frame's empty chat takes the full height and expects the box inside it. And an admin page crashed the whole app: with no API behind
+the dev server, the reply was a web page, reading it as JSON threw, and nothing caught that kind of error. The menu on every admin page made it
+worse. The fix went in the one place replies are read, so every page gets it. Tests answer the questions you thought to ask.
+
+**A form in the vocabulary is a line we crossed on purpose (F59.8).** Recipes can now be found, fixed and removed on screen, with no script. A list of columns is cheap to
+describe, but a form has to say what each field is, whether it can change, and what a refusal means, and that's how a description turns into a programming language. So it
+stops at four kinds: text, number, link and rows. The rules stay in the pack: `RecipeForm` says a name is required and where a recipe came from can't change, and the page only
+draws what it's told. A value for a read-only field has nowhere to land, because the save starts from the kept recipe rather than from what was sent.
+
+**Destroying something should cost a second thought, in code.** Removing a recipe does two writes, and their order matters. The page goes on the excluded list first, so if the
+second write fails the recipe is still there. The other way round, a failure would leave it gone from the library and free to be kept again on the next read. Being able to say
+which half-finished state you'd rather be in is most of what makes a two-step write safe when you have no transaction.
+
+**A template is only proved by using it (F59.11).** A new site is one command, and it holds only its name. A template is an ordinary project plus a small settings file, which
+makes it easy to break without noticing: nothing compiles what it makes until someone runs it. So one test really does: it installs the template into a throwaway list, makes a
+site called Acme in a throwaway folder, checks the old name is gone everywhere, and builds it. That's slow for a test, so it's an integration test, but it's the only one that can
+say the template works. It's also the fairest test of the whole framework: if a site really is this small, the framework must hold the rest.
+
+**Moving 400 files takes three commits, and only the last is the move (F59.10).** The eval pages looked like one big move, but they still knew things about Puls: its name on the screen, and a list of South African shops
+inside a chart. Move those along and the framework names a site; clean them up during the move and nobody can review it. So the cleanups went first, in Puls, where the old tests still ran, and the move itself came last, with a checker
+saying every changed line is a namespace, a using or a path. Reviewing that takes minutes, where reading 400 diffs would take days. The shop list is the part worth keeping: it wasn't a word to change but something only the site can know, so it became data the site
+hands over (a small named rule per kind of website, what Evans and Fowler call a Specification), and the chart only counts.
+
+**A checker has to look for the mistake you'd really make (F59.10).** My script replaced a path twice and wrote `Evals/Evals`. The checker passed it, because it asked "does this line look like a path?", and that line did. The tests caught it, since a golden file can't be found at
+a wrong path. A check that only reads the shape of a change says what kind of change it was, not that it's right, so it needs something that runs behind it.
+
+**A guard that fires on a harmless change is still doing its job (F59.12).** The static site's films are exported to files, and a test holds a fingerprint of the stylesheets they're
+made from. Moving those stylesheets to Sass changed no colour, so the films surely look the same, and it would be easy to update the fingerprint and move on. But *surely* is the very
+thing the guard is there to replace. The film has to be exported again, which needs Docker, so the test stays red until someone does. A red test with a known, written-down reason is honest;
+a green one you edited by hand isn't.
+
+Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
+
 ## The admin's frame (F59.2, 2026-11-06)
 
 The admin's frame moved to the framework, and Puls's layout shrank to what's its own. Two patterns carry it, and both solve the same
@@ -263,6 +340,18 @@ look in a browser covered that: the views, a template's draft, renaming, a favou
 width. Sending a message needs the API key and costs money, so the turn itself leans on the recorded turn in the golden file.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Presentation Model (Fowler).
+
+## Styles anyone can reuse (F59.4, 2026-11-07)
+
+Moving stylesheets into a framework sounds like moving files. It wasn't, for one reason you spotted when you asked "can't we use color vairables?": 89 rules had Puls's orange written straight in, so any new site would have come out orange. A framework's rules can't hold one site's values, so the first job was getting the values out.
+
+**Use names someone else already defined.** The colour names became Bootstrap's own, so a site's author learns no list of ours, and only what Bootstrap has no word for gets a `--web-` name. It had a cost: Bootstrap's own parts read those names too, so text in its dropdowns took Puls's colour. Look for that kind of side effect whenever two things share a name.
+
+**Sass doesn't replace CSS variables.** A Sass variable is gone once the build has run, and a theme that swaps while the page runs needs a variable the browser can read. So Sass writes the variables. The real win is one mixin writing both forms of a colour from one value, so `--bs-primary` and `--bs-primary-rgb` can't disagree.
+
+**Prove a move by comparing what the browser gets.** Each file was split by whose classes its rules use, and the checks compared the whole compiled CSS, rule by rule: 1,591 before and after. Then the browser compared every element on every page with the old stylesheet swapped in. One run gave nonsense because the old sheet hadn't loaded, which is worth remembering: check that your comparison compared something.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Mixin.
 
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

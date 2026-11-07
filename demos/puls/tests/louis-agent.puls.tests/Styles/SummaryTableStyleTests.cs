@@ -10,8 +10,8 @@ namespace LouisAgent.Puls.Tests.Styles;
 /// </summary>
 public class SummaryTableStyleTests
 {
-    /// <summary>The Puls stylesheet, every file it imports.</summary>
-    private static string Css => Stylesheet.Of("louis-agent.puls").Read();
+    /// <summary>The CSS the build makes for Puls.</summary>
+    private static string Css => SassStylesheet.Of("louis-agent.puls").Read();
 
     /// <summary>The declarations of the first rule for this selector, or a failure naming it.</summary>
     private static string RuleOf(string selector)
@@ -49,10 +49,10 @@ public class SummaryTableStyleTests
         Assert.That(RuleOf(".summary-table tr.overall td"),
             Does.Contain("font-weight: 600").And.Not.Contain("245, 130, 32"),
             "bold, not edged (Louis: an orange heading instead)");
-        Assert.That(RuleOf(".summary-mode h3"), Does.Contain("var(--orange-text)"),
+        Assert.That(RuleOf(".summary-mode h3"), Does.Contain("var(--bs-primary-text-emphasis)"),
             "the mode's heading is the orange, as the run table's mode lines are");
         Assert.That(RuleOf(".summary-table .summary-row td"),
-            Does.Contain("background: var(--bg)").And.Contain("border-top"), "each row its own rounded card");
+            Does.Contain("background: var(--bs-body-bg)").And.Contain("border-top"), "each row its own rounded card");
         Assert.That(RuleOf(".summary-mode h3"), Does.Match(@"font-size:\s*(1\d|2[0-2])px"),
             "a heading, not the page's title");
     }

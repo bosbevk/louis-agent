@@ -1,56 +1,19 @@
 @page "/"
+@page "/chat"
 @page "/chat/{SessionId}"
 
-@* The code-review app's one page (W2): the layout only. The sidebar and the viewers are its components, the chat
-   pieces (the turns, the notice, the usage line, the message box) are the shared ones, a turn's life is the shared
-   ChatRunner, and the page's own state and handlers are in ChatPage.razor.cs. *@
+@* The code-review app on the framework's chat frame: its name, its links to the packs' screens, and its theme picker. *@
 
-<PageTitle>@(Runner.Chat?.Title ?? "Louis Agent")</PageTitle>
-
-<div class="app">
-    <WorkspaceSidebar Chats="Store.Chats" SessionId="@SessionId" ChangeCount="Git.ChangeCount" UnmergedCount="History.UnmergedCount" ApiKeyDraft="@Store.ApiKeyDraft"
-                      ViewerOpen="ViewerOpen" OpenFilePath="@_openFile?.Path" OpenDiffKey="@_openDiffKey" OpenHistoryKey="@_openHistoryKey"
-                      OnNewChat="NewChat" OnOpenFile="OpenFile" OnOpenDiff="OpenDiff" OnReviewAll="ReviewAllChanges" OnOpenBranch="OpenBranch"
-                      OnOpenCommit="OpenCommit" OnOpenChat="CloseFile" OnDeleteChat="DeleteChat" OnSaveApiKey="SaveApiKey" />
-
-    <main class="conversation">
-        @if (_openBranch is not null || _openCommit is not null)
-        {
-            <HistoryViewer Branch="_openBranch" Commit="_openCommit" Busy="@(_openBranch is { } open && History.Pending(open.Branch.Name) is not null)" OnMerge="MergeBranch"
-                           OnDelete="DeleteBranch" OnOpenCommit="OpenCommit" OnClose="CloseFile" />
-        }
-        else if (_openDiff is not null)
-        {
-            <DiffViewer Diff="_openDiff" Busy="@(Runner.Streaming || Git.Busy)" OnStage="() => ChangeOpenDiff(Git.StageAsync)"
-                        OnUnstage="() => ChangeOpenDiff(Git.UnstageAsync)" OnDiscard="() => ChangeOpenDiff(Git.DiscardAsync)"
-                        OnReview="ReviewOpenDiff" OnClose="CloseFile" />
-        }
-        else if (_openFile is not null)
-        {
-            <FileViewer File="_openFile" Busy="Runner.Streaming" OnReview="ReviewFile" OnAsk="AskAboutFile" OnClose="CloseFile" />
-        }
-
-        <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="@(ViewerOpen ? "hidden" : "")">
-            <Empty><EmptyChat /></Empty>
-        </MessageList>
-
-        <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
-
-        <ChatUsageBar Usage="@(ViewerOpen ? null : Runner.Chat?.Usage())" Currency="Currency.Current" />
-
-        <div class="composer @(ViewerOpen ? "hidden" : "")">
-            <Composer @bind-Draft="Runner.Draft" Attachments="Runner.Attachments" Streaming="Runner.Streaming" CanSend="Runner.CanSend"
-                      Disabled="@(Runner.Chat?.Ended == true)"
-                      Placeholder="@(Runner.Chat?.Ended == true ? "This chat ended when the API restarted - start a new chat" : "Message Louis Agent (Enter to send, Shift+Enter for a new line)")"
-                      OnSend="Runner.SendAsync" OnStop="Runner.StopAsync">
-                <BeforeInput>
-                    <label class="attach" title="Attach text files">
-                        📎
-                        <InputFile OnChange="Runner.AddFilesAsync" multiple />
-                    </label>
-                    <span class="prompt" aria-hidden="true">&gt;</span>
-                </BeforeInput>
-            </Composer>
-        </div>
-    </main>
-</div>
+<ChatShell @ref="_shell" SessionId="@SessionId" ChatPath="chat" Title="Louis Agent" OpenSession="OpenSessionAsync" VoicePrefix="" DefaultLanguage="en"
+           BrandTitle="Louis Agent" Features="Features">
+    <Logo>LOUIS AGENT</Logo>
+    <Views>
+        <nav class="side-nav">
+            <a class="side-link" href="admin/screens/workspace-files"><span class="ic i-file" aria-hidden="true"></span>Files</a>
+            <a class="side-link" href="admin/screens/git-changes"><span class="ic i-check" aria-hidden="true"></span>Changes</a>
+            <a class="side-link" href="admin/screens/git-branches"><span class="ic i-folder" aria-hidden="true"></span>Branches</a>
+        </nav>
+    </Views>
+    <Settings><ThemeSwitcher /></Settings>
+    <Empty Context="empty"><EmptyChat Composer="empty.MessageBox" /></Empty>
+</ChatShell>

@@ -24,6 +24,10 @@ public class RecipesFeedTests
         public Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.FromResult(false);
 
         public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task<bool> ReplaceAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.FromResult(false);
+
+        public Task<bool> RemoveAsync(string id, CancellationToken cancellationToken) => Task.FromResult(false);
     }
 
     private static StoredRecipe Recipe(string slug) => KeptRecipes.Of($"https://example.com/{slug}/bobotie", slug, "Bobotie");

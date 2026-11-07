@@ -1,0 +1,34 @@
+/* Puls's styles, one partial per concern (CL26), each at most 200 lines of rules. The order below is the cascade: the
+   colours and the plain elements first (ITCSS's settings and base), then the parts in the order they always came, so a
+   later rule still wins where it did. A name under web/ is the framework's Sass, found through sasscompiler.json. A new
+   rule goes in the partial of its concern, and anything that repeats becomes one shared piece that both places use. A partial that grows past 200 lines is split, and its new partial
+   is listed where its lines were. The build makes wwwroot/css/app.css from this, and that file isn't in git. */
+
+@forward "web/settings/colours";
+@forward "settings/tokens";
+@forward "web/base/elements";
+
+@forward "web/layout/shell";
+@forward "layout/shell";
+@forward "web/chat/conversation";
+@forward "chat/conversation";
+@forward "web/layout/responsive";
+@forward "layout/responsive";
+@forward "web/chat/interaction";
+@forward "chat/interaction";
+@forward "web/chat/finish";
+@forward "chat/finish";
+
+@forward "landing/hero";
+@forward "landing/sections";
+
+@forward "web/layout/panels";
+@forward "layout/panels";
+@forward "web/chat/bars";
+@forward "chat/bars";
+@forward "web/chat/pages";
+@forward "chat/pages";
+
+@forward "web/admin/shell";
+@forward "web/admin/eval-pages";
+@forward "web/admin/screens";

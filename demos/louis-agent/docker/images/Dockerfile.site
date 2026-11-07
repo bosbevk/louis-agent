@@ -2,6 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY demos/louis-agent/web/louis-agent.site/ demos/louis-agent/web/louis-agent.site/
+# The Sass build reads the framework's colours from here; nothing else of the framework goes in.
+COPY src/web/louis-agent.web/Styles/ src/web/louis-agent.web/Styles/
 RUN dotnet publish "demos/louis-agent/web/louis-agent.site/louis-agent.site.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0

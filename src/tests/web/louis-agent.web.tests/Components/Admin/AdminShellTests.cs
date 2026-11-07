@@ -1,4 +1,12 @@
+using System.Net;
+using System.Net.Http.Json;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Screens;
+using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Packs;
+using LouisAgent.Web.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Admin;
 
@@ -8,11 +16,47 @@ namespace LouisAgent.Web.Tests.Components.Admin;
 /// </summary>
 public class AdminShellTests
 {
+    /// <summary>A context with what the frame's pack menu asks for, over an API that offers this one screen.</summary>
+    private static BunitContext NewContext()
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var settings = new ChatSettings();
+        var screens = new ScreensReply(
+        [
+            new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+        ]);
+        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
+        ctx.Services.AddSingleton(new PackViews());
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ =>
+            new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(screens, options: AdminJson.SnakeCase)
+            }))
+        {
+            BaseAddress = new Uri("http://localhost/")
+        }, settings));
+        return ctx;
+    }
+
+    /// <summary>A pack's screens get their links in the sidebar, after the site's own.</summary>
+    [Test]
+    public void APacksScreens_GetTheirLinks_AfterTheSitesOwn()
+    {
+        using var ctx = NewContext();
+
+        var cut = ctx.Render<AdminShell>(parameters => parameters
+            .Add(shell => shell.Links, "<a class=\"side-link my-link\" href=\"x\">X</a>"));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
+            Is.EqualTo(new[] { "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
+    }
+
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>
     [Test]
     public void TheBrand_ShowsInTheTopBar_AndTheSidebar()
     {
-        using var ctx = new BunitContext();
+        using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.Brand, "<b class=\"logo\">Brand</b>")
@@ -27,7 +71,7 @@ public class AdminShellTests
     [Test]
     public void TheLinks_GoInTheSidebar()
     {
-        using var ctx = new BunitContext();
+        using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>"));
@@ -39,7 +83,7 @@ public class AdminShellTests
     [Test]
     public void TheTop_ComesAboveThePage()
     {
-        using var ctx = new BunitContext();
+        using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.Top, "<div class=\"strip\">Live</div>")
@@ -53,7 +97,7 @@ public class AdminShellTests
     [Test]
     public void TheWayBack_ShowsTwice_ToTheSamePlace()
     {
-        using var ctx = new BunitContext();
+        using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.BackHref, "chat")
@@ -71,7 +115,7 @@ public class AdminShellTests
     [Test]
     public void WithNothingNamed_ThePageShows_AndNoSlotLeavesAGap()
     {
-        using var ctx = new BunitContext();
+        using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
 

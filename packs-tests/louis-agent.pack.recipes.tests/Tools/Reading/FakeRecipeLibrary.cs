@@ -36,6 +36,24 @@ internal sealed class FakeRecipeLibrary(bool fails = false) : IRecipeStore, IRec
     /// <inheritdoc />
     public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) => Task.CompletedTask;
 
+    /// <summary>Puts this in place of the kept recipe, or fails.</summary>
+    public Task<bool> ReplaceAsync(StoredRecipe recipe, CancellationToken cancellationToken)
+    {
+        if (fails) throw new TimeoutException("no Mongo");
+        int at = Kept.FindIndex(kept => kept.Id == recipe.Id);
+        if (at < 0) return Task.FromResult(false);
+
+        Kept[at] = recipe;
+        return Task.FromResult(true);
+    }
+
+    /// <summary>Takes this one out, or fails.</summary>
+    public Task<bool> RemoveAsync(string id, CancellationToken cancellationToken)
+    {
+        if (fails) throw new TimeoutException("no Mongo");
+        return Task.FromResult(Kept.RemoveAll(kept => kept.Id == id) > 0);
+    }
+
     /// <inheritdoc />
     public Uri AddressOf(StoredRecipe recipe) => new(Address + recipe.Id);
 

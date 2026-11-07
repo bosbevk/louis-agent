@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Louis Marais",
+  "classifications": [ "Web", "Blazor", "AI" ],
+  "identity": "LouisAgent.Starter.Site",
+  "name": "A site on the framework's web",
+  "shortName": "louis-site",
+  "sourceName": "LouisAgent.Starter",
+  "preferNameDirectory": true,
+  "tags": { "language": "C#", "type": "project" },
+  "symbols": {
+    "siteFolder": {
+      "type": "derived",
+      "valueSource": "name",
+      "valueTransform": "lowerCase",
+      "replaces": "louis-agent.starter",
+      "fileRename": "louis-agent.starter"
+    }
+  },
+  "forms": {
+    "lowerCase": { "identifier": "lowerCaseInvariant" }
+  },
+  "sources": [
+    {
+      "exclude": [ "bin/**", "obj/**", ".template.config/**", "wwwroot/css/**" ]
+    }
+  ]
+}

@@ -9,8 +9,8 @@
 
 ## Purpose
 
-Tells a .NET developer what the louis-agent framework is, why they'd want it, how they'd build on it, and shows that it works, in the Console
-theme (black, white and metallic grays). It talks about the engine; it doesn't run it. It shows only what works
+The coding agent's landing page, and its demo: it tells a .NET developer what the louis-agent framework is, why they'd want it, how they'd build on
+it, shows that it works, and leads to the agent itself at `/chat`, or wherever `CHAT_ADDRESS` says it runs. It's in the framework's Console colours (black, white and metallic grays). It talks about the engine; it doesn't run it. It shows only what works
 today, the same rule as Puls's landing page: no feature tile for anything that hasn't shipped.
 
 ## How it works
@@ -21,20 +21,20 @@ numbers, the short film, what's built on it, the contact strip), `/how-it-works`
 plain words, the rules every turn keeps), `/packs` (every pack, and the rules a pack keeps), `/build-your-own` (a real
 program and catalogue, whose is what, where it stands), `/proof`, `/built-on-it`, `/contact`. `/health` answers a container's check.
 
-**The two films** are CSS alone. `movie/stage.css` is what they share: a 1280×720 stage scaled to its container
+**The two films** are CSS alone. `movie/_stage.scss` is what they share: a 1280×720 stage scaled to its container
 (`tan(atan2(100cqw, 1280px))` turns the width ratio into a number), a floor seen from above (`perspective` on the
 camera, the camera's moves a `transform` animation on the floor), each part a slab raised off the floor
 (`translateZ` plus a stack of 1px shadows for its side), the turn as a light flying above them with its shadow on
-the floor, a flat detail card top right, a caption strip at the bottom. `short.css` (36 s, six scenes) and
-`detail.css` (60 s, ten scenes) add where each part stands, the camera's keyframes, when each part lights up, the
+the floor, a flat detail card top right, a caption strip at the bottom. `_short.scss` (36 s, six scenes) and
+`_detail.scss` (60 s, ten scenes) add where each part stands, the camera's keyframes, when each part lights up, the
 light's path and when each card and caption shows, under `.film-short` and `.film-detail`, every keyframe name ending
 in the film's letter. A scene's window is a share of the loop (a sixth, a tenth); the camera is wide at the start and
 the end, otherwise flown in on the part at work and panned to the next. The detailed film's six slabs inside core are
 the chat pipeline's middleware in its real order, outermost first (`ChatPipeline.cs`), and `DetailedMovieTests` holds
 that order.
 
-**The theme** is `settings/tokens.css`: one dark ground, white for what matters, a gray scale, and "chrome" (a
-white-to-steel gradient clipped to the big words). No light mode: the films are drawn for a dark floor. Motion is
+**The colours** are the framework's, `web/settings/_colours.scss`, the one copy, read through `sasscompiler.json` when the site builds: one dark ground, white for what
+matters, a gray scale, and "chrome" (a white-to-steel gradient clipped to the big words). `settings/_tokens.scss` holds only what's this site's own. No light mode: the films are drawn for a dark floor. Motion is
 off under `prefers-reduced-motion` for the decoration only: the films are the content and play as a video would (FX35).
 
 ## Architecture
@@ -45,7 +45,7 @@ flowchart LR
     site --> pages["Components/Pages<br/>Home · HowItWorks · Packs · BuildYourOwn · Proof · BuiltOnIt · Contact"]
     pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
     pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]
-    site --> css["wwwroot/css<br/>app.css imports: tokens · elements · shell · landing · movie · responsive"]
+    site --> css["Styles<br/>app.scss lists: the framework's colours · tokens · elements · shell · landing · movie · responsive"]
     docker["demos/louis-agent/docker/images/Dockerfile.site"] --> site
     site -. references no engine project .-> core["louis-agent.core"]
     tool["demos/louis-agent/tools/louis-agent.film-export"] -->|renders the films| site
@@ -59,8 +59,8 @@ flowchart LR
 | `Components/Layout` | `SiteLayout`: the header with the menu, the body, the footer |
 | `Components/Pages` | One component per route |
 | `Components/Landing` | The home page's parts: `Hero`, `LiveTurn` (the streaming turn in the hero), `ProofTiles`, `BuiltOnIt`, `ContactStrip` |
-| `Components/Movies` | `ShortMovie`, `DetailedMovie`: markup only; their behaviour is in `wwwroot/css/movie/` |
-| `wwwroot/css` | `app.css` the import list in cascade order; one file per concern, each under 200 lines of rules |
+| `Components/Movies` | `ShortMovie`, `DetailedMovie`: markup only; their behaviour is in `Styles/movie/` |
+| `Styles` | `app.scss` the list in cascade order; one partial per concern, each under 200 lines of rules. The build makes `wwwroot/css/app.css`, which isn't in git |
 
 ## Settings
 
@@ -71,7 +71,7 @@ None. `ASPNETCORE_URLS` as for any ASP.NET Core app; the container listens on 80
 `demos/louis-agent/tests/louis-agent.site.tests`: the site started in memory with `WebApplicationFactory` (every page answers with its
 title and its film, no Blazor script, `/health`); bUnit renders of both films (the scenes counted, the parts numbered
 in the order the turn reaches them, core's slabs in the pipeline's order, the markup pinned to a golden beside the
-test, `LOUIS_UPDATE_GOLDEN=1` to rewrite); the stylesheet's import list, tokens first, each film's keyframes its own.
+test, `LOUIS_UPDATE_GOLDEN=1` to rewrite); the stylesheet's list, the framework's colours first, each film's keyframes its own.
 
 Three tests keep the words true of the code: every type a film's card names is in the repo (`FilmNamesTests`), the program
 on *Build your own* is the real one (`BuildYourOwnTests`), and every folder under `packs/` is on the *Packs* page

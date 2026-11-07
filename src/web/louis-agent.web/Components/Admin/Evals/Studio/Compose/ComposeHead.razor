@@ -1,0 +1,22 @@
+@* F49.5: what the eval is (its name, the identity it proves, its version, what a pass means, its manual) and its modes. *@
+<section class="compose-head card-p">
+    <h4>The eval</h4>
+    <div class="compose-grid">
+        <label class="compose-field"><span>Name</span><input class="compose-name" placeholder="weather-eval" @bind="Eval.Name" /></label>
+        <label class="compose-field"><span>Identity</span><input class="compose-identity" placeholder="the identity it proves" @bind="Eval.Identity" /></label>
+        <label class="compose-field"><span>Version</span><input class="compose-version" type="number" min="1" @bind="Eval.Version" /></label>
+        <label class="compose-field"><span>Manual (optional)</span><input class="compose-manual" placeholder="manual.md" @bind="Eval.Manual" /></label>
+    </div>
+    <label class="compose-field"><span>Proves</span><input class="compose-proves" placeholder="What a pass means, in one sentence" @bind="Eval.Proves" /></label>
+    <h4>Modes</h4>
+    @foreach (var mode in Eval.Modes)
+    {
+        <div class="compose-mode">
+            <input class="compose-mode-name" placeholder="name" @bind="mode.Name" />
+            <input class="compose-mode-role" placeholder="role, such as agent/voice" @bind="mode.Role" />
+            <input class="compose-mode-toolsets" placeholder="toolsets, commas between" @bind="mode.Toolsets" />
+            <button type="button" class="compose-remove-mode link-button" @onclick="() => Eval.Modes.Remove(mode)">Remove</button>
+        </div>
+    }
+    <button type="button" class="compose-add-mode header-button" @onclick="AddMode">Add a mode</button>
+</section>

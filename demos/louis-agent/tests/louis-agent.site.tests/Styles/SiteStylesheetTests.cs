@@ -1,33 +1,43 @@
 namespace LouisAgent.Site.Tests.Styles;
 
 /// <summary>
-/// The site's stylesheet is app.css's import list (ADR 0053): every area file is imported once, nothing imported is
-/// missing, the tokens come first, each film's timing is its own so the two never share a keyframe name, and a
-/// visitor's reduced-motion setting stills the decoration but never the films (FX35).
+/// The site's stylesheet is Sass, on the framework's colours (ADR 0085): every partial is on app.scss's list once,
+/// nothing on it is missing, each film's timing is its own so the two never share a keyframe name, and a visitor's
+/// reduced-motion setting stills the decoration but never the films (FX35).
 /// </summary>
 public class SiteStylesheetTests
 {
     /// <summary>The site's stylesheet.</summary>
-    private static readonly Stylesheet Css = Stylesheet.Of("louis-agent.site");
+    private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.site");
 
-    /// <summary>Every area file is imported, and every import points at a file that's there.</summary>
+    /// <summary>Every partial is on the list, and everything on the list is there.</summary>
     [Test]
-    public void EveryAreaFile_IsImported_AndEveryImportIsThere() =>
-        Assert.That(Css.Imports().Order(), Is.EqualTo(Css.AreaFiles().Order()));
+    public void EveryPartial_IsOnTheList_AndEveryNameOnTheListIsThere() =>
+        Assert.That(Css.Forwards().Order(), Is.EqualTo(Css.AreaFiles().Order()));
 
-    /// <summary>The tokens are imported first, then the plain elements: the rest of the files build on them.</summary>
+    /// <summary>Its colours are the framework's one copy, listed first, and it keeps none of its own.</summary>
     [Test]
-    public void TheTokensComeFirst_ThenThePlainElements() =>
-        Assert.That(Css.Imports().Take(2), Is.EqualTo(new[] { "settings/tokens.css", "base/elements.css" }));
-
-    /// <summary>The stylesheet reads as the files in their import order, one after the other.</summary>
-    [Test]
-    public void TheStylesheet_IsTheFilesInImportOrder()
+    public void ItsColours_AreTheFrameworks()
     {
-        var starts = Css.Starts();
+        Assert.That(Css.FrameworkForwards(), Is.EqualTo(new[] { "web/settings/colours" }));
+        Assert.That(Css.Read(), Does.Contain("--bs-primary: #ffffff"));
+        Assert.That(Css.Source("settings/tokens"), Does.Not.Contain("--bs-"));
+    }
 
-        Assert.That(starts, Is.All.GreaterThanOrEqualTo(0), "every file is in it");
-        Assert.That(starts, Is.Ordered, "in import order");
+    /// <summary>Its own values come next, then the plain elements: the rest of the files build on them.</summary>
+    [Test]
+    public void ItsValuesComeFirst_ThenThePlainElements() =>
+        Assert.That(Css.Forwards().Take(2), Is.EqualTo(new[] { "settings/tokens", "base/elements" }));
+
+    /// <summary>Every colour name a rule reads is set, by the framework or by this site, so none falls through.</summary>
+    [Test]
+    public void EveryNameARuleReads_IsSet()
+    {
+        string css = Css.Read();
+        var read = System.Text.RegularExpressions.Regex.Matches(css, @"var\((--[a-z0-9-]+)").Select(m => m.Groups[1].Value).Distinct();
+        var setByAFilm = new[] { "--loop", "--d" };
+
+        Assert.That(read.Except(setByAFilm).Where(name => !css.Contains($"{name}:")), Is.Empty);
     }
 
     /// <summary>

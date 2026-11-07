@@ -13,6 +13,9 @@ public partial class AnswerActions
     [Parameter] public EventCallback<string> OnCopy { get; set; }
     [Parameter] public EventCallback<string> OnComingSoon { get; set; }
 
+    /// <summary>Whether what only says it's coming shows too.</summary>
+    [Parameter] public bool Unfinished { get; set; } = true;
+
     /// <summary>The answer's own words: its text after the last tool call or thought.</summary>
     private static string AnswerText(Turn turn) => SpecialistAnswer.Split(turn).Answer.Trim();
 }

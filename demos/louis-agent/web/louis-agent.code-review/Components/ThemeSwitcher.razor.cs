@@ -19,7 +19,7 @@ public partial class ThemeSwitcher
         try
         {
             _themes = await Http.GetFromJsonAsync<List<Theme>>("css/themes/themes.json") ?? [];
-            _current = await JS.InvokeAsync<string>("louisChat.getTheme");
+            _current = await JS.InvokeAsync<string>("siteTheme.get");
         }
         catch (Exception)
         {
@@ -32,6 +32,6 @@ public partial class ThemeSwitcher
     {
         if (e.Value?.ToString() is not { } id || _themes.All(t => t.Id != id)) return;
         _current = id;
-        await JS.InvokeVoidAsync("louisChat.setTheme", id);
+        await JS.InvokeVoidAsync("siteTheme.set", id);
     }
 }

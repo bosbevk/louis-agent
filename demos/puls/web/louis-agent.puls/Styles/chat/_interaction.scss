@@ -1,0 +1,19 @@
+/* Suggestions: an icon each, and an arrow that slides in. */
+.suggestion { padding-right: 34px; }
+.suggestion strong { display: flex; align-items: center; gap: 9px; }
+.suggestion strong::before {
+    content: ""; width: 16px; height: 16px; flex: none; background: var(--bs-primary);
+    -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.suggestion:nth-child(1) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='M15.5 15.5 21 21'/></svg>"); }
+.suggestion:nth-child(2) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h8l5 5v13H6z'/><path d='M14 3v5h5M9 13h7M9 17h7'/></svg>"); }
+.suggestion:nth-child(3) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>"); }
+.suggestion:nth-child(4) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg>"); }
+.suggestion > span::after {
+    content: "→"; position: absolute; right: 14px; top: 50%; transform: translate(-6px, -50%); opacity: 0;
+    color: var(--bs-primary); font-weight: 700; transition: transform .3s var(--web-spring), opacity .2s;
+}
+.suggestion:hover > span::after { transform: translate(0, -50%); opacity: 1; }
+.suggestion:active { transform: translateY(-1px) scale(.98); }
+.suggestions { width: min(540px, 100%); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) { .suggestions { grid-template-columns: minmax(0, 1fr); } }

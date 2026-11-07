@@ -87,6 +87,13 @@ public sealed record ChatText
     /// <summary>{0} is the place.</summary>
     public string LocationFound { get; init; } = "Location: {0}";
     public string LocationUnknown { get; init; } = "Couldn't find your location.";
+    public string LocationNoBrowser { get; init; } = "This browser can't give your location.";
+    public string LocationDenied { get; init; } = "You didn't give permission for your location.";
+    public string LocationNotNamed { get; init; } = "OpenStreetMap couldn't name the place.";
+    public string LocationUnreachable { get; init; } = "Couldn't reach OpenStreetMap.";
+
+    /// <summary>The languages OpenStreetMap names a place in, as a browser's language list.</summary>
+    public string PlaceLanguages { get; init; } = "en";
     public string Names { get; init; } = "Names";
     public string ShowMotion { get; init; } = "Show animations although my system asks for less";
     public string SystemAsksNoLess { get; init; } = " (your system doesn't ask for less)";

@@ -5,10 +5,9 @@
 > **Elsewhere:** how it works in [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
 > [Change the framework's web](../../../../src/docs/guides/change-the-web.md); the folder rules in [src/CLAUDE.md](../../../../src/CLAUDE.md).
 
-The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. One page,
-`Pages/ChatPage.razor`, holds a sidebar with four tabs (Chats, Files, Changes, Branches) and a main area that shows a
-chat, a file, a diff or a commit. What a chat needs (the API client, a turn's life, the turn views, markdown, usage) is
-in `src/web/louis-agent.web`, which Puls uses too.
+The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. It's a small site on
+the framework's web: `Pages/ChatPage.razor` is a thin page on `ChatShell`, `Layout/AdminLayout.razor` a small one on `AdminShell`.
+Files, Changes and Branches aren't its own: they're the files and git packs' views under `packs-web/`, opened as admin screens.
 
 ## Run it
 
@@ -20,29 +19,25 @@ dotnet run --project demos/louis-agent/hosts/louis-agent.coding-api             
 The coding agent's program, `louis-agent.coding-api`, references this app, so that's what it serves. After a change to the app, rebuild the `api` image or
 restart the run. If the API needs `AGENT_API_KEY`, enter it under *API key* in the sidebar; it stays in this browser.
 
-## Add a tab
+## Add a control
 
-1. A `…Panel` component for the sidebar and a viewer for the main area, in the folder of their concern under
-   `Components/` (`Workspace/` or `Git/` today, or a new one). The Branches tab (`BranchesPanel`, `HistoryViewer`,
-   `PatchView`) is the most recent example to copy.
-2. Each `.razor` holds markup only. Its C# goes in the `.razor.cs` code-behind, and any logic that needs no component
-   (parsing, formatting, sums) goes in a plain class in a concern folder with its own NUnit tests, as `UnifiedDiff` and
-   `RelativeTime` are ([ADR 0034](../../../../src/docs/adr/0034-code-a-person-can-maintain.md); `RazorHasNoCodeTests` checks it).
-3. State that several panels show lives in a `…State` service with a `Changed` event, as `GitState` and `GitHistory`
-   do, registered in `Program.cs`. A component takes state as parameters and reports up with `EventCallback`s, and
-   never reaches into its page.
-4. Wire the tab into `WorkspaceSidebar` and `ChatPage`, keeping `ChatPage.razor` a layout.
+A control for a pack isn't this app's. It goes in that pack's web project under `packs-web/` and opens as an admin screen, as the git pack's
+`GitChangesView` does ([Build a pack](../../../../src/docs/guides/build-a-pack.md)). Then:
+
+1. Register it in `Program.cs`, as `GitWebViews.AddTo(views)` does, and list its Sass in `Styles/app.scss` with its folder in `sasscompiler.json`.
+2. Add a link in the `Views` slot of `Pages/ChatPage.razor`, if the chat's sidebar should have one. `PackMenu` lists it on the admin pages by itself.
+3. A button that asks the agent for something uses `ChatHandoff`, which opens the chat with a draft and sends nothing.
 
 ## Call a new endpoint
 
-Components never use `HttpClient`. A call only this app makes is an extension method on the shared `AgentApi` in the
-app's concern folder, as `Workspace/AgentApiWorkspace.cs` adds the workspace and git calls. A call both apps make goes
+Components never use `HttpClient`. A call only a pack's views make is an extension method on `AgentApi` in that pack's web project, as
+`AgentApiGit` is. A call both apps make goes
 in `AgentApi` itself ([Change the framework's web](../../../../src/docs/guides/change-the-web.md)). The endpoint itself is the API's
 ([Change the API](../../../../src/docs/guides/change-the-api.md)), protected by its key.
 
 ## Add a theme
 
-Copy `wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of `wwwroot/css/base/page.css`, and
+Copy `Styles/themes/paper.scss` to `{id}.scss`, set the framework's colour names (`web/settings/_colours.scss` lists them), and
 add `{ "id": "{id}", "name": "…" }` to `themes/themes.json`. Ids are lowercase letters, digits and dashes.
 
 ## Words
@@ -59,12 +54,10 @@ dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests     # after a deliberate markup change: then read the diff
 ```
 
-- `Git/` and `Workspace/` test the plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `ReviewActions`,
-  `CodeLanguage`, `FileSize`).
+- The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are tested under `packs-tests/`.
 - `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of the API from
   `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a recorded Puls turn.
-  The empty page and the page with the turn are pinned to `ChatPage.empty.html` and `ChatPage.turn.html`. The test
-  also lists every JavaScript call the page makes, so a new call shows up as a review point.
+  The empty page and the page with the turn are pinned to `ChatPage.empty.html` and `ChatPage.turn.html`.
 - The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the machine.
 
 Then check it in a browser: send a message, open a file, stage and commit a change, merge a branch. Nothing pushes:

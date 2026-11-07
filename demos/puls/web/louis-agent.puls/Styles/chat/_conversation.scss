@@ -1,0 +1,4 @@
+/* Puls's empty chat on a narrow screen: its suggestions stack. */
+@media (max-width: 600px) {
+    .suggestions { grid-template-columns: 1fr; }
+}

@@ -138,32 +138,34 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("import"));
     }
 
-    /// <summary>Each pack's reports are gathered in order; a pack with none changes nothing; core has none.</summary>
+    /// <summary>Each pack's screens are gathered in order; a pack with none changes nothing; core has none.</summary>
     [Test]
-    public void ThePacksReports_AreGathered()
+    public void ThePacksScreens_AreGathered()
     {
         var catalog = Catalog(packs:
         [
-            new FakePack("first", toolsets: [], reports: [new FakeReport("usage"), new FakeReport("errors")]),
+            new FakePack("first", toolsets: [], screens: [new FakeScreen("usage"), new FakeScreen("errors")]),
             new FakePack("second", toolsets: []),
-            new FakePack("third", toolsets: [], reports: [new FakeReport("visits")])
+            new FakePack("third", toolsets: [], screens: [new FakeScreen("visits")])
         ]);
 
-        Assert.That(catalog.Reports.Select(r => r.Name), Is.EqualTo(new[] { "usage", "errors", "visits" }));
-        Assert.That(AgentCatalog.CoreOnly.Reports, Is.Empty);
+        Assert.That(catalog.Screens.Select(s => s.Spec.Name), Is.EqualTo(new[] { "usage", "errors", "visits" }));
+        Assert.That(catalog.Screen("VISITS")?.Spec.Name, Is.EqualTo("visits"), "case ignored");
+        Assert.That(catalog.Screen("nothing"), Is.Null);
+        Assert.That(AgentCatalog.CoreOnly.Screens, Is.Empty);
     }
 
-    /// <summary>Two reports with one name, in one pack or two, can't both be listed: a name means one report.</summary>
+    /// <summary>Two screens with one name can't both be listed: a name means one screen and one address.</summary>
     [Test]
-    public void AReportNamedTwice_IsRefused()
+    public void AScreenNamedTwice_IsRefused()
     {
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
             [
-                new FakePack("first", toolsets: [], reports: [new FakeReport("usage")]),
-                new FakePack("second", toolsets: [], reports: [new FakeReport("Usage")])
+                new FakePack("first", toolsets: [], screens: [new FakeScreen("usage")]),
+                new FakePack("second", toolsets: [], screens: [new FakeScreen("Usage")])
             ]))!;
 
-        Assert.That(error.Message, Does.Contain("Usage").And.Contain("report"));
+        Assert.That(error.Message, Does.Contain("Usage").And.Contain("screen"));
     }
 
     /// <summary>A pack can't take the name of one of core's toolsets.</summary>

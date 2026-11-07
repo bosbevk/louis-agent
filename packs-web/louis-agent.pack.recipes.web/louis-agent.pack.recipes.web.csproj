@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The recipes pack's own web views (F59.5, ADR 0086). It references the framework's web, never the pack: the pack
+       runs on the server with its database, and this runs in the browser, so the two share only names, which
+       louis-agent.pack.recipes.web.tests holds together. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Packs.Recipes.Web</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+  </ItemGroup>
+
+</Project>

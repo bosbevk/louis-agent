@@ -39,6 +39,18 @@ public enum ApiUserText
     [Description("No upload '{Name}' here; GET /v1/admin/imports lists the ones there are.")]
     UnknownImport,
 
+    [Description("No screen '{Name}' here; GET /v1/admin/screens lists the ones there are.")]
+    UnknownScreen,
+
+    [Description("The screen '{Name}' has no action '{Action}'; GET /v1/admin/screens lists what each can do.")]
+    UnknownScreenAction,
+
+    [Description("'{Action}' acts on a row, so it needs a row_id.")]
+    ScreenActionNeedsRow,
+
+    [Description("The screen '{Name}' has no row '{Row}'.")]
+    UnknownScreenRow,
+
     [Description("Send the files to upload: 'files', each with its 'slot', 'file_name' and 'content'.")]
     ImportNoFiles,
 

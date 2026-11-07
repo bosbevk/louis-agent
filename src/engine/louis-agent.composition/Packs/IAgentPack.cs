@@ -1,5 +1,5 @@
 using LouisAgent.Composition.Packs.Imports;
-using LouisAgent.Composition.Packs.Reports;
+using LouisAgent.Composition.Packs.Screens;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Composition.Packs;
@@ -57,7 +57,7 @@ public interface IAgentPack
     IReadOnlyList<IDataImport> Imports => [];
 
     /// <summary>
-    /// The numbers it keeps about itself, for whoever runs it to read behind the admin key: none unless it says so.
+    /// The screens it offers whoever runs it, behind the admin key, as plain data: none unless it says so.
     /// </summary>
-    IReadOnlyList<IDataReport> Reports => [];
+    IReadOnlyList<IDataScreen> Screens => [];
 }

@@ -1,0 +1,19 @@
+/* The site's styles, one partial per concern (ADR 0053), each at most 200 lines of rules. The order below is the cascade:
+   the framework's colours and this site's own few values, the plain elements, then the shell, the landing page's parts,
+   the two films (the stage they share, then each film's positions and timing), and the phone-width rules last so they win.
+   The build makes wwwroot/css/app.css from this. */
+
+@forward "web/settings/colours";
+@forward "settings/tokens";
+@forward "base/elements";
+
+@forward "layout/shell";
+@forward "landing/hero";
+@forward "landing/live-turn";
+@forward "landing/sections";
+
+@forward "movie/stage";
+@forward "movie/short";
+@forward "movie/detail";
+
+@forward "layout/responsive";

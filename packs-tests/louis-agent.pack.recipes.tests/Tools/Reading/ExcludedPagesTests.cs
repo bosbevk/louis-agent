@@ -35,6 +35,12 @@ public class ExcludedPagesTests
             Pages.Add(page);
             return Task.CompletedTask;
         }
+
+        public Task<IReadOnlyList<ExcludedPage>> AllAsync(CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<ExcludedPage>>(Pages);
+
+        public Task<bool> RemoveAsync(string id, CancellationToken cancellationToken) =>
+            Task.FromResult(Pages.RemoveAll(page => page.Id == id) > 0);
     }
 
     /// <summary>The tools over a browser with this page, this list and these sources.</summary>

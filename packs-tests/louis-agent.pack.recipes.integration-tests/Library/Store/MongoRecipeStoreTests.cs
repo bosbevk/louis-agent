@@ -127,4 +127,59 @@ public class MongoRecipeStoreTests
         Assert.That((await store.AllAsync(CancellationToken.None)).Select(recipe => recipe.SiteSlug),
             Is.EqualTo(new[] { "foodandhome" }));
     }
+
+    /// <summary>An edit takes the kept copy's place and says when; a later read can't overwrite it.</summary>
+    [Test]
+    public async Task AnEdit_ReplacesTheCopy_AndALaterReadLeavesIt()
+    {
+        var store = MongoRecipeStore.Open(Url!, _database);
+        var kept = Recipe("https://taste.co.za/bobotie/");
+        await store.KeepAsync(kept, CancellationToken.None);
+        var edited = kept with { Recipe = kept.Recipe with { Name = "Bobotie 2" }, EditedAt = Read.AddDays(1) };
+
+        Assert.That(await store.ReplaceAsync(edited, CancellationToken.None), Is.True);
+        await store.KeepAsync(kept, CancellationToken.None);
+
+        var found = (await store.FindAsync(kept.Id, CancellationToken.None))!;
+        Assert.That(found.Title, Is.EqualTo("Bobotie 2"));
+        Assert.That(found.EditedAt, Is.EqualTo(Read.AddDays(1)));
+    }
+
+    /// <summary>A copy from before edits existed reads fine, with no edit date.</summary>
+    [Test]
+    public async Task AnOldCopy_WithNoEditDate_ReadsFine()
+    {
+        var store = MongoRecipeStore.Open(Url!, _database);
+        var kept = Recipe("https://taste.co.za/bobotie/");
+
+        await store.KeepAsync(kept, CancellationToken.None);
+
+        Assert.That((await store.FindAsync(kept.Id, CancellationToken.None))!.EditedAt, Is.Null);
+    }
+
+    /// <summary>What isn't there can't be changed or taken out, and says so.</summary>
+    [Test]
+    public async Task AMissingRecipe_SaysSo()
+    {
+        var store = MongoRecipeStore.Open(Url!, _database);
+        var missing = Recipe("https://taste.co.za/nothing/");
+
+        Assert.That(await store.ReplaceAsync(missing, CancellationToken.None), Is.False);
+        Assert.That(await store.RemoveAsync(missing.Id, CancellationToken.None), Is.False);
+    }
+
+    /// <summary>Removing takes that one out and leaves the rest.</summary>
+    [Test]
+    public async Task Removing_TakesOnlyThatOne()
+    {
+        var store = MongoRecipeStore.Open(Url!, _database);
+        var first = Recipe("https://taste.co.za/bobotie/");
+        var second = Recipe("https://taste.co.za/melktert/");
+        await store.KeepAsync(first, CancellationToken.None);
+        await store.KeepAsync(second, CancellationToken.None);
+
+        Assert.That(await store.RemoveAsync(first.Id, CancellationToken.None), Is.True);
+
+        Assert.That((await store.AllAsync(CancellationToken.None)).Select(recipe => recipe.Id), Is.EqualTo(new[] { second.Id }));
+    }
 }

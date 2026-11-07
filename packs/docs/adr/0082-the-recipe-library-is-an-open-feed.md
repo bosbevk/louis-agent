@@ -46,6 +46,12 @@ search would stop at the few kinds of melktert it already had.
   `ReadRecipe` follows it. What it finds is ignored if we hold that page, so the first copy stays.
 - **An eval's trial leaves the library alone** unless `RECIPE_LIBRARY_IN_EVALS=true`, so one run doesn't change the next.
 
+**Amended 2026-11-07: a person can change or remove a kept recipe (F59.8).** The first copy of a page still stays against any later read, since keeping
+only ever inserts, but someone running the library can now fix it by hand on the `kept-recipes` admin screen. An edit records when, and the screen shows it,
+so nobody takes it for the page's own words. The page and the site can't change, as they're the link and the credit. Removing a recipe also puts its page
+on the excluded list, so the next read doesn't simply keep it again; clearing the page on `excluded-pages` gives it another look. The open feed can still
+serve a removed recipe for up to five minutes, and the answer says so.
+
 ## Consequences
 
 - A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.

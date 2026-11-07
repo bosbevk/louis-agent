@@ -154,8 +154,16 @@ listing and the settings).
 `Library/Usage/` keeps one record per UTC day in `library_usage`, on the library's database: *Kept* (a page we didn't hold
 yet), *Offered* (hits of ours a search showed, not what it held), *Served* (`ReadRecipe` from us) and *Failed* (a read we
 couldn't serve). `RecipeShelf` and `RecipeScatter` count inside the shelf's guard, so a counter that's down only logs and a
-trial that leaves the library alone counts nothing. `RecipesUsageReport` shows it behind the admin key as `recipe-library`,
-listed only with a database ([ADR 0083](../../../src/docs/adr/0083-packs-keep-reports-behind-the-admin-key.md)).
+trial that leaves the library alone counts nothing ([ADR 0083](../../../src/docs/adr/0083-packs-keep-reports-behind-the-admin-key.md)).
+`Library/Screens/RecipesUsageScreen` shows it behind the admin key as the `recipe-library` screen, listed only with a database
+([ADR 0086](../../../src/docs/adr/0086-a-packs-screens-are-described.md)). Its own view, `RecipeLibraryView` in
+`packs-web/louis-agent.pack.recipes.web`, adds the line *Of 10 offered, 1 served* above the table.
+
+`Library/Screens/` also holds what someone running the library manages it with, listed only with a database. `RecipesScreen` (`kept-recipes`) lists and searches
+what's kept, opens one as a form, and removes it; `RecipeForm` turns a recipe into its fields and back and holds its rules: a name, an ingredient and a step are
+required, and the page and the site can't change. A save marks the copy edited, and a later read can't overwrite it, since keeping only inserts. Removing also
+excludes the page. `ExcludedPagesScreen` (`excluded-pages`) lists the excluded pages and clears one, so the next read looks again
+([ADR 0082](../adr/0082-the-recipe-library-is-an-open-feed.md)).
 
 ## A recipe on its way out
 

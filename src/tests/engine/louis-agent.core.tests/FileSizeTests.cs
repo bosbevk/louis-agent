@@ -32,7 +32,6 @@ public class FileSizeTests
         "packs/louis-agent.pack.devops/DevOpsTools.cs",
         "packs/louis-agent.pack.paymo/PaymoTools.cs",
         "src/engine/louis-agent.core/Web/Browsing/ChromeWebBrowser.cs",
-        "demos/louis-agent/web/louis-agent.code-review/Pages/ChatPage.razor.cs",
         "packs-tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
         "packs-tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
         "src/tools/louis-agent.usage-probe/Program.cs",
@@ -81,7 +80,7 @@ public class FileSizeTests
     private static int? Lines(string file) => Path.GetExtension(file) switch
     {
         ".cs" or ".razor" => CountCodeLines(File.ReadAllLines(file)),
-        ".css" => CountCssLines(File.ReadAllLines(file)),
+        ".css" or ".scss" => CountCssLines(File.ReadAllLines(file)),
         _ => null
     };
 
@@ -119,9 +118,19 @@ public class FileSizeTests
         return count;
     }
 
-    /// <summary>What the build wrote (bin/, obj/) isn't ours to size.</summary>
+    /// <summary>A web app on Sass gets its CSS from the build, themes too; its Sass is what's sized.</summary>
+    private static bool IsMadeFromSass(string path)
+    {
+        int css = path.IndexOf($"{Path.DirectorySeparatorChar}wwwroot{Path.DirectorySeparatorChar}css{Path.DirectorySeparatorChar}",
+            StringComparison.Ordinal);
+        return css >= 0 && path.EndsWith(".css", StringComparison.Ordinal)
+            && File.Exists(Path.Combine(path[..css], "Styles", "app.scss"));
+    }
+
+    /// <summary>What the build wrote (bin/, obj/, the CSS it makes from Sass) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>
-        path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
+        IsMadeFromSass(path)
+        || path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}data{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}");
