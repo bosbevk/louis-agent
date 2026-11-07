@@ -15,7 +15,8 @@ internal sealed class SoftwareAuthenticator : IDisposable
 {
     private readonly ECDsa _key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
     private readonly byte[] _credentialId = RandomNumberGenerator.GetBytes(16);
-    private uint _counter;
+    /// <summary>The signature counter: always 0, as a platform authenticator that doesn't count reports it.</summary>
+    private const uint Counter = 0;
 
     /// <summary>The credential's id as the browser writes it.</summary>
     public string CredentialId => Base64Url.EncodeToString(_credentialId);
@@ -74,7 +75,7 @@ internal sealed class SoftwareAuthenticator : IDisposable
     private byte[] AuthenticatorData(string rpId, byte flags, bool withCredential)
     {
         var data = new List<byte>(SHA256.HashData(Encoding.UTF8.GetBytes(rpId))) { flags };
-        data.AddRange(BitConverter.GetBytes(_counter).Reverse());
+        data.AddRange(BitConverter.GetBytes(Counter).Reverse());
         if (!withCredential) return [.. data];
 
         data.AddRange(new byte[16]);
