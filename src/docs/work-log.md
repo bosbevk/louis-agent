@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 64 | 75 |
-| Fixes (`FX`) | 60 | 4 |
+| Features (`F`) | 66 | 74 |
+| Fixes (`FX`) | 60 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -40,7 +40,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F71 | At the next run, read the hand-off lines | Now |
 | F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
-| F59 | The framework's web | Now |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
@@ -71,6 +70,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX59 | binary attachments sent as files, not text | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
+| FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
@@ -128,10 +128,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (64 done)
+## Features (66 done)
 
 | Id | When | What |
 |---|---|---|
+| F109.2 | 2026-11-08 | The demo's app beside Puls: `louis-agent-app` on `puls-env` from the same Bicep file and script (`-App`), its own identity, share, keys and tenant, live on `louis-agent.dev` with its certificates, released by the same workflow after green CI; ADR 0098 |
+| F59 | 2026-11-08 | The framework's web: its leftovers closed with the site on the framework's web (F109.1) and deployed (F109.2) |
 | F109.5 | 2026-11-07 | Puls deploys from GitHub: a workflow after green CI on `main` and from a button, signed in to Azure by OpenID Connect with no password, running `deploy.ps1 release` as it is; planned as F109 in another thread, folded into F109 as its fifth child (ADR 0097) |
 | F109.1 | 2026-11-08 | The site in the web app: the framework's static site becomes the code-review app's landing (its frame the framework's `SiteShell`, its pages, films and look moved in, the look inside the frame, `console` the default theme, the films exported from the app), and the site project goes |
 | F61 | 2026-11-08 | Accounts, tenants and the two sites in Azure, the parent: its five children built; the site's move (F61.6, PR #221) is the same work as F109 and folded into it at Louis's pick; the plan is deleted, its full text at commit `20f28c9f` |
@@ -201,7 +203,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
-| FX66 | 2026-11-07 | Each sign-in provider's button in the provider's own look: Google's, Microsoft's and LinkedIn's colours, font and logo |
+| FX67 | 2026-11-07 | Each sign-in provider's button in the provider's own look: Google's, Microsoft's and LinkedIn's colours, font and logo |
 | FX65 | 2026-11-07 | The sidebar's settings line up, and a picker's list can be read |
 | FX64 | 2026-11-07 | The account pages look like their site: the action's own text colour, Puls's glass card on the water |
 | FX63 | 2026-11-07 | The message box keeps its look: a scoped rule sits in the component that draws its element |

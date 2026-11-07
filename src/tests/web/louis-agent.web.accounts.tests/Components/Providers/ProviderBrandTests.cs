@@ -4,7 +4,7 @@ using LouisAgent.Web.Accounts.Components;
 namespace LouisAgent.Web.Accounts.Tests.Components.Providers;
 
 /// <summary>
-/// Each provider's button wears that provider's own look (FX66, Louis: "google have their own button look and feel, we
+/// Each provider's button wears that provider's own look (FX67, Louis: "google have their own button look and feel, we
 /// must comply"): its logo, unchanged, beside the words, in its own class; a provider we have no brand for keeps the
 /// plain button.
 /// </summary>

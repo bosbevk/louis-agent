@@ -291,6 +291,9 @@ should update the films with what it looks like now, explaining the whole archit
   all as files under its own project, ADR 0017 to 0020 and 0027), the two that exist (Puls with its specialists,
   the coding agent) and how a customer's is a folder of markdown of their own, the way the expert in the corner is
   this site's (F109.3); the test of F109.4 counts `identity/` folders under `demos/` as it counts the packs.
+- **The branding arrives with the next merge** (Louis, 2026-11-08: "when you are done, on the next merge the branding
+  will be available"): the site takes it (the brand slot, the icon, the colours it names) in the first step after
+  it lands, before F109.4's rewrite, so the pages and films are written on the brand.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -360,6 +363,30 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
 - **One F109, five children** (Louis, 2026-11-08: "merge these 2, the work is done and working"). Another thread
   had planned and built *Puls deploys from GitHub* as F109 (PR #223); it is this plan's F109.5, its plan file
   deleted, ADR 0097 and the deploy README its lasting parts, and the TODO carries one F109 row.
+- **F109.2 steps 1 to 3 run** (2026-11-08, each on Louis's "go"): `infra` made the second identity, its vault role,
+  the share and the environment storage (four creates, the what-if's reference-only modifies); `workspace -App
+  louis-agent-app` put the price tables in the share; `secrets` put the app's two keys in the vault, no provider
+  keys yet (sign-in by password only until Louis registers providers for `louis-agent.dev`); `release` built
+  `louis-agent-coding:2026-11-08-0050` in four minutes and created the app as `v001`, live at its Azure address
+  with health 200 and the landing page.
+- **F109.2 step 4: the domain** (2026-11-08). Cloudflare had imported the old host's records (a proxied wildcard and
+  apex, Afrihost's mail records); Louis replaced them with the four DNS-only records and the `_dnsauth` TXT. The
+  verb's token fallback found nothing: the certificate list and the newer API versions leave the token out, the
+  2023-05-01 version still returns it, so the verb reads it there, stops while the certificate is pending (the bind
+  refuses a pending one) and doesn't re-add a hostname it added. The apex validated after nine checks and is bound
+  with its padlock; `www` validates by its CNAME on Azure's clock. Chrome showed ERR_QUIC_PROTOCOL_ERROR once: it
+  remembered the old proxy's HTTP/3, a reload clears it.
+- **F109.2 steps 5 and 6** (2026-11-08): the deploy README, the architecture doc and the deployment view carry the
+  second app; ADR 0098 *The demo's app runs beside Puls, split later*; the workflow releases both apps from one
+  merge, each tried even when the other fails (`DeployWorkflowTests`); the TODO's F59 row closes (the site is on the
+  framework's web and deployed); F51 stays, since it is about public traffic, not where the apps run. The
+  data-protection keys finding (both apps sign everyone out on a cold start) is a fix of its own, FX66 (FX64 and FX65 were taken meanwhile), opened in the TODO.
+- **F109.2 step 7: the link card is the framework's rule** (Louis, 2026-11-08, on a bare Facebook card for
+  louis-agent.dev: "we need to fix this", "this must be in the framework"). A crawler runs no script, so a site's
+  card is Open Graph tags in its own `index.html`; `SiteLinkCardTests` in the framework's web tests holds every
+  site to the six tags with an absolute picture and address, the starter carries them as placeholders, the web
+  guide says how. The louis-agent app's picture is the brand's social card (PR #227), its own copy; Puls's its
+  icon and its Afrikaans hero line.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

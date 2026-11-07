@@ -46,7 +46,7 @@ public class AccountPageStyleTests
         Assert.That(RuleOf(".puls-account .account-button"), Does.Contain("border-radius: 999px"));
 
     /// <summary>
-    /// A provider's button keeps the provider's own colours on Puls too (FX66, Louis: "google have their own button
+    /// A provider's button keeps the provider's own colours on Puls too (FX67, Louis: "google have their own button
     /// look and feel, we must comply"): its rule reads the brand's variable, and the variable holds the guideline's
     /// colour.
     /// </summary>

@@ -38,7 +38,7 @@ public partial class ProviderButtons
         $"account/external/{Uri.EscapeDataString(provider)}?returnUrl={Uri.EscapeDataString(SafeReturn.Of(ReturnUrl))}";
 
     /// <summary>
-    /// The button's classes (FX66): the brand's own look, which its guidelines fix, or the site's plain button for a
+    /// The button's classes (FX67): the brand's own look, which its guidelines fix, or the site's plain button for a
     /// provider we have no look for.
     /// </summary>
     private static string Look(ProviderBrand? brand) =>

@@ -2,7 +2,7 @@
 .account-divider { display: flex; align-items: center; gap: 10px; color: var(--bs-tertiary-color); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
 .account-divider::before, .account-divider::after { content: ""; flex: 1; border-top: 1px solid var(--bs-border-color); }
 
-/* ---- A provider's own button (FX66): each in the look its brand guidelines give, which no site may restyle, so these
+/* ---- A provider's own button (FX67): each in the look its brand guidelines give, which no site may restyle, so these
    rules don't read the site's colours. The same height and width for all three, so none is less prominent than another
    (Google's rule). Google: the dark theme, Google Sans Medium 14/20, 12px before the G, 10px after it, a 1px stroke,
    rectangular. Microsoft: the dark theme, Segoe UI Semibold 15px, the four squares, square corners. LinkedIn: its blue,

@@ -90,6 +90,16 @@ extension method beside what uses it (the git pack's views have `AgentApiGit`). 
 `mailto`, and allows images only from the shops' own image hosts, so a model-written image can't send the chat's data
 elsewhere. Widen any of these only with a test in `MarkdownTests` that shows the case is safe.
 
+## The link card
+
+A link to a site pasted anywhere (Facebook, LinkedIn, Slack, a chat) shows a card: a title, a line and a picture. The
+crawler that builds it runs no script, so the card is read from the site's `wwwroot/index.html`, never from a page:
+`<meta name="description">`, the Open Graph tags `og:title`, `og:description`, `og:url` and `og:image`, and
+`twitter:card`. The picture and the address are absolute, on HTTPS (a relative path shows no picture); a large card
+wants a picture of about 1200 × 630, a small one a square icon. `SiteLinkCardTests` holds every site to it; the
+starter's page has the tags with placeholders to fill. A site's picture is its own file under its `wwwroot`, a copy,
+never a link into the framework's docs (ADR 0074).
+
 ## Test it
 
 ```bash
