@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
 using System.Security.Cryptography;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Core.Guardrails.Auth;
+
 /// <summary>
 /// The rule for a host that serves the agent's tools over the network (the API; the MCP server over HTTP), FX18: it
 /// fails closed. Without a key it refuses to start, unless <c>AGENT_AUTH=off</c> says it may be open on purpose; a key
@@ -32,7 +32,11 @@ public static class HostAuth
     {
         if (!SettingChoice.TryParse(setting, out AuthMode? mode))
             throw new ArgumentException(MessageText.Format(GuardrailErrorMessage.UnknownAuthMode,
-                new { Value = setting?.Trim(), Supported = string.Join(" or ", SupportedModes) }));
+                new
+                {
+                    Value = setting?.Trim(),
+                    Supported = string.Join(" or ", SupportedModes)
+                }));
         return mode ?? AuthMode.Required;
     }
 
@@ -60,4 +64,18 @@ public static class HostAuth
         return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(presented),
             Encoding.UTF8.GetBytes(expected));
     }
+
+    /// <summary>The header a browser app sends with every call, so a cookie counts only on a call it made itself.</summary>
+    public const string RequestedWithHeader = "X-Requested-With";
+
+    /// <summary>The value that header carries: the framework's web, the one app that signs in with the cookie.</summary>
+    public const string RequestedWithWeb = "louis-agent.web";
+
+    /// <summary>
+    /// Whether a signed-in person counts in place of the key (F61.2): the cookie has named them, and the call carries
+    /// the header a cross-site form can't send. A browser sends the cookie on any form posted to us; it adds a custom
+    /// header only to a call the app's own script made, so the header is what tells the two apart.
+    /// </summary>
+    public static bool IsSignedIn(bool authenticated, string? requestedWith) =>
+        authenticated && string.Equals(requestedWith?.Trim(), RequestedWithWeb, StringComparison.OrdinalIgnoreCase);
 }
