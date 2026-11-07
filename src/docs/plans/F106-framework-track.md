@@ -1,7 +1,7 @@
-# Draft: F106 The framework's track, alongside configured agents
+# Draft: F106 The framework's track, before the agents
 
-> **Plan draft, not yet approved.** Written on 2026-11-07 from Louis's decision that selling configured agents and the
-> framework "must run in parallel", and from a positioning page ChatGPT wrote for him (in the project files,
+> **Plan draft, not yet approved.** Written on 2026-11-07 from Louis's decision to "focus on the framework first then
+> build the agents" (an hour earlier: "they must run in parallel"; the later word wins), and from a positioning page ChatGPT wrote for him (in the project files,
 > `research/louis-agent-positioning-chatgpt-2026-11-07.md`). The open choices below go to Louis one at a time, three
 > options each (the development guide, rules 10 and 11); when they are settled this becomes the parent plan he
 > approves, and each child gets its own plan when it starts.
@@ -9,9 +9,10 @@
 ## Context
 
 Until now the roadmap sold configured agents first and the engine only after Phase 10, which itself waited for every
-engine feature (Louis, 2026-10-20). On 2026-11-07 Louis changed the order: the two are **two tracks that run side by
-side**. Configured agents stay the money track (the practice assistant, "get paid"); the framework becomes a track of
-its own that takes its turns between the phases, the way Puls's track does. Nothing in Phases 4 to 9 is dropped.
+engine feature (Louis, 2026-10-20). On 2026-11-07 Louis changed the order: **the framework first, then the agents**.
+The framework's track runs now; the configured agents (the practice assistant, "get paid") are built afterwards, on
+that framework, the way a developer who bought it would build them. Nothing in Phases 4 to 9 is dropped; they come
+after this track's first children, and the demand check (F62) keeps running meanwhile.
 
 What changes is *when* the framework work starts, not what the engine is. The split ChatGPT describes (the engine is
 how, an identity is who, a pack is what, a composition root brings them together) is the split we already have

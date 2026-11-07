@@ -52,7 +52,7 @@ known limitations below are facts about today, not tasks.
 | F54 | F54's leftovers | Next | — |
 | F44 | The engine as a product | Next | [feature doc](src/docs/features/F12-response-speed.md) |
 | F51 | Hosting for public traffic | Next | — |
-| F106 | The framework's track, alongside configured agents | Next | [draft](src/docs/plans/F106-framework-track.md) |
+| F106 | The framework's track, before the agents | Next | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Next | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F75 | Puls local spec | Puls | — |
 | F76 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
