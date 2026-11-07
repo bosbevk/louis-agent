@@ -1,6 +1,8 @@
 using LouisAgent.Web.Components.Chat.Header.Menu;
 using LouisAgent.Web.Text;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Chat.Header;
@@ -14,8 +16,15 @@ namespace LouisAgent.Web.Components.Chat.Header;
 /// The seam is asked for once and falls back to <see cref="NoAccounts"/>, a Null Object: a site that registered no
 /// accounts (and every test of the chat that didn't) draws the menu as a guest's, with no branch here for the case.
 /// </remarks>
-public partial class ProfileMenu : IDisposable
+public partial class ProfileMenu : IAsyncDisposable
 {
+    private JsModule? _shell;
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The shell's module (CL31), shared with every part of the chat; the browser fetches it once.</summary>
+    private JsModule Shell => _shell ??= new JsModule(JS, FrameworkScripts.Shell);
+
     private IAccountMenu _menu = NoAccounts.Instance;
 
     [Inject] private ChatText Text { get; set; } = null!;
@@ -44,5 +53,12 @@ public partial class ProfileMenu : IDisposable
 
     private Task SignOutAsync() => _menu.SignOutAsync();
 
-    public void Dispose() => _menu.Changed -= StateHasChanged;
+    public ValueTask DisposeAsync()
+    {
+        _menu.Changed -= StateHasChanged;
+        return _shell?.DisposeAsync() ?? ValueTask.CompletedTask;
+    }
+
+    /// <summary>Shows the sidebar if it's hidden, then opens its settings.</summary>
+    private Task OpenSettings() => Shell.InvokeVoidAsync("openSettings").AsTask();
 }

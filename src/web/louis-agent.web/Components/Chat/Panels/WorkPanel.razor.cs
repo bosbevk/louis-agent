@@ -1,21 +1,32 @@
 using LouisAgent.Web.Content;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Usage;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Web.Components.Chat.Panels;
 
 /// <summary>The work panel: the work this chat handed out, newest first.</summary>
-public partial class WorkPanel
+public partial class WorkPanel : IAsyncDisposable
 {
+    private JsModule? _shell;
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The shell's module (CL31), shared with every part of the chat; the browser fetches it once.</summary>
+    private JsModule Shell => _shell ??= new JsModule(JS, FrameworkScripts.Shell);
+
     [Parameter] public ChatModel? Chat { get; set; }
 
     /// <summary>The site's picture for an empty panel; with none, there isn't one.</summary>
-    [Parameter] public string? EmptyImage { get; set; }
+    [Parameter]
+    public string? EmptyImage { get; set; }
 
     /// <summary>The site's picture beside each piece of work; with none, there isn't one.</summary>
-    [Parameter] public string? Avatar { get; set; }
+    [Parameter]
+    public string? Avatar { get; set; }
 
     [Parameter] public bool Streaming { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
@@ -37,18 +48,26 @@ public partial class WorkPanel
                 {
                     if (Delegation.From(block) is not { } delegation) continue;
                     if (delegation is { Handle: { } h, Role: { } r }) roles[h] = r;
-                    string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
-                    string who = delegation.Role ?? (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known) ? known : null) ?? delegation.Handle ?? agent;
-                    string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
+                    string agent = delegation.Agent is { Length: > 0 } named
+                        ? named
+                        : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
+                    string who = delegation.Role ??
+                                 (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known)
+                                     ? known
+                                     : null) ?? delegation.Handle ?? agent;
+                    string status = live && block.ToolResult is null ? "running" :
+                        block.ToolFailed || delegation.Failed ? "failed" : "done";
                     items.Add(new Item(delegation, block, who, status));
                 }
+
             items.Reverse();
             return items;
         }
     }
 
     /// <summary>A page's address as people read it: no scheme, no www.</summary>
-    private static string Address(string url) => url.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
+    private static string Address(string url) =>
+        url.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
 
     /// <summary>Every source of the chat, newest turn first, each address once.</summary>
     private List<Source> ChatSources =>
@@ -56,6 +75,13 @@ public partial class WorkPanel
 
     /// <summary>The specialists' usage in this chat: every delegation's sub-turn, added up.</summary>
     private TurnUsage? SpecialistUsage =>
-        Items.Select(i => i.Block.SubTurn?.Usage).OfType<TurnUsage>().Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
+        Items.Select(i => i.Block.SubTurn?.Usage).OfType<TurnUsage>()
+            .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
 
+
+    /// <summary>Hides the work panel.</summary>
+    private Task HideWork() => Shell.InvokeVoidAsync("toggleWork").AsTask();
+
+    /// <summary>Lets the shell's module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _shell?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

@@ -10,7 +10,7 @@
 <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="@Text.Chats">
     <div class="sidebar-top">
         <a class="brand brand-stack" href="./" title="@BrandTitle">@Brand</a>
-        <button class="icon d-none d-lg-inline-grid" type="button" onclick="chatUi.toggleSidebar()" title="@Text.HideSidebar" aria-label="@Text.HideSidebar">⇤</button>
+        <button class="icon d-none d-lg-inline-grid" type="button" @onclick="HideSidebar" title="@Text.HideSidebar" aria-label="@Text.HideSidebar">⇤</button>
         <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="@Text.CloseMenu">×</button>
     </div>
     <button class="new-chat" @onclick="OnNewChat">@Text.NewChat</button>

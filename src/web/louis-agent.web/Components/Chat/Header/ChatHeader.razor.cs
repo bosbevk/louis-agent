@@ -1,24 +1,36 @@
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Text;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Web;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Web.Components.Chat.Header;
 
 /// <summary>The chat's top bar: its title and menu, then the work panel, credits, language and profile.</summary>
-public partial class ChatHeader
+public partial class ChatHeader : IAsyncDisposable
 {
+    private JsModule? _shell;
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The shell's module (CL31), shared with every part of the chat; the browser fetches it once.</summary>
+    private JsModule Shell => _shell ??= new JsModule(JS, FrameworkScripts.Shell);
+
     [Inject] private ChatText Text { get; set; } = null!;
 
     /// <summary>The parts this site turns off.</summary>
-    [Parameter] public ChatFeatures Features { get; set; } = new();
+    [Parameter]
+    public ChatFeatures Features { get; set; } = new();
 
     /// <summary>The title of a view a site shows instead of the chat; with none, the chat's own shows.</summary>
-    [Parameter] public string? ViewTitle { get; set; }
+    [Parameter]
+    public string? ViewTitle { get; set; }
 
     /// <summary>The chat shown; null for a new one.</summary>
-    [Parameter] public ChatModel? Chat { get; set; }
+    [Parameter]
+    public ChatModel? Chat { get; set; }
 
     // Renaming: the session being renamed, whether the field is here, and its text (the page keeps them: the sidebar renames too).
     [Parameter] public string? Renaming { get; set; }
@@ -44,4 +56,13 @@ public partial class ChatHeader
     [Parameter] public string Language { get; set; } = "en";
     [Parameter] public IReadOnlyList<string> Languages { get; set; } = ["en"];
     [Parameter] public EventCallback<string> OnChooseLanguage { get; set; }
+
+    /// <summary>Shows the sidebar again.</summary>
+    private Task ShowSidebar() => Shell.InvokeVoidAsync("toggleSidebar").AsTask();
+
+    /// <summary>Hides or shows the work panel on a wide screen.</summary>
+    private Task ToggleWork() => Shell.InvokeVoidAsync("toggleWork").AsTask();
+
+    /// <summary>Lets the shell's module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _shell?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

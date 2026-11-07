@@ -35,6 +35,11 @@ public partial class ChatShell : IAsyncDisposable
 
     private JsModule? _dialogs;
     private JsModule? _preferencesModule;
+    private JsModule? _shell;
+
+    /// <summary>The shell's own module (CL31): the page-wide behaviour, attached while the shell is drawn.</summary>
+    private JsModule Shell => _shell ??= new JsModule(JS, FrameworkScripts.Shell);
+
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
 
@@ -185,10 +190,13 @@ public partial class ChatShell : IAsyncDisposable
     /// <summary>Does what had to wait for the draw, such as putting the cursor in the message box.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // The listeners the page hangs on the document, while the shell is drawn.
+        if (firstRender) await Shell.InvokeVoidAsync("attach");
+
         if (_focusDraft)
         {
             _focusDraft = false;
-            await JS.InvokeVoidAsync("chatUi.focusEnd", "#composer-input");
+            await Shell.InvokeVoidAsync("focusEnd", "#composer-input");
         }
 
         if (_renaming.TakeFocus())
@@ -196,23 +204,33 @@ public partial class ChatShell : IAsyncDisposable
             await Dialogs.InvokeVoidAsync("focus", "#rename-input", true);
         }
 
-        // A cost that changed since the last draw counts up to its new value (data-count elements, chatUi).
-        await JS.InvokeVoidAsync("chatUi.countCosts");
+        // A cost that changed since the last draw counts up to its new value (data-count elements).
+        await Shell.InvokeVoidAsync("countCosts");
     }
 
-    /// <summary>Stops listening when the frame goes, and lets the modules go if they were ever loaded.</summary>
-    public ValueTask DisposeAsync()
+    /// <summary>Stops listening when the frame goes, takes the page's listeners down, and lets the modules go if they were ever loaded.</summary>
+    public async ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
-        return Release(_dialogs, _preferencesModule);
+        // A closed browser tab has no JS runtime to tell.
+        try
+        {
+            if (_shell is not null) await _shell.InvokeVoidAsync("detach");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        await Release(_dialogs, _preferencesModule, _shell);
     }
 
     /// <summary>Lets every module go that was ever loaded.</summary>
     private static async ValueTask Release(params JsModule?[] modules)
     {
         foreach (var module in modules)
-            if (module is not null) await module.DisposeAsync();
+            if (module is not null)
+                await module.DisposeAsync();
     }
 
     /// <summary>A placeholder's answer: a short word saying what's coming.</summary>
@@ -231,7 +249,7 @@ public partial class ChatShell : IAsyncDisposable
     /// <summary>A new chat's session, the site's way, with what only the frame knows.</summary>
     private async Task<string> OpenSessionAsync()
     {
-        string? timeZone = await JS.InvokeAsync<string?>("chatUi.timeZone");
+        string? timeZone = await Shell.InvokeAsync<string?>("timeZone");
         return await OpenSession(new ChatOpening(_languages.Role, _preferences.Location, timeZone));
     }
 
@@ -265,7 +283,7 @@ public partial class ChatShell : IAsyncDisposable
     /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
     {
-        bool copied = await JS.InvokeAsync<bool>("chatUi.copy", text);
+        bool copied = await Shell.InvokeAsync<bool>("copy", text);
         _ = ShowToast(copied ? Text.Copied : Text.CopyFailed);
     }
 

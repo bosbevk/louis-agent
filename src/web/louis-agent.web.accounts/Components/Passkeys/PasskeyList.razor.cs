@@ -2,6 +2,7 @@ using LouisAgent.Accounts.Contracts;
 using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Accounts.Client.Errors;
 using LouisAgent.Web.Accounts.Text;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -12,8 +13,10 @@ namespace LouisAgent.Web.Accounts.Components.Passkeys;
 /// for the credential (<c>passkeys.create</c> in <c>passkeys.js</c>), and the API to keep it under the name given.
 /// The list is read again after every change (ADR 0042).
 /// </summary>
-public partial class PasskeyList
+public partial class PasskeyList : IAsyncDisposable
 {
+    private JsModule? _passkeysModule;
+
     private IReadOnlyList<PasskeyInfo> _passkeys = [];
     private string _name = "";
     private AccountErrorView? _notice;
@@ -23,10 +26,13 @@ public partial class PasskeyList
     [Inject] private AccountText Text { get; set; } = null!;
     [Inject] private IJSRuntime JS { get; set; } = null!;
 
+    /// <summary>The library's passkeys module (CL31): the browser's WebAuthn calls.</summary>
+    private JsModule Passkeys => _passkeysModule ??= new JsModule(JS, AccountScripts.Passkeys);
+
     /// <summary>Asks the browser whether it can do passkeys, then reads the list.</summary>
     protected override async Task OnInitializedAsync()
     {
-        _supported = await JS.InvokeAsync<bool>("passkeys.supported");
+        _supported = await Passkeys.InvokeAsync<bool>("supported");
         await LoadAsync();
     }
 
@@ -51,7 +57,7 @@ public partial class PasskeyList
         try
         {
             string options = await Api.PasskeyCreationOptionsAsync();
-            string credential = await JS.InvokeAsync<string>("passkeys.create", options);
+            string credential = await Passkeys.InvokeAsync<string>("create", options);
             await Api.AddPasskeyAsync(new PasskeyBody(credential, _name));
             _name = "";
             _notice = new AccountErrorView(Text.PasskeyAdded, []);
@@ -94,4 +100,7 @@ public partial class PasskeyList
             _busy = false;
         }
     }
+
+    /// <summary>Lets the module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _passkeysModule?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

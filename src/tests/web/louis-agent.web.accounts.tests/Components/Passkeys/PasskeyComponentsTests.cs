@@ -20,9 +20,11 @@ public class PasskeyComponentsTests
     {
         var (ctx, handler) = AccountTestContext.New(request => Answer(request, listJson));
         ctx.JSInterop.Mode = JSRuntimeMode.Strict;
-        ctx.JSInterop.Setup<bool>("passkeys.supported").SetResult(supported);
-        ctx.JSInterop.Setup<string>("passkeys.create", Options).SetResult(Credential);
-        ctx.JSInterop.Setup<string>("passkeys.get", Options).SetResult(Credential);
+        // The library's passkeys module (CL31), planned: what the browser would answer.
+        var passkeys = ctx.JSInterop.SetupModule(AccountScripts.Passkeys);
+        passkeys.Setup<bool>("supported").SetResult(supported);
+        passkeys.Setup<string>("create", Options).SetResult(Credential);
+        passkeys.Setup<string>("get", Options).SetResult(Credential);
         return (ctx, handler);
     }
 

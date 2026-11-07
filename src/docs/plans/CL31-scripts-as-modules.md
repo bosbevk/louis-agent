@@ -256,6 +256,13 @@ Picks made unattended (Louis, 2026-11-07: "continue with CL31", mode **Unattende
   three, then "revert to javascript"). Noted for the record: `Microsoft.TypeScript.MSBuild` 7.0.x bundles the
   native compiler for Windows, Linux and macOS, so TypeScript would need no Node.js; it is one package and a
   `tsconfig.json` per project away if the scripts ever grow.
+- **Steps 6, 7 and 8 are one commit:** the moment the buttons stopped calling `chatUi`, the old rule (which
+  counted those calls) had nothing to count, so the rule's rewrite, `chat.js` going and the passkeys module came
+  with the shell; each in between would have been a red commit. The new rule reads the modules a class names
+  through its `Scripts` constants and the functions it invokes, and a site's page may list only `first-paint.js`.
+- **The shell's module is shared by its parts** (the header, the sidebar, the work panel, an answer's actions,
+  the profile menu, the explorer's count-up): each holds its own `JsModule` on the same path, and the browser
+  fetches the file once. `renderCode`, which nothing called, went with `chat.js`.
 - **The plan predates CL57**, which moved the studio's pages into `louis-agent.web.evals`: `AgreementPanel`,
   `PromptfooPanel`, `EvalStudio`, `ManualDialog`, `ChatsDialog` and `RunExplorer` live there now, under
   `Components/` and `Pages/`, and their tests in `louis-agent.web.evals.tests`; `FrameworkScriptsTests` already reads
