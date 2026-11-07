@@ -220,7 +220,21 @@ and why. Each step ends with the three sites built and their goldens green.
 
 ## Approved during the build
 
-(none yet)
+- **Step 2, the accounts' shared rules (2026-11-07, unattended; the pick Claude recommended, for Louis to confirm).**
+  Finding: the form rules (`.account-form`, `.account-field`, `.account-button`, `.account-actions`, `.account-links`,
+  `.account-section`, `.account-providers`, `.account-logins`, the card's `h1` and `p`) are drawn by eleven to sixteen
+  pages and components, not one, and a scoped rule reaches only the file's own elements. Three options: **A** keep them
+  a global partial the sites forward (the step's goal, no accounts forward, missed); **B** hold them once in
+  `AccountShell.razor.scss` under `::deep`, the shell being the one ancestor every account page has (Blazor's own
+  way for a parent to style what its children draw; the selector gains the shell's attribute, so a site's override
+  needs the same specificity, and no site overrides one today); **C** a copy in each component's file (eleven
+  copies). **B taken.** A rule a single component draws (the notice, the password field, the divider, the facts, the
+  key and codes) is in that component's file; the step is an edit, not a pure move, since every shared line gained
+  `::deep`. The account library has no `Styles/` partial left, so `FrameworkStylesTests` reads only its `.razor.scss`.
+- **Step 1, the libraries (2026-11-07).** The Sass package goes in the three libraries too (it compiles a library's
+  `X.razor.scss` to the `X.razor.css` Blazor bundles), with `SassCompilerEnableWatcher` off, since a library has no
+  page to watch and the package would otherwise compile its watcher attribute in; the generated `X.razor.css` is
+  git-ignored. The accounts library has no goldens: its tests find elements by class, so no golden changed.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0085](../adr/0085-styles-are-written-in-sass.md) · [ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md)

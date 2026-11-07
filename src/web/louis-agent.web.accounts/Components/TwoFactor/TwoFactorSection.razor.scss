@@ -1,0 +1,2 @@
+/* The app's key and the recovery codes in monospace, selectable in one go (F61.5). */
+.account-key, .account-codes { font-family: var(--bs-font-monospace); letter-spacing: .08em; user-select: all; color: var(--bs-emphasis-color); }
