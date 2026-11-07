@@ -546,4 +546,4 @@ None of this is legal advice: the providers' terms and Microsoft's licences are 
 *Puls's endpoint is sold*), and a qualified check is due before customers depend on them.
 
 ---
-[Docs index](../README.md) · Related: [Plans](README.md) · [F58](F58-sites-from-this-pc.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)
+[Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)
