@@ -8,11 +8,9 @@
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the app's definition, the VM's
 files and one script; the Bicep build in `config/azure/` is everything else. No secret value is in any file here.
 
-**Two builds live side by side until the new one is up (2026-11-08):** the CL19 one that runs today (`puls-app` in
-`puls-container-env`, reaching the PC's browser and Mongo through the `ts-forwarder` sidecar, with `puls-searxng` as
-its own app and the ingress locked to one IP), and the F61.4 one below, whose files are built and whose first `infra`
-waits for Louis. The old one's files (`puls-searxng.yaml`, `ts-forwarder/`, the tunnel's `docker-compose.public.yml`
-and the placeholder) go when the new one answers on `mypuls.co.za`.
+Live since 2026-11-07 on `https://mypuls.co.za` and `https://www.mypuls.co.za`. It replaced the CL19 deploy, which
+reached the PC's browser and Mongo through a Tailscale sidecar with SearXNG as its own app and the ingress locked to
+one IP, and the F58 tunnel that served a placeholder from the PC; both are gone, in Azure and in the repo.
 
 ## What the Bicep build makes (`deploy.ps1 infra`)
 
@@ -25,7 +23,7 @@ and the placeholder) go when the new one answers on `mypuls.co.za`.
 | Environment | `puls-env` | A Container Apps environment on the apps' subnet with a Consumption profile; logs to `puls-logs`, traces and logs to `puls-insights` through its OpenTelemetry agent; its identity pulls from `acrpulsza`; the app's share `puls-app-workspace` as storage `puls-app-vol` |
 | Application Insights | `puls-insights` | Puls's logs and traces (F52), on `puls-logs` |
 | SQL | `puls-sql-za`, database `puls_accounts` | Azure SQL's free offer: serverless General Purpose, 32 GB, 100,000 vCore-seconds a month, paused when idle and when the month's seconds run out, never billed; "Allow Azure services" on, TLS 1.2 |
-| Kept from CL19 | `acrpulsza`, `puls-logs`, `pulsstorage` | The registry, the workspace, the storage account: referenced, never redeclared |
+| Kept from CL19 | `acrpulsza`, `puls-logs`, `pulsstorage`, `puls-keys` | The registry, the workspace, the storage account (the share `puls-app-workspace`), the vault: referenced, never redeclared |
 
 The deployment is `puls-build`; it creates what is missing and updates what exists, and its outputs (the VM's private
 IP, the environment's id and static IP, the SQL server's address) are what the verbs read back, never a value copied
@@ -55,10 +53,10 @@ by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` int
    | CNAME | `www` | the app's own address (`puls-app.<env>.southafricanorth.azurecontainerapps.io`) |
    | TXT | `asuid.www` | the same verification id (`www` validates by its CNAME, no token) |
 
-8. Then, and not before, retire the old: the old environment `puls-container-env` with its `puls-app` and
-   `puls-searxng`, the `ts-forwarder` and `searxng` images in the registry, the `searxng-config` and `mongo-data`
-   shares, `tailscale serve` on the PC, the tunnel `mypuls-placeholder` and the `mypuls-production` compose group;
-   and in the repo the files named above with the tunnel and Tailscale lines in `.env.secrets.example`.
+8. Done on 2026-11-07, for the record: the old environment `puls-container-env` with its `puls-app` and
+   `puls-searxng`, the `ts-forwarder` and `searxng` images in the registry and the `searxng-config` and `mongo-data`
+   shares were deleted; on the PC, `tailscale serve reset` and `docker compose -p mypuls-production down` end the
+   old paths, and the tunnel `mypuls-placeholder` goes in Cloudflare Zero Trust.
 
 ## Every-day deploy
 

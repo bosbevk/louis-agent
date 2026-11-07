@@ -32,10 +32,10 @@ the rewritten benchmarks; `Dockerfile.orchestrator` still builds the orchestrato
 
 ## In Azure (F61.4)
 
-Each demo's `config/azure/main.bicep` is the record of what Azure holds for it, deployed by its `deploy/azure/deploy.ps1
-infra`; the app itself is a yaml the script's `release` deploys as a new revision. Built on 2026-11-08, live once Louis
-runs it; until then the CL19 deploy (Puls reaching the PC's browser and Mongo through a Tailscale sidecar) and the F58
-tunnels (both domains served from the PC) keep running, and go when the new build answers.
+Puls's `config/azure/main.bicep` is the record of what Azure holds for it, deployed by `deploy/azure/deploy.ps1 infra`;
+the app itself is a yaml the script's `release` deploys as a new revision. Live since 2026-11-07 on `mypuls.co.za`; the
+CL19 deploy (Puls reaching the PC's browser and Mongo through a Tailscale sidecar) and the F58 tunnel (a placeholder
+served from the PC) are gone. The diagrams are in [Puls's architecture](../../../demos/puls/deploy/azure/ARCHITECTURE.md).
 
 | Where | What runs | Reaches |
 |---|---|---|
