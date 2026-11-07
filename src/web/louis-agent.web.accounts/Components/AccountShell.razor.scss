@@ -17,7 +17,9 @@
 ::deep .account-field input { font: inherit; font-weight: 400; padding: 10px 12px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: var(--bs-body-bg); color: var(--bs-body-color); }
 ::deep .account-field input:focus { outline: 2px solid rgba(var(--bs-primary-rgb), .35); border-color: var(--bs-primary); }
 ::deep .account-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-::deep .account-button { font: inherit; font-weight: 700; padding: 11px 14px; border: 1px solid var(--bs-primary); border-radius: var(--bs-border-radius); background: var(--bs-primary); color: var(--bs-body-bg); cursor: pointer; transition: filter .15s; }
+/* The action is the site's: its gradient, and the text colour every theme sets for what goes on it (FX64: the page's
+   background colour made dark text on a bright action). */
+::deep .account-button { font: inherit; font-weight: 700; padding: 11px 14px; border: 1px solid transparent; border-radius: var(--bs-border-radius); background: var(--web-cta); color: var(--web-on-primary); cursor: pointer; transition: filter .15s; }
 ::deep .account-button:hover { filter: brightness(1.08); }
 ::deep .account-button:disabled { opacity: .6; cursor: default; }
 ::deep .account-button.is-plain { background: transparent; color: var(--bs-body-color); border-color: var(--bs-border-color); }
