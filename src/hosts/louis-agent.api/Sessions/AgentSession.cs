@@ -31,12 +31,16 @@ internal sealed class AgentSession(
     string? llm = null,
     string? tool = null,
     StreamFormat format = StreamFormat.Claude,
-    SessionReplay? replay = null)
+    SessionReplay? replay = null,
+    SessionOpener? opener = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
 
     public string Id { get; } = id;
+
+    /// <summary>The signed-in person who opened it (F61.2), or null for a session a key opened.</summary>
+    public SessionOpener? Opener { get; } = opener;
 
     /// <summary>The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).</summary>
     public StreamFormat StreamFormat { get; } = format;

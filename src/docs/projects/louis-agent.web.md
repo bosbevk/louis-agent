@@ -17,6 +17,14 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
+- **Accounts, through one seam** (CL30, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md)).
+  The account pages and their client are [louis-agent.web.accounts](louis-agent.web.accounts.md), a library on top of
+  this one that a site opts into. All this library knows of accounts is `IAccountMenu`, declared beside the chat's
+  profile menu: are there accounts, who is signed in, the two labels, load, changed, sign out. The menu asks the
+  provider for it once and holds `NoAccounts`, a Null Object, when a site registered nothing, so the guest's menu
+  draws with no branch for the case. Every call to the API still says it is the app's own (`X-Requested-With`), which
+  is what lets a signed-in person's cookie count in place of a key; `SiteFrames.Account` names the layout the account
+  pages draw inside.
 - **The eval pages.** The evals, their runs, the answers to grade, the studio and the prompts are on every site at `/admin`, and a site makes
   one call for them. They have [their own doc](eval-pages.md).
 - **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
@@ -112,7 +120,8 @@ sequenceDiagram
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
-| `Components/Admin/`, `Layout/` | `AdminShell`, `AdminGate` and `SiteFrames`; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
 | `Admin/`, `Components/Admin/Evals/` | The eval pages' plain classes and their components ([The eval pages](eval-pages.md)) |

@@ -1,4 +1,4 @@
-using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Layout;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -17,7 +17,7 @@ public class AdminFrameTests
     public void AFrameworkPage_DrawsInTheSitesLayout_NotTheDefault()
     {
         using var ctx = new BunitContext();
-        ctx.Services.AddSingleton(new SiteFrames(typeof(SiteLayout)));
+        ctx.Services.AddSingleton(new SiteFrames(typeof(SiteLayout), typeof(SiteLayout)));
 
         var cut = ctx.Render<RouteView>(parameters => parameters
             .Add(view => view.RouteData, new RouteData(typeof(FrameworkPage), new Dictionary<string, object?>()))

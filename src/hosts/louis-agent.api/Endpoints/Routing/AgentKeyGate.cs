@@ -12,7 +12,9 @@ namespace LouisAgent.Api.Endpoints.Routing;
 /// route is closed until the code opens it. Whether the API starts without a key is <c>HostAuth</c>'s decision, made
 /// in <c>ApiStartup</c> (core's one rule for this and the MCP server over HTTP), and this gate is mapped only when a
 /// key is set. <c>/health</c> and the web app's files are outside <c>/v1</c> and stay public: they hold no data, and
-/// the app sends the key the user enters in its settings.
+/// the app sends the key the user enters in its settings. A person the accounts' cookie has signed in counts in place
+/// of the key (F61.2), on a call that carries the browser app's header; the accounts' middleware must run before this
+/// gate for the person to be known.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AgentKeyGate
@@ -24,10 +26,13 @@ internal static class AgentKeyGate
     {
         app.Use(async (context, next) =>
         {
-            // An open route, or the right key: let it through.
+            // An open route, the right key, or a signed-in person on the app's own call: let it through.
             string? presented = context.Request.Headers["x-api-key"].FirstOrDefault();
             string? bearer = context.Request.Headers.Authorization.FirstOrDefault();
-            if (!NeedsKey(context.Request.Path, context.GetEndpoint()) || HostAuth.HasKey(presented, bearer, apiKey))
+            string? requestedWith = context.Request.Headers[HostAuth.RequestedWithHeader].FirstOrDefault();
+            bool signedIn = context.User.Identity?.IsAuthenticated == true;
+            if (!NeedsKey(context.Request.Path, context.GetEndpoint()) || HostAuth.HasKey(presented, bearer, apiKey)
+                                                                       || HostAuth.IsSignedIn(signedIn, requestedWith))
             {
                 await next(context);
                 return;

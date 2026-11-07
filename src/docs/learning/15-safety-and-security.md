@@ -84,3 +84,103 @@ Phase 7); tenants, a sandbox per tenant and POPIA (F43, Phase 9).
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)
+
+## A credential the page can't read (F61.1, 2026-11-07)
+
+**What was built.** The framework's accounts: ASP.NET Core Identity in `louis-agent.accounts`, signing in with a
+cookie, a tenant on every account from the host name, SQL Server behind EF Core ([ADR 0087](../adr/0087-identity-is-the-identity-server.md),
+[ADR 0088](../adr/0088-a-tenant-on-every-account.md)). Skill 15, and skill 9's first half: who a session belongs to.
+
+**Where the credential lives is the whole question.** A bearer token the browser keeps in its storage is readable by
+any script on the page, including one an attacker slips into a markdown answer. A cookie marked HttpOnly never
+reaches a script at all; the browser sends it, and only the browser. The price is that the browser also sends it on a
+form another site posts to us. Two rules close that: the cookie is SameSite Lax (a cross-site POST doesn't carry it),
+and the agent's routes will take the cookie only with a header a cross-site form can't set (F61.2). A cookie that
+isn't there gets a 401, never a redirect to a login page: the API answers JSON and the page draws itself.
+
+**Fail closed, twice.** The user store refuses to look anyone up when the request's tenant isn't set, so a route
+mapped before the tenant middleware fails loudly rather than landing in the wrong tenant; and the routes refuse to
+map until the middleware is in, the same shape as the API's key check. Both are the same lesson as FX18: a host that
+can't be sure says no.
+
+**The log is the mail, carefully.** Until a mail sender is picked, a confirmation link goes to the log. On a hosted
+instance that line would be a sign-in anyone could use, so it goes through `LogContent` like every personal value:
+a keyed hash unless `LOG_CONTENT=full` on a developer's own machine.
+
+**What the tests taught.** Identity writes a link for an HTML mail, `&amp;` and all; following it raw gave a 400 with
+no body, the kind of failure only a test that follows the real link finds. And `puls` can't be a tenant in a test:
+it's an identity's wire name, and the names rule (ADR 0043) is right to flag it.
+
+## A cookie that counts only on the app's own call (F61.2, 2026-11-07)
+
+**What was built.** The framework's sign-in, registration, reset and profile pages, and the agent's key gate taking
+a signed-in person in place of `AGENT_API_KEY`.
+
+**The header is the whole trick.** A browser sends our cookie on any request to our address, a form on another site
+included. It adds a custom header only to a request the page's own script made, because a cross-site form can't set
+one and a cross-site script is stopped by the browser's same-origin rule. So the gate's rule is two things, not one:
+the cookie names the person, and `X-Requested-With: louis-agent.web` proves the call is ours. `HostAuth.IsSignedIn`
+holds it as a pure function beside `HasKey`, and the test is three lines: cookie alone 401, header alone 401, both
+through.
+
+**Where a sign-in page may send you.** `?returnUrl=` is the page the person came from; a sign-in page that forwards
+anywhere is a phishing tool. `SafeReturn` follows a relative path of ours and nothing else: not `//evil.test`, not
+`https://…`, not `javascript:`. The test lists the shapes an attacker would try.
+
+**Say the same thing either way.** Forgot-password and resend-confirmation answer the same whether or not the address
+has an account, on the server and on the page, so neither can be used to find out which addresses do.
+
+**What the tests taught.** Identity answers `Results<ContentHttpResult, UnauthorizedHttpResult>`, a wrapper, so a
+filter that switches on the answer's type must unwrap `INestedHttpResult` first; the redirect never fired until it
+did. And a query parameter in a Blazor page can't be passed as a parameter in a test; the test navigates with the
+query, as a browser would.
+
+## What a provider tells us, and what we keep (F61.3, 2026-11-07)
+
+**What was built.** Sign in through Google, Microsoft and LinkedIn: OAuth 2.0 for the first two on Microsoft's own
+handlers, OpenID Connect for LinkedIn on the generic handler. Skill 15 with skill 11's protocols.
+
+**Two cookies, one short-lived.** A provider sends the browser back to `/signin-google` with a code; the handler
+trades it for the provider's word on who this is, and writes that into Identity's *external* cookie, not the sign-in
+cookie. Our callback reads the external cookie, decides (a known login, a known email, a newcomer), writes the real
+sign-in cookie, and clears the external one. Nothing from the provider is kept but its name and its id for the person
+(`AspNetUserLogins`); no token is saved (`SaveTokens = false`), since nothing of ours calls a provider's API.
+
+**A newcomer's email is confirmed because the provider said so.** The person just proved they own the account at the
+provider, and the provider says which email it is; that's a stronger confirmation than our own mailed link. One
+Google account links in one tenant only, since Identity keys a login by provider and id across the table.
+
+**Linking checks it's still you.** The challenge for a link carries the signed-in person's id in the state the
+provider echoes back (`XsrfId`), and the callback refuses a link whose state names someone else: otherwise a page
+could make a signed-in person link an attacker's provider account to theirs. Unlinking the last way in without a
+password is refused, or the account would be unreachable.
+
+**The server checks the return address too.** The web's `SafeReturn` guards the pages; the callback is a server
+route a browser lands on, so `LocalPath` guards it the same way. Two copies of one rule, each tested, on purpose.
+
+## A secret the server never holds (F61.5, 2026-11-07)
+
+**What was built.** Passkeys (a fingerprint, a face, a security key) to add on the profile and sign in with, and
+two-factor with an authenticator app, both on what Identity ships in .NET 10. Skill 15.
+
+**A passkey is a key pair, and we keep the public half.** The browser asks the device to make a key pair for this
+site; the private key never leaves the device, and what reaches us is the public key with a signature over a
+challenge we issued. Signing in is the same in reverse: we issue a challenge, the device signs it, we check the
+signature against the public key we kept. There's no password to steal from us, nothing to phish, and a credential
+made for one site can't be used on another, because the browser binds it to the origin and Identity checks that
+origin on every call. Our code hands JSON between the API and `navigator.credentials` and touches none of it.
+
+**Proving it without a device.** The tests hold a software authenticator: an ES256 key, a "none" attestation, the
+CBOR written by hand. It does exactly what a fingerprint reader does at the protocol level, which is the point: the
+protocol is what we trust, not the hardware. The same for two-factor: a six-digit code is HMAC-SHA1 of the half-minute
+counter under the shared key (RFC 6238), so a forty-line `Totp` proves the whole flow on the real SQL Server.
+
+**Two-factor shares a secret, a passkey doesn't.** The authenticator key is known to the phone and to us, so a leak
+of our table would let someone mint codes; a passkey's private half is only ever on the device. That's why the
+passkey is the better sign-in and two-factor is the fallback for a password. A recovery code is a one-time password
+stored hashed, spent on use, for the day the phone is gone.
+
+**Where the key is shown, it's shown once.** The recovery codes come back only on the call that made them and the
+page shows them then; after that only the count. The authenticator key goes to the person as text and as an
+`otpauth://` link the phone opens straight into the app; the QR code is a later step, since every app takes the key
+typed or the link tapped.

@@ -24,7 +24,8 @@
         "SEARXNG_URL": "http://127.0.0.1:8888",
         "BROWSER_URL": "http://127.0.0.1:9222",
         "BROWSER_USER_AGENT": "Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md; reads a page on a user's behalf)",
-        "EVALS_MONGO_DATABASE": "puls_benchmarks"
+        "EVALS_MONGO_DATABASE": "puls_benchmarks",
+        "ACCOUNTS_TENANT": "puls"
       }
     }
   }

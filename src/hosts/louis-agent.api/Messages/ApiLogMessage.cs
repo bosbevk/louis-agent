@@ -22,6 +22,9 @@ public enum ApiLogMessage
     [Description("Turn failed in {Session}")]
     TurnFailed,
 
+    [Description("Session {Session} opened by user {User} in tenant {Tenant}")]
+    SessionOpenedBy,
+
     [Description("Benchmark run {Run}: the store failed, so recording stopped; the run goes on")]
     BenchmarkStoreFailed,
 

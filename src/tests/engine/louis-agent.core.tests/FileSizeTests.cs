@@ -121,15 +121,20 @@ public class FileSizeTests
     /// <summary>A web app on Sass gets its CSS from the build, themes too; its Sass is what's sized.</summary>
     private static bool IsMadeFromSass(string path)
     {
-        int css = path.IndexOf($"{Path.DirectorySeparatorChar}wwwroot{Path.DirectorySeparatorChar}css{Path.DirectorySeparatorChar}",
+        int css = path.IndexOf(
+            $"{Path.DirectorySeparatorChar}wwwroot{Path.DirectorySeparatorChar}css{Path.DirectorySeparatorChar}",
             StringComparison.Ordinal);
         return css >= 0 && path.EndsWith(".css", StringComparison.Ordinal)
-            && File.Exists(Path.Combine(path[..css], "Styles", "app.scss"));
+                        && File.Exists(Path.Combine(path[..css], "Styles", "app.scss"));
     }
 
-    /// <summary>What the build wrote (bin/, obj/, the CSS it makes from Sass) isn't ours to size.</summary>
+    /// <summary>
+    /// What a tool wrote (bin/, obj/, the CSS it makes from Sass, an EF Core migration and its snapshot) isn't ours to
+    /// size: nobody maintains it by hand (F61.1).
+    /// </summary>
     private static bool InBuildOutput(string path) =>
         IsMadeFromSass(path)
+        || path.Contains($"{Path.DirectorySeparatorChar}Migrations{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}data{Path.DirectorySeparatorChar}")

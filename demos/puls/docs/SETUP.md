@@ -16,6 +16,8 @@ Puls keeps its settings in `demos/puls/config/`. The stack sets `CONFIG_DIRECTOR
 | `.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `.env.mongo` | ❌ git-ignored | The benchmark store's root user, read only by `puls-mongo` (F31) |
 | `.env.mongo.example` | ✅ tracked | Template for `.env.mongo` |
+| `.env.sql` | ❌ git-ignored | The accounts database's sa password, read only by `puls-sql` (F61); the stack won't start without it |
+| `.env.sql.example` | ✅ tracked | Template for `.env.sql` |
 | `.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32); the stack won't start without it |
 | `.env.searxng.example` | ✅ tracked | Template for `.env.searxng` |
 | `.env.anthropic`, `.env.ollama-puls` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks |
@@ -53,6 +55,11 @@ These are read by this stack or by the packs Puls loads.
 | `SEARXNG_URL` | The SearXNG we run (F32): `http://puls-searxng:8080` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:8888` |
 | `SHOP_PRICES_MONGO_URL` | The MongoDB the `shop-prices` pack keeps its price tables in (F50.2, ADR 0069; a secret, `config/.env.secrets`). Unset, the tables it ships are read from memory |
 | `SHOP_PRICES_MONGO_DATABASE` | That store's database (default `shop_prices`; the collection is `price_files`) |
+| `ACCOUNTS_SQL_URL` | The accounts database (F61, ADR 0087; a secret, `config/.env.secrets`): `puls-sql` in the Puls stack, Azure SQL in the cloud. Unset, the instance has no accounts and no `/account` route |
+| `ACCOUNTS_TENANT`, `ACCOUNTS_COOKIE_DOMAIN` | The tenant a request lands in when no tenant row names its host (ADR 0088; Puls's compose sets `puls`, the library's default is `site`), and the sign-in cookie's domain (unset: the request's host) |
+| `AUTH_GOOGLE_CLIENT_ID`, `AUTH_GOOGLE_CLIENT_SECRET`, `AUTH_MICROSOFT_…`, `AUTH_LINKEDIN_…` | Sign in through a provider (F61.3; secrets, `config/.env.secrets`): a provider is on only with both its keys ([how to get them](../../../src/docs/guides/register-a-sign-in-provider.md)) |
+| `MSSQL_SA_PASSWORD` | In `config/.env.sql`, not here: the accounts database's sa password, read only by `puls-sql`; `ACCOUNTS_SQL_URL` carries the same one |
+| `ACCOUNTS_SQL_TEST_URL` | Set in the shell, not in a file: the SQL Server the accounts' integration tests build their databases on (`Server=127.0.0.1,1433;User Id=sa;Password=…;TrustServerCertificate=true`); unset, they skip |
 | `RECIPE_SOURCES` | The recipe sites the `recipes` toolset may search (F35), comma-separated slugs from the pack's table (`foodandhome,thelazymakoti`), or `*` for every site in it. Unset, the toolset is off; it needs `BROWSER_URL` too, and a site searched through the web needs a search provider (ADR 0023) |
 | `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` | In `config/.env.mongo`, not here: the benchmark store's root user (`puls-mongo`, F31), created the first time it starts with an empty `data/mongo`; changing them later needs the folder emptied. Their own file, so the database container never sees the other keys |
 | `EVALS_MONGO_URL` (was `BENCHMARKS_MONGO_URL`, still read; the Mongo contract tests read only the old name) | How Puls reaches the eval store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |

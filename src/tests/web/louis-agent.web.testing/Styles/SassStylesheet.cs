@@ -40,12 +40,18 @@ public sealed partial record SassStylesheet(string Project)
     public string FrameworkPartial(string partial)
     {
         string folder = Path.GetDirectoryName(partial) ?? "";
-        return Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles", folder,
-            $"_{Path.GetFileName(partial)}.scss");
+        string library = partial.StartsWith(AccountsPrefix, StringComparison.Ordinal)
+            ? "src/web/louis-agent.web.accounts/Styles"
+            : "src/web/louis-agent.web/Styles";
+        return Path.Combine(TestPaths.RepoRoot, library, folder, $"_{Path.GetFileName(partial)}.scss");
     }
 
-    /// <summary>The framework's Sass is all under <c>web/</c>, so a name says whose it is.</summary>
-    private static bool IsFrameworks(string name) => name.StartsWith("web/", StringComparison.Ordinal);
+    /// <summary>The account library's Sass is under <c>accounts/</c> (CL30), as the framework's is under <c>web/</c>.</summary>
+    private const string AccountsPrefix = "accounts/";
+
+    /// <summary>The framework's Sass is all under <c>web/</c>, and the account library's under <c>accounts/</c>, so a name says whose it is.</summary>
+    private static bool IsFrameworks(string name) =>
+        name.StartsWith("web/", StringComparison.Ordinal) || name.StartsWith(AccountsPrefix, StringComparison.Ordinal);
 
     /// <summary>The partials on disk that write CSS, named the way <c>app.scss</c> names them.</summary>
     public IReadOnlyList<string> AreaFiles() =>

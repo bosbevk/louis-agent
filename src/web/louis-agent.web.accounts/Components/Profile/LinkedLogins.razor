@@ -1,0 +1,31 @@
+@* The ways this account signs in through someone else: each linked one with its unlink, and a link for each provider
+   the instance has keys for that isn't on the account yet. *@
+<section class="account-section">
+    <h2>@Text.LinkedLogins</h2>
+    <AccountNotice Message="@_notice?.Message" Details="_notice?.Details ?? []" IsError="true" />
+    @if (Me.Logins.Count == 0)
+    {
+        <p>@Text.NoLinkedLogins</p>
+    }
+    else
+    {
+        <ul class="account-logins">
+            @foreach (var login in Linked)
+            {
+                <li>
+                    <span>@login.Label</span>
+                    <button class="account-button is-plain" type="button" @onclick="() => UnlinkAsync(login.Name)" disabled="@_busy">@Text.Unlink</button>
+                </li>
+            }
+        </ul>
+    }
+    @if (Unlinked.Count > 0)
+    {
+        <div class="account-providers">
+            @foreach (var provider in Unlinked)
+            {
+                <a class="account-button is-plain" href="@LinkFor(provider.Name)">@string.Format(Text.LinkProvider, provider.Label)</a>
+            }
+        </div>
+    }
+</section>

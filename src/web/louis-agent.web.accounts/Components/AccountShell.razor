@@ -1,0 +1,11 @@
+@* The account pages' frame (F61.2): one centred card with the site's brand above it and the page inside. A site's
+   account layout fills the brand and nothing else; the words on the pages come from AccountText. *@
+<div class="account-shell">
+    <main class="account-card">
+        @if (Brand is not null)
+        {
+            <a class="brand account-brand" href="./" title="@BrandTitle">@Brand</a>
+        }
+        @ChildContent
+    </main>
+</div>

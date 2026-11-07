@@ -1,0 +1,13 @@
+@page "/confirm-email"
+@layout AccountFrame
+
+@* Where the confirmation mail's link lands: the API confirmed the email and sent the browser here with the outcome
+   in the query, so the page only says what happened and where to go next. *@
+
+<PageTitle>@Text.Register</PageTitle>
+
+<h1>@Text.Register</h1>
+<AccountNotice Message="@(Done ? Text.Confirmed : Text.ConfirmFailed)" IsError="@(!Done)" />
+<div class="account-links">
+    <a href="login">@Text.BackToSignIn</a>
+</div>

@@ -159,7 +159,7 @@ in [Project layout](../engine/louis-agent.core/CLAUDE.md#project-layout).
 ```
 src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
-src/web/                 # louis-agent.web: the framework's web, what every site shares
+src/web/                 # louis-agent.web: the framework's web, what every site shares; louis-agent.web.accounts: the account pages, a site opts in
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, calculator, where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these

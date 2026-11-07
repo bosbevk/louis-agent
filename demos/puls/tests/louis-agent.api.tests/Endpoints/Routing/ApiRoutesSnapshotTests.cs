@@ -12,14 +12,17 @@ namespace LouisAgent.Api.Tests.Endpoints.Routing;
 public partial class ApiRoutesSnapshotTests
 {
     private static readonly string GoldenFile =
-        Path.Combine(ApiTestHost.RepoRoot, "demos/puls/tests/louis-agent.api.tests", "Endpoints", "Routing", "ApiRoutesSnapshot.json");
+        Path.Combine(ApiTestHost.RepoRoot, "demos/puls/tests/louis-agent.api.tests", "Endpoints", "Routing",
+            "ApiRoutesSnapshot.json");
 
-    private static readonly string[] AllowedInProgram = ["MapStaticAssets", "MapFallbackToFile", "MapApi", "MapLouisAgentApi", "MapAdmin"];
+    private static readonly string[] AllowedInProgram =
+        ["MapStaticAssets", "MapFallbackToFile", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts"];
 
     private static string Snapshot()
     {
         using var app = ApiTestHost.Build();
-        var routes = ApiTestHost.Routes(app).Select(endpoint => $"{ApiTestHost.Line(endpoint)} ({ApiTestHost.Access(endpoint)})")
+        var routes = ApiTestHost.Routes(app)
+            .Select(endpoint => $"{ApiTestHost.Line(endpoint)} ({ApiTestHost.Access(endpoint)})")
             .Order(StringComparer.Ordinal).ToList();
         return JsonSerializer.Serialize(routes, new JsonSerializerOptions
         {

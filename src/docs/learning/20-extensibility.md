@@ -355,3 +355,43 @@ Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method
 
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
+
+## Adapters over Identity's seams (F61.1, 2026-11-07)
+
+Identity is built to be extended at three seams, and the accounts library uses exactly those and no more: the user
+type (`AccountUser : IdentityUser`, a tenant and a name on Identity's columns), the user store
+(`AccountUserStore : UserStore<AccountUser>`, three methods overridden so a lookup is within the request's tenant,
+Template Method), and the mail sender (`IEmailSender<AccountUser>`, the log today, a service tomorrow, Null Object).
+Its managers, its routes and its migrations machinery stay Microsoft's. The one thing Identity has no seam for,
+which tenant a request is in, is a seam of ours: `ITenantResolver` (Strategy), by host today, by a path or a header
+on a business site later, with `CurrentTenant` as the scoped answer every part reads.
+
+The lesson for the goal's skill 20 is the same as the renderers' and the search providers': find where the library
+expects to be extended, extend it there, and put a seam of your own only where it has none. The alternative, our own
+user tables over every Identity interface, would have been Identity again for one column.
+
+## The same Bridge twice (F61.2, 2026-11-07)
+
+The admin pages reached a site's layout through `AdminFrame`, a layout in the framework that hands over to the one the
+site set (`SiteFrames`, a Bridge). The account pages needed the same, so `SiteFrames` names two layouts and
+`AccountFrame` is the second bridge: eleven lines, the same test. A site's `AccountLayout` is a brand in a slot of
+`AccountShell`, as its `AdminLayout` is for `AdminShell`. The lesson for skill 20: when a seam already exists, a second
+use of it should look like the first, so the third is obvious.
+
+One place deliberately breaks the injection rule: the profile menu looks the account services up
+(`IServiceProvider.GetService`) instead of injecting them, because accounts are a site's choice and the menu is drawn
+on every site, and in every chat test, with or without them. Rather than make every site and every test register
+services they don't use, the one component that cares asks whether they're there.
+
+## A provider is one class, and a test can play one (F61.3, 2026-11-07)
+
+`IExternalProvider` is the seam: which provider, its label, whether this instance has its keys, and how it joins the
+authentication pipeline. Google, Microsoft and LinkedIn are one class each, Facebook and X are names in the enum
+waiting for theirs. The toolsets' rule holds here as everywhere: `?` only where the instance has it, so a button
+appears the moment the keys do and never before. LinkedIn taught the other lesson of the skill: before reaching for a
+third-party package, ask what the standard handler already does. LinkedIn is OpenID Connect, so the generic handler
+and a discovery document were the whole of it.
+
+The callback route runs the real `SignInManager` on the real external cookie, so the test needed a provider that
+isn't there. `ScriptedProvider` is a route the test host alone maps, which writes that cookie exactly as a handler
+would; the callback can't tell the difference, which is the point.

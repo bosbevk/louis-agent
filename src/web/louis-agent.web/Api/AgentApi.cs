@@ -193,9 +193,11 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         HttpCompletionOption completion = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        // The admin portal's requests carry its own key, the chat's carry the chat's (F31).
+        // The admin portal's requests carry its own key, the chat's carry the chat's (F31); and every request says it
+        // is the app's own, which is what lets a signed-in person's cookie count in place of a key (F61.2).
         if (settings.KeyFor(request.RequestUri) is { } key && !string.IsNullOrWhiteSpace(key))
             request.Headers.Add("x-api-key", key);
+        request.Headers.Add(ApiHeaders.RequestedWith, ApiHeaders.RequestedWithWeb);
         var response = await http.SendAsync(request, completion, cancellationToken);
         if (response.IsSuccessStatusCode) return response;
 

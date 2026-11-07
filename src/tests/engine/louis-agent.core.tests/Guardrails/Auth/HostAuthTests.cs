@@ -22,7 +22,8 @@ public class HostAuthTests
     public void AnUnknownMode_NamesTheSettingAndItsValues(string setting)
     {
         var error = Assert.Throws<ArgumentException>(() => HostAuth.Mode(setting))!;
-        Assert.That(error.Message, Does.Contain("AGENT_AUTH").And.Contain(setting).And.Contain("required").And.Contain("off"));
+        Assert.That(error.Message,
+            Does.Contain("AGENT_AUTH").And.Contain(setting).And.Contain("required").And.Contain("off"));
     }
 
     // Review of the step (2026-10-19): a blank MCP_API_KEY= in an env file is "", which ?? never falls back from, so
@@ -43,7 +44,8 @@ public class HostAuthTests
     {
         string? key = HostAuth.Key("", "agent");
         Assert.That(HostAuth.AtStartup(AuthMode.Required, key), Is.EqualTo(HostAuthDecision.Start));
-        Assert.That(HostAuth.AtStartup(AuthMode.Off, key), Is.EqualTo(HostAuthDecision.Start), "off never opens a host that has a key");
+        Assert.That(HostAuth.AtStartup(AuthMode.Off, key), Is.EqualTo(HostAuthDecision.Start),
+            "off never opens a host that has a key");
     }
 
     [TestCase(AuthMode.Required, null, HostAuthDecision.Refuse)]
@@ -71,6 +73,19 @@ public class HostAuthTests
     [TestCase(null, "k", true)]
     [TestCase(null, "Basic k", false)]
     [TestCase(null, "kBearer ", false)]
-    public void HasKey_ReadsXApiKeyThenBearer_AndComparesWhole(string? apiKeyHeader, string? authorization, bool expected) =>
+    public void HasKey_ReadsXApiKeyThenBearer_AndComparesWhole(string? apiKeyHeader, string? authorization,
+        bool expected) =>
         Assert.That(HostAuth.HasKey(apiKeyHeader, authorization, expected: "k"), Is.EqualTo(expected));
+
+    // F61.2: a signed-in person counts in place of the key only on a call the browser app made itself, which the
+    // header says; a cross-site form carries the cookie but can't add the header.
+    [TestCase(true, "louis-agent.web", true)]
+    [TestCase(true, " Louis-Agent.Web ", true)]
+    [TestCase(true, null, false)]
+    [TestCase(true, "", false)]
+    [TestCase(true, "XMLHttpRequest", false)]
+    [TestCase(false, "louis-agent.web", false)]
+    [TestCase(false, null, false)]
+    public void IsSignedIn_NeedsTheCookieAndTheHeader(bool authenticated, string? requestedWith, bool expected) =>
+        Assert.That(HostAuth.IsSignedIn(authenticated, requestedWith), Is.EqualTo(expected));
 }

@@ -37,7 +37,8 @@ and packs, and reference your site from it.
 | Your own landing page | Replace `Pages/LandingPage.razor` |
 | A part of the chat turned on or off | Change `Features` in `Pages/ChatPage.razor.cs`. Language needs your identity's voices, and credits and the place need a site that uses them |
 | Your own links, settings or empty chat | Fill the slots on `ChatShell` in `Pages/ChatPage.razor`, as the code-review app does with its theme picker |
-| The words in your language | Register your own `ChatText` in `Program.cs` |
+| The words in your language | Register your own `ChatText` in `Program.cs`, and your own `AccountText` before `AddLouisAgentAccounts()` |
+| No accounts | Drop the `louis-agent.web.accounts` reference, `AddLouisAgentAccounts()`, `AccountLayout`, the `accounts/shell` line and the `passkeys.js` line; the chat's menu draws the guest's ([Change the web](change-the-web.md#change-the-account-pages)) |
 | A pack's screens | Nothing, for a described screen: the sidebar lists it. For a pack's own view, reference its project under `packs-web/`, add `XWebViews.AddTo(views)` in `Program.cs`, and list its Sass |
 
 Keep what would be the same on every site out of your site, and put it in the framework instead. `FrameworkNamesNoSiteTests` and `SiteLayoutsStaySmallTests` hold that.

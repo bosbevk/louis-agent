@@ -24,6 +24,8 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
 | `src/hosts/louis-agent.acp-server` | Library (stdio); a demo's program starts it | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/hosts/louis-agent.api` | Library (ASP.NET Core); a demo's program starts it | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
+| `src/hosts/louis-agent.accounts` | Library (ASP.NET Core); a demo's program adds it beside the API | Sign-in, registration and profiles on ASP.NET Core Identity, a tenant on every account, EF Core on SQL Server; the `/account` routes (F61) | [accounts](louis-agent.accounts.md) |
+| `src/hosts/louis-agent.accounts.contracts` | Class library | The records the accounts routes send and read, so the browser app reads what the server writes (ADR 0045) | [accounts](louis-agent.accounts.md) |
 | `demos/louis-agent/web/louis-agent.code-review` | Blazor WebAssembly | The coding agent's browser app: a thin chat page on the framework's frame, with the files and git packs' screens | [web](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) |
 | `demos/puls/web/louis-agent.puls` | Blazor WebAssembly | Puls: the general assistant in Afrikaans; a landing page and a three-panel chat that delegates every task | [puls](../../../demos/puls/docs/projects/louis-agent.puls.md) |
 | `demos/louis-agent/web/louis-agent.site` | ASP.NET Core app (static Razor) | The coding agent's landing page: the framework's colours and two CSS films of how the engine works; references no project of ours | [site](../../../demos/louis-agent/docs/projects/louis-agent.site.md) |
@@ -38,6 +40,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `louis-agent.session-stream` | Class library | Reads a session's server-sent events into records, for core's sub-sessions, the web apps and the eval runner | — (to write) |
 | `src/hosts/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
 | `src/web/louis-agent.web` | Razor class library | What every site shares: the chat's and the admin's frames, the eval pages ([their own doc](eval-pages.md)), a pack's screens, chat models, the API client, markdown, usage and currency | [louis-agent.web](louis-agent.web.md) |
+| `src/web/louis-agent.web.accounts` | Razor class library, on `louis-agent.web` | The account pages, their client, words, styles and passkey script; a site that has accounts opts in (CL30, ADR 0089) | [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `src/tests`, `demos/*/tests`, `packs-tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `src/tests/shared/louis-agent.testing` and `src/tests/web/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other

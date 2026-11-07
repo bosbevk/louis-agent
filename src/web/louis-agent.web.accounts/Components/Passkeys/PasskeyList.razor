@@ -1,0 +1,39 @@
+@* The person's passkeys, each with its remove, and a way to add one with a name. *@
+<section class="account-section">
+    <h2>@Text.Passkeys</h2>
+    <p>@Text.PasskeysIntro</p>
+    <AccountNotice Message="@_notice?.Message" Details="_notice?.Details ?? []" IsError="@_isError"/>
+    @if (_passkeys.Count == 0)
+    {
+        <p>@Text.NoPasskeys</p>
+    }
+    else
+    {
+        <ul class="account-logins">
+            @foreach (var passkey in _passkeys)
+            {
+                <li>
+                    <span>@(passkey.Name ?? passkey.Id)</span>
+                    <button class="account-button is-plain" type="button" @onclick="() => RemoveAsync(passkey.Id)"
+                            disabled="@_busy">@Text.RemovePasskey</button>
+                </li>
+            }
+        </ul>
+    }
+    @if (_supported)
+    {
+        <form class="account-form" @onsubmit="AddAsync">
+            <label class="account-field">
+                @Text.PasskeyName
+                <input type="text" maxlength="64" @bind="_name"/>
+            </label>
+            <div class="account-actions">
+                <button class="account-button is-plain" type="submit" disabled="@_busy">@Text.AddPasskey</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <p class="muted">@Text.PasskeysUnsupported</p>
+    }
+</section>

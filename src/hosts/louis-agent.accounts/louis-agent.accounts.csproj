@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F61.1: the framework's accounts. ASP.NET Core Identity on EF Core and SQL Server, a tenant on every account from
+       the host name, and the /account routes a host maps beside the agent's API. A library, like louis-agent.api: a
+       demo's program calls its three start-up methods. It names no site and no product. -->
+  <ItemGroup>
+    <!-- A library, so ASP.NET comes as a framework reference, with the usings the web SDK gives an app. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.AspNetCore.Builder" />
+    <Using Include="Microsoft.AspNetCore.Hosting" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Routing" />
+    <Using Include="Microsoft.Extensions.Configuration" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Hosting" />
+    <Using Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Identity's managers over EF Core, and SQL Server as the engine on the PC (Docker) and in Azure alike. -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.14" />
+    <!-- The SQL client brings a 9.0 build of this with two known vulnerabilities (NU1903); the current one replaces it. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+    <!-- The sign-in providers (F61.3), Microsoft's own handlers: Google and Microsoft accounts by OAuth, LinkedIn by
+         OpenID Connect through the generic handler; no third-party package. -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.14" />
+    <!-- What `dotnet ef migrations add` needs to write a migration; build time only, nothing of it ships. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The message templates and the one enum-name parser every part shares; no reference to the engine itself. -->
+    <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\engine\louis-agent.choices\louis-agent.choices.csproj" />
+    <ProjectReference Include="..\louis-agent.accounts.contracts\louis-agent.accounts.contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.accounts.tests" />
+    <InternalsVisibleTo Include="louis-agent.accounts.integration-tests" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Accounts</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.accounts.md" Link="docs\louis-agent.accounts.md" />
+  </ItemGroup>
+
+</Project>

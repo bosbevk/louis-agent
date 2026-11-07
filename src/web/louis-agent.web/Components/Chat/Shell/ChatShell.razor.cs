@@ -149,6 +149,7 @@ public partial class ChatShell : IDisposable
         await _preferences.LoadAsync();
         // With no language menu there's no list to read, and no choice to read back.
         if (Features.Language) await _languages.LoadAsync();
+
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");

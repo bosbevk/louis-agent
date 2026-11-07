@@ -77,6 +77,9 @@ services:
       # The eval store's database (F18 step 7b (iii)): the API's default is `evals` now, so Puls names the one its runs
       # have always been in. BENCHMARKS_MONGO_DATABASE, its name before, is still honoured when set in config/.env.
       EVALS_MONGO_DATABASE: ${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}
+      # The accounts (F61, ADR 0088): every account on a host no tenant row names is Puls's. The database itself is
+      # ACCOUNTS_SQL_URL in config/.env.secrets, pointing at puls-sql below; unset, Puls has no accounts.
+      ACCOUNTS_TENANT: ${ACCOUNTS_TENANT-puls}
     # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it the container refuses to
     # start, unless AGENT_AUTH=off in config/.env says so on purpose. puls sends the same key to its peer, itself.
     ports:
@@ -91,6 +94,36 @@ services:
       # Mongo answering before puls asks it, so the store's first call doesn't fail on start-up.
       puls-mongo:
         condition: service_healthy
+      # The accounts database the same, since the API applies its migrations as it starts (F61.1).
+      puls-sql:
+        condition: service_healthy
+
+  # The accounts database (F61.1): ASP.NET Core Identity's tables, kept by the accounts library through EF Core. SQL
+  # Server Developer edition (free, development only; Azure SQL in the cloud, the same code), pinned by digest. Its data
+  # is a Docker volume, not a folder on the host: the server runs as its own user and crashes at start-up on a Windows
+  # bind mount it can't own. Localhost only. The sa password is MSSQL_SA_PASSWORD in
+  # config/.env.sql, its own file, so the database never sees the keys in config/.env.secrets; puls reaches it at
+  # ACCOUNTS_SQL_URL (the service name, puls-sql), and the accounts' integration tests from the host at
+  # ACCOUNTS_SQL_TEST_URL (127.0.0.1).
+  puls-sql:
+    image: mcr.microsoft.com/mssql/server:2025-latest@sha256:245f6b1c8903edae52cb20fa31419cefcde1a49938bb8c3447099011fc871ca3
+    container_name: puls_sql
+    env_file:
+      - path: ../config/.env.sql
+        required: true
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+    ports:
+      - "127.0.0.1:${PULS_SQL_PORT:-1433}:1433"
+    volumes:
+      - puls-sql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' -b"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # The benchmark store (F31): the admin portal's runs, recorded by puls from each check's output. Its data is a folder
   # on the host (this demo's data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
@@ -159,3 +192,7 @@ services:
       - --log-level=0
 networks:
   web:
+
+volumes:
+  # The accounts database's files (F61.1); `docker compose down -v` is what deletes them.
+  puls-sql-data:

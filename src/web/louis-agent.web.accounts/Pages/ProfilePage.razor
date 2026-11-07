@@ -1,0 +1,26 @@
+@page "/profile"
+@layout AccountFrame
+@implements IDisposable
+
+@* The profile, the same on every site: who the person is, their name, their email, their password, the ways they
+   sign in, and the way out. A guest is sent to sign in first. *@
+
+<PageTitle>@Text.Profile</PageTitle>
+
+@if (State.Me is { } me)
+{
+    <h1>@Text.Profile</h1>
+    <p>@Text.ProfileIntro</p>
+    <ProfileDetails Me="me" />
+    <ChangeEmail />
+    <ChangePassword Me="me" />
+    <SetPassword Me="me" />
+    <AccountNotice Message="@(Failed == "link" ? Text.LinkFailed : null)" IsError="true" />
+    <LinkedLogins Me="me" />
+    <PasskeyList />
+    <TwoFactorSection Me="me" />
+    <DeleteAccount Me="me" OnDeleted="GoHome" />
+    <div class="account-section account-actions">
+        <button class="account-button is-plain" type="button" @onclick="SignOutAsync">@Text.SignOut</button>
+    </div>
+}
