@@ -2,7 +2,7 @@
 
 > **How-to.** What to do at Google, Microsoft and LinkedIn so a site can sign people in through them (F61.3), and
 > which settings to fill. **Elsewhere:** how the sign-in works in [louis-agent.accounts](../projects/louis-agent.accounts.md);
-> why these three and not Facebook or X in [F61](../plans/F61-accounts-and-azure.md).
+> why these three and not Facebook or X in [F61 (history)](https://github.com/bosbevk/louis-agent/blob/20f28c9f/src/docs/plans/F61-accounts-and-azure.md).
 
 A provider is on only when both its keys are set, so an instance with none has password sign-in alone, and a button
 appears the moment its keys do. Each provider wants the exact address it may send the browser back to: on the PC's

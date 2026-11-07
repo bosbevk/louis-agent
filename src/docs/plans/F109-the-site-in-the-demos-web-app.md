@@ -266,6 +266,7 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   rules, on `--bs-border-color` and a `--site-gutter` the site sets in step 4). The demo's `SiteLayout` only fills
   the slots, under the 40-line rule; `louis-agent.site` keeps its own copy until step 6 deletes it. Louis also asked
   (2026-11-08) that the chat sit in the corner of this layout: the slot is here, the widget is F109.3.
+- **F61.6 is F109** (Louis, 2026-11-08, pick 1 of three). PR #221 trimmed the F61 plan to a child F61.6 "The framework's site beside Puls": the same work as F109.1 and F109.2. F109 stays, the F61 plan is deleted (its full text at commit `20f28c9f`) and the TODO's F61 row closes in the work log. F61.6's notes already sit here: the site project goes in F109.1 step 6 (not kept as a library), the second app's accounts are a tenant on the same database (F109.2), the TODO's F54 row closes with step 6.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

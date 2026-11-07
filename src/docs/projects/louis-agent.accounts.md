@@ -2,8 +2,7 @@
 
 > **Explanation.** How the framework's accounts work: who a person is to a site, which tenant they belong to, how they
 > sign in and what the browser app reads. **Elsewhere:** why in [ADR 0087](../adr/0087-identity-is-the-identity-server.md)
-> and [ADR 0088](../adr/0088-a-tenant-on-every-account.md); how to change the web in [Change the web](../guides/change-the-web.md);
-> the plan that builds the rest, [F61](../plans/F61-accounts-and-azure.md), until it's done.
+> and [ADR 0088](../adr/0088-a-tenant-on-every-account.md); how to change the web in [Change the web](../guides/change-the-web.md).
 
 ## Purpose
 
