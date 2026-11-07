@@ -12,7 +12,8 @@ public class SolutionLayoutTests
 
     /// <summary>Each group holds the projects whose folder on disk has that name.</summary>
     [TestCase("src/engine", "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream",
-        "louis-agent.composition", "louis-agent.core.web", "louis-agent.core.telemetry")]
+        "louis-agent.composition", "louis-agent.core.web", "louis-agent.core.telemetry", "louis-agent.core.anthropic",
+        "louis-agent.core.ollama", "louis-agent.core.openai")]
     [TestCase("src/hosts", "louis-agent.acp-server", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
         "louis-agent.mcp-server", "louis-agent.accounts", "louis-agent.accounts.contracts")]
     [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts")]
@@ -38,7 +39,8 @@ public class SolutionLayoutTests
         "louis-agent.coding-api", "louis-agent.coding-catalog")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests", "louis-agent.core.web.tests",
-        "louis-agent.core.telemetry.tests")]
+        "louis-agent.core.telemetry.tests", "louis-agent.core.anthropic.tests", "louis-agent.core.ollama.tests",
+        "louis-agent.core.openai.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests",
         "louis-agent.accounts.tests", "louis-agent.accounts.integration-tests")]
     [TestCase("src/tests/web", "louis-agent.web.tests", "louis-agent.web.testing", "louis-agent.web.accounts.tests")]

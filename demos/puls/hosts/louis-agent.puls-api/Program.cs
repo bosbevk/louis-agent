@@ -1,4 +1,7 @@
 using LouisAgent.Core.Web;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
@@ -8,7 +11,8 @@ using LouisAgent.HostPacks;
 
 // Puls's API: the identities and packs its settings name, serving Puls's web app, with the framework's accounts
 // (F61) when ACCOUNTS_SQL_URL is set.
-var host = AgentHost.Build(Plugins.FromEnvironment(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance));
+var host = AgentHost.Build(Plugins.FromEnvironment(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
+    Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));
 var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
 builder.AddLouisAgentAccounts(AccountsOptions.FromEnvironment());

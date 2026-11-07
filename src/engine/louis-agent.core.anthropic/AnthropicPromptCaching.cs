@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Llm.Providers.AnthropicProvider;
-
-using LouisAgent.Core.Llm.Caching;
 using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Llm.Caching;
 using Microsoft.Extensions.AI;
+
+namespace LouisAgent.Core.Anthropic;
 
 /// <summary>
 /// Anthropic's two cache markers (F4, "How caching works"). The API renders tools, then the system prompt, then the
@@ -17,13 +17,15 @@ using Microsoft.Extensions.AI;
 /// </list>
 /// Two of the four markers a request may carry; the longer lifetime always comes first, as the API requires.
 /// </summary>
-public sealed class AnthropicPromptCaching(CacheLifetime prefixLifetime, string model, int maxOutputTokens) : IPromptCachingStrategy
+public sealed class AnthropicPromptCaching(CacheLifetime prefixLifetime, string model, int maxOutputTokens)
+    : IPromptCachingStrategy
 {
     private readonly Ttl _prefixTtl = prefixLifetime == CacheLifetime.OneHour ? Ttl.Ttl1h : Ttl.Ttl5m;
 
     public CacheLifetime PrefixLifetime => prefixLifetime;
 
-    public (IEnumerable<ChatMessage> Messages, ChatOptions? Options) Prepare(IEnumerable<ChatMessage> messages, ChatOptions? options)
+    public (IEnumerable<ChatMessage> Messages, ChatOptions? Options) Prepare(IEnumerable<ChatMessage> messages,
+        ChatOptions? options)
     {
         // A new list: the caller's is the history.
         List<ChatMessage> request = messages.ToList();
@@ -60,7 +62,9 @@ public sealed class AnthropicPromptCaching(CacheLifetime prefixLifetime, string 
             // The adapter keeps model and max_tokens from this object, then adds the messages, tools and options.
             var raw = previousFactory?.Invoke(client) as MessageCreateParams ?? new MessageCreateParams
             {
-                Model = model, MaxTokens = prepared.MaxOutputTokens ?? maxOutputTokens, Messages = [],
+                Model = model,
+                MaxTokens = prepared.MaxOutputTokens ?? maxOutputTokens,
+                Messages = [],
             };
             return raw with { CacheControl = new CacheControlEphemeral { Ttl = Ttl.Ttl5m } };
         };

@@ -6,7 +6,7 @@ using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
 
-namespace LouisAgent.Core.Tests.Llm.Providers.AnthropicProvider;
+namespace LouisAgent.Core.Anthropic.Tests;
 
 // F4 step 1, the spike: what the Anthropic adapter (Microsoft.Extensions.AI over Anthropic 12.53) puts on the wire for
 // cache markers, checked on the captured request body; no model call. Kept as a regression test: if an SDK update stops
@@ -15,11 +15,11 @@ public class AnthropicCachingWireTests
 {
     // A Messages API reply, with cache writes split by lifetime as the API reports them.
     private const string Reply = """
-        {"id":"msg_1","type":"message","role":"assistant","model":"claude-haiku-5-5",
-         "content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","stop_sequence":null,
-         "usage":{"input_tokens":10,"output_tokens":2,"cache_creation_input_tokens":248,"cache_read_input_tokens":0,
-                  "cache_creation":{"ephemeral_5m_input_tokens":148,"ephemeral_1h_input_tokens":100}}}
-        """;
+                                 {"id":"msg_1","type":"message","role":"assistant","model":"claude-haiku-5-5",
+                                  "content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","stop_sequence":null,
+                                  "usage":{"input_tokens":10,"output_tokens":2,"cache_creation_input_tokens":248,"cache_read_input_tokens":0,
+                                           "cache_creation":{"ephemeral_5m_input_tokens":148,"ephemeral_1h_input_tokens":100}}}
+                                 """;
 
     private static (IChatClient Client, StubHandler Handler) Client()
     {
@@ -27,7 +27,11 @@ public class AnthropicCachingWireTests
         {
             Content = new StringContent(Reply, System.Text.Encoding.UTF8, "application/json"),
         });
-        var anthropic = new AnthropicClient(new ClientOptions { ApiKey = "test", HttpClient = new HttpClient(handler) });
+        var anthropic = new AnthropicClient(new ClientOptions
+        {
+            ApiKey = "test",
+            HttpClient = new HttpClient(handler)
+        });
         return (anthropic.AsIChatClient("claude-haiku-5-5", 1024), handler);
     }
 
@@ -38,7 +42,9 @@ public class AnthropicCachingWireTests
     {
         RawRepresentationFactory = _ => new MessageCreateParams
         {
-            Model = "claude-haiku-5-5", MaxTokens = 1024, Messages = [],
+            Model = "claude-haiku-5-5",
+            MaxTokens = 1024,
+            Messages = [],
             CacheControl = new CacheControlEphemeral { Ttl = ttl },
         },
     };
@@ -72,7 +78,8 @@ public class AnthropicCachingWireTests
         JsonNode body = Body(handler);
         Assert.That(body["cache_control"]!.ToJsonString(), Is.EqualTo("""{"type":"ephemeral","ttl":"5m"}"""));
         Assert.That(body["system"]!.AsArray().Single()!["cache_control"]!["ttl"]!.GetValue<string>(), Is.EqualTo("1h"));
-        Assert.That(body["messages"]!.ToJsonString(), Does.Not.Contain("cache_control"), "no marker on the messages themselves");
+        Assert.That(body["messages"]!.ToJsonString(), Does.Not.Contain("cache_control"),
+            "no marker on the messages themselves");
     }
 
     [Test]
@@ -100,7 +107,8 @@ public class AnthropicCachingWireTests
         ChatOptions options = AutomaticCaching(Ttl.Ttl5m);
         options.Reasoning = new ReasoningOptions { Effort = ReasoningEffort.Medium };
 
-        await client.GetResponseAsync(Messages(Ttl.Ttl5m), LlmClientFactory.WithThinkingBudget(options, "claude-haiku-4-5"));
+        await client.GetResponseAsync(Messages(Ttl.Ttl5m),
+            ThinkingBudget.WithThinkingBudget(options, "claude-haiku-4-5"));
 
         JsonNode body = Body(handler);
         Assert.That(body["cache_control"]!["ttl"]!.GetValue<string>(), Is.EqualTo("5m"));
@@ -116,9 +124,11 @@ public class AnthropicCachingWireTests
 
         ChatResponse response = await client.GetResponseAsync(Messages(Ttl.Ttl1h), AutomaticCaching(Ttl.Ttl5m));
 
-        Assert.That(response.Usage!.AdditionalCounts, Is.EqualTo(new Dictionary<string, long> { ["CacheCreationInputTokens"] = 248 }),
+        Assert.That(response.Usage!.AdditionalCounts,
+            Is.EqualTo(new Dictionary<string, long> { ["CacheCreationInputTokens"] = 248 }),
             "the total only, as F1 found");
         var raw = (Message)response.RawRepresentation!;
-        Assert.That((raw.Usage.CacheCreation!.Ephemeral5mInputTokens, raw.Usage.CacheCreation.Ephemeral1hInputTokens), Is.EqualTo((148L, 100L)));
+        Assert.That((raw.Usage.CacheCreation!.Ephemeral5mInputTokens, raw.Usage.CacheCreation.Ephemeral1hInputTokens),
+            Is.EqualTo((148L, 100L)));
     }
 }

@@ -43,7 +43,7 @@ public static class RunTarget
     private static IEval FromFolder(string name, string folder, RunnerCatalogs catalogs)
     {
         ManifestSeal.Seal(folder);
-        var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio");
+        var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio", catalogs.Models);
         if (eval.Name != name)
             throw new RunnerException(MessageText.Format(RunnerMessage.FolderIsAnotherEval,
                 new

@@ -6,6 +6,9 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using Anthropic.Models.Messages;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -35,7 +38,9 @@ System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureIn
 
 if (Array.IndexOf(args, "--host-culture") is var cultureArg and >= 0)
 {
-    string? given = cultureArg + 1 < args.Length && !args[cultureArg + 1].StartsWith("--") ? args[cultureArg + 1] : null;
+    string? given = cultureArg + 1 < args.Length && !args[cultureArg + 1].StartsWith("--")
+        ? args[cultureArg + 1]
+        : null;
     Environment.Exit(WriteHostCulture(given ?? machineCulture.Name));
 }
 
@@ -64,7 +69,8 @@ if (Array.IndexOf(args, "--cache-gaps") is var gapsArg and >= 0)
 }
 
 var llm = LlmOptions.FromEnvironment();
-var factory = new LlmClientFactory();
+var factory =
+    new LlmClientFactory([AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]);
 IChatClient client = factory.Create(llm);
 IUsageMapper mapper = factory.CreateUsageMapper(llm);
 ReasoningEffort? thinking = llm.ResolveThinking();
@@ -73,10 +79,12 @@ bool anthropic = string.Equals(llm.Provider, LlmOptions.Anthropic, StringCompari
 // Anthropic only caches a prefix above a minimum (4,096 tokens on Haiku 4.5); small local models have small context
 // windows, so they get a short prompt.
 int lines = args.Length == 2 && args[0] == "--lines" ? int.Parse(args[1]) : anthropic ? 600 : 40;
-string filler = string.Join("\n", Enumerable.Range(1, lines).Select(i => $"Reference line {i}: the quick brown fox jumps over the lazy dog."));
+string filler = string.Join("\n",
+    Enumerable.Range(1, lines).Select(i => $"Reference line {i}: the quick brown fox jumps over the lazy dog."));
 string prompt = NewPrompt();
 
-Console.WriteLine($"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} mapper={mapper.GetType().Name} lines={lines}");
+Console.WriteLine(
+    $"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} mapper={mapper.GetType().Name} lines={lines}");
 
 if (args.Contains("--think"))
 {
@@ -120,10 +128,15 @@ try
     }
 }
 catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound &&
-                                      string.Equals(llm.Provider, LlmOptions.Ollama, StringComparison.OrdinalIgnoreCase))
+                                      string.Equals(llm.Provider, LlmOptions.Ollama,
+                                          StringComparison.OrdinalIgnoreCase))
 {
     // Ollama answers 404 for a model it hasn't pulled; the stack trace doesn't say so.
-    Console.Error.WriteLine(MessageText.Format(ProbeUserText.ModelNotPulled, new { llm.Model, Endpoint = llm.Endpoint ?? "http://localhost:11434" }));
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.ModelNotPulled, new
+    {
+        llm.Model,
+        Endpoint = llm.Endpoint ?? "http://localhost:11434"
+    }));
     Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullInCompose, new { llm.Model }));
     Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullNative, new { llm.Model }));
     return 1;
@@ -136,7 +149,13 @@ string NewPrompt() => $"Run {Guid.NewGuid():N}. You answer in one word.\n{filler
 
 ChatOptions Options() => new()
 {
-    Reasoning = thinking is { } effort ? new ReasoningOptions { Effort = effort, Output = ReasoningOutput.Full } : null,
+    Reasoning = thinking is { } effort
+        ? new ReasoningOptions
+        {
+            Effort = effort,
+            Output = ReasoningOutput.Full
+        }
+        : null,
 };
 
 List<ChatMessage> Messages(bool cache)
@@ -150,7 +169,8 @@ async Task NonStreaming(string label, bool cache)
 {
     ChatResponse response = await client.GetResponseAsync(Messages(cache), Options());
     int usageContents = response.Messages.SelectMany(m => m.Contents).OfType<UsageContent>().Count();
-    Console.WriteLine($"--- {label}: finish={response.FinishReason} model={response.ModelId} UsageContent items={usageContents}");
+    Console.WriteLine(
+        $"--- {label}: finish={response.FinishReason} model={response.ModelId} UsageContent items={usageContents}");
     PrintThinking(response.Messages.SelectMany(m => m.Contents));
     Print("ChatResponse.Usage", response.Usage);
 }
@@ -174,7 +194,8 @@ async Task Streaming(string label, bool cache)
         .Where(x => x.Update.Contents.OfType<UsageContent>().Any())
         .Select(x => $"{x.Index + 1}{(x.Update.FinishReason is { } f ? $"(finish={f})" : "")}")
         .ToList();
-    Console.WriteLine($"--- {label}: {updates.Count} updates; UsageContent in update(s) {(carriers.Count == 0 ? "none" : string.Join(", ", carriers))} of {updates.Count}");
+    Console.WriteLine(
+        $"--- {label}: {updates.Count} updates; UsageContent in update(s) {(carriers.Count == 0 ? "none" : string.Join(", ", carriers))} of {updates.Count}");
     PrintThinking(updates.SelectMany(u => u.Contents));
     Print("ToChatResponse().Usage", updates.ToChatResponse().Usage);
 }
@@ -195,8 +216,9 @@ void Print(string source, UsageDetails? usage)
     }
 
     UsageTokens tokens = mapper.Map(usage);
-    Console.WriteLine($"  ledger: input={Show(tokens.Input)} cache_write={Show(tokens.CacheWrite)} cache_read={Show(tokens.CacheRead)} " +
-                      $"output={Show(tokens.Output)} reasoning={Show(tokens.Reasoning)}");
+    Console.WriteLine(
+        $"  ledger: input={Show(tokens.Input)} cache_write={Show(tokens.CacheWrite)} cache_read={Show(tokens.CacheRead)} " +
+        $"output={Show(tokens.Output)} reasoning={Show(tokens.Reasoning)}");
 }
 
 static string Show(long? count) => count?.ToString() ?? "null";
@@ -215,12 +237,17 @@ static int WriteHostCulture(string name)
     try
     {
         var culture = System.Globalization.CultureInfo.GetCultureInfo(name);
-        if (culture.IsNeutralCulture) throw new ArgumentException(MessageText.Format(ProbeUserText.LanguageWithoutRegion));
+        if (culture.IsNeutralCulture)
+            throw new ArgumentException(MessageText.Format(ProbeUserText.LanguageWithoutRegion));
         region = new System.Globalization.RegionInfo(culture.Name);
     }
     catch (Exception ex) when (ex is ArgumentException or System.Globalization.CultureNotFoundException)
     {
-        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CultureNamesNoRegion, new { Name = name, Reason = ex.Message }));
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CultureNamesNoRegion, new
+        {
+            Name = name,
+            Reason = ex.Message
+        }));
         return 1;
     }
 
@@ -231,9 +258,22 @@ static int WriteHostCulture(string name)
     ExchangeRates rates = ExchangeRatesLoader.Load(agent, prices.Currency);
     DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
 
-    Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, new { Name = name, Region = region.TwoLetterISORegionName, Code = region.ISOCurrencySymbol, Symbol = region.CurrencySymbol }));
+    Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, new
+    {
+        Name = name,
+        Region = region.TwoLetterISORegionName,
+        Code = region.ISOCurrencySymbol,
+        Symbol = region.CurrencySymbol
+    }));
     Console.WriteLine(display.Converts
-        ? MessageText.Format(ProbeUserText.RateFound, new { display.Base, display.Rate, display.Code, AsOf = display.RateAsOf, rates.Source })
+        ? MessageText.Format(ProbeUserText.RateFound, new
+        {
+            display.Base,
+            display.Rate,
+            display.Code,
+            AsOf = display.RateAsOf,
+            rates.Source
+        })
         : MessageText.Format(ProbeUserText.ShownAsCharged, new { display.Base }));
 
     if (EnvFile.Find(Environment.CurrentDirectory) is not { } envFile)
@@ -244,7 +284,12 @@ static int WriteHostCulture(string name)
 
     bool replaced = EnvFile.Write(envFile, "HOST_CULTURE", name,
         MessageText.Format(ProbeUserText.HostCultureComment));
-    Console.WriteLine(MessageText.Format(replaced ? ProbeUserText.HostCultureUpdated : ProbeUserText.HostCultureAdded, new { Name = name, File = envFile }));
+    Console.WriteLine(MessageText.Format(replaced ? ProbeUserText.HostCultureUpdated : ProbeUserText.HostCultureAdded,
+        new
+        {
+            Name = name,
+            File = envFile
+        }));
     if (Environment.GetEnvironmentVariable("DISPLAY_CURRENCY") is { Length: > 0 } other)
         Console.WriteLine(MessageText.Format(ProbeUserText.DisplayCurrencyOverrides, new { Code = other }));
     Console.WriteLine(MessageText.Format(ProbeUserText.RestartHosts));
@@ -255,28 +300,55 @@ static int WriteHostCulture(string name)
 static void PrintCacheGaps(string path, PriceTable prices)
 {
     IReadOnlyList<CacheGapGroup> groups = CacheGaps.Analyse(UsageReport.Read(path), prices);
-    Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsHeader, new { Path = path, AsOf = prices.AsOf ?? "(none)" }));
+    Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsHeader, new
+    {
+        Path = path,
+        AsOf = prices.AsOf ?? "(none)"
+    }));
     if (groups.Count == 0) Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNone, new { Path = path }));
 
     foreach (CacheGapGroup g in groups)
     {
         Console.WriteLine();
-        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGroup, new { g.Host, g.Model, g.Requests, Prefix = g.PrefixTokens.ToString("N0") }));
-        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGaps, new { g.Under5m, g.From5To60m, g.Over60m }));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGroup, new
+        {
+            g.Host,
+            g.Model,
+            g.Requests,
+            Prefix = g.PrefixTokens.ToString("N0")
+        }));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGaps, new
+        {
+            g.Under5m,
+            g.From5To60m,
+            g.Over60m
+        }));
         foreach (var (lifetime, cost) in new[] { ("5 minutes", g.FiveMinutes), ("1 hour   ", g.OneHour) })
             Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsLifetime,
-                new { Lifetime = lifetime, cost.Writes, cost.Reads, Cost = cost.Cost is { } c ? Money(c) : "price unknown" }));
+                new
+                {
+                    Lifetime = lifetime,
+                    cost.Writes,
+                    cost.Reads,
+                    Cost = cost.Cost is { } c ? Money(c) : "price unknown"
+                }));
 
         if (g is not { FiveMinutes.Cost: { } five, OneHour.Cost: { } hour })
             Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNoPrice, new { g.Model }));
         else if (g.Recommended == CacheLifetime.OneHour)
             Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendOneHour,
-                new { Saving = Money(five - hour), Percent = (five - hour) / five is var share ? share.ToString("0%") : "" }));
+                new
+                {
+                    Saving = Money(five - hour),
+                    Percent = (five - hour) / five is var share ? share.ToString("0%") : ""
+                }));
         else
-            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendFiveMinutes, new { Extra = Money(hour - five) }));
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendFiveMinutes,
+                new { Extra = Money(hour - five) }));
     }
 
-    string Money(decimal amount) => prices.Currency == "USD" ? $"${amount:0.0000}" : $"{amount:0.0000} {prices.Currency}";
+    string Money(decimal amount) =>
+        prices.Currency == "USD" ? $"${amount:0.0000}" : $"{amount:0.0000} {prices.Currency}";
 }
 
 static void PrintLedger(string path, PriceTable prices)
@@ -288,7 +360,13 @@ static void PrintLedger(string path, PriceTable prices)
     var rollUps = rows.Where(r => r.Purpose == UsagePurpose.SubSession).ToList();
     var records = rows.Except(rollUps).ToList();
     var models = records.Select(r => r.Model).Distinct().ToList();
-    Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, new { Path = path, records.Count, Models = string.Join(", ", models), AsOf = prices.AsOf ?? "(none)" }));
+    Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, new
+    {
+        Path = path,
+        records.Count,
+        Models = string.Join(", ", models),
+        AsOf = prices.AsOf ?? "(none)"
+    }));
     if (rollUps.Count > 0)
     {
         UsageTotal delegated = UsageReport.Total("sub_session", rollUps);
@@ -308,9 +386,11 @@ static void PrintLedger(string path, PriceTable prices)
     void Section(string title, IReadOnlyList<UsageTotal> totals)
     {
         Console.WriteLine($"\n{title}");
-        Console.WriteLine($"  {"",-34} {"requests",8} {"input",11} {"cache w",9} {"cache r",9} {"output",8} {"cost",10}");
+        Console.WriteLine(
+            $"  {"",-34} {"requests",8} {"input",11} {"cache w",9} {"cache r",9} {"output",8} {"cost",10}");
         foreach (UsageTotal t in totals)
-            Console.WriteLine($"  {t.Key,-34} {t.Requests,8} {t.Input,11:N0} {t.CacheWrite,9:N0} {t.CacheRead,9:N0} {t.Output,8:N0} " +
-                              $"{(t.Cost is { } cost ? $"${cost:0.0000}" : "unknown"),10}{(t.Unpriced > 0 ? $"  ({t.Unpriced} unpriced)" : "")}");
+            Console.WriteLine(
+                $"  {t.Key,-34} {t.Requests,8} {t.Input,11:N0} {t.CacheWrite,9:N0} {t.CacheRead,9:N0} {t.Output,8:N0} " +
+                $"{(t.Cost is { } cost ? $"${cost:0.0000}" : "unknown"),10}{(t.Unpriced > 0 ? $"  ({t.Unpriced} unpriced)" : "")}");
     }
 }

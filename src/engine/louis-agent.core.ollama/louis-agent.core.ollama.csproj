@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Ollama on core (CL57): the provider strategy that talks to a local model through OllamaSharp, with the long
+       timeout a small GPU needs. A program hands OllamaProvider.Instance to AgentHost.Build in its HostServices. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Core.Ollama</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\louis-agent.core\louis-agent.core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.core.ollama.tests" />
+    <PackageReference Include="OllamaSharp" Version="5.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.core.ollama.md" Link="docs\louis-agent.core.ollama.md" />
+  </ItemGroup>
+
+</Project>

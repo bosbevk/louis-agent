@@ -280,7 +280,19 @@ demos/puls/tests/louis-agent.api.evals.tests/
 
 Picks made unattended, each with its why, for Louis's review:
 
-- (none yet)
+- **Steps 4 and 5 are one commit** (step 4): the three providers as classes still inside core would have been a
+  state with no value to review, so the seam, the registry and the three libraries landed together.
+- **The SDK's `Usage` type is aliased** in `core.anthropic`: the library's namespace `LouisAgent.Core.Anthropic`
+  shadows the SDK's `Anthropic`, and core's `Usage` folder shadows its `Usage` type; the usings sit above the
+  namespace and the type is `SdkUsage`.
+- **The judge reaches the providers through `CheckContext.Models`** (and `RunnerCatalogs.Models`, which the
+  runner host sets from its services): a Parameter Object field, not a static, so a check built in a test can
+  be handed a fake factory.
+- **A starter API program joins the plan** (Louis, 2026-11-07, pointing at `demos/starter`: "we must also add a
+  starter api"): `demos/starter/hosts/louis-agent.starter-api`, the smallest program that serves the starter
+  site with the framework's API, accounts and the eval studio opted in, built in step 7 with the API's studio.
+- **Test first, where the test could compile:** the seam tests of steps 2 to 4 reference members that did not
+  exist before the step, so they could not be run red first; each was written before its code and seen green after.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)

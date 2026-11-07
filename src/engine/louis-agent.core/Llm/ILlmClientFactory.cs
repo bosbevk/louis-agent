@@ -1,16 +1,10 @@
-namespace LouisAgent.Core.Llm;
 
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.UsageMapping;
-using System.ClientModel;
-using Anthropic;
-using Anthropic.Core;
-using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
-using OllamaSharp;
-using OpenAI;
 
+namespace LouisAgent.Core.Llm;
 public interface ILlmClientFactory
 {
     IChatClient Create(LlmOptions options);

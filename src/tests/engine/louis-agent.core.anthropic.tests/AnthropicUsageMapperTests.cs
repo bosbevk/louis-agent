@@ -3,12 +3,11 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 
-namespace LouisAgent.Core.Tests.Llm.UsageMapping;
+namespace LouisAgent.Core.Anthropic.Tests;
 
 // F1-S1: counts mapped from UsageDetails; missing counts stay null. Numbers are from the F1 step 1 spike.
-public class UsageMapperTests
+public class AnthropicUsageMapperTests
 {
     private static readonly IUsageMapper Standard = new StandardUsageMapper();
     private static readonly IUsageMapper Anthropic = new AnthropicUsageMapper();
@@ -31,7 +30,12 @@ public class UsageMapperTests
     [Test]
     public void Map_NoCache_InputUnchanged()
     {
-        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 0, OutputTokenCount = 277 };
+        var usage = new UsageDetails
+        {
+            InputTokenCount = 10_266,
+            CachedInputTokenCount = 0,
+            OutputTokenCount = 277
+        };
 
         Assert.That(Standard.Map(usage), Is.EqualTo(new UsageTokens(10_266, null, 0, 277, null)));
     }
@@ -40,7 +44,12 @@ public class UsageMapperTests
     public void Map_CacheRead_SubtractsCachedTokensFromInput()
     {
         // The Microsoft.Extensions.AI contract: cached tokens are part of InputTokenCount. Holds for every provider.
-        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 206 };
+        var usage = new UsageDetails
+        {
+            InputTokenCount = 10_266,
+            CachedInputTokenCount = 10_227,
+            OutputTokenCount = 206
+        };
 
         Assert.That(Standard.Map(usage), Is.EqualTo(new UsageTokens(39, null, 10_227, 206, null)));
         Assert.That(Anthropic.Map(usage), Is.EqualTo(new UsageTokens(39, null, 10_227, 206, null)));
@@ -62,7 +71,12 @@ public class UsageMapperTests
     [Test]
     public void Map_ReasoningCount_IsKept()
     {
-        var usage = new UsageDetails { InputTokenCount = 100, OutputTokenCount = 50, ReasoningTokenCount = 30 };
+        var usage = new UsageDetails
+        {
+            InputTokenCount = 100,
+            OutputTokenCount = 50,
+            ReasoningTokenCount = 30
+        };
 
         Assert.That(Standard.Map(usage).Reasoning, Is.EqualTo(30));
     }
@@ -76,11 +90,14 @@ public class UsageMapperTests
 
     [TestCase(LlmOptions.Anthropic, typeof(AnthropicUsageMapper))]
     [TestCase("ANTHROPIC", typeof(AnthropicUsageMapper))]
-    [TestCase(LlmOptions.Ollama, typeof(StandardUsageMapper))]
-    [TestCase(LlmOptions.OpenAiCompatible, typeof(StandardUsageMapper))]
     public void CreateUsageMapper_PicksTheProvidersMapper(string provider, Type expected)
     {
-        var mapper = new LlmClientFactory().CreateUsageMapper(new LlmOptions { Provider = provider, Model = "m" });
+        var mapper =
+            new LlmClientFactory([AnthropicProvider.Instance]).CreateUsageMapper(new LlmOptions
+            {
+                Provider = provider,
+                Model = "m"
+            });
 
         Assert.That(mapper, Is.TypeOf(expected));
     }

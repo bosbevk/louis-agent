@@ -1,4 +1,7 @@
 using LouisAgent.Core.Web;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
 using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Composition.Guardrails.Messages;
@@ -20,7 +23,9 @@ public class MessageEnumTests
     /// <summary>Every enum of a <c>Messages</c> namespace in core.</summary>
     private static readonly Type[] MessageEnums =
         typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
-            .Concat(typeof(WebAccess).Assembly.GetTypes())
+            .Concat(typeof(WebAccess).Assembly.GetTypes()).Concat(typeof(AnthropicProvider).Assembly.GetTypes())
+            .Concat(typeof(OllamaProvider).Assembly.GetTypes())
+            .Concat(typeof(OpenAiCompatibleProvider).Assembly.GetTypes())
             .Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
             .ToArray();
 
@@ -39,10 +44,10 @@ public class MessageEnumTests
                 "ConfigErrorMessage", "ConfigLogMessage", "ErrorMessage", "ScreenMessage", "GuardrailErrorMessage",
                 "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
                 "LoggingErrorMessage", "LoggingLogMessage", "PricingErrorMessage", "PricingLogMessage",
-                "PromptHeaderMessage", "ScriptToolMessage", "SessionErrorMessage", "RunnerToolMessage",
-                "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage",
-                "TextErrorMessage", "ToolMessage", "UserText", "UsageErrorMessage", "UsageLogMessage",
-                "WebLogMessage", "WebToolMessage",
+                "PromptHeaderMessage", "ScriptToolMessage", "AnthropicErrorMessage", "OpenAiErrorMessage",
+                "SessionErrorMessage", "RunnerToolMessage", "SkillErrorMessage", "SkillLogMessage",
+                "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",
+                "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage",
             }));
     }
 
@@ -53,7 +58,9 @@ public class MessageEnumTests
         // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails
         // here.
         var stray = typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
-            .Concat(typeof(WebAccess).Assembly.GetTypes())
+            .Concat(typeof(WebAccess).Assembly.GetTypes()).Concat(typeof(AnthropicProvider).Assembly.GetTypes())
+            .Concat(typeof(OllamaProvider).Assembly.GetTypes())
+            .Concat(typeof(OpenAiCompatibleProvider).Assembly.GetTypes())
             .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) ||
                                      t.Name.EndsWith("Text", StringComparison.Ordinal)))
             .Where(t => t.Namespace?.Split('.').Last() != "Messages")

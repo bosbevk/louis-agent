@@ -1,9 +1,8 @@
-namespace LouisAgent.Core.Llm.UsageMapping;
 
 using LouisAgent.Core.Usage.Records;
-using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.UsageMapping;
 /// <summary>
 /// Turns a provider adapter's <see cref="UsageDetails"/> into the ledger's four non-overlapping token kinds. One per
 /// provider, chosen by <c>LlmClientFactory.CreateUsageMapper</c>, so provider differences stay out of the recorder.

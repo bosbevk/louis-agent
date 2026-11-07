@@ -1,9 +1,10 @@
-namespace LouisAgent.Core.Llm.Providers.AnthropicProvider;
-
+using Anthropic.Models.Messages;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Records;
-using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
+using SdkUsage = Anthropic.Models.Messages.Usage;
+
+namespace LouisAgent.Core.Anthropic;
 
 /// <summary>
 /// The Anthropic adapter reports cache writes in <see cref="UsageDetails.AdditionalCounts"/> (measured in F1 step 1;
@@ -21,17 +22,22 @@ public sealed class AnthropicUsageMapper : StandardUsageMapper
     /// a stream the <c>message_start</c> event's message (the closing <c>message_delta</c> has the total only; measured
     /// in F4 step 6).
     /// </summary>
-    public override bool Keeps(object raw) => Usage(raw) is not null;
+    public override bool Keeps(object raw) => SdkUsageOf(raw) is not null;
 
     public override UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw)
     {
         UsageTokens tokens = Map(usage);
         // Not reported is null, never 0 (F1): with no writes reported there is nothing to split.
         if (tokens.CacheWrite is null) return tokens;
-        return tokens with { CacheWrite1h = raw.Select(r => Usage(r)?.CacheCreation).OfType<CacheCreation>().FirstOrDefault()?.Ephemeral1hInputTokens };
+        return tokens with
+        {
+            CacheWrite1h = raw.Select(r => SdkUsageOf(r)?.CacheCreation).OfType<CacheCreation>().FirstOrDefault()
+                ?.Ephemeral1hInputTokens
+        };
     }
 
-    private static Usage? Usage(object raw) => raw switch
+    /// <summary>The SDK's own usage on a response or a stream's first event; nothing on anything else.</summary>
+    private static SdkUsage? SdkUsageOf(object raw) => raw switch
     {
         Message message => message.Usage,
         RawMessageStreamEvent e when e.TryPickStart(out RawMessageStartEvent? start) => start.Message.Usage,

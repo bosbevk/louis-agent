@@ -6,19 +6,18 @@ using Anthropic;
 using Anthropic.Core;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 
-namespace LouisAgent.Core.Tests.Llm.Caching;
+namespace LouisAgent.Core.Anthropic.Tests;
 
 // F4 step 4: the caching strategy and its client. Anthropic's markers are checked on the captured request body, through
 // the real adapter (as in AnthropicCachingWireTests), so the test sees what the API would see.
-public class PromptCachingTests
+public class AnthropicPromptCachingTests
 {
     private const string Reply = """
-        {"id":"msg_1","type":"message","role":"assistant","model":"claude-haiku-5-5",
-         "content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","stop_sequence":null,
-         "usage":{"input_tokens":10,"output_tokens":2}}
-        """;
+                                 {"id":"msg_1","type":"message","role":"assistant","model":"claude-haiku-5-5",
+                                  "content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","stop_sequence":null,
+                                  "usage":{"input_tokens":10,"output_tokens":2}}
+                                 """;
 
     private static (IChatClient Client, StubHandler Handler) Anthropic(CacheLifetime prefix)
     {
@@ -26,9 +25,14 @@ public class PromptCachingTests
         {
             Content = new StringContent(Reply, System.Text.Encoding.UTF8, "application/json"),
         });
-        IChatClient adapter = new AnthropicClient(new ClientOptions { ApiKey = "test", HttpClient = new HttpClient(handler) })
+        IChatClient adapter = new AnthropicClient(new ClientOptions
+        {
+            ApiKey = "test",
+            HttpClient = new HttpClient(handler)
+        })
             .AsIChatClient("claude-haiku-5-5", 1024);
-        return (new PromptCachingChatClient(adapter, new AnthropicPromptCaching(prefix, "claude-haiku-5-5", 1024)), handler);
+        return (new PromptCachingChatClient(adapter, new AnthropicPromptCaching(prefix, "claude-haiku-5-5", 1024)),
+            handler);
     }
 
     private static List<ChatMessage> Conversation() =>
@@ -39,7 +43,8 @@ public class PromptCachingTests
         new(ChatRole.User, "fix the bug"),
     ];
 
-    private static JsonNode Body(StubHandler handler, int request = 0) => JsonNode.Parse(handler.Requests[request].Body!)!;
+    private static JsonNode Body(StubHandler handler, int request = 0) =>
+        JsonNode.Parse(handler.Requests[request].Body!)!;
 
     private static string? SystemTtl(JsonNode body) =>
         body["system"]?.AsArray().Last()!["cache_control"]?["ttl"]?.GetValue<string>();
@@ -108,7 +113,11 @@ public class PromptCachingTests
         {
             Content = new StringContent(Reply, System.Text.Encoding.UTF8, "application/json"),
         });
-        return new AnthropicClient(new ClientOptions { ApiKey = "test", HttpClient = new HttpClient(handler) })
+        return new AnthropicClient(new ClientOptions
+        {
+            ApiKey = "test",
+            HttpClient = new HttpClient(handler)
+        })
             .AsIChatClient("claude-haiku-5-5", 1024);
     }
 
@@ -166,10 +175,13 @@ public class PromptCachingTests
     {
         // Hosts stream; the client prepares the streaming path exactly as the other.
         var inner = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "ok")));
-        var client = new PromptCachingChatClient(inner, new AnthropicPromptCaching(CacheLifetime.OneHour, "claude-haiku-5-5", 1024));
+        var client = new PromptCachingChatClient(inner,
+            new AnthropicPromptCaching(CacheLifetime.OneHour, "claude-haiku-5-5", 1024));
         List<ChatMessage> history = Conversation();
 
-        await foreach (var _ in client.GetStreamingResponseAsync(history)) { }
+        await foreach (var _ in client.GetStreamingResponseAsync(history))
+        {
+        }
 
         var (sent, options) = inner.Requests.Single();
         Assert.That(sent[0], Is.Not.SameAs(history[0]), "the system message is a marked copy");

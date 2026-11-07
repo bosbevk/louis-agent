@@ -12,6 +12,9 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
 | `louis-agent.core.web` | Class library | Web access on core (CL33): the browser, the fetcher, the robots policy, search, rendering and the recorders; a host hands it in through `HostServices` | [core.web](louis-agent.core.web.md) |
 | `louis-agent.core.telemetry` | Class library | Telemetry on core (CL33): the OpenTelemetry tracer and exporter and the collector's log sink; a host hands it in through `HostServices` | [core.telemetry](louis-agent.core.telemetry.md) |
+| `louis-agent.core.anthropic` | Class library | Claude on core (CL57): the provider strategy, the cache-write mapper, the two prompt-cache markers; a program hands `AnthropicProvider.Instance` in through `HostServices` | [core.anthropic](louis-agent.core.anthropic.md) |
+| `louis-agent.core.ollama` | Class library | A local model through Ollama on core (CL57), with the long timeout a small GPU needs | [core.ollama](louis-agent.core.ollama.md) |
+| `louis-agent.core.openai` | Class library | Any server that speaks OpenAI's chat API, on core (CL57) | [core.openai](louis-agent.core.openai.md) |
 | `demos/puls/identity/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`where-to-buy`, `shop-prices`, `recipes`, `web`, `calculator`); its prompts embedded with their paths | [identity.puls](../../../demos/puls/docs/projects/louis-agent.identity.puls.md) |
 | `demos/puls/evals/louis-agent.identity.puls.evals` | Class library | What proves Puls: its evals as folders of files, their readers and expectations; only the runner references it | [identity.puls](../../../demos/puls/docs/projects/louis-agent.identity.puls.md) |
 | `demos/puls/evals/louis-agent.identity.puls.judges` | Class library | Puls's model judge, the cook's `meal-for-people`, apart from the identity because it needs the harness; only the runner references it | [identity.puls.judges](../../../demos/puls/docs/projects/louis-agent.identity.puls.judges.md) |
@@ -55,7 +58,7 @@ flowchart TD
     Hosts["<b>What runs on core</b><br/>cli, acp-server, api, mcp-server, evals.runner<br/>orchestrator, usage-probe"]
     Catalogs["<b>What picks the packs</b><br/>coding-catalog, host-packs"]
     Core["<b>louis-agent.core</b><br/>the engine"]
-    OnCore["<b>On core</b><br/>core.web, core.telemetry"]
+    OnCore["<b>On core</b><br/>core.web, core.telemetry, core.anthropic, core.ollama, core.openai"]
     Ids["<b>Every identity</b><br/>who an agent is"]
     Packs["<b>Every pack</b><br/>what an agent can do"]
     Comp["<b>louis-agent.composition</b><br/>the contracts"]

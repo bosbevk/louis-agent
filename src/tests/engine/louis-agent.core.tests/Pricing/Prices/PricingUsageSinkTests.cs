@@ -7,7 +7,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.Providers.AnthropicProvider;
+using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Pricing.Prices;
@@ -16,14 +16,14 @@ namespace LouisAgent.Core.Tests.Pricing.Prices;
 public class PricingUsageSinkTests
 {
     private const string Prices = """
-        {
-          "as_of": "2026-10-10",
-          "currency": "USD",
-          "models": {
-            "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 }
-          }
-        }
-        """;
+                                  {
+                                    "as_of": "2026-10-10",
+                                    "currency": "USD",
+                                    "models": {
+                                      "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 }
+                                    }
+                                  }
+                                  """;
 
     private string _dir = null!;
     private string _prices = null!;
@@ -40,8 +40,10 @@ public class PricingUsageSinkTests
     public void TearDown() => Directory.Delete(_dir, recursive: true);
 
     private static UsageRecord Record(string? model, UsageCost? cost = null) => new(
-        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: "api", Session: "sess_1", Turn: 1, Task: null,
-        Run: null, Service: null, Model: model, Tokens: new UsageTokens(47_605, null, 0, 470, null), DurationMs: 1, Stop: "stop",
+        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: "api", Session: "sess_1", Turn: 1,
+        Task: null,
+        Run: null, Service: null, Model: model, Tokens: new UsageTokens(47_605, null, 0, 470, null), DurationMs: 1,
+        Stop: "stop",
         Cost: cost);
 
     [Test]
@@ -96,13 +98,19 @@ public class PricingUsageSinkTests
         var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi"))
         {
             ModelId = "claude-haiku-5-5",
-            Usage = new UsageDetails { InputTokenCount = 47_605, CachedInputTokenCount = 0, OutputTokenCount = 470 },
+            Usage = new UsageDetails
+            {
+                InputTokenCount = 47_605,
+                CachedInputTokenCount = 0,
+                OutputTokenCount = 470
+            },
         };
         AgentOptions agent = TestPaths.Agent();
         agent.LogDirectory = _dir;
         agent.PricesFile = _prices;
 
-        AgentEngine engine = AgentHost.Build(new LlmOptions(), agent, new StubClientFactory(new FakeChatClient(_ => response))).Engine;
+        AgentEngine engine = AgentHost
+            .Build(new LlmOptions(), agent, new StubClientFactory(new FakeChatClient(_ => response))).Engine;
         await engine.ProcessPromptAsync(engine.NewHistory(), "hi");
 
         string line = File.ReadAllLines(Path.Combine(_dir, JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow))).Single();
@@ -137,7 +145,11 @@ public class PricingUsageSinkTests
     {
         File.WriteAllText(_prices, "{ not json");
 
-        Assert.Throws<InvalidDataException>(() => UsageLedger.Open(new AgentOptions { LogDirectory = _dir, PricesFile = _prices }));
+        Assert.Throws<InvalidDataException>(() => UsageLedger.Open(new AgentOptions
+        {
+            LogDirectory = _dir,
+            PricesFile = _prices
+        }));
     }
 
     [Test]

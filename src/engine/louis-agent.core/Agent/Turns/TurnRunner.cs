@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Telemetry;
@@ -38,7 +39,7 @@ internal sealed class TurnRunner(
     /// <summary>
     /// Room for a sizeable file in one tool call; larger files are written in chunks (see default.md).
     /// </summary>
-    internal const int MaxOutputTokens = LlmClientFactory.MaxOutputTokens;
+    internal const int MaxOutputTokens = LlmLimits.MaxOutputTokens;
 
     /// <summary>How many times a cut-off reply is continued before the turn gives up.</summary>
     private const int MaxCutOffContinuations = 3;
@@ -112,7 +113,10 @@ internal sealed class TurnRunner(
             // The turn ended on a specialist's report: it's shown as it is, and no request is made to retype it.
             if (ShownReport.In([.. updates.SelectMany(update => update.Contents)]) is { } report)
             {
-                var shown = new ChatResponseUpdate(ChatRole.Assistant, report) { MessageId = Guid.NewGuid().ToString() };
+                var shown = new ChatResponseUpdate(ChatRole.Assistant, report)
+                {
+                    MessageId = Guid.NewGuid().ToString()
+                };
                 updates.Add(shown);
                 yield return shown;
             }

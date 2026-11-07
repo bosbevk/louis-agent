@@ -83,7 +83,7 @@ public static class AgentHost
         AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent), telemetry.AddSinks);
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
         telemetry.Start();
-        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog, services);
+        return Build(llm, agent, clientFactory ?? services.ClientFactory(), catalog, services);
     }
 
     /// <summary>

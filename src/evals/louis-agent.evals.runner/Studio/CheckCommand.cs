@@ -43,7 +43,7 @@ public static class CheckCommand
         try
         {
             ManifestSeal.Seal(folder);
-            var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio");
+            var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio", catalogs.Models);
             var cases = ConformanceCases.Load(eval.Transcripts, eval.Scenarios);
             return await EvalConformance.CheckAsync(eval, cases, cancellationToken);
         }

@@ -13,6 +13,9 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Telemetry;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator;
@@ -61,7 +64,8 @@ Log(OrchestratorLogMessage.CostsShownIn, new { Display = display });
 
 var comms = new CommsLog(options.CommsLogPath, display);
 var tools = new ServiceTools(options, feed, louisAgent, methods, comms);
-var clientFactory = new LlmClientFactory();
+var clientFactory =
+    new LlmClientFactory([AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]);
 var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, llm.ResolveSupportsTools(),
     toolsets: [tools],
     usageSink: UsageLedger.Open(agentOptions, prices), usageMapper: clientFactory.CreateUsageMapper(llm))

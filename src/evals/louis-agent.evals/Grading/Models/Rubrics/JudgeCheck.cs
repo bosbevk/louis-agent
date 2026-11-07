@@ -110,7 +110,7 @@ public sealed class JudgeCheck : IRubricCheck
                 throw new InvalidDataException(MessageText.Format(EvalErrorMessage.RubricMissing, new { File = file }));
             string rubric = PromptHeaders.Split(settings.Rubric, File.ReadAllText(file)).Body;
             return new JudgeCheck(Type, settings.Version, rubric, settings.Ask ?? [],
-                () => JudgeClients.FromEnvironment(), settings.Sources);
+                () => JudgeClients.FromEnvironment(context.Models), settings.Sources);
         }
     }
 }
