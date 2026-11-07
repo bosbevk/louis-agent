@@ -58,13 +58,13 @@ flowchart TD
     Programs --> Catalogs
     Hosts --> Core
     Catalogs --> Core
-    Core ~~~ Ids
     Core ~~~ Packs
-    Catalogs --> Ids
+    Core ~~~ Ids
     Catalogs --> Packs
-    Ids --> Comp
+    Catalogs --> Ids
     Core --> Comp
     Packs --> Comp
+    Ids --> Comp
 ```
 
 A pack or an identity references only the contracts, and core references no pack, identity or host, so only what picks the packs knows them all. Behaviour lives in core, and every host is a thin
