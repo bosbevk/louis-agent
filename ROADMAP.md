@@ -76,23 +76,23 @@ from Azure (F61.4); the final cook's paid measure is still owed.
 
 ## The phases
 
-One at a time, in this order; Puls's own track takes its turns between them. An id links the TODO's row; a phase is
+One at a time, in this order; Puls's own track takes its turns between them. Since 2026-11-07 the framework's track comes first, and the [TODO](TODO.md)'s rows are the build order. An id links the TODO's row; a phase is
 done when Louis has written its learning write-up himself, without the code open.
 
 | Phase | What | The selling point | Status | Ids |
 |---|---|---|---|---|
 | 0 to 3 | Docs and ADRs; three doors closed; the cut into engine, identities and packs; evals in C# | Measured | Done | — |
 | 3b | Evals as content: an eval is files beside its identity, a pack ships its checks, a studio in the admin portal | Measured | Done | F49 |
-| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | F35 done; F48.1 to F48.3 done, F48.4 to F48.6 remain | F48 |
-| 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Now | F46 |
-| 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Now; F50.2 done | F50 |
-| 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Now | F40 |
+| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | Next, after the framework's first children; F48.1 to F48.3 done | F48 |
+| 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Next, after the framework | F46 |
+| 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Next, after the framework; F50.2 done | F50 |
+| 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Next, after the framework | F40 |
 | 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Next | F7 |
 | 6 | Orchestration: one delegation function, typed results checked in code, the orchestrator as an identity | Checked, not trusted | Next | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
 | 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains | F43, F8, F15, F44, F51, F61 |
-| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F47 |
+| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F44, F47 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
 

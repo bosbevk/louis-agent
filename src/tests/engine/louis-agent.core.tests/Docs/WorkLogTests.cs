@@ -48,18 +48,19 @@ public partial class WorkLogTests
         Assert.That(named.Except(Done()), Is.Empty, "add the row to src/docs/work-log.md");
     }
 
+    /// <summary>
+    /// The TODO's rows are the build order (Louis, 2026-11-07: the framework first, then the agents), so the work
+    /// log's open table holds the same ids in the same order, not only the same set.
+    /// </summary>
     [Test]
-    public void TheOpenList_IsTheTodos()
+    public void TheOpenList_IsTheTodos_InItsOrder()
     {
         var todo = TodoIds().Matches(File.ReadAllText(Path.Combine(Root, "TODO.md")))
-            .Select(m => m.Groups[1].Value).ToHashSet();
+            .Select(m => m.Groups[1].Value).ToList();
+        var open = OpenRows().Matches(WorkLog).Select(m => m.Groups[1].Value).ToList();
 
         // A done feature may still be open for its leftovers (F18, F54), so open and done can share an id.
-        Assert.Multiple(() =>
-        {
-            Assert.That(todo.Except(Open()), Is.Empty, "open in the TODO, not in the work log's Open table");
-            Assert.That(Open().Except(todo), Is.Empty, "in the work log's Open table, not in the TODO");
-        });
+        Assert.That(open, Is.EqualTo(todo), "the work log's Open table is the TODO's rows, in the TODO's order");
     }
 
     /// <summary>Every row has a real date, no id is listed twice, and the counts at the top are the rows below.</summary>
