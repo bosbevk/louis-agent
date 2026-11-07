@@ -83,7 +83,7 @@ quality trade.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark chat passes recall under the threshold; demo 10/10 with cost per fix ≤ M2.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F9** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F9** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

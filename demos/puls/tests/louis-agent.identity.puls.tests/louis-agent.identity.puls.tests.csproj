@@ -18,14 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <!-- The packs Puls names, so its golden builds the cook with them as the Puls stack does. -->
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <!-- The other pack Puls names (F35.2 step 1): the catalogue the tests build holds it. -->
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- The name enums Puls's prompts tests read, kept with its evals (Evals/Checks/Shared/). -->

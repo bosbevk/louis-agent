@@ -13,12 +13,12 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `demos/puls/identity/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`where-to-buy`, `shop-prices`, `recipes`, `web`, `calculator`); its prompts embedded with their paths | [identity.puls](../../../demos/puls/docs/projects/louis-agent.identity.puls.md) |
 | `demos/puls/evals/louis-agent.identity.puls.evals` | Class library | What proves Puls: its evals as folders of files, their readers and expectations; only the runner references it | [identity.puls](../../../demos/puls/docs/projects/louis-agent.identity.puls.md) |
 | `demos/puls/evals/louis-agent.identity.puls.judges` | Class library | Puls's model judge, the cook's `meal-for-people`, apart from the identity because it needs the harness; only the runner references it | [identity.puls.judges](../../../demos/puls/docs/projects/louis-agent.identity.puls.judges.md) |
-| `packs/louis-agent.pack.calculator` | Class library | Sums worked out in code: the `calculator` toolset's `Calculate` | [pack.calculator](../../../packs/docs/projects/louis-agent.pack.calculator.md) |
-| `packs/louis-agent.pack.where-to-buy` | Class library | Where to buy: the `where-to-buy` toolset (a shop's nearest branches on OpenStreetMap, and which is the town's), its guide and its texts | [pack.where-to-buy](../../../packs/docs/projects/louis-agent.pack.where-to-buy.md) |
-| `packs-evals/louis-agent.pack.where-to-buy.checks` | Class library | The shop rules evals name; only the runner references it | [pack.where-to-buy](../../../packs/docs/projects/louis-agent.pack.where-to-buy.md) |
-| `packs/louis-agent.pack.shop-prices` | Class library | Shop prices: the `shop-prices` toolset (a list estimated from Stats SA's average prices, totals in code), its tables, its store (`SHOP_PRICES_MONGO_URL`), its guide and its texts | [pack.shop-prices](../../../packs/docs/projects/louis-agent.pack.shop-prices.md) |
-| `packs/louis-agent.pack.recipes` | Class library | What the recipes are: the `recipes` toolset (search an enabled South African recipe site, read any recipe page), its guide, its setting (`RECIPE_SOURCES`) and its texts | [pack.recipes](../../../packs/docs/projects/louis-agent.pack.recipes.md) |
-| `packs-evals/louis-agent.pack.recipes.checks` | Class library | The rule evals name to prove a recipe's link is on a site of the pack's table; only the runner references it | [pack.recipes](../../../packs/docs/projects/louis-agent.pack.recipes.md) |
+| `packs/tools/louis-agent.pack.calculator` | Class library | Sums worked out in code: the `calculator` toolset's `Calculate` | [pack.calculator](../../../packs/docs/projects/louis-agent.pack.calculator.md) |
+| `packs/tools/louis-agent.pack.where-to-buy` | Class library | Where to buy: the `where-to-buy` toolset (a shop's nearest branches on OpenStreetMap, and which is the town's), its guide and its texts | [pack.where-to-buy](../../../packs/docs/projects/louis-agent.pack.where-to-buy.md) |
+| `packs/evals/louis-agent.pack.where-to-buy.checks` | Class library | The shop rules evals name; only the runner references it | [pack.where-to-buy](../../../packs/docs/projects/louis-agent.pack.where-to-buy.md) |
+| `packs/tools/louis-agent.pack.shop-prices` | Class library | Shop prices: the `shop-prices` toolset (a list estimated from Stats SA's average prices, totals in code), its tables, its store (`SHOP_PRICES_MONGO_URL`), its guide and its texts | [pack.shop-prices](../../../packs/docs/projects/louis-agent.pack.shop-prices.md) |
+| `packs/tools/louis-agent.pack.recipes` | Class library | What the recipes are: the `recipes` toolset (search an enabled South African recipe site, read any recipe page), its guide, its setting (`RECIPE_SOURCES`) and its texts | [pack.recipes](../../../packs/docs/projects/louis-agent.pack.recipes.md) |
+| `packs/evals/louis-agent.pack.recipes.checks` | Class library | The rule evals name to prove a recipe's link is on a site of the pack's table; only the runner references it | [pack.recipes](../../../packs/docs/projects/louis-agent.pack.recipes.md) |
 | `demos/puls/hosts/louis-agent.host-packs` | Class library | Picks what Puls's programs run: the one project that references the identity and packs they can load; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md) |
 | `src/engine/louis-agent.composition` | Class library | The contracts a pack, an identity and the engine share; it names no pack and leans on no project | [ADR 0076](../adr/0076-core-ships-no-agent.md) |
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
@@ -41,7 +41,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/hosts/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
 | `src/web/louis-agent.web` | Razor class library | What every site shares: the chat's and the admin's frames, the eval pages ([their own doc](eval-pages.md)), a pack's screens, chat models, the API client, markdown, usage and currency | [louis-agent.web](louis-agent.web.md) |
 | `src/web/louis-agent.web.accounts` | Razor class library, on `louis-agent.web` | The account pages, their client, words, styles and passkey script; a site that has accounts opts in (CL30, ADR 0089) | [louis-agent.web.accounts](louis-agent.web.accounts.md) |
-| `src/tests`, `demos/*/tests`, `packs-tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `src/tests/shared/louis-agent.testing` and `src/tests/web/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
+| `src/tests`, `demos/*/tests`, `packs/tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `src/tests/shared/louis-agent.testing` and `src/tests/web/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
 
@@ -79,7 +79,7 @@ adapter between its protocol and `AgentEngine`.
 flowchart TD
     ApiPrograms["<b>The programs that serve a site</b><br/>puls-api, coding-api"]
     Sites["<b>The sites</b><br/>louis-agent.puls, louis-agent.code-review, louis-agent.starter"]
-    PacksWeb["<b>packs-web</b><br/>a pack's own views, for the sites that use them"]
+    PacksWeb["<b>packs/web</b><br/>a pack's own views, for the sites that use them"]
     Web["<b>louis-agent.web</b><br/>what every site shares"]
     Api["<b>louis-agent.api</b>"]
 

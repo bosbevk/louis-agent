@@ -11,15 +11,15 @@ one day without changing. The engine (`louis-agent.core`) never references a pac
 (`demos/puls/hosts/louis-agent.host-packs`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
-no network. The real packs in the repo follow the same steps: `packs/louis-agent.pack.where-to-buy` is the closest
-(no settings, one tool, its own eval checks), and `packs/louis-agent.pack.recipes` adds the two things `units` doesn't
+no network. The real packs in the repo follow the same steps: `packs/tools/louis-agent.pack.where-to-buy` is the closest
+(no settings, one tool, its own eval checks), and `packs/tools/louis-agent.pack.recipes` adds the two things `units` doesn't
 need: settings (`RecipesOptions`) and a core service (the guarded browser). Read them beside this guide.
 
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o packs/louis-agent.pack.units
-dotnet sln louis-agent-solution.sln add packs/louis-agent.pack.units/louis-agent.pack.units.csproj
+dotnet new classlib -o packs/tools/louis-agent.pack.units
+dotnet sln louis-agent-solution.sln add packs/tools/louis-agent.pack.units/louis-agent.pack.units.csproj
 ```
 
 Delete the template's `Class1.cs`, and make the csproj look like the packs':
@@ -196,9 +196,9 @@ gives an empty page and never throws. What anyone may read belongs in a feed ins
 `RecipesUsageScreen` is the example.
 
 When a description can't say what you want, a real component replaces it by name. It goes in its own project under
-`packs-web/`, never in the pack: `louis-agent.pack.recipes.web` holds `RecipeLibraryView`, which wraps the plain table and adds a
+`packs/web/`, never in the pack: `louis-agent.pack.recipes.web` holds `RecipeLibraryView`, which wraps the plain table and adds a
 line above it, and a site adds it with `RecipeWebViews.AddTo(views)`. The pack and its web project can't reference each other,
-so a test project under `packs-tests/` sees both and holds the names they share.
+so a test project under `packs/tests/` sees both and holds the names they share.
 
 A screen is read-only until it says otherwise. To add a button, name a `ScreenAction` in the spec and write `ActAsync`; give one that destroys something a
 `Confirm` question, and it takes two clicks. To let a row open as a form, set `Editable` and write `ReadRowAsync` and `SaveRowAsync`: the fields are text, number,
@@ -241,7 +241,7 @@ that needs the real toolset uses your enum member, never a sample and never a st
 ## 5. Give it settings (when it needs them)
 
 A pack reads its own settings in its own options class, never through core's `AgentOptions`. The recipes pack's is the
-pattern (`packs/louis-agent.pack.recipes/RecipesOptions.cs`): one property per setting and a `FromEnvironment` that reads
+pattern (`packs/tools/louis-agent.pack.recipes/RecipesOptions.cs`): one property per setting and a `FromEnvironment` that reads
 them once. The pack takes the options in its constructor and says what is missing through `MissingSettings`.
 
 Then document each setting where people look for it: a commented line in `config/.env.example` (the recipes pack's
@@ -267,15 +267,15 @@ catalogue refuses it as unknown.
 ## 7. Test it
 
 ```bash
-dotnet new nunit -o packs-tests/louis-agent.pack.units.tests
-dotnet sln louis-agent-solution.sln add packs-tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
+dotnet new nunit -o packs/tests/louis-agent.pack.units.tests
+dotnet sln louis-agent-solution.sln add packs/tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
 ```
 
 Give the test project the packs' tests' references (the pack, and `src/tests/shared/louis-agent.testing` for the shared fakes), mirror
 the pack's folders, and write:
 
 - **A prompts fixture** that registers the pack's prompts before any test reads one, as a host does at start-up
-  (`packs-tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
+  (`packs/tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
   `[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
 - **A pack test** (`WhereToBuyPackTests` is the model): its name, its toolsets, that `toolsets/units.md` is in its prompts,
   and that the guide routes here and holds no `## Skill:`.
@@ -318,7 +318,7 @@ To prove what your tools do, first try a general check in your eval file, naming
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
 mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 
-A rule no general check can say goes in its own project, `packs-evals/louis-agent.pack.{name}.checks`,
+A rule no general check can say goes in its own project, `packs/evals/louis-agent.pack.{name}.checks`,
 which only the runner references, so someone can use your tools without the evals:
 
 1. **Its csproj** references the check contract, `..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
@@ -329,7 +329,7 @@ which only the runner references, so someone can use your tools without the eval
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
 4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the catalogues the demo's eval program hands to the runner (`PulsCatalogs`).
-5. **Test it** in `packs-tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
+5. **Test it** in `packs/tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 
 A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test

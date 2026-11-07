@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Web.Reading;
+
 namespace LouisAgent.HostPacks.Tests.Copies;
 
 /// <summary>
@@ -8,11 +9,11 @@ namespace LouisAgent.HostPacks.Tests.Copies;
 public class PageReaderCopyTests
 {
     /// <summary>A reader in the recipes pack and its original say the same thing.</summary>
-    [TestCase("packs/louis-agent.pack.recipes/Reading/HtmlText.cs",
+    [TestCase("packs/tools/louis-agent.pack.recipes/Reading/HtmlText.cs",
         "src/engine/louis-agent.composition/Web/Reading/HtmlText.cs")]
-    [TestCase("packs/louis-agent.pack.recipes/Reading/LeadImage.cs",
+    [TestCase("packs/tools/louis-agent.pack.recipes/Reading/LeadImage.cs",
         "src/engine/louis-agent.composition/Web/Reading/LeadImage.cs")]
-    [TestCase("packs/louis-agent.pack.recipes/Reading/JsonLdBlocks.cs",
+    [TestCase("packs/tools/louis-agent.pack.recipes/Reading/JsonLdBlocks.cs",
         "src/engine/louis-agent.composition/Web/Reading/JsonLdBlocks.cs")]
     public void TheCopy_IsTheOriginal(string copy, string original) =>
         Assert.That(Code(copy), Is.EqualTo(Code(original)));

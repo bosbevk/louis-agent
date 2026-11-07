@@ -31,18 +31,20 @@ public class PackWebBoundaryTests
     /// <summary>A pack knows nothing of the web: not the framework's, nor its own views.</summary>
     [Test]
     public void NoPack_ReferencesTheWeb() =>
-        Assert.That(Offending("packs", reference => reference.StartsWith("src/web/") || reference.StartsWith("packs-web/")),
+        Assert.That(
+            Offending("packs/tools",
+                reference => reference.StartsWith("src/web/") || reference.StartsWith("packs/web/")),
             Is.Empty);
 
     /// <summary>A pack's web views know nothing of any pack: they read what the API hands them.</summary>
     [Test]
     public void NoPacksWebViews_ReferenceAPack() =>
-        Assert.That(Offending("packs-web", reference => reference.StartsWith("packs/")), Is.Empty);
+        Assert.That(Offending("packs/web", reference => reference.StartsWith("packs/tools/")), Is.Empty);
 
     /// <summary>A site in a browser takes a pack's web views, and never the pack.</summary>
     [TestCase("demos/puls/web")]
     [TestCase("demos/louis-agent/web")]
     [TestCase("demos/starter/web")]
     public void NoSite_ReferencesAPack(string folder) =>
-        Assert.That(Offending(folder, reference => reference.StartsWith("packs/")), Is.Empty);
+        Assert.That(Offending(folder, reference => reference.StartsWith("packs/tools/")), Is.Empty);
 }

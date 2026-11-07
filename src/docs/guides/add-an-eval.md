@@ -148,7 +148,7 @@ name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its project's
-list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs-evals/louis-agent.pack.where-to-buy.checks/Checks/`),
+list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs/evals/louis-agent.pack.where-to-buy.checks/Checks/`),
 which the demo's program hands to the runner (`PulsCatalogs`). It lives in a project of its own, which only the runner references,
 never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
 ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons

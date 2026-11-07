@@ -12,7 +12,7 @@ public class OneSeamForScreensTests
     {
         var oldSeam = "IData" + "Report";
 
-        var named = new[] { "src", "packs", "packs-web", "packs-evals", "packs-tests", "demos" }
+        var named = new[] { "src", "packs", "demos" }
             .Select(folder => Path.Combine(TestPaths.RepoRoot, folder))
             .Where(Directory.Exists)
             .SelectMany(folder => Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories))

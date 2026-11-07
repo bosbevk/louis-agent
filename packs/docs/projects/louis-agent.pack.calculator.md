@@ -66,7 +66,7 @@ shopping list's prices and totals aren't sums for this tool, since the `shop-pri
 
 ## Tests
 
-`packs-tests/louis-agent.pack.calculator.tests`: the sums and what's refused, the tool's lines, the pack's shape, and a golden
+`packs/tests/louis-agent.pack.calculator.tests`: the sums and what's refused, the tool's lines, the pack's shape, and a golden
 of its texts (`CalculatorToolMessageSnapshot.json`).
 
 ---

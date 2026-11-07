@@ -111,7 +111,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2E4C10
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-tests", "packs-tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0163}"
 	ProjectSection(SolutionItems) = preProject
@@ -414,7 +414,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{7B2E4C10
 		src\docs\specs\USAGE_AND_BUDGETS.md = src\docs\specs\USAGE_AND_BUDGETS.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-evals", "packs-evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "evals", "evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}"
 EndProject
@@ -480,13 +480,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.t
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs", "packs", "{13F83573-227E-2BB1-530B-3E26FFFFAA85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy", "packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj", "{F649C1D9-659D-43D4-B3B7-E53E589B15AD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C3200A32-7E1B-4C9A-9F7D-2026110700B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.calculator", "packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj", "{B219DD1F-E3C9-4EFD-A627-8D872A3B0EE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy", "packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj", "{F649C1D9-659D-43D4-B3B7-E53E589B15AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.tests", "packs-tests\louis-agent.pack.where-to-buy.tests\louis-agent.pack.where-to-buy.tests.csproj", "{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.calculator", "packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj", "{B219DD1F-E3C9-4EFD-A627-8D872A3B0EE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.calculator.tests", "packs-tests\louis-agent.pack.calculator.tests\louis-agent.pack.calculator.tests.csproj", "{EC1B8F0C-6862-4FEC-A627-4DCF6D00FB60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.tests", "packs\tests\louis-agent.pack.where-to-buy.tests\louis-agent.pack.where-to-buy.tests.csproj", "{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.calculator.tests", "packs\tests\louis-agent.pack.calculator.tests\louis-agent.pack.calculator.tests.csproj", "{EC1B8F0C-6862-4FEC-A627-4DCF6D00FB60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.testing", "src\tests\shared\louis-agent.testing\louis-agent.testing.csproj", "{57E3BAD7-2851-4611-9D17-97D957ED1E74}"
 EndProject
@@ -556,29 +558,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "demos\l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site.tests", "demos\louis-agent\tests\louis-agent.site.tests\louis-agent.site.tests.csproj", "{019CBDE7-1B72-4A30-8722-EA790CB43F1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes", "packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", "{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes", "packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", "{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.tests", "packs-tests\louis-agent.pack.recipes.tests\louis-agent.pack.recipes.tests.csproj", "{0A63FD85-04F5-4A18-AC61-BC7C9B319791}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.tests", "packs\tests\louis-agent.pack.recipes.tests\louis-agent.pack.recipes.tests.csproj", "{0A63FD85-04F5-4A18-AC61-BC7C9B319791}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices", "packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj", "{2FCE5E63-43C3-4FE1-9711-17C0AE33A639}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices", "packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj", "{2FCE5E63-43C3-4FE1-9711-17C0AE33A639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.tests", "packs-tests\louis-agent.pack.shop-prices.tests\louis-agent.pack.shop-prices.tests.csproj", "{24BE9DBB-A080-4355-8541-E07316E974E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.tests", "packs\tests\louis-agent.pack.shop-prices.tests\louis-agent.pack.shop-prices.tests.csproj", "{24BE9DBB-A080-4355-8541-E07316E974E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.integration-tests", "packs-tests\louis-agent.pack.shop-prices.integration-tests\louis-agent.pack.shop-prices.integration-tests.csproj", "{F5A6DA99-85A7-4CE4-B051-62798C6F91D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.integration-tests", "packs\tests\louis-agent.pack.shop-prices.integration-tests\louis-agent.pack.shop-prices.integration-tests.csproj", "{F5A6DA99-85A7-4CE4-B051-62798C6F91D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.integration-tests", "packs-tests\louis-agent.pack.recipes.integration-tests\louis-agent.pack.recipes.integration-tests.csproj", "{000CF338-1D40-44D0-9F8A-EE8F2A0D56B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.integration-tests", "packs\tests\louis-agent.pack.recipes.integration-tests\louis-agent.pack.recipes.integration-tests.csproj", "{000CF338-1D40-44D0-9F8A-EE8F2A0D56B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server.tests", "src\tests\hosts\louis-agent.mcp-server.tests\louis-agent.mcp-server.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "packs\evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks", "packs-evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj", "{D83A4AAF-492F-42CB-8C09-13197A073043}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks", "packs\evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj", "{D83A4AAF-492F-42CB-8C09-13197A073043}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals", "demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj", "{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks.tests", "packs-tests\louis-agent.pack.where-to-buy.checks.tests\louis-agent.pack.where-to-buy.checks.tests.csproj", "{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks.tests", "packs\tests\louis-agent.pack.where-to-buy.checks.tests\louis-agent.pack.where-to-buy.checks.tests.csproj", "{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks.tests", "packs-tests\louis-agent.pack.recipes.checks.tests\louis-agent.pack.recipes.checks.tests.csproj", "{904EE291-244B-4BE0-812E-E9B8938B0022}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks.tests", "packs\tests\louis-agent.pack.recipes.checks.tests\louis-agent.pack.recipes.checks.tests.csproj", "{904EE291-244B-4BE0-812E-E9B8938B0022}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals.tests", "demos\puls\tests\louis-agent.identity.puls.evals.tests\louis-agent.identity.puls.evals.tests.csproj", "{B1E6B1EA-183F-4E6F-9747-63AD2303090A}"
 EndProject
@@ -598,43 +600,43 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls-api", "dem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.coding-api", "demos\louis-agent\hosts\louis-agent.coding-api\louis-agent.coding-api.csproj", "{76F6D3A9-5840-5380-B83B-26EEC96FD4FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.paymo", "packs\louis-agent.pack.paymo\louis-agent.pack.paymo.csproj", "{6C2DB34D-AB11-5140-B508-FF2FB75474F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.paymo", "packs\tools\louis-agent.pack.paymo\louis-agent.pack.paymo.csproj", "{6C2DB34D-AB11-5140-B508-FF2FB75474F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.paymo.tests", "packs-tests\louis-agent.pack.paymo.tests\louis-agent.pack.paymo.tests.csproj", "{05C814B8-7211-56E1-9CFA-29040F392978}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.paymo.tests", "packs\tests\louis-agent.pack.paymo.tests\louis-agent.pack.paymo.tests.csproj", "{05C814B8-7211-56E1-9CFA-29040F392978}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.devops", "packs\louis-agent.pack.devops\louis-agent.pack.devops.csproj", "{DA7B07D6-FC91-5E46-B48F-47570867F0E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.devops", "packs\tools\louis-agent.pack.devops\louis-agent.pack.devops.csproj", "{DA7B07D6-FC91-5E46-B48F-47570867F0E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.devops.tests", "packs-tests\louis-agent.pack.devops.tests\louis-agent.pack.devops.tests.csproj", "{9300680F-FDBB-5BCE-A9D2-9BDA4791D117}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.devops.tests", "packs\tests\louis-agent.pack.devops.tests\louis-agent.pack.devops.tests.csproj", "{9300680F-FDBB-5BCE-A9D2-9BDA4791D117}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.coding-catalog", "demos\louis-agent\hosts\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj", "{52B25985-32BC-5A83-A5B5-B59CFAF7377A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.coding-catalog.tests", "demos\louis-agent\tests\louis-agent.coding-catalog.tests\louis-agent.coding-catalog.tests.csproj", "{191D8D8D-AF6D-539E-8C3F-BDB4ACC3A841}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet", "packs\louis-agent.pack.dotnet\louis-agent.pack.dotnet.csproj", "{7F9DD4A5-08FB-59E9-B101-E6EBC80EF223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet", "packs\tools\louis-agent.pack.dotnet\louis-agent.pack.dotnet.csproj", "{7F9DD4A5-08FB-59E9-B101-E6EBC80EF223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet.tests", "packs-tests\louis-agent.pack.dotnet.tests\louis-agent.pack.dotnet.tests.csproj", "{4E9CDA86-4050-5259-83EF-63E0A3622A97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet.tests", "packs\tests\louis-agent.pack.dotnet.tests\louis-agent.pack.dotnet.tests.csproj", "{4E9CDA86-4050-5259-83EF-63E0A3622A97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet.integration-tests", "packs-tests\louis-agent.pack.dotnet.integration-tests\louis-agent.pack.dotnet.integration-tests.csproj", "{D197FBAE-905C-5AB6-BA37-21AB2FB6169D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.dotnet.integration-tests", "packs\tests\louis-agent.pack.dotnet.integration-tests\louis-agent.pack.dotnet.integration-tests.csproj", "{D197FBAE-905C-5AB6-BA37-21AB2FB6169D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git", "packs\louis-agent.pack.git\louis-agent.pack.git.csproj", "{5B16445F-8855-5E22-A9A3-8CABA146EA3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git", "packs\tools\louis-agent.pack.git\louis-agent.pack.git.csproj", "{5B16445F-8855-5E22-A9A3-8CABA146EA3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.tests", "packs-tests\louis-agent.pack.git.tests\louis-agent.pack.git.tests.csproj", "{2BF21520-B4A1-5FCD-9F92-EF1B0C75C4A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.tests", "packs\tests\louis-agent.pack.git.tests\louis-agent.pack.git.tests.csproj", "{2BF21520-B4A1-5FCD-9F92-EF1B0C75C4A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.integration-tests", "packs-tests\louis-agent.pack.git.integration-tests\louis-agent.pack.git.integration-tests.csproj", "{01DA36C3-ED7F-5E77-BA82-C783E690B2CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.integration-tests", "packs\tests\louis-agent.pack.git.integration-tests\louis-agent.pack.git.integration-tests.csproj", "{01DA36C3-ED7F-5E77-BA82-C783E690B2CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files", "packs\louis-agent.pack.files\louis-agent.pack.files.csproj", "{DC2836AE-C908-5AC0-999E-B4A7B545957A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files", "packs\tools\louis-agent.pack.files\louis-agent.pack.files.csproj", "{DC2836AE-C908-5AC0-999E-B4A7B545957A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.tests", "packs-tests\louis-agent.pack.files.tests\louis-agent.pack.files.tests.csproj", "{10C762C9-E387-5B1B-B57E-DD7CB4DD2143}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.tests", "packs\tests\louis-agent.pack.files.tests\louis-agent.pack.files.tests.csproj", "{10C762C9-E387-5B1B-B57E-DD7CB4DD2143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell", "packs\louis-agent.pack.shell\louis-agent.pack.shell.csproj", "{E127A649-8C9B-55E1-87A0-C6863026680A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell", "packs\tools\louis-agent.pack.shell\louis-agent.pack.shell.csproj", "{E127A649-8C9B-55E1-87A0-C6863026680A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell.tests", "packs-tests\louis-agent.pack.shell.tests\louis-agent.pack.shell.tests.csproj", "{E5F569FC-45FB-5057-82A1-AF78EB8361D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell.tests", "packs\tests\louis-agent.pack.shell.tests\louis-agent.pack.shell.tests.csproj", "{E5F569FC-45FB-5057-82A1-AF78EB8361D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell.integration-tests", "packs-tests\louis-agent.pack.shell.integration-tests\louis-agent.pack.shell.integration-tests.csproj", "{ADA04BED-0F68-55A9-956E-AA8EF29C7DB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shell.integration-tests", "packs\tests\louis-agent.pack.shell.integration-tests\louis-agent.pack.shell.integration-tests.csproj", "{ADA04BED-0F68-55A9-956E-AA8EF29C7DB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web", "packs\louis-agent.pack.web\louis-agent.pack.web.csproj", "{E124B4F8-44EE-578B-83F0-DD03727783F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web", "packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj", "{E124B4F8-44EE-578B-83F0-DD03727783F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web.tests", "packs-tests\louis-agent.pack.web.tests\louis-agent.pack.web.tests.csproj", "{05F4A614-C6A6-5FE5-86BD-64A414503C7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web.tests", "packs\tests\louis-agent.pack.web.tests\louis-agent.pack.web.tests.csproj", "{05F4A614-C6A6-5FE5-86BD-64A414503C7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{44238E49-E4B6-5358-8A71-78820C764D6D}"
 EndProject
@@ -646,19 +648,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.film-export", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.film-export.tests", "demos\louis-agent\tests\louis-agent.film-export.tests\louis-agent.film-export.tests.csproj", "{E9F190FC-DCCD-5E5A-A7B0-916C19C1BD02}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-web", "packs-web", "{1696B542-0FB6-40D1-AD84-B617E362FEC4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{1696B542-0FB6-40D1-AD84-B617E362FEC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.web", "packs-web\louis-agent.pack.recipes.web\louis-agent.pack.recipes.web.csproj", "{8F8D9AE4-6A3B-4A4D-A2D0-BD670A645EB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.web", "packs\web\louis-agent.pack.recipes.web\louis-agent.pack.recipes.web.csproj", "{8F8D9AE4-6A3B-4A4D-A2D0-BD670A645EB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.web.tests", "packs-tests\louis-agent.pack.recipes.web.tests\louis-agent.pack.recipes.web.tests.csproj", "{22993A6A-A284-42ED-82FA-D7593D5810FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.web.tests", "packs\tests\louis-agent.pack.recipes.web.tests\louis-agent.pack.recipes.web.tests.csproj", "{22993A6A-A284-42ED-82FA-D7593D5810FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web", "packs-web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj", "{CD249E7A-5297-4F48-8019-A086D1275BF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web", "packs\web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj", "{CD249E7A-5297-4F48-8019-A086D1275BF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web.tests", "packs-tests\louis-agent.pack.files.web.tests\louis-agent.pack.files.web.tests.csproj", "{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web.tests", "packs\tests\louis-agent.pack.files.web.tests\louis-agent.pack.files.web.tests.csproj", "{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web", "packs-web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj", "{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web", "packs\web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj", "{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web.tests", "packs-tests\louis-agent.pack.git.web.tests\louis-agent.pack.git.web.tests.csproj", "{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web.tests", "packs\tests\louis-agent.pack.git.web.tests\louis-agent.pack.git.web.tests.csproj", "{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "starter", "starter", "{1D74F711-3395-4F67-81CC-FEADC314DB25}"
 EndProject
@@ -1989,24 +1991,24 @@ Global
 		{44238E49-E4B6-5358-8A71-78820C764D6D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
 		{53415676-2C15-5714-A2B2-03C39121F699} = {44238E49-E4B6-5358-8A71-78820C764D6D}
 		{05F4A614-C6A6-5FE5-86BD-64A414503C7B} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{E124B4F8-44EE-578B-83F0-DD03727783F1} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{E124B4F8-44EE-578B-83F0-DD03727783F1} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{ADA04BED-0F68-55A9-956E-AA8EF29C7DB0} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 		{E5F569FC-45FB-5057-82A1-AF78EB8361D9} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{E127A649-8C9B-55E1-87A0-C6863026680A} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{E127A649-8C9B-55E1-87A0-C6863026680A} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{10C762C9-E387-5B1B-B57E-DD7CB4DD2143} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{DC2836AE-C908-5AC0-999E-B4A7B545957A} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{DC2836AE-C908-5AC0-999E-B4A7B545957A} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{01DA36C3-ED7F-5E77-BA82-C783E690B2CB} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 		{2BF21520-B4A1-5FCD-9F92-EF1B0C75C4A3} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{5B16445F-8855-5E22-A9A3-8CABA146EA3F} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{5B16445F-8855-5E22-A9A3-8CABA146EA3F} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{D197FBAE-905C-5AB6-BA37-21AB2FB6169D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 		{4E9CDA86-4050-5259-83EF-63E0A3622A97} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{7F9DD4A5-08FB-59E9-B101-E6EBC80EF223} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{7F9DD4A5-08FB-59E9-B101-E6EBC80EF223} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{191D8D8D-AF6D-539E-8C3F-BDB4ACC3A841} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
 		{52B25985-32BC-5A83-A5B5-B59CFAF7377A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
 		{9300680F-FDBB-5BCE-A9D2-9BDA4791D117} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{DA7B07D6-FC91-5E46-B48F-47570867F0E2} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{DA7B07D6-FC91-5E46-B48F-47570867F0E2} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{05C814B8-7211-56E1-9CFA-29040F392978} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
-		{6C2DB34D-AB11-5140-B508-FF2FB75474F6} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{6C2DB34D-AB11-5140-B508-FF2FB75474F6} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{76F6D3A9-5840-5380-B83B-26EEC96FD4FF} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
 		{15FEE171-93EB-5050-93F2-E3D2064DA4D8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0146}
 		{2E53FE7C-7F57-56F1-9257-2728120EBBFE} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
@@ -2027,6 +2029,10 @@ Global
 		{FAC76245-0EC6-5B8A-97AB-269AB866204F} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
 		{47D7AC85-780B-5876-BB42-669EB7301C70} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
 		{40A7E11D-7BA0-58DC-93A8-E4C5585AC7FB} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{C3200A32-7E1B-4C9A-9F7D-2026110700B1} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{1696B542-0FB6-40D1-AD84-B617E362FEC4} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
 		{A230FA11-8B13-51C6-82ED-ED4E5BDDE653} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
 		{67D12025-5001-5F15-8E4B-ECFCA01E1D26} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
 		{5350B428-1572-5C72-8D7F-D5EF1438F8CC} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
@@ -2080,8 +2086,8 @@ Global
 		{B7678750-A3A4-4B29-AA77-E1E1E1682E68} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0145}
 		{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0143}
 		{06007296-284A-4A6E-A166-0555BB47408F} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
-		{F649C1D9-659D-43D4-B3B7-E53E589B15AD} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{B219DD1F-E3C9-4EFD-A627-8D872A3B0EE4} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{F649C1D9-659D-43D4-B3B7-E53E589B15AD} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
+		{B219DD1F-E3C9-4EFD-A627-8D872A3B0EE4} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{BCB772FE-E1BB-492A-BCCF-3BFC61C732AB} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{9D8E25B4-C4BC-4EED-97D7-CEEF606156AA} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
 		{DB2E212A-B775-459B-A8EB-5BEFB55B3AE5} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
@@ -2095,8 +2101,8 @@ Global
 		{4E129E05-751C-41CF-87CE-9A2E232B707D} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
 		{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}
 		{2AF9206D-FA47-452E-BFB5-909E16B0B283} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147}
-		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{2FCE5E63-43C3-4FE1-9711-17C0AE33A639} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
+		{2FCE5E63-43C3-4FE1-9711-17C0AE33A639} = {C3200A32-7E1B-4C9A-9F7D-2026110700B1}
 		{D17ECC33-4647-413E-AB3C-E56C38278590} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}
 		{D83A4AAF-492F-42CB-8C09-13197A073043} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}
 		{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}

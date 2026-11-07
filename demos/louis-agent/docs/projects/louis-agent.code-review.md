@@ -16,8 +16,8 @@ flowchart LR
     Page["Pages/ChatPage: a thin page"] --> Shell["ChatShell (framework)"]
     Admin["Layout/AdminLayout"] --> AdminShell["AdminShell (framework)"]
     Screen["Screen page (framework)"] --> Views["PackViews"]
-    Views --> Files["FilesView (packs-web)"]
-    Views --> Git["GitChangesView, GitBranchesView (packs-web)"]
+    Views --> Files["FilesView (packs/web)"]
+    Views --> Git["GitChangesView, GitBranchesView (packs/web)"]
     Files -->|Review or Ask: a draft| Handoff["ChatHandoff"]
     Git -->|Review: a draft| Handoff
     Handoff --> Page
@@ -29,7 +29,7 @@ flowchart LR
 - **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs' screens. A coding agent has no
   use for credits, a language menu, a place or projects, so `ChatPage` turns those off, along with what only says it's coming.
 - **A session** gets every toolset the API can load.
-- **Files, Changes and Branches aren't this app's.** They're the files and git packs' views, under `packs-web/`, and open as admin screens
+- **Files, Changes and Branches aren't this app's.** They're the files and git packs' views, under `packs/web/`, and open as admin screens
   at `/admin/screens/{name}`. `Program.cs` registers them with `FilesWebViews.AddTo` and `GitWebViews.AddTo`.
 - **A Review or Ask button opens this chat with the prompt as a draft,** and nothing is sent until the person sends it (`ChatHandoff`).
 - **Themes** are `retro`, the default, and `paper`: Sass that sets the framework's colour names, built to `wwwroot/css/themes/`, loaded after
@@ -69,7 +69,7 @@ sequenceDiagram
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
 | `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this site's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
-| `packs-web/louis-agent.pack.files.web`, `packs-web/louis-agent.pack.git.web` | Not in this project: the views it registers, with their records, calls and Sass |
+| `packs/web/louis-agent.pack.files.web`, `packs/web/louis-agent.pack.git.web` | Not in this project: the views it registers, with their records, calls and Sass |
 
 ## Configuration
 
@@ -86,7 +86,7 @@ A control for a pack goes in that pack's web project as a screen ([Build a pack]
 
 `demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
 pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
-`Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs-tests/`.
+`Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
 

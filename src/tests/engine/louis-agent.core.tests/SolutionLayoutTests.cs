@@ -18,12 +18,12 @@ public class SolutionLayoutTests
     [TestCase("src/web", "louis-agent.web", "louis-agent.web.accounts")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
-    [TestCase("packs", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
+    [TestCase("packs/tools", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
         "louis-agent.pack.git", "louis-agent.pack.dotnet", "louis-agent.pack.devops", "louis-agent.pack.paymo",
         "louis-agent.pack.recipes", "louis-agent.pack.calculator", "louis-agent.pack.shop-prices",
         "louis-agent.pack.where-to-buy")]
-    [TestCase("packs-evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
-    [TestCase("packs-web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web")]
+    [TestCase("packs/evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
+    [TestCase("packs/web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
     [TestCase("demos/puls/web", "louis-agent.puls")]
@@ -52,7 +52,7 @@ public class SolutionLayoutTests
     [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests",
         "louis-agent.code-review.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
-    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests",
+    [TestCase("packs/tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests",
         "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests",
         "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests",
         "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests",

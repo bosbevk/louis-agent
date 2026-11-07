@@ -6,6 +6,8 @@
 match, these two items could be put in one ADR", "this is actually demos", "should be called demos") · **Recorded:**
 2026-11-04
 
+**Updated (CL32, 2026-11-07):** the folders this ADR names are now one area, `packs/tools/`, `packs/evals/`, `packs/tests/` and `packs/web/` ([ADR 0090](0090-the-packs-are-one-area.md)); the rule is unchanged.
+
 ## Context
 
 This is a framework that will ship as NuGet packages ([ADR 0073](0073-packs-reference-no-evals.md)), but the folders didn't

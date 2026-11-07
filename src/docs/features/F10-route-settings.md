@@ -62,7 +62,7 @@ setting (`SUMMARY_MODEL`), and F16 comes before F9.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: fewer continues per fix, fix rate unchanged, triage cheaper; numbers recorded.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F10** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F10** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

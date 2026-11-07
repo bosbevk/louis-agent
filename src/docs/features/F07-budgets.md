@@ -90,7 +90,7 @@ Enforcement:
 - Stories' criteria pass; tests added; suites pass.
 - Acceptance run: a run budget below the full run's cost stops the run cleanly with deferred fixes; `-Resume` with a
   larger budget completes them (spec §9).
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F7** to the CHANGELOG,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F7** to the work log,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

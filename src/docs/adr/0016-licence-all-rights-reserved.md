@@ -18,7 +18,7 @@ change, share or host it without written permission. It is no longer open source
 ## Consequences
 
 - `LICENSE` is the notice; the README's licence section, the landing page (the hero's line, Oor ons, the FAQ, the
-  footer) and the CHANGELOG say so.
+  footer) and the work log say so.
 - **Not retroactive:** a version released under MIT or the AGPL-3.0 stays under that licence for whoever has it. The
   notice applies from 2026-10-15 onward.
 - GitHub's Terms of Service still let anyone view the public repo and fork it on GitHub; that gives no right to use the

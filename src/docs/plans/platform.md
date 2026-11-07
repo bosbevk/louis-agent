@@ -298,12 +298,12 @@ phone); in the code it is an **identity**.
 
 | Item | Becomes | Kind | When |
 |---|---|---|---|
-| Checkers (shops) | `packs/louis-agent.pack.shops`, with the town geocoder (`PlaceCoordinates`), which only the Checkers store lookup uses (`ShopCatalogueFactory.cs:37`) | green: ours, in process | Phase 2, step 4 |
-| Customers (the invoice simulation) | `CustomersPack`, self-contained in `identities/louis-agent.identity.demo/Packs/Customers/` with its guide and samples until a second identity wants it, when the folder moves out whole into `packs/louis-agent.pack.customers` (Phase 4); a client's own system plugs in behind `ICustomerDirectory` (their API, or their MCP server behind our tool) | green | F40 (Phase 4) |
-| Recipes | `packs/louis-agent.pack.recipes`: `FindRecipes(source, query)` searches only the sites turned on, and `ReadRecipe(url)` reads any public page's schema.org Recipe block through the guarded browser and returns it as a short table, in our process. Free, because Louis: "it has to be free", and no hosted recipe API covers South African dishes (TheMealDB returns 0 South African meals; Spoonacular's free plan is 50 points a day and Edamam has no free tier, and both forbid keeping results; `research/sa-recipes-api.md`, checked 2026-10-18) | green | F35, on Puls's track after Phase 3 |
-| The cook | a reusable `cook` role in `packs/louis-agent.pack.cooking`, which requires `recipes` | green | CL16 *Reusable roles*, after F35 |
-| Places | `packs/louis-agent.pack.places`: the municipality and its colours, what's nearby and how far, each fact with its source (OpenStreetMap's Nominatim reverse lookup, Wikipedia's nearby search in English and Afrikaans, the municipality's own site; tools such as `FindPlaces` and `Municipality`). It takes the geocoder from the shops pack, behind an `IGeocoder` seam in core, so shops keeps naming places by name only | green | its own feature on Puls's track, after the area-guide simulation (F40, Phase 4) |
-| The orchestrator's tools and checks | `packs/louis-agent.pack.triage` (the decision tools, the error feed) and `packs/louis-agent.pack.fixing` (the `voorman-fixer` role, `ConfirmFix`) | green | F39, Phase 6 Part B |
+| Checkers (shops) | `packs/tools/louis-agent.pack.shops`, with the town geocoder (`PlaceCoordinates`), which only the Checkers store lookup uses (`ShopCatalogueFactory.cs:37`) | green: ours, in process | Phase 2, step 4 |
+| Customers (the invoice simulation) | `CustomersPack`, self-contained in `identities/louis-agent.identity.demo/Packs/Customers/` with its guide and samples until a second identity wants it, when the folder moves out whole into `packs/tools/louis-agent.pack.customers` (Phase 4); a client's own system plugs in behind `ICustomerDirectory` (their API, or their MCP server behind our tool) | green | F40 (Phase 4) |
+| Recipes | `packs/tools/louis-agent.pack.recipes`: `FindRecipes(source, query)` searches only the sites turned on, and `ReadRecipe(url)` reads any public page's schema.org Recipe block through the guarded browser and returns it as a short table, in our process. Free, because Louis: "it has to be free", and no hosted recipe API covers South African dishes (TheMealDB returns 0 South African meals; Spoonacular's free plan is 50 points a day and Edamam has no free tier, and both forbid keeping results; `research/sa-recipes-api.md`, checked 2026-10-18) | green | F35, on Puls's track after Phase 3 |
+| The cook | a reusable `cook` role in `packs/tools/louis-agent.pack.cooking`, which requires `recipes` | green | CL16 *Reusable roles*, after F35 |
+| Places | `packs/tools/louis-agent.pack.places`: the municipality and its colours, what's nearby and how far, each fact with its source (OpenStreetMap's Nominatim reverse lookup, Wikipedia's nearby search in English and Afrikaans, the municipality's own site; tools such as `FindPlaces` and `Municipality`). It takes the geocoder from the shops pack, behind an `IGeocoder` seam in core, so shops keeps naming places by name only | green | its own feature on Puls's track, after the area-guide simulation (F40, Phase 4) |
+| The orchestrator's tools and checks | `packs/tools/louis-agent.pack.triage` (the decision tools, the error feed) and `packs/tools/louis-agent.pack.fixing` (the `voorman-fixer` role, `ConfirmFix`) | green | F39, Phase 6 Part B |
 | Git, dotnet, shell, Paymo, DevOps | the coding identity's packs | green | CL17 (Later) |
 | Axiz price rules, a client's system | an MCP server plugged in as a pack; Axiz's speaks stdio only, so it runs as a child process on the same machine | **orange**: theirs, with their own security and data layer | F36 (Phase 8) |
 
@@ -1235,7 +1235,7 @@ what the plan holds.
 |---|---|---|
 | 0 to 3 | done: their plans and docs folded by CL24, at the tag `pre-cl24` | merged |
 | 3b | one plan per row, written when it starts (the catalogue and eval files; checks in packs; the studio) | each its own `feature/` branch |
-| 3c | `F35-recipe-sources.md` (the draft rebased onto `packs/louis-agent.pack.recipes`), then `F48-cook-and-teacher.md` from `plans/cook-teacher/cook-and-teacher.md` | `feature/F35-recipe-sources`, `feature/F48-cook-and-teacher` |
+| 3c | `F35-recipe-sources.md` (the draft rebased onto `packs/tools/louis-agent.pack.recipes`), then `F48-cook-and-teacher.md` from `plans/cook-teacher/cook-and-teacher.md` | `feature/F35-recipe-sources`, `feature/F48-cook-and-teacher` |
 | 3d | `F46-localisation.md`, written when it starts | `feature/F46-localisation` |
 | 3e | one plan: the two shared packs, then a specialist at a time | `feature/F??-puls-specialists`, numbered when written |
 | 4 | `F40-sales-playground.md`, copied from Phase 4's section | `feature/F40-sales-playground` |
@@ -1344,7 +1344,7 @@ at the tag `pre-cl24`.
 |---|---|---|
 | 0 | **Docs.** This plan landed as the roadmap, ADRs 0027 to 0031, the TODO trimmed to one item per line, the merged features marked, F21, F22, F25, F26 and F29 closed. PR #64, merged 2026-10-19. Step 4, Louis's ten buyer conversations and 30 Malmesbury questions, is still his and still open. | `docs/plans/platform.md`, `docs/adr/0027` to `0031`, `TODO.md` |
 | 1 | **Three doors closed.** FX18 the API and the MCP server's HTTP transport refuse to start without a key (PR #65); FX19 every git call takes a list of arguments (PR #66); FX20 a skill file the agent writes waits in `pending/` for `/approve` (PR #68). ADR 0033 records what the agent writes and who widens its scope. Merged 2026-10-19. | `docs/fixes/FX18`, `FX19`, `FX20`, `docs/adr/0033`, `docs/learning/15-safety` |
-| 2 | **CL15 The cut.** Core is the engine and names no product; `identities/louis-agent.identity.puls` is who Puls is, `packs/louis-agent.pack.shops` what it can do, `src/louis-agent.composition` the one project that knows them all, picked with `IDENTITIES` and `PACKS`; a Puls golden file proved the moves; F30's minions stayed in core as a specialist's toolset; every pack stays convertible to MCP (`PackConvertibilityTests`). PR #71 (merged 2026-10-20) and its close-out PR #72 (ADR 0034, code a person can maintain). | `docs/plans/CL15-engine-identities-packs.md`, `docs/adr/0027`, `0028`, `0034`, `docs/architecture/` (today's stack and diagrams), `docs/learning/18` |
+| 2 | **CL15 The cut.** Core is the engine and names no product; `identities/louis-agent.identity.puls` is who Puls is, `packs/tools/louis-agent.pack.shops` what it can do, `src/louis-agent.composition` the one project that knows them all, picked with `IDENTITIES` and `PACKS`; a Puls golden file proved the moves; F30's minions stayed in core as a specialist's toolset; every pack stays convertible to MCP (`PackConvertibilityTests`). PR #71 (merged 2026-10-20) and its close-out PR #72 (ADR 0034, code a person can maintain). | `docs/plans/CL15-engine-identities-packs.md`, `docs/adr/0027`, `0028`, `0034`, `docs/architecture/` (today's stack and diagrams), `docs/learning/18` |
 | 3 | **F18 Evals in C#.** Every check is a C# eval on one harness (`evals/louis-agent.evals/`): datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge calibrated against people's labels, human review in the portal, pass@k and pass^k, a roll-up by category, frozen web input and $0 replays, traces and hashed logs, CI grading recorded transcripts; the runner and the API on one event contract (protocol v2). First v2 baseline: `puls-cook` 23 of 24 with its cook, `puls-routing` 72 of 72, $0.37 together; the local judge 31 of 36 on a blind agent's labels, below the bar. PR #95, merged 2026-10-29. Leftovers in the TODO: FX26, FX27, Louis's own judge labels, the eval architecture doc. | `docs/projects/louis-agent.evals*.md`, `docs/adr/0040` to `0049`, `docs/learning/12`, `13`, `docs/guides/add-an-eval.md`, `run-the-evals.md` |
 
 
@@ -1374,7 +1374,7 @@ GOAL skills 12 and 18. Paid runs: the studio's try-outs hit the replay cache; a 
 
 ### Phase 3c · The cook: F35 Recipe sources, then F48 The cook as a home cook and teacher
 
-Louis, 2026-10-28: "then cook rework". First **F35**'s first four steps, rebased onto `packs/louis-agent.pack.recipes`
+Louis, 2026-10-28: "then cook rework". First **F35**'s first four steps, rebased onto `packs/tools/louis-agent.pack.recipes`
 (the `Recipe` record and the SA sites as data: Drizzle and Dip, Food24, The Lazy Makoti, recipesfromsouthafrica.com,
 each turned on only after its terms are read, ADR 0023); then **F48**, planned on 2026-10-26
 (`plans/cook-teacher/cook-and-teacher.md`, nine steps): the cook calls `WriteRecipe` and C# does the scaling, the
@@ -1589,7 +1589,7 @@ public sealed class DemoIdentity : IAgentIdentity
 }
 
 // identities/louis-agent.identity.demo/Packs/Customers (namespace LouisAgent.Identities.Demo.Packs.Customers):
-// self-contained, so the folder moves out whole into packs/louis-agent.pack.customers when a second identity wants it
+// self-contained, so the folder moves out whole into packs/tools/louis-agent.pack.customers when a second identity wants it
 public sealed class CustomersPack : IAgentPack
 {
     public string Name => "customers";
@@ -1903,7 +1903,7 @@ louis-agent/
 | 5 | **The control room moves to `louis-agent.web`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
 | 6 | **Any simulation's grades in the room:** each grader's score per mode and the cost per conversation, so the demo's runs read as clearly as the cook's; the cook keeps its own measures | bUnit renders a recorded `demo-invoice-batch` run: a row per grader per mode, the cost per invoice, and an unknown cost shown as unknown | Graders, not only one check's measures, on the screen (12, 17) |
 | 7 | ***Try it*:** a chat in one of a simulation's modes, opened from the control room | bUnit with the API stubbed: the page lists the simulations' modes and opens a session whose `POST /sessions` carries the mode's role and toolsets (`demo/voice` with `specialists`) | The pitch and its numbers on one screen (17) |
-| 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), CHANGELOG; **the learning write-up for skills 18, 7 and 12**, written by Louis himself without the code open: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has written it; if he can't explain a step, that step goes back | links checked | Writing it up (18, 7, 12) |
+| 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), work log; **the learning write-up for skills 18, 7 and 12**, written by Louis himself without the code open: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has written it; if he can't explain a step, that step goes back | links checked | Writing it up (18, 7, 12) |
 
 #### Verification
 
@@ -2323,7 +2323,7 @@ public interface IToolChoiceStrategy { ChatOptions Force(ChatOptions options, AI
 //   auto, the tool strict, the DECISION: line as the fallback
 // Ollama (Llm/OllamaProvider/): no tool_choice; the decision's JSON schema as the response format
 
-// packs/louis-agent.pack.triage (B1; RecordDecision in B5)
+// packs/tools/louis-agent.pack.triage (B1; RecordDecision in B5)
 public sealed class TriagePack(TriageOptions options) : IAgentPack    // TriageOptions: the error log and the state folder,
 {                                                                     // today's ORCHESTRATOR_* settings
     public string Name => "triage";
@@ -2354,7 +2354,7 @@ public sealed class TriageTools(IErrorFeed feed, ITriageRecorder recorder)    //
     public string RecordDecision(string errorId, DecisionKind kind, string rule, string reason);   // B5; the DECISION:
 }                                                                                                 // line stays a fallback
 
-// packs/louis-agent.pack.fixing (B1, B3): the fixer's role, its result and the check
+// packs/tools/louis-agent.pack.fixing (B1, B3): the fixer's role, its result and the check
 public sealed class FixingPack(FixingOptions options) : IAgentPack    // FixingOptions: the service root and project, the
 {                                                                     // main branch, the runbooks folder (OPS_RUNBOOKS)
     public string Name => "fixing";
@@ -2611,12 +2611,12 @@ public interface IRecoveryRecorder { Task RecordAsync(RecoveryRecord record, Can
 public sealed class JsonLinesRecoveryRecorder(string stateDirectory) : IRecoveryRecorder;   // recovery.jsonl, append-only
 public interface IReconcile<in T> { Task<ExternalState> ReadAsync(T attempt, CancellationToken ct); }
 
-// packs/louis-agent.pack.triage (B5a): the feed reports what it set aside instead of dropping it
+// packs/tools/louis-agent.pack.triage (B5a): the feed reports what it set aside instead of dropping it
 public sealed record FeedBatch(IReadOnlyList<ErrorEvent> Events, IReadOnlyList<QuarantinedLine> Quarantined);
 public sealed record QuarantinedLine(int LineNumber, string Reason);  // the line itself goes to quarantine.jsonl
 // IErrorFeed.ReadNewAsync returns a FeedBatch from B5a; a quarantined line is never read again
 
-// packs/louis-agent.pack.fixing (B5a): did the fixer's commit land, whatever the child said?
+// packs/tools/louis-agent.pack.fixing (B5a): did the fixer's commit land, whatever the child said?
 public sealed class FixReconcile(FixingOptions options) : IReconcile<FixAttempt>;   // reads the branch and its commits
 public sealed record FixAttempt(string ErrorId, string Branch, string? ReportedCommit);
 ```
@@ -2689,12 +2689,12 @@ flowchart TB
 | `IToolChoiceStrategy` and its implementations | `louis-agent.core/Llm/`, `Llm/AnthropicProvider/`, `Llm/OllamaProvider/` (new provider folder) | `LouisAgent.Core.Llm` … | A6 |
 | `IdentityKind.Voorman`, `PackKind.Triage`, `PackKind.Fixing` | `src/louis-agent.composition/` | `LouisAgent.Composition` (changed) | B1 |
 | `OpsIdentity`, `Prompts/agent/voorman/voice.md` | `identities/louis-agent.identity.voorman/` | `LouisAgent.Identities.Voorman` | B1 |
-| `TriagePack`, `TriageOptions`, `TriageTools`, `IErrorFeed`, `JsonLinesErrorFeed`, `ErrorEvent`, `ITriageRecorder`, `JsonLinesTriageRecorder`, `Decision`, `DecisionKind`, `TriageOutcome` | `packs/louis-agent.pack.triage/` | `LouisAgent.Packs.Triage` | B1 (`RecordDecision` in B5) |
-| `FixingPack`, `FixingOptions`, `FixResult`, `FixStatus`, `Prompts/specialists/voorman-fixer.md` | `packs/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B1 |
-| `ConfirmFix`, `IReplay`, `CliReplay`, `ITestRunner`, `DotNetTestRunner` | `packs/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B3 |
+| `TriagePack`, `TriageOptions`, `TriageTools`, `IErrorFeed`, `JsonLinesErrorFeed`, `ErrorEvent`, `ITriageRecorder`, `JsonLinesTriageRecorder`, `Decision`, `DecisionKind`, `TriageOutcome` | `packs/tools/louis-agent.pack.triage/` | `LouisAgent.Packs.Triage` | B1 (`RecordDecision` in B5) |
+| `FixingPack`, `FixingOptions`, `FixResult`, `FixStatus`, `Prompts/specialists/voorman-fixer.md` | `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B1 |
+| `ConfirmFix`, `IReplay`, `CliReplay`, `ITestRunner`, `DotNetTestRunner` | `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Fixing` | B3 |
 | `TriageWorkflow` | `identities/louis-agent.identity.voorman/Workflows/` | `LouisAgent.Identities.Voorman.Workflows` | B4 |
 | `DataFailure`, `RecoveryAction`, `RecoveryResult`, `ExternalState`, `RecoveryPolicy`, `RecoveryRecord`, `IRecoveryRecorder`, `JsonLinesRecoveryRecorder`, `IReconcile<T>` | `louis-agent.core/Delegation/` (*proposed*; the plan file may give them their own folder) | `LouisAgent.Core.Delegation` | B5a |
-| `FeedBatch`, `QuarantinedLine`; `FixReconcile`, `FixAttempt` | `packs/louis-agent.pack.triage/`; `packs/louis-agent.pack.fixing/` | `LouisAgent.Packs.Triage`; `LouisAgent.Packs.Fixing` | B5a |
+| `FeedBatch`, `QuarantinedLine`; `FixReconcile`, `FixAttempt` | `packs/tools/louis-agent.pack.triage/`; `packs/tools/louis-agent.pack.fixing/` | `LouisAgent.Packs.Triage`; `LouisAgent.Packs.Fixing` | B5a |
 | `Program`, `CommsLog`, `OrchestratorOptions` (thin host) | `src/louis-agent.orchestrator/` | `LouisAgent.Orchestrator` (changed); `LouisAgentClient` deleted in B2, `ServiceTools` in B4 | B1-B4 |
 | `TriageRequestSnapshotTests` and `TriageRequestSnapshot.json` | `tests/louis-agent.orchestrator.tests/` | `LouisAgent.Orchestrator.Tests` | B0, new |
 | tests for the packs, the identity and the simulation | `tests/louis-agent.pack.triage.tests/`, `tests/louis-agent.pack.fixing.tests/`, `tests/louis-agent.identity.voorman.tests/`, `tests/louis-agent.simulations.voorman.tests/` | `LouisAgent.Packs.Triage.Tests` and so on | B1-B6 |
@@ -2961,7 +2961,7 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   `06-agent-loop-and-planning.md`, each with its row in `docs/learning/README.md`): typed results, routing and the
   evaluator-optimizer loop. Then GOAL rows 5, 6 and 10 (build mode leaves row 10's *Planned*), the project doc
   (`docs/projects/louis-agent.orchestrator.md`), the runbooks doc (`docs/projects/orchestrator-runbooks.md`),
-  `docs/specs/ORCHESTRATOR_DESIGN.md`, F39's feature doc with its results, and the CHANGELOG. The phase is done only
+  `docs/specs/ORCHESTRATOR_DESIGN.md`, F39's feature doc with its results, and the work log. The phase is done only
   when Louis has written the write-ups; if he can't explain a step, that step goes back. Skill 10.
 
 #### Verification
@@ -3564,7 +3564,7 @@ the landing page's pitch is rewritten around place: today it sells reading files
 and counting, and never mentions place (`src/louis-agent.puls/Pages/LandingPage.razor:275-292`; *Where this plan
 challenges you*, row 10). The page itself changes in its own small step after the spec.
 
-**2. F35 Recipe sources**, in full (`packs/louis-agent.pack.recipes`, namespace `LouisAgent.Packs.Recipes`, green: small
+**2. F35 Recipe sources**, in full (`packs/tools/louis-agent.pack.recipes`, namespace `LouisAgent.Packs.Recipes`, green: small
 sites read in our process). After Phase 3, whose record and replay its simulation runs on.
 
 - **Why.** Today the cook never opens a recipe page: its role allows `WebSearch` for a recipe and `FetchUrl` only for
@@ -3608,7 +3608,7 @@ sites read in our process). After Phase 3, whose record and replay its simulatio
 | 6 | **The recipes simulation**, on recorded pages | the three ways' cost per answer and match share in the feature doc; **paid, on Louis's go** |
 | 7 | Docs and the write-up, by Louis himself without the code open: `docs/learning/07-context-engineering.md` gains "data read in code, not pages" for recipes, after F32 to F34's prices | Louis's write-up written; F35 closed as *Finishing a feature* says |
 
-**3. CL16 Reusable roles**, after F35. A pack carries roles: the cook moves into `packs/louis-agent.pack.cooking`, which
+**3. CL16 Reusable roles**, after F35. A pack carries roles: the cook moves into `packs/tools/louis-agent.pack.cooking`, which
 requires `recipes` (from F35) and uses `shops` where the instance has it. The identity's frame is loaded before a pack's
 role, a mechanism of CL16's own: the cook's file mixes the craft with Puls's protocol today (*How every Puls specialist
 works* at `puls-cook.md:69`, *Your report to Puls* at `:85`, Afrikaans lines at `:38-40`), so the protocol stays with
@@ -3641,7 +3641,7 @@ recipe rows follow Phase 6's recovery contract (B5a): a row older than its polic
 conflicting prices for one product are settled by a fixed precedence rule, a malformed row is quarantined and never
 coerced into a price, and the cook reports its coverage, as F34 already leaves an item unpriced rather than guess.
 
-**5. Places** (`packs/louis-agent.pack.places`), after the area-guide simulation proves it (Phase 4). Louis: "what would
+**5. Places** (`packs/tools/louis-agent.pack.places`), after the area-guide simulation proves it (Phase 4). Louis: "what would
 be [places] here?", and of his town: "we can even load the municipality css when [a] person changed or drives. Like for
 instance Malmesbury is swartland municipality give it that municipality colours".
 

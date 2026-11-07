@@ -4,6 +4,8 @@
 2026-11-06 (Louis: "why don't packs have their own project, where the web controls live?", "should be overrideable and
 customised", "all our pack controls will work like that") · **Recorded:** 2026-11-07
 
+**Updated (CL32, 2026-11-07):** the folders this ADR names are now one area, `packs/tools/`, `packs/evals/`, `packs/tests/` and `packs/web/` ([ADR 0090](0090-the-packs-are-one-area.md)); the rule is unchanged.
+
 ## Context
 
 A pack could show whoever runs it one thing: a report, which was a table of numbers on one page. The next things wanted, managing the

@@ -39,7 +39,7 @@ own agents.
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](src/docs/plans/platform.md); what's finished is in the
-[CHANGELOG](CHANGELOG.md).
+[work log](src/docs/work-log.md).
 
 ## How it's built
 
@@ -68,7 +68,7 @@ never the engine, and never knows about another pack or an identity. Only a demo
 
 ```
 src/                 the framework: the engine, the hosts as libraries, the eval harness, its tests and docs
-packs/               what an agent can do, tools only; packs-evals/ proves them, packs-tests/ tests them
+packs/               what an agent can do, tools only; packs/evals/ proves them, packs/tests/ tests them
 demos/louis-agent/   the coding agent, as your own project would be: identity, programs, web apps, settings, images, a film export tool, tests
 demos/puls/          Puls, the same way
 ```

@@ -7,7 +7,7 @@
 
 The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. It's a small site on
 the framework's web: `Pages/ChatPage.razor` is a thin page on `ChatShell`, `Layout/AdminLayout.razor` a small one on `AdminShell`.
-Files, Changes and Branches aren't its own: they're the files and git packs' views under `packs-web/`, opened as admin screens.
+Files, Changes and Branches aren't its own: they're the files and git packs' views under `packs/web/`, opened as admin screens.
 
 ## Run it
 
@@ -21,7 +21,7 @@ restart the run. If the API needs `AGENT_API_KEY`, enter it under *API key* in t
 
 ## Add a control
 
-A control for a pack isn't this app's. It goes in that pack's web project under `packs-web/` and opens as an admin screen, as the git pack's
+A control for a pack isn't this app's. It goes in that pack's web project under `packs/web/` and opens as an admin screen, as the git pack's
 `GitChangesView` does ([Build a pack](../../../../src/docs/guides/build-a-pack.md)). Then:
 
 1. Register it in `Program.cs`, as `GitWebViews.AddTo(views)` does, and list its Sass in `Styles/app.scss` with its folder in `sasscompiler.json`.
@@ -54,7 +54,7 @@ dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests     # after a deliberate markup change: then read the diff
 ```
 
-- The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are tested under `packs-tests/`.
+- The packs' views and their plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `CodeLanguage`, `FileSize`) are tested under `packs/tests/`.
 - `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of the API from
   `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a recorded Puls turn.
   The empty page and the page with the turn are pinned to `ChatPage.empty.html` and `ChatPage.turn.html`.

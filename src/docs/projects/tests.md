@@ -1,8 +1,8 @@
 # Test projects — design
 
 > **Kind:** NUnit test projects · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
-> `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs-tests/louis-agent.pack.where-to-buy.tests/`, `packs-tests/louis-agent.pack.shop-prices.tests/`,
-> `packs-tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs-tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs-tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp-server.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
+> `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs/tests/louis-agent.pack.where-to-buy.tests/`, `packs/tests/louis-agent.pack.shop-prices.tests/`,
+> `packs/tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs/tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs/tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp-server.tests/`, `src/tests/web/louis-agent.web.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
 > `demos/louis-agent/tests/louis-agent.code-review.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,
 > `src/tests/web/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -23,7 +23,7 @@ flowchart TD
     framework --> web
     demos["demos/*/tests: each demo's own"] --> shared
     demos --> web
-    packs["packs-tests: each pack's own"] --> shared
+    packs["packs/tests: each pack's own"] --> shared
     integration["*.integration-tests: start a process, open Mongo, need a tool"] --> shared
     ci["CI, on Ubuntu"] -->|"Category!=Integration"| framework
     ci --> demos

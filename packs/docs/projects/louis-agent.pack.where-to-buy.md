@@ -1,6 +1,6 @@
 # louis-agent.pack.where-to-buy — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.where-to-buy/` · **References:**
+> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.where-to-buy/` · **References:**
 > louis-agent.composition, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
 > `PACKS=where-to-buy`, or an identity that names it (Puls) · **Uses:** OpenStreetMap's Nominatim
 
@@ -40,7 +40,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   User-Agent that names the app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a
   loop (`MapUnavailableException`, `WhereToBuyLogMessage`).
 - **The shop rules.** The checks an eval file names to prove an answer about shops live apart from the pack, in
-  `packs-evals/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
+  `packs/evals/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
   [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
   the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 
@@ -122,11 +122,11 @@ None. The User-Agent and the pace are code, so a change to either is a reviewed 
 
 ## Tests
 
-`packs-tests/louis-agent.pack.where-to-buy.tests`, mirroring the folders: `MapSearchTests` (the requests' addresses and the
+`packs/tests/louis-agent.pack.where-to-buy.tests`, mirroring the folders: `MapSearchTests` (the requests' addresses and the
 answer read through records, on fixtures in Nominatim's `jsonv2` shape written by hand, since the container has no
 route to Nominatim), `BranchFinderTests` (the nearest three, the second box, the municipality), `ShopNamesTests`,
 `DistanceTests`, `WhereToBuyToolsTests` (the table and every failure text), `WhereToBuyToolMessageSnapshotTests` with
-its golden of the model-facing texts. The checks' tests are in `packs-tests/louis-agent.pack.where-to-buy.checks.tests`.
+its golden of the model-facing texts. The checks' tests are in `packs/tests/louis-agent.pack.where-to-buy.checks.tests`.
 `PackConvertibilityTests` (composition tests) checks the MCP shapes.
 
 ## Limits and plans

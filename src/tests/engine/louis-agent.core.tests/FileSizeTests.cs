@@ -17,7 +17,7 @@ public class FileSizeTests
 
     private static readonly string[] SourceRoots =
     [
-        "src", "packs", "packs-evals", "packs-tests", "demos"
+        "src", "packs", "demos"
     ];
 
     /// <summary>
@@ -28,12 +28,12 @@ public class FileSizeTests
     [
         "src/engine/louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",
         "src/engine/louis-agent.core/Agent/EngineTools/SkillTools.cs",
-        "packs/louis-agent.pack.dotnet/DotNetTools.cs",
-        "packs/louis-agent.pack.devops/DevOpsTools.cs",
-        "packs/louis-agent.pack.paymo/PaymoTools.cs",
+        "packs/tools/louis-agent.pack.dotnet/DotNetTools.cs",
+        "packs/tools/louis-agent.pack.devops/DevOpsTools.cs",
+        "packs/tools/louis-agent.pack.paymo/PaymoTools.cs",
         "src/engine/louis-agent.core/Web/Browsing/ChromeWebBrowser.cs",
-        "packs-tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
-        "packs-tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
+        "packs/tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
+        "packs/tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
         "src/tools/louis-agent.usage-probe/Program.cs",
     ];
 

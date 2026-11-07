@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What an agent can do with sums: arithmetic worked out in code, so a model doesn't do it in its head. Needs no
+       setting and no network. References the composition's contracts only. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Calculator</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/calculator.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.calculator.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.pack.calculator.md" Link="docs\louis-agent.pack.calculator.md" />
+    <None Include="..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+  </ItemGroup>
+
+</Project>

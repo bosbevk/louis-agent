@@ -40,8 +40,9 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
 - **ADRs** (`src/docs/adr/`, [its README](../../src/docs/adr/README.md) has the template): a lasting decision gets one in the
   same PR, numbered next free, with *Context*, *Decision* as a rule, *Consequences*, *Links*; the quotes and dates
   that explain a rule live there, not in `src/docs/CLAUDE.md`.
-- **Sources of truth:** `TODO.md` (what's next), `CHANGELOG.md` (what was finished, newest first, one entry per
-  feature, fix or cleanup), the design docs, the guides; update them rather than duplicating them. A link to a doc
-  that CL24 deleted points at the tag `pre-cl24`.
+- **Sources of truth:** `TODO.md` (what's next), `src/docs/work-log.md` (what was finished: one row per feature,
+  fix or cleanup, when and what, the counts, and the open list; it replaced the changelog on 2026-11-07), the
+  design docs, the guides; update them rather than duplicating them. A link to a doc that CL24 deleted points at
+  the tag `pre-cl24`.
 - **Links:** relative within the repo; every doc ends with its index line (`[Docs index](…) · Related: …`); a
   renamed heading takes its anchors with it (`grep -rn "CLAUDE.md#"`).

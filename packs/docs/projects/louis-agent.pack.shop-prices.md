@@ -1,6 +1,6 @@
 # louis-agent.pack.shop-prices — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.shop-prices/` · **References:**
+> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.shop-prices/` · **References:**
 > louis-agent.composition, MongoDB.Driver, ExcelDataReader, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
 > an identity that names it (Puls) · **Uses:** MongoDB when `SHOP_PRICES_MONGO_URL` is set
 
@@ -154,12 +154,12 @@ The Puls stack uses the eval store's server and user, on its own database.
 
 ## Tests
 
-`packs-tests/louis-agent.pack.shop-prices.tests`, mirroring the folders: the line reader, the matcher, the estimator (the
+`packs/tests/louis-agent.pack.shop-prices.tests`, mirroring the folders: the line reader, the matcher, the estimator (the
 scaling, the province fallback, `?`), the tool's table and texts with `ShopPriceToolMessageSnapshotTests`' golden, the
 cache (once an hour, the fallback, on a fake clock), the feed (its name, its shape, what the store holds) and the
 options, and the upload: the sheets read from a trimmed fixture pair, every size in the August release, the August
 release giving back the shipped table, the preview and save over an in-memory store, and an older month filling a
-gap. `packs-tests/louis-agent.pack.shop-prices.integration-tests` runs `MongoPriceStore` against a real MongoDB
+gap. `packs/tests/louis-agent.pack.shop-prices.integration-tests` runs `MongoPriceStore` against a real MongoDB
 (`BENCHMARKS_MONGO_URL`, CI's throwaway server): the seed, a newer month read with the older kept, and a stored table
 never overwritten, and an upload saving a month and replacing a corrected one. The API's `FeedRouteTests` read the
 feed over HTTP, and `ImportRouteTests` list, preview and save the upload.

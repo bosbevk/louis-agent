@@ -7,6 +7,8 @@ checks project per pack*, for Puls "do it for identities also now", and then "ch
 seperate, someone could for instance use the tool but do not want the evals. Or do not own evals") · **Recorded:**
 2026-11-04
 
+**Updated (CL32, 2026-11-07):** the folders this ADR names are now one area, `packs/tools/`, `packs/evals/`, `packs/tests/` and `packs/web/` ([ADR 0090](0090-the-packs-are-one-area.md)); the rule is unchanged.
+
 Supersedes [ADR 0060](0060-a-pack-ships-its-checks.md).
 
 ## Context
