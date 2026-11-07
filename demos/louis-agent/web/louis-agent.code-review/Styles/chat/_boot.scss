@@ -1,0 +1,5 @@
+/* The empty chat: the title and a line, above the message box. A theme can add to it, as retro's boot screen does. */
+.empty { color: var(--bs-secondary-color); text-align: center; }
+.empty h1 { margin: 0 0 8px; font: 600 32px/1.2 var(--web-font-display, var(--bs-font-sans-serif)); color: var(--bs-emphasis-color); }
+.boot { display: none; }
+.hint { color: var(--bs-secondary-color); animation: fade-in .5s .15s var(--web-ease) both; }

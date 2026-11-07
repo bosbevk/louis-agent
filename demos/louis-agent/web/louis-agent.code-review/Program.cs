@@ -35,6 +35,6 @@ GitWebViews.AddTo(views);
 FilesWebViews.AddTo(views);
 builder.Services.AddSingleton(views);
 
-builder.Services.AddSingleton(new ChatHandoff(""));   // a screen's Review button opens the chat here, with a draft
+builder.Services.AddSingleton(new ChatHandoff("chat"));   // a screen's Review button opens the chat here, with a draft
 
 await builder.Build().RunAsync();

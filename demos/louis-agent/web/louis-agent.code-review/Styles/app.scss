@@ -1,0 +1,23 @@
+/* The code-review app's styles: the framework's rules and its packs', in the order the framework's always came, with its
+   own few after. A name under web/ is the framework's Sass and one under pack- a pack's, each found through
+   sasscompiler.json, so nothing is copied. The colours aren't here: the framework's come first, and the theme the person
+   picks loads after this file and sets its own (themes/). The build makes wwwroot/css/app.css from this. */
+
+@forward "web/settings/colours";
+@forward "web/base/elements";
+
+@forward "web/layout/shell";
+@forward "web/chat/conversation";
+@forward "web/layout/responsive";
+@forward "web/chat/interaction";
+@forward "web/chat/finish";
+@forward "web/layout/panels";
+@forward "web/chat/bars";
+@forward "web/chat/pages";
+@forward "web/admin/shell";
+@forward "web/admin/screens";
+
+@forward "pack-files/files";
+@forward "pack-git/changes";
+
+@forward "chat/boot";

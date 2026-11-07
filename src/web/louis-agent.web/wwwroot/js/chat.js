@@ -6,6 +6,18 @@ window.louisChat = {
         if (force || nearBottom) element.scrollTop = element.scrollHeight;
     },
 
+    // Fills an element Blazor leaves empty, so its re-renders never fight highlight.js over the markup. highlight.js
+    // escapes the text itself; very large files stay plain so the page doesn't stall.
+    renderCode(element, text, language) {
+        if (!element) return;
+        const hljs = window.hljs;
+        if (hljs && language && text.length <= 300000 && hljs.getLanguage(language)) {
+            element.innerHTML = hljs.highlight(text, { language, ignoreIllegals: true }).value;
+        } else {
+            element.textContent = text;
+        }
+    },
+
     // Highlights fenced code blocks in a rendered answer. Blazor replaces a block's markup only when its markdown changes,
     // so finished blocks keep their highlighting and a block that is still streaming is redone as it grows.
     highlightBlocks(container) {

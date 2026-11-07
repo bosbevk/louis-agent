@@ -56,3 +56,5 @@ __pycache__/
 
 # What the build makes from a web app's Styles/
 demos/puls/web/louis-agent.puls/wwwroot/css/
+demos/louis-agent/web/louis-agent.code-review/wwwroot/css/*.css
+demos/louis-agent/web/louis-agent.code-review/wwwroot/css/themes/*.css

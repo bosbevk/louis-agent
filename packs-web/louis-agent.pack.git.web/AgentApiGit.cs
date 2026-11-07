@@ -9,18 +9,11 @@ namespace LouisAgent.Packs.Git.Web;
 public static class AgentApiGit
 {
     /// <summary>What's changed in the workspace.</summary>
-    public static async Task<GitStatus> GitStatusAsync(this AgentApi api)
-    {
-        using var response = await api.SendAsync(new HttpRequestMessage(HttpMethod.Get, "v1/git/status"));
-        return (await response.Content.ReadFromJsonAsync<GitStatus>())!;
-    }
+    public static Task<GitStatus> GitStatusAsync(this AgentApi api) => api.GetAsync<GitStatus>("v1/git/status");
 
     /// <summary>One file's changes, staged or not.</summary>
-    public static async Task<GitDiff> GitDiffAsync(this AgentApi api, string path, bool staged)
-    {
-        using var response = await api.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"v1/git/diff?path={Uri.EscapeDataString(path)}&staged={(staged ? "true" : "false")}"));
-        return (await response.Content.ReadFromJsonAsync<GitDiff>())!;
-    }
+    public static Task<GitDiff> GitDiffAsync(this AgentApi api, string path, bool staged) =>
+        api.GetAsync<GitDiff>($"v1/git/diff?path={Uri.EscapeDataString(path)}&staged={(staged ? "true" : "false")}");
 
     /// <summary>stage | unstage | discard; returns the new status.</summary>
     public static async Task<GitStatus> GitChangeAsync(this AgentApi api, string action, IEnumerable<string> paths)

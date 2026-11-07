@@ -11,7 +11,7 @@ public partial class SiteColoursTests
 {
     /// <summary>What Bootstrap sets itself the same on every site, so the framework has no need to.</summary>
     private static readonly string[] BootstrapsOwn =
-        ["--bs-black", "--bs-black-rgb", "--bs-white", "--bs-border-radius-xl"];
+        ["--bs-black", "--bs-black-rgb", "--bs-white", "--bs-border-radius", "--bs-border-radius-xl"];
 
     /// <summary>One variable being set: matches <c>--bs-primary: #ffffff;</c> and gives its name.</summary>
     [GeneratedRegex(@"(--[a-z0-9-]+):", RegexOptions.NonBacktracking)]

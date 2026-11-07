@@ -76,11 +76,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("v1/rates/display");
 
     /// <summary>Reads JSON from one of a site's own routes.</summary>
-    public async Task<T> GetAsync<T>(string url)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
-        return (await response.Content.ReadFromJsonAsync<T>())!;
-    }
+    public Task<T> GetAsync<T>(string url) => GetAsync<T>(url, JsonSerializerOptions.Web);
 
     /// <summary>
     /// Reads a route's reply as its record, with the options of the wire it's on (the admin portal's snake_case).
@@ -88,7 +84,16 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     public async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
-        return (await response.Content.ReadFromJsonAsync<T>(options))!;
+        try
+        {
+            return (await response.Content.ReadFromJsonAsync<T>(options))!;
+        }
+        // A web page from a dev server or a proxy isn't JSON. As an API error a page can show it, where a thrown
+        // JsonException nobody expects would take the whole app down.
+        catch (JsonException)
+        {
+            throw new AgentApiException(response.StatusCode, "The API's reply couldn't be read. Is the API running?");
+        }
     }
 
     /// <summary>Sends a message and hands back the answer's events as they arrive.</summary>

@@ -32,7 +32,6 @@ public class FileSizeTests
         "packs/louis-agent.pack.devops/DevOpsTools.cs",
         "packs/louis-agent.pack.paymo/PaymoTools.cs",
         "src/engine/louis-agent.core/Web/Browsing/ChromeWebBrowser.cs",
-        "demos/louis-agent/web/louis-agent.code-review/Pages/ChatPage.razor.cs",
         "packs-tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
         "packs-tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
         "src/tools/louis-agent.usage-probe/Program.cs",
@@ -119,10 +118,14 @@ public class FileSizeTests
         return count;
     }
 
-    /// <summary>A web app on Sass gets its <c>app.css</c> from the build; its partials are what's sized.</summary>
-    private static bool IsMadeFromSass(string path) =>
-        Path.GetFileName(path) == "app.css"
-        && File.Exists(Path.Combine(Path.GetDirectoryName(path)!, "..", "..", "Styles", "app.scss"));
+    /// <summary>A web app on Sass gets its CSS from the build, themes too; its Sass is what's sized.</summary>
+    private static bool IsMadeFromSass(string path)
+    {
+        int css = path.IndexOf($"{Path.DirectorySeparatorChar}wwwroot{Path.DirectorySeparatorChar}css{Path.DirectorySeparatorChar}",
+            StringComparison.Ordinal);
+        return css >= 0 && path.EndsWith(".css", StringComparison.Ordinal)
+            && File.Exists(Path.Combine(path[..css], "Styles", "app.scss"));
+    }
 
     /// <summary>What the build wrote (bin/, obj/, the CSS it makes from Sass) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>

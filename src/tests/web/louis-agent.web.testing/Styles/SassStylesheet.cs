@@ -30,7 +30,8 @@ public sealed partial record SassStylesheet(string Project)
     public string Read() => File.ReadAllText(Compiled);
 
     /// <summary>The site's own partials on <c>app.scss</c>'s list, in its order, such as <c>chat/bars</c>.</summary>
-    public IReadOnlyList<string> Forwards() => [.. Listed().Where(name => !IsFrameworks(name))];
+    public IReadOnlyList<string> Forwards() =>
+        [.. Listed().Where(name => !IsFrameworks(name) && !name.StartsWith("pack-", StringComparison.Ordinal))];
 
     /// <summary>The framework's partials on that list, in its order, such as <c>web/settings/colours</c>.</summary>
     public IReadOnlyList<string> FrameworkForwards() => [.. Listed().Where(IsFrameworks)];
