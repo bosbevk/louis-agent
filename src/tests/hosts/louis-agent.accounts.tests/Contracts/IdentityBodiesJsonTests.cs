@@ -60,6 +60,33 @@ public class IdentityBodiesJsonTests
                 OldPassword = "old"
             })));
 
+    [Test]
+    public void TwoFactor_IsIdentitysTwoFactorRequest() =>
+        Assert.That(Json(new TwoFactorBody(Enable: true, TwoFactorCode: "123456")),
+            Is.EqualTo(Json(new TwoFactorRequest
+            {
+                Enable = true,
+                TwoFactorCode = "123456"
+            })));
+
+    [Test]
+    public void TwoFactorReply_ReadsIdentitysTwoFactorResponse()
+    {
+        string identitys = Json(new TwoFactorResponse
+        {
+            SharedKey = "KEY",
+            RecoveryCodesLeft = 10,
+            RecoveryCodes = ["a-b"],
+            IsTwoFactorEnabled = true,
+            IsMachineRemembered = false
+        });
+
+        var reply = JsonSerializer.Deserialize<TwoFactorReply>(identitys, AccountJson.Web);
+
+        Assert.That(reply, Is.EqualTo(new TwoFactorReply("KEY", 10, reply!.RecoveryCodes, true, false)));
+        Assert.That(reply.RecoveryCodes, Is.EqualTo(new[] { "a-b" }));
+    }
+
     /// <summary>Our own reply, pinned: the browser reads these names.</summary>
     [Test]
     public void AccountInfo_IsWrittenInCamelCase()

@@ -57,7 +57,7 @@ public sealed record AccountText
     public string NotAllowed { get; init; } = "Confirm your email first: open the link we mailed you.";
 
     public string RequiresTwoFactor { get; init; } =
-        "This account asks for a second factor, which isn't on these pages yet.";
+        "Now the code from your authenticator app, or one of your recovery codes.";
 
     public string SomethingWentWrong { get; init; } = "Something went wrong. Try again in a moment.";
 
@@ -103,6 +103,29 @@ public sealed record AccountText
     public string SignInWithPasskey { get; init; } = "Sign in with a passkey";
     public string PasskeysUnsupported { get; init; } = "This browser can't do passkeys.";
     public string PasskeyCancelled { get; init; } = "No passkey was given.";
+
+    // Two-factor (F61.5).
+    public string TwoFactor { get; init; } = "Two-factor sign-in";
+
+    public string TwoFactorIntro { get; init; } =
+        "A code from an authenticator app on your phone, asked for with your password.";
+
+    public string TwoFactorSetup { get; init; } =
+        "Add this key to your authenticator app (Microsoft Authenticator, Google Authenticator, Aegis), then type the code it shows.";
+
+    public string OpenInApp { get; init; } = "Open in your authenticator app";
+    public string AuthenticatorCode { get; init; } = "The code from the app";
+    public string TurnOn { get; init; } = "Turn on";
+    public string TurnOff { get; init; } = "Turn off";
+    public string TwoFactorOn { get; init; } = "Two-factor sign-in is on.";
+    public string TwoFactorOff { get; init; } = "Two-factor sign-in is off.";
+    public string RecoveryCodesLeft { get; init; } = "{0} recovery codes left.";
+    public string RecoveryCodes { get; init; } = "Your recovery codes";
+
+    public string RecoveryCodesIntro { get; init; } =
+        "Keep these somewhere safe: each signs you in once when the app isn't at hand. They're shown this once.";
+
+    public string NewRecoveryCodes { get; init; } = "New recovery codes";
 
     public string DeleteAccount { get; init; } = "Delete your account";
 

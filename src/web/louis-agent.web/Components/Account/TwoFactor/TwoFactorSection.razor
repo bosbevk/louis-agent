@@ -1,0 +1,44 @@
+@* Two-factor sign-in: off, the key for the app and the box for its first code; on, the recovery codes left, a new
+   set, and the way off. The recovery codes show on the one call that made them. *@
+<section class="account-section">
+    <h2>@Text.TwoFactor</h2>
+    <p>@Text.TwoFactorIntro</p>
+    <AccountNotice Message="@_notice?.Message" Details="_notice?.Details ?? []" IsError="@_isError"/>
+    @if (_state is { IsTwoFactorEnabled: true })
+    {
+        <p>@string.Format(Text.RecoveryCodesLeft, _state.RecoveryCodesLeft)</p>
+        @if (_state.RecoveryCodes is { Count: > 0 } codes)
+        {
+            <h3>@Text.RecoveryCodes</h3>
+            <p>@Text.RecoveryCodesIntro</p>
+            <ul class="account-codes">
+                @foreach (var recoveryCode in codes)
+                {
+                    <li>@recoveryCode</li>
+                }
+            </ul>
+        }
+
+        <div class="account-actions">
+            <button class="account-button is-plain" type="button" @onclick="NewCodesAsync"
+                    disabled="@_busy">@Text.NewRecoveryCodes</button>
+            <button class="account-button is-plain" type="button" @onclick="TurnOffAsync"
+                    disabled="@_busy">@Text.TurnOff</button>
+        </div>
+    }
+    else if (_state is not null)
+    {
+        <p>@Text.TwoFactorSetup</p>
+        <p class="account-key">@OtpAuth.Readable(_state.SharedKey)</p>
+        <p><a href="@OtpAuth.Link(Issuer, Me.Email, _state.SharedKey)">@Text.OpenInApp</a></p>
+        <form class="account-form" @onsubmit="TurnOnAsync">
+            <label class="account-field">
+                @Text.AuthenticatorCode
+                <input type="text" inputmode="numeric" autocomplete="one-time-code" required @bind="_code"/>
+            </label>
+            <div class="account-actions">
+                <button class="account-button is-plain" type="submit" disabled="@_busy">@Text.TurnOn</button>
+            </div>
+        </form>
+    }
+</section>

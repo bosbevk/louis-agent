@@ -1,6 +1,7 @@
 using LouisAgent.Accounts.Contracts;
 using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Accounts.Errors;
+using LouisAgent.Web.Accounts.TwoFactor;
 using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 
@@ -8,12 +9,13 @@ namespace LouisAgent.Web.Components.Account;
 
 /// <summary>
 /// Signs a person in with the cookie: the API checks the email and the password, the state takes who they are, and
-/// the page that holds the form hears it's done. A refusal shows why, in the site's words.
+/// the page that holds the form hears it's done. A refusal shows why, in the site's words; "RequiresTwoFactor" is
+/// not a refusal but the second step, so the code box opens and the same form sends again with the code (F61.5).
 /// </summary>
 public partial class LoginForm
 {
-    private string _email = "", _password = "";
-    private bool _busy;
+    private string _email = "", _password = "", _code = "";
+    private bool _busy, _needsCode;
     private AccountErrorView? _error;
 
     [Inject] private AccountApi Api { get; set; } = null!;
@@ -24,16 +26,22 @@ public partial class LoginForm
     [Parameter]
     public EventCallback OnSignedIn { get; set; }
 
-    /// <summary>Sends the two fields; on a yes reads who signed in, on a no says why.</summary>
+    /// <summary>Sends the fields; on a yes reads who signed in, on a no says why.</summary>
     private async Task SignInAsync()
     {
         _busy = true;
         _error = null;
         try
         {
-            await Api.LoginAsync(new LoginBody(_email.Trim(), _password));
+            await Api.LoginAsync(Body());
             State.Set(await Api.MeAsync());
             await OnSignedIn.InvokeAsync();
+        }
+        catch (AccountApiException ex) when (ex.Problem.Detail == "RequiresTwoFactor")
+        {
+            // Not a no: the password passed, and the account wants the app's code too.
+            _needsCode = true;
+            _error = AccountErrors.Of(ex, Text);
         }
         catch (Exception ex) when (ex is AccountApiException or HttpRequestException)
         {
@@ -44,4 +52,8 @@ public partial class LoginForm
             _busy = false;
         }
     }
+
+    private LoginBody Body() => _needsCode
+        ? SecondStep.Of(_email.Trim(), _password, _code)
+        : new LoginBody(_email.Trim(), _password);
 }

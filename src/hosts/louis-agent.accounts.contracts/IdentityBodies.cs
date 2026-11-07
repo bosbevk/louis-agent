@@ -26,3 +26,22 @@ public sealed record ResetPasswordBody(string Email, string ResetCode, string Ne
 
 /// <summary><c>POST /account/manage/info</c>: a new email (confirmed again) or a new password, with the old one.</summary>
 public sealed record InfoBody(string? NewEmail = null, string? NewPassword = null, string? OldPassword = null);
+
+/// <summary>
+/// <c>POST /account/manage/2fa</c> (F61.5): an empty body only reads the state; <c>Enable</c> with the app's code
+/// turns it on, <c>Enable</c> false turns it off, <c>ResetRecoveryCodes</c> makes a new set.
+/// </summary>
+public sealed record TwoFactorBody(
+    bool? Enable = null,
+    string? TwoFactorCode = null,
+    bool ResetSharedKey = false,
+    bool ResetRecoveryCodes = false,
+    bool ForgetMachine = false);
+
+/// <summary>What that route answers: the key for the app, and the recovery codes only on the call that made them.</summary>
+public sealed record TwoFactorReply(
+    string SharedKey,
+    int RecoveryCodesLeft,
+    IReadOnlyList<string>? RecoveryCodes,
+    bool IsTwoFactorEnabled,
+    bool IsMachineRemembered);

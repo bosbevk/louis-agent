@@ -16,7 +16,7 @@ public class AccountErrorsTests
     [TestCase("Failed", "That email and password don't match.")]
     [TestCase("LockedOut", "Too many tries: this account is locked for a while.")]
     [TestCase("NotAllowed", "Confirm your email first: open the link we mailed you.")]
-    [TestCase("RequiresTwoFactor", "This account asks for a second factor, which isn't on these pages yet.")]
+    [TestCase("RequiresTwoFactor", "Now the code from your authenticator app, or one of your recovery codes.")]
     public void ACode_IsSaidInTheSitesWords(string code, string expected) =>
         Assert.That(AccountErrors.Of(Refused(code), Text), Is.EqualTo(new AccountErrorView(expected, [])));
 

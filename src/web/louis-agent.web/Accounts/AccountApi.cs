@@ -112,6 +112,13 @@ public sealed class AccountApi(HttpClient http)
     /// <summary>Signs in with the credential the browser got; a refusal carries Identity's code.</summary>
     public Task PasskeyLoginAsync(PasskeyLoginBody body) => PostAsync("account/passkeys/login", body);
 
+    /// <summary>Two-factor's state, or a change to it (F61.5): an empty body only reads.</summary>
+    public async Task<TwoFactorReply> TwoFactorAsync(TwoFactorBody body)
+    {
+        using var response = await SendAsync(HttpMethod.Post, "account/manage/2fa", body);
+        return (await response.Content.ReadFromJsonAsync<TwoFactorReply>(AccountJson.Web))!;
+    }
+
     public async Task<ProvidersReply> ProvidersAsync()
     {
         using var response = await SendAsync(HttpMethod.Get, "account/providers");

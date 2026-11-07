@@ -48,6 +48,37 @@ public class LoginFormTests
     }
 
     [Test]
+    public void ASecondFactor_OpensTheCodeBox_AndSendsAgainWithTheCode()
+    {
+        var (ctx, handler) = AccountTestContext.New(request => SecondFactor(request));
+        using var _ = ctx;
+        bool signedIn = false;
+        var cut = ctx.Render<LoginForm>(p => p.Add(form => form.OnSignedIn, () => signedIn = true));
+        cut.Find("input[type=email]").Change("ann@x.test");
+        cut.Find("input[type=password]").Input("Long-enough-1");
+
+        cut.Find("form").Submit();
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.Find(".account-notice:not(.is-error)").TextContent, Does.Contain("authenticator app")));
+        cut.Find("input[inputmode=numeric]").Change("123456");
+        cut.Find("form").Submit();
+
+        cut.WaitForAssertion(() => Assert.That(signedIn, Is.True));
+        Assert.That(handler.Requests[1].Body, Does.Contain("\"twoFactorCode\":\"123456\""));
+    }
+
+    /// <summary>The API with two-factor on: the password alone is 401 RequiresTwoFactor, with the code it's in.</summary>
+    private static HttpResponseMessage SecondFactor(HttpRequestMessage request)
+    {
+        if (request.RequestUri!.AbsolutePath.EndsWith("/me", StringComparison.Ordinal))
+            return AccountTestContext.Reply(HttpStatusCode.OK, AccountTestContext.Ann);
+        string body = request.Content?.ReadAsStringAsync().GetAwaiter().GetResult() ?? "";
+        if (body.Contains("\"twoFactorCode\":\"123456\"", StringComparison.Ordinal))
+            return AccountTestContext.Reply(HttpStatusCode.OK);
+        return AccountTestContext.Reply(HttpStatusCode.Unauthorized, """{"status":401,"detail":"RequiresTwoFactor"}""");
+    }
+
+    [Test]
     public void TheForm_LinksToRegisterAndReset()
     {
         var (ctx, _) = AccountTestContext.New(HttpStatusCode.OK);

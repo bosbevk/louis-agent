@@ -1,11 +1,19 @@
-@* The sign-in form: an email and a password, the links to register and to reset, and what went wrong. *@
+@* The sign-in form: an email and a password, the links to register and to reset, and what went wrong. An account
+   with two-factor on gets a second box, for the app's code or a recovery code. *@
 <form class="account-form" @onsubmit="SignInAsync">
-    <AccountNotice Message="@_error?.Message" Details="_error?.Details ?? []" IsError="true" />
+    <AccountNotice Message="@_error?.Message" Details="_error?.Details ?? []" IsError="@(!_needsCode)"/>
     <label class="account-field">
         @Text.Email
-        <input type="email" autocomplete="username" required @bind="_email" />
+        <input type="email" autocomplete="username" required @bind="_email"/>
     </label>
-    <PasswordField Label="@Text.Password" @bind-Value="_password" />
+    <PasswordField Label="@Text.Password" @bind-Value="_password"/>
+    @if (_needsCode)
+    {
+        <label class="account-field">
+            @Text.AuthenticatorCode
+            <input type="text" inputmode="numeric" autocomplete="one-time-code" required @bind="_code"/>
+        </label>
+    }
     <div class="account-actions">
         <button class="account-button" type="submit" disabled="@_busy">@Text.SignIn</button>
     </div>
