@@ -8,3 +8,5 @@ button:disabled { cursor: default; opacity: .4; }
 a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 * { scrollbar-width: thin; scrollbar-color: var(--web-scrollbar) transparent; }
 
+/* A quieter line of text, anywhere: a hint, a count, a date. */
+.muted { color: var(--bs-secondary-color); }

@@ -231,6 +231,22 @@ and why. Each step ends with the three sites built and their goldens green.
   copies). **B taken.** A rule a single component draws (the notice, the password field, the divider, the facts, the
   key and codes) is in that component's file; the step is an edit, not a pure move, since every shared line gained
   `::deep`. The account library has no `Styles/` partial left, so `FrameworkStylesTests` reads only its `.razor.scss`.
+- **Step 3, the admin (2026-11-07, unattended; Claude's picks, for Louis to confirm).** The two admin partials held
+  four kinds of rule, not one. (a) The frame's own (`.admin-shell`, its sidebar, the column) are `AdminShell`'s file.
+  (b) What a pack's own view draws in the column (`.pack-split` and its buttons) sits under `::deep` in the same
+  file, as the accounts' shared rules do in theirs. (c) A part many components draw *and override* stays global,
+  in a partial that stays, since a parent's `::deep` rule carries the parent's scope attribute and would outweigh
+  every single-class override of it (found in the browser: the gate's paragraph lost its margin to the card's
+  rule): `.cards`, `.card-p`, `.card-head` and `.admin-table` to `web/layout/_shell.scss`, the page grid; so too
+  `.page-head` and `.page-actions` (Puls's chat panels draw a page header), `.muted` (the chat, the packs, the
+  accounts) to `web/base/_elements.scss`, and the three keyframes the packs' partials and the sites name
+  (`fade-in`, `slide-in`, `blink-soft`) to `web/layout/_shell.scss` beside `rise`, since a keyframe inside a scoped
+  file is renamed with the scope. (d) The studio's rules that lived in `web/admin/_shell.scss` (`.run-*`,
+  `.summary-*`, `.prompts*`, `.live-run-strip*`, `.admin-details`, `.admin-markdown`, `.admin-pre`) stay there,
+  under a header that says so, until step 4 moves them beside the studio's components; the `web/admin/shell`
+  forward goes then, `web/admin/screens` now. A rule two components share with no ancestor of their own (the
+  screen answer's colours, drawn by the table and the form) is a mixin in `web/tools/` each file includes, as
+  `css.md` says of what repeats; the form styles the rows editor's inputs through `::deep`, since it holds it.
 - **Step 1, the libraries (2026-11-07).** The Sass package goes in the three libraries too (it compiles a library's
   `X.razor.scss` to the `X.razor.css` Blazor bundles), with `SassCompilerEnableWatcher` off, since a library has no
   page to watch and the package would otherwise compile its watcher attribute in; the generated `X.razor.css` is
