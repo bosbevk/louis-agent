@@ -52,6 +52,8 @@ What that reading changes here:
   comes back. It is built into the engine (F39 Part A: one delegation function, typed results checked in code, one
   policy per turn tree, ADR 0031), never as an identity: F39's Part B, the `voorman` orchestrator as an identity, is
   dropped, and what remains of it is a demo of the engine's workflow.
+- **The framework must demonstrate a real-world, complex workflow** (Louis, 2026-11-07), not only have the rungs: that is
+  F106.3, triage and fix a service (below), chosen over a debtors chase and a cook-for-the-week.
 - **Two things the framework must have** (Louis, 2026-11-07), pulled up the list to right after the builder:
   **hand-off**, one agent handing a conversation to another (F39 Part A's hand-off to a named peer), and
   **conversations saved to Mongo so a person can restart them** (F43's durable sessions). Both are what Microsoft's
@@ -93,7 +95,7 @@ Each its own plan, branch and pull request, about ten steps at most; the order i
 |---|---|---|
 | F106.1 | A builder for the common path: providers, packs and an identity registered in a few lines, on top of today's `AgentHost.Build`, which stays as the escape hatch | The starter's API program composes through it, and a test builds an agent with one pack in under ten lines |
 | F106.2 | The framework's own docs: "your first agent in ten minutes", then "write a pack" and "write an identity", on the engine's site | Someone who isn't Louis follows the first guide to a working agent, timed |
-| F106.3 | A second example outside Puls: a small agent of another kind (for example the practice's invoice clerk from Phase 4), built only from the framework's public parts | It builds without referencing any Puls project, and an eval proves it |
+| F106.3 | The real-world workflow the framework demonstrates (Louis's pick, 2026-11-07): **triage and fix a service**. Read a service's errors, delegate a fix to a child agent, verify it with git, a replay and the tests, open a PR; built on F39 Part A's rungs and F43's saved conversations, from the framework's public parts only, as a simulation over a made-up service | It runs end to end as a C# eval (ADR 0029), survives a restart mid-way, and references no Puls project; the triage case in the [F39 draft](F39-orchestration.md) is its source |
 | F106.4 | The side-by-side: the same small application built in louis-agent and in Microsoft Agent Framework, same model, tools, delegation case and eval set | A results page compares lines of code, setup, time to build, eval scores, cost, and what debugging was like; a paid run only on Louis's go |
 | F39 | The workflow in the engine: delegation, hand-off to a named peer, the decision on a typed result (Part A; Part B's identity dropped) | A hand-off between two agents in one conversation, checked by an eval; see its [draft](F39-orchestration.md) |
 | F43 | Conversations saved to Mongo, so a person can restart one after a restart or on another device | A session survives the API restarting and continues where it was |
