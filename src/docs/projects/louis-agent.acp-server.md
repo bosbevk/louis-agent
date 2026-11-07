@@ -51,6 +51,27 @@ sequenceDiagram
   else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
   stay in the log: they are out of scope.
 
+## Diagrams
+
+**Architecture:** the flow is under *How it works*; these are the pieces. Rider starts one container per chat, and everything goes over its stdin and stdout.
+
+```mermaid
+flowchart TD
+    rider["Rider"] -->|"stdin: one JSON-RPC message a line"| server["AcpServer"]
+    host["AcpHost"] -->|"AgentHost.Build"| engine["AgentEngine (core)"]
+    host --> server
+    server -->|"session/prompt"| handler["PromptHandler"]
+    handler --> builder["PromptBuilder"]
+    handler --> roots["GitRoots"]
+    builder --> paths["ContainerPaths"]
+    handler -->|"HandleUserCommand, StreamPromptAsync"| engine
+    handler --> relay["TurnRelay"]
+    relay --> cards["ToolCards"]
+    relay --> writer["JsonRpcWriter"]
+    server --> writer
+    writer -->|"stdout: session/update"| rider
+```
+
 ## Structure
 
 | File | What's in it |

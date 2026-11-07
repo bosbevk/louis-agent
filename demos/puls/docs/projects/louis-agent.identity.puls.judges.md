@@ -21,6 +21,37 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 - **The list** (`PulsJudges.All`) is what an eval file can name; the runner gathers it with the harness's general
   checks and Puls's fixed rules (`PulsCatalogs`).
 
+## Diagrams
+
+**Architecture:** apart from the identity, because a judge is built on the harness and an identity must never reference it. Only the runner references this.
+
+```mermaid
+flowchart TD
+    catalogs["PulsCatalogs, in the runner's program"] --> list["PulsJudges.All"]
+    list --> check["MealForPeopleCheck"]
+    check --> inner["EvaluatorCheck, in the harness"]
+    check --> ask["CookAsk: the people and the town"]
+    check --> verdict["MealVerdict"]
+    check --> rubric[("meal-for-people.md, in the cook's eval folder")]
+    inner --> model["JudgeClients: a model"]
+```
+
+**Flow:** judging one trial. It's shown and counted, but not required until its calibration passes.
+
+```mermaid
+sequenceDiagram
+    participant R as The runner
+    participant C as MealForPeopleCheck
+    participant E as EvaluatorCheck
+    participant M as The judge's model
+    R->>C: the trial
+    C->>E: the last answer, and what the scenario expects
+    E->>M: the rubric, CookAsk's people and town, the answer
+    M-->>E: yes or no, with a reason
+    E-->>C: MealVerdict
+    C-->>R: a Grade, Unknown if there's no verdict
+```
+
 ## Extending it
 
 A new judge of Puls's is a class here with a nested `Entry`, listed in `PulsJudges.All`. A judge every identity could

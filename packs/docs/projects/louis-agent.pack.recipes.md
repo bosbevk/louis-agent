@@ -83,6 +83,69 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
   `RECIPE_SOURCES` names it. Puls's stacks name `*`, every site in the table; a site's terms of use are a separate
   reading, not part of its row (Louis's decision on them is in the plan's F35.2 *Approved during the build*, 2026-11-04).
 
+## Diagrams
+
+**Architecture:** two ways in, for the model and for a person. The model's tools search and read pages, every page goes through core's guarded browser, and what they read fills the library the admin screens look after.
+
+```mermaid
+flowchart TD
+    pack["RecipesPack: the recipes toolset, feed and screens"] --> tools["RecipeTools: FindRecipes, ReadRecipe, ScaleRecipe"]
+    pack --> screens["RecipesUsageScreen, RecipesScreen, ExcludedPagesScreen"]
+    pack --> feed["RecipesFeed: the open feed"]
+    tools --> scatter["RecipeScatter: several sites at once"]
+    scatter --> source["IRecipeSource, from RecipeSourceFactory"]
+    source --> wordpress["WordPressSearch"]
+    source --> web["SiteWebSearch"]
+    tools --> schema["SchemaOrgRecipe: the page's own data"]
+    tools --> printer["RecipePrinter"]
+    wordpress --> browser["Core's guarded browser: robots.txt, no-AI signals"]
+    schema --> browser
+    tools --> shelf["RecipeShelf"]
+    shelf --> store[("The library, in Mongo")]
+    screens --> store
+    feed --> store
+```
+
+**Flow:** the model searches, then reads one recipe. Data comes before text: a page with no recipe data comes back as its text, labelled as such.
+
+```mermaid
+sequenceDiagram
+    participant M as The model
+    participant T as RecipeTools
+    participant S as RecipeScatter
+    participant B as The guarded browser
+    participant P as RecipePrinter
+    participant L as The library
+    M->>T: FindRecipes(query)
+    T->>S: asks several sites, some kept for pages outside the library
+    S->>B: each site's search
+    B-->>S: the hits
+    S-->>T: merged, in a random order
+    T-->>M: a numbered list, framed as untrusted
+    M->>T: ReadRecipe(url)
+    alt it's our own link
+        T->>L: reads the kept copy, and no browser opens
+        L-->>T: the Recipe
+        T->>P: the Recipe
+        P-->>M: ingredients and numbered method lines
+    else it's a page out there
+        T->>L: is it a page already found to have no recipe?
+        T->>B: visits the page
+        B-->>T: the page
+        alt it publishes a whole Recipe
+            T->>L: KeepAsync, if it's from a table site
+            T->>P: the Recipe, from SchemaOrgRecipe
+            P-->>M: ingredients and numbered method lines
+        else it has words but no recipe
+            T->>L: ExcludeAsync, so nobody opens it again
+            T-->>M: says there's no recipe on the page
+        else it has no data, but shows a recipe
+            T->>L: KeepAsync, from its headings
+            T-->>M: the page's text, cut and labelled
+        end
+    end
+```
+
 ## Structure
 
 | Path | What's in it |

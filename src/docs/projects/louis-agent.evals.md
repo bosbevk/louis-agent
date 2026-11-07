@@ -67,6 +67,54 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   graders) and known-bad ones (each required grader must fail one); `Labels/` writes the sheet a person labels and
   calibrates a model judge against the labels (90% of each class, ADR 0029).
 
+## Diagrams
+
+**Architecture:** an eval only says what it asks and how it grades, and the harness does the rest. The API on the far side is an ordinary client's view of the agent, so an eval proves what a user would get.
+
+```mermaid
+flowchart TD
+    eval["IEval: FileEval, reading a folder of files"] --> dataset["Datasets: dataset.json and the scenarios"]
+    eval --> modes["EvalMode: the toolsets and role a session opens with"]
+    runner["EvalRunner"] --> eval
+    runner --> client["ISessionClient"]
+    client --> http["HttpSessionClient"]
+    client --> canned["CannedSessionClient: the stub, no model"]
+    http -->|"HTTP and SSE"| api["louis-agent.api"]
+    runner --> trial["Trial and Transcript"]
+    trial --> checks["ICheck: general checks, the model judge, a person's review"]
+    checks --> grade["Grade: score, outcome, reason"]
+    runner --> summary["RunSummary: the roll-up"]
+    runner --> writer["ProtocolWriter: one JSON line an event, on stdout"]
+```
+
+**Flow:** one run. A failed transport is tried once more, and an infrastructure failure is kept apart from a failing answer, so it never counts against the agent.
+
+```mermaid
+sequenceDiagram
+    participant R as EvalRunner
+    participant S as ISessionClient
+    participant C as The checks
+    participant W as ProtocolWriter
+    R->>W: ProtocolEvent: the eval, its graders, the dataset
+    loop each mode
+        R->>W: ModeEvent
+        loop each repeat and scenario
+            R->>S: opens a session for the mode
+            loop each question and follow-up
+                R->>W: QuestionEvent
+                R->>S: the question
+                S-->>R: the stream, into a Transcript
+                R->>W: SseEvent per piece, then TurnEvent
+            end
+            R->>C: the Trial
+            C-->>R: a Grade from each
+            R->>W: ConversationEvent: grades, outcome, metrics
+        end
+        R->>W: ModeDoneEvent: pass@k and pass^k
+    end
+    R->>W: SummaryEvent
+```
+
 ## Design notes
 
 What F18 settled while building the harness, and why (the plan, the feature doc with every step's notes and the

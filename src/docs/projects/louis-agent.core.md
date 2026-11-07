@@ -99,6 +99,45 @@ flowchart LR
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
+## Diagrams
+
+**Flow:** one turn. The diagram under *How it works* shows how the engine is put together; this is what happens when a host hands it a message. The
+loop goes round once per tool round, at most ten times, and the history is only added to, once the turn is done.
+
+```mermaid
+sequenceDiagram
+    participant H as A host
+    participant E as AgentEngine
+    participant T as TurnRunner
+    participant L as FunctionInvokingChatClient
+    participant U as UsageRecordingChatClient
+    participant M as The model
+    participant G as ToolCallGuards
+    participant O as A tool
+    H->>E: StreamPromptAsync(history, prompt)
+    E->>T: StreamAsync
+    T->>L: the messages and the tools
+    loop until the model answers without a tool call
+        L->>U: one model request
+        U->>M: the request
+        M-->>U: updates: thinking, text, tool calls
+        U->>U: one usage record, to JsonlUsageSink
+        U-->>L: the updates
+        L-->>H: each update, as it comes
+        opt the model asked for a tool
+            L->>G: InvokeAsync(the call)
+            alt cut off, or refused
+                G-->>L: the reason, and the tool never runs
+            else
+                G->>O: run it, arguments as data
+                O-->>G: the result
+                G-->>L: the result, summarised if it's too long
+            end
+        end
+    end
+    T->>T: appends the finished turn to the history
+```
+
 ## Structure
 
 | Path | What's in it |

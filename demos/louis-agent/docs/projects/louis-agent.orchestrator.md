@@ -42,6 +42,27 @@ flowchart TD
    currency (F14: rates from demo-api's `/v1/rates`, one rate for both agents), with the rate and the USD charged under the
    run total; the jsonl files keep USD.
 
+## Diagrams
+
+**Architecture:** the flow is under *How it works*; these are the pieces. It's a second agent on the same core, and it talks to louis-agent the way anyone would, over HTTP.
+
+```mermaid
+flowchart TD
+    program["Program.cs: the poll"] --> feed["ErrorFeed"]
+    feed --> errors[("logs/errors.jsonl, processed.txt")]
+    program --> skills["OrchestratorSkills: the runbooks, as the system prompt"]
+    program --> engine["AgentEngine: its own model"]
+    skills --> engine
+    engine --> tools["ServiceTools: the only tools it has"]
+    tools --> fix["FixConversation, FixPrompt"]
+    fix --> client["LouisAgentClient"]
+    client -->|"HTTP and SSE"| api["louis-agent.api: louis-agent fixes it"]
+    tools --> repository["ServiceRepository: the commit, the replay, the tests"]
+    tools --> comms["CommsLog: agent-comms.md"]
+    tools --> state["StateFiles: fixes, escalations, acknowledged"]
+    program --> decision["Decision, DecisionRecord: decisions.jsonl"]
+```
+
 ## Structure
 
 | Path | What's in it |

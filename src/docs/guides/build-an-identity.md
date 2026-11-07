@@ -72,8 +72,8 @@ public sealed class AcmeIdentity : IAgentIdentity
 }
 ```
 
-`Name` is what `IDENTITIES` loads it by and the folder of its modes (`agent/acme/`). Keep it one lowercase word, for
-the same reason a pack's name is one word (step 5). `Packs` holds names, not types: whatever the catalogue holds under
+`Name` is what `IDENTITIES` loads it by and the folder of its modes (`agent/acme/`). Keep it lowercase, and a name with a dash
+needs a `[WireName]`, as a pack's does (step 5). `Packs` holds names, not types: whatever the catalogue holds under
 that name serves it, our compiled pack today or an MCP server one day. An identity that needs no pack returns `[]`.
 
 ## 3. Write its mode
@@ -200,7 +200,7 @@ Three edits in `demos/puls/hosts/louis-agent.host-packs`, as for a pack:
 
 Every pack it names must be registered too (`PackKind.Units`, from [Build a pack](build-a-pack.md)). If one isn't, the
 catalogue stops start-up with the identity's name, the missing pack's and the ones it has. The setting is matched to
-the enum member with the case ignored, so a dashed name (`acme-shop`) wouldn't match `AcmeShop`: keep it one word.
+the enum member with the case ignored, so a name with a dash needs the member to say so: `[WireName("acme-shop")] AcmeShop`.
 
 ## 6. Test it
 

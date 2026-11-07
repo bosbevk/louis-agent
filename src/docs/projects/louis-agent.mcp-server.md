@@ -41,6 +41,32 @@ flowchart LR
   client's child process.
 - **Approval stays with the user:** approving agent-built tools is not exposed over MCP.
 
+## Diagrams
+
+**Flow:** the architecture is under *How it works*; this is a client using it. The client's own model decides each call, and the server runs no model.
+
+```mermaid
+sequenceDiagram
+    participant C as MCP client
+    participant S as The SDK's server
+    participant Y as EngineToolSync
+    participant E as AgentEngine
+    participant F as FeedResources
+    Y->>E: at start-up: copies its tools, and listens for changes
+    C->>S: tools/list
+    S-->>C: the tools
+    C->>S: tools/call (a name and its arguments)
+    S->>E: runs the engine's tool
+    E-->>S: the result
+    S-->>C: the result
+    E-->>Y: ToolsChanged, as a tool was built or approved
+    Y->>S: the new list
+    S-->>C: notifications/tools/list_changed
+    C->>S: resources/read feed://{name}
+    S->>F: reads the feed
+    F-->>C: the feed, as JSON
+```
+
 ## Structure
 
 | File | What's in it |

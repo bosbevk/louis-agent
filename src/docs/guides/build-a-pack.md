@@ -261,8 +261,8 @@ setting, so it takes three edits in `demos/puls/hosts/louis-agent.host-packs`:
 In a demo with such a list, `PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. A demo without
 one names the pack in its program: `new AgentCatalog([], [new UnitsPack()])` ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
 The setting is matched to the enum
-member with the case ignored, so keep a pack's name one word: a dashed name (`price-rules`) doesn't match `PriceRules`,
-and the catalogue refuses it as unknown.
+member with the case ignored. A name with a dash needs the member to say so, `[WireName("price-rules")] PriceRules`, or the
+catalogue refuses it as unknown.
 
 ## 7. Test it
 
