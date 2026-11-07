@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (107)
+## Open (108)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -57,6 +57,7 @@ known limitations below are facts about today, not tasks.
 | F61 | The framework's site in Azure: the five children are built, what is left is the site's pages into the louis-agent demo's web app, deployed beside Puls on `louis-agent.dev` (F61.6) | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
+| F109 | Puls deploys from GitHub: after green CI on `main`, and from a button, signed in to Azure by OpenID Connect with no password (Louis, 2026-11-07: "let's do a git hub action then") | Next | [plan](src/docs/plans/F109-deploy-from-github.md) |
 | F51 | Hosting for public traffic | Next | — |
 | F75 | Puls local spec | Puls | — |
 | F76 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
