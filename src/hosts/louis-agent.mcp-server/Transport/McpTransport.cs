@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Protocols.Mcp;
+namespace LouisAgent.McpServer.Transport;
 
 /// <summary>
 /// MCP_TRANSPORT: how the MCP server talks to its client (ADR 0024: a choice is an enum, not a string).

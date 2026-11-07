@@ -1,12 +1,11 @@
-
 using LouisAgent.Composition.Logging;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Protocols.Messages;
+using LouisAgent.AcpServer.Messages;
 using Microsoft.Extensions.Logging;
 
-namespace LouisAgent.Core.Protocols.Mcp;
+namespace LouisAgent.AcpServer.Rider;
+
 /// <summary>
 /// MCP client for discovering tools from Rider's MCP server.
 /// Connects via HTTP to Rider's exposed MCP endpoint (default: http://127.0.0.1:64482).
@@ -67,13 +66,17 @@ public sealed class RiderMcpClient : IDisposable
         }
         catch (HttpRequestException ex)
         {
-            Log.Log(LogLevel.Warning, ProtocolLogMessage.McpConnectFailed,
-                new { Endpoint = _endpoint, Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Warning, RiderLogMessage.McpConnectFailed,
+                new
+                {
+                    Endpoint = _endpoint,
+                    Reason = ex.Message
+                }, tag: Tag);
             return [];
         }
         catch (Exception ex)
         {
-            Log.Log(LogLevel.Warning, ProtocolLogMessage.McpDiscoveryError, new { Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Warning, RiderLogMessage.McpDiscoveryError, new { Reason = ex.Message }, tag: Tag);
             return [];
         }
     }
@@ -114,9 +117,9 @@ public sealed class RiderMcpClient : IDisposable
             if (!initResponse.IsSuccessStatusCode)
             {
                 var errorBody = await initResponse.Content.ReadAsStringAsync(ct);
-                Log.Log(LogLevel.Warning, ProtocolLogMessage.McpInitializeFailed,
+                Log.Log(LogLevel.Warning, RiderLogMessage.McpInitializeFailed,
                     new { Status = initResponse.StatusCode }, tag: Tag);
-                Log.Log(LogLevel.Warning, ProtocolLogMessage.McpResponse, new { Body = errorBody }, tag: Tag);
+                Log.Log(LogLevel.Warning, RiderLogMessage.McpResponse, new { Body = errorBody }, tag: Tag);
                 return tools;
             }
 
@@ -124,7 +127,7 @@ public sealed class RiderMcpClient : IDisposable
             if (initResponse.Headers.TryGetValues("mcp-session-id", out var sessionValues))
             {
                 _sessionId = sessionValues.FirstOrDefault();
-                Log.Log(LogLevel.Information, ProtocolLogMessage.McpSessionEstablished, new { Session = _sessionId },
+                Log.Log(LogLevel.Information, RiderLogMessage.McpSessionEstablished, new { Session = _sessionId },
                     tag: Tag);
             }
 
@@ -166,12 +169,12 @@ public sealed class RiderMcpClient : IDisposable
                     }
                 }
 
-                Log.Log(LogLevel.Information, ProtocolLogMessage.McpToolsDiscovered, new { tools.Count }, tag: Tag);
+                Log.Log(LogLevel.Information, RiderLogMessage.McpToolsDiscovered, new { tools.Count }, tag: Tag);
             }
         }
         catch (Exception ex)
         {
-            Log.Log(LogLevel.Warning, ProtocolLogMessage.McpStreamDiscoveryFailed, new { Reason = ex.Message },
+            Log.Log(LogLevel.Warning, RiderLogMessage.McpStreamDiscoveryFailed, new { Reason = ex.Message },
                 tag: Tag);
         }
 
@@ -193,12 +196,12 @@ public sealed class RiderMcpClient : IDisposable
             // Note: Full SSE implementation would require streaming line-by-line parsing
             // For now, we'll attempt a basic response read
             var sseText = await sseResponse.Content.ReadAsStringAsync(ct);
-            Log.Log(LogLevel.Information, ProtocolLogMessage.McpSsePartial,
+            Log.Log(LogLevel.Information, RiderLogMessage.McpSsePartial,
                 new { Text = sseText[..Math.Min(100, sseText.Length)] }, tag: Tag);
         }
         catch (Exception ex)
         {
-            Log.Log(LogLevel.Warning, ProtocolLogMessage.McpSseDiscoveryFailed, new { Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Warning, RiderLogMessage.McpSseDiscoveryFailed, new { Reason = ex.Message }, tag: Tag);
         }
 
         return tools;

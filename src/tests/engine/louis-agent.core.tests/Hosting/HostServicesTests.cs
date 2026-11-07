@@ -1,6 +1,8 @@
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.Discovery;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
@@ -39,6 +41,29 @@ public class HostServicesTests
 
         Assert.That(host.Engines.Context.Web, Is.SameAs(NoWebAccess.Instance));
     }
+
+    private sealed class RecordingDiscovery : IToolDiscovery
+    {
+        public AgentEngine? StartedWith { get; private set; }
+
+        public void Start(AgentEngine engine) => StartedWith = engine;
+    }
+
+    /// <summary>The discovery the program gave is started with the host's engine, once it's built (CL57).</summary>
+    [Test]
+    public void TheDiscoveryTheProgramGave_IsStartedWithTheEngine()
+    {
+        var discovery = new RecordingDiscovery();
+
+        AgentHostContext host = AgentHost.Build(new LlmOptions(), TestPaths.Agent(), new NoModelFactory(),
+            services: new HostServices(Discovery: discovery));
+
+        Assert.That(discovery.StartedWith, Is.SameAs(host.Engine));
+    }
+
+    [Test]
+    public void NoServices_MeansNoDiscovery() =>
+        Assert.That(HostServices.None.DiscoveryOrNone, Is.SameAs(NoToolDiscovery.Instance));
 
     private sealed class NoModelFactory : ILlmClientFactory
     {

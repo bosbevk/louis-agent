@@ -6,7 +6,7 @@ using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Protocols.Mcp;
+using LouisAgent.McpServer.Transport;
 using LouisAgent.McpServer.Messages;
 using LouisAgent.McpServer.Tools;
 using Microsoft.AspNetCore.Builder;

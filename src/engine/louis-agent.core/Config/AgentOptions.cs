@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
@@ -9,6 +8,7 @@ using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Config;
+
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions
 {
@@ -58,15 +58,6 @@ public sealed class AgentOptions
 
     /// <summary>Google Programmable Search Engine ID, the "cx" value (GOOGLE_SEARCH_ENGINE_ID).</summary>
     public string? GoogleSearchEngineId { get; set; }
-
-    /// <summary>Rider MCP server endpoint (default: http://127.0.0.1:64482).</summary>
-    public string? RiderMcpEndpoint { get; set; }
-
-    /// <summary>Enable auto-discovery of tools from Rider's MCP server on startup (default: true).</summary>
-    public bool RiderMcpAutoDiscover { get; set; } = true;
-
-    /// <summary>Project path to send to Rider MCP server (for Docker: the HOST path, not container path).</summary>
-    public string? RiderMcpProjectPath { get; set; }
 
     /// <summary>LOG_DIRECTORY: where run logs and oversized-tool-result records are written; null disables file logging.</summary>
     public string? LogDirectory { get; set; }
@@ -213,7 +204,11 @@ public sealed class AgentOptions
         if (old is not null)
             Log.Log(LogLevel.Warning,
                 roles is null ? ConfigLogMessage.RolesSettingRenamed : ConfigLogMessage.RolesSettingIgnored,
-                new { Old = "PERSONALITIES_ENABLED", New = "ROLES_ENABLED" });
+                new
+                {
+                    Old = "PERSONALITIES_ENABLED",
+                    New = "ROLES_ENABLED"
+                });
         return roles ?? old;
     }
 
@@ -238,9 +233,6 @@ public sealed class AgentOptions
             TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),
-            RiderMcpEndpoint = Get("RIDER_MCP_ENDPOINT") ?? "http://127.0.0.1:64482",
-            RiderMcpAutoDiscover = bool.TryParse(Get("RIDER_MCP_AUTO_DISCOVER"), out var result) ? result : true,
-            RiderMcpProjectPath = Get("RIDER_MCP_PROJECT_PATH"),
             LogDirectory = Get("LOG_DIRECTORY"),
             UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
             UsageInChat = bool.TryParse(Get("USAGE_IN_CHAT"), out bool usageInChat) && usageInChat,

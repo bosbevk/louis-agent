@@ -1,6 +1,6 @@
-using LouisAgent.Core.Protocols.Mcp;
+using LouisAgent.AcpServer.Rider;
 
-namespace LouisAgent.Core.Tests.Protocols.Mcp;
+namespace LouisAgent.AcpServer.Tests.Rider;
 
 public class RiderMcpClientTests
 {
@@ -30,10 +30,7 @@ public class RiderMcpClientTests
     public async Task DiscoverToolsAsync_DoesNotThrowOnFailure()
     {
         using var client = new RiderMcpClient("http://localhost:99999");
-        Assert.DoesNotThrowAsync(async () =>
-        {
-            await client.DiscoverToolsAsync();
-        });
+        Assert.DoesNotThrowAsync(async () => { await client.DiscoverToolsAsync(); });
     }
 
     [Test]

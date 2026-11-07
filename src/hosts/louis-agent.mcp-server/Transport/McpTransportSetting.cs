@@ -1,9 +1,8 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
-using LouisAgent.Core.Protocols.Messages;
-using LouisAgent.Core.Messages;
+using LouisAgent.McpServer.Messages;
 
-namespace LouisAgent.Core.Protocols.Mcp;
+namespace LouisAgent.McpServer.Transport;
 
 /// <summary>
 /// Reads MCP_TRANSPORT once, where it enters, the way <c>HostAuth.Mode</c> reads AGENT_AUTH. The pattern is "parse,
@@ -18,8 +17,12 @@ public static class McpTransportSetting
     public static McpTransport Parse(string? setting)
     {
         if (!SettingChoice.TryParse(setting, out McpTransport? transport))
-            throw new ArgumentException(MessageText.Format(ProtocolErrorMessage.UnknownMcpTransport,
-                new { Value = setting?.Trim(), Supported = string.Join(" or ", SettingChoice.Names<McpTransport>()) }));
+            throw new ArgumentException(MessageText.Format(McpServerErrorMessage.UnknownMcpTransport,
+                new
+                {
+                    Value = setting?.Trim(),
+                    Supported = string.Join(" or ", SettingChoice.Names<McpTransport>())
+                }));
         return transport ?? McpTransport.Stdio;
     }
 }

@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Protocols.Mcp;
 
 using System.Text.Json;
 
+namespace LouisAgent.AcpServer.Rider;
 /// <summary>Tool discovered from an MCP server.</summary>
 public sealed record DiscoveredTool(
     string Name,

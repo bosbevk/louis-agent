@@ -3,7 +3,7 @@ using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Protocols.Messages;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Usage.Messages;
 using Microsoft.Extensions.Logging;
 
@@ -53,7 +53,12 @@ public class AgentLoggingTests
         AgentLogging.Configure(null);
 
         AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
-            new { Arguments = "{}", MaxOutputTokens = 16000, Tool = "WriteWorkspaceFile" });
+            new
+            {
+                Arguments = "{}",
+                MaxOutputTokens = 16000,
+                Tool = "WriteWorkspaceFile"
+            });
 
         Assert.That(_stderr.ToString(),
             Does.Contain("[INFO] WriteWorkspaceFile was cut off by the output limit (16000 tokens); arguments {}"));
@@ -66,12 +71,17 @@ public class AgentLoggingTests
         var logger = AgentLogging.For<AgentLoggingTests>();
 
         logger.Log(LogLevel.Error, UsageLogMessage.LedgerWriteFailed,
-            new { File = "devops-skills.md", Reason = "locked" });
-        logger.Log(LogLevel.Information, ProtocolLogMessage.McpToolsDiscovered, new { Count = 3 }, tag: "MCP");
+            new
+            {
+                File = "devops-skills.md",
+                Reason = "locked"
+            });
+        logger.Log(LogLevel.Information, HostingLogMessage.SkillsFileDiscovered, new { File = "skills.md" },
+            tag: "MCP");
 
         Assert.That(_stderr.ToString(), Does.Contain("[ERROR] Could not write devops-skills.md: locked"),
             "not Serilog's EROR");
-        Assert.That(_stderr.ToString(), Does.Contain("[MCP] Discovered 3 tools from Rider"));
+        Assert.That(_stderr.ToString(), Does.Contain("[MCP] Discovered skills file: skills.md"));
     }
 
     [Test]
@@ -132,7 +142,12 @@ public class AgentLoggingTests
         using (early.BeginScope(
                    new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
             early.Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
-                new { Tool = "Early", MaxOutputTokens = 1, Arguments = "{}" });
+                new
+                {
+                    Tool = "Early",
+                    MaxOutputTokens = 1,
+                    Arguments = "{}"
+                });
         AgentLogging.Configure(null); // flush
 
         Assert.That(File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl")), Has.Length.EqualTo(1));

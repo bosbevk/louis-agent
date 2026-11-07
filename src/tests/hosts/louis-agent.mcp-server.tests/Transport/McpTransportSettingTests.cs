@@ -1,6 +1,6 @@
-using LouisAgent.Core.Protocols.Mcp;
+using LouisAgent.McpServer.Transport;
 
-namespace LouisAgent.Core.Tests.Protocols.Mcp;
+namespace LouisAgent.McpServer.Tests.Transport;
 
 // MCP_TRANSPORT as an enum (ADR 0024: a choice is parsed once where it enters). Unset is stdio, the way a local client
 // starts the server; a value that names nothing stops start-up instead of falling back to stdio without a word.
