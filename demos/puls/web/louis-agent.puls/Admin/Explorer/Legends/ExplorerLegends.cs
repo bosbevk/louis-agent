@@ -28,7 +28,7 @@ public static class ExplorerLegends
     public static readonly IReadOnlyList<LegendEntry> Tools =
         [new(ExplorerColours.Right, "worked"), new(ExplorerColours.Wrong, "refused or failed")];
 
-    /// <summary>The sites read: the kinds the site names, the one that matters most in green, and the rest in grey.</summary>
+    /// <summary>The sites read: the kinds the site names, the first in green, and the rest in grey.</summary>
     public static IReadOnlyList<LegendEntry> Sources(SiteKinds sites) =>
     [
         .. sites.Kinds.Select((kind, i) =>
