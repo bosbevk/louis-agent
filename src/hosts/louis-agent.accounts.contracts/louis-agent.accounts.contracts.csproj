@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Accounts.Contracts</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- F61.1, as louis-agent.api.contracts (ADR 0045): the records the accounts routes send and read, and the one
+       options object for their wire, so the browser app reads what the server writes. It references no project and no
+       package, so a client takes it without the rest of the solution. -->
+
+</Project>
