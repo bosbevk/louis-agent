@@ -13,12 +13,12 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 66 | 74 |
-| Fixes (`FX`) | 59 | 4 |
+| Fixes (`FX`) | 59 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -70,6 +70,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX59 | binary attachments sent as files, not text | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
+| FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
