@@ -64,6 +64,35 @@ What that reading changes here:
   whole conversation to a named peer, the person keeps talking; (6) one policy per turn tree: depth, rounds, money;
   (7) several of those in a row, saved at each step, is a workflow; a named type only if the chain repeats one shape.
   Rungs 3 to 6 are F39 Part A.
+
+The triage workflow, drawn (the page: <https://claude.ai/artifact/46LjmREMUbUWrfNbwM6VSU>). Code runs the fixed steps
+and saves after each; the manager decides and checks; the others work; a branch is left, never a PR:
+
+```mermaid
+flowchart LR
+    subgraph code["Code: fixed steps, a checkpoint after each"]
+        poll["1 Poll the log"] --> collect["2 Collect errors"]
+        save[("Saved after every step<br/>Mongo, restart from here")]
+        branch["9 A branch, never a PR"]
+    end
+    subgraph agents["Agents: the manager decides, the others work"]
+        m1{"3 Manager<br/>worth investigating?"}
+        inv["4 Investigator<br/>typed result"]
+        m2{"5 Manager + a rule in code<br/>human or auto?"}
+        coder["6 Coder<br/>fixes on a branch"]
+        m3["7 Manager validates<br/>tests, replay, git"]
+        rev{"8 Reviewer<br/>happy?"}
+    end
+    human["Endpoint: needs a person"]
+    collect --> m1
+    m1 -- yes --> inv --> m2
+    m1 -- no --> save
+    m2 -- human --> human
+    m2 -- auto-fix --> coder --> m3 --> rev
+    rev -- happy --> branch
+    rev -- "not happy, through the manager" --> m3
+    m3 -- "not valid" --> coder
+```
 - **What to study in Microsoft's framework** before F106.4 (its own docs, not a summary): its agent loop, session state
   and persistence, middleware pipeline, workflow execution, human-in-the-loop, checkpointing and tool permissions.
   Each maps to a phase of ours (F43, F41, F42, F39), so the comparison also tells us where our phases stand.
