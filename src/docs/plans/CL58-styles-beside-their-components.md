@@ -252,6 +252,16 @@ and why. Each step ends with the three sites built and their goldens green.
   `.run-transcript`, `.admin-cols`, `.eval-card`, `.eval-trend`, `.explorer-q`, `.explorer-think`,
   `.explorer-calls`, `.check-script`, `.live-chat`, `.tree-node`, `.tree-mode`, `.tree-meta`, `.conv-row`): dead
   since CL10 by the look of them; left in place for Louis to confirm and delete (a TODO row).
+- **Steps 7 and 8 (2026-11-07, unattended).** Step 7 finds nothing to delete: every partial on a site's list still
+  holds rules (what a site's own pages draw, what a theme overrides, the keyframes), so a site's list stays as it is
+  minus `accounts/shell`, `web/admin/shell` and `web/admin/screens`; the "five forwards" of the plan were the
+  wrong measure, and the right one is in ADR 0094: a site lists the globals, a component ships its own. The
+  browser check on the three sites at desktop and phone width is Louis's, as the plan says: the starter's chat
+  draws its shell only once a session opens, which needs a model, so this build looked at the starter's account
+  pages and admin frame only. Step 8: `ScopedStylesTests` (a style file sits beside its component, holds a rule,
+  and a site's list names no account or admin partial), `FrameworkStylesTests` reading the `.razor.scss` files
+  (step 2), `SassStylesheet` reading the bundle with the scope marks off (step 3), the dead `accounts/` branch
+  of the helper gone.
 - **Steps 5 and 6, the chat (2026-11-07, unattended; one commit for both, since the placement is one computation
   over the six partials and a rule's fate depends on the others').** The same script and rules as the studio's,
   with two corrections found on the way and applied to the studio first (two commits on step 4): `::deep` goes at

@@ -73,29 +73,21 @@ public sealed partial record SassStylesheet(string Project)
     public string FrameworkPartial(string partial)
     {
         string folder = Path.GetDirectoryName(partial) ?? "";
-        string library = partial.StartsWith(AccountsPrefix, StringComparison.Ordinal)
-            ? "src/web/louis-agent.web.accounts/Styles"
-            : partial.StartsWith(EvalsPrefix, StringComparison.Ordinal)
-                ? "src/web/louis-agent.web.evals/Styles"
-                : "src/web/louis-agent.web/Styles";
+        string library = partial.StartsWith(EvalsPrefix, StringComparison.Ordinal)
+            ? "src/web/louis-agent.web.evals/Styles"
+            : "src/web/louis-agent.web/Styles";
         return Path.Combine(TestPaths.RepoRoot, library, folder, $"_{Path.GetFileName(partial)}.scss");
     }
 
-    /// <summary>
-    /// The account library's Sass is under <c>accounts/</c> (CL30), as the framework's is under <c>web/</c>.
-    /// </summary>
-    private const string AccountsPrefix = "accounts/";
-
-    /// <summary>The studio's Sass is under <c>evals/</c> (CL57).</summary>
+    /// <summary>The studio's shared Sass is under <c>evals/</c> (CL57).</summary>
     private const string EvalsPrefix = "evals/";
 
     /// <summary>
-    /// The framework's Sass is all under <c>web/</c>, and the account library's under <c>accounts/</c>, so a name
-    /// says whose it is.
+    /// The framework's Sass is all under <c>web/</c> and the studio's shared Sass under <c>evals/</c>, so a name
+    /// says whose it is; the account library has no partial since CL58, its components carry their own styles.
     /// </summary>
     private static bool IsFrameworks(string name) =>
         name.StartsWith("web/", StringComparison.Ordinal) ||
-        name.StartsWith(AccountsPrefix, StringComparison.Ordinal) ||
         name.StartsWith(EvalsPrefix, StringComparison.Ordinal);
 
     /// <summary>The partials on disk that write CSS, named the way <c>app.scss</c> names them.</summary>
