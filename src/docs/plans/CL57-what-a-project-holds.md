@@ -310,6 +310,14 @@ Picks made unattended, each with its why, for Louis's review:
 - **The test host maps both:** `ApiTestHost.Build(evals: false)` builds the API alone for its route snapshot;
   the default maps the studio too, so the moved tests run unchanged, and `EvalRoutesSnapshot.json` pins the
   whole table with the studio in.
+- **Steps 8 and 9 are one commit** (step 7): the studio's pages and their tests moved together.
+- **A library's assembly is one static on one class:** `AccountLibrary.Assembly` and `EvalLibrary.Assembly`, which
+  a site's router lists through `FrameworkPages.With(...)`. The accounts contracts already own a class named
+  `AccountPages` (the routes), so the web library's handle is `AccountLibrary`, and the studio's follows. This
+  fixes the account pages answering "not found" on every site: no router listed their assembly.
+- **The studio keeps its folders' names:** `Admin/`, `Components/`, `Pages/` under `louis-agent.web.evals`, the
+  namespaces `LouisAgent.Web.Evals.Admin.*`, `.Components.*`, `.Pages.*`; its Sass under `Styles/evals/`, listed by
+  a site as `evals/pages`; the rules tests take the library beside the accounts'.
 - **Test first, where the test could compile:** the seam tests of steps 2 to 4 reference members that did not
   exist before the step, so they could not be run red first; each was written before its code and seen green after.
 

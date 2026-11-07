@@ -498,6 +498,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.accounts", "src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj", "{C3000A30-7E1B-4C9A-9F7D-2026110700A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.evals", "src\web\louis-agent.web.evals\louis-agent.web.evals.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700E1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "demos\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls", "demos\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj", "{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82}"
@@ -525,6 +527,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "src\tests\web\louis-agent.web.tests\louis-agent.web.tests.csproj", "{58DD87D4-4C08-4C58-8E0A-888771B72642}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.accounts.tests", "src\tests\web\louis-agent.web.accounts.tests\louis-agent.web.accounts.tests.csproj", "{C3000A30-7E1B-4C9A-9F7D-2026110700A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.evals.tests", "src\tests\web\louis-agent.web.evals.tests\louis-agent.web.evals.tests.csproj", "{C3300A33-7E1B-4C9A-9F7D-2026110700E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls.tests", "demos\puls\tests\louis-agent.puls.tests\louis-agent.puls.tests.csproj", "{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358}"
 EndProject
@@ -718,6 +722,30 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1}.Release|x86.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x64.Build.0 = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2}.Release|x86.Build.0 = Release|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D7}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -2163,6 +2191,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E1} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
+		{C3300A33-7E1B-4C9A-9F7D-2026110700E2} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D7} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700D9} = {C3300A33-7E1B-4C9A-9F7D-2026110700E0}

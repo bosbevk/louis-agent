@@ -20,6 +20,8 @@
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
+    <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.evals\louis-agent.web.evals.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj" />
   </ItemGroup>

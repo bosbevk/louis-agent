@@ -1,7 +1,7 @@
 # Change the eval pages
 
 > **How-to.** Change the framework's eval pages: the Evals page, one run's page, the Review page, the studio and the prompts; and give a
-> site the pages. **Elsewhere:** how they work in [The eval pages](../projects/eval-pages.md); the rest of the framework's web in
+> site the pages. **Elsewhere:** how they work in [The eval pages](../projects/louis-agent.web.evals.md); the rest of the framework's web in
 > [Change the framework's web](change-the-web.md).
 
 ## Give a site the pages
