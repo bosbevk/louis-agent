@@ -42,49 +42,58 @@ when you're about to change a particular project. Each project's `.csproj` links
 
 ## How they depend on each other
 
+An arrow means "references". **The engine:** core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.
+
 ```mermaid
-flowchart BT
-    Comp["louis-agent.composition: the contracts"]
-    Core["louis-agent.core"] --> Comp
-    Packs["Every pack"] --> Comp
-    Ids["Every identity"] --> Comp
-    CLI["louis-agent.cli"] --> Core
-    ACP["louis-agent.acp-server"] --> Core
-    API["louis-agent.api"] --> Core
-    MCP["louis-agent.mcp-server"] --> Core
-    Probe["louis-agent.usage-probe"] --> Core
-    Evals["louis-agent.evals.runner, on the harness"] --> Core
-    Web["louis-agent.web"]
-    PacksWeb["packs-web: a pack's views"] --> Web
-    Puls["louis-agent.puls"] --> Web
-    Puls --> PacksWeb
-    Review["louis-agent.code-review"] --> Web
-    Review --> PacksWeb
-    Starter["louis-agent.starter"] --> Web
-    HostPacks["louis-agent.host-packs: Puls's packs"] --> Core
-    HostPacks --> Packs
-    HostPacks --> Ids
-    PulsApi["louis-agent.puls-api"] --> API
-    PulsApi --> HostPacks
-    PulsApi --> Puls
-    Catalog["louis-agent.coding-catalog: the coding agent's packs"] --> Core
-    Catalog --> Packs
-    Catalog --> Ids
-    CodingHosts["The coding agent's programs: coding-api, -cli, -acp, -mcp"] --> Catalog
-    CodingHosts --> API & CLI & ACP & MCP
-    CodingHosts --> Review
-    Orch["louis-agent.orchestrator"] --> Core
-    Orch --> Ids
-    Site["louis-agent.site: references none of ours"]
-    Web -. "HTTP and SSE" .-> API
-    API -. "HTTP and SSE: sub-sessions on a peer" .-> API
-    Orch -. "HTTP and SSE: sessions" .-> API
-    Evals -. "HTTP and SSE: sessions" .-> API
+flowchart TD
+    Programs["<b>A demo's programs</b><br/>coding-api, coding-cli, coding-acp, coding-mcp<br/>puls-api, puls-eval-runner"]
+    Hosts["<b>What runs on core</b><br/>cli, acp-server, api, mcp-server, evals.runner<br/>orchestrator, usage-probe"]
+    Catalogs["<b>What picks the packs</b><br/>coding-catalog, host-packs"]
+    Core["<b>louis-agent.core</b><br/>the engine"]
+    Ids["<b>Every identity</b><br/>who an agent is"]
+    Packs["<b>Every pack</b><br/>what an agent can do"]
+    Comp["<b>louis-agent.composition</b><br/>the contracts"]
+
+    Programs --> Hosts
+    Programs --> Catalogs
+    Hosts --> Core
+    Catalogs --> Core
+    Core ~~~ Ids
+    Core ~~~ Packs
+    Catalogs --> Ids
+    Catalogs --> Packs
+    Ids --> Comp
+    Core --> Comp
+    Packs --> Comp
 ```
 
-Solid arrows are project references; dotted ones are runtime calls. The test projects and the small shared projects (`louis-agent.choices`, `louis-agent.session-stream`,
-`louis-agent.api.contracts`, `louis-agent.evals.protocol`) are left out. A pack or an identity references only the contracts in `louis-agent.composition`, and core references no pack,
-identity or host: only a demo's program or catalogue knows them all. Behaviour lives in core, and every host is a thin adapter between its protocol and `AgentEngine`.
+A pack or an identity references only the contracts, and core references no pack, identity or host, so only what picks the packs knows them all. Behaviour lives in core, and every host is a thin
+adapter between its protocol and `AgentEngine`.
+
+**The web:** a site is a small program on the framework's web, and it reaches the engine only over HTTP.
+
+```mermaid
+flowchart TD
+    ApiPrograms["<b>The programs that serve a site</b><br/>puls-api, coding-api"]
+    Sites["<b>The sites</b><br/>louis-agent.puls, louis-agent.code-review, louis-agent.starter"]
+    PacksWeb["<b>packs-web</b><br/>a pack's own views, for the sites that use them"]
+    Web["<b>louis-agent.web</b><br/>what every site shares"]
+    Api["<b>louis-agent.api</b>"]
+
+    ApiPrograms --> Sites
+    ApiPrograms --> Api
+    Sites --> PacksWeb
+    Sites --> Web
+    PacksWeb --> Web
+    Web -. "HTTP and SSE, at run time" .-> Api
+```
+
+**What the diagrams leave out,** to stay readable:
+
+- The test projects, and the small shared projects: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` and `louis-agent.evals.protocol`.
+- `louis-agent.site`, the landing page, which references none of our projects.
+- That the orchestrator and the usage probe are programs of their own, which no demo's program starts, and the orchestrator's reference to the coding identity.
+- The calls at run time on the engine's side: the API opens sub-sessions on a peer, and the orchestrator and the eval runner open sessions on the API, all over HTTP and SSE.
 
 ## Where each one runs
 
