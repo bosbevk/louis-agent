@@ -1,0 +1,9 @@
+/* Ring's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.donut-centre small { max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The ring's total in its middle (Louis: the cost must pop), as a tile's figure. */
+.donut-wrap { position: relative; display: grid; place-items: center; }
+.donut-centre { position: absolute; display: flex; flex-direction: column; align-items: center; line-height: 1.1; pointer-events: none; }
+.donut-centre strong { font-size: 20px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.3px; font-variant-numeric: tabular-nums; }
+.donut-centre small { font-size: 10.5px; color: var(--bs-secondary-color); }
+.donut-track { stroke: rgba(var(--web-overlay-rgb), .06); }
+.donut-arc { stroke-dasharray: var(--len) calc(100 - var(--len)); animation: sweep .9s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }

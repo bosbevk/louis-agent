@@ -1,0 +1,9 @@
+/* EvalScorecard's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* The scorecard: a darker panel with a soft glow of the site's two colours behind the rings. */
+.eval-score { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; border: 1px solid var(--bs-border-color); border-radius: 14px;
+    background: radial-gradient(120% 140% at 0% 0%, rgba(var(--web-success-text-rgb), .09), transparent 55%), radial-gradient(120% 140% at 100% 100%, rgba(var(--bs-primary-rgb), .08), transparent 55%), var(--bs-body-bg); }
+.eval-score-modes { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 18px 48px; padding: 0 8px; }
+.eval-mode { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; min-width: 132px; text-align: center; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.eval-mode figcaption code { font-size: 12.5px; color: var(--bs-emphasis-color); background: none; padding: 0; }
+.eval-mode small { font-size: 12px; color: var(--bs-secondary-color); }
+.eval-mode small strong { color: var(--bs-primary-text-emphasis); font-variant-numeric: tabular-nums; }

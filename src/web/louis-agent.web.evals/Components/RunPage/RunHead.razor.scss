@@ -1,0 +1,6 @@
+/* RunHead's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */
+.run-head h1 code { font-size: 24px; font-weight: 800; color: var(--bs-emphasis-color); background: none; padding: 0; letter-spacing: -.4px; }
+.run-proves { margin: 4px 0 0; color: var(--bs-body-color); font-size: 14.5px; max-width: 90ch; }
+.run-facts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px !important; font-size: 13px; }
+.run-facts > code { color: var(--bs-primary-text-emphasis); }

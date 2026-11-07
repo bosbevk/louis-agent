@@ -15,6 +15,12 @@ public class SnapshotsTests
             Is.EqualTo("<div b-SCOPE class=\"account-shell\"><main b-SCOPE>x</main></div>\n"));
 
     [Test]
+    public void TheScopeAttribute_WithAnEmptyValue_IsNormalisedTheSame() =>
+        Assert.That(
+            Snapshots.Normalise("<div class=\"page-head\" b-k3x9z2m1qa=\"\"><h1 b-k3x9z2m1qa=\"\">x</h1></div>"),
+            Is.EqualTo("<div class=\"page-head\" b-SCOPE><h1 b-SCOPE>x</h1></div>\n"));
+
+    [Test]
     public void AWordThatLooksLikeAScope_InText_Stays() =>
         Assert.That(Snapshots.Normalise("<p>the b-side, and b-k3x9z2m1qa too</p>"),
             Is.EqualTo("<p>the b-side, and b-k3x9z2m1qa too</p>\n"));

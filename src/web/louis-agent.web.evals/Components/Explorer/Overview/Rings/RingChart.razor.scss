@@ -1,0 +1,5 @@
+/* RingChart's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F31: each mode's token mix as a donut; each arc sweeps in after the one before (Jitter's chart idiom), on the
+   explorer's palette. A circumference of 100, so an arc's dash length is its share. */
+/* The rings spread across their card (Louis: there was space on the right), each the same width so they line up. */
+.donuts { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-around; padding-top: 4px; }

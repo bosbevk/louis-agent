@@ -1,0 +1,6 @@
+/* EvalRunControls's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F31 step 10b: a check's manual, from its card into the search dialog's frame, wider and taller for reading. */
+.manual-button { background: none; border: 1px solid var(--bs-border-color); border-radius: 999px; color: var(--bs-secondary-color); font: inherit; font-size: 12px; padding: 2px 10px; margin-right: 6px; transition: color .15s, border-color .15s; }
+.manual-button:hover, .manual-button:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); }
+.eval-run-controls { margin: 0; padding: 10px 12px; border: 1px solid var(--bs-border-color); border-radius: 12px; background: rgba(var(--web-overlay-rgb), .02); }
+.run-estimate { font-size: 12.5px; }

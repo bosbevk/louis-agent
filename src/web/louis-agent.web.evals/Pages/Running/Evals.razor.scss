@@ -1,0 +1,7 @@
+/* Evals's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F31: the store's state beside the page's actions, the banner when there is none, and the live table's open row. */
+.store-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--bs-secondary-color); border: 1px solid var(--bs-border-color); border-radius: 999px; padding: 4px 10px; }
+/* F53.2: the page as list and details (Microsoft's list/details pattern): the list pane on the left, one line an eval, the chosen one edged orange; the details on the right. On a narrow screen the list stacks above. */
+.eval-split { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+.eval-pane { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+@media (max-width: 991.98px) { ::deep .eval-split { grid-template-columns: minmax(0, 1fr); } ::deep .eval-list { position: static; } }

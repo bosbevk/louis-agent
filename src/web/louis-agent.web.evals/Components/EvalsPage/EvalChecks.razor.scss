@@ -1,0 +1,13 @@
+/* EvalChecks's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* What it checks, folded: the facts as names and values, the graders as chips under their kind. */
+.eval-checks { border-top: 1px solid var(--bs-border-color); padding-top: 10px; gap: 12px; }
+.eval-checks-body { display: grid; grid-template-columns: max-content 1fr; gap: 10px 16px; margin: 0; font-size: 13px; align-items: start; }
+.eval-checks-body dt { color: var(--bs-secondary-color); font-weight: 600; padding-top: 2px; }
+.eval-checks-body dd { margin: 0; }
+.eval-chips, .eval-grader-group { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.eval-grader-groups { display: flex; flex-direction: column; gap: 8px; }
+.eval-kind { font-size: 10.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; min-width: 9ch; text-align: center; }
+.eval-kind.rule { background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); }
+.eval-kind.model { background: var(--bs-primary-bg-subtle); color: var(--bs-primary-text-emphasis); }
+.eval-kind.person { background: rgba(var(--web-overlay-rgb), .08); color: var(--bs-emphasis-color); }
+.eval-kind.other { background: var(--bs-body-bg); color: var(--bs-secondary-color); }

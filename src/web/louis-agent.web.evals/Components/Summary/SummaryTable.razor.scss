@@ -1,0 +1,20 @@
+/* SummaryTable's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* The by-category table (F18 step 5c, Louis: "look at how nice everything looks and then we see this"): cells with room between them, numbers on the right, the overall line standing out. */
+.summary-mode { margin: 18px 0 26px; }
+.summary-mode h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; color: var(--bs-primary-text-emphasis); }
+/* 6a.4 (Louis: "too flat"): each row is a rounded card like the pass-rates list (the table keeps its columns), the overall row edged orange, a bar behind each rate. */
+.summary-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.summary-table th, .summary-table td { padding: 9px 14px; text-align: left; vertical-align: middle; white-space: nowrap; }
+.summary-table th { color: var(--bs-secondary-color); font-size: 12px; font-weight: 600; padding-top: 0; padding-bottom: 0; }
+.summary-table .summary-row td { background: var(--bs-body-bg); border-top: 1px solid var(--bs-border-color); border-bottom: 1px solid var(--bs-border-color); }
+.summary-table .summary-row td:first-child { border-left: 1px solid var(--bs-border-color); border-radius: 12px 0 0 12px; }
+.summary-table .summary-row td:last-child { border-right: 1px solid var(--bs-border-color); border-radius: 0 12px 12px 0; }
+.summary-table .summary-row:hover td { border-color: rgba(var(--bs-primary-rgb), .35); }
+.summary-table ::deep tr.overall td { font-weight: 600; color: var(--bs-emphasis-color); }
+.summary-table .s-rate, .summary-table .s-at-k, .summary-table .s-hat-k { min-width: 7.5rem; }
+.summary-table ::deep .rate-fill { display: block; height: 100%; border-radius: 3px; background: var(--bs-success-text-emphasis); animation: grow .7s var(--web-ease) both; }
+.summary-table ::deep .rate-fill.hat { background: var(--bs-primary); }
+.summary-table .s-slice { font-family: var(--bs-font-monospace); font-size: 12.5px; }
+.summary-table .s-passed { min-width: 17rem; white-space: normal; }
+.summary-table .s-tasks details > summary { cursor: pointer; color: var(--bs-secondary-color); }
+.summary-table a.s-task { display: block; padding: 2px 0; font-size: 12.5px; }

@@ -1,0 +1,7 @@
+/* Review's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F53.3: the Review page, one answer at a time: where it is from, its place, Skip; the panel below without its own top margin. */
+.review-item { gap: 12px; }
+.review-item ::deep .review-panel { margin-top: 0; border: 0; padding: 0; background: none; animation: none; }
+.review-progress { font-size: 13px; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.review-empty p { margin: 0; color: var(--bs-secondary-color); }
+.review-page { outline: none; display: flex; flex-direction: column; gap: 18px; }

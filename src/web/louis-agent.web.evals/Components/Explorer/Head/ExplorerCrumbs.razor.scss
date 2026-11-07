@@ -1,0 +1,9 @@
+/* ExplorerCrumbs's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F31: the chats side by side (Louis), from the explorer's crumbs row into a wide modal on the search dialog's frame. */
+.crumbs .chat-open { margin-left: auto; }
+.crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
+.crumb { background: none; border: 0; color: var(--bs-primary-text-emphasis); padding: 3px 8px; border-radius: 8px; font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s; }
+.crumb:hover, .crumb:focus-visible { background: rgba(var(--bs-primary-rgb), .1); text-decoration: underline; text-underline-offset: 3px; }
+.crumb.here { color: var(--bs-emphasis-color); font-weight: 700; cursor: default; background: none; text-decoration: none; }
+.crumb code { color: inherit; }
+.crumb-sep { color: var(--bs-tertiary-color); }

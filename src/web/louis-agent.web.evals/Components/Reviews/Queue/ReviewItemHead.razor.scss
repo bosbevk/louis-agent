@@ -1,0 +1,9 @@
+/* ReviewItemHead's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.review-item-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.review-where { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+.review-item-eval { font-size: 15px; font-weight: 800; color: var(--bs-emphasis-color); background: none; padding: 0; }
+.review-item-run code { color: var(--bs-primary-text-emphasis); background: none; padding: 0; }
+.review-item-run:hover code { text-decoration: underline; }
+.review-item-task { font-weight: 700; color: var(--bs-emphasis-color); }
+.review-item-actions { display: flex; align-items: center; gap: 10px; }
+.review-place { font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }

@@ -231,6 +231,27 @@ and why. Each step ends with the three sites built and their goldens green.
   copies). **B taken.** A rule a single component draws (the notice, the password field, the divider, the facts, the
   key and codes) is in that component's file; the step is an edit, not a pure move, since every shared line gained
   `::deep`. The account library has no `Styles/` partial left, so `FrameworkStylesTests` reads only its `.razor.scss`.
+- **Step 4, the studio (2026-11-07, unattended; Claude's picks, for Louis to confirm).** Seven partials and the
+  studio's lines in the admin's, 720 rules over 75 components: placed by a script (`cl58_studio.py`, in the
+  session's scratchpad, not the repo) on three rules, each block's comment carried with it and the cascade's
+  order kept inside every file. (1) A rule goes to the file of the component that draws its first class; when
+  several do, to their nearest common ancestor among the studio's components, under `::deep`; `::deep` also when a
+  later part of the selector names a child's class or an element the owner never writes. (2) When they have no
+  common ancestor of the studio's, the rule goes to whoever draws its *last* compound, since Blazor scopes only
+  that (`.trend.compact .chart-head` can sit with `.chart-head`'s owner), else it stays in the partial. (3) A rule
+  that stays and names its subject through an ancestor is a variant meant to win over the subject's base; a base
+  that moved would gain the scope and tie, so it stays too, to a fixed point (18 rules; the `.trend.compact` and
+  `.trend.small` family, `.chart-head`, `.trend-panel`). (4) A rule whose subject a razor file outside the library draws as a class (`.prompts`, which the screen table draws too; `.work-status`, the chat's; `.chip`, `.tile`, `.note`, `.muted`) stays global, since a scoped rule would no longer reach that element. 138 rules stay in the five `evals/` partials (`_studio`
+  emptied and deleted), `evals/pages` forwards the five; the studio's shared rules that lived in
+  `web/admin/_shell.scss` (`.admin-details`, `.admin-markdown`, `.admin-pre`, `.run-controls`, `.run-log`,
+  `.run-table`) moved to `evals/_run-page.scss`, and `web/admin/` is gone with its forward. A scan of every scoped
+  rule against the globals (`cl58_ties.py`) finds no two that style the same element with the same weight. The
+  studio's 20 goldens changed by the scope attribute alone (checked by taking it off and comparing with `main`);
+  the pages need the admin key and a store, so the by-hand check of the studio is Louis's, as the plan says.
+  **Found, not done:** the partials hold rules no component or C# file names any more (`.run-report`,
+  `.run-transcript`, `.admin-cols`, `.eval-card`, `.eval-trend`, `.explorer-q`, `.explorer-think`,
+  `.explorer-calls`, `.check-script`, `.live-chat`, `.tree-node`, `.tree-mode`, `.tree-meta`, `.conv-row`): dead
+  since CL10 by the look of them; left in place for Louis to confirm and delete (a TODO row).
 - **Step 3, the admin (2026-11-07, unattended; Claude's picks, for Louis to confirm).** The two admin partials held
   four kinds of rule, not one. (a) The frame's own (`.admin-shell`, its sidebar, the column) are `AdminShell`'s file.
   (b) What a pack's own view draws in the column (`.pack-split` and its buttons) sits under `::deep` in the same

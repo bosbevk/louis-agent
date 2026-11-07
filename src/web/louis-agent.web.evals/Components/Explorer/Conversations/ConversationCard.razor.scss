@@ -1,0 +1,19 @@
+/* ConversationCard's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* 6a.4d (Louis: "a lot of unused space", "which ones to check"): a card per conversation, the chips in one line across it, a review pill in front, the cost strip under it. */
+.conv-card { width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 12px; transition: border-color .2s, box-shadow .2s, transform .25s var(--web-spring); }
+.conv-card:hover { border-color: rgba(var(--bs-primary-rgb), .4); box-shadow: var(--web-glow); transform: translateY(-1px); }
+.conv-card[data-review="to-review"] { border-left: 3px solid var(--bs-primary); }
+.conv-card[data-review="reviewed"] { border-left: 3px solid var(--bs-success-text-emphasis); }
+.conv-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.conv-head code { font-size: 12.5px; font-weight: 700; color: var(--bs-emphasis-color); background: none; padding: 0; }
+.conv-head .conv-q { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--bs-tertiary-color); font-size: 12px; }
+.conv-head ::deep .row-cost.small { margin-left: auto; }
+.conv-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.conv-chips ::deep .tree-chips { margin-left: 0; display: contents; }
+.conv-strip { height: 6px; border-radius: 3px; overflow: hidden; background: rgba(var(--web-overlay-rgb), .05); cursor: default; }
+.conv-strip ::deep .xbar-fill { border-radius: 3px; }
+@media (prefers-reduced-motion: reduce) { ::deep .review-pill.to-review { animation: none; } ::deep .conv-card:hover { transform: none; } }
+.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--bs-primary-text-emphasis); background: none; border: 1px solid rgba(var(--bs-primary-rgb), .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.turn-open:hover, .turn-open:focus-visible { background: rgba(var(--bs-primary-rgb), .14); }
+.turn-open.quiet { color: var(--bs-body-color); border-color: var(--bs-border-color); }
+.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--bs-primary-text-emphasis); border-color: rgba(var(--bs-primary-rgb), .45); background: rgba(var(--bs-primary-rgb), .08); }

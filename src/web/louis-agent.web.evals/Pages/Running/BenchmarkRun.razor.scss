@@ -1,0 +1,26 @@
+/* BenchmarkRun's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.legend ::deep .key-note { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--bs-body-color); }
+.legend ::deep .key-prompt { display: inline-block; width: 0; height: 12px; border-left: 1.5px dashed var(--bs-secondary-color); }
+/* Pass rates per mode (2026-10-26): a row per mode, the two rates as bars with their numbers, the notes beside them. */
+::deep .mode-rates-lead { margin: 0 0 10px; font-size: 13px; max-width: 100ch; }
+.mode-rates-lead ::deep strong { color: var(--bs-emphasis-color); }
+::deep .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; }
+::deep .category-card { background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+::deep .category-card:hover { border-color: rgba(var(--bs-primary-rgb), .35); }
+::deep .category-card.overall { border-color: rgba(var(--bs-primary-rgb), .4); }
+.category-card ::deep h4 { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 15px; font-weight: 700; color: var(--bs-emphasis-color); }
+.category-card ::deep h4 code { background: none; padding: 0; color: var(--bs-emphasis-color); font-size: 14px; }
+::deep .tree-chips { display: inline-flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+.judge-none { font-size: 13.5px; }
+/* The run explorer (F27 steps 8-10): charts you drill into. Marks follow the dataviz specs (bars <= 24px, 4px rounded
+   data-end, a 2px surface gap between stacked segments, recessive hairlines); motion follows the landing page (rise,
+   grow, count-up, a spring), and stops for people who ask for less. */
+.explorer { display: flex; flex-direction: column; gap: 14px; margin: 6px 0 10px; }
+::deep .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: 0 0 auto; }
+::deep .legend { display: inline-flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--bs-secondary-color); margin-left: auto; }
+.legend ::deep > span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-head ::deep strong { color: var(--bs-emphasis-color); }
+.chart-head.lead ::deep strong { font-size: 16px; }
+::deep .explorer-fields { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
+.explorer-fields ::deep dt { color: var(--bs-secondary-color); } .explorer-fields ::deep dd { margin: 0; font-variant-numeric: tabular-nums; }
+::deep .review-error { color: var(--bs-danger); margin: 0; }

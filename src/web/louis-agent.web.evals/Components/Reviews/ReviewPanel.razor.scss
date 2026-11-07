@@ -1,0 +1,16 @@
+/* ReviewPanel's own styles, moved beside it from the studio's partials (CL58, step 4). */
+/* F18 step 6a.3: the blind review panel and the judge-against-people card, in the portal's own parts (card-p, segmented, admin-table, header-button). */
+.review-panel { margin-top: 12px; gap: 8px; }
+.review-question { margin: 0; font-size: 15px; color: var(--bs-emphasis-color); }
+.review-ask p { margin: 0; color: var(--bs-secondary-color); font-size: 13px; }
+.review-answer { font-size: 13.5px; }
+.review-name-row { display: flex; gap: 8px; }
+.review-name, .review-note { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+.review-name { flex: 1; }
+.review-note { width: 100%; min-height: 56px; resize: vertical; }
+.review-name:focus, .review-note:focus { outline: none; border-color: rgba(var(--bs-primary-rgb), .55); }
+.review-buttons { align-self: flex-start; }
+.review-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.review-result { font-weight: 700; color: var(--bs-emphasis-color); margin: 0; }
+.review-judge { margin: 0; font-size: 13px; }
+.review-who { margin: 0; font-size: 13px; }

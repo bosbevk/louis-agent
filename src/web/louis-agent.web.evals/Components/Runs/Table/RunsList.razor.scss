@@ -1,0 +1,8 @@
+/* RunsList's own styles, moved beside it from the studio's partials (CL58, step 4). */
+.runs-list ::deep .run-row-main { color: inherit; text-decoration: none; }
+.runs-list ::deep .run-row-main:hover code { color: var(--bs-primary-text-emphasis); }
+.runs-list { max-height: calc(100vh - 150px); overflow: auto; }
+::deep .runs-head, ::deep .run-row { display: grid; grid-template-columns: 100px 130px 50px 90px 70px minmax(0, 1fr) 70px; align-items: center; gap: 12px; padding: 8px 10px; }
+.runs-head { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--bs-tertiary-color); border-bottom: 1px solid var(--bs-border-color); }
+@media (max-width: 1100px) { ::deep .runs-head { display: none; } ::deep .run-row { grid-template-columns: 1fr 1fr; } ::deep .run-row-notes { grid-column: 1 / -1; } }
+.model-filter { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
