@@ -1,5 +1,6 @@
 using LouisAgent.Accounts.Config;
 using LouisAgent.Accounts.Endpoints;
+using LouisAgent.Accounts.Endpoints.Confirmation;
 using LouisAgent.Accounts.Mail;
 using LouisAgent.Accounts.Messages;
 using LouisAgent.Accounts.Store;
@@ -113,7 +114,7 @@ public static class AccountsStartup
             throw new InvalidOperationException(MessageText.Format(AccountErrorMessage.UseBeforeMap));
 
         var account = app.MapGroup(Prefix);
-        account.MapIdentityApi<AccountUser>();
+        account.MapIdentityApi<AccountUser>().WithConfirmationRedirect();
         account.MapAccountRoutes();
         return app;
     }
