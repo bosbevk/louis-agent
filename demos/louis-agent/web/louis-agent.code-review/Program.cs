@@ -6,6 +6,7 @@ using LouisAgent.CodeReview;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -26,5 +27,6 @@ builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddSingleton(new ChatText());   // the shared components' words, in English
 builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
 builder.Services.AddSingleton(new PackViews());
+builder.Services.AddSingleton(new ChatHandoff(""));   // a screen's Review button opens the chat here, with a draft
 
 await builder.Build().RunAsync();

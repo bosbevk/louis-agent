@@ -1,6 +1,8 @@
 using LouisAgent.Packs.Git.Web.Branches;
 using LouisAgent.Packs.Git.Web.Changes;
 using LouisAgent.CodeReview.Pages;
+using LouisAgent.Web.Components.Chat.Shell;
+using Microsoft.AspNetCore.Components;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -43,6 +45,7 @@ public class ChatPageTests
         ctx.Services.AddSingleton(new GitHistory(api, git));
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
+        ctx.Services.AddSingleton(new ChatHandoff(""));
         // The theme switcher reads css/themes/themes.json on its own client.
         ctx.Services.AddSingleton(new HttpClient(new StubHandler(FixtureApi.Answer)) { BaseAddress = new Uri("http://localhost/") });
         return ctx;
@@ -64,6 +67,21 @@ public class ChatPageTests
         Assert.That(cut.FindAll(".tabs button"), Has.Count.EqualTo(4));
         Assert.That(Calls(ctx), Is.EquivalentTo(StartUpCalls));
         Snapshots.Match("Pages/ChatPage.empty.html", cut.Markup);
+    }
+
+    /// <summary>A prompt from an admin screen waits in the box, and nothing is sent until the person sends it.</summary>
+    [Test]
+    public void APromptFromAScreen_WaitsInTheBox_Unsent()
+    {
+        using var ctx = Context();
+        ctx.Services.GetRequiredService<ChatHandoff>()
+            .OpenChatWith("Review this", ctx.Services.GetRequiredService<NavigationManager>());
+
+        var cut = ctx.Render<ChatPage>();
+        cut.WaitForState(() => cut.FindAll("select").Count > 0, TimeSpan.FromSeconds(10));
+
+        Assert.That(cut.Find("#composer-input").GetAttribute("value"), Is.EqualTo("Review this"));
+        Assert.That(cut.FindAll(".empty"), Has.Count.EqualTo(1), "still an empty chat: nothing was sent");
     }
 
     /// <summary>A message opens a session and streams the turn, and the page matches its golden file.</summary>

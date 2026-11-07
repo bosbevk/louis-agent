@@ -7,6 +7,7 @@ using LouisAgent.Packs.Git.Web.Views.Branches;
 using LouisAgent.Packs.Git.Web.Views.Changes;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -27,6 +28,7 @@ public partial class ChatPage : IDisposable
     [Inject] private GitHistory History { get; set; } = default!;
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
+    [Inject] private ChatHandoff Handoff { get; set; } = default!;
 
     [Parameter] public string? SessionId { get; set; }
 
@@ -55,6 +57,8 @@ public partial class ChatPage : IDisposable
         History.Changed += OnGitChanged;
         Currency.Changed += OnGitChanged;
         if (!Store.Loaded) await Store.LoadAsync();
+        // A prompt from an admin screen waits in the box, for the person to read and send.
+        if (Handoff.Take() is { } draft) Runner.Draft = draft;
         _ = Git.RefreshAsync();
         _ = History.RefreshAsync();
     }
