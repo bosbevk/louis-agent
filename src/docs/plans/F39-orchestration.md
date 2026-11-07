@@ -12,7 +12,8 @@
 > errors; a *manager* identity decides which to investigate; an *investigator* identity reports back a typed result;
 > the manager decides human intervention (an endpoint) or auto-handling, and delegates a fix to the *coder* (the
 > coding identity), validates the changes and hands them to a *reviewer* identity; an unhappy review goes back to the
-> coder until the reviewer is happy or the cap stops it; a branch is left with the fix, **never a PR**. Code for the fixed steps, an agent only where the next step depends
+> coder *through the manager* until the reviewer is happy or the cap stops it; every result passes through the
+> manager, who checks everyone (a hub, never agent to agent); a branch is left with the fix, **never a PR**. Code for the fixed steps, an agent only where the next step depends
 > on what was found. This is F106.3, the framework's workflow demo.
 
 ### Phase 6 · F39 Orchestration: one delegation function, and the orchestrator as an identity
