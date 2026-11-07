@@ -22,6 +22,12 @@ public interface IRecipeStore
     /// </summary>
     Task<bool> KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken);
 
-    /// <summary>Takes out every page of a site: the one way a kept recipe ever leaves.</summary>
+    /// <summary>Takes out every page of a site, when its owner asks.</summary>
     Task PurgeSiteAsync(string slug, CancellationToken cancellationToken);
+
+    /// <summary>Puts a person's edit in place of the kept recipe, and says whether there was one to change.</summary>
+    Task<bool> ReplaceAsync(StoredRecipe recipe, CancellationToken cancellationToken);
+
+    /// <summary>Takes one recipe out, and says whether there was one to take.</summary>
+    Task<bool> RemoveAsync(string id, CancellationToken cancellationToken);
 }

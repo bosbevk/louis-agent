@@ -18,6 +18,12 @@ public interface IExcludedPages
 
     /// <summary>Adds a page; one already on the list stays as it was.</summary>
     Task AddAsync(ExcludedPage page, CancellationToken cancellationToken);
+
+    /// <summary>Every page on the list, newest first, for whoever runs it to read.</summary>
+    Task<IReadOnlyList<ExcludedPage>> AllAsync(CancellationToken cancellationToken);
+
+    /// <summary>Clears a page so it gets looked at again, and says whether it was on the list.</summary>
+    Task<bool> RemoveAsync(string id, CancellationToken cancellationToken);
 }
 
 /// <summary>A page we found no recipe on, and when, so the list can be cleared or read later.</summary>
@@ -40,4 +46,11 @@ public sealed class NoExcludedPages : IExcludedPages
 
     /// <inheritdoc />
     public Task AddAsync(ExcludedPage page, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<ExcludedPage>> AllAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<ExcludedPage>>([]);
+
+    /// <inheritdoc />
+    public Task<bool> RemoveAsync(string id, CancellationToken cancellationToken) => Task.FromResult(false);
 }

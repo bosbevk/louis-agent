@@ -47,6 +47,21 @@ public sealed class MongoExcludedPages(IMongoCollection<ExcludedPageDocument> pa
             // It's on the list already, which is all we wanted.
         }
     }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<ExcludedPage>> AllAsync(CancellationToken cancellationToken)
+    {
+        var all = await pages.Find(FilterDefinition<ExcludedPageDocument>.Empty)
+            .SortByDescending(document => document.At).ToListAsync(cancellationToken);
+        return [.. all.Select(document => document.ToPage())];
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> RemoveAsync(string id, CancellationToken cancellationToken)
+    {
+        var result = await pages.DeleteOneAsync(document => document.Id == id, cancellationToken);
+        return result.DeletedCount > 0;
+    }
 }
 
 /// <summary>One excluded page as MongoDB keeps it. Its id comes from the page's one spelling, so it's listed once.
@@ -59,6 +74,10 @@ public sealed record ExcludedPageDocument(
     [property: BsonElement("page")] string Page,
     [property: BsonElement("at")] DateTime At)
 {
+    /// <summary>The page this document holds.</summary>
+    public ExcludedPage ToPage() =>
+        new(new Uri(Page), new DateTimeOffset(DateTime.SpecifyKind(At, DateTimeKind.Utc)));
+
     /// <summary>The document for a page.</summary>
     public static ExcludedPageDocument Of(ExcludedPage page) => new(page.Id, page.Page.AbsoluteUri, page.At.UtcDateTime);
 }

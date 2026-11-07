@@ -36,7 +36,10 @@ public sealed record StoredRecipeDocument(
     [property: BsonElement("steps")] List<StoredRecipeLine> Steps,
     [property: BsonElement("image")] string? Image,
     [property: BsonElement("author")] string? Author,
-    [property: BsonElement("read_at")] DateTime ReadAt)
+    [property: BsonElement("read_at")] DateTime ReadAt,
+    [property: BsonElement("edited_at")]
+    [property: BsonIgnoreIfNull]
+    DateTime? EditedAt = null)
 {
     /// <summary>The document for a recipe.</summary>
     public static StoredRecipeDocument Of(StoredRecipe stored) => new(
@@ -52,7 +55,8 @@ public sealed record StoredRecipeDocument(
         [.. stored.Recipe.Steps.Select(line => new StoredRecipeLine(line.Section, line.Text))],
         stored.Recipe.Image?.AbsoluteUri,
         stored.Recipe.Author,
-        stored.ReadAt.UtcDateTime);
+        stored.ReadAt.UtcDateTime,
+        stored.EditedAt?.UtcDateTime);
 
     /// <summary>The recipe this document holds.</summary>
     public StoredRecipe ToRecipe() => new(
@@ -63,7 +67,8 @@ public sealed record StoredRecipeDocument(
             Author,
             new Uri(Page)),
         Site,
-        new DateTimeOffset(DateTime.SpecifyKind(ReadAt, DateTimeKind.Utc)));
+        new DateTimeOffset(DateTime.SpecifyKind(ReadAt, DateTimeKind.Utc)),
+        EditedAt is { } edited ? new DateTimeOffset(DateTime.SpecifyKind(edited, DateTimeKind.Utc)) : null);
 }
 
 /// <summary>One ingredient or step as MongoDB keeps it, with the part of the recipe it's under.</summary>

@@ -56,4 +56,32 @@ public class MongoExcludedPagesTests
 
         Assert.That(await list.IdsAsync(CancellationToken.None), Has.Count.EqualTo(1));
     }
+
+    /// <summary>The list reads back newest first, with each page and when we looked.</summary>
+    [Test]
+    public async Task TheList_ReadsBack_NewestFirst()
+    {
+        var list = MongoExcludedPages.Open(Url!, _database);
+        var older = new ExcludedPage(new Uri("https://www.taste.co.za/older/"), DateTimeOffset.UnixEpoch);
+        var newer = new ExcludedPage(new Uri("https://www.taste.co.za/newer/"), DateTimeOffset.UnixEpoch.AddDays(1));
+        await list.AddAsync(older, CancellationToken.None);
+        await list.AddAsync(newer, CancellationToken.None);
+
+        var all = await list.AllAsync(CancellationToken.None);
+
+        Assert.That(all, Is.EqualTo(new[] { newer, older }));
+    }
+
+    /// <summary>Clearing a page takes it off the list, and a page that isn't on it says so.</summary>
+    [Test]
+    public async Task Clearing_TakesItOff_AndAMissingOneSaysSo()
+    {
+        var list = MongoExcludedPages.Open(Url!, _database);
+        var page = new ExcludedPage(new Uri("https://www.taste.co.za/article/"), DateTimeOffset.UnixEpoch);
+        await list.AddAsync(page, CancellationToken.None);
+
+        Assert.That(await list.RemoveAsync(page.Id, CancellationToken.None), Is.True);
+        Assert.That(await list.RemoveAsync(page.Id, CancellationToken.None), Is.False);
+        Assert.That(await list.IdsAsync(CancellationToken.None), Is.Empty);
+    }
 }

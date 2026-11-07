@@ -17,4 +17,10 @@ public sealed class NoRecipeStore : IRecipeStore
 
     /// <inheritdoc />
     public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    /// <inheritdoc />
+    public Task<bool> ReplaceAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.FromResult(false);
+
+    /// <inheritdoc />
+    public Task<bool> RemoveAsync(string id, CancellationToken cancellationToken) => Task.FromResult(false);
 }
