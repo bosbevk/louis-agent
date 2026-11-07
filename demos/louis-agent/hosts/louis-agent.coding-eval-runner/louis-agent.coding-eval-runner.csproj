@@ -11,6 +11,8 @@
     <ItemGroup>
         <!-- The framework's eval runner; this program only says what the coding agent's evals can name. -->
         <ProjectReference Include="..\..\..\..\src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+        <!-- CL57: the program, not the runner library, decides the telemetry. -->
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
     </ItemGroup>
 
 </Project>

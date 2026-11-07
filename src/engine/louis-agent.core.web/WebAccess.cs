@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Web.Rendering;
@@ -60,4 +61,9 @@ public sealed class WebAccess : IWebAccess
 
     /// <summary>A fetcher for one call, under the process's robots policy and its store.</summary>
     public IPageFetcher NewFetcher() => new PageFetcher(replay: _replay, robots: _robots);
+
+    /// <summary>The search provider and renderer the settings pick, by wire name, and whether each is set up.</summary>
+    public WebSetup Setup => new(WebSearchProviderFactory.Resolve(_options)?.Wire(),
+        WebSearchProviderFactory.IsReady(_options), PageRendererFactory.Resolve(_options)?.Wire(),
+        PageRendererFactory.IsReady(_options));
 }

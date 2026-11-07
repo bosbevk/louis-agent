@@ -20,8 +20,6 @@ using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Web.Rendering;
-using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Api;
 
@@ -153,9 +151,7 @@ public static class ApiStartup
             new EvalProcess(evals, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
             admin.AdminKey, evalStore, recorder,
             check => EvalSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled,
-                admin.EvalRunner,
-                WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
-                WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
+                admin.EvalRunner, host.Engines.Context.Web.Setup),
             host.Engine.WorkspaceRoot, reviewStore,
             calibrationStore, calibrationRecorder, drafts: draftStore,
             studio: StudioRunner.ForRunner(admin.EvalRunner));

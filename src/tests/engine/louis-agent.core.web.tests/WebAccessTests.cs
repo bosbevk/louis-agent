@@ -34,6 +34,16 @@ public class WebAccessTests
     private static ToolsetContext Context(AgentOptions options) =>
         new(options, WebAccess.Create(options, null, new NoSearch()));
 
+    /// <summary>The setup names the search provider and renderer the settings pick, by wire name, and whether each is ready (CL57).</summary>
+    [Test]
+    public void TheSetup_NamesWhatTheSettingsPick() =>
+        Assert.That(WebAccess.Create(new AgentOptions
+        {
+            WebSearchProvider = "tavily",
+            PageRenderer = "chrome"
+        }).Setup,
+            Is.EqualTo(new WebSetup("tavily", false, "chrome", false)), "named, but without a key or a browser");
+
     /// <summary>The browser the engine gets is the Chrome BROWSER_URL names, behind the robots policy (ADR 0068).</summary>
     [Test]
     public void BrowserUrl_GivesTheChromeItNames_UnderTheRobotsPolicy() =>

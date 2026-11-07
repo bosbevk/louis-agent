@@ -11,6 +11,8 @@
     <ItemGroup>
         <!-- The framework's eval runner; this program only says what Puls's evals can name. -->
         <ProjectReference Include="..\..\..\..\src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+        <!-- CL57: the program, not the runner library, decides the telemetry. -->
+        <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
         <!-- ADR 0073: what proves Puls and its packs. Only this program references them, so no host carries a check, and
              their eval folders reach this program's output through these references. -->
         <ProjectReference Include="..\..\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />

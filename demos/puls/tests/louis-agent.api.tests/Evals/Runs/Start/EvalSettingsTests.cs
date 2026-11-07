@@ -1,8 +1,7 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Choices;
-using LouisAgent.Core.Web.Rendering;
-using LouisAgent.Core.Web.Search;
+using LouisAgent.Core.Web;
 
 namespace LouisAgent.Api.Tests.Evals.Runs.Start;
 
@@ -22,7 +21,7 @@ public class EvalSettingsTests
 
         var settings = EvalSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", SampleRole.Alpha],
             Runner,
-            WebSearchProviderKind.Searxng, PageRendererKind.Chrome, true, true);
+            new WebSetup("searxng", true, "chrome", true));
 
         Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string>
         {
@@ -44,10 +43,10 @@ public class EvalSettingsTests
     {
         // DuckDuckGo's wire text is its name in lower case, which ToString() ("DuckDuckGo") would not give.
         var settings = EvalSettings.Of(new EvalEntry("c", "C"), "anthropic", "m", [], Runner,
-            WebSearchProviderKind.DuckDuckGo, PageRendererKind.Tavily, true, true);
+            new WebSetup("duckduckgo", true, "tavily", true));
 
         Assert.That((settings["web_search_provider"], settings["page_renderer"]),
-            Is.EqualTo((WebSearchProviderKind.DuckDuckGo.Wire(), PageRendererKind.Tavily.Wire())));
+            Is.EqualTo(("duckduckgo", "tavily")));
     }
 
     /// <summary>
@@ -60,7 +59,7 @@ public class EvalSettingsTests
         string searchText, string rendererText)
     {
         var settings = EvalSettings.Of(new EvalEntry("c", "C"), "anthropic", "m", [], Runner,
-            WebSearchProviderKind.Tavily, PageRendererKind.Chrome, searchReady, rendererReady);
+            new WebSetup("tavily", searchReady, "chrome", rendererReady));
 
         Assert.That(
             (settings["web_search_provider"], settings["web_search_provider_ready"], settings["page_renderer"],
@@ -73,11 +72,11 @@ public class EvalSettingsTests
     public void ARendererThatIsNone_LeavesItsKeyOut_AndTheSearchProviderStillShows()
     {
         var settings = EvalSettings.Of(new EvalEntry("c", "C"), "anthropic", "m", [], Runner,
-            WebSearchProviderKind.DuckDuckGo, null, true, false);
+            new WebSetup("duckduckgo", true, null, false));
 
         Assert.That(settings.ContainsKey("page_renderer"), Is.False, "absent, never empty");
         Assert.That(settings.ContainsKey("page_renderer_ready"), Is.False, "no renderer, so nothing to be ready");
-        Assert.That(settings["web_search_provider"], Is.EqualTo(WebSearchProviderKind.DuckDuckGo.Wire()));
+        Assert.That(settings["web_search_provider"], Is.EqualTo("duckduckgo"));
     }
 
     /// <summary>The settings of a run that has just started, to add to.</summary>
@@ -125,7 +124,8 @@ public class EvalSettingsTests
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
         Assert.That(
-            EvalSettings.Of(new EvalEntry("c", "C"), "anthropic", "m", [], Runner, null, null, false, false)[
+            EvalSettings.Of(new EvalEntry("c", "C"), "anthropic", "m", [], Runner,
+                new WebSetup(null, false, null, false))[
                 "roles_enabled"], Is.EqualTo("(all)"));
 
     /// <summary>An eval records its name and the runner it started from, and no script path any more.</summary>
@@ -133,7 +133,7 @@ public class EvalSettingsTests
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
     {
         var settings = EvalSettings.Of(new EvalEntry("stub", "Stub"), "anthropic", "m", [],
-            "/app/evals/x.dll", null, null, false, false);
+            "/app/evals/x.dll", new WebSetup(null, false, null, false));
 
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
         Assert.That(settings.ContainsKey("script"), Is.False, "no script path any more (F18 step 7.4)");

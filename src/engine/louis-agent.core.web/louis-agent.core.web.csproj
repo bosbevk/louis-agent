@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\louis-agent.core\louis-agent.core.csproj" />
-    <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
-    <ProjectReference Include="..\louis-agent.choices\louis-agent.choices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

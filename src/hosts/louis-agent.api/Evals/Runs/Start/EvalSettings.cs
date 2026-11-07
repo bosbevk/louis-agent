@@ -1,8 +1,7 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Choices;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Web.Rendering;
-using LouisAgent.Core.Web.Search;
+using LouisAgent.Core.Web;
 
 namespace LouisAgent.Api.Evals.Runs.Start;
 
@@ -27,21 +26,15 @@ public static class EvalSettings
     /// Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page
     /// renderer it used and whether each was set up.
     /// </summary>
-    /// <param name="searchProvider">The search engine this instance uses; left out if its name is unknown.</param>
-    /// <param name="pageRenderer">The page renderer it uses; left out if none is set up.</param>
-    /// <param name="searchProviderReady">
-    /// Whether the search engine was set up. Only written when there is an engine.
-    /// </param>
-    /// <param name="pageRendererReady">
-    /// Whether the page renderer was set up. Only written when there is a renderer.
+    /// <param name="web">
+    /// What the web access is (CL57, from the seam): the search engine and renderer by name, each left out when
+    /// nothing is picked, and whether each was set up, only written beside its name.
     /// </param>
     /// <param name="evalRunner">
     /// The runner's path the API starts an eval from. Required, so a caller can't leave it out.
     /// </param>
     public static IReadOnlyDictionary<string, string> Of(EvalEntry check, string provider, string model,
-        IReadOnlyList<string> roles, string evalRunner,
-        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer, bool searchProviderReady,
-        bool pageRendererReady)
+        IReadOnlyList<string> roles, string evalRunner, WebSetup web)
     {
         var settings = new Dictionary<string, string>
         {
@@ -58,16 +51,16 @@ public static class EvalSettings
         // apart. Beside each name goes whether it was set up: a named tool without its settings was only a stand-in,
         // and the run should say so. With no engine or renderer there is nothing to write, so the keys are left out
         // rather than written empty.
-        if (searchProvider is { } search)
+        if (web.SearchProvider is { } search)
         {
-            settings["web_search_provider"] = search.Wire();
-            settings["web_search_provider_ready"] = searchProviderReady ? "true" : "false";
+            settings["web_search_provider"] = search;
+            settings["web_search_provider_ready"] = web.SearchReady ? "true" : "false";
         }
 
-        if (pageRenderer is { } renderer)
+        if (web.PageRenderer is { } renderer)
         {
-            settings["page_renderer"] = renderer.Wire();
-            settings["page_renderer_ready"] = pageRendererReady ? "true" : "false";
+            settings["page_renderer"] = renderer;
+            settings["page_renderer_ready"] = web.RendererReady ? "true" : "false";
         }
 
         return settings;

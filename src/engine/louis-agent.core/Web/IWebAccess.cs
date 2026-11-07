@@ -30,4 +30,7 @@ public interface IWebAccess
 
     /// <summary>A fetcher for one call, under the process's robots policy and its replay store.</summary>
     IPageFetcher NewFetcher();
+
+    /// <summary>What this web access is, for a host to write down (CL57): the names and readiness of its parts.</summary>
+    WebSetup Setup { get; }
 }
