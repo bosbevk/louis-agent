@@ -245,6 +245,17 @@ stays text. It's the same habit as treating a tool's result as data: where a val
 reference never applied, so the test had only passed on the unchanged project. A test seen passing tells you little until you've seen it
 fail, and "seen it fail" needs checking too.
 
+**A button that asks a model is a place to slow down (F59.6).** The git and file controls moved out of one site and into their packs' web
+projects, and became admin screens. On the old page their Review button started the turn at once. A screen is on a different page from the
+chat, so it had to change anyway, and it now opens the chat with the prompt waiting in the box. Nothing costs money or runs a tool until
+the person reads it and presses send. The small `ChatHandoff` object holds the words for the moment between the two pages, in memory, because
+a long prompt in a web address would end up in the browser's history.
+
+**One seam still has to fit what doesn't look like a table.** The git panels have no rows, so a described screen seems wrong for them. They
+became `OwnViewScreen`s, which are a name and a heading and nothing else. That keeps one list of screens rather than a second list of panels,
+but it raised a real question: Puls's host loads the git pack too, for its model, so its sidebar would have offered an empty *Changes*. The
+rule that came out is that a screen with no columns can only be drawn by its own view, so a site that doesn't carry the view doesn't list it.
+
 Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
 
 ## The admin's frame (F59.2, 2026-11-06)

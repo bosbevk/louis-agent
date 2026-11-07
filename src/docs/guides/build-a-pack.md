@@ -200,6 +200,10 @@ When a description can't say what you want, a real component replaces it by name
 line above it, and a site adds it with `RecipeWebViews.AddTo(views)`. The pack and its web project can't reference each other,
 so a test project under `packs-tests/` sees both and holds the names they share.
 
+A control with no rows to describe, such as the git pack's Changes, is an `OwnViewScreen`: a name and a heading, and its view does
+the rest, calling whatever routes it needs. A site that doesn't carry the view doesn't list the screen. A button that asks the agent
+for something opens the chat with a draft through `ChatHandoff`, and never sends it.
+
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
 would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The portal lists every upload at

@@ -58,8 +58,8 @@ public partial class GitBranchesView : IScreenView
     }
 
     /// <summary>
-    /// An action can wait behind others, so the outcome is judged by this branch alone, and the viewer closes only if it
-    /// still shows this branch.
+    /// An action can wait behind others, so the outcome is judged by this branch alone, and the viewer closes only if
+    /// it still shows this branch.
     /// </summary>
     private void Finish(string name, bool done)
     {

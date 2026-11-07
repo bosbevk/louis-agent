@@ -40,6 +40,11 @@ component replaces it by name, and the last to register wins.*
 - **A pack's real components live in `packs-web/`,** never in the pack. A pack references no web and its web project references no
   pack, so someone can take the tools alone and a browser never carries a pack's database driver. A test project under
   `packs-tests/` sees both and holds the names they share. `PackWebBoundaryTests` holds the rule.
+- **A screen with no rows to describe is an `OwnViewScreen`:** a name and a heading, drawn only by its own view, as the git panels are.
+  With no columns it can't be drawn any other way, so a site lists and opens it only if it carries that view (`PackViews.CanDraw`). One
+  host can load a pack without its site showing the pack's controls.
+- **A screen's button never sends anything to the model.** A Review or Ask button opens the site's chat with the prompt as a draft
+  (`ChatHandoff`), and the person reads it and sends it.
 - **A new kind of column, field or control enters only when a second screen needs it;** until then it's a custom component.
 - **Only a web address becomes a link.** A value can come from a page we read, and a `javascript:` address would run in the admin's
   tab, with its key.

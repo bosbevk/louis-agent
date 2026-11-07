@@ -710,6 +710,10 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - Puls's host loads the same two packs, so a screen with no columns is listed and opened only by a site that carries its view (`PackViews.CanDraw`).
     The alternatives were a setting per site naming its screens, or moving the packs out of Puls's host, which changes what Puls's model can do.
   - The file browser's screen is called `workspace-files`, as the plain `files` is the toolset's name and the repeated-names rule holds it to its enum.
+  - `ChatHandoff` takes the site's chat address when the site builds it, and holds the draft in memory, not in the web address, so a long prompt stays
+    out of the browser's history. The chat's title comes from the draft as for any message, so a screen's review no longer sets its own.
+  - Inside each web project the code sits by concern, `Changes/` and `Branches/` with `Views/` for the panels, as the six-file limit asks.
+  - The app's sidebar tabs keep working from the moved components until F59.7 removes them, as Louis's 2C says.
 
 ## Verification
 
