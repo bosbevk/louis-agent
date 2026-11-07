@@ -7,7 +7,7 @@
 - Its programs, each naming what the framework's host loads: `hosts/louis-agent.coding-cli`, `hosts/louis-agent.coding-acp`, `hosts/louis-agent.coding-mcp`, `hosts/louis-agent.coding-eval-runner`, `hosts/louis-agent.coding-api`
 - Change it: [the web app](guides/change-the-web-app.md), [the site](guides/change-the-site.md),
   [the orchestrator](guides/change-the-orchestrator.md)
-- How it works: [web app](projects/louis-agent.code-review.md), [site](projects/louis-agent.site.md),
+- How it works: [web app and site](projects/louis-agent.code-review.md),
   [orchestrator](projects/louis-agent.orchestrator.md), [its runbooks](projects/orchestrator-runbooks.md)
 - Decisions: [ADR 0012](adr/0012-one-orchestrator-per-microservice.md), [ADR 0066](adr/0066-the-site-is-static-razor.md). ADR
   numbers are shared with the framework's, so a number is never used twice.

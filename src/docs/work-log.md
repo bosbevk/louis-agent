@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 62 | 77 |
+| Features (`F`) | 63 | 75 |
 | Fixes (`FX`) | 56 | 4 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (107 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -40,8 +40,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F71 | At the next run, read the hand-off lines | Now |
 | F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
-| F54 | F54's leftovers | Now |
-| F57 | The site tells the new structure | Now |
 | F59 | The framework's web | Now |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
@@ -130,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (62 done)
+## Features (63 done)
 
 | Id | When | What |
 |---|---|---|
+| F109.1 | 2026-11-08 | The site in the web app: the framework's static site becomes the code-review app's landing (its frame the framework's `SiteShell`, its pages, films and look moved in, the look inside the frame, `console` the default theme, the films exported from the app), and the site project goes |
 | F61 | 2026-11-08 | Accounts, tenants and the two sites in Azure, the parent: its five children built; the site's move (F61.6, PR #221) is the same work as F109 and folded into it at Louis's pick; the plan is deleted, its full text at commit `20f28c9f` |
 | F61.4 | 2026-11-07 | Everything in Azure: Puls live on mypuls.co.za from a Container Apps environment on its own network, Mongo 9, the browser and SearXNG on a private VM, the accounts on Azure SQL's free offer, every secret in Key Vault, the build one Bicep file in config (ADR 0095); the CL19 sidecar, the SearXNG app and the F58 tunnel retired |
 | F58 | 2026-11-07 | The two sites from this PC through Cloudflare tunnels: superseded by F61.4 before the Puls placeholder was needed; the framework's site waits for its merge into the louis-agent demo's web app |

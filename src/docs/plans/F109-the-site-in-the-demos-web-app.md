@@ -254,7 +254,11 @@ should update the films with what it looks like now, explaining the whole archit
   someone's own project, and where it runs (Azure).
 - **Done when:** every part of [the building block view](../architecture/05-building-block-view.md) has its place
   on the site, in plain words, with the films drawn from the same map; and the expert in the corner (F109.3) answers
-  in detail about anything a page or a film says, from the same sources the pages were written from.
+  in detail about anything a page or a film says, from the same sources the pages were written from. Louis
+  (2026-11-08): "make sure the whole framework is explained": a test holds it, the way `PacksPageTests` holds the
+  packs page to `packs/tools/`: every project family in the solution (the engine and its satellites, the hosts, the
+  web, the accounts, the packs, the evals, the demos, the deploy) is named on a page, so a new part can't be left
+  off the site.
 - **The shape, to plan with a storyboard Louis approves first:** the pages and films are written from the
   architecture docs (`src/docs/architecture/`), the ADRs and the project docs, so the site and the expert share one
   source and cannot drift; a test pins each page's claims to the code or the docs the way `BuildYourOwnTests` pins
@@ -265,6 +269,15 @@ should update the films with what it looks like now, explaining the whole archit
   that 100% C#, like Microsoft Extensions"): a section on what the framework stands on (Microsoft.Extensions.AI,
   ASP.NET Core, Blazor, ASP.NET Core Identity, EF Core, Bootstrap; nothing paid, licences named), apart from
   *Built on it* (what runs on the framework); and "100% C#" said up front on the landing, not only in the footer.
+- **Puls's numbers in rand, South Africa, a solo project** (Louis, 2026-11-08, on the Measured page: "also include
+  Puls numbers in R, and how that works. Make sure people know we are from South Africa and it is a solo project"):
+  the Puls figures shown in rand beside the dollars, with how that works in plain words (every request priced in
+  dollars by a dated price table, the rates file turning them into rand, the rate's date shown, ADR 0007); and the
+  site says where it comes from and that one person builds it, on the landing and the contact page.
+- **What's coming** (Louis, 2026-11-08: "also mention coming features"): a section of the planned features, drawn
+  from [the roadmap](../../../ROADMAP.md) and the TODO, each marked as planned and dated, with a test that every
+  feature it names has a TODO row, so the list can't outlive the plan. ADR 0066's "what's planned is at most one
+  honest line" is superseded by the F109 ADR: planned work is shown, labelled, never as shipped.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -310,6 +323,11 @@ should update the films with what it looks like now, explaining the whole archit
   WebAssembly app draws a moment after the network goes quiet; `FilmSource` names the app's files, so the hash
   changed and both films were re-exported from the app. The test holding the exports to the films moves to the
   app's tests, which reference the tool as the site's tests did.
+- **Step 6: the site project goes** (2026-11-08). `louis-agent.site`, its tests, `Dockerfile.site`, its design doc and
+  guide are deleted; the code-review app's doc and guide take their sections; the solution loses the two projects and
+  two items; ADR 0066 is superseded in part (the pages are the app's, the films stay CSS) and ADR 0084's bullet on the
+  site says so; the TODO's F54 and F57 rows close. The films' pause Louis asked for (2026-11-08: "can we pause these
+  films?") is a step of its own after this one, his pick pending.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

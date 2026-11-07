@@ -34,7 +34,6 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/hosts/louis-agent.accounts.contracts` | Class library | The records the accounts routes send and read, so the browser app reads what the server writes (ADR 0045) | [accounts](louis-agent.accounts.md) |
 | `demos/louis-agent/web/louis-agent.code-review` | Blazor WebAssembly | The coding agent's browser app: a thin chat page on the framework's frame, with the files and git packs' screens | [web](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) |
 | `demos/puls/web/louis-agent.puls` | Blazor WebAssembly | Puls: the general assistant in Afrikaans; a landing page and a three-panel chat that delegates every task | [puls](../../../demos/puls/docs/projects/louis-agent.puls.md) |
-| `demos/louis-agent/web/louis-agent.site` | ASP.NET Core app (static Razor) | The coding agent's landing page: the framework's colours and two CSS films of how the engine works; references no project of ours | [site](../../../demos/louis-agent/docs/projects/louis-agent.site.md) |
 | `src/hosts/louis-agent.mcp` | Library (stdio or ASP.NET Core); a demo's program starts it | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp.md) |
 | `demos/louis-agent/hosts/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md) |
 | `src/tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
@@ -104,7 +103,6 @@ flowchart TD
 **What the diagrams leave out,** to stay readable:
 
 - The test projects, and the small shared projects: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` and `louis-agent.evals.protocol`.
-- `louis-agent.site`, the landing page, which references none of our projects.
 - That the orchestrator and the usage probe are programs of their own, which no demo's program starts, and the orchestrator's reference to the coding identity.
 - The calls at run time on the engine's side: the API opens sub-sessions on a peer, and the orchestrator and the eval runner open sessions on the API, all over HTTP and SSE.
 

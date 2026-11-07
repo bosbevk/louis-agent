@@ -1,6 +1,8 @@
 # 0066. The engine's site is static Razor, and its films are CSS
 
-**Status:** Accepted · **Date:** 2026-11-03 · **Feature:** F54
+**Status:** Superseded in part by F109.1 (2026-11-08): the site's pages are the code-review app's, Blazor WebAssembly on
+the framework's web, in a frame the framework provides; the films stay CSS and their export stays as ADR 0077 says ·
+**Date:** 2026-11-03 · **Feature:** F54
 
 ## Context
 
@@ -38,7 +40,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 
 ## Links
 
-- [docs/projects/louis-agent.site.md](../projects/louis-agent.site.md), [Change the site](../guides/change-the-site.md)
+- [louis-agent.code-review](../projects/louis-agent.code-review.md), [Change the code-review web app](../guides/change-the-web-app.md)
 - [ADR 0034](../../../../src/docs/adr/0034-code-a-person-can-maintain.md), [ADR 0053](../../../../src/docs/adr/0053-stylesheets-by-concern.md)
 
 ---

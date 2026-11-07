@@ -33,7 +33,6 @@
 | [Change the usage probe](change-the-usage-probe.md) | `src/tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
 | [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) | `demos/louis-agent/web/louis-agent.code-review` | Add a tab, call a new endpoint, add a theme, test the page |
 | [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md) | `demos/puls/web/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
-| [Change the site](../../../demos/louis-agent/docs/guides/change-the-site.md) | `demos/louis-agent/web/louis-agent.site` | Run it, add a page, change the theme, change a film, export a film as a video |
 | [Change the framework's web](change-the-web.md) | `src/web/louis-agent.web` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Register a sign-in provider](register-a-sign-in-provider.md) | `src/hosts/louis-agent.accounts` | What to do at Google, Microsoft and LinkedIn, the callback each wants, the keys to set (F61.3) |
 | [Change the eval pages](change-the-eval-pages.md) | `src/web/louis-agent.web` | Give a site the pages, sort its sources chart, change a page |

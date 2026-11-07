@@ -35,7 +35,7 @@ own agents.
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then the sales playground, budgets, orchestration, safety and accounts |
 | An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
-| A website for the engine itself (`demos/louis-agent/web/louis-agent.site`) | |
+| A website for the engine itself, the landing pages of the coding agent's web app (`demos/louis-agent/web/louis-agent.code-review`) | |
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's finished is in the

@@ -7,7 +7,8 @@
 
 The browser front end for the coding agent: chat with it, browse the workspace, review and commit changes, and review and
 merge branches, on top of louis-agent.api. It's a small site on [the framework's web](../../../../src/docs/projects/louis-agent.web.md),
-the second real user of its frames.
+the second real user of its frames, and since F109.1 the coding agent's landing page as well: the
+framework's site, its pages and films, with the chat behind *Try it*.
 
 ## How it works
 
@@ -60,6 +61,44 @@ sequenceDiagram
     P-->>R: the review, as it comes
 ```
 
+## The site's pages and films
+
+Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on: `/` (the hero
+with the live turn, the numbers, the short film, what's built on it, the contact strip), `/how-it-works` (the detailed
+film, the parts in plain words, the rules every turn keeps), `/packs`, `/build-your-own` (a real program and catalogue),
+`/proof`, `/built-on-it` and `/contact`, every one in the site's frame (`SiteLayout` on the framework's `SiteShell`), the
+chat at `/chat` in its own bare layout. The pages say only what works today, every sentence from the docs and every
+number from the ledger or an eval run; what's planned is marked so (F109.4 widens what the site tells).
+
+**The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its
+container, a floor seen from above (`perspective` on the camera, the camera's moves a `transform` animation on the
+floor), each part a slab raised off the floor, the turn as a light flying above them with its shadow on the floor, a
+flat detail card top right, a caption strip at the bottom. `_short.scss` (36 s, six scenes) and `_detail.scss` (60 s,
+ten scenes) add where each part stands, the camera's keyframes, when each part lights up, the light's path and when
+each card and caption shows, under `.film-short` and `.film-detail`, every keyframe name ending in the film's letter.
+The detailed film's six slabs inside core are the chat pipeline's middleware in its real order, outermost first
+(`ChatPipeline.cs`), and `DetailedMovieTests` holds that order. The films are the content, so a visitor's
+reduced-motion setting stills the hero's typing and never a film (FX35).
+
+**The exports for GitHub** (`docs/films/`) are rendered from the same CSS frame by frame by
+`tools/louis-agent.film-export`, which starts `louis-agent.coding-api` on a spare port, seeks each animation in a
+headless Chrome and encodes the frames in Docker; `films.sha256` records what each was made of, and
+`FilmExportTests` fails until a changed film is re-exported ([ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md)).
+
+```mermaid
+sequenceDiagram
+    actor D as A developer
+    participant E as louis-agent.film-export
+    participant H as louis-agent.coding-api, serving the app
+    participant W as WebPEncoder, in Docker
+    D->>E: dotnet run, after a film's files changed
+    E->>H: SiteProcess starts it on a spare port
+    E->>H: FilmRenderer opens the page, waits for the film, seeks each frame
+    E->>W: the frames
+    W-->>E: short.webp and detail.webp
+    E->>E: FilmHash writes films.sha256, which FilmExportTests holds the sources to
+```
+
 ## Structure
 
 | Path | What's in it |
@@ -96,10 +135,12 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 
 - Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
+- The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address; *Build your own* says the
+  packages aren't on NuGet yet, and has to change the day they are. The films have no pause yet.
 
 ## Related docs
 
-[README § Web app](../../../../README.md#web-app) · [Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md)
+[README § Web app](../../../../README.md#web-app) · [Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · [ADR 0066](../adr/0066-the-site-is-static-razor.md) · [ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md)
 
 ---
 [Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · Next: [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)

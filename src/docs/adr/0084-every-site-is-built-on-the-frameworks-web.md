@@ -51,10 +51,11 @@ ratchet: what's still too long is listed, and the list can only shrink.
   web, and we'd split them into their own library if a site ever needed to go without.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.
-- **`louis-agent.site` is the coding agent's landing page, on the framework's colours and Sass.** It stays server-rendered, with no chat or
-  admin of its own and no reference to the framework's project: it reads the framework's colours when it builds, so there's one copy of them, and
-  it links to the app at `/chat`. A framework's frames and scripts would add nothing to a page that runs no script. Louis: "the static site must
-  become the landing page for the coding agent, it will be it's demo".
+- **The coding agent's landing page is its web app's, on the framework's site frame** (F109.1, 2026-11-08; before it, a
+  static Razor site of its own, `louis-agent.site`, that read the framework's colours and referenced nothing else). Its pages
+  draw in `SiteLayout` on the framework's `SiteShell`, its look hangs off the frame's root so the chat keeps the framework's,
+  and it links to the chat at `/chat`. Louis: "the static site must become the landing page for the coding agent, it will
+  be it's demo"; "that custom layout can be reused, it should be in the framework".
 - **Old commits and docs mean the other project** when they say `louis-agent.web`. The changelog, write-ups and fix docs stay as
   they were written.
 - **The framework needs a stylesheet of its own,** which reverses "the shared components only emit class names" once F59.4 is built.
