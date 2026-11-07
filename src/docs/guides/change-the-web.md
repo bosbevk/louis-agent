@@ -34,7 +34,7 @@ person: it names the problem, and `ChatText` says it.
 
 `Api/AgentApi.cs` is the only code that calls the API. Add a method there for a call both apps make, using
 `GetAsync<T>`, `PostAsync` or `StreamLinesAsync` rather than a new `HttpClient` call. A call one app makes is an
-extension method beside what uses it (the git pack's views have `AgentApiGit`). A failed call throws
+extension method beside what uses it (the git pack's views have `AgentApiGit`). A reply that isn't JSON comes back as the same error, so a page shows it. A failed call throws
 `AgentApiException`, which `ChatRunner` turns into the app's words.
 
 ## Follow a new event in the stream

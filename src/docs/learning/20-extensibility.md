@@ -256,6 +256,15 @@ became `OwnViewScreen`s, which are a name and a heading and nothing else. That k
 but it raised a real question: Puls's host loads the git pack too, for its model, so its sidebar would have offered an empty *Changes*. The
 rule that came out is that a screen with no columns can only be drawn by its own view, so a site that doesn't carry the view doesn't list it.
 
+**Sharing a frame means saying what it isn't (F59.7).** The code-review app moved onto the same chat frame as Puls, and lost about 300 lines of
+page code and all its copies of the frame's styles. But a coding agent has no use for a place, a language menu or buying credits. Those are
+hooks now, all on by default, in one record a site can pass: Template Method's other half. A site names only what doesn't suit it.
+
+**Look at it, even when the tests are green.** Every test passed and the first look still found two bugs. The message box sat below the window,
+since the frame's empty chat takes the full height and expects the box inside it. And an admin page crashed the whole app: with no API behind
+the dev server, the reply was a web page, reading it as JSON threw, and nothing caught that kind of error. The menu on every admin page made it
+worse. The fix went in the one place replies are read, so every page gets it. Tests answer the questions you thought to ask.
+
 Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
 
 ## The admin's frame (F59.2, 2026-11-06)

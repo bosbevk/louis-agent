@@ -715,6 +715,16 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - Inside each web project the code sits by concern, `Changes/` and `Branches/` with `Views/` for the panels, as the six-file limit asks.
   - The app's sidebar tabs keep working from the moved components until F59.7 removes them, as Louis's 2C says.
 
+- **2026-11-07, what F59.7 chose, unattended.** Each is the recommended option, for Louis to read at the end.
+  - The hooks are one record, `ChatFeatures`, rather than a parameter each, so the frame's parts take one value down. *Unfinished* covers everything that only says it's coming, the profile menu included.
+  - The Facade methods from pick 3A shrank to the one that already existed, `SetDraftAsync`: with Review opening a draft and the panels on their own screens, the page has nothing else to drive (ADR 0055).
+  - The chat is at `/chat`, with `/` showing the same page. The sidebar links to the three packs' screens by name.
+  - Themes are Sass too, built to `wwwroot/css/themes/`, so each colour is written once and gets both its forms. They're no longer in git, and `themes.json` stays.
+  - The packs' rules are Sass in each pack's web project, listed by a site under `pack-`, found through `IncludePaths`. A pack's view needs a site to list them, which the starter will show.
+  - Retro's bracketed buttons now apply only on a pack's screens, as the chat's send button is the frame's round one.
+  - A reply that isn't JSON is now an `AgentApiException`, found on the first look: the dev server's web page crashed every admin page. Not in the plan, and it helps every site.
+  - `SiteColoursTests` lists `--bs-border-radius` as Bootstrap's own, which the packs' small corners read.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

@@ -1,8 +1,8 @@
 namespace LouisAgent.Web.Components.Chat.Shell;
 
 /// <summary>
-/// The parts of the chat's frame a site can turn off. Every one is on by default, so a site only names what doesn't suit
-/// it: a coding agent has no use for a place, a language menu or buying credits.
+/// The parts of the chat's frame a site can turn off. Every one is on by default, so a site only names what doesn't
+/// suit it: a coding agent has no use for a place, a language menu or buying credits.
 /// </summary>
 /// <remarks>
 /// Hook methods from Template Method, as one record: the frame stays one frame, and a part left out takes its gap with

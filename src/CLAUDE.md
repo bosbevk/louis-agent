@@ -15,9 +15,8 @@ from source.
 ## A web app's folders
 
 A web app (`louis-agent.code-review`, `louis-agent.puls`, and `louis-agent.web` between them) keeps Blazor's `Pages/`,
-`Layout/` and `Components/`, with subfolders by concern inside `Components/` (the code-review app: `Workspace/`, `Git/`;
-Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
-`Chats/`, `Usage/`, `Storage/`, `Text/`; the code-review app: `Workspace/`, `Git/`; Puls: `Text/`, `Content/`), one type
+`Layout/` and `Components/`, with subfolders by concern inside `Components/` (Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
+`Chats/`, `Usage/`, `Storage/`, `Text/`; Puls: `Text/`, `Content/`), one type
 per file, the namespace equal to the folder path. No `Services/` or `Models/`: each names a kind of thing, not a concern.
 `_Imports.razor` carries a `@using` per folder the pages use. A page keeps its layout and hands each piece to a component
 (W2): state flows down as parameters and up as `EventCallback`s, a component never reaches into its page, and a
@@ -37,5 +36,4 @@ profile too, so a debug run sees what the container sees ([Setup](docs/SETUP.md#
 
 ## Adding a web theme
 
-Copy `demos/louis-agent/web/louis-agent.code-review/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
-`css/base/page.css`, and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
+Copy `demos/louis-agent/web/louis-agent.code-review/Styles/themes/paper.scss` to `{id}.scss`, set the framework's colour names ([the list](web/louis-agent.web/Styles/web/settings/_colours.scss)), and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.

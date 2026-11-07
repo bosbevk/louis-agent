@@ -8,8 +8,8 @@ using LouisAgent.Web.Storage;
 namespace LouisAgent.Web.Tests.Api;
 
 /// <summary>
-/// A reply that isn't JSON, such as a web page from a dev server or a proxy, is an API error a page can show, not a crash
-/// that takes the whole app down with it. Every page already catches an API error.
+/// A reply that isn't JSON, such as a web page from a dev server or a proxy, is an API error a page can show, not a
+/// crash that takes the whole app down with it. Every page already catches an API error.
 /// </summary>
 public class AgentApiUnreadableReplyTests
 {

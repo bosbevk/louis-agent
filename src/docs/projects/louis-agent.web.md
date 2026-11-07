@@ -69,7 +69,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
 | `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
-| `wwwroot/js/` | `chat.js`, `first-paint.js` |
+| `wwwroot/js/` | `chat.js` (with `renderCode` for a pack's file viewer), `first-paint.js` |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |

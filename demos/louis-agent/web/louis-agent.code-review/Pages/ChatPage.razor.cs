@@ -30,7 +30,7 @@ public partial class ChatPage
             await _shell.SetDraftAsync(draft);
     }
 
-    /// <summary>A new chat's session: this site asks for every toolset the API can load, with the person's time zone.</summary>
+    /// <summary>A new chat's session: every toolset the API can load, and the person's time zone.</summary>
     private async Task<string> OpenSessionAsync(ChatOpening opening) =>
         await Api.CreateSessionAsync(await Api.AvailableToolsetsAsync(), timeZone: opening.TimeZone);
 }
