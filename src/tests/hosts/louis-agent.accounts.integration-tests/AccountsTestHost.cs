@@ -73,6 +73,23 @@ internal sealed class AccountsTestHost : IAsyncDisposable
         signedIn.EnsureSuccessStatusCode();
     }
 
+    /// <summary>Signs in an account that exists and is confirmed, keeping the cookie.</summary>
+    public async Task SignInAsync(string email, string password)
+    {
+        using var signedIn = await Client.PostAsJsonAsync("/account/login?useCookies=true", new
+        {
+            email,
+            password
+        });
+        signedIn.EnsureSuccessStatusCode();
+    }
+
+    /// <summary>A client with no cookie at all, for what a stranger sees.</summary>
+    public HttpClient PlainClient() => new(App.GetTestServer().CreateHandler())
+    {
+        BaseAddress = App.GetTestServer().BaseAddress
+    };
+
     public async ValueTask DisposeAsync()
     {
         Client.Dispose();

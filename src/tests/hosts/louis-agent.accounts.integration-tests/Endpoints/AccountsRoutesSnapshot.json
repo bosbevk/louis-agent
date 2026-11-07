@@ -1,0 +1,17 @@
+[
+  "DELETE /account/ (cookie)",
+  "GET /account/confirmEmail (open)",
+  "GET /account/manage/info (cookie)",
+  "GET /account/me (cookie)",
+  "GET /account/providers (open)",
+  "POST /account/forgotPassword (open)",
+  "POST /account/login (open)",
+  "POST /account/logout (cookie)",
+  "POST /account/manage/2fa (cookie)",
+  "POST /account/manage/info (cookie)",
+  "POST /account/refresh (open)",
+  "POST /account/register (open)",
+  "POST /account/resendConfirmationEmail (open)",
+  "POST /account/resetPassword (open)",
+  "PUT /account/profile (cookie)"
+]

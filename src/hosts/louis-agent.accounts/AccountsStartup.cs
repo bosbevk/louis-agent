@@ -1,4 +1,5 @@
 using LouisAgent.Accounts.Config;
+using LouisAgent.Accounts.Endpoints;
 using LouisAgent.Accounts.Mail;
 using LouisAgent.Accounts.Messages;
 using LouisAgent.Accounts.Store;
@@ -111,6 +112,7 @@ public static class AccountsStartup
 
         var account = app.MapGroup(Prefix);
         account.MapIdentityApi<AccountUser>();
+        account.MapAccountRoutes();
         return app;
     }
 }
