@@ -224,7 +224,7 @@ function at a time (ADR 0054), with `export` added and the `chatUi.` prefix drop
    `JsModule` with the accounts library's path; the sites lose its line; the component tests on `SetupModule`.
 9. **Docs.** `louis-agent.web.md` and `louis-agent.web.accounts.md` (the scripts), `change-the-web.md` (a component
    that needs the browser: a module beside it, `JsModule`, the rule), `spawn-a-site.md` (`index.html` lists
-   `first-paint.js` and the third-party scripts), ADR 0091 *A script is a module beside its component*, the work log,
+   `first-paint.js` and the third-party scripts), ADR 0093 *A script is a module beside its component*, the work log,
    TODO (CL31 closed); this plan deleted. Full unit suite.
 
 ## Verification
@@ -247,3 +247,13 @@ pill, add a passkey. No paid run.
 
 ---
 [Docs index](../README.md) · Related: [CL30 (ADR 0089)](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md) · [Plans](README.md)
+
+## Approved during the build
+
+Picks made unattended (Louis, 2026-11-07: "continue with CL31", mode **Unattended**), each with its why:
+
+- **The plan predates CL57**, which moved the studio's pages into `louis-agent.web.evals`: `AgreementPanel`,
+  `PromptfooPanel`, `EvalStudio`, `ManualDialog`, `ChatsDialog` and `RunExplorer` live there now, under
+  `Components/` and `Pages/`, and their tests in `louis-agent.web.evals.tests`; `FrameworkScriptsTests` already reads
+  that library. The modules they import stay the framework's (`download.js`, `dialogs.js`, the shell's), served from
+  `louis-agent.web`'s content path. ADR 0091 is taken, so the ADR is 0093.
