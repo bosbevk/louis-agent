@@ -55,7 +55,10 @@ by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` int
 
 8. Done on 2026-11-07, for the record: the old environment `puls-container-env` with its `puls-app` and
    `puls-searxng`, the `ts-forwarder` and `searxng` images in the registry and the `searxng-config` and `mongo-data`
-   shares were deleted; on the PC, `tailscale serve reset` and `docker compose -p mypuls-production down` end the
+   shares were deleted, with the earlier design's `mongo`, `headless-shell` and `searxng` images and the backups of
+   the two shares in the recovery vault `vault-mvihj8bq`; that vault keeps its soft-deleted backups 14 days and
+   refuses to shorten that, so it is deleted after 2026-11-22 (`az backup vault delete -n vault-mvihj8bq -g rg-puls-za --yes`),
+   at no cost meanwhile. On the PC, `tailscale serve reset` and `docker compose -p mypuls-production down` end the
    old paths, and the tunnel `mypuls-placeholder` goes in Cloudflare Zero Trust.
 
 ## Every-day deploy
