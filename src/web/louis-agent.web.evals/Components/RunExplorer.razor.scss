@@ -3,7 +3,7 @@
 ::deep .compare-head .mode-name { font-size: 12px; font-weight: 400; color: var(--bs-tertiary-color); }
 .lvl { display: flex; flex-direction: column; gap: 14px; transform-origin: 0 0; }
 .lvl.out { animation: zoom-out .35s var(--web-ease) both; }
-.tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+::deep .tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 ::deep .tile-label { display: inline-flex; align-items: center; gap: 7px; color: var(--bs-secondary-color); font-size: 12.5px; }
 ::deep .tile-value { font-size: 26px; font-weight: 700; color: var(--bs-emphasis-color); letter-spacing: -.4px; font-variant-numeric: tabular-nums; }
 ::deep .tile-meta, ::deep .tile-split { color: var(--bs-secondary-color); font-size: 12px; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -24,12 +24,10 @@
 ::deep .xbar-row.drill { grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) auto auto; gap: 16px; padding: 4px 0; }
 ::deep .xbar-row.drill .xbar { cursor: default; }
 ::deep .xbar-row.drill > .xbar-group { min-width: 0; }
-.timeline { display: flex; flex-direction: column; gap: 6px; }
 /* The replay has its own class: .replay is the landing page's pill button, which wrapped the transcript in a rounded border. */
 ::deep .xreplay { display: block; padding: 6px 0; }
 ::deep .compare-col { min-width: 0; display: flex; flex-direction: column; gap: 12px; animation: rise .5s var(--web-ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
 ::deep .compare-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--bs-border-color); font-size: 15px; font-weight: 700; color: var(--bs-emphasis-color); }
-.donut ::deep circle { fill: none; stroke-width: 5; }
 @media (max-width: 991.98px) { ::deep .xbar-row { grid-template-columns: 1fr; gap: 4px; } ::deep .xbar .xbar-value { position: static; } ::deep .lane { grid-template-columns: 70px 1fr; } }
 ::deep .sample-field input, ::deep .sample-field textarea, ::deep .keep-reason { background: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
 ::deep .sample-field input:focus, ::deep .sample-field textarea:focus, ::deep .keep-reason:focus { outline: none; border-color: rgba(var(--bs-primary-rgb), .55); }
@@ -37,3 +35,6 @@
 ::deep .sample-make:disabled, ::deep .keep-reference:disabled, ::deep .keep-bad:disabled { opacity: .45; cursor: not-allowed; }
 ::deep .sample-done, ::deep .keep-done { margin: 0; font-size: 13px; color: var(--bs-emphasis-color); }
 ::deep .sample-error, ::deep .keep-error { margin: 0; font-size: 13px; color: var(--bs-danger); }
+/* The explorer's own box, drawn here, moved from BenchmarkRun, where its scope reached nothing (FX63); the tiles are
+   drawn by two children (OverviewTiles, RequestDetail), so they are reached under ::deep. */
+.explorer { display: flex; flex-direction: column; gap: 14px; margin: 6px 0 10px; }
