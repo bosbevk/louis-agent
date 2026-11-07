@@ -71,8 +71,8 @@ The [work log](src/docs/work-log.md) has the counts and every row.
 | Every agent tested by evals in C# | The cook 23 of 24, the routing 72 of 72, $0.37 together; a replay costs $0 | 2026-10-29 |
 
 Puls is not yet open to the public: the shops refuse automated readers, so the cook gives estimates from Stats SA's
-averages and says where to buy until a retailer says yes (F85). The two sites go live from this PC first (F58), then
-from Azure (F61.4); the final cook's paid measure is still owed.
+averages and says where to buy until a retailer says yes (F85). Puls is live from Azure on mypuls.co.za (F61.4, 2026-11-07;
+F58's tunnels from this PC were superseded before they were needed); the final cook's paid measure is still owed.
 
 ## The phases
 
@@ -91,7 +91,7 @@ done when Louis has written its learning write-up himself, without the code open
 | 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains; F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts and F61.4 put Puls in Azure; F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
 | Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F44, F47 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
@@ -130,8 +130,8 @@ else's tools, listed once when the host starts; annotations that only tighten ap
 to MCP until then (ADR 0028).
 
 **9, what a sale needs** ([draft plan](src/docs/plans/phase-9-what-a-sale-needs.md)). F61 built sign-in, tenants,
-social logins and passkeys; the move to Azure (F61.4, [plan](src/docs/plans/F61-accounts-and-azure.md)) is open, and
-before it the two sites go live from this PC (F58). F43's durable sessions and the tenant on every ledger row, F8's
+social logins and passkeys; Puls runs from Azure (F61.4, [ADR 0095](src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md)); the
+framework's site waits for its merge into the louis-agent demo's web app. F43's durable sessions and the tenant on every ledger row, F8's
 reliability (retries, a fallback model, timeouts), F15's local models given their whole prompt, F44's speed, metrics
 and packages, F51's gateway and uptime remain.
 

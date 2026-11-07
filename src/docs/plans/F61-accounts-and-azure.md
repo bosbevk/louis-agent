@@ -443,7 +443,12 @@ are set, and the profile links and unlinks a provider.
 6. **Docs.** How to register each app (Google Cloud, Entra, LinkedIn Developer Portal) in a guide; the feature doc's
    TODO for Facebook (Meta Business Verification) and X (confirm "Login with X" is free); write-up.
 
-### F61.4 Everything in Azure (`feature/F61.4-azure`)
+### F61.4 Everything in Azure (`feature/F61.4-azure`), built 2026-11-07
+
+> Done: [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) holds the why, the deploy
+> [README](../../../demos/puls/deploy/azure/README.md) and [ARCHITECTURE](../../../demos/puls/deploy/azure/ARCHITECTURE.md)
+> the what. The steps below are as planned; what changed on the way (a Bicep file, Key Vault references, Mongo 9, the
+> framework's site not a deployment of its own, so no `rg-louis-agent-za`) is in the ADR.
 
 Done when: `https://mypuls.co.za` is Puls from Container Apps with sign-in, Mongo and the browser on the VM, SQL on
 Azure SQL's free offer; `https://louis-agent.dev` is the site from its own group; nothing points at the PC; the lock,

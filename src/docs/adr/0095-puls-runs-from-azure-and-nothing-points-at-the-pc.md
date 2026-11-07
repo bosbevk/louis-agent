@@ -44,8 +44,9 @@ move to where the app is.
 
 ## Consequences
 
-- The month's bill is the VM and its two disks, the one always-on replica, the registry's Basic tier and the
-  workspace's first 5 GB; the database is free within its offer. Three always-on containers of the old deploy went
+- The month's bill is the VM and its two disks, the one replica while it runs (the app scales to zero when nobody is
+  on it; the first visitor waits for a cold start), the registry's Basic tier and the workspace's first 5 GB; the
+  database is free within its offer. Three always-on containers of the old deploy went
   with it. The real month is written in the deploy README after the first one.
 - What the build taught, kept in the deploy README and the script: a multi-line script to `az vm run-command` goes
   as a file; Windows PowerShell turns a native command's redirected error text into a terminating error, so a read

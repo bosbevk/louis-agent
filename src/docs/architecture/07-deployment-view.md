@@ -12,7 +12,7 @@ installed and the demo's `skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| Puls: `puls` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}`; its specialists run on the same instance (CL19); logs in `logs/puls`. Its browser and Mongo also serve `puls-app` on Azure, through `tailscale serve` on this PC ([demos/puls/deploy/azure](../../../demos/puls/deploy/azure/README.md)) |
+| Puls: `puls` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}`; its specialists run on the same instance (CL19); logs in `logs/puls`. The Azure app has its own browser and Mongo on the VM since F61.4 ([demos/puls/deploy/azure](../../../demos/puls/deploy/azure/README.md)) |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `ollama/Dockerfile.ollama` | Only with `--profile ollama` |
@@ -40,7 +40,7 @@ served from the PC) are gone. The diagrams are in [Puls's architecture](../../..
 | Where | What runs | Reaches |
 |---|---|---|
 | `rg-puls-za`, `puls-env` (a Container Apps environment on `puls-vnet`) | `puls-app`: the Puls image, one container, behind its key and its sign-in | the VM on private IPs; Azure SQL over TLS; `puls-insights` through the environment's OpenTelemetry agent |
-| `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:8` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
+| `rg-puls-za`, the VM `puls-services` (Ubuntu, Docker, no public IP) | `mongo:9` on 27017, `headless-shell` on 9222, `searxng` on 8080, from `deploy/azure/vm/docker-compose.services.yml`; Mongo's files on an XFS data disk at `/data` | nothing: the security group lets only the apps' subnet in |
 | `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
 
 The domain points at the environment's static IP with a Container Apps managed certificate, DNS-only in Cloudflare;

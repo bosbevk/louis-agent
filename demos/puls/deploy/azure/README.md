@@ -3,7 +3,8 @@
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches its
 > stores, its browser and its search. **Elsewhere:** the local stacks in [docker/](../../docker/README.md), every
 > setting in [Setup](../../../../src/docs/SETUP.md), the build's record in `demos/puls/config/azure/main.bicep`, why
-> the layout is what it is in the F61.4 plan until its ADR.
+> the layout is what it is in [ADR 0095](../../../../src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md),
+> the diagrams in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the app's definition, the VM's
 files and one script; the Bicep build in `config/azure/` is everything else. No secret value is in any file here.
@@ -143,7 +144,8 @@ why (FX21). Never a person's name or place: the string reaches every site and tr
 ## Cost
 
 Written here after the first month, against the parent plan's estimate: the VM and its two disks are the fixed part
-(a `Standard_B2s` and two Standard SSDs), the environment bills by the second for the one replica, the database is
+(a `Standard_B2s` and two Standard SSDs), the environment bills by the second while the one replica runs (the app
+scales to zero when nobody is on it, so the first visitor waits a few seconds), the database is
 free within its offer, the registry's Basic tier and the workspace's first 5 GB a month are the rest. A spend cap on
 the Anthropic key, in the console, is the other half of the bill.
 
