@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Tests.Rules;
+namespace LouisAgent.Web.Tests.Rules.Styles;
 
 /// <summary>
 /// The chat's frame is drawn by the framework, so its rules live there too, and a site lists them rather than copying
