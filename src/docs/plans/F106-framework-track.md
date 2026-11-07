@@ -32,6 +32,26 @@ how, an identity is who, a pack is what, a composition root brings them together
 - **"ABP for AI"** (ABP is a known .NET application framework with modules and conventions) describes the direction
   well, but leans on another product's name. Whether it is used in public is an open choice below.
 
+## How it compares, and what stays
+
+Louis asked ChatGPT how Microsoft Agent Framework and LangGraph organise the same job (2026-11-07). Its reading:
+Microsoft centres on an *agent* (model, instructions, tools, a session) with *workflows* that connect agents and
+functions; LangGraph centres on a *graph* (state, nodes, edges, checkpoints) that controls how work moves. Both give a
+developer building blocks for executing agents and workflows; ours gives a way to package and compose whole agent
+applications: the engine is how, an identity is who, a pack is what, and a pack is written once and used by several
+identities. That split stays (ADR 0027); it is a convention the others could follow but don't make foundational,
+and it is the scenario F106.4's side-by-side should build: one shopping or recipes pack used by two identities, in
+both frameworks.
+
+What that reading changes here:
+
+- **"Workflow" as a fourth concept** is not added now. Orchestration is already planned as an engine function with
+  typed results checked in code (Phase 6, F39, ADR 0031); F39's plan decides whether a workflow is a named thing a
+  developer composes or stays a delegation the engine runs. Until it is measured, three concepts.
+- **What to study in Microsoft's framework** before F106.4 (its own docs, not a summary): its agent loop, session state
+  and persistence, middleware pipeline, workflow execution, human-in-the-loop, checkpointing and tool permissions.
+  Each maps to a phase of ours (F43, F41, F42, F39), so the comparison also tells us where our phases stand.
+
 ## Where we are and where the API should get to
 
 Today a host composes by hand: it builds an `AgentCatalog` and `HostServices`, calls `AgentHost.Build`, and hands the
