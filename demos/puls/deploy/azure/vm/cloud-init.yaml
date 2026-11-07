@@ -1,0 +1,67 @@
+#cloud-config
+# The VM puls-services (F61.4), prepared once at its first boot: Docker from Docker's own repository, the data disk
+# as XFS at /data, the folders the compose expects, the VM's private IP in /data/env/.env, and a systemd unit that
+# brings the services up at every boot from /data/compose/docker-compose.services.yml. The compose, SearXNG's settings
+# and the env files are not in this file: deploy.ps1 vm copies them up afterwards (a secret never travels in
+# cloud-init, which Azure keeps readable on the VM), so the first boot ends with Docker ready and nothing running.
+# The Bicep template (config/azure/main.bicep) hands this file to the VM as its custom data.
+
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - xfsprogs
+
+# Docker's repository (Ubuntu 24.04), so `docker compose` is the plugin Docker ships, as on the PC.
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64 signed-by=$KEY_FILE] https://download.docker.com/linux/ubuntu $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+# The data disk is LUN 0 on Azure's SCSI controller, a stable path whatever /dev/sdX it gets. XFS, mounted at /data,
+# with nofail so a VM without the disk still boots.
+disk_setup:
+  /dev/disk/azure/scsi1/lun0:
+    table_type: gpt
+    layout: true
+    overwrite: false
+fs_setup:
+  - device: /dev/disk/azure/scsi1/lun0
+    partition: auto
+    filesystem: xfs
+    label: pulsdata
+mounts:
+  - [ "/dev/disk/azure/scsi1/lun0-part1", "/data", "xfs", "defaults,nofail", "0", "2" ]
+
+write_files:
+  # Up at boot, down at shutdown; deploy.ps1 vm restarts it after copying new files up.
+  - path: /etc/systemd/system/puls-services.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Puls's services: Mongo, the headless browser, SearXNG (F61.4)
+      Requires=docker.service
+      After=docker.service data.mount
+      ConditionPathExists=/data/compose/docker-compose.services.yml
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      WorkingDirectory=/data/compose
+      ExecStart=/usr/bin/docker compose --env-file /data/env/.env -f /data/compose/docker-compose.services.yml up -d
+      ExecStop=/usr/bin/docker compose --env-file /data/env/.env -f /data/compose/docker-compose.services.yml down
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  - systemctl enable --now docker
+  - mkdir -p /data/compose /data/env /data/mongo
+  - chmod 700 /data/env
+  # The VM's own private address, which the compose binds every port to.
+  - sh -c 'echo "PRIVATE_IP=$(hostname -I | cut -d" " -f1)" > /data/env/.env'
+  - systemctl daemon-reload
+  - systemctl enable puls-services
