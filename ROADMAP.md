@@ -113,7 +113,9 @@ moves to a real identity or pack in its own feature. It never touches the engine
 that warn, ask or stop, the room's cost view, the ledger checked against the bill (F7.2). OWASP LLM10:2025 is the
 standard.
 
-**6, orchestration** ([draft plan](src/docs/plans/F39-orchestration.md)). Part A: one delegation function in the engine,
+**6, orchestration** ([draft plan](src/docs/plans/F39-orchestration.md)), which builds the framework's fourth concept, the
+**workflow**: how steps and agents coordinate, as a thing a developer composes beside an identity and its packs
+(Louis, 2026-11-07). Part A: one delegation function in the engine,
 transport, credentials per peer, policy and limiter, typed results checked in code. Part B: the `voorman` identity on a
 thin host, triaging a service's errors and confirming each fix with git, a replay and the tests.
 
@@ -134,8 +136,9 @@ and packages, F51's gateway and uptime remain.
 
 **The framework's track** ([draft](src/docs/plans/F106-framework-track.md)). Louis, 2026-11-07: "focus on the framework
 first then build the agents", so this track runs now, and the configured agents of Phases 4 to 9 are built on it. The
-positioning: the application framework for AI agents in .NET, judged
-by one question, does it make an agent application easier to build, extend, test or operate. Its first children: a
+positioning: the application framework for AI agents in .NET, in four concepts (the engine is how an agent runs, an
+identity is who it is, a pack is what it can do, a workflow is how steps and agents coordinate; Louis, 2026-11-07),
+judged by one question, does it make an agent application easier to build, extend, test or operate. Its first children: a
 builder so a first agent takes a few lines (F106.1), the framework's own docs (F106.2), an example outside Puls
 (F106.3), the same application built in Microsoft Agent Framework and compared (F106.4), and packaging in place
 (F74, the [Phase 10 draft](src/docs/plans/phase-10-engine-package.md)'s Stage A). The engine's own repo (Stage B) still

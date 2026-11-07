@@ -2,6 +2,12 @@
 
 > **Plan draft, not yet approved.** Moved whole out of the old platform plan on 2026-11-07 (CL56), lines 2005 to 3006 of `platform.md` at the tag `pre-roadmap`; the body below is as it was. When the work starts, this is rewritten into the plan Louis approves (the development guide, rule 3) and its TODO row names it. The sub-feature split of 2026-10-28 is the TODO's rows.
 
+> **Added 2026-11-07** (Louis: "workflow to me means how multiple steps and agents coordinate"; his pick: name it now).
+> F39 builds the framework's **fourth concept**, the workflow, beside the engine, an identity and a pack
+> ([F106](F106-framework-track.md)). When this draft is rewritten into the approved plan, it says what a workflow is in
+> code (a thing a developer composes, as `TriageWorkflow` below), how a host adds one through the builder (F106.1), and
+> what an identity or a pack may reference of it, amending ADR 0027.
+
 ### Phase 6 · F39 Orchestration: one delegation function, and the orchestrator as an identity
 
 Branches `feature/F39-orchestration` (Part A) and `feature/F39-voorman-identity` (Part B). Before step A0 this section is
