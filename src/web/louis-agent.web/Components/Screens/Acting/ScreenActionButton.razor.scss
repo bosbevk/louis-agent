@@ -1,0 +1,2 @@
+/* The question before an action that can't be undone, with its yes and no beside it. */
+.screen-confirm { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; white-space: normal; color: var(--bs-warning); font-size: 13px; }
