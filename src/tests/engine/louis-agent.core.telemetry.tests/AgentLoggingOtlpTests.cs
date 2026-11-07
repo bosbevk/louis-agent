@@ -1,10 +1,11 @@
 using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Messages;
-using LouisAgent.Core.Tests.TestOtlp;
+using LouisAgent.Core.Telemetry;
+using LouisAgent.Testing.Otlp;
 using Microsoft.Extensions.Logging;
 
-namespace LouisAgent.Core.Tests.Logging;
+namespace LouisAgent.Core.Telemetry.Tests;
 
 /// <summary>
 /// With an OTLP endpoint set the standard way (<c>OTEL_EXPORTER_OTLP_ENDPOINT</c>), every log line also leaves the
@@ -48,7 +49,7 @@ public class AgentLoggingOtlpTests
         Environment.SetEnvironmentVariable(EndpointVariable, null);
         Environment.SetEnvironmentVariable(ProtocolVariable, null);
         Environment.SetEnvironmentVariable(ServiceVariable, null);
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
         _receiver.Dispose();
     }
 
@@ -56,7 +57,7 @@ public class AgentLoggingOtlpTests
     [Test]
     public async Task ALine_ReachesTheCollector_WithTheServiceName_AndItsFields()
     {
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         LogOneLine();
         AgentLogging.Flush();
@@ -75,7 +76,7 @@ public class AgentLoggingOtlpTests
     [Test]
     public async Task APacksLine_ReachesTheCollector_ThroughTheContract()
     {
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         PackLog.For<AgentLoggingOtlpTests>().Log(LogLevel.Information, LoggingLogMessage.LoggingTo,
             new { Path = "from-a-pack" });
@@ -89,7 +90,7 @@ public class AgentLoggingOtlpTests
     public async Task TheEnvironmentsServiceName_Wins()
     {
         Environment.SetEnvironmentVariable(ServiceVariable, "my-host");
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         LogOneLine();
         AgentLogging.Flush();
@@ -101,7 +102,7 @@ public class AgentLoggingOtlpTests
     [Test]
     public async Task ARecord_StaysOut()
     {
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         // The record as the tool loop writes it, then a plain line, so the plain one proves the batch went out.
         ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{}", 16000);
@@ -117,7 +118,7 @@ public class AgentLoggingOtlpTests
     public async Task NoEndpoint_SendsNothing()
     {
         Environment.SetEnvironmentVariable(EndpointVariable, null);
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         LogOneLine();
         AgentLogging.Flush();

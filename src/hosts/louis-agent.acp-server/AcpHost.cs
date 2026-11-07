@@ -20,11 +20,11 @@ namespace LouisAgent.AcpServer;
 public static class AcpHost
 {
     /// <summary>Runs the server. If it fails, the reason goes to the log and the process exits with an error.</summary>
-    public static async Task RunAsync(AgentCatalog catalog)
+    public static async Task RunAsync(AgentCatalog catalog, HostServices? services = null)
     {
         try
         {
-            var host = AgentHost.Build(catalog);
+            var host = AgentHost.Build(catalog, services ?? HostServices.None);
             await new AcpServer(host.Engine, usageInChat: host.Agent.UsageInChat).RunAsync();
         }
         catch (Exception ex)

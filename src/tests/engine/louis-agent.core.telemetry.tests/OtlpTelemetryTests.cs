@@ -5,11 +5,11 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Telemetry;
-using LouisAgent.Core.Tests.TestOtlp;
+using LouisAgent.Testing.Otlp;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Telemetry;
+namespace LouisAgent.Core.Telemetry.Tests;
 
 /// <summary>
 /// With an OTLP endpoint set the standard way, a process's spans leave it for that collector (F52 step 2, ADR 0064):
@@ -22,7 +22,7 @@ namespace LouisAgent.Core.Tests.Telemetry;
 /// and starts the tracer; the tear-down disposes it and clears them, so the next test starts fresh.
 /// </remarks>
 [NonParallelizable]
-public class AgentTelemetryTests
+public class OtlpTelemetryTests
 {
     /// <summary>Where the exporter sends, the standard way.</summary>
     private const string EndpointVariable = "OTEL_EXPORTER_OTLP_ENDPOINT";
@@ -72,10 +72,10 @@ public class AgentTelemetryTests
     [Test]
     public async Task AModelRequest_ReachesTheCollector_AsASpan()
     {
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
         await OneTurnAsync();
-        AgentTelemetry.Flush();
+        OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync(Operation), Is.True, "no span reached the collector");
         Assert.That(_receiver.Received.Select(r => r.Path), Does.Contain("/v1/traces"));
@@ -88,10 +88,10 @@ public class AgentTelemetryTests
     public async Task TheEnvironmentsServiceName_Wins()
     {
         Environment.SetEnvironmentVariable(ServiceVariable, "my-host");
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
         await OneTurnAsync();
-        AgentTelemetry.Flush();
+        OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync("my-host"), Is.True);
     }
@@ -100,9 +100,9 @@ public class AgentTelemetryTests
     [Test]
     public void ASecondStart_GivesTheSameHandle()
     {
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
-        Assert.That(AgentTelemetry.Start(), Is.SameAs(_telemetry));
+        Assert.That(OtlpTelemetry.Instance.Start(), Is.SameAs(_telemetry));
     }
 
     /// <summary>With no endpoint, nothing listens to the spans and nothing is sent.</summary>
@@ -110,10 +110,10 @@ public class AgentTelemetryTests
     public async Task NoEndpoint_ListensToNothing_AndSendsNothing()
     {
         Environment.SetEnvironmentVariable(EndpointVariable, null);
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
         await OneTurnAsync();
-        AgentTelemetry.Flush();
+        OtlpTelemetry.Instance.Flush();
         await Task.Delay(200);
 
         using var model = new ActivitySource(ModelSource);
@@ -125,13 +125,13 @@ public class AgentTelemetryTests
     [Test]
     public async Task OurSource_IsListenedTo()
     {
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
-        using (AgentTelemetry.Source.StartActivity("our-own-span"))
+        using (TurnSpans.Source.StartActivity("our-own-span"))
         {
         }
 
-        AgentTelemetry.Flush();
+        OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync("our-own-span"), Is.True);
     }
@@ -143,7 +143,7 @@ public class AgentTelemetryTests
     [Test]
     public async Task ACallToTheCollector_IsLeftOut_AnyOtherStays()
     {
-        _telemetry = AgentTelemetry.Start();
+        _telemetry = OtlpTelemetry.Instance.Start();
 
         // Two calls as HttpClient's source reports them: one to the collector, as the log sink makes, one elsewhere.
         using (var http = new ActivitySource(HttpSource))
@@ -154,7 +154,7 @@ public class AgentTelemetryTests
                 other?.SetTag("url.full", "http://example.test/other");
         }
 
-        AgentTelemetry.Flush();
+        OtlpTelemetry.Instance.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync("other-call"), Is.True, "another call is still a span");
         Assert.That(_receiver.Holds("collector-call"), Is.False, "the collector's own traffic became a span");

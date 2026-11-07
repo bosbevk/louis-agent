@@ -1,3 +1,4 @@
+using LouisAgent.Core.Telemetry;
 using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
@@ -6,7 +7,7 @@ using LouisAgent.Core.Hosting;
 
 // The coding agent's API. It loads what this demo's catalogue names, and serves the code-review app, with the
 // framework's accounts (F61) when ACCOUNTS_SQL_URL is set.
-var host = AgentHost.Build(CodingCatalog.Create());
+var host = AgentHost.Build(CodingCatalog.Create(), new HostServices(Telemetry: OtlpTelemetry.Instance));
 var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
 builder.AddLouisAgentAccounts(AccountsOptions.FromEnvironment());

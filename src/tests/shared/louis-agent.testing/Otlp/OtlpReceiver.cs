@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace LouisAgent.Core.Tests.TestOtlp;
+namespace LouisAgent.Testing.Otlp;
 
 /// <summary>
 /// A tiny OTLP collector for tests (F52): it listens on a free local port, keeps the body and path of every POST it

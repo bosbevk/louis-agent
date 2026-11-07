@@ -231,6 +231,22 @@ One commit each; test first where behaviour changes (steps 2, 4, 6); a move is `
    tree, ADR 0091 *Web access and telemetry are libraries on core* (ADR 0076 gets its dated line), the work log's
    row and the TODO's row (CL33 out), this plan deleted.
 
+## Approved during the build
+
+Picks taken unattended (Louis, 2026-11-07: "go with the CL33 plan unattended"), the recommended one of three each:
+
+- **The crash handler stays in core** (step 2). `LastChance` logs a crash and flushes; only its flush of the spans
+  needed the tracer. Options: move it to `core.telemetry` and have `core.web` reference `core.telemetry` for
+  `ChromeWebBrowser`'s `Expect` (the plan's shape); a second seam for the browser; **keep it in core, installed with
+  the host's `IHostTelemetry`, which it flushes** (picked: one seam, and `core.web` needs nothing of the tracer, so
+  its reference to `core.telemetry` is gone).
+- **Steps 2 and 3, and the telemetry half of 6, in one commit.** With the seam in but the tracer still core's, or the
+  tracer out but no host handing it in, a commit between would start no traces anywhere. Options: three commits
+  with a dead middle; a shim; **one commit** (picked: every commit passes and traces).
+- **The moved tests take the collector's sink with them** (step 3). `LastChanceTests` and `AgentLoggingOtlpTests`
+  prove lines reach the collector, which is now the library's sink, so they moved to `core.telemetry.tests` with the
+  shared `OtlpReceiver` in `louis-agent.testing`; core's own `HostTelemetryTests` prove the seam.
+
 ## Verification
 
 Per step: the project's tests and `core.tests`; the whole solution builds after steps 3 and 5. By hand, free, after

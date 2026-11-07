@@ -1,8 +1,8 @@
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Telemetry;
-using LouisAgent.Core.Tests.TestOtlp;
+using LouisAgent.Testing.Otlp;
 
-namespace LouisAgent.Core.Tests.Telemetry;
+namespace LouisAgent.Core.Telemetry.Tests;
 
 /// <summary>
 /// The last word of a process (F52 step 5, ADR 0064): an exception nothing caught is logged once, Critical, as the
@@ -89,7 +89,8 @@ public class LastChanceTests
 
         Assert.That(expected.Observed, Is.True);
         Assert.That(Lines(afterExpected, "[ERROR]"), Is.Empty);
-        Assert.That(Lines(_stderr.ToString(), "[ERROR]"), Has.Length.EqualTo(1), "one that isn't expected still counts");
+        Assert.That(Lines(_stderr.ToString(), "[ERROR]"), Has.Length.EqualTo(1),
+            "one that isn't expected still counts");
     }
 
     /// <summary>
@@ -101,7 +102,7 @@ public class LastChanceTests
         using var receiver = new OtlpReceiver();
         Environment.SetEnvironmentVariable(EndpointVariable, receiver.Endpoint);
         Environment.SetEnvironmentVariable(ProtocolVariable, "http/protobuf");
-        AgentLogging.Configure(null);
+        AgentLogging.Configure(null, also: OtlpTelemetry.Instance.AddSinks);
 
         LastChance.Handle(Thrown("boom"));
 

@@ -82,7 +82,7 @@ public static class AgentLogging
     private static (string Directory, string File)? _runFile;
 
     /// <summary>What the last <see cref="Configure"/> was given, so <see cref="Flush"/> can make it again.</summary>
-    private static (string? Directory, LogContentMode Content) _configured;
+    private static (string? Directory, LogContentMode Content, Action<SerilogConfiguration>? Also) _configured;
 
     /// <summary>
     /// The standard setting that names an OTLP collector (F52); unset, no log line or span leaves the process.
@@ -95,12 +95,13 @@ public static class AgentLogging
     /// <summary>
     /// Console to stderr; with <paramref name="logDirectory"/>, a file per run
     /// (<c>agent-{host}-{time}-{process}.log</c>: containers run with --rm, so their own logs disappear on exit) and
-    /// the record files too; with an OTLP endpoint set, the collector. Replaces (and flushes) the previous
-    /// configuration, so it is safe to call again.
+    /// the record files too; and whatever sinks the host's telemetry adds through <paramref name="also"/> (the
+    /// collector, CL33). Replaces (and flushes) the previous configuration, so it is safe to call again.
     /// </summary>
-    public static void Configure(string? logDirectory, LogContentMode content = LogContentMode.Hashed)
+    public static void Configure(string? logDirectory, LogContentMode content = LogContentMode.Hashed,
+        Action<SerilogConfiguration>? also = null)
     {
-        _configured = (logDirectory, content);
+        _configured = (logDirectory, content, also);
         LogContent.Use(content);
         var configuration = new SerilogConfiguration()
             .MinimumLevel.Verbose()
@@ -111,12 +112,8 @@ public static class AgentLogging
                 .WriteTo.Console(outputTemplate: ConsoleTemplate, formatProvider: CultureInfo.InvariantCulture,
                     standardErrorFromLevel: LogEventLevel.Verbose, theme: ConsoleTheme.None));
 
-        // With a collector named the standard way, every line goes there too, the records left out as on the console.
-        // The sink reads the endpoint, protocol, headers and OTEL_SERVICE_NAME itself, and they win over ours.
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(OtlpEndpointVariable)))
-            configuration.WriteTo.Logger(otlp => otlp
-                .Filter.ByExcluding(Matching.WithProperty(RecordProperty))
-                .WriteTo.OpenTelemetry(options => options.ResourceAttributes["service.name"] = ServiceName));
+        // The host's telemetry adds its own sink here (the collector's, when one is named): core knows none.
+        also?.Invoke(configuration);
 
         Exception? unusable = null;
         string? runFile = null;
@@ -167,7 +164,7 @@ public static class AgentLogging
     /// builds its logger once, so the same configuration is made again: replacing the logger disposes the old one,
     /// which is what makes a batching sink send.
     /// </summary>
-    internal static void Flush() => Configure(_configured.Directory, _configured.Content);
+    internal static void Flush() => Configure(_configured.Directory, _configured.Content, _configured.Also);
 
     /// <summary>The host's name as the logs give it: the entry assembly's name without <c>louis-agent.</c>.</summary>
     internal static string ServiceName =>

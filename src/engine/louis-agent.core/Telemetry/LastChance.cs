@@ -32,11 +32,15 @@ internal static class LastChance
     /// <summary>The handler's own lines.</summary>
     private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger(typeof(LastChance));
 
-    /// <summary>Subscribes to the runtime's two events, once per process.</summary>
-    public static void Install()
+    /// <summary>The host's telemetry, whose spans go out with the crash's line (CL33).</summary>
+    private static IHostTelemetry? _telemetry;
+
+    /// <summary>Subscribes to the runtime's two events, once per process; the telemetry given is what a crash flushes.</summary>
+    public static void Install(IHostTelemetry telemetry)
     {
         lock (Gate)
         {
+            _telemetry = telemetry;
             if (_installed) return;
             _installed = true;
             AppDomain.CurrentDomain.UnhandledException += OnUnhandled;
@@ -52,7 +56,7 @@ internal static class LastChance
     {
         Log.Log(LogLevel.Critical, TelemetryLogMessage.UnhandledException, exception: exception);
         AgentLogging.Flush();
-        AgentTelemetry.Flush();
+        _telemetry?.Flush();
     }
 
     /// <summary>
