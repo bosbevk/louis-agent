@@ -17,6 +17,7 @@ public sealed record ChatText
 
     /// <summary>What a running specialist is doing, per role (F34), in place of processing; none by default.</summary>
     public IReadOnlyDictionary<string, RolePhases> RolePhases { get; init; } = new Dictionary<string, RolePhases>();
+
     public string Stopped { get; init; } = "Stopped";
 
     public string DelegatedTo { get; init; } = "Delegated to";
@@ -29,6 +30,7 @@ public sealed record ChatText
 
     /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist already working.</summary>
     public string FollowUp { get; init; } = "follow-up";
+
     public string Specialist { get; init; } = "specialist";
     public string Task { get; init; } = "Task";
     public string Working { get; init; } = "Working";
@@ -52,13 +54,16 @@ public sealed record ChatText
     public string Unarchive { get; init; } = "Take out of archive";
     public string Delete { get; init; } = "Delete";
     public string NewName { get; init; } = "New name";
+
     /// <summary>{0} is the chat's title.</summary>
     public string MoreFor { get; init; } = "More for {0}";
 
     public string SearchChats { get; init; } = "Search chats";
     public string SearchPlaceholder { get; init; } = "Search chats…";
+
     /// <summary>{0} is what was typed.</summary>
     public string NoChatsFor { get; init; } = "No chats for \"{0}\".";
+
     public string Recent { get; init; } = "Recent";
     public string Chats { get; init; } = "Chats";
     public string Archived { get; init; } = "Archived";
@@ -72,8 +77,10 @@ public sealed record ChatText
     public string ChatNotSaved { get; init; } = "That chat isn't saved in this browser.";
     public string Copied { get; init; } = "Copied.";
     public string CopyFailed { get; init; } = "Couldn't copy.";
+
     /// <summary>{0} is what's coming.</summary>
     public string ComingSoon { get; init; } = "{0}: coming soon.";
+
     public string Favourites { get; init; } = "Favourites";
     public string Projects { get; init; } = "Projects";
     public string NewProject { get; init; } = "New project";
@@ -84,8 +91,10 @@ public sealed record ChatText
     public string LocationExample { get; init; } = "e.g. Cape Town";
     public string Locating { get; init; } = "Finding…";
     public string UseMyLocation { get; init; } = "Use my location";
+
     /// <summary>{0} is the place.</summary>
     public string LocationFound { get; init; } = "Location: {0}";
+
     public string LocationUnknown { get; init; } = "Couldn't find your location.";
     public string LocationNoBrowser { get; init; } = "This browser can't give your location.";
     public string LocationDenied { get; init; } = "You didn't give permission for your location.";
@@ -94,6 +103,7 @@ public sealed record ChatText
 
     /// <summary>The languages OpenStreetMap names a place in, as a browser's language list.</summary>
     public string PlaceLanguages { get; init; } = "en";
+
     public string Names { get; init; } = "Names";
     public string ShowMotion { get; init; } = "Show animations although my system asks for less";
     public string SystemAsksNoLess { get; init; } = " (your system doesn't ask for less)";
@@ -104,15 +114,19 @@ public sealed record ChatText
     public string ShowWork { get; init; } = "Show the work panel";
 
     public string Credits { get; init; } = "Credits";
+
     /// <summary>{0} is this month's cost.</summary>
     public string CreditsTitle { get; init; } = "Credits and usage: {0} this month";
+
     public string CreditsHeading { get; init; } = "Credits · pay as you go";
     public string ThisChat { get; init; } = "This chat";
     public string ThisMonth { get; init; } = "This month";
     public string ChatOne { get; init; } = "chat";
     public string ChatMany { get; init; } = "chats";
+
     public string CreditsNote { get; init; } =
         "No subscription: you pay only for the questions you ask, specialists included. From the chats in this browser.";
+
     public string BuyCredits { get; init; } = "Buy credits";
 
     public string Language { get; init; } = "Language";
@@ -167,8 +181,10 @@ public sealed record ChatText
     public string HideWork { get; init; } = "Hide the work panel";
     public string CloseWork { get; init; } = "Close the work panel";
     public string NoWorkYet { get; init; } = "No work yet";
+
     public string WorkEmpty { get; init; } =
         "When a task is handed over, you see the specialist's steps, tools and cost here, as it happens.";
+
     public string StepsLabel { get; init; } = "Steps";
     public string Requests { get; init; } = "requests";
     public string Cost { get; init; } = "Cost";
@@ -179,13 +195,21 @@ public sealed record ChatText
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";
-    public string SessionGone { get; init; } = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
+
+    public string SessionGone { get; init; } =
+        "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
+
     public string NeedsKey { get; init; } = "The API needs a key: enter AGENT_API_KEY under API key in the sidebar.";
+
+    /// <summary>The same refusal on a site with accounts (F61.2): a person signs in instead of typing a key.</summary>
+    public string NeedsSignIn { get; init; } = "Sign in to chat.";
+
     public string StillAnswering { get; init; } = "This chat is still answering; wait for it or press Stop.";
     public string ApiUnreachable { get; init; } = "Can't reach the agent API. Is the api container running?";
 
     public string Currency { get; init; } = "Currency";
     public string AsCharged { get; init; } = "As charged";
+
     /// <summary>{0} the base currency, {1} the rate, {2} the shown currency, {3} the rates' date.</summary>
     public string ConvertedAt { get; init; } = "1 {0} = {1} {2} on {3}; the ledger keeps what was charged";
 

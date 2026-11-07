@@ -35,6 +35,9 @@ public sealed class ChatRunner(
     public bool Streaming { get; private set; }
     public string? Notice { get; set; }
 
+    /// <summary>Whether this site has accounts (F61.2): then a refused turn asks for a sign-in, not a key.</summary>
+    public bool AccountsEnabled { get; set; }
+
     /// <summary>
     /// Raised when the page should redraw: the turn started, text arrived (throttled), the turn ended, files were
     /// attached, or a send or stop failed with a notice (FX29).
@@ -211,7 +214,7 @@ public sealed class ChatRunner(
     /// </summary>
     public string Describe(Exception ex) => ex switch
     {
-        AgentApiException { Status: HttpStatusCode.Unauthorized } => text.NeedsKey,
+        AgentApiException { Status: HttpStatusCode.Unauthorized } => AccountsEnabled ? text.NeedsSignIn : text.NeedsKey,
         AgentApiException { Status: HttpStatusCode.Conflict } => text.StillAnswering,
         AgentApiException api => api.Message,
         HttpRequestException => text.ApiUnreachable,

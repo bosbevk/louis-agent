@@ -1,3 +1,4 @@
+using LouisAgent.Web.Accounts;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Shell;
@@ -30,6 +31,10 @@ public partial class ChatShell : IDisposable
     [Inject] private IJSRuntime JS { get; set; } = default!;
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
+
+    /// <summary>For the account state, which a site may not have registered (F61.2): looked up, not injected.</summary>
+    [Inject]
+    private IServiceProvider Services { get; set; } = default!;
 
     /// <summary>The chat the address names; null for a new one.</summary>
     [Parameter]
@@ -149,6 +154,13 @@ public partial class ChatShell : IDisposable
         await _preferences.LoadAsync();
         // With no language menu there's no list to read, and no choice to read back.
         if (Features.Language) await _languages.LoadAsync();
+        // On a site with accounts a refused turn asks for a sign-in, not a key (F61.2).
+        if (Services.GetService(typeof(AccountState)) is AccountState accounts)
+        {
+            if (!accounts.Loaded) await accounts.LoadAsync();
+            Runner.AccountsEnabled = accounts.Enabled;
+        }
+
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
