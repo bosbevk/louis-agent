@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+    <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

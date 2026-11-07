@@ -1,6 +1,6 @@
 using LouisAgent.Starter;
 using LouisAgent.Starter.Layout;
-using LouisAgent.Web.Accounts;
+using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;

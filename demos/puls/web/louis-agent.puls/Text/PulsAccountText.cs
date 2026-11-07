@@ -1,4 +1,4 @@
-using LouisAgent.Web.Text;
+using LouisAgent.Web.Accounts.Text;
 
 namespace LouisAgent.Puls.Text;
 

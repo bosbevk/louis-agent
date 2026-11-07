@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.CodeReview;
 using LouisAgent.CodeReview.Layout;
-using LouisAgent.Web.Accounts;
+using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;

@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+    <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
+    <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
     <!-- The recipes pack's own view of its screen. -->
     <ProjectReference Include="..\..\..\..\packs-web\louis-agent.pack.recipes.web\louis-agent.pack.recipes.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />

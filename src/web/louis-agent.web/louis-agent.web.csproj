@@ -20,8 +20,6 @@
     <PackageReference Include="Markdig" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
-    <!-- F61.2: AuthorizeView and [Authorize] on the pages, over who the API says is signed in. -->
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,8 +29,6 @@
     <ProjectReference Include="..\..\engine\louis-agent.choices\louis-agent.choices.csproj" />
     <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
-    <!-- F61.2: the account routes' bodies and replies, and the claim names, as records the browser sends and reads. -->
-    <ProjectReference Include="..\..\hosts\louis-agent.accounts.contracts\louis-agent.accounts.contracts.csproj" />
     <!-- F18 step 7c.3 (decision A): the eval protocol's kinds, so the portal reads a grader's kind by its wire name. -->
     <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
 
