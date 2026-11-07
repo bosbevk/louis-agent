@@ -22,6 +22,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.14" />
     <!-- The SQL client brings a 9.0 build of this with two known vulnerabilities (NU1903); the current one replaces it. -->
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+    <!-- What `dotnet ef migrations add` needs to write a migration; build time only, nothing of it ships. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

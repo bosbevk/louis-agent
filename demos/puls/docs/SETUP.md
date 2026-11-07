@@ -16,6 +16,8 @@ Puls keeps its settings in `demos/puls/config/`. The stack sets `CONFIG_DIRECTOR
 | `.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `.env.mongo` | ❌ git-ignored | The benchmark store's root user, read only by `puls-mongo` (F31) |
 | `.env.mongo.example` | ✅ tracked | Template for `.env.mongo` |
+| `.env.sql` | ❌ git-ignored | The accounts database's sa password, read only by `puls-sql` (F61); the stack won't start without it |
+| `.env.sql.example` | ✅ tracked | Template for `.env.sql` |
 | `.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32); the stack won't start without it |
 | `.env.searxng.example` | ✅ tracked | Template for `.env.searxng` |
 | `.env.anthropic`, `.env.ollama-puls` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks |

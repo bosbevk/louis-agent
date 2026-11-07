@@ -30,11 +30,22 @@ Built step by step in F61.1; this doc grows with each step.
 ```
 src/hosts/louis-agent.accounts/
 ├── Messages/        # AccountErrorMessage: what the library throws (ADR 0009)
+├── Migrations/      # what `dotnet ef migrations add` wrote; a tool's record, not sized by the file rule
+├── Store/           # AccountsDbContext (Identity's tables, Tenants, the per-tenant indexes), the design-time factory
 └── Users/           # AccountUser, Tenant
 src/hosts/louis-agent.accounts.contracts/   # the records the routes send and read
 src/tests/hosts/louis-agent.accounts.tests/             # pure tests
 src/tests/hosts/louis-agent.accounts.integration-tests/ # against the Docker SQL Server (ACCOUNTS_SQL_TEST_URL)
 ```
+
+**Migrations.** The schema is EF Core migrations in `Migrations/`, applied by the host at start-up. A schema change is
+`dotnet ef migrations add {Name} --project src/hosts/louis-agent.accounts --startup-project src/hosts/louis-agent.accounts
+--output-dir Migrations --namespace LouisAgent.Accounts.Migrations` (`dotnet tool restore` first: `dotnet-ef` is in
+`.config/dotnet-tools.json`). The tool never connects; it reads the model from the code.
+
+**On the PC** the server is `puls-sql` in the Puls compose: SQL Server Developer edition on a Docker volume, its sa
+password in `config/.env.sql`. The integration tests reach it at `ACCOUNTS_SQL_TEST_URL`
+(`Server=127.0.0.1,1433;User Id=sa;Password=…;TrustServerCertificate=true`) and use the database `puls_accounts_test`.
 
 ## Tests
 

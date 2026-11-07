@@ -11,11 +11,11 @@ public class AccountUserTests
     [Test]
     public void New_IsInItsTenant_AndSignsInWithItsEmail()
     {
-        var user = AccountUser.New(" puls ", " ann@example.com ", Now);
+        var user = AccountUser.New(" home ", " ann@example.com ", Now);
 
         Assert.Multiple(() =>
         {
-            Assert.That(user.TenantId, Is.EqualTo("puls"));
+            Assert.That(user.TenantId, Is.EqualTo("home"));
             Assert.That(user.Email, Is.EqualTo("ann@example.com"));
             Assert.That(user.UserName, Is.EqualTo("ann@example.com"));
             Assert.That(user.DisplayName, Is.Null);
@@ -27,7 +27,7 @@ public class AccountUserTests
     [Test]
     public void New_KeepsWhenItWasMade_InUtc()
     {
-        var user = AccountUser.New("puls", "ann@example.com", Now);
+        var user = AccountUser.New("home", "ann@example.com", Now);
 
         Assert.That(user.CreatedAt, Is.EqualTo(new DateTimeOffset(2026, 11, 7, 10, 0, 0, TimeSpan.Zero)));
         Assert.That(user.CreatedAt.Offset, Is.EqualTo(TimeSpan.Zero));
