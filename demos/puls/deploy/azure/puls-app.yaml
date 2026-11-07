@@ -153,7 +153,9 @@ properties:
             failureThreshold: 3
             timeoutSeconds: 5
     scale:
-      minReplicas: 1
+      # Nothing runs while nobody is on it (Louis, 2026-11-07: "I do not need the replica"): the first visitor
+      # waits for a cold start of some seconds, and the month costs what is used.
+      minReplicas: 0
       maxReplicas: 1
     volumes:
       - name: puls-app-vol
