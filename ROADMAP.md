@@ -40,21 +40,36 @@ agent still does its task, is.
 ## What exists
 
 Phases 0 to 3 are done: the docs, three security doors closed, the engine cut apart from Puls into identities and
-packs, every check a C# eval on one harness. Since then: evals as content with a studio in the admin portal (F49), the
-recipe sources and the cook's maths (F35, F48.1 to F48.3), the framework's web every site is built on (F59), and
-accounts with tenants, social logins and passkeys (F61.1 to F61.5). The [work log](src/docs/work-log.md) has the
-counts and every row.
+packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-07):
+
+- **Evals as content** (F49): an eval is files beside its identity, a pack ships its checks, the admin portal has a
+  studio, one Evals page, a review queue and the run page (F53), and a paid judge that can tell (FX45).
+- **The cook** (F35, F48.1 to F48.3): 45 South African recipe sites read as data under every site's robots.txt and
+  no-AI signals, a search over many sites at once, a find-recipe minion, a recipe library of its own with a counter,
+  and the maths (`ScaleRecipe`, yields, a recipe or a meal). The hand-built shop reader was removed on 2026-11-04 when
+  no retailer answered; prices now come from Stats SA's published averages, uploaded in the admin portal (F55), and
+  branches from OpenStreetMap (F50.2); the packs' feeds are MCP resources (F56).
+- **The engine, measured and shown**: every request traced through OpenTelemetry (F52); the engine's own website with
+  two films (F54, F57); the hosts are libraries and core ships no agent (ADR 0076); the packs are one area (CL32).
+- **Every site on the framework's web** (F59): the admin and chat frames, described screens, the pack web projects, a
+  starter template (`dotnet new louis-site`), the eval pages; the coding agent's landing page.
+- **Accounts** (F61.1 to F61.5): ASP.NET Core Identity on SQL Server, a tenant from the host name, social logins,
+  passkeys and a second factor, as a library a site opts into (CL30).
+
+The [work log](src/docs/work-log.md) has the counts and every row.
 
 | What | Result | Measured |
 |---|---|---|
-| Puls's cook: a local recipe with shop prices | 31 of 31 answers right: 26 ingredients priced with sources, 5 correctly left unpriced where no supported shop is | Run of 2026-10-18, $0.118 |
+| Puls's cook: a local recipe with shop prices (the shop reader since removed) | 31 of 31 answers right: 26 ingredients priced with sources, 5 correctly left unpriced where no supported shop is | Run of 2026-10-18, $0.118 |
 | Shop data read in code, not pages read by the model | Sourced prices from 0 of 32 to 31 of 31 | Three runs, 2026-10-17 to 2026-10-18 |
+| Recipes read as a page's own data, not its text | 45 of 74 South African recipe sites allow a reader; 14 publish Recipe data, 31 are read from their text | Checked 2026-11-04 (F35.1) |
 | Prompt caching | A demo run from $0.66 to $0.13, all 10 fixes still correct | Engine benchmark |
 | Tool sets per conversation | The fixed part of each request from about 48,500 to 24,400 tokens | Engine benchmark |
 | Every agent tested by evals in C# | The cook 23 of 24, the routing 72 of 72, $0.37 together; a replay costs $0 | 2026-10-29 |
 
-Puls is not yet open to the public: the shops refuse automated readers, so the cook gives estimates and says where to
-buy until a retailer says yes; the sites go live from Azure with F61.4.
+Puls is not yet open to the public: the shops refuse automated readers, so the cook gives estimates from Stats SA's
+averages and says where to buy until a retailer says yes (F85). The two sites go live from this PC first (F58), then
+from Azure (F61.4); the final cook's paid measure is still owed.
 
 ## The phases
 
@@ -65,23 +80,26 @@ done when Louis has written its learning write-up himself, without the code open
 |---|---|---|---|---|
 | 0 to 3 | Docs and ADRs; three doors closed; the cut into engine, identities and packs; evals in C# | Measured | Done | — |
 | 3b | Evals as content: an eval is files beside its identity, a pack ships its checks, a studio in the admin portal | Measured | Done | F49 |
-| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | F35 done; F48 in progress | F48 |
+| 3c | The cook: recipe sources read as data, then the cook as a home cook and teacher | Measured | F35 done; F48.1 to F48.3 done, F48.4 to F48.6 remain | F48 |
 | 3d | Localisation: every text from a resource file beside its enum | Configured, not coded | Now | F46 |
-| 3e | Puls's local specialists: the weather and where-to-buy packs, then one specialist at a time | Measured | Now | F50 |
+| 3e | Puls's local specialists: the where-to-buy, shop-prices and weather packs, then one specialist at a time | Measured | Now; F50.2 done | F50 |
 | 4 | The sales playground: the demo identity, each pitch a simulation over made-up data, cost on screen | Measured | Now | F40 |
 | 5 | Cost you can see and stop: estimates, budgets that warn, ask or stop, cost per customer, the bill check | Cost | Next | F7 |
 | 6 | Orchestration: one delegation function, typed results checked in code, the orchestrator as an identity | Checked, not trusted | Next | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61 took the accounts and the hosting | F43, F8, F15, F44, F51, F61 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts, F61.4 (Azure) remains | F43, F8, F15, F44, F51, F61 |
 | 10 | The engine as a developer package, after every engine feature | The engine | Later | F74, F47 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
 
 **3b to 3e.** 3b is built (F49.1 to F49.5: the checks catalogue, evals as files, checks in packs, the studio). 3c: F35's
-recipe sources are built and F48's maths too; the pantry and the teaching answers remain. 3d is one feature, F46. 3e
-is F50: the weather pack, the where-to-buy pack (built), then gardener, farmer, stargazer, braaimaster and the rest,
-each a role on the packs it names with its eval, run before it is shown.
+recipe sources, library and minion are built and F48's maths too (`ScaleRecipe`, yields, a recipe or a meal); the rest
+of `WriteRecipe` (the list and its prices, F48.4), the pantry and the teaching answers (F48.5) and the cook's first wave
+(F48.6) remain, in that order ([plan](demos/puls/docs/plans/F48-cook-and-teacher.md)). 3d is one feature, F46. 3e is
+F50: the where-to-buy and shop-prices packs are built (F50.2: branches from OpenStreetMap, Stats SA's average prices
+in Mongo, uploaded in the admin portal), the weather pack is next, then gardener, farmer, stargazer, braaimaster and
+the rest, each a role on the packs it names with its eval, run before it is shown.
 
 **4, the sales playground** ([draft plan](src/docs/plans/F40-sales-playground.md)). The demo identity: each pitch is a
 mode, a role and a small pack over made-up data, born as a simulation, so a pitch is also a measurement. The first
@@ -105,10 +123,11 @@ the audit log, rate limits, injection simulations as the red-team suite.
 else's tools, listed once when the host starts; annotations that only tighten approval. Every pack stays convertible
 to MCP until then (ADR 0028).
 
-**9, what a sale needs** ([draft plan](src/docs/plans/phase-9-what-a-sale-needs.md)). F61 built sign-in, tenants and
-the move to Azure; F43's durable sessions and the tenant on every ledger row, F8's reliability (retries, a fallback
-model, timeouts), F15's local models given their whole prompt, F44's speed, metrics and packages, F51's gateway and
-uptime remain.
+**9, what a sale needs** ([draft plan](src/docs/plans/phase-9-what-a-sale-needs.md)). F61 built sign-in, tenants,
+social logins and passkeys; the move to Azure (F61.4, [plan](src/docs/plans/F61-accounts-and-azure.md)) is open, and
+before it the two sites go live from this PC (F58). F43's durable sessions and the tenant on every ledger row, F8's
+reliability (retries, a fallback model, timeouts), F15's local models given their whole prompt, F44's speed, metrics
+and packages, F51's gateway and uptime remain.
 
 **10, the engine as a package** ([draft](src/docs/plans/phase-10-engine-package.md)). Louis, 2026-10-20: "make the
 engine its own repo with package", after every engine feature; a developer's product, never a business's.
@@ -137,7 +156,7 @@ stays the hobby and the showpiece: its measured numbers go on the CV and on a pu
 
 | Step | Done when |
 |---|---|
-| Now: one-question emails to 20 people, three one-page service offers, a public results page | 3 or more replies |
+| Now (F62): one-question emails to 20 people, three one-page service offers, a public results page | 3 or more replies |
 | Before the first invoice: (Pty) Ltd, SARS representative, bank account, B-BBEE affidavit, one attorney hour (POPIA) | Done |
 | Phase 4: the invoice clerk and "get paid" as simulations with cost on screen, a four-minute video | 3 of 10 practices name a price |
 | Phases 5 to 8: a price sheet (R1,500, R3,500, R6,000 a month), Xero and Sage developer accounts | Listed |
@@ -170,7 +189,7 @@ signs; health data not before a partner carries the compliance; (Pty) Ltd before
 
 | Risk | What answers it |
 |---|---|
-| Local data is hard to get: one hand-built shop reader took 45 commits | One reader per site platform, each shop a row of data; businesses that join supply their own |
+| Local data is hard to get: one hand-built shop reader took 45 commits and was removed when no retailer answered (2026-11-04) | Published data first (Stats SA's averages, OpenStreetMap's branches); a retailer's own prices only with its permission or feed (F85); businesses that join supply their own |
 | Website terms forbid reading | A source is turned on only after its terms are read (ADR 0023); every fetch obeys robots.txt (ADR 0068) |
 | The grocers' own AI cooks and Google's local search | Puls competes on cross-shop, local, sourced answers, not a better chatbot |
 | AI costs grow with use | Every request costed; caching cut a run by 80%; budgets that stop come in Phase 5 |
