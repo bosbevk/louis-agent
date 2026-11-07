@@ -286,6 +286,11 @@ should update the films with what it looks like now, explaining the whole archit
   to github.com/bosbevk/louis-agent, which a visitor can't open now; the links go, or point at what is public (the
   packages once on NuGet, the docs if they are published), and the words "the architecture, every design decision and
   the learning write-ups are public" change with them.
+- **A section on identities** (Louis, 2026-11-08: "we should have a section on identities"): what an identity is
+  (who the agent is: the principles every agent opens with, its voice, its modes, its roles, the toolsets it names,
+  all as files under its own project, ADR 0017 to 0020 and 0027), the two that exist (Puls with its specialists,
+  the coding agent) and how a customer's is a folder of markdown of their own, the way the expert in the corner is
+  this site's (F109.3); the test of F109.4 counts `identity/` folders under `demos/` as it counts the packs.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
