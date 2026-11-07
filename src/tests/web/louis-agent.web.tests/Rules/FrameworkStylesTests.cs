@@ -11,16 +11,21 @@ public partial class FrameworkStylesTests
 {
     private static readonly string Styles = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Styles/web");
 
+    /// <summary>The account library's rules (CL30), under the same rules as the framework's.</summary>
+    private static readonly string AccountStyles =
+        Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web.accounts/Styles/accounts");
+
     /// <summary>A colour written as a value: matches <c>#f58220</c> and <c>rgba(245, 130, 32, .4)</c>, but not
     /// <c>rgba(var(--bs-primary-rgb), .4)</c>.</summary>
     [GeneratedRegex(@"#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d", RegexOptions.NonBacktracking)]
     private static partial Regex FixedColour();
 
-    /// <summary>The framework's rules, without its colours, which are where the values belong.</summary>
+    /// <summary>The framework's rules and the account library's, without the colours, which are where the values belong.</summary>
     private static IEnumerable<string> Rules() =>
         Directory.EnumerateFiles(Styles, "_*.scss", SearchOption.AllDirectories)
             .Where(file => !Path.GetRelativePath(Styles, file).Replace('\\', '/')
-                .StartsWith("settings/", StringComparison.Ordinal));
+                .StartsWith("settings/", StringComparison.Ordinal))
+            .Concat(Directory.EnumerateFiles(AccountStyles, "_*.scss", SearchOption.AllDirectories));
 
     /// <summary>The parts the framework draws have their rules in the framework.</summary>
     [TestCase(".sidebar")]
