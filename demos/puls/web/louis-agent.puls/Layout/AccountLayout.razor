@@ -1,7 +1,11 @@
 @inherits LayoutComponentBase
-@* The framework's account frame, filled with what's Puls's own: its logo. *@
+@* The framework's account frame, filled with what's Puls's own: its logo, the water behind the card as on the landing
+   page and the empty chat, and a glass card in its colours (FX64). *@
 
-<AccountShell BrandTitle="Puls home">
-    <Brand><PulsLogo /></Brand>
-    <ChildContent>@Body</ChildContent>
-</AccountShell>
+<div class="puls-account">
+    <Water />
+    <AccountShell BrandTitle="Puls home">
+        <Brand><PulsLogo /></Brand>
+        <ChildContent>@Body</ChildContent>
+    </AccountShell>
+</div>
