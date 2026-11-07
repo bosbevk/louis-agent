@@ -76,14 +76,19 @@ public class AccountHandlersTests
         Assert.That(await refused.Content.ReadAsStringAsync(), Does.Contain("A name is at most 256 characters."));
     }
 
+    /// <summary>Every provider is listed, none on: the test host has no keys.</summary>
     [Test, Order(4)]
-    public async Task Providers_IsOpen_AndEmptyUntilOneIsSetUp()
+    public async Task Providers_IsOpen_AndListsEveryProvider_NoneOnWithoutKeys()
     {
         using var plain = _host.PlainClient();
 
         var reply = await plain.GetFromJsonAsync<ProvidersReply>("/account/providers", AccountJson.Web);
 
-        Assert.That(reply!.Providers, Is.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(reply!.Providers.Select(p => p.Name), Does.Contain("google").And.Contain("microsoft"));
+            Assert.That(reply.Providers.All(p => !p.Enabled), Is.True);
+        });
     }
 
     [Test, Order(5)]
