@@ -21,9 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts the unit tests share. -->
     <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />

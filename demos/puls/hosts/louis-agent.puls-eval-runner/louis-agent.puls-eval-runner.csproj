@@ -15,8 +15,8 @@
              their eval folders reach this program's output through these references. -->
         <ProjectReference Include="..\..\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
         <ProjectReference Include="..\..\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
-        <ProjectReference Include="..\..\..\..\packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
-        <ProjectReference Include="..\..\..\..\packs-evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
+        <ProjectReference Include="..\..\..\..\packs\evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
+        <ProjectReference Include="..\..\..\..\packs\evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
         <!-- F49.2: Puls's list of identities and packs, for the toolsets an eval's modes name. -->
         <ProjectReference Include="..\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     </ItemGroup>

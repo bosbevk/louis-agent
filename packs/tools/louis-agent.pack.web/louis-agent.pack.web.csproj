@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The web as tools: search, read a page, check a quote, convert the money it names. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Web</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, the toolset's guide is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.web.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.web.integration-tests" />
+    <InternalsVisibleTo Include="louis-agent.coding-catalog.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+</Project>

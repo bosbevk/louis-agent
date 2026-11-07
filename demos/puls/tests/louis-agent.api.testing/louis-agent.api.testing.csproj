@@ -18,13 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 

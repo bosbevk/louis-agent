@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The workspace's files as tools: read, write, search, copy, rename and delete; PDF, Word and Excel as text. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Files</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, the toolset's guide is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.files.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.files.integration-tests" />
+    <InternalsVisibleTo Include="louis-agent.coding-catalog.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+</Project>

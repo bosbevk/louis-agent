@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What an agent can do with recipes (F35, ADR 0027, 0028): a recipe read from a page's own schema.org data, or
+       from the page's text when it carries none, and a search of the recipe sites a deployment turns on. References
+       core alone; the rule that proves it is the project beside it, louis-agent.pack.recipes.checks (ADR 0073). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.Recipes</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/recipes.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.recipes.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.recipes.web.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+    <!-- The recipe library, the same driver as the shop-prices pack's store and the API's eval store. -->
+    <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Prompts\**\*.md" />
+    <!-- The recipe sites as content (J2, ADR 0011): a row is a site, so a site turning noai is a content change. -->
+    <EmbeddedResource Include="Sources\Sites\recipe-sites.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.pack.recipes.md" Link="docs\louis-agent.pack.recipes.md" />
+    <None Include="..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+  </ItemGroup>
+
+</Project>

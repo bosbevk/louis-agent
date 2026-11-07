@@ -20,17 +20,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <!-- What the browser side shares, which these tests check against the API; it no longer comes through the API. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <!-- F35.2 step 1: the recipes pack Puls names, as the Puls stack loads it. -->
-    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <!-- F18 step 1e: the scripted turns of the stream golden run on the shared fake model. -->
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts both the unit and the integration tests use. -->
@@ -51,9 +51,9 @@
     <None Include="..\..\..\..\src\tests\evals\louis-agent.evals.protocol.tests\Fixtures\eval-protocol.jsonl"
           Link="Fixtures\eval-protocol.jsonl" CopyToOutputDirectory="PreserveNewest" />
     <!-- F55: the trimmed Stats SA release the shop-prices pack's tests read, for the upload's routes. -->
-    <None Include="..\..\..\..\packs-tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-all-urban.xlsx"
+    <None Include="..\..\..\..\packs\tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-all-urban.xlsx"
           Link="Fixtures\statssa-all-urban.xlsx" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\..\..\packs-tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-provinces.xlsx"
+    <None Include="..\..\..\..\packs\tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-provinces.xlsx"
           Link="Fixtures\statssa-provinces.xlsx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
