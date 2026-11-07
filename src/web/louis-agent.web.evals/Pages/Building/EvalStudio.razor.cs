@@ -7,6 +7,7 @@ using LouisAgent.Web.Evals.Admin.Studio;
 using LouisAgent.Web.Evals.Admin.Studio.Compose;
 using LouisAgent.Web.Evals.Admin.Studio.Schema;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -25,12 +26,17 @@ namespace LouisAgent.Web.Evals.Pages.Building;
 /// page turns it into the file when it saves, checks or shows it.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
-public partial class EvalStudio : IDisposable
+public partial class EvalStudio : IAsyncDisposable
 {
+    private JsModule? _download;
+
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
     [Inject] private ReviewerState Reviewer { get; set; } = null!;
     [Inject] private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The framework's download module, which saves the zip where there is no workspace (CL31).</summary>
+    private JsModule Download => _download ??= new JsModule(JS, FrameworkScripts.Download);
 
     private const string Drafts = "v1/admin/evals/drafts";
 
@@ -143,7 +149,7 @@ public partial class EvalStudio : IDisposable
                 // No workspace to commit in: the browser saves the folder as a zip.
                 string name = response.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? "eval.zip";
                 byte[] zip = await response.Content.ReadAsByteArrayAsync();
-                await JS.InvokeVoidAsync("louisDownload", name, Convert.ToBase64String(zip), "application/zip");
+                await Download.InvokeVoidAsync("download", name, Convert.ToBase64String(zip), "application/zip");
                 _published = StudioText.PublishedAsZip(name);
                 return;
             }
@@ -202,6 +208,10 @@ public partial class EvalStudio : IDisposable
     /// <summary>Redraws when the reviewer's name changes elsewhere on the page.</summary>
     private void Redraw() => _ = InvokeAsync(StateHasChanged);
 
-    /// <summary>Stops listening for the reviewer's name.</summary>
-    public void Dispose() => Reviewer.Changed -= Redraw;
+    /// <summary>Stops listening for the reviewer's name, and lets the download module go if it was ever loaded.</summary>
+    public ValueTask DisposeAsync()
+    {
+        Reviewer.Changed -= Redraw;
+        return _download?.DisposeAsync() ?? ValueTask.CompletedTask;
+    }
 }

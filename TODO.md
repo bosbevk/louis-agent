@@ -15,7 +15,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (106)
+## Open (105)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -84,7 +84,6 @@ known limitations below are facts about today, not tasks.
 | F47 | The CLI and Rider's host on the agent API | Later | — |
 | F9 | Long chats | Later | [feature doc](src/docs/features/F09-context-management.md) |
 | F10 | Settings per role and per session | Later | [feature doc](src/docs/features/F10-route-settings.md) |
-| CL31 | Scripts as ES modules beside their components | Later | — |
 | F95 | What's left of CL29 | Later | [doc](src/docs/adr/0076-core-ships-no-agent.md) |
 | CL17 | what's left of the coding identity | Later | — |
 | F96 | The browser's user agent names the user's town per visit | Later | — |

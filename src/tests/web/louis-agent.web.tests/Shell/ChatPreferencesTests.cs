@@ -1,3 +1,6 @@
+using LouisAgent.Web.Shell.Location;
+using System.Runtime.CompilerServices;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Shell;
 using LouisAgent.Web.Text;
 
@@ -10,14 +13,24 @@ namespace LouisAgent.Web.Tests.Shell;
 public class ChatPreferencesTests
 {
     /// <summary>Loading reads what this browser kept.</summary>
+    /// <summary>The planned module, one per test context, so each test plans what the browser would answer.</summary>
+    private static readonly ConditionalWeakTable<BunitContext, BunitJSModuleInterop> Modules = new();
+
+    private static BunitJSModuleInterop Module(BunitContext ctx) =>
+        Modules.GetValue(ctx, c => c.JSInterop.SetupModule(FrameworkScripts.Preferences));
+
+    /// <summary>The preferences module as the shell builds it (CL31), over the test's interop.</summary>
+    private static JsModule Preferences(BunitContext ctx) =>
+        new(ctx.JSInterop.JSRuntime, FrameworkScripts.Preferences);
+
     [Test]
     public async Task Loading_ReadsWhatTheBrowserKept()
     {
         using var ctx = new BunitContext();
-        ctx.JSInterop.Setup<string?>("chatUi.loadLocation").SetResult("Stellenbosch");
-        ctx.JSInterop.Setup<bool>("chatUi.motion").SetResult(true);
-        ctx.JSInterop.Setup<bool>("chatUi.reducedMotion").SetResult(true);
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        Module(ctx).Setup<string?>("loadLocation").SetResult("Stellenbosch");
+        Module(ctx).Setup<bool>("motion").SetResult(true);
+        Module(ctx).Setup<bool>("reducedMotion").SetResult(true);
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
 
         await preferences.LoadAsync();
 
@@ -32,12 +45,12 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
 
         await preferences.SaveLocationAsync("  Paarl ");
 
         Assert.That(preferences.Location, Is.EqualTo("Paarl"));
-        Assert.That(ctx.JSInterop.Invocations["chatUi.saveLocation"].Single().Arguments[0], Is.EqualTo("Paarl"));
+        Assert.That(ctx.JSInterop.Invocations["saveLocation"].Single().Arguments[0], Is.EqualTo("Paarl"));
     }
 
     /// <summary>An empty place clears it, rather than keeping a blank.</summary>
@@ -48,7 +61,7 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
         await preferences.SaveLocationAsync("Paarl");
 
         await preferences.SaveLocationAsync(typed);
@@ -62,12 +75,12 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
 
         await preferences.SaveMotionAsync(true);
 
         Assert.That(preferences.Motion, Is.True);
-        Assert.That(ctx.JSInterop.Invocations["chatUi.setMotion"].Single().Arguments[0], Is.EqualTo(true));
+        Assert.That(ctx.JSInterop.Invocations["setMotion"].Single().Arguments[0], Is.EqualTo(true));
     }
 
     /// <summary>A place the browser found is kept, and it says so in the site's words.</summary>
@@ -76,8 +89,8 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace("Worcester", null));
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        Module(ctx).Setup<LocatedPlace>("locate", _ => true).SetResult(new LocatedPlace("Worcester", null));
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
 
         string said = await preferences.UseMyLocationAsync();
 
@@ -96,8 +109,8 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace(null, problem));
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        Module(ctx).Setup<LocatedPlace>("locate", _ => true).SetResult(new LocatedPlace(null, problem));
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
         await preferences.SaveLocationAsync("Paarl");
 
         string said = await preferences.UseMyLocationAsync();
@@ -112,7 +125,7 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText { PlaceLanguages = "xx,en" });
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText { PlaceLanguages = "xx,en" });
 
         try
         {
@@ -123,7 +136,7 @@ public class ChatPreferencesTests
             // Loose interop answers with nothing; only the call matters here.
         }
 
-        Assert.That(ctx.JSInterop.Invocations["chatUi.locate"].Single().Arguments, Is.EqualTo(new object[] { "xx,en" }));
+        Assert.That(ctx.JSInterop.Invocations["locate"].Single().Arguments, Is.EqualTo(new object[] { "xx,en" }));
     }
 
     /// <summary>With no place and no reason, it says it couldn't find one.</summary>
@@ -132,8 +145,8 @@ public class ChatPreferencesTests
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.JSInterop.Setup<LocatedPlace>("chatUi.locate", _ => true).SetResult(new LocatedPlace(null, null));
-        var preferences = new ChatPreferences(ctx.JSInterop.JSRuntime, new ChatText());
+        Module(ctx).Setup<LocatedPlace>("locate", _ => true).SetResult(new LocatedPlace(null, null));
+        var preferences = new ChatPreferences(Preferences(ctx), new ChatText());
 
         string said = await preferences.UseMyLocationAsync();
 

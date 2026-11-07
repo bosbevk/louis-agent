@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -7,8 +8,13 @@ using ChatModel = LouisAgent.Web.Chats.Chat;
 namespace LouisAgent.Web.Components.Chat;
 
 /// <summary>A chat's turns, or what the site shows instead, scrolled to the end as the answer grows.</summary>
-public partial class MessageList
+public partial class MessageList : IAsyncDisposable
 {
+    private JsModule? _list;
+
+    /// <summary>The list's own module, beside it (CL31): the scrolling.</summary>
+    private JsModule List => _list ??= new JsModule(JS, FrameworkScripts.MessageList);
+
     [Parameter] public ChatModel? Chat { get; set; }
     [Parameter] public bool Streaming { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
@@ -42,13 +48,16 @@ public partial class MessageList
         _lastClass = Class;
     }
 
-    /// <summary>Scrolls to the end through the page's script, when something new came in.</summary>
+    /// <summary>Scrolls to the end through the list's module, when something new came in.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Streaming || _scrollToEnd)
         {
-            await JS.InvokeVoidAsync("louisChat.scrollToBottom", _messages, _scrollToEnd);
+            await List.InvokeVoidAsync("scrollToBottom", _messages, _scrollToEnd);
             _scrollToEnd = false;
         }
     }
+
+    /// <summary>Lets the module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _list?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

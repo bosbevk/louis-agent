@@ -9,7 +9,7 @@
 }
 @if (Sources.Of(Turn) is { Count: > 0 } sources)
 {
-    <button class="action action-sources" type="button" onclick="chatUi.showWork()" title="@Text.ShowSources">
+    <button class="action action-sources" type="button" @onclick="ShowWork" title="@Text.ShowSources">
         @foreach (var site in sources.Select(s => s.Site).Distinct().Take(3))
         {
             <span class="source-dot">@site[..1].ToUpperInvariant()</span>

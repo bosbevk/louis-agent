@@ -1,9 +1,11 @@
 // The landing page's motion (F24): the progress line, the compact nav, the section index, in-page links that land their
 // section centred, reveals when blocks enter, counters, labels that decode from glyphs, the magnetic pill, the pinned
 // tour and the demo that plays a turn. Started by LandingPage.razor after its first render and stopped when the page is
-// left, since the page is a Blazor route: nothing here runs on DOMContentLoaded. Everything honours the system's
+// left, since the page is a Blazor route: nothing here runs on DOMContentLoaded. A module (CL31), imported by the page. Everything honours the system's
 // "less motion" setting unless the viewer switched motion on (chat.motion in this browser, read by index.html too).
-window.pulsLanding = (() => {
+import { setMotion } from "../_content/louis-agent.web/js/preferences.js";
+
+const landing = (() => {
     const $ = (s, r = document) => r.querySelector(s);
     const $$ = (s, r = document) => [...r.querySelectorAll(s)];
     const clamp = v => Math.max(0, Math.min(1, v));
@@ -223,9 +225,9 @@ window.pulsLanding = (() => {
             headline(); links(); reveals(); magnetic(); pinned(); demo(); faq();
             const onScroll = scrolling(); onScroll();
             // The system asks for less motion and the viewer hasn't chosen: offer the animations; a yes applies at once
-            // (chatUi.setMotion in chat.js remembers it) and this page starts over with them.
+            // (the framework's preferences module remembers it) and this page starts over with them.
             const pill = $("#motion-pill");
-            if (pill) { pill.hidden = !still; if (still) on(pill, "click", () => { window.chatUi?.setMotion(true); pill.hidden = true; this.start(); }); }
+            if (pill) { pill.hidden = !still; if (still) on(pill, "click", () => { setMotion(true); pill.hidden = true; this.start(); }); }
         },
         stop() {
             cleanup.forEach(f => f()); cleanup = [];
@@ -233,3 +235,7 @@ window.pulsLanding = (() => {
         },
     };
 })();
+
+// What the page imports: start after its first render, stop when it is left.
+export function start() { landing.start(); }
+export function stop() { landing.stop(); }

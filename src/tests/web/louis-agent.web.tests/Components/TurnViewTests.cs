@@ -1,3 +1,4 @@
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components;
 using LouisAgent.Web.Text;
@@ -25,8 +26,11 @@ public class TurnViewTests
 
         var cut = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn).Add(x => x.Streaming, false));
 
+        // The turn's own module (CL31): imported once, asked to highlight the blocks, nothing else.
         Assert.That(ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct(),
-            Is.EqualTo(new[] { "louisChat.highlightBlocks" }));
+            Is.EqualTo(new[] { "import", "highlightBlocks" }));
+        Assert.That(ctx.JSInterop.Invocations.Single(i => i.Identifier == "import").Arguments[0],
+            Is.EqualTo(FrameworkScripts.TurnView));
         Snapshots.Match("Components/TurnView.html", cut.Markup);
     }
 

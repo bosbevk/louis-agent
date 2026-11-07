@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Web.Shell;
+namespace LouisAgent.Web.Shell.Location;
 
 /// <summary>Why the browser's script couldn't name a place. The script names it, and the site's words say it.</summary>
 public enum LocationProblem

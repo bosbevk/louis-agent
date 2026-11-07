@@ -22,7 +22,7 @@ public class MarkdownImageTests
 
     /// <summary>
     /// The list shows the 256 px thumbnail; the photo carries the shop's original (the same file, no size asked), which
-    /// chat.js opens in a dialog.
+    /// the chat shell's module opens in a dialog.
     /// </summary>
     [Test]
     public void AShopsProductImage_CarriesItsOriginal_ForTheModal()

@@ -43,7 +43,7 @@ A line in `Content/Templates.cs`: Verken and Studio show it as a card (`Template
 
 `Pages/LandingPage.razor` lays out the sections in order. Each section is a component in `Components/Landing/` with
 its copy as a C# array in its `.razor.cs`. The motion (the progress line, the reveals, the pinned tour, the demo) is
-`wwwroot/js/landing.js`, started and stopped by the page. Keep a new animation behind the motion switch
+`wwwroot/js/landing.js`, a module the page imports (CL31), started and stopped by it. Keep a new animation behind the motion switch
 (`chat.motion`), so a user who asks for less motion gets none.
 
 ## Change the admin portal
@@ -68,7 +68,7 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests    # a
 
 - `Pages/ChatPageTests` renders the chat page with bUnit against `FixtureApi` and streams a recorded Puls turn (a
   pancake recipe handed to the cook). The empty page and the turn are pinned to `ChatPage.empty.html` and
-  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (`chatUi.*`, `louisChat.*`), so a new call is a
+  `ChatPage.turn.html`, and the test lists the page's JavaScript calls (the modules' imports and the functions called on them), so a new call is a
   review point.
 - `Pages/LandingPageTests` pins the landing page (`LandingPage.html`). `Components/` pins `WorkPanel`,
   `TemplateCard` and `PulsTile`.

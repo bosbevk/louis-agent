@@ -31,8 +31,8 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
   the site's brand. The forms (`Components/`) and the profile's sections (`Components/Profile/`, `Passkeys/`,
   `TwoFactor/`) each do one thing over the client, show what went wrong in the site's words (`AccountErrors`, a
   switch on Identity's codes), and read again after every write (ADR 0042).
-- **Passkeys** (`Components/Passkeys/`, `wwwroot/js/passkeys.js`): three functions a site's `index.html` loads that
-  hand the API's options to `navigator.credentials` and the browser's credential back, untouched; a browser without
+- **Passkeys** (`Components/Passkeys/`, `wwwroot/js/passkeys.js`): a module (CL31) with three functions the two components import
+  through `JsModule` (`Scripts/AccountScripts` names its path), which hand the API's options to `navigator.credentials` and the browser's credential back, untouched; a browser without
   the parsing helpers sees no form. **Two-factor** (`Components/TwoFactor/`, `Client/TwoFactor/`): the key as text
   and an `otpauth://` link with the site's host as the issuer (`OtpAuth`), and the sign-in form's one second box,
   digits as the app's code and the rest as a recovery code (`SecondStep`).
@@ -48,7 +48,6 @@ flowchart LR
         program["Program.cs: AddLouisAgentAccounts()"]
         layout["AccountLayout.razor"]
         css["app.scss: @forward accounts/shell"]
-        html["index.html: passkeys.js"]
     end
     subgraph wa["louis-agent.web.accounts"]
         client["Client/: AccountApi, AccountState, AccountMenu"]
@@ -101,7 +100,7 @@ src/web/louis-agent.web.accounts/
 ├── Styles/accounts/     # _shell.scss
 ├── Text/                # AccountText
 ├── _Imports.razor
-└── wwwroot/js/          # passkeys.js, served at _content/louis-agent.web.accounts/js/passkeys.js
+└── wwwroot/js/          # passkeys.js, a module served at _content/louis-agent.web.accounts/js/passkeys.js; no site lists it
 src/tests/web/louis-agent.web.accounts.tests/   # the same folders; AccountTestContext scripts the API
 ```
 
@@ -125,9 +124,7 @@ its styles hold no fixed colour, and every passkey call is in its script (`louis
 
 ## Limits and plans
 
-The scripts (`chat.js`, `passkeys.js`) are listed by every site's `index.html`; the next cleanup makes each an ES
-module beside its component, loaded on demand (Louis, 2026-11-07, pick A). The QR code for the authenticator key, a
-passkey's name edited after the fact, and the pages seen in a browser wait.
+The QR code for the authenticator key, a passkey's name edited after the fact, and the pages seen in a browser wait.
 
 ## Related docs
 

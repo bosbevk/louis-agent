@@ -1,3 +1,4 @@
+using LouisAgent.Web.Scripts;
 using System.Net;
 using System.Text;
 using LouisAgent.Api.Contracts.Admin.Reviews;
@@ -94,6 +95,9 @@ public class AgreementPanelTests
     public void TheDownload_AsksTheAPIForTheLabelsZip_AndHandsItToTheBrowser()
     {
         var (cut, handler, ctx) = Render(Cook);
+        // The framework's download module (CL31), not a global a site has to list.
+        var download = ctx.JSInterop.SetupModule(FrameworkScripts.Download);
+        download.SetupVoid("download", _ => true).SetVoidResult();
 
         cut.Find(".agreement-download").Click();
 
@@ -102,8 +106,8 @@ public class AgreementPanelTests
             Does.EndWith("v1/admin/benchmarks/runs/run1/labels?grader=meal-for-people"));
         cut.WaitForAssertion(() =>
             Assert.That(
-                ctx.JSInterop.Invocations.Any(i =>
-                    i.Identifier == "louisDownload" && (string)i.Arguments[0]! == "meal-for-people-labels-run1.zip"),
+                download.Invocations.Any(i =>
+                    i.Identifier == "download" && (string)i.Arguments[0]! == "meal-for-people-labels-run1.zip"),
                 Is.True));
     }
 

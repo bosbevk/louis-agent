@@ -33,7 +33,7 @@ public static class Markdown
         {
             if (!IsSafeUrl(link.Url)) link.Url = "#";
             if (link.IsImage && !(IsToolImage(link.Url, shown) || IsShopImage(link.Url))) link.IsImage = false;
-            // A shop's photo opens its original in a dialog when clicked (chat.js): the same file, without the size.
+            // A shop's photo opens its original in a dialog when clicked (the chat shell's module): the same file, without the size.
             if (link.IsImage) link.GetAttributes().AddProperty("data-original", WithoutSize(link.Url!));
         }
 

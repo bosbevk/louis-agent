@@ -1,6 +1,6 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Api.Contracts.Info;
-using Microsoft.JSInterop;
+using LouisAgent.Web.Scripts;
 
 namespace LouisAgent.Web.Shell;
 
@@ -13,8 +13,10 @@ namespace LouisAgent.Web.Shell;
 /// own voices and default, so the framework knows no site's.
 /// </remarks>
 /// <seealso href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model (Fowler)</seealso>
-public sealed class ChatLanguages(AgentApi api, IJSRuntime js, string voicePrefix, string defaultLanguage)
+public sealed class ChatLanguages(AgentApi api, JsModule preferences, string voicePrefix, string defaultLanguage)
 {
+    private readonly string _default = defaultLanguage;
+
     /// <summary>The languages on offer.</summary>
     public IReadOnlyList<string> Available { get; private set; } = [defaultLanguage];
 
@@ -39,15 +41,15 @@ public sealed class ChatLanguages(AgentApi api, IJSRuntime js, string voicePrefi
             // An API that can't say: the site's default is all there is.
         }
 
-        string? saved = await js.InvokeAsync<string?>("chatUi.loadLanguage");
-        Current = FirstOffered(saved, defaultLanguage) ?? Available[0];
+        string? saved = await preferences.InvokeAsync<string?>("loadLanguage");
+        Current = FirstOffered(saved, _default) ?? Available[0];
     }
 
     /// <summary>Keeps the language, and this browser remembers it.</summary>
     public async Task ChooseAsync(string code)
     {
         Current = code;
-        await js.InvokeVoidAsync("chatUi.saveLanguage", code);
+        await preferences.InvokeVoidAsync("saveLanguage", code);
     }
 
     /// <summary>The first of these the API still offers, if any.</summary>

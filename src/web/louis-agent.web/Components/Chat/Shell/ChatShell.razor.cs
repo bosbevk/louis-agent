@@ -4,6 +4,7 @@ using LouisAgent.Web.Shell;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -22,12 +23,16 @@ namespace LouisAgent.Web.Components.Chat.Shell;
 /// </remarks>
 /// <seealso href="https://refactoring.guru/design-patterns/template-method">Template Method (Refactoring.Guru)</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
-public partial class ChatShell : IDisposable
+public partial class ChatShell : IAsyncDisposable
 {
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private ChatStore Store { get; set; } = default!;
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    /// <summary>The frame's modules (CL31): the shell's, the dialogs', the preferences'.</summary>
+    private ChatModules _modules = null!;
+
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
 
@@ -140,8 +145,9 @@ public partial class ChatShell : IDisposable
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
         _renaming = new ChatRenaming(Store);
-        _preferences = new ChatPreferences(JS, Text);
-        _languages = new ChatLanguages(Api, JS, VoicePrefix, DefaultLanguage);
+        _modules = new ChatModules(JS);
+        _preferences = new ChatPreferences(_modules.Preferences, Text);
+        _languages = new ChatLanguages(Api, _modules.Preferences, VoicePrefix, DefaultLanguage);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"{ChatPath}/{id}");
         Currency.Changed += Redraw;
@@ -153,7 +159,7 @@ public partial class ChatShell : IDisposable
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
-            _model = Pretty(model.GetProperty("model").GetString());
+            _model = ModelNames.Pretty(model.GetProperty("model").GetString());
         }
         catch (Exception)
         {
@@ -176,26 +182,30 @@ public partial class ChatShell : IDisposable
     /// <summary>Does what had to wait for the draw, such as putting the cursor in the message box.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // The listeners the page hangs on the document, while the shell is drawn.
+        if (firstRender) await _modules.Shell.InvokeVoidAsync("attach");
+
         if (_focusDraft)
         {
             _focusDraft = false;
-            await JS.InvokeVoidAsync("chatUi.focusEnd", "#composer-input");
+            await _modules.Shell.InvokeVoidAsync("focusEnd", "#composer-input");
         }
 
         if (_renaming.TakeFocus())
         {
-            await JS.InvokeVoidAsync("chatUi.focus", "#rename-input", true);
+            await _modules.Dialogs.InvokeVoidAsync("focus", "#rename-input", true);
         }
 
-        // A cost that changed since the last draw counts up to its new value (data-count elements, chatUi).
-        await JS.InvokeVoidAsync("chatUi.countCosts");
+        // A cost that changed since the last draw counts up to its new value (data-count elements).
+        await _modules.Shell.InvokeVoidAsync("countCosts");
     }
 
-    /// <summary>Stops listening when the frame goes.</summary>
-    public void Dispose()
+    /// <summary>Stops listening when the frame goes, and lets the modules go, the page's listeners first.</summary>
+    public async ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
+        await _modules.DisposeAsync();
     }
 
     /// <summary>A placeholder's answer: a short word saying what's coming.</summary>
@@ -214,7 +224,7 @@ public partial class ChatShell : IDisposable
     /// <summary>A new chat's session, the site's way, with what only the frame knows.</summary>
     private async Task<string> OpenSessionAsync()
     {
-        string? timeZone = await JS.InvokeAsync<string?>("chatUi.timeZone");
+        string? timeZone = await _modules.Shell.InvokeAsync<string?>("timeZone");
         return await OpenSession(new ChatOpening(_languages.Role, _preferences.Location, timeZone));
     }
 
@@ -248,18 +258,8 @@ public partial class ChatShell : IDisposable
     /// <summary>Copies the text and says so.</summary>
     private async Task Copy(string text)
     {
-        bool copied = await JS.InvokeAsync<bool>("chatUi.copy", text);
+        bool copied = await _modules.Shell.InvokeAsync<bool>("copy", text);
         _ = ShowToast(copied ? Text.Copied : Text.CopyFailed);
-    }
-
-    /// <summary>A model's id as a name: <c>claude-opus-5-5</c> reads Claude Opus 5.5.</summary>
-    private static string? Pretty(string? id)
-    {
-        if (string.IsNullOrWhiteSpace(id)) return null;
-        var words = id.Split('-', StringSplitOptions.RemoveEmptyEntries);
-        var named = words.TakeWhile(w => !char.IsDigit(w[0])).Select(w => char.ToUpperInvariant(w[0]) + w[1..]);
-        string version = string.Join(".", words.SkipWhile(w => !char.IsDigit(w[0])));
-        return string.Join(" ", named) + (version.Length > 0 ? " " + version : "");
     }
 
     /// <summary>Keeps the place the person typed.</summary>

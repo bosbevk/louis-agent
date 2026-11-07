@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -6,8 +7,13 @@ using Microsoft.JSInterop;
 namespace LouisAgent.Web.Components;
 
 /// <summary>One turn as the chat shows it: the message, the answer and their actions.</summary>
-public partial class TurnView
+public partial class TurnView : IAsyncDisposable
 {
+    private JsModule? _code;
+
+    /// <summary>The turn's own module, beside it (CL31): the code blocks' highlighting.</summary>
+    private JsModule Code => _code ??= new JsModule(JS, FrameworkScripts.TurnView);
+
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
     [Parameter] public bool Streaming { get; set; }
 
@@ -50,5 +56,8 @@ public partial class TurnView
 
     /// <summary>Only runs after this turn actually re-rendered, so finished turns aren't rescanned.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender) =>
-        await JS.InvokeVoidAsync("louisChat.highlightBlocks", _answer);
+        await Code.InvokeVoidAsync("highlightBlocks", _answer);
+
+    /// <summary>Lets the module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _code?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

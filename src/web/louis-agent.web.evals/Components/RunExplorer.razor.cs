@@ -7,6 +7,7 @@ using LouisAgent.Web.Evals.Admin.Notes;
 using LouisAgent.Web.Evals.Admin.Runs;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -27,7 +28,7 @@ namespace LouisAgent.Web.Evals.Components;
 /// explorer keeps its own state so it still works alone, and the page keeps the address.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-public partial class RunExplorer : IDisposable
+public partial class RunExplorer : IAsyncDisposable
 {
     /// <summary>The run we were handed last.</summary>
     private StoredRunReply? _run;
@@ -99,6 +100,11 @@ public partial class RunExplorer : IDisposable
     [Inject]
     private IJSRuntime Js { get; set; } = null!;
 
+    private JsModule? _shell;
+
+    /// <summary>The chat shell's module (CL31), for the costs that count up.</summary>
+    private JsModule Shell => _shell ??= new JsModule(Js, FrameworkScripts.Shell);
+
     /// <summary>The stored run, as the API sent it.</summary>
     [Parameter, EditorRequired]
     public StoredRunReply Run { get; set; } = null!;
@@ -166,10 +172,10 @@ public partial class RunExplorer : IDisposable
     /// <summary>After each draw, makes the cost numbers count up.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // The landing page's chatUi.countCosts, keyed on data-count; without the page's script nothing counts.
+        // The shell's countCosts, keyed on data-count; without the module (a test) nothing counts.
         try
         {
-            await Js.InvokeVoidAsync("chatUi.countCosts");
+            await Shell.InvokeVoidAsync("countCosts");
         }
         catch (JSException)
         {
@@ -177,7 +183,11 @@ public partial class RunExplorer : IDisposable
     }
 
     /// <summary>Stops a replay that is still playing.</summary>
-    public void Dispose() => _replayStop?.Cancel();
+    public ValueTask DisposeAsync()
+    {
+        _replayStop?.Cancel();
+        return _shell?.DisposeAsync() ?? ValueTask.CompletedTask;
+    }
 
     /// <summary>Switches to another repeat, at the same depth if that conversation or turn is there too.</summary>
     private void ShowRepeat(int repeat)
