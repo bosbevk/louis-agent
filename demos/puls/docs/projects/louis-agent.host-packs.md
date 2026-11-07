@@ -27,6 +27,45 @@ thin and never references an identity or a pack; and which agent a host runs is 
   share, and a tool name two toolsets share or that is the engine's own. The host hands it to `AgentHost`, which
   registers the prompts with `SkillFileSource` and builds every engine from it.
 
+## Diagrams
+
+**Architecture:** the one project that knows every identity and pack Puls can load, so core and the hosts don't have to. A host's own program is the only thing that calls it.
+
+```mermaid
+flowchart TD
+    program["louis-agent.puls-api: Program.cs"] -->|"Plugins.FromEnvironment"| plugins["Plugins"]
+    plugins --> kinds["IdentityKind, PackKind"]
+    plugins --> identity["PulsIdentity"]
+    plugins --> packs["RecipesPack, WhereToBuyPack, ShopPricesPack, CalculatorPack and the general packs"]
+    identity --> catalog["AgentCatalog"]
+    packs --> catalog
+    program -->|"AgentHost.Build"| host["AgentHost: builds every engine from the catalogue"]
+    catalog --> host
+```
+
+**Flow:** start-up. Which agent a host runs is a setting, not a build, and any mistake stops it before an engine exists.
+
+```mermaid
+sequenceDiagram
+    participant H as The host's program
+    participant P as Plugins
+    participant S as SettingChoice
+    participant C as AgentCatalog
+    participant A as AgentHost
+    H->>P: FromEnvironment
+    P->>P: loads config/.env, reads IDENTITIES and PACKS
+    P->>S: each name, once
+    alt a name nobody knows
+        S-->>H: stops, with HostPacksErrorMessage naming the supported ones
+    else
+        P->>P: creates each identity, and each pack it or PACKS names, once
+        P->>C: the identities and the packs
+        C->>C: refuses a name twice, a missing pack, a cycle, a shared path or tool name
+        C-->>H: the catalogue
+        H->>A: Build(catalogue)
+    end
+```
+
 ## Structure
 
 | File | What's in it |

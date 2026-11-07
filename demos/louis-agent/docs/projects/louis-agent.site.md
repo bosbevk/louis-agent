@@ -52,6 +52,31 @@ flowchart LR
     tool --> films2["demos/louis-agent/docs/films<br/>short.webp · detail.webp · stills · films.sha256"]
 ```
 
+## Diagrams
+
+**Flow:** the architecture is above. These are the two things that happen to this site: a visitor reads a page, and someone exports the films. A page runs no script of ours, so what's sent is all there is.
+
+```mermaid
+sequenceDiagram
+    actor V as A visitor
+    participant S as The site
+    participant P as Components/Pages
+    actor D as A developer
+    participant E as louis-agent.film-export
+    participant W as WebPEncoder, in Docker
+    V->>S: GET /
+    S->>P: MapRazorComponents renders it once
+    P-->>V: plain HTML, and css/app.css
+    V->>V: the films play, in CSS alone
+    V->>S: follows a link to /chat, or to CHAT_ADDRESS
+    D->>E: dotnet run, after a film's files changed
+    E->>S: SiteProcess starts it
+    E->>S: FilmRenderer draws each frame in a browser
+    E->>W: the frames
+    W-->>E: short.webp and detail.webp
+    E->>E: FilmHash writes films.sha256, which a test holds the stylesheets to
+```
+
 ## Parts
 
 | Folder | Holds |

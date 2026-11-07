@@ -44,6 +44,43 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
 
+## Diagrams
+
+**Architecture:** one class, and the rest is content. Puls holds no tools: what it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.
+
+```mermaid
+flowchart TD
+    plugins["Plugins, in louis-agent.host-packs"] -->|"IDENTITIES=puls"| identity["PulsIdentity"]
+    identity -->|"its prompts"| prompts["Prompts: voice, specialists, minions"]
+    identity -->|"the packs it names"| packs["where-to-buy, shop-prices, recipes, web, calculator"]
+    prompts --> catalog["AgentCatalog: checks them, then SkillFileSource reads them"]
+    packs --> catalog
+    catalog --> engine["AgentEngine, per session"]
+    evals["louis-agent.identity.puls.evals: its evals and PulsReaders"] -.-> runner["The eval runner only"]
+    judges["louis-agent.identity.puls.judges"] -.-> runner
+```
+
+**Flow:** what a session is made of, and how a cooking question gets to the cook. A role that's off comes back to Puls as a tool error, which it has to report.
+
+```mermaid
+sequenceDiagram
+    participant W as The web app
+    participant E as The engine
+    participant V as Puls: principles, voice-af, voice
+    participant C as The cook: puls-cook
+    participant T as recipes and calculator
+    W->>E: opens with puls/voice-af, specialists and web
+    E->>V: reads the principles, then the voice, then the routing
+    W->>V: a cooking question
+    V->>E: StartSubSession(puls-cook)
+    E->>E: is the role known, and in ROLES_ENABLED?
+    E->>C: a sub-session, with only its role and its toolsets' guides
+    C->>T: FindRecipes, ReadRecipe, Calculate
+    T-->>C: the results
+    C-->>V: its answer
+    V-->>W: the answer, in the user's language
+```
+
 ## Design notes
 
 What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the measured story is
