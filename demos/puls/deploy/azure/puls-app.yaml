@@ -3,17 +3,23 @@
 #   deploy.ps1 update -Tag 2026-11-08-1200 -Revision v021     # fills TAG, REVISION, VM_IP, ENVIRONMENT_ID and the providers
 # One container: the app, on the same image as demos/puls/docker/docker-compose.puls.yml builds. Its web and its
 # stores are on the VM puls-services at its private address (VM_IP, read from the deployment's outputs), its accounts
-# on Azure SQL. No secret value lives in this file: every key is a secretRef to a secret deploy.ps1 secrets has set on
-# the app, and the file sets no `secrets:` block, so an update never overwrites one. Behind its key: the web app
+# on Azure SQL. No secret value lives in this file or on the app: every value is in the vault puls-keys (deploy.ps1
+# secrets puts it there), the app's secrets are references to it by URL, read with the identity the Bicep build
+# made, and deploy.ps1 update writes the `secrets:` block from the names the vault holds. Behind its key: the web app
 # signs in, and the gate takes a signed-in person or AGENT_API_KEY (F61.2), so no lock and no AGENT_AUTH=off.
 name: puls-app
 resourceGroup: rg-puls-za
 location: South Africa North
 type: Microsoft.App/containerApps
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    'APP_IDENTITY_ID': {}
 properties:
   environmentId: ENVIRONMENT_ID
   workloadProfileName: Consumption
   configuration:
+    # SECRETS
     activeRevisionsMode: Single
     ingress:
       external: true

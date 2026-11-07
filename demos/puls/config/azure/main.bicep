@@ -47,6 +47,30 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
   name: 'pulsstorage'
 }
 
+// The vault that holds every secret value (Louis's pick, 2026-11-08): deploy.ps1 secrets writes them here, and the
+// app's secrets are references to them by URL, read with the identity below.
+resource vault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: 'puls-keys'
+}
+
+// ---- The app's identity: what reads the vault ----
+
+resource appIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'puls-app-identity'
+  location: location
+}
+
+// Key Vault Secrets User on the vault; the role's id is Azure's fixed one.
+resource vaultReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(vault.id, appIdentity.id, 'KeyVaultSecretsUser')
+  scope: vault
+  properties: {
+    principalId: appIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+  }
+}
+
 // ---- The network: the apps on one subnet, the services on another ----
 
 resource vnet 'Microsoft.Network/virtualNetworks@2024-01-01' = {
@@ -359,3 +383,9 @@ output environmentDefaultDomain string = environment.properties.defaultDomain
 
 @description('The SQL server\'s address, for the accounts\' connection string.')
 output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
+
+@description('The identity the app reads the vault with; the yaml names it.')
+output appIdentityId string = appIdentity.id
+
+@description('The vault the app\'s secrets reference, by URL.')
+output vaultUri string = vault.properties.vaultUri

@@ -5,17 +5,17 @@ few az commands with the names filled in (CL19, F61.4).
 
 .DESCRIPTION
   deploy.ps1 infra   [-WhatIf] [-Ip 1.2.3.4]     deploys demos/puls/config/azure/main.bicep: the network, the VM, the environment,
-                                                  Application Insights, the SQL server and database; creates what is missing,
-                                                  updates what exists. -WhatIf prints Azure's own what-if and writes nothing.
-                                                  -Ip opens SSH to the VM from that one address (none by default).
+                                                  Application Insights, the SQL server and database, the app's identity on the
+                                                  vault; creates what is missing, updates what exists. -WhatIf prints Azure's
+                                                  own what-if and writes nothing. -Ip opens SSH to the VM from that one address.
   deploy.ps1 vm                                   copies the VM's compose, SearXNG's settings and the Mongo and SearXNG env
                                                   files to the VM through run-command, and restarts its services
   deploy.ps1 build   [-Tag 2026-11-08-1200]       builds louis-agent-puls in the registry
-  deploy.ps1 secrets                              sets the app's secrets from config/.env.secrets, .env.mongo and .env.sql,
-                                                  the VM's address and the SQL server's from the deployment; never printed,
-                                                  a missing value skipped by name
-  deploy.ps1 update  -Tag ... -Revision v021      fills TAG, REVISION, VM_IP, ENVIRONMENT_ID and the providers into
-                                                  puls-app.yaml and creates or updates the app
+  deploy.ps1 secrets                              puts the app's secrets in the vault puls-keys, from config/.env.secrets,
+                                                  .env.mongo and .env.sql and the deployment's outputs; never printed, a
+                                                  missing value skipped by name
+  deploy.ps1 update  -Tag ... -Revision v021      fills TAG, REVISION, VM_IP, ENVIRONMENT_ID, the identity, the secrets the
+                                                  vault holds and the providers into puls-app.yaml and creates or updates the app
   deploy.ps1 release [-Tag ...]                   build, then update as the next revision after the one Azure runs
   deploy.ps1 domain  [-Hostname mypuls.co.za]     prints the DNS records Cloudflare needs, then adds the hostname with a
                                                   managed certificate once they resolve
@@ -42,12 +42,14 @@ $Registry = 'acrpulsza'
 $Environment = 'puls-env'
 $App = 'puls-app'
 $Vm = 'puls-services'
+$Vault = 'puls-keys'
 $Deployment = 'puls-build'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $Here = $PSScriptRoot
 $Config = Join-Path $Repo 'demos\puls\config'
 $Bicep = Join-Path $Config 'azure\main.bicep'
 $BicepParams = Join-Path $Config 'azure\main.bicepparam'
+$Providers = @('google', 'microsoft', 'linkedin')
 
 function Get-EnvValue([string]$File, [string]$Key) {
     # The first uncommented KEY=value line of a .env file; $null when the file or the key is missing.
@@ -69,7 +71,7 @@ function Invoke-Az {
 }
 
 function Get-Output([string]$Name) {
-    # One output of the last Bicep deployment: the VM's address, the environment's id, the SQL server's name.
+    # One output of the last Bicep deployment: the VM's address, the environment's id, the SQL server's name, the identity.
     $value = (& az deployment group show -n $Deployment -g $ResourceGroup --query "properties.outputs.$Name.value" -o tsv)
     if ($LASTEXITCODE -ne 0 -or -not $value) { throw "The deployment $Deployment has no output $Name yet: run deploy.ps1 infra first." }
     return $value
@@ -107,6 +109,43 @@ function ConvertTo-UploadScript([hashtable]$Files) {
     return ($lines -join "`n")
 }
 
+function Get-Secrets {
+    # The app's secrets as name/value pairs, from the git-ignored config files and the deployment's outputs; a missing
+    # value is reported by name, never printed. No `&` in a value: az is a batch file on Windows, and cmd would cut
+    # the value there (connectTimeoutMS was lost that way on 2026-10-24).
+    $secretsFile = Join-Path $Config '.env.secrets'
+    $mongoFile = Join-Path $Config '.env.mongo'
+    $sqlFile = Join-Path $Config '.env.sql'
+    $vmIp = Get-Output 'vmPrivateIp'
+    $sqlServer = Get-Output 'sqlServerFqdn'
+    $wanted = @()
+    $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
+    $wanted += @{ name = 'agent-api-key'; value = Get-EnvValue $secretsFile 'AGENT_API_KEY' }
+    $wanted += @{ name = 'admin-api-key'; value = Get-EnvValue $secretsFile 'ADMIN_API_KEY' }
+    # The VM's Mongo, at its private address.
+    $user = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_USERNAME'
+    $password = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_PASSWORD'
+    $mongo = $null
+    if ($user -and $password) { $mongo = "mongodb://${user}:${password}@${vmIp}:27017/?authSource=admin" }
+    $wanted += @{ name = 'mongo-url'; value = $mongo }
+    # Azure SQL: the admin the Bicep build made, with the same password as the PC's SQL Server (config/.env.sql).
+    $sqlPassword = Get-EnvValue $sqlFile 'MSSQL_SA_PASSWORD'
+    $sql = $null
+    if ($sqlPassword) { $sql = "Server=tcp:${sqlServer},1433;Database=puls_accounts;User Id=pulsadmin;Password=${sqlPassword};Encrypt=True;TrustServerCertificate=False;Connection Timeout=60" }
+    $wanted += @{ name = 'accounts-sql-url'; value = $sql }
+    # The sign-in providers (F61.3): a provider is on only with both its keys, so a pair is set together or not at all.
+    foreach ($provider in $Providers) {
+        $upper = $provider.ToUpperInvariant()
+        $id = Get-EnvValue $secretsFile "AUTH_${upper}_CLIENT_ID"
+        $secret = Get-EnvValue $secretsFile "AUTH_${upper}_CLIENT_SECRET"
+        if ($id -and $secret) {
+            $wanted += @{ name = "auth-$provider-client-id"; value = $id }
+            $wanted += @{ name = "auth-$provider-client-secret"; value = $secret }
+        } else { $wanted += @{ name = "auth-$provider-client-id and -secret"; value = $null } }
+    }
+    return $wanted
+}
+
 switch ($Verb) {
     'infra' {
         Set-BuildParameters
@@ -132,7 +171,7 @@ switch ($Verb) {
         Write-Host "Copying the compose, SearXNG's settings and the two env files to $Vm and restarting its services..."
         # run-command runs as root on the VM through Azure's agent: no port on the VM opens for this. The script,
         # env files included, passes through Azure's control plane, which keeps the last script in the VM's
-        # run-command history; the values are the same ones the apps carry as secrets.
+        # run-command history; the values are the same ones the vault holds.
         Invoke-Az vm run-command invoke -n $Vm -g $ResourceGroup --command-id RunShellScript --scripts $script --query 'value[0].message' -o tsv
     }
     'build' {
@@ -146,75 +185,65 @@ switch ($Verb) {
             -f (Join-Path $Repo 'demos\puls\docker\images\Dockerfile.puls') $Repo
     }
     'secrets' {
-        $secretsFile = Join-Path $Config '.env.secrets'
-        $mongoFile = Join-Path $Config '.env.mongo'
-        $sqlFile = Join-Path $Config '.env.sql'
-        $vmIp = Get-Output 'vmPrivateIp'
-        $sqlServer = Get-Output 'sqlServerFqdn'
-        $wanted = @()
-        $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
-        $wanted += @{ name = 'agent-api-key'; value = Get-EnvValue $secretsFile 'AGENT_API_KEY' }
-        $wanted += @{ name = 'admin-api-key'; value = Get-EnvValue $secretsFile 'ADMIN_API_KEY' }
-        # The VM's Mongo, at its private address. No `&` in a value: az is a batch file on Windows, and cmd would cut
-        # the value there (connectTimeoutMS was lost that way on 2026-10-24); the same holds for every secret value.
-        $user = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_USERNAME'
-        $password = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_PASSWORD'
-        $mongo = $null
-        if ($user -and $password) { $mongo = "mongodb://${user}:${password}@${vmIp}:27017/?authSource=admin" }
-        $wanted += @{ name = 'mongo-url'; value = $mongo }
-        # Azure SQL: the admin the Bicep build made, with the same password as the PC's SQL Server (config/.env.sql).
-        $sqlPassword = Get-EnvValue $sqlFile 'MSSQL_SA_PASSWORD'
-        $sql = $null
-        if ($sqlPassword) { $sql = "Server=tcp:${sqlServer},1433;Database=puls_accounts;User Id=pulsadmin;Password=${sqlPassword};Encrypt=True;TrustServerCertificate=False;Connection Timeout=60" }
-        $wanted += @{ name = 'accounts-sql-url'; value = $sql }
-        # The sign-in providers (F61.3): a provider is on only with both its keys, so a pair is set together or not at all.
-        foreach ($provider in @('google', 'microsoft', 'linkedin')) {
-            $upper = $provider.ToUpperInvariant()
-            $id = Get-EnvValue $secretsFile "AUTH_${upper}_CLIENT_ID"
-            $secret = Get-EnvValue $secretsFile "AUTH_${upper}_CLIENT_SECRET"
-            if ($id -and $secret) {
-                $wanted += @{ name = "auth-$provider-client-id"; value = $id }
-                $wanted += @{ name = "auth-$provider-client-secret"; value = $secret }
-            } else { $wanted += @{ name = "auth-$provider-client-id and -secret"; value = $null } }
+        # Every value goes into the vault, one secret each; the app only ever references them (update writes the block).
+        $set = 0
+        foreach ($s in Get-Secrets) {
+            if ($null -eq $s.value) { Write-Host "  skipped $($s.name): no value in its file"; continue }
+            Write-Host "  $Vault/$($s.name)"
+            Invoke-Az keyvault secret set --vault-name $Vault -n $s.name --value $s.value --query 'name' -o none
+            $set++
         }
-        $set = @()
-        foreach ($s in $wanted) {
-            if ($null -eq $s.value) { Write-Host "  skipped $($s.name): no value in its file" }
-            else { $set += "$($s.name)=$($s.value)" }
-        }
-        if ($set.Count -eq 0) { throw 'No secret has a value to set.' }
-        $names = ($set | ForEach-Object { $_.Split('=')[0] }) -join ', '
-        Write-Host "Setting $($set.Count) secret(s) on ${App}: $names"
-        Invoke-Az containerapp secret set -n $App -g $ResourceGroup --secrets @set --query '[].name' -o tsv
-        Write-Host 'A running revision keeps its old values until the next update.'
+        if ($set -eq 0) { throw 'No secret has a value to set.' }
+        Write-Host "$set secret(s) in $Vault. A running revision keeps the values it read until the next update (deploy.ps1 release)."
     }
     'update' {
         if (-not $Revision) { throw 'update needs -Revision (vNNN, one more than the running revision; Single mode refuses a repeat).' }
         if (-not $Tag) { throw 'update needs -Tag: the tag of an image already built (deploy.ps1 build; or release, which does both).' }
         $vmIp = Get-Output 'vmPrivateIp'
         $environmentId = Get-Output 'environmentId'
-        # A provider's two lines go in only when both its secrets are on the app: a secretRef to a missing secret fails the update.
-        $present = @(& az containerapp secret list -n $App -g $ResourceGroup --query '[].name' -o tsv 2>$null)
-        $providers = @()
-        foreach ($provider in @('google', 'microsoft', 'linkedin')) {
-            if ($present -contains "auth-$provider-client-id" -and $present -contains "auth-$provider-client-secret") {
+        $identityId = Get-Output 'appIdentityId'
+        $vaultUri = (Get-Output 'vaultUri').TrimEnd('/')
+        $exists = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.environmentId' -o tsv 2>$null)
+        $inPlace = ($LASTEXITCODE -eq 0 -and $exists -eq $environmentId)
+        if ($LASTEXITCODE -eq 0 -and $exists -and -not $inPlace) {
+            # A Container App's name is unique in its resource group, and an app can't move between environments.
+            throw "$App already exists in another environment ($exists). Delete the old one first: az containerapp delete -n $App -g $ResourceGroup"
+        }
+        # The secrets block: one reference per secret the vault holds among the names the app may use; a reference to
+        # a secret the vault lacks would stop the revision, so what the vault lacks stays out, the providers' lines too.
+        $inVault = @(& az keyvault secret list --vault-name $Vault --query '[].name' -o tsv)
+        if ($LASTEXITCODE -ne 0) { throw "Could not list ${Vault}: deploy.ps1 secrets first, and check your role on the vault." }
+        $names = @('anthropic-api-key', 'agent-api-key', 'admin-api-key', 'mongo-url', 'accounts-sql-url')
+        foreach ($provider in $Providers) { $names += "auth-$provider-client-id"; $names += "auth-$provider-client-secret" }
+        $secrets = @('    secrets:')
+        foreach ($name in $names) {
+            if ($inVault -contains $name) {
+                $secrets += "      - name: $name"
+                $secrets += "        keyVaultUrl: $vaultUri/secrets/$name"
+                $secrets += "        identity: $identityId"
+            }
+        }
+        foreach ($name in @('anthropic-api-key', 'agent-api-key', 'admin-api-key', 'mongo-url', 'accounts-sql-url')) {
+            if ($inVault -notcontains $name) { throw "The vault $Vault has no $name yet: deploy.ps1 secrets first." }
+        }
+        $providerLines = @()
+        foreach ($provider in $Providers) {
+            if ($inVault -contains "auth-$provider-client-id" -and $inVault -contains "auth-$provider-client-secret") {
                 $upper = $provider.ToUpperInvariant()
-                $providers += "          - name: AUTH_${upper}_CLIENT_ID"
-                $providers += "            secretRef: auth-$provider-client-id"
-                $providers += "          - name: AUTH_${upper}_CLIENT_SECRET"
-                $providers += "            secretRef: auth-$provider-client-secret"
+                $providerLines += "          - name: AUTH_${upper}_CLIENT_ID"
+                $providerLines += "            secretRef: auth-$provider-client-id"
+                $providerLines += "          - name: AUTH_${upper}_CLIENT_SECRET"
+                $providerLines += "            secretRef: auth-$provider-client-secret"
             }
         }
         $template = Join-Path $Here 'puls-app.yaml'
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
-        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('VM_IP', $vmIp).Replace('ENVIRONMENT_ID', $environmentId).Replace('          # PROVIDERS', ($providers -join "`n")) |
+        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('VM_IP', $vmIp).Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")) |
             Set-Content $resolved -Encoding utf8 -NoNewline
-        $exists = (& az containerapp show -n $App -g $ResourceGroup --query 'properties.environmentId' -o tsv 2>$null)
-        if ($LASTEXITCODE -eq 0 -and $exists -eq $environmentId) {
+        if ($inPlace) {
             Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."
             Invoke-Az containerapp update -n $App -g $ResourceGroup --yaml $resolved --query '{revision:properties.latestRevisionName, ready:properties.latestReadyRevisionName, state:properties.provisioningState}' -o json
         } else {
-            # The first deploy into puls-env: the app of the old environment keeps its name until it is deleted (README).
             Write-Host "Creating $App in $Environment as revision $Revision (tag $Tag) from $template..."
             Invoke-Az containerapp create -n $App -g $ResourceGroup --yaml $resolved --query '{fqdn:properties.configuration.ingress.fqdn, state:properties.provisioningState}' -o json
         }
