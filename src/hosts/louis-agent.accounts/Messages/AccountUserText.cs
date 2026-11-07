@@ -14,4 +14,7 @@ public enum AccountUserText
 
     [Description("This account already has a password; change it instead.")]
     HasPasswordAlready,
+
+    [Description("The passkey couldn't be added: {Reason}")]
+    PasskeyRefused,
 }

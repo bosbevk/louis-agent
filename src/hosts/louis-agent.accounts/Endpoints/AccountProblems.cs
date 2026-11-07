@@ -10,9 +10,12 @@ namespace LouisAgent.Accounts.Endpoints;
 /// </summary>
 public static class AccountProblems
 {
-    /// <summary>One of our messages, under the field it's about.</summary>
-    public static ValidationProblem Of(string field, Enum message) =>
-        TypedResults.ValidationProblem(new Dictionary<string, string[]> { [field] = [MessageText.Format(message)] });
+    /// <summary>One of our messages, under the field it's about, with its holes filled.</summary>
+    public static ValidationProblem Of(string field, Enum message, object? values = null) =>
+        TypedResults.ValidationProblem(new Dictionary<string, string[]>
+        {
+            [field] = [MessageText.Format(message, values)]
+        });
 
     /// <summary>Identity's errors as it wrote them, each under its own code.</summary>
     public static ValidationProblem Of(IdentityResult result) =>
