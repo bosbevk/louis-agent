@@ -294,6 +294,14 @@ switch ($Verb) {
         if ($PSCmdlet.ShouldProcess($App, "az containerapp hostname add/bind $Hostname with a managed certificate ($method)")) {
             Write-Host "Adding $Hostname to $App and asking for its managed certificate (the records above must resolve first)..."
             Invoke-Az containerapp hostname add -n $App -g $ResourceGroup --hostname $Hostname -o none
+            if ($apex) {
+                # An apex certificate validates with a token of its own, in a TXT record named _dnsauth (2026-11-07: the
+                # asuid record proves the hostname is ours, the certificate stays Pending without this one). The
+                # certificate is asked for first, so the token can be printed before the bind waits on it.
+                $token = Read-Az containerapp env certificate create -n $Environment -g $ResourceGroup --hostname $Hostname --validation-method TXT --query 'properties.validationToken' -o tsv
+                if (-not $token) { $token = Read-Az containerapp env certificate list -n $Environment -g $ResourceGroup --managed-certificates-only --query "[?properties.subjectName=='$Hostname'].properties.validationToken | [0]" -o tsv }
+                Write-Host "  TXT    _dnsauth    $token      (in Cloudflare too, DNS-only; the certificate validates once it resolves)"
+            }
             Invoke-Az containerapp hostname bind -n $App -g $ResourceGroup --hostname $Hostname --environment $Environment --validation-method $method --query '[].{name:name, state:bindingType}' -o table
         }
     }

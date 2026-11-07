@@ -51,8 +51,9 @@ by hand. The app itself is `puls-app.yaml`, deployed by `deploy.ps1 release` int
    |---|---|---|
    | A | `@` | the environment's static IP, as printed |
    | TXT | `asuid` | the app's domain verification id, as printed |
+   | TXT | `_dnsauth` | the apex certificate's validation token, which `domain` prints once it has asked for the certificate (the `asuid` record proves the hostname is ours; the certificate stays Pending without this one) |
    | CNAME | `www` | the app's own address (`puls-app.<env>.southafricanorth.azurecontainerapps.io`) |
-   | TXT | `asuid.www` | the same verification id |
+   | TXT | `asuid.www` | the same verification id (`www` validates by its CNAME, no token) |
 
 8. Then, and not before, retire the old: the old environment `puls-container-env` with its `puls-app` and
    `puls-searxng`, the `ts-forwarder` and `searxng` images in the registry, the `searxng-config` and `mongo-data`
