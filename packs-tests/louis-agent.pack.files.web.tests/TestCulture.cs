@@ -3,8 +3,7 @@ using System.Globalization;
 namespace LouisAgent.Packs.Files.Web.Tests;
 
 /// <summary>
-/// The snapshots must never depend on the machine. The code-review app sets no culture of its own, so the tests run
-/// invariant.
+/// What's tested must never depend on the machine, so the tests run invariant.
 /// </summary>
 [SetUpFixture]
 public class TestCulture

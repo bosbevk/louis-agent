@@ -644,6 +644,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.files.web.tests", "packs-tests\louis-agent.pack.files.web.tests\louis-agent.pack.files.web.tests.csproj", "{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web", "packs-web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj", "{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.git.web.tests", "packs-tests\louis-agent.pack.git.web.tests\louis-agent.pack.git.web.tests.csproj", "{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -654,6 +658,30 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|x64.Build.0 = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|x64.ActiveCfg = Release|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|x64.Build.0 = Release|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6}.Release|x86.Build.0 = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|x64.Build.0 = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5}.Release|x86.Build.0 = Release|Any CPU
 		{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1811,6 +1839,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{1F4DE0C9-7FB5-41C4-8366-6B690819ACD6} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{1DB99AE2-FE82-46D2-BDAF-E6F53E0B8AD5} = {1696B542-0FB6-40D1-AD84-B617E362FEC4}
 		{74F77AE8-4BE2-4CD6-9A30-CD9D1C232D74} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 		{CD249E7A-5297-4F48-8019-A086D1275BF8} = {1696B542-0FB6-40D1-AD84-B617E362FEC4}
 		{22993A6A-A284-42ED-82FA-D7593D5810FB} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}

@@ -1,7 +1,10 @@
-using LouisAgent.CodeReview.Components.Git;
-using LouisAgent.CodeReview.Git;
-using LouisAgent.CodeReview.Workspace;
 using LouisAgent.Packs.Files.Web.Reading;
+using LouisAgent.Packs.Git.Web;
+using LouisAgent.Packs.Git.Web.Branches;
+using LouisAgent.Packs.Git.Web.Branches.Records;
+using LouisAgent.Packs.Git.Web.Changes;
+using LouisAgent.Packs.Git.Web.Views.Branches;
+using LouisAgent.Packs.Git.Web.Views.Changes;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Storage;
