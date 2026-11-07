@@ -6,6 +6,7 @@ using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Pages.Admin;
 using LouisAgent.Web.Storage;
@@ -23,7 +24,8 @@ public class SiteRoutesTests
 {
     /// <summary>Every address a page in this assembly answers to.</summary>
     private static IEnumerable<string> RoutesOf(Assembly assembly) =>
-        assembly.GetTypes().SelectMany(type => type.GetCustomAttributes<RouteAttribute>()).Select(route => route.Template);
+        assembly.GetTypes().SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
+            .Select(route => route.Template);
 
     /// <summary>No address is claimed twice, by the site and the framework together.</summary>
     [Test]
@@ -45,12 +47,10 @@ public class SiteRoutesTests
         var settings = new ChatSettings();
         ctx.Services.AddSingleton(settings);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(Answer))
-        {
-            BaseAddress = new Uri("http://localhost/")
-        }, settings));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
         ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
+        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
@@ -66,7 +66,8 @@ public class SiteRoutesTests
         var program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "demos/louis-agent/web/louis-agent.code-review/Program.cs"));
 
-        Assert.That(program, Does.Contain("new SiteFrames(Admin: typeof(AdminLayout))"));
+        Assert.That(program,
+            Does.Contain("new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout))"));
         Assert.That(program, Does.Contain("GitWebViews.AddTo(views)"));
         Assert.That(program, Does.Contain("FilesWebViews.AddTo(views)"));
         Assert.That(program, Does.Contain("AddSingleton(views)"));
@@ -79,7 +80,8 @@ public class SiteRoutesTests
         if (path.EndsWith("/v1/admin/screens"))
             return Json(new ScreensReply(
             [
-                new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+                new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")],
+                    Searchable: false)
             ]));
 
         return path.EndsWith("/rows")

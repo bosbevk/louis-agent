@@ -3,6 +3,7 @@ using LouisAgent.Starter.Layout;
 using LouisAgent.Web.Admin;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
@@ -21,8 +22,8 @@ builder.Services.AddSingleton<ChatSettings>();
 builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
-builder.Services.AddSingleton(new ChatText());   // the frame's words, in English; a site can fill in its own
-builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
+builder.Services.AddSingleton(new ChatText()); // the frame's words, in English; a site can fill in its own
+builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
 builder.Services.AddSingleton(new ChatHandoff("chat"));
 EvalPages.AddTo(builder.Services);
 

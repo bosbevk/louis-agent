@@ -1,4 +1,4 @@
-using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Frames;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Layout;
@@ -15,5 +15,6 @@ namespace LouisAgent.Web.Layout;
 public partial class AdminFrame
 {
     /// <summary>The site's layouts, set once by the site.</summary>
-    [Inject] private SiteFrames Frames { get; set; } = null!;
+    [Inject]
+    private SiteFrames Frames { get; set; } = null!;
 }

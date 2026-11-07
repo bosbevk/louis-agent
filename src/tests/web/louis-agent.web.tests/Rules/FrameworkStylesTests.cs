@@ -32,13 +32,15 @@ public partial class FrameworkStylesTests
     [TestCase(".admin-table")]
     [TestCase(".run-table")]
     [TestCase(".trend-delta")]
+    [TestCase(".account-card")]
     public void TheFramesRules_AreInTheFramework(string selector) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)), Does.Contain(selector));
 
     /// <summary>The folded work panel loses its border, or that 1px gives the whole page scrollbars.</summary>
     [Test]
     public void TheFoldedWorkPanel_HasNoBorder() =>
-        Assert.That(string.Concat(Rules().Select(File.ReadAllText)), Does.Contain(".work-hidden .work { visibility: hidden; border: 0; }"));
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+            Does.Contain(".work-hidden .work { visibility: hidden; border: 0; }"));
 
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]

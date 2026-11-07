@@ -7,6 +7,7 @@ using LouisAgent.Starter.Layout;
 using LouisAgent.Starter.Pages;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Chat.Header;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Packs;
@@ -39,13 +40,14 @@ public class StarterSiteTests
         ctx.Services.AddSingleton(new ChatText());
         ctx.Services.AddSingleton(new ChatHandoff("chat"));
         ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
+        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
         return ctx;
     }
 
     /// <summary>Every address a page in this assembly answers to.</summary>
     private static IEnumerable<string> RoutesOf(Assembly assembly) =>
-        assembly.GetTypes().SelectMany(type => type.GetCustomAttributes<RouteAttribute>()).Select(route => route.Template);
+        assembly.GetTypes().SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
+            .Select(route => route.Template);
 
     /// <summary>The chat draws on the framework's frame, with what needs more set up turned off.</summary>
     [Test]
@@ -69,9 +71,10 @@ public class StarterSiteTests
         var settings = new ChatSettings();
         ctx.Services.AddSingleton(settings);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
         ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
+        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
@@ -122,7 +125,8 @@ public class StarterSiteTests
         if (path.EndsWith("/v1/admin/screens"))
             return Json(new ScreensReply(
             [
-                new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+                new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")],
+                    Searchable: false)
             ]));
 
         return path.EndsWith("/rows")
