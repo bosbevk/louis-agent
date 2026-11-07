@@ -36,6 +36,8 @@
          built or copied. -->
     <None Include="..\..\docs\projects\louis-agent.web.md" Link="docs\louis-agent.web.md" />
     <None Include="..\..\docs\guides\change-the-web.md" Link="docs\change-the-web.md" />
+    <None Include="..\..\docs\projects\eval-pages.md" Link="docs\eval-pages.md" />
+    <None Include="..\..\docs\guides\change-the-eval-pages.md" Link="docs\change-the-eval-pages.md" />
   </ItemGroup>
 
 </Project>

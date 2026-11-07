@@ -279,6 +279,14 @@ makes it easy to break without noticing: nothing compiles what it makes until so
 site called Acme in a throwaway folder, checks the old name is gone everywhere, and builds it. That's slow for a test, so it's an integration test, but it's the only one that can
 say the template works. It's also the fairest test of the whole framework: if a site really is this small, the framework must hold the rest.
 
+**Moving 400 files takes three commits, and only the last is the move (F59.10).** The eval pages looked like one big move, but they still knew things about Puls: its name on the screen, and a list of South African shops
+inside a chart. Move those along and the framework names a site; clean them up during the move and nobody can review it. So the cleanups went first, in Puls, where the old tests still ran, and the move itself came last, with a checker
+saying every changed line is a namespace, a using or a path. Reviewing that takes minutes, where reading 400 diffs would take days. The shop list is the part worth keeping: it wasn't a word to change but something only the site can know, so it became data the site
+hands over (a small named rule per kind of website, what Evans and Fowler call a Specification), and the chart only counts.
+
+**A checker has to look for the mistake you'd really make (F59.10).** My script replaced a path twice and wrote `Evals/Evals`. The checker passed it, because it asked "does this line look like a path?", and that line did. The tests caught it, since a golden file can't be found at
+a wrong path. A check that only reads the shape of a change says what kind of change it was, not that it's right, so it needs something that runs behind it.
+
 **A guard that fires on a harmless change is still doing its job (F59.12).** The static site's films are exported to files, and a test holds a fingerprint of the stylesheets they're
 made from. Moving those stylesheets to Sass changed no colour, so the films surely look the same, and it would be easy to update the fingerprint and move on. But *surely* is the very
 thing the guard is there to replace. The film has to be exported again, which needs Docker, so the test stays red until someone does. A red test with a known, written-down reason is honest;

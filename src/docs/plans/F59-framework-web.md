@@ -750,6 +750,15 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - The films' fingerprint now covers the framework's colours too. It's red until they're exported, which needs Docker.
   - `Stylesheet`, the test helper for plain CSS, goes, as no site is on plain CSS any more.
 
+- **2026-11-07, what F59.10 chose, unattended.** Louis allowed a one-off script for this move alone. It stands in for its own plan.
+  - First everything Puls's own came out while the pages were still in Puls, then the script moved them and changed only namespaces, usings and paths, and a checker that doesn't share the script's mapping proved it: 402 files, 102 byte for byte, 300 with 653 lines, nothing else.
+  - Three more choices the plan doesn't settle: `Components/Admin` is full, so the moved parts go in `Components/Admin/Evals/`; `Pages/Admin` is full too and a namespace can't share its class's name, so the pages go by concern in `Running`, `Reviewing` and `Building`; `Admin/` keeps its name.
+  - On screen it says *The agent itself*, *The agent with cook* and *Agent*, and the store's title *The store answers*. For Louis to reword.
+  - The shop list became data a site hands over: `SiteKinds`, a named rule per kind of website (Specification), Puls's in `PulsSites`. The other two options were a neutral count of websites, which loses what the chart is for, and a slot for the whole chart, which would have to be threaded through the explorer. The hover note speaks of kinds now, so Puls loses its sentences about SA shops.
+  - `EvalPages.AddTo` is the one call, made by all three sites, as a router finds every page in the framework. `EvalLinks` is only in Puls's frame, so the other two have the pages with nothing leading to them, for Louis to turn on.
+  - `web/admin/eval-pages` forwards the six partials, so three sites list one name. Reused: all six partials as they were. New: only that list.
+  - Test data still says `puls-cook` in the moved tests, as a sample name. Their long comment lines stay, so the diff stays a move; they're on the TODO.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

@@ -15,7 +15,7 @@ from source.
 ## A web app's folders
 
 A web app (`louis-agent.code-review`, `louis-agent.puls`, and `louis-agent.web` between them) keeps Blazor's `Pages/`,
-`Layout/` and `Components/`, with subfolders by concern inside `Components/` (Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
+`Layout/` and `Components/`, with subfolders by concern inside `Components/` (Puls: `Brand/`, `Landing/`, `Chat/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
 `Chats/`, `Usage/`, `Storage/`, `Text/`; Puls: `Text/`, `Content/`), one type
 per file, the namespace equal to the folder path. No `Services/` or `Models/`: each names a kind of thing, not a concern.
 `_Imports.razor` carries a `@using` per folder the pages use. A page keeps its layout and hands each piece to a component

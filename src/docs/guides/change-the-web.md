@@ -2,7 +2,7 @@
 
 > **How-to.** Change `src/web/louis-agent.web`, the Razor class library every site is built on: decide what belongs here,
 > add an API call, follow a new event in the stream, add a component, give it words, and test it. **Elsewhere:** how
-> it works in [louis-agent.web](../projects/louis-agent.web.md); the two apps in
+> it works in [louis-agent.web](../projects/louis-agent.web.md); the eval pages in [Change the eval pages](change-the-eval-pages.md); the two apps in
 > [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) and [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md).
 
 The library holds what makes a chat work the same in both apps: the API client (`Api/`), the chat as data and a turn's

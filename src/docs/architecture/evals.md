@@ -406,9 +406,9 @@ packs-evals/louis-agent.pack.recipes.checks/Checks/      # recipe-from-source
 src/hosts/louis-agent.api/Evals/          # List/ (RunnerProcess), Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/,
 │                                   # Drafts/ (Samples/, Transcripts/, Composed/, Store/), Studio/ (DraftFolder, the runner's parts, Publish/)
 src/hosts/louis-agent.api/Endpoints/Admin/Studio/   # the studio's routes, Promptfoo/
-demos/puls/web/louis-agent.puls/Pages/Admin/EvalStudio.razor  # the Studio page
-demos/puls/web/louis-agent.puls/Components/Admin/  # the portal's pages; Studio/ (the drafts, Compose/, Promptfoo/)
-demos/puls/web/louis-agent.puls/Admin/Studio/  # the studio's plain classes: Compose/ (the form), Schema/ (a check's fields from its schema)
+src/web/louis-agent.web/Pages/Admin/Building/EvalStudio.razor  # the Studio page
+src/web/louis-agent.web/Components/Admin/Evals/  # the portal's pages; Studio/ (the drafts, Compose/, Promptfoo/)
+src/web/louis-agent.web/Admin/Studio/  # the studio's plain classes: Compose/ (the form), Schema/ (a check's fields from its schema)
 ```
 
 ## What to keep in mind

@@ -35,6 +35,9 @@ no site.**
   and a page naming none gets the site's default, so a framework page names `AdminFrame`, which draws inside what `SiteFrames` says.
 - **Every pack brings its controls the same way:** it names its screens through one seam, and a real component comes from its own
   project under `packs-web/`, found by name. No pack puts a panel in the chat.
+- **The eval pages are the framework's, on every site.** A site makes one call for them and lists one Sass name. What only a site knows comes in as
+  data: the kinds of website its sources chart sorts by are a list it hands that call, a small named rule each (Specification, Evans and Fowler), so the
+  chart counts and never names a shop. Their links are the site's choice, as a site with no evals has nothing to show there.
 - **Where two sites differ, one shape goes into the framework and the other adapts,** rather than the framework growing a
   switch. For today's two, Puls's shape is the one that goes in.
 
@@ -44,8 +47,8 @@ ratchet: what's still too long is listed, and the list can only shrink.
 
 ## Consequences
 
-- **The rule is ahead of the code.** Most of Puls's styles and admin pages are still in Puls, and F59's children move them.
-  Until then the old sentence "each app keeps its own pages and look" stays true in places, and those docs say *for now*.
+- **Every site carries the eval pages' weight,** about 270 files, even a site with no evals, as a Razor class library ships whole. That's the price of one
+  web, and we'd split them into their own library if a site ever needed to go without.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.
 - **`louis-agent.site` is the coding agent's landing page, on the framework's colours and Sass.** It stays server-rendered, with no chat or
@@ -59,7 +62,7 @@ ratchet: what's still too long is listed, and the list can only shrink.
 ## Links
 
 [0027](0027-engine-identities-and-packs.md) · [0034](0034-code-a-person-can-maintain.md) ·
-[0074](0074-the-folders-say-what-ships.md) · [The plan](../plans/F59-framework-web.md) ·
+[0074](0074-the-folders-say-what-ships.md) ·
 [Write-up 20](../learning/20-extensibility.md#the-frameworks-web-f591-2026-11-06) ·
 [ABP themes](https://abp.io/docs/latest/framework/ui/blazor/theming)
 
