@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 66 | 74 |
-| Fixes (`FX`) | 58 | 4 |
+| Fixes (`FX`) | 59 | 4 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -198,10 +198,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (58 done)
+## Fixes (59 done)
 
 | Id | When | What |
 |---|---|---|
+| FX65 | 2026-11-07 | The sidebar's settings line up, and a picker's list can be read |
 | FX64 | 2026-11-07 | The account pages look like their site: the action's own text colour, Puls's glass card on the water |
 | FX63 | 2026-11-07 | The message box keeps its look: a scoped rule sits in the component that draws its element |
 | FX62 | 2026-11-07 | The libraries' `sasscompiler.json` stays out of a publish |
