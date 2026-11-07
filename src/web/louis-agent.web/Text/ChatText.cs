@@ -199,10 +199,9 @@ public sealed record ChatText
     public string SessionGone { get; init; } =
         "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
 
-    public string NeedsKey { get; init; } = "The API needs a key: enter AGENT_API_KEY under API key in the sidebar.";
-
-    /// <summary>The same refusal on a site with accounts (F61.2): a person signs in instead of typing a key.</summary>
-    public string NeedsSignIn { get; init; } = "Sign in to chat.";
+    /// <summary>A refused turn (F61.2): on a site with accounts a person signs in; anywhere, a key in the sidebar works.</summary>
+    public string NeedsKey { get; init; } =
+        "The API said no: sign in, or enter AGENT_API_KEY under API key in the sidebar.";
 
     public string StillAnswering { get; init; } = "This chat is still answering; wait for it or press Stop.";
     public string ApiUnreachable { get; init; } = "Can't reach the agent API. Is the api container running?";
