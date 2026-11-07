@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using LouisAgent.Web.Scripts;
 using System.Net;
 using System.Text;
 using LouisAgent.Web.Api;
@@ -16,6 +18,16 @@ public class ChatLanguagesTests
         """{"default":"site/voice-af","agent":["site/voice-af","site/voice-en","other/voice-de"],"specialist":[]}""";
 
     /// <summary>The languages are the API's voices under the site's prefix, and no others.</summary>
+    /// <summary>The planned module, one per test context, so each test plans what the browser would answer.</summary>
+    private static readonly ConditionalWeakTable<BunitContext, BunitJSModuleInterop> Modules = new();
+
+    private static BunitJSModuleInterop Module(BunitContext ctx) =>
+        Modules.GetValue(ctx, c => c.JSInterop.SetupModule(FrameworkScripts.Preferences));
+
+    /// <summary>The preferences module as the shell builds it (CL31), over the test's interop.</summary>
+    private static JsModule Preferences(BunitContext ctx) =>
+        new(ctx.JSInterop.JSRuntime, FrameworkScripts.Preferences);
+
     [Test]
     public async Task TheLanguages_AreTheVoicesUnderThePrefix()
     {
@@ -48,7 +60,7 @@ public class ChatLanguagesTests
     public async Task TheBrowsersChoice_Wins_IfStillOffered(string saved, string expected)
     {
         using var ctx = new BunitContext();
-        ctx.JSInterop.Setup<string?>("chatUi.loadLanguage").SetResult(saved);
+        Module(ctx).Setup<string?>("loadLanguage").SetResult(saved);
         var languages = Make(ctx, TwoVoices);
 
         await languages.LoadAsync();
@@ -94,7 +106,7 @@ public class ChatLanguagesTests
         await languages.ChooseAsync("en");
 
         Assert.That(languages.Role, Is.EqualTo("site/voice-en"));
-        Assert.That(ctx.JSInterop.Invocations["chatUi.saveLanguage"].Single().Arguments[0], Is.EqualTo("en"));
+        Assert.That(ctx.JSInterop.Invocations["saveLanguage"].Single().Arguments[0], Is.EqualTo("en"));
     }
 
     /// <summary>The languages over an API that answers the roles with this.</summary>
@@ -105,6 +117,6 @@ public class ChatLanguagesTests
             Content = new StringContent(roles, Encoding.UTF8, "application/json")
         });
         var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings());
-        return new ChatLanguages(api, ctx.JSInterop.JSRuntime, "site/voice-", "af");
+        return new ChatLanguages(api, Preferences(ctx), "site/voice-", "af");
     }
 }

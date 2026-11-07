@@ -21,14 +21,15 @@ public class ChatPageTests
     [
         // The attachment picker is Blazor's InputFile, which registers itself through JS on its first render.
         "Blazor._internal.InputFile.init",
-        "localStorage.getItem", "chatUi.loadLocation", "chatUi.motion", "chatUi.loadLanguage", "chatUi.reducedMotion",
+        // The framework's preferences module (CL31) is imported, and what the browser remembers is read from it.
+        "localStorage.getItem", "import", "loadLocation", "motion", "loadLanguage", "reducedMotion",
         "chatUi.countCosts",
     ];
 
     private static readonly string[] TurnCalls =
     [
         // The list's and the turn's own modules (CL31) are imported, and their calls go to the modules.
-        "chatUi.timeZone", "import", "scrollToBottom", "highlightBlocks", "localStorage.setItem",
+        "chatUi.timeZone", "scrollToBottom", "highlightBlocks", "localStorage.setItem",
     ];
 
     /// <summary>A bUnit context with everything the page asks for, over the stub API.</summary>

@@ -34,6 +34,7 @@ public partial class ChatShell : IAsyncDisposable
     private JsModule Dialogs => _dialogs ??= new JsModule(JS, FrameworkScripts.Dialogs);
 
     private JsModule? _dialogs;
+    private JsModule? _preferencesModule;
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
 
@@ -146,8 +147,10 @@ public partial class ChatShell : IAsyncDisposable
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
         _renaming = new ChatRenaming(Store);
-        _preferences = new ChatPreferences(JS, Text);
-        _languages = new ChatLanguages(Api, JS, VoicePrefix, DefaultLanguage);
+        // One preferences module for both (CL31): what this browser remembers for the person.
+        _preferencesModule = new JsModule(JS, FrameworkScripts.Preferences);
+        _preferences = new ChatPreferences(_preferencesModule, Text);
+        _languages = new ChatLanguages(Api, _preferencesModule, VoicePrefix, DefaultLanguage);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"{ChatPath}/{id}");
         Currency.Changed += Redraw;
@@ -202,7 +205,14 @@ public partial class ChatShell : IAsyncDisposable
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
-        return _dialogs?.DisposeAsync() ?? ValueTask.CompletedTask;
+        return Release(_dialogs, _preferencesModule);
+    }
+
+    /// <summary>Lets every module go that was ever loaded.</summary>
+    private static async ValueTask Release(params JsModule?[] modules)
+    {
+        foreach (var module in modules)
+            if (module is not null) await module.DisposeAsync();
     }
 
     /// <summary>A placeholder's answer: a short word saying what's coming.</summary>
