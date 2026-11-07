@@ -11,4 +11,8 @@ public enum AccountErrorMessage
 
     [Description("The request's tenant isn't set: UseTenant must run before the account routes and the store.")]
     TenantNotResolved,
+
+    [Description("Call UseLouisAgentAccounts before MapLouisAgentAccounts: a route without the tenant and the "
+                 + "sign-in middleware would land in no tenant at all, so the routes won't map without them.")]
+    UseBeforeMap,
 }

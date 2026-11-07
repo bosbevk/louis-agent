@@ -14,4 +14,11 @@ public enum AccountLogMessage
 
     [Description("Mail to {Email}: the password reset code is {Code} (no sender is set up, so this log is the mail)")]
     PasswordResetCode,
+
+    [Description("ACCOUNTS_SQL_URL isn't set: this instance has no accounts and no sign-in, and no /account route.")]
+    NoAccounts,
+
+    [Description(
+        "The accounts database is up to date: {Applied} migration(s) applied; the default tenant is {Tenant}.")]
+    Migrated,
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using LouisAgent.Accounts.Messages;
 using LouisAgent.Accounts.Users;
 using LouisAgent.Composition.Logging;
@@ -28,7 +29,7 @@ public sealed class LogEmailSender(ILogger<LogEmailSender> log) : IEmailSender<A
             new
             {
                 Email = LogContent.Of(email),
-                Link = LogContent.Of(confirmationLink)
+                Link = LogContent.Of(Plain(confirmationLink))
             }, tag: Tag);
         return Task.CompletedTask;
     }
@@ -40,10 +41,13 @@ public sealed class LogEmailSender(ILogger<LogEmailSender> log) : IEmailSender<A
             new
             {
                 Email = LogContent.Of(email),
-                Link = LogContent.Of(resetLink)
+                Link = LogContent.Of(Plain(resetLink))
             }, tag: Tag);
         return Task.CompletedTask;
     }
+
+    /// <summary>Identity writes a link for an HTML mail (<c>&amp;amp;</c>); a log line wants one you can click.</summary>
+    private static string Plain(string link) => WebUtility.HtmlDecode(link);
 
     /// <summary>The code Identity's API hands out instead of a link, when a client asks for one.</summary>
     public Task SendPasswordResetCodeAsync(AccountUser user, string email, string resetCode)

@@ -47,6 +47,16 @@ public class LogEmailSenderTests
         });
     }
 
+    /// <summary>Identity hands over a link made for an HTML mail; the log gets one a person can click.</summary>
+    [Test]
+    public async Task ALinkMadeForHtml_IsLoggedPlain()
+    {
+        string line = await LineIn(LogContentMode.Full,
+            s => s.SendConfirmationLinkAsync(Ann, Ann.Email!, "https://x.test/confirm?userId=1&amp;code=abc"));
+
+        Assert.That(line, Does.Contain("https://x.test/confirm?userId=1&code=abc"));
+    }
+
     [Test]
     public async Task AResetCode_IsLoggedTheSameWay()
     {
