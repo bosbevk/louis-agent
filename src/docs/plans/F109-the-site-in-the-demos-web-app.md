@@ -381,6 +381,12 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   merge, each tried even when the other fails (`DeployWorkflowTests`); the TODO's F59 row closes (the site is on the
   framework's web and deployed); F51 stays, since it is about public traffic, not where the apps run. The
   data-protection keys finding (both apps sign everyone out on a cold start) is a fix of its own, FX64, to open.
+- **F109.2 step 7: the link card is the framework's rule** (Louis, 2026-11-08, on a bare Facebook card for
+  louis-agent.dev: "we need to fix this", "this must be in the framework"). A crawler runs no script, so a site's
+  card is Open Graph tags in its own `index.html`; `SiteLinkCardTests` in the framework's web tests holds every
+  site to the six tags with an absolute picture and address, the starter carries them as placeholders, the web
+  guide says how. The louis-agent app's picture is the brand's social card (PR #227), its own copy; Puls's its
+  icon and its Afrikaans hero line.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
