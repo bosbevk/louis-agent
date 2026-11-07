@@ -10,6 +10,8 @@
     <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- CL58: a library has no page to watch; left unset, the Sass package compiles its watcher attribute into us. -->
+    <SassCompilerEnableWatcher>false</SassCompilerEnableWatcher>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +22,8 @@
     <PackageReference Include="Markdig" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
+    <!-- CL58: a component's own X.razor.scss, compiled to the X.razor.css Blazor scopes and bundles; sasscompiler.json. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
   </ItemGroup>
 
   <ItemGroup>

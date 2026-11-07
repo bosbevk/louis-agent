@@ -1,0 +1,6 @@
+/* ---- The account pages' frame (F61.2, beside AccountShell since CL58): one centred card on the chat's colours, the
+   site's brand above it. Scoped: these rules reach only what this component draws. ---- */
+.account-shell { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; background: var(--bs-body-bg); }
+.account-card { width: 100%; max-width: 440px; background: var(--bs-secondary-bg); border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-xl); padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 16px; animation: rise .4s var(--web-ease) both; }
+.account-brand { display: flex; justify-content: center; margin-bottom: 4px; }
+@media (max-width: 480px) { .account-card { padding: 22px 18px 20px; } }
