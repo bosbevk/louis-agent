@@ -145,7 +145,7 @@ sequenceDiagram
     participant A as louis-agent-app
     participant S as Azure SQL (tenant louis-agent)
     B->>A: GET / (the landing, in the site's theme)
-    A-->>B: the WASM app; SiteLayout draws Home
+    A-->>B: the WASM app, SiteLayout draws Home
     B->>A: click "Try it" (ChatLink to /chat)
     A-->>B: ChatPage in ChatLayout: sign in first (F107 once built)
     B->>A: POST /account/login
