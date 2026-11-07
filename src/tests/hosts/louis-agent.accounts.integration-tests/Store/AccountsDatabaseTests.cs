@@ -1,7 +1,6 @@
-using LouisAgent.Accounts.Store;
 using LouisAgent.Accounts.Users;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static LouisAgent.Accounts.IntegrationTests.TestDatabase;
 
 namespace LouisAgent.Accounts.IntegrationTests.Store;
 
@@ -13,25 +12,15 @@ namespace LouisAgent.Accounts.IntegrationTests.Store;
 [Category("Integration")]
 public class AccountsDatabaseTests
 {
-    /// <summary>Where SQL Server runs, if this machine has one: the Docker <c>puls-sql</c>, or CI's service.</summary>
-    private static string? Url => Environment.GetEnvironmentVariable("ACCOUNTS_SQL_TEST_URL");
-
-    /// <summary>A database only these tests use, so dropping it hurts nothing.</summary>
+    /// <summary>A database only these tests use.</summary>
     private const string Database = "puls_accounts_test";
-
-    private static readonly DateTimeOffset Now = new(2026, 11, 7, 12, 0, 0, TimeSpan.Zero);
 
     /// <summary>Skips the fixture without a server, then builds the database from nothing with the migrations.</summary>
     [OneTimeSetUp]
     public async Task MigrateAnEmptyDatabase()
     {
-        Outside.Tool(!string.IsNullOrEmpty(Url),
-            "ACCOUNTS_SQL_TEST_URL isn't set: the accounts database isn't tested here");
-
-        await using var context = Open();
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.MigrateAsync();
-        context.Tenants.AddRange(new Tenant
+        Needed();
+        await ResetAsync(Database, new Tenant
         {
             Id = "home",
             Name = "Home"
@@ -42,23 +31,17 @@ public class AccountsDatabaseTests
                 Name = "Acme",
                 Host = "acme.example"
             });
-        await context.SaveChangesAsync();
     }
 
     /// <summary>Cleans up after the tests by dropping their database.</summary>
     [OneTimeTearDown]
-    public async Task DropTheTestDatabase()
-    {
-        if (string.IsNullOrEmpty(Url)) return;
-        await using var context = Open();
-        await context.Database.EnsureDeletedAsync();
-    }
+    public Task DropTheTestDatabase() => DropAsync(Database);
 
     /// <summary>Two tenants can each hold ann@example.com: the email is unique within a tenant, not across them.</summary>
     [Test]
     public async Task TheSameEmail_FitsInTwoTenants()
     {
-        await using var context = Open();
+        await using var context = Open(Database);
         context.Users.AddRange(User("home", "ann@example.com"), User("acme", "ann@example.com"));
 
         await context.SaveChangesAsync();
@@ -70,7 +53,7 @@ public class AccountsDatabaseTests
     [Test]
     public async Task TheSameEmail_IsRefusedTwiceInOneTenant()
     {
-        await using var context = Open();
+        await using var context = Open(Database);
         context.Users.AddRange(User("home", "bob@example.com"), User("home", "bob@example.com"));
 
         Assert.ThrowsAsync<DbUpdateException>(() => context.SaveChangesAsync());
@@ -80,25 +63,9 @@ public class AccountsDatabaseTests
     [Test]
     public async Task AUser_InATenantThatDoesNotExist_IsRefused()
     {
-        await using var context = Open();
+        await using var context = Open(Database);
         context.Users.Add(User("nobody", "cat@example.com"));
 
         Assert.ThrowsAsync<DbUpdateException>(() => context.SaveChangesAsync());
-    }
-
-    /// <summary>A user as Identity's manager would make it: the normalised columns filled in upper case.</summary>
-    private static AccountUser User(string tenant, string email)
-    {
-        var user = AccountUser.New(tenant, email, Now);
-        user.NormalizedUserName = email.ToUpperInvariant();
-        user.NormalizedEmail = email.ToUpperInvariant();
-        return user;
-    }
-
-    /// <summary>The context on the test database: the server from the setting, the database ours.</summary>
-    private static AccountsDbContext Open()
-    {
-        var address = new SqlConnectionStringBuilder(Url) { InitialCatalog = Database };
-        return new AccountsDbContext(AccountsDbContextFactory.Options(address.ConnectionString));
     }
 }
