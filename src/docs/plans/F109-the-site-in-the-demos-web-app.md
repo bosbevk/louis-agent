@@ -1,6 +1,6 @@
 # F109 The site in the louis-agent demo's web app, deployed beside Puls
 
-> **Plan** (a parent with two children). How the framework's static site becomes the layout page of the louis-agent
+> **Plan** (a parent with four children). How the framework's static site becomes the layout page of the louis-agent
 > demo's web app, keeping the site's theme, and how that app goes live beside Puls on the same environment and VM.
 > Drafted 2026-11-08, **approved by Louis the same day** with two picks (below); committed on
 > `feature/F109.1-the-site-in-the-web-app`. Deleted when the work is done: its why goes to an ADR, its what to the
@@ -231,7 +231,9 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   with the expert, so the layout places `<ExpertChat />` in the corner and any page places the same tag where it
   wants it, nothing configured twice; another demo wraps `ChatWidget` with its own identity the same way.
 - **The guide's knowledge** is open: a tool that searches the docs in the mounted workspace (Claude's pick), an
-  index built at build time, or a digest in the prompt; Louis to pick.
+  index built at build time, or a digest in the prompt; Louis to pick. Whatever the pick, it must answer in
+  detail about everything the site says (Louis, 2026-11-08; F109.4), so the architecture docs, the ADRs and
+  the project docs are in its reach, not a digest of the pages alone.
 - **It follows the framework, and extends it where needed** (Louis, 2026-11-08: "it must follow the framework set in
   place, extend the framework if/where needed"): the expert is an identity like Puls's (its voice, modes and
   toolsets as files under the demo's `identity/`), what it reads is a pack's tool (ADR 0080), the widget is a
@@ -239,6 +241,27 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   its identity from the widget, a smaller frame) the framework gets it, never the demo a way around it.
 - **The demos section** shows the triage workflow (F106) once that is built; until then the review chat at `/chat`
   is the demo the site leads to.
+
+## F109.4 The site tells the whole architecture (`feature/F109.4-the-site-tells-the-architecture`, after F109.2; to plan)
+
+**Louis (2026-11-08):** "the whole website should explain the whole architecture, and the identity running on our
+landing page must be able to answer in detail everything mentioned on the website." Said first of the films ("we
+should update the films with what it looks like now, explaining the whole architecture"), then of the site.
+
+- **What the site says today** stops at the engine: both films tell one turn through core, the pages name the
+  engine, identities, packs and the two demos. Missing: the hosts as libraries, the framework's web and the sites
+  built on it, a pack's four folders (tools, evals, web, tests), the accounts, the evals harness, a demo as
+  someone's own project, and where it runs (Azure).
+- **Done when:** every part of [the building block view](../architecture/05-building-block-view.md) has its place
+  on the site, in plain words, with the films drawn from the same map; and the expert in the corner (F109.3) answers
+  in detail about anything a page or a film says, from the same sources the pages were written from.
+- **The shape, to plan with a storyboard Louis approves first:** the pages and films are written from the
+  architecture docs (`src/docs/architecture/`), the ADRs and the project docs, so the site and the expert share one
+  source and cannot drift; a test pins each page's claims to the code or the docs the way `BuildYourOwnTests` pins
+  the program. Which film tells what (the short film the map and the detailed one the turn, or both the
+  architecture) is the first pick of that plan.
+- **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
+  F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
 ## Verification
 
@@ -268,6 +291,7 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   (2026-11-08) that the chat sit in the corner of this layout: the slot is here, the widget is F109.3.
 - **F61.6 is F109** (Louis, 2026-11-08, pick 1 of three). PR #221 trimmed the F61 plan to a child F61.6 "The framework's site beside Puls": the same work as F109.1 and F109.2. F109 stays, the F61 plan is deleted (its full text at commit `20f28c9f`) and the TODO's F61 row closes in the work log. F61.6's notes already sit here: the site project goes in F109.1 step 6 (not kept as a library), the second app's accounts are a tenant on the same database (F109.2), the TODO's F54 row closes with step 6.
 - **Step 2 takes five pages, step 3 the other two** (2026-11-08, a sequencing call): `Home` and `HowItWorks` embed the films, so they move with them in step 3. The pages are copied, not moved, until step 6 deletes the site project. They are named `…Page` as `ChatPage` is, since a class `Packs` collides with the packs' `LouisAgent.Packs` namespace. The site's HTTP tests become bUnit renders; its plain-HTML and `/health` tests have no counterpart in a WebAssembly app and are dropped.
+- **A fourth child, F109.4** (Louis, 2026-11-08: "the whole website should explain the whole architecture, and the identity running on our landing page must be able to answer in detail everything mentioned on the website"). The films' rewrite Louis asked for first is part of it. Its section is above; F109.1 moves the films as they are.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
