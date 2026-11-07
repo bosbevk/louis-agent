@@ -32,7 +32,8 @@ that references it; the full licence texts are at the links.
 
 The .NET runtime and base class library that ship with each app are Microsoft's, under the
 [MIT licence](https://github.com/dotnet/runtime/blob/main/LICENSE.TXT). The test projects' packages (NUnit, bUnit and
-the like) are only used to build and test, and are never handed out.
+the like) and the Sass compiler the build runs (AspNetCore.SassCompiler, which carries Dart Sass) are only used to
+build and test, and are never handed out: an app ships the CSS the build made, not the compiler.
 
 ## Loaded by the web pages
 
