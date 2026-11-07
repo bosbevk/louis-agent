@@ -18,7 +18,7 @@ public class ToolsetCatalogTests
     [Test]
     public void CoresCatalogue_IsExactlyTheCoreToolsetEnum_TheShopsAreAPack()
     {
-        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) became a pack; F50.2: packs/louis-agent.pack.where-to-buy and shop-prices; core names no shop. The enum is core's whole list (ADR 0043).
+        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) became a pack; F50.2: packs/tools/louis-agent.pack.where-to-buy and shop-prices; core names no shop. The enum is core's whole list (ADR 0043).
         Assert.That(ToolsetCatalog.All.Select(t => t.Name),
             Is.EquivalentTo(Enum.GetValues<CoreToolset>().Select(t => t.Wire())));
         Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));

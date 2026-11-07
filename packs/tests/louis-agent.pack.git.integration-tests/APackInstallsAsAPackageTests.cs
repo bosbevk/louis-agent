@@ -21,7 +21,7 @@ public class APackInstallsAsAPackageTests
             string feed = Directory.CreateDirectory(Path.Combine(root, "feed")).FullName;
             foreach (string project in new[]
                      {
-                         "src/engine/louis-agent.choices", "src/engine/louis-agent.composition", "packs/louis-agent.pack.git",
+                         "src/engine/louis-agent.choices", "src/engine/louis-agent.composition", "packs/tools/louis-agent.pack.git",
                      })
                 Assert.That(Run(TestPaths.RepoRoot, "pack", project, "-c", "Release", "-o", feed, "--nologo").ExitCode, Is.Zero);
 
