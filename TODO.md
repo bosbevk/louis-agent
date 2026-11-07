@@ -54,7 +54,7 @@ known limitations below are facts about today, not tasks.
 | F36 | MCP servers as packs | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
-| F61 | Accounts, tenants and the two sites in Azure | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
+| F61 | The framework's site in Azure: the five children are built, what is left is the site's pages into the louis-agent demo's web app, deployed beside Puls on `louis-agent.dev` (F61.6) | Next | [plan](src/docs/plans/F61-accounts-and-azure.md) |
 | F109 | The site in the louis-agent demo's web app, deployed beside Puls: the site's pages, films and look become the code-review app's landing (F109.1), the app a second Container App on puls-env in the same Bicep file (F109.2), the expert in the corner (F109.3) | Next | [plan](src/docs/plans/F109-the-site-in-the-demos-web-app.md) |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
