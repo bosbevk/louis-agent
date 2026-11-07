@@ -67,6 +67,7 @@ known limitations below are facts about today, not tasks.
 | F84 | A shorter cook report | Puls | — |
 | FX59 | binary attachments sent as files, not text | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
+| FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
 | F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
 | F28 | Team talk, the rest | Puls | [feature doc](demos/puls/docs/features/F28-team-talk.md) |
 | F85 | A retailer's own prices, only with its permission or feed | Puls | — |
@@ -123,7 +124,7 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
-| CL58 | A component's styles sit beside it: `X.razor.scss` scoped and bundled by Blazor's CSS isolation; a site forwards only the globals (settings, base, layout) and its own | Cleanups | [plan](src/docs/plans/CL58-styles-beside-their-components.md) |
+| CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
 
 ## Known limitations
 

@@ -32,9 +32,11 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   `ViewContent` and `UsageLine`. An empty slot leaves no gap, and with no `Empty` a new chat is just the message box. The site also says how a
   session opens (`OpenSession`), since the toolsets it asks for are its own; the frame hands it the voice, the place and the time zone as
   a `ChatOpening`. A site can reach in for two things through `@ref`: put a draft in the message box, and say something's coming soon.
-- **The look.** The rules are Sass under `Styles/web/`, and a site lists them in its own `app.scss`, found through `IncludePaths`, so it
-  gets one CSS file with the order it chose. Colours go by Bootstrap's names, or a `--web-` name where it has none, and no rule holds a fixed
-  one. `web/settings/_colours.scss` is what a site with none of its own gets: the Console theme, black and white with metallic greys, plus a
+- **The look** ([ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md), CL58). A rule one component draws sits beside it in its
+  `X.razor.scss`, scoped and bundled by the build into the site's `{site}.styles.css`, which the site links once. The globals are Sass under
+  `Styles/web/`: what every page shares, what a site's own pages draw too and what a theme overrides; a site lists them in its own `app.scss`,
+  found through `IncludePaths`, so it gets one CSS file with the order it chose. Colours go by Bootstrap's names, or a `--web-` name where it
+  has none, and no rule holds a fixed one. `web/settings/_colours.scss` is what a site with none of its own gets: the Console theme, black and white with metallic greys, plus a
   muted red and an amber. A site's colours come after it and win.
 - **The scripts** ([ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md), CL31) are ES modules beside their components
   (`ChatShell.razor.js`, `MessageList.razor.js`, `TurnView.razor.js`) or shared under `wwwroot/js/` (`preferences.js`, `dialogs.js`,
@@ -134,7 +136,7 @@ sequenceDiagram
 | `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `Location/`: `LocatedPlace`, `LocationProblem`), `ChatLanguages`, `ChatCosts`, `ModelNames` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
-| `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
+| `Styles/web/` | The globals: `settings/_colours.scss`, `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once; `ChatModules`, the frame's three modules on one runtime (CL31) |
 | `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
