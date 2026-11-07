@@ -42,6 +42,8 @@
 .sidebar-settings summary::before { content: "⚙  "; }
 .settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: var(--web-soft-text); }
 .settings input, .settings select { background: rgba(var(--web-overlay-rgb), .08); border: 1px solid rgba(var(--web-overlay-rgb), .18); color: var(--web-bright); border-radius: 10px; padding: 8px 10px; font: inherit; transition: border-color .2s, box-shadow .2s; }
+/* The picker's arrow a little in from the edge: the browser draws it at the end of the content box (FX65). */
+.settings select { padding-right: 16px; }
 .settings input:focus, .settings select:focus { outline: 0; border-color: var(--bs-primary); box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .25); }
 /* A picker's open list on the menu's colour: the browser's own white under the page's bright text hid the options (FX65). */
 .settings select option { color: var(--bs-emphasis-color); background: var(--web-menu-bg); }

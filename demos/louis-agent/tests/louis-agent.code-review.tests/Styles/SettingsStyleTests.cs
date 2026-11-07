@@ -33,6 +33,11 @@ public class SettingsStyleTests
         Assert.That(check, Does.Contain($"margin: {margin}"), "the same side margins as the settings above it");
     }
 
+    /// <summary>A picker's arrow sits a little in from its edge (Louis: "icon must move a bit in").</summary>
+    [Test]
+    public void APickersArrow_SitsInFromTheEdge() =>
+        Assert.That(Css, Does.Match(@"\.settings select\s*\{\s*padding-right:\s*1[2-9]px"));
+
     /// <summary>A picker's open list is the menu's dark with the bright text, never bright text on the browser's white.</summary>
     [Test]
     public void APickersOptions_SitOnTheMenusColour() =>
