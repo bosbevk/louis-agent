@@ -36,7 +36,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   time zone), streams a message's events over SSE, stops and deletes sessions, and reads the toolsets, rates and other
   GETs. Components never touch `HttpClient`.
 - **A turn's life.** `ChatRunner` holds what every chat page does with a message: the draft and its attachments, the
-  session opened on the first message, the stream with a redraw raised at most every 50 ms, stop, the save, and errors
+  session opened on the first message, the stream with a redraw raised at most every 50 ms and the last update always drawn (`RedrawThrottle`), stop, the save, and errors
   in the app's own words.
 - **The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
   `Turn` and its `Block`s the page shows. A sub-session's events go to its `Delegation`, so a specialist's work appears
