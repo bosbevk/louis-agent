@@ -15,11 +15,11 @@ namespace LouisAgent.Core.Tests.Messages;
 public partial class HostMessageEnumTests
 {
     /// <summary>
-    /// Every Messages/ folder's .cs files in the hosts, packs, identities and evals, outside bin and obj (a pack's and
-    /// an identity's enums left core in CL15).
+    /// Every Messages/ folder's .cs files in the hosts, packs, identities and evals, outside bin and obj and outside
+    /// the packs' own tests, which sit in the area since CL32 (a pack's and an identity's enums left core in CL15).
     /// </summary>
     private static IEnumerable<string> HostMessageFiles() =>
-        new[] { "src/hosts", "src/web", "src/evals", "demos", "tools", "packs", "packs-evals" }
+        new[] { "src/hosts", "src/web", "src/evals", "demos", "tools", "packs/tools", "packs/evals", "packs/web" }
             .Select(root => Path.Combine(TestPaths.RepoRoot, root))
             .Where(Directory.Exists)
             .SelectMany(root => Directory.EnumerateDirectories(root, "Messages", SearchOption.AllDirectories))

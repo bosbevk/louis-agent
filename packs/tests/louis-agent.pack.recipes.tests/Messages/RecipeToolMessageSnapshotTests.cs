@@ -13,7 +13,8 @@ namespace LouisAgent.Packs.Recipes.Tests.Messages;
 /// </summary>
 public class RecipeToolMessageSnapshotTests
 {
-    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "packs-tests/louis-agent.pack.recipes.tests", "Messages", "RecipeToolMessageSnapshot.json");
+    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot,
+        "packs/tests/louis-agent.pack.recipes.tests", "Messages", "RecipeToolMessageSnapshot.json");
 
     /// <summary>Every template with each hole shown as its name in angle brackets, as the file's JSON.</summary>
     private static string Snapshot()

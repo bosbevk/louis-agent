@@ -58,7 +58,7 @@ sequenceDiagram
     G-->>M: the result, summarised if it's too long
 ```
 
-**Tests** are in `packs-tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
+**Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.
 
 ---

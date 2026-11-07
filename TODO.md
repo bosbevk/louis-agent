@@ -73,10 +73,10 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 
 - [ ] Puls local spec (`docs/specs/puls-local.md`: the place registry, the business registry and its tiers, the municipality theme, POPIA for location)
 - [ ] Cook for the week (wave 2 of [PULS_COOK.md](demos/puls/docs/specs/PULS_COOK.md), after F48): a week on a budget, using up leftovers, cheap this month from Stats SA's series, diet and allergy rules in code, swaps that fit the dish, fixing what went wrong with a confidence check
-- [ ] CL16 Reusable roles (the cook into `packs/louis-agent.pack.cooking`, under the identity's frame)
+- [ ] CL16 Reusable roles (the cook into `packs/tools/louis-agent.pack.cooking`, under the identity's frame)
 - [ ] A domain stop-list for the browser: `RenderPolicy` refuses a listed domain, read from a setting or a file, so a site that asks us to stop ([SITE_OWNERS.md](demos/puls/docs/SITE_OWNERS.md)) is honoured without a release (FX21's review)
 - [ ] Sources as data (ADR 0032; `ShopKind` becomes the platform; shops and recipe sites as rows; robots.txt and sitemap indexing)
-- [ ] Places (`packs/louis-agent.pack.places`; takes in municipal services; the geocoder behind `IGeocoder`; the area guide moves into Puls)
+- [ ] Places (`packs/tools/louis-agent.pack.places`; takes in municipal services; the geocoder behind `IGeocoder`; the area guide moves into Puls)
 - [ ] Local businesses (listed, always marked as an ad; providers through their platform, a price list or their MCP server)
 - [ ] Vision: `ScreenshotPage(url)` and images as input (question 15)
 - [ ] Local lookups: scores, SARS dates, load-shedding, "the game" means the Springboks or Bafana, each a pack when a simulation shows demand

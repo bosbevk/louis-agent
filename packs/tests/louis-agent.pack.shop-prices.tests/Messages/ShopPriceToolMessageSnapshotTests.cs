@@ -12,7 +12,8 @@ namespace LouisAgent.Packs.ShopPrices.Tests.Messages;
 /// </summary>
 public class ShopPriceToolMessageSnapshotTests
 {
-    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "packs-tests/louis-agent.pack.shop-prices.tests", "Messages", "ShopPriceToolMessageSnapshot.json");
+    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot,
+        "packs/tests/louis-agent.pack.shop-prices.tests", "Messages", "ShopPriceToolMessageSnapshot.json");
 
     /// <summary>Every member's text, its holes shown as names.</summary>
     private static string Snapshot()

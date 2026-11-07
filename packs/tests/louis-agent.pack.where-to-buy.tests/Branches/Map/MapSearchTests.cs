@@ -11,10 +11,12 @@ namespace LouisAgent.Packs.WhereToBuy.Tests.Branches.Map;
 public class MapSearchTests
 {
     /// <summary>A fixture in the shape of Nominatim's jsonv2 answer (coordinates approximate, for these tests).</summary>
-    internal static string Fixture(string name) => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "packs-tests/louis-agent.pack.where-to-buy.tests", "Branches", "Fixtures", name));
+    internal static string Fixture(string name) => File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+        "packs/tests/louis-agent.pack.where-to-buy.tests", "Branches", "Fixtures", name));
 
     /// <summary>A map that answers every request with this body, and counts the requests.</summary>
-    internal static (MapSearch Map, List<Uri> Asked) Answering(Func<Uri, string> body, HttpStatusCode status = HttpStatusCode.OK)
+    internal static (MapSearch Map, List<Uri> Asked) Answering(Func<Uri, string> body,
+        HttpStatusCode status = HttpStatusCode.OK)
     {
         var asked = new List<Uri>();
         var http = new HttpClient(new StubHandler(request =>
@@ -46,7 +48,8 @@ public class MapSearchTests
         var town = await map.TownAsync("Malmesbury", CancellationToken.None);
 
         Assert.That((town!.Name, town.Latitude, town.Longitude), Is.EqualTo(("Malmesbury", -33.460278, 18.723611)));
-        Assert.That((town.Address!.Area, town.Address.State), Is.EqualTo(("Swartland Local Municipality", "Western Cape")));
+        Assert.That((town.Address!.Area, town.Address.State),
+            Is.EqualTo(("Swartland Local Municipality", "Western Cape")));
     }
 
     /// <summary>A town the map doesn't know is no town.</summary>
@@ -69,7 +72,8 @@ public class MapSearchTests
     {
         using var stderr = new CapturedStderr();
 
-        Assert.That(() => Answering(_ => "<html>", HttpStatusCode.OK).Map.TownAsync("Malmesbury", CancellationToken.None),
+        Assert.That(
+            () => Answering(_ => "<html>", HttpStatusCode.OK).Map.TownAsync("Malmesbury", CancellationToken.None),
             Throws.TypeOf<MapUnavailableException>());
 
         Assert.That(stderr.Text, Does.Contain("OpenStreetMap didn't answer a lookup for #").And.Contain("(10)").And.Not

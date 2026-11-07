@@ -1,6 +1,6 @@
 # louis-agent.pack.recipes — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.recipes/` · **References:** louis-agent.composition,
+> **Kind:** class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.recipes/` · **References:** louis-agent.composition,
 > Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
 
@@ -52,7 +52,7 @@ any identity can use it, and it could be served as an MCP server unchanged
   (`{"type": "recipe-from-source", "parameters": {"reader": "recipe-link"}}`), as the shops pack's
   `estimates-at-shop` takes a price reader ([ADR 0059](../../../src/docs/adr/0059-an-identity-ships-readers-not-checks.md),
   [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)). It lives apart from the pack, in
-  `packs-evals/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
+  `packs/evals/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
   demo program's `PulsCatalogs`, and the check catalogue's listing shows it with that one setting.
 
 ## Design notes
@@ -185,7 +185,7 @@ showed (`data` or `text`) and `search` to `wordpress` when the site's own `/?s=`
 
 ## Tests
 
-`packs-tests/louis-agent.pack.recipes.tests`, mirroring the folders: `RecipesPackTests` (the toolset needs a site and a
+`packs/tests/louis-agent.pack.recipes.tests`, mirroring the folders: `RecipesPackTests` (the toolset needs a site and a
 browser, the guide and the table are embedded, the guide routes here and says a hit may not be a recipe),
 `RecipeToolsTests` (the search and the reading on fake sites and a fake browser: the frame, the numbering, every
 refusal, the text path and its cut), `RecipePrinterTests`, `SchemaOrgRecipeTests` (on recorded pages and made-up
@@ -220,7 +220,7 @@ couldn't serve). `RecipeShelf` and `RecipeScatter` count inside the shelf's guar
 trial that leaves the library alone counts nothing ([ADR 0083](../../../src/docs/adr/0083-packs-keep-reports-behind-the-admin-key.md)).
 `Library/Screens/RecipesUsageScreen` shows it behind the admin key as the `recipe-library` screen, listed only with a database
 ([ADR 0086](../../../src/docs/adr/0086-a-packs-screens-are-described.md)). Its own view, `RecipeLibraryView` in
-`packs-web/louis-agent.pack.recipes.web`, adds the line *Of 10 offered, 1 served* above the table.
+`packs/web/louis-agent.pack.recipes.web`, adds the line *Of 10 offered, 1 served* above the table.
 
 `Library/Screens/` also holds what someone running the library manages it with, listed only with a database. `RecipesScreen` (`kept-recipes`) lists and searches
 what's kept, opens one as a form, and removes it; `RecipeForm` turns a recipe into its fields and back and holds its rules: a name, an ingredient and a step are

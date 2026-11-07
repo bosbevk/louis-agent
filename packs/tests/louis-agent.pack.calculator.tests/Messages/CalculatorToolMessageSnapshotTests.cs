@@ -12,7 +12,8 @@ namespace LouisAgent.Packs.Calculator.Tests.Messages;
 /// </summary>
 public class CalculatorToolMessageSnapshotTests
 {
-    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "packs-tests/louis-agent.pack.calculator.tests", "Messages", "CalculatorToolMessageSnapshot.json");
+    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot,
+        "packs/tests/louis-agent.pack.calculator.tests", "Messages", "CalculatorToolMessageSnapshot.json");
 
     /// <summary>Every member's text, its holes shown as names.</summary>
     private static string Snapshot()
