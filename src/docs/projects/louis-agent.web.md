@@ -36,8 +36,11 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   gets one CSS file with the order it chose. Colours go by Bootstrap's names, or a `--web-` name where it has none, and no rule holds a fixed
   one. `web/settings/_colours.scss` is what a site with none of its own gets: the Console theme, black and white with metallic greys, plus a
   muted red and an amber. A site's colours come after it and win.
-- **The scripts.** `wwwroot/js/chat.js` is what the frame calls, and `first-paint.js` applies what the browser remembers before the first
-  paint; a site loads both from `_content/louis-agent.web/js/`. A script names a problem, and the site's `ChatText` says it.
+- **The scripts** ([ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md), CL31) are ES modules beside their components
+  (`ChatShell.razor.js`, `MessageList.razor.js`, `TurnView.razor.js`) or shared under `wwwroot/js/` (`preferences.js`, `dialogs.js`,
+  `download.js`), each imported through `Scripts/JsModule` the first time its component draws and let go when it's disposed; the paths are
+  named once in `FrameworkScripts`. `first-paint.js` applies what the browser remembers before the first paint, and is the one script a
+  site lists of ours. A script names a problem, and the site's `ChatText` says it; `FrameworkModulesTests` holds the rule.
 - **Small state classes.** What the frame keeps that can be tested without drawing it is a plain class in `Shell/`: renaming a chat,
   this browser's settings, choosing a language, a chat's costs. `ChatShell` holds them and only passes them on.
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
@@ -132,7 +135,8 @@ sequenceDiagram
 | `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
 | `Styles/web/` | `settings/_colours.scss`, `tools/_colours.scss` (both forms of a colour from one value), and the rules by concern in `base/`, `layout/`, `chat/`, `admin/` |
-| `wwwroot/js/` | `chat.js` (with `renderCode` for a pack's file viewer), `first-paint.js` |
+| `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once (CL31) |
+| `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |

@@ -30,8 +30,8 @@ The sign-in, registration, confirmation, reset and profile pages are the account
 opts in. **Opting in** is a project reference, `@using LouisAgent.Web.Accounts.Components` in `_Imports.razor`,
 `AddLouisAgentAccounts()` in `Program.cs`, `AccountLibrary.Assembly` in the router's `FrameworkPages.With(...)` (CL57: a
 library a site adds services for is in its router, or its pages answer nothing; `SiteRouterTests` holds it), `@forward "accounts/shell"` in `app.scss` with the library's `Styles` on
-`sasscompiler.json`'s include paths, and `_content/louis-agent.web.accounts/js/passkeys.js` in `index.html` (without
-it the profile's passkey section says the browser can't do passkeys); the starter has all of it. A site then changes
+`sasscompiler.json`'s include paths; the starter has all of it. The passkeys script is a module the components import
+themselves (CL31), so `index.html` lists nothing for it. A site then changes
 three things only: **its words**, a copy of `AccountText` registered before `AddLouisAgentAccounts()` (Puls:
 `PulsAccountText.Afrikaans`); **its frame**, a small `AccountLayout` on `AccountShell` with its brand in the slot,
 named in `SiteFrames`; and **whether it has accounts at all**, which is the API's `ACCOUNTS_SQL_URL`, not the site's.
@@ -43,9 +43,14 @@ needs from accounts comes through `IAccountMenu` in the framework's web, and not
 ## Change the styles or scripts
 
 A rule every site should get goes in a partial under `Styles/web/`, with colours from variables only (`FixedColourTests` and
-`FrameworkStylesTests` hold it). What repeats becomes one piece under `web/tools/` ([the rules](../../../.claude/rules/css.md)). A script a
-component calls goes in `wwwroot/js/chat.js`, and `FrameworkScriptsTests` holds that it's there. A script holds no words for the
-person: it names the problem, and `ChatText` says it.
+`FrameworkStylesTests` hold it). What repeats becomes one piece under `web/tools/` ([the rules](../../../.claude/rules/css.md)). A component that needs the browser gets an ES module beside it, `X.razor.js` with `export function`s and no global
+([ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md)); what several components share is a module under
+`wwwroot/js/`, its path named once in `Scripts/FrameworkScripts`. The component holds a `JsModule` on that path, calls its
+functions and lets it go in `DisposeAsync`; a button calls a method with `@onclick`, never a global inline. A test plans
+the module with bUnit's `SetupModule` and sees the calls. `FrameworkModulesTests` holds it: every module a class names is
+on disk, every function it invokes is exported there, nothing but `first-paint.js` writes to `window`, and a site's
+`index.html` lists only `first-paint.js` of ours. A script holds no words for the person: it names the problem, and
+`ChatText` says it.
 
 ## Add an API call
 

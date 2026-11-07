@@ -29,3 +29,6 @@ live results). The C# rules in `csharp.md` apply to the code-behind.
   the keys.
 - **A theme** is added as [Hosts guide: Adding a web theme](../../src/CLAUDE.md#adding-a-web-theme) says; a bUnit
   test pins each component's markup to a golden file ([Write and run tests](../../src/docs/guides/write-tests.md)).
+- **A script is a module beside its component** ([ADR 0093](../../src/docs/adr/0093-a-script-is-a-module-beside-its-component.md)):
+  `X.razor.js` with `export function`s and no global, held through `Scripts/JsModule` and let go in `DisposeAsync`; a
+  button calls a method with `@onclick`, never a global inline; a site lists only `first-paint.js` of ours.

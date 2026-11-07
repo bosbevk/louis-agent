@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 58 | 76 |
 | Fixes (`FX`) | 55 | 3 |
-| Cleanups (`CL`) | 25 | 26 |
+| Cleanups (`CL`) | 26 | 25 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (104 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -87,7 +87,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F47 | The CLI and Rider's host on the agent API | Later |
 | F9 | Long chats | Later |
 | F10 | Settings per role and per session | Later |
-| CL31 | Scripts as ES modules beside their components | Later |
 | F95 | What's left of CL29 | Later |
 | CL17 | what's left of the coding identity | Later |
 | F96 | The browser's user agent names the user's town per visit | Later |
@@ -251,10 +250,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (25 done)
+## Cleanups (26 done)
 
 | Id | When | What |
 |---|---|---|
+| CL31 | 2026-11-07 | The framework's scripts as ES modules beside their components, imported through JsModule (ADR 0093); chat.js and passkeys.js gone from every site's head; the download the framework owns |
 | CL57 | 2026-11-07 | What a project holds (ADR 0092): the API off core.web, the runners' programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals, the hosts lose -server, a starter API; CL51 with it |
 | CL33 | 2026-11-07 | Core's Web/ and Telemetry/ as louis-agent.core.web and louis-agent.core.telemetry, on core behind a seam each; a host composes through HostServices |
 | CL56 | 2026-11-07 | One roadmap: the platform plan and its summary became ROADMAP.md, the feature plans inside it drafts |

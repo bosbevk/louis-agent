@@ -99,6 +99,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0090](0090-the-packs-are-one-area.md) | The packs are one area, `packs/`, with the same inner names as `src/` and a demo: `tools/`, `evals/`, `tests/`, `web/`, `docs/`; the rules of 0073 and 0086 stand on the new prefixes; a new kind beside the packs is a folder under it, never a new root | Accepted |
 | [0091](0091-web-access-and-telemetry-are-libraries-on-core.md) | The web (browser, fetcher, robots, search, rendering, recorders) and the telemetry (tracer, exporter, the collector's sink) are `louis-agent.core.web` and `louis-agent.core.telemetry`, on core behind `IWebAccess` and `IHostTelemetry` with a Null Object each; a host composes them through `HostServices`; core names neither PuppeteerSharp nor OpenTelemetry | Accepted |
 | [0092](0092-a-project-holds-what-is-reused-together.md) | A project holds what is reused together and nobody takes what it doesn't use: a plain name sits below core and references nothing heavy, a dotted name sits on the thing before the dot and that thing opts into nothing, a product or SDK never sits in core | Accepted |
+| [0093](0093-a-script-is-a-module-beside-its-component.md) | A script is an ES module beside the component that needs it, imported through `JsModule` and let go on dispose; a site lists nothing of ours but `first-paint.js`; the rule reads the modules and the calls | Accepted |
 
 ## When to write one
 
