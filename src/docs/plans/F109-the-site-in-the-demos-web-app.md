@@ -226,8 +226,10 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   second chat; its own session on the API with that identity and its toolsets; the same gate as the chat.
 - **The site's layout places it** configured with the louis-agent expert (Louis: "our layout page will have a
   louis-agent expert configured"): an identity of this demo under `demos/louis-agent/identity`, beside the coding
-  one, whose whole knowledge is the framework, its voice and toolsets its own files; a demo places the widget where
-  it likes, with whichever identity it names.
+  one, whose whole knowledge is the framework, its voice and toolsets its own files. **The demo wraps the widget
+  once as its own component, `ExpertChat`** (Louis: "why not in a component? also as well as layout"), configured
+  with the expert, so the layout places `<ExpertChat />` in the corner and any page places the same tag where it
+  wants it, nothing configured twice; another demo wraps `ChatWidget` with its own identity the same way.
 - **The guide's knowledge** is open: a tool that searches the docs in the mounted workspace (Claude's pick), an
   index built at build time, or a digest in the prompt; Louis to pick.
 - **The demos section** shows the triage workflow (F106) once that is built; until then the review chat at `/chat`
