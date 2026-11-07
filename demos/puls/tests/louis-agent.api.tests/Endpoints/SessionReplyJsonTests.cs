@@ -17,10 +17,12 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class SessionReplyJsonTests
 {
-    private const string CreatedNames = "session_id,created_at,toolsets,depth,role,llm,tool,task,run,service,parent";
+    private const string CreatedNames =
+        "session_id,created_at,toolsets,depth,role,identity,llm,tool,task,run,service,parent";
 
-    private const string SessionNames = "session_id,created_at,last_activity,busy,toolsets,depth,role,llm,tool,tools,"
-                                        + "task,run,service,sub_sessions,usage";
+    private const string SessionNames =
+        "session_id,created_at,last_activity,busy,toolsets,depth,role,identity,llm,tool,tools,"
+        + "task,run,service,sub_sessions,usage";
 
     /// <summary>Opening a session answers 201 with what it opened with.</summary>
     [Test]

@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Composition.Packs.Screens;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Core.Agent.Catalog;
+
 /// <summary>
 /// The one catalogue of what this instance can load (CL15, ADR 0027): core's own toolsets (<see cref="ToolsetCatalog"/>)
 /// and the packs', with the identities that name them. Built once by the host from the identities and packs it was
@@ -31,8 +31,8 @@ public sealed class AgentCatalog
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
         new[]
             {
-                nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile), nameof(AgentEngine.ReloadSkills),
-                nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools)
+                nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile),
+                nameof(AgentEngine.ReloadSkills), nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools)
             }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),
         StringComparer.OrdinalIgnoreCase);
@@ -81,11 +81,20 @@ public sealed class AgentCatalog
             {
                 if (EngineToolNames.Contains(name))
                     throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameIsTheEngines,
-                        new { Tool = name, Toolset = toolset.Name }));
+                        new
+                        {
+                            Tool = name,
+                            Toolset = toolset.Name
+                        }));
                 if (_toolsetOfTool.Keys.FirstOrDefault(k => string.Equals(k, name, StringComparison.OrdinalIgnoreCase)) is
                     { } taken)
                     throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameTwice,
-                        new { Tool = name, First = _toolsetOfTool[taken].Name, Second = toolset.Name }));
+                        new
+                        {
+                            Tool = name,
+                            First = _toolsetOfTool[taken].Name,
+                            Second = toolset.Name
+                        }));
                 _toolsetOfTool[name] = toolset;
             }
 
@@ -98,6 +107,21 @@ public sealed class AgentCatalog
     public IReadOnlyList<IAgentIdentity> Identities { get; }
 
     public IReadOnlyList<IAgentPack> Packs { get; }
+
+    /// <summary>The identity a session names (F109.3), case ignored; null when this instance runs no such one.</summary>
+    public IAgentIdentity? Identity(string name) =>
+        Identities.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Who a session is from its role: the identity whose mode the role is (<c>{name}/{mode}</c>), else the first
+    /// identity, which a session with no role or a specialist's role runs as; null for a host with none.
+    /// </summary>
+    public IAgentIdentity? IdentityOf(string? role)
+    {
+        int slash = role?.IndexOf('/') ?? -1;
+        var named = slash > 0 ? Identity(role![..slash]) : null;
+        return named ?? Identities.FirstOrDefault();
+    }
 
     /// <summary>The data the packs publish (ADR 0070), each pack's in its order.</summary>
     public IReadOnlyList<IDataFeed> Feeds { get; }
@@ -146,7 +170,8 @@ public sealed class AgentCatalog
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
 
     /// <summary>The same for a pack's toolset, before the engine holds it.</summary>
-    public static IEnumerable<MethodInfo> ToolMethodsOf(PackToolset toolset) => ToolMethodsOf(ToolsetDefinition.Of(toolset));
+    public static IEnumerable<MethodInfo> ToolMethodsOf(PackToolset toolset) =>
+        ToolMethodsOf(ToolsetDefinition.Of(toolset));
 
     /// <summary>
     /// The one rule for which methods are tools: the public instance methods a toolset's class declares. The engine
@@ -179,7 +204,11 @@ public sealed class AgentCatalog
         foreach (string name in names)
             if (!seen.Add(name))
                 throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogNameTwice,
-                    new { Name = name, Kind = kind }));
+                    new
+                    {
+                        Name = name,
+                        Kind = kind
+                    }));
     }
 
     private static void CheckNamed(string owner, IEnumerable<string> named, IReadOnlySet<string> registered)

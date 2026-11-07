@@ -32,11 +32,11 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// place is where the user is, only when they shared it (F22).
     /// </summary>
     public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? role = null,
-        string? location = null, string? timeZone = null)
+        string? location = null, string? timeZone = null, string? identity = null)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "v1/sessions")
         {
-            Content = JsonContent.Create(new CreateSessionBody(toolsets, role, location, timeZone)),
+            Content = JsonContent.Create(new CreateSessionBody(toolsets, role, location, timeZone, identity)),
         });
         var reply = await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase);
         return reply!.SessionId;

@@ -468,6 +468,11 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   site to the six tags with an absolute picture and address, the starter carries them as placeholders, the web
   guide says how. The louis-agent app's picture is the brand's social card (PR #227), its own copy; Puls's its
   icon and its Afrikaans hero line.
+- **F109.3 step 1, two notes** (2026-11-08, unattended): the stream's session line doesn't carry the identity yet,
+  only the replies do, since the role on that line already names the identity's voice and the stream goldens stay
+  untouched. The prompt source (`SkillFileSource`) is process-wide and frozen after its first read, so an API test
+  can't add a second identity's voice file mid-process: the test names an embedded voice for its second identity,
+  which exercises the same path; a refreshable source is a cleanup for later if a test ever needs its own file.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

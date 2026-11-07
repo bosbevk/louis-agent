@@ -18,7 +18,8 @@ public sealed record CreateSessionBody(
     string? Role,
     string? Location,
     [property: JsonPropertyName("time_zone")]
-    string? TimeZone);
+    string? TimeZone,
+    string? Identity = null);
 
 /// <summary>A message for the session to answer, with the files the user attached.</summary>
 public sealed record MessageBody(string Message, IEnumerable<Attachment> Attachments);

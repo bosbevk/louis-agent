@@ -97,7 +97,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
             session = sessions.Create(request?.Toolsets,
                 request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent),
                 request?.Depth ?? 0,
-                request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format, replay, opener);
+                request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format, replay, opener,
+                request?.IdentityOrNull());
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {

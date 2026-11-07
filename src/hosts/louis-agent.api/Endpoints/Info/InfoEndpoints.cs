@@ -36,6 +36,7 @@ internal static class InfoEndpoints
         routes.MapGet("/toolsets", handlers.GetToolsets);
         routes.MapGet("/model", handlers.GetModel);
         routes.MapGet("/roles", handlers.GetRoles);
+        routes.MapGet("/identities", handlers.GetIdentities);
         routes.MapGet("/llm-profiles", handlers.GetLlmProfiles);
     }
 }

@@ -22,12 +22,16 @@ internal sealed record CreateSessionRequest(
     string? Tool = null,
     string? Role = null,
     string? Stream = null,
-    ReplayRequest? Replay = null)
+    ReplayRequest? Replay = null,
+    string? Identity = null)
 {
     internal const int MaxTagLength = 200;
 
     /// <summary>The role asked for, trimmed; null when none is sent (the default voice, CL9).</summary>
     public string? RoleOrNull() => string.IsNullOrWhiteSpace(Role) ? null : Role.Trim();
+
+    /// <summary>The identity asked for (F109.3), trimmed; null when none is sent (the host's first).</summary>
+    public string? IdentityOrNull() => string.IsNullOrWhiteSpace(Identity) ? null : Identity.Trim();
 
     /// <summary>The format asked for with <c>stream</c>: Claude when none is sent; null when the name is unknown (the API's 400).</summary>
     public StreamFormat? StreamFormatOrNull() =>
