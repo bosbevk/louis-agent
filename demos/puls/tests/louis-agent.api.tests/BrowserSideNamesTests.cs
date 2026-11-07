@@ -32,6 +32,12 @@ public class BrowserSideNamesTests
         Assert.That(Enum.GetValues<WebScriptLanguage>().Select(m => m.Wire()).Order(),
             Is.EqualTo(Enum.GetValues<CoreScriptLanguage>().Select(m => m.Wire()).Order()));
 
+    /// <summary>The kinds of field the browser can draw are the ones a pack can say, name for name.</summary>
+    [Test]
+    public void TheBrowsersFieldKinds_AreThePacksFieldKinds_NameForName() =>
+        Assert.That(Enum.GetValues<LouisAgent.Web.Components.Screens.Forms.ScreenFieldKind>().Select(kind => kind.Wire()).Order(),
+            Is.EqualTo(Enum.GetValues<LouisAgent.Composition.Packs.Screens.Editing.ScreenFieldKind>().Select(kind => kind.Wire()).Order()));
+
     /// <summary>The kinds of column the browser can draw are the ones a pack can say, name for name.</summary>
     [Test]
     public void TheBrowsersCellKinds_AreThePacksCellKinds_NameForName() =>

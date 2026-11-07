@@ -1,0 +1,28 @@
+@page "/admin/screens/{Name}/rows/{Id}"
+@layout AdminFrame
+
+@* One row of a pack's screen, as its own page: the way back, its heading, and its form. *@
+
+<PageTitle>@(_record?.Title ?? Id) · Admin</PageTitle>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+}
+else if (_record is null)
+{
+    <section class="card-p screen-page-loading"><span class="muted">Loading…</span></section>
+}
+else
+{
+    <div class="page-head">
+        <div>
+            <h1>@_record.Title</h1>
+            <p><a class="screen-back" href="@BackAddress">Back to the list</a></p>
+        </div>
+    </div>
+
+    <section class="card-p">
+        <ScreenForm ScreenName="@Name" RowId="@Id" Record="_record" OnSaved="LoadAsync" />
+    </section>
+}

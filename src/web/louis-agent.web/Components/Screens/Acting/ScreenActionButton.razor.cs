@@ -43,7 +43,7 @@ public partial class ScreenActionButton
     /// <summary>Puts the button back, having done nothing.</summary>
     private void SayNo() => _asking = false;
 
-    /// <summary>Does it. A failure comes back as an answer with its reason, so the table shows it like any other.</summary>
+    /// <summary>Does it. A failure comes back as an answer with its reason, and the table shows it the same.</summary>
     private async Task DoAsync()
     {
         _asking = false;

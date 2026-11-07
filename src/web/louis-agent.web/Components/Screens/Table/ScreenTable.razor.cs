@@ -47,7 +47,7 @@ public partial class ScreenTable : IScreenView
     private string RowAddress(string rowId) =>
         $"admin/screens/{Uri.EscapeDataString(Screen.Name)}/rows/{Uri.EscapeDataString(rowId)}";
 
-    /// <summary>Says what came of an action, and reads the rows again rather than guessing what changed (ADR 0042).</summary>
+    /// <summary>Says what came of an action, and reads the rows again rather than guess what changed.</summary>
     private async Task AfterActionAsync(ScreenAnswerReply answer)
     {
         _answer = answer;
