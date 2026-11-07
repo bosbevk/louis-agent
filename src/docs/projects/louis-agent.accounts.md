@@ -39,6 +39,14 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
   `HostTenantResolver` finds the row that owns it or falls back to `ACCOUNTS_TENANT`, `UseTenant` fills the request's
   `CurrentTenant`, and `Store/AccountUserStore` looks a person up within it and stamps it on a new account. The
   store refuses without a tenant.
+- **The cookie carries the tenant** (`Users/AccountClaimsFactory`, the claim's name in the contracts' `AccountClaims`),
+  so the API reads who opened a session and where from the cookie alone (`SessionOpener`), never from the body.
+- **The agent's key gate takes a signed-in person** (F61.2): a `/v1` call gets through with `AGENT_API_KEY`, or with
+  the cookie *and* the header `X-Requested-With: louis-agent.web`, which the framework's web sends on every call and a
+  cross-site form can't. The accounts' middleware runs before the gate, so the person is known to it.
+- **A browser following the confirmation link lands on the web's page** (`Endpoints/Confirmation/ConfirmationRedirect`,
+  an endpoint filter on Identity's routes): `/confirm-email?done=true`, or `?failed=true`; a client that asks for JSON
+  gets Identity's own text.
 - **Mail** goes through Identity's `IEmailSender<AccountUser>`; `Mail/LogEmailSender` writes the link to the log,
   decoded from Identity's HTML form, hashed unless `LOG_CONTENT=full`. A real sender is one class behind the seam.
 - **Storage** is EF Core on SQL Server: `Store/AccountsDbContext` is Identity's context plus `Tenants`, with the
@@ -129,9 +137,11 @@ out, delete; the route table pinned). CI runs the second against a SQL Server se
 
 ## Limits and plans
 
-The pages, the agent key gate taking a signed-in person and Puls using it all are F61.2; Google, Microsoft and
-LinkedIn F61.3; passkeys and two-factor F61.5; a real mail sender, Facebook and X, and the business site are later.
-One Google account links in one tenant only. A tenant has at most one host.
+Google, Microsoft and LinkedIn are F61.3 (with linking, unlinking, and setting a password on an account that has none);
+passkeys and two-factor F61.5; a real mail sender, Facebook and X, and the business site are later. One Google
+account links in one tenant only. A tenant has at most one host. Identity's own validation messages (a password too
+short) come in English whatever the site's language. The cookie's `/account/refresh` (bearer tokens) is mapped and
+unused.
 
 ## Related docs
 

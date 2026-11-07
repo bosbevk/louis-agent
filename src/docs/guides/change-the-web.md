@@ -23,6 +23,16 @@ of which site this is. A new word goes in `ChatText` in English. State the frame
 own test. A site's page redraws for its own reasons, which sets the frame's parameters again, so `OnParametersSet` there can't assume
 the address changed.
 
+## Change the account pages
+
+The sign-in, registration, confirmation, reset and profile pages are the framework's (`Pages/Account/`), the same on
+every site, and a site changes three things only: **its words**, a copy of `AccountText` registered before
+`AddLouisAgentAccounts()` (Puls: `PulsAccountText.Afrikaans`); **its frame**, a small `AccountLayout` on `AccountShell`
+with its brand in the slot, named in `SiteFrames`; and **whether it has accounts at all**, which is the API's
+`ACCOUNTS_SQL_URL`, not the site's. A new field or section goes in the framework: a component under
+`Components/Account/` with its bUnit test, its call in `AccountApi`, and its words in `AccountText`. The server side
+is `louis-agent.accounts` ([its doc](../projects/louis-agent.accounts.md)).
+
 ## Change the styles or scripts
 
 A rule every site should get goes in a partial under `Styles/web/`, with colours from variables only (`FixedColourTests` and

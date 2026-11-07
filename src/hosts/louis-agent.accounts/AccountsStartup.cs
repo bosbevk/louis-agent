@@ -44,9 +44,11 @@ public static class AccountsStartup
         services.AddSingleton(options);
         if (!options.Enabled) return builder;
 
-        // The database, with a retry for a server that's waking up (Azure SQL's serverless tier pauses).
+        // The database, with a retry for a server that's waking up (Azure SQL's serverless tier pauses). EF Core logs
+        // every statement at Information; the host's log keeps its warnings and errors.
         services.AddDbContext<AccountsDbContext>(db =>
             db.UseSqlServer(options.SqlUrl, sql => sql.EnableRetryOnFailure()));
+        services.AddLogging(logging => logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning));
 
         // The request's tenant, and the rule that finds it.
         services.AddScoped<CurrentTenant>();

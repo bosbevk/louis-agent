@@ -369,3 +369,16 @@ on a business site later, with `CurrentTenant` as the scoped answer every part r
 The lesson for the goal's skill 20 is the same as the renderers' and the search providers': find where the library
 expects to be extended, extend it there, and put a seam of your own only where it has none. The alternative, our own
 user tables over every Identity interface, would have been Identity again for one column.
+
+## The same Bridge twice (F61.2, 2026-11-07)
+
+The admin pages reached a site's layout through `AdminFrame`, a layout in the framework that hands over to the one the
+site set (`SiteFrames`, a Bridge). The account pages needed the same, so `SiteFrames` names two layouts and
+`AccountFrame` is the second bridge: eleven lines, the same test. A site's `AccountLayout` is a brand in a slot of
+`AccountShell`, as its `AdminLayout` is for `AdminShell`. The lesson for skill 20: when a seam already exists, a second
+use of it should look like the first, so the third is obvious.
+
+One place deliberately breaks the injection rule: the profile menu looks the account services up
+(`IServiceProvider.GetService`) instead of injecting them, because accounts are a site's choice and the menu is drawn
+on every site, and in every chat test, with or without them. Rather than make every site and every test register
+services they don't use, the one component that cares asks whether they're there.

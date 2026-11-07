@@ -110,3 +110,27 @@ a keyed hash unless `LOG_CONTENT=full` on a developer's own machine.
 **What the tests taught.** Identity writes a link for an HTML mail, `&amp;` and all; following it raw gave a 400 with
 no body, the kind of failure only a test that follows the real link finds. And `puls` can't be a tenant in a test:
 it's an identity's wire name, and the names rule (ADR 0043) is right to flag it.
+
+## A cookie that counts only on the app's own call (F61.2, 2026-11-07)
+
+**What was built.** The framework's sign-in, registration, reset and profile pages, and the agent's key gate taking
+a signed-in person in place of `AGENT_API_KEY`.
+
+**The header is the whole trick.** A browser sends our cookie on any request to our address, a form on another site
+included. It adds a custom header only to a request the page's own script made, because a cross-site form can't set
+one and a cross-site script is stopped by the browser's same-origin rule. So the gate's rule is two things, not one:
+the cookie names the person, and `X-Requested-With: louis-agent.web` proves the call is ours. `HostAuth.IsSignedIn`
+holds it as a pure function beside `HasKey`, and the test is three lines: cookie alone 401, header alone 401, both
+through.
+
+**Where a sign-in page may send you.** `?returnUrl=` is the page the person came from; a sign-in page that forwards
+anywhere is a phishing tool. `SafeReturn` follows a relative path of ours and nothing else: not `//evil.test`, not
+`https://…`, not `javascript:`. The test lists the shapes an attacker would try.
+
+**Say the same thing either way.** Forgot-password and resend-confirmation answer the same whether or not the address
+has an account, on the server and on the page, so neither can be used to find out which addresses do.
+
+**What the tests taught.** Identity answers `Results<ContentHttpResult, UnauthorizedHttpResult>`, a wrapper, so a
+filter that switches on the answer's type must unwrap `INestedHttpResult` first; the redirect never fired until it
+did. And a query parameter in a Blazor page can't be passed as a parameter in a test; the test navigates with the
+query, as a browser would.

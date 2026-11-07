@@ -15,6 +15,12 @@
   pushed, each child's branch starts from the previous child's tip.
 - **2026-11-07, F61.1 built** on `feature/F61.1-accounts-library`; its plan is deleted, its picks are in the project
   doc's *What the build decided* and in ADRs 0087 and 0088.
+- **2026-11-07, F61.2 built** on `feature/F61.2-account-pages`, branched from F61.1's tip; its plan is deleted. Picks
+  taken unattended: the tenant travels as a claim named in the contracts (a claim is signed with the cookie, and the
+  contracts have no SQL); a refused turn's words say "sign in, or enter a key" on every site, so the chat shell knows
+  nothing of accounts; the profile menu looks the account services up rather than injecting them, so a site or a
+  test without them still draws the guest's menu; the two site-independent sites (the starter, the code-review app)
+  got the account pages too, since they're sites on the framework.
 
 ## Context
 
