@@ -5,6 +5,7 @@ using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Evals.Admin.Studio;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -19,11 +20,16 @@ namespace LouisAgent.Web.Evals.Components.Studio.Promptfoo;
 /// Parameters down, events up: the page owns the drafts and the save, so the panel asks it to save before an export
 /// and tells it which draft an import made. The runner does both conversions; the panel only carries the text.
 /// </remarks>
-public partial class PromptfooPanel
+public partial class PromptfooPanel : IAsyncDisposable
 {
+    private JsModule? _download;
+
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ReviewerState Reviewer { get; set; } = null!;
     [Inject] private IJSRuntime JS { get; set; } = null!;
+
+    /// <summary>The framework's download module, which saves the export (CL31).</summary>
+    private JsModule Download => _download ??= new JsModule(JS, FrameworkScripts.Download);
 
     /// <summary>Whether a draft is open, so there is one to export.</summary>
     [Parameter]
@@ -86,7 +92,7 @@ public partial class PromptfooPanel
             using var response = await Api.SendAsync(new HttpRequestMessage(HttpMethod.Get,
                 $"{Drafts}/{Uri.EscapeDataString(id)}/promptfoo"));
             string yaml = await response.Content.ReadAsStringAsync();
-            await JS.InvokeVoidAsync("louisDownload", ExportName,
+            await Download.InvokeVoidAsync("download", ExportName,
                 Convert.ToBase64String(Encoding.UTF8.GetBytes(yaml)), "application/yaml");
             _exported = StudioText.PromptfooExported(ExportName);
         }
@@ -102,4 +108,7 @@ public partial class PromptfooPanel
 
     /// <summary>The name promptfoo looks for its file under.</summary>
     private const string ExportName = "promptfooconfig.yaml";
+
+    /// <summary>Lets the download module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _download?.DisposeAsync() ?? ValueTask.CompletedTask;
 }

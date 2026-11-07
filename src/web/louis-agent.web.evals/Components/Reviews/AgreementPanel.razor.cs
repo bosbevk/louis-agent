@@ -1,6 +1,7 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -9,15 +10,18 @@ namespace LouisAgent.Web.Evals.Components.Reviews;
 /// <summary>
 /// How often each reviewed judge agreed with the people, and the download of their labels (F18 step 6a.3).
 /// </summary>
-public partial class AgreementPanel
+public partial class AgreementPanel : IAsyncDisposable
 {
+    private JsModule? _download;
+
     /// <summary>The API the labels come from.</summary>
     [Inject]
     private AgentApi Api { get; set; } = null!;
 
-    /// <summary>The browser, which saves the labels zip.</summary>
-    [Inject]
-    private IJSRuntime Js { get; set; } = null!;
+    [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    /// <summary>The framework's download module, which saves the labels zip (CL31).</summary>
+    private JsModule Download => _download ??= new JsModule(Js, FrameworkScripts.Download);
 
     /// <summary>The run's agreement rows as the contract's stored run reply carries them.</summary>
     [Parameter, EditorRequired]
@@ -41,7 +45,7 @@ public partial class AgreementPanel
         {
             byte[] zip = await Api.GetBytesAsync(
                 $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/labels?grader={Uri.EscapeDataString(grader)}");
-            await Js.InvokeVoidAsync("louisDownload", $"{grader}-labels-{RunId}.zip", Convert.ToBase64String(zip),
+            await Download.InvokeVoidAsync("download", $"{grader}-labels-{RunId}.zip", Convert.ToBase64String(zip),
                 "application/zip");
         }
         catch (AgentApiException ex)
@@ -49,4 +53,7 @@ public partial class AgreementPanel
             _error = ex.Message;
         }
     }
+
+    /// <summary>Lets the download module go, if it was ever loaded.</summary>
+    public ValueTask DisposeAsync() => _download?.DisposeAsync() ?? ValueTask.CompletedTask;
 }
