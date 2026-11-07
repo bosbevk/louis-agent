@@ -66,8 +66,10 @@ public static class AccountsStartup
             .AddDefaultTokenProviders()
             .AddApiEndpoints();
 
-        // The mail seam, after Identity's own no-op sender so this one is the one resolved.
+        // The mail seam, after Identity's own no-op sender so this one is the one resolved; and the cookie's claims,
+        // with the tenant on them.
         services.AddTransient<IEmailSender<AccountUser>, LogEmailSender>();
+        services.AddScoped<IUserClaimsPrincipalFactory<AccountUser>, AccountClaimsFactory>();
         services.TryAddSingleton(TimeProvider.System);
         return builder;
     }

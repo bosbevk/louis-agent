@@ -62,7 +62,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
         string? role = null,
         UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
-        SessionReplay? replay = null)
+        SessionReplay? replay = null, SessionOpener? opener = null)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
@@ -70,7 +70,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
-                new { MinionDepth, Depth = depth }));
+                new
+                {
+                    MinionDepth,
+                    Depth = depth
+                }));
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
         var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
             ?
@@ -101,7 +105,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         DropIdle(DateTimeOffset.UtcNow);
 
         var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
-            place, llm, tool, format, replay);
+            place, llm, tool, format, replay, opener);
         _sessions[session.Id] = session;
         return session;
     }

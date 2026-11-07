@@ -1,4 +1,8 @@
+using System.Security.Claims;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Logging;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Sessions;
 using LouisAgent.Api.Endpoints.Answers;
@@ -54,12 +58,16 @@ internal sealed class SessionHandlers(AgentHostContext host)
     private readonly WebReplayMode _defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
     private readonly ReplayStore? _recordings = ReplayStore.From(host.Agent);
 
+    /// <summary>The API's log, for who opened which session.</summary>
+    private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Sessions");
+
     /// <summary>
     /// Opens a session. Every part of the body is optional and refused before any engine is built when it can't be
     /// what a session does: a tag too long, an unknown time zone or stream format, a replay the rules refuse, or a
     /// toolset, role or LLM profile this instance doesn't have.
     /// </summary>
-    public async Task<CreatedAnswer> CreateSession(CreateSessionRequest? request, AgentSessions sessions)
+    public async Task<CreatedAnswer> CreateSession(CreateSessionRequest? request, AgentSessions sessions,
+        ClaimsPrincipal principal)
     {
         if (request?.InvalidTag() is { } invalid)
             return Bad(MessageText.Format(ApiUserText.InvalidTag,
@@ -81,18 +89,29 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (_recordings is not null && ReplayResolution.FreshTrial(request, replay) is { } fresh)
             await _recordings.StartTrialAsync(fresh);
 
+        // Who opened it, when a signed-in person did (F61.2): read from the cookie's claims, never from the body.
+        var opener = SessionOpener.Of(principal);
         AgentSession session;
         try
         {
             session = sessions.Create(request?.Toolsets,
                 request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent),
                 request?.Depth ?? 0,
-                request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format, replay);
+                request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format, replay, opener);
         }
         catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
         {
             return Bad(ex.Message);
         }
+
+        if (opener is not null)
+            Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
+                new
+                {
+                    Session = session.Id,
+                    User = LogContent.Of(opener.UserId),
+                    Tenant = LogContent.Of(opener.TenantId)
+                }, tag: "API");
 
         return new CreatedJson<SessionCreatedReply>($"{ApiMap.Version}/sessions/{session.Id}",
             SessionCreatedReply.Of(session), SessionJson.SnakeCase);

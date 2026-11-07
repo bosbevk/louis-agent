@@ -17,6 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
+    <!-- F61.2: the claim names the sign-in cookie carries, so who opened a session is read by the accounts' name for
+         it; the contracts only, never the accounts library and its database. -->
+    <ProjectReference Include="..\louis-agent.accounts.contracts\louis-agent.accounts.contracts.csproj" />
     <!-- FX26: a failed turn's kind (StreamErrorKind), written by the stream as its readers read it. -->
     <ProjectReference Include="..\..\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />
     <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
