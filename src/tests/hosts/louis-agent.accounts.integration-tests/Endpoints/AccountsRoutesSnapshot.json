@@ -1,6 +1,9 @@
 [
   "DELETE /account/ (cookie)",
+  "DELETE /account/external/{provider} (cookie)",
   "GET /account/confirmEmail (open)",
+  "GET /account/external/callback (open)",
+  "GET /account/external/{provider} (open)",
   "GET /account/manage/info (cookie)",
   "GET /account/me (cookie)",
   "GET /account/providers (open)",
@@ -9,6 +12,7 @@
   "POST /account/logout (cookie)",
   "POST /account/manage/2fa (cookie)",
   "POST /account/manage/info (cookie)",
+  "POST /account/password (cookie)",
   "POST /account/refresh (open)",
   "POST /account/register (open)",
   "POST /account/resendConfirmationEmail (open)",

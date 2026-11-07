@@ -16,3 +16,6 @@ public sealed record AccountInfo(
 
 /// <summary>What the profile page sends to <c>PUT /account/profile</c>: the name, or none to clear it.</summary>
 public sealed record ProfileBody(string? DisplayName);
+
+/// <summary>What the profile sends to <c>POST /account/password</c>: a first password for an account that has none.</summary>
+public sealed record SetPasswordBody(string NewPassword);

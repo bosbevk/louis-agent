@@ -8,4 +8,10 @@ public enum AccountUserText
 {
     [Description("A name is at most {Max} characters.")]
     DisplayNameTooLong,
+
+    [Description("This is the last way into the account: set a password first.")]
+    LastWayIn,
+
+    [Description("This account already has a password; change it instead.")]
+    HasPasswordAlready,
 }
