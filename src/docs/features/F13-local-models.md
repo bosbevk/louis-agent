@@ -5,7 +5,7 @@
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) (toolsets) · [MODELS.md](../MODELS.md) (Ollama)
 >
-> **In the TODO:** merged into [F15](F15-model-limits.md) (2026-10-19, [the platform plan](../plans/platform.md):
+> **In the TODO:** merged into [F15](F15-model-limits.md) (2026-10-19, [the platform plan](../../../ROADMAP.md):
 > most of it is sending `num_ctx`, which is F15's), so its line is gone; its work is on **F15 Model limits and local
 > models** under *Next*, Phase 9 ([TODO](../../../TODO.md)) · **Removes the limitation:** local models get a truncated
 > prompt (now F15's)

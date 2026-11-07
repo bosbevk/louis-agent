@@ -1,6 +1,6 @@
 # F17 · Orchestrator agent: a routing workflow, with an agent for the exceptions
 
-> **Status:** merged into F39 *Orchestration*, Part B (2026-10-19): [the platform plan](../../../../src/docs/plans/platform.md)'s
+> **Status:** merged into F39 *Orchestration*, Part B (2026-10-19): [the platform plan](../../../../ROADMAP.md)'s
 > Phase 6 rebuilds the orchestrator on the identity split, as the `voorman` identity; the local-triage items
 > (`EscalateToHuman` idempotent per error, contradicting decisions refused) are its B5's tests; this doc stays as its
 > design · **Milestone:** M4 (after F10; before build mode) · **Depends on:** F4 (the caching strategy),

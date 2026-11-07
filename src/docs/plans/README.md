@@ -12,12 +12,18 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
-| [platform.md](platform.md) | The living roadmap: Phases 0 to 3 done; next 3b evals as content, 3c the cook (F35, F48), 3d localisation (F46), 3e Puls's specialists (F50), then F40 and the control layer, Phase 10 the engine as a package | 2026-10-19, kept current | One engine, its identities and packs, evals in C#, the sales playground, then the control layer phase by phase; only current and future work, a built phase becomes a done-line |
+| [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
+| [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
+| [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |
+| [phase-7-checked-and-guarded.md](phase-7-checked-and-guarded.md) | Draft: *FX4, F41, F42* (Phase 7) | not yet | The same; one plan per id when each starts |
+| [F36-mcp-packs.md](F36-mcp-packs.md) | Draft: *F36 MCP servers as packs* (Phase 8) | not yet | The same |
+| [phase-9-what-a-sale-needs.md](phase-9-what-a-sale-needs.md) | Draft: *F43, F8, F15, F44, F51* (Phase 9) | not yet | The same; F61 took the accounts and the hosting |
+| [puls-track.md](puls-track.md) | Draft: *Puls's track, between the phases* | not yet | The same; the items are the TODO's *Puls* rows |
+| [phase-10-engine-package.md](phase-10-engine-package.md) | Draft: *Phase 10, the engine as a developer package* | not yet | The same |
 | [F48-cook-and-teacher.md](../../../demos/puls/docs/plans/F48-cook-and-teacher.md) | TODO: *F48 Recipe maths and a teaching cook* (Puls, after F35's steps 1 to 4) | 2026-10-26 | Decisions settled, steps proposed: no Cooklang, our own C# ingredient-line reader, scaler and shopping list on F35's `Recipe`; a `WriteRecipe` tool prints the recipe and list; estimates from Stats SA's average prices plus our own rows (`null`, never 0); cues and whys in every answer; a pantry (global catalogue, stock per browser id, Mongo in the recipes pack). The four diagrams, the namespace map and folder trees are added when it is copied onto its branch |
 | [F61-accounts-and-azure.md](F61-accounts-and-azure.md) | TODO: *F61 Accounts, tenants and the two sites in Azure* (parent) | 2026-11-07 | Sign-in, registration and profiles on the framework's web, on ASP.NET Core Identity with a tenant on every account; SQL Server in Docker now, Azure SQL later; Google, Microsoft and LinkedIn; passkeys; Puls and the site from Azure Container Apps with Mongo and the browser on a VM. Five children, each its own plan when it starts; F61.4 (Azure) last |
 | [CL33-core-web-and-telemetry.md](CL33-core-web-and-telemetry.md) | TODO: *CL33 Core's `Web/` and `Telemetry/` as `louis-agent.core.web` and `louis-agent.core.telemetry`* | 2026-11-07 | Two libraries on core with a seam and a Null Object each (`IWebAccess`, `IHostTelemetry`), a host composes through `HostServices`; PuppeteerSharp and OpenTelemetry leave core; eight steps, unattended |
 | [F58-sites-from-this-pc.md](F58-sites-from-this-pc.md) | TODO: *F58 The two sites go live from this PC* | 2026-11-05 | `louis-agent.dev` (the framework's site) and a static Puls placeholder on `mypuls.co.za`, from Docker on Louis's PC through one Cloudflare Tunnel per demo, in the groups `louis-agent-production` and `mypuls-production`; nothing that spends money is public |
-| [platform-summary.md](platform-summary.md) | The platform plan, for someone outside the project | 2026-10-19 | Two pages to give an investor or partner: what Puls is, what's built and measured, the ten phases, how it makes money, competition and risks; its ask is for Louis to fill in |
 | [F28-team-talk.md](../../../demos/puls/docs/plans/F28-team-talk.md) | [F28 Team talk](../../../demos/puls/docs/features/F28-team-talk.md) | 2026-10-15 | The note in the tools' `message` (no tool change), five labelled lines in the task's language; `read_mood` per turn with a marker line, as the user's place travels (F22); the shared card as a thread; both checks score `briefed` |
 
 ## Conventions
@@ -25,7 +31,7 @@ built or comes next, and every plan as it was is at the tag
 - **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix, `CLn-name.md` for a
   cleanup (a TODO line with no feature or fix doc). A fix gets a plan only when it takes more than one step; a one-step
   fix has its fix doc alone (FX18, FX19 and FX20).
-- **The roadmap** is the one other kind: [platform.md](platform.md) says what we build and in which order, and each plan
+- **The roadmap** is the one other kind: [ROADMAP.md](../../../ROADMAP.md) says what we build and in which order, and each plan
   says how. It is the one name allowed outside `Fnn`/`FXnn`/`CLn`. It holds only current and future work (Louis,
   2026-10-28): a built phase leaves one done-line, and the detail stays in the ADRs, the write-ups and git
   (Louis, 2026-10-29, replacing the frozen copy of 2026-10-19).

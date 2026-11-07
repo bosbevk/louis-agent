@@ -68,7 +68,8 @@ public partial class WorkLogTests
     {
         var done = DoneRows().Matches(WorkLog).Select(m => m.Groups[1].Value).ToList();
         var counts = Counts().Matches(WorkLog)
-            .ToDictionary(m => m.Groups[1].Value, m => (Done: int.Parse(m.Groups[2].Value), Open: int.Parse(m.Groups[3].Value)));
+            .ToDictionary(m => m.Groups[1].Value,
+                m => (Done: int.Parse(m.Groups[2].Value), Open: int.Parse(m.Groups[3].Value)));
 
         Assert.That(WorkLog, Does.Not.Contain("| — |"), "every row is dated");
         Assert.That(done, Is.Unique);

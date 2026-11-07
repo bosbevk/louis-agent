@@ -1,6 +1,6 @@
 # 0030. Build or adopt: the loop stays ours on Microsoft.Extensions.AI
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../plans/platform.md)) ·
+**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md)) ·
 **Recorded:** 2026-10-19
 
 ## Context
@@ -45,7 +45,7 @@ Existo's facts come from its NuGet page (read 2026-10-19), not its code.
 
 ## Links
 
-[Platform plan](../plans/platform.md) (*Where this plan challenges you*, Part 3) ·
+[Platform plan](../../../ROADMAP.md) (*Where this plan challenges you*, Part 3) ·
 [0002](0002-messages-api-tier-with-our-own-loop.md) · [0003](0003-provider-strategies.md) ·
 [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) ·
 [Semantic Kernel](https://github.com/microsoft/semantic-kernel) · [GitHub Copilot SDK](https://github.com/github/copilot-sdk) ·

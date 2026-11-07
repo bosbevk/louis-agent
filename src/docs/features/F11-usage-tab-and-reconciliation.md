@@ -1,6 +1,6 @@
 # F11 · Usage tab, usage API and reconciliation with the bill
 
-> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../plans/platform.md) makes the
+> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../../../ROADMAP.md) makes the
 > usage view and the check against the bill F7's step 4 in Phase 5, *Cost you can see and stop* (the control room's
 > cost view); this doc stays as its design · **Milestone:** M5 · **Depends on:** F1–F3, F6, F7
 >

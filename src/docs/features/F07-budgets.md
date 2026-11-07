@@ -4,7 +4,7 @@
 >
 > **Spec:** [Usage §6](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** **F7 Cost you can see and stop** under *Next*, Phase 5 of [the platform plan](../plans/platform.md),
+> **In the TODO:** **F7 Cost you can see and stop** under *Next*, Phase 5 of [the platform plan](../../../ROADMAP.md),
 > taking in [F6](F06-estimates.md) and [F11](F11-usage-tab-and-reconciliation.md); its fifth story, the orchestrator
 > deferring what it can't afford, goes to F39 (Phase 6 B4) ([TODO](../../../TODO.md))
 

@@ -5,7 +5,7 @@
 > **Spec:** [Optimisation §B (cache minimums), §C, §D](../specs/RESPONSE_OPTIMISATION.md) · [MODELS.md](../MODELS.md)
 >
 > **In the TODO:** **F15 Model limits and local models** under *Next*, Phase 9 of
-> [the platform plan](../plans/platform.md), taking in [F13](F13-local-models.md) and the capability check per model
+> [the platform plan](../../../ROADMAP.md), taking in [F13](F13-local-models.md) and the capability check per model
 > ([TODO](../../../TODO.md))
 
 Every limit the agent works against is a single number today, the same for every model: F9 compacts at 120,000 tokens,

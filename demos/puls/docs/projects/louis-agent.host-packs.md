@@ -104,7 +104,7 @@ copies a pack and an eval each keep equal.
 ## Limits and plans
 
 - Synchronous: nothing to await yet. F36's MCP servers as packs connect here, at start-up, so this becomes async, with
-  `MCP_PACKS` as a second source beside `PackKind` ([platform plan](../../../../src/docs/plans/platform.md)).
+  `MCP_PACKS` as a second source beside `PackKind` ([platform plan](../../../../ROADMAP.md)).
 
 ## Related docs
 

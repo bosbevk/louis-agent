@@ -1,6 +1,6 @@
 # 0031. Orchestration is an engine function, and the orchestrator stays on core
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../plans/platform.md), Phase 6 F39) ·
+**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md), Phase 6 F39) ·
 **Recorded:** 2026-10-19
 
 ## Context
@@ -29,7 +29,7 @@ a regex. ADR 0012 left open whether the real orchestrator keeps core or moves to
 
 ## Links
 
-[Platform plan](../plans/platform.md) (Phase 6) · [0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md) ·
+[Platform plan](../../../ROADMAP.md) (Phase 6) · [0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md) ·
 [0021](0021-minions-one-task-one-tool.md) · [0027](0027-engine-identities-and-packs.md)
 
 ---

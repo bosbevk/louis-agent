@@ -1,6 +1,6 @@
 # 0029. Simulations in C#: one harness for checks, regressions and demos
 
-**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../plans/platform.md), Phase 3 F18) ·
+**Status:** Accepted · **Date:** 2026-10-19 (decided in the [platform plan](../../../ROADMAP.md), Phase 3 F18) ·
 **Recorded:** 2026-10-19 · Amends [0022](0022-benchmarks-recorded-from-the-protocol.md)
 
 ## Context
@@ -39,7 +39,7 @@ file name keep the first word, because the record of the decision keeps its name
 
 ## Links
 
-[Platform plan](../plans/platform.md) (Phases 3 and 4) · [0022](0022-benchmarks-recorded-from-the-protocol.md) ·
+[Platform plan](../../../ROADMAP.md) (Phases 3 and 4) · [0022](0022-benchmarks-recorded-from-the-protocol.md) ·
 [0007](0007-measure-every-request.md)
 
 ---
