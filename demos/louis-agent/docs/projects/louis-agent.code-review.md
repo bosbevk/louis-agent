@@ -35,6 +35,31 @@ flowchart LR
 - **Themes** are `retro`, the default, and `paper`: Sass that sets the framework's colour names, built to `wwwroot/css/themes/`, loaded after
   `app.css` and swapped while the page runs. `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
 
+## Diagrams
+
+**Flow:** the architecture is under *How it works*; this is reviewing a change, the job it's for. The button only fills the message box, and nothing goes to the model until the person sends it.
+
+```mermaid
+sequenceDiagram
+    actor R as Reviewer
+    participant V as GitChangesView
+    participant A as ReviewActions
+    participant H as ChatHandoff
+    participant C as ChatPage and ChatShell
+    participant P as AgentApi
+    R->>V: opens /admin/screens/git-changes, presses Review
+    V->>A: Diff(path, staged, untracked)
+    A-->>V: the prompt and its title
+    V->>H: OpenChatWith(prompt)
+    H->>C: goes to the chat
+    C->>H: Take
+    H-->>C: the draft, once
+    C-->>R: the prompt in the message box
+    R->>C: reads it, changes it, sends it
+    C->>P: StreamMessageAsync
+    P-->>R: the review, as it comes
+```
+
 ## Structure
 
 | Path | What's in it |

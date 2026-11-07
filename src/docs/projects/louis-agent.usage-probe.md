@@ -55,6 +55,44 @@ invariant), checks it names a region, prints the currency and today's rate, and 
 roughly $0.05 on Haiku 4.5. Anthropic only caches a prompt above a minimum size (4,096 tokens on Haiku 4.5), which is
 why its prompt is long.
 
+## Diagrams
+
+**Architecture:** one program with four jobs, picked by its arguments. Only the default job calls a model, and the others read a file or this PC.
+
+```mermaid
+flowchart TD
+    program["Program.cs"] -->|"no job named"| factory["LlmClientFactory"]
+    factory --> client["IChatClient"]
+    factory --> mapper["IUsageMapper"]
+    client --> provider["The real provider"]
+    program -->|"--ledger"| report["UsageReport"]
+    program -->|"--cache-gaps"| gaps["CacheGaps"]
+    gaps --> report
+    report --> ledger[("usage-YYYY-MM.jsonl")]
+    report --> prices["PriceTableLoader"]
+    program -->|"--host-culture"| env["EnvFile"]
+    env --> file[("config/.env")]
+```
+
+**Flow:** the default job. Each request costs real money, and with Anthropic the pair runs again with a cache marker, to see a cache write and then a read.
+
+```mermaid
+sequenceDiagram
+    participant P as Program.cs
+    participant F as LlmClientFactory
+    participant C as The provider
+    participant M as IUsageMapper
+    P->>F: Create, CreateUsageMapper
+    F-->>P: the client and the mapper the agents use
+    loop each request: plain or cached, whole or streamed
+        P->>C: a one-word question, with a long system prompt
+        C-->>P: the answer and its usage
+        P->>P: prints what the adapter reported
+        P->>M: the usage
+        M-->>P: prints the ledger: line
+    end
+```
+
 ## Structure
 
 | File | What's in it |

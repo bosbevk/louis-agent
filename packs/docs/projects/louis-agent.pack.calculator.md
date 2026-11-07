@@ -33,6 +33,32 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
 - **Every number is a decimal.** The evaluator reads a whole number as an int, and `100000*100000` outgrows one, so each whole
   number gets a point first.
 
+## Diagrams
+
+**Architecture:** one tool on .NET's own evaluator, with a check in front so only arithmetic reaches it.
+
+```mermaid
+flowchart LR
+    pack["CalculatorPack: the calculator toolset"] --> tools["CalculatorTools.Calculate"]
+    tools --> arithmetic["Arithmetic"]
+    arithmetic -->|"digits, a point, + - * / ( ) only"| table["DataTable.Compute"]
+```
+
+**Flow:** a call with two sums, one of them bad. A bad sum says why, and the others still answer.
+
+```mermaid
+sequenceDiagram
+    participant M as The model
+    participant T as CalculatorTools
+    participant A as Arithmetic
+    M->>T: Calculate(["500*3/2", "2+x"])
+    T->>A: 500*3/2
+    A-->>T: 750
+    T->>A: 2+x
+    A-->>T: refused before the evaluator sees it
+    T-->>M: one line per sum, each result beside its sum
+```
+
 ## Who uses it
 
 Puls's cook, for scaling a recipe's amounts: its role file asks for the `calculator` toolset, and Puls names the pack. The

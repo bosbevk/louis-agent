@@ -102,6 +102,39 @@ flowchart LR
 
 The full endpoint and event reference: [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi).
 
+## Diagrams
+
+**Flow:** opening a session and asking it something. The diagram under *How it works* shows the routes; this is the main one. A second message while a turn
+is running gets `409`, and a client that disconnects cancels the turn.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant K as AgentKeyGate
+    participant H as SessionHandlers
+    participant S as AgentSessions
+    participant F as AgentEngineFactory
+    participant T as TurnStream
+    participant E as AgentEngine
+    participant W as ITurnStreamFormat
+    C->>K: POST /v1/sessions (toolsets, role, place)
+    K->>H: the key is right
+    H->>S: Create
+    S->>F: the engine for these toolsets, role and level
+    F-->>S: a shared engine, kept for the session's life
+    H-->>C: 201 and the session's id
+    C->>K: POST /v1/sessions/{id}/messages
+    K->>H: the key is right
+    H->>T: StreamTurnAsync
+    T->>E: StreamPromptAsync(history, prompt)
+    loop as the reply comes
+        E-->>T: an update
+        T->>W: shape it like Claude's events
+        W-->>C: a Server-Sent Event
+    end
+    T-->>C: the turn's usage, then the end of the message
+```
+
 ## Structure
 
 | File | What's in it |

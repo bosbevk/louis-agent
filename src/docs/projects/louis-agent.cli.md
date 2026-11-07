@@ -33,6 +33,43 @@ You: exit
   the session total, so stdout stays the answer alone for scripts. Only with the ledger on (`LOG_DIRECTORY` set).
 - Outside Docker, `config/.env` and the repository root are found from any folder inside the repository.
 
+## Diagrams
+
+**Architecture:** the host is one small call on top of core. All the agent's work is in the engine, and `ConsoleChat` only draws it.
+
+```mermaid
+flowchart TD
+    program["Your program<br/>(the coding agent's: louis-agent.coding-cli)"] -->|"args and AgentCatalog"| host["CliHost"]
+    host -->|"AgentHost.Build"| engine["AgentEngine (core)"]
+    host --> chat["ConsoleChat"]
+    chat -->|"StreamPromptAsync"| engine
+    chat -->|"HandleUserCommand"| engine
+    chat --> out["stdout: the answer, thinking and tool lines"]
+    chat --> err["stderr: the usage line"]
+```
+
+**Flow:** one line typed in the interactive loop. A single prompt from a script goes straight to the engine and then exits.
+
+```mermaid
+sequenceDiagram
+    actor Y as You
+    participant C as ConsoleChat
+    participant E as AgentEngine
+    Y->>C: a line
+    C->>E: HandleUserCommand
+    alt it's a command: /tools, /approve, /reject, /usage
+        E-->>C: the answer, with no model involved
+        C-->>Y: prints it
+    else it's a message
+        C->>E: StreamPromptAsync(history, line)
+        loop as the reply comes
+            E-->>C: an update
+            C-->>Y: thinking in grey, the text, a line per tool
+        end
+        C-->>Y: the turn's usage, on stderr
+    end
+```
+
 ## Structure
 
 | File | What's in it |

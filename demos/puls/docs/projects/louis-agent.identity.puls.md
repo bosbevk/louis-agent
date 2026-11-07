@@ -2,14 +2,14 @@
 
 > **Kind:** class library (`net10.0`) · **Path:** `demos/puls/identity/louis-agent.identity.puls/` · **References:**
 > louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
-> sets it) · **Names:** the `where-to-buy`, `shop-prices`, `recipes` and `calculator` packs · **Its evals:**
+> sets it) · **Names:** the `where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator` packs · **Its evals:**
 > `demos/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md))
 
 ## Purpose
 
 Who Puls is: the South African general assistant's voice in Afrikaans and English, its routing, its specialists and its
-minion, and the pack it uses. It holds no tools and no settings: what Puls can do comes from core's toolsets and from
+minion, and the packs it uses. It holds no tools and no settings: what Puls can do comes from core's toolsets and from
 the packs it names ([ADR 0027](../../../../src/docs/adr/0027-engine-identities-and-packs.md)). Puls's web app, what the user sees, is a
 separate project ([louis-agent.puls](louis-agent.puls.md)).
 
@@ -17,8 +17,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 - **One class, the rest is content.** `PulsIdentity` answers three questions: its name (`puls`), its prompts (a
   `ManifestEmbeddedFileProvider` over `Prompts/`, so the files keep their folder paths) and its packs
-  (`["shops", "recipes"]`).
-- **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the packs it names (`shops`, `recipes`); the
+  (`where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator`).
+- **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the packs it names; the
   catalogue checks that each pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
   are read through the same reader as core's (`SkillFileSource`).
 - **A chat.** The web app opens a session with `role: "puls/voice-af"` (or `puls/voice-en`) and the toolsets
@@ -26,10 +26,9 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   shared routing (`voice.md`). Puls answers the world itself with `web`, and hands every cooking question to the cook
   with `StartSubSession`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`).
 - **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
-  ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `recipes`
-  and `calculator`, required (no `?`): a cook that can't read recipes or do its sums is refused, not
-  left without them. It loads no `shops`, since the cook looks up no
-  prices, and gets `web` from Puls. A role that needs a toolset always lists it under
+  ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `recipes`,
+  `where-to-buy`, `shop-prices` and `calculator`, required (no `?`): a cook that can't read recipes, find a shop, estimate a list or do its sums is refused,
+  not left without them. It gets `web` from Puls. A role that needs a toolset always lists it under
   `metadata.toolsets` ([ADR 0025](../../../../src/docs/adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook`, `puls-minion-web-price-lookup` and `puls-minion-find-recipe`, the ones that passed
@@ -40,9 +39,46 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   (`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers
   in `Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring
   code; `recipe-link` reads the `Skakel:` / `Link:` line for the recipes pack's `recipe-from-source`), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
-  rules are the shops pack's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
+  rules are the where-to-buy pack's checks project's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
   Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
+
+## Diagrams
+
+**Architecture:** one class, and the rest is content. Puls holds no tools: what it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.
+
+```mermaid
+flowchart TD
+    plugins["Plugins, in louis-agent.host-packs"] -->|"IDENTITIES=puls"| identity["PulsIdentity"]
+    identity -->|"its prompts"| prompts["Prompts: voice, specialists, minions"]
+    identity -->|"the packs it names"| packs["where-to-buy, shop-prices, recipes, web, calculator"]
+    prompts --> catalog["AgentCatalog: checks them, then SkillFileSource reads them"]
+    packs --> catalog
+    catalog --> engine["AgentEngine, per session"]
+    evals["louis-agent.identity.puls.evals: its evals and PulsReaders"] -.-> runner["The eval runner only"]
+    judges["louis-agent.identity.puls.judges"] -.-> runner
+```
+
+**Flow:** what a session is made of, and how a cooking question gets to the cook. A role that's off comes back to Puls as a tool error, which it has to report.
+
+```mermaid
+sequenceDiagram
+    participant W as The web app
+    participant E as The engine
+    participant V as Puls: principles, voice-af, voice
+    participant C as The cook: puls-cook
+    participant T as Its tools
+    W->>E: opens with puls/voice-af, specialists and web
+    E->>V: reads the principles, then the voice, then the routing
+    W->>V: a cooking question
+    V->>E: StartSubSession(puls-cook)
+    E->>E: is the role known, and in ROLES_ENABLED?
+    E->>C: a sub-session, with only its role and its toolsets' guides
+    C->>T: FindRecipes, ReadRecipe, FindBranches, EstimatePrices, Calculate
+    T-->>C: the results
+    C-->>V: its answer
+    V-->>W: the answer, in the user's language
+```
 
 ## Design notes
 
@@ -83,7 +119,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 |---|---|
 | `PulsIdentity.cs` | The identity: name, prompts, packs |
 | `PulsRole.cs` | The roles Puls offers a session as an enum (the cook, researcher, analyst, historian, reader and the price-lookup and find-recipe minions), each a file of the identity; written with `.Wire()` (F18 step 7.5.4) |
-| `PulsPack.cs` | The packs Puls names as an enum of its own (the shops pack), never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
+| `PulsPack.cs` | The packs Puls names as an enum of its own, never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
 | `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one (by each line's English name; the labels and the lines Puls says are its voice's, so the routing holds no language), what isn't available yet; no mode of its own |
 | `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 15, F50.2: its two modes, the cook's tools now `where-to-buy` and `shop-prices`, and ten checks: general checks over Puls's readers under the cook's names, the where-to-buy pack's two shop rules, `unpriced-items` (the general `tool-rows-marked` on `EstimatePrices`, measured, never fails), `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 60 labels, and `Transcripts/` |

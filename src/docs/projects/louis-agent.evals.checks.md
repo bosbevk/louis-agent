@@ -57,6 +57,46 @@ It references only what a pack already references, each for one thing:
 
 Never the harness, a pack, an identity or a package: the harness keeps `Microsoft.Extensions.AI.Evaluation`.
 
+## Diagrams
+
+**Architecture:** the contract sits apart, so a pack can ship a check without referencing the harness (*Separated Interface*).
+
+```mermaid
+flowchart TD
+    subgraph contract["This project"]
+        catalog["CheckCatalog"]
+        type["ICheckType and CheckType: a check named by its type"]
+        check["ICheck"]
+        reads["Trial, Transcript, TurnFacts, EngineEvents"]
+        grade["Grade and Verdict"]
+        catalog --> type
+        type -->|"builds"| check
+        check -->|"reads"| reads
+        check -->|"returns"| grade
+    end
+    harness["louis-agent.evals: the general checks"] -->|"lists its entries"| catalog
+    pack["A pack's checks project"] -->|"lists its entries"| catalog
+    identity["An identity's judges"] -->|"lists its entries"| catalog
+```
+
+**Flow:** from a line in an eval's file to a grade. A setting the entry can't read is refused here, so a typo can't become a default.
+
+```mermaid
+sequenceDiagram
+    participant F as eval.json
+    participant C as CheckCatalog
+    participant T as The entry
+    participant K as The check
+    participant R as The trial
+    F->>C: Get("within-time")
+    C-->>F: the entry, or a refusal naming the known types
+    F->>T: its settings and a CheckContext
+    T->>T: reads the settings with EvalJson.Strict
+    T-->>K: builds it
+    R->>K: the trial's transcript
+    K-->>R: a Grade, through Verdict
+```
+
 ## Structure
 
 | Path | What's in it |

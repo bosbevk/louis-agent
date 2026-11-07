@@ -34,6 +34,49 @@ as you go: every answer shows what it cost, specialists included.
   the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
   (`chat.motion`, F24).
 
+## Diagrams
+
+**Architecture:** Puls is a small program on the framework's web. What's here is what makes it Puls: its words, its look, its landing page and which websites matter to it.
+
+```mermaid
+flowchart TD
+    api["louis-agent.puls-api: serves this app"] --> program["Program.cs"]
+    program -->|"PulsText.Afrikaans"| text["ChatText"]
+    program -->|"RecipeWebViews.AddTo"| views["PackViews"]
+    program -->|"EvalPages.AddTo, PulsSites.Kinds"| evals["The framework's eval pages"]
+    program -->|"SiteFrames"| layout["AdminLayout"]
+    landing["LandingPage"] --> sections["Components/Landing, Components/Brand"]
+    chat["ChatPage"] -->|"its slots: logo, views, profile, water, EmptyChat"| shell["ChatShell (framework)"]
+    chat --> panels["ChatViews: Verken and Studio"]
+    layout -->|"its logo, LiveRunStrip, EvalLinks"| admin["AdminShell (framework)"]
+    shell --> server["The API, on the same origin"]
+    admin --> server
+```
+
+**Flow:** someone asks Puls about cooking. The web app opens the session and draws what comes back, and the handing over happens on the server.
+
+```mermaid
+sequenceDiagram
+    actor U as Someone
+    participant P as ChatPage
+    participant S as ChatShell
+    participant A as AgentApi
+    participant V as The session, as Puls
+    participant C as A sub-session, as the cook
+    U->>S: asks, in Afrikaans
+    S->>P: OpenSessionAsync, on the first message
+    P->>A: CreateSessionAsync(specialists and web, voice-af, place)
+    S->>A: StreamMessageAsync
+    A->>V: the message
+    V->>C: StartSubSession(puls-cook)
+    C-->>A: its work, as events
+    A-->>S: a DelegationCard and the WorkPanel fill up
+    C-->>V: the cook's answer
+    V-->>A: Puls's reply
+    A-->>S: the turn, then its cost
+    S-->>U: the answer in Afrikaans
+```
+
 ## Structure
 
 | Path | What |

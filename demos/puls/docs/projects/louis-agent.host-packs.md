@@ -1,24 +1,22 @@
 # louis-agent.host-packs — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
-> every identity (`identities/`) and every pack (`packs/`) · **Used by:**
-> louis-agent.api, louis-agent.mcp-server
+> the Puls identity and the packs Puls's programs can load · **Used by:**
+> louis-agent.puls-api, louis-agent.puls-eval-runner
 
 ## Purpose
 
-The host's side of the framework: the one project that knows every identity and every pack, so that nothing else has to
+Puls's side of the composition: the one project that knows every identity and pack Puls's programs can load, so that nothing else has to
 ([ADR 0027](../../../../src/docs/adr/0027-engine-identities-and-packs.md)). Core stays the engine and names no product; a host stays
 thin and never references an identity or a pack; and which agent a host runs is a setting, not a build.
 
 ## How it works
 
-- **One call at start-up.** A host's first line is `AgentHost.Build(Plugins.FromEnvironment())` (the MCP server's is
-  `BuildToolHost`). `FromEnvironment` loads `config/.env` first, since the hosts load it only inside `Build`, which runs
+- **One call at start-up.** `louis-agent.puls-api` starts with `AgentHost.Build(Plugins.FromEnvironment())`. `FromEnvironment` loads `config/.env` first, since the hosts load it only inside `Build`, which runs
   after this, then reads `IDENTITIES` and `PACKS`.
 - **Names become enums once.** `IDENTITIES=puls` and `PACKS=where-to-buy` are comma separated, case ignored, each name once,
   and parsed with `SettingChoice` into `IdentityKind` and `PackKind` ([ADR 0024](../../../../src/docs/adr/0024-choices-are-enums.md)).
-  An unknown name stops start-up with `HostPacksErrorMessage`, naming the supported ones. Unset loads nothing: the
-  code-review stack never carries Puls.
+  An unknown name stops start-up with `HostPacksErrorMessage`, naming the supported ones. Unset loads nothing.
 - **Identities bring their packs.** Each chosen identity is created, and every pack it names in `Packs` is added to the
   packs named on their own; one instance per pack, however often it is named. A pack is created with its own settings
   (`new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
@@ -27,15 +25,54 @@ thin and never references an identity or a pack; and which agent a host runs is 
   share, and a tool name two toolsets share or that is the engine's own. The host hands it to `AgentHost`, which
   registers the prompts with `SkillFileSource` and builds every engine from it.
 
+## Diagrams
+
+**Architecture:** the one project that knows every identity and pack Puls can load, so core and the hosts don't have to. A host's own program is the only thing that calls it.
+
+```mermaid
+flowchart TD
+    program["louis-agent.puls-api: Program.cs"] -->|"Plugins.FromEnvironment"| plugins["Plugins"]
+    plugins --> kinds["IdentityKind, PackKind"]
+    plugins --> identity["PulsIdentity"]
+    plugins --> packs["RecipesPack, WhereToBuyPack, ShopPricesPack, CalculatorPack and the general packs"]
+    identity --> catalog["AgentCatalog"]
+    packs --> catalog
+    program -->|"AgentHost.Build"| host["AgentHost: builds every engine from the catalogue"]
+    catalog --> host
+```
+
+**Flow:** start-up. Which agent a host runs is a setting, not a build, and any mistake stops it before an engine exists.
+
+```mermaid
+sequenceDiagram
+    participant H as The host's program
+    participant P as Plugins
+    participant S as SettingChoice
+    participant C as AgentCatalog
+    participant A as AgentHost
+    H->>P: FromEnvironment
+    P->>P: loads config/.env, reads IDENTITIES and PACKS
+    P->>S: each name, once
+    alt a name nobody knows
+        S-->>H: stops, with HostPacksErrorMessage naming the supported ones
+    else
+        P->>P: creates each identity, and each pack it or PACKS names, once
+        P->>C: the identities and the packs
+        C->>C: refuses a name twice, a missing pack, a cycle, a shared path or tool name
+        C-->>H: the catalogue
+        H->>A: Build(catalogue)
+    end
+```
+
 ## Structure
 
 | File | What's in it |
 |---|---|
 | `Plugins.cs` | `FromEnvironment`, `FromSettings(identities, packs)`, and one `Create` switch for identities and one for packs |
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
-| `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
+| `PackKind.cs` | The compiled packs a host may load or an identity may name: recipes, where-to-buy, shop-prices, web, calculator, shell, files, git and dotnet |
 | `Messages/HostPacksErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
-| `louis-agent.host-packs.csproj` | References core, the Puls identity and the where-to-buy, shop-prices, recipes and calculator packs |
+| `louis-agent.host-packs.csproj` | References core, the Puls identity and each pack in `PackKind` |
 
 ## Configuration
 
@@ -52,8 +89,8 @@ compose sets `IDENTITIES`.
 A new identity or pack is three edits here: a member in `IdentityKind` or `PackKind`, its arm in the `Create` switch,
 and a project reference. What proves it never comes here: no host carries a check or an eval
 ([ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md)). The steps are the registration step of [Build a pack](../../../../src/docs/guides/build-a-pack.md#6-register-it-in-the-composition-root)
-and of [Build an identity](../../../../src/docs/guides/build-an-identity.md#5-register-it-in-the-composition-root). Keep the names one word: the
-setting is matched to the enum member with the case ignored, so `price-rules` would not match `PriceRules`.
+and of [Build an identity](../../../../src/docs/guides/build-an-identity.md#5-register-it-in-the-composition-root). A name with a dash is fine: the setting is
+matched to the member's `[WireName]`, as with `where-to-buy`.
 
 ## Tests
 
@@ -68,7 +105,6 @@ copies a pack and an eval each keep equal.
 
 - Synchronous: nothing to await yet. F36's MCP servers as packs connect here, at start-up, so this becomes async, with
   `MCP_PACKS` as a second source beside `PackKind` ([platform plan](../../../../src/docs/plans/platform.md)).
-- A dashed pack name can't map to an enum member, so names stay one word until a name gets its own alias.
 
 ## Related docs
 

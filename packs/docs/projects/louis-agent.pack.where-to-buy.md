@@ -55,6 +55,47 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 - **The map is a shared public service.** One request a second is the policy; a busy public Puls needs its own
   Nominatim or a paid geocoder (*Limits and plans*).
 
+## Diagrams
+
+**Architecture:** two tools over one polite map client. It asks the map in code and hands the model a short table.
+
+```mermaid
+flowchart TD
+    pack["WhereToBuyPack: the where-to-buy toolset"] --> tools["WhereToBuyTools: FindBranches, FindShopsNear"]
+    tools --> finder["BranchFinder"]
+    finder --> names["ShopNames: PnP is Pick n Pay"]
+    finder --> distance["Distance"]
+    finder --> map["MapSearch: one request a second, an honest User-Agent"]
+    map --> nominatim["OpenStreetMap's Nominatim"]
+    map --> place["MapPlace and MapAddress: what the map answered"]
+    tools --> printer["BranchPrinter"]
+```
+
+**Flow:** finding a shop's branches near a town. The search starts with a small box and widens only when a box finds none, since the map answers at most 20 hits in no order.
+
+```mermaid
+sequenceDiagram
+    participant M as The model
+    participant T as WhereToBuyTools
+    participant F as BranchFinder
+    participant S as MapSearch
+    participant N as Nominatim
+    participant P as BranchPrinter
+    M->>T: FindBranches(shop, town)
+    T->>F: the shop and the town
+    F->>S: TownAsync
+    S->>N: South Africa only, the first answer
+    N-->>F: its centre, municipality and province
+    loop about 16 km, half a degree, a degree and a half, until a box has some
+        F->>S: NearAsync: the shop's name in the box
+        S->>N: one request a second
+        N-->>F: hits
+    end
+    F-->>T: the three nearest
+    T->>P: the town and its branches
+    P-->>M: the province, then a table, framed as untrusted map data
+```
+
 ## Structure
 
 | Path | What's in it |

@@ -11,6 +11,46 @@
 
 A test that starts a real process, opens Mongo or needs the Puls stack is an integration test: its class is `[Category("Integration")]` and it lives in `{name}.integration-tests`, so a unit project never starts a process. Solution folders `unit`, `integration` and `shared` hold the projects; CI runs `--filter "Category!=Integration"` and then `--filter "Category=Integration"` with `INTEGRATION_REQUIRED=1`. `louis-agent.api.testing` (shared) holds the in-memory API host, the built runner and stand-in dlls and the store contracts, so each is written once and run against memory (unit) and Mongo (integration). Two ratchets in `core.tests/Categories/` hold it: `IntegrationTestsAreMarkedTests` (a test that asks for the outside or uses a process, Mongo or the runner is marked; no raw skip) and `IntegrationPlacementTests` (the mark and the project agree).
 
+## Diagrams
+
+**Architecture:** where the tests live, and what they share. A test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.
+
+```mermaid
+flowchart TD
+    shared["louis-agent.testing: FakeChatClient, StubHandler, TestPaths"]
+    web["louis-agent.web.testing: FixtureApi, Snapshots, SassStylesheet"]
+    framework["src/tests: engine, hosts, web, evals"] --> shared
+    framework --> web
+    demos["demos/*/tests: each demo's own"] --> shared
+    demos --> web
+    packs["packs-tests: each pack's own"] --> shared
+    integration["*.integration-tests: start a process, open Mongo, need a tool"] --> shared
+    ci["CI, on Ubuntu"] -->|"Category!=Integration"| framework
+    ci --> demos
+    ci --> packs
+    ci -->|"Category=Integration, INTEGRATION_REQUIRED=1"| integration
+```
+
+**Flow:** a golden file. It pins what a component draws or what the model reads, so a change has to be looked at before it's accepted.
+
+```mermaid
+sequenceDiagram
+    participant T as A test
+    participant S as Snapshots
+    participant G as The .html golden, beside the test
+    participant Y as You
+    T->>S: Match(file, what it rendered)
+    S->>S: normalises what isn't the component's doing
+    alt LOUIS_UPDATE_GOLDEN=1
+        S->>G: writes it
+        G-->>Y: read the diff, then commit it
+    else it's the same
+        S-->>T: passes
+    else it differs
+        S-->>T: fails, with what it rendered in the temp folder
+    end
+```
+
 ## Purpose
 
 Fast, offline checks of the behaviour that matters: tools, skills, the engine's loop and guards, configuration, and the
