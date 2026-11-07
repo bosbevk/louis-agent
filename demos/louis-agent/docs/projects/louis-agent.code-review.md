@@ -90,7 +90,7 @@ A control for a pack goes in that pack's web project as a screen ([Build a pack]
 `demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
 pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
 `Pages/Site/*Tests` render the site's pages (the packs page lists every pack folder, Build your own shows the real program) and
-`Layout/SiteLayoutTests` the frame's links; `Movies/*Tests` pin each film's scenes, its names against the code, and its markup to a golden; `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
+`Layout/SiteLayoutTests` the frame's links; `Movies/*Tests` pin each film's scenes, its names against the code, and its markup to a golden, and `Movies/FilmExportTests` holds the README's exported films to the films as they are (the hash in `docs/films/films.sha256`); `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
 

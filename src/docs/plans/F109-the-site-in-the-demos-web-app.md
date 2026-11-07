@@ -305,6 +305,11 @@ should update the films with what it looks like now, explaining the whole archit
   the tracked `wwwroot/css/themes/themes.json`. The site's stylesheet tests moved in, two narrowed to the site's
   partials (the whole app's CSS reads names Bootstrap and the scripts set); the chat goldens changed only in
   the theme options.
+- **Step 5: the export runs the API host** (2026-11-08). `SiteProcess` starts `louis-agent.coding-api` on a spare
+  port with only its URL set, as it started the site; the renderer waits for the film's element, since a
+  WebAssembly app draws a moment after the network goes quiet; `FilmSource` names the app's files, so the hash
+  changed and both films were re-exported from the app. The test holding the exports to the films moves to the
+  app's tests, which reference the tool as the site's tests did.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
