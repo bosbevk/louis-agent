@@ -34,6 +34,7 @@ you need otherwise.
 | [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |
 | [Core guide](../engine/louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
 | [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
+| [Spawn a site](guides/spawn-a-site.md) | How-to | Make a new site with a chat and an admin from the starter, then make it yours |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |

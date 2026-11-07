@@ -1,0 +1,18 @@
+/* This site's styles: the framework's rules, in their order, so nothing is copied. With no colours of its own a site comes
+   out in the framework's black and white. To have your own, add a partial that sets Bootstrap's colour names after
+   web/settings/colours, as the framework's _colours.scss lists them. A rule of your own goes after the framework's. The
+   build makes wwwroot/css/app.css from this. */
+
+@forward "web/settings/colours";
+@forward "web/base/elements";
+
+@forward "web/layout/shell";
+@forward "web/chat/conversation";
+@forward "web/layout/responsive";
+@forward "web/chat/interaction";
+@forward "web/chat/finish";
+@forward "web/layout/panels";
+@forward "web/chat/bars";
+@forward "web/chat/pages";
+@forward "web/admin/shell";
+@forward "web/admin/screens";

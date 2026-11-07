@@ -25,6 +25,8 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
     [TestCase("demos/puls/web", "louis-agent.puls")]
     [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner", "louis-agent.puls-api")]
+    [TestCase("demos/starter/web", "louis-agent.starter")]
+    [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review", "louis-agent.site")]

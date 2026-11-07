@@ -274,6 +274,11 @@ draws what it's told. A value for a read-only field has nowhere to land, because
 second write fails the recipe is still there. The other way round, a failure would leave it gone from the library and free to be kept again on the next read. Being able to say
 which half-finished state you'd rather be in is most of what makes a two-step write safe when you have no transaction.
 
+**A template is only proved by using it (F59.11).** A new site is one command, and it holds only its name. A template is an ordinary project plus a small settings file, which
+makes it easy to break without noticing: nothing compiles what it makes until someone runs it. So one test really does: it installs the template into a throwaway list, makes a
+site called Acme in a throwaway folder, checks the old name is gone everywhere, and builds it. That's slow for a test, so it's an integration test, but it's the only one that can
+say the template works. It's also the fairest test of the whole framework: if a site really is this small, the framework must hold the rest.
+
 Concept: *20 Extensibility* and *15 Safety* in the [goal](../GOAL.md); patterns: Plugin and Registry (Fowler), Decorator (Gang of Four).
 
 ## The admin's frame (F59.2, 2026-11-06)

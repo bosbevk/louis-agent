@@ -42,6 +42,7 @@ public class PackWebBoundaryTests
     /// <summary>A site in a browser takes a pack's web views, and never the pack.</summary>
     [TestCase("demos/puls/web")]
     [TestCase("demos/louis-agent/web")]
+    [TestCase("demos/starter/web")]
     public void NoSite_ReferencesAPack(string folder) =>
         Assert.That(Offending(folder, reference => reference.StartsWith("packs/")), Is.Empty);
 }

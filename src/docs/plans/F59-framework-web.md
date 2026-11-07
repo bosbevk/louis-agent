@@ -735,6 +735,13 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
 
 - **2026-11-07, what F59.9 chose, unattended.** `ImportForm` moved beside `ImportCard` in `Components/Imports/`, not in a folder of its own. Puls's *Data* heading went with its only link, so Uploads now sits under the sidebar's *Packs*. The four steps are one commit plus the docs, as the page, the override and the link only work together.
 
+- **2026-11-07, the order changed, and what F59.11 chose, unattended.** F59.11 and F59.12 go before F59.10. The eval pages are 271 files and 126 test files, each needing its namespace
+  changed by hand or through Rider, as ADR 0052 allows no script, on a machine short of memory, and nothing later needs them: a new site's admin already has screens and Uploads.
+  - The starter's landing page is one heading and a link, as a landing page is what makes a site itself.
+  - It starts with credits, language, the place, projects and what's unfinished turned off, as they need more than a new site has.
+  - The template replaces `LouisAgent.Starter` with the name, and `louis-agent.starter` with the name in lowercase. A site goes in `demos/{site}/web/{site}/`, since its project points at the framework by relative path.
+  - The test uses `dotnet new`'s custom hive, so running it never touches this machine's template list.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

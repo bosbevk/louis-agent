@@ -163,10 +163,10 @@ src/web/                 # louis-agent.web: the framework's web, what every site
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, calculator, where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
-packs-tests/             # A pack's own tests; packs/docs/ holds the packs' docs
-packs-web/               # A pack's own web views, apart from its tools: neither references the other (ADR 0086)
+packs-tests/, packs-web/ # A pack's own tests, and its own web views, apart from its tools (ADR 0086); packs/docs/ holds the packs' docs
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/
 demos/louis-agent/       # Our own demo: identity/ (the coding agent), web/ (code review, the site), hosts/ (the orchestrator POC, and the programs that start the framework's hosts), config/, docker/, skills/, tools/ (the film export), tests/, docs/, and git-ignored data/ and logs/
+demos/starter/           # The smallest site, and what `dotnet new louis-site` makes ([Spawn a site](guides/spawn-a-site.md))
 src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs-tests/ the packs'; the ones that leave their process are *.integration-tests
 src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
