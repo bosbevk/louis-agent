@@ -34,6 +34,9 @@
     <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
 
+    <!-- The Sass compiler's settings are read at build time only; published, the three libraries' copies would land
+         on one path and dotnet publish refuses (FX62). -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
     <!-- The Sass compiler's settings are read at build time only; published, the three libraries' copies would land

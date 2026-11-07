@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 60 | 77 |
-| Fixes (`FX`) | 55 | 4 |
+| Features (`F`) | 61 | 77 |
+| Fixes (`FX`) | 56 | 4 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -130,12 +130,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (60 done)
+## Features (61 done)
 
 | Id | When | What |
 |---|---|---|
 | F61.4 | 2026-11-07 | Everything in Azure: Puls live on mypuls.co.za from a Container Apps environment on its own network, Mongo 9, the browser and SearXNG on a private VM, the accounts on Azure SQL's free offer, every secret in Key Vault, the build one Bicep file in config (ADR 0095); the CL19 sidecar, the SearXNG app and the F58 tunnel retired |
 | F58 | 2026-11-07 | The two sites from this PC through Cloudflare tunnels: superseded by F61.4 before the Puls placeholder was needed; the framework's site waits for its merge into the louis-agent demo's web app |
+| F105 | 2026-11-07 | The Azure app behind a key: folded into F61.4, the gate takes a signed-in person or `AGENT_API_KEY` (F61.2) and the ingress lock went |
 | F61.5 | 2026-11-07 | Passkeys and a second factor |
 | F61.3 | 2026-11-07 | Social logins |
 | F61.2 | 2026-11-07 | The pages, and the gate takes a signed-in person |
@@ -195,10 +196,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (55 done)
+## Fixes (56 done)
 
 | Id | When | What |
 |---|---|---|
+| FX62 | 2026-11-07 | The libraries' `sasscompiler.json` stays out of a publish |
 | FX58 | 2026-11-07 | The last update of a burst reaches the screen |
 | FX57 | 2026-11-06 | A context lost by Chrome's library is no error |
 | FX56 | 2026-11-06 | Our own rules for amounts |
