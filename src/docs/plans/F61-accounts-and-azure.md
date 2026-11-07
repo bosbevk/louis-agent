@@ -29,7 +29,7 @@ fully featured profile screen **in the framework**, which Puls then uses.
 | SQL now or later | **A: SQL Server in Docker now**, Azure SQL later (a connection string change) |
 | Paid products | **None.** What has no free option we build ourselves (so: no Duende IdentityServer, no Finbuckle, whose releases now carry a fee for revenue use; Microsoft's own packages, MIT, are fine) |
 | Mongo in Azure | **A: a small Linux VM with Docker** (real Mongo on a managed disk; the headless Chrome beside it). Container Apps can't host Mongo: its storage is an Azure Files share, and Mongo's engine fails on it (sources below) |
-| SearXNG | **Goes, for now**, until Louis has another plan for search |
+| SearXNG | **Moves to the VM** with Mongo and the browser (Louis, 2026-11-07, on the architecture diagram: "searxng is missing"); its Container App goes. It stays what ADR 0023 says it is, development and benchmarks, until Louis's search plan |
 | Instagram | **Removed** (Meta ended its consumer login API in December 2024) |
 | Where the accounts code lives | **B: `louis-agent.accounts` + `louis-agent.accounts.contracts`**, the API stays free of SQL |
 | Container Apps to the VM | **A: a new Container Apps environment on a virtual network**; nothing on the VM is public; nothing points at Louis's PC any more |
@@ -50,7 +50,7 @@ F51.2 (where Puls runs), "The Azure app behind a key", F54's leftovers (where th
 
 **Not in this plan:** `business.mypuls.co.za` itself (the tenant shape is built, the business site is a later
 feature); rate limits and the audit log (F42); durable sessions and the tenant on every ledger row (F43.2, F43.3); a
-real mail sender; Facebook and X; a new search provider for Puls.
+real mail sender; Facebook and X; a licensed search provider for the sold endpoint (ADR 0023).
 
 ## Design
 
@@ -87,9 +87,9 @@ real mail sender; Facebook and X; a new search provider for Puls.
   40613, so EF's `EnableRetryOnFailure` is on).
 - **Azure: a private network, one VM, two environments.** `puls-vnet` with a subnet for a new Container Apps
   environment (the current one can't be given a network) and one for `puls-services`, an Ubuntu VM with Docker running
-  `mongo:8` and `chromedp/headless-shell` on the private IP only; its NSG lets only the apps' subnet in on 27017 and
-  9222. Azure SQL on its public endpoint with "Allow Azure services" and TLS (a private endpoint costs money). The
-  Tailscale sidecar, the lock, `AGENT_AUTH=off` and the SearXNG app go. `louis-agent.dev` is a Container App in its
+  `mongo:8`, `chromedp/headless-shell` and `searxng/searxng` on the private IP only; its NSG lets only the apps'
+  subnet in on 27017, 9222 and 8080. Azure SQL on its public endpoint with "Allow Azure services" and TLS (a private endpoint costs money). The
+  Tailscale sidecar, the lock, `AGENT_AUTH=off` and the SearXNG Container App go (SearXNG itself runs on the VM). `louis-agent.dev` is a Container App in its
   own group `rg-louis-agent-za`. Both domains move from Cloudflare tunnels to Container Apps' free managed
   certificates (apex: an A record and a TXT `asuid`; `www`: a CNAME; Cloudflare records DNS-only, since a proxied
   record blocks certificate issue).
@@ -197,6 +197,7 @@ flowchart LR
             subgraph vm["puls-services VM, Docker (F61.4)"]
                 mongo["mongo:8 :27017, data on the managed disk"]
                 chrome["headless-shell :9222"]
+                searxng["searxng :8080 (dev and benchmarks, ADR 0023)"]
             end
         end
         sql["Azure SQL, free offer: puls_accounts (F61.4)"]
@@ -204,6 +205,7 @@ flowchart LR
     end
     pulsapp -->|private IP| mongo
     pulsapp -->|private IP| chrome
+    pulsapp -->|private IP| searxng
     pulsapp -->|TLS, Allow Azure services| sql
     pulsapp --> insights
     google["Google"] -.->|OAuth| pulsapp
@@ -212,7 +214,7 @@ flowchart LR
 ```
 
 On the PC the same shape in `docker-compose.puls.yml`: `puls`, `puls-mongo`, `puls-browser` and a new `puls-sql`
-(SQL Server Developer); SearXNG stays only in the local compose for benchmarks until Louis's search plan.
+(SQL Server Developer); `puls-searxng` stays as it is.
 
 ### Communication: register, sign in, open a chat
 
@@ -424,11 +426,13 @@ are set, and the profile links and unlinks a provider.
 
 Done when: `https://mypuls.co.za` is Puls from Container Apps with sign-in, Mongo and the browser on the VM, SQL on
 Azure SQL's free offer; `https://louis-agent.dev` is the site from its own group; nothing points at the PC; the lock,
-`AGENT_AUTH=off`, the sidecar and the SearXNG app are gone; the month's cost is written in the deploy README.
+`AGENT_AUTH=off`, the sidecar and the SearXNG Container App are gone, SearXNG runs on the VM; the month's cost is
+written in the deploy README.
 
 1. **The VM's files.** `vm/cloud-init.yaml` (Docker, the compose, XFS on the data disk mounted at `/data`), `vm/docker-compose.services.yml`
-   (`mongo:8` with its root user from `.env.mongo`, `headless-shell` by digest, both bound to the private IP). A test
-   reads the compose: no port on `0.0.0.0`, images by digest.
+   (`mongo:8` with its root user from `.env.mongo`, `headless-shell` and `searxng/searxng` by digest with the local
+   stack's `settings.yml` and `.env.searxng`, all bound to the private IP). A test reads the compose: no port on
+   `0.0.0.0`, images by digest.
 2. **`deploy.ps1 infra`** (`-WhatIf` first): `puls-vnet` (apps subnet `/23`, services subnet), NSG (27017 and 9222 from the
    apps subnet, 22 from `-Ip`), the VM `puls-services` (Ubuntu, a B-series with 4 GiB, a Standard SSD data disk) with
    the cloud-init, the environment `puls-env` on the VNet, Application Insights re-pointed. Configuration only.
@@ -436,8 +440,8 @@ Azure SQL's free offer; `https://louis-agent.dev` is the site from its own group
    Azure services"), the connection string into the app's secrets as `accounts-sql-url`.
 4. **`puls-app.yaml`** in the new environment: no sidecar, `AGENT_AUTH` and the lock gone (`AGENT_API_KEY` set, the
    web app signs in), `BROWSER_URL` and the three Mongo URLs on the VM's private IP, `ACCOUNTS_SQL_URL` by secretRef,
-   the provider keys by secretRef, no `SEARXNG_URL`/`WEB_SEARCH_PROVIDER` (WebSearch falls back to the provider the
-   keys name, else DuckDuckGo, until Louis's search plan). `deploy.ps1 release` targets the new environment.
+   the provider keys by secretRef, `SEARXNG_URL` on the VM's private IP. `deploy.ps1 release` targets the new
+   environment.
 5. **The domain.** `deploy.ps1 domain`: the managed certificate for `mypuls.co.za` and `www`; the README's DNS
    lines for Cloudflare (A and TXT `asuid` on the apex, CNAME on `www`, DNS-only). Louis's steps in Cloudflare are
    written as step 0 of the child's plan. The Puls placeholder compose and tunnel are deleted.
