@@ -20,7 +20,9 @@ public sealed record WebParts(
     IPageRenderer? Renderer = null,
     Func<IPageFetcher>? Fetcher = null) : IWebAccess
 {
+    /// <summary>The renderer given, else the one that says web access isn't set up.</summary>
     IPageRenderer IWebAccess.Renderer => Renderer ?? NoWebAccess.Instance.Renderer;
 
+    /// <summary>A fetcher the way given, else one that says web access isn't set up.</summary>
     public IPageFetcher NewFetcher() => Fetcher?.Invoke() ?? NoWebAccess.Instance.NewFetcher();
 }

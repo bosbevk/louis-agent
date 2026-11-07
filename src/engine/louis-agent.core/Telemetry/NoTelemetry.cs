@@ -12,12 +12,14 @@ namespace LouisAgent.Core.Telemetry;
 /// </remarks>
 public sealed class NoTelemetry : IHostTelemetry
 {
+    /// <summary>The one instance: it holds nothing of its own.</summary>
     public static readonly NoTelemetry Instance = new();
 
     private NoTelemetry()
     {
     }
 
+    /// <summary>No sink: the log lines stay on the console and in the file.</summary>
     public void AddSinks(LoggerConfiguration logging)
     {
     }
@@ -29,6 +31,7 @@ public sealed class NoTelemetry : IHostTelemetry
         return Nothing.Instance;
     }
 
+    /// <summary>Nothing is held, so nothing is sent.</summary>
     public void Flush()
     {
     }

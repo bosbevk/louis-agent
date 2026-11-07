@@ -4,8 +4,10 @@ namespace LouisAgent.Composition.Web.Fetching;
 /// <remarks>Null Object, as <c>UnavailablePageRenderer</c> is for the renderer.</remarks>
 public sealed class UnavailablePageFetcher(string reason) : IPageFetcher
 {
+    /// <summary>Fails with the reason: there is nothing to check an address against.</summary>
     public Task EnsurePublicAsync(Uri uri) => throw new BlockedAddressException(reason);
 
+    /// <summary>Fails with the reason: nothing is fetched.</summary>
     public Task<(HttpResponseMessage Response, Uri FinalUri)> GetFollowingRedirectsAsync(Uri uri,
         CancellationToken cancellationToken = default) => throw new BlockedAddressException(reason);
 }

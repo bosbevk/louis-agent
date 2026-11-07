@@ -25,6 +25,7 @@ namespace LouisAgent.Core.Telemetry;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 public sealed class OtlpTelemetry : IHostTelemetry
 {
+    /// <summary>The one instance: the process has one tracer, guarded below.</summary>
     public static readonly OtlpTelemetry Instance = new();
 
     /// <summary>

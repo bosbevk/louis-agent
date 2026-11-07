@@ -17,6 +17,7 @@ namespace LouisAgent.Core.Web;
 /// </remarks>
 public sealed class NoWebAccess : IWebAccess
 {
+    /// <summary>The one instance: it holds nothing of its own.</summary>
     public static readonly NoWebAccess Instance = new();
 
     private static readonly string Reason = MessageText.Format(WebToolMessage.WebAccessNotSetUp);
@@ -25,11 +26,15 @@ public sealed class NoWebAccess : IWebAccess
     {
     }
 
+    /// <summary>A search that answers with the reason.</summary>
     public IWebSearchProvider Search { get; } = new UnavailableSearchProvider("none", Reason);
 
+    /// <summary>No browser, so a toolset that needs one is unavailable.</summary>
     public IWebBrowser? Browser => null;
 
+    /// <summary>A renderer that fails every page with the reason.</summary>
     public IPageRenderer Renderer { get; } = new UnavailablePageRenderer(Reason);
 
+    /// <summary>A fetcher that fails every fetch with the reason.</summary>
     public IPageFetcher NewFetcher() => new UnavailablePageFetcher(Reason);
 }

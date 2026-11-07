@@ -49,12 +49,15 @@ public sealed class WebAccess : IWebAccess
     public static IWebAccess Create(AgentOptions options, ReplayStore? replay, IWebSearchProvider search) =>
         new WebAccess(options, replay, search);
 
+    /// <summary>The provider the settings name, recorded where a store is kept.</summary>
     public IWebSearchProvider Search { get; }
 
+    /// <summary>The one guarded browser from <c>BROWSER_URL</c>; none without Chrome.</summary>
     public IWebBrowser? Browser { get; }
 
     /// <summary>The renderer the settings pick, made for each ask as before, over the one browser.</summary>
     public IPageRenderer Renderer => PageRendererFactory.Create(_options, browser: Browser);
 
+    /// <summary>A fetcher for one call, under the process's robots policy and its store.</summary>
     public IPageFetcher NewFetcher() => new PageFetcher(replay: _replay, robots: _robots);
 }
