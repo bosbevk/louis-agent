@@ -129,6 +129,11 @@ sequenceDiagram
 None of its own: it's served by the API on the same origin. The coding agent's program, `louis-agent.coding-api`, references it. If the API
 needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admin's key on the admin page; each stays in this browser.
 
+## The slogan
+
+**100% C#, because I can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
+footer, and it is the one line the site says about itself.
+
 ## What the site sells, and how to reach Louis
 
 The guide answers questions about buying from this section (FX72), so it holds the site's public offer in full:
