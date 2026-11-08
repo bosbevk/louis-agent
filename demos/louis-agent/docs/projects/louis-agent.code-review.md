@@ -157,7 +157,8 @@ The guide answers questions about buying from this section (FX72), so it holds t
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
   subject already filled in, or WhatsApp on 066 391 2470 (WhatsApp Business), which the page's WhatsApp buttons open
-  as a chat (`https://wa.me/27663912470`). Say what the agent should do, which systems it needs to reach, and where
+  as a chat (`https://wa.me/27663912470`), with WhatsApp's own mark, green and words, as its brand guidelines ask
+  ([ADR 0102](../../../../src/docs/adr/0102-third-party-marks-follow-their-owners-guidelines.md)). Say what the agent should do, which systems it needs to reach, and where
   it should run.
 
 ## Extending it

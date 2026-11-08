@@ -49,8 +49,15 @@
         text-decoration: none;
         white-space: nowrap;
     }
+    /* A button answers the pointer (FX82, Louis: "this one is bland no hover effect"): a small lift and a glow. */
+    .btn { transition: transform .25s var(--web-ease), box-shadow .3s, border-color .3s, background .3s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -18px rgba(var(--bs-primary-rgb), .55); }
     .btn-fill { background: var(--bs-emphasis-color); color: var(--bs-body-bg); }
-    .btn-fill:hover { background: #e6e8eb; color: var(--bs-body-bg); }
+    .btn-fill:hover { background: var(--bs-emphasis-color); color: var(--bs-body-bg); box-shadow: 0 18px 36px -14px rgba(var(--bs-primary-rgb), .75); }
+    /* WhatsApp's button: its green, its mark in white, its words (ADR 0102). */
+    .btn-whatsapp { background: var(--whatsapp); color: #fff; border: 1px solid var(--whatsapp); display: inline-flex; align-items: center; gap: 10px; }
+    .btn-whatsapp:hover { color: #fff; box-shadow: 0 18px 36px -14px var(--whatsapp); }
+    .btn-whatsapp .whatsapp-mark { flex: none; }
     .btn-line { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); }
     .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
