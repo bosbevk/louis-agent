@@ -84,6 +84,50 @@ The API serves whatever web app the program references, and nothing in the API n
 `AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapFallbackToFile`, then `MapLouisAgentApi`, which refuses to
 map without the key check.
 
+## The whole program
+
+This is the API's `Program.cs`, the one the coding agent's API runs (`demos/louis-agent/hosts/louis-agent.coding-api`),
+complete, so a developer can paste it and change the catalogue and the web app for their own (FX96). The accounts and
+the eval studio are the two optional lines; leave them out and the API runs without them.
+
+```csharp
+using LouisAgent.Core.Web;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
+using LouisAgent.Core.Telemetry;
+using LouisAgent.Accounts;
+using LouisAgent.Accounts.Config;
+using LouisAgent.Api;
+using LouisAgent.Api.Evals;
+using LouisAgent.Coding;
+using LouisAgent.Core.Hosting;
+
+// The host: the catalogue says who the agent is and what it can do; the services say what it gets besides.
+var host = AgentHost.Build(CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
+    Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));
+var builder = WebApplication.CreateBuilder(args);
+builder.AddLouisAgentApi(host);
+builder.AddLouisAgentAccounts(AccountsOptions.FromEnvironment());   // optional: sign-in, tenants (F61)
+var app = builder.Build();
+
+// The accounts first, then the key check, which takes a signed-in person in place of the key; before any route.
+app.UseLouisAgentAccounts();                                         // optional, with the line above
+app.UseLouisAgentKey();
+
+// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}.
+app.MapStaticAssets();
+app.MapFallbackToFile("index.html");
+
+app.MapLouisAgentAccounts();                                         // optional, with the two above
+app.MapLouisAgentApi(host);
+app.MapLouisAgentEvals(host);                                        // optional: the eval studio
+app.Run();
+```
+
+It runs with `AGENT_API_KEY` set (or `AGENT_AUTH=off` for a local try), a model's key (`ANTHROPIC_API_KEY`, or Ollama
+with none) and the paths in the host's run profile; the rest has defaults.
+
 ## Test it
 
 ```bash
