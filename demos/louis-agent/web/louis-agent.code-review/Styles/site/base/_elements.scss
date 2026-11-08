@@ -67,6 +67,10 @@
     .btn-whatsapp:hover { border-color: var(--whatsapp); color: var(--bs-emphasis-color); box-shadow: 0 18px 36px -18px var(--whatsapp); }
     .btn-linkedin .linkedin-mark { flex: none; }
     .btn-linkedin:hover { border-color: var(--linkedin); color: var(--bs-emphasis-color); box-shadow: 0 18px 36px -18px var(--linkedin); }
+    /* A link in the footer's own quiet type, an owner's mark small beside it (FX103): LinkedIn on every page. */
+    .footer-link { display: inline-flex; align-items: center; gap: 6px; color: var(--bs-tertiary-color); text-decoration: none; }
+    .footer-link:hover { color: var(--bs-emphasis-color); }
+    .footer-link .linkedin-mark { width: 13px; height: 13px; }
     .btn-line { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); }
     .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
