@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 70 | 73 |
-| Fixes (`FX`) | 65 | 5 |
+| Fixes (`FX`) | 66 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -202,10 +202,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (65 done)
+## Fixes (66 done)
 
 | Id | When | What |
 |---|---|---|
+| FX73 | 2026-11-08 | What's coming in the menu, and the framework's five pages grouped under one label that opens on hover or on focus: a `SiteMenu` component in the framework's web, CSS only |
 | FX72 | 2026-11-08 | The guide is a salesperson that reads the person: plain words for a normie, the full technical answer once it knows it talks to a software developer |
 | FX71 | 2026-11-08 | The guide's button pops as a pill that says what it is and pulses; the hero's turn takes its own class so the chat's turns in the widget keep their spacing |
 | FX70 | 2026-11-08 | Enter sends in the guide's widget: the message box's key rule is its own module, attached to the box wherever it is drawn |
