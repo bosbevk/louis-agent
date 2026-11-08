@@ -46,3 +46,17 @@
 
 .widget-composer { padding: 10px; border-top: 1px solid var(--bs-border-color); }
 ::deep .widget-composer textarea { font-size: 14px; }
+
+/* On a phone the panel is the whole screen, square to its edges, and the round button goes while it is open: the
+   panel's own head closes it (FX69). */
+@media (max-width: 600px) {
+    .chat-widget.is-open .widget-button { display: none; }
+    .widget-panel {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100dvh;
+        border: 0;
+        border-radius: 0;
+    }
+}

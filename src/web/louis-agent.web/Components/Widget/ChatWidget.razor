@@ -16,7 +16,8 @@
             <div class="widget-composer">
                 <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
                           Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
-                          OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
+                          OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                          SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
             </div>
         </section>
     }

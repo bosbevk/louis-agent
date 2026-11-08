@@ -65,6 +65,23 @@ public class ChatWidgetTests
         Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
     }
 
+    /// <summary>
+    /// The composer's buttons are the chat's glyphs, not the words, which a 40-pixel button clips (FX69): Send is the
+    /// arrow and the word is its title.
+    /// </summary>
+    [Test]
+    public void TheSendButton_IsTheChatsGlyph_NotAWord()
+    {
+        using var ctx = Context(out _);
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+
+        var send = cut.Find("button.send");
+
+        Assert.That(send.TextContent.Trim(), Is.EqualTo("↑"));
+        Assert.That(send.GetAttribute("title"), Is.Not.Empty);
+    }
+
     /// <summary>A question opens a session as the widget's identity, with no toolsets of its own, and the turn shows.</summary>
     [Test]
     public void AQuestion_OpensASession_AsTheIdentity()
