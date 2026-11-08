@@ -100,7 +100,7 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-main .page"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-footer .note"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-corner .widget"), Has.Count.EqualTo(1));
-        Assert.That(inside, Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-footer", "site-corner" }));
+        Assert.That(inside, Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-up", "site-footer", "site-corner" }));
     }
 
     /// <summary>
@@ -130,6 +130,27 @@ public class SiteShellTests
             var links = cut.FindAll(".site nav.site-index a");
             Assert.That(links.Select(a => a.GetAttribute("href")), Is.EqualTo(new[] { "#rule", "#contact" }));
             Assert.That(links.Select(a => a.TextContent), Is.EqualTo(new[] { "One rule", "Contact" }));
+        });
+    }
+
+    /// <summary>
+    /// Every page has a way back up (F118, Louis: "we need a up button to take you to the top again"): the frame draws
+    /// one link to the top, named for a screen reader, which its module shows once the page is scrolled and which
+    /// scrolls to the top on a click.
+    /// </summary>
+    [Test]
+    public void TheFrame_DrawsAWayBackUp()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
+
+        var up = cut.Find(".site > a.site-up");
+        Assert.Multiple(() =>
+        {
+            Assert.That(up.GetAttribute("href"), Is.EqualTo("#top"));
+            Assert.That(up.GetAttribute("aria-label"), Is.EqualTo("Back to the top"));
+            Assert.That(up.QuerySelector("svg"), Is.Not.Null);
         });
     }
 

@@ -48,6 +48,31 @@
     color: var(--bs-tertiary-color);
 }
 
+/* The way back up (F118, Louis: "we need a up button to take you to the top again"): a round button in the lower-left
+   corner, across from the site's corner, hidden at the top of the page and shown by the frame's module once the page
+   is scrolled a screen; the frame's click handler takes it to the top in one smooth move. */
+.site-up {
+    position: fixed;
+    left: 24px;
+    bottom: 72px;
+    z-index: 10;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 50%;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-secondary-color);
+    box-shadow: var(--bs-box-shadow);
+    opacity: 0;
+    translate: 0 12px;
+    pointer-events: none;
+    transition: opacity .3s var(--web-ease), translate .3s var(--web-ease), color .2s, border-color .2s;
+}
+.site-up[data-shown] { opacity: 1; translate: 0 0; pointer-events: auto; }
+.site-up:hover, .site-up:focus-visible { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
+
 /* The corner floats over the page, high enough to clear the footer's line when the page is scrolled to its end (FX72),
    so the footer's words stay readable; what a site puts in it sizes itself. */
 .site-corner { position: fixed; right: 24px; bottom: 72px; z-index: 10; }
@@ -56,4 +81,5 @@
     .site-header { gap: 12px; }
     .site-nav { gap: 16px; width: 100%; order: 3; }
     .site-corner { right: 16px; bottom: 64px; }
+    .site-up { left: 16px; bottom: 64px; }
 }

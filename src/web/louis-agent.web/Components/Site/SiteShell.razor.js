@@ -33,12 +33,13 @@ const follow = (e) => {
     goTo(target);
 };
 
-// On scroll: the progress line's width, the header compact past the top.
+// On scroll: the progress line's width, the header compact past the top, the way back up shown a screen down (F118).
 const scrolled = () => {
     const progress = $("#site-progress");
     const max = document.documentElement.scrollHeight - innerHeight;
     if (progress) progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + "%";
     $(".site-header")?.classList.toggle("compact", scrollY > 40);
+    $(".site-up")?.toggleAttribute("data-shown", scrollY > innerHeight * .8);
 };
 
 // A block plays its reveal once, when a quarter of it is in view; a page that asks for less motion shows it at rest.

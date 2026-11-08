@@ -2,7 +2,7 @@
 @* A site's frame: a header with the brand, the menu and the actions, the page, a footer, and a corner that floats
    over every page (a site's chat widget goes there). A slot left empty leaves no gap. Its own root class, not .app:
    a chat's grid rules must not reach here. The frame also draws what every page gets for nothing (F118): the scroll
-   progress line and the section index, built from the bands the page puts on the frame's list. *@
+   progress line, the section index, built from the bands the page puts on the frame's list, and the way back up. *@
 <CascadingValue Value="_areas" IsFixed="true">
 <div class="site">
     <div class="site-progress" id="site-progress" aria-hidden="true"></div>
@@ -31,6 +31,10 @@
     <main class="site-main">
         @ChildContent
     </main>
+
+    <a class="site-up" href="#top" aria-label="Back to the top">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    </a>
 
     @if (Footer is not null)
     {
