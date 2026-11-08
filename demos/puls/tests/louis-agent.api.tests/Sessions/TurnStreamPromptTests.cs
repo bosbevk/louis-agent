@@ -64,22 +64,24 @@ public class TurnStreamPromptTests
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Does.EndWith("/home/built Built on it\nOn their screen now: /home/built Built on it]"));
+        Assert.That(prompt, Does.EndWith("/home/built Built on it\nOn their screen now: the section /home/built, \"Built on it\", of the page / they are reading]"));
     }
 
     /// <summary>
     /// A later message from the same page carries only where they are on it (F118): the page's words went with the
-    /// first, and the section in view is one short line.
+    /// first, and the place in view is one short line that says it is a section of that page, so an address like
+    /// /home/contact is never taken for the Contact page (Louis: "that is the contact section, the agent got
+    /// confused").
     /// </summary>
     [Test]
     public void OnTheSamePage_OnlyTheSectionInViewTravels()
     {
-        var request = new SendMessageRequest("and this?", null,
-            new PageRequest("/", null, null, null, new PageAreaRequest("/home/custom", "Custom agents")));
+        var request = new SendMessageRequest("contact page?", null,
+            new PageRequest("/", null, null, null, new PageAreaRequest("/home/contact", "Building an agent for a .NET team?")));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Is.EqualTo("and this?\n\n[On their screen now, on /: /home/custom Custom agents]"));
+        Assert.That(prompt, Is.EqualTo("contact page?\n\n[On their screen now: the section /home/contact, \"Building an agent for a .NET team?\", of the page /, whose words came with an earlier message]"));
     }
 
     /// <summary>Without a page the prompt is the words alone, as before.</summary>

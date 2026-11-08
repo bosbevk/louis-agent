@@ -73,7 +73,8 @@ internal static class TurnStream
     private static string InViewOf(PageRequest page)
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
-        return MessageText.Format(ApiModelText.PageInView, new { Id = id, Heading = inView.Heading ?? "" }).TrimEnd();
+        return MessageText.Format(ApiModelText.PageInView,
+            new { Id = id, Heading = inView.Heading ?? "", Url = page.Url ?? "" }).TrimEnd();
     }
 
     /// <summary>
