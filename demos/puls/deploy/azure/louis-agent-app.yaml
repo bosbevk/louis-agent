@@ -93,6 +93,9 @@ properties:
             secretRef: mongo-url
           - name: EVALS_MONGO_DATABASE
             value: louis_agent_benchmarks
+          # The docs the expert reads (F109.3): the copy the image carries, laid out as the repo.
+          - name: DOCS_ROOT
+            value: /app/docs
           # The accounts (F61): the same Azure SQL database as Puls's, every account on this host this app's tenant,
           # the cookie on the domain.
           - name: ACCOUNTS_SQL_URL

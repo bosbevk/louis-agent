@@ -16,6 +16,15 @@ COPY --from=build /app/publish/ .
 # The C# evals (F18): the API lists them with `dotnet /app/evals/louis-agent.coding-eval-runner.dll --list` and starts one with `run`.
 COPY --from=build /app/evals-publish/ /app/evals/
 ENV EVAL_RUNNER=/app/evals/louis-agent.coding-eval-runner.dll
+# The docs the expert reads (F109.3), laid out as the repo lays them so their links hold: the framework's, each demo's
+# and the packs', with the repo's own front page; the films are pictures the guide never reads, and 20 MB.
+COPY --from=build /src/README.md /src/ROADMAP.md /src/TODO.md /app/docs/
+COPY --from=build /src/src/docs/ /app/docs/src/docs/
+COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/
+COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/
+COPY --from=build /src/packs/docs/ /app/docs/packs/docs/
+RUN rm -rf /app/docs/demos/louis-agent/docs/films
+ENV DOCS_ROOT=/app/docs
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD curl -fs http://localhost:8080/health || exit 1
