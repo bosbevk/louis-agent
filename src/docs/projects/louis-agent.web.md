@@ -149,6 +149,15 @@ Identity="…" />`: a button folded in a corner and a panel with the chat's own 
 page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
 A site's frame (`SiteShell`) has a `Corner` slot made for it.
 
+**`Components/Site/Cards/CardDeck`** is a row of short cards that open (F113): each `Card` inside gives a title, a
+one-line summary, an optional mono tag and, as its content, the story. The cards register with the deck through a
+cascading value (the tab-set pattern) and draw nothing; the deck draws the summaries as buttons in a row and, under
+the row, the open card's story, which the styles beside it slide in once. One open at a time, a click on the open one
+closes it, a phone stacks the row. `CardDeckTests` holds the row, the click, the swap and the golden.
+
+**`Components/Site/Menu/SiteMenu`** is a group in a site's menu (FX73): a label in the bar that opens the links it holds
+on hover or on focus, CSS only.
+
 **`Components/Graphs/GraphView`** draws a diagram from data (F111): a page declares a `GraphSpec` (`Graphs/`: nodes
 with an id, a label, a note and a column; edges between ids, with a word when one helps), `GraphLayout.Place` puts the
 columns across the width and gives each arrow a curve with its length, and the view writes one SVG that scales to its
