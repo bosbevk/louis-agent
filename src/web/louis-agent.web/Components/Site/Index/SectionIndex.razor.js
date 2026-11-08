@@ -31,6 +31,26 @@ const spy = () => {
     });
     if (links.length && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.length - 1;
     links.forEach((a, k) => a.classList.toggle(activeClass, k === active));
+    if (arrived) follow(active > 0 ? links[active].getAttribute("href") : "");
+};
+
+// The address follows the section in view (F118, Louis: "we should have it in the url"): /proof#rand, so a link
+// someone copies opens on that section; the first section is the page's own address. It replaces the entry and keeps
+// the router's state, so the back button still goes to the page before, and the router never hears of it.
+const follow = (hash) => {
+    if (location.hash === hash) return;
+    history.replaceState(history.state, "", location.pathname + location.search + hash);
+};
+
+// A page opened on an address with a section scrolls to it once that section is drawn, then the address follows the
+// scroll; before that the address is left as it came, so it isn't lost while the page loads.
+let arrived = false;
+const arrive = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id ? document.getElementById(id) : null;
+    if (id && !target) return;
+    target?.scrollIntoView({ block: "start" });
+    arrived = true;
 };
 
 // Hangs the listeners once, under the class the component's styles light, and marks what is in view now; called
@@ -41,11 +61,13 @@ export function attach(cls) {
         on(window, "scroll", spy, { passive: true });
         on(window, "resize", spy);
     }
+    if (!arrived) arrive();
     spy();
 }
 
-// Takes the listeners down when the index goes.
+// Takes the listeners down when the index goes; the next page's index arrives afresh.
 export function detach() {
     listeners.forEach(off => off());
     listeners = [];
+    arrived = false;
 }
