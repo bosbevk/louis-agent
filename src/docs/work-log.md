@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 70 | 73 |
-| Fixes (`FX`) | 70 | 5 |
+| Fixes (`FX`) | 71 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -202,10 +202,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (70 done)
+## Fixes (71 done)
 
 | Id | When | What |
 |---|---|---|
+| FX78 | 2026-11-08 | The guide is on Built on it, the third agent on the engine, on the landing's tiles and the page |
 | FX77 | 2026-11-08 | The guide talks like a person, one thing at a time with a question back, and names the doc it read only to a developer |
 | FX76 | 2026-11-08 | The landing's contact strip stands clear of the band above it and rises as it enters |
 | FX75 | 2026-11-08 | Louis's WhatsApp on the Contact page: a button beside each mail link opens a chat with 066 391 2470, and the guide's doc names the number |
