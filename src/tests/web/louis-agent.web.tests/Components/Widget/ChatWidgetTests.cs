@@ -117,4 +117,18 @@ public class ChatWidgetTests
         Assert.That(opened.Body, Does.Contain("\"identity\":\"guide\"").And.Contain("\"toolsets\":[]"));
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
     }
+
+    /// <summary>
+    /// The widget asks the API for the rates when it draws (FX80, Louis: "cost in rand"), so a turn's cost shows in the
+    /// site's currency and not as charged; the chat page does this through its switcher, the widget has none.
+    /// </summary>
+    [Test]
+    public void TheWidget_AsksForTheRates_WhenItDraws()
+    {
+        using var ctx = Context(out var handler);
+
+        ctx.Render<ChatWidget>(parameters => parameters.Add(widget => widget.Toolsets, new[] { "docs" }));
+
+        Assert.That(handler.Requests.Where(r => r.Method == HttpMethod.Get && r.Url.EndsWith("/v1/rates")), Is.Not.Empty);
+    }
 }

@@ -161,6 +161,30 @@ public class SitePagesTests
     }
 
     /// <summary>
+    /// Every page that explains a part of the framework shows one diagram of it (F111, Louis: "add a nice graph on each
+    /// page"); the landing has its film, Contact and What's coming explain nothing.
+    /// </summary>
+    [TestCase(typeof(HowItWorksPage))]
+    [TestCase(typeof(ArchitecturePage))]
+    [TestCase(typeof(IdentitiesPage))]
+    [TestCase(typeof(PacksPage))]
+    [TestCase(typeof(BuildYourOwnPage))]
+    [TestCase(typeof(ProofPage))]
+    [TestCase(typeof(BuiltOnItPage))]
+    public void AnExplainingPage_ShowsOneDiagram(Type page)
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render(builder =>
+        {
+            builder.OpenComponent(0, page);
+            builder.CloseComponent();
+        });
+
+        Assert.That(cut.FindAll("figure.graph"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
     /// Where a grid carried a summary and a story each, the page now shows a deck of short cards (F113, Louis: "make
     /// the card a short summary, and clickable with the detail sliding in at the bottom"): a click on the first card
     /// opens its story under the row, with words the row itself does not show.

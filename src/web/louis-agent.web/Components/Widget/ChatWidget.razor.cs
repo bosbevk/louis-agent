@@ -75,6 +75,12 @@ public partial class ChatWidget : IDisposable
         Currency.Changed += Redraw;
     }
 
+    /// <summary>
+    /// Asks the API for the rates and the display currency once, so a turn's cost shows in the site's currency, not as
+    /// charged (FX80, Louis: "cost in rand"); the chat page does the same through its currency switcher.
+    /// </summary>
+    protected override Task OnInitializedAsync() => Currency.LoadAsync();
+
     public void Dispose()
     {
         Runner.Changed -= Redraw;

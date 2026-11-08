@@ -63,6 +63,18 @@ sequenceDiagram
 
 ## The site's pages and films
 
+Since F113 a grid that carried a summary and a story each is a deck of cards that open (the framework's `CardDeck`):
+the agents on Built on it, the identities that exist, the general tools and the cook's packs, and how the rand come
+about on Proof. The card shows the title, a line and, for an identity, its project's name as a tag, so the page still
+names every identity and pack; the story slides in under the row on a click, and `SitePagesTests` holds that it waits
+for the click.
+
+Since F111 every page that explains a part of the framework shows one animated diagram of it, drawn by the framework's
+`GraphView` from data in `Graphs/` (`IdentityGraph`, `PacksGraph`, `ArchitectureGraph`, `TurnGraph`, `ProgramGraph`
+under `Framework/`, `ProofGraph` and `DemosGraph`), each held to the code by a test in `Graphs/`: the identity's parts
+to the page's list, the architecture's boxes to the solution file's groups, the turn's pipeline to the middleware's
+order, the demos to the folders under `demos/`; `SitePagesTests` fails a page that explains and shows none.
+
 Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on, and since F109.4
 the site tells the whole architecture ([ADR 0100](../../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md)):
 `/` (one page that moves, F110: the lockup and the menu on the right in the frame; a section index on the left and a
