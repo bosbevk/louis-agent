@@ -132,6 +132,9 @@ recommended options taken unattended.
 - **A click on an index entry stays on the page** (Louis: "the clicks take you to the home page"): a `#area` link
   resolves against the page's base, so Blazor's own handler opened the home page from every other page; the frame
   hears the click in the capture phase, first, and Blazor leaves it alone.
+- **A page's last section fills the screen down to the footer** (Louis: "we need a min height for the section, in
+  order for smooth transition"): a short last section ("Yours" on Identities) could not scroll up under the header,
+  so a jump to it stopped early and looked cut off. The frame gives the last section a minimum height.
 - **The spotlight sits under the site's corner** (z-index 9 under 10), so the guide's own words are never dimmed,
   and follows the area while it plays; the lit area's scroll lands 96px under the header, as the frame's links do.
 

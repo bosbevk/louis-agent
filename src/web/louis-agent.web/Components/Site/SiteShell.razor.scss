@@ -31,6 +31,12 @@
 
 .site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; }
 
+/* The page's last section fills the screen down to the footer (F118, Louis: "we need a min height for the section,
+   in order for smooth transition"): a short last section can't scroll up under the header, so a jump to it from the
+   index or the guide stopped early and looked cut off. 96px is the room the jump leaves under the header, 64px the
+   footer's height. */
+.site-main ::deep > section:last-of-type { min-height: calc(100dvh - 160px); }
+
 .site-footer {
     margin-top: auto;
     padding: 20px var(--site-gutter, 24px);
