@@ -298,7 +298,8 @@ public class SitePagesTests
         var web = cut.Find("section#web");
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".band").Select(band => band.Id), Is.EqualTo(new[] { "top", "loop", "web", "rules" }));
+            // The web's id is read from its section: the bare word is a toolset's wire name (ADR 0043).
+            Assert.That(cut.FindAll(".band").Select(band => band.Id), Is.EqualTo(new[] { "top", "loop", web.Id, "rules" }));
             Assert.That(cut.Find("section#loop").QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
             Assert.That(web.QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
             Assert.That(web.TextContent, Does.Contain("runs without the web").And.Contain("turns an agent into a website"));
