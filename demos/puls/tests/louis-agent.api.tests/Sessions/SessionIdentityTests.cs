@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Choices;
+using LouisAgent.Identities.Puls;
 using Microsoft.AspNetCore.TestHost;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -48,7 +50,7 @@ public class SessionIdentityTests
         using var response = await client.PostAsJsonAsync("/v1/sessions", new { });
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
-        Assert.That(body.RootElement.GetProperty("identity").GetString(), Is.EqualTo("puls"));
+        Assert.That(body.RootElement.GetProperty("identity").GetString(), Is.EqualTo(PulsIdentityName.Puls.Wire()));
     }
 
     /// <summary>An identity the host doesn't run is a 400 that names what it runs.</summary>
@@ -81,7 +83,8 @@ public class SessionIdentityTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(rows.Select(row => row.GetProperty("name").GetString()), Is.EqualTo(new[] { "puls", "guide" }));
+            Assert.That(rows.Select(row => row.GetProperty("name").GetString()),
+                Is.EqualTo(new[] { PulsIdentityName.Puls.Wire(), "guide" }));
             Assert.That(rows[1].GetProperty("voice").GetString(), Is.EqualTo("puls/voice-en"));
             Assert.That(rows[0].GetProperty("default").GetBoolean(), Is.True);
             Assert.That(rows[1].GetProperty("default").GetBoolean(), Is.False);

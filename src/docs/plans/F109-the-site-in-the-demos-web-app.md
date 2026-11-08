@@ -473,6 +473,10 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   untouched. The prompt source (`SkillFileSource`) is process-wide and frozen after its first read, so an API test
   can't add a second identity's voice file mid-process: the test names an embedded voice for its second identity,
   which exercises the same path; a refreshable source is a cleanup for later if a test ever needs its own file.
+- **F109.3 step 2, one note** (2026-11-08): `PackConvertibilityTests` enumerates Puls's packs through its composition
+  root, so it never sees a pack Puls doesn't name; the docs pack's own tests hold its tools to the convertible shape
+  (public, described, plain values, text back) instead. Step 1's two tests that spelled an identity's name as a
+  string use its enum, as ADR 0043's test asked.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

@@ -402,7 +402,7 @@ public class AgentCatalogTests
         {
             Assert.That(catalog.IdentityOf("two/voice")?.Name, Is.EqualTo("two"));
             Assert.That(catalog.IdentityOf(null)?.Name, Is.EqualTo("one"));
-            Assert.That(catalog.IdentityOf("puls-cook")?.Name, Is.EqualTo("one"),
+            Assert.That(catalog.IdentityOf("a-specialist")?.Name, Is.EqualTo("one"),
                 "a specialist's role is the host's own");
         });
     }
