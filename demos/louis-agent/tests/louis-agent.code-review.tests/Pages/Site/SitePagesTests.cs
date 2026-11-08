@@ -13,7 +13,7 @@ namespace LouisAgent.CodeReview.Tests.Pages.Site;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "The whole framework, in six scenes.")]
+    [TestCase(typeof(HomePage), "/", "First principles.")]
     [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
     [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]
@@ -68,9 +68,12 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "href=\"/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
+    [TestCase(typeof(HomePage), "id=\"rule\"")]
+    [TestCase(typeof(HomePage), "First principles.")]
+    [TestCase(typeof(HomePage), "This startup runs on one rule.")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
-    [TestCase(typeof(HomePage), "class=\"strip-contact reveal\"")]
+    [TestCase(typeof(HomePage), "class=\"band band-strip reveal\"")]
     [TestCase(typeof(HomePage), "The guide")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
@@ -83,6 +86,9 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
     [TestCase(typeof(ContactPage), "href=\"https://wa.me/27663912470")]
     [TestCase(typeof(ContactPage), "066 391 2470")]
+    [TestCase(typeof(ContactPage), "Chat on WhatsApp")]
+    [TestCase(typeof(ContactPage), "class=\"btn btn-whatsapp\"")]
+    [TestCase(typeof(ContactPage), "aria-label=\"WhatsApp\"")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
