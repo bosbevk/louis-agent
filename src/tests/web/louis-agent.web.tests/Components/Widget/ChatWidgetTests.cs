@@ -1,9 +1,11 @@
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Widget;
@@ -116,6 +118,45 @@ public class ChatWidgetTests
         var opened = handler.Requests.Single(r => r.Method == HttpMethod.Post && r.Url.EndsWith("/v1/sessions"));
         Assert.That(opened.Body, Does.Contain("\"identity\":\"guide\"").And.Contain("\"toolsets\":[]"));
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// The guide knows the page (F115, Louis: "the agent should know which page im on"): the widget reads the page's
+    /// address, title and text through its module when it opens and sends them with the first message; the next
+    /// message on the same page carries no page; after a move to another page the next message carries that one.
+    /// </summary>
+    [Test]
+    public void ThePage_TravelsWithTheFirstMessage_AndAgainAfterAMove()
+    {
+        using var ctx = Context(out var handler);
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
+        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own."));
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+
+        Send(cut, "which page am I on?");
+        Send(cut, "and then?");
+        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide."));
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/packs");
+        Send(cut, "and here?");
+
+        var bodies = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(bodies, Has.Count.EqualTo(3));
+            Assert.That(bodies[0], Does.Contain("\"url\":\"/build-your-own\"").And.Contain("A few lines of your own."));
+            Assert.That(bodies[1], Does.Not.Contain("\"page\""), "the same page again carries nothing");
+            Assert.That(bodies[2], Does.Contain("\"url\":\"/packs\""));
+        });
+    }
+
+    /// <summary>Types a message into the widget's composer, sends it and waits for the turn to show and the stream to end.</summary>
+    private static void Send(IRenderedComponent<ChatWidget> cut, string text)
+    {
+        int turns = cut.FindAll(".turn").Count;
+        cut.Find("#composer-input").Input(text);
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => cut.FindAll(".turn").Count > turns && cut.FindAll("button.send").Count == 1, TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
