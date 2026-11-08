@@ -1,4 +1,4 @@
-using LouisAgent.CodeReview.Components.Landing;
+using LouisAgent.CodeReview.Components.Landing.Live;
 
 namespace LouisAgent.CodeReview.Tests.Components.Landing;
 
