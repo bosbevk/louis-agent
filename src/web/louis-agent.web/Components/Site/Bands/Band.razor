@@ -1,11 +1,21 @@
+@implements IDisposable
 @* One named area of a site's page (F117, ADR 0106): a section that must carry an id, a kicker over its content, and the
    classes a site adds for its look. The id is what the guide's ShowPage names and the section index links, so a page
-   built of bands has every area named by construction. The band draws no style of its own: .band and .kicker are the
-   site's, so each site keeps its look. *@
+   built of bands has every area named by construction, and the band puts itself on the frame's list as it draws
+   (F118). The band draws no style of its own: .band and .kicker are the site's, so each site keeps its look. Its body
+   lays out as if it weren't there; on a page of slides, when it holds more than a screen, the frame's module pages it
+   sideways and shows the pager beside it (F118). *@
 <section id="@Id" class="@Classes">
-    @if (Kicker is not null)
-    {
-        <span class="kicker">@Kicker</span>
-    }
-    @ChildContent
+    <div class="band-body">
+        @if (Kicker is not null)
+        {
+            <span class="kicker">@Kicker</span>
+        }
+        @ChildContent
+    </div>
+    <div class="band-pager" hidden>
+        <button type="button" class="band-page" data-step="-1" aria-label="Previous page">‹</button>
+        <span class="band-pages" aria-live="polite"></span>
+        <button type="button" class="band-page" data-step="1" aria-label="Next page">›</button>
+    </div>
 </section>

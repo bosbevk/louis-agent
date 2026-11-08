@@ -16,8 +16,11 @@ public static class FrameworkScripts
     /// <summary>The message list's scrolling.</summary>
     public const string MessageList = Content + "Components/Chat/MessageList.razor.js";
 
-    /// <summary>A site frame's motion: the progress line, the compact header, the section index, the reveals (F110).</summary>
+    /// <summary>A site frame's motion: the progress line, the compact header, the in-page links, the reveals (F110).</summary>
     public const string SiteShell = Content + "Components/Site/SiteShell.razor.js";
+
+    /// <summary>The section index: the entries in the page's order, the one in view lit (F118).</summary>
+    public const string SectionIndex = Content + "Components/Site/Index/SectionIndex.razor.js";
 
     /// <summary>The message box's keys: Enter sends, Shift+Enter breaks the line, wherever the box is drawn (FX70).</summary>
     public const string Composer = Content + "Components/Chat/Composer.razor.js";

@@ -63,6 +63,20 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **Usage and currency.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event;
   `CurrencyState` and `CurrencySwitcher` show it in the browser's chosen currency from the API's rates
   ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
+- **A site's public pages** (F118, ADR 0106, 0107). The engine and an agent run without any of this: the CLI, Rider,
+  the API and MCP need no web. This part is what turns an agent into a website. `SiteShell` is the frame: a header, the
+  page, a footer, the guide in its corner, a scroll progress line, a way back up, and a section index on the left
+  built from the page's bands (each band puts itself on the frame's `PageAreas` as it draws). A page is built of
+  `Band`s and the framework's `SiteHero`, `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words;
+  a `GuideButton` anywhere asks the guide a question through `GuideDoor`. A site lays its pages out
+  as **slides** or a **flowing page** (`SiteShell Layout`, a page may choose the other with one `PageLayoutChoice`
+  line): on slides every section is a screen tall, its content in the middle, the page settles on one section at a
+  time, a section with more than a screen of content pages sideways with a pager, and a diagram scales to fit. Every
+  place has its own address (ADR 0107): a section `/proof/rand`, a card `/identities/puls`, a page of a paged section
+  `/how-it-works/parts/2`, the landing's under `/home`; `SiteAddresses` is the rule and `SectionPage` the catch-all
+  route that opens any place, and the address bar follows the visitor. The guide's widget sends the page it reads
+  with every place by its address and the place on the visitor's screen, and its page tool takes an address: it
+  scrolls there, opens a card or turns a page, and lights it with a spotlight that dims the rest.
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.
 

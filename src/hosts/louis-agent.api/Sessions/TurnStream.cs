@@ -57,26 +57,50 @@ internal static class TurnStream
                           })));
         }
 
-        if (request.Page is { } page) parts.Add(PageBlock(page));
+        if (request.Page is { } page && PageBlock(page) is { Length: > 0 } block) parts.Add(block);
         return string.Join("\n\n", parts);
     }
 
-    /// <summary>The page's named areas as lines of "#id heading" after the text (F117), nothing when the page lists none.</summary>
+    /// <summary>A later message's page: the section on the visitor's screen and the address, or nothing.</summary>
+    private static string InViewOnly(PageRequest page)
+    {
+        if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
+        return MessageText.Format(ApiModelText.PageInViewOnly,
+            new { Url = page.Url ?? "", Id = id, Heading = inView.Heading ?? "" });
+    }
+
+    /// <summary>The section on the visitor's screen as a line after the areas (F118), nothing when none is named.</summary>
+    private static string InViewOf(PageRequest page)
+    {
+        if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
+        return MessageText.Format(ApiModelText.PageInView,
+            new { Id = id, Heading = inView.Heading ?? "", Url = page.Url ?? "" }).TrimEnd();
+    }
+
+    /// <summary>
+    /// The page's named places as lines of "address heading" after the text (F117; each its own address since F118,
+    /// ADR 0107), nothing when the page lists none.
+    /// </summary>
     private static string AreasOf(PageRequest page)
     {
         var areas = (page.Areas ?? []).Where(area => !string.IsNullOrWhiteSpace(area.Id)).ToList();
         if (areas.Count == 0) return "";
         return MessageText.Format(ApiModelText.PageAreas,
-            new { List = string.Join("\n", areas.Select(area => $"#{area.Id} {area.Heading}".TrimEnd())) });
+            new { List = string.Join("\n", areas.Select(area => $"{area.Id} {area.Heading}".TrimEnd())) });
     }
 
-    /// <summary>The page as one block: where the visitor is, what the page says, cut with a note when it is long, and its areas.</summary>
+    /// <summary>
+    /// The page as one block: where the visitor is, what the page says, cut with a note when it is long, its areas and
+    /// the section on their screen. A page without words is a later message from the same page (F118): only the
+    /// section on their screen, or nothing.
+    /// </summary>
     private static string PageBlock(PageRequest page)
     {
         string text = page.Text ?? string.Empty;
+        if (text.Length == 0) return InViewOnly(page);
         string shown = text.Length <= MaxPageChars ? text : text[..MaxPageChars];
         string block = MessageText.Format(ApiModelText.Page,
-            new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown, Areas = AreasOf(page) });
+            new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown, Areas = AreasOf(page), InView = InViewOf(page) });
         if (text.Length <= MaxPageChars) return block;
         return block + MessageText.Format(ApiModelText.PageTruncated, new
         {

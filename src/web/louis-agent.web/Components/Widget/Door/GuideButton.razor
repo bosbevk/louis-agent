@@ -1,0 +1,7 @@
+@* A button that asks the guide in the corner a question (F118): the site's words on it, the site's question behind it,
+   and a look you cannot miss: the chrome gradient, a light that sweeps across it, a soft pulse of glow and a spark,
+   still for a visitor who asked for less motion. *@
+<button type="button" class="guide-button @Class" @onclick="Ask">
+    <span class="guide-spark" aria-hidden="true">✦</span>
+    <span class="guide-words">@ChildContent</span>
+</button>

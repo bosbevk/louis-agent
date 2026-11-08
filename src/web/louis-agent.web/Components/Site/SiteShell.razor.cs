@@ -1,5 +1,9 @@
+using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Components.Site.Bands;
+using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site;
@@ -49,7 +53,48 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// How the site's pages are laid out (F118): flowing, unless the site asks for slides; a page may choose the other
+    /// for itself with a <see cref="PageLayoutChoice"/>.
+    /// </summary>
+    [Parameter]
+    public PageLayout Layout { get; set; } = PageLayout.Flow;
+
+    /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
+    private readonly PageOptions _options = new();
+
+    /// <summary>The page's choice, else the site's.</summary>
+    private PageLayout Laid => _options.Layout ?? Layout;
+
+    /// <summary>The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.</summary>
+    private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
+
+    /// <summary>Redraws when the page makes or takes back its choice.</summary>
+    protected override void OnInitialized() => _options.Changed += Redraw;
+
+    private void Redraw() => InvokeAsync(StateHasChanged);
+
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
+    [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
+    private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
+
+    /// <summary>Where the address points: the page, and the place on it when it names one (F118, ADR 0107).</summary>
+    private SiteAddress Here =>
+        Addresses?.Read(Nav.Uri) ?? new SiteAddress(Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath);
+
+    /// <summary>
+    /// The page's own address, without the place on it (F118): the main column is keyed by it, so a new page draws a
+    /// new column and its entrance plays, while a move within the page keeps the one there.
+    /// </summary>
+    private string PagePath => Here.Page;
+
+    /// <summary>The page's areas (F118): the bands fill it as they draw, and the index on the left reads it.</summary>
+    private readonly PageAreas _areas = new();
 
     private JsModule? _motion;
 
@@ -58,13 +103,20 @@ public partial class SiteShell
 
     /// <summary>
     /// Attaches the motion after every render, not only the first: a page that just drew has reveals to observe, and
-    /// the module hangs its listeners once.
+    /// the module hangs its listeners once. It is told what a place's address on this page starts with, so the
+    /// address bar can follow the visitor, and the place the address names, so a page opened on one goes there.
     /// </summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await Motion.InvokeVoidAsync("attach");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var here = Here;
+        string? arrive = here.Section is null ? null : here.Turn is { } turn ? $"{here.Section}/{turn}" : here.Section;
+        await Motion.InvokeVoidAsync("attach", Addresses?.Base(here.Page), arrive);
+    }
 
     /// <summary>Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.</summary>
     public async ValueTask DisposeAsync()
     {
+        _options.Changed -= Redraw;
         if (_motion is null) return;
         try
         {

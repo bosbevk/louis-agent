@@ -1,0 +1,14 @@
+/* A row of tiles (F118, from a site's grid-3): the width a site asks for on a wide screen, two across on a tablet, one
+   on a phone. */
+.tiles { display: grid; gap: 16px; }
+.tiles-1 { grid-template-columns: minmax(0, 1fr); }
+.tiles-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tiles-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 900px) {
+    .tiles-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .tiles-2, .tiles-3 { grid-template-columns: minmax(0, 1fr); }
+}

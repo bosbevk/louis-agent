@@ -1,0 +1,58 @@
+/* A button you cannot miss (F118, Louis: "just a more flashy button", "one you cannot miss"): the site's chrome
+   gradient, bold words and a spark, a light that sweeps across it every few seconds and a soft pulse of glow around it;
+   it lifts under the pointer. A visitor who asked for less motion gets it still, glow and all. */
+.guide-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 22px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 999px;
+    background: var(--web-cta);
+    color: var(--bs-body-bg);
+    font: 700 15px/1 var(--bs-font-sans-serif);
+    letter-spacing: .01em;
+    overflow: hidden;
+    isolation: isolate;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .5), 0 12px 40px -10px rgba(var(--bs-primary-rgb), .7);
+    animation: guide-glow 2.8s var(--web-ease, ease-in-out) infinite;
+    transition: transform .25s var(--web-ease, ease-out);
+}
+.guide-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, rgba(var(--web-overlay-rgb), .85) 50%, transparent 70%);
+    translate: -120% 0;
+    animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
+}
+.guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
+/* Above the guide's own button in the corner, a page's tour (F118): the same button as the landing's, and the guide's
+   own matches it (Louis: "they must be the same size, make them the same as the one on the landing page"), with room
+   between the two so they read as two buttons (Louis: "sits too close"). */
+.guide-button.widget-tour { margin-bottom: 14px; }
+.guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
+.guide-words { white-space: nowrap; }
+
+@keyframes guide-sweep {
+    0%, 55% { translate: -120% 0; }
+    85%, 100% { translate: 120% 0; }
+}
+/* A soft pulse, the same as the guide's own button in the corner (Louis: "too much glow", "make them the same as the
+   one on the landing page"); the sweep and the spark are what set the tour apart. */
+@keyframes guide-glow {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55); }
+    50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
+}
+@keyframes guide-twinkle {
+    0%, 100% { opacity: 1; scale: 1; }
+    50% { opacity: .55; scale: .82; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guide-button, .guide-button::after, .guide-spark { animation: none; }
+}

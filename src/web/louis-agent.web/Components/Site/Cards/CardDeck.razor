@@ -1,12 +1,13 @@
 @* A row of short cards that open (F113): each Card inside gives a title, a one-line summary and, as its content, the
    story. The deck draws the summaries as buttons in a row and, under the row, the open card's story, which slides in
-   by the styles beside this file. One open at a time; a click on the open one closes it. *@
+   by the styles beside this file. One open at a time; a click on the open one closes it. Each button carries the
+   card's id and is marked as a card (F118), so the guide's widget can open it to show the visitor. *@
 <div class="card-deck">
     <CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue>
     <div class="card-deck-row" style="--cols: @Columns">
         @foreach (var card in Cards)
         {
-            <button type="button" class="card-summary @(IsOpen(card) ? "open" : "")" aria-expanded="@(IsOpen(card) ? "true" : "false")" @onclick="() => Toggle(card)">
+            <button type="button" id="@card.AreaId" data-card class="card-summary @(IsOpen(card) ? "open" : "")" aria-expanded="@(IsOpen(card) ? "true" : "false")" @onclick="() => Toggle(card)">
                 <span class="card-title">@card.Title</span>
                 @if (card.Summary is not null)
                 {

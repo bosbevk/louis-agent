@@ -20,29 +20,40 @@ public sealed class SiteTools
 {
     /// <summary>Takes the visitor to a page of this site, or to an area of it.</summary>
     [Description(
-        "Opens a page of this site in the visitor's browser, scrolled to one of its areas when the path names one " +
-        "after #, and lights the area up. Use it when the right page or area exists for what they ask; then say in " +
-        "one line what to look at. The page you are on lists its areas.")]
+        "Opens a place of this site in the visitor's browser by its own address, and lights it up: a page, a section " +
+        "of one, a card, which opens, or a page of a section paged sideways, which turns to it. Use it when the right " +
+        "place exists for what they ask; then say in one line what to look at. The page you are on lists its places " +
+        "by their addresses.")]
     public string ShowPage(
-        [Description("The page's path on this site, such as /packs, with an area after # for a part of it, such as /identities#levels.")]
+        [Description("The place's address as the page lists it, such as /packs, /identities/levels, /identities/puls, /home/rule or /how-it-works/parts/2.")]
         string path)
     {
-        if (!IsSitePath(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });
+        if (!IsSiteAddress(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });
         return MessageText.Format(SiteToolMessage.Shown, new { Path = path });
     }
 
     /// <summary>
-    /// A path of this site: it starts with one slash, carries no scheme, no host, no climb out and no space, and an
-    /// area after the hash, when there is one, is an id in words.
+    /// An address of this site (ADR 0107): one slash first, then words of lowercase letters, digits and dashes, one
+    /// after another, the last perhaps the number of a paged section's page from one up. Nothing else: no scheme, no
+    /// host, no climb out, no space, no fragment, no query.
     /// </summary>
-    private static bool IsSitePath(string path)
+    private static bool IsSiteAddress(string path)
     {
-        if (string.IsNullOrWhiteSpace(path) || !path.StartsWith('/') || path.StartsWith("//")) return false;
-        if (path.Contains(':') || path.Contains("..") || path.Any(char.IsWhiteSpace)) return false;
+        if (path == "/") return true;
+        if (string.IsNullOrWhiteSpace(path) || !path.StartsWith('/') || path.EndsWith('/')) return false;
 
-        int hash = path.IndexOf('#');
-        if (hash < 0) return true;
-        string area = path[(hash + 1)..];
-        return area.Length > 0 && char.IsAsciiLetterLower(area[0]) && area.All(c => char.IsAsciiLetterLower(c) || c == '-');
+        string[] words = path[1..].Split('/');
+        string last = words[^1];
+        bool turned = last.All(char.IsAsciiDigit);
+        if (turned && !IsPage(last)) return false;
+        return (turned ? words[..^1] : words).All(IsWord) && (!turned || words.Length > 1);
     }
+
+    /// <summary>A word of an address: a letter or digit first, then letters, digits and dashes.</summary>
+    private static bool IsWord(string word) =>
+        word.Length > 0 && char.IsAsciiLetterLower(word[0]) &&
+        word.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-');
+
+    /// <summary>A page of a paged section: a number from one up, written plainly.</summary>
+    private static bool IsPage(string page) => int.TryParse(page, out int number) && number >= 1 && page[0] != '0';
 }

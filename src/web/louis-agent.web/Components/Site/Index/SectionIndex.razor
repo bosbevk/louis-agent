@@ -1,0 +1,15 @@
+@implements IAsyncDisposable
+@* The page's section index (F118): one link per area on the frame's list, in page order, drawn when there is
+   something to choose between (one area alone is no index). Each link is the section's own address (ADR 0107), the
+   first the page's; its own module marks the one in view and keeps the address bar on it, the frame's scrolls there
+   on a click without leaving the page; the styles sit beside this file. *@
+@if (Areas is { Items.Count: > 1 })
+{
+    <nav class="site-index" aria-label="Sections">
+        @for (int k = 0; k < Areas.Items.Count; k++)
+        {
+            var entry = Areas.Items[k];
+            <a href="@HrefOf(entry, k)" data-section="@entry.Id">@entry.Label</a>
+        }
+    </nav>
+}

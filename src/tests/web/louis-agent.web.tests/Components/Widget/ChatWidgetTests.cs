@@ -2,7 +2,9 @@ using System.Net;
 using System.Text;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -47,6 +49,7 @@ public class ChatWidgetTests
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
+        ctx.Services.AddSingleton(new SiteAddresses("home", ["/", "/identities"]));
         return ctx;
     }
 
@@ -56,7 +59,7 @@ public class ChatWidgetTests
         data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
 
         event: content_block_start
-        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities#levels"}}}
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities/levels"}}}
 
         event: content_block_stop
         data: {"type":"content_block_stop","index":0}
@@ -86,16 +89,72 @@ public class ChatWidgetTests
         using var ctx = ContextStreaming(ShowPageStream);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
         module.Setup<Page>("pageText").SetResult(new Page("/", "louis-agent", "An AI agent framework.", []));
-        module.SetupVoid("showArea", "levels");
+        module.SetupVoid("showArea", _ => true);
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
         Send(cut, "where are the levels?");
 
+        var shown = module.Invocations.Where(call => call.Identifier == "showArea").ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities#levels"));
-            Assert.That(module.Invocations.Where(call => call.Identifier == "showArea").Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
+            Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities"));
+            Assert.That(shown.Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
+            Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }), "the bar shows the place's own address (ADR 0107)");
+        });
+    }
+
+    /// <summary>
+    /// A button anywhere asks the guide through the door (F118, "take the tour"): the panel opens and the question goes
+    /// as if the visitor had typed it.
+    /// </summary>
+    [Test]
+    public void AQuestionAtTheDoor_OpensThePanel_AndGoes()
+    {
+        using var ctx = Context(out var handler);
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var cut = Render(ctx);
+
+        cut.InvokeAsync(() => door.Ask("Walk me through this site."));
+
+        cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
+        var sent = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(sent, Has.Count.EqualTo(1));
+            Assert.That(sent[0], Does.Contain("Walk me through this site."));
+            Assert.That(cut.FindAll(".widget-panel"), Is.Not.Empty, "the panel is open");
+        });
+    }
+
+    /// <summary>
+    /// Every page offers its own tour (F118, Louis: "each page should have the take a tour option for the page"): with
+    /// a label set, the folded widget shows the tour button above its own, and a click opens the guide and asks it to
+    /// walk the visitor through the page; without one, there is none.
+    /// </summary>
+    [Test]
+    public void ThePagesTour_SitsAboveTheButton_AndAsksForAWalkthrough()
+    {
+        using var ctx = Context(out var handler);
+        ctx.Services.AddSingleton(new GuideDoor());
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide")
+            .Add(w => w.TourLabel, "Tour this page"));
+        var without = Render(ctx);
+
+        var tour = cut.Find(".chat-widget > button.guide-button.widget-tour");
+        string label = tour.TextContent;
+        tour.Click();
+
+        cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
+        var sent = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(label, Does.Contain("Tour this page"));
+            Assert.That(sent, Has.Some.Contains("Walk me through this page"));
+            Assert.That(cut.FindAll(".widget-tour"), Is.Empty, "the tour hides while the chat is open");
+            Assert.That(without.FindAll(".widget-tour"), Is.Empty);
         });
     }
 
@@ -202,6 +261,7 @@ public class ChatWidgetTests
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
+        module.Setup<PageArea?>("inView").SetResult(new PageArea("program", "The whole program"));
         Send(cut, "which page am I on?");
         Send(cut, "and then?");
         module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide.", []));
@@ -213,7 +273,9 @@ public class ChatWidgetTests
         {
             Assert.That(bodies, Has.Count.EqualTo(3));
             Assert.That(bodies[0], Does.Contain("\"url\":\"/build-your-own\"").And.Contain("A few lines of your own."));
-            Assert.That(bodies[1], Does.Not.Contain("\"page\""), "the same page again carries nothing");
+            Assert.That(bodies[1], Does.Not.Contain("A few lines of your own."), "the same page's words go once");
+            Assert.That(bodies[1], Does.Contain("\"inView\":{\"id\":\"program\",\"heading\":\"The whole program\"}"),
+                "where they are on it goes every time (F118)");
             Assert.That(bodies[2], Does.Contain("\"url\":\"/packs\""));
         });
     }
