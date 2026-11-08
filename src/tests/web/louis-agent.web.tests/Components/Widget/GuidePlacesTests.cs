@@ -30,6 +30,21 @@ public class GuidePlacesTests
         });
     }
 
+    /// <summary>
+    /// A page's first section is the page itself, so the guide reads it by the same address the bar shows: the page's,
+    /// and its later pages after it.
+    /// </summary>
+    [Test]
+    public void TheFirstSection_IsThePage()
+    {
+        var page = new Page("/architecture", "Architecture", "The whole framework.",
+            [new PageArea("top", "Architecture"), new PageArea("top/2", "page 2 of 2"), new PageArea("engine", "src/engine")]);
+
+        var read = GuidePlaces.Addressed(page, new SiteAddresses("home", ["/", "/architecture"]), "/architecture");
+
+        Assert.That(read.Areas.Select(area => area.Id), Is.EqualTo(new[] { "/architecture", "/architecture/2", "/architecture/engine" }));
+    }
+
     /// <summary>The landing's places sit under the home word, so they never clash with a page of the same name.</summary>
     [Test]
     public void TheLandingsPlaces_SitUnderTheHomeWord() =>
@@ -37,7 +52,8 @@ public class GuidePlacesTests
             Is.EqualTo("/home/proof"));
 
     /// <summary>A page tool's address goes to the page and the place; one that names no page goes nowhere.</summary>
-    [TestCase("/identities", "/identities", null)]
+    [TestCase("/identities", "/identities", "top")]
+    [TestCase("/identities/2", "/identities", "top/2")]
     [TestCase("/identities/puls", "/identities", "puls")]
     [TestCase("/how-it-works/parts/2", "/how-it-works", "parts/2")]
     [TestCase("/home/proof", "/", "proof")]

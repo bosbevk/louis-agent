@@ -17,8 +17,21 @@ public class SiteAddressesTests
     [TestCase("/", "rule", "/home/rule")]
     [TestCase("/", "proof", "/home/proof")]
     [TestCase("/proof", null, "/proof")]
+    [TestCase("/identities", "top", "/identities")]
+    [TestCase("/", "top", "/")]
     public void ASection_HasAnAddress(string page, string? section, string address) =>
         Assert.That(Site.Address(page, section), Is.EqualTo(address));
+
+    /// <summary>
+    /// A page's first section, the one every page names "top", is the page itself (Louis: "see this will confuse the
+    /// agent"): one name for one place, so its second page is the page's address and the number.
+    /// </summary>
+    [TestCase("/how-it-works", "parts", 2, "/how-it-works/parts/2")]
+    [TestCase("/how-it-works", "parts", 1, "/how-it-works/parts")]
+    [TestCase("/identities", "top", 2, "/identities/2")]
+    [TestCase("/", "top", 2, "/home/2")]
+    public void APageOfAPagedSection_HasAnAddress(string page, string section, int turn, string address) =>
+        Assert.That(Site.Address(page, section, turn), Is.EqualTo(address));
 
     /// <summary>An address read back: the page, the section and the page of a paged section, when it names them.</summary>
     [TestCase("/proof", "/proof", null, null)]
@@ -28,6 +41,8 @@ public class SiteAddressesTests
     [TestCase("/", "/", null, null)]
     [TestCase("/how-it-works/parts/2", "/how-it-works", "parts", 2)]
     [TestCase("/how-it-works/parts/1", "/how-it-works", "parts", null)]
+    [TestCase("/identities/2", "/identities", "top", 2)]
+    [TestCase("/home/2", "/", "top", 2)]
     [TestCase("/Proof/Rand/", "/proof", "rand", null)]
     [TestCase("http://127.0.0.1:5080/identities/puls", "/identities", "puls", null)]
     [TestCase("https://example.com/proof?x=1#y", "/proof", null, null)]

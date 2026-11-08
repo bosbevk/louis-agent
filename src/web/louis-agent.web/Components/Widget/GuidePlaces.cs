@@ -30,15 +30,22 @@ public static class GuidePlaces
     public static (string Page, string? Place)? Target(string address, SiteAddresses addresses)
     {
         if (addresses.Read(address) is not { } read) return null;
-        if (read.Section is null) return (read.Page, null);
-        return (read.Page, read.Turn is { } turn ? $"{read.Section}/{turn}" : read.Section);
+        // The page itself is its first section: showing it lights the top of the page.
+        string section = read.Section ?? SiteAddresses.Top;
+        return (read.Page, read.Turn is { } turn ? $"{section}/{turn}" : section);
     }
 
-    /// <summary>One area's address: its id after the page's, a page of a paged section after that.</summary>
-    private static string AddressOf(string id, SiteAddresses addresses, string pageAddress)
+    /// <summary>
+    /// One place's address as the page's script names it: <c>levels</c>, <c>parts/2</c>; the first section, <c>top</c>,
+    /// is the page itself, and its pages follow the page's address.
+    /// </summary>
+    public static string AddressOf(string place, SiteAddresses addresses, string pageAddress)
     {
-        int slash = id.IndexOf('/');
-        if (slash < 0) return addresses.Address(pageAddress, id);
-        return $"{addresses.Address(pageAddress, id[..slash])}{id[slash..]}";
+        int slash = place.IndexOf('/');
+        if (slash < 0) return addresses.Address(pageAddress, place);
+        string section = place[..slash];
+        return int.TryParse(place[(slash + 1)..], out int turn)
+            ? addresses.Address(pageAddress, section, turn)
+            : addresses.Address(pageAddress, section);
     }
 }

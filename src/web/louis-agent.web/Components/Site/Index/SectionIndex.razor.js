@@ -40,7 +40,8 @@ const within = (section) => {
     if (!section) return false;
     const words = location.pathname.split("/").filter(Boolean);
     const last = words[words.length - 1] ?? "";
-    if (/^\d+$/.test(last)) return words[words.length - 2] === section.id;
+    // A number names a page of the section before it, or of the page's first section, which is the page itself.
+    if (/^\d+$/.test(last)) return words[words.length - 2] === section.id || section.id === "top";
     const card = last ? document.getElementById(last) : null;
     return !!card && card.matches("[data-card][aria-expanded='true']") && section.contains(card);
 };

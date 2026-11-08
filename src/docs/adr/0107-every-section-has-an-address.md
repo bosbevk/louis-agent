@@ -16,7 +16,10 @@ otherwise the agents won't work optimally", and for the cards and the pages of a
 
 - **Every place has its own address, in one form.** A page is its route, `/proof`. A section is the page and its id,
   `/proof/rand`. A card is the page and its id, `/identities/puls`, and opening it at that address opens the card. A
-  page of a section paged sideways is the section's address and its number, `/how-it-works/parts/2`. The landing's
+  page of a section paged sideways is the section's address and its number, `/how-it-works/parts/2`, and its first
+  page is the section itself, never `/parts/1`. A page's first section, the one every page names `top`, is the page
+  itself: `/architecture`, its second page `/architecture/2`, so the guide, the index and the bar never give one
+  place two names (Louis: "see this will confuse the agent"). The landing's
   places sit under the site's home word, `/home/rule`, so a landing section never clashes with a page of the same
   name (the landing has sections called "proof" and "contact", and those are pages too). Louis chose this of three
   options; the others were no prefix with the page winning a clash, and a query (`/proof?section=rand`).

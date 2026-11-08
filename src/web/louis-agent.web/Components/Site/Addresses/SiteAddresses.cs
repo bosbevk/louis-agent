@@ -53,9 +53,23 @@ public sealed class SiteAddresses
         return clean == "/" ? $"/{_home}" : clean;
     }
 
-    /// <summary>A place's address, or the page's own when no place is named.</summary>
+    /// <summary>The id every page gives its first section, which is the page itself: one name for one place.</summary>
+    public const string Top = "top";
+
+    /// <summary>A place's address, or the page's own when no place is named or the place is the page's first section.</summary>
     public string Address(string page, string? section) =>
-        string.IsNullOrEmpty(section) ? Clean(page) : $"{Base(page)}/{section}";
+        string.IsNullOrEmpty(section) || section == Top ? Clean(page) : $"{Base(page)}/{section}";
+
+    /// <summary>
+    /// A page of a section paged sideways: the section's address and the page's number, its first page the section
+    /// itself; the page's first section's pages follow the page's own address (the landing's its home word).
+    /// </summary>
+    public string Address(string page, string section, int turn)
+    {
+        if (turn <= 1) return Address(page, section);
+        string place = section == Top ? Base(page) : Address(page, section);
+        return $"{place}/{turn}";
+    }
 
     /// <summary>
     /// What an address points to, or none when it names no page of the site. Read from the end: a number is the page
@@ -72,6 +86,11 @@ public sealed class SiteAddresses
         if (turn is not null) parts.RemoveAt(parts.Count - 1);
         // A paged section's first page is the section itself: /parts/1 is /parts, one place, not two.
         if (turn == 1) turn = null;
+
+        // A page's address and a number is a page of its first section: /identities/2, /home/2.
+        string rest = "/" + string.Join('/', parts);
+        if (turn is not null && rest == $"/{_home}") return new SiteAddress("/", Top, turn);
+        if (turn is not null && _pages.ContainsKey(rest)) return new SiteAddress(rest, Top, turn);
         if (parts.Count < 2 || !IsSectionId(parts[^1])) return null;
 
         string section = parts[^1];

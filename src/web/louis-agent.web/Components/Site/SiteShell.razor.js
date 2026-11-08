@@ -49,7 +49,13 @@ const cardOpened = (e) => {
     if (!card || !base) return;
     setTimeout(() => { if (card.getAttribute("aria-expanded") === "true") show(`${base}/${card.id}`); }, 0);
 };
-const turned = (band, page) => { if (base && band.id) show(page > 1 ? `${base}/${band.id}/${page}` : `${base}/${band.id}`); };
+// A turned page's address; the first section, "top", is the page itself, so its pages follow the page's address.
+const turned = (band, page) => {
+    if (!base || !band.id) return;
+    const place = band.id === "top" ? base : `${base}/${band.id}`;
+    if (page > 1) show(`${place}/${page}`);
+    else show(band.id === "top" && base === "/home" ? "/" : place);
+};
 
 // A page opened on a place's address goes to it once it is drawn: a card opens, a paged section turns to its page.
 // The address is held while it goes, so it isn't lost while the page loads.
