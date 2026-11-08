@@ -67,6 +67,17 @@ public class SiteLayoutTests
         });
     }
 
+    /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
+    [Test]
+    public void TheSlogan_SitsUnderTheBrand()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because I can"));
+    }
+
     /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
     [Test]
     public void TheFooter_SaysWhyItIsCSharp()
@@ -91,7 +102,7 @@ public class SiteLayoutTests
         {
             Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
             Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
-            Assert.That(brand.TextContent.Trim(), Is.EqualTo("louis-agent"));
+            Assert.That(brand.QuerySelector(".site-brand-name")!.TextContent.Trim(), Is.EqualTo("louis-agent"));
             Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
                     "demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg")),
                 "the mark is the app's own copy");
