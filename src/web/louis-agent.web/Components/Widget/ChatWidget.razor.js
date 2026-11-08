@@ -4,5 +4,10 @@
 export function pageText() {
     const main = document.querySelector("main") ?? document.body;
     const text = (main?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 6000);
-    return { url: location.pathname, title: document.title, text };
+    // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2).
+    const areas = [...document.querySelectorAll("section[id]")].map((section) => ({
+        id: section.id,
+        heading: (section.querySelector(".kicker, h1, h2, h3")?.textContent ?? "").replace(/\s+/g, " ").trim(),
+    }));
+    return { url: location.pathname, title: document.title, text, areas };
 }

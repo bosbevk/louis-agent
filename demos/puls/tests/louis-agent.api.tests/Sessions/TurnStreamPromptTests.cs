@@ -36,6 +36,18 @@ public class TurnStreamPromptTests
         });
     }
 
+    /// <summary>A page's areas end the block (F117): each as its id and heading, one a line, so the model knows where it can send the visitor.</summary>
+    [Test]
+    public void ThePagesAreas_EndTheBlock()
+    {
+        var request = new SendMessageRequest("where are the levels?", null,
+            new PageRequest("/identities", "Identities", "Who an agent is.", [new PageAreaRequest("parts", "What an identity holds"), new PageAreaRequest("levels", "The three that exist")]));
+
+        string prompt = TurnStream.BuildPrompt(request);
+
+        Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n#parts What an identity holds\n#levels The three that exist]"));
+    }
+
     /// <summary>Without a page the prompt is the words alone, as before.</summary>
     [Test]
     public void NoPage_LeavesThePromptAlone()

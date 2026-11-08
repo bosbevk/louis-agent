@@ -49,7 +49,7 @@ public class ChatRunnerTests
     [Test]
     public async Task ThePage_TravelsWithTheNextMessage_Once()
     {
-        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question, Page = new Page("/packs", "Packs", "A pack is tools and their guide.") } };
+        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question, Page = new Page("/packs", "Packs", "A pack is tools and their guide.", [new PageArea("general", "General tools")]) } };
 
         await h.Runner.SendAsync();
         string first = h.Handler.Requests.Last().Body!;
@@ -59,7 +59,7 @@ public class ChatRunnerTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(first, Does.Contain("\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\"}"));
+            Assert.That(first, Does.Contain("\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\",\"areas\":[{\"id\":\"general\",\"heading\":\"General tools\"}]}"));
             Assert.That(h.Runner.Page, Is.Null, "forgotten once sent");
             Assert.That(second, Does.Not.Contain("\"page\""), "the wire as it was without a page");
         });

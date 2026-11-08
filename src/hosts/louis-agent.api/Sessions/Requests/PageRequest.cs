@@ -5,4 +5,4 @@ namespace LouisAgent.Api.Sessions.Requests;
 /// the model sees what they see. The web sends it with the first message of a chat and again after a move to another
 /// page.
 /// </summary>
-internal sealed record PageRequest(string? Url, string? Title, string? Text);
+internal sealed record PageRequest(string? Url, string? Title, string? Text, List<PageAreaRequest>? Areas = null);

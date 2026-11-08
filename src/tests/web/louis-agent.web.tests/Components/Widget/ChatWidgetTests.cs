@@ -130,13 +130,13 @@ public class ChatWidgetTests
     {
         using var ctx = Context(out var handler);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
-        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own."));
+        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own.", []));
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
         Send(cut, "which page am I on?");
         Send(cut, "and then?");
-        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide."));
+        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide.", []));
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/packs");
         Send(cut, "and here?");
 
