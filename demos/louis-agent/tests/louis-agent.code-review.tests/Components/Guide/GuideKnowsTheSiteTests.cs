@@ -42,6 +42,8 @@ public class GuideKnowsTheSiteTests
     [TestCase("What we sell today")]
     [TestCase("R500 to R1,000 a month")]
     [TestCase("closed Docker container")]
+    [TestCase("When someone is interested, you can tell Louis yourself.")]
+    [TestCase("never send twice")]
     public void TheVoice_SellsWhatTheSiteSells(string words)
     {
         Assert.That(TheVoice(), Does.Contain(words));

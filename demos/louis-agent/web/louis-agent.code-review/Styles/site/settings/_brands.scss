@@ -1,0 +1,5 @@
+/* Third parties' colours, as their brand guidelines give them (ADR 0102): a mark keeps its owner's colour. Apart from
+   the site's own tokens, so the films' hash (which covers _tokens.scss) doesn't move for a brand the films never draw. */
+:root {
+    --whatsapp: #25d366;        /* WhatsApp's green */
+}

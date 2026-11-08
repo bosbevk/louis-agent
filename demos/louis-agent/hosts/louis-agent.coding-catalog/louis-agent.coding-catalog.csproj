@@ -23,6 +23,8 @@
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.devops\louis-agent.pack.devops.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.paymo\louis-agent.pack.paymo.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
+    <!-- F112: the guide's way to mail Louis a lead. -->
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.leads\louis-agent.pack.leads.csproj" />
     </ItemGroup>
 
 </Project>

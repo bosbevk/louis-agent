@@ -146,6 +146,13 @@ needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admi
 **100% C#, because I can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
 footer, and it is the one line the site says about itself.
 
+## The one rule
+
+**First principles.** The startup runs on one rule, and the landing says so under the hero (FX81): every decision
+starts from what is certainly true and builds up from there, not from what everyone else does. Measure before you
+assume. Write down why. Adopt what is proven, and build only what nobody has. The decision records (`src/docs/adr/`)
+are the rule at work: each says what was true, what was chosen, and why.
+
 ## What the site sells, and how to reach Louis
 
 The guide answers questions about buying from this section (FX72), so it holds the site's public offer in full:
@@ -162,7 +169,8 @@ The guide answers questions about buying from this section (FX72), so it holds t
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
   subject already filled in, or WhatsApp on 066 391 2470 (WhatsApp Business), which the page's WhatsApp buttons open
-  as a chat (`https://wa.me/27663912470`). Say what the agent should do, which systems it needs to reach, and where
+  as a chat (`https://wa.me/27663912470`), with WhatsApp's own mark, green and words, as its brand guidelines ask
+  ([ADR 0102](../../../../src/docs/adr/0102-third-party-marks-follow-their-owners-guidelines.md)). Say what the agent should do, which systems it needs to reach, and where
   it should run.
 
 ## Extending it

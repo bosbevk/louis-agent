@@ -4,6 +4,7 @@ using LouisAgent.Identities.Coding;
 using LouisAgent.Identities.Expert;
 using LouisAgent.Identities.Triage;
 using LouisAgent.Packs.Docs;
+using LouisAgent.Packs.Leads;
 using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Paymo;
 using LouisAgent.Packs.Triage;
@@ -25,7 +26,8 @@ public class CodingPrompts
                 Runs = "snapshot-runs",
                 People = "snapshot-people",
                 Departments = Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config/departments.yaml")
-            }));
+            },
+            new LeadsOptions { To = "snapshot@example.test" }));
 
     /// <summary>Registers its prompts.</summary>
     [OneTimeSetUp]

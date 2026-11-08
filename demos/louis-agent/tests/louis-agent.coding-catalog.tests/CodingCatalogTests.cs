@@ -41,8 +41,8 @@ public class CodingCatalogTests
                 "the coding agent stays the default");
             Assert.That(expert, Is.Not.Null);
             Assert.That(expert!.DefaultVoice, Is.EqualTo($"{expert.Name}/voice"));
-            Assert.That(expert.Packs, Is.EqualTo(new[] { ExpertPack.Docs.Wire() }));
-            Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(ExpertPack.Docs.Wire()));
+            Assert.That(expert.Packs, Is.EqualTo(new[] { ExpertPack.Docs.Wire(), ExpertPack.Leads.Wire() }));
+            Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(ExpertPack.Docs.Wire()).And.Contain(ExpertPack.Leads.Wire()));
         });
     }
 }
