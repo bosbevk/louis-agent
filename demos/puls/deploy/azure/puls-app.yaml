@@ -47,6 +47,10 @@ properties:
           # OpenTelemetry agent (the Bicep build), never from here.
           - name: OTEL_SERVICE_NAME
             value: puls
+          # Container Apps ends https at its ingress, so the app reads the visitor's scheme from X-Forwarded-Proto (FX68):
+          # without it a sign-in provider is told to send the person back to http://, and Google refuses the address.
+          - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+            value: 'true'
           - name: HOST_TIME_ZONE
             value: Africa/Johannesburg
           - name: HOST_CULTURE
