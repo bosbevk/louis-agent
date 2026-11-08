@@ -6,23 +6,20 @@
     <span class="kicker">Built on it</span>
     <h2 class="chrome">Three agents run on the engine today.</h2>
     <p class="lede">Each is a demo, the way your own project would be: its own program, its own identity, and the packs it names.</p>
-    <div class="grid-3">
-        <article class="panel">
-            <h3>Puls</h3>
-            <p>A general assistant in everyday South African Afrikaans (English too). It doesn't answer with tools itself: it hands each task to a specialist, a second session with only the tools that task needs and a role that says how to work and report back. The work shows live, with the sources it read and what it cost, in rand.</p>
-            <p class="muted">Five specialists today: a researcher, a reader, a historian, an analyst and a cook. Its packs find a shop's branches near you, estimate prices from Stats SA's public averages, and read recipes from South African sites.</p>
-        </article>
-        <article class="panel">
-            <h3>The coding agent</h3>
-            <p>Works on your repository with real tools, all of them packs: files, git, dotnet, Python, PowerShell, bash and web search. It runs inside Rider through the Agent Client Protocol, in a web app with a changes view and a branches view, in the terminal, over the HTTP API, and its tools alone over MCP. Pushing always stays with you.</p>
-            <p class="muted">A proof of concept beside it: an orchestrator that reads a service's errors and has the coding agent fix and verify them.</p>
-        </article>
-        <article class="panel">
-            <h3>The guide</h3>
-            <p>The expert in this site's corner. It answers about the framework from the framework's own docs, read-only, reads before it speaks, and sells what the site sells: a hosted website with an agent like itself, and custom agents. It speaks plainly to a visitor and technically to a developer.</p>
-            <p class="muted">The smallest identity there is: one voice and one pack. A fourth, a team that triages a service's errors and fixes them, is being built on the same engine.</p>
-        </article>
-    </div>
+    <CardDeck>
+        <Card Title="Puls" Summary="A general assistant in everyday South African Afrikaans, English too. It hands each task to a specialist and shows the work live.">
+            <p>It doesn't answer with tools itself: it hands each task to a specialist, a second session with only the tools that task needs and a role that says how to work and report back. The work shows live, with the sources it read and what it cost, in rand.</p>
+            <p>Five specialists today: a researcher, a reader, a historian, an analyst and a cook. Its packs find a shop's branches near you, estimate prices from Stats SA's public averages, and read recipes from South African sites.</p>
+        </Card>
+        <Card Title="The coding agent" Summary="Works on your repository with real tools, from Rider, the web, the terminal or the API. Pushing stays with you.">
+            <p>All of its tools are packs: files, git, dotnet, Python, PowerShell, bash and web search. It runs inside Rider through the Agent Client Protocol, in a web app with a changes view and a branches view, in the terminal, over the HTTP API, and its tools alone over MCP. Pushing always stays with you.</p>
+            <p>A proof of concept beside it: an orchestrator that reads a service's errors and has the coding agent fix and verify them.</p>
+        </Card>
+        <Card Title="The guide" Summary="The expert in this site's corner. It answers from the framework's own docs and sells what the site sells.">
+            <p>It answers about the framework from the framework's own docs, read-only, reads before it speaks, and sells what the site sells: a hosted website with an agent like itself, and custom agents. It speaks plainly to a visitor and technically to a developer.</p>
+            <p>The smallest identity there is: one voice and one pack. A fourth, a team that triages a service's errors and fixes them, is being built on the same engine.</p>
+        </Card>
+    </CardDeck>
 </section>
 
 <section class="band stands-on">
