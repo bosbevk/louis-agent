@@ -1,3 +1,3 @@
 namespace LouisAgent.Api.Sessions.Requests;
 
-internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
+internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments, PageRequest? Page = null);

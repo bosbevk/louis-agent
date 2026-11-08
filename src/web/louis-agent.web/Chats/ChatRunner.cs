@@ -32,6 +32,9 @@ public sealed class ChatRunner(
 
     public string Draft { get; set; } = "";
     public List<Attachment> Attachments { get; } = [];
+
+    /// <summary>The page the visitor is reading, sent with the next message and then forgotten (F115).</summary>
+    public Page? Page { get; set; }
     public bool Streaming { get; private set; }
     public string? Notice { get; set; }
 
@@ -56,16 +59,18 @@ public sealed class ChatRunner(
 
         string message = Draft.Trim();
         var attachments = Attachments.ToList();
+        var page = Page;
+        Page = null;
         Draft = "";
         Attachments.Clear();
-        await StartTurnAsync(message, attachments);
+        await StartTurnAsync(message, attachments, page);
     }
 
     /// <summary>
     /// One turn: a session is opened for a new chat (<paramref name="title"/> names it, else its first message does),
     /// the turn is added and streamed, and the chat saved when the stream ends, however it ends.
     /// </summary>
-    public async Task StartTurnAsync(string message, List<Attachment> attachments, string? title = null)
+    public async Task StartTurnAsync(string message, List<Attachment> attachments, Page? page = null, string? title = null)
     {
         Notice = null;
         if (Chat is null)
@@ -86,6 +91,7 @@ public sealed class ChatRunner(
                 // The draft goes back and the page is told to redraw, or the notice never shows (FX29).
                 Draft = message;
                 Attachments.AddRange(attachments);
+                Page ??= page;
                 Notice = Describe(ex);
                 Changed?.Invoke();
                 return;
@@ -107,7 +113,7 @@ public sealed class ChatRunner(
         var redraw = new RedrawThrottle(_clock, RedrawEvery, () => Changed?.Invoke());
         try
         {
-            await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments))
+            await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments, page))
             {
                 TurnStream.Apply(turn, streamEvent);
                 redraw.Request();

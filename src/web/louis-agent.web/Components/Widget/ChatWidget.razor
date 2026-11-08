@@ -1,4 +1,4 @@
-@implements IDisposable
+@implements IAsyncDisposable
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
    opened as the identity the page names. The words come in as parameters, so the framework names no site. *@
 <div class="chat-widget @(_open ? "is-open" : "")">
@@ -16,7 +16,7 @@
             <div class="widget-composer">
                 <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
                           Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
-                          OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                          OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
                           SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
             </div>
         </section>

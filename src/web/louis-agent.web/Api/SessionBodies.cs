@@ -21,5 +21,12 @@ public sealed record CreateSessionBody(
     string? TimeZone,
     string? Identity = null);
 
-/// <summary>A message for the session to answer, with the files the user attached.</summary>
-public sealed record MessageBody(string Message, IEnumerable<Attachment> Attachments);
+/// <summary>
+/// A message for the session to answer, with the files the user attached and, when it travels, the page they are
+/// reading (F115); without one the wire is as it was, the page key left out.
+/// </summary>
+public sealed record MessageBody(
+    string Message,
+    IEnumerable<Attachment> Attachments,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    Page? Page = null);
