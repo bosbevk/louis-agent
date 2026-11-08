@@ -35,6 +35,16 @@ people will have a public facing AI on a page and not the rest".
 
 - Each generic piece found on the landing moves into the framework as it is touched, with the site's words coming in
   through parameters, and a site test holds that the framework names no site (`FrameworkNamesNoSiteTests`).
+- F118 moved the landing's shape in (2026-11-08, Louis reviewing each step on the Docker copy): the section index
+  built from the bands on every page, the scroll progress line and a way back up; **slides or a flowing page** as a
+  layout option the site sets and a page may override, slides being a screen per section, centred, the page settling
+  on one at a time, a section with more than a screen paged sideways with a pager rather than fitted by hand, a
+  diagram scaled to the slide; a page-change entrance; `SiteHero`, `TileRow` and `Tile`, `SiteStrip` with the site's
+  words and the site's strip colour; every place its own address (ADR 0107). The guide reads the section on the
+  visitor's screen and a section from a page, opens a card, turns a paged section's page, lights a place with a
+  spotlight around its content, and walks a page from a tour button (`GuideButton`, through `GuideDoor`) on the start
+  slide and above its own button on every page; its four jobs are to explain as the framework's expert, walk a page,
+  sell and take the lead. A framework class shared with a site takes a prefix (`.site-strip`: the films had `.strip`).
 - The starter site (`demos/starter`) grows to show the product's shape, so `dotnet new louis-site` gives a business
   website with the agent in its corner and the owner's words to fill in.
 - A new part is asked "would every business's site have this?" before it is written into the louis-agent site.

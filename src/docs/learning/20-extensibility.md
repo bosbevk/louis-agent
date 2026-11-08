@@ -433,3 +433,35 @@ Two small things worth knowing. Razor keeps the `<text>` tag for itself and refu
 text elements go out as `MarkupString` from the code-behind, encoded. And the scope rule for a component's styles
 looks for the classes a component draws in its markup and in the quoted strings of its code-behind, so a class
 written only as an argument in the markup is invisible to it: the three text classes became three small methods.
+
+## A site of slides, and every place an address (F118, 2026-11-08)
+
+F118 was built with Louis looking at each step on the Docker copy, and most of what it became came from that review,
+not the plan: the plan had five steps, the build had over thirty commits. What held it together was one question asked
+of every request: would every business's site want this? When the answer was yes, it went into the framework.
+
+**Parts that register themselves.** The section index is never written by hand. A `Band` puts itself on the frame's
+`PageAreas` as it draws and takes itself off as it goes (a Registry the parts fill, Observer for the index), so every
+page has an index by construction. The order comes from the page, read in the browser after each draw, because a band
+inside a component registers after the page's own.
+
+**A layout is an option, not a page's code.** Slides or a flowing page is a Strategy picked by configuration: the site
+sets one on the frame, a page may say the other with one line, and the page's choice reaches the frame through a small
+holder it listens to. "All content must fit the slide" was the hard ask, and Louis's "you must not fit it by hand"
+ruled out the easy answer. The frame measures each band, and one taller than a screen flows into screen-high CSS
+columns that page sideways. The content is untouched; the layout does the fitting.
+
+**An address is a rule both ways.** `SiteAddresses` writes a place's address and reads one back, from the routes the
+pages already declare, and a catch-all route opens any place. Each wrong turn in review was one place having two names:
+`#rand` against `/proof/rand`, `/parts` against `/parts/1`, `/architecture` against `/architecture/top`. The fix every
+time was to make the rule say they are the same, never to teach the guide the difference. An agent is only as good as
+the names it's given.
+
+**The guide acts through the page's own parts.** It opens a card the way a click would, turns a page the way the pager
+would, and is asked a question through a door any button can knock on (`GuideDoor`), so the guide gained abilities
+without a new tool. Two of its mistakes were information, not reasoning: it didn't know which section was on screen,
+and an address that ended in "contact" read like a page. Both were fixed by what the page sends, with one line in the
+guide's text each.
+
+**Side lessons.** A class name shared between the framework and a site needs a prefix: the films' `.strip` caught the
+framework's strip. And a full-height section makes a spotlight around the section useless; light the content instead.

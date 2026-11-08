@@ -66,7 +66,9 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **A site's public pages** (F118, ADR 0106, 0107). The engine and an agent run without any of this: the CLI, Rider,
   the API and MCP need no web. This part is what turns an agent into a website. `SiteShell` is the frame: a header, the
   page, a footer, the guide in its corner, a scroll progress line, a way back up, and a section index on the left
-  built from the page's bands (each band puts itself on the frame's `PageAreas` as it draws). A site lays its pages out
+  built from the page's bands (each band puts itself on the frame's `PageAreas` as it draws). A page is built of
+  `Band`s and the framework's `SiteHero`, `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words;
+  a `GuideButton` anywhere asks the guide a question through `GuideDoor`. A site lays its pages out
   as **slides** or a **flowing page** (`SiteShell Layout`, a page may choose the other with one `PageLayoutChoice`
   line): on slides every section is a screen tall, its content in the middle, the page settles on one section at a
   time, a section with more than a screen of content pages sideways with a pager, and a diagram scales to fit. Every
