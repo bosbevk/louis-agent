@@ -1,15 +1,12 @@
-<section id="top" class="hero">
-    <AreaMark Id="top" Label="Top" />
-    <div class="hero-text">
-        <span class="kicker">An AI agent framework · 100% C#</span>
-        <h1 class="chrome">Watch every turn. Pay for what you see.</h1>
-        <p class="lede">Thinking, every tool call and every guard stream to the host as they happen, and the turn ends with its bill. A few lines of your own say who the agent is and what it can do. Built on Microsoft.Extensions.AI, provider by configuration, nothing but C# from the engine to this page.</p>
-        <p class="muted">Built in South Africa by one person, with every number measured and every design decision written down.</p>
-        <div class="actions">
-            <ChatLink Class="btn btn-fill">Try the coding agent</ChatLink>
-            <a class="btn btn-line" href="/build-your-own">Build your own</a>
-            <a class="btn btn-line" href="#how">How it works</a>
-        </div>
-    </div>
-    <LiveTurn />
-</section>
+@* The landing's hero: the framework's SiteHero (F118) with this site's words, and the live turn beside them. *@
+<SiteHero Kicker="An AI agent framework · 100% C#">
+    <Headline>Watch every turn. Pay for what you see.</Headline>
+    <Lede>Thinking, every tool call and every guard stream to the host as they happen, and the turn ends with its bill. A few lines of your own say who the agent is and what it can do. Built on Microsoft.Extensions.AI, provider by configuration, nothing but C# from the engine to this page.</Lede>
+    <Note>Built in South Africa by one person, with every number measured and every design decision written down.</Note>
+    <Actions>
+        <ChatLink Class="btn btn-fill">Try the coding agent</ChatLink>
+        <a class="btn btn-line" href="/build-your-own">Build your own</a>
+        <a class="btn btn-line" href="#how">How it works</a>
+    </Actions>
+    <Aside><LiveTurn /></Aside>
+</SiteHero>

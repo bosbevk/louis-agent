@@ -6,7 +6,6 @@
     :root { --site-gutter: 24px; }
     .site h1 { font-size: 44px; }
     .site h2 { font-size: 30px; }
-    .hero { grid-template-columns: minmax(0, 1fr); padding-top: 48px; }
     .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

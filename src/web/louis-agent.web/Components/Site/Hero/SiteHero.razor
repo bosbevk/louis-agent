@@ -1,0 +1,29 @@
+@* A site's hero (F118, ADR 0106): the words on the left, in the slots a site fills, and what the site puts beside them
+   on the right. It marks its place in the section index. The kicker, chrome, lede and muted classes are the site's own
+   words' look, as a band's kicker is; the layout is this component's and sits beside it. *@
+<section id="@Id" class="@Classes">
+    <AreaMark Id="@Id" Label="@Label" />
+    <div class="hero-text">
+        @if (Kicker is not null)
+        {
+            <span class="kicker">@Kicker</span>
+        }
+        <h1 class="chrome">@Headline</h1>
+        @if (Lede is not null)
+        {
+            <p class="lede">@Lede</p>
+        }
+        @if (Note is not null)
+        {
+            <p class="muted">@Note</p>
+        }
+        @if (Actions is not null)
+        {
+            <div class="actions">@Actions</div>
+        }
+    </div>
+    @if (Aside is not null)
+    {
+        <div class="hero-aside">@Aside</div>
+    }
+</section>

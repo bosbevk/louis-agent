@@ -18,8 +18,8 @@ public class StylesheetTests
     /// <summary>Every partial of the site's look.</summary>
     private static readonly string[] Site =
     [
-        "site/settings/tokens", "site/base/elements", "site/landing/hero", "site/landing/live-turn",
-        "site/landing/sections", "site/landing/motion", "site/layout/responsive", .. Films
+        "site/settings/tokens", "site/base/elements", "site/landing/live-turn", "site/landing/sections",
+        "site/landing/motion", "site/layout/responsive", .. Films
     ];
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
