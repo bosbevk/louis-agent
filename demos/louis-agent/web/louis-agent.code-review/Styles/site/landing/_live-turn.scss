@@ -1,7 +1,9 @@
 /* The live turn in the hero: a terminal-like panel whose lines fade in on their own delays (--d, set in the markup) and
    loop every 14 seconds, with a blinking caret on the answer and a rule that draws itself before the cost line. */
 
-.turn { border: 1px solid var(--bs-border-color); border-radius: var(--radius); background: var(--bs-secondary-bg); overflow: hidden; }
+/* Its own name, not the chat's .turn: the guide's chat sits on the same page, and a bare .turn drew its turns as these
+   cards (FX71). */
+.live-turn { border: 1px solid var(--bs-border-color); border-radius: var(--radius); background: var(--bs-secondary-bg); overflow: hidden; }
 
 .turn-head {
     display: flex;
