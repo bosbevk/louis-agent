@@ -42,6 +42,39 @@ public class SitePagesTests
         });
     }
 
+    /// <summary>
+    /// Every page is made of named areas (F117, Louis: "all pages must have areas"): each section carries an id in
+    /// words, unique on its page, so the guide can send a visitor to it and the section index can name it.
+    /// </summary>
+    [TestCase(typeof(HomePage))]
+    [TestCase(typeof(HowItWorksPage))]
+    [TestCase(typeof(ArchitecturePage))]
+    [TestCase(typeof(IdentitiesPage))]
+    [TestCase(typeof(PacksPage))]
+    [TestCase(typeof(BuildYourOwnPage))]
+    [TestCase(typeof(ProofPage))]
+    [TestCase(typeof(BuiltOnItPage))]
+    [TestCase(typeof(ContactPage))]
+    [TestCase(typeof(WhatsComingPage))]
+    public void EverySection_IsANamedArea(Type page)
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render(builder =>
+        {
+            builder.OpenComponent(0, page);
+            builder.CloseComponent();
+        });
+
+        var ids = cut.FindAll("section").Select(section => section.GetAttribute("id") ?? "").ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(ids, Is.Not.Empty);
+            Assert.That(ids, Is.All.Match("^[a-z][a-z-]*$"), "an id in words on every section");
+            Assert.That(ids, Is.Unique);
+        });
+    }
+
     /// <summary>The words from before the split are gone: a shops pack, tools in the engine.</summary>
     [TestCase(typeof(BuiltOnItPage), "A shops pack")]
     [TestCase(typeof(HowItWorksPage), "tools sorted by name")]

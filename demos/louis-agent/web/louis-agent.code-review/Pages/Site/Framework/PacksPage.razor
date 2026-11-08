@@ -2,14 +2,14 @@
 
 <PageTitle>Packs · louis-agent</PageTitle>
 
-<section class="band">
+<section id="top" class="band">
     <span class="kicker">Packs</span>
     <h2 class="chrome">What an agent can do is a package.</h2>
     <p class="lede">A pack is tools and their guide. An agent has only the packs its program names, and a session only the toolsets it asks for, so its prompt never describes a tool it can't use.</p>
     <GraphView Spec="PacksGraph.Spec" Title="A pack, what it holds, and what a session loads from it" />
 </section>
 
-<section class="band">
+<section id="general" class="band">
     <span class="kicker">General tools</span>
     <CardDeck>
         <Card Title="louis-agent.pack.files" Summary="The workspace's files, and documents as text.">
@@ -45,7 +45,7 @@
     </CardDeck>
 </section>
 
-<section class="band">
+<section id="cook" class="band">
     <span class="kicker">The packs behind Puls's cook</span>
     <CardDeck Columns="4">
         <Card Title="louis-agent.pack.where-to-buy" Summary="A shop's branches near you, as a short table.">
@@ -63,7 +63,7 @@
     </CardDeck>
 </section>
 
-<section class="band">
+<section id="rules" class="band">
     <span class="kicker">The rules a pack keeps</span>
     <ul class="rules">
         <li><strong>Only the contracts.</strong> A pack references the small contracts package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>

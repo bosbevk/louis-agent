@@ -2,14 +2,14 @@
 
 <PageTitle>Build your own · louis-agent</PageTitle>
 
-<section class="band">
+<section id="top" class="band">
     <span class="kicker">Build your own</span>
     <h2 class="chrome">A few lines of your own.</h2>
     <GraphView Spec="ProgramGraph.Spec" Title="Your program, the catalogue it names, the host it starts" />
     <p class="lede">The framework is the engine, the hosts and the packs. Your project says who its agent is and what it can do, and starts a host. This is how our own coding agent does it, exactly as the code stands.</p>
 </section>
 
-<section class="band">
+<section id="program" class="band">
     <span class="kicker">The whole program</span>
     <pre class="listing"><code>using LouisAgent.Core.Web;
 using LouisAgent.Core.Anthropic;
@@ -26,7 +26,7 @@ await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.
     <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own. The last argument is what the host gets besides the catalogue: the web for its agent, a tracer for its turns and the model providers it may talk to, each a library of its own. Leave one out and the host runs without it.</p>
 </section>
 
-<section class="band">
+<section id="loads" class="band">
     <span class="kicker">What it loads</span>
     <pre class="listing"><code>public static AgentCatalog Create() => new([new CodingIdentity(), new ExpertIdentity()], Packs());
 
@@ -36,7 +36,7 @@ new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads),</code></pre>
     <p class="band-note">The identities are who it is: the coding agent, and the guide in this page's corner. The packs are what it can do. <a href="/packs">Every pack</a></p>
 </section>
 
-<section class="band">
+<section id="whose" class="band">
     <span class="kicker">Whose is what</span>
     <div class="grid-2">
         <article class="panel">
@@ -50,7 +50,7 @@ new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads),</code></pre>
     </div>
 </section>
 
-<section class="band">
+<section id="stands" class="band">
     <span class="kicker">Where it stands</span>
     <div class="panel">
         <h3>The packages aren't on NuGet yet.</h3>

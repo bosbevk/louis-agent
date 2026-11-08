@@ -2,14 +2,14 @@
 
 <PageTitle>How the engine works · louis-agent</PageTitle>
 
-<section class="band band-movie">
+<section id="top" class="band band-movie">
     <span class="kicker">How it works · in detail</span>
     <h2 class="chrome">One turn, through every layer.</h2>
     <p class="lede">Sixty seconds, ten scenes. The six slabs inside core are the real middleware in its real order, outermost first, the way <code>ChatPipeline.cs</code> builds it.</p>
     <FilmFrame><DetailedMovie /></FilmFrame>
 </section>
 
-<section class="band">
+<section id="parts" class="band">
     <span class="kicker">The parts, in plain words, in the order a turn meets them</span>
     <GraphView Spec="TurnGraph.Spec" Title="One turn: your program, a host, the engine's pipeline, the model and a tool, the ledger" />
     <ul class="rules">
@@ -24,7 +24,7 @@
     </ul>
 </section>
 
-<section class="band">
+<section id="rules" class="band">
     <span class="kicker">The rules every turn keeps</span>
     <ul class="rules">
         <li><strong>An agent runs in a closed Docker container.</strong> It sees only the folders mounted into it and the secrets handed to it. The fetcher it must use refuses your network's internal addresses. Nothing it does reaches the machine it runs on.</li>
