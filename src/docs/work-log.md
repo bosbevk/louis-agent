@@ -14,8 +14,6 @@
 |---|---|---|
 | Features (`F`) | 74 | 73 |
 | Fixes (`FX`) | 81 | 5 |
-| Features (`F`) | 73 | 73 |
-| Fixes (`FX`) | 81 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
