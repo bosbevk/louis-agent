@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 76 | 74 |
-| Fixes (`FX`) | 89 | 5 |
+| Fixes (`FX`) | 90 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -210,13 +210,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (89 done)
+## Fixes (90 done)
 
 | Id | When | What |
 |---|---|---|
 | FX92 | 2026-11-08 | The slogan reads "100% C#, because you can" |
 | FX91 | 2026-11-08 | The band and the guide say what drives the work: a stoic and Kierkegaard outlook, meaning and purpose, a startup of one; a described job is a custom agent to offer, and the agent can run where the customer is |
 | FX90 | 2026-11-08 | The guide opens on every copy of the site: the run profile and the compose file carry the guide's settings as the release does |
+| FX99 | 2026-11-08 | The social card shows the website's address and the slogan, no longer the private repository's |
 | FX98 | 2026-11-08 | The chat follows the answer to its end: one more scroll on the draw after the stream ends |
 | FX96 | 2026-11-08 | A developer who asks the guide for code gets a whole Program.cs in a C# block: the API guide holds the listing, the voice says to write it |
 | FX95 | 2026-11-08 | The guide knows its own leads: yes, shown, the leads pack it uses itself, a mailbox read for leads as a custom agent |
