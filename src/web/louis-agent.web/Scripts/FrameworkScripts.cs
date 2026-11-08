@@ -16,6 +16,9 @@ public static class FrameworkScripts
     /// <summary>The message list's scrolling.</summary>
     public const string MessageList = Content + "Components/Chat/MessageList.razor.js";
 
+    /// <summary>The message box's keys: Enter sends, Shift+Enter breaks the line, wherever the box is drawn (FX70).</summary>
+    public const string Composer = Content + "Components/Chat/Composer.razor.js";
+
     /// <summary>A turn's code blocks, highlighted on the site's highlight.js.</summary>
     public const string TurnView = Content + "Components/TurnView.razor.js";
 

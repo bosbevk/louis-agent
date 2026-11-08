@@ -97,12 +97,7 @@ const on = (type, handler, options) => {
     listeners.push(() => document.removeEventListener(type, handler, options));
 };
 
-// Enter sends, Shift+Enter adds a new line (IME composition is left alone); the box grows with what's typed.
-const enterSends = (e) => {
-    if (e.target.id !== "composer-input" || e.key !== "Enter" || e.shiftKey || e.isComposing) return;
-    e.preventDefault();
-    document.getElementById("send-button")?.click();
-};
+// The box grows with what's typed; its keys (Enter sends) are the composer's own module (FX70).
 const grow = (e) => {
     if (e.target.id !== "composer-input") return;
     e.target.style.height = "auto";
@@ -185,7 +180,6 @@ const searchShortcut = (e) => {
 // Hangs the listeners when the shell first draws; a second attach replaces the first.
 export function attach() {
     detach();
-    on("keydown", enterSends);
     on("input", grow);
     on("click", openPhoto);
     on("pointerdown", startResize);
