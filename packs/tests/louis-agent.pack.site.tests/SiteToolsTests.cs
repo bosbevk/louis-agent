@@ -18,6 +18,7 @@ public class SiteToolsTests
     [TestCase("/#rule")]
     [TestCase("/identities#the-coding-agent")]
     [TestCase("/proof#a-10-fixes")]
+    [TestCase("/how-it-works#parts/2")]
     public void ASitePath_IsShown(string path)
     {
         Assert.That(_tools.ShowPage(path), Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));
@@ -31,6 +32,10 @@ public class SiteToolsTests
     [TestCase("/pa cks")]
     [TestCase("")]
     [TestCase("/identities#Levels Two")]
+    [TestCase("/how-it-works#parts/")]
+    [TestCase("/how-it-works#parts/two")]
+    [TestCase("/how-it-works#parts/0")]
+    [TestCase("/how-it-works#/2")]
     public void AnythingElse_IsRefused_WithTheReason(string path)
     {
         Assert.That(_tools.ShowPage(path),

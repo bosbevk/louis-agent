@@ -7,14 +7,30 @@ export function pageText() {
     // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2),
     // and every card the guide can open (F118), by its title and marked as a card.
     const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
-    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].map((area) => ({
+    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].flatMap((area) => [{
         id: area.id,
         heading: area.matches("[data-card]")
             ? `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`
             : fold(area.querySelector(".kicker, h1, h2, h3")?.textContent),
-    }));
+    }, ...pagesOf(area, fold)]);
     return { url: location.pathname, title: document.title, text, areas };
 }
+
+// A section paged sideways on this visitor's screen (F118) lists its pages, each by what it holds, so the guide can
+// turn to the page it talks about: "#parts/2", "page 2 of 3: Your program, The hosts, ...".
+const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
+const pagesOf = (area, fold) => {
+    const body = area.matches(".is-paged") ? area.querySelector(".band-body") : null;
+    if (!body) return [];
+    const step = stepOf(body), left = body.getBoundingClientRect().left - body.scrollLeft, pages = [];
+    for (const item of body.children) {
+        const page = Math.floor((item.getBoundingClientRect().left - left + 1) / step);
+        const name = fold(item.querySelector("strong, h3, h4, .card-title, figcaption")?.textContent ?? item.textContent).slice(0, 40);
+        if (name) (pages[page] ??= []).push(name);
+    }
+    return pages.map((names, k) => ({ id: `${area.id}/${k + 1}`, heading: `page ${k + 1} of ${pages.length}: ${names.join(", ")}` }))
+        .filter(Boolean);
+};
 
 // Takes the visitor to an area the guide named (F117, F118): waits for the page to have it (the router draws the new
 // page a moment after the address changes), scrolls it to just under the header, and puts a spotlight on it: one
@@ -26,7 +42,9 @@ export function pageText() {
 const headerRoom = 96;
 const spotlightPad = 14;
 const spotlightMs = 4000;
-export function showArea(id) {
+export function showArea(name) {
+    // "parts/2" is the area "parts", turned to its second page.
+    const [id, page] = name.split("/");
     const started = performance.now();
     const attempt = () => {
         const area = document.getElementById(id);
@@ -34,7 +52,8 @@ export function showArea(id) {
             const card = area.matches("[data-card]");
             if (card && area.getAttribute("aria-expanded") !== "true") area.click();
             const target = card ? area.closest(".card-deck") ?? area : area;
-            turnTo(target);
+            if (page) turnToPage(area, Number(page));
+            else turnTo(target);
             holdSnap();
             place(target, true);
             // A new page's router scrolls to the top a moment after the area appears, and a card's story grows the
@@ -53,9 +72,16 @@ export function showArea(id) {
 const turnTo = (target) => {
     const body = target.closest(".is-paged .band-body");
     if (!body) return;
-    const step = body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
+    const step = stepOf(body);
     const at = body.scrollLeft + target.getBoundingClientRect().left - body.getBoundingClientRect().left;
     body.scrollTo({ left: Math.max(0, Math.floor(at / step) * step), behavior: "auto" });
+};
+
+// A paged band named with its page ("parts/2") turns to that page, smoothly, as its pager's button would.
+const turnToPage = (band, page) => {
+    const body = band.matches(".is-paged") ? band.querySelector(".band-body") : null;
+    if (!body || !(page >= 1)) return;
+    body.scrollTo({ left: (page - 1) * stepOf(body), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 };
 
 // Where the area belongs (F118, Louis: "the agent must also center it, it takes you to the top"): centred in the

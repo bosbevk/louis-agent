@@ -2058,12 +2058,12 @@
     },
     {
       "Name": "ShowPage",
-      "Description": "Opens a page of this site in the visitor's browser, scrolled to one of its areas when the path names one after #, and lights the area up. A card is an area too, and it opens. Use it when the right page, area or card exists for what they ask; then say in one line what to look at. The page you are on lists its areas.",
+      "Description": "Opens a page of this site in the visitor's browser, scrolled to one of its areas when the path names one after #, and lights the area up. A card is an area too, and it opens; a section paged sideways turns to the page named after a slash. Use it when the right page, area or card exists for what they ask; then say in one line what to look at. The page you are on lists its areas, and a paged section's pages.",
       "Schema": {
         "type": "object",
         "properties": {
           "path": {
-            "description": "The page's path on this site, such as /packs, with an area or a card after # for a part of it, such as /identities#levels or /identities#puls.",
+            "description": "The page's path on this site, such as /packs, with an area or a card after # for a part of it, such as /identities#levels or /identities#puls, and a page of a paged section after a slash, such as /how-it-works#parts/2.",
             "type": "string"
           }
         },

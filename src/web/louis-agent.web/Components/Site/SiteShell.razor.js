@@ -73,6 +73,12 @@ const paginate = () => {
         if (!band.dataset.measured) {
             band.dataset.measured = "1";
             if (band.getBoundingClientRect().height > slideRoom() + 2) band.classList.add("is-paged");
+            // The count follows the body however it is turned: its pager, or the guide naming a page.
+            const body = $(".band-body", band);
+            if (body && !body.dataset.counted) {
+                body.dataset.counted = "1";
+                body.addEventListener("scroll", () => count(band), { passive: true });
+            }
         }
         if (band.classList.contains("is-paged")) count(band);
     });
