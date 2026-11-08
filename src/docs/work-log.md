@@ -13,7 +13,9 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 74 | 73 |
-| Fixes (`FX`) | 80 | 5 |
+| Fixes (`FX`) | 81 | 5 |
+| Features (`F`) | 73 | 73 |
+| Fixes (`FX`) | 81 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -206,10 +208,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (80 done)
+## Fixes (81 done)
 
 | Id | When | What |
 |---|---|---|
+| FX89 | 2026-11-08 | The gradient headings keep their descenders: the chrome class's box reaches down for them |
 | FX88 | 2026-11-08 | The coding agent's chat is closed to visitors until it is ready: "Coming soon" pills in the header and the hero, and the chat's address leads back to the landing |
 | FX87 | 2026-11-08 | The site's release carries the guide's mail key: `secrets` copies it into the vault and `release` names it only once the vault holds it |
 | FX86 | 2026-11-08 | The site's release names Resend's key only once the vault holds it; main's deploy after FX82 had failed on the missing secret |
