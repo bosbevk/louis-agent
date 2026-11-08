@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Tests.Components.Site.Bands;
 public class AreaIdsTests
 {
     /// <summary>The ids the site's card titles get.</summary>
-    [TestCase("Puls", "puls")]
+    [TestCase("Basic", "basic")]
     [TestCase("The coding agent", "the-coding-agent")]
     [TestCase("louis-agent.pack.files", "louis-agent-pack-files")]
     [TestCase("Rand for display, with the rate's date", "rand-for-display-with-the-rate-s-date")]

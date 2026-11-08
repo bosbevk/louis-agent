@@ -44,7 +44,7 @@ public class SiteAddressesTests
     [TestCase("/identities/2", "/identities", "top", 2)]
     [TestCase("/home/2", "/", "top", 2)]
     [TestCase("/Proof/Rand/", "/proof", "rand", null)]
-    [TestCase("http://127.0.0.1:5080/identities/puls", "/identities", "puls", null)]
+    [TestCase("http://127.0.0.1:5080/identities/the-guide", "/identities", "the-guide", null)]
     [TestCase("https://example.com/proof?x=1#y", "/proof", null, null)]
     public void AnAddress_ReadsBack(string address, string page, string? section, int? turn)
     {
