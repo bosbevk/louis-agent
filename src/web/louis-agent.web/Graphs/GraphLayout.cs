@@ -21,6 +21,8 @@ public static class GraphLayout
     private const double BoxHeight = 56;
     private const double NotedBoxHeight = 72;
     private const double Gap = 18;
+    /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
+    private const double MinColumnGap = 60;
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     /// <summary>Places a diagram across the given width.</summary>
@@ -28,6 +30,8 @@ public static class GraphLayout
     {
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the height.
         var columns = Ordered(spec);
+        // Columns never touch: when the width can't hold them with room between, the drawing widens and the page scales it.
+        width = Math.Max(width, (int)Math.Ceiling(columns.Count * BoxWidth + Math.Max(0, columns.Count - 1) * MinColumnGap));
         double height = columns.Count == 0 ? 0 : columns.Max(ColumnHeight);
 
         var nodes = new List<PlacedNode>();

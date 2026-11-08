@@ -112,6 +112,26 @@ public class GraphLayoutTests
         Assert.That(edge.WordX, Is.GreaterThan(start + gap * 0.15).And.LessThan(start + gap * 0.45));
     }
 
+    /// <summary>
+    /// Columns never touch (FX85, Louis's screenshot of a five-column diagram): when the width can't hold them with
+    /// room between, the drawing grows and the page scales it, so a box is never drawn over another.
+    /// </summary>
+    [Test]
+    public void ManyColumns_NeverOverlap()
+    {
+        var spec = new GraphSpec(Enumerable.Range(0, 6).Select(column => new GraphNode($"n{column}", $"N{column}", null, column)).ToList(), []);
+
+        var placed = GraphLayout.Place(spec, 880);
+
+        var boxes = placed.Nodes.OrderBy(node => node.X).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.Width, Is.GreaterThan(880), "the drawing widens");
+            for (int at = 1; at < boxes.Count; at++)
+                Assert.That(boxes[at].X - (boxes[at - 1].X + boxes[at - 1].W), Is.GreaterThanOrEqualTo(60), "room between columns");
+        });
+    }
+
     /// <summary>An arrow to a box the diagram doesn't have is left out, not drawn to nowhere.</summary>
     [Test]
     public void AnArrowToNowhere_IsLeftOut()
