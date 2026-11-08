@@ -209,6 +209,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX87 | 2026-11-08 | The site's release carries the guide's mail key: `secrets` copies it into the vault and `release` names it only once the vault holds it |
 | FX86 | 2026-11-08 | The site's release names Resend's key only once the vault holds it; main's deploy after FX82 had failed on the missing secret |
 | FX84 | 2026-11-08 | A line between an answer's paragraphs: the chat's markdown says its own paragraph margin |
 | FX82 | 2026-11-08 | WhatsApp's mark, green and words on its buttons as its guidelines ask (ADR 0102), a hover on every button, the hairline above the contact strip, and the index marks the last section at the page's end |
