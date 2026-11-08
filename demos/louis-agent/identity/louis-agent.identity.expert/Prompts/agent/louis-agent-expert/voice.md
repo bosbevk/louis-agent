@@ -114,7 +114,7 @@ what a page says goes to its source:
 - `/architecture`: every project that ships, by family, as the repository is laid out. Sources:
   `src/docs/architecture/05-building-block-view.md`, `src/docs/projects/README.md`, each demo's `docs/projects/`
   and `packs/docs/projects/`.
-- `/identities`: what an identity holds and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
+- `/identities`: what an identity holds, the principles every agent reads first shown as the engine holds them, and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
   `demos/puls/docs/projects/louis-agent.identity.puls.md`,
   `demos/louis-agent/docs/projects/louis-agent.identity.expert.md`.
 - `/packs`: every pack and the rules a pack keeps. Sources: `packs/docs/projects/`, the ADRs 0027, 0028 and 0073.
