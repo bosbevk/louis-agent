@@ -76,13 +76,16 @@ internal static class TurnStream
         return MessageText.Format(ApiModelText.PageInView, new { Id = id, Heading = inView.Heading ?? "" }).TrimEnd();
     }
 
-    /// <summary>The page's named areas as lines of "#id heading" after the text (F117), nothing when the page lists none.</summary>
+    /// <summary>
+    /// The page's named places as lines of "address heading" after the text (F117; each its own address since F118,
+    /// ADR 0107), nothing when the page lists none.
+    /// </summary>
     private static string AreasOf(PageRequest page)
     {
         var areas = (page.Areas ?? []).Where(area => !string.IsNullOrWhiteSpace(area.Id)).ToList();
         if (areas.Count == 0) return "";
         return MessageText.Format(ApiModelText.PageAreas,
-            new { List = string.Join("\n", areas.Select(area => $"#{area.Id} {area.Heading}".TrimEnd())) });
+            new { List = string.Join("\n", areas.Select(area => $"{area.Id} {area.Heading}".TrimEnd())) });
     }
 
     /// <summary>

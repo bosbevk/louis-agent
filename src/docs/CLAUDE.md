@@ -144,8 +144,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 **The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
 
 - **Every site is built on the framework's web:** what would be the same on every site is in `louis-agent.web`, which names no
-  site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses.
-  [ADR 0084](adr/0084-every-site-is-built-on-the-frameworks-web.md).
+  site; a site holds only its words, brand, colours, addresses, own pages and which packs and views it uses; every
+  place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](adr/0107-every-section-has-an-address.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
   [ADR 0034](adr/0034-code-a-person-can-maintain.md), [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
 - **One type per doc**; plans, feature and fix docs have a lifecycle and a done plan is deleted.

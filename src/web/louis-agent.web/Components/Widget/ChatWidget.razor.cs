@@ -1,11 +1,13 @@
 using System.Text.Json;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Widget;
@@ -43,6 +45,7 @@ public partial class ChatWidget : IAsyncDisposable
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
     [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IServiceProvider Services { get; set; } = default!;
 
     /// <summary>Who answers: the identity a session opens as, by the name the host's catalogue knows.</summary>
     [Parameter, EditorRequired]
@@ -91,20 +94,26 @@ public partial class ChatWidget : IAsyncDisposable
     }
 
     /// <summary>
-    /// The guide takes the visitor to a page (F117): on a ShowPage call the browser goes to the path, and the area
-    /// after the hash, when there is one, is scrolled to and lit up by the module once the page has it. Any other
-    /// tool is the chat's business.
+    /// The guide takes the visitor to a place (F117, ADR 0107): on a ShowPage call the address is read into the page
+    /// and the place on it; the browser goes to the page only when it is another one, and the module scrolls to the
+    /// place, opens a card or turns a paged section, and lights it once the page has it. Any other tool is the chat's.
     /// </summary>
     private void OnToolCalled(Block block)
     {
-        if (block.ToolName != ShowPageTool || block.ToolInput is null) return;
+        if (block.ToolName != ShowPageTool || block.ToolInput is null || Addresses is not { } addresses) return;
         using var input = JsonDocument.Parse(block.ToolInput);
         if (!input.RootElement.TryGetProperty("path", out var pathElement) || pathElement.GetString() is not { } path) return;
+        if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
-        Nav.NavigateTo(path);
-        int hash = path.IndexOf('#');
-        if (hash >= 0 && hash < path.Length - 1) _ = Module.InvokeVoidAsync("showArea", path[(hash + 1)..]);
+        if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));
+        if (target.Place is not null) _ = Module.InvokeVoidAsync("showArea", target.Place, addresses.Address(target.Page, null), path);
     }
+
+    /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
+    private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
+
+    /// <summary>The page the visitor is on, without the place on it.</summary>
+    private string PageAddress => Addresses?.Read(Nav.Uri)?.Page ?? new Uri(Nav.Uri).AbsolutePath;
 
     /// <summary>
     /// Asks the API for the rates and the display currency once, so a turn's cost shows in the site's currency, not as
@@ -129,17 +138,21 @@ public partial class ChatWidget : IAsyncDisposable
     private async Task SendAsync()
     {
         var inView = await Module.InvokeAsync<PageArea?>("inView");
-        if (_pageSentFor != Nav.Uri)
+        string here = PageAddress;
+        Page? page = null;
+        if (_pageSentFor != here)
         {
-            var page = await Module.InvokeAsync<Page?>("pageText");
-            Runner.Page = page is null ? null : page with { InView = inView };
-            _pageSentFor = Nav.Uri;
+            page = await Module.InvokeAsync<Page?>("pageText");
+            page = page is null ? null : page with { InView = inView };
+            _pageSentFor = here;
         }
         else if (inView is not null)
         {
-            Runner.Page = new Page(new Uri(Nav.Uri).AbsolutePath, "", "", [], inView);
+            page = new Page(here, "", "", [], inView);
         }
 
+        // Every place by its own address (ADR 0107), so the guide names what it sends the visitor to as it reads it.
+        Runner.Page = page is not null && Addresses is { } addresses ? GuidePlaces.Addressed(page, addresses, here) : page;
         await Runner.SendAsync();
     }
 

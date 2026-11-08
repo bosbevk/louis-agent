@@ -20,10 +20,10 @@ public enum ApiModelText
     [Description("\nIts areas:\n{List}")]
     PageAreas,
 
-    [Description("\nOn their screen now: #{Id} {Heading}")]
+    [Description("\nOn their screen now: {Id} {Heading}")]
     PageInView,
 
-    [Description("[On their screen now, on {Url}: #{Id} {Heading}]")]
+    [Description("[On their screen now, on {Url}: {Id} {Heading}]")]
     PageInViewOnly,
 
     [Description("\n[Page truncated: showing {Shown} of {Length} chars]")]

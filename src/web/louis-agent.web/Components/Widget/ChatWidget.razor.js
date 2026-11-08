@@ -54,13 +54,18 @@ const pagesOf = (area, fold) => {
 const headerRoom = 96;
 const spotlightPad = 14;
 const spotlightMs = 4000;
-export function showArea(name) {
+export function showArea(name, pageAddress, address) {
     // "parts/2" is the area "parts", turned to its second page.
     const [id, page] = name.split("/");
     const started = performance.now();
     const attempt = () => {
         const area = document.getElementById(id);
         if (area) {
+            // The address bar shows the place's own address (ADR 0107), held while the spotlight plays.
+            if (address) {
+                document.documentElement.dataset.addressHeld = String(Date.now() + spotlightMs);
+                history.replaceState(history.state, "", address);
+            }
             const card = area.matches("[data-card]");
             if (card && area.getAttribute("aria-expanded") !== "true") area.click();
             const target = card ? area.closest(".card-deck") ?? area : area;

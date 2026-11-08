@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Index;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site;
+namespace LouisAgent.Web.Tests.Components.Site.Index;
 
 /// <summary>
 /// The section index comes from the bands (F118, Louis: "we should also have the sections in the left like on the

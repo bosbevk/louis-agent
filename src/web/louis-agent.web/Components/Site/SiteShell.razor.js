@@ -23,14 +23,50 @@ const goTo = (target) => {
     scrollTo({ top: Math.max(0, top), behavior: still() ? "auto" : "smooth" });
 };
 const follow = (e) => {
-    const a = e.target.closest?.(".site a[href^='#']");
+    const a = e.target.closest?.(".site a[href^='#'], .site a[data-section]");
     if (!a) return;
-    const id = a.getAttribute("href");
-    if (id === "#top") { e.preventDefault(); scrollTo({ top: 0, behavior: still() ? "auto" : "smooth" }); return; }
-    const target = id.length > 1 ? document.getElementById(id.slice(1)) : null;
+    const href = a.getAttribute("href");
+    if (href === "#top") { e.preventDefault(); scrollTo({ top: 0, behavior: still() ? "auto" : "smooth" }); return; }
+    const id = a.dataset.section ?? href.slice(1);
+    const target = id ? document.getElementById(id) : null;
     if (!target) return;
+    // A section's own address (ADR 0107) is a move within this page: no router, the address bar shows where it went.
     e.preventDefault();
+    if (a.dataset.section) show(href);
     goTo(target);
+};
+
+// Every place on the page has its own address (F118, ADR 0107): the bar shows it as the visitor opens a card or
+// turns a page, held for a moment so the index's scroll-following doesn't take it straight back.
+let base = null;
+const hold = (ms) => { document.documentElement.dataset.addressHeld = String(Date.now() + ms); };
+const show = (address) => {
+    hold(1200);
+    if (location.pathname !== address) history.replaceState(history.state, "", address);
+};
+const cardOpened = (e) => {
+    const card = e.target.closest?.(".site [data-card]");
+    if (!card || !base) return;
+    setTimeout(() => { if (card.getAttribute("aria-expanded") === "true") show(`${base}/${card.id}`); }, 0);
+};
+const turned = (band, page) => { if (base && band.id) show(page > 1 ? `${base}/${band.id}/${page}` : `${base}/${band.id}`); };
+
+// A page opened on a place's address goes to it once it is drawn: a card opens, a paged section turns to its page.
+// The address is held while it goes, so it isn't lost while the page loads.
+const arriveAt = (place) => {
+    const [id, page] = place.split("/");
+    const started = performance.now();
+    hold(2500);
+    const attempt = () => {
+        const target = document.getElementById(id);
+        if (!target) { if (performance.now() - started < 2000) requestAnimationFrame(attempt); return; }
+        if (target.matches("[data-card]") && target.getAttribute("aria-expanded") !== "true") target.click();
+        const band = target.closest(".band");
+        const body = page && band?.classList.contains("is-paged") ? $(".band-body", band) : null;
+        if (body) body.scrollTo({ left: (Number(page) - 1) * stepOf(body), behavior: "auto" });
+        goTo(target.matches("[data-card]") ? target.closest(".card-deck") ?? target : target);
+    };
+    setTimeout(attempt, 60);
 };
 
 // On scroll: the progress line's width, the header compact past the top, the way back up shown a screen down (F118).
@@ -99,25 +135,33 @@ const turn = (e) => {
     if (!button) return;
     const band = button.closest(".band"), body = band && $(".band-body", band);
     if (!body) return;
-    const step = stepOf(body), page = Math.round(body.scrollLeft / step) + Number(button.dataset.step);
-    body.scrollTo({ left: Math.max(0, page * step), behavior: still() ? "auto" : "smooth" });
+    const step = stepOf(body), page = Math.max(0, Math.round(body.scrollLeft / step) + Number(button.dataset.step));
+    body.scrollTo({ left: page * step, behavior: still() ? "auto" : "smooth" });
     setTimeout(() => count(band), still() ? 0 : 450);
+    turned(band, page + 1);
 };
 
 // Hangs the listeners once and observes what the latest render added; safe to call after every render. The click is
 // heard in the capture phase, before Blazor's own handler: a "#area" link resolves against the page's base, so left
-// to Blazor it would open the home page from any other page (F118); handled here first, Blazor leaves it alone.
-export function attach() {
+// to Blazor it would open the home page from any other page (F118); handled here first, Blazor leaves it alone. It
+// is told what a place's address starts with on this page, and the place the address names when a new page opened
+// on one (ADR 0107).
+export function attach(pageBase, place) {
     if (listeners.length === 0) {
         on(window, "scroll", scrolled, { passive: true });
         on(window, "resize", scrolled);
         on(window, "resize", remeasure);
         on(document, "click", follow, true);
         on(document, "click", turn);
+        on(document, "click", cardOpened);
     }
     observe();
     scrolled();
     paginate();
+    if (pageBase !== base) {
+        base = pageBase;
+        if (place) arriveAt(place);
+    }
 }
 
 // Takes everything down when the frame goes.

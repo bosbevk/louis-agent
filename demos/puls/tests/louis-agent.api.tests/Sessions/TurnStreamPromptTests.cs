@@ -37,16 +37,19 @@ public class TurnStreamPromptTests
         });
     }
 
-    /// <summary>A page's areas end the block (F117): each as its id and heading, one a line, so the model knows where it can send the visitor.</summary>
+    /// <summary>
+    /// A page's places end the block (F117): each by its own address and heading, one a line (ADR 0107), so the model
+    /// knows where it can send the visitor and names it as it read it.
+    /// </summary>
     [Test]
     public void ThePagesAreas_EndTheBlock()
     {
         var request = new SendMessageRequest("where are the levels?", null,
-            new PageRequest("/identities", "Identities", "Who an agent is.", [new PageAreaRequest("parts", "What an identity holds"), new PageAreaRequest("levels", "The three that exist")]));
+            new PageRequest("/identities", "Identities", "Who an agent is.", [new PageAreaRequest("/identities/parts", "What an identity holds"), new PageAreaRequest("/identities/levels", "The three that exist")]));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n#parts What an identity holds\n#levels The three that exist]"));
+        Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n/identities/parts What an identity holds\n/identities/levels The three that exist]"));
     }
 
     /// <summary>
@@ -57,11 +60,11 @@ public class TurnStreamPromptTests
     public void TheSectionInView_IsNamed()
     {
         var request = new SendMessageRequest("what is this?", null,
-            new PageRequest("/", "louis-agent", "An AI agent framework.", [new PageAreaRequest("built", "Built on it")], new PageAreaRequest("built", "Built on it")));
+            new PageRequest("/", "louis-agent", "An AI agent framework.", [new PageAreaRequest("/home/built", "Built on it")], new PageAreaRequest("/home/built", "Built on it")));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Does.EndWith("#built Built on it\nOn their screen now: #built Built on it]"));
+        Assert.That(prompt, Does.EndWith("/home/built Built on it\nOn their screen now: /home/built Built on it]"));
     }
 
     /// <summary>
@@ -72,11 +75,11 @@ public class TurnStreamPromptTests
     public void OnTheSamePage_OnlyTheSectionInViewTravels()
     {
         var request = new SendMessageRequest("and this?", null,
-            new PageRequest("/", null, null, null, new PageAreaRequest("custom", "Custom agents")));
+            new PageRequest("/", null, null, null, new PageAreaRequest("/home/custom", "Custom agents")));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Is.EqualTo("and this?\n\n[On their screen now, on /: #custom Custom agents]"));
+        Assert.That(prompt, Is.EqualTo("and this?\n\n[On their screen now, on /: /home/custom Custom agents]"));
     }
 
     /// <summary>Without a page the prompt is the words alone, as before.</summary>

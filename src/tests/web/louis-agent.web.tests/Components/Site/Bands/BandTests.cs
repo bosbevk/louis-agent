@@ -1,6 +1,6 @@
 using LouisAgent.Web.Components.Site.Bands;
 
-namespace LouisAgent.Web.Tests.Components.Site;
+namespace LouisAgent.Web.Tests.Components.Site.Bands;
 
 /// <summary>
 /// A band is one named area of a site's page (F117, ADR 0106): a section that must have an id, with a kicker over its

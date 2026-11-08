@@ -1,6 +1,6 @@
 using LouisAgent.Web.Components.Site.Bands;
 
-namespace LouisAgent.Web.Tests.Components.Site;
+namespace LouisAgent.Web.Tests.Components.Site.Bands;
 
 /// <summary>
 /// A title becomes an id a link and the guide can name (F118): lowercase, words joined by one dash, nothing at either

@@ -1,6 +1,8 @@
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site.Index;
@@ -26,6 +28,21 @@ public partial class SectionIndex : IAsyncDisposable
     [CascadingParameter] public PageAreas? Areas { get; set; }
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
+    [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>
+    /// A link's address (ADR 0107): the section's own, <c>/proof/rand</c>, the first section's the page's; on a site
+    /// without addresses, the section on this page.
+    /// </summary>
+    private string HrefOf(IndexEntry entry, int position)
+    {
+        var addresses = Services.GetService<SiteAddresses>();
+        if (addresses?.Read(Nav.Uri) is not { } here) return $"#{entry.Id}";
+        return addresses.Address(here.Page, position == 0 ? null : entry.Id);
+    }
 
     private PageAreas? _watched;
     private JsModule? _module;

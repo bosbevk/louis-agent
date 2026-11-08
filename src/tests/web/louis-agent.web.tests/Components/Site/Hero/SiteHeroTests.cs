@@ -2,7 +2,7 @@ using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Components.Site.Hero;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site;
+namespace LouisAgent.Web.Tests.Components.Site.Hero;
 
 /// <summary>
 /// A site's hero is the framework's (F118, ADR 0106): the kicker, the headline, the lede, the note, the actions and

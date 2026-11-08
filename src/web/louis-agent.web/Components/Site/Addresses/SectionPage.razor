@@ -1,0 +1,8 @@
+@page "/{*Path}"
+@* A place's own address (F118, ADR 0107): /pricing/plans matches no page's route, so it comes here and draws the page
+   it names, the pricing page; the frame then takes the visitor to the place. An address that names no page of the site,
+   or a site without addresses, is the not-found page's. *@
+@if (Drawn is not null)
+{
+    <DynamicComponent Type="@Drawn" />
+}

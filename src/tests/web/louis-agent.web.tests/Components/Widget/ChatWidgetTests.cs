@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
@@ -47,6 +48,7 @@ public class ChatWidgetTests
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
+        ctx.Services.AddSingleton(new SiteAddresses("home", ["/", "/identities"]));
         return ctx;
     }
 
@@ -56,7 +58,7 @@ public class ChatWidgetTests
         data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
 
         event: content_block_start
-        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities#levels"}}}
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities/levels"}}}
 
         event: content_block_stop
         data: {"type":"content_block_stop","index":0}
@@ -86,16 +88,18 @@ public class ChatWidgetTests
         using var ctx = ContextStreaming(ShowPageStream);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
         module.Setup<Page>("pageText").SetResult(new Page("/", "louis-agent", "An AI agent framework.", []));
-        module.SetupVoid("showArea", "levels");
+        module.SetupVoid("showArea", _ => true);
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
         Send(cut, "where are the levels?");
 
+        var shown = module.Invocations.Where(call => call.Identifier == "showArea").ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities#levels"));
-            Assert.That(module.Invocations.Where(call => call.Identifier == "showArea").Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
+            Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities"));
+            Assert.That(shown.Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
+            Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }), "the bar shows the place's own address (ADR 0107)");
         });
     }
 

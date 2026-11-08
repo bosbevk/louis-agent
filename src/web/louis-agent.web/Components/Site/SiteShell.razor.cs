@@ -1,7 +1,9 @@
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site;
@@ -76,11 +78,20 @@ public partial class SiteShell
 
     [Inject] private NavigationManager Nav { get; set; } = default!;
 
+    [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
+    private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
+
+    /// <summary>Where the address points: the page, and the place on it when it names one (F118, ADR 0107).</summary>
+    private SiteAddress Here =>
+        Addresses?.Read(Nav.Uri) ?? new SiteAddress(Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath);
+
     /// <summary>
-    /// The page's path without its #area (F118): the main column is keyed by it, so a new page draws a new column and
-    /// its entrance plays, while a jump within the page keeps the one there.
+    /// The page's own address, without the place on it (F118): the main column is keyed by it, so a new page draws a
+    /// new column and its entrance plays, while a move within the page keeps the one there.
     /// </summary>
-    private string PagePath => Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
+    private string PagePath => Here.Page;
 
     /// <summary>The page's areas (F118): the bands fill it as they draw, and the index on the left reads it.</summary>
     private readonly PageAreas _areas = new();
@@ -92,9 +103,15 @@ public partial class SiteShell
 
     /// <summary>
     /// Attaches the motion after every render, not only the first: a page that just drew has reveals to observe, and
-    /// the module hangs its listeners once.
+    /// the module hangs its listeners once. It is told what a place's address on this page starts with, so the
+    /// address bar can follow the visitor, and the place the address names, so a page opened on one goes there.
     /// </summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await Motion.InvokeVoidAsync("attach");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var here = Here;
+        string? arrive = here.Section is null ? null : here.Turn is { } turn ? $"{here.Section}/{turn}" : here.Section;
+        await Motion.InvokeVoidAsync("attach", Addresses?.Base(here.Page), arrive);
+    }
 
     /// <summary>Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.</summary>
     public async ValueTask DisposeAsync()

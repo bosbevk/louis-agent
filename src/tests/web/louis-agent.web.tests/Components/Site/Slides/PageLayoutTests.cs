@@ -2,7 +2,7 @@ using LouisAgent.Web.Components.Site;
 using LouisAgent.Web.Components.Site.Slides;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site;
+namespace LouisAgent.Web.Tests.Components.Site.Slides;
 
 /// <summary>
 /// A site's pages are laid out as slides or as a flowing page, a framework option (F118, Louis: "like a layout option in

@@ -11,14 +11,18 @@ public class SiteToolsTests
 {
     private readonly SiteTools _tools = new();
 
-    /// <summary>A page of the site, and a page with an area or a card (F118, a card's id may hold digits), are shown.</summary>
+    /// <summary>
+    /// A page of the site, and a place on it by its own address (F118, ADR 0107): a section, a card (whose id may hold
+    /// digits), the landing's under the home word, a page of a paged section.
+    /// </summary>
     [TestCase("/identities")]
-    [TestCase("/identities#levels")]
+    [TestCase("/identities/levels")]
     [TestCase("/")]
-    [TestCase("/#rule")]
-    [TestCase("/identities#the-coding-agent")]
-    [TestCase("/proof#a-10-fixes")]
-    [TestCase("/how-it-works#parts/2")]
+    [TestCase("/home/rule")]
+    [TestCase("/identities/the-coding-agent")]
+    [TestCase("/proof/a-10-fixes")]
+    [TestCase("/how-it-works/parts/2")]
+    [TestCase("/build-your-own")]
     public void ASitePath_IsShown(string path)
     {
         Assert.That(_tools.ShowPage(path), Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));
@@ -31,14 +35,15 @@ public class SiteToolsTests
     [TestCase("/../secret")]
     [TestCase("/pa cks")]
     [TestCase("")]
-    [TestCase("/identities#Levels Two")]
-    [TestCase("/how-it-works#parts/")]
-    [TestCase("/how-it-works#parts/two")]
-    [TestCase("/how-it-works#parts/0")]
-    [TestCase("/how-it-works#/2")]
+    [TestCase("/identities/Levels Two")]
+    [TestCase("/identities#levels")]
+    [TestCase("/how-it-works/parts/0")]
+    [TestCase("/how-it-works/parts/02")]
+    [TestCase("/how-it-works?x=1")]
+    [TestCase("/identities//levels")]
     public void AnythingElse_IsRefused_WithTheReason(string path)
     {
         Assert.That(_tools.ShowPage(path),
-            Is.EqualTo($"Not shown: '{path}' isn't a page of this site. Give a path that starts with / and names a page of this site, with #area for a part of it, such as /identities#levels."));
+            Is.EqualTo($"Not shown: '{path}' isn't a page of this site. Give an address from the page's list: a page such as /packs, or a place on one such as /identities/levels."));
     }
 }
