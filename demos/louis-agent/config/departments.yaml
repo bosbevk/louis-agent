@@ -1,0 +1,13 @@
+# The departments the triage workflow runs for (F106.3.1): the same identity and packs once per department, each with
+# its own repository (which its coder may never leave: the workspace boundary holds it), its own error log (the feed
+# the workflow reads) and where its people read a case raised to them. A path is relative to this file's folder when
+# it isn't absolute; a container sets its own file in the compose.
+departments:
+  - name: code
+    repository: ../samples/order-service
+    error_log: ../samples/order-service/logs/errors.jsonl
+    people: ../data/triage/people/code
+  - name: ops
+    repository: ../samples/ops-config
+    error_log: ../samples/ops-config/logs/errors.jsonl
+    people: ../data/triage/people/ops

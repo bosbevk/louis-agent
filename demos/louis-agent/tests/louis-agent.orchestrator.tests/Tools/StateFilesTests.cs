@@ -1,5 +1,6 @@
 using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Orchestrator.Tools.Records;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Tests.Tools;
 
@@ -22,7 +23,7 @@ public class StateFilesTests
     [Test]
     public void AnEscalation_IsOneSnakeCaseLine()
     {
-        var error = new ErrorEvent("abc123", At, "order-service", "refund", "1003", "System.InvalidOperationException",
+        var error = new ServiceError("abc123", At, "order-service", "refund", "1003", "System.InvalidOperationException",
             "card ref missing", null);
 
         string line = Write(StateFiles.Escalations, EscalationRecord.Of(error, "payments", "never auto-fixed", At));

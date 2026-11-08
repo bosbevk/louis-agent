@@ -8,6 +8,7 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Tests;
 
@@ -100,7 +101,7 @@ public class SessionTagsTests
             SkillsDirectory = Path.Combine(_dir, "Skills"),
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
-        return new ServiceTools(options, new ErrorFeed(Path.Combine(_dir, "errors.jsonl"), options.StateDirectory),
+        return new ServiceTools(options, new JsonLinesErrorFeed(Path.Combine(_dir, "errors.jsonl"), options.StateDirectory),
             client,
             new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")));
     }

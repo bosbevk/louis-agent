@@ -3,6 +3,7 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator.Comms;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Tests.Comms;
 
@@ -193,7 +194,7 @@ public class CommsLogTests
     }
 
     /// <summary>An error event as the service logs it.</summary>
-    private static ErrorEvent Error(string id) =>
+    private static ServiceError Error(string id) =>
         new(id, DateTimeOffset.UnixEpoch, "order-service", "order-total", "1003",
             "System.Collections.Generic.KeyNotFoundException", "The given key 'SUMMER25' was not present",
             "   at OrderService.OrderApi.GetOrderTotal(Int32 id)");

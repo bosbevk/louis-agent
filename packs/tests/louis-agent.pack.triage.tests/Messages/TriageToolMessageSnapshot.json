@@ -1,0 +1,12 @@
+{
+  "BadDepartment": "'<Name>' in <File> is not a department name, or repeats one: letters, digits, dashes and underscores, each once.",
+  "BadRunId": "'<RunId>' is not a run id: letters, digits, dashes and underscores only, up to 64 of them.",
+  "NoReason": "A <What> needs a reason, in a sentence.",
+  "NoSuchRun": "There is no run '<RunId>'. Use the run id you were given.",
+  "NotAChoice": "'<Value>' is not a <What>: one of <Options>.",
+  "Raised": "Raised run <RunId> to a person: the case is written at <Path>, and step <Number> says so.",
+  "Recorded": "Recorded step <Number> of run <RunId>: <Summary>",
+  "RunEnded": ", ended <Outcome>",
+  "RunRead": "Run <RunId>: <Count> steps so far<Ended>.\n<Steps>",
+  "StepLine": "<Number>. <Agent> (<Kind>, <At>): <Summary> <Why>"
+}

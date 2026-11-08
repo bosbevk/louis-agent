@@ -133,14 +133,33 @@ public class FileSizeTests
     }
 
     /// <summary>
+    /// A demo's sample is a customer's repository the agents work on, never ours to shape (F106.3.1), so its files
+    /// aren't sized; a file merely under a folder named samples elsewhere still is.
+    /// </summary>
+    [TestCase("demos/louis-agent/samples/order-service/src/OrderService/Program.cs", true)]
+    [TestCase("demos/puls/web/louis-agent.puls/Program.cs", false)]
+    [TestCase("src/web/louis-agent.web/Components/Samples/Sample.razor", false)]
+    public void ADemosSample_IsntOurs(string file, bool skipped) =>
+        Assert.That(InBuildOutput(Path.Combine(TestPaths.RepoRoot, file)), Is.EqualTo(skipped));
+
+    /// <summary>
     /// What a tool wrote (bin/, obj/, the CSS it makes from Sass, an EF Core migration and its snapshot) isn't ours to
-    /// size: nobody maintains it by hand (F61.1).
+    /// size: nobody maintains it by hand (F61.1), and nor is a demo's sample (F106.3.1).
     /// </summary>
     private static bool InBuildOutput(string path) =>
         IsMadeFromSass(path)
+        || IsADemosSample(path)
         || path.Contains($"{Path.DirectorySeparatorChar}Migrations{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}data{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}");
+
+    /// <summary>Under a demo's own samples folder: the segment right after the demo's name is samples.</summary>
+    private static bool IsADemosSample(string path)
+    {
+        var parts = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        int demos = Array.IndexOf(parts, "demos");
+        return demos >= 0 && demos + 2 < parts.Length && parts[demos + 2] == "samples";
+    }
 }

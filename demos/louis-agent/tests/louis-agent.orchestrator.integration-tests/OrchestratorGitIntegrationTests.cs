@@ -4,6 +4,8 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Orchestrator.Tools.Checks;
+using LouisAgent.Packs.Triage.Feed;
 using LouisAgent.Testing;
 
 namespace LouisAgent.Orchestrator.IntegrationTests;
@@ -40,13 +42,13 @@ public class OrchestratorGitIntegrationTests
         Git("commit", "-am", "fix");
         string fixCommit = Git("rev-parse", "HEAD");
 
-        var tools = Tools(FeedWith());
-        Assert.That(tools.VerifyFixCommit(fixCommit, "fix/order-total-abc123"),
+        var checks = Checks();
+        Assert.That(checks.VerifyFixCommit(fixCommit, "fix/order-total-abc123"),
             Does.EndWith("VERIFIED" + Environment.NewLine).And.Not.Contain("FAIL"));
-        Assert.That(tools.VerifyFixCommit(mainCommit, "fix/order-total-abc123"),
+        Assert.That(checks.VerifyFixCommit(mainCommit, "fix/order-total-abc123"),
             Does.Contain("FAIL commit is not on main").And.Contain("NOT VERIFIED"));
-        Assert.That(tools.VerifyFixCommit("deadbeef", "fix/order-total-abc123"), Does.Contain("FAIL commit exists"));
-        Assert.That(tools.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
+        Assert.That(checks.VerifyFixCommit("deadbeef", "fix/order-total-abc123"), Does.Contain("FAIL commit exists"));
+        Assert.That(checks.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
     }
 
     [Test]
@@ -74,32 +76,44 @@ public class OrchestratorGitIntegrationTests
         Git("commit", "-m", "initial");
     }
 
-    private ErrorFeed FeedWith(params string[] events)
+    private JsonLinesErrorFeed FeedWith(params string[] events)
     {
         string log = Path.Combine(_dir, "errors.jsonl");
         File.WriteAllLines(log, events);
-        var feed = new ErrorFeed(log, Path.Combine(_dir, "state"));
+        var feed = new JsonLinesErrorFeed(log, Path.Combine(_dir, "state"));
         feed.ReadNew();
         return feed;
     }
 
-    private ServiceTools Tools(ErrorFeed feed)
+    private static readonly HashSet<string> Methods = ["get-order", "order-total", "refund"];
+
+    /// <summary>The orchestrator's settings over this test's repository.</summary>
+    private OrchestratorOptions Options() => new()
     {
-        var options = new OrchestratorOptions
-        {
-            ServiceRoot = _dir,
-            StateDirectory = Path.Combine(_dir, "state"),
-            SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
-        };
+        ServiceRoot = _dir,
+        StateDirectory = Path.Combine(_dir, "state"),
+        SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
+    };
+
+    private CommsLog Comms() => new(Path.Combine(_dir, "state", "agent-comms.md"));
+
+    private ServiceTools Tools(JsonLinesErrorFeed feed)
+    {
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
-        return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
-            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")));
+        return new ServiceTools(Options(), feed, client, Methods, Comms());
     }
+
+    /// <summary>The checks of a fix, over the same repository and methods.</summary>
+    private FixChecks Checks() => new(Options(), Methods, Comms());
 
     private string Git(params string[] args)
     {
         var psi = new ProcessStartInfo("git")
-        { WorkingDirectory = _dir, RedirectStandardOutput = true, RedirectStandardError = true };
+        {
+            WorkingDirectory = _dir,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
         foreach (string arg in args) psi.ArgumentList.Add(arg);
         using var process = Process.Start(psi)!;
         string output = process.StandardOutput.ReadToEnd();

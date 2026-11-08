@@ -79,6 +79,16 @@ public class FolderSizeTests
         });
     }
 
+    /// <summary>
+    /// A demo's sample is a customer's repository the agents work on, never ours to shape (F106.3.1), so its folders
+    /// aren't counted; a folder merely named samples elsewhere still is.
+    /// </summary>
+    [TestCase("demos/louis-agent/samples/order-service/src/OrderService/Api", true)]
+    [TestCase("demos/puls/web/louis-agent.puls/Components/Landing", false)]
+    [TestCase("src/web/louis-agent.web/Components/Samples", false)]
+    public void ADemosSample_IsntOurs(string folder, bool skipped) =>
+        Assert.That(InBuildOutput(Path.Combine(TestPaths.RepoRoot, folder)), Is.EqualTo(skipped));
+
     /// <summary>A component's markup and its code-behind are one thing to find, so they count once.</summary>
     [Test]
     public void AComponentAndItsCodeBehind_CountAsOne()
@@ -99,10 +109,16 @@ public class FolderSizeTests
                                                        !markup.Contains(n[..^".cs".Length])));
     }
 
-    /// <summary>What the build wrote (bin/, obj/) isn't ours to count.</summary>
+    /// <summary>
+    /// What the build wrote (bin/, obj/) isn't ours to count, and nor is a demo's sample (F106.3.1): the segment right
+    /// after the demo's name is samples.
+    /// </summary>
     private static bool InBuildOutput(string path)
     {
         var parts = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        return parts.Contains("bin") || parts.Contains("obj") || parts.Contains("data") || parts.Contains("logs");
+        int demos = Array.IndexOf(parts, "demos");
+        bool sample = demos >= 0 && demos + 2 < parts.Length && parts[demos + 2] == "samples";
+        return sample || parts.Contains("bin") || parts.Contains("obj") || parts.Contains("data") ||
+               parts.Contains("logs");
     }
 }

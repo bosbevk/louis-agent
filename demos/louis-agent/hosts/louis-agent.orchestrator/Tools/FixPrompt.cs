@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Tools;
 
@@ -13,7 +14,8 @@ internal static class FixPrompt
     private static readonly JsonSerializerOptions IndentedJson = new() { WriteIndented = true };
 
     /// <summary>The fix task for one error, on its own branch, to the behaviour the runbook expects.</summary>
-    public static string For(OrchestratorOptions options, ErrorEvent error, string expectedBehaviour, string branch) =>
+    public static string For(OrchestratorOptions options, ServiceError error, string expectedBehaviour,
+        string branch) =>
         $$"""
           You are being called by the {{options.Service}} orchestrator to fix an exception from production. Work on your own;
           nobody will answer questions during this task.

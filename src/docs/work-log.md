@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 68 | 73 |
+| Features (`F`) | 69 | 73 |
 | Fixes (`FX`) | 64 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (68 done)
+## Features (69 done)
 
 | Id | When | What |
 |---|---|---|
+| F106.3.1 | 2026-11-08 | The service and the triage pack: the order-service sample restored from `pre-cl10` as the agent's workspace (a sample skips the size rules), `louis-agent.pack.triage` with the feed moved from the orchestrator, a run's recorder, the roles' typed endings checked in code, a case raised to a person, a run read back, departments as YAML held to their repositories by the boundary; the orchestrator's checks of a fix split into `FixChecks` |
 | F109.4 | 2026-11-08 | The site tells the whole architecture: an Architecture page held to the solution file, an Identities page held to the identity folders, 100% C# and South Africa up front, the rand beside the dollars at the rates file's rate, what the framework stands on, What's coming held to the TODO, How it works the whole way, the short film as the map, the guide's voice naming every page, no link to the private repository; ADR 0100 takes F109's lasting parts and the parent closes |
 | F109.3 | 2026-11-08 | The guide in the corner: a session names its identity, the docs pack, the expert identity beside the coding agent, the docs in the image, the guide's door (ADR 0099), the framework's `ChatWidget` and the demo's `ExpertChat` in the site's corner |
 | F109.2 | 2026-11-08 | The demo's app beside Puls: `louis-agent-app` on `puls-env` from the same Bicep file and script (`-App`), its own identity, share, keys and tenant, live on `louis-agent.dev` with its certificates, released by the same workflow after green CI; ADR 0098 |
