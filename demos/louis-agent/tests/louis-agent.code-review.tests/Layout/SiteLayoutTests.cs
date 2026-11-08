@@ -76,7 +76,7 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because I can"));
+        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because you can"));
     }
 
     /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
@@ -87,7 +87,7 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because I can"));
+        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
     }
 
     /// <summary>The brand is the lockup (F110): the mark, its own copy, then the name, as the brand README says.</summary>
