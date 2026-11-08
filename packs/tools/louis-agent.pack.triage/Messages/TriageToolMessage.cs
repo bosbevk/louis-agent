@@ -20,4 +20,16 @@ public enum TriageToolMessage
 
     [Description("Recorded step {Number} of run {RunId}: {Summary}")]
     Recorded,
+
+    [Description("Raised run {RunId} to a person: the case is written at {Path}, and step {Number} says so.")]
+    Raised,
+
+    [Description("Run {RunId}: {Count} steps so far{Ended}.\n{Steps}")]
+    RunRead,
+
+    [Description(", ended {Outcome}")]
+    RunEnded,
+
+    [Description("{Number}. {Agent} ({Kind}, {At}): {Summary} {Why}")]
+    StepLine,
 }
