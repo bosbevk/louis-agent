@@ -1,0 +1,29 @@
+@* The guide taking a lead, as it happened (F116, the shape of Louis's own chat on 2026-11-08, the details made up):
+   a visitor asks about automating a task, the guide asks back, one thing at a time, looks in the docs, takes a name,
+   a contact and a want, sends the lead and says so. The hero's live-turn styles: the lines fade in on their own
+   delays and loop. *@
+<div class="live-turn live-lead" role="img" aria-label="An animated chat with the guide: a visitor asks about automating invoice matching, the guide asks back, takes their details and sends the lead to Louis">
+    <div class="turn-head">
+        <span class="turn-dot"></span><span class="turn-dot"></span><span class="turn-dot"></span>
+        <span>the guide · toolsets: docs, leads</span>
+    </div>
+    <div class="turn-body">
+        <div class="ln ln-prompt" style="--d: 0s">› I have a business and want to automate some of my tasks</div>
+        <div class="ln ln-answer" style="--d: 1s">Happy to help. Which tasks do you have in mind?</div>
+        <div class="ln ln-prompt" style="--d: 2.2s">› Invoice matching. They arrive as PDFs</div>
+        <div class="ln ln-think" style="--d: 3.1s">thinking · a mailbox, PDFs and the books: a custom agent with its own packs</div>
+        <div class="ln" style="--d: 3.9s"><span class="ln-tool">tool</span> SearchDocs <span class="ln-arg">invoice pdf</span></div>
+        <div class="ln ln-answer" style="--d: 4.9s">An agent built for you reads each PDF, matches it to what was paid and flags the rest. It runs closed, in Azure or at yours. Shall I tell Louis what you need?</div>
+        <div class="ln ln-prompt" style="--d: 6.4s">› Yes</div>
+        <div class="ln ln-answer" style="--d: 7.1s">Three things, one at a time. Your name?</div>
+        <div class="ln ln-prompt" style="--d: 7.9s">› Thandi, thandi@example.co.za</div>
+        <div class="ln ln-answer" style="--d: 8.8s">Thanks, Thandi. So: match PDF invoices against payments and flag the rest. Send it?</div>
+        <div class="ln ln-prompt" style="--d: 9.9s">› Go</div>
+        <div class="ln" style="--d: 10.5s"><span class="ln-tool">tool</span> SendLead <span class="ln-arg">Thandi · thandi@example.co.za · match PDF invoices against payments</span></div>
+        <div class="ln ln-answer" style="--d: 11.4s">Sent to Louis. He'll be in touch within a day.<span class="caret"></span></div>
+        <div class="turn-bill">
+            <div class="bill-rule"></div>
+            <div class="ln ln-cost" style="--d: 12.4s">turn: 1 request · 6k tokens (4.6k cached) · <strong>R0.04</strong></div>
+        </div>
+    </div>
+</div>

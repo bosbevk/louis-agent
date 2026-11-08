@@ -14,7 +14,7 @@
     :root { --site-gutter: 16px; }
     .site h1 { font-size: 36px; }
     .site h2 { font-size: 26px; }
-    .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
+    .grid-2, .grid-3, .custom-grid { grid-template-columns: minmax(0, 1fr); }
     .stat-value { font-size: 34px; }
     .strip-contact { margin: 0 var(--site-gutter) 48px; padding: 28px; }
     .turn-body { min-height: 0; font-size: 12px; }
