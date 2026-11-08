@@ -120,6 +120,11 @@ services:
       AGENT_PEERS: ${AGENT_PEERS:-}
       # The docs the expert reads (F109.3): the repo, mounted at /workspace, holds them as the image's /app/docs does.
       DOCS_ROOT: /workspace
+      # The guide's lead mail (F112): the same addresses as the release's; RESEND_API_KEY comes from .env.secrets when it
+      # is there, else the lead goes to the log and the guide says so. Without these the guide's identity can't open
+      # (FX90: "Toolset 'leads' needs LEADS_TO to be set on this instance").
+      LEADS_TO: louis.marais@live.com
+      LEADS_FROM: guide@louis-agent.dev
       # The guide's door (F109.3): the expert answers a visitor without a sign-in, this many times a day per address.
       OPEN_IDENTITY: louis-agent-expert
       OPEN_SESSIONS_PER_DAY: "50"
