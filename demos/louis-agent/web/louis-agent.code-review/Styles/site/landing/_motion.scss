@@ -11,7 +11,9 @@
 .site .reveal.in[data-delay="3"] { animation-delay: .3s; }
 .site h2.reveal.in { animation: site-unmask .9s var(--web-ease) both; }
 @keyframes site-rise { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
-@keyframes site-unmask { from { clip-path: inset(0 0 100% 0); translate: 0 22px; } to { clip-path: inset(0 0 0 0); translate: 0 0; } }
+/* The unmask ends a little outside the heading's box, not on it: the tight line height leaves a g's or a y's tail below
+   the box, and a clip that stays on the box cut it off for good (F118, Louis: "does not fit"). */
+@keyframes site-unmask { from { clip-path: inset(-.2em -.2em 100% -.2em); translate: 0 22px; } to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; } }
 
 /* The header shrinks a little once the page scrolls. */
 .site-header.compact { padding-top: 10px; padding-bottom: 10px; box-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8); }

@@ -81,6 +81,7 @@ public class StylesheetTests
     [TestCase(".band-strip { padding-bottom: 72px; }")]
     [TestCase(".btn:hover { transform: translateY(-2px);")]
     [TestCase(".btn-whatsapp { background: var(--whatsapp);")]
+    [TestCase("to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; }")]
     public void TheLook_AnswersTheVisitor(string rule) =>
         Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
             Does.Contain(rule));
