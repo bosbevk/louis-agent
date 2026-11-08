@@ -93,7 +93,7 @@ each sign-in provider whose two secrets are set, and creates or updates the app.
 
 ## Deploying from GitHub (F109.5)
 
-A merge to `main` deploys both apps by itself once CI passes on it, and *Actions → Deploy the apps → Run workflow*
+A merge to `main` deploys both apps by itself at once (CI runs on the pull request, FX93), and *Actions → Deploy the apps → Run workflow*
 deploys `main` any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the
 PC, once per app, each tried even when the other's release failed. It signs in
 to Azure by OpenID Connect: GitHub signs a short-lived token for the run, and Azure trusts it only for this repo's
