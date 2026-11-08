@@ -39,13 +39,14 @@
     .site-main { animation: none; }
 }
 
-/* Every section of a page is at least a screen tall, less the header's room and the footer (F118, Louis: "we need a
-   min height for the section, in order for smooth transition", then "a min height on all sections"): a short section
-   could not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. It
-   holds its content in the middle of that height, a band's flex column and a hero's grid alike, and the page settles
-   on it under the header as it scrolls (Louis: "vertically centered in the screen and then ... it rolls in"); the
-   reveal plays as it arrives. */
-.site-main ::deep > section {
+/* On a page of slides (F118, Louis's option 2: the site's layout, a page may choose another), every section is a
+   screen tall, less the header's room and the footer (Louis: "a min height on all sections"): a short section could
+   not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. It holds
+   its content in the middle of that height, a band's flex column and a hero's grid alike, and the page settles on it
+   under the header as it scrolls (Louis: "vertically centered in the screen and then ... it rolls in"); the reveal
+   plays as it arrives. A diagram scales down to fit the slide. A flowing page keeps its sections as tall as they are. */
+.layout-slides .site-main ::deep .graph svg { max-height: calc(100dvh - 420px); }
+.layout-slides .site-main ::deep > section {
     min-height: calc(100dvh - 160px);
     justify-content: center;
     align-content: center;

@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Site.Bands;
+using LouisAgent.Web.Components.Site.Slides;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -50,6 +51,27 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// How the site's pages are laid out (F118): flowing, unless the site asks for slides; a page may choose the other
+    /// for itself with a <see cref="PageLayoutChoice"/>.
+    /// </summary>
+    [Parameter]
+    public PageLayout Layout { get; set; } = PageLayout.Flow;
+
+    /// <summary>What the page in view asks of the frame: its own layout, when it has one.</summary>
+    private readonly PageOptions _options = new();
+
+    /// <summary>The page's choice, else the site's.</summary>
+    private PageLayout Laid => _options.Layout ?? Layout;
+
+    /// <summary>The frame's root classes: the frame, and the layout the page is drawn in, which its styles read.</summary>
+    private string SiteClasses => Laid == PageLayout.Slides ? "site layout-slides" : "site layout-flow";
+
+    /// <summary>Redraws when the page makes or takes back its choice.</summary>
+    protected override void OnInitialized() => _options.Changed += Redraw;
+
+    private void Redraw() => InvokeAsync(StateHasChanged);
+
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
     [Inject] private NavigationManager Nav { get; set; } = default!;
@@ -77,6 +99,7 @@ public partial class SiteShell
     /// <summary>Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.</summary>
     public async ValueTask DisposeAsync()
     {
+        _options.Changed -= Redraw;
         if (_motion is null) return;
         try
         {

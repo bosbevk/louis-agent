@@ -8,7 +8,7 @@ namespace LouisAgent.Web.Tests.Components.Site;
 /// </summary>
 public class BandTests
 {
-    /// <summary>The id is on the section, the kicker is its first child, the content follows, and the classes a site adds come along.</summary>
+    /// <summary>The id is on the section, the kicker opens its body, the content follows, and the classes a site adds come along.</summary>
     [Test]
     public void ABand_IsANamedSection_WithItsKicker()
     {
@@ -21,13 +21,37 @@ public class BandTests
             .AddChildContent("<h2>Level 0, 1 and 2</h2>"));
 
         var section = cut.Find("section");
+        var body = cut.Find("section > .band-body");
         Assert.Multiple(() =>
         {
             Assert.That(section.Id, Is.EqualTo("levels"));
             Assert.That(section.ClassList, Is.EquivalentTo(new[] { "band", "stands-on", "reveal" }));
-            Assert.That(section.FirstElementChild!.ClassName, Is.EqualTo("kicker"));
-            Assert.That(section.FirstElementChild!.TextContent, Is.EqualTo("The three that exist"));
-            Assert.That(cut.Find("h2").TextContent, Is.EqualTo("Level 0, 1 and 2"));
+            Assert.That(body.FirstElementChild!.ClassName, Is.EqualTo("kicker"));
+            Assert.That(body.FirstElementChild!.TextContent, Is.EqualTo("The three that exist"));
+            Assert.That(body.QuerySelector("h2")!.TextContent, Is.EqualTo("Level 0, 1 and 2"));
+        });
+    }
+
+    /// <summary>
+    /// A band carries its own pager, hidden (F118, Louis's option 2): on a page of slides, a band with more than a
+    /// screen of content is paged sideways by the frame's module, which shows the pager and fills in "1 / 3"; the
+    /// buttons are named for a screen reader.
+    /// </summary>
+    [Test]
+    public void ABand_CarriesAHiddenPager()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "parts").AddChildContent("<p>Long.</p>"));
+
+        var pager = cut.Find("section > .band-pager");
+        var steps = pager.QuerySelectorAll("button.band-page");
+        Assert.Multiple(() =>
+        {
+            Assert.That(pager.HasAttribute("hidden"), Is.True);
+            Assert.That(steps.Select(b => b.GetAttribute("data-step")), Is.EqualTo(new[] { "-1", "1" }));
+            Assert.That(steps.Select(b => b.GetAttribute("aria-label")), Is.EqualTo(new[] { "Previous page", "Next page" }));
+            Assert.That(pager.QuerySelector(".band-pages"), Is.Not.Null);
         });
     }
 

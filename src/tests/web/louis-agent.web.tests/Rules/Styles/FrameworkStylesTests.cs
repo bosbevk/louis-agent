@@ -76,7 +76,10 @@ public partial class FrameworkStylesTests
     /// that dims the page around it and rings it in the accent, catches no pointer, and stays under the site's
     /// corner so the guide's words are never dimmed; it fades, unless the visitor asked for less motion.
     /// </summary>
-    [TestCase("html:has(.site-main) { scroll-snap-type: y mandatory; }")]
+    [TestCase("html:has(.layout-slides) { scroll-snap-type: y mandatory; }")]
+    [TestCase(".layout-slides .site-main ::deep > section {")]
+    [TestCase(".band.is-paged { display: block; }")]
+    [TestCase("columns: 1;")]
     [TestCase(".area-spotlight {\n    position: absolute;\n    z-index: 9;\n    pointer-events: none;")]
     [TestCase("0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62)")]
     [TestCase("animation: area-spotlight 4s var(--web-ease) both;")]

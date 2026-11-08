@@ -52,6 +52,52 @@ const observe = () => {
     $$(".site .reveal:not(.in):not([data-seen])").forEach(el => { el.dataset.seen = "1"; seen.observe(el); });
 };
 
+// On a page of slides, a band with more than a screen of content is paged sideways (F118, Louis's option 2): measured
+// once as it stands, marked .is-paged so its body flows into screen-high columns, and its pager shown with "1 / n".
+// A band already paged only has its count brought up to date, as an opened card can add a page.
+const slideRoom = () => innerHeight - 160;
+const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
+const count = (band) => {
+    const body = $(".band-body", band), pager = $(".band-pager", band);
+    if (!body || !pager) return;
+    const step = stepOf(body), pages = Math.max(1, Math.round((body.scrollWidth + step - body.clientWidth) / step));
+    const page = Math.min(pages, Math.round(body.scrollLeft / step) + 1);
+    $(".band-pages", pager).textContent = `${page} / ${pages}`;
+    const [back, on] = $$(".band-page", pager);
+    back.disabled = page <= 1;
+    on.disabled = page >= pages;
+    pager.hidden = pages <= 1;
+};
+const paginate = () => {
+    $$(".layout-slides .site-main > section.band").forEach(band => {
+        if (!band.dataset.measured) {
+            band.dataset.measured = "1";
+            if (band.getBoundingClientRect().height > slideRoom() + 2) band.classList.add("is-paged");
+        }
+        if (band.classList.contains("is-paged")) count(band);
+    });
+};
+// A new size measures every band again, as it stands.
+const remeasure = () => {
+    $$(".site-main > section.band").forEach(band => {
+        band.classList.remove("is-paged");
+        delete band.dataset.measured;
+        const pager = $(".band-pager", band);
+        if (pager) pager.hidden = true;
+    });
+    paginate();
+};
+// The pager's buttons move the band's body one column back or on, in one smooth move.
+const turn = (e) => {
+    const button = e.target.closest?.(".band-page");
+    if (!button) return;
+    const band = button.closest(".band"), body = band && $(".band-body", band);
+    if (!body) return;
+    const step = stepOf(body), page = Math.round(body.scrollLeft / step) + Number(button.dataset.step);
+    body.scrollTo({ left: Math.max(0, page * step), behavior: still() ? "auto" : "smooth" });
+    setTimeout(() => count(band), still() ? 0 : 450);
+};
+
 // Hangs the listeners once and observes what the latest render added; safe to call after every render. The click is
 // heard in the capture phase, before Blazor's own handler: a "#area" link resolves against the page's base, so left
 // to Blazor it would open the home page from any other page (F118); handled here first, Blazor leaves it alone.
@@ -59,10 +105,13 @@ export function attach() {
     if (listeners.length === 0) {
         on(window, "scroll", scrolled, { passive: true });
         on(window, "resize", scrolled);
+        on(window, "resize", remeasure);
         on(document, "click", follow, true);
+        on(document, "click", turn);
     }
     observe();
     scrolled();
+    paginate();
 }
 
 // Takes everything down when the frame goes.

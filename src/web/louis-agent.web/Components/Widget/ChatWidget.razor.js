@@ -34,6 +34,7 @@ export function showArea(id) {
             const card = area.matches("[data-card]");
             if (card && area.getAttribute("aria-expanded") !== "true") area.click();
             const target = card ? area.closest(".card-deck") ?? area : area;
+            turnTo(target);
             holdSnap();
             place(target, true);
             // A new page's router scrolls to the top a moment after the area appears, and a card's story grows the
@@ -47,6 +48,15 @@ export function showArea(id) {
     };
     attempt();
 }
+
+// An area inside a band paged sideways (F118) may stand on a later page: the band's body turns to that page first.
+const turnTo = (target) => {
+    const body = target.closest(".is-paged .band-body");
+    if (!body) return;
+    const step = body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
+    const at = body.scrollLeft + target.getBoundingClientRect().left - body.getBoundingClientRect().left;
+    body.scrollTo({ left: Math.max(0, Math.floor(at / step) * step), behavior: "auto" });
+};
 
 // Where the area belongs (F118, Louis: "the agent must also center it, it takes you to the top"): centred in the
 // screen under the header when it fits, else its top just under the header.
