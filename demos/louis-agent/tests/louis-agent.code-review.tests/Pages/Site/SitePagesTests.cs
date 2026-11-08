@@ -67,6 +67,11 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
+    [TestCase(typeof(HowItWorksPage), "as libraries")]
+    [TestCase(typeof(HowItWorksPage), "framework's web")]
+    [TestCase(typeof(HowItWorksPage), "accounts")]
+    [TestCase(typeof(HowItWorksPage), "harness")]
+    [TestCase(typeof(HowItWorksPage), "Azure")]
     [TestCase(typeof(BuiltOnItPage), "Each is a demo")]
     [TestCase(typeof(PacksPage), "never the engine")]
     public void APage_TellsTheNewStructure(Type page, string words)
