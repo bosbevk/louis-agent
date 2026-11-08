@@ -23,7 +23,7 @@ public sealed class RunTools(ITriageRecorder recorder, string peopleFolder, Time
 {
     /// <summary>A run's steps, one line each, so the reader can say what happened and why.</summary>
     [Description(
-        "Reads a triage run back: every step so far, one line each, with who did it, what and why, and how the run " +
+        "Reads the run back: every step so far, one line each, with who did it, what and why, and how the run " +
         "ended if it has. Use it to explain what is happening in a run, or to see what came before you.")]
     public async Task<string> ReadTriageRun(
         [Description("The run id.")] string runId,

@@ -1865,7 +1865,7 @@
     },
     {
       "Name": "ReadTriageRun",
-      "Description": "Reads a triage run back: every step so far, one line each, with who did it, what and why, and how the run ended if it has. Use it to explain what is happening in a run, or to see what came before you.",
+      "Description": "Reads the run back: every step so far, one line each, with who did it, what and why, and how the run ended if it has. Use it to explain what is happening in a run, or to see what came before you.",
       "Schema": {
         "type": "object",
         "properties": {
