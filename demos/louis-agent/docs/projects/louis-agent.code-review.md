@@ -124,7 +124,7 @@ sequenceDiagram
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own |
+| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own. Every section is the framework's `Band` with an id in words (F117), so the guide can take a visitor to an area, and `SitePagesTests` holds that no page has a nameless one |
 | `Components/Architecture/` | The Architecture page's families, one component each: `Framework/` (the engine, the hosts, the web, the evals) and `OnIt/` (the packs, the demos, where it runs) |
 | `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |

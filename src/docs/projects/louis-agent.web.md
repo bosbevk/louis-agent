@@ -149,7 +149,9 @@ Identity="…" />`: a button folded in a corner and a panel with the chat's own 
 page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
 A site's frame (`SiteShell`) has a `Corner` slot made for it. It knows the page (F115, ADR 0104): its module beside
 it, `ChatWidget.razor.js`, reads the page's address, title and main text when a message is sent, and the runner
-sends them with the first message written from a page, so the guide answers about what the visitor sees.
+sends them with the first message written from a page, so the guide answers about what the visitor sees. The block lists the page's areas, and the widget acts on the guide's `ShowPage` call (F117, ADR 0105): `ChatRunner.ToolCalled` tells it of each tool call as it arrives, it navigates to the path and the module's `showArea` scrolls the area into view and lights it up with `.area-shown`, a glow in the web's base styles a site may restyle.
+
+**`Components/Site/Bands/Band`** is one named area of a site's page (F117, ADR 0106): a section with a required id, an optional kicker and the site's classes, drawing no style of its own, so every area on every site is named because the framework insists and the guide can send a visitor to it.
 
 **`Components/Site/Cards/CardDeck`** is a row of short cards that open (F113): each `Card` inside gives a title, a
 one-line summary, an optional mono tag and, as its content, the story. The cards register with the deck through a
