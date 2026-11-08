@@ -1,3 +1,4 @@
+@implements IAsyncDisposable
 @* The message box: the attachments as chips, the text, and Send or Stop. Each app lays its own box around the text
    (a prompt sign and an attach button before it, or a toolbar after it, where the buttons then sit), so those come
    as fragments; the draft flows down and up, and sending and stopping are the page's. *@
@@ -13,7 +14,7 @@
 <div class="@BoxClass">
     @BeforeInput
     @* The pages bound the draft with @bind, which writes value and its handler after the other attributes; the same order here. *@
-    <textarea id="composer-input" rows="1" disabled="@Disabled" placeholder="@Placeholder"
+    <textarea id="composer-input" rows="1" disabled="@Disabled" placeholder="@Placeholder" @ref="_input"
               value="@Draft" @oninput='e => DraftChanged.InvokeAsync(e.Value?.ToString() ?? "")'></textarea>
     @if (Tools is null)
     {
