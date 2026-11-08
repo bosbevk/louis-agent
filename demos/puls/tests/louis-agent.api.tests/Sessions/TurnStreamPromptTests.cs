@@ -1,5 +1,6 @@
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
+using LouisAgent.Api.Sessions.Requests.Pages;
 
 namespace LouisAgent.Api.Tests.Sessions;
 

@@ -6,6 +6,7 @@ using System.Threading.Channels;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Requests;
+using LouisAgent.Api.Sessions.Requests.Pages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
