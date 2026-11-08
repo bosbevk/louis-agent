@@ -1,0 +1,7 @@
+@* A group in a site's menu (FX73): one word in the menu bar that opens the links it holds, on hover or on focus, so a
+   menu with many pages stays one line. The site puts its links inside; the styles beside this file do the opening,
+   with no script. *@
+<div class="site-menu">
+    <button type="button" class="site-menu-label" aria-haspopup="true">@Label</button>
+    <div class="site-menu-list">@ChildContent</div>
+</div>

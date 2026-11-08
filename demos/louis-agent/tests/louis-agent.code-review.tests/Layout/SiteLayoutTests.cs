@@ -36,6 +36,7 @@ public class SiteLayoutTests
     [TestCase("/build-your-own")]
     [TestCase("/proof")]
     [TestCase("/built-on-it")]
+    [TestCase("/whats-coming")]
     [TestCase("/contact")]
     public void TheMenu_LeadsToThePage(string address)
     {
@@ -44,6 +45,37 @@ public class SiteLayoutTests
         var cut = ctx.Render<SiteLayout>();
 
         Assert.That(cut.FindAll($".site-nav a[href='{address}']"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// The framework's five pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"),
+    /// so the bar stays one line with What's coming on it.
+    /// </summary>
+    [Test]
+    public void TheFrameworksPages_AreOneGroup()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-nav .site-menu-label").TextContent, Is.EqualTo("The framework"));
+            Assert.That(cut.FindAll(".site-nav .site-menu a").Select(a => a.GetAttribute("href")),
+                Is.EqualTo(new[] { "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own" }));
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
+        });
+    }
+
+    /// <summary>The slogan sits under the brand (FX79, Louis: "this is our slogan under our brand").</summary>
+    [Test]
+    public void TheSlogan_SitsUnderTheBrand()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-brand .site-tagline").TextContent, Is.EqualTo("100% C#, because I can"));
     }
 
     /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
@@ -70,7 +102,7 @@ public class SiteLayoutTests
         {
             Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
             Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
-            Assert.That(brand.TextContent.Trim(), Is.EqualTo("louis-agent"));
+            Assert.That(brand.QuerySelector(".site-brand-name")!.TextContent.Trim(), Is.EqualTo("louis-agent"));
             Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
                     "demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg")),
                 "the mark is the app's own copy");

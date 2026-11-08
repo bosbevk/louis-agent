@@ -20,7 +20,7 @@ public class SitePagesTests
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
-    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
+    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
@@ -69,6 +69,10 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(IdentitiesPage), "Never lie.")]
+    [TestCase(typeof(HomePage), "class=\"strip-contact reveal\"")]
+    [TestCase(typeof(HomePage), "The guide")]
+    [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]
@@ -77,6 +81,8 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "What we sell today")]
     [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
     [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
+    [TestCase(typeof(ContactPage), "href=\"https://wa.me/27663912470")]
+    [TestCase(typeof(ContactPage), "066 391 2470")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
@@ -119,7 +125,8 @@ public class SitePagesTests
 
     /// <summary>
     /// No page joins two clauses with a semicolon (Louis, 2026-11-08: "we should never do this"): a visitor reads short
-    /// sentences. Code listings are code and may keep theirs.
+    /// sentences. Code listings are code and may keep theirs, and the principles are the engine's own file, shown as it
+    /// is (FX74), not the site's words.
     /// </summary>
     [Test]
     public void NoPage_JoinsClausesWithASemicolon()
@@ -136,7 +143,7 @@ public class SitePagesTests
                 builder.OpenComponent(0, page);
                 builder.CloseComponent();
             });
-            foreach (var code in cut.FindAll("code, pre, style, script"))
+            foreach (var code in cut.FindAll("code, pre, style, script, .principles"))
             {
                 code.Remove();
             }

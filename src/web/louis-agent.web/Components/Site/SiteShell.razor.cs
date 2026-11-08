@@ -21,6 +21,10 @@ public partial class SiteShell
     [Parameter]
     public RenderFragment? Brand { get; set; }
 
+    /// <summary>The site's slogan, one short line under the brand (FX79); left empty, the brand stands alone.</summary>
+    [Parameter]
+    public RenderFragment? Tagline { get; set; }
+
     /// <summary>Where the brand takes you; home unless the site says otherwise.</summary>
     [Parameter]
     public string BrandHref { get; set; } = "/";

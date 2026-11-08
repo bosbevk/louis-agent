@@ -24,7 +24,7 @@ which of the two it opens as (a session names its identity, F109.3 step 1).
   honest always; since FX72 a salesperson that reads the person: plain words for someone who has never written code,
   no code or file names, and the full technical answer once it knows it talks to a software developer), what we
   sell today (web hosting with an AI agent for small businesses, R500 to R1,000 a month: the one public price, and
-  what an agent does for a business in the owner's words), how it answers (reads before it speaks, names the doc,
+  what an agent does for a business in the owner's words), how it answers (reads before it speaks, names the doc for a developer only, since FX77,
   says what the docs don't say, numbers only from a doc, plain words, only what works today), what stays Louis's
   (the roadmap's money, numbers and risks and the TODO's notes are never quoted; any other price question goes to
   the contact page) and where things are in the docs

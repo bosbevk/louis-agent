@@ -129,6 +129,11 @@ sequenceDiagram
 None of its own: it's served by the API on the same origin. The coding agent's program, `louis-agent.coding-api`, references it. If the API
 needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admin's key on the admin page; each stays in this browser.
 
+## The slogan
+
+**100% C#, because I can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
+footer, and it is the one line the site says about itself.
+
 ## What the site sells, and how to reach Louis
 
 The guide answers questions about buying from this section (FX72), so it holds the site's public offer in full:
@@ -144,7 +149,9 @@ The guide answers questions about buying from this section (FX72), so it holds t
 - **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
-  subject already filled in. Say what the agent should do, which systems it needs to reach, and where it should run.
+  subject already filled in, or WhatsApp on 066 391 2470 (WhatsApp Business), which the page's WhatsApp buttons open
+  as a chat (`https://wa.me/27663912470`). Say what the agent should do, which systems it needs to reach, and where
+  it should run.
 
 ## Extending it
 

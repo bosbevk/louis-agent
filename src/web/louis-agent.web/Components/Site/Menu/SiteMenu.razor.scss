@@ -1,0 +1,36 @@
+/* SiteMenu's own styles (FX73): the label reads like the menu's other links with a small mark after it; the list drops
+   under it on hover or when a link inside has focus, so the keyboard opens it too. Colours read the framework's names. */
+.site-menu { position: relative; }
+.site-menu-label {
+    all: unset;
+    cursor: pointer;
+    color: var(--bs-secondary-color);
+    font: inherit;
+    transition: color .2s;
+}
+.site-menu-label::after { content: " ▾"; font-size: 11px; }
+.site-menu:hover .site-menu-label, .site-menu:focus-within .site-menu-label { color: var(--bs-emphasis-color); }
+
+.site-menu-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -14px;
+    z-index: 20;
+    min-width: 180px;
+    padding: 10px 0;
+    margin-top: 10px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    background: var(--bs-secondary-bg);
+    box-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8);
+}
+/* A gap between the label and the list would close it as the pointer crosses; the list's margin is covered here. */
+.site-menu-list::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+.site-menu:hover .site-menu-list, .site-menu:focus-within .site-menu-list { display: flex; flex-direction: column; }
+.site-menu-list ::deep a { display: block; padding: 7px 18px; white-space: nowrap; }
+.site-menu-list ::deep a:hover { background: rgba(var(--bs-primary-rgb), .08); }
+
+@media (max-width: 720px) {
+    .site-menu-list { position: static; margin: 6px 0 0; padding: 0 0 0 12px; border: 0; box-shadow: none; background: none; }
+}
