@@ -203,3 +203,15 @@ stored hashed, spent on use, for the day the phone is gone.
 page shows them then; after that only the count. The authenticator key goes to the person as text and as an
 `otpauth://` link the phone opens straight into the app; the QR code is a later step, since every app takes the key
 typed or the link tapped.
+
+## A tool with a side effect, and the consent in the prompt (F112, 2026-11-08)
+
+The guide got one tool that does something in the world: `SendLead` mails Louis a visitor's name, contact and wish.
+Three things made it safe to hand to a model. The tool checks its input and refuses a lead with a part missing, so a
+half-heard name never leaves. The consent lives in the voice, where judgement belongs (ADR 0080): ask for the three
+things one at a time, repeat them back, send only on the visitor's yes, once, never a guessed contact. And the sender
+is a seam with a Null Object: without a key the lead goes to the log, and the tool tells the model so, because a lead
+that only reached the log was not mailed to anyone and the guide must never say Louis has it when he doesn't. The
+Resend sender is one JSON post with our own `HttpClient`, so no package sits between us and the wire, and a refusal
+comes back as text with the service's words, never a throw into the loop (ADR 0005). Skill 3 (tools) and skill 15.
+

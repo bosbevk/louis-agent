@@ -39,4 +39,5 @@ public enum ExpertIdentityName
 public enum ExpertPack
 {
     Docs,
+    Leads,
 }

@@ -1,0 +1,33 @@
+@* A diagram drawn from data (F111): the boxes and arrows of a GraphSpec as one SVG that scales to its box. The root
+   carries reveal, so the frame's module adds .in when it enters and the styles beside this file make the arrows draw
+   themselves and the boxes rise, column by column, once. Fully drawn at rest, so a page with no module still reads. *@
+
+<figure class="graph reveal" role="img" aria-label="@Title">
+    <svg viewBox="@ViewBox" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="graph-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path class="arrow" d="M 0 0 L 8 4 L 0 8 z" />
+            </marker>
+        </defs>
+        @foreach (var edge in Placed.Edges)
+        {
+            <path class="edge" d="@edge.Path" style="@EdgeStyle(edge)" marker-end="url(#graph-arrow)" />
+            @if (edge.Edge.Word is { } word)
+            {
+                @Word(edge, word)
+            }
+        }
+        @foreach (var node in Placed.Nodes)
+        {
+            <g class="node" transform="@Translate(node)" style="@NodeStyle(node)">
+                <rect width="@N(node.W)" height="@N(node.H)" rx="10" />
+                @Label(node)
+                @if (node.Node.Note is { } note)
+                {
+                    @Note(node, note)
+                }
+            </g>
+        }
+    </svg>
+    <figcaption>@Title</figcaption>
+</figure>
