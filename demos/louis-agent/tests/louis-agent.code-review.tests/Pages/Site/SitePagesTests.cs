@@ -154,6 +154,34 @@ public class SitePagesTests
         Assert.That(offenders, Is.Empty);
     }
 
+    /// <summary>
+    /// Where a grid carried a summary and a story each, the page now shows a deck of short cards (F113, Louis: "make
+    /// the card a short summary, and clickable with the detail sliding in at the bottom"): a click on the first card
+    /// opens its story under the row, with words the row itself does not show.
+    /// </summary>
+    [TestCase(typeof(BuiltOnItPage), "Five specialists today")]
+    [TestCase(typeof(IdentitiesPage), "five specialists as roles")]
+    [TestCase(typeof(PacksPage), "read PDF, Word and Excel as text")]
+    [TestCase(typeof(ProofPage), "it keeps dollars, because that is what was charged")]
+    public void ACard_OpensItsStory(Type page, string storyWords)
+    {
+        using var ctx = new BunitContext();
+        var cut = ctx.Render(builder =>
+        {
+            builder.OpenComponent(0, page);
+            builder.CloseComponent();
+        });
+
+        bool shownBefore = cut.Markup.Contains(storyWords);
+        cut.FindAll(".card-deck button.card-summary")[0].Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shownBefore, Is.False, "the story waits for the click");
+            Assert.That(cut.Find(".card-detail-body").TextContent, Does.Contain(storyWords));
+        });
+    }
+
     /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
     [Test]
     public void TheLanding_RevealsItsBlocks()

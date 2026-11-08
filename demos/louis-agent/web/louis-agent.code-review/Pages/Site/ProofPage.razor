@@ -24,16 +24,14 @@
 
 <section class="band">
     <span class="kicker">How the rand come about</span>
-    <div class="grid-2">
-        <article class="panel">
-            <h3>Priced in dollars, once</h3>
+    <CardDeck Columns="2">
+        <Card Title="Priced in dollars, once" Summary="Every model request is one record in the ledger, priced by a dated price table, in the currency that was charged.">
             <p>Every model request lands in the usage ledger as one record with its four kinds of token (in, cache write, cached, out), priced by a dated price table for that model on that day. A price the table doesn't hold stays unknown, never 0. The ledger is the only source of cost, and it keeps dollars, because that is what was charged.</p>
-        </article>
-        <article class="panel">
-            <h3>Rand for display, with the rate's date</h3>
+        </Card>
+        <Card Title="Rand for display, with the rate's date" Summary="A screen converts with the European Central Bank's rates and says which day's rate it used.">
             <p>A screen turns dollars into rand with a rates file: how much of each currency one dollar buys, from the European Central Bank's reference rates, with the date it was read. The live rate is fetched when it can be. The file in the repository is the fallback, so a container offline still converts. Puls shows every answer's cost this way, in rand, and the ledger underneath never changes.</p>
-        </article>
-    </div>
+        </Card>
+    </CardDeck>
 </section>
 
 <section class="band">
