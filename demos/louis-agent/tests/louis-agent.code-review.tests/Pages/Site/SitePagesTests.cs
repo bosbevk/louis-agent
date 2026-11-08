@@ -87,6 +87,24 @@ public class SitePagesTests
         Assert.That(cut.Markup, Does.Contain(words));
     }
 
+    /// <summary>
+    /// The landing is one page the visitor scrolls (F110): its index names every section by id, each a section on
+    /// the page, and a progress line sits at the top for the frame's module to fill.
+    /// </summary>
+    [Test]
+    public void TheLanding_IndexesItsSections()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+        var targets = cut.FindAll(".site-index a").Select(a => a.GetAttribute("href")!).ToList();
+
+        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the index names the sections");
+        Assert.That(targets, Has.All.StartWith("#"));
+        Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
+        Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+    }
+
     /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>
     [TestCase(typeof(HomePage), "film-short", "film-detail")]
     [TestCase(typeof(HowItWorksPage), "film-detail", "film-short")]
