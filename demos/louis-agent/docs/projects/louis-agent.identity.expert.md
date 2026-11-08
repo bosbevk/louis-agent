@@ -19,7 +19,7 @@ which of the two it opens as (a session names its identity, F109.3 step 1).
 ## How it works
 
 - `ExpertIdentity`: the name, the voice `louis-agent-expert/voice` as the default, and two packs: the docs pack it
-  answers from, and since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested and
+  answers from, since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested, and since F117 the site pack, whose one tool takes the visitor to a page or an area of it (the widget hears it and moves the browser), and
   has said yes ([ADR 0101](../../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md)).
 - `Prompts/agent/louis-agent-expert/voice.md`: who it is (the guide, a solo project from South Africa; since F110,
   fun, bubbly and excited, it teaches one thing with every answer and sells by showing, with one nudge at the end,
