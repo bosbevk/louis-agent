@@ -12,20 +12,49 @@ export function pageText() {
     return { url: location.pathname, title: document.title, text, areas };
 }
 
-// Takes the visitor to an area the guide named (F117): waits for the page to have it (the router draws the new page
-// a moment after the address changes), scrolls it into view and lights it up for four seconds with a class the web's
-// styles draw as a glow that fades. Gives up quietly after two seconds if the area never appears.
+// Takes the visitor to an area the guide named (F117, F118): waits for the page to have it (the router draws the new
+// page a moment after the address changes), scrolls it to just under the header, and puts a spotlight on it: one
+// element laid over the area, which the web's styles draw as a dim over the rest of the page and a ring around the
+// area, in and out over four seconds. The spotlight follows the area while it plays, so a page still settling (an
+// image loading, a block revealing) keeps it in place. Gives up quietly after two seconds if the area never appears.
+const headerRoom = 96;
+const spotlightPad = 14;
+const spotlightMs = 4000;
 export function showArea(id) {
     const started = performance.now();
     const attempt = () => {
         const area = document.getElementById(id);
         if (area) {
-            area.scrollIntoView({ behavior: "smooth", block: "start" });
-            area.classList.add("area-shown");
-            setTimeout(() => area.classList.remove("area-shown"), 4000);
+            const top = scrollY + area.getBoundingClientRect().top - headerRoom;
+            scrollTo({ top: Math.max(0, top), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+            spotlight(area);
             return;
         }
         if (performance.now() - started < 2000) requestAnimationFrame(attempt);
     };
     attempt();
 }
+
+// One spotlight at a time: a new one takes the old one down first.
+let lit = null;
+const spotlight = (area) => {
+    lit?.remove();
+    const light = document.createElement("div");
+    light.className = "area-spotlight";
+    light.setAttribute("aria-hidden", "true");
+    document.body.append(light);
+    lit = light;
+    const until = performance.now() + spotlightMs;
+    // Lays the light over the area, a little wider than it, in page coordinates, until its time is up.
+    const follow = () => {
+        if (lit !== light) return;
+        const r = area.getBoundingClientRect();
+        light.style.top = `${scrollY + r.top - spotlightPad}px`;
+        light.style.left = `${scrollX + r.left - spotlightPad}px`;
+        light.style.width = `${r.width + 2 * spotlightPad}px`;
+        light.style.height = `${r.height + 2 * spotlightPad}px`;
+        if (performance.now() < until) requestAnimationFrame(follow);
+        else { light.remove(); lit = null; }
+    };
+    follow();
+};
