@@ -84,6 +84,14 @@ extension method beside what uses it (the git pack's views have `AgentApiGit`). 
    Afrikaans in `demos/puls/web/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
 3. Leave slots (`RenderFragment` parameters) where an app adds its own parts, as `Composer` and `MessageList` do.
 
+## Drop a chat into a page
+
+`<ChatWidget Identity="the-identity" Title="…" Greeting="…" Placeholder="…" ButtonText="…" />` anywhere in a page
+or a layout: a site's frame has a `Corner` slot fixed lower right for it. The identity is one the host's catalogue
+runs (`GET /v1/identities`); a visitor with no key or sign-in reaches it only through the host's door
+(`OPEN_IDENTITY`, `OPEN_SESSIONS_PER_DAY`, ADR 0099). A site wraps the tag once with its own words as a component
+of its own, so a page places that and nothing is configured twice. `ChatWidgetTests` pins it folded and open.
+
 ## Markdown and links
 
 `Text/Markdown.cs` is the one Markdig pipeline. It shows raw HTML as text, allows links only to `http(s)` and

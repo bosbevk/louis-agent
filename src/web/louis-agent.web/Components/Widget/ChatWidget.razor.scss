@@ -1,0 +1,48 @@
+/* ---- The chat widget (F109.3): a round button, and above it a panel the size of a phone's screen with the chat's own
+   list and composer. The page puts the widget where it wants it (a site's frame has a corner for it); the panel opens
+   upwards from the button. Scoped: the list, the turns and the composer inside are reached under ::deep. ---- */
+.chat-widget { position: relative; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+.widget-button {
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 50%;
+    background: var(--bs-emphasis-color);
+    color: var(--bs-body-bg);
+    font: 600 20px/1 var(--bs-font-sans-serif);
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(var(--web-shadow-rgb), .35);
+}
+.widget-button:hover { background: var(--bs-secondary-color); }
+
+.widget-panel {
+    width: min(380px, calc(100vw - 32px));
+    height: min(560px, calc(100vh - 100px));
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    background: var(--bs-body-bg);
+    box-shadow: 0 16px 48px rgba(var(--web-shadow-rgb), .45);
+    overflow: hidden;
+}
+
+.widget-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: var(--bs-secondary-bg);
+}
+.widget-title { font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
+.widget-close { font-size: 18px; line-height: 1; }
+
+/* The list fills what the head and the composer leave, and scrolls on its own. */
+::deep .widget-list { flex: 1; min-height: 0; overflow: auto; padding: 14px; }
+.widget-greeting { margin: 0; font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
+::deep .widget-list .turn { font-size: 14px; }
+
+.widget-composer { padding: 10px; border-top: 1px solid var(--bs-border-color); }
+::deep .widget-composer textarea { font-size: 14px; }

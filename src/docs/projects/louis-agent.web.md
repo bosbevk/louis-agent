@@ -143,6 +143,12 @@ sequenceDiagram
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
 
+**`Components/Widget/ChatWidget`** (F109.3): a chat any page or layout drops in with one tag, `<ChatWidget
+Identity="…" />`: a button folded in a corner and a panel with the chat's own `MessageList` and `Composer` on a
+`ChatRunner` of its own, opened as the identity named, its chats kept under a key of their own so a site's chat
+page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
+A site's frame (`SiteShell`) has a `Corner` slot made for it.
+
 ## Configuration
 
 None. It calls the API on the same origin as the app; the API key, when the API asks for one, is typed into the app
