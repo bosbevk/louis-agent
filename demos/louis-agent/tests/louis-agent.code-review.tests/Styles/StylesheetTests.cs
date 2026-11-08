@@ -81,8 +81,10 @@ public class StylesheetTests
     [TestCase("padding: 64px var(--site-gutter) 40px;")]
     [TestCase(".band-strip { padding-bottom: 72px; }")]
     [TestCase(".btn:hover { transform: translateY(-2px);")]
-    [TestCase(".btn-whatsapp { background: var(--whatsapp);")]
-    [TestCase(".btn-linkedin { background: var(--linkedin);")]
+    [TestCase(".btn-whatsapp, .btn-linkedin { border: 1px solid var(--web-border-hover); color: var(--bs-body-color);")]
+    [TestCase(".btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }")]
+    [TestCase(".btn-whatsapp:hover { border-color: var(--whatsapp);")]
+    [TestCase(".btn-linkedin:hover { border-color: var(--linkedin);")]
     public void TheLook_AnswersTheVisitor(string rule) =>
         Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
             Does.Contain(rule));
