@@ -1,5 +1,6 @@
-/* The bands a page is made of: a kicker, a heading, a grid of panels; the stat tiles; the rules list; the contact
-   strip in steel at the foot of the home page. */
+/* The bands a page is made of: a kicker, a heading, a grid of panels; the rules list; the colours of the closing strip
+   in steel. The tiles and the strip themselves are the framework's since F118 (TileRow, Tile, SiteStrip), styled
+   beside them; this site gives the strip its steel. */
 
 /* A band's room is above its content, as Puls spaces its sections (FX72): one gap between two bands, not two
    paddings and a line in the middle of an empty screen. */
@@ -17,7 +18,6 @@
 .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 /* The custom-agents band (F116): the three tiles stacked on the left, the guide's lead chat animating on the right. */
 .custom-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; align-items: start; }
-.custom-tiles { display: grid; gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 
 /* Code shown as it stands in the repo: it scrolls inside its own box rather than widening the page. */
@@ -31,10 +31,6 @@
     line-height: 1.6;
 }
 
-.stat { gap: 8px; }
-.stat-value { font: 700 44px/1 var(--bs-font-monospace); letter-spacing: -.03em; }
-.stat-note { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
-
 .rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--bs-border-color); max-width: 72ch; }
 .rules li { padding: 14px 0; border-bottom: 1px solid var(--bs-border-color); font-size: 15px; line-height: 1.6; color: var(--bs-secondary-color); }
 .rules strong { color: var(--bs-emphasis-color); font-weight: 600; }
@@ -46,17 +42,5 @@
 /* The strip sits in a band of its own (FX82), so it gets the hairline every band has and stands clear of the band above
    it (FX76, Louis: "increase the paddings or margins between slides"). */
 .band-strip { padding-bottom: 72px; }
-.strip-contact {
-    margin: 0;
-    padding: 48px;
-    border-radius: 14px;
-    background: var(--steel);
-    color: var(--bs-body-bg);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-}
-.strip-contact h2 { color: var(--bs-body-bg); font-size: 32px; }
-.strip-contact p { color: #3d4148; max-width: var(--measure); }
-.strip-contact .btn { margin-top: 6px; }
+/* The framework's strip in this site's steel, dark words on it. */
+.site { --web-strip-bg: var(--steel); --web-strip-text: var(--bs-body-bg); --web-strip-muted: #3d4148; }
