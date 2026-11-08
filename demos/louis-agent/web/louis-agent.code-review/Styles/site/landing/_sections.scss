@@ -34,6 +34,10 @@
 .rules li { padding: 14px 0; border-bottom: 1px solid var(--bs-border-color); font-size: 15px; line-height: 1.6; color: var(--bs-secondary-color); }
 .rules strong { color: var(--bs-emphasis-color); font-weight: 600; }
 
+/* What's coming: each item carries its id from the open list, and the word that keeps it honest. */
+.plan-id { font: 600 12px/1 var(--bs-font-monospace); letter-spacing: .08em; color: var(--bs-emphasis-color); margin-right: 6px; }
+.planned { font: 500 11px/1 var(--bs-font-monospace); letter-spacing: .14em; text-transform: uppercase; color: var(--bs-tertiary-color); border: 1px solid var(--bs-border-color); border-radius: 4px; padding: 3px 6px; margin-right: 8px; vertical-align: 1px; }
+
 .strip-contact {
     margin: 0 var(--site-gutter) 72px;
     padding: 48px;

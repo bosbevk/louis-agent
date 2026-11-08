@@ -20,6 +20,7 @@ public class SitePagesTests
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
     [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "Building an agent for a .NET team?")]
+    [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
