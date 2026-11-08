@@ -509,6 +509,9 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   their tests demanded. The browser check at 1400 and 390 wide could not be taken: Chrome's renderer stopped answering
   screenshots three times in a row that night; the widget's goldens folded and open, the layout test on the corner and
   the rebuilt image serving the widget's styles stand in, and Louis sees it on the PC's app and on louis-agent.dev.
+- **F109.3 step 8** (2026-11-08): the API doc, the web doc, the guide, the write-ups (skill 15: a door beside the
+  gate; skill 20: a second identity in one catalogue), F107 narrowed to the chat, the work log. The live question
+  on `louis-agent.dev` spends the key and waits for Louis's word; the merge deploys the app with the guide.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

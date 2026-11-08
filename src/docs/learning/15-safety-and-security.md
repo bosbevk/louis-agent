@@ -82,6 +82,25 @@ Phase 7); tenants, a sandbox per tenant and POPIA (F43, Phase 9).
   operator in a hosted product.
 - Why a security test has to fail for the hole itself.
 
+## A door beside the gate (F109.3)
+
+The site's guide had to answer visitors who have neither the key nor an account, and the gate's rule is that every
+`/v1` call has one or the other. The way through was not a weaker gate but a second guard beside it, asked first: the
+door admits exactly one kind of call, a session for the one identity the host names open, a few times a day from one
+address, and the calls on a session it admitted; for everything else it says "not mine" and the gate goes on as
+before. Three things made it safe to add:
+
+- **Narrowing in code, not trusting the body.** The visitor's request may ask for any toolsets; the handler replaces
+  it with the open identity and that identity's own packs' toolsets. A route is closed until the code opens it, and so
+  is a toolset.
+- **Failing shut.** No identity, a cap of 0 or a cap that isn't a number all mean no door. The default is the
+  old behaviour.
+- **A cap with a cheap memory.** Counts per address per day, in memory, on one replica; a restart forgives the day.
+  The model key's spend cap stays the real ceiling. The address is the first forwarded one, which the platform sets.
+
+The lesson: when a public door is needed, add a guard that admits one narrow thing and leaves the gate alone, rather
+than a flag that loosens the gate for everyone.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)
 

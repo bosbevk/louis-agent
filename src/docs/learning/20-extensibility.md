@@ -353,6 +353,25 @@ Moving stylesheets into a framework sounds like moving files. It wasn't, for one
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Mixin.
 
+## A second identity in one catalogue (F109.3)
+
+The guide in the site's corner is a second identity beside the coding agent, in the same catalogue, served by the
+same host. Nothing in the engine knew which identity a session was: the first one's voice was every session's. The
+change was small because the seams were already there: the catalogue answers an identity by name and says whose a
+role is; a session carries `identity` and takes that identity's default voice as its role; the engine factory already
+kept an engine per role, so a second identity costs no new cache key. What the day taught:
+
+- **An identity is a folder of markdown and one class.** The expert is a voice file and a class naming one pack; the
+  packs it names are what it can do, and the docs pack is read-only by construction, so the guide can't act.
+- **A test that routes every toolset has to know whose toolsets they are.** The coding agent's router test named
+  every toolset of the catalogue; with two identities it names the first identity's packs' toolsets, since the
+  expert's docs are not the coding agent's to route.
+- **Names that repeat are enums, even in tests.** The wire-name rule caught `"puls"`, `"files"` and
+  `"rate_limit_error"` spelled out in new tests; each became its enum's `.Wire()`.
+- **A widget is a facade over parts that already exist.** The corner's chat is the chat frame's list, composer and
+  runner behind one tag with the identity as its setting, on a store of its own so a site's chat page never lists
+  the widget's conversations.
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)
 
