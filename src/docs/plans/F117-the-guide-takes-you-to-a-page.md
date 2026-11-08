@@ -132,3 +132,12 @@ sequenceDiagram
 On louis-agent.dev a visitor who asks the guide to show them something lands on that page, scrolled to the area with
 the area aglow for a moment, the guide says one line about it, and the next message is about the new page. Every page's sections have ids, every
 step has its test, the pack references the composition only, the engine is untouched.
+
+## Approved during the build
+
+- **The band is the framework's** (Louis, 2026-11-08: "we must now already split out the framework parts, this is a
+  framework function, even this landing page"): a `Band` component in `louis-agent.web` (`Components/Site/Bands/`)
+  with a required id, an optional kicker and the site's classes replaces every hand-written `<section class="band">`
+  on the site, so an area is named because the framework insists; ADR 0106 records the direction (the landing is the
+  template of the product, a business's public website). The section index from the bands and the landing's other
+  parts as framework components are F118.

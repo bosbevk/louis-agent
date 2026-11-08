@@ -2,8 +2,7 @@
 
 <PageTitle>Architecture · louis-agent</PageTitle>
 
-<section id="top" class="band">
-    <span class="kicker">Architecture</span>
+<Band Id="top" Kicker="Architecture">
     <h2 class="chrome">The whole framework, as the repository is laid out.</h2>
     <p class="lede">Every project that ships has its place here, one line each. The folders say what ships: <code>src/</code> is the framework and nothing else, <code>packs/</code> what an agent can do, <code>demos/</code> what someone built on it. A test holds this page to the solution file, so a new project can't be left off.</p>
     <pre class="listing"><code>src/engine/   the engine: core, and what sits on it, one library each
@@ -15,7 +14,7 @@ packs/        tools/ (the packs), evals/ (what proves one), web/ (a pack's scree
 demos/        louis-agent/ (the coding agent and this site), puls/ (the assistant), starter/ (the smallest site)
               each with identity/, hosts/, web/, evals/, config/, docker/, deploy/, tests/ and docs/</code></pre>
     <GraphView Spec="ArchitectureGraph.Spec" Title="The groups of the repository, and which rests on which" />
-</section>
+</Band>
 
 <EngineFamily />
 <HostsFamily />

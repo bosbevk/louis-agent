@@ -1,6 +1,5 @@
 @* The engine's family on the Architecture page: core, the libraries that sit on it, and the one developer tool. *@
-<section id="engine" class="band">
-    <span class="kicker">src/engine · the engine</span>
+<Band Id="engine" Kicker="src/engine · the engine">
     <h3>Core, and what sits on it.</h3>
     <p class="lede">The engine holds the loop and everything around it, and names no product. What a host may add is a library of its own on core, so a program that needs no web access or tracer doesn't carry them.</p>
     <ul class="rules">
@@ -13,4 +12,4 @@
         <li><strong><code>louis-agent.core.anthropic</code> · <code>louis-agent.core.ollama</code> · <code>louis-agent.core.openai</code></strong> One model provider each: Claude, a local model through Ollama, any server that speaks OpenAI's chat API. A program hands in the ones its agent may talk to.</li>
         <li><strong><code>louis-agent.usage-probe</code></strong> In <code>src/tools</code>, a developer's tool: what a provider reports as token usage, and what the ledger makes of it.</li>
     </ul>
-</section>
+</Band>
