@@ -11,3 +11,21 @@ export function pageText() {
     }));
     return { url: location.pathname, title: document.title, text, areas };
 }
+
+// Takes the visitor to an area the guide named (F117): waits for the page to have it (the router draws the new page
+// a moment after the address changes), scrolls it into view and lights it up for four seconds with a class the web's
+// styles draw as a glow that fades. Gives up quietly after two seconds if the area never appears.
+export function showArea(id) {
+    const started = performance.now();
+    const attempt = () => {
+        const area = document.getElementById(id);
+        if (area) {
+            area.scrollIntoView({ behavior: "smooth", block: "start" });
+            area.classList.add("area-shown");
+            setTimeout(() => area.classList.remove("area-shown"), 4000);
+            return;
+        }
+        if (performance.now() - started < 2000) requestAnimationFrame(attempt);
+    };
+    attempt();
+}

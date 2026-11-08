@@ -65,6 +65,22 @@ public class ChatRunnerTests
         });
     }
 
+    /// <summary>
+    /// The runner tells its listeners of each tool call once, as its block arrives (F117), so a widget can act on a
+    /// call while the turn still streams; the recorded turn has one call, to a specialist.
+    /// </summary>
+    [Test]
+    public async Task EachToolCall_IsToldOnce_AsItArrives()
+    {
+        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question } };
+        var calls = new List<string?>();
+        h.Runner.ToolCalled += block => calls.Add(block.ToolName);
+
+        await h.Runner.SendAsync();
+
+        Assert.That(calls, Is.EqualTo(new[] { "StartSubSession" }));
+    }
+
     /// <summary>A message opens a session, streams the turn and saves the chat.</summary>
     [Test]
     public async Task AMessage_OpensASession_StreamsTheTurn_AndSavesTheChat()
