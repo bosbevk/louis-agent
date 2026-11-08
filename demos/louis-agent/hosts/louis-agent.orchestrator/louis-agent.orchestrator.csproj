@@ -17,6 +17,8 @@
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj" />
 <ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
+      <!-- F106.3.1: the error feed is the triage pack's, read by every department's workflow. -->
+      <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.triage\louis-agent.pack.triage.csproj" />
       <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
       <!-- F18 step 1d: the orchestrator reads a session's stream through the reader itself, so it references it directly. -->
       <ProjectReference Include="..\..\..\..\src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />

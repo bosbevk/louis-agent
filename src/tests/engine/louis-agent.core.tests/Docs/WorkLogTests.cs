@@ -18,15 +18,18 @@ public partial class WorkLogTests
     private static partial Regex FixesIds();
 
     /// <summary>A TODO row: matches <c>| F61 | Accounts, tenants … | Next | [plan](…) |</c> and gives <c>F61</c>.</summary>
-    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)?) \| [^|]+ \| [^|]+ \| [^|]+ \|\r?$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| [^|]+ \| [^|]+ \| [^|]+ \|\r?$", RegexOptions.Multiline)]
     private static partial Regex TodoIds();
 
-    /// <summary>A done row: matches <c>| F61.5 | 2026-11-07 | Passkeys |</c> and gives the id.</summary>
-    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)?) \| \d{4}-\d{2}-\d{2} \|", RegexOptions.Multiline)]
+    /// <summary>
+    /// A done row: matches <c>| F61.5 | 2026-11-07 | Passkeys |</c> and gives the id; a child of a child
+    /// (<c>F106.3.1</c>) counts too.
+    /// </summary>
+    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| \d{4}-\d{2}-\d{2} \|", RegexOptions.Multiline)]
     private static partial Regex DoneRows();
 
     /// <summary>An open row, under the Open heading: matches <c>| F61 | Accounts, tenants … | Next |</c> (no date) and gives the id.</summary>
-    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)?) \| [^|\d][^|]* \| [^|]+ \|\r?$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| [^|\d][^|]* \| [^|]+ \|\r?$", RegexOptions.Multiline)]
     private static partial Regex OpenRows();
 
     /// <summary>A counts row: matches <c>| Fixes (`FX`) | 55 | 0 |</c> and gives the kind, done and open.</summary>

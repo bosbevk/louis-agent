@@ -28,8 +28,8 @@ into the build, so rebuild after a change.
    ([ADR 0004](../../../../src/docs/adr/0004-arguments-as-data.md)). A claim from louis-agent is checked, never trusted.
 5. Tell the model when to use it: the runbooks' `service.md` or the method runbooks.
 
-`ServiceTools.cs` is over the 200-line limit and on `FileSizeTests`' list: a new group of tools goes in a class of its
-own, passed to the engine beside it (`toolsets: [tools]` in `Program.cs`).
+`ServiceTools.cs` sits at the 200-line limit: a new group of tools goes in a class of its own, passed to the engine
+beside it, as the checks of a fix are in `Tools/Checks/FixChecks.cs` (`toolsets: [tools, checks]` in `Program.cs`).
 
 ## Add a setting
 

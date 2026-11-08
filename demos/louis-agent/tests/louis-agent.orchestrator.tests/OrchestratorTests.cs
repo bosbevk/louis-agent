@@ -4,7 +4,9 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Orchestrator.Tools.Checks;
 using LouisAgent.Orchestrator.Triage;
+using LouisAgent.Packs.Triage.Feed;
 using LouisAgent.Testing;
 
 namespace LouisAgent.Orchestrator.Tests;
@@ -31,31 +33,6 @@ public class OrchestratorTests
 
     private static string Event(string id, string method = "order-total") =>
         $$"""{"id":"{{id}}","timestamp":"2026-10-06T10:00:00+00:00","service":"order-service","method":"{{method}}","arguments":"1003","exception_type":"System.Collections.Generic.KeyNotFoundException","message":"The given key 'SUMMER25' was not present","stack_trace":"   at OrderService.OrderApi.GetOrderTotal(Int32 id)"}""";
-
-    [Test]
-    public void ErrorFeed_ReturnsEachEventUntilItIsProcessed()
-    {
-        string log = Path.Combine(_dir, "errors.jsonl");
-        File.WriteAllLines(log, [Event("aaa111"), "not json", Event("bbb222")]);
-        var feed = new ErrorFeed(log, Path.Combine(_dir, "state"));
-
-        Assert.That(feed.ReadNew().Select(e => e.Id), Is.EqualTo(new[] { "aaa111", "bbb222" }));
-        Assert.That(feed.Find("aaa111")!.Method, Is.EqualTo("order-total"));
-
-        feed.MarkProcessed("aaa111");
-        Assert.That(new ErrorFeed(log, Path.Combine(_dir, "state")).ReadNew().Select(e => e.Id),
-            Is.EqualTo(new[] { "bbb222" }),
-            "processed ids survive a restart");
-    }
-
-    [Test]
-    public void ErrorFeed_IgnoresIdsThatAreNotPlainTokens()
-    {
-        string log = Path.Combine(_dir, "errors.jsonl");
-        File.WriteAllLines(log, [Event("x; rm -rf /"), Event("ok_1")]);
-
-        Assert.That(new ErrorFeed(log, _dir).ReadNew().Select(e => e.Id), Is.EqualTo(new[] { "ok_1" }));
-    }
 
     [Test]
     public void TheWorkflow_IsBuiltIn_OnlyTheRunbooksAreOnDisk()
@@ -87,11 +64,12 @@ public class OrchestratorTests
         string skills = Path.Combine(AppContext.BaseDirectory, "Skills");
         var (provider, methods) = OrchestratorSkills.Load(skills, "order-service");
 
-        Assert.That(methods, Is.EquivalentTo(new[]
-        {
-            "customer-initials", "delivery-estimate", "discount-label", "get-order", "invoice-number", "loyalty-points",
-            "order-total", "packing-slip", "refund", "shipping-cost", "vat",
-        }));
+        Assert.That(methods,
+            Is.EquivalentTo(new[]
+            {
+                "customer-initials", "delivery-estimate", "discount-label", "get-order", "invoice-number",
+                "loyalty-points", "order-total", "packing-slip", "refund", "shipping-cost", "vat",
+            }));
         // CL9 step 2: the orchestrator is an agent too, so it gets the shared principles first.
         Assert.That(provider.Documentation, Does.StartWith("# Principles"));
         Assert.That(provider.Documentation, Does.Contain("# Orchestrator"));
@@ -120,7 +98,7 @@ public class OrchestratorTests
 
     [Test]
     public void ReplayRequest_RejectsMethodsWithoutARunbook() =>
-        Assert.That(Tools(FeedWith()).ReplayRequest("delete-everything", 1), Does.StartWith("Error: unknown method"));
+        Assert.That(Checks().ReplayRequest("delete-everything", 1), Does.StartWith("Error: unknown method"));
 
     [Test]
     public void ATool_LogsToStderr_WithTheOrchestratorTag_NeverToStdout()
@@ -179,25 +157,33 @@ public class OrchestratorTests
             "another error while stopping");
     }
 
-    private ErrorFeed FeedWith(params string[] events)
+    private JsonLinesErrorFeed FeedWith(params string[] events)
     {
         string log = Path.Combine(_dir, "errors.jsonl");
         File.WriteAllLines(log, events);
-        var feed = new ErrorFeed(log, Path.Combine(_dir, "state"));
+        var feed = new JsonLinesErrorFeed(log, Path.Combine(_dir, "state"));
         feed.ReadNew();
         return feed;
     }
 
-    private ServiceTools Tools(ErrorFeed feed)
+    private static readonly HashSet<string> Methods = ["get-order", "order-total", "refund"];
+
+    /// <summary>The orchestrator's settings over this test's folder.</summary>
+    private OrchestratorOptions Options() => new()
     {
-        var options = new OrchestratorOptions
-        {
-            ServiceRoot = _dir,
-            StateDirectory = Path.Combine(_dir, "state"),
-            SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
-        };
+        ServiceRoot = _dir,
+        StateDirectory = Path.Combine(_dir, "state"),
+        SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
+    };
+
+    private CommsLog Comms() => new(Path.Combine(_dir, "state", "agent-comms.md"));
+
+    private ServiceTools Tools(JsonLinesErrorFeed feed)
+    {
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
-        return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
-            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")));
+        return new ServiceTools(Options(), feed, client, Methods, Comms());
     }
+
+    /// <summary>The checks of a fix, over the same folder and methods.</summary>
+    private FixChecks Checks() => new(Options(), Methods, Comms());
 }
