@@ -87,15 +87,15 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return await ReadAsync<T>(response, options);
     }
 
-    /// <summary>Sends a message and hands back the answer's events as they arrive.</summary>
+    /// <summary>Sends a message, with the page the visitor is reading when there is one (F115), and hands back the answer's events as they arrive.</summary>
     public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
-        string sessionId, string message, IReadOnlyList<Attachment> attachments,
+        string sessionId, string message, IReadOnlyList<Attachment> attachments, Page? page = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // The browser buffers a reply unless told to stream it, which would hold the whole turn back until its end.
         var request = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{sessionId}/messages")
         {
-            Content = JsonContent.Create(new MessageBody(message, attachments)),
+            Content = JsonContent.Create(new MessageBody(message, attachments, page)),
         };
         request.SetBrowserResponseStreamingEnabled(true);
 

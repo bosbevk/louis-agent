@@ -48,7 +48,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
   time zone), streams a message's events over SSE, stops and deletes sessions, and reads the toolsets, rates and other
   GETs. Components never touch `HttpClient`.
-- **A turn's life.** `ChatRunner` holds what every chat page does with a message: the draft and its attachments, the
+- **A turn's life.** `ChatRunner` holds what every chat page does with a message: the draft, its attachments and the page the visitor is reading when one is set (F115, sent once and forgotten), the
   session opened on the first message, the stream with a redraw raised at most every 50 ms and the last update always drawn (`RedrawThrottle`), stop, the save, and errors
   in the app's own words.
 - **The stream becomes a turn.** `TurnStream` folds the API's events (thinking, text, tool calls, usage) into the
@@ -147,7 +147,9 @@ sequenceDiagram
 Identity="…" />`: a button folded in a corner and a panel with the chat's own `MessageList` and `Composer` on a
 `ChatRunner` of its own, opened as the identity named, its chats kept under a key of their own so a site's chat
 page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
-A site's frame (`SiteShell`) has a `Corner` slot made for it.
+A site's frame (`SiteShell`) has a `Corner` slot made for it. It knows the page (F115, ADR 0104): its module beside
+it, `ChatWidget.razor.js`, reads the page's address, title and main text when a message is sent, and the runner
+sends them with the first message written from a page, so the guide answers about what the visitor sees.
 
 **`Components/Site/Cards/CardDeck`** is a row of short cards that open (F113): each `Card` inside gives a title, a
 one-line summary, an optional mono tag and, as its content, the story. The cards register with the deck through a

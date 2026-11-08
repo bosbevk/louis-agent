@@ -26,9 +26,12 @@ namespace LouisAgent.Api.Sessions;
 /// </summary>
 internal static class TurnStream
 {
+    /// <summary>How much of the page the visitor is reading goes to the model (F115): enough for a site's page, not a book.</summary>
+    private const int MaxPageChars = 6_000;
+
     /// <summary>
     /// The prompt for a message: its text, then each attachment's contents (the API can't see the caller's disk), each
-    /// capped so one can't fill the context.
+    /// capped so one can't fill the context, then the page the visitor is reading, capped the same way (F115).
     /// </summary>
     public static string BuildPrompt(SendMessageRequest request)
     {
@@ -53,7 +56,22 @@ internal static class TurnStream
                           })));
         }
 
+        if (request.Page is { } page) parts.Add(PageBlock(page));
         return string.Join("\n\n", parts);
+    }
+
+    /// <summary>The page as one block: where the visitor is and what the page says, cut with a note when it is long.</summary>
+    private static string PageBlock(PageRequest page)
+    {
+        string text = page.Text ?? string.Empty;
+        string shown = text.Length <= MaxPageChars ? text : text[..MaxPageChars];
+        string block = MessageText.Format(ApiModelText.Page, new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown });
+        if (text.Length <= MaxPageChars) return block;
+        return block + MessageText.Format(ApiModelText.PageTruncated, new
+        {
+            Shown = MaxPageChars.ToString("N0", CultureInfo.InvariantCulture),
+            Length = text.Length.ToString("N0", CultureInfo.InvariantCulture),
+        });
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -20,18 +21,21 @@ namespace LouisAgent.Web.Components.Widget;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 /// <seealso href="https://refactoring.guru/design-patterns/facade">Facade (Refactoring.Guru)</seealso>
-public partial class ChatWidget : IDisposable
+public partial class ChatWidget : IAsyncDisposable
 {
     /// <summary>Where the widget's own chats are kept, apart from the chat page's.</summary>
     private const string ChatsKey = "louis-agent.widget-chats";
 
     private bool _open;
+    private JsModule? _module;
+    private string? _pageSentFor;
 
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
     [Inject] private ChatSettings Settings { get; set; } = default!;
     [Inject] private CurrencyState Currency { get; set; } = default!;
     [Inject] private ChatText Text { get; set; } = default!;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
 
     /// <summary>Who answers: the identity a session opens as, by the name the host's catalogue knows.</summary>
     [Parameter, EditorRequired]
@@ -67,6 +71,9 @@ public partial class ChatWidget : IDisposable
 
     private ChatRunner Runner { get; set; } = default!;
 
+    /// <summary>The module beside this component that reads the page (F115), imported on first use.</summary>
+    private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.Widget);
+
     /// <summary>The runner over the site's API, on a store of its own, opening every session as the identity.</summary>
     protected override void OnInitialized()
     {
@@ -81,10 +88,26 @@ public partial class ChatWidget : IDisposable
     /// </summary>
     protected override Task OnInitializedAsync() => Currency.LoadAsync();
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
         Currency.Changed -= Redraw;
+        if (_module is not null) await _module.DisposeAsync();
+    }
+
+    /// <summary>
+    /// Sends the message, with the page the visitor is reading when this page hasn't gone with a message yet (F115):
+    /// read at send time, so it is the page as rendered, not the one before a move.
+    /// </summary>
+    private async Task SendAsync()
+    {
+        if (_pageSentFor != Nav.Uri)
+        {
+            Runner.Page = await Module.InvokeAsync<Page>("pageText");
+            _pageSentFor = Nav.Uri;
+        }
+
+        await Runner.SendAsync();
     }
 
     private Task<string> OpenSessionAsync() => Api.CreateSessionAsync(Toolsets, identity: Identity);
