@@ -1,0 +1,1074 @@
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_4ad57fbd130046bb9d8afcbebe4d71f6","role":"assistant","toolsets":["files","git","dotnet"],"session_role":null}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm starting by"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" looking over"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the workspace, and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I pl"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"an to run the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" project-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"listing and status chec"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ks at"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" same time."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: content_block_start
+data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"I'll"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" start by locating the solution and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" chec"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"king the rep"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"o state."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_01GiKP1srFfMiUGBFWQvzhBR","name":"DotNetListProjects","input":{}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: content_block_start
+data: {"type":"content_block_start","index":3,"content_block":{"type":"tool_use","id":"toolu_01DeqkTmMCP3QKekuH9KTyVv","name":"GetStatus","input":{}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":3}
+
+event: content_block_start
+data: {"type":"content_block_start","index":4,"content_block":{"type":"tool_result","tool_use_id":"toolu_01GiKP1srFfMiUGBFWQvzhBR","content":"InvoiceMatcher.slnx\nInvoiceMatcher.Tests/InvoiceMatcher.Tests.csproj\nInvoiceMatcher/InvoiceMatcher.csproj","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":4}
+
+event: content_block_start
+data: {"type":"content_block_start","index":5,"content_block":{"type":"tool_result","tool_use_id":"toolu_01DeqkTmMCP3QKekuH9KTyVv","content":"M InvoiceMatcher.slnx","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":5}
+
+event: content_block_start
+data: {"type":"content_block_start","index":6,"content_block":{"type":"tool_use","id":"toolu_01AKm6r5Rv9QDcj1pBZwkWnz","name":"ListDirectoryTree","input":{"maxDepth":3}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":6}
+
+event: content_block_start
+data: {"type":"content_block_start","index":7,"content_block":{"type":"tool_use","id":"toolu_01531yCsoyHxUqnzXVJBV7rV","name":"DiffUnstaged","input":{"filePath":"InvoiceMatcher.slnx"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":7}
+
+event: content_block_start
+data: {"type":"content_block_start","index":8,"content_block":{"type":"tool_result","tool_use_id":"toolu_01AKm6r5Rv9QDcj1pBZwkWnz","content":"Directory tree for . (depth: 3):\n\n├── \uD83D\uDCC1 InvoiceMatcher\n│   ├── \uD83D\uDCC4 InvoiceMatcher.csproj\n│   ├── \uD83D\uDCC4 Matcher.cs\n│   └── \uD83D\uDCC4 Records.cs\n├── \uD83D\uDCC1 InvoiceMatcher.Tests\n│   ├── \uD83D\uDCC4 InvoiceMatcher.Tests.csproj\n│   └── \uD83D\uDCC4 MatcherTests.cs\n├── \uD83D\uDCC4 .gitignore\n└── \uD83D\uDCC4 InvoiceMatcher.slnx\n","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":8}
+
+event: content_block_start
+data: {"type":"content_block_start","index":9,"content_block":{"type":"tool_result","tool_use_id":"toolu_01531yCsoyHxUqnzXVJBV7rV","content":"diff --git a/InvoiceMatcher.slnx b/InvoiceMatcher.slnx\nindex 4cf3fa2..de9e9bb 100644\n--- a/InvoiceMatcher.slnx\n+++ b/InvoiceMatcher.slnx\n@@ -1,4 +1,4 @@\n-<Solution>\n-  <Project Path=\"InvoiceMatcher.Tests/InvoiceMatcher.Tests.csproj\" />\n-  <Project Path=\"InvoiceMatcher/InvoiceMatcher.csproj\" />\n-</Solution>\n+<Solution>\n+  <Project Path=\"InvoiceMatcher.Tests/InvoiceMatcher.Tests.csproj\" />\n+  <Project Path=\"InvoiceMatcher/InvoiceMatcher.csproj\" />\n+</Solution>","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":9}
+
+event: content_block_start
+data: {"type":"content_block_start","index":10,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":"The ."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":"slnx file"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" se"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":"ems to show only"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" a line-ending change, which"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" isn't mine,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" so I'll leave it al"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":"one and note"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" it. Next I'll read"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":" the source files."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":10,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":10}
+
+event: content_block_start
+data: {"type":"content_block_start","index":11,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"There"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"'s an unr"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"elated pre-existing change"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":" in `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"InvoiceMatc"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"her.slnx` (line"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":" end"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":"ings only). I'll leave"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":" it alone."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":" Now the source and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":11,"delta":{"type":"text_delta","text":" tests."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":11}
+
+event: content_block_start
+data: {"type":"content_block_start","index":12,"content_block":{"type":"tool_use","id":"toolu_01FMsQeFBcWwDcVUPimNRS3d","name":"ReadWorkspaceFile","input":{"relativePath":"InvoiceMatcher/Matcher.cs"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":12}
+
+event: content_block_start
+data: {"type":"content_block_start","index":13,"content_block":{"type":"tool_use","id":"toolu_0134CAxM4UQNDdYvb4TaudzB","name":"ReadWorkspaceFile","input":{"relativePath":"InvoiceMatcher/Records.cs"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":13}
+
+event: content_block_start
+data: {"type":"content_block_start","index":14,"content_block":{"type":"tool_use","id":"toolu_015e5dBPEH7c7ar1eMLkyeDu","name":"ReadWorkspaceFile","input":{"relativePath":"InvoiceMatcher.Tests/MatcherTests.cs"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":14}
+
+event: content_block_start
+data: {"type":"content_block_start","index":15,"content_block":{"type":"tool_result","tool_use_id":"toolu_01FMsQeFBcWwDcVUPimNRS3d","content":"namespace InvoiceMatcher;\n\n/// <summary>Matches the bank's payments to our invoices: the invoice number in the reference, and the full amount.</summary>\npublic static class Matcher\n{\n    /// <summary>Each payment that names an invoice and pays it in full is matched; the rest are left for a person.</summary>\n    public static MatchResult Match(IReadOnlyList<Invoice> invoices, IEnumerable<Payment> payments)\n    {\n        var matched = new List<Match>();\n        var unmatched = new List<Payment>();\n        foreach (var payment in payments)\n        {\n            var invoice = invoices.FirstOrDefault(invoice =>\n                payment.Reference.Contains(invoice.Number) && invoice.Amount == payment.Amount);\n            if (invoice is null)\n            {\n                unmatched.Add(payment);\n                continue;\n            }\n\n            matched.Add(new Match(invoice, payment));\n        }\n\n        return new MatchResult(matched, unmatched);\n    }\n}\n","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":15}
+
+event: content_block_start
+data: {"type":"content_block_start","index":16,"content_block":{"type":"tool_result","tool_use_id":"toolu_0134CAxM4UQNDdYvb4TaudzB","content":"namespace InvoiceMatcher;\n\n/// <summary>An invoice we sent: its number, who it is for and what they owe.</summary>\npublic sealed record Invoice(string Number, string Customer, decimal Amount);\n\n/// <summary>A payment from the bank statement: the reference the customer typed, and the amount.</summary>\npublic sealed record Payment(string Reference, decimal Amount);\n\n/// <summary>A payment and the invoice it pays.</summary>\npublic sealed record Match(Invoice Invoice, Payment Payment);\n\n/// <summary>What matched, and the payments left for a person to look at.</summary>\npublic sealed record MatchResult(IReadOnlyList<Match> Matched, IReadOnlyList<Payment> Unmatched);\n","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":16}
+
+event: content_block_start
+data: {"type":"content_block_start","index":17,"content_block":{"type":"tool_result","tool_use_id":"toolu_015e5dBPEH7c7ar1eMLkyeDu","content":"namespace InvoiceMatcher.Tests;\n\n/// <summary>How the bank's payments find their invoices, with references the way customers really type them.</summary>\npublic class MatcherTests\n{\n    private static readonly Invoice Acme = new(\"INV-1042\", \"Acme Plumbing\", 1250.00m);\n    private static readonly Invoice Karoo = new(\"INV-104\", \"Karoo Farm Stall\", 1250.00m);\n\n    /// <summary>A reference that names the invoice and pays it in full matches.</summary>\n    [Test]\n    public void AnExactReference_Matches()\n    {\n        var result = Matcher.Match([Acme], [new Payment(\"INV-1042\", 1250.00m)]);\n\n        Assert.That(result.Matched.Single().Invoice, Is.EqualTo(Acme));\n    }\n\n    /// <summary>A payment short of the invoice is left for a person.</summary>\n    [Test]\n    public void APartPayment_IsLeftForAPerson()\n    {\n        var result = Matcher.Match([Acme], [new Payment(\"INV-1042\", 1000.00m)]);\n\n        Assert.That(result.Unmatched, Has.Count.EqualTo(1));\n    }\n\n    /// <summary>Customers type the number in lower case, with words around it.</summary>\n    [Test]\n    public void ALowerCaseReference_StillMatches()\n    {\n        var result = Matcher.Match([Acme], [new Payment(\"acme inv-1042 thanks\", 1250.00m)]);\n\n        Assert.That(result.Matched.Single().Invoice, Is.EqualTo(Acme));\n    }\n\n    /// <summary>One invoice number inside a longer one is a different invoice.</summary>\n    [Test]\n    public void AShorterNumber_DoesNotTakeALongerOnesPayment()\n    {\n        var result = Matcher.Match([Karoo, Acme], [new Payment(\"INV-1042\", 1250.00m)]);\n\n        Assert.That(result.Matched.Single().Invoice, Is.EqualTo(Acme));\n    }\n}\n","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":17}
+
+event: content_block_start
+data: {"type":"content_block_start","index":18,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"I'm no"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ting"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" the mat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ching u"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ses a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" case"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"-sensitive substring check"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":", which f"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ails the case-insensitive"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" test and also l"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ets \"INV-104"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"\" match in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"side \"INV-1042\"."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" I'"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"m consid"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ering tokenizing the re"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ference into"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" invoice-number p"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ieces and com"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"paring those"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" case"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"-insensitively inst"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ead."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"I'm we"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ighing a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" bo"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"undary-based regex for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" the invoice number,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" with l"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ookarounds on"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" both"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" sides so \""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"INV-104\" can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"'t match in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"side \"INV-1042\","}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" and case"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"-insensitive matching."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" I'm"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" also plan"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"ning to run the tests first to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":" confirm the failure."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":18,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":18}
+
+event: content_block_start
+data: {"type":"content_block_start","index":19,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"The mat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"cher u"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"ses a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":" plain substring `Contains"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":", which is case"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"-sensitive and has"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":" no word"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":" boundaries. Before chang"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"ing anything, I'll run"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":" the tests to confirm which"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":" failures are real"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":19,"delta":{"type":"text_delta","text":"."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":19}
+
+event: content_block_start
+data: {"type":"content_block_start","index":20,"content_block":{"type":"tool_use","id":"toolu_01VGkX8ExgzrtniDgGCkPd4s","name":"DotNetTest","input":{}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":20}
+
+event: content_block_start
+data: {"type":"content_block_start","index":21,"content_block":{"type":"tool_result","tool_use_id":"toolu_01VGkX8ExgzrtniDgGCkPd4s","content":"Failed!  - Failed:     2, Passed:     2, Skipped:     0, Total:     4, Duration: 45 ms - InvoiceMatcher.Tests.dll (net10.0)\n\nFailed ALowerCaseReference_StillMatches [13 ms]\n  Error Message:\n   System.InvalidOperationException : Sequence contains no elements\n  Stack Trace:\n     at System.Linq.ThrowHelper.ThrowNoElementsException()\n   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)\n   at InvoiceMatcher.Tests.MatcherTests.ALowerCaseReference_StillMatches() in /workspace/InvoiceMatcher.Tests/MatcherTests.cs:line 33\n   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)\n\nFailed AShorterNumber_DoesNotTakeALongerOnesPayment [23 ms]\n  Error Message:\n     Assert.That(result.Matched.Single().Invoice, Is.EqualTo(Acme))\n  Expected: <Invoice { Number = INV-1042, Customer = Acme Plumbing, Amount = 1250.00 }>\n  But was:  <Invoice { Number = INV-104, Customer = Karoo Farm Stall, Amount = 1250.00 }>\n  Stack Trace:\n     at InvoiceMatcher.Tests.MatcherTests.AShorterNumber_DoesNotTakeALongerOnesPayment() in /workspace/InvoiceMatcher.Tests/MatcherTests.cs:line 42\n1)    at InvoiceMatcher.Tests.MatcherTests.AShorterNumber_DoesNotTakeALongerOnesPayment() in /workspace/InvoiceMatcher.Tests/MatcherTests.cs:line 42","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":21}
+
+event: content_block_start
+data: {"type":"content_block_start","index":22,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"Two failures are"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" confirmed, so I'"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"ll fix the matcher with"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" a whole-token, case-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"insensitive regex. That"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" needs `System"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":".Text.RegularEx"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"pressions`, which isn"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"'t among"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" the implicit usings even"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" though the project"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" se"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"ems to have"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" those"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" enabled, so I'll"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" add the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" using"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":" write the file."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":22,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":22}
+
+event: content_block_start
+data: {"type":"content_block_start","index":23,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"Both failures are the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" matcher's fault:"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"\n\n1. **Sh"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"orter-number b"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ug:** `\""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"INV-1042\"."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"Contains(\"INV-104"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"\")` is true, so a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" payment for IN"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"V-1042 can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" be cla"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"imed by INV-104 "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"when"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" invoice com"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"es first in the list.\n2"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":". **Case b"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ug:** `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"Contains` is case-s"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ensitive, so `\"ac"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"me inv-1042 "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"thanks\"` never"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" matches `IN"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"V-1042`.\n\nThe"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" fix is"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" to match"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" the invoice number as a wh"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ole token, "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ignoring case,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" so the number"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"'t be a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" f"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":"ragment of a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":23,"delta":{"type":"text_delta","text":" longer one."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":23}
+
+event: content_block_start
+data: {"type":"content_block_start","index":24,"content_block":{"type":"tool_use","id":"toolu_01TJJPLYNzbxZU4KpcyEExs2","name":"WriteWorkspaceFile","input":{"relativePath":"InvoiceMatcher/Matcher.cs","content":"using System.Text.RegularExpressions;\n\nnamespace InvoiceMatcher;\n\n/// <summary>Matches the bank's payments to our invoices: the invoice number in the reference, and the full amount.</summary>\npublic static class Matcher\n{\n    /// <summary>Each payment that names an invoice and pays it in full is matched; the rest are left for a person.</summary>\n    public static MatchResult Match(IReadOnlyList<Invoice> invoices, IEnumerable<Payment> payments)\n    {\n        var matched = new List<Match>();\n        var unmatched = new List<Payment>();\n        foreach (var payment in payments)\n        {\n            var invoice = invoices.FirstOrDefault(invoice =>\n                NamesInvoice(payment.Reference, invoice.Number) && invoice.Amount == payment.Amount);\n            if (invoice is null)\n            {\n                unmatched.Add(payment);\n                continue;\n            }\n\n            matched.Add(new Match(invoice, payment));\n        }\n\n        return new MatchResult(matched, unmatched);\n    }\n\n    /// <summary>\n    /// True when the invoice number appears in the reference as a whole token, ignoring case.\n    /// \"INV-104\" must not match inside \"INV-1042\", so the number may not be followed or preceded by a letter or digit.\n    /// </summary>\n    private static bool NamesInvoice(string reference, string invoiceNumber)\n    {\n        var pattern = $@\"(?<![A-Za-z0-9]){Regex.Escape(invoiceNumber)}(?![A-Za-z0-9])\";\n        return Regex.IsMatch(reference, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);\n    }\n}\n"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":24}
+
+event: content_block_start
+data: {"type":"content_block_start","index":25,"content_block":{"type":"tool_result","tool_use_id":"toolu_01TJJPLYNzbxZU4KpcyEExs2","content":"Wrote InvoiceMatcher/Matcher.cs (1545 characters).","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":25}
+
+event: content_block_start
+data: {"type":"content_block_start","index":26,"content_block":{"type":"tool_use","id":"toolu_01XK6ZDSdy12WxJRNn1TwDGG","name":"DotNetBuild","input":{}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":26}
+
+event: content_block_start
+data: {"type":"content_block_start","index":27,"content_block":{"type":"tool_use","id":"toolu_01UMkD7Axdnm4XUrM938PrhV","name":"DotNetTest","input":{}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":27}
+
+event: content_block_start
+data: {"type":"content_block_start","index":28,"content_block":{"type":"tool_result","tool_use_id":"toolu_01XK6ZDSdy12WxJRNn1TwDGG","content":"Succeeded.\n0 error(s), 0 warning(s).","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":28}
+
+event: content_block_start
+data: {"type":"content_block_start","index":29,"content_block":{"type":"tool_result","tool_use_id":"toolu_01UMkD7Axdnm4XUrM938PrhV","content":"Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 48 ms - InvoiceMatcher.Tests.dll (net10.0)","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":29}
+
+event: content_block_start
+data: {"type":"content_block_start","index":30,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":"I'm"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" weighing whether to commit"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":","}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" but the user only asked for the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" fix and the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" tests, so I'll"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" leave the changes uncomm"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":"itted and mention that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":" my re"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":"ply."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":30,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":30}
+
+event: content_block_start
+data: {"type":"content_block_start","index":31,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"The matcher"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" is fixed, and all"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" 4 tests pass."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" The build has"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"0 errors and 0 "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"warnings.\n\n**Why"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" pay"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ments did"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"n't match**"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"\n\nThe"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" matcher in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" `InvoiceMat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"cher/Matcher."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"cs` chec"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ked `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"payment.Reference."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"Contains(invoice."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"Number)`."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" That ca"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"used two of"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" the failures:"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"\n\n-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" **Sh"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"orter inv"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"oice numbers st"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ole pay"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ments.** `\""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"INV-1042\""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"` contains `\"INV-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"104\"`, so a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" payment for INV-1"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"042 was"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" mat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ched to INV-104 wh"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"enever that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" invoice came"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" first in the list."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" Both invoices are"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" 1,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"250."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"00, so the am"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ount check didn't catch it"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":".\n- **L"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ower-case references were miss"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ed.** `Contains`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" is case-sensitive,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" so `\"acme inv-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"1042 thanks\"`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" never matched `INV-1"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"042`.\n\n**The"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" fix**"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"\n\nThe mat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"cher now loo"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ks for the invoice number as"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" a whole token, igno"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ring case. A new"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" helper, `NamesIn"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"voice`, uses a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" regex with"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" boundaries so"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" number can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"'t be part of a longer one"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":". `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"INV-104` no"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" longer matches in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"side `INV-1042`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":", and `in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"v-1042` matches `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"INV-1042`. The"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" rest of the mat"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ching logic is unchanged"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":":"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" the full"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"amount check and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" the un"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"matched list still"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" work"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" as before.\n\n**Test results"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"**\n\n-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" Before the fix: 2 "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"failed, 2"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" passed."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" The two failures were `AL"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"owerCaseReference_"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"StillMatches` and `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"AShorterNumber_"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"DoesNotTake"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ALongerOnes"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"Payment`.\n- After"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" the fix: 4 pass"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ed, 0 failed."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"\n\n**Things to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" know**\n\n- I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" didn't commit an"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ything. The change to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" `Matcher.cs"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"` is in the working tree."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"\n- `Invoice"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"Matcher.slnx"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"` already"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" had an"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" uncommitted change before I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" started. It looks like a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" line-ending difference only."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" I left it as"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" it was,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" so you can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" decide wh"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ether to keep or"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" discard it.\n- The"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" new"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" r"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ule means"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" an"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" invoice number followed direct"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ly by a letter or digit"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" (for example `INV-1"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"042A"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"`) won't match. That se"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ems right for b"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ank references, but t"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":"ell me if your"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" customers type"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" references"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":31,"delta":{"type":"text_delta","text":" way."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":31}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":16,"cache_creation_input_tokens":27013,"cache_read_input_tokens":143208,"output_tokens":2850,"requests":7,"cost":0.006236,"currency":"USD","unpriced":0,"display_cost":0.103132,"display_currency":"ZAR","display_symbol":"R","rate_as_of":"2026-11-06"}}
+
+event: message_stop
+data: {"type":"message_stop"}
+
