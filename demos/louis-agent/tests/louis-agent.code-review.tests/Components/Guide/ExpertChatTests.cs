@@ -29,6 +29,16 @@ public class ExpertChatTests
         return ctx;
     }
 
+    /// <summary>Folded, the button says what it is in words, since it is the site's selling point (FX71).</summary>
+    [Test]
+    public void TheButton_SaysAskTheGuide()
+    {
+        using var ctx = Context(out _);
+        var cut = ctx.Render<ExpertChat>();
+
+        Assert.That(cut.Find("button.widget-button").TextContent.Trim(), Is.EqualTo("Ask the guide"));
+    }
+
     /// <summary>Opened, it carries the site's words; a question opens a session as the expert.</summary>
     [Test]
     public void TheGuide_SpeaksTheSitesWords_AndOpensAsTheExpert()
