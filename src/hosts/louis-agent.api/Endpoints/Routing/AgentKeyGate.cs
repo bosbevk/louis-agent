@@ -22,10 +22,26 @@ internal static class AgentKeyGate
     /// <summary>
     /// Turns away a call to a route that needs the key and doesn't bring it, with a 401 in the API's error shape.
     /// </summary>
-    public static WebApplication UseAgentKey(this WebApplication app, string apiKey)
+    public static WebApplication UseAgentKey(this WebApplication app, string apiKey, OpenDoor? door = null)
     {
         app.Use(async (context, next) =>
         {
+            // The guide's door first (F109.3): a visitor it admits passes, one past the day's cap hears so, and
+            // for anything else the key's rules stand as they were.
+            var answer = door is null ? OpenDoorAnswer.NotMine : await door.ConsiderAsync(context);
+            if (answer == OpenDoorAnswer.Capped)
+            {
+                context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                await context.Response.WriteAsJsonAsync(ApiErrors.Body(ApiErrorKind.RateLimit, door!.CapReachedText()));
+                return;
+            }
+
+            if (answer == OpenDoorAnswer.Pass)
+            {
+                await next(context);
+                return;
+            }
+
             // An open route, the right key, or a signed-in person on the app's own call: let it through.
             string? presented = context.Request.Headers["x-api-key"].FirstOrDefault();
             string? bearer = context.Request.Headers.Authorization.FirstOrDefault();

@@ -1,7 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using LouisAgent.Core.Web;
 using LouisAgent.Packs.Web;
 using LouisAgent.Api.Endpoints.Admin;
 using LouisAgent.Api.Evals.Endpoints.Runs;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
@@ -56,16 +58,16 @@ internal static class ApiTestHost
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
         DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
         IReadOnlyList<IAgentPack>? morePacks = null, bool evals = true,
-        IReadOnlyList<IAgentIdentity>? moreIdentities = null)
+        IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
-        builder.Services.AddApi(host);
+        builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
         var app = builder.Build();
 
-        if (apiKey is not null) app.UseAgentKey(apiKey);
+        if (apiKey is not null) app.UseAgentKey(apiKey, app.Services.GetRequiredService<OpenDoor>());
         var api = app.MapApi(host);
         api.MapAdmin(adminKey);
         if (!evals) return app;

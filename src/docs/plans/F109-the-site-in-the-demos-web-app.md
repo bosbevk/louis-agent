@@ -484,6 +484,10 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
 - **F109.3 step 4, one note** (2026-11-08): the image's docs root is laid out as the repo is (`/app/docs/src/docs`,
   `/app/docs/demos/…/docs`, `/app/docs/packs/docs`, the repo's README, ROADMAP and TODO at the top), not flattened,
   so the docs' relative links hold and the PC can use the mounted repo itself as the root (`DOCS_ROOT=/workspace`).
+- **F109.3 step 5, two notes** (2026-11-08): the door reads the session body to see the identity named, then rewinds
+  it for the handler, so no route changed and the route golden stands; counts and admitted sessions are in memory
+  (one replica; a restart forgives the day). The address is the first `X-Forwarded-For` value, else the connection's,
+  which Container Apps forwards. ADR 0099.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

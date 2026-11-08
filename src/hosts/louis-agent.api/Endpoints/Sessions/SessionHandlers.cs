@@ -67,8 +67,10 @@ internal sealed class SessionHandlers(AgentHostContext host)
     /// toolset, role or LLM profile this instance doesn't have.
     /// </summary>
     public async Task<CreatedAnswer> CreateSession(CreateSessionRequest? request, AgentSessions sessions,
-        ClaimsPrincipal principal)
+        ClaimsPrincipal principal, HttpContext context, OpenDoor door, AgentEngineFactory engines)
     {
+        // A visitor the door admitted (F109.3) gets the open identity and its own toolsets, whatever the body asked.
+        if (OpenDoor.IsMarked(context)) request = NarrowToTheOpenIdentity(request, door, engines);
         if (request?.InvalidTag() is { } invalid)
             return Bad(MessageText.Format(ApiUserText.InvalidTag,
                 new
@@ -105,6 +107,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
             return Bad(ex.Message);
         }
 
+        if (OpenDoor.IsMarked(context)) door.Admit(session.Id);
         if (opener is not null)
             Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
                 new
@@ -188,4 +191,22 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
     /// <summary>A 400 with its reason.</summary>
     private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
+
+    /// <summary>
+    /// What a visitor's session is allowed to be: the open identity, the toolsets of its own packs and nothing more,
+    /// tagged for the ledger; the place they shared stays, since it only tells the guide where they are.
+    /// </summary>
+    private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, OpenDoor door,
+        AgentEngineFactory engines)
+    {
+        string identity = door.Options.Identity!;
+        var packs = engines.Catalog.Identity(identity)?.Packs ?? [];
+        var toolsets = engines.Catalog.Packs.Where(p => packs.Contains(p.Name, StringComparer.OrdinalIgnoreCase))
+            .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToList();
+        return new CreateSessionRequest(null, null, OpenDoorService, toolsets, Location: request?.Location,
+            TimeZone: request?.TimeZone, Identity: identity);
+    }
+
+    /// <summary>The ledger's service tag on a visitor's session, so the guide's cost can be read apart.</summary>
+    internal const string OpenDoorService = "open-door";
 }

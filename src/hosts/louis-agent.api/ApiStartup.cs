@@ -50,7 +50,8 @@ public static class ApiStartup
                 AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Warning, ApiLogMessage.NoApiKey);
                 break;
             case HostAuthDecision.Start:
-                app.UseAgentKey(apiKey!); // apiKey is set whenever the decision is Start
+                app.UseAgentKey(apiKey!,
+                    app.Services.GetRequiredService<OpenDoor>()); // apiKey is set whenever the decision is Start
                 break;
         }
 

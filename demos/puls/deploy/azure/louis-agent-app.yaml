@@ -77,6 +77,11 @@ properties:
             secretRef: agent-api-key-louis-agent
           - name: ADMIN_API_KEY
             secretRef: admin-api-key-louis-agent
+          # The guide's door (F109.3): a visitor opens the expert without a sign-in, this many times a day per address.
+          - name: OPEN_IDENTITY
+            value: louis-agent-expert
+          - name: OPEN_SESSIONS_PER_DAY
+            value: '20'
           # The web it reads: SearXNG and the headless browser on the VM, at its private address.
           - name: WEB_SEARCH_PROVIDER
             value: searxng
