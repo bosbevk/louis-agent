@@ -120,7 +120,9 @@ public partial class ChatWidget : IAsyncDisposable
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
         if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));
-        if (target.Place is not null) _ = Module.InvokeVoidAsync("showArea", target.Place, addresses.Address(target.Page, null), path);
+        // The bar shows the place's address as the rule writes it, so /parts/1 shows as /parts.
+        if (target.Place is not null)
+            _ = Module.InvokeVoidAsync("showArea", target.Place, addresses.Address(target.Page, null), addresses.Address(target.Page, target.Place));
     }
 
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>

@@ -27,6 +27,7 @@ public class SiteAddressesTests
     [TestCase("/home", "/", null, null)]
     [TestCase("/", "/", null, null)]
     [TestCase("/how-it-works/parts/2", "/how-it-works", "parts", 2)]
+    [TestCase("/how-it-works/parts/1", "/how-it-works", "parts", null)]
     [TestCase("/Proof/Rand/", "/proof", "rand", null)]
     [TestCase("http://127.0.0.1:5080/identities/puls", "/identities", "puls", null)]
     [TestCase("https://example.com/proof?x=1#y", "/proof", null, null)]

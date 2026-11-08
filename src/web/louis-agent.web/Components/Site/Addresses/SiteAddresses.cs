@@ -70,6 +70,8 @@ public sealed class SiteAddresses
         var parts = clean.Trim('/').Split('/').ToList();
         int? turn = parts.Count > 0 && int.TryParse(parts[^1], out int number) && number >= 1 ? number : null;
         if (turn is not null) parts.RemoveAt(parts.Count - 1);
+        // A paged section's first page is the section itself: /parts/1 is /parts, one place, not two.
+        if (turn == 1) turn = null;
         if (parts.Count < 2 || !IsSectionId(parts[^1])) return null;
 
         string section = parts[^1];

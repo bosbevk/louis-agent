@@ -6,13 +6,16 @@ export function pageText() {
     const text = (main?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 6000);
     // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2),
     // and every card the guide can open (F118), by its title and marked as a card.
+    // A paged section's first page is the section itself, so its heading carries "page 1 of 2: ..." and only the pages
+    // after it are places of their own; listed apart, a walkthrough stopped twice on the same screen (F118).
     const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
-    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].flatMap((area) => [{
-        id: area.id,
-        heading: area.matches("[data-card]")
+    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].flatMap((area) => {
+        const heading = area.matches("[data-card]")
             ? `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`
-            : fold(area.querySelector(".kicker, h1, h2, h3")?.textContent),
-    }, ...pagesOf(area, fold)]);
+            : fold(area.querySelector(".kicker, h1, h2, h3")?.textContent);
+        const [first, ...later] = pagesOf(area, fold);
+        return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later];
+    });
     return { url: location.pathname, title: document.title, text, areas };
 }
 
@@ -29,7 +32,7 @@ export function inView() {
 }
 
 // A section paged sideways on this visitor's screen (F118) lists its pages, each by what it holds, so the guide can
-// turn to the page it talks about: "#parts/2", "page 2 of 3: Your program, The hosts, ...".
+// turn to the page it talks about: "parts/2", "page 2 of 3: Your program, The hosts, ...".
 const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
 const pagesOf = (area, fold) => {
     const body = area.matches(".is-paged") ? area.querySelector(".band-body") : null;
@@ -101,10 +104,26 @@ const turnToPage = (band, page) => {
     body.scrollTo({ left: (page - 1) * stepOf(body), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 };
 
+// The box around what a place holds (F118, Louis: "highlight only this section, the section right around the actual
+// parts"): a band is a screen tall on a page of slides, mostly room, so its box is its content's, the kicker to the
+// last line, and on a page paged sideways its body and pager; anything else is its own box.
+const boxOf = (target) => {
+    if (!target.matches(".band")) return target.getBoundingClientRect();
+    const paged = target.matches(".is-paged");
+    const parts = paged
+        ? [target.querySelector(".band-body"), target.querySelector(".band-pager:not([hidden])")]
+        : [...(target.querySelector(".band-body")?.children ?? [])];
+    const rects = parts.filter(Boolean).map(part => part.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0);
+    if (rects.length === 0) return target.getBoundingClientRect();
+    const top = Math.min(...rects.map(r => r.top)), bottom = Math.max(...rects.map(r => r.bottom));
+    const left = Math.min(...rects.map(r => r.left)), right = Math.max(...rects.map(r => r.right));
+    return { top, left, width: right - left, height: bottom - top };
+};
+
 // Where the area belongs (F118, Louis: "the agent must also center it, it takes you to the top"): centred in the
 // screen under the header when it fits, else its top just under the header.
 const placeFor = (target) => {
-    const r = target.getBoundingClientRect(), room = innerHeight - headerRoom;
+    const r = boxOf(target), room = innerHeight - headerRoom;
     const offset = r.height <= room ? headerRoom + (room - r.height) / 2 : headerRoom;
     return Math.max(0, scrollY + r.top - offset);
 };
@@ -136,10 +155,10 @@ const spotlight = (area) => {
     document.body.append(light);
     lit = light;
     const until = performance.now() + spotlightMs;
-    // Lays the light over the area, a little wider than it, in page coordinates, until its time is up.
+    // Lays the light over what the area holds, a little wider, in page coordinates, until its time is up.
     const follow = () => {
         if (lit !== light) return;
-        const r = area.getBoundingClientRect();
+        const r = boxOf(area);
         light.style.top = `${scrollY + r.top - spotlightPad}px`;
         light.style.left = `${scrollX + r.left - spotlightPad}px`;
         light.style.width = `${r.width + 2 * spotlightPad}px`;
