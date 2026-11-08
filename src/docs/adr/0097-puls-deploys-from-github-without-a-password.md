@@ -26,10 +26,18 @@ builds in the registry, the app's secrets are already Key Vault references, and 
    value. `infra`, `vm`, `secrets` and `domain` stay on the PC.
 5. **The rules hold it:** `DeployWorkflowTests` (no password, release only, after green CI on main, never cancelled).
 
+## Changed, 2026-11-08 (FX93)
+
+The deploy no longer waits for a CI run on `main`: it runs on the push that a merge is, and CI runs on pull requests
+only (Louis: "we do not need a build and test on deploy, we only need it pull request build and test"). Every pull
+request is tested with `main` merged in before it can merge, so a second run of the same tests on the merge commit
+bought a quarter of an hour's delay and nothing else. The deploy checks out the merge commit itself.
+
 ## Consequences
 
 - A green merge reaches mypuls.co.za in the time the image takes to build, without anyone's PC.
-- Louis merging before CI ends no longer ships a red merge: the deploy waits for CI's verdict.
+- Louis merging before CI ends no longer ships a red merge: the deploy waits for CI's verdict (until FX93: since
+  then a merge needs a green pull request, and the deploy follows the merge at once).
 - A run from any branch but `main` fails at sign-in: the trust names `main` only.
 - The setup is once, by hand, in the deploy README (an app registration is outside the resource group the Bicep
   build owns). The framework's site (F61.6) gets its own trigger or job when it deploys beside Puls.
