@@ -24,15 +24,39 @@ internal static class EdgeRouter
     private const double BackLane = 30, Step = 18;
     /// <summary>How far out of a box's right side an arrow to itself reaches.</summary>
     private const double SelfReach = 40;
+    /// <summary>The flat piece of an arrow that carries no word: room for the bend and the arrowhead.</summary>
+    private const double Stub = 24;
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     /// <summary>
-    /// The room two columns need between them so the widest word sits on a flat piece with space either side (Louis:
-    /// "never overlap"): the longer of an arrow's two flat pieces is at least half the gap, so the gap is twice the
-    /// word and its margins.
+    /// The room two columns need between them so the widest word of the arrows crossing it sits on a flat piece with
+    /// space either side (Louis: "never overlap"): the longer of an arrow's two flat pieces is at least half the
+    /// gap, so the gap is twice the word and its margins.
     /// </summary>
     public static double GapFor(IReadOnlyList<GraphEdge> edges) =>
         edges.Count == 0 ? 0 : 2 * (8 * edges.Max(edge => edge.Word?.Length ?? 0) + 16);
+
+    /// <summary>
+    /// The room either side of the bend for the arrows between two neighbouring columns (Louis: "this one can still
+    /// move closer"): the source's side as long as the widest word that sits by its source, the target's side as long
+    /// as the widest word by its target, and a side with no word only a stub for the bend and the arrowhead.
+    /// </summary>
+    public static (double Source, double Target) RoomsFor(
+        IReadOnlyList<GraphEdge> between, IReadOnlyList<GraphEdge> forward)
+    {
+        var wordsOut = WordsOut(forward);
+        double Room(bool bySource) => between
+            .Where(edge => edge.Word is not null && wordsOut.GetValueOrDefault(edge.From) <= 1 == bySource)
+            .Select(edge => 8 * edge.Word!.Length + 16.0).DefaultIfEmpty(Stub).Max();
+        return (Room(true), Room(false));
+    }
+
+    /// <summary>
+    /// How many arrows with a word leave each box; a box with two or more puts its words by their targets.
+    /// </summary>
+    private static Dictionary<string, int> WordsOut(IEnumerable<GraphEdge> forward) =>
+        forward.Where(edge => edge.Word is not null).GroupBy(edge => edge.From)
+            .ToDictionary(group => group.Key, group => group.Count());
 
     /// <summary>Routes the known arrows; the height and width grow for the lanes and loops that run outside the boxes.</summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
@@ -56,24 +80,43 @@ internal static class EdgeRouter
     }
 
     /// <summary>
-    /// The forward arrows: every arrow between two columns bends at the same place, one track in the middle of the gap
-    /// (Louis: "conformity", "alignment is key"), leaves its box's middle and arrives at its target's middle, so a box
-    /// has one line out that branches at the track and the arrows into a box join there. A word sits on the piece by
-    /// its source, or by its target when the source has more than one word out, so two words never share a line.
+    /// The forward arrows: every arrow between two columns bends at the same place, one track in the gap (Louis:
+    /// "conformity", "alignment is key"), leaves its box's middle and arrives at its target's middle, so a box has one
+    /// line out that branches at the track and the arrows into a box join there. A word sits on the piece by its
+    /// source, or by its target when the source has more than one word out, so two words never share a line. Between
+    /// neighbouring columns the track stands where <see cref="RoomsFor"/> puts it, the spare room shared either side;
+    /// an arrow that skips a column bends in the middle.
     /// </summary>
     private static IEnumerable<PlacedEdge> Forward(List<GraphEdge> forward, IReadOnlyDictionary<string, PlacedNode> byId)
     {
-        var wordsOut = forward.Where(edge => edge.Word is not null).GroupBy(edge => edge.From).ToDictionary(group => group.Key, group => group.Count());
+        var wordsOut = WordsOut(forward);
         foreach (var edge in forward)
         {
             var from = byId[edge.From];
             var to = byId[edge.To];
             double x1 = from.X + from.W, y1 = from.Y + from.H / 2;
             double x2 = to.X, y2 = to.Y + to.H / 2;
-            double track = (x1 + x2) / 2;
+            double track = Track(x1, x2, forward, byId);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
             yield return Connector(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)], bySource ? (x1 + track) / 2 : (track + x2) / 2, bySource ? y1 : y2);
         }
+    }
+
+    /// <summary>
+    /// Where an arrow bends: between neighbouring columns, after the source's room plus half what the gap has to spare,
+    /// the same for every arrow of that gap; across a column between, in the middle.
+    /// </summary>
+    private static double Track(
+        double x1, double x2, List<GraphEdge> forward, IReadOnlyDictionary<string, PlacedNode> byId)
+    {
+        bool Between(PlacedNode node) => node.X >= x1 && node.X < x2;
+        if (byId.Values.Any(Between)) return (x1 + x2) / 2;
+
+        // Every arrow from the same column's right edge to the same column's left edge shares this gap.
+        var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
+            .ToList();
+        var (source, target) = RoomsFor(gap, forward);
+        return x1 + source + (x2 - x1 - source - target) / 2;
     }
 
     /// <summary>
