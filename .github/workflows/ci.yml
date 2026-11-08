@@ -1,27 +1,24 @@
-# Build and test every pull request and every merge to main, so a regression is caught before a review, not only locally.
+# Build and test every pull request, so a regression is caught before a review, not only locally.
 # The development guide's "Finishing a step", in two steps: dotnet build, then the unit tests, then (F18 step 7.6) the integration tests, which leave their process and live in their own projects.
 # already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
 # use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing. One service: a
 # throwaway MongoDB, so the benchmark store's contract runs against the real store too (F31), not only in memory.
 name: CI
 
-# One run per change: a pull request's every push, and main once a pull request merges. A push to a branch alone runs
-# nothing (open a draft pull request to get CI); with both events on every branch, each push ran twice and the two runs
-# shared one concurrency group, so one cancelled the other, and the formatting check, which ran only on the push, was
-# the one most often cancelled.
+# One run per change: a pull request's every push. A push to a branch alone runs nothing (open a draft pull request to
+# get CI), and a merge to main runs nothing either (FX93): the pull request was tested with main merged in before it
+# could merge, and the deploy follows the merge at once.
 on:
-  push:
-    branches: [ main ]
   pull_request:
 
 # The job only reads the repository: the token gets no write rights, whatever the repository's default is.
 permissions:
   contents: read
 
-# A newer push to the same pull request cancels its older run; main's runs never cancel, so every merge is checked.
+# A newer push to the same pull request cancels its older run.
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:

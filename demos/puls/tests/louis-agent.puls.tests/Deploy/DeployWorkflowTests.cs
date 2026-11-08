@@ -52,21 +52,22 @@ public class DeployWorkflowTests
         Assert.That(Trimmed(), Has.Some.Contains("if: ${{ !cancelled() }}"), "the second app is tried when the first fails");
     }
 
-    /// <summary>Automatic only after green CI on main (Louis's pick), and a button for any time.</summary>
+    /// <summary>
+    /// The deploy runs on the merge itself and from the button (FX93, Louis: "we only need it pull request build and
+    /// test"): a push to main, never a pull request, and no wait on a CI run, since every pull request was tested with
+    /// main merged in before it could merge.
+    /// </summary>
     [Test]
-    public void TheWorkflow_DeploysOnlyAfterGreenCiOnMain()
+    public void TheWorkflow_DeploysOnTheMerge()
     {
-        var lines = Trimmed().ToList();
+        var lines = Trimmed();
 
-        Assert.That(lines, Does.Contain("workflow_run:").And.Contain("workflow_dispatch:"));
-        Assert.That(lines, Does.Contain("workflows: [ CI ]").And.Contain("branches: [ main ]"));
-        Assert.That(lines, Has.Some.Contains("github.event.workflow_run.conclusion == 'success'"));
-        Assert.That(lines, Has.None.StartsWith("push:").And.None.StartsWith("pull_request:"));
+        Assert.That(lines, Does.Contain("push:").And.Contain("workflow_dispatch:"));
+        Assert.That(lines, Does.Contain("branches: [ main ]"));
+        Assert.That(lines, Has.None.StartsWith("workflow_run:").And.None.StartsWith("pull_request:"));
+        Assert.That(lines, Has.None.Contains("workflow_run"), "nothing reads a CI run any more");
     }
 
-    /// <summary>
-    /// A second deploy waits for the first; a deploy stopped half-way could leave a revision half-made.
-    /// </summary>
     [Test]
     public void Deploys_QueueAndNeverCancel() =>
         Assert.That(Trimmed(), Does.Contain("cancel-in-progress: false"));
