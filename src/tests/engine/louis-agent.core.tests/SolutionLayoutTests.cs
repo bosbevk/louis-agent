@@ -22,7 +22,7 @@ public class SolutionLayoutTests
     [TestCase("packs/tools", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files",
         "louis-agent.pack.git", "louis-agent.pack.dotnet", "louis-agent.pack.devops", "louis-agent.pack.paymo",
         "louis-agent.pack.recipes", "louis-agent.pack.calculator", "louis-agent.pack.shop-prices",
-        "louis-agent.pack.where-to-buy", "louis-agent.pack.docs", "louis-agent.pack.triage")]
+        "louis-agent.pack.where-to-buy", "louis-agent.pack.docs", "louis-agent.pack.triage", "louis-agent.pack.leads")]
     [TestCase("packs/evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
     [TestCase("packs/web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
@@ -64,6 +64,7 @@ public class SolutionLayoutTests
         "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests",
         "louis-agent.pack.recipes.tests", "louis-agent.pack.recipes.integration-tests",
         "louis-agent.pack.calculator.tests", "louis-agent.pack.docs.tests", "louis-agent.pack.triage.tests",
+        "louis-agent.pack.leads.tests",
         "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests",
