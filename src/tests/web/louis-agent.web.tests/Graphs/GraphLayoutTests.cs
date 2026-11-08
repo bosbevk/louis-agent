@@ -34,7 +34,10 @@ public class GraphLayoutTests
         });
     }
 
-    /// <summary>A column's boxes are stacked with a gap and the shorter column is centred on the taller one.</summary>
+    /// <summary>
+    /// A column's boxes are stacked on the row grid with a gap, a plain box in the middle of its row (the noted box sets
+    /// the row), and the shorter column is centred on the taller one.
+    /// </summary>
     [Test]
     public void AColumn_IsStackedAndCentred()
     {
@@ -42,11 +45,12 @@ public class GraphLayoutTests
 
         var right = placed.Nodes.Where(node => node.Node.Column == 1).OrderBy(node => node.Y).ToList();
         var left = placed.Nodes.Single(node => node.Node.Id == "who");
+        double inset = (left.H - right[0].H) / 2;
         Assert.Multiple(() =>
         {
-            Assert.That(right[0].Y, Is.EqualTo(0));
+            Assert.That(right[0].Y, Is.EqualTo(inset), "the first row starts at the top, the plain box in its middle");
             Assert.That(right[1].Y, Is.GreaterThan(right[0].Y + right[0].H), "a gap between boxes");
-            Assert.That(right[2].Y + right[2].H, Is.EqualTo(placed.Height), "the tallest column is the height");
+            Assert.That(right[2].Y + right[2].H, Is.EqualTo(placed.Height - inset), "the tallest column is the height");
             Assert.That(left.Y + left.H / 2, Is.EqualTo(placed.Height / 2.0).Within(0.5), "the one box sits in the middle");
         });
     }
@@ -270,6 +274,35 @@ public class GraphLayoutTests
 
         var words = placed.Edges.Select(edge => (edge.WordX, edge.WordY)).Distinct().ToList();
         Assert.That(words, Has.Count.EqualTo(2));
+    }
+
+    /// <summary>
+    /// Every box sits on one row grid (Louis's screenshots of the Turn and Packs diagrams: two lines a few pixels
+    /// apart jogged, "this must not happen, our framework must cater for this"): a row is as tall as the tallest box,
+    /// a shorter column is centred on the grid, so any two middles differ by nothing or by half a row at least, and a
+    /// shorter box stands in the middle of its row.
+    /// </summary>
+    [Test]
+    public void TheBoxes_SitOnARowGrid()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 0),
+                new GraphNode("c", "C", null, 1), new GraphNode("d", "D", "two lines of note here", 1), new GraphNode("e", "E", null, 1),
+            ],
+            [new GraphEdge("a", "c"), new GraphEdge("b", "e")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var middles = placed.Nodes.Select(node => node.Y + node.H / 2).Distinct().OrderBy(y => y).ToList();
+        var d = placed.Nodes.Single(node => node.Node.Id == "d");
+        var c = placed.Nodes.Single(node => node.Node.Id == "c");
+        Assert.Multiple(() =>
+        {
+            for (int at = 1; at < middles.Count; at++)
+                Assert.That(middles[at] - middles[at - 1], Is.GreaterThanOrEqualTo((d.H + 18) / 2), "half a row apart at least");
+            Assert.That(c.Y + c.H / 2, Is.EqualTo(d.Y + d.H / 2 - (d.H + 18)), "one row apart, the short box in the middle of its row");
+        });
     }
 
     /// <summary>An arrow to a box the diagram doesn't have is left out, not drawn to nowhere.</summary>

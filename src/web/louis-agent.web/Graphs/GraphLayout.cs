@@ -4,7 +4,7 @@ namespace LouisAgent.Web.Graphs;
 
 /// <summary>
 /// Gives every box and arrow of a diagram its place (F111): the columns left to right across the width, a column's
-/// boxes stacked and centred in the order that keeps the arrows apart, and each arrow a connector drawn by
+/// boxes on one row grid, centred, in the order that keeps the arrows apart, and each arrow a connector drawn by
 /// <see cref="EdgeRouter"/>.
 /// </summary>
 /// <remarks>
@@ -35,18 +35,22 @@ public static class GraphLayout
         // widens and the page scales it.
         double gap = Math.Max(MinColumnGap, EdgeRouter.GapFor(spec.Edges));
         width = Math.Max(width, (int)Math.Ceiling(columns.Count * BoxWidth + Math.Max(0, columns.Count - 1) * gap));
-        double height = columns.Count == 0 ? 0 : columns.Max(ColumnHeight);
+        // Every box sits on one row grid, each row as tall as the tallest box, a shorter column centred on it (Louis:
+        // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
+        // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
+        double row = spec.Nodes.Count == 0 ? 0 : spec.Nodes.Max(HeightOf);
+        double height = columns.Count == 0 ? 0 : columns.Max(column => ColumnHeight(column, row));
 
         var nodes = new List<PlacedNode>();
         for (int at = 0; at < columns.Count; at++)
         {
             double x = ColumnX(at, columns.Count, width);
-            double y = (height - ColumnHeight(columns[at])) / 2;
+            double y = (height - ColumnHeight(columns[at], row)) / 2;
             foreach (var node in columns[at])
             {
                 double h = HeightOf(node);
-                nodes.Add(new PlacedNode(node, x, y, BoxWidth, h));
-                y += h + Gap;
+                nodes.Add(new PlacedNode(node, x, y + (row - h) / 2, BoxWidth, h));
+                y += row + Gap;
             }
         }
 
@@ -133,10 +137,11 @@ public static class GraphLayout
         return lines;
     }
 
-    private static double ColumnHeight(IEnumerable<GraphNode> column)
+    /// <summary>A column's height on the grid: a row per box, a gap between rows.</summary>
+    private static double ColumnHeight(IEnumerable<GraphNode> column, double row)
     {
-        var boxes = column.ToList();
-        return boxes.Sum(HeightOf) + Gap * (boxes.Count - 1);
+        int boxes = column.Count();
+        return boxes * row + Gap * (boxes - 1);
     }
 
     /// <summary>The first column at the left edge, the last at the right, the rest spread evenly; one alone in the middle.</summary>
