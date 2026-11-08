@@ -105,6 +105,18 @@ public class SitePagesTests
         Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
     }
 
+    /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
+    [Test]
+    public void TheLanding_RevealsItsBlocks()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+
+        Assert.That(cut.FindAll("h2.reveal"), Has.Count.GreaterThanOrEqualTo(3));
+        Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
+    }
+
     /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>
     [TestCase(typeof(HomePage), "film-short", "film-detail")]
     [TestCase(typeof(HowItWorksPage), "film-detail", "film-short")]
