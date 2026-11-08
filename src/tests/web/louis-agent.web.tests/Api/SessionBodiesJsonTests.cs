@@ -20,7 +20,7 @@ public class SessionBodiesJsonTests
             "Africa/Johannesburg"));
 
         Assert.That(await body.ReadAsStringAsync(), Is.EqualTo(
-            """{"toolsets":["specialists"],"role":null,"location":null,"time_zone":"Africa/Johannesburg"}"""));
+            """{"toolsets":["specialists"],"role":null,"location":null,"time_zone":"Africa/Johannesburg","identity":null}"""));
     }
 
     /// <summary>A message goes with its attachments, each by name and content.</summary>

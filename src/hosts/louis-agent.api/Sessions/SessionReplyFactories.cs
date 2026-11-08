@@ -27,6 +27,7 @@ internal static class SessionReplyFactories
             session.Toolsets,
             session.Depth,
             session.Role,
+            session.Identity,
             session.Llm,
             session.Tool,
             session.Engine.Tools.Count,

@@ -104,6 +104,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0095](0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) | Puls runs from Azure in its own private network (a VM for Mongo, the browser and SearXNG; Azure SQL's free offer for the accounts); the build is one Bicep file in config whose outputs the verbs read back; every secret a Key Vault reference; the old deploy and the F58 tunnel retired once the domain answered; the framework's site merges into the louis-agent demo's web app rather than deploying on its own | Accepted |
 | [0097](0097-puls-deploys-from-github-without-a-password.md) | Puls deploys from GitHub after green CI on `main` and from a button, signed in by OpenID Connect with no password, running `deploy.ps1 release` as it is, with Contributor on its resource group and Key Vault Reader only | Accepted |
 | [0098](0098-the-demos-app-runs-beside-puls-split-later.md) | The demo's app runs beside Puls, split later: one build, one environment, one VM and one database for both apps, each with its own identity, share, keys, domain and tenant; `-App` on every verb; a Bicep module of its own when it's sold | F109.2 |
+| [0099](0099-the-guide-answers-without-a-sign-in-within-a-cap.md) | The guide answers without a sign-in, within a cap: a host names one open identity and a cap per address per day; the door is a guard beside the key gate; an admitted session is narrowed in code to that identity's own toolsets; past the cap a 429 | F109.3 |
 
 ## When to write one
 

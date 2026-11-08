@@ -27,12 +27,12 @@ await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.
 
 <section class="band">
     <span class="kicker">What it loads</span>
-    <pre class="listing"><code>public static AgentCatalog Create() => new([new CodingIdentity()], Packs());
+    <pre class="listing"><code>public static AgentCatalog Create() => new([new CodingIdentity(), new ExpertIdentity()], Packs());
 
 // The packs:
 new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-new DevOpsPack(devOps),</code></pre>
-    <p class="band-note">The identity is who it is. The packs are what it can do. <a href="/packs">Every pack</a></p>
+new DevOpsPack(devOps), new DocsPack(docs),</code></pre>
+    <p class="band-note">The identities are who it is: the coding agent, and the guide in this page's corner. The packs are what it can do. <a href="/packs">Every pack</a></p>
 </section>
 
 <section class="band">

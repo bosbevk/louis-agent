@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Api.Messages;
@@ -62,8 +63,12 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
         string? role = null,
         UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
-        SessionReplay? replay = null, SessionOpener? opener = null)
+        SessionReplay? replay = null, SessionOpener? opener = null, string? identity = null)
     {
+        // Who the session is (F109.3): the identity it names, whose voice it opens in unless it names a role of its
+        // own; an identity this instance doesn't run is refused by name, with the ones it does.
+        var who = FindIdentity(identity);
+        if (who is not null && string.IsNullOrWhiteSpace(role)) role = who.DefaultVoice;
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
@@ -105,9 +110,25 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         DropIdle(DateTimeOffset.UtcNow);
 
         var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
-            place, llm, tool, format, replay, opener);
+            place, llm, tool, format, replay, opener, (who ?? engines.Catalog.IdentityOf(role))?.Name);
         _sessions[session.Id] = session;
         return session;
+    }
+
+    /// <summary>The identity a session names, or null for none named; one this instance lacks is refused.</summary>
+    /// <remarks>Guard clauses: none named, a known one, then the refusal.</remarks>
+    private IAgentIdentity? FindIdentity(string? identity)
+    {
+        if (string.IsNullOrWhiteSpace(identity)) return null;
+        if (engines.Catalog.Identity(identity) is { } who) return who;
+        throw new RoleException(MessageText.Format(ApiErrorMessage.UnknownIdentity,
+            new
+            {
+                Name = identity,
+                Available = engines.Catalog.Identities.Count == 0
+                    ? "none"
+                    : string.Join(", ", engines.Catalog.Identities.Select(i => i.Name))
+            }));
     }
 
     /// <summary>

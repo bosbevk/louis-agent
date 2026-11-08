@@ -189,6 +189,7 @@ copies the price tables into an app's share:
 | Folder | Holds |
 |---|---|
 | `config/` | `prices.json` and `rates.json`, as `PRICES_FILE` and `RATES_FILE` expect; `deploy.ps1 workspace` copies them from the app's `config/` when they change |
+| (not on the share) | The docs the louis-agent app's expert reads are the image's own copy at `/app/docs` (`DOCS_ROOT`), laid out as the repo, films left out; a new revision carries the docs as they were at its commit |
 | `logs/` | The run files (`agent-api-*.log`), the usage ledger (`usage-YYYY-MM.jsonl`) and the tool-result records |
 | `data/` | `shop-stores.json`, the shops' store-per-town cache (F34), the pages an eval run saves |
 

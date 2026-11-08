@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 66 | 74 |
+| Features (`F`) | 67 | 74 |
 | Fixes (`FX`) | 61 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
@@ -128,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (66 done)
+## Features (67 done)
 
 | Id | When | What |
 |---|---|---|
+| F109.3 | 2026-11-08 | The guide in the corner: a session names its identity, the docs pack, the expert identity beside the coding agent, the docs in the image, the guide's door (ADR 0099), the framework's `ChatWidget` and the demo's `ExpertChat` in the site's corner |
 | F109.2 | 2026-11-08 | The demo's app beside Puls: `louis-agent-app` on `puls-env` from the same Bicep file and script (`-App`), its own identity, share, keys and tenant, live on `louis-agent.dev` with its certificates, released by the same workflow after green CI; ADR 0098 |
 | F59 | 2026-11-08 | The framework's web: its leftovers closed with the site on the framework's web (F109.1) and deployed (F109.2) |
 | F109.5 | 2026-11-07 | Puls deploys from GitHub: a workflow after green CI on `main` and from a button, signed in to Azure by OpenID Connect with no password, running `deploy.ps1 release` as it is; planned as F109 in another thread, folded into F109 as its fifth child (ADR 0097) |

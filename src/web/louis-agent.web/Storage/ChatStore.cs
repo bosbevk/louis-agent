@@ -5,9 +5,13 @@ using Microsoft.JSInterop;
 namespace LouisAgent.Web.Storage;
 
 /// <summary>Chats and settings saved in the browser's localStorage, so a reload keeps the conversation.</summary>
-public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
+public sealed class ChatStore(IJSRuntime js, ChatSettings settings, string? chatsKey = null)
 {
-    private const string ChatsKey = "louis-agent.chats";
+    private const string DefaultChatsKey = "louis-agent.chats";
+
+    /// <summary>Where the chats are kept; a widget's store keeps its own list apart from the chat page's (F109.3).</summary>
+    private readonly string _chatsKey = chatsKey ?? DefaultChatsKey;
+
     private const string ApiKeyKey = "louis-agent.apiKey";
     private const string AdminKeyKey = "louis-agent.adminKey";
 
@@ -28,7 +32,7 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
         Loaded = true;
         settings.ApiKey = await js.InvokeAsync<string?>("localStorage.getItem", ApiKeyKey);
         settings.AdminKey = await js.InvokeAsync<string?>("localStorage.getItem", AdminKeyKey);
-        string? json = await js.InvokeAsync<string?>("localStorage.getItem", ChatsKey);
+        string? json = await js.InvokeAsync<string?>("localStorage.getItem", _chatsKey);
         try
         {
             Chats = json is null ? [] : JsonSerializer.Deserialize<List<Chat>>(json, Json) ?? [];
@@ -48,13 +52,14 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
         foreach (var block in Chats.SelectMany(c => c.Turns).SelectMany(t => t.Blocks))
         {
             if (block.ToolResult is { Length: > MaxStoredToolResultChars } result)
-                block.ToolResult = result[..MaxStoredToolResultChars] + $"\n... [{result.Length - MaxStoredToolResultChars:N0} more chars not saved]";
+                block.ToolResult = result[..MaxStoredToolResultChars] +
+                                   $"\n... [{result.Length - MaxStoredToolResultChars:N0} more chars not saved]";
         }
 
         Chats = Chats.OrderByDescending(c => c.UpdatedAt).ToList();
         try
         {
-            await js.InvokeVoidAsync("localStorage.setItem", ChatsKey, JsonSerializer.Serialize(Chats, Json));
+            await js.InvokeVoidAsync("localStorage.setItem", _chatsKey, JsonSerializer.Serialize(Chats, Json));
         }
         catch (JSException)
         {
@@ -64,10 +69,12 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
                 Chats.RemoveAt(Chats.Count - 1);
                 try
                 {
-                    await js.InvokeVoidAsync("localStorage.setItem", ChatsKey, JsonSerializer.Serialize(Chats, Json));
+                    await js.InvokeVoidAsync("localStorage.setItem", _chatsKey, JsonSerializer.Serialize(Chats, Json));
                     return;
                 }
-                catch (JSException) { }
+                catch (JSException)
+                {
+                }
             }
         }
     }

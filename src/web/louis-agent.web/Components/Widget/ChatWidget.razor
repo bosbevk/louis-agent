@@ -1,0 +1,34 @@
+@implements IDisposable
+@* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
+   opened as the identity the page names. The words come in as parameters, so the framework names no site. *@
+<div class="chat-widget @(_open ? "is-open" : "")">
+    @if (_open)
+    {
+        <section class="widget-panel" role="dialog" aria-label="@Title">
+            <header class="widget-head">
+                <span class="widget-title">@Title</span>
+                <button class="icon widget-close" type="button" @onclick="Toggle" aria-label="@CloseLabel">×</button>
+            </header>
+            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="widget-list">
+                <Empty><p class="widget-greeting">@Greeting</p></Empty>
+            </MessageList>
+            <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
+            <div class="widget-composer">
+                <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
+                          Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
+                          OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
+            </div>
+        </section>
+    }
+    <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(_open ? "true" : "false")"
+            aria-label="@(_open ? CloseLabel : OpenLabel)" title="@(_open ? CloseLabel : OpenLabel)">
+        @if (_open)
+        {
+            <span aria-hidden="true">×</span>
+        }
+        else
+        {
+            <span aria-hidden="true">@ButtonText</span>
+        }
+    </button>
+</div>

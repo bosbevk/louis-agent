@@ -1,0 +1,10 @@
+{
+  "DocNotFound": "There is no doc at '<Path>'. ListDocs shows what is there.",
+  "DocTooLarge": "'<Path>' is over 1 MB; a doc that size is not read whole. Search it instead.",
+  "FolderEmpty": "'<Path>' is empty.",
+  "FolderNotFound": "There is no folder '<Path>' in the docs. ListDocs with no folder shows the top.",
+  "NotADoc": "'<Path>' is not a doc: only .md and .txt files are read here.",
+  "NothingFound": "Nothing in the docs contains '<Query>'. Try another word, or ListDocs to see what is there.",
+  "OutsideTheDocs": "'<Path>' is outside the docs: only a path under the docs root, with no '..', can be read.",
+  "QueryEmpty": "SearchDocs needs some text to look for."
+}

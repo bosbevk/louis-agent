@@ -16,6 +16,12 @@ public sealed record RolesReply(
     IReadOnlyList<string> Specialists,
     IReadOnlyList<string> Minions);
 
+/// <summary>The identities this instance runs (F109.3): a session opens as one of them by name, the first when it names none.</summary>
+public sealed record IdentitiesReply(IReadOnlyList<IdentityRow> Identities);
+
+/// <summary>One identity: its name, the voice a session opens in, the packs it uses, and whether it is the host's default.</summary>
+public sealed record IdentityRow(string Name, string? Voice, IReadOnlyList<string> Packs, bool Default);
+
 /// <summary>The LLM profiles a session can name besides this instance's model; no default means its own.</summary>
 public sealed record LlmProfilesReply(string? Default, IReadOnlyList<string> Profiles);
 

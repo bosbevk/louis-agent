@@ -1,3 +1,4 @@
+using LouisAgent.Api.Config;
 using LouisAgent.Composition.Guardrails.Workspace;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
@@ -31,8 +32,11 @@ internal static class ApiMap
     public const string Version = "/v1";
 
     /// <summary>The services the endpoints take, from the host the agent was built as.</summary>
-    public static IServiceCollection AddApi(this IServiceCollection services, AgentHostContext host)
+    public static IServiceCollection AddApi(this IServiceCollection services, AgentHostContext host,
+        OpenDoorOptions? openDoor = null)
     {
+        // The guide's door (F109.3): shut unless the settings name an identity and a cap.
+        services.AddSingleton(new OpenDoor(openDoor ?? OpenDoorOptions.FromEnvironment()));
         // host.Engine (every toolset this instance can load) serves /v1/workspace and /v1/git; sessions get their own
         // (F5).
         services.AddSingleton(host.Engine);

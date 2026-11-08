@@ -97,10 +97,10 @@ public class AgentCatalogTests
     public void AFeedNamedTwice_IsRefused()
     {
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
-            [
-                new FakePack("first", toolsets: [], feeds: [new FakeFeed("prices")]),
-                new FakePack("second", toolsets: [], feeds: [new FakeFeed("Prices")])
-            ]))!;
+        [
+            new FakePack("first", toolsets: [], feeds: [new FakeFeed("prices")]),
+            new FakePack("second", toolsets: [], feeds: [new FakeFeed("Prices")])
+        ]))!;
 
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("feed"));
     }
@@ -130,10 +130,10 @@ public class AgentCatalogTests
     public void AnImportNamedTwice_IsRefused()
     {
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
-            [
-                new FakePack("first", toolsets: [], imports: [new FakeImport("prices")]),
-                new FakePack("second", toolsets: [], imports: [new FakeImport("Prices")])
-            ]))!;
+        [
+            new FakePack("first", toolsets: [], imports: [new FakeImport("prices")]),
+            new FakePack("second", toolsets: [], imports: [new FakeImport("Prices")])
+        ]))!;
 
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("import"));
     }
@@ -160,10 +160,10 @@ public class AgentCatalogTests
     public void AScreenNamedTwice_IsRefused()
     {
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
-            [
-                new FakePack("first", toolsets: [], screens: [new FakeScreen("usage")]),
-                new FakePack("second", toolsets: [], screens: [new FakeScreen("Usage")])
-            ]))!;
+        [
+            new FakePack("first", toolsets: [], screens: [new FakeScreen("usage")]),
+            new FakePack("second", toolsets: [], screens: [new FakeScreen("Usage")])
+        ]))!;
 
         Assert.That(error.Message, Does.Contain("Usage").And.Contain("screen"));
     }
@@ -185,9 +185,15 @@ public class AgentCatalogTests
     public void APackThatComesBeforeTheEngine_ListsFirst()
     {
         var general = new FakePack("general",
-            [FakePack.Toolset("general", typeof(FakeShopTools), _ => [new FakeShopTools()])], comesBeforeTheEngine: true);
+            [FakePack.Toolset("general", typeof(FakeShopTools), _ => [new FakeShopTools()])],
+            comesBeforeTheEngine: true);
 
-        var names = Catalog(packs: [new FakePack("fakeshop", [FakePack.Toolset("fakeshop", typeof(FakeOtherShopTools), _ => [new FakeOtherShopTools()])]), general]).Toolsets.Select(t => t.Name).ToList();
+        var names = Catalog(packs:
+        [
+            new FakePack("fakeshop",
+                [FakePack.Toolset("fakeshop", typeof(FakeOtherShopTools), _ => [new FakeOtherShopTools()])]),
+            general
+        ]).Toolsets.Select(t => t.Name).ToList();
 
         Assert.That(names.First(), Is.EqualTo(general.Name));
         Assert.That(names.Last(), Is.EqualTo("fakeshop"));
@@ -370,5 +376,34 @@ public class AgentCatalogTests
             "its file is there");
         var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/nothing"))!;
         Assert.That(error.Message, Does.Contain("testprod/nothing"));
+    }
+
+    /// <summary>A session names an identity by its name, case ignored; one the catalogue lacks is nobody (F109.3).</summary>
+    [Test]
+    public void AnIdentity_IsFoundByName_CaseIgnored()
+    {
+        var catalog = new AgentCatalog([new FakeIdentity("one", voice: "one/voice"), new FakeIdentity("two")], []);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(catalog.Identity("TWO")?.Name, Is.EqualTo("two"));
+            Assert.That(catalog.Identity("one")?.DefaultVoice, Is.EqualTo("one/voice"));
+            Assert.That(catalog.Identity("three"), Is.Null);
+        });
+    }
+
+    /// <summary>A role names the identity whose mode it is; with no role, the first identity is who a session is.</summary>
+    [Test]
+    public void TheIdentityOfARole_IsTheOneWhoseModeItIs_ElseTheFirst()
+    {
+        var catalog = new AgentCatalog([new FakeIdentity("one"), new FakeIdentity("two")], []);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(catalog.IdentityOf("two/voice")?.Name, Is.EqualTo("two"));
+            Assert.That(catalog.IdentityOf(null)?.Name, Is.EqualTo("one"));
+            Assert.That(catalog.IdentityOf("a-specialist")?.Name, Is.EqualTo("one"),
+                "a specialist's role is the host's own");
+        });
     }
 }

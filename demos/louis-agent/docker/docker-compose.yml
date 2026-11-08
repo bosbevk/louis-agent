@@ -118,6 +118,11 @@ services:
       # Sub-sessions (F5): peers StartSubSession may call, from config/.env (empty: none). The general assistant that
       # delegates everything is Puls (demos/puls/docker/docker-compose.puls.yml); this is the code-review app, with every toolset.
       AGENT_PEERS: ${AGENT_PEERS:-}
+      # The docs the expert reads (F109.3): the repo, mounted at /workspace, holds them as the image's /app/docs does.
+      DOCS_ROOT: /workspace
+      # The guide's door (F109.3): the expert answers a visitor without a sign-in, this many times a day per address.
+      OPEN_IDENTITY: louis-agent-expert
+      OPEN_SESSIONS_PER_DAY: "50"
     # Localhost only: the agent can run shell commands and write files. AGENT_API_KEY in .env.secrets is required
     # (FX18): without it the container refuses to start, unless AGENT_AUTH=off in config/.env says so on purpose.
     ports:

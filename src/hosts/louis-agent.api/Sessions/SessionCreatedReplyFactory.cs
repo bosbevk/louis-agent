@@ -21,6 +21,7 @@ internal static class SessionCreatedReplyFactory
             session.Toolsets,
             session.Depth,
             session.Role,
+            session.Identity,
             session.Llm,
             session.Tool,
             session.Tags.Task,

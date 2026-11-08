@@ -81,6 +81,11 @@ properties:
             secretRef: agent-api-key-louis-agent
           - name: ADMIN_API_KEY
             secretRef: admin-api-key-louis-agent
+          # The guide's door (F109.3): a visitor opens the expert without a sign-in, this many times a day per address.
+          - name: OPEN_IDENTITY
+            value: louis-agent-expert
+          - name: OPEN_SESSIONS_PER_DAY
+            value: '20'
           # The web it reads: SearXNG and the headless browser on the VM, at its private address.
           - name: WEB_SEARCH_PROVIDER
             value: searxng
@@ -97,6 +102,9 @@ properties:
             secretRef: mongo-url
           - name: EVALS_MONGO_DATABASE
             value: louis_agent_benchmarks
+          # The docs the expert reads (F109.3): the copy the image carries, laid out as the repo.
+          - name: DOCS_ROOT
+            value: /app/docs
           # The accounts (F61): the same Azure SQL database as Puls's, every account on this host this app's tenant,
           # the cookie on the domain.
           - name: ACCOUNTS_SQL_URL

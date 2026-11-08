@@ -175,4 +175,8 @@ public enum ApiUserText
 
     [Description("replay.web 'replay' needs 'of': the recorded trial to read its pages from.")]
     ReplayNeedsOf,
+
+    [Description(
+        "The guide answers {Cap} conversations a day from one address, and this address has had them. Try again tomorrow, or sign in.")]
+    OpenDoorCapReached,
 }

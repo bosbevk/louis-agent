@@ -91,6 +91,10 @@ internal sealed class InfoHandlers(AgentHostContext host)
     public JsonHttpResult<RolesReply> GetRoles(AgentEngineFactory engines) =>
         TypedResults.Json(RolesReply.Of(engines), InfoJson.SnakeCase);
 
+    /// <summary>The identities a session can open as (F109.3).</summary>
+    public JsonHttpResult<IdentitiesReply> GetIdentities(AgentEngineFactory engines) =>
+        TypedResults.Json(IdentitiesReply.Of(engines), InfoJson.SnakeCase);
+
     /// <summary>The LLM profiles a session can name besides this instance's model.</summary>
     public JsonHttpResult<LlmProfilesReply> GetLlmProfiles(AgentEngineFactory engines) =>
         TypedResults.Json(new LlmProfilesReply(null, engines.SessionLlms), InfoJson.SnakeCase);
@@ -122,7 +126,11 @@ internal sealed class InfoHandlers(AgentHostContext host)
         if (engines.Catalog.Feed(name) is not { } feed)
             return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeed, new { Name = name }));
         if (await feed.ReadItemJsonAsync(id, cancellationToken) is not { } item)
-            return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeedItem, new { Name = name, Id = id }));
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeedItem, new
+            {
+                Name = name,
+                Id = id
+            }));
         return TypedResults.Text(item, "application/json");
     }
 

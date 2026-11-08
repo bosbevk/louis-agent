@@ -32,8 +32,12 @@ internal sealed class AgentSession(
     string? tool = null,
     StreamFormat format = StreamFormat.Claude,
     SessionReplay? replay = null,
-    SessionOpener? opener = null)
+    SessionOpener? opener = null,
+    string? identity = null)
 {
+    /// <summary>Who this session is (F109.3): the identity it named, or the one its role belongs to.</summary>
+    public string? Identity { get; } = identity;
+
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
 

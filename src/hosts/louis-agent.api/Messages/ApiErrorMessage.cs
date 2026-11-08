@@ -1,4 +1,3 @@
-
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
@@ -41,4 +40,7 @@ public enum ApiErrorMessage
 
     [Description("No toolset builds a '{Tool}' tool.")]
     NoToolsetForTool,
+
+    [Description("This instance runs no identity '{Name}'; it runs: {Available}.")]
+    UnknownIdentity,
 }

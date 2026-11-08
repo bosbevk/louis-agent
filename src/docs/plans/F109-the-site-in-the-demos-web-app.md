@@ -218,7 +218,7 @@ its own tenant, a review session reaches the VM's services, and the month's cost
    the same OpenID Connect identity, running `deploy.ps1 release -App louis-agent`; `DeployWorkflowTests` holds it;
    the deploy README's *Deploying from GitHub* names both apps.
 
-## F109.3 The guide in the corner (`feature/F109.3-the-guide-in-the-corner`, after F109.1; drafted, its steps to come)
+## F109.3 The guide in the corner (`feature/F109.3-the-guide-in-the-corner`, after F109.2; steps drafted 2026-11-08)
 
 **Louis (2026-11-08):** "for this layout we need something like a chatbot in the lower right corner, for the
 layout and he will know everything about louis-agent and will have all the knowledge on the framework. then demos
@@ -245,6 +245,87 @@ will be the workflow triage example"; "like we have to be able to also inject a 
   its identity from the widget, a smaller frame) the framework gets it, never the demo a way around it.
 - **The demos section** shows the triage workflow (F106) once that is built; until then the review chat at `/chat`
   is the demo the site leads to.
+
+**Louis's picks (2026-11-08, three findings, one card each):** **A2**, the expert is a second identity and a
+session names its identity (not a role of the coding one, not a host of its own); **B1**, what it knows comes through
+a docs pack over a docs root the image carries (not an index built at build time, not a digest in the prompt); **C1**,
+the guide answers a visitor without a sign-in, within a cap per address per day (not behind a sign-in, never a key
+in the page).
+
+**What exists:** a session is opened with toolsets and a role (`CreateSessionRequest`, `AgentSessions.Create`), and
+the engine comes from `AgentEngineFactory` per toolset list; the catalog holds several identities but a host uses the
+first one's voice. The files pack is rooted at `WORKSPACE_ROOT`; the image copies only the published app. The gate
+(`AgentKeyGate`) passes the key or a signed-in person. The chat's parts (`MessageList`, `Composer`, `ChatRunner`
+over `AgentApi`) are what `ChatShell` is built from.
+
+Done when: a visitor on `louis-agent.dev` opens the guide in the corner, asks anything the site says, and gets an
+answer from the docs with the doc it read named, without an account, until the day's cap; the same tag on any page;
+`louis-agent.web` names no site; the ledger shows what the guide cost.
+
+1. **A session names its identity** (core, the API, the contracts). `AgentCatalog` answers an identity by name;
+   `AgentEngineFactory` keeps an engine per (identity, toolsets); `CreateSessionRequest.Identity`, the default the
+   catalog's first; the session's replies and the stream carry it; `GET /v1/identities` lists what the host runs.
+   Test first in `louis-agent.api.tests`: two identities in a fake catalog, a session for each, each engine on its own
+   voice; an unknown name is a 400.
+2. **The docs pack**, `packs/tools/louis-agent.pack.docs`: `ListDocs`, `ReadDoc`, `SearchDocs`, read-only under
+   `DOCS_ROOT`, never a path outside it (the files pack's guard, reused); tests in `packs/tests/`;
+   `PackConvertibilityTests` sees it. ADR 0080: a tool when it improves the prompt.
+3. **The expert identity**, `demos/louis-agent/identity/louis-agent.identity.expert`: `ExpertIdentity` (name
+   `louis-agent-expert`, packs: docs), `Prompts/agent/louis-agent-expert/voice.md` (who it is: the framework's guide,
+   from South Africa, one person's project; how it answers: reads before it speaks, names the doc, says what it
+   doesn't find, never invents a number; the docs map, `src/docs/README.md`, in its voice), the catalog's `Create()`
+   adds it; the model-request goldens regenerated and reviewed.
+4. **The docs in the image.** `Dockerfile.api` copies `src/docs`, each demo's `docs/` and `packs/docs` to
+   `/app/docs`, films left out; `DOCS_ROOT=/app/docs` in the yaml, the compose mounts the repo's docs for the PC;
+   the deploy README's share layout says the docs are the image's, not the share's.
+5. **The guide's door** (C1). `OPEN_IDENTITY` names the one identity an anonymous session may open, with only its
+   packs' toolsets; `OPEN_SESSIONS_PER_DAY` caps them per address (0, the default, keeps the door shut); past the cap
+   a 429 with a plain message; the gate passes such a session's calls and nothing else; the ledger tags them. Test
+   first in `AgentKeyGateTests`: an anonymous session with the open identity passes, one with another is 401, the
+   cap is a 429, the admin routes stay closed. ADR *The guide answers without a sign-in, within a cap*.
+6. **`ChatWidget`** in `louis-agent.web` (`Components/Widget/`): a button folded in the corner, a panel with
+   `MessageList` and `Composer` on a `ChatRunner` of its own over the site's `AgentApi`, opened with `Identity`,
+   `Toolsets`; `Title`, `Greeting`, `Placeholder` and the button's label as parameters; a 429 shown as the day's cap;
+   its own scoped styles; bUnit goldens folded and open.
+7. **`ExpertChat`** in the demo, the widget configured with the expert and the site's words, placed in
+   `SiteLayout`'s `Corner`; the same tag on a page where it wants it; checked in the browser at 1400 and 390 wide, the
+   chat at `/chat` untouched.
+8. **Docs and write-up.** The project docs (the web, the API, the identity, the pack), the guides, ADR, the TODO
+   (F107 narrowed: the chat behind sign-in, the guide not), the work log, the write-up (skill 9, the catalogue, and
+   skill 15, the door); a live question on `louis-agent.dev` (**spends the key: ask first**).
+
+### Communication: a visitor asks the guide
+
+```mermaid
+sequenceDiagram
+    participant B as Browser (ExpertChat on SiteLayout)
+    participant G as AgentKeyGate
+    participant A as louis-agent-app
+    participant D as the docs pack (/app/docs)
+    participant M as the model
+    B->>A: POST /v1/sessions (identity louis-agent-expert, toolsets docs, no key, no cookie)
+    A->>G: open identity? under the day's cap for this address?
+    G-->>A: yes (a 401 for any other identity, a 429 past the cap)
+    A-->>B: session id, identity louis-agent-expert
+    B->>A: POST a turn: "how does a pack stay convertible to MCP?"
+    A->>M: the expert's voice, the docs map, the question
+    M->>D: SearchDocs("MCP"), ReadDoc("src/docs/adr/0028-...md")
+    D-->>M: the text
+    M-->>A: the answer, naming the doc
+    A-->>B: streamed into the panel, the cost on the ledger
+```
+
+### Namespace map, F109.3
+
+| Type | Folder | Namespace | Step |
+|---|---|---|---|
+| `AgentCatalog.Identity(name)`, `AgentEngineFactory` keyed by identity | `src/engine/louis-agent.core/Agent/Catalog/`, `Hosting/` | `LouisAgent.Core.Agent.Catalog`, `.Hosting` | 1 changed |
+| `CreateSessionRequest.Identity`, `IdentitiesReply`, `IdentityRow` | `src/hosts/louis-agent.api/Sessions/Requests/`, `louis-agent.api.contracts/Sessions/` | `LouisAgent.Api.Sessions.Requests`, `LouisAgent.Api.Contracts.Sessions` | 1 new |
+| `DocsPack`, `DocsTools`, `DocsRoot` | `packs/tools/louis-agent.pack.docs/` | `LouisAgent.Packs.Docs` | 2 new |
+| `ExpertIdentity`, `ExpertIdentityName`, `ExpertPack` | `demos/louis-agent/identity/louis-agent.identity.expert/` | `LouisAgent.Expert` | 3 new |
+| `OpenDoor` (the open identity and the cap), `OpenSessionCounter` | `src/hosts/louis-agent.api/Endpoints/Routing/` | `LouisAgent.Api.Endpoints.Routing` | 5 new |
+| `ChatWidget`, `ChatWidgetText` | `src/web/louis-agent.web/Components/Widget/`, `Text/` | `LouisAgent.Web.Components.Widget`, `LouisAgent.Web.Text` | 6 new |
+| `ExpertChat` | `demos/louis-agent/web/louis-agent.code-review/Components/Guide/` | `LouisAgent.CodeReview.Components.Guide` | 7 new |
 
 ## F109.4 The site tells the whole architecture (`feature/F109.4-the-site-tells-the-architecture`, after F109.2; to plan)
 
@@ -294,6 +375,17 @@ should update the films with what it looks like now, explaining the whole archit
 - **The branding arrives with the next merge** (Louis, 2026-11-08: "when you are done, on the next merge the branding
   will be available"): the site takes it (the brand slot, the icon, the colours it names) in the first step after
   it lands, before F109.4's rewrite, so the pages and films are written on the brand.
+- **"Try it" is the triage demo, not a chat** (Louis, 2026-11-08, on the header's button: "this must just let the
+  user see the demo, no real chat but it should actually do triage right there, and the user must see it happen,
+  the flow"): the site's *Try it* and the hero's *Try the coding agent* lead to the triage demo page (F106.3), where
+  a visitor starts a real triage of a service's errors and watches each step of the flow as it happens, with no
+  chat of their own, and each step is explained as it happens (Louis: "and then it must be explained what is
+  happening", "with popups as the process is going forward"): as the flow advances, a popup per step opens beside
+  it and says in plain words what the agent is doing and why, the way the films' cards do, then gives way to the next;
+  and the guide in the corner stays on that page and can explain the running triage when asked (Louis: "our AI in
+  right hand bottom must show there and must be able to explain what is happening to the user"), so the demo page
+  hands the flow's steps to the guide as context of its session, not only to the popups; the coding chat at `/chat` stays behind a sign-in for Louis. Built with the triage demo, after
+  F109.4; until then the links lead to the chat.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -387,6 +479,39 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   site to the six tags with an absolute picture and address, the starter carries them as placeholders, the web
   guide says how. The louis-agent app's picture is the brand's social card (PR #227), its own copy; Puls's its
   icon and its Afrikaans hero line.
+- **F109.3 step 1, two notes** (2026-11-08, unattended): the stream's session line doesn't carry the identity yet,
+  only the replies do, since the role on that line already names the identity's voice and the stream goldens stay
+  untouched. The prompt source (`SkillFileSource`) is process-wide and frozen after its first read, so an API test
+  can't add a second identity's voice file mid-process: the test names an embedded voice for its second identity,
+  which exercises the same path; a refreshable source is a cleanup for later if a test ever needs its own file.
+- **F109.3 step 2, one note** (2026-11-08): `PackConvertibilityTests` enumerates Puls's packs through its composition
+  root, so it never sees a pack Puls doesn't name; the docs pack's own tests hold its tools to the convertible shape
+  (public, described, plain values, text back) instead. Step 1's two tests that spelled an identity's name as a
+  string use its enum, as ADR 0043's test asked.
+- **F109.3 step 3, two notes** (2026-11-08): the coding agent's router test named every toolset of the catalogue,
+  which now holds the expert's docs toolset too; it names the toolsets of the packs the first identity uses, so
+  one identity's packs are never another's to route. The docs pack's `NoMatches` became `NothingFound`: every
+  `*ToolMessage` member name is unique across the packs a demo loads, and the files pack had that one.
+- **F109.3 step 4, one note** (2026-11-08): the image's docs root is laid out as the repo is (`/app/docs/src/docs`,
+  `/app/docs/demos/…/docs`, `/app/docs/packs/docs`, the repo's README, ROADMAP and TODO at the top), not flattened,
+  so the docs' relative links hold and the PC can use the mounted repo itself as the root (`DOCS_ROOT=/workspace`).
+- **F109.3 step 5, two notes** (2026-11-08): the door reads the session body to see the identity named, then rewinds
+  it for the handler, so no route changed and the route golden stands; counts and admitted sessions are in memory
+  (one replica; a restart forgives the day). The address is the first `X-Forwarded-For` value, else the connection's,
+  which Container Apps forwards. ADR 0099.
+- **F109.3 step 6, one note** (2026-11-08): the widget's runner saves its chats through a `ChatStore` of its own,
+  under a key of its own (`louis-agent.widget-chats`), since the store's one list is what the chat page shows; the
+  store took an optional key for that. The widget's words are parameters with English defaults, not a text record,
+  since a site sets them once in its own wrapper.
+- **F109.3 step 7, one note** (2026-11-08): the demo's web app references the expert identity's project for its name
+  (`ExpertIdentityName`), as ADR 0043 asks, rather than spelling it; the identity itself runs on the API. The two
+  site pages that mirror the code (the catalogue on *Build your own*, the packs list) followed the catalogue, as
+  their tests demanded. The browser check at 1400 and 390 wide could not be taken: Chrome's renderer stopped answering
+  screenshots three times in a row that night; the widget's goldens folded and open, the layout test on the corner and
+  the rebuilt image serving the widget's styles stand in, and Louis sees it on the PC's app and on louis-agent.dev.
+- **F109.3 step 8** (2026-11-08): the API doc, the web doc, the guide, the write-ups (skill 15: a door beside the
+  gate; skill 20: a second identity in one catalogue), F107 narrowed to the chat, the work log. The live question
+  on `louis-agent.dev` spends the key and waits for Louis's word; the merge deploys the app with the guide.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

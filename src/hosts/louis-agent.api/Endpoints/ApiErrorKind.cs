@@ -39,4 +39,7 @@ internal enum ApiErrorKind
 
     /// <summary>Something on our side isn't there or didn't answer (the store, a turn that broke).</summary>
     [WireName("api_error")] Api,
+
+    /// <summary>A visitor past the guide's cap for the day (F109.3): a 429, as the model providers name it.</summary>
+    [WireName("rate_limit_error")] RateLimit,
 }
