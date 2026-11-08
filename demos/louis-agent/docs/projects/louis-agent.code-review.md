@@ -143,7 +143,7 @@ needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admi
 
 ## The slogan
 
-**100% C#, because I can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
+**100% C#, because you can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
 footer, and it is the one line the site says about itself.
 
 ## The one rule
