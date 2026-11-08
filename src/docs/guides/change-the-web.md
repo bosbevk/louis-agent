@@ -92,6 +92,15 @@ runs (`GET /v1/identities`); a visitor with no key or sign-in reaches it only th
 (`OPEN_IDENTITY`, `OPEN_SESSIONS_PER_DAY`, ADR 0099). A site wraps the tag once with its own words as a component
 of its own, so a page places that and nothing is configured twice. `ChatWidgetTests` pins it folded and open.
 
+## Make a page move
+
+A page in a site's frame gets the frame's motion for free (F110): give a block the class `reveal` (and `data-delay="1"`
+to `"3"` for a stagger) and it plays the site's reveal once when it enters; draw `<div class="site-progress"
+id="site-progress">` for a progress line and `<nav class="site-index">` with `#id` links for an index the frame keeps
+in step with the scroll; an in-page link lands its section centred. The look is the site's: the keyframes `site-rise`
+and `site-unmask`, the index and the line are a site partial (`site/landing/_motion.scss` in the coding agent's app), so
+a site without one shows every block at rest. Less motion when the system asks is the framework's one rule.
+
 ## Markdown and links
 
 `Text/Markdown.cs` is the one Markdig pipeline. It shows raw HTML as text, allows links only to `http(s)` and

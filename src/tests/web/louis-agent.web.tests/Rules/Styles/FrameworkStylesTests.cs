@@ -63,6 +63,7 @@ public partial class FrameworkStylesTests
     /// </summary>
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
     [TestCase("animation: widget-pulse")]
+    [TestCase(".site-nav { margin-left: auto;")]
     [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
     [TestCase("position: fixed;\n        inset: 0;\n        width: 100vw;\n        height: 100dvh;")]
     public void TheWidgetsPanel_FillsAPhone(string rule) =>

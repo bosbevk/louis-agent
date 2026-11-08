@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="louis-agent">
+  <defs>
+    <linearGradient id="steel" gradientUnits="userSpaceOnUse" x1="0" y1="8" x2="0" y2="56">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b4b9c0"/>
+    </linearGradient>
+  </defs>
+  <path d="M10 43 L32 54 L54 43" fill="none" stroke="#5c6168" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 33 L32 44 L54 33" fill="none" stroke="#a9aeb5" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 9 L54 20 L32 31 L10 20 Z" fill="url(#steel)" stroke="url(#steel)" stroke-width="2" stroke-linejoin="round"/>
+</svg>

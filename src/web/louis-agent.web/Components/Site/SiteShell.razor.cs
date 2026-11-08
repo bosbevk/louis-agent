@@ -1,4 +1,6 @@
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site;
 
@@ -42,4 +44,32 @@ public partial class SiteShell
     /// <summary>The page.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    private JsModule? _motion;
+
+    /// <summary>The frame's own module (F110): the progress line, the compact header, the index, the reveals.</summary>
+    private JsModule Motion => _motion ??= new JsModule(JS, FrameworkScripts.SiteShell);
+
+    /// <summary>
+    /// Attaches the motion after every render, not only the first: a page that just drew has reveals to observe, and
+    /// the module hangs its listeners once.
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender) => await Motion.InvokeVoidAsync("attach");
+
+    /// <summary>Takes the listeners down and lets the module go; a closed browser tab has no JS runtime to tell.</summary>
+    public async ValueTask DisposeAsync()
+    {
+        if (_motion is null) return;
+        try
+        {
+            await _motion.InvokeVoidAsync("detach");
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        await _motion.DisposeAsync();
+    }
 }

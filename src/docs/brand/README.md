@@ -22,9 +22,10 @@ below it are strokes in two grays, lighter going up.
 | [avatar.png](avatar.png) | 512 × 512, the mark on the Floor colour | The GitHub avatar, any square profile picture |
 | [social-card.png](social-card.png) | 1280 × 640, the lockup and the line | GitHub's *Settings → Social preview*, link previews |
 
-The coding agent's web app (the site) uses its own copy as its favicon:
-`demos/louis-agent/web/louis-agent.code-review/wwwroot/favicon.svg`, ink on a light browser tab and steel on a dark one.
-A demo references no framework folder, so it keeps a copy (ADR 0074).
+The coding agent's web app (the site) shows the lockup in its header (F110): its own copy of the mark,
+`demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg`, the drawing alone without the export's
+manifest, then the name in the mono face; and its own copy as its favicon, `wwwroot/favicon.svg`, ink on a light
+browser tab and steel on a dark one. A demo references no framework folder, so it keeps copies (ADR 0074).
 
 The SVGs are drawn on a 64 × 64 grid: the top slab is the diamond `32,9 54,20 32,31 10,20` and the two strokes below it
 are 4.5 wide.

@@ -19,7 +19,7 @@ public class SitePagesTests
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
     [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
-    [TestCase(typeof(ContactPage), "/contact", "Building an agent for a .NET team?")]
+    [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
@@ -65,6 +65,10 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "one person")]
     [TestCase(typeof(HomePage), "href=\"/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
+    [TestCase(typeof(HomePage), "id=\"custom\"")]
+    [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(ContactPage), "Custom agents")]
+    [TestCase(typeof(ContactPage), "mailto:")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
@@ -85,6 +89,36 @@ public class SitePagesTests
         });
 
         Assert.That(cut.Markup, Does.Contain(words));
+    }
+
+    /// <summary>
+    /// The landing is one page the visitor scrolls (F110): its index names every section by id, each a section on
+    /// the page, and a progress line sits at the top for the frame's module to fill.
+    /// </summary>
+    [Test]
+    public void TheLanding_IndexesItsSections()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+        var targets = cut.FindAll(".site-index a").Select(a => a.GetAttribute("href")!).ToList();
+
+        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the index names the sections");
+        Assert.That(targets, Has.All.StartWith("#"));
+        Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
+        Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
+    [Test]
+    public void TheLanding_RevealsItsBlocks()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+
+        Assert.That(cut.FindAll("h2.reveal"), Has.Count.GreaterThanOrEqualTo(3));
+        Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
     }
 
     /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>

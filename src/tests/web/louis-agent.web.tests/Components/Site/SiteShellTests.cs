@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Site;
+using LouisAgent.Web.Scripts;
 
 namespace LouisAgent.Web.Tests.Components.Site;
 
@@ -8,11 +9,36 @@ namespace LouisAgent.Web.Tests.Components.Site;
 /// </summary>
 public class SiteShellTests
 {
+    /// <summary>A context whose browser answers the frame's module with nothing, and lists what was asked.</summary>
+    private static BunitContext Context()
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        return ctx;
+    }
+
+    /// <summary>
+    /// The frame attaches its motion after it draws (F110): the module is imported from its path and asked to attach,
+    /// so a page's index, progress line and reveals move without a script of the site's own.
+    /// </summary>
+    [Test]
+    public void TheFrame_AttachesItsMotion_WhenItDraws()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
+
+        cut.WaitForAssertion(() =>
+            Assert.That(ctx.JSInterop.Invocations.Select(call => call.Identifier), Does.Contain("attach")));
+        Assert.That(ctx.JSInterop.Invocations.Where(call => call.Identifier == "import")
+            .Select(call => call.Arguments[0]), Does.Contain(FrameworkScripts.SiteShell));
+    }
+
     /// <summary>The brand links home, or where the site says.</summary>
     [Test]
     public void TheBrand_LinksHome()
     {
-        using var ctx = new BunitContext();
+        using var ctx = Context();
 
         var cut = ctx.Render<SiteShell>(parameters => parameters
             .Add(shell => shell.Brand, "<b class=\"logo\">Brand</b>"));
@@ -26,7 +52,7 @@ public class SiteShellTests
     [Test]
     public void TheLinks_GoInTheMenu_AndTheActionsAfter()
     {
-        using var ctx = new BunitContext();
+        using var ctx = Context();
 
         var cut = ctx.Render<SiteShell>(parameters => parameters
             .Add(shell => shell.Links, "<a class=\"my-link\" href=\"x\">X</a>")
@@ -41,7 +67,7 @@ public class SiteShellTests
     [Test]
     public void ThePage_TheFooter_ThenTheCorner()
     {
-        using var ctx = new BunitContext();
+        using var ctx = Context();
 
         var cut = ctx.Render<SiteShell>(parameters => parameters
             .Add(shell => shell.Footer, "<span class=\"note\">Note</span>")
@@ -59,7 +85,7 @@ public class SiteShellTests
     [Test]
     public void WithNothingNamed_ThePageShows_AndNoSlotLeavesAGap()
     {
-        using var ctx = new BunitContext();
+        using var ctx = Context();
 
         var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
 
