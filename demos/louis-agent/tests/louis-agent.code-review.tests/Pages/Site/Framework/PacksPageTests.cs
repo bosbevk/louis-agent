@@ -1,7 +1,7 @@
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
 
-namespace LouisAgent.CodeReview.Tests.Pages.Site;
+namespace LouisAgent.CodeReview.Tests.Pages.Site.Framework;
 
 /// <summary>The Packs page lists what's really in the repo, so a new pack can't be forgotten.</summary>
 public class PacksPageTests

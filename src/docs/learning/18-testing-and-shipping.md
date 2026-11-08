@@ -262,6 +262,25 @@ that way since the film was built. A test can hold words to the code; it takes e
 What it measures: size decided the format. The same film was 22 MB as a GIF and under 3 MB as WebP at the same frame rate, which
 settled a choice that opinion wouldn't have. Concept: *18 Testing and shipping* in the [goal](../GOAL.md).
 
+## A site held to the solution (F109.4)
+
+F57 held three things on the site to the code; F109.4 made the whole site that way, because a site that explains the
+whole architecture drifts the moment the architecture moves. The step that mattered was the first: a test that reads
+the solution file and asks that every project that ships is named on some page. Writing the Architecture page was then
+filling a list the test already held, and the test says the day a project is added without a sentence about it.
+
+- **Hold a claim to the thing it claims about, not to a copy.** The rand on the Measured page are computed by the
+  test from the rates file the app itself falls back on; the packages the Built on it page names are checked against
+  the project files; the planned features against the TODO's open rows. Each test reads the source the page was
+  written from, so a wrong number can't be pinned in a golden.
+- **What's planned is a page, not a line, when a test keeps it honest.** ADR 0066 kept the plan to one line because
+  nothing could stop a planned feature reading as shipped. With every item held to an open row and labelled, the
+  plan can be shown in full: what ships fails the test and leaves the page.
+- **The guide is a page too.** The expert's voice names every page and the docs it came from, held by a test over
+  the routes, so the site and the guide can't tell different stories.
+- **A film's layout needs eyes once more.** The export's poster frame showed a slab under the caption strip in the
+  wide shot; the tests hold the words, not the picture. Concept: *18 Testing and shipping* in the [goal](../GOAL.md).
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

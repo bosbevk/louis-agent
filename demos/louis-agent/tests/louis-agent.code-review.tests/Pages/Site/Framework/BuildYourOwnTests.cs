@@ -2,7 +2,7 @@ using System.Net;
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
 
-namespace LouisAgent.CodeReview.Tests.Pages.Site;
+namespace LouisAgent.CodeReview.Tests.Pages.Site.Framework;
 
 /// <summary>The code on Build your own is the real code, and the page is honest about the packages.</summary>
 public class BuildYourOwnTests

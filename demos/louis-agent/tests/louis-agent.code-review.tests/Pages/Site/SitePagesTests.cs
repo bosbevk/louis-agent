@@ -11,13 +11,16 @@ namespace LouisAgent.CodeReview.Tests.Pages.Site;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "A turn goes down the stack and comes back priced.")]
+    [TestCase(typeof(HomePage), "/", "The whole framework, in six scenes.")]
     [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
+    [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
+    [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
     [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "Building an agent for a .NET team?")]
+    [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -57,8 +60,18 @@ public class SitePagesTests
 
     /// <summary>What's new is on the page: a demo is built on the framework, a pack never needs the engine.</summary>
     [TestCase(typeof(HomePage), "An AI agent framework")]
+    [TestCase(typeof(HomePage), "100% C#")]
+    [TestCase(typeof(HomePage), "South Africa")]
+    [TestCase(typeof(HomePage), "one person")]
+    [TestCase(typeof(HomePage), "href=\"/identities\"")]
+    [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
+    [TestCase(typeof(HowItWorksPage), "as libraries")]
+    [TestCase(typeof(HowItWorksPage), "framework's web")]
+    [TestCase(typeof(HowItWorksPage), "accounts")]
+    [TestCase(typeof(HowItWorksPage), "harness")]
+    [TestCase(typeof(HowItWorksPage), "Azure")]
     [TestCase(typeof(BuiltOnItPage), "Each is a demo")]
     [TestCase(typeof(PacksPage), "never the engine")]
     public void APage_TellsTheNewStructure(Type page, string words)

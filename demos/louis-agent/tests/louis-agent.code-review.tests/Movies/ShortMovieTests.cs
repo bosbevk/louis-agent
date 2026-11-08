@@ -22,17 +22,22 @@ public class ShortMovieTests
             Is.EqualTo(Enumerable.Range(1, 6).Select(n => $"{n}")));
     }
 
-    /// <summary>The parts the turn reaches are numbered in that order: your program, the catalogue, core, a tool, the ledger.</summary>
+    /// <summary>
+    /// The parts the film visits are numbered in that order (F109.4, the map): your program, the catalogue, core,
+    /// the hosts, the evals, where it runs.
+    /// </summary>
     [Test]
-    public void TheParts_AreNumbered_InTheOrderTheTurnReachesThem()
+    public void TheParts_AreNumbered_InTheOrderTheFilmVisitsThem()
     {
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<ShortMovie>();
 
-        Assert.That(cut.FindAll(".part i").Select(i => i.TextContent), Is.EqualTo(["1", "2", "3", "4", "5"]));
+        Assert.That(cut.FindAll(".part i").Select(i => i.TextContent), Is.EqualTo(["4", "1", "2", "6", "3", "5"]));
         Assert.That(cut.FindAll(".part").Where(p => p.QuerySelector("i") is not null).Select(p => p.ClassName),
-            Is.EqualTo(["part p-host", "part p-comp", "part p-core core", "part p-tools", "part p-ledger"]));
+            Is.EqualTo([
+                "part p-hosts", "part p-host", "part p-comp", "part p-cloud", "part p-core core", "part p-evals"
+            ]));
     }
 
     /// <summary>The film is one picture to a screen reader, with what happens in it said once.</summary>

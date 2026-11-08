@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (105)
+## Open (104)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -51,7 +51,6 @@ known limitations below are facts about today, not tasks.
 | F36 | MCP servers as packs | Next | — |
 | F8 | Reliability | Next | [feature doc](src/docs/features/F08-reliability.md) |
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
-| F109 | The site in the louis-agent demo's web app, deployed beside Puls: the site's pages, films and look become the code-review app's landing (F109.1), the app a second Container App on puls-env in the same Bicep file (F109.2), the expert in the corner (F109.3), the whole site telling the whole architecture and the expert answering all of it (F109.4); Puls deploying from GitHub after green CI, by OpenID Connect (F109.5, built) | Next | [plan](src/docs/plans/F109-the-site-in-the-demos-web-app.md) |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then; the guide in the site's corner is open on purpose (F109.3, ADR 0099), only the chat is behind the sign-in | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
 | F51 | Hosting for public traffic | Next | — |

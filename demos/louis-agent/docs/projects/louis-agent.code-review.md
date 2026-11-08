@@ -63,12 +63,18 @@ sequenceDiagram
 
 ## The site's pages and films
 
-Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on: `/` (the hero
-with the live turn, the numbers, the short film, what's built on it, the contact strip), `/how-it-works` (the detailed
-film, the parts in plain words, the rules every turn keeps), `/packs`, `/build-your-own` (a real program and catalogue),
-`/proof`, `/built-on-it` and `/contact`, every one in the site's frame (`SiteLayout` on the framework's `SiteShell`), the
-chat at `/chat` in its own bare layout. The pages say only what works today, every sentence from the docs and every
-number from the ledger or an eval run; what's planned is marked so (F109.4 widens what the site tells).
+Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on, and since F109.4
+the site tells the whole architecture ([ADR 0100](../../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md)):
+`/` (the hero, 100% C# and South Africa up front, the numbers, the short film as the map of the whole framework, the
+four concepts, what's built on it, the contact strip), `/how-it-works` (the detailed film, one turn through core; the
+parts in the order a turn meets them; the rules every turn keeps), `/architecture` (every project that ships, by
+family), `/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/proof` (the numbers in dollars
+and rand, and how the rand come about), `/built-on-it` (the two demos, what the framework stands on with each licence,
+the hosts), `/whats-coming` (the planned features by id, each marked planned) and `/contact`, every one in the site's
+frame (`SiteLayout` on the framework's `SiteShell`), the chat at `/chat` in its own bare layout. The pages are written
+from the docs the guide in the corner reads, every number from the ledger or an eval run, and each claim is held to
+the repo by a test (below); what's planned is on its own page, labelled, never as shipped. The repository is private,
+so no page links to it.
 
 **The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its
 container, a floor seen from above (`perspective` on the camera, the camera's moves a `transform` animation on the
@@ -104,7 +110,8 @@ sequenceDiagram
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Pages/Site/` | The site's pages (F109.1): the landing, how it works, packs, build your own, proof, built on it, contact |
+| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own |
+| `Components/Architecture/` | The Architecture page's families, one component each: `Framework/` (the engine, the hosts, the web, the evals) and `OnIt/` (the packs, the demos, where it runs) |
 | `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Guide/` | `ExpertChat`: the framework's `ChatWidget` wrapped once with the expert identity and the site's words, placed in the frame's corner by `SiteLayout` and placeable on any page (F109.3) |
@@ -129,7 +136,7 @@ A control for a pack goes in that pack's web project as a screen ([Build a pack]
 
 `demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
 pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
-`Pages/Site/*Tests` render the site's pages (the packs page lists every pack folder, Build your own shows the real program) and
+`Pages/Site/*Tests` render the site's pages and hold them to the repo (`SiteMapTests`: every project the solution ships is named on a page; `IdentitiesPageTests` and `PacksPageTests`: every identity and pack folder; `BuildYourOwnTests`: the real program; `ProofPageTests`: the rand at the rates file's rate and date; `StandsOnTests`: every package named is referenced, and no page links to the private repository; `WhatsComingTests`: every planned feature is an open TODO row, marked planned), `Components/Guide/GuideKnowsTheSiteTests` holds the expert's voice to every page's address, and
 `Layout/SiteLayoutTests` the frame's links; `Movies/*Tests` pin each film's scenes, its names against the code, and its markup to a golden, and `Movies/FilmExportTests` holds the README's exported films to the films as they are (the hash in `docs/films/films.sha256`); `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
@@ -138,6 +145,9 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
 - The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address; *Build your own* says the
   packages aren't on NuGet yet, and has to change the day they are.
+- *Try it* and the hero's button lead to the chat until the triage demo (F106.3) gives them a page of their own; the
+  brand mark waits for its files (the site keeps its wordmark); the short film's export grew to about 7 MB with its
+  twelve parts, where the old one was under 3 MB.
 
 ## Related docs
 

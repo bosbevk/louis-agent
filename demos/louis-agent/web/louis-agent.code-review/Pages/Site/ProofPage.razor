@@ -8,16 +8,31 @@
     <div class="grid-3">
         <div class="panel stat">
             <span class="stat-value chrome">$0.66 → $0.13</span>
-            <span class="stat-note">a 10-fix benchmark run before and after prompt caching, on Claude Haiku; all 10 fixes still confirmed; input cost −87%</span>
+            <span class="stat-note">a 10-fix benchmark run before and after prompt caching, on Claude Haiku; all 10 fixes still confirmed; input cost −87%. About R10.91 → R2.15.</span>
         </div>
         <div class="panel stat">
             <span class="stat-value chrome">72 / 72</span>
-            <span class="stat-note">Puls's routing eval on the first baseline; the cook 23 of 24; $0.37 for both, live</span>
+            <span class="stat-note">Puls's routing eval on the first baseline; the cook 23 of 24; $0.37 for both, live. About R6.12.</span>
         </div>
         <div class="panel stat">
             <span class="stat-value chrome">$0</span>
             <span class="stat-note">to replay an eval run: it records the model's answers and the pages it read, so it re-scores for nothing</span>
         </div>
+    </div>
+    <p class="band-note">The rand are at R16.5331 to the dollar, the ECB's reference rate of 2026-10-09 in the repository's rates file; the apps show the live rate.</p>
+</section>
+
+<section class="band">
+    <span class="kicker">How the rand come about</span>
+    <div class="grid-2">
+        <article class="panel">
+            <h3>Priced in dollars, once</h3>
+            <p>Every model request lands in the usage ledger as one record with its four kinds of token (in, cache write, cached, out), priced by a dated price table for that model on that day. A price the table doesn't hold stays unknown, never 0. The ledger is the only source of cost, and it keeps dollars, because that is what was charged.</p>
+        </article>
+        <article class="panel">
+            <h3>Rand for display, with the rate's date</h3>
+            <p>A screen turns dollars into rand with a rates file: how much of each currency one dollar buys, from the European Central Bank's reference rates, with the date it was read. The live rate is fetched when it can be; the file in the repository is the fallback, so a container offline still converts. Puls shows every answer's cost this way, in rand, and the ledger underneath never changes.</p>
+        </article>
     </div>
 </section>
 
