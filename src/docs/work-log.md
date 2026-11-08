@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 73 | 73 |
-| Fixes (`FX`) | 79 | 5 |
+| Fixes (`FX`) | 80 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -205,10 +205,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (79 done)
+## Fixes (80 done)
 
 | Id | When | What |
 |---|---|---|
+| FX90 | 2026-11-08 | The guide opens on every copy of the site: the run profile and the compose file carry the guide's settings as the release does |
 | FX87 | 2026-11-08 | The site's release carries the guide's mail key: `secrets` copies it into the vault and `release` names it only once the vault holds it |
 | FX86 | 2026-11-08 | The site's release names Resend's key only once the vault holds it; main's deploy after FX82 had failed on the missing secret |
 | FX85 | 2026-11-08 | The diagrams read: the listing's box, wrapped notes, a column ordered by its neighbours, every box on a row grid and every arrow a connector with right-angle bends, back arrows under the drawing (ADR 0103) |
