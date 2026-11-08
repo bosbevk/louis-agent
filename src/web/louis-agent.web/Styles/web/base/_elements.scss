@@ -11,10 +11,10 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
 /* A quieter line of text, anywhere: a hint, a count, a date. */
 .muted { color: var(--bs-secondary-color); }
 
-/* A site's page settles on a section as it scrolls (F118): near one, the browser rolls it into place under the header,
-   each section saying where it lands (SiteShell); a long section still scrolls freely. Only on a site's pages, never
-   the chat's. */
-html:has(.site-main) { scroll-snap-type: y proximity; }
+/* A site's page settles on a section every time it scrolls (F118, Louis: "all of the page must scroll the same,
+   middled and centered"): the browser rolls the nearest section into place under the header, each section saying
+   where it lands (SiteShell), so no scroll stops between two. Only on a site's pages, never the chat's. */
+html:has(.site-main) { scroll-snap-type: y mandatory; }
 
 /* The spotlight the guide puts on an area it took the visitor to (F117, F118): one element the widget's module lays
    over the area, which dims the whole page around it through a shadow the size of the screen and rings the area in
