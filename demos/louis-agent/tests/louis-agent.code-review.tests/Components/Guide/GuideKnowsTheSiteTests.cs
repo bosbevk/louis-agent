@@ -34,4 +34,16 @@ public class GuideKnowsTheSiteTests
         Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
         Assert.That(addresses.Where(address => !voice.Contains(address)), Is.Empty);
     }
+
+    /// <summary>
+    /// The guide sells what the site sells, in the same words (FX72): the hosted site with an agent, at the one price
+    /// the site publishes, so the corner and the page can't quote two different offers.
+    /// </summary>
+    [TestCase("What we sell today")]
+    [TestCase("R500 to R1,000 a month")]
+    [TestCase("closed Docker container")]
+    public void TheVoice_SellsWhatTheSiteSells(string words)
+    {
+        Assert.That(TheVoice(), Does.Contain(words));
+    }
 }

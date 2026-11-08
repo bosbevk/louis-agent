@@ -36,11 +36,12 @@
     color: var(--bs-tertiary-color);
 }
 
-/* The corner floats over the page, clear of the footer; what a site puts in it sizes itself. */
-.site-corner { position: fixed; right: 24px; bottom: 24px; z-index: 10; }
+/* The corner floats over the page, high enough to clear the footer's line when the page is scrolled to its end (FX72),
+   so the footer's words stay readable; what a site puts in it sizes itself. */
+.site-corner { position: fixed; right: 24px; bottom: 72px; z-index: 10; }
 
 @media (max-width: 720px) {
     .site-header { gap: 12px; }
     .site-nav { gap: 16px; width: 100%; order: 3; }
-    .site-corner { right: 16px; bottom: 16px; }
+    .site-corner { right: 16px; bottom: 64px; }
 }
