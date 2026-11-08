@@ -13,9 +13,12 @@
     flex-wrap: wrap;
 }
 
-.site-brand { font: 600 16px var(--bs-font-monospace); text-decoration: none; }
+/* The brand is a lockup when a site gives it a mark: the mark, then the name, set in the mono face as the brand's
+   README says; the menu and the actions sit on the right (F110). */
+.site-brand { font: 500 16px var(--bs-font-monospace); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.site-brand ::deep img { height: 22px; width: auto; display: block; }
 
-.site-nav { display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
+.site-nav { margin-left: auto; display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
 .site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
 .site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
 

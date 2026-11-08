@@ -46,6 +46,26 @@ public class SiteLayoutTests
         Assert.That(cut.FindAll($".site-nav a[href='{address}']"), Has.Count.EqualTo(1));
     }
 
+    /// <summary>The brand is the lockup (F110): the mark, its own copy, then the name, as the brand README says.</summary>
+    [Test]
+    public void TheBrand_IsTheLockup()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+        var brand = cut.Find(".site-brand");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("src"), Is.EqualTo("brand/mark.svg"));
+            Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
+            Assert.That(brand.TextContent.Trim(), Is.EqualTo("louis-agent"));
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
+                    "demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg")),
+                "the mark is the app's own copy");
+        });
+    }
+
     /// <summary>The header's way into the chat leads to the app at /chat.</summary>
     [Test]
     public void TheHeader_LeadsToTheChat()
