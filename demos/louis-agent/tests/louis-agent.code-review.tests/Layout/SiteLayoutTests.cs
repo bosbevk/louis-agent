@@ -36,6 +36,7 @@ public class SiteLayoutTests
     [TestCase("/build-your-own")]
     [TestCase("/proof")]
     [TestCase("/built-on-it")]
+    [TestCase("/whats-coming")]
     [TestCase("/contact")]
     public void TheMenu_LeadsToThePage(string address)
     {
@@ -44,6 +45,26 @@ public class SiteLayoutTests
         var cut = ctx.Render<SiteLayout>();
 
         Assert.That(cut.FindAll($".site-nav a[href='{address}']"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// The framework's five pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"),
+    /// so the bar stays one line with What's coming on it.
+    /// </summary>
+    [Test]
+    public void TheFrameworksPages_AreOneGroup()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-nav .site-menu-label").TextContent, Is.EqualTo("The framework"));
+            Assert.That(cut.FindAll(".site-nav .site-menu a").Select(a => a.GetAttribute("href")),
+                Is.EqualTo(new[] { "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own" }));
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
+        });
     }
 
     /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
