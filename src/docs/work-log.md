@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 77 | 73 |
-| Fixes (`FX`) | 94 | 5 |
+| Features (`F`) | 78 | 73 |
+| Fixes (`FX`) | 95 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (77 done)
+## Features (78 done)
 
 | Id | When | What |
 |---|---|---|
+| F119 | 2026-11-09 | How it works splits the loop from the web: the web's slide says the agent runs without it and the web turns an agent into a website, names how the site, the guide, the API and the accounts work with the engine, and has its own diagram; a sitemap of every page and place, held to the pages by a test |
 | F118 | 2026-11-08 | A site of slides from the framework's parts: the section index from the bands, slides or a flowing page as a layout option, a section that pages sideways when it holds more, the hero, tiles and closing strip as framework parts; every place its own address (ADR 0107); the guide reads the section in view, opens a card, turns a page, lights a place with a spotlight, and walks a page from a tour button on every page |
 | F117 | 2026-11-08 | The guide takes you to a page, and to a part of it: the site pack's ShowPage, checked in the API and heard by the widget, which navigates, scrolls the area into view and lights it up; every section a framework Band with an id; the page block lists the areas; ADRs 0105 and 0106 |
 | F115 | 2026-11-08 | The guide knows the page: a message may carry the page the visitor is reading, one block in the user's message, sent once per page by the widget's own module, the guide's voice says what it is (ADR 0104) |
@@ -213,6 +214,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX103 | 2026-11-08 | Every page's footer links to Louis's LinkedIn profile, LinkedIn's mark small beside the word |
 | FX102 | 2026-11-08 | The guide lights what it talks about, offers a walkthrough or one section, walks it one stop per answer, and sells and takes the lead at its end |
 | FX101 | 2026-11-08 | The chat follows the answer to its end until the reader scrolls up, however much text arrives at once |
 | FX100 | 2026-11-08 | The WhatsApp and LinkedIn buttons sit quietly: outlined, the owner's mark and name, the owner's colour on the edge under the pointer |

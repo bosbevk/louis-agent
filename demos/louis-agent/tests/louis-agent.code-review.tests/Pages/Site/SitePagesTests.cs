@@ -259,8 +259,9 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// Every page that explains a part of the framework shows one diagram of it (F111, Louis: "add a nice graph on each
-    /// page"); the landing has its film, Contact and What's coming explain nothing.
+    /// Every page that explains a part of the framework shows a diagram of it (F111, Louis: "add a nice graph on each
+    /// page"), at least one, a slide that explains its own part having its own (F119, the web's on How it works); the
+    /// landing has its film, Contact and What's coming explain nothing.
     /// </summary>
     [TestCase(typeof(HowItWorksPage))]
     [TestCase(typeof(ArchitecturePage))]
@@ -269,7 +270,7 @@ public class SitePagesTests
     [TestCase(typeof(BuildYourOwnPage))]
     [TestCase(typeof(ProofPage))]
     [TestCase(typeof(BuiltOnItPage))]
-    public void AnExplainingPage_ShowsOneDiagram(Type page)
+    public void AnExplainingPage_ShowsADiagram(Type page)
     {
         using var ctx = new BunitContext();
 
@@ -279,7 +280,33 @@ public class SitePagesTests
             builder.CloseComponent();
         });
 
-        Assert.That(cut.FindAll("figure.graph"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll("figure.graph"), Has.Count.GreaterThanOrEqualTo(1));
+    }
+
+    /// <summary>
+    /// How it works splits the loop from the web (F119, Louis: "split the Loop sections from the web sections"): four
+    /// slides, the film, the loop with the turn's diagram, the web with its own, and the rules; the web's opens with
+    /// Louis's line and names how the site works with the backend.
+    /// </summary>
+    [Test]
+    public void HowItWorks_SplitsTheLoopFromTheWeb()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HowItWorksPage>();
+
+        var web = cut.Find("section#web");
+        Assert.Multiple(() =>
+        {
+            // The web's id is read from its section: the bare word is a toolset's wire name (ADR 0043).
+            Assert.That(cut.FindAll(".band").Select(band => band.Id), Is.EqualTo(new[] { "top", "loop", web.Id, "rules" }));
+            Assert.That(cut.Find("section#loop").QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
+            Assert.That(web.QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
+            Assert.That(web.TextContent, Does.Contain("runs without the web").And.Contain("turns an agent into a website"));
+            Assert.That(web.TextContent, Does.Contain("WebAssembly").And.Contain("same address").And.Contain("server-sent events"));
+            Assert.That(web.TextContent, Does.Contain("guide in the corner").And.Contain("its own address").And.Contain("signs in"));
+            Assert.That(cut.Find("section#loop").TextContent, Does.Not.Contain("WebAssembly"), "the web's parts left the loop");
+        });
     }
 
     /// <summary>

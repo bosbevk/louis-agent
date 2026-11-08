@@ -29,6 +29,26 @@ public class SiteLayoutTests
         return ctx;
     }
 
+    /// <summary>
+    /// Every page's footer links to Louis's LinkedIn profile with LinkedIn's mark (FX103, Louis: "my linked in can also
+    /// be added here"), after the rights line.
+    /// </summary>
+    [Test]
+    public void TheFooter_LinksToLinkedIn()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var link = cut.Find(".site-footer a.footer-link");
+        Assert.Multiple(() =>
+        {
+            Assert.That(link.GetAttribute("href"), Is.EqualTo("https://www.linkedin.com/in/louismarais86"));
+            Assert.That(link.QuerySelector("svg[aria-label='LinkedIn']"), Is.Not.Null);
+            Assert.That(link.TextContent.Trim(), Is.EqualTo("LinkedIn"));
+        });
+    }
+
     /// <summary>The menu leads to each page, from every page.</summary>
     [TestCase("/how-it-works")]
     [TestCase("/architecture")]

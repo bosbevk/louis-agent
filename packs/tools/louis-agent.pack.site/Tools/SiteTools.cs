@@ -25,7 +25,7 @@ public sealed class SiteTools
         "place exists for what they ask; then say in one line what to look at. The page you are on lists its places " +
         "by their addresses.")]
     public string ShowPage(
-        [Description("The place's address as the page lists it, such as /packs, /identities/levels, /identities/puls, /home/rule or /how-it-works/parts/2.")]
+        [Description("The place's address as the page lists it, such as /packs, /identities/levels, /identities/puls, /home/rule or /how-it-works/loop/2.")]
         string path)
     {
         if (!IsSiteAddress(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });
