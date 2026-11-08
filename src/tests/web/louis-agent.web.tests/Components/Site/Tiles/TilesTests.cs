@@ -79,9 +79,9 @@ public class TilesTests
         {
             Assert.That(band.Id, Is.EqualTo("contact"));
             Assert.That(band.ClassList, Does.Contain("band-strip"));
-            Assert.That(cut.Find(".strip h2").TextContent, Is.EqualTo("Building an agent for a .NET team?"));
-            Assert.That(cut.Find(".strip p").TextContent, Is.EqualTo("Tell us what you're building."));
-            Assert.That(cut.Find(".strip a.btn").GetAttribute("href"), Is.EqualTo("/contact"));
+            Assert.That(cut.Find(".site-strip h2").TextContent, Is.EqualTo("Building an agent for a .NET team?"));
+            Assert.That(cut.Find(".site-strip p").TextContent, Is.EqualTo("Tell us what you're building."));
+            Assert.That(cut.Find(".site-strip a.btn").GetAttribute("href"), Is.EqualTo("/contact"));
         });
     }
 }

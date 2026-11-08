@@ -1,7 +1,8 @@
 @* A closing call on a site's page (F118, ADR 0106): a band with a strip in the site's strip colour, a heading, a line
-   of words and the action. It is an area of the page like any band, so the index lists it and it has its address. *@
+   of words and the action. It is an area of the page like any band, so the index lists it and it has its address.
+   Its class is prefixed, as a shared name must be: a bare .strip was already a film's layer on this site. *@
 <Band Id="@Id" Short="@Short" Class="band-strip reveal">
-    <div class="strip">
+    <div class="site-strip">
         <h2 class="reveal">@Heading</h2>
         @if (ChildContent is not null)
         {
