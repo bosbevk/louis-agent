@@ -109,7 +109,7 @@ properties:
           # put there by the release only once the vault holds resend-api-key (FX87; a secretRef the vault lacks fails
           # the release, FX86); until then the lead goes to the log and the guide says so.
           - name: LEADS_TO
-            value: louis.marais@live.com
+            value: louismarais0@gmail.com
           - name: LEADS_FROM
             value: guide@louis-agent.dev
           # WHEN SET
