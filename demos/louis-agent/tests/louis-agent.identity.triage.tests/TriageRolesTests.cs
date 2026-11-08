@@ -23,6 +23,7 @@ public class TriageRolesTests
     /// <summary>Each role names its toolsets on its first line of text and ends with its own tool, never another's.</summary>
     [TestCase(TriageRole.Sorter, "toolsets: triage", "SortCase", "ReportInvestigation")]
     [TestCase(TriageRole.Investigator, "toolsets: triage, files, git, dotnet", "ReportInvestigation", "ReportReview")]
+    [TestCase(TriageRole.Reviewer, "toolsets: triage, files, git", "ReportReview", "ReportInvestigation")]
     public void ARole_NamesItsToolsets_AndEndsWithItsTool(TriageRole role, string toolsets, string tool,
         string notItsTool)
     {
