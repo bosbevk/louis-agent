@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 69 | 73 |
-| Fixes (`FX`) | 61 | 5 |
+| Fixes (`FX`) | 63 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -201,10 +201,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (61 done)
+## Fixes (63 done)
 
 | Id | When | What |
 |---|---|---|
+| FX70 | 2026-11-08 | Enter sends in the guide's widget: the message box's key rule is its own module, attached to the box wherever it is drawn |
+| FX69 | 2026-11-08 | The guide's widget works on a phone: the composer's glyphs instead of clipped words, the panel the whole screen under 600 px, the round button gone while it is open |
 | FX68 | 2026-11-08 | Google sign-in works on Azure: both apps read the visitor's https from the proxy, so the return address matches |
 | FX67 | 2026-11-07 | Each sign-in provider's button in the provider's own look: Google's, Microsoft's and LinkedIn's colours, font and logo |
 | FX65 | 2026-11-07 | The sidebar's settings line up, and a picker's list can be read |
