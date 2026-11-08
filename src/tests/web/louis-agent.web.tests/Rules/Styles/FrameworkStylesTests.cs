@@ -62,6 +62,8 @@ public partial class FrameworkStylesTests
     /// nothing is clipped at the panel's edge and only the head's × closes it.
     /// </summary>
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
+    [TestCase("animation: widget-pulse")]
+    [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
     [TestCase("position: fixed;\n        inset: 0;\n        width: 100vw;\n        height: 100dvh;")]
     public void TheWidgetsPanel_FillsAPhone(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));

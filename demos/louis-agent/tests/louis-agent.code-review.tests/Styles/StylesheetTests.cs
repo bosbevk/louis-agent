@@ -72,6 +72,25 @@ public class StylesheetTests
         Assert.That(Css.Read(), Does.Contain(".site h1").And.Contain(".site .panel").And.Contain(".site .btn"));
     }
 
+    /// <summary>
+    /// No site partial styles a bare class the chat draws (FX71): the guide's chat sits on every page, and the hero's
+    /// turn once drew the chat's turns as its cards. The site prefixes its own names, or hangs them off .site.
+    /// </summary>
+    [TestCase(".turn")]
+    [TestCase(".messages")]
+    [TestCase(".user-message")]
+    [TestCase(".assistant-message")]
+    [TestCase(".composer")]
+    public void NoSitePartial_StylesTheChatsClasses(string chatClass)
+    {
+        var offenders = Site.Where(partial => Css.Source(partial).Split('\n')
+                .Any(line => line.StartsWith(chatClass + " ") || line.StartsWith(chatClass + "{") ||
+                             line.StartsWith(chatClass + ",") || line.StartsWith(chatClass + ".")))
+            .ToList();
+
+        Assert.That(offenders, Is.Empty);
+    }
+
     /// <summary>The git and file rules come from their packs' web projects, so the build found them.</summary>
     [Test]
     public void ThePacksRules_AreInTheBuild() =>
