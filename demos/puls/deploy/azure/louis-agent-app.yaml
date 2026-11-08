@@ -105,6 +105,13 @@ properties:
           # The docs the expert reads (F109.3): the copy the image carries, laid out as the repo.
           - name: DOCS_ROOT
             value: /app/docs
+          # The guide's lead mail (F112): Louis's address, the verified sender, and Resend's key from the vault.
+          - name: LEADS_TO
+            value: louis.marais@live.com
+          - name: LEADS_FROM
+            value: guide@louis-agent.dev
+          - name: RESEND_API_KEY
+            secretRef: resend-api-key
           # The accounts (F61): the same Azure SQL database as Puls's, every account on this host this app's tenant,
           # the cookie on the domain.
           - name: ACCOUNTS_SQL_URL
