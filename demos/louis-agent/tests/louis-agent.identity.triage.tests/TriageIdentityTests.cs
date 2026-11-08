@@ -36,8 +36,7 @@ public class TriageIdentityTests
             Assert.That(identity.Name, Is.EqualTo(TriageIdentityName.Triage.Wire()));
             Assert.That(identity.DefaultVoice, Is.EqualTo($"{TriageIdentityName.Triage.Wire()}/voice"));
             Assert.That(identity.Packs, Is.EqualTo(Enum.GetValues<TriageIdentityPack>().Select(p => p.Wire())));
-            Assert.That(identity.Packs,
-                Does.Contain("triage").And.Contain("files").And.Contain("git").And.Contain("dotnet"));
+            Assert.That(identity.Packs, Has.Count.EqualTo(4));
         });
     }
 

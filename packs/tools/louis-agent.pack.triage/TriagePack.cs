@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Packs.Triage.Departments;
 using LouisAgent.Packs.Triage.Runs;
 using LouisAgent.Packs.Triage.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -45,15 +46,18 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
     [
         .. options.Runs is null ? [TriageOptions.RunsSetting] : Array.Empty<string>(),
         .. options.People is null ? [TriageOptions.PeopleSetting] : Array.Empty<string>(),
+        .. options.Departments is null ? [TriageOptions.DepartmentsSetting] : Array.Empty<string>(),
     ];
 
-    /// <summary>Both tool classes over one recorder, on the system clock.</summary>
+    /// <summary>Both tool classes over one recorder, on the system clock, with the departments' names for the sorter.</summary>
     private static IReadOnlyList<object> Tools(TriageOptions options)
     {
         var recorder = new FileTriageRecorder(options.Runs!);
+        var departments = DepartmentsFile.Read(options.Departments!).Select(d => d.Name).ToList();
         return
         [
-            new TriageTools(recorder, TimeProvider.System), new RunTools(recorder, options.People!, TimeProvider.System)
+            new TriageTools(recorder, departments, TimeProvider.System),
+            new RunTools(recorder, options.People!, TimeProvider.System)
         ];
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using LouisAgent.Packs.Triage.Tools.Choices;
 
 namespace LouisAgent.Packs.Triage.Tools.Results;
 

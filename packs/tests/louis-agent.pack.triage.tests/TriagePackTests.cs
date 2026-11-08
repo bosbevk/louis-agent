@@ -24,20 +24,22 @@ public class TriagePackTests
 
     /// <summary>Without its settings the toolset says what it lacks; with them it loads both tool classes, one at a time.</summary>
     [Test]
-    public void ItNeedsItsTwoSettings_AndRunsOneCallAtATime()
+    public void ItNeedsItsThreeSettings_AndRunsOneCallAtATime()
     {
         var off = new TriagePack(new TriageOptions()).Toolsets[0];
         var half = new TriagePack(new TriageOptions { Runs = Path.GetTempPath() }).Toolsets[0];
         var on = new TriagePack(new TriageOptions
         {
             Runs = Path.GetTempPath(),
-            People = Path.GetTempPath()
+            People = Path.GetTempPath(),
+            Departments = Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config/departments.yaml")
         }).Toolsets[0];
 
         Assert.Multiple(() =>
         {
-            Assert.That(off.MissingSettings(null!), Is.EqualTo(new[] { "TRIAGE_RUNS", "TRIAGE_PEOPLE" }));
-            Assert.That(half.MissingSettings(null!), Is.EqualTo(new[] { "TRIAGE_PEOPLE" }));
+            Assert.That(off.MissingSettings(null!),
+                Is.EqualTo(new[] { "TRIAGE_RUNS", "TRIAGE_PEOPLE", "TRIAGE_DEPARTMENTS" }));
+            Assert.That(half.MissingSettings(null!), Is.EqualTo(new[] { "TRIAGE_PEOPLE", "TRIAGE_DEPARTMENTS" }));
             Assert.That(on.MissingSettings(null!), Is.Empty);
             Assert.That(on.ParallelSafe, Is.False);
             Assert.That(on.ToolTypes, Is.EqualTo(new[] { typeof(TriageTools), typeof(RunTools) }));
@@ -73,7 +75,7 @@ public class TriagePackTests
         Assert.That(tools.Select(t => t.Name),
             Is.EquivalentTo(new[]
             {
-                "ReportInvestigation", "ReportReview", "DecideCase", "RaiseToPerson", "ReadTriageRun"
+                "SortCase", "ReportInvestigation", "ReportReview", "DecideCase", "RaiseToPerson", "ReadTriageRun"
             }));
         Assert.That(tools, Has.All.Matches<MethodInfo>(t =>
             t.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>() is not null));

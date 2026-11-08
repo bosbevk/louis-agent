@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Packs.Triage.Runs;
 using LouisAgent.Packs.Triage.Runs.Steps;
 using LouisAgent.Packs.Triage.Tools;
+using LouisAgent.Packs.Triage.Tools.Choices;
 using LouisAgent.Packs.Triage.Tools.Results;
 using Microsoft.Extensions.Time.Testing;
 
@@ -27,7 +28,28 @@ public class TriageToolsTests
         _recorder = new FileTriageRecorder(_root);
         await _recorder.SaveAsync(new TriageStep("run-1", 1, TriageAgent.Code, TriageStepKind.Collected,
             "Error abc123 read from the feed.", "", Now));
-        _tools = new TriageTools(_recorder, new FakeTimeProvider(Now.AddMinutes(1)));
+        _tools = new TriageTools(_recorder, ["code", "ops"], new FakeTimeProvider(Now.AddMinutes(1)));
+    }
+
+    /// <summary>The sorter's ending (F106.3.2): a department it was given is saved as Sorted; another is refused with the names.</summary>
+    [Test]
+    public async Task ASorting_KeepsTheDepartment_AndRefusesOneNotGiven()
+    {
+        string said = await _tools.SortCase("run-1", "ops", "The stack is in the hosting configuration.");
+        string refused = await _tools.SortCase("run-1", "marketing", "no");
+
+        var run = await _recorder.ReadAsync("run-1");
+        var sorting = JsonSerializer.Deserialize<Sorting>(run!.Steps[1].Result!, FileTriageRecorder.Json)!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(said, Does.StartWith("Recorded step 2 of run run-1"));
+            Assert.That(run.Steps[1].Agent, Is.EqualTo(TriageAgent.Sorter));
+            Assert.That(run.Steps[1].Kind, Is.EqualTo(TriageStepKind.Sorted));
+            Assert.That(sorting, Is.EqualTo(new Sorting("ops", "The stack is in the hosting configuration.")));
+            Assert.That(refused, Does.Contain("is not a department").And.Contain("code, ops"));
+            Assert.That(run.Steps, Has.Count.EqualTo(2));
+        });
     }
 
     [TearDown]

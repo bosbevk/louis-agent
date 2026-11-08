@@ -19,11 +19,17 @@ public sealed class TriageOptions
     /// <summary>TRIAGE_RUNS: the folder a run's steps are written under, one file per run.</summary>
     public string? Runs { get; init; }
 
+    /// <summary>The third setting's name: the departments file the sorter's choice is checked against.</summary>
+    public const string DepartmentsSetting = "TRIAGE_DEPARTMENTS";
+
     /// <summary>
     /// TRIAGE_PEOPLE: the folder a case raised to a person is written in, one file per run, until a department's
     /// own endpoint names where its people read (a tracker, a mailbox).
     /// </summary>
     public string? People { get; init; }
+
+    /// <summary>TRIAGE_DEPARTMENTS: the departments file (F106.3.2), whose names the sorter may send a case to.</summary>
+    public string? Departments { get; init; }
 
     /// <summary>Reads the settings; the variable lookup is replaceable for tests.</summary>
     public static TriageOptions FromEnvironment(Func<string, string?>? getVariable = null)
@@ -32,7 +38,8 @@ public sealed class TriageOptions
         return new TriageOptions
         {
             Runs = Trimmed(getVariable(RunsSetting)),
-            People = Trimmed(getVariable(PeopleSetting))
+            People = Trimmed(getVariable(PeopleSetting)),
+            Departments = Trimmed(getVariable(DepartmentsSetting))
         };
     }
 
