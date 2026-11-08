@@ -28,7 +28,7 @@ public sealed class JsonLinesErrorFeed(string errorLogPath, string stateDirector
         foreach (string line in File.ReadLines(errorLogPath).Where(l => !string.IsNullOrWhiteSpace(l)))
         {
             ServiceError? error = Read(line);
-            if (error is null || !IsPlainId(error.Id) || handled.Contains(error.Id)) continue;
+            if (error is null || !PlainId.Is(error.Id) || handled.Contains(error.Id)) continue;
             _seen[error.Id] = error;
             errors.Add(error);
         }
@@ -58,8 +58,4 @@ public sealed class JsonLinesErrorFeed(string errorLogPath, string stateDirector
             return null;
         }
     }
-
-    /// <summary>Letters, digits, dashes and underscores, up to 64 of them: what a branch name can carry.</summary>
-    private static bool IsPlainId(string? id) =>
-        id is { Length: > 0 and <= 64 } && id.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
 }
