@@ -5,14 +5,15 @@
 .graph svg { width: 100%; height: auto; display: block; overflow: visible; }
 .graph figcaption { font: 600 10.5px/1.4 var(--bs-font-monospace); letter-spacing: 1.4px; text-transform: uppercase; color: var(--bs-tertiary-color); }
 
-.edge { fill: none; stroke: var(--web-border-hover); stroke-width: 1.5; stroke-dasharray: var(--len); }
-.word { fill: var(--bs-tertiary-color); font: 600 10.5px var(--bs-font-monospace); letter-spacing: 1px; text-transform: uppercase; }
-.arrow { fill: var(--web-border-hover); }
+/* Bright enough to read on the dark ground (FX85, Louis: "can't see"): the strokes in the body's colour, the words in white. */
+.edge { fill: none; stroke: var(--bs-secondary-color); stroke-width: 2; stroke-dasharray: var(--len); }
+.word { fill: var(--bs-emphasis-color); font: 600 11px var(--bs-font-monospace); letter-spacing: 1px; text-transform: uppercase; paint-order: stroke; stroke: var(--bs-body-bg); stroke-width: 5px; stroke-linejoin: round; }
+.arrow { fill: var(--bs-secondary-color); }
 
-.node rect { fill: var(--bs-secondary-bg); stroke: var(--bs-border-color); transition: stroke .3s; }
+.node rect { fill: var(--bs-secondary-bg); stroke: var(--web-border-hover); stroke-width: 1.5; transition: stroke .3s; }
 .node:hover rect { stroke: rgba(var(--bs-primary-rgb), .6); }
-.node .label { fill: var(--bs-emphasis-color); font: 600 14px var(--bs-font-sans-serif); letter-spacing: -.01em; }
-.node .note { fill: var(--bs-secondary-color); font: 12px var(--bs-font-sans-serif); }
+.node .label { fill: var(--bs-emphasis-color); font: 600 15px var(--bs-font-sans-serif); letter-spacing: -.01em; }
+.node .note { fill: var(--bs-body-color); font: 12.5px var(--bs-font-sans-serif); }
 
 /* The reveal: a box rises when its column's turn comes, an arrow draws once its box stands. */
 .graph.in .node { animation: graph-rise .6s var(--web-ease) both; animation-delay: calc(var(--col) * .28s); }

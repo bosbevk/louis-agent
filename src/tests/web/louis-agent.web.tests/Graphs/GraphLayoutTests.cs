@@ -79,6 +79,39 @@ public class GraphLayoutTests
         });
     }
 
+    /// <summary>
+    /// A column's boxes stand where their neighbours are (FX85, Louis: "lines may not overlap"): a box at the bottom
+    /// of its column whose arrow goes to the top of the next moves up, so the arrows between the columns don't cross.
+    /// </summary>
+    [Test]
+    public void AColumn_IsOrdered_SoArrowsDontCross()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 0), new GraphNode("c", "C", null, 0),
+                new GraphNode("top", "Top", null, 1), new GraphNode("bottom", "Bottom", null, 1),
+            ],
+            [new GraphEdge("a", "top"), new GraphEdge("b", "bottom"), new GraphEdge("c", "top")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var first = placed.Nodes.Where(node => node.Node.Column == 0).OrderBy(node => node.Y).Select(node => node.Node.Id);
+        Assert.That(first, Is.EqualTo(new[] { "a", "c", "b" }), "c, which goes to the top, comes before b, which goes to the bottom");
+    }
+
+    /// <summary>A word sits near the arrow's start, past the box it leaves, not at the middle where a box may stand.</summary>
+    [Test]
+    public void AWord_SitsNearTheArrowsStart()
+    {
+        var placed = GraphLayout.Place(TwoColumns());
+
+        var left = placed.Nodes.Single(node => node.Node.Id == "who");
+        var right = placed.Nodes.Single(node => node.Node.Id == "packs");
+        var edge = placed.Edges.Single(edge => edge.Edge.To == "packs");
+        double start = left.X + left.W, gap = right.X - start;
+        Assert.That(edge.WordX, Is.GreaterThan(start + gap * 0.15).And.LessThan(start + gap * 0.45));
+    }
+
     /// <summary>An arrow to a box the diagram doesn't have is left out, not drawn to nowhere.</summary>
     [Test]
     public void AnArrowToNowhere_IsLeftOut()

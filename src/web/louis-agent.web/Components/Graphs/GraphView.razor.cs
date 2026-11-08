@@ -55,7 +55,7 @@ public partial class GraphView
     private static MarkupString Note(PlacedNode node, string note) => Words("note", node.W / 2, node.H - 16, note);
 
     /// <summary>The word on an arrow, just above its middle.</summary>
-    private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.MidX, edge.MidY - 6, word, EdgeStyle(edge));
+    private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
 
     /// <summary>
     /// An SVG text element, centred on a point. Written as markup here because Razor keeps the <c>text</c> tag for
