@@ -2,6 +2,7 @@ using LouisAgent.Web.Components.Site;
 using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Site;
 
@@ -164,8 +165,63 @@ public class SiteShellTests
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
 
-        Assert.That(rules, Does.Contain(".site-main ::deep > section { min-height: calc(100dvh - 160px); }"));
+        Assert.That(rules, Does.Contain(".site-main ::deep > section {").And.Contain("min-height: calc(100dvh - 160px);"));
         Assert.That(rules, Does.Not.Contain("section:last-of-type"));
+    }
+
+    /// <summary>
+    /// A section holds its content in the middle of the screen, and the page settles on one section at a time as it
+    /// scrolls (F118, Louis: "should this part not always be horizontal and vertically centered in the screen and then
+    /// when you move to another section it rolls in?"): the section centres what it holds and snaps under the header.
+    /// </summary>
+    [TestCase("justify-content: center;")]
+    [TestCase("align-content: center;")]
+    [TestCase("scroll-snap-align: start;")]
+    [TestCase("scroll-margin-top: 96px;")]
+    public void ASection_CentresItsContent_AndSnapsIntoPlace(string rule)
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
+
+        Assert.That(rules, Does.Contain(rule));
+    }
+
+    /// <summary>
+    /// A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation
+    /// doing it"): the frame draws the main column afresh for each page, so its entrance plays, and a jump within the
+    /// page keeps the same column.
+    /// </summary>
+    [Test]
+    public void APageChange_DrawsTheColumnAfresh_AJumpWithinItDoesNot()
+    {
+        using var ctx = Context();
+        var nav = ctx.Services.GetRequiredService<NavigationManager>();
+        nav.NavigateTo("/packs");
+        PageProbe.Made = 0;
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent<PageProbe>());
+
+        nav.NavigateTo("/packs#cook");
+        cut.Render();
+        int afterJump = PageProbe.Made;
+        nav.NavigateTo("/identities");
+        cut.Render();
+        int afterPageChange = PageProbe.Made;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(afterJump, Is.EqualTo(1), "a jump within the page keeps the column");
+            Assert.That(afterPageChange, Is.EqualTo(2), "a new page draws a new column");
+        });
+    }
+
+    /// <summary>Stands for a page in the column, and counts how often the column makes it.</summary>
+    private sealed class PageProbe : ComponentBase
+    {
+        /// <summary>How many times one was made since the count was reset.</summary>
+        public static int Made;
+
+        /// <summary>Counts itself as it is made.</summary>
+        protected override void OnInitialized() => Made++;
     }
 
     /// <summary>With nothing named, the page still shows, and the empty slots leave no gaps.</summary>

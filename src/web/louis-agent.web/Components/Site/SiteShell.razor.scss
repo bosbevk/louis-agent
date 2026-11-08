@@ -29,12 +29,29 @@
 .site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
 .site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
 
-.site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; }
+.site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; animation: site-page-in .5s var(--web-ease, ease-out) both; }
+
+/* A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation"):
+   the frame draws the main column afresh for each page, so the new page fades in and rises a little; a jump within
+   the page keeps the column and plays nothing. */
+@keyframes site-page-in { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .site-main { animation: none; }
+}
 
 /* Every section of a page is at least a screen tall, less the header's room and the footer (F118, Louis: "we need a
    min height for the section, in order for smooth transition", then "a min height on all sections"): a short section
-   could not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. */
-.site-main ::deep > section { min-height: calc(100dvh - 160px); }
+   could not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. It
+   holds its content in the middle of that height, a band's flex column and a hero's grid alike, and the page settles
+   on it under the header as it scrolls (Louis: "vertically centered in the screen and then ... it rolls in"); the
+   reveal plays as it arrives. */
+.site-main ::deep > section {
+    min-height: calc(100dvh - 160px);
+    justify-content: center;
+    align-content: center;
+    scroll-snap-align: start;
+    scroll-margin-top: 96px;
+}
 
 .site-footer {
     margin-top: auto;

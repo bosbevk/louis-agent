@@ -11,6 +11,11 @@ a { color: var(--bs-link-color); text-decoration-thickness: 1px; text-underline-
 /* A quieter line of text, anywhere: a hint, a count, a date. */
 .muted { color: var(--bs-secondary-color); }
 
+/* A site's page settles on a section as it scrolls (F118): near one, the browser rolls it into place under the header,
+   each section saying where it lands (SiteShell); a long section still scrolls freely. Only on a site's pages, never
+   the chat's. */
+html:has(.site-main) { scroll-snap-type: y proximity; }
+
 /* The spotlight the guide puts on an area it took the visitor to (F117, F118): one element the widget's module lays
    over the area, which dims the whole page around it through a shadow the size of the screen and rings the area in
    the accent, with a soft light behind the ring. It comes in as the page settles, holds, and goes over four seconds;

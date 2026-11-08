@@ -52,6 +52,14 @@ public partial class SiteShell
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
+    /// <summary>
+    /// The page's path without its #area (F118): the main column is keyed by it, so a new page draws a new column and
+    /// its entrance plays, while a jump within the page keeps the one there.
+    /// </summary>
+    private string PagePath => Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
+
     /// <summary>The page's areas (F118): the bands fill it as they draw, and the index on the left reads it.</summary>
     private readonly PageAreas _areas = new();
 
