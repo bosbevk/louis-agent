@@ -3,7 +3,7 @@
 > **Plan.** The guide in the site's corner can open a page of the site for the visitor, and scroll to an area of it,
 > instead of pointing. Approved 2026-11-08 (Louis: "I want this agent to take you to a page", "A we do it now", "he
 > should be able to direct you to a certain part of the page also, location on the page, so all pages must have
-> areas"). On `feature/F117-the-guide-takes-you-to-a-page`; deleted when the work is merged, its lasting parts in
+> areas", "can we also give it the capability to highlight areas on the page?"). On `feature/F117-the-guide-takes-you-to-a-page`; deleted when the work is merged, its lasting parts in
 > ADR 0105 and the packs, web, site and identity docs.
 
 ## Context
@@ -30,7 +30,9 @@ named areas the guide can send the visitor to.
   site, with an area after `#` when there is one (`/identities#levels`); the tool refuses anything else (another
   host, a scheme, `..`) with a plain reason and answers that the page is shown. The web already folds every tool call
   into the chat; the runner tells its listeners when a tool call arrives, and the widget, on `ShowPage`, navigates
-  to the path and, once the page has rendered, scrolls the area into view through its module. The guide's identity
+  to the path and, once the page has rendered, scrolls the area into view through its module and lights it up: the
+  module puts a class on the section for a few seconds, and the framework's web styles it as a soft glow that fades,
+  which a site may restyle. The guide's identity
   names the pack, and its voice says: when the right page or area exists, take them there and say in one line what
   to look at.
 
@@ -41,7 +43,7 @@ classDiagram
     class SiteTools { +ShowPage(path) : string }
     class SiteToolMessage { Shown, NotASitePage }
     class ExpertPack { Docs, Leads, Site }
-    class ChatWidgetModule { pageText(): {url, title, text, areas} showArea(id) }
+    class ChatWidgetModule { pageText(): {url, title, text, areas} showArea(id): scroll + glow }
     class Page { +Url +Title +Text +Areas }
     class PageRequest { +Url +Title +Text +Areas }
     class ChatRunner { +event ToolCalled(Block) }
@@ -68,7 +70,8 @@ public event Action<Block>? ToolCalled;                          // ChatRunner, 
 // src/hosts/louis-agent.api/Sessions/Requests (changed)
 internal sealed record PageRequest(string? Url, string? Title, string? Text, List<PageAreaRequest>? Areas);
 // ApiModelText.Page gains "Its areas: {Areas}" (id and heading, one a line)
-// ChatWidget.razor.js: pageText() also returns areas from section[id]; showArea(id) scrolls it into view
+// ChatWidget.razor.js: pageText() also returns areas from section[id]; showArea(id) scrolls it into view and
+// gives it the class area-shown for four seconds; web/styles: .area-shown, a glow that fades (a site may restyle)
 // demos/louis-agent/identity/louis-agent.identity.expert/ExpertIdentity.cs: ExpertPack { Docs, Leads, Site }
 ```
 
@@ -79,7 +82,7 @@ flowchart LR
     model -->|ShowPage('/identities#levels')| api["the API: a site path? → Shown"]
     api -->|tool_use in the stream| runner["ChatRunner: ToolCalled"]
     runner --> widget
-    widget -->|NavigateTo, then showArea| browser["the browser: the page, scrolled to the area"]
+    widget -->|NavigateTo, then showArea| browser["the browser: the page, scrolled to the area, the area aglow"]
 ```
 
 ```mermaid
@@ -93,7 +96,7 @@ sequenceDiagram
     G->>A: ShowPage("/identities#levels")
     A-->>G: Shown. Say in one line what to look at.
     A-->>W: tool_use ShowPage {path}
-    W->>W: NavigateTo("/identities#levels"), then showArea("levels")
+    W->>W: NavigateTo("/identities#levels"), then showArea("levels"): scroll, glow
     G-->>V: Here, the three levels: the agent, a specialist, a minion.
 ```
 
@@ -101,7 +104,7 @@ sequenceDiagram
 |---|---|---|---|
 | Section ids on every site page, `SitePagesTests.EverySection_HasAnArea` | `demos/louis-agent/web/louis-agent.code-review/Pages/Site/`, its tests | `LouisAgent.CodeReview.Pages.Site` | 1 changed |
 | `PageArea`, `Page.Areas`; `PageAreaRequest`, `PageRequest.Areas`; `ApiModelText.Page` | web `Chats/`, api `Sessions/Requests/`, `Messages/` | `LouisAgent.Web.Chats`, `LouisAgent.Api.…` | 2 changed |
-| `ChatWidget.razor.js` (`pageText` with areas, `showArea`) | `src/web/louis-agent.web/Components/Widget/` | — | 2, 4 changed |
+| `ChatWidget.razor.js` (`pageText` with areas, `showArea`), `.area-shown` in the web's styles | `src/web/louis-agent.web/Components/Widget/`, `Styles/web/` | — | 2, 4 changed |
 | `SitePack`, `SiteToolset`, `SiteTools`, `SiteToolMessage`, `toolsets/site.md` | `packs/tools/louis-agent.pack.site/` | `LouisAgent.Packs.Site`, `.Tools`, `.Messages` | 3 new |
 | `SitePackTests`, `SiteToolsTests` | `packs/tests/louis-agent.pack.site.tests/` | `LouisAgent.Packs.Site.Tests` | 3 new |
 | `ChatRunner.ToolCalled`, `ChatWidget.OnToolCalled` | web `Chats/`, `Components/Widget/` | `LouisAgent.Web.…` | 4 changed |
@@ -115,9 +118,10 @@ sequenceDiagram
    `PageRequest` carry them; the page block ends with "Its areas:" and the list. Tests first on the block and the body.
 3. **The pack.** `SitePack`, `SiteTools.ShowPage` accepting a site path with an optional area and refusing the rest
    with a reason, the two texts, the guide file. Tests first: the shape, a good path, a bad one, a path with an area.
-4. **The widget acts.** `ChatRunner.ToolCalled` once per tool call; the widget navigates on `ShowPage` and scrolls to
-   the area through `showArea` once rendered. Tests first: the runner raises once, the fake navigation ends on the
-   path, the module is asked for the area; a stream without the call leaves both alone.
+4. **The widget acts.** `ChatRunner.ToolCalled` once per tool call; the widget navigates on `ShowPage` and, once
+   rendered, scrolls to the area and lights it up through `showArea` (the class for four seconds, the glow in the
+   web's styles). Tests first: the runner raises once, the fake navigation ends on the path, the module is asked for
+   the area; a stream without the call leaves both alone.
 5. **The guide gets it.** `ExpertPack.Site`, the catalogue's list and its golden files, the site's listing, the voice's
    rule: when the right page or area exists, take them there and say in one line what to look at.
 6. **Docs.** ADR 0105 *The guide acts on the page through a tool the widget hears*, the pack's doc, the web, site and
@@ -125,6 +129,6 @@ sequenceDiagram
 
 ## Done when
 
-On louis-agent.dev a visitor who asks the guide to show them something lands on that page, scrolled to the area, the
-guide says one line about it, and the next message is about the new page. Every page's sections have ids, every
+On louis-agent.dev a visitor who asks the guide to show them something lands on that page, scrolled to the area with
+the area aglow for a moment, the guide says one line about it, and the next message is about the new page. Every page's sections have ids, every
 step has its test, the pack references the composition only, the engine is untouched.
