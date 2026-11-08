@@ -31,11 +31,10 @@
 
 .site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; }
 
-/* The page's last section fills the screen down to the footer (F118, Louis: "we need a min height for the section,
-   in order for smooth transition"): a short last section can't scroll up under the header, so a jump to it from the
-   index or the guide stopped early and looked cut off. 96px is the room the jump leaves under the header, 64px the
-   footer's height. */
-.site-main ::deep > section:last-of-type { min-height: calc(100dvh - 160px); }
+/* Every section of a page is at least a screen tall, less the header's room and the footer (F118, Louis: "we need a
+   min height for the section, in order for smooth transition", then "a min height on all sections"): a short section
+   could not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. */
+.site-main ::deep > section { min-height: calc(100dvh - 160px); }
 
 .site-footer {
     margin-top: auto;

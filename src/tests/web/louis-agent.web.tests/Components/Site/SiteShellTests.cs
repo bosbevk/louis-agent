@@ -134,16 +134,17 @@ public class SiteShellTests
     }
 
     /// <summary>
-    /// The page's last section fills the screen down to the footer (F118), so a jump to it can land it under the
-    /// header like any other section instead of stopping early when the page runs out.
+    /// Every section of a page is at least a screen tall (F118, Louis: "a min height on all sections"), so a jump or a
+    /// click in the index lands any section in place and lights the one clicked.
     /// </summary>
     [Test]
-    public void ThePagesLastSection_FillsTheScreen()
+    public void EverySection_IsAtLeastAScreenTall()
     {
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
 
-        Assert.That(rules, Does.Contain(".site-main ::deep > section:last-of-type { min-height: calc(100dvh - 160px); }"));
+        Assert.That(rules, Does.Contain(".site-main ::deep > section { min-height: calc(100dvh - 160px); }"));
+        Assert.That(rules, Does.Not.Contain("section:last-of-type"));
     }
 
     /// <summary>With nothing named, the page still shows, and the empty slots leave no gaps.</summary>

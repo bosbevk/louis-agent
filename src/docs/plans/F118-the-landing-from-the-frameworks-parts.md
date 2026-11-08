@@ -134,7 +134,9 @@ recommended options taken unattended.
   hears the click in the capture phase, first, and Blazor leaves it alone.
 - **A page's last section fills the screen down to the footer** (Louis: "we need a min height for the section, in
   order for smooth transition"): a short last section ("Yours" on Identities) could not scroll up under the header,
-  so a jump to it stopped early and looked cut off. The frame gives the last section a minimum height.
+  so a jump to it stopped early and looked cut off. The frame gives the last section a minimum height. Then every
+  section (Louis: "I think we need a min height on all sections"), after a click on "Measured" centred that short
+  section and lit "One rule" above it: each is at least a screen tall less the header's room and the footer.
 - **The guide opens a card, as a framework feature** (Louis: "the agent should be able to click this also to show
   people", then "it should be a framework feature which is implemented"); the first of three options, taken: a card
   is an area. Its button carries an id made from its title (`AreaIds`) unless the site gives one, and is marked as a
