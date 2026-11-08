@@ -1,15 +1,13 @@
 # Deploys Puls and the louis-agent demo's app to Azure (F109.5, F109.2): the same `deploy.ps1 release` Louis runs on
-# his PC, from GitHub, so a merge reaches mypuls.co.za and louis-agent.dev without anyone's machine. By itself only
-# after CI passes on main (Louis's pick, 2026-11-07), so a red merge never ships; any time from the Actions tab's
-# "Run workflow" button. Each app is released even when the other's release failed: they are two apps on one
+# his PC, from GitHub, so a merge reaches mypuls.co.za and louis-agent.dev without anyone's machine. By itself on the
+# merge (the push to main; CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow"
+# button. Each app is released even when the other's release failed: they are two apps on one
 # environment, and one's bad day is not the other's. The how-to, Louis's one-time Azure setup and the roll-back are in
 # demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
 name: Deploy the apps
 
 on:
-  workflow_run:
-    workflows: [ CI ]
-    types: [ completed ]
+  push:
     branches: [ main ]
   workflow_dispatch:
 
@@ -26,9 +24,7 @@ concurrency:
 
 jobs:
   release:
-    # The automatic run only when CI on main passed (and never for a CI run on a pull request's branch); the button
-    # runs from main, the only branch the federated credential trusts.
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    # The push is main's (the trigger names it); the button runs from main, the only branch the federated credential trusts.
     runs-on: ubuntu-latest
     steps:
       - name: Check the Azure ids are set
@@ -49,7 +45,7 @@ jobs:
       # The commit CI passed, not whatever main holds by now; the button deploys main as it is.
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.sha }}
 
       - uses: azure/login@v2
         with:
