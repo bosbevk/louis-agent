@@ -1,0 +1,13 @@
+@* A recorded session in a window: the chat's own list of turns, typing out as it did, then the site's ending and a
+   button that plays it again. *@
+<div class="recorded-chat">
+    <div class="recorded-bar"><span class="recorded-dots" aria-hidden="true"><i></i><i></i><i></i></span>@Title</div>
+    <MessageList Chat="_chat" Streaming="_playing" />
+    @if (_ended)
+    {
+        <div class="recorded-end">
+            @Ending
+            <button class="recorded-again" type="button" @onclick="PlayAsync">@PlayAgain</button>
+        </div>
+    }
+</div>

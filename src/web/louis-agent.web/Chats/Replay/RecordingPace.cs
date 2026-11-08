@@ -31,9 +31,12 @@ public static class RecordingPace
         _ => 0,
     };
 
-    /// <summary>The events in order, each with its wait.</summary>
-    public static List<ReplayStep> Steps(IEnumerable<SessionEvent> events) =>
-        events.Select(streamEvent => new ReplayStep(streamEvent, WaitMs(streamEvent))).ToList();
+    /// <summary>
+    /// The events in order, each with its wait, times the pace: 1 as recorded, 0 for no waits at all.
+    /// </summary>
+    public static List<ReplayStep> Steps(IEnumerable<SessionEvent> events, double pace = 1) => events
+        .Select(streamEvent => new ReplayStep(streamEvent, (int)Math.Round(WaitMs(streamEvent) * pace)))
+        .ToList();
 
     /// <summary>Whether the event's object under this name has this property.</summary>
     private static bool Has(SessionEvent streamEvent, string name, string property) =>

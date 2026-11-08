@@ -1,0 +1,21 @@
+/* A window drawn around a chat or a terminal: a hairline frame, a title bar of three dots and a line in the code font.
+   The framework's recorded chat draws one (F120), and a site's own animated panels draw the same, so both include
+   these rather than copy them. */
+@mixin frame {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--radius, 12px);
+    background: var(--bs-secondary-bg);
+    overflow: hidden;
+}
+
+@mixin bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--bs-border-color);
+    font: 12px var(--bs-font-monospace);
+    color: var(--bs-tertiary-color);
+}
+
+@mixin dot { width: 10px; height: 10px; border-radius: 50%; background: var(--web-border-hover); }

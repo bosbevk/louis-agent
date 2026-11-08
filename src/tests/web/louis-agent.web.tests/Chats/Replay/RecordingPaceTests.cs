@@ -73,4 +73,18 @@ public class RecordingPaceTests
         Assert.That(steps.Select(step => step.Event), Is.EqualTo(events));
         Assert.That(steps.Select(step => step.WaitMs), Is.EqualTo(events.Select(RecordingPace.WaitMs)));
     }
+
+    /// <summary>The pace scales every wait: half as long at 0.5, none at all at 0.</summary>
+    [Test]
+    public void ThePace_ScalesTheWaits()
+    {
+        var events = new[] { Started("""{"type":"tool_use","id":"t1","name":"ReadFile","input":{}}""") };
+        int full = RecordingPace.WaitMs(events[0]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(RecordingPace.Steps(events, 0.5).Single().WaitMs, Is.EqualTo(full / 2));
+            Assert.That(RecordingPace.Steps(events, 0).Single().WaitMs, Is.Zero);
+        });
+    }
 }
