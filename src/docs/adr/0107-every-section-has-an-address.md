@@ -40,8 +40,9 @@ otherwise the agents won't work optimally", and for the cards and the pages of a
 
 - A link someone copies opens on the place they copied it from, and the guide names a place as it read it, so the
   agent and the visitor share one name for every place.
-- A page's places are known only once it draws, so a sitemap of every place needs the pages rendered; until then
-  search engines see the pages, and a place's address is for links, sharing and the guide.
+- A page's places are known only once it draws, so the sitemap (F119) is a file a site test writes from the rendered
+  pages and holds to them, `/sitemap.xml` named by `robots.txt`: every page and place, a paged section's later pages
+  left out since they depend on the screen. Search engines then list every place by its own address.
 - A site that registers no `SiteAddresses` keeps plain pages: the index links to `#id` on the page, the catch-all
   answers nothing, the guide's page tool is ignored.
 
