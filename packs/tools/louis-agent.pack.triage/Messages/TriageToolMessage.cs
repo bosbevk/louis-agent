@@ -27,9 +27,12 @@ public enum TriageToolMessage
     [Description("Run {RunId}: {Count} steps so far{Ended}.\n{Steps}")]
     RunRead,
 
-    [Description(", ended {Outcome}")]
-    RunEnded,
+    [Description(", ended {Outcome}")] RunEnded,
 
     [Description("{Number}. {Agent} ({Kind}, {At}): {Summary} {Why}")]
     StepLine,
+
+    [Description(
+        "'{Name}' in {File} is not a department name, or repeats one: letters, digits, dashes and underscores, each once.")]
+    BadDepartment,
 }
