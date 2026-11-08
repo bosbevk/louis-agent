@@ -1,5 +1,7 @@
 using LouisAgent.Web.Components.Site;
+using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
+using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Tests.Components.Site;
 
@@ -98,7 +100,37 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-main .page"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-footer .note"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-corner .widget"), Has.Count.EqualTo(1));
-        Assert.That(inside, Is.EqualTo(new[] { "site-header", "site-main", "site-footer", "site-corner" }));
+        Assert.That(inside, Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-footer", "site-corner" }));
+    }
+
+    /// <summary>
+    /// The frame lists the page's bands in its index (F118): a page is bands, each puts itself on the frame's list as
+    /// it draws, and the index on the left is that list, so no site writes one by hand and every page has it.
+    /// </summary>
+    [Test]
+    public void TheFrame_ListsThePagesBands_InItsIndex()
+    {
+        using var ctx = Context();
+
+        RenderFragment page = builder =>
+        {
+            builder.OpenComponent<Band>(0);
+            builder.AddComponentParameter(1, nameof(Band.Id), "rule");
+            builder.AddComponentParameter(2, nameof(Band.Kicker), "One rule");
+            builder.CloseComponent();
+            builder.OpenComponent<Band>(3);
+            builder.AddComponentParameter(4, nameof(Band.Id), "contact");
+            builder.AddComponentParameter(5, nameof(Band.Short), "Contact");
+            builder.CloseComponent();
+        };
+        var cut = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.ChildContent, page));
+
+        cut.WaitForAssertion(() =>
+        {
+            var links = cut.FindAll(".site nav.site-index a");
+            Assert.That(links.Select(a => a.GetAttribute("href")), Is.EqualTo(new[] { "#rule", "#contact" }));
+            Assert.That(links.Select(a => a.TextContent), Is.EqualTo(new[] { "One rule", "Contact" }));
+        });
     }
 
     /// <summary>With nothing named, the page still shows, and the empty slots leave no gaps.</summary>

@@ -1,0 +1,13 @@
+@implements IAsyncDisposable
+@* The page's section index (F118): one link per area on the frame's list, in page order, drawn when there is
+   something to choose between (one area alone is no index). Its own module marks the one in view, the frame's
+   scrolls on a click; the styles sit beside this file. *@
+@if (Areas is { Items.Count: > 1 })
+{
+    <nav class="site-index" aria-label="Sections">
+        @foreach (var entry in Areas.Items)
+        {
+            <a href="#@entry.Id">@entry.Label</a>
+        }
+    </nav>
+}

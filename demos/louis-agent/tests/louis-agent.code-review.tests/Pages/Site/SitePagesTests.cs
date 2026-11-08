@@ -2,6 +2,7 @@ using System.Reflection;
 using AngleSharp.Dom;
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
+using LouisAgent.Web.Components.Site.Bands;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Tests.Pages.Site;
@@ -149,21 +150,27 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// The landing is one page the visitor scrolls (F110): its index names every section by id, each a section on
-    /// the page, and a progress line sits at the top for the frame's module to fill.
+    /// The landing is one page the visitor scrolls (F110), and since F118 its sections put themselves on the frame's
+    /// list as they draw: every section is listed, each by an id that is on the page once, the hero among them as
+    /// "Top". The order is the page's, read in the browser, so it isn't asserted here.
     /// </summary>
     [Test]
-    public void TheLanding_IndexesItsSections()
+    public void TheLanding_ListsItsSections_OnTheFramesIndex()
     {
         using var ctx = new BunitContext();
+        var areas = new PageAreas();
 
-        var cut = ctx.Render<HomePage>();
-        var targets = cut.FindAll(".site-index a").Select(a => a.GetAttribute("href")!).ToList();
+        RenderFragment page = builder =>
+        {
+            builder.OpenComponent<HomePage>(0);
+            builder.CloseComponent();
+        };
+        var cut = ctx.Render<CascadingValue<PageAreas>>(parameters => parameters.Add(c => c.Value, areas).AddChildContent(page));
+        var targets = areas.Items.Select(entry => entry.Id).ToList();
 
-        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the index names the sections");
-        Assert.That(targets, Has.All.StartWith("#"));
-        Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
-        Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the sections list themselves");
+        Assert.That(areas.Items, Does.Contain(new IndexEntry("top", "Top")));
+        Assert.That(targets.Where(target => cut.FindAll($"[id='{target}']").Count != 1), Is.Empty);
     }
 
     /// <summary>

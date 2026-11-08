@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -50,6 +51,9 @@ public partial class SiteShell
     public RenderFragment? ChildContent { get; set; }
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    /// <summary>The page's areas (F118): the bands fill it as they draw, and the index on the left reads it.</summary>
+    private readonly PageAreas _areas = new();
 
     private JsModule? _motion;
 

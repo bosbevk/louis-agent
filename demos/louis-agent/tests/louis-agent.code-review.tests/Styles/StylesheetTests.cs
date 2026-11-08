@@ -73,11 +73,10 @@ public class StylesheetTests
     }
 
     /// <summary>
-    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer, the
-    /// index lights the section in view as a bar in the accent, and a band keeps its room above its content.
+    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer and a
+    /// band keeps its room above its content. The index's lit bar is the framework's since F118, tested beside it.
     /// </summary>
     [TestCase(".panel:hover { transform: translateY(-3px);")]
-    [TestCase(".site-index a.active::before { width: 10px; height: 3px;")]
     [TestCase("padding: 64px var(--site-gutter) 40px;")]
     [TestCase(".band-strip { padding-bottom: 72px; }")]
     [TestCase(".btn:hover { transform: translateY(-2px);")]

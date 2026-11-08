@@ -2,13 +2,8 @@
 
 <PageTitle>louis-agent · an AI agent framework in C#</PageTitle>
 
-@* One page the visitor scrolls (F110): the frame's module fills the progress line and marks the section in view in
-   the index; the sections carry the ids the index names. *@
-<div class="site-progress" id="site-progress" aria-hidden="true"></div>
-<nav class="site-index" aria-label="Sections">
-    <a href="#top">Top</a><a href="#rule">One rule</a><a href="#proof">Measured</a><a href="#how">How it works</a><a href="#concepts">Concepts</a><a href="#built">Built on it</a><a href="#custom">Custom agents</a><a href="#contact">Contact</a>
-</nav>
-
+@* One page the visitor scrolls (F110): the frame draws the progress line and the section index from the bands below
+   (F118), so a band's id and kicker are all a section needs to be listed. *@
 <Hero />
 
 <Band Id="rule" Kicker="One rule">
@@ -26,7 +21,7 @@
     <p class="band-note">The parts and the words are the real ones. <a href="/how-it-works">The long version</a> follows one turn through every layer of core.</p>
 </Band>
 
-<Band Id="concepts" Kicker="Four concepts">
+<Band Id="concepts" Kicker="Four concepts" Short="Concepts">
     <h2 class="chrome reveal">The engine is how, an identity is who, a pack is what.</h2>
     <div class="grid-3">
         <article class="panel reveal">

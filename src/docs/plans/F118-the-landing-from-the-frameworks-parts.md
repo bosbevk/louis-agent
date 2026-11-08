@@ -116,6 +116,25 @@ sequenceDiagram
 5. **Docs.** ADR 0106's consequences updated with what moved, the web and site docs, the work log's row, F118 out of
    the TODO and the open list, this plan deleted.
 
+## Approved during the build
+
+Louis is reviewing the Docker copy as the steps land (2026-11-08); his words are the picks, the rest are the
+recommended options taken unattended.
+
+- **The index has one width and a long label wraps** (Louis: "should be a fixed width and wrapped"): 150px, the dot
+  on the first line; `Short` stays for a site that wants a shorter word, and the landing keeps its three. Because the
+  content column is 1280px centred, the index hides under 1560px instead of 1240px, or it would reach into the text.
+- **The order is the page's, not the draw's.** A band inside a component (the hero's mark, the proof tiles) registers
+  after the page's own bands, so the index's own module reads where each section stands after every draw and the
+  list is put in that order. The module also marks the link in view after every draw: a mark made while the page
+  was still short pointed at "Concepts" at the top of the landing.
+- **One area alone is no index** (the Architecture page): the index draws with two entries or more.
+- **A click on an index entry stays on the page** (Louis: "the clicks take you to the home page"): a `#area` link
+  resolves against the page's base, so Blazor's own handler opened the home page from every other page; the frame
+  hears the click in the capture phase, first, and Blazor leaves it alone.
+- **The spotlight sits under the site's corner** (z-index 9 under 10), so the guide's own words are never dimmed,
+  and follows the area while it plays; the lit area's scroll lands 96px under the header, as the frame's links do.
+
 ## Done when
 
 Every page of the site shows the section index on the left with the progress line, built from its bands; the

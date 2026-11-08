@@ -3,6 +3,10 @@
    is reached under ::deep. A site sets --site-gutter in its own settings; without it the frame keeps a plain one. ---- */
 .site { min-height: 100vh; display: flex; flex-direction: column; }
 
+/* The scroll progress line at the very top (F110, the frame's since F118): the module sets its width as the page
+   scrolls. It reads the site's call-to-action colour, so a theme changes it. */
+.site-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 30; background: var(--web-cta); box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6); }
+
 .site-header {
     display: flex;
     align-items: center;
