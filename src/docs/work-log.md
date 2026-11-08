@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 72 | 74 |
+| Features (`F`) | 73 | 73 |
 | Fixes (`FX`) | 74 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (104 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -53,7 +53,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F15 | Model limits and local models | Next |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then | Next |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next |
-| F112 | The guide mails Louis a lead: a leads pack with one tool, Resend behind a seam, the rule in the voice | Next |
 | F51 | Hosting for public traffic | Next |
 | F75 | Puls local spec | Puls |
 | F76 | Cook for the week | Puls |
@@ -132,6 +131,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| F112 | 2026-11-08 | The guide mails Louis a lead: a leads pack with one tool that refuses an incomplete lead and tells the truth when it only reached the log, Resend behind a seam with the log sender on the PC, the rule in the voice (ask, repeat back, send on yes, once), ADR 0101 |
 | F113 | 2026-11-08 | Cards that open: one CardDeck in the framework's web draws a row of short cards and, on a click, one story sliding in under the row; the agents on Built on it, the identities, the packs and how the rand come about are decks, each held by a test |
 | F111 | 2026-11-08 | A diagram on every page: one GraphView in the framework's web draws an SVG from data a page declares and reveals it once as it enters; seven diagrams on the louis-agent site, each held to the code by a test (the identity's parts, the solution's groups, the pipeline's order, the demos on disk) |
 | F110 | 2026-11-08 | The landing like Puls: the lockup in the header and the menu on the right (the frame's), a section index, a progress line and reveals driven by the frame's own motion module, the guide's personality (fun, bubbly, excited; teaches and sells by showing; the roadmap's money stays Louis's), and a custom-agents band on the landing and on Contact |
