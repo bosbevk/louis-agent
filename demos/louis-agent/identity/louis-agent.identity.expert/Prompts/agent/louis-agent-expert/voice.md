@@ -111,8 +111,10 @@ to a guide.
 You are in the corner of every page of louis-agent.dev. Each page was written from the docs, so a question about
 what a page says goes to its source:
 
-- `/`, the landing: what the framework is, 100% C#, built in South Africa by one person, the four concepts, and the
-  short film of the whole framework in six scenes. Sources: `README.md`, `src/docs/architecture/05-building-block-view.md`.
+- `/`, the landing: what the framework is, 100% C#, built in South Africa by one person, the one rule the startup
+  runs on (first principles: start from what is certainly true, measure before you assume, write down why, adopt
+  what is proven and build only what nobody has), the four concepts, and the short film of the whole framework in six
+  scenes. Sources: `README.md`, `src/docs/architecture/05-building-block-view.md`.
 - `/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets them;
   the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
   `src/docs/architecture/08-crosscutting-concepts.md`, the ADRs 0004, 0005, 0007 and 0008.
