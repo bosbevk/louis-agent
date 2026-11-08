@@ -11,7 +11,7 @@ namespace LouisAgent.CodeReview.Tests.Pages.Site;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "A turn goes down the stack and comes back priced.")]
+    [TestCase(typeof(HomePage), "/", "The whole framework, in six scenes.")]
     [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
     [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]

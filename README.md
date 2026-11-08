@@ -4,7 +4,7 @@
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="demos/louis-agent/docs/films/short.png">
-  <img alt="A 36-second film of one turn: your program starts a host and a prompt comes in, the catalogue says who the agent is and what it can do, core asks the model, a pack's tool runs behind a guard, the ledger prices every request, and the answer streams back with its bill." src="demos/louis-agent/docs/films/short.webp" width="960">
+  <img alt="A 36-second film of the whole framework in six scenes: your program starts a host, the catalogue says who the agent is and what it can do, core asks the model and a pack's tool runs behind a guard, the hosts are libraries and a site is an app on the framework's web, every check is an eval and every request lands in the ledger priced, and it runs in Docker on a PC and in Container Apps in Azure." src="demos/louis-agent/docs/films/short.webp" width="960">
 </picture>
 
 louis-agent is a framework: the engine (the tool loop, streaming, providers, cost tracking and safety guards, built on

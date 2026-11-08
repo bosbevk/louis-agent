@@ -1,45 +1,51 @@
-@* How the engine works, as a 36-second film in six scenes: a turn as a light travelling over the parts on a tilted
-   floor, a flat card with the detail of each scene, a caption strip. All of it is CSS (css/movie/stage.css for the
-   stage, css/movie/short.css for this film's positions and timing). *@
-<div class="movie" role="img" aria-label="A 36-second loop: your program starts a host and a prompt leaves it, the catalogue says which identity and packs it runs on, core asks the model, a pack's tool runs behind a guard, the ledger prices every request, and the answer returns with its bill; a detail card explains each scene">
+@* The whole framework, as a 36-second film in six scenes (F109.4): a light travelling over every part on a tilted
+   floor in the order a turn meets them, a flat card with the detail of each scene, a caption strip. All of it is CSS
+   (Styles/site/movie/_stage.scss for the stage, _short.scss for this film's positions and timing). *@
+<div class="movie" role="img" aria-label="A 36-second loop over the whole framework: your program starts a host, the catalogue says which identity and packs it runs on, core asks the model and a pack's tool runs behind a guard, the hosts are libraries and a site is an app on the framework's web, every check is an eval and every request lands in the ledger priced, and it runs in Docker on a PC and in Container Apps in Azure; a detail card explains each scene">
     <div class="stage film-short">
         <div class="camera" aria-hidden="true">
             <div class="floor">
                 <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
                 <div class="wire w5"></div><div class="wire w6"></div><div class="wire w7"></div><div class="wire w8"></div>
+                <div class="wire w9"></div><div class="wire w10"></div><div class="wire w11"></div><div class="wire w12"></div>
                 <div class="pool pool-host"></div><div class="pool pool-comp"></div><div class="pool pool-core"></div>
-                <div class="pool pool-model"></div><div class="pool pool-tools"></div><div class="pool pool-ledger"></div>
-                <div class="part p-host"><i>1</i>Your program<small>starts a host: Rider · API · CLI · MCP</small></div>
+                <div class="pool pool-hosts"></div><div class="pool pool-web"></div><div class="pool pool-evals"></div>
+                <div class="pool pool-ledger"></div><div class="pool pool-cloud"></div>
+                <div class="part p-hosts"><i>4</i>Hosts, as libraries<small>Rider · API · CLI · MCP</small></div>
+                <div class="part p-host"><i>1</i>Your program<small>a demo, or yours: a few lines</small></div>
+                <div class="part p-web">Sites<small>the framework's web · accounts</small></div>
                 <div class="part p-comp"><i>2</i>Catalogue<small>who it is · what it can do</small></div>
-                <div class="part p-ident">Identity<small>who it is</small></div>
+                <div class="part p-ident">Identity<small>voice · roles · as markdown</small></div>
                 <div class="part p-packs">Packs<small>tools, as packages</small></div>
+                <div class="part p-cloud"><i>6</i>Where it runs<small>Docker · Azure Container Apps</small></div>
                 <div class="part p-core core"><i>3</i>Core<small>the loop · guards · ledger · streaming</small></div>
+                <div class="part p-evals"><i>5</i>Evals<small>one harness · replay for $0</small></div>
                 <div class="part p-model">Model<small>Claude · Ollama · OpenAI-compatible</small></div>
-                <div class="part p-tools"><i>4</i>A pack's tool<small>files · git · dotnet · web · your own</small></div>
-                <div class="part p-ledger"><i>5</i>Usage ledger<small>one priced record per request</small></div>
+                <div class="part p-tools">A pack's tool<small>files · git · dotnet · web · your own</small></div>
+                <div class="part p-ledger">Usage ledger<small>one priced record per request</small></div>
                 <div class="shadow"></div><div class="dot"></div>
             </div>
         </div>
 
-        <div class="title"><span class="kicker">How the engine works</span><span class="title-text">One turn, through every part</span></div>
+        <div class="title"><span class="kicker">How it fits together</span><span class="title-text">The whole framework, in six scenes</span></div>
 
         <div class="cards">
-            <div class="card c1"><b>1 · Your program</b><code>CliHost.RunAsync(args, catalog)</code><ul><li>A few lines of your own start a host; every host speaks to the same engine</li><li>The prompt is appended to a history that only grows</li></ul><em>› fix the failing test</em></div>
-            <div class="card c2"><b>2 · The catalogue</b><code>new AgentCatalog(identities, packs)</code><ul><li>An identity is who the agent is: voice, modes, roles</li><li>A pack is what it can do, and ships as a package</li><li>The engine itself names no product</li></ul><em>identity: coding agent · packs: files, git, dotnet</em></div>
-            <div class="card c3"><b>3 · Core asks the model</b><code>Microsoft.Extensions.AI · IChatClient</code><ul><li>The history and the session's tools go to the model</li><li>The provider is configuration: Claude, Ollama or OpenAI-compatible</li><li>The prompt prefix stays the same bytes, so it caches</li></ul><em>thinking · reads the test first… → ReadWorkspaceFile</em></div>
-            <div class="card c4"><b>4 · A pack's tool, behind a guard</b><code>the tool loop · ToolCallGuards</code><ul><li>The pack holds the tool; the engine holds the guards</li><li>Arguments are data, never a shell command</li><li>A result over 50,000 characters is summarised first</li></ul><em>DotNetTest → 61,340 chars → 1,100</em></div>
-            <div class="card c5"><b>5 · The ledger</b><code>one record per request · a dated price table</code><ul><li>Every model request is recorded with its tokens and cost</li><li>An unknown price stays unknown, never 0</li></ul><em>request 3 · 9.4k tokens · $0.002</em></div>
-            <div class="card c6"><b>6 · Back to the host, with the bill</b><code>every host shows the same totals</code><ul><li>Thinking, text and every tool call streamed as they happened</li><li>The turn ends with what it cost</li></ul><em>turn: 4 requests · 31k tokens (27k cached) · $0.008</em></div>
+            <div class="card c1"><b>1 · Your program</b><code>CliHost.RunAsync(args, CodingCatalog.Create(), services)</code><ul><li>A few lines in a project of your own: a demo is one, a customer's is one</li><li>They name the catalogue and start a host; nothing in the framework knows your project exists</li></ul><em>demos/louis-agent · identity · hosts · web · evals · deploy</em></div>
+            <div class="card c2"><b>2 · The catalogue</b><code>new AgentCatalog(identities, packs)</code><ul><li>An identity is who the agent is: voice, modes, roles, as markdown</li><li>A pack is what it can do, and ships as a package that needs only the contracts</li><li>The engine itself names no product</li></ul><em>identity: coding agent · packs: files, git, dotnet</em></div>
+            <div class="card c3"><b>3 · Core, the model, a tool</b><code>IChatClient · ToolCallGuards</code><ul><li>One chat client across providers; the provider is configuration</li><li>The pack holds the tool; the engine holds the guards: arguments are data, a result over 50,000 characters is summarised first</li></ul><em>thinking → ReadWorkspaceFile → DotNetTest → 61,340 chars → 1,100</em></div>
+            <div class="card c4"><b>4 · The hosts, and the web</b><code>AgentHost.Build() · AgentKeyGate</code><ul><li>Every host is a library: a terminal, Rider's chat, the HTTP API, an MCP server</li><li>A site is a small app on the framework's web, served by the API from the same origin</li><li>A sign-in or a key before any session opens</li></ul><em>Rider · API + web · CLI · MCP</em></div>
+            <div class="card c5"><b>5 · The evals, and the ledger</b><code>UsageLedger · PriceTable</code><ul><li>Every check is a C# eval on one harness, beside what it proves; a stored run re-scores for nothing</li><li>Every model request is one record with its tokens and cost, from a dated price table; unknown stays unknown</li></ul><em>72 / 72 · $0.37 live · $0 to replay</em></div>
+            <div class="card c6"><b>6 · Where it runs</b><code>docker compose up · deploy.ps1 release</code><ul><li>Docker on a developer's machine, the repository mounted as the workspace</li><li>Two Container Apps in Azure on one private network, Mongo and the browser on a small VM</li><li>A merge to main releases both after green CI</li></ul><em>louis-agent.dev · mypuls.co.za</em></div>
         </div>
 
         <div class="strip" aria-hidden="true"></div>
         <div class="steps" aria-hidden="true"><i class="k1"></i><i class="k2"></i><i class="k3"></i><i class="k4"></i><i class="k5"></i><i class="k6"></i></div>
         <div class="bar" aria-hidden="true"><i></i></div>
-        <div class="cap c1"><b>1 / 6</b><span>Your program starts a host, and a prompt comes in.</span></div>
-        <div class="cap c2"><b>2 / 6</b><span>Its catalogue says who the agent is and what it can do.</span></div>
-        <div class="cap c3"><b>3 / 6</b><span>Core sends the history and the tools to the model. The provider is configuration.</span></div>
-        <div class="cap c4"><b>4 / 6</b><span>The model calls a pack's tool. A guard keeps the result in bounds.</span></div>
-        <div class="cap c5"><b>5 / 6</b><span>Every request lands in the ledger, priced.</span></div>
-        <div class="cap c6"><b>6 / 6</b><span>The answer streams back with its bill. Then the next turn.</span></div>
+        <div class="cap c1"><b>1 / 6</b><span>Your program names the catalogue and starts a host.</span></div>
+        <div class="cap c2"><b>2 / 6</b><span>The catalogue says who the agent is and what it can do.</span></div>
+        <div class="cap c3"><b>3 / 6</b><span>Core asks the model; a pack's tool runs behind a guard.</span></div>
+        <div class="cap c4"><b>4 / 6</b><span>The hosts are libraries; a site is an app on the framework's web.</span></div>
+        <div class="cap c5"><b>5 / 6</b><span>Every check is an eval; every request lands in the ledger, priced.</span></div>
+        <div class="cap c6"><b>6 / 6</b><span>Docker on a PC, Container Apps in Azure, released from GitHub.</span></div>
     </div>
 </div>
