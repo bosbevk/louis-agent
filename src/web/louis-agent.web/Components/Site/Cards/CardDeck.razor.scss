@@ -1,0 +1,47 @@
+/* CardDeck's own styles (F113): the summaries as a row of card-shaped buttons that lift under the pointer, the open
+   one marked on its edge, and the story under the row sliding in once. Colours read the framework's names. */
+.card-deck { display: flex; flex-direction: column; gap: 16px; }
+.card-deck-row { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 16px; }
+
+.card-summary {
+    all: unset;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 44px 22px 24px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    background: var(--bs-secondary-bg);
+    cursor: pointer;
+    text-align: left;
+    transition: transform .25s var(--web-ease), border-color .3s, box-shadow .3s;
+}
+.card-summary:hover, .card-summary:focus-visible { transform: translateY(-3px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45); }
+.card-summary.open { border-color: rgba(var(--bs-primary-rgb), .7); }
+.card-title { font: 600 18px/1.2 var(--bs-font-sans-serif); letter-spacing: -.02em; color: var(--bs-emphasis-color); }
+.card-summary-text { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
+.card-tag { font: 500 12px/1 var(--bs-font-monospace); color: var(--bs-tertiary-color); }
+.card-more { position: absolute; right: 18px; top: 20px; font-size: 22px; line-height: 1; color: var(--bs-tertiary-color); transition: transform .3s var(--web-ease), color .3s; }
+.card-summary.open .card-more { transform: rotate(90deg); color: var(--bs-primary); }
+
+/* The story slides in under the row; a new card's story slides in afresh (the deck keys it on the card). */
+.card-detail {
+    padding: 24px 28px;
+    border: 1px solid rgba(var(--bs-primary-rgb), .35);
+    border-radius: 14px;
+    background: var(--bs-secondary-bg);
+    animation: card-slide .45s var(--web-ease) both;
+}
+.card-detail-title { display: block; margin-bottom: 10px; font: 600 11px/1 var(--bs-font-monospace); letter-spacing: 1.4px; text-transform: uppercase; color: var(--bs-tertiary-color); }
+.card-detail-body ::deep p { margin: 0 0 10px; font-size: 15px; line-height: 1.6; color: var(--bs-secondary-color); }
+.card-detail-body ::deep p:last-child { margin-bottom: 0; }
+@keyframes card-slide { from { opacity: 0; translate: 0 -10px; } to { opacity: 1; translate: 0 0; } }
+
+@media (max-width: 720px) {
+    .card-deck-row { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .card-detail { animation: none; }
+}

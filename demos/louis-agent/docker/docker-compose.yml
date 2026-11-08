@@ -120,6 +120,10 @@ services:
       AGENT_PEERS: ${AGENT_PEERS:-}
       # The docs the expert reads (F109.3): the repo, mounted at /workspace, holds them as the image's /app/docs does.
       DOCS_ROOT: /workspace
+      # The triage team (F106.3): its runs and its people under the demo's data, the departments file from config.
+      TRIAGE_RUNS: /workspace/demos/louis-agent/data/triage/runs
+      TRIAGE_PEOPLE: /workspace/demos/louis-agent/data/triage/people
+      TRIAGE_DEPARTMENTS: /workspace/demos/louis-agent/config/departments.yaml
       # The guide's door (F109.3): the expert answers a visitor without a sign-in, this many times a day per address.
       OPEN_IDENTITY: louis-agent-expert
       OPEN_SESSIONS_PER_DAY: "50"

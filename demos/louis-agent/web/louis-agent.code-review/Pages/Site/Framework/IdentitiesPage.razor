@@ -6,6 +6,7 @@
     <span class="kicker">Identities</span>
     <h2 class="chrome">Who an agent is, as files.</h2>
     <p class="lede">An identity is who the agent is: its voice, its modes, its roles and the packs it names, all markdown in a project of its own. The engine runs any identity you hand it. Your program picks one, or several, the way this site's program runs the coding agent and the guide in its corner.</p>
+    <GraphView Spec="IdentityGraph.Spec" Title="An identity, what it holds, and the level each part speaks at" />
 </section>
 
 <section class="band">
@@ -28,28 +29,20 @@
 
 <section class="band">
     <span class="kicker">The four that exist</span>
-    <div class="grid-3">
-        <article class="panel">
-            <h3>Puls</h3>
-            <p>The South African assistant: a voice in Afrikaans and one in English, five specialists as roles, two minions, and the packs that find a shop, estimate prices and read recipes.</p>
-            <p class="muted"><code>louis-agent.identity.puls</code></p>
-        </article>
-        <article class="panel">
-            <h3>The coding agent</h3>
-            <p>Works on your repository with the files, git, dotnet, shell and web packs, and has a second voice for the orchestrator that has it fix a service's errors.</p>
-            <p class="muted"><code>louis-agent.identity.coding</code></p>
-        </article>
-        <article class="panel">
-            <h3>The guide</h3>
-            <p>The expert in this site's corner: one voice on one pack, the framework's own docs, read-only. It answers about the framework from the docs and names the doc it read.</p>
-            <p class="muted"><code>louis-agent.identity.expert</code></p>
-        </article>
-        <article class="panel">
-            <h3>The triage team</h3>
-            <p>A manager as the voice, the hub every result passes through, and three roles: a sorter, an investigator and a reviewer. The coder is the coding agent, reached as a peer. Built for the workflow that triages a service's errors, which is coming.</p>
-            <p class="muted"><code>louis-agent.identity.triage</code></p>
-        </article>
-    </div>
+    <CardDeck>
+        <Card Title="Puls" Summary="The South African assistant: two voices, five specialists, two minions." Tag="louis-agent.identity.puls">
+            <p>A voice in Afrikaans and one in English, five specialists as roles, two minions, and the packs that find a shop, estimate prices and read recipes.</p>
+        </Card>
+        <Card Title="The coding agent" Summary="Works on your repository with the files, git, dotnet, shell and web packs." Tag="louis-agent.identity.coding">
+            <p>Its tools are the files, git, dotnet, shell and web packs, and it has a second voice for the orchestrator that has it fix a service's errors.</p>
+        </Card>
+        <Card Title="The guide" Summary="The expert in this site's corner: one voice on one pack, the framework's own docs." Tag="louis-agent.identity.expert">
+            <p>One voice on one pack, the framework's own docs, read-only. It answers about the framework from the docs, plainly to a visitor and in full to a developer.</p>
+        </Card>
+        <Card Title="The triage team" Summary="A manager and three roles that triage a service's errors: a sorter, an investigator, a reviewer." Tag="louis-agent.identity.triage">
+            <p>A manager as the voice, the hub every result passes through, and three roles: a sorter that names the department, an investigator that finds the cause and its area, and a reviewer that judges a fix. The coder is the coding agent. The workflow that runs them on a service's errors is being built.</p>
+        </Card>
+    </CardDeck>
 </section>
 
 <section class="band">
