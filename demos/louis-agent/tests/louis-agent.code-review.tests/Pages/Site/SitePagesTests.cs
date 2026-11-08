@@ -19,7 +19,7 @@ public class SitePagesTests
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
     [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
-    [TestCase(typeof(ContactPage), "/contact", "Building an agent for a .NET team?")]
+    [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
@@ -65,6 +65,10 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "one person")]
     [TestCase(typeof(HomePage), "href=\"/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
+    [TestCase(typeof(HomePage), "id=\"custom\"")]
+    [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(ContactPage), "Custom agents")]
+    [TestCase(typeof(ContactPage), "mailto:")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
