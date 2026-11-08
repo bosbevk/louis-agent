@@ -1,7 +1,7 @@
 # 0066. The engine's site is static Razor, and its films are CSS
 
 **Status:** Superseded in part by F109.1 (2026-11-08): the site's pages are the code-review app's, Blazor WebAssembly on
-the framework's web, in a frame the framework provides; the films stay CSS and their export stays as ADR 0077 says ·
+the framework's web, in a frame the framework provides; the films stay CSS and their export stays as ADR 0077 says; and by [ADR 0100](../../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md) (F109.4): what's planned is shown, labelled, not kept to one line ·
 **Date:** 2026-11-03 · **Feature:** F54
 
 ## Context

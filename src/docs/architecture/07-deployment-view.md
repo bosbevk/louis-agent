@@ -46,6 +46,6 @@ button, signed in by OpenID Connect ([ADR 0097](../adr/0097-puls-deploys-from-gi
 | `rg-puls-za`, Azure SQL `puls-sql-za` | `puls_accounts`, the free offer, paused when idle | — |
 
 The domain points at the environment's static IP with a Container Apps managed certificate, DNS-only in Cloudflare;
-the how-to is [Puls's deploy README](../../../demos/puls/deploy/azure/README.md). The framework's static site is not a
-deployment of its own: it merges into the louis-agent demo's web app as its layout page (Louis, 2026-11-08), a later
-feature, and that app is then deployed the way Puls is.
+the how-to is [Puls's deploy README](../../../demos/puls/deploy/azure/README.md). The framework's site is the louis-agent
+demo's web app's landing (F109.1), deployed as the second app above on `louis-agent.dev` (F109.2), with the guide in its
+corner (F109.3) and the whole architecture on its pages (F109.4, [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)).
