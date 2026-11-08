@@ -35,5 +35,7 @@ public static class IdentityGraph
             new GraphEdge("roles", "level1"),
             new GraphEdge("small-jobs", "level2"),
             new GraphEdge("packs", "level0", "tools"),
+            // A specialist may call another (Louis, FX85); the arrows back to the identity went again ("take these out").
+            new GraphEdge("level1", "level1", "calls another"),
         ]);
 }
