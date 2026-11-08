@@ -477,6 +477,10 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   root, so it never sees a pack Puls doesn't name; the docs pack's own tests hold its tools to the convertible shape
   (public, described, plain values, text back) instead. Step 1's two tests that spelled an identity's name as a
   string use its enum, as ADR 0043's test asked.
+- **F109.3 step 3, two notes** (2026-11-08): the coding agent's router test named every toolset of the catalogue,
+  which now holds the expert's docs toolset too; it names the toolsets of the packs the first identity uses, so
+  one identity's packs are never another's to route. The docs pack's `NoMatches` became `NothingFound`: every
+  `*ToolMessage` member name is unique across the packs a demo loads, and the files pack had that one.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

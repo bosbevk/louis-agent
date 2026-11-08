@@ -27,14 +27,20 @@ public class CodingRouterTests
         string doc = Routing();
         var catalog = CodingPrompts.Catalog;
 
-        // Every toolset but minions: a specialist's toolset, never a chat's, and this product has no minion role.
-        foreach (string toolset in catalog.Toolsets.Select(t => t.Name).Where(name => name != CoreToolset.Minions.Wire()))
+        // Every toolset but minions (a specialist's toolset, never a chat's; this product has no minion role) and the
+        // ones of packs another identity names (F109.3: the expert's docs are not the coding agent's to route).
+        var coding = catalog.Identities[0];
+        var othersToolsets = catalog.Packs.Where(p => !coding.Packs.Contains(p.Name))
+            .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToHashSet(StringComparer.Ordinal);
+        foreach (string toolset in catalog.Toolsets.Select(t => t.Name)
+                     .Where(name => name != CoreToolset.Minions.Wire() && !othersToolsets.Contains(name)))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
         Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
 
         string[] tools =
         [
-            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(", "PythonRun", "WebSearch", "CreateSkillFile",
+            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(", "PythonRun", "WebSearch",
+            "CreateSkillFile",
             "LogTimeByTaskName", "GetWorkItemsByAssignee",
         ];
         foreach (string tool in tools)

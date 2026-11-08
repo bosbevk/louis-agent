@@ -2,6 +2,8 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Identities.Coding;
+using LouisAgent.Identities.Expert;
+using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
@@ -23,16 +25,19 @@ public static class CodingCatalog
     public static IReadOnlyList<IAgentPack> Packs()
     {
         HostEnvironment.Load();
-        return Packs(PaymoOptions.FromEnvironment(), DevOpsOptions.FromEnvironment());
+        return Packs(PaymoOptions.FromEnvironment(), DevOpsOptions.FromEnvironment(), DocsOptions.FromEnvironment());
     }
 
     /// <summary>The same list with the settings given, so the golden files hold it without this machine's keys.</summary>
-    public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps) =>
-        [
-            new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-            new DevOpsPack(devOps),
-        ];
+    public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps, DocsOptions docs) =>
+    [
+        new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
+        new DevOpsPack(devOps), new DocsPack(docs),
+    ];
 
-    /// <summary>The catalogue a program hands to its host.</summary>
-    public static AgentCatalog Create() => new([new CodingIdentity()], Packs());
+    /// <summary>
+    /// The catalogue a program hands to its host: the coding agent first, so it is the default, and the expert
+    /// beside it (F109.3), which a session opens as by name.
+    /// </summary>
+    public static AgentCatalog Create() => new([new CodingIdentity(), new ExpertIdentity()], Packs());
 }

@@ -11,6 +11,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
+    <ProjectReference Include="..\..\identity\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
     <!-- packs -->
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.shell\louis-agent.pack.shell.csproj" />
@@ -19,6 +20,7 @@
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.dotnet\louis-agent.pack.dotnet.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.devops\louis-agent.pack.devops.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.paymo\louis-agent.pack.paymo.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
     </ItemGroup>
 
 </Project>

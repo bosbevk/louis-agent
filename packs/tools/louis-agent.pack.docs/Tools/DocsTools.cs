@@ -102,7 +102,7 @@ public sealed class DocsTools
         }
 
         return matches.Count == 0
-            ? MessageText.Format(DocsToolMessage.NoMatches, new { Query = query })
+            ? MessageText.Format(DocsToolMessage.NothingFound, new { Query = query })
             : string.Join('\n', matches);
     }
 

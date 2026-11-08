@@ -25,7 +25,7 @@ public enum DocsToolMessage
     QueryEmpty,
 
     [Description("Nothing in the docs contains '{Query}'. Try another word, or ListDocs to see what is there.")]
-    NoMatches,
+    NothingFound,
 
     [Description("'{Path}' is empty.")] FolderEmpty,
 }
