@@ -32,7 +32,8 @@ public class SolutionLayoutTests
     [TestCase("demos/starter/web", "louis-agent.starter")]
     [TestCase("demos/starter/hosts", "louis-agent.starter-api")]
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
-    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.expert")]
+    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.expert",
+        "louis-agent.identity.triage")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
@@ -56,7 +57,7 @@ public class SolutionLayoutTests
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
     [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests",
-        "louis-agent.code-review.tests",
+        "louis-agent.code-review.tests", "louis-agent.identity.triage.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
     [TestCase("packs/tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests",
         "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests",
