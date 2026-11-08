@@ -17,14 +17,17 @@ export function order(ids) {
     return [...present, ...ids.filter(id => !present.includes(id))];
 }
 
-// The link whose section has passed the upper half of the screen is the one in view. At the page's end the last
-// section can't reach the middle of the screen, so it is the one in view (FX82).
+// The link whose section's top has passed the line just under the header is the one in view: the same place a jump
+// lands a section, so a jump always lights what it went to, and at the top of the page the first section is lit. A
+// line halfway down the screen left a short first section never lit on a tall screen (F118, Louis: "that one never
+// activates"). At the page's end the last section can't reach the line, so it is the one in view (FX82).
+const inViewLine = 140;
 const spy = () => {
     const links = $$(".site-index a");
-    let active = -1;
+    let active = links.length ? 0 : -1;
     links.forEach((a, k) => {
         const s = document.getElementById(a.getAttribute("href").slice(1));
-        if (s && s.getBoundingClientRect().top < innerHeight * .45) active = k;
+        if (s && s.getBoundingClientRect().top <= inViewLine) active = k;
     });
     if (links.length && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.length - 1;
     links.forEach((a, k) => a.classList.toggle(activeClass, k === active));
