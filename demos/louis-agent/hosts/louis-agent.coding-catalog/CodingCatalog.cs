@@ -7,6 +7,7 @@ using LouisAgent.Identities.Triage;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Triage;
 using LouisAgent.Packs.Leads;
+using LouisAgent.Packs.Site;
 using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
@@ -37,7 +38,7 @@ public static class CodingCatalog
         TriageOptions triage, LeadsOptions leads) =>
     [
         new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-        new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads),
+        new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads), new SitePack(),
     ];
 
     /// <summary>

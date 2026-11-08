@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
     <!-- F112: the guide's way to mail Louis a lead. -->
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.leads\louis-agent.pack.leads.csproj" />
+    <!-- F117: the guide's way to take a visitor to a page of the site, or an area of it. -->
+    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.site\louis-agent.pack.site.csproj" />
     </ItemGroup>
 
 </Project>

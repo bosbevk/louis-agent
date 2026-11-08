@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget;
@@ -29,6 +31,72 @@ public class ChatWidgetTests
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ChatText());
         return ctx;
+    }
+
+    /// <summary>A context whose API answers a message with the given stream instead of the recorded turn.</summary>
+    private static BunitContext ContextStreaming(string sse)
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var settings = new ChatSettings();
+        var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/messages")
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") }
+            : FixtureApi.Answer(request));
+        var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
+        ctx.Services.AddSingleton(settings);
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
+        ctx.Services.AddSingleton(new ChatText());
+        return ctx;
+    }
+
+    /// <summary>A turn in which the model calls ShowPage for the levels on Identities, and nothing else.</summary>
+    private const string ShowPageStream = """
+        event: message_start
+        data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
+
+        event: content_block_start
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities#levels"}}}
+
+        event: content_block_stop
+        data: {"type":"content_block_stop","index":0}
+
+        event: content_block_start
+        data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_show","content":"Shown: the visitor's browser is now on /identities#levels.","is_error":false}}
+
+        event: content_block_stop
+        data: {"type":"content_block_stop","index":1}
+
+        event: message_delta
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1,"output_tokens":1,"requests":1}}
+
+        event: message_stop
+        data: {"type":"message_stop"}
+
+        """;
+
+    /// <summary>
+    /// The guide takes the visitor to a page (F117, Louis: "I want this agent to take you to a page", "direct you to a
+    /// certain part of the page"): on a ShowPage call in the turn the widget moves the browser to the path and asks its
+    /// module to show the area, scrolled to and lit up.
+    /// </summary>
+    [Test]
+    public void AShowPageCall_MovesTheBrowser_AndShowsTheArea()
+    {
+        using var ctx = ContextStreaming(ShowPageStream);
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
+        module.Setup<Page>("pageText").SetResult(new Page("/", "louis-agent", "An AI agent framework.", []));
+        module.SetupVoid("showArea", "levels");
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+
+        Send(cut, "where are the levels?");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities#levels"));
+            Assert.That(module.Invocations.Where(call => call.Identifier == "showArea").Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
+        });
     }
 
     private static IRenderedComponent<ChatWidget> Render(BunitContext ctx) =>
@@ -130,13 +198,13 @@ public class ChatWidgetTests
     {
         using var ctx = Context(out var handler);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
-        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own."));
+        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own.", []));
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
         Send(cut, "which page am I on?");
         Send(cut, "and then?");
-        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide."));
+        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide.", []));
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("/packs");
         Send(cut, "and here?");
 

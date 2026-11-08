@@ -127,6 +127,7 @@ known limitations below are facts about today, not tasks.
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
+| F118 | The landing from the framework's parts: the section index built from the bands, the hero, tiles and contact strip as framework components with the site's words, so a new site gets this landing's shape with one layout | Now | ADR 0106 |
 
 ## Known limitations
 
