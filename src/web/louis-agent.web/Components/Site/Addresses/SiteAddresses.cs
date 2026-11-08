@@ -83,10 +83,15 @@ public sealed class SiteAddresses
         id.Length > 0 && char.IsAsciiLetterLower(id[0]) &&
         id.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-');
 
-    /// <summary>An address in one form: lowercase, one leading slash, no trailing one, no query or fragment.</summary>
+    /// <summary>
+    /// An address in one form: the path alone (a full address, as the browser gives it, loses its host), lowercase,
+    /// one leading slash, no trailing one, no query or fragment.
+    /// </summary>
     private static string Clean(string address)
     {
-        string path = address.Split('?', '#')[0].Trim().ToLowerInvariant().TrimEnd('/');
+        string trimmed = address.Trim();
+        if (Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https") trimmed = uri.AbsolutePath;
+        string path = trimmed.Split('?', '#')[0].ToLowerInvariant().TrimEnd('/');
         if (path.Length == 0) return "/";
         return path.StartsWith('/') ? path : "/" + path;
     }
