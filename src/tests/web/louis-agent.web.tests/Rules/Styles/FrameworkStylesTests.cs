@@ -57,6 +57,15 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
             Does.Contain(".work-hidden .work { visibility: hidden; border: 0; }"));
 
+    /// <summary>
+    /// On a phone the chat widget's panel is the whole screen and the round button goes while it is open (FX69), so
+    /// nothing is clipped at the panel's edge and only the head's × closes it.
+    /// </summary>
+    [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
+    [TestCase("position: fixed;\n        inset: 0;\n        width: 100vw;\n        height: 100dvh;")]
+    public void TheWidgetsPanel_FillsAPhone(string rule) =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()
