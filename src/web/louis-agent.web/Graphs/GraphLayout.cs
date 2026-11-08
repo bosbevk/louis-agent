@@ -19,10 +19,17 @@ public static class GraphLayout
 {
     private const double BoxWidth = 170;
     private const double BoxHeight = 52;
-    private const double NotedBoxHeight = 64;
+    /// <summary>What a line of the note adds to a box; the note wraps at <see cref="NoteWidth"/> characters of the code font.</summary>
+    private const double NoteLine = 12;
+    /// <summary>How many characters of the 10px code font fit a line inside the box.</summary>
+    public const int NoteWidth = 25;
     private const double Gap = 18;
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
     private const double MinColumnGap = 60;
+    /// <summary>How far under the drawing the first arrow that goes back runs, and the step between two such arrows.</summary>
+    private const double BackLane = 34, BackStep = 18;
+    /// <summary>How far out of a box's right side an arrow to itself bulges.</summary>
+    private const double SelfBulge = 44;
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     /// <summary>Places a diagram across the given width.</summary>
@@ -47,12 +54,17 @@ public static class GraphLayout
             }
         }
 
-        // An arrow only between two boxes that exist.
+        // An arrow only between two boxes that exist. One that goes back (to an earlier column) loops under the drawing,
+        // one lane each; one to its own box loops out of the box's right side.
         var byId = nodes.ToDictionary(placed => placed.Node.Id);
-        var edges = spec.Edges
-            .Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To))
-            .Select(edge => Curve(edge, byId[edge.From], byId[edge.To]))
-            .ToList();
+        var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
+        var back = known.Where(edge => byId[edge.To].Node.Column < byId[edge.From].Node.Column).ToList();
+        var edges = known.Select(edge =>
+            edge.From == edge.To ? SelfLoop(edge, byId[edge.From])
+            : back.Contains(edge) ? Back(edge, byId[edge.From], byId[edge.To], height + BackLane + BackStep * back.IndexOf(edge))
+            : Curve(edge, byId[edge.From], byId[edge.To])).ToList();
+        if (back.Count > 0) height += BackLane + BackStep * (back.Count - 1) + 8;
+        if (known.Any(edge => edge.From == edge.To && byId[edge.From].Node.Column == columns.Count - 1)) width += (int)SelfBulge;
 
         return new PlacedGraph(width, (int)Math.Ceiling(height), nodes, edges);
     }
@@ -84,11 +96,52 @@ public static class GraphLayout
             return joined.Count == 0 ? own : joined.Average();
         }
 
-        return column.Select((node, index) => (node, key: Key(node, index))).OrderBy(pair => pair.key)
+        var sorted = column.Select((node, index) => (node, key: Key(node, index))).OrderBy(pair => pair.key)
             .Select(pair => pair.node).ToList();
+        // The data's order stands unless the sort takes crossings away: a column already clear keeps the order it was given.
+        return Crossings(sorted, beside, edges, mine, theirs) < Crossings(column, beside, edges, mine, theirs) ? sorted : column;
     }
 
-    private static double HeightOf(GraphNode node) => node.Note is null ? BoxHeight : NotedBoxHeight;
+    /// <summary>How many pairs of arrows between the two columns cross each other.</summary>
+    private static int Crossings(List<GraphNode> column, List<GraphNode> beside,
+        IReadOnlyList<GraphEdge> edges, Func<GraphEdge, string> mine, Func<GraphEdge, string> theirs)
+    {
+        var here = column.Select((node, index) => (node.Id, index)).ToDictionary(pair => pair.Id, pair => pair.index);
+        var there = beside.Select((node, index) => (node.Id, index)).ToDictionary(pair => pair.Id, pair => pair.index);
+        var arrows = edges.Where(edge => here.ContainsKey(mine(edge)) && there.ContainsKey(theirs(edge)))
+            .Select(edge => (From: here[mine(edge)], To: there[theirs(edge)])).ToList();
+        int crossings = 0;
+        for (int a = 0; a < arrows.Count; a++)
+            for (int b = a + 1; b < arrows.Count; b++)
+                if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0) crossings++;
+        return crossings;
+    }
+
+    private static double HeightOf(GraphNode node) => node.Note is null ? BoxHeight : BoxHeight + NoteLine * NoteLines(node.Note).Count;
+
+    /// <summary>
+    /// The note as the lines the box shows (FX85, Louis: "need wrapping"): words taken in order while a line holds
+    /// <see cref="NoteWidth"/> characters, a word too long for any line on one of its own.
+    /// </summary>
+    public static IReadOnlyList<string> NoteLines(string note)
+    {
+        var lines = new List<string>();
+        var line = "";
+        foreach (string word in note.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (line.Length > 0 && line.Length + 1 + word.Length > NoteWidth)
+            {
+                lines.Add(line);
+                line = word;
+                continue;
+            }
+
+            line = line.Length == 0 ? word : $"{line} {word}";
+        }
+
+        if (line.Length > 0) lines.Add(line);
+        return lines;
+    }
 
     private static double ColumnHeight(IEnumerable<GraphNode> column)
     {
@@ -110,9 +163,30 @@ public static class GraphLayout
         double x2 = to.X, y2 = to.Y + to.H / 2;
         double bend = (x2 - x1) / 2;
         string path = $"M {N(x1)} {N(y1)} C {N(x1 + bend)} {N(y1)}, {N(x2 - bend)} {N(y2)}, {N(x2)} {N(y2)}";
-        // Where a word sits: three tenths along the curve, past the box it leaves and short of the one it reaches.
-        var (wordX, wordY) = At(0.3, x1, y1, x1 + bend, y1, x2 - bend, y2, x2, y2);
+        // Where a word sits: the curve's middle, the empty ground between two columns, so two words leaving one box part.
+        var (wordX, wordY) = At(0.5, x1, y1, x1 + bend, y1, x2 - bend, y2, x2, y2);
         return new PlacedEdge(edge, path, Length(x1, y1, x1 + bend, y1, x2 - bend, y2, x2, y2), wordX, wordY);
+    }
+
+    /// <summary>
+    /// An arrow back to an earlier column: down from the box's bottom middle, along a lane under the drawing, up into
+    /// the target's bottom middle; its word sits on the lane.
+    /// </summary>
+    private static PlacedEdge Back(GraphEdge edge, PlacedNode from, PlacedNode to, double lane)
+    {
+        double x1 = from.X + from.W / 2, y1 = from.Y + from.H, x2 = to.X + to.W / 2, y2 = to.Y + to.H;
+        string path = $"M {N(x1)} {N(y1)} C {N(x1)} {N(lane)}, {N(x2)} {N(lane)}, {N(x2)} {N(y2)}";
+        var (wordX, wordY) = At(0.5, x1, y1, x1, lane, x2, lane, x2, y2);
+        return new PlacedEdge(edge, path, Length(x1, y1, x1, lane, x2, lane, x2, y2), wordX, wordY + 4);
+    }
+
+    /// <summary>An arrow from a box to itself: out of its right side near the top, round, and back in near the bottom.</summary>
+    private static PlacedEdge SelfLoop(GraphEdge edge, PlacedNode box)
+    {
+        double x = box.X + box.W, y1 = box.Y + box.H * 0.3, y2 = box.Y + box.H * 0.7, bulge = x + SelfBulge;
+        string path = $"M {N(x)} {N(y1)} C {N(bulge)} {N(box.Y - 10)}, {N(bulge)} {N(box.Y + box.H + 10)}, {N(x)} {N(y2)}";
+        var (wordX, wordY) = At(0.5, x, y1, bulge, box.Y - 10, bulge, box.Y + box.H + 10, x, y2);
+        return new PlacedEdge(edge, path, Length(x, y1, bulge, box.Y - 10, bulge, box.Y + box.H + 10, x, y2), wordX + 6, wordY + 3);
     }
 
     private static string N(double value) => value.ToString("0.#", Invariant);

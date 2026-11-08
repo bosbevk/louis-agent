@@ -99,9 +99,78 @@ public class GraphLayoutTests
         Assert.That(first, Is.EqualTo(new[] { "a", "c", "b" }), "c, which goes to the top, comes before b, which goes to the bottom");
     }
 
-    /// <summary>A word sits near the arrow's start, past the box it leaves, not at the middle where a box may stand.</summary>
+    /// <summary>
+    /// A column whose data order already has no crossing keeps that order (FX85, Louis's screenshot: the pipeline's
+    /// boxes had moved although their arrows never crossed): the engine's six middleware stay in the order given.
+    /// </summary>
     [Test]
-    public void AWord_SitsNearTheArrowsStart()
+    public void AColumnWithoutCrossings_KeepsTheDataOrder()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("loop", "Loop", null, 0), new GraphNode("usage", "Usage", null, 0),
+                new GraphNode("cutoff", "Cut-off", null, 0), new GraphNode("tracing", "Tracing", null, 0),
+                new GraphNode("replay", "Replay", null, 0), new GraphNode("caching", "Caching", null, 0),
+                new GraphNode("tool", "Tool", null, 1), new GraphNode("ledger", "Ledger", null, 1), new GraphNode("model", "Model", null, 1),
+            ],
+            [new GraphEdge("loop", "tool"), new GraphEdge("usage", "ledger"), new GraphEdge("caching", "model")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var pipeline = placed.Nodes.Where(node => node.Node.Column == 0).OrderBy(node => node.Y).Select(node => node.Node.Id);
+        Assert.That(pipeline, Is.EqualTo(new[] { "loop", "usage", "cutoff", "tracing", "replay", "caching" }));
+    }
+
+    /// <summary>
+    /// An arrow back to an earlier column loops under the drawing (FX85, Louis: "shouldn't here be a line back, a
+    /// specialist is an agent session"): from the box's bottom middle, along a lane below the lowest box, up into the
+    /// target's bottom middle; the drawing grows to hold the lane.
+    /// </summary>
+    [Test]
+    public void AnArrowBack_LoopsUnderTheDrawing()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("who", "Who", null, 0), new GraphNode("part", "Part", null, 1), new GraphNode("session", "Session", null, 2)],
+            [new GraphEdge("who", "part"), new GraphEdge("part", "session"), new GraphEdge("session", "who", "a session of it")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var who = placed.Nodes.Single(node => node.Node.Id == "who");
+        var session = placed.Nodes.Single(node => node.Node.Id == "session");
+        var back = placed.Edges.Single(edge => edge.Edge.To == "who");
+        Assert.Multiple(() =>
+        {
+            Assert.That(back.Path, Does.StartWith($"M {session.X + session.W / 2:0.#} {session.Y + session.H:0.#} C"));
+            Assert.That(back.Path, Does.EndWith($"{who.X + who.W / 2:0.#} {who.Y + who.H:0.#}"));
+            Assert.That(placed.Height, Is.GreaterThan(placed.Nodes.Max(node => node.Y + node.H) + 20), "room for the lane");
+            Assert.That(back.WordY, Is.GreaterThan(placed.Nodes.Max(node => node.Y + node.H)), "the word sits on the lane");
+        });
+    }
+
+    /// <summary>An arrow from a box to itself loops out of its right side (a specialist may call another specialist).</summary>
+    [Test]
+    public void AnArrowToItself_LoopsOutOfTheRightSide()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 1)],
+            [new GraphEdge("a", "b"), new GraphEdge("b", "b", "calls another")]);
+
+        var placed = GraphLayout.Place(spec, 880);
+
+        var b = placed.Nodes.Single(node => node.Node.Id == "b");
+        var loop = placed.Edges.Single(edge => edge.Edge.From == "b" && edge.Edge.To == "b");
+        Assert.Multiple(() =>
+        {
+            Assert.That(loop.Path, Does.StartWith($"M {b.X + b.W:0.#} "));
+            Assert.That(loop.Path, Does.EndWith($"{b.X + b.W:0.#} {b.Y + b.H * 0.7:0.#}"));
+            Assert.That(loop.WordX, Is.GreaterThan(b.X + b.W), "the word sits beside the box");
+            Assert.That(placed.Width, Is.GreaterThan(880), "the drawing widens for a loop on the last column");
+        });
+    }
+
+    /// <summary>A word sits in the middle of its arrow, the empty ground between two columns, so two words leaving one box part.</summary>
+    [Test]
+    public void AWord_SitsBetweenTheColumns()
     {
         var placed = GraphLayout.Place(TwoColumns());
 
@@ -109,7 +178,7 @@ public class GraphLayoutTests
         var right = placed.Nodes.Single(node => node.Node.Id == "packs");
         var edge = placed.Edges.Single(edge => edge.Edge.To == "packs");
         double start = left.X + left.W, gap = right.X - start;
-        Assert.That(edge.WordX, Is.GreaterThan(start + gap * 0.15).And.LessThan(start + gap * 0.45));
+        Assert.That(edge.WordX, Is.GreaterThan(start + gap * 0.4).And.LessThan(start + gap * 0.6));
     }
 
     /// <summary>
