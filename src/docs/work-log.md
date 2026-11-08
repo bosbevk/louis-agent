@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 75 | 73 |
-| Fixes (`FX`) | 86 | 5 |
+| Fixes (`FX`) | 87 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -208,13 +208,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (86 done)
+## Fixes (87 done)
 
 | Id | When | What |
 |---|---|---|
 | FX92 | 2026-11-08 | The slogan reads "100% C#, because you can" |
 | FX91 | 2026-11-08 | The band and the guide say what drives the work: a stoic and Kierkegaard outlook, meaning and purpose, a startup of one; a described job is a custom agent to offer, and the agent can run where the customer is |
 | FX90 | 2026-11-08 | The guide opens on every copy of the site: the run profile and the compose file carry the guide's settings as the release does |
+| FX95 | 2026-11-08 | The guide knows its own leads: yes, shown, the leads pack it uses itself, a mailbox read for leads as a custom agent |
 | FX94 | 2026-11-08 | A lead goes to Louis's Gmail address: Outlook accepted the guide's mail and dropped it without a trace |
 | FX93 | 2026-11-08 | The deploy runs on the merge itself, CI on pull requests only (ADR 0097 amended) |
 | FX89 | 2026-11-08 | The gradient headings keep their descenders: the chrome class's box reaches down for them |
