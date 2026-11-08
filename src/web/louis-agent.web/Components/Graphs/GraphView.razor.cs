@@ -38,8 +38,11 @@ public partial class GraphView
 
     private static string Translate(PlacedNode node) => $"translate({N(node.X)} {N(node.Y)})";
 
-    /// <summary>The label sits in the middle of a plain box, and above the note in a noted one.</summary>
-    private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : node.H / 2 - 4;
+    /// <summary>The label sits in the middle of a plain box; in a noted one it stands above the note's lines, which start under it.</summary>
+    private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : 28;
+
+    /// <summary>Where the note's first line sits, each line one step lower.</summary>
+    private const double NoteTop = 44, NoteStep = 12;
 
     /// <summary>The column as a CSS variable, so the styles delay each column's motion a little more.</summary>
     private static string NodeStyle(PlacedNode node) => $"--col: {node.Node.Column}";
@@ -51,11 +54,17 @@ public partial class GraphView
     /// <summary>The words on a box.</summary>
     private static MarkupString Label(PlacedNode node) => Words("label", node.W / 2, LabelY(node), node.Node.Label);
 
-    /// <summary>The line under a box's words.</summary>
-    private static MarkupString Note(PlacedNode node, string note) => Words("note", node.W / 2, node.H - 16, note);
+    /// <summary>The line under a box's words, wrapped as the layout wraps it, one span a line.</summary>
+    private static MarkupString Note(PlacedNode node, string note)
+    {
+        var lines = GraphLayout.NoteLines(note);
+        var spans = string.Concat(lines.Select((line, at) =>
+            $"<tspan x=\"{N(node.W / 2)}\" y=\"{N(NoteTop + NoteStep * at)}\">{System.Net.WebUtility.HtmlEncode(line)}</tspan>"));
+        return new MarkupString($"<text class=\"note\" text-anchor=\"middle\">{spans}</text>");
+    }
 
     /// <summary>The word on an arrow, just above its middle.</summary>
-    private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.MidX, edge.MidY - 6, word, EdgeStyle(edge));
+    private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
 
     /// <summary>
     /// An SVG text element, centred on a point. Written as markup here because Razor keeps the <c>text</c> tag for
