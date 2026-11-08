@@ -1,4 +1,5 @@
 using LouisAgent.CodeReview.Components.Landing;
+using LouisAgent.CodeReview.Content;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Storage;
@@ -10,7 +11,7 @@ namespace LouisAgent.CodeReview.Tests.Layout;
 
 /// <summary>
 /// The site's frame leads everywhere the site goes: to every page of the menu, to the coding agent's chat at
-/// <c>/chat</c> unless a link is told the chat lives somewhere else, and, in its corner, to the guide (F109.3).
+/// <c>/chat</c> once it opens (closed today, FX88), and, in its corner, to the guide (F109.3).
 /// </summary>
 public class SiteLayoutTests
 {
@@ -109,15 +110,23 @@ public class SiteLayoutTests
         });
     }
 
-    /// <summary>The header's way into the chat leads to the app at /chat.</summary>
+    /// <summary>
+    /// The header's way into the chat says "Coming soon" and leads nowhere while the chat is closed to visitors (FX88,
+    /// Louis: "have this as coming soon and make it not accessible until the feature is done"); open, it leads to /chat.
+    /// </summary>
     [Test]
-    public void TheHeader_LeadsToTheChat()
+    public void TheHeader_SaysComingSoon_WhileTheChatIsClosed()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.FindAll(".site-actions a[href='/chat']"), Has.Count.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(SiteDoors.CodingAgent, Is.False, "the chat is closed today");
+            Assert.That(cut.FindAll(".site-actions a[href='/chat']"), Is.Empty);
+            Assert.That(cut.Find(".site-actions .is-soon").TextContent.Trim(), Is.EqualTo("Coming soon"));
+        });
     }
 
     /// <summary>The guide sits in the frame's corner, folded, on every page.</summary>
@@ -134,16 +143,22 @@ public class SiteLayoutTests
         Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
     }
 
-    /// <summary>Where the chat runs elsewhere, the link is told so.</summary>
+    /// <summary>While the chat is closed, a chat link is a "Coming soon" pill wherever it was told to go: no link, no address.</summary>
     [Test]
-    public void AChatLink_GoesWhereItsTold()
+    public void AChatLink_IsAComingSoonPill_WhileTheChatIsClosed()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<ChatLink>(parameters => parameters
             .Add(link => link.Address, "https://agent.example/chat")
+            .Add(link => link.Class, "btn btn-fill")
             .AddChildContent("Try it"));
 
-        Assert.That(cut.Find("a").GetAttribute("href"), Is.EqualTo("https://agent.example/chat"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("a"), Is.Empty);
+            Assert.That(cut.Find("span.btn.is-soon").TextContent, Is.EqualTo("Coming soon"));
+            Assert.That(cut.Find("span").GetAttribute("aria-disabled"), Is.EqualTo("true"));
+        });
     }
 }
