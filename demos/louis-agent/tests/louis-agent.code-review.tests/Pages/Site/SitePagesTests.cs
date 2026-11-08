@@ -155,8 +155,8 @@ public class SitePagesTests
 
     /// <summary>
     /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
-    /// the tour button"): the coding agent's chat first, then the tour, and nothing else; the line above says the
-    /// guide can walk you through.
+    /// the tour button", then "switch these buttons"): the tour first, then the coding agent's chat, and nothing else;
+    /// the line above says the guide can walk you through.
     /// </summary>
     [Test]
     public void TheStartSlide_OffersTheTour()
@@ -169,9 +169,9 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             Assert.That(actions, Has.Count.EqualTo(2));
-            Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Coming soon"));
-            Assert.That(actions[1].ClassList, Does.Contain("guide-button"));
-            Assert.That(actions[1].TextContent, Does.Contain("Take the tour"));
+            Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
+            Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Coming soon"));
             Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
         });
     }
