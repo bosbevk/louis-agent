@@ -327,7 +327,7 @@ sequenceDiagram
 | `ChatWidget`, `ChatWidgetText` | `src/web/louis-agent.web/Components/Widget/`, `Text/` | `LouisAgent.Web.Components.Widget`, `LouisAgent.Web.Text` | 6 new |
 | `ExpertChat` | `demos/louis-agent/web/louis-agent.code-review/Components/Guide/` | `LouisAgent.CodeReview.Components.Guide` | 7 new |
 
-## F109.4 The site tells the whole architecture (`feature/F109.4-the-site-tells-the-architecture`, after F109.2; to plan)
+## F109.4 The site tells the whole architecture (`feature/F109.4-the-site-tells-the-architecture`, after F109.3; steps drafted 2026-11-08)
 
 **Louis (2026-11-08):** "the whole website should explain the whole architecture, and the identity running on our
 landing page must be able to answer in detail everything mentioned on the website." Said first of the films ("we
@@ -388,6 +388,53 @@ should update the films with what it looks like now, explaining the whole archit
   F109.4; until then the links lead to the chat.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
+
+**The steps (drafted 2026-11-08, built unattended on Louis's word of that night; the storyboard pick is recorded under
+*Approved during the build*).** Each is one commit with its test first; the pages are written from the architecture
+docs, the ADRs and the project docs, and a test holds each claim to the repo:
+
+1. **The map test, and the Architecture page.** `SiteMapTests` reads the solution file and asks that every project
+   that ships (not a test, a testing helper or a stand-in) is named on some page of the site, so a new project can't
+   be left off; it fails first. `ArchitecturePage` at `/architecture` answers it: the whole framework as the
+   repository is laid out, one section per family (the engine and its satellites, the hosts as libraries, the
+   framework's web, the accounts, the evals, the packs with their four folders, the demos as someone's own project,
+   the deploy), every project named with one plain line, drawn from the building block view and the project docs.
+   The menu gains *Architecture*.
+2. **Identities.** `IdentitiesPage` at `/identities`: what an identity is (the principles every agent opens with, its
+   voice, modes and roles, the packs it names, all files in its own project), the three that exist (Puls with its
+   specialists, the coding agent, the guide in this site's corner) and how yours is a folder of markdown.
+   `IdentitiesPageTests` counts the `identity/` folders under `demos/` as `PacksPageTests` counts the packs. The menu
+   gains *Identities*.
+3. **The landing says it up front.** The hero says 100% C#, built in South Africa by one person, on
+   Microsoft.Extensions.AI; a band on identities and packs with the way to both pages; the proof tiles get the
+   figures the Measured page carries. `SitePagesTests` holds the words.
+4. **Measured, in rand too.** The Puls figures in rand beside the dollars, and how that works in plain words (every
+   request priced in dollars by a dated price table, the rates file turning them into rand, the rate's date shown,
+   ADR 0007); the rand figures and the rate come from the repo's rates file, read by the page's test so the page
+   can't quote a rate the file doesn't hold.
+5. **What it stands on, and the private repository.** *Built on it* gains a section on what the framework stands on
+   (Microsoft.Extensions.AI, ASP.NET Core, Blazor, ASP.NET Core Identity, EF Core, MongoDB's driver, Bootstrap;
+   nothing paid, each licence named), apart from what runs on it; a test holds each package named to the repo's
+   `Directory.Packages.props`. The links to the private repository go: *Build your own* and *Contact* say the
+   packages are heading for NuGet and the guide in the corner has read the docs; the words "are public" change.
+6. **What's coming.** `WhatsComingPage` at `/whats-coming`, from the roadmap and the TODO: each planned feature by
+   its id, one line, marked planned and dated; `WhatsComingTests` asks that every id the page names has a TODO row
+   that is not done, so the list can't outlive the plan. The landing's contact strip links it.
+7. **How it works, the whole way.** The page's three panels become the eight parts of the architecture page's
+   families, in the order of a turn, with the hosts as libraries, the framework's web, the accounts and the evals
+   harness named where the turn meets them; the rules stay.
+8. **The short film becomes the map.** Six scenes over the architecture (your program; the catalogue, an identity
+   and its packs; core, with the model and a pack's tool behind a guard; the hosts and the web a site is built on;
+   the evals and the ledger; where it runs, in Azure); the detailed film keeps the turn. Both films re-exported
+   and their hash renewed; the goldens follow.
+9. **The guide knows the site.** The expert's voice gains the site's map: which page says what, so a question about a
+   page's claim goes to the doc it was written from; the docs image keeps the architecture docs it reads. The site's
+   golden of the model request follows.
+10. **Docs, the ADR and the write-up.** ADR *The site tells the whole architecture, and shows what's planned as
+    planned* (supersedes ADR 0066's one honest line); the code-review app's design doc and guide; the architecture's
+    deployment view says the site is deployed; the write-up (skill 18, shipping: a site held to the code by tests);
+    the TODO's F109 row closes, the work log gains it, and this plan's lasting parts go to the ADR and the plan is
+    deleted, since F109.4 is the last child (the triage demo's *Try it* is F106.3's).
 
 ## F109.5 Puls deploys from GitHub (`feature/F109-deploy-from-github`, built 2026-11-07, merged in PR #223)
 
@@ -512,6 +559,11 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
 - **F109.3 step 8** (2026-11-08): the API doc, the web doc, the guide, the write-ups (skill 15: a door beside the
   gate; skill 20: a second identity in one catalogue), F107 narrowed to the chat, the work log. The live question
   on `louis-agent.dev` spends the key and waits for Louis's word; the merge deploys the app with the guide.
+- **F109.4 starts without the storyboard stop, and without the brand** (2026-11-08, on Louis's word that night:
+  "continue unattended and finish everything, when done with this feature move on to the next. you can PR yourself
+  and merge."). The ten steps above are built one commit each with their tests; the picks the section calls for
+  are the recommended ones and are recorded here as each step lands. `main` holds no louis-agent brand yet (only
+  Puls's), so the step that takes the brand waits for the files, and the site keeps its wordmark.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)
