@@ -1,6 +1,6 @@
 using LouisAgent.CodeReview.Pages.Site.Framework;
 
-namespace LouisAgent.CodeReview.Tests.Pages.Site;
+namespace LouisAgent.CodeReview.Tests.Pages.Site.Framework;
 
 /// <summary>
 /// The Identities page (F109.4) lists what's really in the repo: every identity under a demo's <c>identity/</c>

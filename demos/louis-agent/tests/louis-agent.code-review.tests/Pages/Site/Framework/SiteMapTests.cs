@@ -2,7 +2,7 @@ using System.Reflection;
 using LouisAgent.CodeReview.Pages.Site;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.CodeReview.Tests.Pages.Site;
+namespace LouisAgent.CodeReview.Tests.Pages.Site.Framework;
 
 /// <summary>
 /// The site tells the whole framework (F109.4): every project that ships is named on some page of the site, the way
