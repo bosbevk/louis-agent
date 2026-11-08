@@ -13,6 +13,7 @@ public class SitePagesTests
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
     [TestCase(typeof(HomePage), "/", "A turn goes down the stack and comes back priced.")]
     [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
+    [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]

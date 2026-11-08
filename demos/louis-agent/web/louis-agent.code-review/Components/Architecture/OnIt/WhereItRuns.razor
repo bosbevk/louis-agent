@@ -1,0 +1,15 @@
+@* Where it runs, on the Architecture page: Docker on a developer's machine, two Container Apps in Azure. *@
+<section class="band">
+    <span class="kicker">where it runs</span>
+    <h3>Docker on a PC, Container Apps in Azure.</h3>
+    <div class="grid-2">
+        <article class="panel">
+            <h4>On a developer's machine</h4>
+            <p>Every host is a Docker image on the .NET SDK, started from a demo's compose file with the repository mounted as the workspace. Rider starts the ACP server per chat, the API serves the web app on one port, and a local model runs in Ollama beside them when a profile asks for it.</p>
+        </article>
+        <article class="panel">
+            <h4>In Azure, from GitHub</h4>
+            <p>Puls and this site are two Container Apps on one private network, each with its own image, identity, keys and tenant. A small VM holds MongoDB and the headless browser on private addresses, Azure SQL holds the accounts, and a merge to <code>main</code> releases both apps after green CI, signed in without a password.</p>
+        </article>
+    </div>
+</section>
