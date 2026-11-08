@@ -36,12 +36,15 @@ public partial class MessageList : IAsyncDisposable
     private bool _wasStreaming;
     private string? _lastClass;
     private bool _scrollToEnd;
+    private bool _streamEnded;
 
     /// <summary>Notes a new chat or a new turn, so the next draw knows to scroll.</summary>
     protected override void OnParametersSet()
     {
         if (!ReferenceEquals(Chat, _shown)) _scrollToEnd = true;
         if (Streaming && !_wasStreaming) _scrollToEnd = true;
+        // The draw after the stream ends adds the cost line and takes the caret away (FX98): follow it to the end too.
+        if (!Streaming && _wasStreaming) _streamEnded = true;
         if (_lastClass == "hidden" && Class != "hidden") _scrollToEnd = true;
         _shown = Chat;
         _wasStreaming = Streaming;
@@ -51,10 +54,11 @@ public partial class MessageList : IAsyncDisposable
     /// <summary>Scrolls to the end through the list's module, when something new came in.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Streaming || _scrollToEnd)
+        if (Streaming || _scrollToEnd || _streamEnded)
         {
             await List.InvokeVoidAsync("scrollToBottom", _messages, _scrollToEnd);
             _scrollToEnd = false;
+            _streamEnded = false;
         }
     }
 
