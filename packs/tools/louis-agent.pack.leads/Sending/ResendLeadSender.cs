@@ -19,6 +19,9 @@ public sealed class ResendLeadSender(HttpClient http, LeadsOptions options) : IL
     public static readonly Uri Endpoint = new("https://api.resend.com/emails");
 
     /// <inheritdoc />
+    public bool Mails => true;
+
+    /// <inheritdoc />
     public async Task SendAsync(Lead lead, CancellationToken cancellationToken)
     {
         // The key goes in the header, never in the address or the body.

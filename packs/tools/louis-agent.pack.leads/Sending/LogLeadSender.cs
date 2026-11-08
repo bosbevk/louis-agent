@@ -18,6 +18,9 @@ public sealed class LogLeadSender(ILogger<LogLeadSender> log) : ILeadSender
     private const string Tag = "LEAD";
 
     /// <inheritdoc />
+    public bool Mails => false;
+
+    /// <inheritdoc />
     public Task SendAsync(Lead lead, CancellationToken cancellationToken)
     {
         log.Log(LogLevel.Information, LeadsLogMessage.Logged,

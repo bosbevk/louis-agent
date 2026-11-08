@@ -20,4 +20,7 @@ public enum LeadsToolMessage
 
     [Description("Not sent: the mail service answered {Reason}. Tell them to use the contact page, and try once more later.")]
     Failed,
+
+    [Description("Not mailed: this instance has no mail key, so the lead went to the log only ({Name}, {Contact}, about {Wants}). Tell them to use the contact page.")]
+    Logged,
 }

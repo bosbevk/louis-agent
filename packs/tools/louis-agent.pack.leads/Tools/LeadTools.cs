@@ -43,6 +43,18 @@ public sealed class LeadTools(ILeadSender sender, TimeProvider time)
             return MessageText.Format(LeadsToolMessage.Failed, new { Reason = failure.Message });
         }
 
+        // The truth to the model: a lead that only went to the log was not mailed to anyone.
+        if (!sender.Mails)
+        {
+            return MessageText.Format(LeadsToolMessage.Logged,
+                new
+                {
+                    lead.Name,
+                    lead.Contact,
+                    lead.Wants
+                });
+        }
+
         return MessageText.Format(LeadsToolMessage.Sent,
             new
             {

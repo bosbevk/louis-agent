@@ -15,6 +15,8 @@ public class LeadToolsTests
     /// <summary>A sender that keeps what it was given, or refuses with the message it was told to.</summary>
     private sealed class RecordingSender(string? refuseWith = null) : ILeadSender
     {
+        public bool Mails => true;
+
         public List<Lead> Sent { get; } = [];
 
         public Task SendAsync(Lead lead, CancellationToken cancellationToken)
@@ -75,6 +77,17 @@ public class LeadToolsTests
         string answer = await Tools(sender).SendLead("Thandi", "082 000 0000", "a bakery site");
 
         Assert.That(answer, Does.StartWith("Not sent: the mail service answered 422 Unprocessable Entity"));
+    }
+
+    /// <summary>With the log sender the model hears the truth: the lead was not mailed, only logged.</summary>
+    [Test]
+    public async Task TheLogSender_SaysItWasNotMailed()
+    {
+        var tools = new LeadTools(new LogLeadSender(Microsoft.Extensions.Logging.Abstractions.NullLogger<LogLeadSender>.Instance), new FixedClock());
+
+        string answer = await tools.SendLead("Thandi", "082 000 0000", "a bakery site");
+
+        Assert.That(answer, Does.StartWith("Not mailed: this instance has no mail key"));
     }
 
     /// <summary>The toolset's wire name is what a session asks for.</summary>
