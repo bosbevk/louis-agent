@@ -6,17 +6,20 @@
 .graph svg { width: 100%; height: auto; display: block; overflow: visible; }
 .graph figcaption { font: 600 10.5px/1.4 var(--bs-font-monospace); letter-spacing: 1.4px; text-transform: uppercase; color: var(--bs-tertiary-color); }
 
-/* Bright enough to read on the dark ground (FX85, Louis: "can't see"): the strokes in the body's colour, the words in white. */
+/* The arrows read on the dark ground (FX85, Louis: "can't see"): the body's colour, a word in white on a dark halo. */
 .edge { fill: none; stroke: var(--bs-secondary-color); stroke-width: 2; stroke-dasharray: var(--len); }
 .graph ::deep .word { fill: var(--bs-emphasis-color); font: 600 10px var(--bs-font-monospace); letter-spacing: 1px; text-transform: uppercase; paint-order: stroke; stroke: var(--bs-body-bg); stroke-width: 5px; stroke-linejoin: round; }
 .arrow { fill: var(--bs-secondary-color); }
 
-/* A box: the site's sans for its words, the code font for the line under them, both sized to the box (Louis: "use our
-   website fonts, code font maybe, then make the box smaller"). */
-.node rect { fill: var(--bs-secondary-bg); stroke: var(--web-border-hover); stroke-width: 1.5; transition: stroke .3s; }
-.node:hover rect { stroke: rgba(var(--bs-primary-rgb), .6); }
-.node ::deep .label { fill: var(--bs-emphasis-color); font: 600 13px var(--bs-font-sans-serif); letter-spacing: -.01em; }
-.node ::deep .note { fill: var(--bs-secondary-color); font: 10px var(--bs-font-monospace); }
+/* A box is the site's code listing (Louis, FX85: "use this box for a graph box"): the same hairline and corner, the
+   code font, the words light and the line under them quieter. Under the pointer it inverts, white box and dark words,
+   and glows (Louis: "an inverted colors hover effect", "make it all fancy"). */
+.node { cursor: default; }
+.node rect { fill: var(--bs-body-bg); stroke: var(--bs-border-color); stroke-width: 1; transition: fill .3s var(--web-ease), stroke .3s, filter .3s; }
+.node ::deep .label { fill: var(--bs-body-color); font: 600 12px var(--bs-font-monospace); transition: fill .3s; }
+.node ::deep .note { fill: var(--bs-secondary-color); font: 10px var(--bs-font-monospace); transition: fill .3s; }
+.node:hover rect { fill: var(--bs-emphasis-color); stroke: var(--bs-emphasis-color); filter: drop-shadow(0 12px 28px rgba(var(--bs-primary-rgb), .45)); }
+.node:hover ::deep .label, .node:hover ::deep .note { fill: var(--bs-body-bg); }
 
 /* The reveal: a box rises when its column's turn comes, an arrow draws once its box stands. */
 .graph.in .node { animation: graph-rise .6s var(--web-ease) both; animation-delay: calc(var(--col) * .28s); }
