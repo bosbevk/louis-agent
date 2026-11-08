@@ -30,7 +30,7 @@ public class ProviderButtonsTests
         {
             var links = cut.FindAll(".account-providers a");
             Assert.That(links, Has.Count.EqualTo(1));
-            Assert.That(links[0].TextContent, Is.EqualTo("Sign in with Google"));
+            Assert.That(links[0].TextContent.Trim(), Is.EqualTo("Sign in with Google"));
             Assert.That(links[0].GetAttribute("href"), Is.EqualTo("account/external/google?returnUrl=.%2F"));
         });
     }

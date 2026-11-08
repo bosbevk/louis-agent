@@ -1,12 +1,17 @@
 @* The other ways to sign in, one button per provider this instance has keys for; none draws nothing. The link leaves
-   the app for the API's challenge route, which sends the person to the provider and back. *@
+   the app for the API's challenge route, which sends the person to the provider and back. A provider with a brand
+   wears its own look, its logo beside the words (FX67); any other keeps the plain button. *@
 @if (_providers.Count > 0)
 {
     <div class="account-divider">@Text.Or</div>
     <div class="account-providers">
         @foreach (var provider in _providers)
         {
-            <a class="account-button is-plain" href="@LinkFor(provider.Name)">@string.Format(Text.SignInWith, provider.Label)</a>
+            var brand = ProviderBrands.Of(provider.Name);
+            <a class="@Look(brand)" href="@LinkFor(provider.Name)">
+                <ProviderLogo Brand="brand" />
+                <span>@string.Format(Text.SignInWith, provider.Label)</span>
+            </a>
         }
     </div>
 }
