@@ -93,7 +93,7 @@ each sign-in provider whose two secrets are set, and creates or updates the app.
 
 ## Deploying from GitHub (F109.5)
 
-A merge to `main` deploys both apps by itself once CI passes on it, and *Actions → Deploy the apps → Run workflow*
+A merge to `main` deploys both apps by itself at once (CI runs on the pull request, FX93), and *Actions → Deploy the apps → Run workflow*
 deploys `main` any time (`.github/workflows/deploy-puls.yml`). The workflow runs the same `deploy.ps1 release` as the
 PC, once per app, each tried even when the other's release failed. It signs in
 to Azure by OpenID Connect: GitHub signs a short-lived token for the run, and Azure trusts it only for this repo's
@@ -147,7 +147,7 @@ from the names the vault holds, so no value is ever on the app or in a file unde
 | `accounts-sql-url` | `config/.env.sql`'s password, the admin `pulsadmin`, the server from the outputs | the accounts (Identity's tables, F61.1) |
 | `agent-api-key-louis-agent`, `admin-api-key-louis-agent`, `auth-…-louis-agent` | `demos/louis-agent/config/.env.secrets`, by `secrets -App louis-agent-app` | the louis-agent app's own keys and providers; it references `anthropic-api-key`, `mongo-url` and `accounts-sql-url` by the same names as Puls (F109.2) |
 | `auth-google-client-id` and `-secret`, `auth-microsoft-…`, `auth-linkedin-…` | `config/.env.secrets` `AUTH_*` | the sign-in providers (F61.3); a pair is set together or not at all |
-| `resend-api-key` | `demos/louis-agent/config/.env.secrets` `RESEND_API_KEY`, by `secrets -App louis-agent-app` | the guide's lead mail (F112): without it the lead goes to the log and the guide says so. Resend verifies the sender once Louis adds the DNS records it gives for `louis-agent.dev` |
+| `resend-api-key` | `demos/louis-agent/config/.env.secrets` `RESEND_API_KEY`, by `secrets -App louis-agent-app` | the guide's lead mail (F112): without it the lead goes to the log and the guide says so. Resend verifies the sender once Louis adds the DNS records it gives for `louis-agent.dev`. `release` names it in the app's yaml only once the vault holds it (FX86, FX87), so after `secrets` the next release turns the mail on, no hand edit |
 
 `deploy.ps1 secrets` copies them all, prints only their names, and skips one whose value is missing. No value may hold
 `&` or `|` (az is a batch file on Windows, and cmd would cut it there). To rotate one: change it locally, run

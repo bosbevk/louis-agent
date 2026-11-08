@@ -18,12 +18,16 @@
 
     code { font-family: var(--bs-font-monospace); font-size: .92em; color: var(--web-soft-text); }
 
-    /* The big words in chrome: a white-to-steel gradient clipped to the letters. */
+    /* The big words in chrome: a white-to-steel gradient clipped to the letters. The gradient only paints the box, and
+       a heading's tight line height leaves the descenders (g, y, p) hanging out of it, so they came out cut off (FX89,
+       Louis: "we have cut offs here"); the box reaches down for them and gives the room back below. */
     .chrome {
         background: var(--web-cta);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
+        padding-bottom: .12em;
+        margin-bottom: -.12em;
     }
 
     /* A small mono label above a section. */
@@ -62,6 +66,8 @@
     .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
     .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
+    /* A door that isn't open yet (FX88): the button's shape, faded, and no answer to the pointer. */
+    .btn.is-soon { opacity: .5; cursor: default; pointer-events: none; }
 
     .panel {
         border: 1px solid var(--bs-border-color);

@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 73 | 73 |
-| Fixes (`FX`) | 75 | 6 |
+| Features (`F`) | 74 | 73 |
+| Fixes (`FX`) | 83 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -128,10 +128,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (72 done)
+## Features (74 done)
+## Features (74 done)
 
 | Id | When | What |
 |---|---|---|
+| F116 | 2026-11-08 | The guide's chat on the landing: the shape of Louis's own lead chat as an animated panel beside the custom-agents tiles, on the hero's live-turn styles, with made-up details |
 | F112 | 2026-11-08 | The guide mails Louis a lead: a leads pack with one tool that refuses an incomplete lead and tells the truth when it only reached the log, Resend behind a seam with the log sender on the PC, the rule in the voice (ask, repeat back, send on yes, once), ADR 0101 |
 | F113 | 2026-11-08 | Cards that open: one CardDeck in the framework's web draws a row of short cards and, on a click, one story sliding in under the row; the agents on Built on it, the identities, the packs and how the rand come about are decks, each held by a test |
 | F111 | 2026-11-08 | A diagram on every page: one GraphView in the framework's web draws an SVG from data a page declares and reveals it once as it enters; seven diagrams on the louis-agent site, each held to the code by a test (the identity's parts, the solution's groups, the pipeline's order, the demos on disk) |
@@ -206,10 +208,18 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (74 done)
+## Fixes (83 done)
 
 | Id | When | What |
 |---|---|---|
+| FX90 | 2026-11-08 | The guide opens on every copy of the site: the run profile and the compose file carry the guide's settings as the release does |
+| FX93 | 2026-11-08 | The deploy runs on the merge itself, CI on pull requests only (ADR 0097 amended) |
+| FX89 | 2026-11-08 | The gradient headings keep their descenders: the chrome class's box reaches down for them |
+| FX88 | 2026-11-08 | The coding agent's chat is closed to visitors until it is ready: "Coming soon" pills in the header and the hero, and the chat's address leads back to the landing |
+| FX87 | 2026-11-08 | The site's release carries the guide's mail key: `secrets` copies it into the vault and `release` names it only once the vault holds it |
+| FX86 | 2026-11-08 | The site's release names Resend's key only once the vault holds it; main's deploy after FX82 had failed on the missing secret |
+| FX85 | 2026-11-08 | The diagrams read: the listing's box, wrapped notes, a column ordered by its neighbours, every box on a row grid and every arrow a connector with right-angle bends, back arrows under the drawing (ADR 0103) |
+| FX84 | 2026-11-08 | A line between an answer's paragraphs: the chat's markdown says its own paragraph margin |
 | FX82 | 2026-11-08 | WhatsApp's mark, green and words on its buttons as its guidelines ask (ADR 0102), a hover on every button, the hairline above the contact strip, and the index marks the last section at the page's end |
 | FX81 | 2026-11-08 | The landing says the one rule the startup runs on, first principles, with a short summary |
 | FX80 | 2026-11-08 | The chat widget shows a turn's cost in the site's currency: it loads the rates when it opens |

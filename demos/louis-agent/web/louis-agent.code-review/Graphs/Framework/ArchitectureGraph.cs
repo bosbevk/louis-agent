@@ -16,8 +16,8 @@ public static class ArchitectureGraph
             new GraphNode("src/web", "src/web", "the framework's web", 1),
             new GraphNode("src/evals", "src/evals", "the harness and its runner", 1),
             new GraphNode("src/tools", "src/tools", "a developer's tool", 1),
-            new GraphNode("packs", "packs", "tools, evals, web and tests", 2),
-            new GraphNode("demos", "demos", "louis-agent, puls, starter", 3),
+            new GraphNode("packs", "packs", "tools, evals, web and tests", 1),
+            new GraphNode("demos", "demos", "louis-agent, puls, starter", 2),
         ],
         [
             new GraphEdge("src/engine", "src/hosts"),
