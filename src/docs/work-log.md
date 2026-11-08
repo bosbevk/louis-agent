@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 73 | 73 |
-| Fixes (`FX`) | 74 | 5 |
+| Fixes (`FX`) | 75 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -205,10 +205,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (73 done)
+## Fixes (74 done)
 
 | Id | When | What |
 |---|---|---|
+| FX82 | 2026-11-08 | WhatsApp's mark, green and words on its buttons as its guidelines ask (ADR 0102), a hover on every button, the hairline above the contact strip, and the index marks the last section at the page's end |
 | FX81 | 2026-11-08 | The landing says the one rule the startup runs on, first principles, with a short summary |
 | FX80 | 2026-11-08 | The chat widget shows a turn's cost in the site's currency: it loads the rates when it opens |
 | FX79 | 2026-11-08 | The slogan under the brand: a Tagline slot on the frame, "100% C#, because I can" on the site |

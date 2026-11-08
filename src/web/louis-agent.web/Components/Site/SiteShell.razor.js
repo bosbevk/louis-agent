@@ -41,6 +41,8 @@ const spy = () => {
         const s = document.getElementById(a.getAttribute("href").slice(1));
         if (s && s.getBoundingClientRect().top < innerHeight * .45) active = k;
     });
+    // At the page's end the last section can't reach the middle of the screen, so it is the one in view (FX82).
+    if (links.length && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.length - 1;
     links.forEach((a, k) => a.classList.toggle("active", k === active));
 };
 const scrolled = () => {
