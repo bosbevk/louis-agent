@@ -65,8 +65,10 @@ sequenceDiagram
 
 Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on, and since F109.4
 the site tells the whole architecture ([ADR 0100](../../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md)):
-`/` (the hero, 100% C# and South Africa up front, the numbers, the short film as the map of the whole framework, the
-four concepts, what's built on it, the contact strip), `/how-it-works` (the detailed film, one turn through core; the
+`/` (one page that moves, F110: the lockup and the menu on the right in the frame; a section index on the left and a
+progress line the frame's module drives; the hero, 100% C# and South Africa up front, the numbers, the short film as
+the map of the whole framework, the four concepts, what's built on it, the custom-agents band, the contact strip, each
+block revealing as it enters), `/how-it-works` (the detailed film, one turn through core; the
 parts in the order a turn meets them; the rules every turn keeps), `/architecture` (every project that ships, by
 family), `/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/proof` (the numbers in dollars
 and rand, and how the rand come about), `/built-on-it` (the two demos, what the framework stands on with each licence,
@@ -115,7 +117,8 @@ sequenceDiagram
 | `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Guide/` | `ExpertChat`: the framework's `ChatWidget` wrapped once with the expert identity and the site's words, placed in the frame's corner by `SiteLayout` and placeable on any page (F109.3) |
-| `Components/Landing/` | The landing's parts: the hero with its animated turn, the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat |
+| `Components/Landing/` | The landing's parts: the hero with its animated turn (`live-turn`, its own class since FX71), the proof tiles, built on it, the contact strip, and `ChatLink`, the way into the chat; the custom-agents band is the page's own |
+| `Styles/site/landing/_motion.scss`, `wwwroot/brand/mark.svg` | The look of the landing's motion (the index, the progress line, the reveal keyframes `site-rise` and `site-unmask`, the compact header), which the frame's module drives (F110); the app's own copy of the mark for the lockup |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
 | `Styles/app.scss`, `Styles/site/`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, then the site's look (F109.1: its values and elements right after the framework's, hung off the frame's root `.site` so the chat keeps the framework's; the landing, the films and its phone rules after the packs'), this site's few rules, and the two themes: `console`, the default, the framework's colours as they are, and `retro` to switch to; the picker's list is `wwwroot/css/themes/themes.json` ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
@@ -143,8 +146,9 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 
 - Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
-- The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address; *Build your own* says the
-  packages aren't on NuGet yet, and has to change the day they are.
+- The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address, in its early-access panel and
+  in the custom-agents section (F110); *Build your own* says the packages aren't on NuGet yet, and has to change the
+  day they are.
 - *Try it* and the hero's button lead to the chat until the triage demo (F106.3) gives them a page of their own; the
   brand mark waits for its files (the site keeps its wordmark); the short film's export grew to about 7 MB with its
   twelve parts, where the old one was under 3 MB.
