@@ -1,6 +1,7 @@
 @implements IAsyncDisposable
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
-   opened as the identity the page names. The words come in as parameters, so the framework names no site. *@
+   opened as the identity the page names. The words come in as parameters, so the framework names no site. With a
+   tour label, the folded corner also offers a tour of the page in view (F118), which asks the guide to walk it. *@
 <div class="chat-widget @(_open ? "is-open" : "")">
     @if (_open)
     {
@@ -20,6 +21,10 @@
                           SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
             </div>
         </section>
+    }
+    @if (!_open && TourLabel is not null)
+    {
+        <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
     }
     <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(_open ? "true" : "false")"
             aria-label="@(_open ? CloseLabel : OpenLabel)" title="@(_open ? CloseLabel : OpenLabel)">

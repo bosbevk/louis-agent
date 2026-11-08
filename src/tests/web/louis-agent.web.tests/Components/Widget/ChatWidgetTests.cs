@@ -128,6 +128,36 @@ public class ChatWidgetTests
         });
     }
 
+    /// <summary>
+    /// Every page offers its own tour (F118, Louis: "each page should have the take a tour option for the page"): with
+    /// a label set, the folded widget shows the tour button above its own, and a click opens the guide and asks it to
+    /// walk the visitor through the page; without one, there is none.
+    /// </summary>
+    [Test]
+    public void ThePagesTour_SitsAboveTheButton_AndAsksForAWalkthrough()
+    {
+        using var ctx = Context(out var handler);
+        ctx.Services.AddSingleton(new GuideDoor());
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide")
+            .Add(w => w.TourLabel, "Tour this page"));
+        var without = Render(ctx);
+
+        var tour = cut.Find(".chat-widget > button.guide-button.widget-tour");
+        string label = tour.TextContent;
+        tour.Click();
+
+        cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
+        var sent = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(label, Does.Contain("Tour this page"));
+            Assert.That(sent, Has.Some.Contains("Walk me through this page"));
+            Assert.That(cut.FindAll(".widget-tour"), Is.Empty, "the tour hides while the chat is open");
+            Assert.That(without.FindAll(".widget-tour"), Is.Empty);
+        });
+    }
+
     private static IRenderedComponent<ChatWidget> Render(BunitContext ctx) =>
         ctx.Render<ChatWidget>(parameters => parameters
             .Add(w => w.Identity, "guide")

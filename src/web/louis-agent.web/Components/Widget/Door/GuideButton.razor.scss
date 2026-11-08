@@ -31,6 +31,8 @@
     animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
 }
 .guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
+/* A size smaller above the guide's own button in the corner, a page's tour (F118). */
+.guide-button.widget-tour { height: 38px; padding: 0 16px; font-size: 13px; gap: 8px; }
 .guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
 .guide-words { white-space: nowrap; }
 

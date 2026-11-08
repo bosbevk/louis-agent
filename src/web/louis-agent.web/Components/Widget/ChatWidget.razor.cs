@@ -80,6 +80,14 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public string CloseLabel { get; set; } = "Close the chat";
 
+    /// <summary>The words on the page's tour button above the corner's own (F118); none, and there is no tour.</summary>
+    [Parameter]
+    public string? TourLabel { get; set; }
+
+    /// <summary>What the tour asks the guide.</summary>
+    [Parameter]
+    public string TourQuestion { get; set; } = "Walk me through this page, one section at a time.";
+
     private ChatRunner Runner { get; set; } = default!;
 
     /// <summary>The module beside this component that reads the page (F115), imported on first use.</summary>
