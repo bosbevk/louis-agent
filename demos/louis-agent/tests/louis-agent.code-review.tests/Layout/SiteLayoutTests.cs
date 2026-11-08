@@ -46,6 +46,17 @@ public class SiteLayoutTests
         Assert.That(cut.FindAll($".site-nav a[href='{address}']"), Has.Count.EqualTo(1));
     }
 
+    /// <summary>The footer says why it is all C#, in Louis's words (FX72).</summary>
+    [Test]
+    public void TheFooter_SaysWhyItIsCSharp()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because I can"));
+    }
+
     /// <summary>The brand is the lockup (F110): the mark, its own copy, then the name, as the brand README says.</summary>
     [Test]
     public void TheBrand_IsTheLockup()

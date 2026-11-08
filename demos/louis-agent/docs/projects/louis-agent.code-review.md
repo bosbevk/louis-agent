@@ -129,6 +129,23 @@ sequenceDiagram
 None of its own: it's served by the API on the same origin. The coding agent's program, `louis-agent.coding-api`, references it. If the API
 needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admin's key on the admin page; each stays in this browser.
 
+## What the site sells, and how to reach Louis
+
+The guide answers questions about buying from this section (FX72), so it holds the site's public offer in full:
+
+- **What we sell today: web hosting with an AI agent, for small businesses.** A website for a person or a small local
+  company, hosted and kept running by Louis, with an agent in its corner like the site's own guide. It knows the
+  business (its hours, prices, services and story, from files the owner can read and change), answers customers day
+  and night, and points them to the right place or person. Every answer it gives is measured, so the owner sees what
+  it costs. Every agent runs in its own closed Docker container that sees only what it is handed.
+- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know. The exact figure
+  comes from a short call. This is the one public price; anything else (a custom agent, the framework, a licence) is
+  not published yet and is asked for on the Contact page.
+- **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
+  spreadsheet, an accounting package), hosted and measured, every change checked by evals.
+- **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
+  subject already filled in. Say what the agent should do, which systems it needs to reach, and where it should run.
+
 ## Extending it
 
 A control for a pack goes in that pack's web project as a screen ([Build a pack](../../../../src/docs/guides/build-a-pack.md)), not here. A theme is
@@ -146,8 +163,8 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 
 - Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
-- The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address, in its early-access panel and
-  in the custom-agents section (F110); *Build your own* says the packages aren't on NuGet yet, and has to change the
+- The contact page's three mail links go to Louis's address (FX72), in its early-access panel, the custom-agents
+  section and the hosted-site offer; *Build your own* says the packages aren't on NuGet yet, and has to change the
   day they are.
 - *Try it* and the hero's button lead to the chat until the triage demo (F106.3) gives them a page of their own; the
   brand mark waits for its files (the site keeps its wordmark); the short film's export grew to about 7 MB with its

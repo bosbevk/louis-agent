@@ -1,3 +1,5 @@
+using System.Reflection;
+using AngleSharp.Dom;
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
 using Microsoft.AspNetCore.Components;
@@ -67,8 +69,14 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(HomePage), "closed Docker container")]
+    [TestCase(typeof(HowItWorksPage), "closed Docker container")]
+    [TestCase(typeof(HomePage), "What we sell today")]
+    [TestCase(typeof(HomePage), "R500 to R1,000 a month")]
     [TestCase(typeof(ContactPage), "Custom agents")]
-    [TestCase(typeof(ContactPage), "mailto:")]
+    [TestCase(typeof(ContactPage), "What we sell today")]
+    [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
+    [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
@@ -107,6 +115,36 @@ public class SitePagesTests
         Assert.That(targets, Has.All.StartWith("#"));
         Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
         Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// No page joins two clauses with a semicolon (Louis, 2026-11-08: "we should never do this"): a visitor reads short
+    /// sentences. Code listings are code and may keep theirs.
+    /// </summary>
+    [Test]
+    public void NoPage_JoinsClausesWithASemicolon()
+    {
+        using var ctx = new BunitContext();
+        var pages = typeof(HomePage).Assembly.GetTypes()
+            .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
+            .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
+
+        var offenders = pages.Select(page =>
+        {
+            var cut = ctx.Render(builder =>
+            {
+                builder.OpenComponent(0, page);
+                builder.CloseComponent();
+            });
+            foreach (var code in cut.FindAll("code, pre, style, script"))
+            {
+                code.Remove();
+            }
+            return (page.Name, Text: cut.Nodes.OfType<IElement>().Select(node => node.TextContent).Aggregate("", string.Concat));
+        }).Where(page => page.Text.Contains(';')).Select(page => page.Name).ToList();
+
+        Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(offenders, Is.Empty);
     }
 
     /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
