@@ -202,6 +202,7 @@ public class ChatWidgetTests
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
+        module.Setup<PageArea?>("inView").SetResult(new PageArea("program", "The whole program"));
         Send(cut, "which page am I on?");
         Send(cut, "and then?");
         module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide.", []));
@@ -213,7 +214,9 @@ public class ChatWidgetTests
         {
             Assert.That(bodies, Has.Count.EqualTo(3));
             Assert.That(bodies[0], Does.Contain("\"url\":\"/build-your-own\"").And.Contain("A few lines of your own."));
-            Assert.That(bodies[1], Does.Not.Contain("\"page\""), "the same page again carries nothing");
+            Assert.That(bodies[1], Does.Not.Contain("A few lines of your own."), "the same page's words go once");
+            Assert.That(bodies[1], Does.Contain("\"inView\":{\"id\":\"program\",\"heading\":\"The whole program\"}"),
+                "where they are on it goes every time (F118)");
             Assert.That(bodies[2], Does.Contain("\"url\":\"/packs\""));
         });
     }

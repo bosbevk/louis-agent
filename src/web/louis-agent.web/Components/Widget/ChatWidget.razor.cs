@@ -122,14 +122,22 @@ public partial class ChatWidget : IAsyncDisposable
 
     /// <summary>
     /// Sends the message, with the page the visitor is reading when this page hasn't gone with a message yet (F115):
-    /// read at send time, so it is the page as rendered, not the one before a move.
+    /// read at send time, so it is the page as rendered, not the one before a move. Every message carries the section
+    /// on their screen (F118, Louis: "see it did not know where I was"); a later one from the same page carries only
+    /// that, so the page's words go once.
     /// </summary>
     private async Task SendAsync()
     {
+        var inView = await Module.InvokeAsync<PageArea?>("inView");
         if (_pageSentFor != Nav.Uri)
         {
-            Runner.Page = await Module.InvokeAsync<Page>("pageText");
+            var page = await Module.InvokeAsync<Page?>("pageText");
+            Runner.Page = page is null ? null : page with { InView = inView };
             _pageSentFor = Nav.Uri;
+        }
+        else if (inView is not null)
+        {
+            Runner.Page = new Page(new Uri(Nav.Uri).AbsolutePath, "", "", [], inView);
         }
 
         await Runner.SendAsync();

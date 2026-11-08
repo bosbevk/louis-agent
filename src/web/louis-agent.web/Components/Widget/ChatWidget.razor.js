@@ -16,6 +16,18 @@ export function pageText() {
     return { url: location.pathname, title: document.title, text, areas };
 }
 
+// The section on the visitor's screen (F118): the last whose top has passed the line just under the header, the same
+// rule the section index lights by; at the page's end, the last section. Sent with every message, so "this" is known.
+export function inView() {
+    const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
+    const sections = [...document.querySelectorAll(".site-main > section[id]")];
+    if (sections.length === 0) return null;
+    let at = sections[0];
+    for (const section of sections) if (section.getBoundingClientRect().top <= 140) at = section;
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) at = sections[sections.length - 1];
+    return { id: at.id, heading: fold(at.querySelector(".kicker, h1, h2, h3")?.textContent) };
+}
+
 // A section paged sideways on this visitor's screen (F118) lists its pages, each by what it holds, so the guide can
 // turn to the page it talks about: "#parts/2", "page 2 of 3: Your program, The hosts, ...".
 const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);

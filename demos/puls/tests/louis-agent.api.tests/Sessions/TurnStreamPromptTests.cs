@@ -49,6 +49,36 @@ public class TurnStreamPromptTests
         Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n#parts What an identity holds\n#levels The three that exist]"));
     }
 
+    /// <summary>
+    /// The page says which section is on the visitor's screen (F118, Louis: "see it did not know where I was"), so
+    /// "this" in their message is that section.
+    /// </summary>
+    [Test]
+    public void TheSectionInView_IsNamed()
+    {
+        var request = new SendMessageRequest("what is this?", null,
+            new PageRequest("/", "louis-agent", "An AI agent framework.", [new PageAreaRequest("built", "Built on it")], new PageAreaRequest("built", "Built on it")));
+
+        string prompt = TurnStream.BuildPrompt(request);
+
+        Assert.That(prompt, Does.EndWith("#built Built on it\nOn their screen now: #built Built on it]"));
+    }
+
+    /// <summary>
+    /// A later message from the same page carries only where they are on it (F118): the page's words went with the
+    /// first, and the section in view is one short line.
+    /// </summary>
+    [Test]
+    public void OnTheSamePage_OnlyTheSectionInViewTravels()
+    {
+        var request = new SendMessageRequest("and this?", null,
+            new PageRequest("/", null, null, null, new PageAreaRequest("custom", "Custom agents")));
+
+        string prompt = TurnStream.BuildPrompt(request);
+
+        Assert.That(prompt, Is.EqualTo("and this?\n\n[On their screen now, on /: #custom Custom agents]"));
+    }
+
     /// <summary>Without a page the prompt is the words alone, as before.</summary>
     [Test]
     public void NoPage_LeavesThePromptAlone()

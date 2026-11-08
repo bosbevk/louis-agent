@@ -14,11 +14,17 @@ public enum ApiModelText
     [Description("\n[Attachment truncated: showing {Shown} of {Length} chars]")]
     AttachmentTruncated,
 
-    [Description("[The visitor is reading {Url} ({Title}). The page says:\n{Text}{Areas}]")]
+    [Description("[The visitor is reading {Url} ({Title}). The page says:\n{Text}{Areas}{InView}]")]
     Page,
 
     [Description("\nIts areas:\n{List}")]
     PageAreas,
+
+    [Description("\nOn their screen now: #{Id} {Heading}")]
+    PageInView,
+
+    [Description("[On their screen now, on {Url}: #{Id} {Heading}]")]
+    PageInViewOnly,
 
     [Description("\n[Page truncated: showing {Shown} of {Length} chars]")]
     PageTruncated,
