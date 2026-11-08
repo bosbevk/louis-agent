@@ -205,6 +205,33 @@ public class SitePagesTests
     }
 
     /// <summary>
+    /// Every id on a page names one place (F118): a card takes its id from its title, and the guide opens it by that id,
+    /// so a card named like a band beside it would send the visitor to the wrong one.
+    /// </summary>
+    [Test]
+    public void EveryIdOnAPage_NamesOnePlace()
+    {
+        using var ctx = new BunitContext();
+        var pages = typeof(HomePage).Assembly.GetTypes()
+            .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
+            .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
+
+        var twice = pages.SelectMany(page =>
+        {
+            var cut = ctx.Render(builder =>
+            {
+                builder.OpenComponent(0, page);
+                builder.CloseComponent();
+            });
+            return cut.FindAll("[id]").GroupBy(element => element.Id).Where(ids => ids.Count() > 1)
+                .Select(ids => $"{page.Name}: #{ids.Key}");
+        }).ToList();
+
+        Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(twice, Is.Empty);
+    }
+
+    /// <summary>
     /// Every page that explains a part of the framework shows one diagram of it (F111, Louis: "add a nice graph on each
     /// page"); the landing has its film, Contact and What's coming explain nothing.
     /// </summary>

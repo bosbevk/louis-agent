@@ -135,6 +135,14 @@ recommended options taken unattended.
 - **A page's last section fills the screen down to the footer** (Louis: "we need a min height for the section, in
   order for smooth transition"): a short last section ("Yours" on Identities) could not scroll up under the header,
   so a jump to it stopped early and looked cut off. The frame gives the last section a minimum height.
+- **The guide opens a card, as a framework feature** (Louis: "the agent should be able to click this also to show
+  people", then "it should be a framework feature which is implemented"); the first of three options, taken: a card
+  is an area. Its button carries an id made from its title (`AreaIds`) unless the site gives one, and is marked as a
+  card; the page the guide reads lists cards with its areas, as `(card, opens)`; `ShowPage("/identities#puls")`
+  opens the card as a click would and lights its whole deck. The other options were a second tool, `OpenCard`, and
+  a general click tool, refused because the guide could press what a visitor never chose. A site test holds every
+  id on a page to one place; it found the principles band and the principles file's own heading both named
+  `principles`, so the band is `the-principles` now.
 - **The spotlight sits under the site's corner** (z-index 9 under 10), so the guide's own words are never dimmed,
   and follows the area while it plays; the lit area's scroll lands 96px under the header, as the frame's links do.
 

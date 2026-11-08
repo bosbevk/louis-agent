@@ -11,11 +11,13 @@ public class SiteToolsTests
 {
     private readonly SiteTools _tools = new();
 
-    /// <summary>A page of the site, and a page with an area, are shown.</summary>
+    /// <summary>A page of the site, and a page with an area or a card (F118, a card's id may hold digits), are shown.</summary>
     [TestCase("/identities")]
     [TestCase("/identities#levels")]
     [TestCase("/")]
     [TestCase("/#rule")]
+    [TestCase("/identities#the-coding-agent")]
+    [TestCase("/proof#a-10-fixes")]
     public void ASitePath_IsShown(string path)
     {
         Assert.That(_tools.ShowPage(path), Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));

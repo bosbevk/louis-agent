@@ -4,10 +4,14 @@
 export function pageText() {
     const main = document.querySelector("main") ?? document.body;
     const text = (main?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 6000);
-    // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2).
-    const areas = [...document.querySelectorAll("section[id]")].map((section) => ({
-        id: section.id,
-        heading: (section.querySelector(".kicker, h1, h2, h3")?.textContent ?? "").replace(/\s+/g, " ").trim(),
+    // The page's named areas (F117): every section with an id, with the heading it carries (its kicker, else its h2),
+    // and every card the guide can open (F118), by its title and marked as a card.
+    const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
+    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].map((area) => ({
+        id: area.id,
+        heading: area.matches("[data-card]")
+            ? `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`
+            : fold(area.querySelector(".kicker, h1, h2, h3")?.textContent),
     }));
     return { url: location.pathname, title: document.title, text, areas };
 }
@@ -16,7 +20,9 @@ export function pageText() {
 // page a moment after the address changes), scrolls it to just under the header, and puts a spotlight on it: one
 // element laid over the area, which the web's styles draw as a dim over the rest of the page and a ring around the
 // area, in and out over four seconds. The spotlight follows the area while it plays, so a page still settling (an
-// image loading, a block revealing) keeps it in place. Gives up quietly after two seconds if the area never appears.
+// image loading, a block revealing) keeps it in place. A card is opened as a visitor's click would open it, and the
+// light falls on its whole deck, so the card and its story are lit together (F118). Gives up quietly after two
+// seconds if the area never appears.
 const headerRoom = 96;
 const spotlightPad = 14;
 const spotlightMs = 4000;
@@ -25,9 +31,12 @@ export function showArea(id) {
     const attempt = () => {
         const area = document.getElementById(id);
         if (area) {
-            const top = scrollY + area.getBoundingClientRect().top - headerRoom;
+            const card = area.matches("[data-card]");
+            if (card && area.getAttribute("aria-expanded") !== "true") area.click();
+            const target = card ? area.closest(".card-deck") ?? area : area;
+            const top = scrollY + target.getBoundingClientRect().top - headerRoom;
             scrollTo({ top: Math.max(0, top), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-            spotlight(area);
+            spotlight(target);
             return;
         }
         if (performance.now() - started < 2000) requestAnimationFrame(attempt);

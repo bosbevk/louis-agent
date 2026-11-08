@@ -21,10 +21,10 @@ public sealed class SiteTools
     /// <summary>Takes the visitor to a page of this site, or to an area of it.</summary>
     [Description(
         "Opens a page of this site in the visitor's browser, scrolled to one of its areas when the path names one " +
-        "after #, and lights the area up. Use it when the right page or area exists for what they ask; then say in " +
-        "one line what to look at. The page you are on lists its areas.")]
+        "after #, and lights the area up. A card is an area too, and it opens. Use it when the right page, area or " +
+        "card exists for what they ask; then say in one line what to look at. The page you are on lists its areas.")]
     public string ShowPage(
-        [Description("The page's path on this site, such as /packs, with an area after # for a part of it, such as /identities#levels.")]
+        [Description("The page's path on this site, such as /packs, with an area or a card after # for a part of it, such as /identities#levels or /identities#puls.")]
         string path)
     {
         if (!IsSitePath(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });
@@ -33,7 +33,8 @@ public sealed class SiteTools
 
     /// <summary>
     /// A path of this site: it starts with one slash, carries no scheme, no host, no climb out and no space, and an
-    /// area after the hash, when there is one, is an id in words.
+    /// area after the hash, when there is one, is an id in words: a letter first, then letters, digits and dashes,
+    /// as a card's id made from its title can hold a number (F118).
     /// </summary>
     private static bool IsSitePath(string path)
     {
@@ -43,6 +44,7 @@ public sealed class SiteTools
         int hash = path.IndexOf('#');
         if (hash < 0) return true;
         string area = path[(hash + 1)..];
-        return area.Length > 0 && char.IsAsciiLetterLower(area[0]) && area.All(c => char.IsAsciiLetterLower(c) || c == '-');
+        return area.Length > 0 && char.IsAsciiLetterLower(area[0]) &&
+               area.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-');
     }
 }
