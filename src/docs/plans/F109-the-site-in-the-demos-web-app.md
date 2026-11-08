@@ -375,6 +375,17 @@ should update the films with what it looks like now, explaining the whole archit
 - **The branding arrives with the next merge** (Louis, 2026-11-08: "when you are done, on the next merge the branding
   will be available"): the site takes it (the brand slot, the icon, the colours it names) in the first step after
   it lands, before F109.4's rewrite, so the pages and films are written on the brand.
+- **"Try it" is the triage demo, not a chat** (Louis, 2026-11-08, on the header's button: "this must just let the
+  user see the demo, no real chat but it should actually do triage right there, and the user must see it happen,
+  the flow"): the site's *Try it* and the hero's *Try the coding agent* lead to the triage demo page (F106.3), where
+  a visitor starts a real triage of a service's errors and watches each step of the flow as it happens, with no
+  chat of their own, and each step is explained as it happens (Louis: "and then it must be explained what is
+  happening", "with popups as the process is going forward"): as the flow advances, a popup per step opens beside
+  it and says in plain words what the agent is doing and why, the way the films' cards do, then gives way to the next;
+  and the guide in the corner stays on that page and can explain the running triage when asked (Louis: "our AI in
+  right hand bottom must show there and must be able to explain what is happening to the user"), so the demo page
+  hands the flow's steps to the guide as context of its session, not only to the popups; the coding chat at `/chat` stays behind a sign-in for Louis. Built with the triage demo, after
+  F109.4; until then the links lead to the chat.
 - **Order:** F109.1 moves the pages and films as they are, so the goldens prove the move; F109.2 deploys them;
   F109.3 brings the expert; F109.4 rewrites what they say, and F109.3's knowledge tool is sized to it.
 
@@ -492,6 +503,12 @@ as a done plan is. The second app (F109.2) deploys the same way once it exists.
   under a key of its own (`louis-agent.widget-chats`), since the store's one list is what the chat page shows; the
   store took an optional key for that. The widget's words are parameters with English defaults, not a text record,
   since a site sets them once in its own wrapper.
+- **F109.3 step 7, one note** (2026-11-08): the demo's web app references the expert identity's project for its name
+  (`ExpertIdentityName`), as ADR 0043 asks, rather than spelling it; the identity itself runs on the API. The two
+  site pages that mirror the code (the catalogue on *Build your own*, the packs list) followed the catalogue, as
+  their tests demanded. The browser check at 1400 and 390 wide could not be taken: Chrome's renderer stopped answering
+  screenshots three times in a row that night; the widget's goldens folded and open, the layout test on the corner and
+  the rebuilt image serving the widget's styles stand in, and Louis sees it on the PC's app and on louis-agent.dev.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md) · [ADR 0095](../adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md) · [louis-agent.code-review](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

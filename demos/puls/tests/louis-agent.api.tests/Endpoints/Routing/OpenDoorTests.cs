@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Config;
+using LouisAgent.Api.Endpoints;
 using LouisAgent.Choices;
 using LouisAgent.Identities.Puls;
 using Microsoft.AspNetCore.TestHost;
@@ -60,7 +61,7 @@ public class OpenDoorTests
         using var opened = await OpenAsync(client, new
         {
             identity = "guide",
-            toolsets = new[] { "files", "web" }
+            toolsets = new[] { TestToolset.Files.Wire(), TestToolset.Web.Wire() }
         });
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
 
@@ -69,17 +70,18 @@ public class OpenDoorTests
     }
 
     /// <summary>Any other identity, or none, is behind the key as before.</summary>
-    [TestCase("puls")]
-    [TestCase(null)]
-    public async Task AnotherIdentity_StaysBehindTheKey(string? identity)
+    [Test]
+    public async Task AnotherIdentity_StaysBehindTheKey()
     {
         await using var app = ApiTestHost.Build(Key, moreIdentities: [Guide], openDoor: Door);
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        using var opened = await OpenAsync(client, new { identity });
-
-        Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+        foreach (string? identity in new[] { PulsIdentityName.Puls.Wire(), null })
+        {
+            using var opened = await OpenAsync(client, new { identity });
+            Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), identity ?? "(none)");
+        }
     }
 
     /// <summary>Past the day's cap the door says so with a 429, and a session of someone else's is still not reachable.</summary>
@@ -107,7 +109,7 @@ public class OpenDoorTests
             Assert.That(first.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(second.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(third.StatusCode, Is.EqualTo(HttpStatusCode.TooManyRequests));
-            Assert.That(text, Does.Contain("rate_limit_error"));
+            Assert.That(text, Does.Contain(ApiErrorKind.RateLimit.Wire()));
             Assert.That(peek.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "a keyed session is not the door's");
         });
     }
