@@ -34,8 +34,12 @@ export function showArea(id) {
             const card = area.matches("[data-card]");
             if (card && area.getAttribute("aria-expanded") !== "true") area.click();
             const target = card ? area.closest(".card-deck") ?? area : area;
-            const top = scrollY + target.getBoundingClientRect().top - headerRoom;
-            scrollTo({ top: Math.max(0, top), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+            holdSnap();
+            place(target, true);
+            // A new page's router scrolls to the top a moment after the area appears, and a card's story grows the
+            // deck as it slides in: look again twice, and move once more if the area is not where it should be.
+            setTimeout(() => place(target, false), 350);
+            setTimeout(() => place(target, false), 900);
             spotlight(target);
             return;
         }
@@ -43,6 +47,31 @@ export function showArea(id) {
     };
     attempt();
 }
+
+// Where the area belongs (F118, Louis: "the agent must also center it, it takes you to the top"): centred in the
+// screen under the header when it fits, else its top just under the header.
+const placeFor = (target) => {
+    const r = target.getBoundingClientRect(), room = innerHeight - headerRoom;
+    const offset = r.height <= room ? headerRoom + (room - r.height) / 2 : headerRoom;
+    return Math.max(0, scrollY + r.top - offset);
+};
+
+// Moves the page there; a second look moves it only when it is more than a little off.
+const place = (target, first) => {
+    const top = placeFor(target);
+    if (!first && Math.abs(top - scrollY) < 24) return;
+    scrollTo({ top, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+};
+
+// The page's section snapping would pull the scroll to a section's start, away from the centred area: it rests while
+// the spotlight plays and comes back after.
+let snapHeld = null;
+const holdSnap = () => {
+    const root = document.documentElement;
+    clearTimeout(snapHeld);
+    root.style.scrollSnapType = "none";
+    snapHeld = setTimeout(() => root.style.removeProperty("scroll-snap-type"), spotlightMs);
+};
 
 // One spotlight at a time: a new one takes the old one down first.
 let lit = null;
