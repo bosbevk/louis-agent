@@ -14,7 +14,7 @@ itself before calling anything fixed. It never edits code.
 
 ```mermaid
 flowchart TD
-    Feed["ErrorFeed<br/>new events in logs/errors.jsonl"] --> Triage["AgentEngine (its own model)<br/>system prompt = runbooks<br/>tools = ServiceTools only"]
+    Feed["JsonLinesErrorFeed (the triage pack)<br/>new events in logs/errors.jsonl"] --> Triage["AgentEngine (its own model)<br/>system prompt = runbooks<br/>tools = ServiceTools and FixChecks"]
     Triage -->|expected| Ack["AcknowledgeError"]
     Triage -->|escalate| Esc["EscalateToHuman"]
     Triage -->|auto-fixable| Fix["CallLouisAgentFix<br/>(main checked out → session on louis-agent.api → FIX-RESULT)"]
@@ -25,10 +25,11 @@ flowchart TD
     Decision --> Main["back to main for the next error"]
 ```
 
-1. **Poll** (`Program.cs`): read new events from the service's error log (`ErrorFeed` remembers processed ids in
-   `processed.txt`, so each is triaged once; a failed triage stays unprocessed for the next run). `--once` runs one pass.
+1. **Poll** (`Program.cs`): read new events from the service's error log (the triage pack's `JsonLinesErrorFeed`,
+   since F106.3.1, remembers handled ids in `processed.txt`, so each is triaged once; a failed triage stays unhandled
+   for the next run). `--once` runs one pass.
 2. **Triage** each event with a fresh history: the runbooks are the system prompt, the event is fenced as untrusted data,
-   and the model's only tools are `ServiceTools` (via `AgentEngine`'s `toolsets:`).
+   and the model's only tools are `ServiceTools` and `FixChecks` (via `AgentEngine`'s `toolsets:`).
 3. **Fix** (`CallLouisAgentFix`): check `main` out (stashing leftovers), open a session on louis-agent.api, send the fix
    request, stream the reply, send "continue" up to three times if it ends without a `FIX-RESULT`, then delete the
    session.
@@ -48,12 +49,12 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    program["Program.cs: the poll"] --> feed["ErrorFeed"]
+    program["Program.cs: the poll"] --> feed["JsonLinesErrorFeed, the triage pack's"]
     feed --> errors[("logs/errors.jsonl, processed.txt")]
     program --> skills["OrchestratorSkills: the runbooks, as the system prompt"]
     program --> engine["AgentEngine: its own model"]
     skills --> engine
-    engine --> tools["ServiceTools: the only tools it has"]
+    engine --> tools["ServiceTools and FixChecks: the only tools it has"]
     tools --> fix["FixConversation, FixPrompt"]
     fix --> client["LouisAgentClient"]
     client -->|"HTTP and SSE"| api["louis-agent.api: louis-agent fixes it"]
@@ -68,9 +69,10 @@ flowchart TD
 | Path | What's in it |
 |---|---|
 | `Program.cs` | Start-up, the poll loop, the triage prompt, `Decision` parsing, runbook loading (`OrchestratorSkills`) |
-| `ServiceTools.cs` | The orchestrator's only tools: `CallLouisAgentFix`, `VerifyFixCommit`, `ReplayRequest`, `RunServiceTests`, `EscalateToHuman`, `AcknowledgeError`; the fix prompt; returning to `main` |
+| `ServiceTools.cs` | The fix and the two decisions: `CallLouisAgentFix`, `EscalateToHuman`, `AcknowledgeError`; the fix prompt; returning to `main` |
+| `Tools/Checks/FixChecks.cs` | The checks of a fix the coding agent claims (F106.3.1, split out by responsibility): `VerifyFixCommit`, `ReplayRequest`, `RunServiceTests` |
 | `LouisAgentClient.cs` | Sessions on louis-agent.api, SSE parsing into `AgentReply` (text, tool calls with inputs and results), `FIX-RESULT` parsing |
-| `ErrorFeed.cs` | Reads the error log, skips processed and malformed events, accepts only plain-token ids |
+| the triage pack's `Feed/JsonLinesErrorFeed` | Reads the error log, skips handled and malformed events, accepts only plain-token ids; moved out of this project in F106.3.1, so every department's workflow reads the same feed |
 | `CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
@@ -87,7 +89,7 @@ removed in CL10, so a run sets them by hand.
 ## Extending it
 
 The steps are in [Change the orchestrator](../guides/change-the-orchestrator.md). In short: a behaviour change is a
-runbook where it can be; a tool is a public method on `ServiceTools`.
+runbook where it can be; a tool is a public method on `ServiceTools` or `FixChecks`.
 
 ## Tests
 
