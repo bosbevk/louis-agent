@@ -16,8 +16,8 @@ public class GuidePlacesTests
     [Test]
     public void ThePage_NamesItsPlaces_ByTheirAddresses()
     {
-        var page = new Page("/identities/puls", "Identities", "Who an agent is.",
-            [new PageArea("levels", "The three that exist"), new PageArea("puls", "Puls (card, opens)"), new PageArea("parts/2", "page 2 of 3")],
+        var page = new Page("/identities/the-guide", "Identities", "Who an agent is.",
+            [new PageArea("levels", "The three that exist"), new PageArea("the-guide", "The guide (card, opens)"), new PageArea("parts/2", "page 2 of 3")],
             new PageArea("levels", "The three that exist"));
 
         var read = GuidePlaces.Addressed(page, Site, "/identities");
@@ -25,7 +25,7 @@ public class GuidePlacesTests
         Assert.Multiple(() =>
         {
             Assert.That(read.Url, Is.EqualTo("/identities"));
-            Assert.That(read.Areas.Select(area => area.Id), Is.EqualTo(new[] { "/identities/levels", "/identities/puls", "/identities/parts/2" }));
+            Assert.That(read.Areas.Select(area => area.Id), Is.EqualTo(new[] { "/identities/levels", "/identities/the-guide", "/identities/parts/2" }));
             Assert.That(read.InView!.Id, Is.EqualTo("/identities/levels"));
         });
     }
@@ -54,7 +54,7 @@ public class GuidePlacesTests
     /// <summary>A page tool's address goes to the page and the place; one that names no page goes nowhere.</summary>
     [TestCase("/identities", "/identities", "top")]
     [TestCase("/identities/2", "/identities", "top/2")]
-    [TestCase("/identities/puls", "/identities", "puls")]
+    [TestCase("/identities/the-guide", "/identities", "the-guide")]
     [TestCase("/how-it-works/parts/2", "/how-it-works", "parts/2")]
     [TestCase("/home/proof", "/", "proof")]
     public void AnAddress_GoesToItsPlace(string address, string page, string? place) =>
