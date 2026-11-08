@@ -14,6 +14,7 @@ using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -45,5 +46,6 @@ builder.Services.AddSingleton(new ChatHandoff("chat")); // a screen's Review but
 
 // Every place on the site's pages has its own address (ADR 0107), the landing's under /home, read from the pages' routes.
 builder.Services.AddSingleton(SiteAddresses.From("home", typeof(App).Assembly));
+builder.Services.AddSingleton<GuideDoor>(); // "Take the tour" and any other button that asks the guide in the corner
 
 await builder.Build().RunAsync();

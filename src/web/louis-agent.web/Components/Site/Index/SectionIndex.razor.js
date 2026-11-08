@@ -31,7 +31,18 @@ const spy = () => {
     });
     if (links.length && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.length - 1;
     links.forEach((a, k) => a.classList.toggle(activeClass, k === active));
-    if (active >= 0) follow(links[active].getAttribute("href"));
+    if (active >= 0 && !within(document.getElementById(links[active].dataset.section))) follow(links[active].getAttribute("href"));
+};
+
+// The address already names a place inside the section in view (ADR 0107): an open card in it, or a page of it paged
+// sideways. That address stays while the section does.
+const within = (section) => {
+    if (!section) return false;
+    const words = location.pathname.split("/").filter(Boolean);
+    const last = words[words.length - 1] ?? "";
+    if (/^\d+$/.test(last)) return words[words.length - 2] === section.id;
+    const card = last ? document.getElementById(last) : null;
+    return !!card && card.matches("[data-card][aria-expanded='true']") && section.contains(card);
 };
 
 // The address bar follows the section in view (F118, ADR 0107, Louis: "we should have it in the url"): each link is

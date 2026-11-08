@@ -4,6 +4,7 @@ using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -100,6 +101,30 @@ public class ChatWidgetTests
             Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities"));
             Assert.That(shown.Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
             Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }), "the bar shows the place's own address (ADR 0107)");
+        });
+    }
+
+    /// <summary>
+    /// A button anywhere asks the guide through the door (F118, "take the tour"): the panel opens and the question goes
+    /// as if the visitor had typed it.
+    /// </summary>
+    [Test]
+    public void AQuestionAtTheDoor_OpensThePanel_AndGoes()
+    {
+        using var ctx = Context(out var handler);
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var cut = Render(ctx);
+
+        cut.InvokeAsync(() => door.Ask("Walk me through this site."));
+
+        cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
+        var sent = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(sent, Has.Count.EqualTo(1));
+            Assert.That(sent[0], Does.Contain("Walk me through this site."));
+            Assert.That(cut.FindAll(".widget-panel"), Is.Not.Empty, "the panel is open");
         });
     }
 

@@ -154,6 +154,29 @@ public class SitePagesTests
     }
 
     /// <summary>
+    /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
+    /// the tour button"): the coding agent's chat first, then the tour, and nothing else; the line above says the
+    /// guide can walk you through.
+    /// </summary>
+    [Test]
+    public void TheStartSlide_OffersTheTour()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+
+        var actions = cut.Find(".hero .actions").Children.ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(actions, Has.Count.EqualTo(2));
+            Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Coming soon"));
+            Assert.That(actions[1].ClassList, Does.Contain("guide-button"));
+            Assert.That(actions[1].TextContent, Does.Contain("Take the tour"));
+            Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
+        });
+    }
+
+    /// <summary>
     /// The landing is one page the visitor scrolls (F110), and since F118 its sections put themselves on the frame's
     /// list as they draw: every section is listed, each by an id that is on the page once, the hero among them as
     /// "Top". The order is the page's, read in the browser, so it isn't asserted here.

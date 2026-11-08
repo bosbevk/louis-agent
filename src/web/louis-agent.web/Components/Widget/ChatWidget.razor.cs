@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Addresses;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -91,7 +92,20 @@ public partial class ChatWidget : IAsyncDisposable
         Runner.Changed += Redraw;
         Runner.ToolCalled += OnToolCalled;
         Currency.Changed += Redraw;
+        if (Door is { } door) door.Asked += OnAsked;
     }
+
+    /// <summary>The way in from a button anywhere on the site (F118), when the site has one.</summary>
+    private GuideDoor? Door => Services.GetService<GuideDoor>();
+
+    /// <summary>A button asked the guide a question: the panel opens and it goes as if the visitor had typed it.</summary>
+    private void OnAsked(string question) => InvokeAsync(async () =>
+    {
+        _open = true;
+        Runner.Draft = question;
+        StateHasChanged();
+        await SendAsync();
+    });
 
     /// <summary>
     /// The guide takes the visitor to a place (F117, ADR 0107): on a ShowPage call the address is read into the page
@@ -126,6 +140,7 @@ public partial class ChatWidget : IAsyncDisposable
         Runner.Changed -= Redraw;
         Runner.ToolCalled -= OnToolCalled;
         Currency.Changed -= Redraw;
+        if (Door is { } door) door.Asked -= OnAsked;
         if (_module is not null) await _module.DisposeAsync();
     }
 

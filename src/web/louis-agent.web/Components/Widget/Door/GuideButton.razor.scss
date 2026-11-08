@@ -1,0 +1,52 @@
+/* A button you cannot miss (F118, Louis: "just a more flashy button", "one you cannot miss"): the site's chrome
+   gradient, bold words and a spark, a light that sweeps across it every few seconds and a soft pulse of glow around it;
+   it lifts under the pointer. A visitor who asked for less motion gets it still, glow and all. */
+.guide-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--web-cta);
+    color: var(--bs-body-bg);
+    font-weight: 700;
+    letter-spacing: .01em;
+    overflow: hidden;
+    isolation: isolate;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .5), 0 12px 40px -10px rgba(var(--bs-primary-rgb), .7);
+    animation: guide-glow 2.8s var(--web-ease, ease-in-out) infinite;
+    transition: transform .25s var(--web-ease, ease-out);
+}
+.guide-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, rgba(var(--web-overlay-rgb), .85) 50%, transparent 70%);
+    translate: -120% 0;
+    animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
+}
+.guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
+.guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
+.guide-words { white-space: nowrap; }
+
+@keyframes guide-sweep {
+    0%, 55% { translate: -120% 0; }
+    85%, 100% { translate: 120% 0; }
+}
+@keyframes guide-glow {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .5), 0 12px 40px -10px rgba(var(--bs-primary-rgb), .7); }
+    50% { box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), .18), 0 16px 56px -6px rgba(var(--bs-primary-rgb), .95); }
+}
+@keyframes guide-twinkle {
+    0%, 100% { opacity: 1; scale: 1; }
+    50% { opacity: .55; scale: .82; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guide-button, .guide-button::after, .guide-spark { animation: none; }
+}
