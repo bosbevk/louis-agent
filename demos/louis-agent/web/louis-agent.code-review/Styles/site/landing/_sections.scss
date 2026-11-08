@@ -1,8 +1,10 @@
 /* The bands a page is made of: a kicker, a heading, a grid of panels; the stat tiles; the rules list; the contact
    strip in steel at the foot of the home page. */
 
+/* A band's room is above its content, as Puls spaces its sections (FX72): one gap between two bands, not two
+   paddings and a line in the middle of an empty screen. */
 .band {
-    padding: 72px var(--site-gutter);
+    padding: 64px var(--site-gutter) 40px;
     border-top: 1px solid var(--line);
     display: flex;
     flex-direction: column;
@@ -38,8 +40,9 @@
 .plan-id { font: 600 12px/1 var(--bs-font-monospace); letter-spacing: .08em; color: var(--bs-emphasis-color); margin-right: 6px; }
 .planned { font: 500 11px/1 var(--bs-font-monospace); letter-spacing: .14em; text-transform: uppercase; color: var(--bs-tertiary-color); border: 1px solid var(--bs-border-color); border-radius: 4px; padding: 3px 6px; margin-right: 8px; vertical-align: 1px; }
 
+/* The strip stands clear of the band above it (FX76, Louis: "increase the paddings or margins between slides"). */
 .strip-contact {
-    margin: 0 var(--site-gutter) 72px;
+    margin: 56px var(--site-gutter) 72px;
     padding: 48px;
     border-radius: 14px;
     background: var(--steel);

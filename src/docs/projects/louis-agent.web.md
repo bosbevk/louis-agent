@@ -149,6 +149,14 @@ Identity="…" />`: a button folded in a corner and a panel with the chat's own 
 page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
 A site's frame (`SiteShell`) has a `Corner` slot made for it.
 
+**`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
+motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width
+(`#site-progress`), the header compact past the top, the section index's active link (`.site-index a`), an in-page link
+that lands its section centred, and a reveal each `.reveal` block plays once when a quarter of it enters, all honouring
+the system's less-motion setting unless the viewer switched motion on. A site marks what moves and holds the look
+(the keyframes, the index, the line) in its own partials, so a site chooses its motion; `SiteShellTests` holds the
+attach and `FrameworkModulesTests` the module's path and exports.
+
 ## Configuration
 
 None. It calls the API on the same origin as the app; the API key, when the API asks for one, is typed into the app

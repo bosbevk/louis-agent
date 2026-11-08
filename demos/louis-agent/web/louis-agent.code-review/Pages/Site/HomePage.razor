@@ -2,28 +2,36 @@
 
 <PageTitle>louis-agent · an AI agent framework in C#</PageTitle>
 
+@* One page the visitor scrolls (F110): the frame's module fills the progress line and marks the section in view in
+   the index; the sections carry the ids the index names. *@
+<div class="site-progress" id="site-progress" aria-hidden="true"></div>
+<nav class="site-index" aria-label="Sections">
+    <a href="#top">Top</a><a href="#proof">Measured</a><a href="#how">How it works</a><a href="#concepts">Concepts</a><a href="#built">Built on it</a><a href="#custom">Custom agents</a><a href="#contact">Contact</a>
+</nav>
+
 <Hero />
 <ProofTiles />
 
 <section id="how" class="band band-movie">
     <span class="kicker">How it works</span>
-    <h2 class="chrome">The whole framework, in six scenes.</h2>
+    <h2 class="chrome reveal">The whole framework, in six scenes.</h2>
     <FilmFrame><ShortMovie /></FilmFrame>
     <p class="band-note">The parts and the words are the real ones. <a href="/how-it-works">The long version</a> follows one turn through every layer of core.</p>
 </section>
 
-<section id="parts" class="band">
+<section id="concepts" class="band">
     <span class="kicker">Four concepts</span>
+    <h2 class="chrome reveal">The engine is how, an identity is who, a pack is what.</h2>
     <div class="grid-3">
-        <article class="panel">
+        <article class="panel reveal">
             <h3>The engine is how</h3>
-            <p>The loop, streaming, the guards, the ledger and handing work to other sessions. It names no product; every host is a library a few lines of yours start. <a href="/architecture">The whole map</a></p>
+            <p>The loop, streaming, the guards, the ledger and handing work to other sessions. It names no product, and every host is a library a few lines of yours start. <a href="/architecture">The whole map</a></p>
         </article>
-        <article class="panel">
+        <article class="panel reveal" data-delay="1">
             <h3>An identity is who</h3>
             <p>Its voice, its roles and the packs it names, as markdown in a project of its own. Puls, the coding agent and the guide in this page's corner are identities. <a href="/identities">Identities</a></p>
         </article>
-        <article class="panel">
+        <article class="panel reveal" data-delay="2">
             <h3>A pack is what</h3>
             <p>Tools and their guide, as a package that needs only the contracts. Written once, used by any identity, and served over MCP as it is. <a href="/packs">Every pack</a></p>
         </article>
@@ -32,4 +40,26 @@
 </section>
 
 <BuiltOnIt />
+
+<section id="custom" class="band">
+    <span class="kicker">Custom agents</span>
+    <h2 class="chrome reveal">Want an agent for your business? Louis builds them on this framework.</h2>
+    <div class="grid-3">
+        <article class="panel reveal">
+            <h3>Your identity</h3>
+            <p>Who the agent is for your business: its voice, its roles and the rules it keeps, written as files you can read and change.</p>
+        </article>
+        <article class="panel reveal" data-delay="1">
+            <h3>Your packs</h3>
+            <p>Tools for your own systems, written once as a package: your data read in code, never guessed, with the engine's guards around every call.</p>
+        </article>
+        <article class="panel reveal" data-delay="2">
+            <h3>Hosted, closed and measured</h3>
+            <p>Run for you in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here, every request priced and the bill shown in rand. Checked by evals before anyone sees a change. <a href="/how-it-works">The rules it keeps</a></p>
+        </article>
+    </div>
+    <p class="band-note"><strong>What we sell today:</strong> web hosting with an AI agent, for small businesses. Your website, hosted, with an agent in the corner like this one that knows your business and answers your customers. R500 to R1,000 a month. <a href="/contact">Ask for yours</a>.</p>
+    <p class="band-note">One person, start to finish, in South Africa. <a href="/contact">Say what the agent should do</a> and we take it from there.</p>
+</section>
+
 <ContactStrip />

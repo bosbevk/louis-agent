@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 69 | 73 |
-| Fixes (`FX`) | 64 | 5 |
+| Features (`F`) | 70 | 73 |
+| Fixes (`FX`) | 73 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -127,10 +127,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (69 done)
+## Features (70 done)
 
 | Id | When | What |
 |---|---|---|
+| F110 | 2026-11-08 | The landing like Puls: the lockup in the header and the menu on the right (the frame's), a section index, a progress line and reveals driven by the frame's own motion module, the guide's personality (fun, bubbly, excited; teaches and sells by showing; the roadmap's money stays Louis's), and a custom-agents band on the landing and on Contact |
 | F106.3.1 | 2026-11-08 | The service and the triage pack: the order-service sample restored from `pre-cl10` as the agent's workspace (a sample skips the size rules), `louis-agent.pack.triage` with the feed moved from the orchestrator, a run's recorder, the roles' typed endings checked in code, a case raised to a person, a run read back, departments as YAML held to their repositories by the boundary; the orchestrator's checks of a fix split into `FixChecks` |
 | F109.4 | 2026-11-08 | The site tells the whole architecture: an Architecture page held to the solution file, an Identities page held to the identity folders, 100% C# and South Africa up front, the rand beside the dollars at the rates file's rate, what the framework stands on, What's coming held to the TODO, How it works the whole way, the short film as the map, the guide's voice naming every page, no link to the private repository; ADR 0100 takes F109's lasting parts and the parent closes |
 | F109.3 | 2026-11-08 | The guide in the corner: a session names its identity, the docs pack, the expert identity beside the coding agent, the docs in the image, the guide's door (ADR 0099), the framework's `ChatWidget` and the demo's `ExpertChat` in the site's corner |
@@ -201,10 +202,19 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (64 done)
+## Fixes (73 done)
 
 | Id | When | What |
 |---|---|---|
+| FX80 | 2026-11-08 | The chat widget shows a turn's cost in the site's currency: it loads the rates when it opens |
+| FX79 | 2026-11-08 | The slogan under the brand: a Tagline slot on the frame, "100% C#, because I can" on the site |
+| FX78 | 2026-11-08 | The guide is on Built on it, the third agent on the engine, on the landing's tiles and the page |
+| FX77 | 2026-11-08 | The guide talks like a person, one thing at a time with a question back, and names the doc it read only to a developer |
+| FX76 | 2026-11-08 | The landing's contact strip stands clear of the band above it and rises as it enters |
+| FX75 | 2026-11-08 | Louis's WhatsApp on the Contact page: a button beside each mail link opens a chat with 066 391 2470, and the guide's doc names the number |
+| FX74 | 2026-11-08 | The principles are public: the Identities page shows the engine's own principles file, embedded by link and held equal to it by a test |
+| FX73 | 2026-11-08 | What's coming in the menu, and the framework's five pages grouped under one label that opens on hover or on focus: a `SiteMenu` component in the framework's web, CSS only |
+| FX72 | 2026-11-08 | The guide is a salesperson that reads the person: plain words for a normie, the full technical answer once it knows it talks to a software developer |
 | FX71 | 2026-11-08 | The guide's button pops as a pill that says what it is and pulses; the hero's turn takes its own class so the chat's turns in the widget keep their spacing |
 | FX70 | 2026-11-08 | Enter sends in the guide's widget: the message box's key rule is its own module, attached to the box wherever it is drawn |
 | FX69 | 2026-11-08 | The guide's widget works on a phone: the composer's glyphs instead of clipped words, the panel the whole screen under 600 px, the round button gone while it is open |

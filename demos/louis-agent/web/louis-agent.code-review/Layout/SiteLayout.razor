@@ -3,21 +3,25 @@
    footer lines. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
 
 <SiteShell>
-    <Brand>louis-agent</Brand>
+    <Brand><img class="site-mark" src="brand/mark.svg" alt="" width="22" height="22" />louis-agent</Brand>
+    <Tagline>100% C#, because I can</Tagline>
     <Links>
-        <a href="/how-it-works">How it works</a>
-        <a href="/architecture">Architecture</a>
-        <a href="/identities">Identities</a>
-        <a href="/packs">Packs</a>
-        <a href="/build-your-own">Build your own</a>
+        <SiteMenu Label="The framework">
+            <a href="/how-it-works">How it works</a>
+            <a href="/architecture">Architecture</a>
+            <a href="/identities">Identities</a>
+            <a href="/packs">Packs</a>
+            <a href="/build-your-own">Build your own</a>
+        </SiteMenu>
         <a href="/proof">Measured</a>
         <a href="/built-on-it">Built on it</a>
+        <a href="/whats-coming">What's coming</a>
         <a href="/contact">Contact</a>
     </Links>
     <Actions><ChatLink Class="btn btn-line btn-small">Try it</ChatLink></Actions>
     <Footer>
         <span>louis-agent · all rights reserved</span>
-        <span>100% C#, on purpose</span>
+        <span>100% C#, because I can</span>
     </Footer>
     <Corner><ExpertChat /></Corner>
     <ChildContent>@Body</ChildContent>

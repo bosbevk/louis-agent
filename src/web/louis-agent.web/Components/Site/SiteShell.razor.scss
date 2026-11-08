@@ -13,9 +13,15 @@
     flex-wrap: wrap;
 }
 
-.site-brand { font: 600 16px var(--bs-font-monospace); text-decoration: none; }
+/* The brand is a lockup when a site gives it a mark: the mark, then the name, set in the mono face as the brand's
+   README says; the menu and the actions sit on the right (F110). */
+.site-brand { font: 500 16px var(--bs-font-monospace); text-decoration: none; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.site-brand-name { display: inline-flex; align-items: center; gap: 8px; }
+.site-brand ::deep img { height: 22px; width: auto; display: block; }
+/* The slogan under the brand (FX79): one quiet mono line, the site's own words. */
+.site-tagline { font: 500 11px/1 var(--bs-font-monospace); letter-spacing: .04em; color: var(--bs-tertiary-color); }
 
-.site-nav { display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
+.site-nav { margin-left: auto; display: flex; gap: 28px; flex-wrap: wrap; font-size: 14px; }
 .site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
 .site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
 
@@ -33,11 +39,12 @@
     color: var(--bs-tertiary-color);
 }
 
-/* The corner floats over the page, clear of the footer; what a site puts in it sizes itself. */
-.site-corner { position: fixed; right: 24px; bottom: 24px; z-index: 10; }
+/* The corner floats over the page, high enough to clear the footer's line when the page is scrolled to its end (FX72),
+   so the footer's words stay readable; what a site puts in it sizes itself. */
+.site-corner { position: fixed; right: 24px; bottom: 72px; z-index: 10; }
 
 @media (max-width: 720px) {
     .site-header { gap: 12px; }
     .site-nav { gap: 16px; width: 100%; order: 3; }
-    .site-corner { right: 16px; bottom: 16px; }
+    .site-corner { right: 16px; bottom: 64px; }
 }

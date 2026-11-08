@@ -19,7 +19,7 @@ public class StylesheetTests
     private static readonly string[] Site =
     [
         "site/settings/tokens", "site/base/elements", "site/landing/hero", "site/landing/live-turn",
-        "site/landing/sections", "site/layout/responsive", .. Films
+        "site/landing/sections", "site/landing/motion", "site/layout/responsive", .. Films
     ];
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
@@ -71,6 +71,18 @@ public class StylesheetTests
         Assert.That(topLevel, Is.All.Matches<string>(line => line.StartsWith(".site")));
         Assert.That(Css.Read(), Does.Contain(".site h1").And.Contain(".site .panel").And.Contain(".site .btn"));
     }
+
+    /// <summary>
+    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer, the
+    /// index lights the section in view as a bar in the accent, and a band keeps its room above its content.
+    /// </summary>
+    [TestCase(".panel:hover { transform: translateY(-3px);")]
+    [TestCase(".site-index a.active::before { width: 10px; height: 3px;")]
+    [TestCase("padding: 64px var(--site-gutter) 40px;")]
+    [TestCase("margin: 56px var(--site-gutter) 72px;")]
+    public void TheLook_AnswersTheVisitor(string rule) =>
+        Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
+            Does.Contain(rule));
 
     /// <summary>
     /// No site partial styles a bare class the chat draws (FX71): the guide's chat sits on every page, and the hero's

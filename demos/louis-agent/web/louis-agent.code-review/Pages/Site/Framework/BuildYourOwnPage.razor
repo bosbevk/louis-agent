@@ -22,7 +22,7 @@ using LouisAgent.Coding;
 // Usage: louis-agent.coding-cli [prompt]. It loads what this demo's catalogue names.
 await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
     Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));</code></pre>
-    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own. The last argument is what the host gets besides the catalogue: the web for its agent, a tracer for its turns and the model providers it may talk to, each a library of its own; leave one out and the host runs without it.</p>
+    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own. The last argument is what the host gets besides the catalogue: the web for its agent, a tracer for its turns and the model providers it may talk to, each a library of its own. Leave one out and the host runs without it.</p>
 </section>
 
 <section class="band">

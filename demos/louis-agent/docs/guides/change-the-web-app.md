@@ -57,7 +57,10 @@ class of the app's words rather than inline, as Puls keeps its own in `Text/`
    `SiteLayoutTests.TheMenu_LeadsToThePage`. Code or a list that mirrors the repo gets a test holding it to the repo,
    as `BuildYourOwnTests`, `PacksPageTests`, `ProofPageTests` (the rand to the rates file), `StandsOnTests` (the packages
    to the project files) and `WhatsComingTests` (the planned features to the TODO's open rows) do.
-5. The guide's voice (`louis-agent.identity.expert`, `voice.md`, *The site you sit on*) gets the page's address, what it
+5. A block that should reveal as it enters gets `reveal` (and a `data-delay`); a section the landing's index should
+   name gets an id and a link in `HomePage`'s `site-index`; the frame's module does the rest (F110,
+   [Make a page move](../../../../src/docs/guides/change-the-web.md#make-a-page-move)).
+6. The guide's voice (`louis-agent.identity.expert`, `voice.md`, *The site you sit on*) gets the page's address, what it
    says and the docs it came from: `GuideKnowsTheSiteTests` fails until it does. A new project of the solution has to be
    named on the Architecture page (`SiteMapTests`); a new identity on Identities, a new pack on Packs.
 4. A new section's styles go in the partial of their concern under `Styles/site/` (a landing part in `landing/`); a

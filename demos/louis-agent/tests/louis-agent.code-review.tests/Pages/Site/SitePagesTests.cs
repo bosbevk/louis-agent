@@ -1,3 +1,5 @@
+using System.Reflection;
+using AngleSharp.Dom;
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
 using Microsoft.AspNetCore.Components;
@@ -18,8 +20,8 @@ public class SitePagesTests
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
-    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
-    [TestCase(typeof(ContactPage), "/contact", "Building an agent for a .NET team?")]
+    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
+    [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
@@ -65,6 +67,22 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "one person")]
     [TestCase(typeof(HomePage), "href=\"/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
+    [TestCase(typeof(HomePage), "id=\"custom\"")]
+    [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(IdentitiesPage), "Never lie.")]
+    [TestCase(typeof(HomePage), "class=\"strip-contact reveal\"")]
+    [TestCase(typeof(HomePage), "The guide")]
+    [TestCase(typeof(BuiltOnItPage), "The guide")]
+    [TestCase(typeof(HomePage), "closed Docker container")]
+    [TestCase(typeof(HowItWorksPage), "closed Docker container")]
+    [TestCase(typeof(HomePage), "What we sell today")]
+    [TestCase(typeof(HomePage), "R500 to R1,000 a month")]
+    [TestCase(typeof(ContactPage), "Custom agents")]
+    [TestCase(typeof(ContactPage), "What we sell today")]
+    [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
+    [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
+    [TestCase(typeof(ContactPage), "href=\"https://wa.me/27663912470")]
+    [TestCase(typeof(ContactPage), "066 391 2470")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
@@ -85,6 +103,67 @@ public class SitePagesTests
         });
 
         Assert.That(cut.Markup, Does.Contain(words));
+    }
+
+    /// <summary>
+    /// The landing is one page the visitor scrolls (F110): its index names every section by id, each a section on
+    /// the page, and a progress line sits at the top for the frame's module to fill.
+    /// </summary>
+    [Test]
+    public void TheLanding_IndexesItsSections()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+        var targets = cut.FindAll(".site-index a").Select(a => a.GetAttribute("href")!).ToList();
+
+        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the index names the sections");
+        Assert.That(targets, Has.All.StartWith("#"));
+        Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
+        Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// No page joins two clauses with a semicolon (Louis, 2026-11-08: "we should never do this"): a visitor reads short
+    /// sentences. Code listings are code and may keep theirs, and the principles are the engine's own file, shown as it
+    /// is (FX74), not the site's words.
+    /// </summary>
+    [Test]
+    public void NoPage_JoinsClausesWithASemicolon()
+    {
+        using var ctx = new BunitContext();
+        var pages = typeof(HomePage).Assembly.GetTypes()
+            .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
+            .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
+
+        var offenders = pages.Select(page =>
+        {
+            var cut = ctx.Render(builder =>
+            {
+                builder.OpenComponent(0, page);
+                builder.CloseComponent();
+            });
+            foreach (var code in cut.FindAll("code, pre, style, script, .principles"))
+            {
+                code.Remove();
+            }
+            return (page.Name, Text: cut.Nodes.OfType<IElement>().Select(node => node.TextContent).Aggregate("", string.Concat));
+        }).Where(page => page.Text.Contains(';')).Select(page => page.Name).ToList();
+
+        Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(offenders, Is.Empty);
+    }
+
+    /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
+    [Test]
+    public void TheLanding_RevealsItsBlocks()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+
+        Assert.That(cut.FindAll("h2.reveal"), Has.Count.GreaterThanOrEqualTo(3));
+        Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
     }
 
     /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>
