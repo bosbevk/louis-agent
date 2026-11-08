@@ -77,6 +77,32 @@ public class DeployFilesTests
     public void TheSecondAppsYaml_NamesWhatIsItsOwn(string line) =>
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
 
+    /// <summary>
+    /// The guide's mail key (FX87): the script copies RESEND_API_KEY from the app's .env.secrets into the vault, and
+    /// the release names it in the app's secrets and env only when the vault holds it, so no hand edit of the yaml.
+    /// </summary>
+    [TestCase("RESEND_API_KEY = 'resend-api-key'")]
+    [TestCase("$AppInfo.WhenSet")]
+    [TestCase("'          # WHEN SET'")]
+    public void TheScript_CarriesTheMailKey_OnlyOnceTheVaultHoldsIt(string text) =>
+        Assert.That(Script, Does.Contain(text));
+
+    /// <summary>
+    /// The yaml keeps the marker the release fills and never names the mail key itself: a secretRef the vault lacks
+    /// fails the whole release (FX86).
+    /// </summary>
+    [Test]
+    public void TheSecondAppsYaml_LeavesTheMailKey_ToTheRelease()
+    {
+        var lines = CodingApp.Select(l => l.Trim()).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(lines, Does.Contain("# WHEN SET"));
+            Assert.That(lines, Has.None.EqualTo("secretRef: resend-api-key"));
+        });
+    }
+
     /// <summary>An image by tag alone can change under us between two boots; a digest can't.</summary>
     [Test]
     public void EveryImage_IsPinnedByDigest()

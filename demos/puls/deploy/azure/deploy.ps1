@@ -18,7 +18,7 @@ the build's and ignore it.
                                                   (Puls's: .env.mongo and .env.sql and the deployment's outputs too, the
                                                   values both apps share); never printed, a missing value skipped by name
   deploy.ps1 update  [-App ...] -Tag ... -Revision v021   fills TAG, REVISION, VM_IP, ENVIRONMENT_ID, the app's identity, the
-                                                  secrets the vault holds and the providers into the app's yaml and creates or updates it
+                                                  secrets the vault holds, the providers and the keys it runs without into the app's yaml and creates or updates it
   deploy.ps1 release [-App ...] [-Tag ...]        build, then update as the next revision after the one Azure runs
   deploy.ps1 domain  [-App ...] [-Hostname ...]   prints the DNS records Cloudflare needs, then adds the hostname (the app's
                                                   apex by default) with a managed certificate once they resolve
@@ -58,17 +58,19 @@ $Bicep = Join-Path $Config 'azure\main.bicep'
 $BicepParams = Join-Path $Config 'azure\main.bicepparam'
 $Providers = @('google', 'microsoft', 'linkedin')
 # What is each app's: its image and Dockerfile, its config folder, its yaml, the Bicep output that names its identity,
-# its share, its domain, and the suffix on the vault secrets that are its own (the rest both apps share).
+# its share, its domain, the suffix on the vault secrets that are its own (the rest both apps share), and WhenSet: the
+# keys the app runs without, each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
 $Apps = @{
     'puls-app' = @{
         Image = 'louis-agent-puls'; Dockerfile = 'demos\puls\docker\images\Dockerfile.puls'
         Config = 'demos\puls\config'; Yaml = 'puls-app.yaml'; IdentityOutput = 'appIdentityId'
-        Share = 'puls-app-workspace'; Hostname = 'mypuls.co.za'; Suffix = ''
+        Share = 'puls-app-workspace'; Hostname = 'mypuls.co.za'; Suffix = ''; WhenSet = @{}
     }
     'louis-agent-app' = @{
         Image = 'louis-agent-coding'; Dockerfile = 'demos\louis-agent\docker\images\Dockerfile.api'
         Config = 'demos\louis-agent\config'; Yaml = 'louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'
+        WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
     }
 }
 $AppInfo = $Apps[$App]
@@ -163,6 +165,8 @@ function Get-Secrets {
             $wanted += @{ name = "auth-$provider-client-secret$suffix"; value = $secret }
         } else { $wanted += @{ name = "auth-$provider-client-id$suffix and -secret$suffix"; value = $null } }
     }
+    # The keys the app runs without (FX87), each from its env var.
+    foreach ($key in $AppInfo.WhenSet.Keys) { $wanted += @{ name = $AppInfo.WhenSet[$key]; value = Get-EnvValue $secretsFile $key } }
     if ($App -ne 'puls-app') { return $wanted }
     $mongoFile = Join-Path $Config '.env.mongo'
     $sqlFile = Join-Path $Config '.env.sql'
@@ -269,6 +273,7 @@ switch ($Verb) {
         $suffix = $AppInfo.Suffix
         $names = @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix", 'mongo-url', 'accounts-sql-url')
         foreach ($provider in $Providers) { $names += "auth-$provider-client-id$suffix"; $names += "auth-$provider-client-secret$suffix" }
+        $names += @($AppInfo.WhenSet.Values)
         $secrets = @('    secrets:')
         foreach ($name in $names) {
             if ($inVault -contains $name) {
@@ -290,9 +295,17 @@ switch ($Verb) {
                 $providerLines += "            secretRef: auth-$provider-client-secret$suffix"
             }
         }
+        # The keys the app runs without (FX87): an env line only for a key the vault holds.
+        $whenSetLines = @()
+        foreach ($key in $AppInfo.WhenSet.Keys) {
+            if ($inVault -contains $AppInfo.WhenSet[$key]) {
+                $whenSetLines += "          - name: $key"
+                $whenSetLines += "            secretRef: $($AppInfo.WhenSet[$key])"
+            }
+        }
         $template = Join-Path $Here $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
-        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('VM_IP', $vmIp).Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")) |
+        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('VM_IP', $vmIp).Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n")) |
             Set-Content $resolved -Encoding utf8 -NoNewline
         if ($inPlace) {
             Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."
