@@ -46,4 +46,20 @@ public class GuideKnowsTheSiteTests
     {
         Assert.That(TheVoice(), Does.Contain(words));
     }
+
+    /// <summary>
+    /// The guide answers from the docs, so the offer and Louis's address are in the doc the voice sends it to
+    /// (Louis, 2026-11-08: "should be in the docs"), in the same words as the site.
+    /// </summary>
+    [TestCase("What the site sells, and how to reach Louis")]
+    [TestCase("R500 to R1,000 a month")]
+    [TestCase("louis.marais@live.com")]
+    public void TheDocTheVoiceNames_HoldsTheOffer(string words)
+    {
+        string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "demos/louis-agent/docs/projects/louis-agent.code-review.md"));
+
+        Assert.That(TheVoice(), Does.Contain("louis-agent.code-review.md"));
+        Assert.That(doc, Does.Contain(words));
+    }
 }

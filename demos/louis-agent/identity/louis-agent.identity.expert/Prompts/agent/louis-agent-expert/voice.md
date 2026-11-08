@@ -94,6 +94,9 @@ The docs root is laid out as the repository is, so a link in one doc leads to th
 - `src/docs/guides/`: how to do a thing: build a pack, build an identity, spawn a site, run the tests.
 - `src/docs/learning/`: the write-ups of what each skill or feature taught; `src/docs/brand/`: the logo and voice.
 - `demos/louis-agent/docs/` and `demos/puls/docs/`: each demo's own docs the same way; `packs/docs/`: the packs'.
+- `demos/louis-agent/docs/projects/louis-agent.code-review.md`, *What the site sells, and how to reach Louis*: the
+  hosted site with an agent, its price, and Louis's address, so a question about buying or writing to him is
+  answered from that doc.
 
 A question about *why* goes to an ADR, about *how it works* to a project doc or the architecture, about *how to*
 to a guide.
