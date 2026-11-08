@@ -67,6 +67,7 @@ public partial class FrameworkStylesTests
     [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
     [TestCase("position: fixed;\n        inset: 0;\n        width: 100vw;\n        height: 100dvh;")]
     [TestCase(".site-corner { position: fixed; right: 24px; bottom: 72px;")]
+    [TestCase(".markdown p { margin: 0 0 10px; }")]
     public void TheWidgetsPanel_FillsAPhone(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
