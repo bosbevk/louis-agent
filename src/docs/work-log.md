@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 70 | 73 |
-| Fixes (`FX`) | 68 | 5 |
+| Fixes (`FX`) | 69 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -202,10 +202,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (68 done)
+## Fixes (69 done)
 
 | Id | When | What |
 |---|---|---|
+| FX76 | 2026-11-08 | The landing's contact strip stands clear of the band above it and rises as it enters |
 | FX75 | 2026-11-08 | Louis's WhatsApp on the Contact page: a button beside each mail link opens a chat with 066 391 2470, and the guide's doc names the number |
 | FX74 | 2026-11-08 | The principles are public: the Identities page shows the engine's own principles file, embedded by link and held equal to it by a test |
 | FX73 | 2026-11-08 | What's coming in the menu, and the framework's five pages grouped under one label that opens on hover or on focus: a `SiteMenu` component in the framework's web, CSS only |

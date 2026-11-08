@@ -70,6 +70,7 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
+    [TestCase(typeof(HomePage), "class=\"strip-contact reveal\"")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]
