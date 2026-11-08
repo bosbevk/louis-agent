@@ -12,7 +12,7 @@
     border-radius: 999px;
     background: var(--web-cta);
     color: var(--bs-body-bg);
-    font-weight: 700;
+    font: 700 15px/1 var(--bs-font-sans-serif);
     letter-spacing: .01em;
     overflow: hidden;
     isolation: isolate;
@@ -31,10 +31,10 @@
     animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
 }
 .guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
-/* Above the guide's own button in the corner, a page's tour (F118): the same size as that button, its height, padding
-   and type (Louis: "buttons should be the same size"), with room between the two so they read as two buttons and
-   their glows don't run together (Louis: "sits too close"). */
-.guide-button.widget-tour { height: 56px; padding: 0 22px; font: 600 16px/1 var(--bs-font-sans-serif); letter-spacing: -.01em; margin-bottom: 14px; }
+/* Above the guide's own button in the corner, a page's tour (F118): the same button as the landing's, and the guide's
+   own matches it (Louis: "they must be the same size, make them the same as the one on the landing page"), with room
+   between the two so they read as two buttons (Louis: "sits too close"). */
+.guide-button.widget-tour { margin-bottom: 14px; }
 .guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
 .guide-words { white-space: nowrap; }
 
@@ -42,11 +42,11 @@
     0%, 55% { translate: -120% 0; }
     85%, 100% { translate: 120% 0; }
 }
-/* At least the glow of the guide's own button in the corner, never less (Louis: "the chat to the agent button cannot
-   be cooler than the take the tour button"): the same ring and depth at its peak, and the sweep and the spark on top. */
+/* A soft pulse, the same as the guide's own button in the corner (Louis: "too much glow", "make them the same as the
+   one on the landing page"); the sweep and the spark are what set the tour apart. */
 @keyframes guide-glow {
-    0%, 100% { box-shadow: 0 10px 30px -8px rgba(var(--bs-primary-rgb), .7), 0 6px 24px rgba(var(--web-shadow-rgb), .35); }
-    50% { box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), .16), 0 14px 44px -6px rgba(var(--bs-primary-rgb), 1); }
+    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55); }
+    50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
 }
 @keyframes guide-twinkle {
     0%, 100% { opacity: 1; scale: 1; }

@@ -3,28 +3,35 @@
    upwards from the button. Scoped: the list, the turns and the composer inside are reached under ::deep. ---- */
 .chat-widget { position: relative; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 
-/* The button is the selling point, so it reads as a pill with its words and breathes (FX71): the site's gradient, a
-   glow that swells and settles, a lift on hover; folded to the × when the panel is open. */
+/* The button is the selling point, so it reads as a pill with an icon and its words and breathes (FX71): the site's
+   gradient, a soft glow that swells and settles, a lift on hover; folded to the × when the panel is open. The same
+   size, type and glow as the tour button beside it and on the landing (F118, Louis: "they must be the same size",
+   "too much glow", "give the ask the guide button also an icon"). */
 .widget-button {
-    min-width: 56px;
-    height: 56px;
+    min-width: 46px;
+    height: 46px;
     padding: 0 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     border: 1px solid var(--web-border-hover);
     border-radius: 999px;
     background: var(--web-cta);
     color: var(--web-on-primary);
-    font: 600 16px/1 var(--bs-font-sans-serif);
-    letter-spacing: -.01em;
+    font: 700 15px/1 var(--bs-font-sans-serif);
+    letter-spacing: .01em;
     cursor: pointer;
-    box-shadow: 0 10px 30px -8px rgba(var(--bs-primary-rgb), .7), 0 6px 24px rgba(var(--web-shadow-rgb), .35);
-    animation: widget-pulse 2.6s var(--web-ease) infinite;
+    box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
+    animation: widget-pulse 2.8s var(--web-ease) infinite;
     transition: transform .25s var(--web-spring), box-shadow .25s var(--web-ease);
 }
-.widget-button:hover { transform: translateY(-2px) scale(1.04); animation-play-state: paused; }
+.widget-button:hover { transform: translateY(-2px) scale(1.03); animation-play-state: paused; }
+.widget-icon { display: inline-flex; }
 .chat-widget.is-open .widget-button { padding: 0; animation: none; font-size: 20px; }
 @keyframes widget-pulse {
-    0%, 100% { box-shadow: 0 10px 30px -8px rgba(var(--bs-primary-rgb), .7), 0 6px 24px rgba(var(--web-shadow-rgb), .35); }
-    50% { box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), .14), 0 14px 40px -6px rgba(var(--bs-primary-rgb), .95); }
+    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55); }
+    50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
 }
 
 .widget-panel {
