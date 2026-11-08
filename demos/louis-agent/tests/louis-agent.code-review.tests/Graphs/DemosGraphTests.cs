@@ -9,14 +9,14 @@ namespace LouisAgent.CodeReview.Tests.Graphs;
 /// </summary>
 public class DemosGraphTests
 {
-    /// <summary>Every folder under demos/ is a box, and nothing else stands in that column.</summary>
+    /// <summary>Every folder under demos/ is a box (its id the folder's path, so a name that is also a wire name stays an id), and nothing else stands in that column.</summary>
     [Test]
     public void EveryDemo_IsABox()
     {
         var demos = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
             .Select(Path.GetFileName).OrderBy(name => name).ToList();
 
-        var boxes = DemosGraph.Spec.Nodes.Where(node => node.Column == 1).Select(node => node.Id).OrderBy(id => id).ToList();
+        var boxes = DemosGraph.Spec.Nodes.Where(node => node.Column == 1).Select(node => node.Id.Split('/')[1]).OrderBy(id => id).ToList();
 
         Assert.That(boxes, Is.EqualTo(demos));
     }
