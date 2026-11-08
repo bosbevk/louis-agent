@@ -31,6 +31,7 @@ public class SiteLayoutTests
     /// <summary>The menu leads to each page, from every page.</summary>
     [TestCase("/how-it-works")]
     [TestCase("/architecture")]
+    [TestCase("/identities")]
     [TestCase("/packs")]
     [TestCase("/build-your-own")]
     [TestCase("/proof")]
