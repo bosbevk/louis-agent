@@ -8,17 +8,29 @@
     <FilmFrame><DetailedMovie /></FilmFrame>
 </Band>
 
-<Band Id="parts" Kicker="The parts, in plain words, in the order a turn meets them">
+<Band Id="loop" Kicker="The loop: the parts a turn meets, in order">
     <GraphView Spec="TurnGraph.Spec" Title="One turn: your program, a host, the engine's pipeline, the model and a tool, the ledger" />
     <ul class="rules">
         <li><strong>Your program.</strong> A few lines in a project of your own: they name the catalogue, who the agent is and what it can do, and start a host. A demo is such a project, and so is a customer's.</li>
-        <li><strong>The hosts, as libraries.</strong> A terminal, Rider's AI chat, an HTTP API with answers streamed as server-sent events, an MCP server that hands the tools to another client. Each maps the agent's stream to its protocol and holds no behaviour of its own.</li>
-        <li><strong>The framework's web, and the accounts.</strong> A site is a Blazor WebAssembly app on the framework's web, served by the API from the same origin, reaching the engine only over HTTP. A person signs in through ASP.NET Core Identity with a tenant from the host name, and the key gate takes the sign-in or a key before any session opens.</li>
+        <li><strong>The hosts, as libraries.</strong> A terminal, Rider's AI chat, an HTTP API, an MCP server that hands the tools to another client. Each maps the agent's stream to its protocol and holds no behaviour of its own.</li>
         <li><strong>The engine.</strong> The loop: streaming, the providers, the usage ledger, handing work to other sessions, and the guards around every tool and fetch. It holds no agent and no tools, and names no product and no country. Everything goes through one <code>IChatClient</code> from Microsoft.Extensions.AI, so the provider is configuration: Claude by default, Ollama or an OpenAI-compatible endpoint by a setting.</li>
         <li><strong>The identity.</strong> Who an agent is: its voice, its modes and its roles, as markdown. Every identity's prompt opens with the same principles file. <a href="/identities">Identities</a></li>
         <li><strong>The packs.</strong> What an agent can do: toolsets and their guides, each pack its own package. A pack needs only the contracts, never the engine, never knows another pack or an identity, and can be served over MCP as it is. <a href="/packs">Packs</a></li>
         <li><strong>The eval harness.</strong> What proves it: every check a C# eval on one harness, kept beside the identity or pack it proves, recording what the model answered and read so a run re-scores for nothing. <a href="/proof">Measured</a></li>
         <li><strong>Where it runs.</strong> Docker on a developer's machine, two Container Apps in Azure released from GitHub after green CI. <a href="/architecture">The whole map</a></li>
+    </ul>
+</Band>
+
+<Band Id="web" Kicker="The web: a website with an agent, working with the backend">
+    <p class="lede">The agent runs without the web, from the terminal, Rider, the API or MCP. The framework's web is the part that turns an agent into a website: the pages, the guide in the corner, and everything between them and the engine.</p>
+    <GraphView Spec="WebGraph.Spec" Title="The web with the backend: a browser, the site and the guide, the API and the accounts, the engine, the model and ShowPage" />
+    <ul class="rules">
+        <li><strong>The site.</strong> A Blazor WebAssembly app on the framework's web, all C#, served by the API from the same address. It reaches the engine only over HTTP, so the engine never knows a page exists.</li>
+        <li><strong>The frame and its places.</strong> The framework draws the frame, the slides, the index on the left and the parts a page is made of. Every section, card and page of a section has its own address. A site brings only its words, its brand and its colours.</li>
+        <li><strong>A turn, live.</strong> The page opens a session on the API and streams each turn as server-sent events, so thinking, every tool call and the bill appear as they happen.</li>
+        <li><strong>The guide in the corner.</strong> Each message carries the page the visitor is reading and the section on their screen. The guide answers from the framework's docs, and its one site tool, ShowPage, takes the visitor to a place by its address: the page moves, a card opens, the place lights up.</li>
+        <li><strong>Accounts.</strong> A person signs in through ASP.NET Core Identity, with a tenant from the host name, and the key gate takes the sign-in or a key before any session opens.</li>
+        <li><strong>Yours.</strong> A customer's site is the same pieces with its own words and its own agent in the corner. <a href="/contact">Ask for yours</a></li>
     </ul>
 </Band>
 

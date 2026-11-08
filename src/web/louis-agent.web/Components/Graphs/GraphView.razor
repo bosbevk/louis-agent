@@ -5,13 +5,13 @@
 <figure class="graph reveal" role="img" aria-label="@Title">
     <svg viewBox="@ViewBox" xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <marker id="graph-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <marker id="@ArrowId" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
                 <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
             </marker>
         </defs>
         @foreach (var edge in Placed.Edges)
         {
-            <path class="edge" d="@edge.Path" style="@EdgeStyle(edge)" marker-end="url(#graph-arrow)" />
+            <path class="edge" d="@edge.Path" style="@EdgeStyle(edge)" marker-end="@ArrowRef" />
             @if (edge.Edge.Word is { } word)
             {
                 @Word(edge, word)

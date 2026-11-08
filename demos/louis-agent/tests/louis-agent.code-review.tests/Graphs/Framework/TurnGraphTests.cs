@@ -33,7 +33,7 @@ public class TurnGraphTests
         Assert.That(TurnGraph.Spec.Edges.Where(edge => !ids.Contains(edge.From) || !ids.Contains(edge.To)), Is.Empty);
     }
 
-    /// <summary>The page shows the diagram once.</summary>
+    /// <summary>The page shows the diagram once, on the loop's slide (the web's has its own since F119).</summary>
     [Test]
     public void ThePage_ShowsIt()
     {
@@ -41,6 +41,6 @@ public class TurnGraphTests
 
         var cut = ctx.Render<HowItWorksPage>();
 
-        Assert.That(cut.FindAll("figure.graph g.node"), Has.Count.EqualTo(TurnGraph.Spec.Nodes.Count));
+        Assert.That(cut.FindAll("section#loop figure.graph g.node"), Has.Count.EqualTo(TurnGraph.Spec.Nodes.Count));
     }
 }
