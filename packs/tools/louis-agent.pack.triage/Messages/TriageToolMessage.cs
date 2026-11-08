@@ -8,4 +8,16 @@ public enum TriageToolMessage
 {
     [Description("'{RunId}' is not a run id: letters, digits, dashes and underscores only, up to 64 of them.")]
     BadRunId,
+
+    [Description("There is no run '{RunId}'. Use the run id you were given.")]
+    NoSuchRun,
+
+    [Description("'{Value}' is not a {What}: one of {Options}.")]
+    NotAChoice,
+
+    [Description("A {What} needs a reason, in a sentence.")]
+    NoReason,
+
+    [Description("Recorded step {Number} of run {RunId}: {Summary}")]
+    Recorded,
 }

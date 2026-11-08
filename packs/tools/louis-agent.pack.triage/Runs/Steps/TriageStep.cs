@@ -8,6 +8,8 @@ namespace LouisAgent.Packs.Triage.Runs.Steps;
 /// <param name="Summary">What happened, in one sentence a visitor can read.</param>
 /// <param name="Why">Why the agent did it, in a sentence; empty for a step the code took on a rule.</param>
 /// <param name="Outcome">Set on the finishing step only.</param>
+/// <param name="Result">The typed record behind a decision step (an investigation, a review, a decision), as JSON by
+/// wire names, so the workflow reads it back as the record; null for a step with none.</param>
 /// <remarks>A record with snake_case names (ADR 0041), one JSON line per step in the file recorder.</remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
@@ -21,4 +23,5 @@ public sealed record TriageStep(
     [property: JsonPropertyName("why")] string Why,
     [property: JsonPropertyName("at")] DateTimeOffset At,
     [property: JsonPropertyName("outcome")]
-    TriageOutcome? Outcome = null);
+    TriageOutcome? Outcome = null,
+    [property: JsonPropertyName("result")] string? Result = null);
