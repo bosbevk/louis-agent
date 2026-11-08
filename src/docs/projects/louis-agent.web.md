@@ -158,6 +158,14 @@ closes it, a phone stacks the row. `CardDeckTests` holds the row, the click, the
 **`Components/Site/Menu/SiteMenu`** is a group in a site's menu (FX73): a label in the bar that opens the links it holds
 on hover or on focus, CSS only.
 
+**`Components/Graphs/GraphView`** draws a diagram from data (F111): a page declares a `GraphSpec` (`Graphs/`: nodes
+with an id, a label, a note and a column; edges between ids, with a word when one helps), `GraphLayout.Place` puts the
+columns across the width and gives each arrow a curve with its length, and the view writes one SVG that scales to its
+box. Its root carries `reveal`, so the frame's module adds `.in` as it enters and the styles beside it make each arrow
+draw itself and each box rise, a column at a time, once; fully drawn at rest. The SVG's text goes out as markup from
+the code-behind, since Razor keeps the `text` tag for itself. `GraphLayoutTests` holds the numbers, `GraphViewTests`
+the markup.
+
 **`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
 motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width
 (`#site-progress`), the header compact past the top, the section index's active link (`.site-index a`), an in-page link

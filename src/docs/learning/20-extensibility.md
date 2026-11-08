@@ -414,3 +414,22 @@ and a discovery document were the whole of it.
 The callback route runs the real `SignInManager` on the real external cookie, so the test needed a provider that
 isn't there. `ScriptedProvider` is a route the test host alone maps, which writes that cookie exactly as a handler
 would; the callback can't tell the difference, which is the point.
+
+## A diagram is data (F111, 2026-11-08)
+
+Louis asked for "a nice graph on each page", animated, not a film. The first idea is seven drawings; the pick was one
+component and seven records. `GraphSpec` is the diagram as data: boxes with an id, a label, a note and a column, and
+arrows between ids. `GraphLayout.Place` is a pure function from that to coordinates and curves, tested with numbers.
+`GraphView` writes the SVG, and its styles beside it make the arrows draw themselves and the boxes rise once the
+frame's module marks the figure `.in`, the same mechanism the landing's blocks reveal with, so the motion needs no
+script of its own.
+
+What the shape buys is not the drawing but the test. A diagram that is data can be held to the thing it draws the way
+the pages' words are (ADR 0100): the Identities diagram's boxes are checked against the parts the page lists, the
+Architecture diagram's against the groups the solution file has, the turn's pipeline against the middleware's order,
+the demos against the folders on disk. A drawing kept by hand can say anything; a record can be read.
+
+Two small things worth knowing. Razor keeps the `<text>` tag for itself and refuses attributes on it, so an SVG's
+text elements go out as `MarkupString` from the code-behind, encoded. And the scope rule for a component's styles
+looks for the classes a component draws in its markup and in the quoted strings of its code-behind, so a class
+written only as an argument in the markup is invisible to it: the three text classes became three small methods.
