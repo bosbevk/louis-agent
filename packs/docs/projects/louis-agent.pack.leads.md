@@ -21,9 +21,12 @@ after the visitor's yes (the rule is in the guide's voice).
   for it; sends a whole one with the clock's UTC time; a sender's failure comes back as text with its reason, never a
   throw into the loop (ADR 0005). Its texts are `Messages/LeadsToolMessage`.
 - `Sending/ILeadSender` is the seam (Strategy with a Null Object): `LogLeadSender` writes the lead to the log, so the PC
-  and the tests never send; `ResendLeadSender` (step 2) posts a `ResendMessage` to Resend's API with the key as a
-  bearer token.
-- `LeadsPack` (step 3): toolset `leads`, off without `LEADS_TO`; the sender picked by `RESEND_API_KEY`.
+  and the tests never send; `ResendLeadSender` posts a `ResendMessage` to Resend's API with the key as a bearer
+  token. A sender says whether it `Mails`, and the tool tells the model when a lead only reached the log, so the
+  guide never says Louis has it when he doesn't.
+- `LeadsPack`: toolset `leads`, off without `LEADS_TO`; the sender picked by `RESEND_API_KEY`; the guide
+  (`Prompts/toolsets/leads.md`) says to ask for the three things one at a time, repeat them back, and send on yes, once.
+  The decision is [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).
 
 ## Settings
 
@@ -35,8 +38,8 @@ after the visitor's yes (the rule is in the guide's voice).
 
 ## Tests
 
-`packs/tests/louis-agent.pack.leads.tests`: the tool's refusals and its send, the Resend sender's request and its
-failure, the pack's settings.
+`packs/tests/louis-agent.pack.leads.tests`: the tool's refusals, its send and its truth about the log, the Resend
+sender's request and its failure, the pack's settings and the sender the key picks.
 
 ---
 [Docs index](../../../src/docs/README.md) · Related: [the docs pack](louis-agent.pack.docs.md), [the projects](../../../src/docs/projects/README.md)
