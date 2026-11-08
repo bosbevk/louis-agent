@@ -30,6 +30,8 @@ The framework's web draws every diagram by these rules, and a site only declares
   arrow between two columns bends at the one track in the middle of the gap, leaves its box's middle and arrives at
   its target's middle, so a box has one line out that branches at the track and the arrows into a box join there.
   Orthogonal routing: a crossing becomes a junction.
+- **An arrow inside a column drops straight** from a box's bottom middle to the next box's top middle, its word
+  beside it: a pipeline reads top to bottom. No box stands without an arrow; the site's test holds it.
 - **Back arrows under, loops to the right.** The arrows back to one box share one track past the last column, one
   lane under the drawing and one entry in the box's bottom middle, a second target's set nested outside. An arrow
   from a box to itself loops out of its right side, its word beside it; the back tracks start past both.

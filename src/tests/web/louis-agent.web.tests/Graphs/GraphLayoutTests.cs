@@ -305,6 +305,30 @@ public class GraphLayoutTests
         });
     }
 
+    /// <summary>
+    /// An arrow inside a column (Louis's Turn diagram: "no lines, what are they?", the pipeline a turn runs down)
+    /// drops straight from the box's bottom middle to the next box's top middle; its word sits beside the drop.
+    /// </summary>
+    [Test]
+    public void AnArrowDownAColumn_DropsStraight()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 0), new GraphNode("c", "C", null, 0)],
+            [new GraphEdge("a", "b", "then"), new GraphEdge("b", "c")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var a = placed.Nodes.Single(node => node.Node.Id == "a");
+        var b = placed.Nodes.Single(node => node.Node.Id == "b");
+        var drop = placed.Edges.Single(edge => edge.Edge.From == "a");
+        Assert.Multiple(() =>
+        {
+            Assert.That(drop.Path, Is.EqualTo($"M {a.X + a.W / 2:0.#} {a.Y + a.H:0.#} L {b.X + b.W / 2:0.#} {b.Y:0.#}"));
+            Assert.That(drop.WordX, Is.GreaterThan(a.X + a.W / 2), "the word stands beside the drop");
+            Assert.That(drop.WordY, Is.GreaterThan(a.Y + a.H).And.LessThan(b.Y), "in the gap");
+        });
+    }
+
     /// <summary>An arrow to a box the diagram doesn't have is left out, not drawn to nowhere.</summary>
     [Test]
     public void AnArrowToNowhere_IsLeftOut()

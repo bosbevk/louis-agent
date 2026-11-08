@@ -27,6 +27,12 @@ public static class TurnGraph
         [
             new GraphEdge("program", "host", "starts"),
             new GraphEdge("host", "loop", "a turn"),
+            // The pipeline, in the order a turn runs down it (Louis, FX85: "no lines, what are they?").
+            new GraphEdge("loop", "usage"),
+            new GraphEdge("usage", "cutoff"),
+            new GraphEdge("cutoff", "tracing"),
+            new GraphEdge("tracing", "replay"),
+            new GraphEdge("replay", "caching"),
             new GraphEdge("caching", "model"),
             new GraphEdge("loop", "tool", "calls"),
             new GraphEdge("usage", "ledger"),

@@ -8,7 +8,8 @@ namespace LouisAgent.Web.Graphs;
 /// but make direct lines"): straight pieces that turn at right angles, each bend rounded a little. Forward, an arrow
 /// leaves the box's right side, runs to the one track between the columns, up or down it and into the target's left
 /// side; every arrow between two columns bends there, so they join instead of crossing. Back, it leaves the right side low,
-/// drops to a lane under the drawing and climbs into the target's bottom. To its own box, it loops out of the right side.
+/// drops to a lane under the drawing and climbs into the target's bottom. Inside a column, it drops straight from one
+/// box to the next. To its own box, it loops out of the right side.
 /// </summary>
 /// <remarks>
 /// Orthogonal routing, the drawing style of circuit and org charts. Chosen over curves because curves between a tall
@@ -39,10 +40,12 @@ internal static class EdgeRouter
     {
         var self = edges.Where(edge => edge.From == edge.To).ToList();
         var back = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column < byId[edge.From].Node.Column).ToList();
-        var forward = edges.Except(self).Except(back).ToList();
+        var down = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column == byId[edge.From].Node.Column).ToList();
+        var forward = edges.Except(self).Except(back).Except(down).ToList();
 
         var placed = new List<PlacedEdge>();
         placed.AddRange(Forward(forward, byId));
+        placed.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
         if (back.Count > 0) placed.AddRange(Back(back, byId, height, self));
         placed.AddRange(self.Select(edge => SelfLoop(edge, byId[edge.From])));
 
@@ -93,6 +96,17 @@ internal static class EdgeRouter
             double entry = to.X + to.W / 2, y2 = to.Y + to.H;
             yield return Connector(edge, [(x1, y1), (track, y1), (track, lane), (entry, lane), (entry, y2)], (track + entry) / 2, lane + 4);
         }
+    }
+
+    /// <summary>
+    /// An arrow inside a column (a pipeline a turn runs down): a straight drop from the box's bottom middle to the next
+    /// box's top middle, its word beside it in the gap. Rising, it climbs the same way, from the top to the bottom.
+    /// </summary>
+    private static PlacedEdge Down(GraphEdge edge, PlacedNode from, PlacedNode to)
+    {
+        bool falls = to.Y >= from.Y;
+        double x = from.X + from.W / 2, y1 = falls ? from.Y + from.H : from.Y, y2 = falls ? to.Y : to.Y + to.H;
+        return Connector(edge, [(x, y1), (x, y2)], x + 8 + 4 * (edge.Word?.Length ?? 0), (y1 + y2) / 2 + 4);
     }
 
     /// <summary>An arrow from a box to itself: out of its right side near the top, round and back in near the bottom, its word beside it.</summary>
