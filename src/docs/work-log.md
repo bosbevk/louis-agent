@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 67 | 74 |
-| Fixes (`FX`) | 60 | 5 |
+| Fixes (`FX`) | 61 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -200,10 +200,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (60 done)
+## Fixes (61 done)
 
 | Id | When | What |
 |---|---|---|
+| FX68 | 2026-11-08 | Google sign-in works on Azure: both apps read the visitor's https from the proxy, so the return address matches |
 | FX67 | 2026-11-07 | Each sign-in provider's button in the provider's own look: Google's, Microsoft's and LinkedIn's colours, font and logo |
 | FX65 | 2026-11-07 | The sidebar's settings line up, and a picker's list can be read |
 | FX64 | 2026-11-07 | The account pages look like their site: the action's own text colour, Puls's glass card on the water |
