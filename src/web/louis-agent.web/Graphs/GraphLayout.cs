@@ -17,9 +17,9 @@ namespace LouisAgent.Web.Graphs;
 /// </remarks>
 public static class GraphLayout
 {
-    private const double BoxWidth = 180;
-    private const double BoxHeight = 56;
-    private const double NotedBoxHeight = 72;
+    private const double BoxWidth = 170;
+    private const double BoxHeight = 52;
+    private const double NotedBoxHeight = 64;
     private const double Gap = 18;
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
     private const double MinColumnGap = 60;

@@ -39,7 +39,7 @@ public partial class GraphView
     private static string Translate(PlacedNode node) => $"translate({N(node.X)} {N(node.Y)})";
 
     /// <summary>The label sits in the middle of a plain box, and above the note in a noted one.</summary>
-    private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : node.H / 2 - 4;
+    private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : node.H / 2 - 3;
 
     /// <summary>The column as a CSS variable, so the styles delay each column's motion a little more.</summary>
     private static string NodeStyle(PlacedNode node) => $"--col: {node.Node.Column}";
@@ -52,7 +52,7 @@ public partial class GraphView
     private static MarkupString Label(PlacedNode node) => Words("label", node.W / 2, LabelY(node), node.Node.Label);
 
     /// <summary>The line under a box's words.</summary>
-    private static MarkupString Note(PlacedNode node, string note) => Words("note", node.W / 2, node.H - 16, note);
+    private static MarkupString Note(PlacedNode node, string note) => Words("note", node.W / 2, node.H - 14, note);
 
     /// <summary>The word on an arrow, just above its middle.</summary>
     private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
