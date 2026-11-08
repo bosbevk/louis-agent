@@ -20,7 +20,7 @@ below it are strokes in two grays, lighter going up.
 | [mark-light.svg](mark-light.svg) | The mark on a light ground: solid Ink `#15171a`, no gradient | Docs, print, anything light |
 | [nuget-icon.png](nuget-icon.png) | 128 × 128, the mark on the Floor colour | The NuGet packages' `PackageIcon`, when they ship (F74) |
 | [avatar.png](avatar.png) | 512 × 512, the mark on the Floor colour | The GitHub avatar, any square profile picture |
-| [social-card.png](social-card.png) | 1280 × 640, the lockup and the line | GitHub's *Settings → Social preview*, link previews |
+| [social-card.png](social-card.png) | 1280 × 640, the lockup, the line, the site's address and the slogan (FX99: no repository address, the repository is private) | The site's `og:image`, link previews |
 
 The coding agent's web app (the site) shows the lockup in its header (F110): its own copy of the mark,
 `demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg`, the drawing alone without the export's
