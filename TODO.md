@@ -53,6 +53,8 @@ known limitations below are facts about today, not tasks.
 | F15 | Model limits and local models | Next | [feature doc](src/docs/features/F15-model-limits.md) |
 | F107 | A guest is sent to sign in before the chat: no composer for nobody (Louis, 2026-11-08, on mypuls.co.za: "I need to log in first"); today the gate answers 401 and the page sends them then; the guide in the site's corner is open on purpose (F109.3, ADR 0099), only the chat is behind the sign-in | Next | — |
 | F108 | The admin portal is a role of a signed-in person, not a key: ADMIN_API_KEY goes once an account can carry the admin role (Louis, 2026-11-08: "should this not be a role?") | Next | — |
+| F111 | A diagram on every page of the louis-agent site, drawn by one framework component from data each page declares, animated as it enters (Louis, 2026-11-08: "add a nice graph on each page", "animated graph, not movies") | Now | [plan](src/docs/plans/F111-a-diagram-on-every-page.md) |
+| F112 | The guide mails Louis a lead: a leads pack with one tool, Resend behind a seam, the rule in the voice (Louis, 2026-11-08: "the agent should send me an email, if someone is interested") | Next | plan on its branch |
 | F51 | Hosting for public traffic | Next | — |
 | F75 | Puls local spec | Puls | — |
 | F76 | Cook for the week | Puls | [spec](demos/puls/docs/specs/PULS_COOK.md) |
