@@ -2,15 +2,13 @@
 
 <PageTitle>Packs · louis-agent</PageTitle>
 
-<section class="band">
-    <span class="kicker">Packs</span>
+<Band Id="top" Kicker="Packs">
     <h2 class="chrome">What an agent can do is a package.</h2>
     <p class="lede">A pack is tools and their guide. An agent has only the packs its program names, and a session only the toolsets it asks for, so its prompt never describes a tool it can't use.</p>
     <GraphView Spec="PacksGraph.Spec" Title="A pack, what it holds, and what a session loads from it" />
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">General tools</span>
+<Band Id="general" Kicker="General tools">
     <CardDeck>
         <Card Title="louis-agent.pack.files" Summary="The workspace's files, and documents as text.">
             <p>Read, write, search, copy, rename and delete in the workspace, and read PDF, Word and Excel as text.</p>
@@ -42,11 +40,13 @@
         <Card Title="louis-agent.pack.leads" Summary="One tool: it tells Louis a visitor wants a site with an agent.">
             <p>For the guide in this page's corner: it tells Louis that a visitor wants a website with an agent or a custom agent, once they said yes, by mail. Without the mail key the lead goes to the log, and the guide says so.</p>
         </Card>
+        <Card Title="louis-agent.pack.site" Summary="One tool: it takes you to a page of the site, or to a part of it.">
+            <p>For the guide in this page's corner: when the right page or area exists for what you ask, it opens it for you, scrolled to the part and with that part lit up for a moment, then says in one line what to look at. The tool checks the path is a page of this site and nothing else; the page itself moves the browser.</p>
+        </Card>
     </CardDeck>
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">The packs behind Puls's cook</span>
+<Band Id="cook" Kicker="The packs behind Puls's cook">
     <CardDeck Columns="4">
         <Card Title="louis-agent.pack.where-to-buy" Summary="A shop's branches near you, as a short table.">
             <p>Finds a shop's branches near you from OpenStreetMap, and hands the model a short table instead of a map to guess at.</p>
@@ -61,10 +61,9 @@
             <p>Works out sums in code, so a model hands over its arithmetic instead of doing it in its head.</p>
         </Card>
     </CardDeck>
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">The rules a pack keeps</span>
+<Band Id="rules" Kicker="The rules a pack keeps">
     <ul class="rules">
         <li><strong>Only the contracts.</strong> A pack references the small contracts package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>
         <li><strong>No other pack.</strong> A pack never knows about another pack or an identity. Only a demo's own program knows them all.</li>
@@ -73,4 +72,4 @@
         <li><strong>Ready for MCP.</strong> A pack's tools and guide keep a shape that can be served over MCP as they are.</li>
     </ul>
     <p class="band-note"><a href="/how-it-works">How a turn uses them</a></p>
-</section>
+</Band>

@@ -6,6 +6,7 @@ using System.Threading.Channels;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Requests;
+using LouisAgent.Api.Sessions.Requests.Pages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -60,12 +61,22 @@ internal static class TurnStream
         return string.Join("\n\n", parts);
     }
 
-    /// <summary>The page as one block: where the visitor is and what the page says, cut with a note when it is long.</summary>
+    /// <summary>The page's named areas as lines of "#id heading" after the text (F117), nothing when the page lists none.</summary>
+    private static string AreasOf(PageRequest page)
+    {
+        var areas = (page.Areas ?? []).Where(area => !string.IsNullOrWhiteSpace(area.Id)).ToList();
+        if (areas.Count == 0) return "";
+        return MessageText.Format(ApiModelText.PageAreas,
+            new { List = string.Join("\n", areas.Select(area => $"#{area.Id} {area.Heading}".TrimEnd())) });
+    }
+
+    /// <summary>The page as one block: where the visitor is, what the page says, cut with a note when it is long, and its areas.</summary>
     private static string PageBlock(PageRequest page)
     {
         string text = page.Text ?? string.Empty;
         string shown = text.Length <= MaxPageChars ? text : text[..MaxPageChars];
-        string block = MessageText.Format(ApiModelText.Page, new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown });
+        string block = MessageText.Format(ApiModelText.Page,
+            new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown, Areas = AreasOf(page) });
         if (text.Length <= MaxPageChars) return block;
         return block + MessageText.Format(ApiModelText.PageTruncated, new
         {

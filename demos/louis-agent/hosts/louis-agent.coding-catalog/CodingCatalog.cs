@@ -5,6 +5,7 @@ using LouisAgent.Identities.Coding;
 using LouisAgent.Identities.Expert;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Leads;
+using LouisAgent.Packs.Site;
 using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
@@ -34,7 +35,7 @@ public static class CodingCatalog
     public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps, DocsOptions docs, LeadsOptions leads) =>
     [
         new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-        new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads),
+        new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads), new SitePack(),
     ];
 
     /// <summary>

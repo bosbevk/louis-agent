@@ -2,15 +2,13 @@
 
 <PageTitle>How the engine works · louis-agent</PageTitle>
 
-<section class="band band-movie">
-    <span class="kicker">How it works · in detail</span>
+<Band Id="top" Kicker="How it works · in detail" Class="band-movie">
     <h2 class="chrome">One turn, through every layer.</h2>
     <p class="lede">Sixty seconds, ten scenes. The six slabs inside core are the real middleware in its real order, outermost first, the way <code>ChatPipeline.cs</code> builds it.</p>
     <FilmFrame><DetailedMovie /></FilmFrame>
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">The parts, in plain words, in the order a turn meets them</span>
+<Band Id="parts" Kicker="The parts, in plain words, in the order a turn meets them">
     <GraphView Spec="TurnGraph.Spec" Title="One turn: your program, a host, the engine's pipeline, the model and a tool, the ledger" />
     <ul class="rules">
         <li><strong>Your program.</strong> A few lines in a project of your own: they name the catalogue, who the agent is and what it can do, and start a host. A demo is such a project, and so is a customer's.</li>
@@ -22,10 +20,9 @@
         <li><strong>The eval harness.</strong> What proves it: every check a C# eval on one harness, kept beside the identity or pack it proves, recording what the model answered and read so a run re-scores for nothing. <a href="/proof">Measured</a></li>
         <li><strong>Where it runs.</strong> Docker on a developer's machine, two Container Apps in Azure released from GitHub after green CI. <a href="/architecture">The whole map</a></li>
     </ul>
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">The rules every turn keeps</span>
+<Band Id="rules" Kicker="The rules every turn keeps">
     <ul class="rules">
         <li><strong>An agent runs in a closed Docker container.</strong> It sees only the folders mounted into it and the secrets handed to it. The fetcher it must use refuses your network's internal addresses. Nothing it does reaches the machine it runs on.</li>
         <li><strong>Arguments are data.</strong> Model text never reaches a shell. A tool gets typed arguments.</li>
@@ -35,4 +32,4 @@
         <li><strong>A session keeps its tools.</strong> It names its toolsets when it opens, and there is one engine per toolset list, in a fixed order, so the same list always sends the same prefix.</li>
         <li><strong>A pack can't skip a guard.</strong> It asks the engine for a fetcher, which refuses internal addresses and obeys a site's <code>robots.txt</code> on every request.</li>
     </ul>
-</section>
+</Band>

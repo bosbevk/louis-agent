@@ -2,8 +2,7 @@
 
 <PageTitle>Built on it · louis-agent</PageTitle>
 
-<section class="band">
-    <span class="kicker">Built on it</span>
+<Band Id="top" Kicker="Built on it">
     <h2 class="chrome">Three agents run on the engine today.</h2>
     <GraphView Spec="DemosGraph.Spec" Title="The framework, and what is built on it" />
     <p class="lede">Each is a demo, the way your own project would be: its own program, its own identity, and the packs it names.</p>
@@ -21,10 +20,9 @@
             <p>The smallest identity there is: one voice and one pack. A fourth, a team that triages a service's errors and fixes them, is being built on the same engine.</p>
         </Card>
     </CardDeck>
-</section>
+</Band>
 
-<section class="band stands-on">
-    <span class="kicker">What it stands on</span>
+<Band Id="stands-on" Kicker="What it stands on" Class="stands-on">
     <h3>Microsoft's own pieces, and a few open ones. Nothing paid.</h3>
     <p class="lede">The framework is 100% C# on .NET 10, and it adopts before it builds: a maintained package under a permissive licence wins over code of our own. These are the ones it stands on, each with its licence.</p>
     <ul class="rules">
@@ -39,14 +37,13 @@
         <li><strong><code>PuppeteerSharp</code></strong> The headless browser that draws a page a reader can't. MIT.</li>
         <li><strong><code>AspNetCore.SassCompiler</code></strong> The stylesheets, compiled at build. MIT.</li>
     </ul>
-</section>
+</Band>
 
-<section class="band">
-    <span class="kicker">Hosts</span>
+<Band Id="hosts" Kicker="Hosts">
     <p class="lede">The framework's hosts are libraries. A demo's few lines start the ones it wants.</p>
     <div class="grid-3">
         <div class="panel small"><h4>Rider</h4><p>An Agent Client Protocol server over stdio for Rider's AI chat.</p></div>
         <div class="panel small"><h4>Web app and HTTP API</h4><p>Sessions with answers streamed as server-sent events. The API serves the web app.</p></div>
         <div class="panel small"><h4>CLI and MCP server</h4><p>Interactive or one-shot prompts in the terminal, and the tools handed to any MCP client, which brings its own model.</p></div>
     </div>
-</section>
+</Band>
