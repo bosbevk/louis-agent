@@ -16,7 +16,7 @@ question="The bank payments are not matching their invoices, and the tests show 
 
 # The sample as its own repository, so the agent's git tools see one clean commit.
 mkdir -p "$work/workspace" "$work/config" "$work/skills" "$work/logs"
-cp -r demos/louis-agent/recordings/invoice-matcher/. "$work/workspace/"
+cp -r demos/louis-agent/samples/invoice-matcher/. "$work/workspace/"
 printf "bin/\nobj/\n" > "$work/workspace/.gitignore"
 git -C "$work/workspace" init -q -b main
 git -C "$work/workspace" -c user.name=Sample -c user.email=sample@example.com add -A

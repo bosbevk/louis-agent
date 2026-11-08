@@ -111,7 +111,17 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+Built unattended (Louis: "continue and finish unattended"), so these are the build's own calls, recorded here.
+
+- **The sample moved to `demos/louis-agent/samples/invoice-matcher/`**, beside the order service, where the repo's size
+  and folder rules already leave a customer's code alone; `recordings/` keeps the script and its how-to.
+- **The recording container mounts only the price and rate files.** The host reads every `.env` file in its config
+  folder, so the first try, with `config/` mounted, loaded the private key and the git identity. It was stopped before
+  any session opened. `record.sh` mounts a copy of the two files instead.
+- **The recording cost about R0.10** (US$0.006, seven requests on Haiku): the agent ran the tests, read the code, fixed
+  both bugs with a whole-token, case-blind match, built and ran the tests again, 4 of 4.
+- **The window's frame, bar and dots became a framework mixin** (`web/tools/_window`), used by `RecordedChat` and by the
+  landing's live panel, whose compiled rules stayed the same.
 
 ---
 [Docs index](../README.md) · Related: [plans](README.md), [ADR 0107](../adr/0107-every-section-has-an-address.md)

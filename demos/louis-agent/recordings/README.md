@@ -7,9 +7,9 @@
 The site's `/coding-agent` page plays `wwwroot/recordings/coding-session.sse` from the code-review app: the stream the
 API sent while the coding agent fixed a real bug, saved as it came. Nothing runs when a visitor watches it.
 
-**The sample.** `invoice-matcher/` is a small C# library that matches bank payments to invoices, with two bugs its own
-tests catch: a lower-case reference is missed, and `INV-104` takes the payment meant for `INV-1042`. It sits outside the
-solution on purpose, so its failing tests never run in CI.
+**The sample.** [`samples/invoice-matcher/`](../samples/README.md#invoice-matcher) is a small C# library that matches
+bank payments to invoices, with two bugs its own tests catch: a lower-case reference is missed, and `INV-104` takes the
+payment meant for `INV-1042`. It sits outside the solution on purpose, so its failing tests never run in CI.
 
 **Recording again.** It is one paid run on Haiku, a few cents, so ask Louis first. Build the API image, then run the
 script from the repo root:
