@@ -26,12 +26,12 @@
 <section class="band">
     <span class="kicker">The rules every turn keeps</span>
     <ul class="rules">
-        <li><strong>An agent runs in a closed Docker container.</strong> It sees only the folders mounted into it and the secrets handed to it; the fetcher it must use refuses your network's internal addresses; nothing it does reaches the machine it runs on.</li>
-        <li><strong>Arguments are data.</strong> Model text never reaches a shell; a tool gets typed arguments.</li>
-        <li><strong>The context is guarded.</strong> A result over 50,000 characters is summarised by a separate call; a call cut off by the output limit never runs; a failure goes back to the model with its reason.</li>
+        <li><strong>An agent runs in a closed Docker container.</strong> It sees only the folders mounted into it and the secrets handed to it. The fetcher it must use refuses your network's internal addresses. Nothing it does reaches the machine it runs on.</li>
+        <li><strong>Arguments are data.</strong> Model text never reaches a shell. A tool gets typed arguments.</li>
+        <li><strong>The context is guarded.</strong> A result over 50,000 characters is summarised by a separate call. A call cut off by the output limit never runs. A failure goes back to the model with its reason.</li>
         <li><strong>History is append-only.</strong> Nothing edits the system prompt, the tools or earlier messages mid-conversation, so the prompt prefix stays cacheable.</li>
-        <li><strong>Every request is measured.</strong> One priced record per model request, from a dated price table; an unknown price stays unknown, never 0.</li>
-        <li><strong>A session keeps its tools.</strong> It names its toolsets when it opens; one engine per toolset list, in a fixed order, so the same list always sends the same prefix.</li>
+        <li><strong>Every request is measured.</strong> One priced record per model request, from a dated price table. An unknown price stays unknown, never 0.</li>
+        <li><strong>A session keeps its tools.</strong> It names its toolsets when it opens, and there is one engine per toolset list, in a fixed order, so the same list always sends the same prefix.</li>
         <li><strong>A pack can't skip a guard.</strong> It asks the engine for a fetcher, which refuses internal addresses and obeys a site's <code>robots.txt</code> on every request.</li>
     </ul>
 </section>

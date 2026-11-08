@@ -73,6 +73,17 @@ public class StylesheetTests
     }
 
     /// <summary>
+    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer, the
+    /// index lights the section in view as a bar in the accent, and a band keeps its room above its content.
+    /// </summary>
+    [TestCase(".panel:hover { transform: translateY(-3px);")]
+    [TestCase(".site-index a.active::before { width: 10px; height: 3px;")]
+    [TestCase("padding: 64px var(--site-gutter) 40px;")]
+    public void TheLook_AnswersTheVisitor(string rule) =>
+        Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
+            Does.Contain(rule));
+
+    /// <summary>
     /// No site partial styles a bare class the chat draws (FX71): the guide's chat sits on every page, and the hero's
     /// turn once drew the chat's turns as its cards. The site prefixes its own names, or hangs them off .site.
     /// </summary>

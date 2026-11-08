@@ -1,8 +1,10 @@
 /* The bands a page is made of: a kicker, a heading, a grid of panels; the stat tiles; the rules list; the contact
    strip in steel at the foot of the home page. */
 
+/* A band's room is above its content, as Puls spaces its sections (FX72): one gap between two bands, not two
+   paddings and a line in the middle of an empty screen. */
 .band {
-    padding: 72px var(--site-gutter);
+    padding: 64px var(--site-gutter) 40px;
     border-top: 1px solid var(--line);
     display: flex;
     flex-direction: column;

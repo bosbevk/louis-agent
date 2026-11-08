@@ -1,7 +1,7 @@
 @* The whole framework, as a 36-second film in six scenes (F109.4): a light travelling over every part on a tilted
    floor in the order a turn meets them, a flat card with the detail of each scene, a caption strip. All of it is CSS
    (Styles/site/movie/_stage.scss for the stage, _short.scss for this film's positions and timing). *@
-<div class="movie" role="img" aria-label="A 36-second loop over the whole framework: your program starts a host, the catalogue says which identity and packs it runs on, core asks the model and a pack's tool runs behind a guard, the hosts are libraries and a site is an app on the framework's web, every check is an eval and every request lands in the ledger priced, and it runs in Docker on a PC and in Container Apps in Azure; a detail card explains each scene">
+<div class="movie" role="img" aria-label="A 36-second loop over the whole framework: your program starts a host, the catalogue says which identity and packs it runs on, core asks the model and a pack's tool runs behind a guard, the hosts are libraries and a site is an app on the framework's web, every check is an eval and every request lands in the ledger priced, and it runs in Docker on a PC and in Container Apps in Azure. A detail card explains each scene">
     <div class="stage film-short">
         <div class="camera" aria-hidden="true">
             <div class="floor">
@@ -30,11 +30,11 @@
         <div class="title"><span class="kicker">How it fits together</span><span class="title-text">The whole framework, in six scenes</span></div>
 
         <div class="cards">
-            <div class="card c1"><b>1 · Your program</b><code>CliHost.RunAsync(args, CodingCatalog.Create(), services)</code><ul><li>A few lines in a project of your own: a demo is one, a customer's is one</li><li>They name the catalogue and start a host; nothing in the framework knows your project exists</li></ul><em>demos/louis-agent · identity · hosts · web · evals · deploy</em></div>
+            <div class="card c1"><b>1 · Your program</b><code>CliHost.RunAsync(args, CodingCatalog.Create(), services)</code><ul><li>A few lines in a project of your own: a demo is one, a customer's is one</li><li>They name the catalogue and start a host. Nothing in the framework knows your project exists</li></ul><em>demos/louis-agent · identity · hosts · web · evals · deploy</em></div>
             <div class="card c2"><b>2 · The catalogue</b><code>new AgentCatalog(identities, packs)</code><ul><li>An identity is who the agent is: voice, modes, roles, as markdown</li><li>A pack is what it can do, and ships as a package that needs only the contracts</li><li>The engine itself names no product</li></ul><em>identity: coding agent · packs: files, git, dotnet</em></div>
-            <div class="card c3"><b>3 · Core, the model, a tool</b><code>IChatClient · ToolCallGuards</code><ul><li>One chat client across providers; the provider is configuration</li><li>The pack holds the tool; the engine holds the guards: arguments are data, a result over 50,000 characters is summarised first</li></ul><em>thinking → ReadWorkspaceFile → DotNetTest → 61,340 chars → 1,100</em></div>
+            <div class="card c3"><b>3 · Core, the model, a tool</b><code>IChatClient · ToolCallGuards</code><ul><li>One chat client across providers, and the provider is configuration</li><li>The pack holds the tool. The engine holds the guards: arguments are data, a result over 50,000 characters is summarised first</li></ul><em>thinking → ReadWorkspaceFile → DotNetTest → 61,340 chars → 1,100</em></div>
             <div class="card c4"><b>4 · The hosts, and the web</b><code>AgentHost.Build() · AgentKeyGate</code><ul><li>Every host is a library: a terminal, Rider's chat, the HTTP API, an MCP server</li><li>A site is a small app on the framework's web, served by the API from the same origin</li><li>A sign-in or a key before any session opens</li></ul><em>Rider · API + web · CLI · MCP</em></div>
-            <div class="card c5"><b>5 · The evals, and the ledger</b><code>UsageLedger · PriceTable</code><ul><li>Every check is a C# eval on one harness, beside what it proves; a stored run re-scores for nothing</li><li>Every model request is one record with its tokens and cost, from a dated price table; unknown stays unknown</li></ul><em>72 / 72 · $0.37 live · $0 to replay</em></div>
+            <div class="card c5"><b>5 · The evals, and the ledger</b><code>UsageLedger · PriceTable</code><ul><li>Every check is a C# eval on one harness, beside what it proves. A stored run re-scores for nothing</li><li>Every model request is one record with its tokens and cost, from a dated price table. Unknown stays unknown</li></ul><em>72 / 72 · $0.37 live · $0 to replay</em></div>
             <div class="card c6"><b>6 · Where it runs</b><code>docker compose up · deploy.ps1 release</code><ul><li>Docker on a developer's machine, the repository mounted as the workspace</li><li>Two Container Apps in Azure on one private network, Mongo and the browser on a small VM</li><li>A merge to main releases both after green CI</li></ul><em>louis-agent.dev · mypuls.co.za</em></div>
         </div>
 
@@ -43,9 +43,9 @@
         <div class="bar" aria-hidden="true"><i></i></div>
         <div class="cap c1"><b>1 / 6</b><span>Your program names the catalogue and starts a host.</span></div>
         <div class="cap c2"><b>2 / 6</b><span>The catalogue says who the agent is and what it can do.</span></div>
-        <div class="cap c3"><b>3 / 6</b><span>Core asks the model; a pack's tool runs behind a guard.</span></div>
-        <div class="cap c4"><b>4 / 6</b><span>The hosts are libraries; a site is an app on the framework's web.</span></div>
-        <div class="cap c5"><b>5 / 6</b><span>Every check is an eval; every request lands in the ledger, priced.</span></div>
+        <div class="cap c3"><b>3 / 6</b><span>Core asks the model. A pack's tool runs behind a guard.</span></div>
+        <div class="cap c4"><b>4 / 6</b><span>The hosts are libraries. A site is an app on the framework's web.</span></div>
+        <div class="cap c5"><b>5 / 6</b><span>Every check is an eval. Every request lands in the ledger, priced.</span></div>
         <div class="cap c6"><b>6 / 6</b><span>Docker on a PC, Container Apps in Azure, released from GitHub.</span></div>
     </div>
 </div>

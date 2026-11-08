@@ -146,8 +146,8 @@ pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesT
 
 - Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
-- The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address, in its early-access panel and
-  in the custom-agents section (F110); *Build your own* says the packages aren't on NuGet yet, and has to change the
+- The contact page's three mail links go to Louis's address (FX72), in its early-access panel, the custom-agents
+  section and the hosted-site offer; *Build your own* says the packages aren't on NuGet yet, and has to change the
   day they are.
 - *Try it* and the hero's button lead to the chat until the triage demo (F106.3) gives them a page of their own; the
   brand mark waits for its files (the site keeps its wordmark); the short film's export grew to about 7 MB with its
