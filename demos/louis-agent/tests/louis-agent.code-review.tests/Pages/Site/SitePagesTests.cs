@@ -78,6 +78,8 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "What we sell today")]
     [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
     [TestCase(typeof(ContactPage), "mailto:louis.marais@live.com")]
+    [TestCase(typeof(ContactPage), "href=\"https://wa.me/27663912470")]
+    [TestCase(typeof(ContactPage), "066 391 2470")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]

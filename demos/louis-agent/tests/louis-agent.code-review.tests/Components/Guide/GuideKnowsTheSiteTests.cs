@@ -54,6 +54,7 @@ public class GuideKnowsTheSiteTests
     [TestCase("What the site sells, and how to reach Louis")]
     [TestCase("R500 to R1,000 a month")]
     [TestCase("louis.marais@live.com")]
+    [TestCase("066 391 2470")]
     public void TheDocTheVoiceNames_HoldsTheOffer(string words)
     {
         string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
