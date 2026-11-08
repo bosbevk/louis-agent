@@ -61,9 +61,13 @@ public class GraphLayoutTests
             Is.GreaterThan(placed.Nodes.Single(node => node.Node.Id == "voice").H));
     }
 
-    /// <summary>An arrow leaves the left box's right edge at its middle and arrives at the right box's left edge.</summary>
+    /// <summary>
+    /// An arrow is a connector (FX85, Louis: "make direct lines"): it leaves the middle of the left box's right side
+    /// flat, the one stem every arrow out of that box shares, bends at right angles and arrives flat at the middle of
+    /// the right box's left side.
+    /// </summary>
     [Test]
-    public void AnArrow_RunsFromRightEdgeToLeftEdge()
+    public void AnArrow_IsAConnectorFromRightSideToLeftSide()
     {
         var placed = GraphLayout.Place(TwoColumns());
 
@@ -72,10 +76,35 @@ public class GraphLayoutTests
         var edge = placed.Edges.Single(edge => edge.Edge.To == "packs");
         Assert.Multiple(() =>
         {
-            Assert.That(edge.Path, Does.StartWith($"M {left.X + left.W:0.#} {left.Y + left.H / 2:0.#} C"));
-            Assert.That(edge.Path, Does.EndWith($"{right.X:0.#} {right.Y + right.H / 2:0.#}"));
-            Assert.That(edge.Length, Is.GreaterThan(right.X - (left.X + left.W)), "a curve is longer than the gap");
+            Assert.That(edge.Path, Does.StartWith($"M {left.X + left.W:0.#} {left.Y + left.H / 2:0.#} L"), "out of the middle");
+            Assert.That(edge.Path, Does.EndWith($"L {right.X:0.#} {right.Y + right.H / 2:0.#}"));
+            Assert.That(edge.Path, Does.Not.Contain(" C "), "no curve");
+            Assert.That(edge.Path, Does.Contain(" Q "), "a rounded bend");
+            Assert.That(edge.Length, Is.GreaterThan(right.X - (left.X + left.W)), "the bends make it longer than the gap");
             Assert.That(edge.Edge.Word, Is.EqualTo("names"));
+        });
+    }
+
+    /// <summary>
+    /// Every arrow between two columns bends at the one track in the middle of the gap (Louis: "conformity"), so arrows
+    /// join where curves would have crossed and the bends line up.
+    /// </summary>
+    [Test]
+    public void TheArrowsBetweenTwoColumns_ShareOneTrack()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A", null, 0), new GraphNode("top", "Top", null, 1), new GraphNode("low", "Low", null, 1)],
+            [new GraphEdge("a", "top"), new GraphEdge("a", "low")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        // The first bend's corner is on the track: "... Q trackX y ...", the same x for every arrow that bends.
+        var bent = placed.Edges.Where(edge => edge.Path.Contains(" Q ")).ToList();
+        var tracks = bent.Select(edge => edge.Path.Split(' ').SkipWhile(piece => piece != "Q").Skip(1).First()).Distinct().ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(bent, Has.Count.EqualTo(2), "both arrows change row");
+            Assert.That(tracks, Has.Count.EqualTo(1));
         });
     }
 
@@ -122,9 +151,9 @@ public class GraphLayoutTests
     }
 
     /// <summary>
-    /// An arrow back to an earlier column loops under the drawing (FX85, Louis: "shouldn't here be a line back, a
-    /// specialist is an agent session"): from the box's bottom middle, along a lane below the lowest box, up into the
-    /// target's bottom middle; the drawing grows to hold the lane.
+    /// An arrow back to an earlier column runs under the drawing (FX85, Louis: "shouldn't here be a line back, a
+    /// specialist is an agent session", and his sketch): out of the box's right side, down to a lane below the lowest
+    /// box, along it and up into the target's bottom; the drawing grows to hold the lane.
     /// </summary>
     [Test]
     public void AnArrowBack_LoopsUnderTheDrawing()
@@ -140,8 +169,8 @@ public class GraphLayoutTests
         var back = placed.Edges.Single(edge => edge.Edge.To == "who");
         Assert.Multiple(() =>
         {
-            Assert.That(back.Path, Does.StartWith($"M {session.X + session.W / 2:0.#} {session.Y + session.H:0.#} C"));
-            Assert.That(back.Path, Does.EndWith($"{who.X + who.W / 2:0.#} {who.Y + who.H:0.#}"));
+            Assert.That(back.Path, Does.StartWith($"M {session.X + session.W:0.#} {session.Y + session.H * 0.8:0.#} L"), "out of the right side, low");
+            Assert.That(back.Path, Does.EndWith($"L {who.X + who.W / 2:0.#} {who.Y + who.H:0.#}"), "up into the bottom middle");
             Assert.That(placed.Height, Is.GreaterThan(placed.Nodes.Max(node => node.Y + node.H) + 20), "room for the lane");
             Assert.That(back.WordY, Is.GreaterThan(placed.Nodes.Max(node => node.Y + node.H)), "the word sits on the lane");
         });
@@ -162,13 +191,14 @@ public class GraphLayoutTests
         Assert.Multiple(() =>
         {
             Assert.That(loop.Path, Does.StartWith($"M {b.X + b.W:0.#} "));
-            Assert.That(loop.Path, Does.EndWith($"{b.X + b.W:0.#} {b.Y + b.H * 0.7:0.#}"));
-            Assert.That(loop.WordX, Is.GreaterThan(b.X + b.W), "the word sits beside the box");
+            Assert.That(loop.Path, Does.EndWith($"L {b.X + b.W:0.#} {b.Y + b.H * 0.7:0.#}"));
+            Assert.That(loop.WordX, Is.GreaterThan(b.X + b.W + 40), "the word sits beside the loop");
             Assert.That(placed.Width, Is.GreaterThan(880), "the drawing widens for a loop on the last column");
+            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(loop.WordX + 4 * "calls another".Length), "and holds the word");
         });
     }
 
-    /// <summary>A word sits in the middle of its arrow, the empty ground between two columns, so two words leaving one box part.</summary>
+    /// <summary>A word sits on a flat piece of its arrow, in the empty ground between the columns, never on a box or on the shared track.</summary>
     [Test]
     public void AWord_SitsBetweenTheColumns()
     {
@@ -177,8 +207,11 @@ public class GraphLayoutTests
         var left = placed.Nodes.Single(node => node.Node.Id == "who");
         var right = placed.Nodes.Single(node => node.Node.Id == "packs");
         var edge = placed.Edges.Single(edge => edge.Edge.To == "packs");
-        double start = left.X + left.W, gap = right.X - start;
-        Assert.That(edge.WordX, Is.GreaterThan(start + gap * 0.4).And.LessThan(start + gap * 0.6));
+        Assert.Multiple(() =>
+        {
+            Assert.That(edge.WordX, Is.GreaterThan(left.X + left.W).And.LessThan(right.X));
+            Assert.That(edge.WordY, Is.EqualTo(left.Y + left.H / 2).Or.EqualTo(right.Y + right.H / 2), "on one of its flat pieces");
+        });
     }
 
     /// <summary>
@@ -199,6 +232,44 @@ public class GraphLayoutTests
             for (int at = 1; at < boxes.Count; at++)
                 Assert.That(boxes[at].X - (boxes[at - 1].X + boxes[at - 1].W), Is.GreaterThanOrEqualTo(60), "room between columns");
         });
+    }
+
+    /// <summary>
+    /// A word fits on its flat piece (Louis's screenshot of the Turn diagram: "starts" ran onto the host's box): four
+    /// columns on a narrow width stand apart far enough for the widest word, with room either side.
+    /// </summary>
+    [Test]
+    public void TheColumns_StandApartForTheWidestWord()
+    {
+        var spec = new GraphSpec(
+            Enumerable.Range(0, 4).Select(column => new GraphNode($"n{column}", $"N{column}", null, column)).ToList(),
+            [new GraphEdge("n0", "n1", "starts"), new GraphEdge("n1", "n2", "a turn"), new GraphEdge("n2", "n3")]);
+
+        var placed = GraphLayout.Place(spec, 880);
+
+        var word = placed.Edges.Single(edge => edge.Edge.Word == "a turn");
+        var from = placed.Nodes.Single(node => node.Node.Id == "n1");
+        var to = placed.Nodes.Single(node => node.Node.Id == "n2");
+        Assert.Multiple(() =>
+        {
+            Assert.That(to.X - (from.X + from.W), Is.GreaterThanOrEqualTo(2 * (8 * 6 + 16)), "twice the word and its margins");
+            Assert.That(word.WordX - 4 * 6, Is.GreaterThanOrEqualTo(from.X + from.W + 8), "clear of the left box");
+            Assert.That(word.WordX + 4 * 6, Is.LessThanOrEqualTo(to.X - 8), "clear of the right box");
+        });
+    }
+
+    /// <summary>Two words out of one box don't share a line: the second word moves to the piece by its own target.</summary>
+    [Test]
+    public void TwoWordsOutOfOneBox_Part()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A", null, 0), new GraphNode("x", "X", null, 1), new GraphNode("y", "Y", null, 1)],
+            [new GraphEdge("a", "x", "through"), new GraphEdge("a", "y", "served")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var words = placed.Edges.Select(edge => (edge.WordX, edge.WordY)).Distinct().ToList();
+        Assert.That(words, Has.Count.EqualTo(2));
     }
 
     /// <summary>An arrow to a box the diagram doesn't have is left out, not drawn to nowhere.</summary>

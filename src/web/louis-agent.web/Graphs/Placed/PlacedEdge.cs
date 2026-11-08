@@ -1,8 +1,8 @@
 namespace LouisAgent.Web.Graphs.Placed;
 
 /// <summary>
-/// An arrow with its path: the SVG path from the left box's right edge to the right box's left edge, about how long
-/// it is (the view needs that to make it draw itself), and the point near its start where a word on it sits, clear
-/// of the boxes it heads for.
+/// An arrow with its path: the SVG path of its connector, straight pieces that bend at right angles, about how long
+/// it is (the view needs that to make it draw itself), the point where a word on it sits, on a flat piece clear of
+/// the boxes, and how far right it reaches, so the drawing can make room for a loop past the last column.
 /// </summary>
-public sealed record PlacedEdge(GraphEdge Edge, string Path, double Length, double WordX, double WordY);
+public sealed record PlacedEdge(GraphEdge Edge, string Path, double Length, double WordX, double WordY, double Right);
