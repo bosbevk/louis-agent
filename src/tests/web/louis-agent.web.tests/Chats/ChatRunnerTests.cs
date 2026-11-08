@@ -49,7 +49,7 @@ public class ChatRunnerTests
     [Test]
     public async Task ThePage_TravelsWithTheNextMessage_Once()
     {
-        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question, Page = new Page("/packs", "Packs", "A pack is tools and their guide.") } };
+        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question, Page = new Page("/packs", "Packs", "A pack is tools and their guide.", [new PageArea("general", "General tools")]) } };
 
         await h.Runner.SendAsync();
         string first = h.Handler.Requests.Last().Body!;
@@ -59,10 +59,26 @@ public class ChatRunnerTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(first, Does.Contain("\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\"}"));
+            Assert.That(first, Does.Contain("\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\",\"areas\":[{\"id\":\"general\",\"heading\":\"General tools\"}]}"));
             Assert.That(h.Runner.Page, Is.Null, "forgotten once sent");
             Assert.That(second, Does.Not.Contain("\"page\""), "the wire as it was without a page");
         });
+    }
+
+    /// <summary>
+    /// The runner tells its listeners of each tool call once, as its block arrives (F117), so a widget can act on a
+    /// call while the turn still streams; the recorded turn has one call, to a specialist.
+    /// </summary>
+    [Test]
+    public async Task EachToolCall_IsToldOnce_AsItArrives()
+    {
+        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question } };
+        var calls = new List<string?>();
+        h.Runner.ToolCalled += block => calls.Add(block.ToolName);
+
+        await h.Runner.SendAsync();
+
+        Assert.That(calls, Is.EqualTo(new[] { "StartSubSession" }));
     }
 
     /// <summary>A message opens a session, streams the turn and saves the chat.</summary>

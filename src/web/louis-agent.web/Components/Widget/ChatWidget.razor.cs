@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Scripts;
@@ -25,6 +26,12 @@ public partial class ChatWidget : IAsyncDisposable
 {
     /// <summary>Where the widget's own chats are kept, apart from the chat page's.</summary>
     private const string ChatsKey = "louis-agent.widget-chats";
+
+    /// <summary>
+    /// The site pack's tool that names a page to show (F117). The web names the tool and never the pack, which it
+    /// can't reference (ADR 0027): a pack is data to the web, and this is the one call it acts on.
+    /// </summary>
+    private const string ShowPageTool = "ShowPage";
 
     private bool _open;
     private JsModule? _module;
@@ -79,7 +86,24 @@ public partial class ChatWidget : IAsyncDisposable
     {
         Runner = new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
         Runner.Changed += Redraw;
+        Runner.ToolCalled += OnToolCalled;
         Currency.Changed += Redraw;
+    }
+
+    /// <summary>
+    /// The guide takes the visitor to a page (F117): on a ShowPage call the browser goes to the path, and the area
+    /// after the hash, when there is one, is scrolled to and lit up by the module once the page has it. Any other
+    /// tool is the chat's business.
+    /// </summary>
+    private void OnToolCalled(Block block)
+    {
+        if (block.ToolName != ShowPageTool || block.ToolInput is null) return;
+        using var input = JsonDocument.Parse(block.ToolInput);
+        if (!input.RootElement.TryGetProperty("path", out var pathElement) || pathElement.GetString() is not { } path) return;
+
+        Nav.NavigateTo(path);
+        int hash = path.IndexOf('#');
+        if (hash >= 0 && hash < path.Length - 1) _ = Module.InvokeVoidAsync("showArea", path[(hash + 1)..]);
     }
 
     /// <summary>
@@ -91,6 +115,7 @@ public partial class ChatWidget : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         Runner.Changed -= Redraw;
+        Runner.ToolCalled -= OnToolCalled;
         Currency.Changed -= Redraw;
         if (_module is not null) await _module.DisposeAsync();
     }

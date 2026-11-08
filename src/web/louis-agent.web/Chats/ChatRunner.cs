@@ -50,6 +50,9 @@ public sealed class ChatRunner(
     /// <summary>A turn ended, however it ended: a site refreshes whatever the agent may have changed here.</summary>
     public event Action? TurnEnded;
 
+    /// <summary>A tool call arrived in the turn (F117), once per call, so a page can act on it while the turn still streams.</summary>
+    public event Action<Block>? ToolCalled;
+
     public bool CanSend => !Streaming && Chat?.Ended != true && (Draft.Trim().Length > 0 || Attachments.Count > 0);
 
     /// <summary>Sends the draft with its attachments, and clears both.</summary>
@@ -115,7 +118,10 @@ public sealed class ChatRunner(
         {
             await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments, page))
             {
+                // A tool call is one new block the moment it starts; its result later changes that block, adding none.
+                int blocks = turn.Blocks.Count;
                 TurnStream.Apply(turn, streamEvent);
+                if (turn.Blocks.Count > blocks && turn.Blocks[^1] is { Kind: BlockKind.Tool } call) ToolCalled?.Invoke(call);
                 redraw.Request();
             }
         }

@@ -1,6 +1,5 @@
 @* The eval harness on the Architecture page: the four projects every check runs on. *@
-<section class="band">
-    <span class="kicker">src/evals · the harness</span>
+<Band Id="evals" Kicker="src/evals · the harness">
     <h3>Every check is a C# eval on one harness.</h3>
     <p class="lede">An eval is a folder of files beside the identity or pack it proves: the samples, the rubric, the checks. The harness runs it, records what the model answered and read, and re-scores a stored run for nothing.</p>
     <ul class="rules">
@@ -9,4 +8,4 @@
         <li><strong><code>louis-agent.evals.protocol</code></strong> The events a run writes and the API and the pages read: records and enums only.</li>
         <li><strong><code>louis-agent.evals.runner</code></strong> The command that lists and runs evals, re-scores a run and checks a judge. A demo's program starts it, and the API starts it as a child process.</li>
     </ul>
-</section>
+</Band>
