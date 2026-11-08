@@ -150,7 +150,9 @@ The guide answers questions about buying from this section (FX72), so it holds t
 - **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
-  subject already filled in. Say what the agent should do, which systems it needs to reach, and where it should run.
+  subject already filled in, or WhatsApp on 066 391 2470 (WhatsApp Business), which the page's WhatsApp buttons open
+  as a chat (`https://wa.me/27663912470`). Say what the agent should do, which systems it needs to reach, and where
+  it should run.
 
 ## Extending it
 
