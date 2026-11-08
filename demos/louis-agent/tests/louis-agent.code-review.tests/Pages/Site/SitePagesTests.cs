@@ -69,6 +69,7 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "href=\"/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(HomePage), "Custom agents")]
+    [TestCase(typeof(IdentitiesPage), "Never lie.")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]
@@ -119,7 +120,8 @@ public class SitePagesTests
 
     /// <summary>
     /// No page joins two clauses with a semicolon (Louis, 2026-11-08: "we should never do this"): a visitor reads short
-    /// sentences. Code listings are code and may keep theirs.
+    /// sentences. Code listings are code and may keep theirs, and the principles are the engine's own file, shown as it
+    /// is (FX74), not the site's words.
     /// </summary>
     [Test]
     public void NoPage_JoinsClausesWithASemicolon()
@@ -136,7 +138,7 @@ public class SitePagesTests
                 builder.OpenComponent(0, page);
                 builder.CloseComponent();
             });
-            foreach (var code in cut.FindAll("code, pre, style, script"))
+            foreach (var code in cut.FindAll("code, pre, style, script, .principles"))
             {
                 code.Remove();
             }
