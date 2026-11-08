@@ -154,6 +154,30 @@ public class SitePagesTests
         Assert.That(offenders, Is.Empty);
     }
 
+    /// <summary>
+    /// Every page that explains a part of the framework shows one diagram of it (F111, Louis: "add a nice graph on each
+    /// page"); the landing has its film, Contact and What's coming explain nothing.
+    /// </summary>
+    [TestCase(typeof(HowItWorksPage))]
+    [TestCase(typeof(ArchitecturePage))]
+    [TestCase(typeof(IdentitiesPage))]
+    [TestCase(typeof(PacksPage))]
+    [TestCase(typeof(BuildYourOwnPage))]
+    [TestCase(typeof(ProofPage))]
+    [TestCase(typeof(BuiltOnItPage))]
+    public void AnExplainingPage_ShowsOneDiagram(Type page)
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render(builder =>
+        {
+            builder.OpenComponent(0, page);
+            builder.CloseComponent();
+        });
+
+        Assert.That(cut.FindAll("figure.graph"), Has.Count.EqualTo(1));
+    }
+
     /// <summary>The landing's blocks reveal as they enter (F110): the headings and the panels carry the mark.</summary>
     [Test]
     public void TheLanding_RevealsItsBlocks()
