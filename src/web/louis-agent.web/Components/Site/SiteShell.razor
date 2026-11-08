@@ -6,7 +6,13 @@
     <header class="site-header">
         @if (Brand is not null)
         {
-            <a class="site-brand" href="@BrandHref">@Brand</a>
+            <a class="site-brand" href="@BrandHref">
+                <span class="site-brand-name">@Brand</span>
+                @if (Tagline is not null)
+                {
+                    <span class="site-tagline">@Tagline</span>
+                }
+            </a>
         }
         @if (Links is not null)
         {

@@ -20,7 +20,7 @@ public class SitePagesTests
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
-    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Two agents run on the engine today.")]
+    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
     [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
@@ -71,6 +71,8 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
     [TestCase(typeof(HomePage), "class=\"strip-contact reveal\"")]
+    [TestCase(typeof(HomePage), "The guide")]
+    [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]

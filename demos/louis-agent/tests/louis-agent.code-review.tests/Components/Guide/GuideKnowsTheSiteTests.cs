@@ -48,6 +48,24 @@ public class GuideKnowsTheSiteTests
     }
 
     /// <summary>
+    /// A plain-words answer ends with no file path (FX77, Louis: "do not do this"): the doc is named only to a developer,
+    /// and the chat's tool cards already show what was read.
+    /// </summary>
+    [Test]
+    public void TheVoice_NamesADoc_OnlyForADeveloper()
+    {
+        string voice = TheVoice();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("Name the doc, for a developer."));
+            Assert.That(voice, Does.Contain("No file paths in your words"));
+            Assert.That(voice, Does.Contain("Like a person talking, not a brochure."));
+            Assert.That(voice, Does.Not.Contain("for the curious"));
+        });
+    }
+
+    /// <summary>
     /// The guide answers from the docs, so the offer and Louis's address are in the doc the voice sends it to
     /// (Louis, 2026-11-08: "should be in the docs"), in the same words as the site.
     /// </summary>
