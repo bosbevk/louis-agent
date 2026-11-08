@@ -141,5 +141,15 @@ in the corner still opens. No paid run.
 - **One module beside its component** (ADR 0093): the frame's behaviour as the frame's script, a site's motion as
   the site's rules.
 
+## Approved during the build
+
+- **A step on the guide's personality** (Louis, 2026-11-08, on a screenshot of the guide: "we must give this AI a
+  personality a way it speaks, fun and bubbly and excited. It should also sell the product the goal is to teach
+  people and sell it to people"), built as step 3 right after the index, the motion and the custom-agents band
+  moving to 4 and 5 and the docs to 6. The voice gains *Who you are* (fun, bubbly, excited; teaches; sells by
+  showing with one nudge; honest always) and *What stays Louis's*: the same screenshot showed the guide quoting the
+  roadmap's price sheet and margins to a visitor, so the roadmap's money, numbers and risks and the TODO's notes
+  are named as the owner's plans, never quoted, and a price question goes to the contact page.
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · Related: [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md), [ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md), [the brand](../brand/README.md)
