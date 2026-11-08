@@ -1,4 +1,5 @@
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Comms;
 
@@ -6,10 +7,10 @@ namespace LouisAgent.Orchestrator.Comms;
 /// What the comms log remembers about one error while it's being handled: the messages and tool calls of its fix,
 /// louis-agent's last FIX-RESULT, the orchestrator's own checks, and in the end the decision and what it all used.
 /// </summary>
-internal sealed class EventSummary(int number, ErrorEvent error)
+internal sealed class EventSummary(int number, ServiceError error)
 {
     public int Number { get; } = number;
-    public ErrorEvent Error { get; } = error;
+    public ServiceError Error { get; } = error;
     public int Messages { get; set; }
     public int ToolCalls { get; private set; }
     public FixResult? Fix { get; private set; }

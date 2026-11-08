@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Triage;
+using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Tests.Triage;
 
@@ -55,7 +56,7 @@ public class DecisionTests
     [Test]
     public void Record_UsesSnakeCaseKeys_LikeTheOtherRecords()
     {
-        var error = new ErrorEvent("abc123", DateTimeOffset.UnixEpoch, "order-service", "order-total", "1003",
+        var error = new ServiceError("abc123", DateTimeOffset.UnixEpoch, "order-service", "order-total", "1003",
             "System.Collections.Generic.KeyNotFoundException", "The given key 'SUMMER25' was not present", null);
         var used = new EventUsage(null, null, null);
         var at = new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero);

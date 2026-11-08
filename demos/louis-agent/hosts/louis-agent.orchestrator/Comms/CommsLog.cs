@@ -5,7 +5,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
-
+using LouisAgent.Packs.Triage.Feed;
 using static LouisAgent.Orchestrator.Comms.CommsMarkdown;
 
 namespace LouisAgent.Orchestrator.Comms;
@@ -50,36 +50,36 @@ internal sealed class CommsLog(string path, DisplayCurrency? display = null, Tim
     {
         _events.Clear();
         Append($"""
-            # Agent communications: {service}
+                # Agent communications: {service}
 
-            Run started {_time.GetUtcNow():yyyy-MM-dd HH:mm:ss} UTC · louis-agent at {louisAgentUrl} · model `{model}`
+                Run started {_time.GetUtcNow():yyyy-MM-dd HH:mm:ss} UTC · louis-agent at {louisAgentUrl} · model `{model}`
 
-            Each error below shows what the orchestrator sent louis-agent and what louis-agent replied (text verbatim;
-            tool inputs and results shortened to {MaxCellChars} characters), the orchestrator's own checks, and a summary.
-            The run summary is at the end.
+                Each error below shows what the orchestrator sent louis-agent and what louis-agent replied (text verbatim;
+                tool inputs and results shortened to {MaxCellChars} characters), the orchestrator's own checks, and a summary.
+                The run summary is at the end.
 
-            """);
+                """);
     }
 
     /// <summary>Starts one error's section, with the error event as the service logged it.</summary>
-    public void StartEvent(int number, int total, ErrorEvent error)
+    public void StartEvent(int number, int total, ServiceError error)
     {
         _current = new EventSummary(number, error);
         _events.Add(_current);
         _checksHeaderWritten = false;
         Append($"""
 
-            ---
+                ---
 
-            ## {number}/{total} · `{error.Method} {error.Arguments}` · {ShortType(error.ExceptionType)}
+                ## {number}/{total} · `{error.Method} {error.Arguments}` · {ShortType(error.ExceptionType)}
 
-            Error `{error.Id}` from the service's error log:
+                Error `{error.Id}` from the service's error log:
 
-            ```json
-            {JsonSerializer.Serialize(error, Indented)}
-            ```
+                ```json
+                {JsonSerializer.Serialize(error, Indented)}
+                ```
 
-            """);
+                """);
     }
 
     /// <summary>A message from the orchestrator to louis-agent, exactly as sent.</summary>
@@ -87,13 +87,13 @@ internal sealed class CommsLog(string path, DisplayCurrency? display = null, Tim
     {
         if (_current is { } e) e.Messages++;
         Append($"""
-            ### Orchestrator → louis-agent · message {_current?.Messages ?? 0} · session `{sessionId}`
+                ### Orchestrator → louis-agent · message {_current?.Messages ?? 0} · session `{sessionId}`
 
-            ````text
-            {message}
-            ````
+                ````text
+                {message}
+                ````
 
-            """);
+                """);
     }
 
     /// <summary>louis-agent's reply to the last message: its tool calls, then its text.</summary>
