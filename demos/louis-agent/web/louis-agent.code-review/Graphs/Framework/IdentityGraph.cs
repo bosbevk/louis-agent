@@ -35,10 +35,7 @@ public static class IdentityGraph
             new GraphEdge("roles", "level1"),
             new GraphEdge("small-jobs", "level2"),
             new GraphEdge("packs", "level0", "tools"),
-            // Every level is a session of the identity, and a specialist may call another (Louis, FX85).
-            new GraphEdge("level0", "identity", "a session of it"),
-            new GraphEdge("level1", "identity"),
-            new GraphEdge("level2", "identity"),
+            // A specialist may call another (Louis, FX85); the arrows back to the identity went again ("take these out").
             new GraphEdge("level1", "level1", "calls another"),
         ]);
 }
