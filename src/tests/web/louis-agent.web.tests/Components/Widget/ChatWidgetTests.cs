@@ -280,6 +280,28 @@ public class ChatWidgetTests
         });
     }
 
+    /// <summary>
+    /// A card open on the visitor's screen goes with every message (FX106, Louis's screenshot: on the leads pack's
+    /// card, "this pack" was taken for the one the guide had opened before), so "this" is the card they opened.
+    /// </summary>
+    [Test]
+    public void AnOpenCard_TravelsWithEveryMessage()
+    {
+        using var ctx = Context(out var handler);
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
+        module.Setup<Page>("pageText").SetResult(new Page("/packs", "Packs", "A pack is tools and their guide.", []));
+        module.Setup<PageArea?>("inView").SetResult(new PageArea("general", "General tools"));
+        module.Setup<PageArea?>("openCard").SetResult(new PageArea("louis-agent-pack-leads", "louis-agent.pack.leads"));
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+
+        Send(cut, "tell me about this pack");
+        Send(cut, "and this one?");
+
+        var bodies = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.That(bodies, Has.All.Contain("\"open\":{\"id\":\"louis-agent-pack-leads\""));
+    }
+
     /// <summary>Types a message into the widget's composer, sends it and waits for the turn to show and the stream to end.</summary>
     private static void Send(IRenderedComponent<ChatWidget> cut, string text)
     {

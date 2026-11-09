@@ -21,6 +21,7 @@ public static class GuidePlaces
             Url = pageAddress,
             Areas = page.Areas.Select(area => area with { Id = AddressOf(area.Id, addresses, pageAddress) }).ToList(),
             InView = page.InView is { } inView ? inView with { Id = AddressOf(inView.Id, addresses, pageAddress) } : null,
+            Open = page.Open is { } open ? open with { Id = AddressOf(open.Id, addresses, pageAddress) } : null,
         };
 
     /// <summary>

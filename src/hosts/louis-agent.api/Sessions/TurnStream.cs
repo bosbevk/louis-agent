@@ -66,15 +66,24 @@ internal static class TurnStream
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
         return MessageText.Format(ApiModelText.PageInViewOnly,
-            new { Url = page.Url ?? "", Id = id, Heading = inView.Heading ?? "" });
+            new { Url = page.Url ?? "", Id = id, Heading = inView.Heading ?? "", Open = OpenOf(page) });
     }
+
+    /// <summary>
+    /// The card open on the visitor's screen as a line (FX106), so "this" is the card they opened and not one the guide
+    /// opened earlier; nothing when no card is open.
+    /// </summary>
+    private static string OpenOf(PageRequest page) =>
+        page.Open is { Id: { Length: > 0 } id } open
+            ? MessageText.Format(ApiModelText.PageCardOpen, new { Id = id, Heading = open.Heading ?? "" })
+            : "";
 
     /// <summary>The section on the visitor's screen as a line after the areas (F118), nothing when none is named.</summary>
     private static string InViewOf(PageRequest page)
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
         return MessageText.Format(ApiModelText.PageInView,
-            new { Id = id, Heading = inView.Heading ?? "", Url = page.Url ?? "" }).TrimEnd();
+            new { Id = id, Heading = inView.Heading ?? "", Url = page.Url ?? "", Open = OpenOf(page) }).TrimEnd();
     }
 
     /// <summary>
