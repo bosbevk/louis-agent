@@ -1,13 +1,30 @@
 /* ---- A site's public frame (F109.1, from the framework's static site): a header with the brand, the menu and the
    actions, the main column, a footer, and a corner that floats over every page. Scoped: what a site puts in a slot
-   is reached under ::deep. A site sets --site-gutter in its own settings; without it the frame keeps a plain one. ---- */
+   is reached under ::deep. A site sets --site-gutter in its own settings; without it the frame keeps a plain
+   one. ---- */
 .site { min-height: 100vh; display: flex; flex-direction: column; }
 
 /* The scroll progress line at the very top (F110, the frame's since F118): the module sets its width as the page
    scrolls. It reads the site's call-to-action colour, so a theme changes it. */
-.site-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 30; background: var(--web-cta); box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6); }
+.site-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    z-index: 30;
+    background: var(--web-cta);
+    box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6);
+}
 
+/* The header stays at the top of the screen (FX111): a slide settles under it, so the room above a slide holds the
+   menu, never the bottom of the slide before; the page shows through it a little, blurred. */
 .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(var(--bs-body-bg-rgb), .86);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -19,7 +36,14 @@
 
 /* The brand is a lockup when a site gives it a mark: the mark, then the name, set in the mono face as the brand's
    README says; the menu and the actions sit on the right (F110). */
-.site-brand { font: 500 16px var(--bs-font-monospace); text-decoration: none; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.site-brand {
+    font: 500 16px var(--bs-font-monospace);
+    text-decoration: none;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
 .site-brand-name { display: inline-flex; align-items: center; gap: 8px; }
 .site-brand ::deep img { height: 22px; width: auto; display: block; }
 /* The slogan under the brand (FX79): one quiet mono line, the site's own words. */
@@ -29,7 +53,13 @@
 .site-nav ::deep a { color: var(--bs-secondary-color); text-decoration: none; }
 .site-nav ::deep a:hover { color: var(--bs-emphasis-color); }
 
-.site-main { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; animation: site-page-in .5s var(--web-ease, ease-out) both; }
+.site-main {
+    flex: 1;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    animation: site-page-in .5s var(--web-ease, ease-out) both;
+}
 
 /* A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation"):
    the frame draws the main column afresh for each page, so the new page fades in and rises a little; a jump within
@@ -44,7 +74,8 @@
    not scroll into place, so a jump to it stopped early, and a click in the index lit the section before it. It holds
    its content in the middle of that height, a band's flex column and a hero's grid alike, and the page settles on it
    under the header as it scrolls (Louis: "vertically centered in the screen and then ... it rolls in"); the reveal
-   plays as it arrives. A diagram scales down to fit the slide. A flowing page keeps its sections as tall as they are. */
+   plays as it arrives. A diagram scales down to fit the slide. A flowing page keeps its sections as tall as they
+   are. */
 .layout-slides .site-main ::deep .graph svg { max-height: calc(100dvh - 420px); }
 .layout-slides .site-main ::deep > section {
     min-height: calc(100dvh - 160px);

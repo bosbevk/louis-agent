@@ -96,6 +96,15 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
             Does.Contain(".is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }"));
 
+    /// <summary>
+    /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
+    /// above itself holds the header and the menu, never the bottom of the slide before.
+    /// </summary>
+    [Test]
+    public void TheSitesHeader_StaysOnTop() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
+            Does.Contain("position: sticky;\n    top: 0;"));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

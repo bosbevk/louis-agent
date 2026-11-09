@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 82 | 73 |
-| Fixes (`FX`) | 102 | 6 |
+| Fixes (`FX`) | 103 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -215,10 +215,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (92 done)
+## Fixes (93 done)
 
 | Id | When | What |
 |---|---|---|
+| FX111 | 2026-11-09 | The site's header stays at the top of the screen, so the strip above a slide holds the menu, not the slide before |
 | FX110 | 2026-11-09 | A section paged sideways keeps its heading with what follows it, so a page never holds only a title while its content starts on the next |
 | FX109 | 2026-11-09 | The guide's walkthrough is told every page of a paged section: the page list counts as the pager does, so a page a long list flows on to is a stop too |
 | FX108 | 2026-11-09 | A tool call missing an argument is answered with that argument's own description and choices, from the tool's schema, for every tool |
