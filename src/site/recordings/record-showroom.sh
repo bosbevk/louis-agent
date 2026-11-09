@@ -23,8 +23,10 @@ for file in "$config/.env" "$config/.env.secrets"; do
   if [ -f "$file" ]; then env_files+=(--env-file "$file"); fi
 done
 
+# Open without a key on localhost: AGENT_AUTH=off lets the host start keyless, and the key the settings carry is
+# blanked, since a key that is set is always asked for.
 MSYS_NO_PATHCONV=1 docker run -d --rm --name louis_agent_showroom -p "127.0.0.1:$port:8080" "${env_files[@]}" \
-  -e AGENT_AUTH=off -e HOST_TIME_ZONE=Africa/Johannesburg -e LEADS_TO=louismarais0@gmail.com \
+  -e AGENT_AUTH=off -e AGENT_API_KEY= -e HOST_TIME_ZONE=Africa/Johannesburg -e LEADS_TO=louismarais0@gmail.com \
   -e LEADS_FROM=guide@louis-agent.dev "${mail[@]}" louis-agent-site:latest >/dev/null
 trap 'docker stop louis_agent_showroom >/dev/null 2>&1 || true' EXIT
 # Ready within two minutes, or say so: a host that stops at start-up is gone, and would be waited on for ever.
@@ -40,7 +42,7 @@ record() {
   shift
   local session
   session=$(curl -s -X POST "http://127.0.0.1:$port/v1/sessions" -H "content-type: application/json" \
-    -d "{\"identity\":\"$business\",\"time_zone\":\"Africa/Johannesburg\"}" |
+    -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\"],\"time_zone\":\"Africa/Johannesburg\"}" |
     sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
   local turn=0
   for question in "$@"; do
