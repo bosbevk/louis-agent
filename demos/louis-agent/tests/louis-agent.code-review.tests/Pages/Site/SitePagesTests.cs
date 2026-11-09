@@ -158,6 +158,23 @@ public class SitePagesTests
     }
 
     /// <summary>
+    /// The custom agents' section opens with a paragraph under its heading (FX119, Louis: "otherwise we must just put
+    /// a paragraph there"): its cards are too tall to sit under the heading at 1080p, so the first page says what
+    /// they hold instead of showing a heading alone.
+    /// </summary>
+    [Test]
+    public void TheCustomAgents_OpenWithAParagraph()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HomePage>();
+
+        var lede = cut.Find("#custom h2 + p.lede");
+        Assert.That(lede.TextContent, Does.Contain("your own"));
+        Assert.That(lede.TextContent, Does.Not.Contain(";"));
+    }
+
+    /// <summary>
     /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
     /// the tour button", then "switch these buttons"): the tour first, then the demos (F122, Louis: "just have a button
     /// there then called demos", "which takes you to the demo index"), and nothing else; the line above says the guide
