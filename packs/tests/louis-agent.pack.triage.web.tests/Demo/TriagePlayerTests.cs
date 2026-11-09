@@ -39,6 +39,32 @@ public class TriagePlayerTests
             .Add(player => player.Pace, 0)
             .Add(player => player.Ending, Offer));
 
+    /// <summary>
+    /// Two columns (F122, Louis: "both text lists can be under one another in the second column"): the site's words,
+    /// the stage and the controls on the left, the step's popup with the list of steps under it on the right.
+    /// </summary>
+    [Test]
+    public void ThePlayer_IsTwoColumns_TheWordsLeft_ThePopupAndStepsRight()
+    {
+        using var ctx = Context();
+        RenderFragment intro = builder => builder.AddMarkupContent(0, "<h2 class=\"intro\">Watch</h2>");
+
+        var cut = ctx.Render<TriagePlayer>(parameters => parameters
+            .Add(player => player.Source, Source)
+            .Add(player => player.Pace, 0)
+            .Add(player => player.Intro, intro)
+            .Add(player => player.Ending, Offer));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".triage-main > .intro"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-main .triage-stage"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-main .triage-controls"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-side > .step-popup + .triage-steps"), Has.Count.EqualTo(1));
+        });
+    }
+
     /// <summary>Played through, every step is in the list, the last one is shown, and the ending follows.</summary>
     [Test]
     public void TheRun_PlaysThrough_ToItsEnding()

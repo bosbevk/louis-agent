@@ -1,8 +1,17 @@
 /* The triage demo (F106.3.4): the team on a stage, the agent at work lit, its popup beside it, the controls, and the
    steps so far as a list. Colours are the framework's variables, so a site's theme draws it. */
 
-.triage-player { display: flex; flex-direction: column; gap: 18px; }
-.triage-scene { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: center; }
+/* Two columns (F122): the words, the stage and the controls on the left; the popup and the steps under it on the
+   right, as tall as a slide, the list scrolling inside it so the page fits one screen. */
+.triage-player { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.triage-main { display: flex; flex-direction: column; gap: 18px; }
+.triage-side {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: calc(100dvh - 300px - var(--site-bar, 0px));
+}
+.triage-side .triage-steps { min-height: 0; overflow-y: auto; padding-right: 6px; }
 
 /* The stage: the workflow and five agents in the order a case meets them, the manager as the hub. */
 .triage-stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -33,10 +42,20 @@
 }
 .step-popup p { margin: 0 0 8px; }
 .step-popup p:last-child { margin-bottom: 0; }
-.popup-who { font: 600 12px var(--bs-font-monospace); letter-spacing: .06em; text-transform: uppercase; color: var(--bs-tertiary-color); }
+.popup-who {
+    font: 600 12px var(--bs-font-monospace);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
 .popup-what { font-weight: 600; color: var(--bs-emphasis-color); }
 .popup-why { font-size: 14px; color: var(--bs-secondary-color); }
-.popup-kind { font-size: 13px; color: var(--bs-tertiary-color); border-top: 1px solid var(--bs-border-color); padding-top: 8px; }
+.popup-kind {
+    font-size: 13px;
+    color: var(--bs-tertiary-color);
+    border-top: 1px solid var(--bs-border-color);
+    padding-top: 8px;
+}
 @keyframes step-popup-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .step-popup, .stage-agent { animation: none; transition: none; } }
 
@@ -52,10 +71,19 @@
 .triage-controls button:disabled { opacity: .4; }
 
 /* The steps so far: what the guide reads of the page, and a visitor's record of the run. */
-.triage-steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--bs-secondary-color); }
+.triage-steps {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--bs-secondary-color);
+}
 .triage-steps li.is-current { color: var(--bs-emphasis-color); }
 .triage-end { border-top: 1px solid var(--bs-border-color); padding-top: 14px; }
 
 @media (max-width: 900px) {
-    .triage-scene { grid-template-columns: minmax(0, 1fr); }
+    .triage-player { grid-template-columns: minmax(0, 1fr); }
+    .triage-side { max-height: none; }
 }

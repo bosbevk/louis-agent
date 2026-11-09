@@ -37,6 +37,9 @@ public partial class TriagePlayer : IDisposable
     /// <summary>What shows when the case is closed: the site's offer.</summary>
     [Parameter] public RenderFragment? Ending { get; set; }
 
+    /// <summary>The site's words about the run, at the top of the first column above the stage (F122).</summary>
+    [Parameter] public RenderFragment? Intro { get; set; }
+
     private IReadOnlyList<TriageStepView> Steps => _steps ?? [];
 
     private TriageStepView? Current => _at >= 0 && _at < Steps.Count ? Steps[_at] : null;

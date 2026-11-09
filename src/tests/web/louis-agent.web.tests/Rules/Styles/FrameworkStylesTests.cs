@@ -142,6 +142,17 @@ public partial class FrameworkStylesTests
         });
     }
 
+    /// <summary>
+    /// A recording's ending fits inside its window (F122, Louis: "too big just button", "the panel should leave space
+    /// for the button"): the guide's button has a plain, small look a site can ask for, and the window keeps its
+    /// height while the list gives up room for the ending.
+    /// </summary>
+    [TestCase(".guide-button.is-plain {")]
+    [TestCase("height: calc(var(--recorded-height, min(58vh, 560px)) + 48px);")]
+    [TestCase("flex: 1 1 auto;\n    min-height: 0;")]
+    public void ARecordingsEnding_FitsInsideItsWindow(string rule) =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

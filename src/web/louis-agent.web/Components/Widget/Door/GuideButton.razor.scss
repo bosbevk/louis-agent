@@ -31,6 +31,24 @@
     animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
 }
 .guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
+/* A plain one (F122, Louis: "too big just button"): where a page already has its own call to action, such as a
+   recording's ending, the guide's button takes the small line look of the controls beside it, still. */
+.guide-button.is-plain {
+    height: auto;
+    padding: 6px 14px;
+    border-color: var(--bs-border-color);
+    background: none;
+    color: var(--bs-body-color);
+    font: 500 13px/1.4 var(--bs-font-sans-serif);
+    box-shadow: none;
+    animation: none;
+}
+.guide-button.is-plain::after { display: none; }
+.guide-button.is-plain .guide-spark { font-size: 12px; animation: none; }
+.guide-button.is-plain:hover, .guide-button.is-plain:focus-visible {
+    transform: none;
+    border-color: var(--web-border-hover);
+}
 /* In the corner, a page's tour (F118) is the same button as the landing's, and since FX114 the only one there while
    the guide is folded: it opens the guide. In the phone's bottom bar (FX113) it is slimmer, and still. */
 @media (max-width: 720px) {
