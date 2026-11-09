@@ -31,13 +31,10 @@
     animation: guide-sweep 3.6s var(--web-ease, ease-in-out) infinite;
 }
 .guide-button:hover, .guide-button:focus-visible { transform: translateY(-2px) scale(1.03); }
-/* Above the guide's own button in the corner, a page's tour (F118): the same button as the landing's, and the guide's
-   own matches it (Louis: "they must be the same size, make them the same as the one on the landing page"), with room
-   between the two so they read as two buttons (Louis: "sits too close"). */
-.guide-button.widget-tour { margin-bottom: 14px; }
-/* In the phone's bottom bar (FX113) the tour sits beside the guide's button, as slim as it. */
+/* In the corner, a page's tour (F118) is the same button as the landing's, and since FX114 the only one there while
+   the guide is folded: it opens the guide. In the phone's bottom bar (FX113) it is slimmer, and still. */
 @media (max-width: 720px) {
-    .guide-button.widget-tour { margin-bottom: 0; height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
+    .guide-button.widget-tour { height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
 }
 .guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
 .guide-words { white-space: nowrap; }

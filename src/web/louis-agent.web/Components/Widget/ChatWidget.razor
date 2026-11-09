@@ -26,18 +26,22 @@
     {
         <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
     }
-    <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(_open ? "true" : "false")"
-            aria-label="@(_open ? CloseLabel : OpenLabel)" title="@(_open ? CloseLabel : OpenLabel)">
-        @if (_open)
-        {
-            <span aria-hidden="true">×</span>
-        }
-        else
-        {
-            <span class="widget-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
-            </span>
-            <span aria-hidden="true">@ButtonText</span>
-        }
-    </button>
+    @* With a tour, the folded corner is the tour alone (FX114): it opens the guide, and this button is its close. *@
+    @if (_open || TourLabel is null)
+    {
+        <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(_open ? "true" : "false")"
+                aria-label="@(_open ? CloseLabel : OpenLabel)" title="@(_open ? CloseLabel : OpenLabel)">
+            @if (_open)
+            {
+                <span aria-hidden="true">×</span>
+            }
+            else
+            {
+                <span class="widget-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
+                </span>
+                <span aria-hidden="true">@ButtonText</span>
+            }
+        </button>
+    }
 </div>
