@@ -24,4 +24,8 @@ public enum ApiLogMessage
 
     [Description("Session {Session} opened by user {User} in tenant {Tenant}")]
     SessionOpenedBy,
+
+    [Description("The page {Page} couldn't be rendered for search engines, so {Route} answers the plain shell until "
+                 + "the next deploy")]
+    PagePrerenderFailed,
 }
