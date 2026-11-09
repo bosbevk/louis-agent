@@ -116,6 +116,30 @@ public partial class FrameworkStylesTests
     public void OnAPhone_TheCornerIsABarAtTheBottom(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
+    /// <summary>
+    /// On a phone the guide opens full screen (FX115): the panel is fixed to the screen from the width the bottom bar
+    /// starts at, and the bar has no backdrop filter, which would make it the box a fixed panel is placed in and
+    /// squeeze the guide into the bar.
+    /// </summary>
+    [Test]
+    public void OnAPhone_TheGuideOpensFullScreen()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n");
+        string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss")).ReplaceLineEndings("\n");
+        int corner = shell.IndexOf("    .site-corner {", StringComparison.Ordinal);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules, Does.Contain("@media (max-width: 720px) {\n    .chat-widget.is-open .widget-button"));
+            Assert.That(corner, Is.GreaterThan(0));
+            Assert.That(shell[corner..shell.IndexOf('}', corner)], Does.Not.Contain("backdrop-filter"));
+            Assert.That(shell,
+                Does.Contain(".site-corner { position: fixed; right: 24px; bottom: 72px; z-index: 25; }"),
+                "above the sticky header's 20, so the open panel covers it");
+        });
+    }
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()
