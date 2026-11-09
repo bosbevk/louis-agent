@@ -69,6 +69,26 @@ rule a test can hold is held by a test, and what it can't hold is written where 
 - **Reuse before building held.** The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
   hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
+## F128.2: a pack names no owner, and a session names its tools (2026-11-10)
+
+**What it was.** Three made-up businesses' agents (a restaurant, a law practice, a doctor's practice) for the site's
+demos, each passing a booking on to its owner. The leads pack already did that, but its texts said "Tells Louis that
+this person wants a website with an agent" and "Sent to Louis". A tool that names one site's owner and one site's
+offer can't serve a second site. Made neutral ("tells the owner what this person wants"), the same tool now sends
+Louis a lead and a practice a booking request, and the guide's voice says who the owner is.
+
+**What the recording run taught.** It took three runs, and none of the first two sent anything. First the host asked
+for its key: `AGENT_AUTH=off` only lets a host start without one, and a key that is set is always asked for. Then
+every agent called `SendLead` and got "not found": a session opens with the toolsets its request names, not the
+packs its identity lists, so the voice described a tool the session didn't have. The agents told the customer so,
+plainly, rather than pretend it went, which is what the voice asks. Neither failure sent a mail, the first stopping at
+the key and the second before the tool, but the second was a run with mail on: a dry run first, with the side effect
+switched off, would have shown it for free.
+
+**What I can now explain.** Why a pack's texts are part of its contract and must not name a site; why an
+identity's pack list and a session's toolsets are different things; why a dry run with the side effect switched off
+comes before the run that sends.
+
 ## F50.2: one job per pack, and the numbers in code (2026-11-04)
 
 The shops pack read Checkers' catalogue, which only a retailer's yes would let us ship, and none came. It became two

@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Site.Pages.Agents;
@@ -16,6 +17,9 @@ public partial class CodingAgentPage
     public const string Question =
         "The bank payments are not matching their invoices, and the tests show it. " +
         "Find out why, fix the matcher, and run the tests again.";
+
+    /// <summary>The recorded session: one turn, the question and its stream.</summary>
+    private static readonly RecordedTurn[] Session = [new(Question, "recordings/coding-session.sse")];
 
     /// <summary>
     /// The bill in rand at the rate the ledger used on the day it was recorded, as its own display cost said

@@ -49,6 +49,12 @@
     <loc>https://louis-agent.dev/demos</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/demos/at-work</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/doctors-practice-demo</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/framework/architecture</loc>
   </url>
   <url>
@@ -151,6 +157,9 @@
     <loc>https://louis-agent.dev/framework/identities/the-triage-team</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/framework/identities/the-showroom</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/framework/identities/yours</loc>
   </url>
   <url>
@@ -241,10 +250,16 @@
     <loc>https://louis-agent.dev/framework/whats-coming/site-demos</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/law-practice-demo</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/pricing</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/pricing/quoted</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/triage-demo</loc>

@@ -10,7 +10,8 @@ namespace LouisAgent.Site.Tests.Pages.Agents;
 public class DemosPageTests
 {
     /// <summary>
-    /// The page is at /demos, and lists the coding agent's demo and the triage team's, each with its link.
+    /// The page is at /demos, and lists the showroom's three businesses first (F128.2), then the coding agent's demo
+    /// and the triage team's, each with its link.
     /// </summary>
     [Test]
     public void ThePage_ListsEachDemo_WithItsLink()
@@ -25,8 +26,13 @@ public class DemosPageTests
         Assert.Multiple(() =>
         {
             Assert.That(route, Is.EqualTo("/demos"));
-            Assert.That(cut.FindAll("article.panel"), Has.Count.EqualTo(2));
-            Assert.That(links, Is.EqualTo(new[] { "/coding-agent", "/triage-demo" }));
+            Assert.That(cut.FindAll("article.panel"), Has.Count.EqualTo(5));
+            Assert.That(links,
+                Is.EqualTo(new[]
+                {
+                    "/restaurant-demo", "/law-practice-demo", "/doctors-practice-demo", "/coding-agent",
+                    "/triage-demo"
+                }));
             Assert.That(cut.Markup, Does.Not.Contain(";"), "no semicolons in the site's words");
         });
     }

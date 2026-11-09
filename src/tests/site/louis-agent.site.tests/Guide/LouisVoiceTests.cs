@@ -34,6 +34,7 @@ public class LouisVoiceTests
     [TestCase("more than twenty years")]
     [TestCase("works remotely")]
     [TestCase("Stellenbosch")]
+    [TestCase("Paarl and the Winelands")]
     [TestCase("Never add to his story")]
     public void TheVoice_TellsHisStory(string words) =>
         Assert.That(Voice(), Does.Contain(words));

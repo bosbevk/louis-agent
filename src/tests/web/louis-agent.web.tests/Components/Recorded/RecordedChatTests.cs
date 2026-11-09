@@ -34,11 +34,13 @@ public class RecordedChatTests
         return ctx;
     }
 
+    /// <summary>One recorded turn: the fixture's question and its stream.</summary>
+    private static readonly RecordedTurn[] OneTurn = [new(SessionStreamFixture.Question, Source)];
+
     /// <summary>The recording with no waits, the question asked, and an ending that names itself.</summary>
     private static IRenderedComponent<RecordedChat> Render(BunitContext ctx) =>
         ctx.Render<RecordedChat>(parameters => parameters
-            .Add(chat => chat.Source, Source)
-            .Add(chat => chat.Question, SessionStreamFixture.Question)
+            .Add(chat => chat.Turns, OneTurn)
             .Add(chat => chat.Title, "the agent at work")
             .Add(chat => chat.PlayAgain, "Play again")
             .Add(chat => chat.Pace, 0)
@@ -87,14 +89,50 @@ public class RecordedChatTests
         using var ctx = Context();
 
         var cut = ctx.Render<RecordedChat>(parameters => parameters
-            .Add(chat => chat.Source, Source)
-            .Add(chat => chat.Question, SessionStreamFixture.Question)
+            .Add(chat => chat.Turns, OneTurn)
             .Add(chat => chat.Pace, 0)
             .Add(chat => chat.Currency, new CurrencyChoice("ZAR", "R", 18m, "2026-11-06", "USD")));
 
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".recorded-end"), Has.Count.EqualTo(1)));
         Assert.That(cut.Find(".recorded-chat .messages").TextContent, Does.Contain("R"));
         Assert.That(cut.Find(".recorded-chat .messages").TextContent, Does.Not.Contain("$"));
+    }
+
+    /// <summary>
+    /// A conversation plays its turns in order (F128.2): each question, then the answer recorded for it, the next only
+    /// once the last is done, as a booking goes, then the ending.
+    /// </summary>
+    [Test]
+    public void AConversation_PlaysItsTurnsInOrder()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns,
+                [new RecordedTurn("First question", Source), new RecordedTurn("Second one", Source)])
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Ending, Offer));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+        Assert.That(cut.FindAll(".recorded-chat .turn .user-text").Select(text => text.TextContent),
+            Is.EqualTo(new[] { "First question", "Second one" }));
+    }
+
+    /// <summary>
+    /// A customer's view hides the agent's work, as a customer's site does: its words and a thinking label.
+    /// </summary>
+    [Test]
+    public void WithItsWorkHidden_ARecordingShowsTheWordsAlone()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, OneTurn)
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.ShowWork, false));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".recorded-end"), Has.Count.EqualTo(1)));
+        Assert.That(cut.FindAll(".recorded-chat .tool, .recorded-chat .delegation"), Is.Empty);
     }
 
     /// <summary>A recording the site can't serve shows the ending at once, never an empty window that waits.</summary>

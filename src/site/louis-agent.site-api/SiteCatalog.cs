@@ -2,6 +2,7 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Identities.Guide;
+using LouisAgent.Identities.Showroom;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Leads;
 using LouisAgent.Packs.Site;
@@ -18,8 +19,12 @@ namespace LouisAgent.SiteApi;
 /// </remarks>
 public static class SiteCatalog
 {
-    /// <summary>The identities the site opens as: the guide alone, so it is the default.</summary>
-    public static IReadOnlyList<IAgentIdentity> Identities { get; } = [new GuideIdentity()];
+    /// <summary>
+    /// The identities the site opens as: the guide first, so it is the default and the one open to visitors, then the
+    /// showroom's three businesses (F128.2), which only the site's key opens, for recording its demos.
+    /// </summary>
+    public static IReadOnlyList<IAgentIdentity> Identities { get; } =
+        [new GuideIdentity(), new RestaurantIdentity(), new LawPracticeIdentity(), new DoctorsPracticeIdentity()];
 
     /// <summary>The packs, with the settings each reads, so the settings files load first.</summary>
     public static IReadOnlyList<IAgentPack> Packs()

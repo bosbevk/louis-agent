@@ -219,7 +219,7 @@
   "SensitiveRead": "Reading this sensitive file is not allowed.",
   "SensitiveRename": "Renaming this sensitive file is not allowed.",
   "SensitiveWrite": "Writing this sensitive file is not allowed.",
-  "Sent": "Sent to Louis at <At>: <Name>, <Contact>, about <Wants>. Tell them he will be in touch.",
+  "Sent": "Sent to the owner at <At>: <Name>, <Contact>, about <Wants>. Tell them they will hear back.",
   "Shown": "Shown: the visitor's browser is now on <Path>. Say in one line what to look at there.",
   "SkillArgumentsInvalid": "Error: Invalid JSON arguments: <Reason>",
   "SkillArgumentsNotObject": "Error: Invalid JSON arguments: expected an object.",

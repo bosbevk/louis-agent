@@ -1,4 +1,8 @@
+using System.Reflection;
+using Description = System.ComponentModel.DescriptionAttribute;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Packs.Leads.Messages;
 using LouisAgent.Packs.Leads.Sending;
 using LouisAgent.Packs.Leads.Tools;
 
@@ -39,7 +43,8 @@ public class LeadToolsTests
     [TestCase("", "082 000 0000", "a bakery site", "name")]
     [TestCase("Thandi", " ", "a bakery site", "reach them")]
     [TestCase("Thandi", "082 000 0000", "", "what they want")]
-    public async Task AnIncompleteLead_IsRefused_AndSaysWhatIsMissing(string name, string contact, string wants, string asksFor)
+    public async Task AnIncompleteLead_IsRefused_AndSaysWhatIsMissing(string name, string contact, string wants,
+        string asksFor)
     {
         var sender = new RecordingSender();
 
@@ -52,20 +57,41 @@ public class LeadToolsTests
         });
     }
 
-    /// <summary>A whole lead is sent with its three fields trimmed and the clock's time, and the answer says so.</summary>
+    /// <summary>
+    /// A whole lead is sent with its three fields trimmed and the clock's time, and the answer says so.
+    /// </summary>
     [Test]
     public async Task AWholeLead_IsSent_WithTheClocksTime()
     {
         var sender = new RecordingSender();
 
-        string answer = await Tools(sender).SendLead(" Thandi ", "082 000 0000", "a bakery in Paarl, a site with an agent ");
+        string answer =
+            await Tools(sender).SendLead(" Thandi ", "082 000 0000", "a bakery in Paarl, a site with an agent ");
 
         Assert.Multiple(() =>
         {
             Assert.That(sender.Sent, Has.Count.EqualTo(1));
-            Assert.That(sender.Sent[0], Is.EqualTo(new Lead("Thandi", "082 000 0000", "a bakery in Paarl, a site with an agent", Now)));
-            Assert.That(answer, Does.StartWith("Sent to Louis at 2026-11-08 12:40:00Z: Thandi, 082 000 0000"));
+            Assert.That(sender.Sent[0],
+                Is.EqualTo(new Lead("Thandi", "082 000 0000", "a bakery in Paarl, a site with an agent", Now)));
+            Assert.That(answer, Does.StartWith("Sent to the owner at 2026-11-08 12:40:00Z: Thandi, 082 000 0000"));
         });
+    }
+
+    /// <summary>
+    /// The pack names no one (F128.2): not a site's owner and not what a site sells, so a practice's agent sends a
+    /// booking with the same tool a site's guide sends a lead with.
+    /// </summary>
+    [Test]
+    public void ThePack_NamesNoOne()
+    {
+        var method = typeof(LeadTools).GetMethod(nameof(LeadTools.SendLead))!;
+        var texts = method.GetCustomAttributes<Description>()
+            .Concat(method.GetParameters().SelectMany(p => p.GetCustomAttributes<Description>()))
+            .Select(d => d.Description)
+            .Concat(Enum.GetValues<LeadsToolMessage>().Select(m => MessageText.Template(m)))
+            .ToList();
+
+        Assert.That(texts.Where(text => text.Contains("Louis") || text.Contains("website")), Is.Empty);
     }
 
     /// <summary>The sender's failure comes back as text with its reason, never as a throw.</summary>
@@ -83,7 +109,9 @@ public class LeadToolsTests
     [Test]
     public async Task TheLogSender_SaysItWasNotMailed()
     {
-        var tools = new LeadTools(new LogLeadSender(Microsoft.Extensions.Logging.Abstractions.NullLogger<LogLeadSender>.Instance), new FixedClock());
+        var tools = new LeadTools(
+            new LogLeadSender(Microsoft.Extensions.Logging.Abstractions.NullLogger<LogLeadSender>.Instance),
+            new FixedClock());
 
         string answer = await tools.SendLead("Thandi", "082 000 0000", "a bakery site");
 
