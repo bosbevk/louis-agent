@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 83 | 73 |
 | Fixes (`FX`) | 115 | 6 |
-| Cleanups (`CL`) | 27 | 26 |
+| Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (105 in the TODO)
+## Open (106 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -127,6 +127,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
+| CL60 | Simpler evals: `eval.json` and `samples.jsonl`, a fingerprint for the versions, transcripts optional, the unused checks and promptfoo out, a schema for hand editing | Cleanups |
 
 ## Features (83 done)
 
