@@ -98,7 +98,9 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+- **`/try` side by side, like `/coding-agent`** (Louis's pick of three, 2026-11-09, on the triage demo outgrowing a
+  1080p screen as its step list fills): the words on the left, and on the right one window, the framework's
+  `_window` mixin, holding the stage, the step's popup and the list, which scrolls inside it. Step 3 takes it.
 
 ---
 [Docs index](../README.md) · Related: [plans](README.md), [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)

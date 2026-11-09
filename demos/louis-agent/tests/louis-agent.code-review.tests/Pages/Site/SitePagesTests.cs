@@ -177,7 +177,7 @@ public class SitePagesTests
             Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
             Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
             Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Watch a triage"));
-            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/try"));
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/triage-demo"));
             Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
         });
     }

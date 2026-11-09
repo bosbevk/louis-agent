@@ -58,7 +58,7 @@ visitor and the guide can read, and the site's ending shows once the case is clo
 play again starts it over. The words are `TriageWords`, English by default and a site's own when given; the styles
 are `Styles/pack-triage/_demo.scss`, which a site forwards. It references the framework's web, never the pack, so it
 keeps its own copy of a step (`TriageStepView`), and `louis-agent.pack.triage.web.tests` writes a step with the
-recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/try` until
+recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/triage-demo` until
 F106.3.3's workflow runs live.
 
 ## Tests
