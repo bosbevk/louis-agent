@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 83 | 73 |
+| Features (`F`) | 83 | 74 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (106 in the TODO)
+## Open (107 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -40,6 +40,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F71 | At the next run, read the hand-off lines | Now |
 | F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
+| F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
