@@ -5,7 +5,7 @@
 > works in [louis-agent.core](../projects/louis-agent.core.md); the rules these steps follow in
 > [core's development guide](../../engine/louis-agent.core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
 
-Core is the engine: the tool loop (`Agent/`), the toolsets and their guides (`Tools/`, `Prompts/`), skills, the model
+Core is the engine: the tool loop (`Agent/`), the toolsets and their guides (`Tools/`, `prompts/`), skills, the model
 providers (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards (`Guardrails/`) and the start-up every host
 shares (`Hosting/`). It names no product, shop or country: who an agent is lives in an identity, and what it can do
 beyond the basics lives in a pack ([ADR 0027](../adr/0027-engine-identities-and-packs.md)). `ArchitectureTests` holds
@@ -28,7 +28,7 @@ too (CL17), so add to core only what every agent needs.
 4. If it touches the outside world, use the guards: a path through `WorkspaceBoundary` and `SensitiveFiles`, a URL
    through `SsrfGuard`, and a process through `ProcessRunner` with an argument list, never a command line built from
    model text ([ADR 0004](../adr/0004-arguments-as-data.md)).
-5. Name it in the toolset's guide, `Prompts/toolsets/{toolset}.md`, so the model knows when to use it.
+5. Name it in the toolset's guide, `prompts/toolsets/{toolset}.md`, so the model knows when to use it.
 6. Regenerate the golden files and read their diff (below).
 
 ## Add a toolset
@@ -36,13 +36,13 @@ too (CL17), so add to core only what every agent needs.
 A toolset is guide, then tools, then guide: a mode's routing sends a task to the toolset, its guide names its tools,
 and each tool's description stays short. You add a tool class, a `ToolsetDefinition` in
 `Agent/Toolsets/ToolsetCatalog.cs` (its name, description, needed settings, tool classes and guide file), the guide
-in `Prompts/toolsets/`, and a routing row in each mode that uses it. The full list, and what is reserved, is in
+in `prompts/toolsets/`, and a routing row in each mode that uses it. The full list, and what is reserved, is in
 [Adding a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool). A session picks its toolsets when it opens and
 keeps them, so its prompt stays cacheable ([ADR 0006](../adr/0006-toolsets-per-session.md)).
 
 ## Change a built-in prompt
 
-Built-in prompts are markdown in `Prompts/`, by the level that reads them: `agent/` (a mode: voice, then routing),
+Built-in prompts are markdown in `prompts/`, by the level that reads them: `agent/` (a mode: voice, then routing),
 `toolsets/` (a toolset's guide) and `shared/` (`principles.md`, which opens every prompt)
 ([ADR 0017](../adr/0017-skills-by-level.md)). They are embedded, so a wording change is a rebuild of every image that
 uses core. A running chat keeps the prompt it opened with: start a new chat to see the change. A product's own modes

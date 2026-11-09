@@ -78,11 +78,11 @@ that name serves it, our compiled pack today or an MCP server one day. An identi
 
 ## 3. Write its mode
 
-A mode is what the agent the user talks to (level 0) reads: one markdown file under `Prompts/agent/acme/`. Its first
+A mode is what the agent the user talks to (level 0) reads: one markdown file under `prompts/agent/acme/`. Its first
 `# ` section is the **voice**: who the agent is and how it talks. Everything from the second `# ` heading on is the
 **routing**: which work goes to which toolset or specialist.
 
-`Prompts/agent/acme/voice.md`:
+`prompts/agent/acme/voice.md`:
 
 ```markdown
 ---
@@ -130,7 +130,7 @@ What to know when you write one:
 ## 4. Add a specialist (when the work needs one)
 
 A specialist (level 1) is a sub-session the mode hands a piece of work to, with only the toolsets that work needs.
-Its role file is `Prompts/specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
+Its role file is `prompts/specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
 called it.
 
 ```markdown
@@ -165,8 +165,8 @@ One line with the amount and the unit to buy, then the sums, then anything you a
   instance that has the role. Usually that is the instance itself, as Puls's compose does (`AGENT_PEERS: puls=http://puls:8080`).
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
-`Prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
-`Prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
+`prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
+`prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
 (`minions/puls-minion-find-recipe.md`, which a specialist would start with `FindRecipes` as its tool; the cook no longer does, ADR 0081) and its price lookup
 (`minions/puls-minion-web-price-lookup.md`) are the worked examples when you need one; a role that lists `minions` in
 its header is refused where `MINION_LLMS` isn't set.

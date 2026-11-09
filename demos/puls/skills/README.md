@@ -12,7 +12,7 @@ mounted at `/skills`). It holds only what the agent writes, kept on disk so it s
 | `tools/` | Agent-built tools, pending and approved | `CreateTool`, `/approve` |
 
 **The built-in prompts are not here.** The principles, the modes, the specialists' roles and the toolset guides
-live in [`src/engine/louis-agent.core/Prompts/`](../../../src/engine/louis-agent.core/Prompts), one folder per level, and are
+live in [`src/engine/louis-agent.core/prompts/`](../../../src/engine/louis-agent.core/Prompts), one folder per level, and are
 read only from the assembly: change one there and rebuild. A copy of a built-in file here is ignored, with a warning.
 
 `AgentHost` finds this folder by this file, so keep it.

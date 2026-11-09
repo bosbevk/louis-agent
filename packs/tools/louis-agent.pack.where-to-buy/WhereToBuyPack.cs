@@ -28,7 +28,8 @@ public sealed class WhereToBuyPack : IAgentPack
         Toolsets =
         [
             new(WhereToBuyToolset.WhereToBuy.Wire(),
-                "A shop's branches or the supermarkets near the user's town, with its municipality and province (OpenStreetMap)",
+                "A shop's branches or the supermarkets near the user's town, with its municipality and province " +
+                "(OpenStreetMap)",
                 GuideFile: PackToolset.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(WhereToBuyTools)],
@@ -46,7 +47,7 @@ public sealed class WhereToBuyPack : IAgentPack
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(WhereToBuyPack).Assembly, "Prompts");
+        EmbeddedPrompts.Of(typeof(WhereToBuyPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

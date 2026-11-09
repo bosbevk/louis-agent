@@ -13,8 +13,9 @@ namespace LouisAgent.Packs.ShopPrices;
 /// <summary>
 /// Shop prices as a pack: one toolset, <c>shop-prices</c>, that estimates what a shopping list costs from Stats SA's
 /// average prices, one feed of the same name that publishes those tables for anyone to read (ADR 0070), and one
-/// import of the same name that takes Stats SA's spreadsheets from the admin portal (F55). It needs no setting and no browser, so it loads wherever it is named: with SHOP_PRICES_MONGO_URL
-/// it reads the prices from MongoDB, seeded from the tables it ships; without it, from those tables in memory.
+/// import of the same name that takes Stats SA's spreadsheets from the admin portal (F55). It needs no setting and no
+/// browser, so it loads wherever it is named: with SHOP_PRICES_MONGO_URL it reads the prices from MongoDB, seeded from
+/// the tables it ships; without it, from those tables in memory.
 /// </summary>
 /// <remarks>
 /// The same shape as every pack (ADR 0027): a list of toolsets and the files the model reads, naming no identity and
@@ -25,7 +26,9 @@ namespace LouisAgent.Packs.ShopPrices;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
 public sealed class ShopPricesPack : IAgentPack
 {
-    /// <summary>Builds the pack over the price store its settings name, or the tables it ships when they name none.</summary>
+    /// <summary>
+    /// Builds the pack over the price store its settings name, or the tables it ships when they name none.
+    /// </summary>
     public ShopPricesPack(ShopPricesOptions options)
     {
         IPriceStore store = options.MongoUrl is { } url
@@ -58,7 +61,7 @@ public sealed class ShopPricesPack : IAgentPack
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(ShopPricesPack).Assembly, "Prompts");
+        EmbeddedPrompts.Of(typeof(ShopPricesPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

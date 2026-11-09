@@ -24,7 +24,7 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   answers from, since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested and has said
   yes ([ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md)), and since F117 the site pack, whose
   one tool takes the visitor to a page or an area of it (the widget hears it and moves the browser).
-- `Prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
+- `prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
   louis-agent, with his own story told as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four
   kids, the outdoors, a stoic who reads Kierkegaard; it talks like him, plain, dry and at home, with an idiom where it
   helps; the widget's title reads "Louis · AI", it says it is the AI the moment that matters, never adds to his story,

@@ -44,7 +44,11 @@ public sealed class RecipesPack : IAgentPack
         Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, enabled)];
         Screens = options.MongoUrl is null
             ? []
-            : [new RecipesUsageScreen(usage), new RecipesScreen(store, excluded, TimeProvider.System), new ExcludedPagesScreen(excluded)];
+            :
+            [
+                new RecipesUsageScreen(usage), new RecipesScreen(store, excluded, TimeProvider.System),
+                new ExcludedPagesScreen(excluded)
+            ];
         // The cook reads the library the way anyone would: over HTTP, from the open feed.
         IRecipeLibrary library = options.LibraryUrl is { } api
             ? new FeedRecipeLibrary(new HttpClient(), api, TimeProvider.System)
@@ -82,7 +86,7 @@ public sealed class RecipesPack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(RecipesPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(RecipesPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

@@ -24,7 +24,7 @@ public sealed class DotNetPack : IAgentPack
     public bool ComesBeforeTheEngine => true;
 
     /// <inheritdoc/>
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(DotNetPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(DotNetPack).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];

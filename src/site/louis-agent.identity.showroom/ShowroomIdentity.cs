@@ -26,7 +26,7 @@ public abstract class ShowroomIdentity(ShowroomIdentityName name) : IAgentIdenti
     /// catalogue, so each must carry only its voice.
     /// </summary>
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(ShowroomIdentity).Assembly, $"Prompts/{name.Wire()}");
+        EmbeddedPrompts.Of(typeof(ShowroomIdentity).Assembly, name.Wire());
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } =

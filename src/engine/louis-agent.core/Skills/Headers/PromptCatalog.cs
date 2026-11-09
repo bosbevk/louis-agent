@@ -16,7 +16,7 @@ public static class PromptCatalog
 {
     private static readonly Lazy<IReadOnlyDictionary<string, PromptFile>> Files = new(Read);
 
-    /// <summary>Every built-in prompt, by its path under <c>Prompts/</c>.</summary>
+    /// <summary>Every built-in prompt, by its path under <c>prompts/</c>.</summary>
     public static IReadOnlyList<PromptFile> All => [.. Files.Value.Values.OrderBy(p => p.Path, StringComparer.Ordinal)];
 
     /// <summary>The prompt at this path, or none when there is no built-in prompt there.</summary>

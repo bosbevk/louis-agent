@@ -23,7 +23,7 @@ also", "can we also give it the capability to highlight areas on the page?"
   no space; an area after `#` is an id in words) and answers that the page is shown and that the model should say one
   line about it; refuses anything else with the reason. The tool moves nothing itself. Its texts are
   `Messages/SiteToolMessage`.
-- `SitePack`: the one toolset, `site`, always on, with its guide `Prompts/toolsets/site.md`, which says when to call
+- `SitePack`: the one toolset, `site`, always on, with its guide `prompts/toolsets/site.md`, which says when to call
   it (the right page or area exists for what the visitor asks), once, and what to say after.
 - **The widget acts** (`louis-agent.web`): the runner raises `ToolCalled` for every tool call as it arrives in the turn's
   stream; the widget, on `ShowPage`, navigates to the path and, once the page has rendered, scrolls the area into view

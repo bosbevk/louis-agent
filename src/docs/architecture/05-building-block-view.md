@@ -233,7 +233,7 @@ documentation is the system prompt; every file is plain markdown read by `Markdo
    describes tools the session doesn't have
 4. with the `skills` toolset only, every function skill the agent wrote (`demos/louis-agent/skills/agent/functions/*.md`)
 
-The built-in files live in `src/engine/louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
+The built-in files live in `src/engine/louis-agent.core/prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
 beside `toolsets/` (ADR 0017), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
 ADR 0018), so what the model reads is fixed by the build. Files the agent writes (its function skills, its tools) are
 on disk only, in the skills folder: `SKILLS_DIRECTORY`, else a `skills/` above the working directory (found by its README).

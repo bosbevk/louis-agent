@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 namespace LouisAgent.Testing;
 
 /// <summary>
-/// Prompts in memory, as a pack or identity would embed them: paths with forward slashes under their <c>Prompts/</c>,
+/// Prompts in memory, as a pack or identity would embed them: paths with forward slashes under their <c>prompts/</c>,
 /// directories implied by the paths. Enough of <see cref="IFileProvider"/> for the catalogue and the prompt reader.
 /// </summary>
 public sealed class FakePrompts(IReadOnlyDictionary<string, string> files) : IFileProvider
@@ -20,13 +20,15 @@ public sealed class FakePrompts(IReadOnlyDictionary<string, string> files) : IFi
         string folder = subpath.Trim('/');
         string prefix = folder.Length == 0 ? "" : folder + "/";
         var entries = new List<IFileInfo>();
-        foreach (string path in files.Keys.Where(p => p.StartsWith(prefix, StringComparison.Ordinal)).Order(StringComparer.Ordinal))
+        foreach (string path in files.Keys.Where(p => p.StartsWith(prefix, StringComparison.Ordinal))
+                     .Order(StringComparer.Ordinal))
         {
             string rest = path[prefix.Length..];
             int slash = rest.IndexOf('/');
             if (slash < 0) entries.Add(new File(rest, files[path]));
             else if (entries.All(e => e.Name != rest[..slash])) entries.Add(new Directory(rest[..slash]));
         }
+
         return entries.Count == 0 && folder.Length > 0 ? NotFoundDirectoryContents.Singleton : new Contents(entries);
     }
 

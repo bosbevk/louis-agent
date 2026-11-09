@@ -23,7 +23,7 @@ are the workflow's to read, not the model's, so they are records and readers, ne
 | `Tools/Results/` | `Investigation`, `Review`, `CaseDecision` and their enums `DepartmentArea`, `Confidence`, `CaseDecisionKind` |
 | `Departments/Department`, `DepartmentsFile` | A department as configuration: its repository, its error log, where its people read; read from `departments.yaml` with every path absolute against the file, a bad or repeated name refused. Its coder is held to its repository by `WorkspaceBoundary`, which a test proves |
 | `PlainId` | The one rule for an id from outside: letters, digits, dashes and underscores, up to 64, since ids end up in branch names, commit messages and file names |
-| `TriagePack`, `TriageToolset`, `TriageOptions`, `Messages/TriageToolMessage`, `Prompts/toolsets/triage.md` | The pack: one toolset, `triage`, both tool classes over one recorder, off until its two settings are set, its calls one at a time since they write; the guide; the texts, pinned by a golden |
+| `TriagePack`, `TriageToolset`, `TriageOptions`, `Messages/TriageToolMessage`, `prompts/toolsets/triage.md` | The pack: one toolset, `triage`, both tool classes over one recorder, off until its two settings are set, its calls one at a time since they write; the guide; the texts, pinned by a golden |
 
 ## The settings
 
