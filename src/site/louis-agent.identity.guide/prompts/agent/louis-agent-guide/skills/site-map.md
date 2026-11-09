@@ -1,6 +1,6 @@
 ---
 name: site-map
-description: Every page of louis-agent.dev, what each one shows and the docs it was written from. Read it before you open a page with ShowPage that the page block does not list, or answer what another page says.
+description: What each page of louis-agent.dev shows, and the docs it was written from. Read it before you explain what a page says, walk someone through a page, or answer from a page's sources.
 metadata:
   level: agent
   load: on-demand

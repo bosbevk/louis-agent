@@ -116,6 +116,18 @@ Skill 7 (context engineering): what is always in the prompt and what is read whe
   the tool finding the session's identity at run time; or only an engine whose identity has an on-demand skill,
   holding only that identity's) the pick is the last: no session is told of a tool it can't use (the coding agent's
   tools are unchanged), and one identity can't read another's skills in a host that serves several (the showroom).
+- **2026-11-10, step 6, the live check and an unattended pick:** six questions, each in a fresh session on the local
+  site container, before the split, after it, and after the fix below (`check-guide.sh`, Claude Haiku as the site
+  runs). With both maps on demand the prompt fell from 31,782 to 24,784 characters, but the guide stopped opening
+  the framework's pages for a question about a topic ("where can I read how packs work?", "what is an identity?"):
+  it didn't think to read the site map, and without it never guesses a page. Of three ways (the site map always; a
+  sharper description, read on nearly every question; or a short index of every page always, with what each page
+  says and its sources on demand) the pick is the index, `skills/site-pages.md`, `load: always`: progressive
+  disclosure one level finer. After it both pages open again, a pricing question needs no read, and the prompt is
+  26,403 characters, about 7,667 tokens of fixed prefix against 8,909 (−14%, ReadSkill included); a simple turn on a
+  warm cache cost about 8% less ($0.000531 against $0.000582, $0.000521 against $0.000564). Not from the split, seen
+  in both runs: the greeting's time of day wavers at 01:40, and the after run's identity answer skipped its greeting
+  and named ADR 0027 to a visitor; Louis to look at.
 
 ---
 [Plans](README.md)

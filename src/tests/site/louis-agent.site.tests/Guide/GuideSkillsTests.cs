@@ -1,5 +1,8 @@
+using System.Reflection;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Identities.Guide;
+using LouisAgent.Site.Pages;
+using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Site.Tests.Guide;
 
@@ -27,6 +30,24 @@ public class GuideSkillsTests
 
         Assert.That((file.Header?.Load, file.Body.StartsWith(heading, StringComparison.Ordinal)),
             Is.EqualTo(((SkillLoad?)SkillLoad.OnDemand, true)));
+    }
+
+    /// <summary>
+    /// Every page of the site is in the index he always has, so he can open the right one without reading the map
+    /// first (F129's live check: with the whole map on demand he stopped opening the framework's pages).
+    /// </summary>
+    [Test]
+    public void EveryPage_IsInTheIndexHeAlwaysHas()
+    {
+        var index = Read("skills/site-pages.md");
+        var addresses = typeof(HomePage).Assembly.GetTypes()
+            .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
+            .SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
+            .Select(route => $"`{route.Template}`").ToList();
+
+        Assert.That(index.Header?.Load, Is.EqualTo(SkillLoad.Always));
+        Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(addresses.Where(address => !index.Body.Contains(address)), Is.Empty);
     }
 
     /// <summary>The voice keeps who he is and how he answers, and no longer carries either map.</summary>
