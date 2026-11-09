@@ -130,7 +130,7 @@ public class SiteLayoutTests
             Assert.That(brand.QuerySelector("img.site-mark")?.GetAttribute("alt"), Is.EqualTo(""));
             Assert.That(brand.QuerySelector(".site-brand-name")!.TextContent.Trim(), Is.EqualTo("louis-agent"));
             Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot,
-                    "demos/louis-agent/web/louis-agent.code-review/wwwroot/brand/mark.svg")),
+                    "src/site/louis-agent.site/wwwroot/brand/mark.svg")),
                 "the mark is the app's own copy");
         });
     }

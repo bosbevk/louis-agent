@@ -1,18 +1,13 @@
-/* The code-review app's styles: the framework's rules and its packs', in the order the framework's always came, then the
-   site's look and its own few. A name under web/ is the framework's Sass and one under pack- a pack's, each found through
-   sasscompiler.json, so nothing is copied; a name under site/ is the static site's Sass, moved in (F109.1): its values
-   right after the framework's colours and its elements right after the framework's, so the site's win where they meet,
-   and the landing, the films and its phone rules after the packs'. The colours aren't here: the framework's come first,
-   and the theme the person picks loads after this file (themes/; console, the default, is the framework's colours as they
-   are). The build makes wwwroot/css/app.css from this. */
+/* The code-review app's styles: the framework's rules and its packs', in the order the framework's always came, then its
+   own few. A name under web/ is the framework's Sass and one under pack- a pack's, each found through sasscompiler.json,
+   so nothing is copied. The framework's own site and its look left for src/site in F124. The colours aren't here: the
+   framework's come first, and the theme the person picks loads after this file (themes/; console, the default, is the
+   framework's colours as they are). The build makes wwwroot/css/app.css from this. */
 
 @forward "web/settings/colours";
-@forward "site/settings/tokens";
 @forward "web/base/elements";
-@forward "site/base/elements";
 
 @forward "web/settings/brands";
-@forward "site/settings/brands";
 @forward "web/layout/shell";
 @forward "web/chat/conversation";
 @forward "web/layout/responsive";
@@ -25,14 +20,5 @@
 
 @forward "pack-files/files";
 @forward "pack-git/changes";
-@forward "pack-triage/demo";
-
-@forward "site/landing/live-turn";
-@forward "site/landing/sections";
-@forward "site/landing/motion";
-@forward "site/movie/stage";
-@forward "site/movie/short";
-@forward "site/movie/detail";
-@forward "site/layout/responsive";
 
 @forward "chat/boot";

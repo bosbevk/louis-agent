@@ -10,7 +10,9 @@ public class DocsImageTests
     private static string[] Lines(string path) =>
         File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, path)).Select(line => line.Trim()).ToArray();
 
-    /// <summary>The image copies each docs folder to its repo path under /app/docs, drops the films, and names the root.</summary>
+    /// <summary>
+    /// The image copies each docs folder to its repo path under /app/docs, drops the films, and names the root.
+    /// </summary>
     [TestCase("COPY --from=build /src/src/docs/ /app/docs/src/docs/")]
     [TestCase("COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/")]
     [TestCase("COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/")]

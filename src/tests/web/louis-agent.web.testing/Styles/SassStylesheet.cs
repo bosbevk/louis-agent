@@ -14,10 +14,12 @@ public sealed partial record SassStylesheet(string Project)
     /// <summary>Shared Sass helpers that write no CSS of their own, so the list doesn't name them.</summary>
     private const string Tools = "tools/";
 
-    /// <summary>The stylesheet of one of our web apps, by its project's name.</summary>
+    /// <summary>The stylesheet of one of our web apps, by its project's name: a demo's or the framework's.</summary>
     public static SassStylesheet Of(string project) =>
-        new(Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"), project,
-            SearchOption.AllDirectories).Single());
+        new(new[] { "demos", "src/site" }
+            .SelectMany(folder => Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, folder), project,
+                SearchOption.AllDirectories))
+            .Single());
 
     private string Styles => Path.Combine(Project, "Styles");
 

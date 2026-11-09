@@ -13,7 +13,7 @@ public class SiteFactsTests
     private const string Site = "https://louis-agent.dev/";
 
     private static string WebRoot => Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot");
+        "src/site/louis-agent.site/wwwroot");
 
     /// <summary>The landing names who runs the site, the site and the software, each at the site's address.</summary>
     [Test]

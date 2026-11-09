@@ -9,13 +9,20 @@ public class FrameworkNamesNoSiteTests
 {
     private static readonly string[] Kinds = [".cs", ".razor", ".scss", ".css", ".js", ".html", ".csproj"];
 
-    /// <summary>Every file in the framework's web, and in the account library on it (CL30), is read, and no line may hold a site's name.</summary>
+    /// <summary>
+    /// Every file in the framework's web, and in the account library on it (CL30), is read, and no line may hold a
+    /// site's name. The framework's own site (F124) is left out: its name is the framework's, which the web may say.
+    /// </summary>
     [TestCase("louis-agent.web")]
     [TestCase("louis-agent.web.accounts")]
     [TestCase("louis-agent.web.evals")]
     public void TheFramework_NamesNoSite(string library)
     {
-        string[] names = [.. FrameworkWebSites.Folders().Select(FrameworkWebSites.NameOf).SelectMany(Spellings)];
+        string[] names =
+        [
+            .. FrameworkWebSites.Folders().Select(FrameworkWebSites.NameOf).Where(name => name != "site")
+                .SelectMany(Spellings)
+        ];
         string root = Path.Combine(TestPaths.RepoRoot, "src/web", library);
 
         var found = Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)

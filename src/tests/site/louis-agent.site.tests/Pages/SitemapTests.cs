@@ -18,7 +18,7 @@ public class SitemapTests
     private static readonly XNamespace Ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
 
     private static string SitemapPath => Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot/sitemap.xml");
+        "src/site/louis-agent.site/wwwroot/sitemap.xml");
 
     /// <summary>Every page and place, in the file, and nothing else.</summary>
     [Test]
@@ -37,7 +37,7 @@ public class SitemapTests
     public void RobotsTxt_NamesTheSitemap()
     {
         string robots = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "demos/louis-agent/web/louis-agent.code-review/wwwroot/robots.txt"));
+            "src/site/louis-agent.site/wwwroot/robots.txt"));
 
         Assert.That(robots, Does.Contain("User-agent: *").And.Contain($"Sitemap: {Site}/sitemap.xml"));
     }

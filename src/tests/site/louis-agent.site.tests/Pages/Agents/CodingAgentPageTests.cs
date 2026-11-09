@@ -12,7 +12,7 @@ namespace LouisAgent.Site.Tests.Pages.Agents;
 public class CodingAgentPageTests
 {
     private static string Recording => Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot/recordings/coding-session.sse");
+        "src/site/louis-agent.site/wwwroot/recordings/coding-session.sse");
 
     private static string Script => Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/recordings/record.sh");
 

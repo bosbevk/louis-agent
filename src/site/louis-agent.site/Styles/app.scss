@@ -1,0 +1,31 @@
+/* The framework's site's styles (F124): the framework's rules and the triage pack's demo, in the order the framework's
+   always came, then the site's look. A name under web/ is the framework's Sass and one under pack- a pack's, each found
+   through sasscompiler.json, so nothing is copied; a name under site/ is the site's own: its values right after the
+   framework's colours and its elements right after the framework's, so the site's win where they meet, and the landing,
+   the films and its phone rules last. The build makes wwwroot/css/app.css from this. */
+
+@forward "web/settings/colours";
+@forward "site/settings/tokens";
+@forward "web/base/elements";
+@forward "site/base/elements";
+
+@forward "web/settings/brands";
+@forward "site/settings/brands";
+@forward "web/layout/shell";
+@forward "web/chat/conversation";
+@forward "web/layout/responsive";
+@forward "web/chat/interaction";
+@forward "web/chat/finish";
+@forward "web/layout/panels";
+@forward "web/chat/bars";
+@forward "web/chat/pages";
+
+@forward "pack-triage/demo";
+
+@forward "site/landing/live-turn";
+@forward "site/landing/sections";
+@forward "site/landing/motion";
+@forward "site/movie/stage";
+@forward "site/movie/short";
+@forward "site/movie/detail";
+@forward "site/layout/responsive";

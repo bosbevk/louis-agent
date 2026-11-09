@@ -6,7 +6,6 @@
   "IncludePaths": [
     "../../../../src/web/louis-agent.web/Styles", "../../../../src/web/louis-agent.web.accounts/Styles", "../../../../src/web/louis-agent.web.evals/Styles",
     "../../../../packs/web/louis-agent.pack.git.web/Styles",
-    "../../../../packs/web/louis-agent.pack.files.web/Styles",
-    "../../../../packs/web/louis-agent.pack.triage.web/Styles"
+    "../../../../packs/web/louis-agent.pack.files.web/Styles"
   ]
 }

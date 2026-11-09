@@ -5,11 +5,15 @@ namespace LouisAgent.Web.Tests.Rules;
 /// </summary>
 internal static class FrameworkWebSites
 {
-    /// <summary>Every project under a demo's <c>web</c> folder that references <c>louis-agent.web</c>.</summary>
+    /// <summary>
+    /// Every project under a demo's <c>web</c> folder, and the framework's own site under <c>src/site</c> (F124), that
+    /// references <c>louis-agent.web</c>.
+    /// </summary>
     public static IReadOnlyList<string> Folders() =>
     [
         .. Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
             .Select(demo => $"{demo}/web")
+            .Append(Path.Combine(TestPaths.RepoRoot, "src", "site"))
             .Where(Directory.Exists)
             .SelectMany(Directory.EnumerateDirectories)
             .Where(ReferencesTheFramework)

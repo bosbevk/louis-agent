@@ -1,16 +1,16 @@
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.CodeReview.Tests.Styles;
+namespace LouisAgent.Site.Tests.Styles;
 
 /// <summary>
-/// The code-review app's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and its packs', then the
-/// site's look (F109.1) and its own few, so it keeps no copy. What's checked is what the build really made, its
-/// themes included.
+/// The framework's site's stylesheet is Sass: <c>app.scss</c> lists the framework's rules and the triage pack's demo,
+/// then the site's look, so it keeps no copy (F124: it left the code-review app with the site). What's checked is
+/// what the build really made.
 /// </summary>
 public class StylesheetTests
 {
-    /// <summary>The code-review app's stylesheet.</summary>
-    private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.code-review");
+    /// <summary>The site's stylesheet.</summary>
+    private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.site");
 
     /// <summary>The site's three film partials, where every film keyframe lives.</summary>
     private static readonly string[] Films = ["site/movie/stage", "site/movie/short", "site/movie/detail"];
@@ -44,7 +44,7 @@ public class StylesheetTests
     public void TheSitesValuesAndElements_ComeRightAfterTheFrameworks()
     {
         string list = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "demos/louis-agent/web/louis-agent.code-review/Styles/app.scss"));
+            "src/site/louis-agent.site/Styles/app.scss"));
         var forwards = Regex.Matches(list, "@forward \"([^\"]+)\"").Select(match => match.Groups[1].Value);
 
         Assert.That(forwards.Take(4),
@@ -73,8 +73,8 @@ public class StylesheetTests
     }
 
     /// <summary>
-    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer and a
-    /// band keeps its room above its content. The index's lit bar is the framework's since F118, tested beside it.
+    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer and
+    /// a band keeps its room above its content. The index's lit bar is the framework's since F118, tested beside it.
     /// </summary>
     [TestCase(".panel:hover { transform: translateY(-3px);")]
     [TestCase("padding: 64px var(--site-gutter) 40px;")]
@@ -86,7 +86,8 @@ public class StylesheetTests
     [TestCase(".btn-linkedin:hover { border-color: var(--linkedin);")]
     [TestCase("to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; }")]
     public void TheLook_AnswersTheVisitor(string rule) =>
-        Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
+        Assert.That(
+            Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
             Does.Contain(rule));
 
     /// <summary>
@@ -108,34 +109,10 @@ public class StylesheetTests
         Assert.That(offenders, Is.Empty);
     }
 
-    /// <summary>The git and file rules come from their packs' web projects, so the build found them.</summary>
+    /// <summary>The triage demo's rules come from the triage pack's web project, so the build found them.</summary>
     [Test]
     public void ThePacksRules_AreInTheBuild() =>
-        Assert.That(Css.Read(), Does.Contain(".changes-panel").And.Contain(".file-tree").And.Contain(".pack-split"));
-
-    /// <summary>
-    /// Each theme the picker offers was built, and sets the framework's colour names in both forms. Console is the
-    /// site's look, the framework's colours as they are; retro is the one to switch to.
-    /// </summary>
-    [TestCase("console")]
-    [TestCase("retro")]
-    public void ATheme_IsBuilt_WithBothFormsOfItsColours(string theme)
-    {
-        var built = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "demos/louis-agent/web/louis-agent.code-review/wwwroot/css/themes", $"{theme}.css"));
-        Assert.That(built, Does.Contain("--bs-primary:").And.Contain("--bs-primary-rgb:").And.Contain("--bs-body-bg:"));
-    }
-
-    /// <summary>The picker lists exactly the themes that were built, console first as the default.</summary>
-    [Test]
-    public void ThePickersList_IsTheThemesBuilt_ConsoleFirst()
-    {
-        string themes = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "demos/louis-agent/web/louis-agent.code-review/wwwroot/css/themes/themes.json"));
-        var ids = Regex.Matches(themes, "\"id\": \"([a-z0-9-]+)\"").Select(match => match.Groups[1].Value).ToList();
-
-        Assert.That(ids, Is.EqualTo(new[] { "console", "retro" }));
-    }
+        Assert.That(Css.Read(), Does.Contain(".step-popup").And.Contain(".popup-kind"));
 
     /// <summary>
     /// Every name the site's rules read is set, by the framework or by the site, so none falls through. The site's
@@ -186,7 +163,9 @@ public class StylesheetTests
         Assert.That(selectors, Is.All.Contains(":not(.stage *)"), "nothing in it reaches a film");
     }
 
-    /// <summary>A film's keyframe name ends in <c>-s</c> or <c>-d</c>, or in that letter and the scene's number.</summary>
+    /// <summary>
+    /// A film's keyframe name ends in <c>-s</c> or <c>-d</c>, or in that letter and the scene's number.
+    /// </summary>
     private static bool BelongsToOneFilm(string name)
     {
         string tail = name[(name.LastIndexOf('-') + 1)..];

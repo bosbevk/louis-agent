@@ -12,7 +12,7 @@ public class PageShellTests
     private static readonly Uri Site = new("https://louis-agent.dev/");
 
     private static string Index => File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot/index.html"));
+        "src/site/louis-agent.site/wwwroot/index.html"));
 
     private static readonly RenderedPage Page = new("Measured · louis-agent", "Every number & its \"source\".",
         "<section id=\"top\"><h2>Every number</h2></section>");

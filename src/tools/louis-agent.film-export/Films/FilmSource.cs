@@ -1,8 +1,7 @@
 namespace LouisAgent.FilmExport.Films;
 
 /// <summary>
-/// One of the site's films, played by the code-review app (F109.1): where it plays, how long it runs, and the files
-/// it's made of.
+/// One of the framework's site's films (F124, src/site): where it plays, how long it runs, and the files it's made of.
 /// </summary>
 /// <param name="Name">Its name, which is also its exported file's name.</param>
 /// <param name="Route">The app's page that plays it.</param>
@@ -16,8 +15,6 @@ public sealed record FilmSource(
     TimeSpan Length,
     IReadOnlyList<string> Files)
 {
-    private const string App = "demos/louis-agent/web/louis-agent.code-review/";
-
     /// <summary>The framework's own site, where the films play since F124.</summary>
     private const string Site = "src/site/louis-agent.site/";
 
@@ -27,15 +24,15 @@ public sealed record FilmSource(
     /// <summary>The 36-second film on the home page.</summary>
     public static FilmSource Short { get; } = new(FilmName.Short, "/", ".movie", TimeSpan.FromSeconds(36),
     [
-        Site + "Components/Movies/ShortMovie.razor", App + "Styles/site/movie/_stage.scss",
-        App + "Styles/site/movie/_short.scss", App + "Styles/site/settings/_tokens.scss", Colours,
+        Site + "Components/Movies/ShortMovie.razor", Site + "Styles/site/movie/_stage.scss",
+        Site + "Styles/site/movie/_short.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
     ]);
 
     /// <summary>The 60-second film on the how-it-works page.</summary>
     public static FilmSource Detail { get; } = new(FilmName.Detail, "/how-it-works", ".movie", TimeSpan.FromSeconds(60),
     [
-        Site + "Components/Movies/DetailedMovie.razor", App + "Styles/site/movie/_stage.scss",
-        App + "Styles/site/movie/_detail.scss", App + "Styles/site/settings/_tokens.scss", Colours,
+        Site + "Components/Movies/DetailedMovie.razor", Site + "Styles/site/movie/_stage.scss",
+        Site + "Styles/site/movie/_detail.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
     ]);
 
     /// <summary>Every film the site has.</summary>
