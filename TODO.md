@@ -42,6 +42,7 @@ known limitations below are facts about today, not tasks.
 | F72 | Open from the recipes evals | Now | — |
 | F73 | Check the 47 new own-prices rows | Now | — |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now | [plan](src/docs/plans/F125-an-agentic-site.md) |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now | [plan](src/docs/plans/F126-evals-redesigned.md) |
 | F48 | Recipe maths and a teaching cook | Next | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
 | F46 | Localisation | Next | — |
 | F50 | Puls's local specialists | Next | — |
@@ -129,7 +130,6 @@ known limitations below are facts about today, not tasks.
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
-| CL60 | Simpler evals: `eval.json` and `samples.jsonl`, a fingerprint for the versions, transcripts optional, the unused checks and promptfoo out, a schema for hand editing | Cleanups | [plan](src/docs/plans/CL60-simpler-evals.md) |
 
 ## Known limitations
 

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F126 mockup: How the screens connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--page:#070708;--panel:#0d0e10;--menu:#15171a;--border:#2c2f35;--border-strong:#3a3e45;--hair:rgba(255,255,255,.06);--subtle:rgba(255,255,255,.03);
+--text:#e6e8eb;--emph:#ffffff;--soft:#c9ccd1;--muted:#9aa0a8;--faint:#7c828a;--solid:#e6e8eb;--on-solid:#070708;
+--cta:linear-gradient(180deg,#ffffff 0%,#b9bec6 100%);--ok:#6cbf94;--ok-bg:rgba(108,191,148,.12);--info:#7fa8e8;--info-bg:rgba(127,168,232,.12);--bad:#d9675f;--bad-text:#e8a39c;--warn:#d4a72c;--flip-bg:#1b1d21;color-scheme:dark}
+body{margin:0;font-family:Geist,system-ui,sans-serif;color:var(--text);background:var(--page)}
+a{color:var(--emph)}a:hover{color:var(--emph)}
+.pg{min-height:100%;background:var(--page);font-family:Geist,system-ui,sans-serif;color:var(--text)}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:18px 32px;background:var(--panel);border-bottom:1px solid var(--border);font-size:14px}
+.top a{color:var(--muted);text-decoration:none}.top .sep{color:var(--faint)}.top b{font-weight:600}
+.addr{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:var(--muted);background:var(--hair);padding:3px 8px;border-radius:6px}
+.pill{font-size:12px;color:var(--muted);background:var(--hair);padding:4px 10px;border-radius:999px}
+.grow{flex:1 1 auto}
+.main{max-width:1120px;margin:0 auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px}
+.pad{padding:18px 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--border-strong);background:var(--panel);font:inherit;font-size:14px;font-weight:600;color:var(--text);text-decoration:none;cursor:pointer}
+.btn.dark{background:var(--solid);color:var(--on-solid);border-color:var(--solid)}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.blue{color:var(--emph)}
+h1{margin:0;font-size:26px;font-weight:700}h2{margin:0;font-size:17px;font-weight:600}h3{margin:0;font-size:15px;font-weight:600}
+code,.mono{font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.mark{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
+.mark.no{border:2px solid var(--bad)}.mark.flip{background:var(--flip-bg);border-color:var(--emph)}
+.mark .t{flex:1 1 auto;display:flex;flex-direction:column;gap:3px}.mark .t b{font-size:14px;font-weight:600}.mark .t span{font-size:13px;color:var(--muted)}
+.dot{flex:none;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--on-solid);font-size:12px;font-weight:700}
+.dot.y{background:var(--ok)}.dot.n{background:var(--bad)}.dot.f{background:var(--emph)}
+.note{font-size:12px;color:var(--muted);margin:0}
+.top .actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.main{max-width:1120px!important}
+.hero{display:flex;flex-direction:column;gap:6px}
+.hero .big{font-size:44px;font-weight:700;line-height:1}
+.hero .big small{font-size:22px;color:var(--muted);font-weight:500}
+.delta{font-size:14px;font-weight:600}
+.meta{font-size:12px;color:var(--muted)}
+.heroRow{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between}
+.stats{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.stats>div{padding:14px 18px;border-left:1px solid var(--hair)}.stats>div:first-child{border-left:0}
+.stats dt{font-size:13px;color:var(--muted)}.stats dd{margin:4px 0 0;font-size:18px;font-weight:600}
+.stats.compact{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:none;border:0;border-radius:0}.stats.compact>div{padding:0;border:0}.stats.compact dd{font-size:13px;margin-top:2px}
+.split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:stretch}
+.kv{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--hair);font-size:14px}
+.kv b{text-align:right;white-space:nowrap}
+.list{overflow:hidden}
+.bar{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;flex-wrap:wrap}
+.item{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--hair);text-decoration:none;color:inherit;align-items:flex-start}
+.item:last-child{border-bottom:0}
+.item .body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
+.item .head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.item .name{font-size:15px;font-weight:600}
+.item.wait{color:var(--faint)}
+.group{padding:10px 16px;border-bottom:1px solid var(--hair);background:var(--subtle)}
+.label{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.dot.w{background:var(--border-strong)}.dot.e{background:var(--border)}.dot.g{background:var(--faint)}
+.cols{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.cols>.wide{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.cols>.side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.main>.heroRow,.main>.hero{padding-bottom:20px;border-bottom:1px solid var(--border)}
+.card .hero,.card .stats.compact,.card .btns{border-top:1px solid var(--hair);padding-top:14px}
+.card[role=dialog]>*+*{border-top:1px solid var(--hair);padding-top:14px}
+.card[role=dialog] .btns{margin-top:auto}
+.frame{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100%}
+.sb{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 12px;gap:4px}
+.sb .brand{display:flex;flex-direction:column;padding:2px 10px 18px;margin-bottom:6px;border-bottom:1px solid var(--hair);text-decoration:none;color:var(--text)}
+.sb .brand b{font-size:16px;font-weight:700}.sb .brand span{font-size:12px;color:var(--muted)}
+.sb .sl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+.sb a.lk{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 10px;border-radius:8px;color:var(--soft);text-decoration:none;font-size:14px}
+.sb a.lk.on{background:var(--solid);color:var(--on-solid);font-weight:600}
+.sb .ft{margin-top:auto;border-top:1px solid var(--hair);padding-top:10px}
+.col{display:flex;flex-direction:column;min-width:0}
+.col>.main{flex:1 1 auto;width:100%;box-sizing:border-box}
+.pfoot{border-top:1px solid var(--border);background:var(--panel);padding:14px 32px;font-size:12px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+.sechead{display:flex;align-items:center;gap:12px;margin-top:4px}
+.sechead::after{content:"";flex:1 1 auto;height:1px;background:var(--border)}
+/* Our styles: the framework's Console look (src/web/louis-agent.web/Styles/web/settings/_colours.scss, layout/_shell.scss). */
+body,.pg{background:var(--page);color:var(--text)}
+a{color:var(--text)}a:hover{color:var(--emph)}
+.card,.stats{background:var(--panel);border-color:var(--border);border-radius:16px}
+.stats.compact{background:none}
+.top{background:transparent;border-bottom:1px solid var(--border)}
+.top b{color:var(--emph)}
+h1{font-weight:800;letter-spacing:-.4px;color:var(--emph)}h2,h3{color:var(--emph)}
+.hero .big{font-weight:800;letter-spacing:-.6px;color:var(--emph)}
+.btn{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);border-radius:11px;font-weight:700}
+.btn:hover{border-color:rgba(255,255,255,.45);color:var(--emph)}
+.btn.dark{background:var(--cta);color:var(--on-solid);border:0;box-shadow:0 6px 16px -8px rgba(255,255,255,.7)}
+.btn.sm{height:36px;min-height:36px;font-size:13px}
+.pill{background:var(--hair);color:var(--muted)}
+.addr{background:var(--hair);color:var(--muted)}
+.bad{color:var(--bad-text)}.ok{color:var(--ok)}.blue{color:var(--emph)}
+.dot.y{background:var(--solid);color:var(--on-solid)}.dot.n{background:var(--bad);color:var(--on-solid)}.dot.f{background:var(--emph);color:var(--on-solid);box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+.mark{background:var(--subtle);border-color:var(--border)}.mark.no{border-color:var(--bad)}.mark.flip{background:var(--flip-bg);border:1px solid var(--emph)}
+.sb{background:var(--menu);border-right-color:var(--border);padding:20px 14px 16px}
+.sb .brand{border-bottom-color:var(--border)}.sb .brand b{font-size:21px;font-weight:800;letter-spacing:-.6px;color:var(--emph)}.sb .brand span{color:var(--muted)}
+.sb .sl{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)}
+.sb a.lk{color:var(--text);border-radius:10px}
+.sb a.lk.on{background:rgba(255,255,255,.07);color:var(--emph);font-weight:600;box-shadow:inset 3px 0 0 var(--emph)}
+.sb .ft{border-top-color:var(--border)}
+.pfoot{background:var(--menu);border-top-color:var(--border);color:var(--faint)}
+.label,.sechead .label{color:var(--faint);font-weight:700;letter-spacing:1.2px;font-size:11px}
+.sechead::after{background:var(--border)}
+.item{border-bottom-color:var(--hair)}.kv{border-bottom-color:var(--hair)}.bar{border-bottom-color:var(--border)}
+.group{background:var(--subtle);border-bottom-color:var(--hair)}
+.main>.heroRow,.main>.hero{border-bottom-color:var(--border)}
+.card .hero,.card .stats.compact,.card .btns,.card[role=dialog]>*+*{border-top-color:var(--hair)}
+.stats>div{border-left-color:var(--hair)}
+code,.mono{color:var(--soft)}
+details summary{color:var(--text)}
+/* Indicators (Louis, 2026-11-09): green for met and better, red for not met and worse, blue for your flips; only on marks, dots and deltas. */
+.dot.y{background:var(--ok);color:var(--on-solid)}
+.dot.f{background:var(--info);color:var(--on-solid);box-shadow:0 0 0 3px var(--info-bg)}
+.ok{color:var(--ok)}.blue{color:var(--info)}
+.mark.flip{background:var(--info-bg);border:1px solid var(--info)}
+.mark.no{background:rgba(217,103,95,.08)}
+.pill.live{background:rgba(212,167,44,.15);color:var(--warn)}
+/* Amber: not wrong, but look at this (spends money, out of date, the judge may be wrong). */
+.warn{color:var(--warn)}
+.btn.spend{border-color:rgba(212,167,44,.55);color:var(--warn);background:rgba(212,167,44,.06)}
+.btn.spend:hover{border-color:var(--warn);color:var(--warn)}
+.btn.spendsolid{background:var(--warn);color:var(--on-solid);border:0}
+.notice{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;border:1px solid rgba(212,167,44,.45);background:rgba(212,167,44,.08);font-size:13px;color:var(--text)}
+.notice::before{content:"!";flex:none;width:18px;height:18px;border-radius:50%;background:var(--warn);color:var(--on-solid);font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div class="pg" style="min-height:1260px">
+  <header class="top"><b>How the eval screens connect</b><span class="pill">today's framework → the redesign</span></header>
+  <main class="main">
+    <section class="card pad" style="display:flex;flex-direction:column;gap:10px">
+      <h2>Six screens, one click deeper each</h2>
+      <p class="small muted" style="margin:0">Numbers match the boards. Solid arrows are a click; the dashed one is you committing the file in Rider.</p>
+      <svg viewBox="0 0 1176 410" width="100%" role="img" aria-label="Evals leads to a live run or straight to a run; a run leads to a conversation or a re-graded run; a conversation's Copy button leads to the eval file, and committing it brings you back to Evals." style="font-family:Inter,system-ui,sans-serif">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7c828a"/></marker></defs>
+<g><rect x="8" y="70" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="32" cy="96" r="12" fill="#e6e8eb"/><text x="32" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">1</text>
+<text x="52" y="101" font-size="15" font-weight="600" fill="#e6e8eb">Evals</text>
+<text x="24" y="128" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">/admin/evals</text>
+<text x="24" y="147" font-size="12" fill="#9aa0a8">a card per eval file</text></g>
+<g><rect x="308" y="70" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="332" cy="96" r="12" fill="#e6e8eb"/><text x="332" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">2</text>
+<text x="352" y="101" font-size="15" font-weight="600" fill="#e6e8eb">A live run</text>
+<text x="324" y="128" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">asks first</text>
+<text x="324" y="147" font-size="12" fill="#9aa0a8">then fills in as it runs</text></g>
+<g><rect x="608" y="70" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="632" cy="96" r="12" fill="#e6e8eb"/><text x="632" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">3</text>
+<text x="652" y="101" font-size="15" font-weight="600" fill="#e6e8eb">A run</text>
+<text x="624" y="128" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">…/{eval}/runs/{run}</text>
+<text x="624" y="147" font-size="12" fill="#9aa0a8">failed first · Re-grade · Replay</text></g>
+<g><rect x="908" y="70" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="932" cy="96" r="12" fill="#e6e8eb"/><text x="932" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">4</text>
+<text x="952" y="101" font-size="15" font-weight="600" fill="#e6e8eb">A conversation</text>
+<text x="924" y="128" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">…/runs/{run}/{id}</text>
+<text x="924" y="147" font-size="12" fill="#9aa0a8">turns · Flip · Next failed ›</text></g>
+<g><rect x="608" y="270" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="632" cy="296" r="12" fill="#e6e8eb"/><text x="632" y="300" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">5</text>
+<text x="652" y="301" font-size="15" font-weight="600" fill="#e6e8eb">A re-graded run</text>
+<text x="624" y="328" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">a new run</text>
+<text x="624" y="347" font-size="12" fill="#9aa0a8">"re-graded from" the old one</text></g>
+<g><rect x="908" y="270" width="236" height="90" rx="12" fill="#0d0e10" stroke="#3a3e45" stroke-width="1.5"/>
+<circle cx="932" cy="296" r="12" fill="#e6e8eb"/><text x="932" y="300" text-anchor="middle" font-size="12" font-weight="700" fill="#070708">6</text>
+<text x="952" y="301" font-size="15" font-weight="600" fill="#e6e8eb">The eval file</text>
+<text x="924" y="328" font-size="12" fill="#9aa0a8" font-family="JetBrains Mono, monospace">{name}.eval.json</text>
+<text x="924" y="347" font-size="12" fill="#9aa0a8">in Rider, in git</text></g>
+        <path d="M244 115H304" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M544 115H604" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M844 115H904" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M126 70C126 18 726 18 726 66" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M726 160V266" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M1026 160V266" stroke="#7c828a" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+        <path d="M1026 360V392H126V164" stroke="#7c828a" stroke-width="1.5" stroke-dasharray="6 5" fill="none" marker-end="url(#ah)"/>
+<text x="274" y="106" font-size="12" fill="#c9ccd1" text-anchor="middle">Run live</text>
+<text x="574" y="106" font-size="12" fill="#c9ccd1" text-anchor="middle">it ends</text>
+<text x="874" y="106" font-size="12" fill="#c9ccd1" text-anchor="middle">click one</text>
+<text x="426" y="30" font-size="12" fill="#c9ccd1" text-anchor="middle">Open last run · Replay free</text>
+<text x="736" y="218" font-size="12" fill="#c9ccd1" text-anchor="start">Re-grade</text>
+<text x="1036" y="218" font-size="12" fill="#c9ccd1" text-anchor="start">Copy as conversation</text>
+<text x="576" y="386" font-size="12" fill="#c9ccd1" text-anchor="middle">commit the file: the card shows the new conversation</text>
+      </svg>
+    </section>
+    <section class="card pad" style="display:flex;flex-direction:column;gap:10px">
+      <h2>Today's screens, and where each one goes</h2>
+      <p class="small muted" style="margin:0">Read from <code>src/web/louis-agent.web.evals</code> on main: five admin pages, the run page's five tabs, the explorer's five levels.</p>
+      <table style="border-collapse:collapse;font-size:13px;width:100%">
+        <thead><tr style="text-align:left"><th style="padding:8px 10px;border-bottom:1px solid var(--border);width:50%">Today</th><th style="padding:8px 10px;border-bottom:1px solid var(--border)">In the redesign</th></tr></thead>
+        <tbody>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Evals</b> <code>/admin</code>: a list, and a details pane with run controls (repeats, Run, estimate, Manual), scorecard, timeline, trend, checks, drafts and a runs table</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>1 Evals</b>: one card per eval file, the last result against the run before, three buttons</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The live run panel above the details</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>2 A live run</b>: asks first with the estimate and the repeats, then the run page fills in</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Run</b> <code>/admin/runs/{id}</code>: a verdict and five tabs: Summary, Conversations, Judge, Notes, Settings</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>3 A run</b>: one view, no tabs: the number against the run before, the last runs as bars, failed first, the criteria missed most, one "ran with" line</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The explorer's five levels: overview, conversations, turns, a turn compared, one request</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>4 A conversation</b>: each turn with its tool calls in a fold and its own marks beside it</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Review</b> <code>/admin/review</code>: a blind queue, pass / fail / unsure, keys 1 2 3</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Flip a mark on <b>4</b>; Next failed › walks them one by one</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The Judge tab: the judge against people's blind reviews</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">"Judge agrees with you" on <b>1</b> and <b>3</b>, counted from your flips</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Re-score</b>: the stored transcripts graded again with today's graders, free</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>5 Re-grade</b>: facts again for free, the judge only for new or reworded criteria, every other mark reused</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Replay</b>: the recorded web and model answers played back, free</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Replay free</b> on <b>1</b> and <b>3</b>, the same idea</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Studio</b> <code>/admin/studio</code>: compose, check, try, publish; promptfoo in and out</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>6 The eval file</b>, written in Rider with the schema; Copy as conversation on <b>4</b></td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The Notes tab</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Gone: the commit that changed the file says why (my suggestion)</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The Settings tab</td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">One "ran with" line on <b>3</b>: identity, model, commit</td></tr>
+<tr><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Prompts</b> <code>/admin/prompts</code></td><td style="padding:9px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Not an eval page: it stays as it is</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+</body>
+</html>
