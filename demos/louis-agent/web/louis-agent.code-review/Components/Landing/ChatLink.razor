@@ -1,10 +1,10 @@
-@* A link to the coding agent's chat, from the header and from the landing page; while the chat is closed to visitors
-   (SiteDoors, FX88) it is a "Coming soon" pill that leads nowhere. *@
+@* A way to the coding agent, from the header and from the landing page: its chat when the chat is open to visitors,
+   else its recorded session (SiteDoors, FX88, F120), so no door on the site leads nowhere. *@
 @if (SiteDoors.CodingAgent)
 {
     <a class="@Class" href="@Address">@ChildContent</a>
 }
 else
 {
-    <span class="@Class is-soon" aria-disabled="true">Coming soon</span>
+    <a class="@Class" href="@Recording">@Watch</a>
 }

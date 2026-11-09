@@ -1,0 +1,9 @@
+/* A tile that shows a measurement (F118, from a site's sections): the number big in the mono face, the note under it
+   close. The panel itself is the site's look. */
+.stat { gap: 8px; }
+.stat-value { font: 700 44px/1 var(--bs-font-monospace); letter-spacing: -.03em; }
+.stat-note { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
+
+@media (max-width: 600px) {
+    .stat-value { font-size: 34px; }
+}

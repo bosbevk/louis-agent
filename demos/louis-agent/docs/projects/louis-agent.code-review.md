@@ -124,12 +124,12 @@ sequenceDiagram
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own. Every section is the framework's `Band` with an id in words (F117), so the guide can take a visitor to an area, and `SitePagesTests` holds that no page has a nameless one |
+| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own; under `Agents/`, the coding agent's page, `/coding-agent`, where the framework's `RecordedChat` plays `wwwroot/recordings/coding-session.sse`, the agent fixing the invoice matcher sample, recorded once for about R0.10 and shown with the bill in rand at that day's rate, then the offer ([ADR 0108](../../../../src/docs/adr/0108-the-public-watches-the-coding-agent-recorded.md), [how to record it again](../../recordings/README.md)). Every section is the framework's `Band` with an id in words (F117), so the guide can take a visitor to an area, and `SitePagesTests` holds that no page has a nameless one |
 | `Components/Architecture/` | The Architecture page's families, one component each: `Framework/` (the engine, the hosts, the web, the evals) and `OnIt/` (the packs, the demos, where it runs) |
 | `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
 | `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
 | `Components/Guide/` | `ExpertChat`: the framework's `ChatWidget` wrapped once with the expert identity and the site's words, placed in the frame's corner by `SiteLayout` and placeable on any page (F109.3) |
-| `Components/Landing/` | The landing's parts: the hero, the proof tiles, built on it, the contact strip and `ChatLink`, the way into the chat (a "Coming soon" pill while `SiteDoors` keeps it closed, FX88); under `Live/`, the two animated panels: the hero's turn (`live-turn`, its own class since FX71) and `LiveLead`, the guide taking a lead as an animated chat on the same styles beside the custom-agents tiles (F116, the shape of Louis's own chat with made-up details). The custom-agents band is the page's own |
+| `Components/Landing/` | The landing's parts: the hero, the proof tiles, built on it, the contact strip and `ChatLink`, the way to the coding agent (its chat when `SiteDoors` opens it, else its recorded session at `/coding-agent`, FX88, F120); under `Live/`, the two animated panels: the hero's turn (`live-turn`, its own class since FX71) and `LiveLead`, the guide taking a lead as an animated chat on the same styles beside the custom-agents tiles (F116, the shape of Louis's own chat with made-up details). The custom-agents band is the page's own |
 | `Styles/site/landing/_motion.scss`, `wwwroot/brand/mark.svg` | The look of the landing's motion (the index, the progress line, the reveal keyframes `site-rise` and `site-unmask`, the compact header), which the frame's module drives (F110); the app's own copy of the mark for the lockup |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
 | `Styles/app.scss`, `Styles/site/`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, then the site's look (F109.1: its values and elements right after the framework's, hung off the frame's root `.site` so the chat keeps the framework's; the landing, the films and its phone rules after the packs'), this site's few rules, and the two themes: `console`, the default, the framework's colours as they are, and `retro` to switch to; the picker's list is `wwwroot/css/themes/themes.json` ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
@@ -162,9 +162,13 @@ The guide answers questions about buying from this section (FX72), so it holds t
   business (its hours, prices, services and story, from files the owner can read and change), answers customers day
   and night, and points them to the right place or person. Every answer it gives is measured, so the owner sees what
   it costs. Every agent runs in its own closed Docker container that sees only what it is handed.
-- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know. The exact figure
-  comes from a short call. This is the one public price; anything else (a custom agent, the framework, a licence) is
-  not published yet and is asked for on the Contact page.
+- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know, plus a
+  once-off fee to build the site. The exact figures, the building fee's too, come from a short call. This is the
+  one public price; anything else (a custom agent, the framework, a licence) is not published yet and is asked for
+  on the Contact page.
+- **Your first files, written with you:** an agent is a few Markdown files (its voice, its roles and what it knows
+  about the business), and Louis can write a customer's first Markdown files with them, for a fee, so the agent starts
+  out sounding like them. Its price comes from the short call.
 - **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a

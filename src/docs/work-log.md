@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 76 | 74 |
-| Fixes (`FX`) | 87 | 6 |
+| Features (`F`) | 79 | 73 |
+| Fixes (`FX`) | 97 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (106 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -127,13 +127,14 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
-| F118 | The landing from the framework's parts: the section index built from the bands, the hero, tiles and contact strip as framework components with the site's words | Now |
 
-## Features (76 done)
-## Features (76 done)
+## Features (79 done)
 
 | Id | When | What |
 |---|---|---|
+| F120 | 2026-11-09 | Watch the coding agent work: the site's doors lead to `/coding-agent`, where the agent fixing a sample's two bugs, recorded once on Haiku for about R0.10, plays in the framework's chat view (`RecordedChat`, a shared replay loop, a pace by kind), then the offer; the live chat stays behind the key (ADR 0108); a diagram's gaps fit their own words |
+| F119 | 2026-11-09 | How it works splits the loop from the web: the web's slide says the agent runs without it and the web turns an agent into a website, names how the site, the guide, the API and the accounts work with the engine, and has its own diagram; a sitemap of every page and place, held to the pages by a test |
+| F118 | 2026-11-08 | A site of slides from the framework's parts: the section index from the bands, slides or a flowing page as a layout option, a section that pages sideways when it holds more, the hero, tiles and closing strip as framework parts; every place its own address (ADR 0107); the guide reads the section in view, opens a card, turns a page, lights a place with a spotlight, and walks a page from a tour button on every page |
 | F117 | 2026-11-08 | The guide takes you to a page, and to a part of it: the site pack's ShowPage, checked in the API and heard by the widget, which navigates, scrolls the area into view and lights it up; every section a framework Band with an id; the page block lists the areas; ADRs 0105 and 0106 |
 | F115 | 2026-11-08 | The guide knows the page: a message may carry the page the visitor is reading, one block in the user's message, sent once per page by the widget's own module, the guide's voice says what it is (ADR 0104) |
 | F116 | 2026-11-08 | The guide's chat on the landing: the shape of Louis's own lead chat as an animated panel beside the custom-agents tiles, on the hero's live-turn styles, with made-up details |
@@ -211,13 +212,23 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (87 done)
+## Fixes (90 done)
 
 | Id | When | What |
 |---|---|---|
+| FX105 | 2026-11-09 | The coding agent's page is one slide, side by side: the words on the left, the recorded session in a full-height window on the right |
+| FX104 | 2026-11-09 | The offer names its fees: a once-off fee to build the site beside the monthly price, and Louis writing a customer's first Markdown files, for a fee, on the landing, the Contact page and in the guide |
+| FX103 | 2026-11-08 | Every page's footer links to Louis's LinkedIn profile, LinkedIn's mark small beside the word |
+| FX102 | 2026-11-08 | The guide lights what it talks about, offers a walkthrough or one section, walks it one stop per answer, and sells and takes the lead at its end |
+| FX101 | 2026-11-08 | The chat follows the answer to its end until the reader scrolls up, however much text arrives at once |
+| FX100 | 2026-11-08 | The WhatsApp and LinkedIn buttons sit quietly: outlined, the owner's mark and name, the owner's colour on the edge under the pointer |
+| FX97 | 2026-11-08 | The Contact page links to Louis's LinkedIn profile, with LinkedIn's own mark and blue |
 | FX92 | 2026-11-08 | The slogan reads "100% C#, because you can" |
 | FX91 | 2026-11-08 | The band and the guide say what drives the work: a stoic and Kierkegaard outlook, meaning and purpose, a startup of one; a described job is a custom agent to offer, and the agent can run where the customer is |
 | FX90 | 2026-11-08 | The guide opens on every copy of the site: the run profile and the compose file carry the guide's settings as the release does |
+| FX99 | 2026-11-08 | The social card shows the website's address and the slogan, no longer the private repository's |
+| FX98 | 2026-11-08 | The chat follows the answer to its end: one more scroll on the draw after the stream ends |
+| FX96 | 2026-11-08 | A developer who asks the guide for code gets a whole Program.cs in a C# block: the API guide holds the listing, the voice says to write it |
 | FX95 | 2026-11-08 | The guide knows its own leads: yes, shown, the leads pack it uses itself, a mailbox read for leads as a custom agent |
 | FX94 | 2026-11-08 | A lead goes to Louis's Gmail address: Outlook accepted the guide's mail and dropped it without a trace |
 | FX93 | 2026-11-08 | The deploy runs on the merge itself, CI on pull requests only (ADR 0097 amended) |

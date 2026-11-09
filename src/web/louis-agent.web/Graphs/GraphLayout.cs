@@ -31,10 +31,11 @@ public static class GraphLayout
     {
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the height.
         var columns = Ordered(spec);
-        // Columns never touch, and a word fits between them: when the width can't hold them with that room, the drawing
-        // widens and the page scales it.
-        double gap = Math.Max(MinColumnGap, EdgeRouter.GapFor(spec.Edges));
-        width = Math.Max(width, (int)Math.Ceiling(columns.Count * BoxWidth + Math.Max(0, columns.Count - 1) * gap));
+        // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
+        // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
+        var gaps = Gaps(spec, columns);
+        width = Math.Max(width, (int)Math.Ceiling(columns.Count * BoxWidth + gaps.Sum()));
+        var lefts = Lefts(gaps, columns.Count, width);
         // Every box sits on one row grid, each row as tall as the tallest box, a shorter column centred on it (Louis:
         // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
         // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
@@ -44,7 +45,7 @@ public static class GraphLayout
         var nodes = new List<PlacedNode>();
         for (int at = 0; at < columns.Count; at++)
         {
-            double x = ColumnX(at, columns.Count, width);
+            double x = lefts[at];
             double y = (height - ColumnHeight(columns[at], row)) / 2;
             foreach (var node in columns[at])
             {
@@ -144,7 +145,47 @@ public static class GraphLayout
         return boxes * row + Gap * (boxes - 1);
     }
 
-    /// <summary>The first column at the left edge, the last at the right, the rest spread evenly; one alone in the middle.</summary>
-    private static double ColumnX(int at, int count, int width) =>
-        count == 1 ? (width - BoxWidth) / 2 : at * (width - BoxWidth) / (count - 1);
+    /// <summary>
+    /// The room between each pair of neighbouring columns: the rooms either side of the bend for its own arrows'
+    /// words (<see cref="EdgeRouter.RoomsFor"/>), never less than <see cref="MinColumnGap"/>. An arrow that skips a
+    /// column bends in the middle, so it needs twice its word in every gap it crosses.
+    /// </summary>
+    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns)
+    {
+        var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
+            .ToDictionary(pair => pair.Id, pair => pair.at);
+        var forward = spec.Edges.Where(edge => columnOf.ContainsKey(edge.From) && columnOf.ContainsKey(edge.To)
+            && columnOf[edge.To] > columnOf[edge.From]).ToList();
+
+        double Gap(int gap)
+        {
+            var neighbours = forward.Where(edge => columnOf[edge.From] == gap && columnOf[edge.To] == gap + 1).ToList();
+            var (source, target) = EdgeRouter.RoomsFor(neighbours, forward);
+            var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
+                || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
+            return Math.Max(MinColumnGap, Math.Max(source + target, EdgeRouter.GapFor(skipping)));
+        }
+
+        return Enumerable.Range(0, Math.Max(0, columns.Count - 1)).Select(Gap).ToList();
+    }
+
+    /// <summary>
+    /// Where each column starts: the first at the left edge and the last at the right, each gap its own room plus an
+    /// even share of what the width has to spare; one column alone stands in the middle.
+    /// </summary>
+    private static List<double> Lefts(List<double> gaps, int count, int width)
+    {
+        if (count == 1) return [(width - BoxWidth) / 2];
+
+        double spare = gaps.Count == 0 ? 0 : (width - count * BoxWidth - gaps.Sum()) / gaps.Count;
+        var lefts = new List<double>();
+        double x = 0;
+        for (int at = 0; at < count; at++)
+        {
+            lefts.Add(x);
+            if (at < gaps.Count) x += BoxWidth + gaps[at] + spare;
+        }
+
+        return lefts;
+    }
 }

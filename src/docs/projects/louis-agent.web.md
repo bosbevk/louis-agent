@@ -63,6 +63,21 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **Usage and currency.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event;
   `CurrencyState` and `CurrencySwitcher` show it in the browser's chosen currency from the API's rates
   ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
+- **A site's public pages** (F118, ADR 0106, 0107). The engine and an agent run without any of this: the CLI, Rider,
+  the API and MCP need no web. This part is what turns an agent into a website. `SiteShell` is the frame: a header, the
+  page, a footer, the guide in its corner, a scroll progress line, a way back up, and a section index on the left
+  built from the page's bands (each band puts itself on the frame's `PageAreas` as it draws). A page is built of
+  `Band`s and the framework's `SiteHero`, `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words;
+  a `GuideButton` anywhere asks the guide a question through `GuideDoor`. A site lays its pages out
+  as **slides** or a **flowing page** (`SiteShell Layout`, a page may choose the other with one `PageLayoutChoice`
+  line): on slides every section is a screen tall, its content in the middle, the page settles on one section at a
+  time, a section with more than a screen of content pages sideways with a pager, and a diagram scales to fit. Every
+  place has its own address (ADR 0107): a section `/proof/rand`, a card `/identities/puls`, a page of a paged section
+  `/how-it-works/parts/2`, the landing's under `/home`; `SiteAddresses` is the rule and `SectionPage` the catch-all
+  route that opens any place, and the address bar follows the visitor. The guide's widget sends the page it reads
+  with every place by its address and the place on the visitor's screen, and its page tool takes an address: it
+  scrolls there, opens a card or turns a page, and lights it with a spotlight that dims the rest. A site lists every
+  page and place in its `sitemap.xml`, which a site test writes from the rendered pages and holds to them (F119).
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.
 
@@ -166,11 +181,21 @@ on hover or on focus, CSS only.
 a page declares a `GraphSpec` (`Graphs/`: nodes with an id, a label, a note and a column; edges between ids, with a
 word when one helps), `GraphLayout.Place` puts the columns across the width on one row grid, orders each by its
 neighbours and hands the arrows to `EdgeRouter`, which draws each as a connector (right-angle bends, one track per
-gap, back arrows under the drawing, loops to the right, words on flat pieces with room), and the view writes one SVG
+gap, back arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words
+that cross it and the bend just after a word, F119), and the view writes one SVG
 that scales to its box. Its root carries `reveal`, so the frame's module adds `.in` as it enters and the styles beside it make each arrow
 draw itself and each box rise, a column at a time, once; fully drawn at rest. The SVG's text goes out as markup from
 the code-behind, since Razor keeps the `text` tag for itself. `GraphLayoutTests` holds the numbers, `GraphViewTests`
 the markup.
+
+**`Components/Recorded/RecordedChat`** plays a recorded session in the chat's own view (F120,
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)): a site gives it a `.sse` file of the stream
+the API sent, the question it answered, a title, the currency for the bill and an ending, and a visitor watches the
+agent think, call its tools and answer, then sees the ending and a play-again button. It reads the file with
+`SessionStreamReader`, waits by each event's kind (`Chats/Replay/RecordingPace`: thinking fast, the answer at reading
+speed, a beat per tool) and folds the events with `Chats/Replay/TurnReplay`, the loop the eval studio's replay shares,
+into a `MessageList`. Its window is the framework's `web/tools/_window` mixin, which a site's own animated panels use
+too. `RecordedChatTests`, `RecordingPaceTests` and `TurnReplayTests` hold it.
 
 **`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
 motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width

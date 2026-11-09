@@ -1,0 +1,14 @@
+/* A site's hero (F118, from the landing's own partial): the words on the left and, when the site puts something beside
+   them, a second, slightly wider column on the right; one column on a phone. The gutter is the site's, with the
+   frame's plain one when a site sets none. */
+.hero { padding: 88px var(--site-gutter, 24px) 64px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: center; }
+.hero.with-aside { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+
+.hero-text { display: flex; flex-direction: column; gap: 22px; }
+.hero-text .lede { max-width: 46ch; }
+
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+    .hero, .hero.with-aside { grid-template-columns: minmax(0, 1fr); padding-top: 48px; }
+}

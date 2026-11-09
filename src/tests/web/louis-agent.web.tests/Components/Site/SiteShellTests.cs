@@ -1,5 +1,8 @@
 using LouisAgent.Web.Components.Site;
+using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Scripts;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Site;
 
@@ -98,7 +101,127 @@ public class SiteShellTests
         Assert.That(cut.FindAll(".site-main .page"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-footer .note"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".site-corner .widget"), Has.Count.EqualTo(1));
-        Assert.That(inside, Is.EqualTo(new[] { "site-header", "site-main", "site-footer", "site-corner" }));
+        Assert.That(inside, Is.EqualTo(new[] { "site-progress", "site-header", "site-main", "site-up", "site-footer", "site-corner" }));
+    }
+
+    /// <summary>
+    /// The frame lists the page's bands in its index (F118): a page is bands, each puts itself on the frame's list as
+    /// it draws, and the index on the left is that list, so no site writes one by hand and every page has it.
+    /// </summary>
+    [Test]
+    public void TheFrame_ListsThePagesBands_InItsIndex()
+    {
+        using var ctx = Context();
+
+        RenderFragment page = builder =>
+        {
+            builder.OpenComponent<Band>(0);
+            builder.AddComponentParameter(1, nameof(Band.Id), "rule");
+            builder.AddComponentParameter(2, nameof(Band.Kicker), "One rule");
+            builder.CloseComponent();
+            builder.OpenComponent<Band>(3);
+            builder.AddComponentParameter(4, nameof(Band.Id), "contact");
+            builder.AddComponentParameter(5, nameof(Band.Short), "Contact");
+            builder.CloseComponent();
+        };
+        var cut = ctx.Render<SiteShell>(parameters => parameters.Add(shell => shell.ChildContent, page));
+
+        cut.WaitForAssertion(() =>
+        {
+            var links = cut.FindAll(".site nav.site-index a");
+            Assert.That(links.Select(a => a.GetAttribute("href")), Is.EqualTo(new[] { "#rule", "#contact" }));
+            Assert.That(links.Select(a => a.TextContent), Is.EqualTo(new[] { "One rule", "Contact" }));
+        });
+    }
+
+    /// <summary>
+    /// Every page has a way back up (F118, Louis: "we need a up button to take you to the top again"): the frame draws
+    /// one link to the top, named for a screen reader, which its module shows once the page is scrolled and which
+    /// scrolls to the top on a click.
+    /// </summary>
+    [Test]
+    public void TheFrame_DrawsAWayBackUp()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent("<div class=\"page\">Page</div>"));
+
+        var up = cut.Find(".site > a.site-up");
+        Assert.Multiple(() =>
+        {
+            Assert.That(up.GetAttribute("href"), Is.EqualTo("#top"));
+            Assert.That(up.GetAttribute("aria-label"), Is.EqualTo("Back to the top"));
+            Assert.That(up.QuerySelector("svg"), Is.Not.Null);
+        });
+    }
+
+    /// <summary>
+    /// Every section of a page is at least a screen tall (F118, Louis: "a min height on all sections"), so a jump or a
+    /// click in the index lands any section in place and lights the one clicked.
+    /// </summary>
+    [Test]
+    public void EverySection_IsAtLeastAScreenTall()
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
+
+        Assert.That(rules, Does.Contain(".site-main ::deep > section {").And.Contain("min-height: calc(100dvh - 160px);"));
+        Assert.That(rules, Does.Not.Contain("section:last-of-type"));
+    }
+
+    /// <summary>
+    /// A section holds its content in the middle of the screen, and the page settles on one section at a time as it
+    /// scrolls (F118, Louis: "should this part not always be horizontal and vertically centered in the screen and then
+    /// when you move to another section it rolls in?"): the section centres what it holds and snaps under the header.
+    /// </summary>
+    [TestCase("justify-content: center;")]
+    [TestCase("align-content: center;")]
+    [TestCase("scroll-snap-align: start;")]
+    [TestCase("scroll-margin-top: 96px;")]
+    public void ASection_CentresItsContent_AndSnapsIntoPlace(string rule)
+    {
+        string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
+
+        Assert.That(rules, Does.Contain(rule));
+    }
+
+    /// <summary>
+    /// A page change plays an entrance (F118, Louis: "when changing from one page to another can we have an animation
+    /// doing it"): the frame draws the main column afresh for each page, so its entrance plays, and a jump within the
+    /// page keeps the same column.
+    /// </summary>
+    [Test]
+    public void APageChange_DrawsTheColumnAfresh_AJumpWithinItDoesNot()
+    {
+        using var ctx = Context();
+        var nav = ctx.Services.GetRequiredService<NavigationManager>();
+        nav.NavigateTo("/packs");
+        PageProbe.Made = 0;
+        var cut = ctx.Render<SiteShell>(parameters => parameters.AddChildContent<PageProbe>());
+
+        nav.NavigateTo("/packs#cook");
+        cut.Render();
+        int afterJump = PageProbe.Made;
+        nav.NavigateTo("/identities");
+        cut.Render();
+        int afterPageChange = PageProbe.Made;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(afterJump, Is.EqualTo(1), "a jump within the page keeps the column");
+            Assert.That(afterPageChange, Is.EqualTo(2), "a new page draws a new column");
+        });
+    }
+
+    /// <summary>Stands for a page in the column, and counts how often the column makes it.</summary>
+    private sealed class PageProbe : ComponentBase
+    {
+        /// <summary>How many times one was made since the count was reset.</summary>
+        public static int Made;
+
+        /// <summary>Counts itself as it is made.</summary>
+        protected override void OnInitialized() => Made++;
     }
 
     /// <summary>With nothing named, the page still shows, and the empty slots leave no gaps.</summary>

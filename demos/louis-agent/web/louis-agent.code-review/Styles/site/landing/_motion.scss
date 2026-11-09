@@ -1,18 +1,7 @@
-/* The landing as one page that moves (F110, Puls's landing as the pattern): the scroll progress line at the top, the
-   section index on the left, and the reveal each block plays once when it enters. The frame's module (SiteShell)
-   fills the line, marks the section in view and adds .in to a block; the look is this site's. Colours read the
-   framework's names, so a theme changes them. */
-
-.site-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 30; background: var(--web-cta); box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .6); }
-
-.site-index { position: fixed; left: 22px; top: 50%; translate: 0 -50%; z-index: 20; display: flex; flex-direction: column; gap: 9px; }
-.site-index a { position: relative; padding-left: 16px; font: 600 10.5px/1.4 var(--bs-font-monospace); letter-spacing: 1.4px; text-transform: uppercase; color: var(--bs-tertiary-color); text-decoration: none; transition: color .25s; }
-.site-index a::before { content: ""; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; translate: 0 -50%; background: var(--bs-border-color); transition: background .25s, scale .25s var(--web-spring); }
-.site-index a:hover { color: var(--bs-body-color); translate: 3px 0; }
-/* The section in view is unmistakable (FX72): its label in the accent, its dot a lit bar. */
-.site-index a.active { color: var(--bs-primary-text-emphasis); translate: 3px 0; }
-.site-index a.active::before { width: 10px; height: 3px; border-radius: 2px; background: var(--bs-primary); box-shadow: 0 0 12px rgba(var(--bs-primary-rgb), .9); }
-@media (max-width: 1240px) { .site-index { display: none; } }
+/* The landing as one page that moves (F110, Puls's landing as the pattern): the reveal each block plays once when it
+   enters. The frame's module (SiteShell) adds .in to a block; the progress line and the section index are the
+   frame's own since F118, styled beside their components. Colours read the framework's names, so a theme changes
+   them. */
 
 /* Visible at rest, so a page with no module still reads; when a block enters it rises once, a heading unmasks. The
    rise is on translate, not transform: a filled transform would override a card's own hover. */
@@ -22,7 +11,9 @@
 .site .reveal.in[data-delay="3"] { animation-delay: .3s; }
 .site h2.reveal.in { animation: site-unmask .9s var(--web-ease) both; }
 @keyframes site-rise { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
-@keyframes site-unmask { from { clip-path: inset(0 0 100% 0); translate: 0 22px; } to { clip-path: inset(0 0 0 0); translate: 0 0; } }
+/* The unmask ends a little outside the heading's box, not on it: the tight line height leaves a g's or a y's tail below
+   the box, and a clip that stays on the box cut it off for good (F118, Louis: "does not fit"). */
+@keyframes site-unmask { from { clip-path: inset(-.2em -.2em 100% -.2em); translate: 0 22px; } to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; } }
 
 /* The header shrinks a little once the page scrolls. */
 .site-header.compact { padding-top: 10px; padding-bottom: 10px; box-shadow: 0 18px 40px -16px rgba(var(--web-shadow-rgb), .8); }

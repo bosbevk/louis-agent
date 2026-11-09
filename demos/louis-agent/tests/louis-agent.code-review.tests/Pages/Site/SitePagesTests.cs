@@ -2,6 +2,7 @@ using System.Reflection;
 using AngleSharp.Dom;
 using LouisAgent.CodeReview.Pages.Site;
 using LouisAgent.CodeReview.Pages.Site.Framework;
+using LouisAgent.Web.Components.Site.Bands;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Tests.Pages.Site;
@@ -117,6 +118,10 @@ public class SitePagesTests
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]
     [TestCase(typeof(HomePage), "R500 to R1,000 a month")]
+    [TestCase(typeof(HomePage), "once-off fee to build the site")]
+    [TestCase(typeof(HomePage), "first Markdown files")]
+    [TestCase(typeof(ContactPage), "once-off fee to build the site")]
+    [TestCase(typeof(ContactPage), "first Markdown files")]
     [TestCase(typeof(ContactPage), "Custom agents")]
     [TestCase(typeof(ContactPage), "What we sell today")]
     [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
@@ -126,6 +131,10 @@ public class SitePagesTests
     [TestCase(typeof(ContactPage), "Chat on WhatsApp")]
     [TestCase(typeof(ContactPage), "class=\"btn btn-whatsapp\"")]
     [TestCase(typeof(ContactPage), "aria-label=\"WhatsApp\"")]
+    [TestCase(typeof(ContactPage), "href=\"https://www.linkedin.com/in/louismarais86\"")]
+    [TestCase(typeof(ContactPage), "class=\"btn btn-linkedin\"")]
+    [TestCase(typeof(ContactPage), "aria-label=\"LinkedIn\"")]
+    [TestCase(typeof(ContactPage), "Louis on LinkedIn")]
     [TestCase(typeof(HowItWorksPage), "holds no agent and no tools")]
     [TestCase(typeof(HowItWorksPage), "never the engine")]
     [TestCase(typeof(HowItWorksPage), "as libraries")]
@@ -149,21 +158,52 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// The landing is one page the visitor scrolls (F110): its index names every section by id, each a section on
-    /// the page, and a progress line sits at the top for the frame's module to fill.
+    /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
+    /// the tour button", then "switch these buttons"): the tour first, then the coding agent, which leads to its
+    /// recorded session while the live chat is closed (F120), and nothing else; the line above says the guide can walk
+    /// you through.
     /// </summary>
     [Test]
-    public void TheLanding_IndexesItsSections()
+    public void TheStartSlide_OffersTheTour()
     {
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<HomePage>();
-        var targets = cut.FindAll(".site-index a").Select(a => a.GetAttribute("href")!).ToList();
 
-        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the index names the sections");
-        Assert.That(targets, Has.All.StartWith("#"));
-        Assert.That(targets.Where(target => cut.FindAll($"[id='{target[1..]}']").Count != 1), Is.Empty);
-        Assert.That(cut.FindAll("#site-progress"), Has.Count.EqualTo(1));
+        var actions = cut.Find(".hero .actions").Children.ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(actions, Has.Count.EqualTo(2));
+            Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
+            Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Watch the coding agent"));
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/coding-agent"));
+            Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
+        });
+    }
+
+    /// <summary>
+    /// The landing is one page the visitor scrolls (F110), and since F118 its sections put themselves on the frame's
+    /// list as they draw: every section is listed, each by an id that is on the page once, the hero among them as
+    /// "Top". The order is the page's, read in the browser, so it isn't asserted here.
+    /// </summary>
+    [Test]
+    public void TheLanding_ListsItsSections_OnTheFramesIndex()
+    {
+        using var ctx = new BunitContext();
+        var areas = new PageAreas();
+
+        RenderFragment page = builder =>
+        {
+            builder.OpenComponent<HomePage>(0);
+            builder.CloseComponent();
+        };
+        var cut = ctx.Render<CascadingValue<PageAreas>>(parameters => parameters.Add(c => c.Value, areas).AddChildContent(page));
+        var targets = areas.Items.Select(entry => entry.Id).ToList();
+
+        Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the sections list themselves");
+        Assert.That(areas.Items, Does.Contain(new IndexEntry("top", "Top")));
+        Assert.That(targets.Where(target => cut.FindAll($"[id='{target}']").Count != 1), Is.Empty);
     }
 
     /// <summary>
@@ -174,7 +214,7 @@ public class SitePagesTests
     [Test]
     public void NoPage_JoinsClausesWithASemicolon()
     {
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var pages = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
@@ -198,8 +238,36 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// Every page that explains a part of the framework shows one diagram of it (F111, Louis: "add a nice graph on each
-    /// page"); the landing has its film, Contact and What's coming explain nothing.
+    /// Every id on a page names one place (F118): a card takes its id from its title, and the guide opens it by that id,
+    /// so a card named like a band beside it would send the visitor to the wrong one.
+    /// </summary>
+    [Test]
+    public void EveryIdOnAPage_NamesOnePlace()
+    {
+        using var ctx = SitePageContext.Create();
+        var pages = typeof(HomePage).Assembly.GetTypes()
+            .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
+            .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
+
+        var twice = pages.SelectMany(page =>
+        {
+            var cut = ctx.Render(builder =>
+            {
+                builder.OpenComponent(0, page);
+                builder.CloseComponent();
+            });
+            return cut.FindAll("[id]").GroupBy(element => element.Id).Where(ids => ids.Count() > 1)
+                .Select(ids => $"{page.Name}: #{ids.Key}");
+        }).ToList();
+
+        Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
+        Assert.That(twice, Is.Empty);
+    }
+
+    /// <summary>
+    /// Every page that explains a part of the framework shows a diagram of it (F111, Louis: "add a nice graph on each
+    /// page"), at least one, a slide that explains its own part having its own (F119, the web's on How it works); the
+    /// landing has its film, Contact and What's coming explain nothing.
     /// </summary>
     [TestCase(typeof(HowItWorksPage))]
     [TestCase(typeof(ArchitecturePage))]
@@ -208,7 +276,7 @@ public class SitePagesTests
     [TestCase(typeof(BuildYourOwnPage))]
     [TestCase(typeof(ProofPage))]
     [TestCase(typeof(BuiltOnItPage))]
-    public void AnExplainingPage_ShowsOneDiagram(Type page)
+    public void AnExplainingPage_ShowsADiagram(Type page)
     {
         using var ctx = new BunitContext();
 
@@ -218,7 +286,33 @@ public class SitePagesTests
             builder.CloseComponent();
         });
 
-        Assert.That(cut.FindAll("figure.graph"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll("figure.graph"), Has.Count.GreaterThanOrEqualTo(1));
+    }
+
+    /// <summary>
+    /// How it works splits the loop from the web (F119, Louis: "split the Loop sections from the web sections"): four
+    /// slides, the film, the loop with the turn's diagram, the web with its own, and the rules; the web's opens with
+    /// Louis's line and names how the site works with the backend.
+    /// </summary>
+    [Test]
+    public void HowItWorks_SplitsTheLoopFromTheWeb()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<HowItWorksPage>();
+
+        var web = cut.Find("section#web");
+        Assert.Multiple(() =>
+        {
+            // The web's id is read from its section: the bare word is a toolset's wire name (ADR 0043).
+            Assert.That(cut.FindAll(".band").Select(band => band.Id), Is.EqualTo(new[] { "top", "loop", web.Id, "rules" }));
+            Assert.That(cut.Find("section#loop").QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
+            Assert.That(web.QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
+            Assert.That(web.TextContent, Does.Contain("runs without the web").And.Contain("turns an agent into a website"));
+            Assert.That(web.TextContent, Does.Contain("WebAssembly").And.Contain("same address").And.Contain("server-sent events"));
+            Assert.That(web.TextContent, Does.Contain("guide in the corner").And.Contain("its own address").And.Contain("signs in"));
+            Assert.That(cut.Find("section#loop").TextContent, Does.Not.Contain("WebAssembly"), "the web's parts left the loop");
+        });
     }
 
     /// <summary>

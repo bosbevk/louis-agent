@@ -26,7 +26,7 @@ public class SiteMapTests
     /// <summary>The whole site as a visitor reads it: every page of the site's namespace, rendered, in one string.</summary>
     private static string TheWholeSite()
     {
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var pages = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any());

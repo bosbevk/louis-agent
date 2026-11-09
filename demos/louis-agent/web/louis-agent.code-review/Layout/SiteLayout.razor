@@ -2,7 +2,7 @@
 @* The framework's site frame, filled with what's this site's own: its name, its pages, the way to the chat and its
    footer lines. The router draws every page in it but the chat's, which keeps its own full-screen layout. *@
 
-<SiteShell>
+<SiteShell Layout="PageLayout.Slides">
     <Brand><img class="site-mark" src="brand/mark.svg" alt="" width="22" height="22" />louis-agent</Brand>
     <Tagline>100% C#, because you can</Tagline>
     <Links>
@@ -18,9 +18,9 @@
         <a href="/whats-coming">What's coming</a>
         <a href="/contact">Contact</a>
     </Links>
-    <Actions><ChatLink Class="btn btn-line btn-small">Try it</ChatLink></Actions>
+    <Actions><ChatLink Class="btn btn-line btn-small" Watch="Watch it work">Try it</ChatLink></Actions>
     <Footer>
-        <span>louis-agent · all rights reserved</span>
+        <span>louis-agent · all rights reserved · <a class="footer-link" href="https://www.linkedin.com/in/louismarais86" target="_blank" rel="noopener"><LinkedInMark /> LinkedIn</a></span>
         <span>100% C#, because you can</span>
     </Footer>
     <Corner><ExpertChat /></Corner>

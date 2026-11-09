@@ -58,16 +58,23 @@
     .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -18px rgba(var(--bs-primary-rgb), .55); }
     .btn-fill { background: var(--bs-emphasis-color); color: var(--bs-body-bg); }
     .btn-fill:hover { background: var(--bs-emphasis-color); color: var(--bs-body-bg); box-shadow: 0 18px 36px -14px rgba(var(--bs-primary-rgb), .75); }
-    /* WhatsApp's button: its green, its mark in white, its words (ADR 0102). */
-    .btn-whatsapp { background: var(--whatsapp); color: #fff; border: 1px solid var(--whatsapp); display: inline-flex; align-items: center; gap: 10px; }
-    .btn-whatsapp:hover { color: #fff; box-shadow: 0 18px 36px -14px var(--whatsapp); }
-    .btn-whatsapp .whatsapp-mark { flex: none; }
+    /* WhatsApp's and LinkedIn's buttons sit quietly beside the site's own (FX100, Louis: "the color is too bright
+       here"): an outlined button with the owner's mark and name, the owner's colour on the edge under the pointer.
+       WhatsApp's mark keeps its green, which WhatsApp allows on a dark ground; LinkedIn's takes the text colour, white
+       on the dark, black on a light theme, the two LinkedIn allows besides its blue (ADR 0102). */
+    .btn-whatsapp, .btn-linkedin { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); display: inline-flex; align-items: center; gap: 10px; }
+    .btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }
+    .btn-whatsapp:hover { border-color: var(--whatsapp); color: var(--bs-emphasis-color); box-shadow: 0 18px 36px -18px var(--whatsapp); }
+    .btn-linkedin .linkedin-mark { flex: none; }
+    .btn-linkedin:hover { border-color: var(--linkedin); color: var(--bs-emphasis-color); box-shadow: 0 18px 36px -18px var(--linkedin); }
+    /* A link in the footer's own quiet type, an owner's mark small beside it (FX103): LinkedIn on every page. */
+    .footer-link { display: inline-flex; align-items: center; gap: 6px; color: var(--bs-tertiary-color); text-decoration: none; }
+    .footer-link:hover { color: var(--bs-emphasis-color); }
+    .footer-link .linkedin-mark { width: 13px; height: 13px; }
     .btn-line { border: 1px solid var(--web-border-hover); color: var(--bs-body-color); }
     .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
     .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
-    /* A door that isn't open yet (FX88): the button's shape, faded, and no answer to the pointer. */
-    .btn.is-soon { opacity: .5; cursor: default; pointer-events: none; }
 
     .panel {
         border: 1px solid var(--bs-border-color);

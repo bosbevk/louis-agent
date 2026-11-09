@@ -18,8 +18,8 @@ public class StylesheetTests
     /// <summary>Every partial of the site's look.</summary>
     private static readonly string[] Site =
     [
-        "site/settings/tokens", "site/base/elements", "site/landing/hero", "site/landing/live-turn",
-        "site/landing/sections", "site/landing/motion", "site/layout/responsive", .. Films
+        "site/settings/tokens", "site/base/elements", "site/landing/live-turn", "site/landing/sections",
+        "site/landing/motion", "site/layout/responsive", .. Films
     ];
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
@@ -73,15 +73,18 @@ public class StylesheetTests
     }
 
     /// <summary>
-    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer, the
-    /// index lights the section in view as a bar in the accent, and a band keeps its room above its content.
+    /// The page answers the visitor (FX72, Louis's review against Puls): a panel lifts and glows under the pointer and a
+    /// band keeps its room above its content. The index's lit bar is the framework's since F118, tested beside it.
     /// </summary>
     [TestCase(".panel:hover { transform: translateY(-3px);")]
-    [TestCase(".site-index a.active::before { width: 10px; height: 3px;")]
     [TestCase("padding: 64px var(--site-gutter) 40px;")]
     [TestCase(".band-strip { padding-bottom: 72px; }")]
     [TestCase(".btn:hover { transform: translateY(-2px);")]
-    [TestCase(".btn-whatsapp { background: var(--whatsapp);")]
+    [TestCase(".btn-whatsapp, .btn-linkedin { border: 1px solid var(--web-border-hover); color: var(--bs-body-color);")]
+    [TestCase(".btn-whatsapp .whatsapp-mark { flex: none; color: var(--whatsapp); }")]
+    [TestCase(".btn-whatsapp:hover { border-color: var(--whatsapp);")]
+    [TestCase(".btn-linkedin:hover { border-color: var(--linkedin);")]
+    [TestCase("to { clip-path: inset(-.2em -.2em -.3em -.2em); translate: 0 0; }")]
     public void TheLook_AnswersTheVisitor(string rule) =>
         Assert.That(Css.Source("site/base/elements") + Css.Source("site/landing/motion") + Css.Source("site/landing/sections"),
             Does.Contain(rule));

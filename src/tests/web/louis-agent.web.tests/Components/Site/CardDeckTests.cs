@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Bands;
 using LouisAgent.Web.Components.Site.Cards;
 using Microsoft.AspNetCore.Components;
 
@@ -65,6 +66,36 @@ public class CardDeckTests
             Assert.That(marked, Is.True);
             Assert.That(second, Is.EqualTo("The one in the corner."));
             Assert.That(cut.FindAll(".card-detail"), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// Every card is an area the guide can open (F118, Louis: "the agent should be able to click this also to show
+    /// people"): its button carries an id from its title, or the one the site gives, and is marked as a card, so the
+    /// widget can find it, open it and light it up.
+    /// </summary>
+    [Test]
+    public void EveryCard_IsNamed_AndMarkedAsACard()
+    {
+        using var ctx = new BunitContext();
+        RenderFragment cards = builder =>
+        {
+            builder.OpenComponent<Card>(0);
+            builder.AddComponentParameter(1, nameof(Card.Title), "The coding agent");
+            builder.CloseComponent();
+            builder.OpenComponent<Card>(2);
+            builder.AddComponentParameter(3, nameof(Card.Title), "Puls");
+            builder.AddComponentParameter(4, nameof(Card.Id), "puls-the-assistant");
+            builder.CloseComponent();
+        };
+
+        var cut = ctx.Render<CardDeck>(parameters => parameters.AddChildContent(cards));
+
+        var buttons = cut.FindAll("button.card-summary");
+        Assert.Multiple(() =>
+        {
+            Assert.That(buttons.Select(b => b.Id), Is.EqualTo(new[] { "the-coding-agent", "puls-the-assistant" }));
+            Assert.That(buttons.All(b => b.HasAttribute("data-card")), Is.True);
         });
     }
 

@@ -240,7 +240,7 @@ public class GraphLayoutTests
 
     /// <summary>
     /// A word fits on its flat piece (Louis's screenshot of the Turn diagram: "starts" ran onto the host's box): four
-    /// columns on a narrow width stand apart far enough for the widest word, with room either side.
+    /// columns on a narrow width stand apart far enough for the word, with room either side, and the bend after it.
     /// </summary>
     [Test]
     public void TheColumns_StandApartForTheWidestWord()
@@ -256,9 +256,37 @@ public class GraphLayoutTests
         var to = placed.Nodes.Single(node => node.Node.Id == "n2");
         Assert.Multiple(() =>
         {
-            Assert.That(to.X - (from.X + from.W), Is.GreaterThanOrEqualTo(2 * (8 * 6 + 16)), "twice the word and its margins");
+            Assert.That(to.X - (from.X + from.W), Is.GreaterThanOrEqualTo(8 * 6 + 16), "the word and its margins");
             Assert.That(word.WordX - 4 * 6, Is.GreaterThanOrEqualTo(from.X + from.W + 8), "clear of the left box");
             Assert.That(word.WordX + 4 * 6, Is.LessThanOrEqualTo(to.X - 8), "clear of the right box");
+        });
+    }
+
+    /// <summary>
+    /// A gap is as wide as the words that cross it, not the widest word of the drawing (Louis's screenshot of the web
+    /// diagram: "just take these empty spaces out"): a long word between two columns leaves the next gap narrow.
+    /// </summary>
+    [Test]
+    public void AGap_FitsOnlyItsOwnWords()
+    {
+        var spec = new GraphSpec(
+            Enumerable.Range(0, 4).Select(column => new GraphNode($"n{column}", $"N{column}", null, column)).ToList(),
+            [
+                new GraphEdge("n0", "n1", "opens"),
+                new GraphEdge("n1", "n2", "a message, the page"),
+                new GraphEdge("n2", "n3", "a turn"),
+            ]);
+
+        var placed = GraphLayout.Place(spec, 880);
+
+        var boxes = placed.Nodes.OrderBy(node => node.X).ToList();
+        double Gap(int left) => boxes[left + 1].X - (boxes[left].X + boxes[left].W);
+        Assert.Multiple(() =>
+        {
+            Assert.That(Gap(1), Is.GreaterThanOrEqualTo(8 * 19 + 16), "the long word has its room");
+            Assert.That(Gap(1), Is.LessThan(2 * (8 * 19 + 16)), "but no empty half after the bend");
+            Assert.That(Gap(2), Is.GreaterThanOrEqualTo(8 * 6 + 16), "the short word has its room");
+            Assert.That(Gap(2), Is.LessThan(Gap(1)), "and no more");
         });
     }
 

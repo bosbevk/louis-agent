@@ -34,7 +34,7 @@ public class PrinciplesTests
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<IdentitiesPage>();
-        string shown = cut.Find("#principles .principles").TextContent;
+        string shown = cut.Find("#the-principles .principles").TextContent;
 
         Assert.Multiple(() =>
         {

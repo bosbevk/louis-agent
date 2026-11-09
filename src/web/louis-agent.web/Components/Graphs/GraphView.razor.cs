@@ -32,6 +32,15 @@ public partial class GraphView
 
     private PlacedGraph Placed => GraphLayout.Place(Spec, Width);
 
+    /// <summary>
+    /// This diagram's own arrowhead id (F119): an id is the page's, so two diagrams on one page each need their own, or
+    /// the second borrows the first's and the page holds one id twice.
+    /// </summary>
+    private string ArrowId { get; } = $"arrow-{Guid.NewGuid():N}"[..14] + "-graph";
+
+    /// <summary>The arrowhead an edge ends in.</summary>
+    private string ArrowRef => $"url(#{ArrowId})";
+
     private string ViewBox => $"{-Pad} {-Pad} {Placed.Width + 2 * Pad} {Placed.Height + 2 * Pad}";
 
     private static string N(double value) => value.ToString("0.#", Invariant);

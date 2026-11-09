@@ -71,6 +71,22 @@ public partial class FrameworkStylesTests
     public void TheWidgetsPanel_FillsAPhone(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
+    /// <summary>
+    /// The spotlight the guide puts on an area (F118, Louis: "more prominent and elegant"): one element over the area
+    /// that dims the page around it and rings it in the accent, catches no pointer, and stays under the site's
+    /// corner so the guide's words are never dimmed; it fades, unless the visitor asked for less motion.
+    /// </summary>
+    [TestCase("html:has(.layout-slides) { scroll-snap-type: y mandatory; }")]
+    [TestCase(".layout-slides .site-main ::deep > section {")]
+    [TestCase(".band.is-paged { display: block; }")]
+    [TestCase("columns: 1;")]
+    [TestCase(".area-spotlight {\n    position: absolute;\n    z-index: 9;\n    pointer-events: none;")]
+    [TestCase("0 0 0 200vmax rgba(var(--web-backdrop-rgb), .62)")]
+    [TestCase("animation: area-spotlight 4s var(--web-ease) both;")]
+    [TestCase("@media (prefers-reduced-motion: reduce) {\n    .area-spotlight { animation: none; }")]
+    public void TheSpotlight_DimsThePage_AndRingsTheArea(string rule) =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()
