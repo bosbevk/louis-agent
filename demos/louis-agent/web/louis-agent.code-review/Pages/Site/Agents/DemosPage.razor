@@ -1,0 +1,17 @@
+@page "/demos"
+
+@* The demo index (F122, Louis: "a button there called demos", "which takes you to the demo index"): one tile per demo,
+   each saying what it shows and leading to it. The demos are explained for the guide in docs/demos.md. *@
+
+<PageTitle>Demos · louis-agent</PageTitle>
+<PageDescription Text="Watch agents built on the louis-agent framework at work: the coding agent fixing a real bug, and a triage team handling a real error." />
+
+<Band Id="top" Kicker="Demos">
+    <h2 class="chrome">Watch the agents at work.</h2>
+    <p class="lede">Each demo is a real run, recorded once and played back. Nothing runs while you watch, and every word on screen is what the agents said.</p>
+    <TileRow Columns="2">
+        <Tile Title="The coding agent fixes a bug">A small invoice matcher whose payments don't find their invoices. It runs the tests, reads the code, fixes two bugs and runs the tests again, for about R0.10. <a href="/coding-agent">Watch it</a></Tile>
+        <Tile Title="A triage team handles an error" Delay="1">An order service fails on a retired discount code. A team sorts the error, finds the cause, fixes it on a branch with a test and reviews the fix. <a href="/triage-demo">Watch it</a></Tile>
+    </TileRow>
+    <p class="band-note">Want an agent like these on your own work? <a href="/contact">Ask for yours</a>.</p>
+</Band>

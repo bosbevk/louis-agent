@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Records one real triage of the order service (F106.3.4), for the site's /try page, until F106.3.3's workflow runs it
-# in code. One paid run on Haiku, a few rand: ask Louis first. Run from the repo root, with the API image built from main:
+# Records one real triage of the order service (F106.3.4), for the site's /triage-demo page, until F106.3.3's
+# workflow runs it in code. One paid run on Haiku, a few rand: ask Louis first. Run from the repo root, with the API image built from main:
 #   docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env build api
 #   bash demos/louis-agent/recordings/record-triage.sh
 # The script does what the workflow will: it collects the error, asks each agent in turn with the brief the workflow

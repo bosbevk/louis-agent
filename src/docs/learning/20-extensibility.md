@@ -465,3 +465,22 @@ guide's text each.
 
 **Side lessons.** A class name shared between the framework and a site needs a prefix: the films' `.strip` caught the
 framework's strip. And a full-height section makes a spotlight around the section useless; light the content instead.
+
+## The demos, and a framework that learns from one page (F122, 2026-11-09)
+
+F122 put the two demos in one place: a Demos menu, a demo index, and a doc the guide explains them from. Most of the
+work came from looking at one page, the triage demo, on a real 1080p screen, and each fix asked the F118 question
+again: is this the page's problem, or the framework's?
+
+- **A band that must stay whole.** The slide frame pages any section taller than a screen, which is right for words
+  and wrong for a demo that plays: its controls ended up on one page and its list on another. The fix was not a
+  special case for that page but a parameter every site has, `Band Paged="false"`, honoured by the frame's module.
+- **Layout as plain code.** The swimlanes look like a drawing, but where each dot goes is arithmetic: its agent's
+  lane, one column right of the step before. Putting that in `SwimlaneLayout`, apart from the SVG, gave it four quick
+  tests and left the component only the drawing (the same split as `GraphLayout` and `GraphView`).
+- **Slots over copies.** The triage player gained `Intro` and `Actions`, so the site puts its own words in the left
+  column and its own button at the end of the controls, and the pack still names no site.
+- **The guide reads what is written.** "Make sure the agent can explain them" meant a doc, `docs/demos.md`, and one
+  line in the voice naming it, held by a test; the guide's answers come from that doc, not from the page alone.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md).

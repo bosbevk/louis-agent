@@ -2,15 +2,22 @@
 
 /* The recorded session's window (F120): the framework's window, the chat's list scrolling inside it at a fixed height
    so the page doesn't grow as the answer types, and the ending under it. */
-.recorded-chat { @include window.frame; display: flex; flex-direction: column; }
+/* The window keeps one height, the list's and its bar's, so the ending takes its room from the list rather than
+   growing the window past its slide (F122, Louis: "the panel should leave space for the button"). A site that gives
+   the window more room sets --recorded-height (FX105). */
+.recorded-chat {
+    @include window.frame;
+    display: flex;
+    flex-direction: column;
+    height: calc(var(--recorded-height, min(58vh, 560px)) + 48px);
+}
 .recorded-bar { @include window.bar; }
 .recorded-dots { display: inline-flex; gap: 6px; margin-right: 4px; }
 .recorded-dots i { @include window.dot; }
-/* The chat's own list grows to fill its page (flex: 1); here it keeps its height, so `flex: none`. A site that gives
-   the window more room sets --recorded-height (FX105). */
+/* The chat's own list fills what the bar and the ending leave, and scrolls inside it. */
 .recorded-chat ::deep .messages {
-    flex: none;
-    height: var(--recorded-height, min(58vh, 560px));
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     padding: 18px 20px;
 }

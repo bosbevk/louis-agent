@@ -8,7 +8,10 @@ namespace LouisAgent.Web.Tests.Components.Site.Bands;
 /// </summary>
 public class BandTests
 {
-    /// <summary>The id is on the section, the kicker opens its body, the content follows, and the classes a site adds come along.</summary>
+    /// <summary>
+    /// The id is on the section, the kicker opens its body, the content follows, and the classes a site adds come
+    /// along.
+    /// </summary>
     [Test]
     public void ABand_IsANamedSection_WithItsKicker()
     {
@@ -42,7 +45,8 @@ public class BandTests
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "parts").AddChildContent("<p>Long.</p>"));
+        var cut = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "parts").AddChildContent("<p>Long.</p>"));
 
         var pager = cut.Find("section > .band-pager");
         var steps = pager.QuerySelectorAll("button.band-page");
@@ -50,24 +54,48 @@ public class BandTests
         {
             Assert.That(pager.HasAttribute("hidden"), Is.True);
             Assert.That(steps.Select(b => b.GetAttribute("data-step")), Is.EqualTo(new[] { "-1", "1" }));
-            Assert.That(steps.Select(b => b.GetAttribute("aria-label")), Is.EqualTo(new[] { "Previous page", "Next page" }));
+            Assert.That(steps.Select(b => b.GetAttribute("aria-label")),
+                Is.EqualTo(new[] { "Previous page", "Next page" }));
             Assert.That(pager.QuerySelector(".band-pages"), Is.Not.Null);
         });
     }
 
-    /// <summary>Without a class of its own, the section is a plain band; without a kicker, a strip, it has none.</summary>
+    /// <summary>
+    /// Without a class of its own, the section is a plain band; without a kicker, a strip, it has none.
+    /// </summary>
     [Test]
     public void ABand_WithoutAClassOrAKicker_IsAPlainNamedSection()
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "contact").AddChildContent("<h2>Get in touch</h2>"));
+        var cut = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "contact").AddChildContent("<h2>Get in touch</h2>"));
 
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find("section").GetAttribute("class"), Is.EqualTo("band"));
             Assert.That(cut.FindAll(".kicker"), Is.Empty);
             Assert.That(cut.Find("section").Id, Is.EqualTo("contact"));
+        });
+    }
+
+    /// <summary>
+    /// A band that must stay whole is never paged (F122, Louis on the triage demo: "this must be one section"): it
+    /// says so on the section, and the frame's module leaves it unpaged however tall it is; by default a band pages.
+    /// </summary>
+    [Test]
+    public void ABandThatMustStayWhole_SaysSo()
+    {
+        using var ctx = new BunitContext();
+
+        var whole = ctx.Render<Band>(parameters => parameters
+            .Add(band => band.Id, "top").Add(band => band.Paged, false));
+        var paged = ctx.Render<Band>(parameters => parameters.Add(band => band.Id, "top"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(whole.Find("section").HasAttribute("data-whole"), Is.True);
+            Assert.That(paged.Find("section").HasAttribute("data-whole"), Is.False);
         });
     }
 }

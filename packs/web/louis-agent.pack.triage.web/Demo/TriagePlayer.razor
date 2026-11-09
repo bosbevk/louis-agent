@@ -1,26 +1,40 @@
-@* A recorded triage, played (F106.3.4): the stage and the popup for the step on screen, the controls, the steps so far
-   as a list a visitor and the guide can read, and the site's ending once the case is closed. *@
+@* A recorded triage, played (F106.3.4), in two columns (F122): on the left the site's words, the stage and the
+   controls, and the site's ending once the case is closed; on the right the popup for the step on screen and the
+   steps so far under it, a list a visitor and the guide can read, scrolling inside its column. *@
 <div class="triage-player">
-    @if (Current is { } step)
-    {
-        <div class="triage-scene">
-            <TriageStage Lit="@step.Agent" Words="Words" />
-            <StepPopup Step="step" Words="Words" />
-        </div>
-        <div class="triage-controls">
-            <button class="triage-back" type="button" @onclick="Back" disabled="@AtStart">@Words.Back</button>
-            <button class="triage-next" type="button" @onclick="Next" disabled="@AtEnd">@Words.Next</button>
-            <button class="triage-again" type="button" @onclick="PlayAsync">@Words.PlayAgain</button>
-        </div>
-    }
-    <ol class="triage-steps">
-        @foreach (var shown in Shown)
+    <div class="triage-main">
+        @Intro
+        @if (Current is { } step)
         {
-            <li class="@(shown == Current ? "is-current" : "")"><strong>@AgentWords.Of(shown.Agent, Words)</strong> @shown.Summary</li>
+            <TriageStage Lit="@step.Agent" Played="PlayedAgents" Total="Steps.Count" Current="_at" OnPick="Pick"
+                         Words="Words" />
+            <div class="triage-controls">
+                <button class="triage-back" type="button" @onclick="Back" disabled="@AtStart">@Words.Back</button>
+                <button class="triage-next" type="button" @onclick="Next" disabled="@AtEnd">@Words.Next</button>
+                <button class="triage-again" type="button" @onclick="PlayAsync">@Words.PlayAgain</button>
+                @if (_ended && Actions is not null)
+                {
+                    <span class="triage-actions">@Actions</span>
+                }
+            </div>
         }
-    </ol>
-    @if (_ended)
-    {
-        <div class="triage-end">@Ending</div>
-    }
+        @if (_ended)
+        {
+            <div class="triage-end">@Ending</div>
+        }
+    </div>
+    <div class="triage-side">
+        @if (Current is { } shown)
+        {
+            <StepPopup Step="shown" Words="Words" />
+        }
+        <ol class="triage-steps">
+            @foreach (var item in Shown)
+            {
+                <li class="@(item == Current ? "is-current" : "")">
+                    <strong>@AgentWords.Of(item.Agent, Words)</strong> @item.Summary
+                </li>
+            }
+        </ol>
+    </div>
 </div>

@@ -58,15 +58,16 @@ public class FilmFrameTests
     }
 
     /// <summary>
-    /// The film fits a slide's page whatever the screen's height (FX112): the frame is never wider than the page is
-    /// high at 16:9, so the film, which scales to its frame's width, never overflows a page and leaves one empty.
+    /// The film fits a slide's page under its section's heading, whatever the screen's height (FX112, FX118): the
+    /// frame is never wider than the room under a heading is high at 16:9, so the film, which scales to its frame's
+    /// width, sits on the page with its title and never leaves the title alone on a page of its own.
     /// </summary>
     [Test]
-    public void TheFrame_IsNeverWiderThanAPageIsHigh()
+    public void TheFrame_FitsUnderItsHeading()
     {
         string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "demos/louis-agent/web/louis-agent.code-review/Components/Movies/FilmFrame.razor.scss"));
 
-        Assert.That(styles, Does.Contain("max-width: calc((100dvh - 350px - var(--site-bar, 0px)) * 16 / 9);"));
+        Assert.That(styles, Does.Contain("max-width: calc((100dvh - 500px - var(--site-bar, 0px)) * 16 / 9);"));
     }
 }

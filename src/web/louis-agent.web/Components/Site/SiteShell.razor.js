@@ -116,7 +116,9 @@ const paginate = () => {
     $$(".layout-slides .site-main > section.band").forEach(band => {
         if (!band.dataset.measured) {
             band.dataset.measured = "1";
-            if (band.getBoundingClientRect().height > slideRoom() + 2) band.classList.add("is-paged");
+            // A band that must stay whole (F122, data-whole) is never paged, however tall it is.
+            const tall = band.getBoundingClientRect().height > slideRoom() + 2;
+            if (tall && !band.hasAttribute("data-whole")) band.classList.add("is-paged");
             // The count follows the body however it is turned: its pager, or the guide naming a page.
             const body = $(".band-body", band);
             if (body && !body.dataset.counted) {

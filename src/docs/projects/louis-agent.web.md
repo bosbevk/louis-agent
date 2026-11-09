@@ -168,7 +168,7 @@ A site's frame (`SiteShell`) has a `Corner` slot made for it. It knows the page 
 it, `ChatWidget.razor.js`, reads the page's address, title and main text when a message is sent, and the runner
 sends them with the first message written from a page, so the guide answers about what the visitor sees. The block lists the page's areas, and the widget acts on the guide's `ShowPage` call (F117, ADR 0105): `ChatRunner.ToolCalled` tells it of each tool call as it arrives, it navigates to the path and the module's `showArea` scrolls the area into view and lights it up with `.area-shown`, a glow in the web's base styles a site may restyle.
 
-**`Components/Site/Bands/Band`** is one named area of a site's page (F117, ADR 0106): a section with a required id, an optional kicker and the site's classes, drawing no style of its own, so every area on every site is named because the framework insists and the guide can send a visitor to it.
+**`Components/Site/Bands/Band`** is one named area of a site's page (F117, ADR 0106): a section with a required id, an optional kicker and the site's classes, drawing no style of its own, so every area on every site is named because the framework insists and the guide can send a visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"` and the frame's module never pages it sideways (F122).
 
 **`Components/Site/Cards/CardDeck`** is a row of short cards that open (F113): each `Card` inside gives a title, a
 one-line summary, an optional mono tag and, as its content, the story. The cards register with the deck through a
@@ -177,7 +177,8 @@ the row, the open card's story, which the styles beside it slide in once. One op
 closes it, a phone stacks the row. `CardDeckTests` holds the row, the click, the swap and the golden.
 
 **`Components/Site/Menu/SiteMenu`** is a group in a site's menu (FX73): a label in the bar that opens the links it holds
-on hover or on focus, CSS only.
+on hover or on focus, CSS only; the one at the end of the bar opens its list right-aligned, so it stays on the screen
+(F122).
 
 **`Components/Graphs/GraphView`** draws a diagram from data (F111, the rules in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md)):
 a page declares a `GraphSpec` (`Graphs/`: nodes with an id, a label, a note and a column; edges between ids, with a
@@ -197,7 +198,8 @@ agent think, call its tools and answer, then sees the ending and a play-again bu
 `SessionStreamReader`, waits by each event's kind (`Chats/Replay/RecordingPace`: thinking fast, the answer at reading
 speed, a beat per tool) and folds the events with `Chats/Replay/TurnReplay`, the loop the eval studio's replay shares,
 into a `MessageList`. Its window is the framework's `web/tools/_window` mixin, which a site's own animated panels use
-too. `RecordedChatTests`, `RecordingPaceTests` and `TurnReplayTests` hold it.
+too, and keeps one height: the list gives up room for the ending, whose guide button a site can make plain
+(`GuideButton Class="is-plain"`, F122). `RecordedChatTests`, `RecordingPaceTests` and `TurnReplayTests` hold it.
 
 **`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
 motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width

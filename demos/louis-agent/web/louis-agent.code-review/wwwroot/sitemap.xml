@@ -91,6 +91,9 @@
     <loc>https://louis-agent.dev/contact/early-access</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/demos</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/how-it-works</loc>
   </url>
   <url>
@@ -202,7 +205,7 @@
     <loc>https://louis-agent.dev/proof/checks</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/try</loc>
+    <loc>https://louis-agent.dev/triage-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/whats-coming</loc>

@@ -23,10 +23,14 @@ public partial class Band : IDisposable
     /// <summary>The area's name, in words: what a link or the guide names it by.</summary>
     [Parameter, EditorRequired] public string Id { get; set; } = "";
 
-    /// <summary>The small mono label over the band's content; none for a band that is a strip or a closing call.</summary>
+    /// <summary>
+    /// The small mono label over the band's content; none for a band that is a strip or a closing call.
+    /// </summary>
     [Parameter] public string? Kicker { get; set; }
 
-    /// <summary>The index's word for this band when the kicker is too long for the margin; else the kicker, else the id.</summary>
+    /// <summary>
+    /// The index's word for this band when the kicker is too long for the margin; else the kicker, else the id.
+    /// </summary>
     [Parameter] public string? Short { get; set; }
 
     /// <summary>The site's own classes for this band's look, after <c>band</c>; none for a plain band.</summary>
@@ -34,6 +38,15 @@ public partial class Band : IDisposable
 
     /// <summary>The band's content, under the kicker.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Whether the frame may page the band sideways when it holds more than a screen (F118); a band whose content is
+    /// one piece, such as a demo that plays, says false and stays whole (F122).
+    /// </summary>
+    [Parameter] public bool Paged { get; set; } = true;
+
+    /// <summary>The section's mark for the frame's module: present only on a band that stays whole.</summary>
+    private string? Whole => Paged ? null : "";
 
     /// <summary>The section's classes: always a band, then the site's.</summary>
     private string Classes => string.IsNullOrWhiteSpace(Class) ? "band" : $"band {Class.Trim()}";

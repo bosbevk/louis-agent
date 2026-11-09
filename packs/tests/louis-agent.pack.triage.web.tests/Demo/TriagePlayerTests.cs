@@ -39,6 +39,74 @@ public class TriagePlayerTests
             .Add(player => player.Pace, 0)
             .Add(player => player.Ending, Offer));
 
+    /// <summary>
+    /// Two columns (F122, Louis: "both text lists can be under one another in the second column"): the site's words,
+    /// the stage and the controls on the left, the step's popup with the list of steps under it on the right.
+    /// </summary>
+    [Test]
+    public void ThePlayer_IsTwoColumns_TheWordsLeft_ThePopupAndStepsRight()
+    {
+        using var ctx = Context();
+        RenderFragment intro = builder => builder.AddMarkupContent(0, "<h2 class=\"intro\">Watch</h2>");
+
+        var cut = ctx.Render<TriagePlayer>(parameters => parameters
+            .Add(player => player.Source, Source)
+            .Add(player => player.Pace, 0)
+            .Add(player => player.Intro, intro)
+            .Add(player => player.Ending, Offer));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".triage-main > .intro"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-main .triage-stage"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-main .triage-controls"), Has.Count.EqualTo(1));
+            Assert.That(cut.FindAll(".triage-side > .step-popup + .triage-steps"), Has.Count.EqualTo(1));
+        });
+    }
+
+    /// <summary>
+    /// The stage is swimlanes (F122): a dot per step played, the one on screen lit, and a click on a dot shows that
+    /// step.
+    /// </summary>
+    [Test]
+    public void ADot_ShowsItsStep()
+    {
+        using var ctx = Context();
+        var cut = Render(ctx);
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+
+        cut.FindAll(".triage-stage .lane-dot")[2].Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".triage-stage .lane-dot"), Has.Count.EqualTo(9));
+            Assert.That(cut.FindAll(".triage-stage .lane-dot.is-current"), Has.Count.EqualTo(1));
+            Assert.That(cut.Find(".triage-stage .lane-dot.is-current").TextContent.Trim(), Is.EqualTo("3"));
+            Assert.That(cut.Find(".triage-stage .is-lit").GetAttribute("data-agent"), Is.EqualTo("manager"));
+        });
+    }
+
+    /// <summary>
+    /// The site's actions join the controls once the case is closed (F122, Louis: "move this button to" the end of
+    /// the controls' row), and not before.
+    /// </summary>
+    [Test]
+    public void TheSitesActions_JoinTheControls_OnceTheCaseIsClosed()
+    {
+        using var ctx = Context();
+        RenderFragment ask = builder => builder.AddMarkupContent(0, "<button class=\"ask\">Ask</button>");
+
+        var cut = ctx.Render<TriagePlayer>(parameters => parameters
+            .Add(player => player.Source, Source)
+            .Add(player => player.Pace, 0)
+            .Add(player => player.Actions, ask)
+            .Add(player => player.Ending, Offer));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+        Assert.That(cut.FindAll(".triage-controls .triage-actions .ask"), Has.Count.EqualTo(1));
+    }
+
     /// <summary>Played through, every step is in the list, the last one is shown, and the ending follows.</summary>
     [Test]
     public void TheRun_PlaysThrough_ToItsEnding()

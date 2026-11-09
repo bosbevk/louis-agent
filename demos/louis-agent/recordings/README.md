@@ -26,8 +26,8 @@ private before you commit it. If the question changes, change it on the page too
 
 ## The triage run
 
-The site's `/try` page (F106.3.4) plays `wwwroot/recordings/triage-run.jsonl`: one real triage of the order service's
-`order-total 1003` error, step by step, in the triage pack's own format, until F106.3.3's workflow runs triages live.
+The site's `/triage-demo` page (F106.3.4, at `/try` until F122) plays `wwwroot/recordings/triage-run.jsonl`: one
+real triage of the order service's `order-total 1003` error, step by step, in the triage pack's own format, until F106.3.3's workflow runs triages live.
 `record-triage.sh` does what the workflow will: it collects the error, asks the sorter, the manager, the investigator,
 the manager again, the coder (the coding identity, on a fresh clone of `samples/order-service`) and the reviewer, each
 with the brief the workflow will hand it, commits the coder's change on its branch, checks the fix in code (the tests,

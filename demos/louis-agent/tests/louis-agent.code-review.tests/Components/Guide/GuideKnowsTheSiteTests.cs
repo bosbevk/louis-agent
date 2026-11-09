@@ -87,4 +87,21 @@ public class GuideKnowsTheSiteTests
         Assert.That(TheVoice(), Does.Contain("louis-agent.code-review.md"));
         Assert.That(doc, Does.Contain(words));
     }
+
+    /// <summary>
+    /// The guide can explain the demos (F122, Louis: "make sure we have documentation on the demos, and the agent can
+    /// explain them"): the voice sends it to the demo index and to the doc that explains each demo, and the doc says
+    /// what each shows, how it was made and what it would mean for a business.
+    /// </summary>
+    [TestCase("## The coding agent fixing a bug (`/coding-agent`)")]
+    [TestCase("## The triage team at work (`/triage-demo`)")]
+    [TestCase("**How it was made.**")]
+    [TestCase("**For a business.**")]
+    public void TheDemos_AreExplained_InTheDocTheVoiceNames(string words)
+    {
+        string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/docs/demos.md"));
+
+        Assert.That(TheVoice(), Does.Contain("- `/demos`:").And.Contain("demos/louis-agent/docs/demos.md"));
+        Assert.That(doc, Does.Contain(words));
+    }
 }
