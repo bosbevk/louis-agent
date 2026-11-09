@@ -323,8 +323,8 @@ public class ChatWidgetTests
     {
         using var ctx = Context(out var handler);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
-        module.Setup<Page>("pageText")
-            .SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own.", []));
+        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own",
+            "A few lines of your own.", [], Links: [new PageArea("/contact", "Ask for yours")]));
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
@@ -340,6 +340,8 @@ public class ChatWidgetTests
         {
             Assert.That(bodies, Has.Count.EqualTo(3));
             Assert.That(bodies[0], Does.Contain("\"url\":\"/build-your-own\"").And.Contain("A few lines of your own."));
+            Assert.That(bodies[0], Does.Contain("\"links\":[{\"id\":\"/contact\",\"heading\":\"Ask for yours\"}]"),
+                "its links go with its words (FX120)");
             Assert.That(bodies[1], Does.Not.Contain("A few lines of your own."), "the same page's words go once");
             Assert.That(bodies[1], Does.Contain("\"inView\":{\"id\":\"program\",\"heading\":\"The whole program\"}"),
                 "where they are on it goes every time (F118)");
