@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 82 | 73 |
-| Fixes (`FX`) | 100 | 6 |
+| Fixes (`FX`) | 101 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -215,10 +215,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (90 done)
+## Fixes (91 done)
 
 | Id | When | What |
 |---|---|---|
+| FX109 | 2026-11-09 | The guide's walkthrough is told every page of a paged section: the page list counts as the pager does, so a page a long list flows on to is a stop too |
 | FX108 | 2026-11-09 | A tool call missing an argument is answered with that argument's own description and choices, from the tool's schema, for every tool |
 | FX107 | 2026-11-09 | The git pack's SwitchBranch runs `git switch`: on the API image's git 2.43 checkout refused it, and checkout could throw a file's changes away |
 | FX106 | 2026-11-09 | The guide knows the card open on the visitor's screen, so "this pack" is the one they opened |
