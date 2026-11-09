@@ -103,7 +103,8 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
   routes take the admin key, and `/health` and the app's own files stay public. Without a key the API refuses to start,
   unless `AGENT_AUTH=off` says so on purpose: one pure rule in core, `Guardrails/Auth/HostAuth`, shared with the MCP
   server (FX18).
-- The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
+- The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and `MapLouisAgentSite`, which answers
+  a page's address with that page rendered as HTML inside `index.html` until the app takes over (F121). It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
 - The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click
   order; only the branch being worked on is marked busy ("Merging…", "Queued").

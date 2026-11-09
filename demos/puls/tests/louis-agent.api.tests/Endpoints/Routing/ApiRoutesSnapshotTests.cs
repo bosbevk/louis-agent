@@ -4,11 +4,16 @@ using System.Text.RegularExpressions;
 
 namespace LouisAgent.Api.Tests.Endpoints.Routing;
 
-// CL20 steps 1 and 2 (ADR 0039): the API's route table is pinned. Every route, as "METHOD /pattern (Access)", sorted, is compared
-// with a committed golden file, so a change to the API, or to who may call a route, shows as a diff of ApiRoutesSnapshot.json. The
-// table is built through ApiTestHost, which uses the same AddApi and MapApi as ApiStartup; the second test is what keeps that
-// true: neither ApiStartup nor a demo's program may map a route of its own. To change the golden: set LOUIS_UPDATE_GOLDEN=1, run
-// the test, review the file's diff, commit it.
+/// <summary>
+/// The API's route table is pinned (CL20): every route, with who may call it, is compared with a committed golden
+/// file, so a change to the API, or to who may call a route, shows as a diff of ApiRoutesSnapshot.json. To change it:
+/// set LOUIS_UPDATE_GOLDEN=1, run the test, review the file's diff, commit it.
+/// </summary>
+/// <remarks>
+/// The table is built through ApiTestHost, with the same AddApi and MapApi as ApiStartup; the second test keeps that
+/// true, since neither ApiStartup nor a demo's program may map a route of its own.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API's routes under /v1</seealso>
 public partial class ApiRoutesSnapshotTests
 {
     private static readonly string GoldenFile =
@@ -17,10 +22,11 @@ public partial class ApiRoutesSnapshotTests
 
     private static readonly string[] AllowedInProgram =
     [
-        "MapStaticAssets", "MapFallbackToFile", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
+        "MapStaticAssets", "MapLouisAgentSite", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
         "MapLouisAgentEvals"
     ];
 
+    /// <summary>Every route as "METHOD /pattern (Access)", sorted, as the golden file holds it.</summary>
     private static string Snapshot()
     {
         using var app = ApiTestHost.Build(evals: false);
@@ -34,6 +40,7 @@ public partial class ApiRoutesSnapshotTests
         }).ReplaceLineEndings("\n") + "\n";
     }
 
+    /// <summary>The routes are the ones the golden file says, or the diff shows what changed.</summary>
     [Test]
     public void TheRoutes_MatchTheGoldenFile()
     {
@@ -46,9 +53,11 @@ public partial class ApiRoutesSnapshotTests
 
         Assert.That(File.Exists(GoldenFile), $"No golden file; run with LOUIS_UPDATE_GOLDEN=1 to write {GoldenFile}.");
         Assert.That(actual, Is.EqualTo(File.ReadAllText(GoldenFile).ReplaceLineEndings("\n")),
-            "The API's routes, or who may call them, changed. If that is intended, rerun with LOUIS_UPDATE_GOLDEN=1 and review the diff.");
+            "The API's routes, or who may call them, changed. "
+            + "If that is intended, rerun with LOUIS_UPDATE_GOLDEN=1 and review the diff.");
     }
 
+    /// <summary>A program maps only the framework's own calls, so the table above is the one that runs.</summary>
     [TestCase("src/hosts/louis-agent.api/ApiStartup.cs")]
     [TestCase("demos/puls/hosts/louis-agent.puls-api/Program.cs")]
     [TestCase("demos/louis-agent/hosts/louis-agent.coding-api/Program.cs")]
@@ -64,6 +73,9 @@ public partial class ApiRoutesSnapshotTests
             $"{file} maps a route of its own: put it in ApiMap, so the route tests see it (CL20, ADR 0039).");
     }
 
+    /// <summary>
+    /// A call whose name starts with Map: matches <c>app.MapGet(</c>, not <c>MapGet</c> without a dot.
+    /// </summary>
     [GeneratedRegex(@"\.(Map\w*)\(")]
     private static partial Regex MapCall();
 }

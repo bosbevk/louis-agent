@@ -81,8 +81,10 @@ StreamGoldenTests`. Read the golden's diff before you commit it. A new format is
 ## Serve the other web app
 
 The API serves whatever web app the program references, and nothing in the API names one, so keep it that way. A program calls
-`AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapFallbackToFile`, then `MapLouisAgentApi`, which refuses to
-map without the key check.
+`AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapLouisAgentSite` (each page of its web app
+served as HTML, F121), then `MapLouisAgentApi`, which refuses to map without the key check. `MapLouisAgentSite` takes
+the web app's assembly and the services its pages inject; a page that declares a `PageDescription` is rendered once per
+process and served with its own title, description, canonical link and words, any other page the plain `index.html`.
 
 ## The whole program
 
@@ -99,6 +101,7 @@ using LouisAgent.Core.Telemetry;
 using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
+using LouisAgent.Api.Site;
 using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
@@ -115,9 +118,14 @@ var app = builder.Build();
 app.UseLouisAgentAccounts();                                         // optional, with the line above
 app.UseLouisAgentKey();
 
-// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}.
+// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}: a page meant for
+// search as its own HTML, rendered with the services its pages inject; the landing's sections sit under /home.
 app.MapStaticAssets();
-app.MapFallbackToFile("index.html");
+app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
+{
+    services.AddSingleton(new LouisAgent.Web.Text.ChatText());
+    services.AddSingleton(new HttpClient());
+}, home: "home");
 
 app.MapLouisAgentAccounts();                                         // optional, with the two above
 app.MapLouisAgentApi(host);

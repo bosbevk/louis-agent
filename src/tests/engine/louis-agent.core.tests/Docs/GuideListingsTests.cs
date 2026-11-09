@@ -8,9 +8,13 @@ namespace LouisAgent.Core.Tests.Docs;
 /// </summary>
 public class GuideListingsTests
 {
-    private static string Guide => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/docs/guides/change-the-api.md"));
+    private static string Guide =>
+        File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/docs/guides/change-the-api.md"));
 
-    /// <summary>The API guide has one complete program in a C# block: the host, the API, the key check, the web app, the routes, the run.</summary>
+    /// <summary>
+    /// The API guide has one complete program in a C# block: the host, the API, the key check, the web app, the
+    /// routes, the run.
+    /// </summary>
     [Test]
     public void TheApiGuide_HoldsTheWholeProgram_AsCSharp()
     {
@@ -21,8 +25,13 @@ public class GuideListingsTests
 
         Assert.Multiple(() =>
         {
-            foreach (string line in new[] { "AgentHost.Build(", "builder.AddLouisAgentApi(host)", "app.UseLouisAgentKey()", "app.MapStaticAssets()", "app.MapFallbackToFile(\"index.html\")", "app.MapLouisAgentApi(host)", "app.Run()" })
+            foreach (string line in new[]
+                     {
+                         "AgentHost.Build(", "builder.AddLouisAgentApi(host)", "app.UseLouisAgentKey()",
+                         "app.MapStaticAssets()", "app.MapLouisAgentSite(", "app.MapLouisAgentApi(host)", "app.Run()"
+                     })
                 Assert.That(listing, Does.Contain(line));
+            Assert.That(listing, Does.Contain("using LouisAgent.Api.Site;"), "the site's pages as HTML");
             Assert.That(listing, Does.Contain("using LouisAgent.Api;"), "the usings a paste needs");
         });
     }
