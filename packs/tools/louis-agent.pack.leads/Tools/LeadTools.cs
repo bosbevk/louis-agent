@@ -20,12 +20,16 @@ public sealed class LeadTools(ILeadSender sender, TimeProvider time)
 {
     /// <summary>Sends the owner a lead: who, how to reach them, what they want.</summary>
     [Description(
-        "Tells Louis that this person wants a website with an agent or a custom agent. Call it once, only after they " +
-        "gave their name, a way to reach them and what they want, and said yes to sending it.")]
+        "Tells the owner what this person wants and how to reach them: a lead, a booking request, a call back. Call " +
+        "it once, only after they gave their name, a way to reach them and what they want, and said yes to " +
+        "sending it.")]
     public async Task<string> SendLead(
-        [Description("The person's name, as they gave it.")] string name,
-        [Description("How Louis may reach them: a mail address or a phone number.")] string contact,
-        [Description("What they want, in their own words: the business, the site, the agent.")] string wants,
+        [Description("The person's name, as they gave it.")]
+        string name,
+        [Description("How the owner may reach them: a mail address or a phone number.")]
+        string contact,
+        [Description("What they want, in their own words, with any day or time they asked for.")]
+        string wants,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(name)) return MessageText.Format(LeadsToolMessage.NoName);

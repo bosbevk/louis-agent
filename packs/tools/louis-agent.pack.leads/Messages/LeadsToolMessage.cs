@@ -15,12 +15,15 @@ public enum LeadsToolMessage
     [Description("Not sent: I need a line on what they want, in their words. Ask for it.")]
     NoWants,
 
-    [Description("Sent to Louis at {At}: {Name}, {Contact}, about {Wants}. Tell them he will be in touch.")]
+    [Description("Sent to the owner at {At}: {Name}, {Contact}, about {Wants}. Tell them they will hear back.")]
     Sent,
 
-    [Description("Not sent: the mail service answered {Reason}. Tell them to use the contact page, and try once more later.")]
+    [Description(
+        "Not sent: the mail service answered {Reason}. Tell them to use the contact page, and try once more later.")]
     Failed,
 
-    [Description("Not mailed: this instance has no mail key, so the lead went to the log only ({Name}, {Contact}, about {Wants}). Tell them to use the contact page.")]
+    [Description(
+        "Not mailed: this instance has no mail key, so the lead went to the log only ({Name}, {Contact}, about " +
+        "{Wants}). Tell them to use the contact page.")]
     Logged,
 }

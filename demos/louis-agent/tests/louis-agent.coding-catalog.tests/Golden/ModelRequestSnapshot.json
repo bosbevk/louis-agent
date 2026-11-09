@@ -2125,7 +2125,7 @@
     },
     {
       "Name": "SendLead",
-      "Description": "Tells Louis that this person wants a website with an agent or a custom agent. Call it once, only after they gave their name, a way to reach them and what they want, and said yes to sending it.",
+      "Description": "Tells the owner what this person wants and how to reach them: a lead, a booking request, a call back. Call it once, only after they gave their name, a way to reach them and what they want, and said yes to sending it.",
       "Schema": {
         "type": "object",
         "properties": {
@@ -2134,11 +2134,11 @@
             "type": "string"
           },
           "contact": {
-            "description": "How Louis may reach them: a mail address or a phone number.",
+            "description": "How the owner may reach them: a mail address or a phone number.",
             "type": "string"
           },
           "wants": {
-            "description": "What they want, in their own words: the business, the site, the agent.",
+            "description": "What they want, in their own words, with any day or time they asked for.",
             "type": "string"
           }
         },
