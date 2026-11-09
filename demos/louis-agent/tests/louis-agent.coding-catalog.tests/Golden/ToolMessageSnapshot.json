@@ -4,6 +4,8 @@
   "AgentToolPending": "- <Name> [pending, active this session]: <Description>",
   "AgentToolTimeout": "[Timeout] <Name> exceeded <Seconds>s and was killed.\n<Output>",
   "ApprovedToolExists": "Error: an approved tool named '<Name>' already exists; choose another name.",
+  "ArgumentMissing": "- <Name>: <Meaning>",
+  "ArgumentsMissing": "Error: <Tool> was NOT run: it needs every argument below. Call it again with them:\n<Missing>",
   "AttachmentUnknown": "No attachment named '<Name>' in this conversation. Attached: <Attached>.",
   "BadDepartment": "'<Name>' in <File> is not a department name, or repeats one: letters, digits, dashes and underscores, each once.",
   "BadRunId": "'<RunId>' is not a run id: letters, digits, dashes and underscores only, up to 64 of them.",

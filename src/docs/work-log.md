@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 80 | 73 |
-| Fixes (`FX`) | 99 | 6 |
+| Fixes (`FX`) | 100 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -217,6 +217,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX108 | 2026-11-09 | A tool call missing an argument is answered with that argument's own description and choices, from the tool's schema, for every tool |
 | FX107 | 2026-11-09 | The git pack's SwitchBranch runs `git switch`: on the API image's git 2.43 checkout refused it, and checkout could throw a file's changes away |
 | FX106 | 2026-11-09 | The guide knows the card open on the visitor's screen, so "this pack" is the one they opened |
 | FX105 | 2026-11-09 | The coding agent's page is one slide, side by side: the words on the left, the recorded session in a full-height window on the right |
