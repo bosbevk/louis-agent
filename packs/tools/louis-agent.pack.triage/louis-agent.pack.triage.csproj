@@ -14,6 +14,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="louis-agent.pack.triage.tests" />
+    <!-- F106.3.4: the web's tests write a step with the recorder's own options, to hold the web's copy to it. -->
+    <InternalsVisibleTo Include="louis-agent.pack.triage.web.tests" />
   </ItemGroup>
 
   <ItemGroup>
