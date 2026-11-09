@@ -30,7 +30,9 @@
 .widget-icon { display: inline-flex; }
 .chat-widget.is-open .widget-button { padding: 0; animation: none; font-size: 20px; }
 @keyframes widget-pulse {
-    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55); }
+    0%, 100% {
+        box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
+    }
     50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
 }
 
@@ -64,6 +66,13 @@
 
 .widget-composer { padding: 10px; border-top: 1px solid var(--bs-border-color); }
 ::deep .widget-composer textarea { font-size: 14px; }
+
+/* On a phone the folded corner is a bar across the bottom (FX113): the tour and the guide's button side by side,
+   slimmer, still. */
+@media (max-width: 720px) {
+    .chat-widget:not(.is-open) { flex-direction: row; align-items: center; gap: 10px; }
+    .chat-widget:not(.is-open) .widget-button { height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
+}
 
 /* On a phone the panel is the whole screen, square to its edges, and the round button goes while it is open: the
    panel's own head closes it (FX69). */

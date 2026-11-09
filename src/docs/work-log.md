@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 82 | 73 |
-| Fixes (`FX`) | 104 | 6 |
+| Fixes (`FX`) | 105 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -215,10 +215,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (94 done)
+## Fixes (95 done)
 
 | Id | When | What |
 |---|---|---|
+| FX113 | 2026-11-09 | On a phone the tour and the guide's button sit side by side in a slim bar across the bottom, and the page's room ends above it |
 | FX112 | 2026-11-09 | A film fits a slide's page on any screen: its frame is never wider than the page is high at 16:9, so it never overflows into an empty page |
 | FX111 | 2026-11-09 | The site's header stays at the top of the screen, so the strip above a slide holds the menu, not the slide before |
 | FX110 | 2026-11-09 | A section paged sideways keeps its heading with what follows it, so a page never holds only a title while its content starts on the next |

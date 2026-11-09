@@ -35,6 +35,10 @@
    own matches it (Louis: "they must be the same size, make them the same as the one on the landing page"), with room
    between the two so they read as two buttons (Louis: "sits too close"). */
 .guide-button.widget-tour { margin-bottom: 14px; }
+/* In the phone's bottom bar (FX113) the tour sits beside the guide's button, as slim as it. */
+@media (max-width: 720px) {
+    .guide-button.widget-tour { margin-bottom: 0; height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
+}
 .guide-spark { font-size: 15px; animation: guide-twinkle 1.8s ease-in-out infinite; }
 .guide-words { white-space: nowrap; }
 
@@ -45,7 +49,9 @@
 /* A soft pulse, the same as the guide's own button in the corner (Louis: "too much glow", "make them the same as the
    one on the landing page"); the sweep and the spark are what set the tour apart. */
 @keyframes guide-glow {
-    0%, 100% { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55); }
+    0%, 100% {
+        box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .4), 0 10px 30px -12px rgba(var(--bs-primary-rgb), .55);
+    }
     50% { box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .14), 0 12px 36px -10px rgba(var(--bs-primary-rgb), .7); }
 }
 @keyframes guide-twinkle {

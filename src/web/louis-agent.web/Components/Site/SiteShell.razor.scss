@@ -78,7 +78,7 @@
    are. */
 .layout-slides .site-main ::deep .graph svg { max-height: calc(100dvh - 420px); }
 .layout-slides .site-main ::deep > section {
-    min-height: calc(100dvh - 160px);
+    min-height: calc(100dvh - 160px - var(--site-bar, 0px));
     justify-content: center;
     align-content: center;
     scroll-snap-align: start;
@@ -126,9 +126,25 @@
    so the footer's words stay readable; what a site puts in it sizes itself. */
 .site-corner { position: fixed; right: 24px; bottom: 72px; z-index: 10; }
 
+/* On a phone the corner is a slim bar across the bottom (FX113, Louis's pick of three, Material's bottom app bar):
+   what a site puts in it sits side by side, see-through and blurred like the header. --site-bar is its height, and
+   a slide, a paged section's page and the way up end above it, so the bar covers nothing. */
 @media (max-width: 720px) {
+    .site { --site-bar: 60px; padding-bottom: var(--site-bar); }
     .site-header { gap: 12px; }
     .site-nav { gap: 16px; width: 100%; order: 3; }
-    .site-corner { right: 16px; bottom: 64px; }
-    .site-up { left: 16px; bottom: 64px; }
+    .site-corner {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--site-bar);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border-top: 1px solid var(--bs-border-color);
+        background: rgba(var(--bs-body-bg-rgb), .86);
+        backdrop-filter: blur(12px);
+    }
+    .site-up { left: 16px; bottom: calc(var(--site-bar) + 12px); }
 }

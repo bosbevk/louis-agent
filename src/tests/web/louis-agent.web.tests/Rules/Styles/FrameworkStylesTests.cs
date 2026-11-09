@@ -105,6 +105,17 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
             Does.Contain("position: sticky;\n    top: 0;"));
 
+    /// <summary>
+    /// On a phone the corner's two buttons sit side by side in a slim bar across the bottom (FX113, Louis's pick of
+    /// three), and a slide's room, a paged section's page and the way up end above it, so the bar covers nothing.
+    /// </summary>
+    [TestCase(".site { --site-bar: 60px; padding-bottom: var(--site-bar); }")]
+    [TestCase("min-height: calc(100dvh - 160px - var(--site-bar, 0px));")]
+    [TestCase("height: calc(100dvh - 330px - var(--site-bar, 0px));")]
+    [TestCase(".chat-widget:not(.is-open) { flex-direction: row;")]
+    public void OnAPhone_TheCornerIsABarAtTheBottom(string rule) =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

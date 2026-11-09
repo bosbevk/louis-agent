@@ -97,7 +97,9 @@ const observe = () => {
 // On a page of slides, a band with more than a screen of content is paged sideways (F118, Louis's option 2): measured
 // once as it stands, marked .is-paged so its body flows into screen-high columns, and its pager shown with "1 / n".
 // A band already paged only has its count brought up to date, as an opened card can add a page.
-const slideRoom = () => innerHeight - 160;
+// On a phone the corner's bar takes its height off the bottom (FX113), --site-bar on the frame, 0 elsewhere.
+const slideRoom = () => innerHeight - 160 - (parseFloat(getComputedStyle($(".site") ?? document.body)
+    .getPropertyValue("--site-bar")) || 0);
 const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
 const count = (band) => {
     const body = $(".band-body", band), pager = $(".band-pager", band);

@@ -67,6 +67,6 @@ public class FilmFrameTests
         string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "demos/louis-agent/web/louis-agent.code-review/Components/Movies/FilmFrame.razor.scss"));
 
-        Assert.That(styles, Does.Contain("max-width: calc((100dvh - 350px) * 16 / 9);"));
+        Assert.That(styles, Does.Contain("max-width: calc((100dvh - 350px - var(--site-bar, 0px)) * 16 / 9);"));
     }
 }
