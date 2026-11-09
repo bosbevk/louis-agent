@@ -4,7 +4,8 @@ namespace LouisAgent.CodeReview.Graphs.Framework;
 
 /// <summary>
 /// The Architecture page's diagram (F111): the repository's groups as the solution file lays them out, and which rests
-/// on which. The engine first, the libraries on it, the packs beside, the demos built on all of it.
+/// on which. The engine first, the libraries on it, the packs beside, the demos and the framework's own site (F124)
+/// built on all of it.
 /// </summary>
 public static class ArchitectureGraph
 {
@@ -18,6 +19,7 @@ public static class ArchitectureGraph
             new GraphNode("src/tools", "src/tools", "a developer's tool", 1),
             new GraphNode("packs", "packs", "tools, evals, web and tests", 1),
             new GraphNode("demos", "demos", "louis-agent, puls, starter", 2),
+            new GraphNode("src/site", "src/site", "the framework's own site", 2),
         ],
         [
             new GraphEdge("src/engine", "src/hosts"),
@@ -28,5 +30,8 @@ public static class ArchitectureGraph
             new GraphEdge("src/hosts", "demos"),
             new GraphEdge("src/web", "demos"),
             new GraphEdge("packs", "demos", "named"),
+            new GraphEdge("src/hosts", "src/site"),
+            new GraphEdge("src/web", "src/site"),
+            new GraphEdge("packs", "src/site", "named"),
         ]);
 }

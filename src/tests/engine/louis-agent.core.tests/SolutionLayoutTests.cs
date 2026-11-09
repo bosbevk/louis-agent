@@ -35,8 +35,9 @@ public class SolutionLayoutTests
     [TestCase("demos/starter/web", "louis-agent.starter")]
     [TestCase("demos/starter/hosts", "louis-agent.starter-api")]
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
-    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.expert",
-        "louis-agent.identity.triage")]
+    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.triage")]
+    [TestCase("src/site", "louis-agent.site", "louis-agent.identity.expert")]
+    [TestCase("src/tests/site", "louis-agent.site.tests")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",

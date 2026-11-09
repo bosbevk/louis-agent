@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <!-- The expert identity's name, for the guide in the corner (F109.3); the identity itself runs on the API. -->
-    <ProjectReference Include="..\..\identity\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
+    <ProjectReference Include="..\..\..\..\src\site\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
     <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
     <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->

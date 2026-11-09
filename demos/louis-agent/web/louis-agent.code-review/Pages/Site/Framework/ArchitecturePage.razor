@@ -5,14 +5,15 @@
 
 <Band Id="top" Kicker="Architecture">
     <h2 class="chrome">The whole framework, as the repository is laid out.</h2>
-    <p class="lede">Every project that ships has its place here, one line each. The folders say what ships: <code>src/</code> is the framework and nothing else, <code>packs/</code> what an agent can do, <code>demos/</code> what someone built on it. A test holds this page to the solution file, so a new project can't be left off.</p>
+    <p class="lede">Every project that ships has its place here, one line each. The folders say what ships: <code>src/</code> is the framework and its own site, <code>packs/</code> what an agent can do, <code>demos/</code> what someone built on it. A test holds this page to the solution file, so a new project can't be left off.</p>
     <pre class="listing"><code>src/engine/   the engine: core, and what sits on it, one library each
 src/hosts/    the hosts, as libraries: a CLI, Rider's protocol, the HTTP API, the MCP server, the accounts
 src/web/      the framework's web: what every site shares
 src/evals/    the eval harness, its checks contract, its protocol and its runner
 src/tools/    a developer's tool
+src/site/     the framework's own website: this site, its guide and its host, built on the framework
 packs/        tools/ (the packs), evals/ (what proves one), web/ (a pack's screens), tests/
-demos/        louis-agent/ (the coding agent and this site), puls/ (the assistant), starter/ (the smallest site)
+demos/        louis-agent/ (the coding agent, its chat and admin), puls/ (the assistant), starter/ (the smallest site)
               each with identity/, hosts/, web/, evals/, config/, docker/, deploy/, tests/ and docs/</code></pre>
     <GraphView Spec="ArchitectureGraph.Spec" Title="The groups of the repository, and which rests on which" />
 </Band>
@@ -20,6 +21,7 @@ demos/        louis-agent/ (the coding agent and this site), puls/ (the assistan
 <EngineFamily />
 <HostsFamily />
 <WebFamily />
+<SiteFamily />
 <EvalsFamily />
 <PacksFamily />
 <DemosFamily />

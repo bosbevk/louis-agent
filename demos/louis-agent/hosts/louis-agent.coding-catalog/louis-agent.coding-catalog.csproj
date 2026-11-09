@@ -11,7 +11,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
-    <ProjectReference Include="..\..\identity\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
+    <ProjectReference Include="..\..\..\..\src\site\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
     <ProjectReference Include="..\..\identity\louis-agent.identity.triage\louis-agent.identity.triage.csproj" />
     <!-- packs -->
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.triage\louis-agent.pack.triage.csproj" />
