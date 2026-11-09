@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 83 | 73 |
-| Fixes (`FX`) | 112 | 6 |
+| Fixes (`FX`) | 113 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -216,10 +216,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (102 done)
+## Fixes (103 done)
 
 | Id | When | What |
 |---|---|---|
+| FX121 | 2026-11-09 | The guide's spotlight on a site's hero rings what the hero holds, not the whole screen-tall section |
 | FX120 | 2026-11-09 | The guide can open where a link on the visitor's screen leads: the page it reads lists its links by the address each opens |
 | FX119 | 2026-11-09 | The custom agents' section opens with a paragraph under its heading, so its first page is never a heading alone |
 | FX118 | 2026-11-09 | A film fits under its section's heading on any screen, so the landing's How it works is one page with its film |

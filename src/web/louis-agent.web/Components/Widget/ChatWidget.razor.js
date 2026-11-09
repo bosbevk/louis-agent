@@ -142,13 +142,20 @@ const turnToPage = (band, page) => {
 
 // The box around what a place holds (F118, Louis: "highlight only this section, the section right around the actual
 // parts"): a band is a screen tall on a page of slides, mostly room, so its box is its content's, the kicker to the
-// last line, and on a page paged sideways its body and pager; anything else is its own box.
+// last line, and on a page paged sideways its body and pager. Any other section, such as a site's hero, is a screen
+// tall too, so its box is what it holds (FX121, Louis: "highlight too big"); a card or a smaller place is its own box.
 const boxOf = (target) => {
-    if (!target.matches(".band")) return target.getBoundingClientRect();
-    const paged = target.matches(".is-paged");
-    const parts = paged
-        ? [target.querySelector(".band-body"), target.querySelector(".band-pager:not([hidden])")]
-        : [...(target.querySelector(".band-body")?.children ?? [])];
+    if (target.matches(".band")) {
+        const paged = target.matches(".is-paged");
+        return unionOf(target, paged
+            ? [target.querySelector(".band-body"), target.querySelector(".band-pager:not([hidden])")]
+            : [...(target.querySelector(".band-body")?.children ?? [])]);
+    }
+    return target.matches("section") ? unionOf(target, [...target.children]) : target.getBoundingClientRect();
+};
+
+// The box around the parts that show; the target's own box when none does.
+const unionOf = (target, parts) => {
     const rects = parts.filter(Boolean).map(part => part.getBoundingClientRect())
         .filter(r => r.width > 0 && r.height > 0);
     if (rects.length === 0) return target.getBoundingClientRect();
