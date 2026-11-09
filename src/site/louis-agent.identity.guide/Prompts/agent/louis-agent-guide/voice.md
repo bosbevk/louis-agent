@@ -234,11 +234,13 @@ what a page says goes to its source. Every page that explains a part shows an an
 identity's parts, a pack's shape, the repository's groups, one turn through the engine, your program, where a number
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
-- `/`, the landing: what the framework is, 100% C#, built in South Africa by one person, the one rule the startup
-  runs on (first principles: start from what is certainly true, measure before you assume, write down why, adopt
-  what is proven and build only what nobody has) and what drives it (a stoic and Kierkegaard outlook: the work for
-  its meaning and purpose, competition and the norm no concern), the four concepts, and the short film of the whole
-  framework in six scenes. Sources: `README.md`, `src/docs/architecture/05-building-block-view.md`.
+- `/`, the landing, offer first: a website with an agent from R500 a month, what the agent does for a business,
+  how it works for them (three steps, then why to trust it), custom agents and the demos. Then the framework as the
+  proof: the one rule the startup runs on (first principles: start from what is certainly true, measure before you
+  assume, write down why, adopt what is proven and build only what nobody has) and what drives it (a stoic and
+  Kierkegaard outlook: the work for its meaning and purpose, competition and the norm no concern), the numbers, the
+  short film of the whole framework in six scenes, the four concepts and what's built on it. Sources: `README.md`,
+  `src/docs/architecture/05-building-block-view.md`, `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets
   them; the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
   `src/docs/architecture/08-crosscutting-concepts.md`, the ADRs 0004, 0005, 0007 and 0008.

@@ -20,7 +20,8 @@ public class TilesTests
         {
             builder.OpenComponent<Tile>(0);
             builder.AddComponentParameter(1, nameof(Tile.Title), "Your identity");
-            builder.AddComponentParameter(2, nameof(Tile.ChildContent), (RenderFragment)(b => b.AddContent(0, "Who the agent is.")));
+            builder.AddComponentParameter(2, nameof(Tile.ChildContent),
+                (RenderFragment)(b => b.AddContent(0, "Who the agent is.")));
             builder.CloseComponent();
             builder.OpenComponent<Tile>(3);
             builder.AddComponentParameter(4, nameof(Tile.Title), "Your packs");
@@ -43,7 +44,9 @@ public class TilesTests
         });
     }
 
-    /// <summary>A tile that shows a measurement draws its number big and its note under it, and nothing it wasn't given.</summary>
+    /// <summary>
+    /// A tile that shows a measurement draws its number big and its note under it, and nothing it wasn't given.
+    /// </summary>
     [Test]
     public void ANumbersTile_ShowsTheNumber_AndItsNote()
     {
@@ -71,7 +74,9 @@ public class TilesTests
 
         var cut = ctx.Render<SiteStrip>(parameters => parameters
             .Add(strip => strip.Heading, "Building an agent for a .NET team?")
-            .Add(strip => strip.Action, (RenderFragment)(b => b.AddMarkupContent(0, "<a class=\"btn btn-dark\" href=\"/contact\">Get in touch</a>")))
+            .Add(strip => strip.Action,
+                (RenderFragment)(b =>
+                    b.AddMarkupContent(0, "<a class=\"btn btn-dark\" href=\"/contact\">Get in touch</a>")))
             .AddChildContent("Tell us what you're building."));
 
         var band = cut.Find("section.band");
@@ -82,6 +87,28 @@ public class TilesTests
             Assert.That(cut.Find(".site-strip h2").TextContent, Is.EqualTo("Building an agent for a .NET team?"));
             Assert.That(cut.Find(".site-strip p").TextContent, Is.EqualTo("Tell us what you're building."));
             Assert.That(cut.Find(".site-strip a.btn").GetAttribute("href"), Is.EqualTo("/contact"));
+        });
+    }
+
+    /// <summary>
+    /// A tile may wear an accent (F128.1, Louis: "use them when needed to add some color"): the eval screens' red,
+    /// green, blue and yellow, as a class the tile's own styles colour; none by default, so a plain tile stays plain.
+    /// </summary>
+    [TestCase(TileAccent.Red, "accent-red")]
+    [TestCase(TileAccent.Green, "accent-green")]
+    [TestCase(TileAccent.Blue, "accent-blue")]
+    [TestCase(TileAccent.Yellow, "accent-yellow")]
+    public void ATile_WearsItsAccent(TileAccent accent, string kind)
+    {
+        using var ctx = new BunitContext();
+
+        var plain = ctx.Render<Tile>(p => p.Add(t => t.Title, "Plain"));
+        var accented = ctx.Render<Tile>(p => p.Add(t => t.Title, "Coloured").Add(t => t.Accent, accent));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(plain.Find("article").ClassList.Where(c => c.StartsWith("accent-")), Is.Empty);
+            Assert.That(accented.Find("article").ClassList, Does.Contain(kind));
         });
     }
 }

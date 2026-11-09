@@ -4,6 +4,18 @@
     <loc>https://louis-agent.dev/</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/home/does</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/home/for-you</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/home/custom</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/home/demos</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/home/rule</loc>
   </url>
   <url>
@@ -17,9 +29,6 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/home/built</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/home/custom</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/home/contact</loc>

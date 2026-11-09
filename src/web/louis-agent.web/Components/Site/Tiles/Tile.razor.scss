@@ -4,6 +4,16 @@
 .stat-value { font: 700 44px/1 var(--bs-font-monospace); letter-spacing: -.03em; }
 .stat-note { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
 
+/* An accented tile (F128.1): a thin edge of its colour along the top, and its heading in it. */
+.accent-red { border-top: 2px solid var(--bs-danger); }
+.accent-green { border-top: 2px solid var(--web-ok); }
+.accent-blue { border-top: 2px solid var(--bs-info); }
+.accent-yellow { border-top: 2px solid var(--bs-warning); }
+.accent-red h3 { color: var(--bs-danger); }
+.accent-green h3 { color: var(--web-ok); }
+.accent-blue h3 { color: var(--bs-info); }
+.accent-yellow h3 { color: var(--bs-warning); }
+
 @media (max-width: 600px) {
     .stat-value { font-size: 34px; }
 }
