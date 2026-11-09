@@ -10,8 +10,8 @@
 ## One turn, as a film
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="../../../demos/louis-agent/docs/films/detail.png">
-  <img alt="A 60-second film of one turn in detail: your program and its host, the catalogue, the six layers of the chat pipeline inside core in their real order, a pack's tool, a guard, the ledger, a specialist, the answer streaming back with its bill, and a replay for nothing." src="../../../demos/louis-agent/docs/films/detail.webp" width="960">
+  <source media="(prefers-reduced-motion: reduce)" srcset="../films/detail.png">
+  <img alt="A 60-second film of one turn in detail: your program and its host, the catalogue, the six layers of the chat pipeline inside core in their real order, a pack's tool, a guard, the ledger, a specialist, the answer streaming back with its bill, and a replay for nothing." src="../films/detail.webp" width="960">
 </picture>
 
 The six slabs inside core are the real middleware in its real order, and a test holds that. The film is rendered from the

@@ -10,7 +10,7 @@ using PuppeteerSharp;
 // and records a hash of what each was made of. Run it after changing a film, and commit what it writes (Change the
 // site).
 //
-//   dotnet run --project demos/louis-agent/tools/louis-agent.film-export [short] [detail] [--out <folder>]
+//   dotnet run --project src/tools/louis-agent.film-export [short] [detail] [--out <folder>]
 //
 // It needs Docker running, for the encoder. CHROME_PATH names the browser; without it, a Chrome for Testing is
 // downloaded once.
@@ -25,7 +25,7 @@ string repoRoot = FindRepoRoot();
 int outAt = Array.IndexOf(args, outOption);
 string output = Path.GetFullPath(outAt >= 0
     ? args[outAt + 1]
-    : Path.Combine(repoRoot, "demos/louis-agent/docs/films"));
+    : Path.Combine(repoRoot, "src/docs/films"));
 var names = args.Where((_, at) => outAt < 0 || (at != outAt && at != outAt + 1)).ToList();
 
 var films = new List<FilmSource>();

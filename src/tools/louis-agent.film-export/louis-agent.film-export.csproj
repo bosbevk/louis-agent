@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <PackageReference Include="PuppeteerSharp" Version="25.14.0" />
   </ItemGroup>
 

@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\tools\louis-agent.film-export\louis-agent.film-export.csproj" />
-    <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
+    <ProjectReference Include="..\..\..\tools\louis-agent.film-export\louis-agent.film-export.csproj" />
+    <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

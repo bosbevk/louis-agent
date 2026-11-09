@@ -23,8 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\louis-agent.code-review\louis-agent.code-review.csproj" />
-    <!-- The films' export: its list of films and their hash, so a changed film fails until it's re-exported (F109.1). -->
-    <ProjectReference Include="..\..\tools\louis-agent.film-export\louis-agent.film-export.csproj" />
     <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\..\..\..\src\tests\web\louis-agent.web.testing\louis-agent.web.testing.csproj" />
     <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />

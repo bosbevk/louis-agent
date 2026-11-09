@@ -1,12 +1,14 @@
 using LouisAgent.Choices;
 using LouisAgent.FilmExport.Films;
 
-namespace LouisAgent.CodeReview.Tests.Movies;
+namespace LouisAgent.FilmExport.Tests;
 
-/// <summary>The README's films are what the app's pages play: change a film and this fails until it's re-exported.</summary>
-public class FilmExportTests
+/// <summary>
+/// The README's films are what the framework's site plays: change a film and this fails until it's re-exported.
+/// </summary>
+public class ExportedFilmsTests
 {
-    private const string Folder = "demos/louis-agent/docs/films";
+    private const string Folder = "src/docs/films";
 
     /// <summary>The hash recorded at the export is the film's hash today.</summary>
     [Test]

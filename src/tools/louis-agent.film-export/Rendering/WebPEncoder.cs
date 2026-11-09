@@ -14,7 +14,7 @@ namespace LouisAgent.FilmExport.Rendering;
 public static class WebPEncoder
 {
     /// <summary>Where the encoder's image is described, from the repo's root.</summary>
-    public const string Dockerfile = "demos/louis-agent/docker/images/Dockerfile.film-encoder";
+    public const string Dockerfile = "src/tools/louis-agent.film-export/Dockerfile.film-encoder";
 
     private const string Image = "louis-agent-film-encoder";
 

@@ -38,7 +38,6 @@ public class SolutionLayoutTests
     [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.triage")]
     [TestCase("src/site", "louis-agent.site", "louis-agent.identity.guide")]
     [TestCase("src/tests/site", "louis-agent.site.tests")]
-    [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
         "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",
@@ -54,13 +53,14 @@ public class SolutionLayoutTests
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]
-    [TestCase("src/tools", "louis-agent.usage-probe")]
+    [TestCase("src/tools", "louis-agent.usage-probe", "louis-agent.film-export")]
+    [TestCase("src/tests/tools", "louis-agent.film-export.tests")]
     [TestCase("demos/puls/tests", "louis-agent.api.tests", "louis-agent.api.integration-tests",
         "louis-agent.api.evals.tests",
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
-    [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests",
+    [TestCase("demos/louis-agent/tests", "louis-agent.coding-catalog.tests",
         "louis-agent.code-review.tests", "louis-agent.identity.triage.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
     [TestCase("packs/tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests",
