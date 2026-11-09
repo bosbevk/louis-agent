@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What proves the triage team (F106.3.2, ADR 0073): one eval per role, as folders of files, apart from the
+       identity, so someone can take the identity without them. Only the coding demo's runner references this. The
+       checks they name are the harness's general ones, so there is no code here. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Identities.Triage.Evals</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Each eval is a folder (Evals/{Role}/: eval.json, Dataset/, its manual), copied as every eval project's are, to
+         EvalFiles/{this project's path from the repository root}/Evals/{Role}/, where the runner finds them. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\demos\louis-agent\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.identity.triage.md" Link="docs\louis-agent.identity.triage.md" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+{
+  "id": "order-total-charges-nothing",
+  "input": [
+    {
+      "role": "user",
+      "content": "Run id: eval-reviewer-order-total.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace. The coder's branch isn't checked out here, so its diff is below; read the files it touches as they are on main.\n\nThe cause the investigator found: OrderApi.GetOrderTotal in src/OrderService/Api/OrderTotal.cs looks the order's discount code up in DiscountRates with the indexer, which throws a KeyNotFoundException for a retired code such as SUMMER25 (order 1003).\n\nThe method's runbook says: an unknown or retired discount code gives no discount (the total is the subtotal) instead of failing. Totals for orders with WELCOME10, VIP20 or no code must not change.\n\nThe code's checks passed: the commit is on its branch, order-total 1003 now answers 200, and the tests pass.\n\nThe coder's diff:\n\n```diff\n--- a/src/OrderService/Api/OrderTotal.cs\n+++ b/src/OrderService/Api/OrderTotal.cs\n@@ -15,7 +15,14 @@ public sealed partial class OrderApi\n         decimal subtotal = Subtotal(order);\n         if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;\n \n-        decimal rate = DiscountRates[order.DiscountCode];\n-        return Math.Round(subtotal * (1 - rate), 2);\n+        try\n+        {\n+            decimal rate = DiscountRates[order.DiscountCode];\n+            return Math.Round(subtotal * (1 - rate), 2);\n+        }\n+        catch (KeyNotFoundException)\n+        {\n+            return 0m;\n+        }\n     }\n }\n```\n\nReview the fix."
+    }
+  ],
+  "metadata": {
+    "place": null,
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {},
+    "categories": [
+      "role:reviewer",
+      "verdict:not-happy"
+    ]
+  }
+}

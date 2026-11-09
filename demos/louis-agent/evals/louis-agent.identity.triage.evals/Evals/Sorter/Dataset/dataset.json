@@ -1,0 +1,9 @@
+{
+  "name": "triage-sorter",
+  "version": 1,
+  "covers": "The sorter's routing: one error of the order service, in its own code, for the dev split.",
+  "content_hash": "a1889acd07fcda42e16a1d48540ba0af072dbecf7be9e4ba287236ad47156a58",
+  "changes": [
+    "2026-11-09: first version, order-total 1003's KeyNotFoundException for the retired code SUMMER25"
+  ]
+}

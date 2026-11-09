@@ -1,0 +1,9 @@
+{
+  "name": "triage-reviewer",
+  "version": 1,
+  "covers": "The reviewer's verdict: one fix of the order service that passes the code's checks but charges a retired code nothing, for the dev split.",
+  "content_hash": "30c37f20877ad5b3bec43decdccbe10d833769b27d47ac8a3aac7d74f0f45977",
+  "changes": [
+    "2026-11-09: first version, a fix of order-total that returns 0 for a retired code where the runbook says the subtotal"
+  ]
+}

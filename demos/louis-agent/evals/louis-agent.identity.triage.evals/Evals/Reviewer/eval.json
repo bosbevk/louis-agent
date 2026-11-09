@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "name": "triage-reviewer",
+  "identity": "triage",
+  "version": 1,
+  "proves": "The triage team's reviewer holds a fix against its cause and the runbook, and ends with ReportReview, not happy with a fix that hides the cause.",
+  "manual": "manual.md",
+  "modes": [
+    { "name": "reviewer", "role": "triage-reviewer", "toolsets": ["triage", "files", "git"], "depth": 1 }
+  ],
+  "checks": [
+    { "type": "no-error", "name": "reviewer-no-error" },
+    { "type": "tool-used", "parameters": { "tool": "ReportReview" } },
+    { "type": "tool-used-with", "parameters": { "tool": "ReportReview", "field": "happy", "value": "false" } }
+  ]
+}
