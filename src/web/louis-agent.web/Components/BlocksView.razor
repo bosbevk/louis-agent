@@ -1,5 +1,6 @@
 @* The blocks of an answer: thinking, text and tool calls, in order. A StartSubSession call is drawn as a delegation card,
-   with the specialist's own blocks inside it (F5). Used by TurnView and, nested, by DelegationCard. *@
+   with the specialist's own blocks inside it (F5). Used by TurnView and, nested, by DelegationCard. With its work
+   hidden (F128.1), thinking is its label alone and no tool call is drawn. *@
 
 @inject ChatText Text
 
@@ -7,15 +8,22 @@
 {
     switch (block.Kind)
     {
+        case BlockKind.Thinking when !ShowWork:
+            <div class="thinking-label">@ThinkingLabel(block)</div>
+            break;
+
         case BlockKind.Thinking:
             <details class="thinking" open="@(Streaming && block.ThinkingSeconds is null)">
-                <summary>@(block.ThinkingSeconds is { } seconds ? string.Format(Text.ThoughtFor, Math.Max(1, Math.Round(seconds))) : Text.Thinking)</summary>
+                <summary>@ThinkingLabel(block)</summary>
                 <div class="thinking-text">@block.Text</div>
             </details>
             break;
 
         case BlockKind.Text:
             <div class="markdown">@Markdown.ToHtml(block.Text, Shown)</div>
+            break;
+
+        case BlockKind.Tool when !ShowWork:
             break;
 
         case BlockKind.Tool when Delegation.From(block) is { } delegation:

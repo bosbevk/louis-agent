@@ -10,7 +10,8 @@
                 <span class="widget-title">@Title</span>
                 <button class="icon widget-close" type="button" @onclick="Toggle" aria-label="@CloseLabel">×</button>
             </header>
-            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="widget-list">
+            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="widget-list"
+                         ShowWork="ShowWork">
                 <Empty><p class="widget-greeting">@Greeting</p></Empty>
             </MessageList>
             <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />

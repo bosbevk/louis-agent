@@ -1,53 +1,35 @@
 @page "/"
 
-<PageTitle>louis-agent · an AI agent framework in C#</PageTitle>
-<PageHead Description="An AI agent framework in C#: watch every turn stream as it happens, pay for what you see, and build an agent from a few lines of your own." Schemas="SiteFacts.All" />
+<PageTitle>Websites with an agent · louis-agent</PageTitle>
+<PageHead Description="A website for your business with an AI agent in its corner that answers your customers day and night. From R500 a month, built in South Africa." Schemas="SiteFacts.All" />
 
 @* One page the visitor scrolls (F110): the frame draws the progress line and the section index from the bands below
-   (F118), so a band's id and kicker are all a section needs to be listed. *@
+   (F118), so a band's id and kicker are all a section needs to be listed. Since F128.1 it tells the story offer first:
+   what it does, how it works for you, custom agents and the demos, then one band of the framework as the proof; its
+   rule, film and concepts live on the framework's own pages. *@
 <Hero />
 
-<Band Id="rule" Kicker="One rule">
-    <h2 class="chrome reveal">First principles.</h2>
-    <p class="lede reveal">This startup runs on one rule. Every decision starts from what is certainly true and builds up from there, not from what everyone else does. Measure before you assume. Write down why. Adopt what is proven, and build only what nobody has.</p>
-    <p class="lede reveal" data-delay="1">What drives it is older than the rule. A stoic outlook, and Kierkegaard's: do the work for its meaning and purpose, and let the result be what it is. Competition doesn't bother us, and neither does breaking from the norm. This is a startup of one person, and it says so.</p>
-    <p class="band-note reveal" data-delay="2">The decision records on this site are that rule at work: each says what was true, what was chosen, and why. <a href="/how-it-works">The rules every turn keeps</a> came out of them.</p>
-</Band>
+<WhatItDoes />
 
-<ProofTiles />
-
-<Band Id="how" Kicker="How it works" Class="band-movie">
-    <h2 class="chrome reveal">The whole framework, in six scenes.</h2>
-    <FilmFrame><ShortMovie /></FilmFrame>
-    <p class="band-note">The parts and the words are the real ones. <a href="/how-it-works">The long version</a> follows one turn through every layer of core.</p>
-</Band>
-
-<Band Id="concepts" Kicker="Four concepts" Short="Concepts">
-    <h2 class="chrome reveal">The engine is how, an identity is who, a pack is what.</h2>
-    <TileRow>
-        <Tile Title="The engine is how">The loop, streaming, the guards, the ledger and handing work to other sessions. It names no product, and every host is a library a few lines of yours start. <a href="/architecture">The whole map</a></Tile>
-        <Tile Title="An identity is who" Delay="1">Its voice, its roles and the packs it names, as markdown in a project of its own. Puls, the coding agent and the guide in this page's corner are identities. <a href="/identities">Identities</a></Tile>
-        <Tile Title="A pack is what" Delay="2">Tools and their guide, as a package that needs only the contracts. Written once, used by any identity, and served over MCP as it is. <a href="/packs">Every pack</a></Tile>
-    </TileRow>
-    <p class="band-note">The fourth, a workflow, is how one agent delegates to another and decides on what comes back. It is planned, and the engine's job: <a href="/whats-coming">what's coming</a>.</p>
-</Band>
-
-<BuiltOnIt />
+<HowItWorksForYou />
 
 <Band Id="custom" Kicker="Custom agents">
     <h2 class="chrome reveal">Want an agent for your business? Louis builds them on this framework.</h2>
-    <p class="lede reveal">An agent of your own is three things: who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. Here is what each one holds, and the guide can pass your details to Louis.</p>
+    <p class="lede reveal">An agent of your own is three things: who it is, the tools it uses on your own systems, and a closed place to run where every request is measured. Here is what each one holds, and Louis in the corner can pass your details on.</p>
     <div class="custom-grid">
         <TileRow Columns="1">
             <Tile Title="Your identity">Who the agent is for your business: its voice, its roles and the rules it keeps, written as files you can read and change.</Tile>
             <Tile Title="Your packs" Delay="1">Tools for your own systems, written once as a package: your data read in code, never guessed, with the engine's guards around every call.</Tile>
-            <Tile Title="Hosted, closed and measured" Delay="2">Run for you in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here, every request priced and the bill shown in rand. Checked by evals before anyone sees a change. <a href="/how-it-works">The rules it keeps</a></Tile>
+            <Tile Title="Hosted, closed and measured" Delay="2">Run for you in a closed Docker container that sees only what you hand it, in Azure's South African region if you want your data here, every request priced and the bill shown in rand. Checked by evals before anyone sees a change. <a href="/framework/how-it-works">The rules it keeps</a></Tile>
         </TileRow>
-        <LiveLead />
+        <LiveTurn />
     </div>
-    <p class="band-note"><strong>What we sell today:</strong> web hosting with an AI agent, for small businesses. Your website, hosted, with an agent in the corner like this one that knows your business and answers your customers. R500 to R1,000 a month, plus a once-off fee to build the site. <a href="/contact">Ask for yours</a>.</p>
+    <p class="band-note"><strong>What we sell today:</strong> web hosting with an AI agent, for small businesses. Your website, hosted, with an agent in the corner like this one that knows your business and answers your customers. R500 to R1,000 a month, plus a once-off fee to build the site. <a href="/pricing">See the plans</a>.</p>
     <p class="band-note"><strong>Your first files, written with you:</strong> an agent is a few Markdown files, its voice, its roles and what it knows about your business. Louis can write your first Markdown files with you, for a fee, so your agent starts out sounding like you. <a href="/contact">Ask about it</a>.</p>
-    <p class="band-note">One person, start to finish, in South Africa. <a href="/contact">Say what the agent should do</a> and we take it from there.</p>
 </Band>
+
+<LandingDemos />
+
+<ProofTiles />
 
 <ContactStrip />

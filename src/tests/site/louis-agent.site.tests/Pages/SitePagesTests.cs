@@ -14,18 +14,19 @@ namespace LouisAgent.Site.Tests.Pages;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "First principles.")]
-    [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
-    [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
-    [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]
-    [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
-    [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
+    [TestCase(typeof(HomePage), "/", "Your best employee, at ten at night.")]
+    [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
+    [TestCase(typeof(ArchitecturePage), "/framework/architecture",
+        "The whole framework, as the repository is laid out.")]
+    [TestCase(typeof(IdentitiesPage), "/framework/identities", "Who an agent is, as files.")]
+    [TestCase(typeof(PacksPage), "/framework/packs", "What an agent can do is a package.")]
+    [TestCase(typeof(BuildYourOwnPage), "/framework/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(CsharpAgentFrameworkPage), "/csharp-ai-agent-framework",
         "An AI agent framework in C#, on your own hardware.")]
-    [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
-    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
+    [TestCase(typeof(ProofPage), "/framework/measured", "Every number here comes from the ledger or an eval run.")]
+    [TestCase(typeof(BuiltOnItPage), "/framework/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
-    [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
+    [TestCase(typeof(WhatsComingPage), "/framework/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -97,24 +98,23 @@ public class SitePagesTests
     }
 
     /// <summary>What's new is on the page: a demo is built on the framework, a pack never needs the engine.</summary>
-    [TestCase(typeof(HomePage), "An AI agent framework")]
+    [TestCase(typeof(HomePage), "AI agent framework")]
     [TestCase(typeof(HomePage), "100% C#")]
     [TestCase(typeof(HomePage), "South Africa")]
     [TestCase(typeof(HomePage), "one person")]
-    [TestCase(typeof(HomePage), "href=\"/identities\"")]
-    [TestCase(typeof(HomePage), "href=\"/architecture\"")]
+    [TestCase(typeof(ArchitecturePage), "href=\"/framework/identities\"")]
+    [TestCase(typeof(HomePage), "href=\"/framework/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
-    [TestCase(typeof(HomePage), "id=\"rule\"")]
-    [TestCase(typeof(HomePage), "First principles.")]
-    [TestCase(typeof(HomePage), "This startup runs on one rule.")]
-    [TestCase(typeof(HomePage), "meaning and purpose")]
-    [TestCase(typeof(HomePage), "Kierkegaard")]
-    [TestCase(typeof(HomePage), "stoic")]
-    [TestCase(typeof(HomePage), "Competition")]
+    [TestCase(typeof(ProofPage), "id=\"rule\"")]
+    [TestCase(typeof(ProofPage), "First principles.")]
+    [TestCase(typeof(ProofPage), "This startup runs on one rule.")]
+    [TestCase(typeof(ProofPage), "meaning and purpose")]
+    [TestCase(typeof(ProofPage), "Kierkegaard")]
+    [TestCase(typeof(ProofPage), "stoic")]
+    [TestCase(typeof(ProofPage), "Competition")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
     [TestCase(typeof(HomePage), "class=\"band band-strip reveal\"")]
-    [TestCase(typeof(HomePage), "The guide")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
@@ -177,13 +177,11 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
-    /// the tour button", then "switch these buttons"): the tour first, then the demos (F122, Louis: "just have a button
-    /// there then called demos", "which takes you to the demo index"), and nothing else; the line above says the guide
-    /// can walk you through.
+    /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, from R500 a month, then "Ask for yours"
+    /// and "See one work", with the tour Louis liked (F118) kept beside them, and Louis taking a lead in the aside.
     /// </summary>
     [Test]
-    public void TheStartSlide_OffersTheTour()
+    public void TheHero_SellsTheWebsiteWithAnAgent()
     {
         using var ctx = new BunitContext();
 
@@ -192,12 +190,17 @@ public class SitePagesTests
         var actions = cut.Find(".hero .actions").Children.ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(actions, Has.Count.EqualTo(2));
-            Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
-            Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Demos"));
+            Assert.That(cut.Find(".hero .kicker").TextContent, Does.Contain("from R500 a month"));
+            Assert.That(cut.Find(".hero h1").TextContent, Does.Contain("website"));
+            Assert.That(actions, Has.Count.EqualTo(3));
+            Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See one work"));
+            Assert.That(actions[2].TextContent, Does.Contain("Take the tour"));
+            Assert.That(actions[0].GetAttribute("href"), Is.EqualTo("/contact"));
             Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
-            Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
+            Assert.That(actions[2].ClassList, Does.Contain("guide-button"));
+            Assert.That(cut.FindAll(".hero .live-lead"), Has.Count.EqualTo(1), "Louis taking a lead, beside it");
+            Assert.That(cut.Find(".hero .live-lead .turn-head").TextContent, Does.Contain("Louis · AI"));
         });
     }
 
@@ -382,8 +385,11 @@ public class SitePagesTests
         Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
     }
 
-    /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>
-    [TestCase(typeof(HomePage), "film-short", "film-detail")]
+    /// <summary>
+    /// The architecture page shows the short film (since F128.1, when it left the landing); How it works the detailed
+    /// one; neither the other's.
+    /// </summary>
+    [TestCase(typeof(ArchitecturePage), "film-short", "film-detail")]
     [TestCase(typeof(HowItWorksPage), "film-detail", "film-short")]
     public void APage_ShowsItsFilm(Type page, string film, string notThisOne)
     {

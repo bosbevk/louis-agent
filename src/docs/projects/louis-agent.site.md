@@ -41,17 +41,28 @@ one animated diagram of it, drawn by the framework's `GraphView` from data in `G
 test: the identity's parts to the page's list, the architecture's boxes to the solution file's groups, the turn's
 pipeline to the middleware's order, the demos to the folders under `demos/` (F111).
 
-The site tells the whole architecture ([ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)): `/` (one page
-that moves, F110: the hero, the one rule, the numbers, the short film as the map of the whole framework, the four
-concepts, what's built on it, the custom-agents band, the contact strip), `/how-it-works` (the detailed film, one turn
-through core, the rules every turn keeps), `/architecture` (every project that ships, by family, `src/site` among them),
-`/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/csharp-ai-agent-framework` (written for
-what people search, F123), `/proof` (the numbers in dollars and rand), `/built-on-it`, `/whats-coming` (planned
-features by id, each marked planned), `/contact`, and the demos: `/demos`, `/coding-agent` (the coding agent fixing a
-bug, recorded once and played back, [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and
-`/triage-demo`. The pages are written from the docs the guide reads, every number from the ledger or an eval run, each
-claim held to the repo by a test; the repository is private, so no page links to it. The landing's `PageHead` carries
-the site's facts for search engines (`Content/SiteFacts.cs`, F123).
+The site sells first and the framework is the proof ([ADR 0112](../adr/0112-the-site-sells-first.md), F128.1), and it
+still tells the whole architecture ([ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)). The menu reads
+What we build · Pricing · Demos · Contact · The framework. `/` is one page that moves (F110), offer first: the hero
+(a website with an agent, from R500 a month, Louis taking a lead beside it), what it does, how it works for you (three
+steps and the facts a buyer trusts), custom agents, the demos, one band of proof (built on a framework of its own,
+measured, with links into it) and a strip that asks a business for theirs. The framework's rule moved to
+`/framework/measured`, its short film and four concepts to `/framework/architecture`. `/what-we-build` and
+`/pricing` (two plans, each a tile with its price) are the selling pages; `/contact`, and the demos: `/demos`,
+`/coding-agent` (the coding agent fixing a bug, recorded once and played back,
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages
+sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
+`/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
+`/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,
+`/framework/packs`, `/framework/build-your-own` (a real program and catalogue), `/framework/measured` (the numbers in
+dollars and rand), `/framework/built-on-it` and `/framework/whats-coming` (planned features by id, each marked
+planned). `/csharp-ai-agent-framework` stays where search found it (F123). The site's host sends each old address on,
+section and all, with a permanent redirect (`MovedPages` in `louis-agent.site-api`), and `SiteLinksTests` holds every
+link on the site to a place on it. The pages are written from the docs the guide reads, every number from the ledger
+or an eval run, each claim held to the repo by a test; the repository is private, so no page links to it. The
+landing's `PageHead` carries the site's facts for search engines (`Content/SiteFacts.cs`, F123). Louis in the corner
+is the guide's identity ([ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)): the widget is titled
+"Louis · AI" and hides his work (`ShowWork="false"`).
 
 **The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its
 container, a floor seen from above, each part a slab raised off it, the turn as a light flying above them with its

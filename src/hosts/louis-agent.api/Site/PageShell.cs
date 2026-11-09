@@ -4,9 +4,9 @@ namespace LouisAgent.Api.Site;
 
 /// <summary>
 /// Puts a rendered page into the site's own index.html (F121): its title, its description, its link card and its
-/// canonical address in the head, its structured data and a breadcrumb (F123), and its words inside the app's element
-/// in place of the loading screen. The app replaces those words when it starts, so a visitor sees the page at once and
-/// a crawler that runs no script reads it.
+/// canonical address in the head, its structured data and a breadcrumb (F123), and its words inside the app's element,
+/// hidden behind the loading screen (F128.1). The app replaces both when it starts, so a visitor sees the loader, never
+/// a bare page, and a crawler that runs no script reads the words.
 /// </summary>
 /// <remarks>
 /// Plain string reading over the site's own file, which the framework's sites share the shape of (ADR 0057: a regular
@@ -99,8 +99,9 @@ public static class PageShell
     }
 
     /// <summary>
-    /// The page's words as the app element's whole content: its closing tag found by counting the elements opened and
-    /// closed inside it, so the loading screen goes and everything after the element stays.
+    /// The page's words inside the app element, hidden after its loading screen (F128.1): a visitor sees the loader
+    /// until the app starts and replaces both, and a crawler reads the words in the HTML. The element's closing tag is
+    /// found by counting the elements opened and closed inside it, so everything after the element stays.
     /// </summary>
     private static string InApp(string html, string body)
     {
@@ -120,6 +121,6 @@ public static class PageShell
         }
 
         int close = at - 4;
-        return html[..inside] + "\n" + body + "\n" + html[close..];
+        return html[..close] + "\n<div class=\"prerendered\" hidden>\n" + body + "\n</div>\n" + html[close..];
     }
 }

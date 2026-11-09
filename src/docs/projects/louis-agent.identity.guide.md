@@ -24,8 +24,12 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   answers from, since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested and has said
   yes ([ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md)), and since F117 the site pack, whose
   one tool takes the visitor to a page or an area of it (the widget hears it and moves the browser).
-- `Prompts/agent/louis-agent-guide/voice.md`: who it is (the guide, a solo project from South Africa; since F110,
-  fun, bubbly and excited, it teaches one thing with every answer and sells by showing, with one nudge at the end,
+- `Prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
+  louis-agent, with his own story told as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four
+  kids, the outdoors, a stoic who reads Kierkegaard; it talks like him, plain, dry and at home, with an idiom where it
+  helps; the widget's title reads "Louis · AI", it says it is the AI the moment that matters, never adds to his story,
+  and leaves the man's work, the call, the lead and a meeting in Cape Town and surrounds, to the real one. It
+  teaches one thing with every answer and sells by showing, with one nudge at the end,
   honest always; since FX72 a salesperson that reads the person: plain words for someone who has never written code,
   no code or file names, and the full technical answer once it knows it talks to a software developer), what we
   sell today (web hosting with an AI agent for small businesses, R500 to R1,000 a month: the one public price, and
@@ -38,6 +42,19 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
 - Its knowledge is the `docs` toolset over `DOCS_ROOT` (the site's image carries the docs; the PC mounts the repo's),
   so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
   (B1).
+
+## Open on purpose
+
+The guide is more open than most agents on business sites (Louis, 2026-11-09: "quite open if compared to how other
+online agents is configured, but that is on purpose"). Many site agents follow a script or a short list of topics,
+turn away anything off it, and never say what they read. This one needs no sign-in (ADR 0099), follows the visitor's
+own questions across the whole framework, reads the docs and says where an answer came from, gives a developer the
+full technical answer, and says plainly when the docs don't cover something. That is the point: the site sells agents,
+and an agent that answers freely and honestly is the demo.
+
+What stays closed is held in code, not by narrowing what it talks about. Its host loads only its three packs, so it has
+no files, git or shell. It sends a lead only on the visitor's yes. It never quotes Louis's own money, numbers, risks or
+notes. A cap limits what a visitor can spend (ADR 0099).
 
 ## Tests
 

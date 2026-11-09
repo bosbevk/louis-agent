@@ -56,3 +56,6 @@
 .band-strip { padding-bottom: 72px; }
 /* The framework's strip in this site's steel, dark words on it. */
 .site { --web-strip-bg: var(--steel); --web-strip-text: var(--bs-body-bg); --web-strip-muted: #3d4148; }
+/* How it works for you (F128.1): the three steps from a call to a live agent, each on its own line, its lead word bright. */
+.buyer-steps { display: grid; gap: 10px; max-width: var(--measure); margin: 0 0 28px; padding-left: 1.3em; color: var(--bs-secondary-color); }
+.buyer-steps strong { color: var(--bs-emphasis-color); }

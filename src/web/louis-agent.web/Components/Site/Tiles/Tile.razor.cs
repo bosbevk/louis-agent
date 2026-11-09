@@ -11,22 +11,44 @@ namespace LouisAgent.Web.Components.Site.Tiles;
 public partial class Tile
 {
     /// <summary>The tile's heading, for a tile of words.</summary>
-    [Parameter] public string? Title { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
 
     /// <summary>The big number, for a tile that shows a measurement.</summary>
-    [Parameter] public string? Value { get; set; }
+    [Parameter]
+    public string? Value { get; set; }
 
     /// <summary>What the number means, under it.</summary>
-    [Parameter] public string? Note { get; set; }
+    [Parameter]
+    public string? Note { get; set; }
 
     /// <summary>How many steps after the row's first tile this one rises; none for the first.</summary>
-    [Parameter] public int Delay { get; set; }
+    [Parameter]
+    public int Delay { get; set; }
 
     /// <summary>The tile's words, as a paragraph.</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
-    /// <summary>A panel that rises; a number's tile also keeps its number and note close together.</summary>
-    private string Classes => Value is null ? "panel reveal" : "panel reveal stat";
+    /// <summary>A colour to set the tile apart, the eval screens' four; none by default.</summary>
+    [Parameter]
+    public TileAccent Accent { get; set; }
+
+    /// <summary>
+    /// A panel that rises; a number's tile also keeps its number and note close together, and an accented tile wears
+    /// its colour's class.
+    /// </summary>
+    private string Classes => (Value is null ? "panel reveal" : "panel reveal stat") + AccentClass;
+
+    /// <summary>The class an accent's colour hangs on, one per colour, read like a table (ADR 0051).</summary>
+    private string AccentClass => Accent switch
+    {
+        TileAccent.Red => " accent-red",
+        TileAccent.Green => " accent-green",
+        TileAccent.Blue => " accent-blue",
+        TileAccent.Yellow => " accent-yellow",
+        _ => "",
+    };
 
     /// <summary>The delay the site's reveal reads, left off the first tile.</summary>
     private string? DelayValue => Delay > 0 ? Delay.ToString(CultureInfo.InvariantCulture) : null;

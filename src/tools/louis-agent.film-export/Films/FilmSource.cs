@@ -21,19 +21,21 @@ public sealed record FilmSource(
     /// <summary>The site's colours are the framework's, so a change there changes how a film looks.</summary>
     private const string Colours = "src/web/louis-agent.web/Styles/web/settings/_colours.scss";
 
-    /// <summary>The 36-second film on the home page.</summary>
-    public static FilmSource Short { get; } = new(FilmName.Short, "/", ".movie", TimeSpan.FromSeconds(36),
-    [
-        Site + "Components/Movies/ShortMovie.razor", Site + "Styles/site/movie/_stage.scss",
-        Site + "Styles/site/movie/_short.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
-    ]);
+    /// <summary>The 36-second film on the architecture page.</summary>
+    public static FilmSource Short { get; } = new(FilmName.Short, "/framework/architecture", ".movie",
+        TimeSpan.FromSeconds(36),
+        [
+            Site + "Components/Movies/ShortMovie.razor", Site + "Styles/site/movie/_stage.scss",
+            Site + "Styles/site/movie/_short.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
+        ]);
 
     /// <summary>The 60-second film on the how-it-works page.</summary>
-    public static FilmSource Detail { get; } = new(FilmName.Detail, "/how-it-works", ".movie", TimeSpan.FromSeconds(60),
-    [
-        Site + "Components/Movies/DetailedMovie.razor", Site + "Styles/site/movie/_stage.scss",
-        Site + "Styles/site/movie/_detail.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
-    ]);
+    public static FilmSource Detail { get; } = new(FilmName.Detail, "/framework/how-it-works", ".movie",
+        TimeSpan.FromSeconds(60),
+        [
+            Site + "Components/Movies/DetailedMovie.razor", Site + "Styles/site/movie/_stage.scss",
+            Site + "Styles/site/movie/_detail.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
+        ]);
 
     /// <summary>Every film the site has.</summary>
     public static IReadOnlyList<FilmSource> All { get; } = [Short, Detail];

@@ -36,19 +36,25 @@ public class PageShellTests
     }
 
     /// <summary>
-    /// The page's words sit inside the app's element, in place of the loading screen; the rest stays.
+    /// The page's words sit inside the app's element, hidden after the loading screen (F128.1, Louis: "we used to have
+    /// a loader that showed"): a visitor sees the loader until the app starts and replaces both, a crawler reads the
+    /// words in the HTML; the rest stays.
     /// </summary>
     [Test]
-    public void TheWords_SitInsideTheApp()
+    public void TheWords_SitInsideTheApp_HiddenBehindTheLoader()
     {
         string html = PageShell.Fill(Index, Page, Site, "/proof", "/proof");
 
         int app = html.IndexOf("<div id=\"app\">", StringComparison.Ordinal);
+        int loader = html.IndexOf("BOOTING LOUIS AGENT", StringComparison.Ordinal);
+        int hidden = html.IndexOf("<div class=\"prerendered\" hidden>", StringComparison.Ordinal);
+        int words = html.IndexOf("<h2>Every number</h2>", StringComparison.Ordinal);
         Assert.Multiple(() =>
         {
-            Assert.That(html.IndexOf("<h2>Every number</h2>", StringComparison.Ordinal), Is.GreaterThan(app));
-            Assert.That(html, Does.Not.Contain("BOOTING LOUIS AGENT"));
-            Assert.That(html, Does.Contain("<div id=\"blazor-error-ui\">"));
+            Assert.That(loader, Is.GreaterThan(app), "the loader shows while the app starts");
+            Assert.That(hidden, Is.GreaterThan(loader));
+            Assert.That(words, Is.GreaterThan(hidden), "the words are in the HTML, out of sight");
+            Assert.That(html.IndexOf("<div id=\"blazor-error-ui\">", StringComparison.Ordinal), Is.GreaterThan(words));
             Assert.That(html, Does.Contain("_framework/blazor.webassembly.js"));
         });
     }

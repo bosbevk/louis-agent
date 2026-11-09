@@ -105,6 +105,13 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public string ResumeQuestion { get; set; } = "Let's carry on with the tour.";
 
+    /// <summary>
+    /// Whether the chat shows the agent's work, what it thought and the tools it called (F128.1). A site's visitor
+    /// may want the answer alone: off, they see its words and a thinking label.
+    /// </summary>
+    [Parameter]
+    public bool ShowWork { get; set; } = true;
+
     /// <summary>A conversation has started and the site offers to pick it up again.</summary>
     private bool CanResume => ResumeLabel is not null && Runner.Chat is { Turns.Count: > 0 };
 
@@ -193,7 +200,13 @@ public partial class ChatWidget : IAsyncDisposable
         if (_pageSentFor != here)
         {
             page = await Module.InvokeAsync<Page?>("pageText");
-            page = page is null ? null : page with { InView = inView, Open = open };
+            page = page is null
+                ? null
+                : page with
+                {
+                    InView = inView,
+                    Open = open
+                };
             _pageSentFor = here;
         }
         else if (inView is not null || open is not null)

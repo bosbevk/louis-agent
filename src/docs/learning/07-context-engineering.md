@@ -197,6 +197,29 @@ now. **No run has tested them yet.**
 count at the start of a run says little. I also compared an unfinished run's repeats with a finished run's, and chained a
 commit to a test run, so one commit went in red (`b4c621cb`, fixed by the next).
 
+## A persona, tuned with its owner (F128.1)
+
+**What it was.** The guide in louis-agent.dev's corner became Louis: the AI version of the man, labelled "Louis · AI",
+with his own story told as "I" (ADR 0113). Its voice was then tuned live with Louis in eight rounds, each a small edit
+to `voice.md`, the container rebuilt, and the same few questions asked through the API, a few cents a round.
+
+**What each round showed.** Every rule overshot a little, and the next round pulled it back:
+
+| Louis said | The voice did | What fixed it |
+|---|---|---|
+| "become me" | Honest, but told his story as "he was born…" | Say it is the AI once, then speak as "I" |
+| "too eager … get the sale" | Asked a restaurant owner's name before they said yes | Details only after they want to go ahead |
+| "he does not sound like fun" | Calm, no exclamation marks: drab | Lively about the work, relaxed about the sale |
+| "max 3 short sentences" | Mostly three, but long ones, and the hello ran over | A rule, and long only when they ask |
+| "do not greet howzit" | Slang from the voice's own example | Proper greetings, the bad word never named |
+| "greet based on the time" | No clock in the prompt | The engine's `GetToday`, and the host's time zone |
+
+**What it taught.** An example in a prompt is copied, word for word ("Howzit" came from the voice's own list), so a
+banned word is described, never quoted. A rule about tone pushes the other way too: "don't push" made it flat until
+"lively" went in beside it. A fact the model can't see (the time) is a tool, not a rule (ADR 0080). And a word-level
+test (`LouisVoiceTests`) holds the rules in place, but only a live chat shows whether the model keeps them; that
+check is F126's eval.
+
 ## Where skill 7 stands
 
 GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured
@@ -212,6 +235,7 @@ that retrieves, ranks and budgets (F9).
 - Why taking a tool away can raise accuracy.
 - Why a check needs a control with the same tools, a count for each way of being wrong, and a right answer for the
   empty case, and why re-scoring stored answers is free.
+- Why an example in a prompt is copied, why a tone rule needs its opposite beside it, and why the time is a tool.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

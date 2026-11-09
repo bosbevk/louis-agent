@@ -25,7 +25,8 @@ public class SiteToolsTests
     [TestCase("/build-your-own")]
     public void ASitePath_IsShown(string path)
     {
-        Assert.That(_tools.ShowPage(path), Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));
+        Assert.That(_tools.ShowPage(path),
+            Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));
     }
 
     /// <summary>Not a page of this site: another host, a scheme, a climb out of the site, a space, an empty path, a bad area.</summary>
@@ -44,6 +45,7 @@ public class SiteToolsTests
     public void AnythingElse_IsRefused_WithTheReason(string path)
     {
         Assert.That(_tools.ShowPage(path),
-            Is.EqualTo($"Not shown: '{path}' isn't a page of this site. Give an address from the page's list: a page such as /packs, or a place on one such as /identities/levels."));
+            Is.EqualTo($"Not shown: '{path}' isn't a page of this site. Give an address from the page's list: a page " +
+                       "such as /framework/packs, or a place on one such as /framework/identities/levels."));
     }
 }

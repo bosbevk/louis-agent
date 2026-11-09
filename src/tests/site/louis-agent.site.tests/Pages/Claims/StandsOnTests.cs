@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using LouisAgent.Site.Pages;
 
-namespace LouisAgent.Site.Tests.Pages;
+namespace LouisAgent.Site.Tests.Pages.Claims;
 
 /// <summary>
 /// What the framework stands on is real (F109.4): every package the Built on it page names is one a project of the

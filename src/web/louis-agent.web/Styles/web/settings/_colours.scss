@@ -1,5 +1,6 @@
 /* The framework's colours: what a site with none of its own looks like. Black and white with metallic greys, set in Geist,
-   the static site's Console theme. The only colours in it are a muted red for errors and an amber for warnings. A site
+   the static site's Console theme. The only colours in it are a muted red for errors, an amber for warnings, and the
+   eval screens' green and blue (F128.1), which a tile may also wear as an accent with the red and the amber. A site
    lists this first and its own colours after, so the same name set twice gives the site's. The names are Bootstrap's, and
    a --web- name where it has none; a site that sets some of them keeps these for the rest. */
 
@@ -10,6 +11,8 @@
     @include colours.both(bs-primary, #ffffff);          // what matters: actions, accents, active states
     @include colours.both(bs-danger, #d9675f);
     @include colours.both(bs-warning, #d4a72c);
+    @include colours.both(bs-info, #7fa8e8);             // the eval screens' blue
+    @include colours.both(web-ok, #6cbf94);              // the eval screens' green; Bootstrap's success is your messages' grey
     @include colours.both(bs-body-bg, #070708);          // the page
     @include colours.both(bs-secondary-bg, #0d0e10);     // a panel
     @include colours.both(bs-tertiary-bg, #15171a);      // the menu

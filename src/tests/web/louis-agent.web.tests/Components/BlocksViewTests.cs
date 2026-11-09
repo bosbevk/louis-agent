@@ -26,13 +26,65 @@ public class BlocksViewTests
         Snapshots.Match("Components/BlocksView.html", cut.Markup);
     }
 
+    /// <summary>
+    /// With its work hidden, an answer is its words and a thinking label (F128.1, Louis: "do not show the tool calls in
+    /// the agent, not its thinking, hide it", then "it must just show the label"): no tool call and no thinking text
+    /// is drawn, so none is in the page to read either.
+    /// </summary>
+    [Test]
+    public async Task WithItsWorkHidden_AnAnswerIsItsWordsAndAThinkingLabel()
+    {
+        var turn = await SessionStreamFixture.ReplayAsync();
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+
+        var cut = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, turn.Blocks).Add(x => x.ShowWork, false));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".tool, .delegation, .thinking-text, details"), Is.Empty);
+            Assert.That(cut.FindAll(".thinking-label"),
+                Has.Count.EqualTo(turn.Blocks.Count(b => b.Kind == BlockKind.Thinking)));
+            Assert.That(cut.FindAll(".markdown"), Has.Count.EqualTo(turn.Blocks.Count(b => b.Kind == BlockKind.Text)));
+        });
+    }
+
+    /// <summary>While it thinks with its work hidden, the label says so, and after, how long it thought.</summary>
+    [Test]
+    public void AHiddenThinkingBlock_ShowsItsLabelAlone()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+        var thinking = new Block
+        {
+            Kind = BlockKind.Thinking,
+            Text = "Eers die winkel."
+        };
+
+        var running = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, [thinking]).Add(x => x.ShowWork, false)
+            .Add(x => x.Streaming, true));
+        thinking.ThinkingSeconds = 3.4;
+        var done = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, [thinking]).Add(x => x.ShowWork, false));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(running.Find(".thinking-label").TextContent, Is.EqualTo("Thinking…"));
+            Assert.That(done.Find(".thinking-label").TextContent, Is.EqualTo("Thought for 3s"));
+            Assert.That(done.Markup, Does.Not.Contain("Eers die winkel."));
+        });
+    }
+
     /// <summary>A thinking block is open while it thinks, and says how long after.</summary>
     [Test]
     public void AThinkingBlock_IsOpenWhileItThinks_AndSaysHowLongAfter()
     {
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
-        var thinking = new Block { Kind = BlockKind.Thinking, Text = "Eers die winkel." };
+        var thinking = new Block
+        {
+            Kind = BlockKind.Thinking,
+            Text = "Eers die winkel."
+        };
 
         var running = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, [thinking]).Add(x => x.Streaming, true));
         Assert.That(running.Find("details.thinking").HasAttribute("open"), Is.True);
@@ -50,7 +102,14 @@ public class BlocksViewTests
     {
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
-        var call = new Block { Kind = BlockKind.Tool, ToolName = "FetchUrl", ToolInput = "{\n  \"url\": \"https://x\"\n}", ToolResult = "Error: 404", ToolFailed = true };
+        var call = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "FetchUrl",
+            ToolInput = "{\n  \"url\": \"https://x\"\n}",
+            ToolResult = "Error: 404",
+            ToolFailed = true
+        };
 
         var cut = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, [call]));
 

@@ -5,9 +5,9 @@ description: The site toolset's guide, loaded with it. When and how to take the 
 # Site
 
 You have one tool, `ShowPage`, that opens a place of this site in the visitor's browser and lights it up for a moment.
-Every place has its own address: a page (`/packs`), a section of one (`/identities/levels`), a card, which opens so
-its story shows (`/identities/puls`), a page of a section paged sideways (`/how-it-works/loop/2`), and the landing's
-sections under `/home` (`/home/rule`). It is for taking someone to what they ask about, not for wandering.
+Every place has its own address: a page (`/framework/packs`), a section of one (`/framework/identities/levels`), a
+card, which opens so its story shows (`/framework/identities/puls`), a page of a section paged sideways
+(`/framework/how-it-works/loop/2`), and the landing's sections under `/home` (`/home/rule`). It is for taking someone to what they ask about, not for wandering.
 
 ## Tools
 

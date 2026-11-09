@@ -9,9 +9,11 @@
 /* Thinking and tools: quiet until opened */
 .thinking summary, .tool summary { cursor: pointer; color: var(--bs-secondary-color); font-size: 13px; list-style: none; user-select: none; }
 .thinking summary::-webkit-details-marker, .tool summary::-webkit-details-marker { display: none; }
-.thinking summary { display: inline-flex; align-items: center; gap: 8px; padding: 3px 10px 3px 8px; border-radius: 999px; transition: background .2s; }
+.thinking summary, .thinking-label { display: inline-flex; align-items: center; gap: 8px; padding: 3px 10px 3px 8px; border-radius: 999px; transition: background .2s; }
 .thinking summary:hover { background: var(--bs-primary-bg-subtle); }
-.thinking summary::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--bs-primary); box-shadow: 0 0 0 3px var(--bs-primary-bg-subtle); }
+/* The label alone, when a chat hides its work (F128.1): the same pill, nothing to open. */
+.thinking-label { color: var(--bs-secondary-color); font-size: 13px; user-select: none; }
+.thinking summary::before, .thinking-label::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--bs-primary); box-shadow: 0 0 0 3px var(--bs-primary-bg-subtle); }
 .thinking[open] > summary { color: var(--bs-emphasis-color); }
 .tool { border: 1px solid var(--bs-border-color); border-radius: 12px; background: var(--bs-secondary-bg); padding: 9px 13px; box-shadow: var(--bs-box-shadow-sm); transition: border-color .2s, box-shadow .2s; }
 .tool:hover { border-color: var(--web-border-hover); box-shadow: var(--bs-box-shadow); }

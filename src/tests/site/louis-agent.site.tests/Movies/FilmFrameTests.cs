@@ -1,5 +1,6 @@
 using LouisAgent.Site.Components.Movies;
 using LouisAgent.Site.Pages;
+using LouisAgent.Site.Pages.Framework;
 
 namespace LouisAgent.Site.Tests.Movies;
 
@@ -41,7 +42,7 @@ public class FilmFrameTests
     }
 
     /// <summary>Both pages play their film in the frame, so both can be paused; the film itself is unchanged.</summary>
-    [TestCase(typeof(HomePage), "film-short")]
+    [TestCase(typeof(ArchitecturePage), "film-short")]
     [TestCase(typeof(HowItWorksPage), "film-detail")]
     public void APage_PlaysItsFilm_InTheFrame(Type page, string film)
     {

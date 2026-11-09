@@ -16,7 +16,7 @@
     {
         @foreach (var turn in Chat.Turns)
         {
-            <TurnView Turn="turn" Streaming="@(Streaming && turn == Chat.Turns[^1])" Currency="Currency" UserActions="UserActions" AnswerActions="AnswerActions" />
+            <TurnView Turn="turn" Streaming="@(Streaming && turn == Chat.Turns[^1])" Currency="Currency" UserActions="UserActions" AnswerActions="AnswerActions" ShowWork="ShowWork" />
         }
     }
 </div>
