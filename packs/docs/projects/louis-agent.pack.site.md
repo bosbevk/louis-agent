@@ -2,7 +2,7 @@
 
 > **Explanation.** How the guide takes a visitor to a page of the site, and to an area of it (F117): one tool, checked
 > here, acted on by the web's widget. **Elsewhere:** the guide that calls it in
-> [louis-agent.identity.expert](../../../demos/louis-agent/docs/projects/louis-agent.identity.expert.md); the widget
+> [louis-agent.identity.guide](../../../src/docs/projects/louis-agent.identity.guide.md); the widget
 > that hears it in [louis-agent.web](../../../src/docs/projects/louis-agent.web.md); how a pack is shaped in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 

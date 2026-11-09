@@ -178,7 +178,10 @@ time. Free checks: the registry search, Claude Desktop against the public server
 
 ## Approved during the build
 
-Nothing yet.
+- **F124 moved the site and renamed the guide (Louis's picks, 2026-11-09).** Read every path here against it: the
+  framework's website is `src/site/louis-agent.site`, its host `src/site/louis-agent.site-api` (the guide on the docs,
+  leads and site packs only), and the guide is `src/site/louis-agent.identity.guide` with the id `louis-agent-guide`
+  (`GuideIdentity`), no longer the demo's expert ([ADR 0111](../adr/0111-the-frameworks-website-lives-in-src-site.md)).
 
 ---
 [Plans](README.md) · Related: [F36 draft](F36-mcp-packs.md) · [ADR 0105](../adr/0105-the-guide-acts-on-the-page-through-a-tool-the-widget-hears.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)

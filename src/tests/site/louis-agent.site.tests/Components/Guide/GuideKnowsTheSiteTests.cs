@@ -82,9 +82,9 @@ public class GuideKnowsTheSiteTests
     public void TheDocTheVoiceNames_HoldsTheOffer(string words)
     {
         string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "demos/louis-agent/docs/projects/louis-agent.code-review.md"));
+            "src/docs/projects/louis-agent.site.md"));
 
-        Assert.That(TheVoice(), Does.Contain("louis-agent.code-review.md"));
+        Assert.That(TheVoice(), Does.Contain("src/docs/projects/louis-agent.site.md"));
         Assert.That(doc, Does.Contain(words));
     }
 

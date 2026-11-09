@@ -3,7 +3,7 @@
 > **Explanation.** What the docs pack does and why it's built this way. **Elsewhere:** the rule behind it in
 > [ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md); building a pack in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md); who uses it, the guide in the site's corner, in the
-> louis-agent demo's [expert identity](../../../demos/louis-agent/docs/projects/louis-agent.identity.expert.md).
+> framework's site's [guide](../../../src/docs/projects/louis-agent.identity.guide.md).
 
 A guide that answers about a project from memory invents; one that reads the project's docs first answers from what
 was written and can say where. This pack gives a model three read-only tools over one folder of markdown: the index,

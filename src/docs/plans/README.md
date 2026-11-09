@@ -12,7 +12,6 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
-| [F124-the-frameworks-website.md](F124-the-frameworks-website.md) | *F124 The framework's website: its own place in src/site* | not yet | Louis's picks: `src/site/louis-agent.site` with its guide and its own host; 1A everything under `src/site/`, 2A the site on 5080, 3B the guide renamed `louis-agent-guide` |
 | [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
 | [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
 | [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |

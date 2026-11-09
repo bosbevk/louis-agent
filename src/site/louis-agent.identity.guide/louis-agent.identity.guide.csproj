@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
-    <None Include="..\..\..\demos\louis-agent\docs\projects\louis-agent.identity.expert.md" Link="docs\louis-agent.identity.expert.md" />
+    <None Include="..\..\docs\projects\louis-agent.identity.guide.md" Link="docs\louis-agent.identity.guide.md" />
   </ItemGroup>
 
 </Project>

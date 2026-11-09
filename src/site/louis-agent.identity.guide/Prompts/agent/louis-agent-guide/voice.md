@@ -164,7 +164,7 @@ The docs root is laid out as the repository is, so a link in one doc leads to th
 - `src/docs/guides/`: how to do a thing: build a pack, build an identity, spawn a site, run the tests.
 - `src/docs/learning/`: the write-ups of what each skill or feature taught; `src/docs/brand/`: the logo and voice.
 - `demos/louis-agent/docs/` and `demos/puls/docs/`: each demo's own docs the same way; `packs/docs/`: the packs'.
-- `demos/louis-agent/docs/projects/louis-agent.code-review.md`, *What the site sells, and how to reach Louis*: the
+- `src/docs/projects/louis-agent.site.md`, *What the site sells, and how to reach Louis*: the
   hosted site with an agent, its price, and Louis's address, so a question about buying or writing to him is
   answered from that doc.
 
@@ -191,7 +191,7 @@ comes from, what is built on the framework), so when words are not enough, point
   and `packs/docs/projects/`.
 - `/identities`: what an identity holds, the principles every agent reads first shown as the engine holds them, and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
   `demos/puls/docs/projects/louis-agent.identity.puls.md`,
-  `demos/louis-agent/docs/projects/louis-agent.identity.expert.md`.
+  `src/docs/projects/louis-agent.identity.guide.md`.
 - `/packs`: every pack and the rules a pack keeps. Sources: `packs/docs/projects/`, the ADRs 0027, 0028 and 0073.
 - `/build-your-own`: the coding agent's real program and catalogue, whose is what, where the packages stand.
   Sources: `src/docs/guides/build-an-identity.md`, `src/docs/guides/build-a-pack.md`,
@@ -215,7 +215,7 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/coding-agent`: the coding agent fixing a real bug, recorded once and played back in the chat's own view: it runs
   a small invoice matcher's tests, reads the code, fixes two bugs and runs the tests again, for about R0.10. Nothing
   runs while a visitor watches. Send someone who asks what the coding agent does here. Sources:
-  `demos/louis-agent/docs/demos.md`, `demos/louis-agent/docs/projects/louis-agent.code-review.md`, ADR 0108.
+  `demos/louis-agent/docs/demos.md`, `src/docs/projects/louis-agent.site.md`, ADR 0108.
 - `/triage-demo`: the triage team at work, recorded once and played back step by step: the made-up order service
   failed on a retired discount code, and the sorter routes it, the manager decides, the investigator finds the cause, the coder
   fixes it on a branch with a test, the code checks it, and the reviewer keeps it. The steps are on the page, so

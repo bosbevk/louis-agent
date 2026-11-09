@@ -2,7 +2,7 @@
 
 > **Explanation.** How the guide tells the owner someone is interested (F112): one tool, a sender behind a seam, and
 > what each setting does. **Elsewhere:** the guide that calls it in
-> [louis-agent.identity.expert](../../../demos/louis-agent/docs/projects/louis-agent.identity.expert.md); how a pack is
+> [louis-agent.identity.guide](../../../src/docs/projects/louis-agent.identity.guide.md); how a pack is
 > shaped in [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
 > **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
