@@ -179,6 +179,25 @@ demos/puls/deploy/azure/louis-agent-app.yaml    src/site/deploy/azure/louis-agen
 | The site's config, compose and Dockerfile | (new), from the demo's `api` service | `src/site/config/`, `src/site/docker/` | — | 9 |
 | `louis-agent-app.yaml` | `demos/puls/deploy/azure/` | `src/site/deploy/azure/` | — | 10 |
 
+## Approved during the build
+
+Unattended (Louis, 2026-11-09: "unattended"); each a call the plan didn't settle, the smallest that keeps every commit
+green, for his review:
+
+- **Steps 4 and 5 are one move.** The pages use the components (the hero, the films, the guide's chat), and the site may
+  not reference the demo, so neither half builds alone.
+- **Step 1's new group broke two of the site's own tests** (ADR 0100), so step 2 named `src/site` on the Architecture page
+  and its graph, and added the `SiteFamily` section, instead of waiting for step 11.
+- **The code-review chat no longer sends visitors away** (the FX88 gate): the app is no longer public, and with the chat at
+  `/` the gate would loop. `SiteDoors` stays with the site, where its links to the recording use it.
+- **The site's not-found page lives in `Errors/`**, outside `Pages/`, so the tests that hold every page to a description, the
+  sitemap and the guide's voice don't count a 404.
+- **The films' recorded hashes are renewed for the move.** The hash includes each file's path; the films didn't change,
+  only where their files live. A real re-export follows once the site has its own host (step 7).
+- **`SiteRoutesTests` went back to code review**: it holds that app's router and admin frame, not the site's.
+- **The film export tool moves to `src/tools/`** (Louis: "move the film export to here"), with its tests, as its own
+  commit after this step.
+
 ## Steps
 
 Each is one commit with its test, seen failing first where it changes behaviour; a pure move is held by the tests it

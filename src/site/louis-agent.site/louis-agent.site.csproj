@@ -18,6 +18,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" />
+    <!-- The guide's name, for its chat in the corner (F109.3); the guide itself runs on the site's host. -->
+    <ProjectReference Include="..\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />
+    <!-- F106.3.4: the triage pack's demo, played on /triage-demo. -->
+    <ProjectReference Include="..\..\..\packs\web\louis-agent.pack.triage.web\louis-agent.pack.triage.web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The principles every agent reads first, shown on the Identities page as they are (FX74, Louis: "this should be
+         public"). The engine's own file, embedded here by link, so the page can never drift from it; a test holds the
+         two equal. When the engine ships as a package the page reads the package's copy instead. -->
+    <EmbeddedResource Include="..\..\engine\louis-agent.core\Prompts\shared\principles.md" Link="Content\principles.md" LogicalName="principles.md" />
   </ItemGroup>
 
 </Project>

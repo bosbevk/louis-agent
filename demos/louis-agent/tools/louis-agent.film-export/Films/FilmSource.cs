@@ -18,20 +18,23 @@ public sealed record FilmSource(
 {
     private const string App = "demos/louis-agent/web/louis-agent.code-review/";
 
+    /// <summary>The framework's own site, where the films play since F124.</summary>
+    private const string Site = "src/site/louis-agent.site/";
+
     /// <summary>The site's colours are the framework's, so a change there changes how a film looks.</summary>
     private const string Colours = "src/web/louis-agent.web/Styles/web/settings/_colours.scss";
 
     /// <summary>The 36-second film on the home page.</summary>
     public static FilmSource Short { get; } = new(FilmName.Short, "/", ".movie", TimeSpan.FromSeconds(36),
     [
-        App + "Components/Movies/ShortMovie.razor", App + "Styles/site/movie/_stage.scss",
+        Site + "Components/Movies/ShortMovie.razor", App + "Styles/site/movie/_stage.scss",
         App + "Styles/site/movie/_short.scss", App + "Styles/site/settings/_tokens.scss", Colours,
     ]);
 
     /// <summary>The 60-second film on the how-it-works page.</summary>
     public static FilmSource Detail { get; } = new(FilmName.Detail, "/how-it-works", ".movie", TimeSpan.FromSeconds(60),
     [
-        App + "Components/Movies/DetailedMovie.razor", App + "Styles/site/movie/_stage.scss",
+        Site + "Components/Movies/DetailedMovie.razor", App + "Styles/site/movie/_stage.scss",
         App + "Styles/site/movie/_detail.scss", App + "Styles/site/settings/_tokens.scss", Colours,
     ]);
 

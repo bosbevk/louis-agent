@@ -171,7 +171,8 @@ public partial class ArchitectureTests
     // Pending's. ----
 
     /// <summary>
-    /// The engine never reaches for an identity or a pack, by reference or by namespace; the contracts are what they share.
+    /// The engine never reaches for an identity or a pack, by reference or by namespace; the contracts are what they
+    /// share.
     /// </summary>
     [Test]
     public void Core_ReferencesNoIdentityOrPack()
@@ -406,7 +407,9 @@ public partial class ArchitectureTests
 
     /// <summary>
     /// A framework project ships as a package, and a package can't point at someone's project: the program that uses it
-    /// names the packs, never the framework. A project that has stopped pointing out comes off the list.
+    /// names the packs, never the framework. A project that has stopped pointing out comes off the list. The
+    /// framework's own site (<c>src/site/</c>, F124) ships no package and may use packs; <c>SiteBoundaryTests</c>
+    /// holds it.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0074-the-folders-say-what-ships.md">ADR 0074: framework and implementation are split</seealso>
     [Test]
@@ -415,6 +418,8 @@ public partial class ArchitectureTests
         string src = Path.Combine(TestPaths.RepoRoot, "src");
         var pointing = Directory.EnumerateFiles(src, "*.csproj", SearchOption.AllDirectories)
             .Where(file => !TestPaths.InTestProject(Path.GetRelativePath(src, file).Replace('\\', '/')))
+            .Where(file => !Path.GetRelativePath(src, file).Replace('\\', '/')
+                .StartsWith("site/", StringComparison.Ordinal))
             .Where(file => File.ReadAllLines(file).Any(PointsOutsideTheFramework))
             .Select(file => Path.GetFileNameWithoutExtension(file))
             .ToHashSet();

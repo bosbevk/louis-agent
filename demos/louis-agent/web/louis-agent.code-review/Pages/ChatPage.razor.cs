@@ -1,4 +1,3 @@
-using LouisAgent.CodeReview.Content;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Chat.Shell;
 using Microsoft.AspNetCore.Components;
@@ -20,16 +19,10 @@ public partial class ChatPage
 
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatHandoff Handoff { get; set; } = null!;
-    [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     /// <summary>The chat the address names; null for a new one.</summary>
-    [Parameter] public string? SessionId { get; set; }
-
-    /// <summary>While the chat is closed to visitors (FX88), the address leads back to the landing.</summary>
-    protected override void OnInitialized()
-    {
-        if (!SiteDoors.CodingAgent) Navigation.NavigateTo("/", replace: true);
-    }
+    [Parameter]
+    public string? SessionId { get; set; }
 
     /// <summary>A prompt from an admin screen waits in the box, for the person to read and send.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
