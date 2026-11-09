@@ -45,8 +45,9 @@ The site sells first and the framework is the proof ([ADR 0112](../adr/0112-the-
 still tells the whole architecture ([ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)). The menu reads
 What we build · Pricing · Demos · Contact · The framework. `/` is one page that moves (F110), offer first: the hero
 (a website with an agent, from R500 a month, Louis taking a lead beside it), what it does, how it works for you (three
-steps and the facts a buyer trusts), custom agents, the demos, then the framework (the one rule, the numbers, the
-short film, the four concepts, what's built on it) and a strip that asks a business for theirs. `/what-we-build` and
+steps and the facts a buyer trusts), custom agents, the demos, one band of proof (built on a framework of its own,
+measured, with links into it) and a strip that asks a business for theirs. The framework's rule moved to
+`/framework/measured`, its short film and four concepts to `/framework/architecture`. `/what-we-build` and
 `/pricing` (two plans, each a tile with its price) are the selling pages; `/contact`, and the demos: `/demos`,
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages

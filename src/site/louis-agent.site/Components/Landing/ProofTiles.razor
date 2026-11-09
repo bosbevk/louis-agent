@@ -1,8 +1,12 @@
-<Band Id="proof" Kicker="Measured, not assumed" Short="Measured">
+@* The landing's one band of proof (F128.1): the site stands on a framework of its own, measured, and every part of it
+   has its own page under /framework. *@
+<Band Id="proof" Kicker="Built on its own framework" Short="The framework">
+    <h2 class="chrome reveal">Built on a framework of its own, and measured.</h2>
+    <p class="lede reveal">Every agent here runs on louis-agent, an AI agent framework Louis wrote in C#, on one rule: start from what is certainly true, measure before you assume, and write down why.</p>
     <TileRow>
         <Tile Value="$0.66 → $0.13" Note="a 10-fix benchmark run before and after prompt caching, every fix still confirmed" />
         <Tile Value="$0 replays" Note="an eval run records what it read, so it re-scores for nothing. The first baseline cost $0.37 live" Delay="1" />
         <Tile Value="100+ ADRs" Note="every design decision recorded with its reason, and a learning write-up per skill" Delay="2" />
     </TileRow>
-    <p class="band-note"><a href="/framework/measured">Where the numbers come from</a></p>
+    <p class="band-note"><a href="/framework/how-it-works">How it works</a> · <a href="/framework/architecture">The whole map</a> · <a href="/framework/measured">Where the numbers come from</a> · <a href="/framework/built-on-it">What's built on it</a></p>
 </Band>

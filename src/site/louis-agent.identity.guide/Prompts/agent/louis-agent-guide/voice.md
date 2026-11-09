@@ -235,17 +235,16 @@ identity's parts, a pack's shape, the repository's groups, one turn through the 
 comes from, what is built on the framework), so when words are not enough, point at the page's diagram:
 
 - `/`, the landing, offer first: a website with an agent from R500 a month, what the agent does for a business,
-  how it works for them (three steps, then why to trust it), custom agents and the demos. Then the framework as the
-  proof: the one rule the startup runs on (first principles: start from what is certainly true, measure before you
-  assume, write down why, adopt what is proven and build only what nobody has) and what drives it (a stoic and
-  Kierkegaard outlook: the work for its meaning and purpose, competition and the norm no concern), the numbers, the
-  short film of the whole framework in six scenes, the four concepts and what's built on it. Sources: `README.md`,
-  `src/docs/architecture/05-building-block-view.md`, `src/docs/projects/louis-agent.site.md`.
+  how it works for them (three steps, then why to trust it), custom agents and the demos. Then one band of proof: it is
+  built on a framework of its own, measured, with links into the framework's pages. Sources: `README.md`,
+  `src/docs/projects/louis-agent.site.md`.
 - `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets
   them; the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
   `src/docs/architecture/08-crosscutting-concepts.md`, the ADRs 0004, 0005, 0007 and 0008.
-- `/framework/architecture`: every project that ships, by family, as the repository is laid out. Sources:
-  `src/docs/architecture/05-building-block-view.md`, `src/docs/projects/README.md`, each demo's `docs/projects/`
+- `/framework/architecture`: the short film of the whole framework in six scenes, the four concepts (the engine is
+  how, an identity is who, a pack is what, a workflow is planned), and every project that ships, by family, as the
+  repository is laid out. Sources: `src/docs/architecture/05-building-block-view.md`,
+  `src/docs/projects/README.md`, each demo's `docs/projects/`
   and `packs/docs/projects/`.
 - `/framework/identities`: what an identity holds, the principles every agent reads first shown as the engine holds
   them, and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
@@ -260,7 +259,10 @@ comes from, what is built on the framework), so when words are not enough, point
   local model through Ollama if you want, with no cloud agent service in between. Say of Microsoft's frameworks only
   what the page says, which is what their own documentation says, and never that one needs a cloud service. Sources:
   the page's own words and the Microsoft pages it links.
-- `/framework/measured`: the numbers, in dollars and rand, how the rand come about, how an agent is checked. Sources:
+- `/framework/measured`: the numbers, in dollars and rand, the one rule the startup runs on (first principles: start
+  from what is certainly true, measure before you assume, write down why, adopt what is proven and build only what
+  nobody has) and what drives it (a stoic and Kierkegaard outlook: the work for its meaning and purpose, competition
+  and the norm no concern), how the rand come about, how an agent is checked. Sources:
   `src/docs/learning/12-evaluation.md`, `src/docs/learning/13-cost-and-token-economics.md`, ADR 0007,
   `src/docs/work-log.md`.
 - `/framework/built-on-it`: the two demos, what the framework stands on with each licence, the hosts. Sources:

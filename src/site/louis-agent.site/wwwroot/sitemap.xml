@@ -16,19 +16,7 @@
     <loc>https://louis-agent.dev/home/demos</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/home/rule</loc>
-  </url>
-  <url>
     <loc>https://louis-agent.dev/home/proof</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/home/how</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/home/concepts</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/home/built</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/home/contact</loc>
@@ -62,6 +50,12 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/architecture</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/architecture/how</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/architecture/concepts</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/architecture/engine</loc>
@@ -161,6 +155,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/measured</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/measured/rule</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/measured/rand</loc>

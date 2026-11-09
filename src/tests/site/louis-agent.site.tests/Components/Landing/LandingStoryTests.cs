@@ -1,4 +1,6 @@
 using LouisAgent.Site.Pages;
+using LouisAgent.Site.Pages.Framework;
+using LouisAgent.Site.Tests.Pages;
 
 namespace LouisAgent.Site.Tests.Components.Landing;
 
@@ -9,7 +11,10 @@ namespace LouisAgent.Site.Tests.Components.Landing;
 /// </summary>
 public class LandingStoryTests
 {
-    /// <summary>The sections, in the order a buyer meets them.</summary>
+    /// <summary>
+    /// The sections, in the order a buyer meets them, and the framework as one band of proof (Louis: "I thought we will
+    /// rework it and move framework stuff out"): its rule, film, concepts and what's built on it live on its own pages.
+    /// </summary>
     [Test]
     public void TheLanding_TellsItsStory_OfferFirst()
     {
@@ -18,10 +23,41 @@ public class LandingStoryTests
         var cut = ctx.Render<HomePage>();
 
         Assert.That(cut.FindAll("section").Select(section => section.Id),
-            Is.EqualTo(new[]
-            {
-                "top", "does", "for-you", "custom", "demos", "rule", "proof", "how", "concepts", "built", "contact"
-            }));
+            Is.EqualTo(new[] { "top", "does", "for-you", "custom", "demos", "proof", "contact" }));
+    }
+
+    /// <summary>The proof band says what the site stands on and leads into the framework's own pages.</summary>
+    [TestCase("/framework/how-it-works")]
+    [TestCase("/framework/architecture")]
+    [TestCase("/framework/measured")]
+    [TestCase("/framework/built-on-it")]
+    public void TheProofBand_LeadsIntoTheFramework(string address)
+    {
+        using var ctx = new BunitContext();
+
+        var band = ctx.Render<HomePage>().Find("section#proof");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(band.TextContent, Does.Contain("framework of its own"));
+            Assert.That(band.QuerySelectorAll($"a[href='{address}']"), Has.Length.EqualTo(1));
+        });
+    }
+
+    /// <summary>What left the landing has a home on the framework's pages.</summary>
+    [Test]
+    public void WhatLeftTheLanding_LivesOnTheFrameworksPages()
+    {
+        using var ctx = SitePageContext.Create();
+
+        string measured = ctx.Render<ProofPage>().Markup;
+        string architecture = ctx.Render<ArchitecturePage>().Markup;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(measured, Does.Contain("First principles."));
+            Assert.That(architecture, Does.Contain("film-short").And.Contain("The engine is how"));
+        });
     }
 
     /// <summary>How it works for you is three steps, then the facts a buyer trusts.</summary>

@@ -102,20 +102,19 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "100% C#")]
     [TestCase(typeof(HomePage), "South Africa")]
     [TestCase(typeof(HomePage), "one person")]
-    [TestCase(typeof(HomePage), "href=\"/framework/identities\"")]
+    [TestCase(typeof(ArchitecturePage), "href=\"/framework/identities\"")]
     [TestCase(typeof(HomePage), "href=\"/framework/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
-    [TestCase(typeof(HomePage), "id=\"rule\"")]
-    [TestCase(typeof(HomePage), "First principles.")]
-    [TestCase(typeof(HomePage), "This startup runs on one rule.")]
-    [TestCase(typeof(HomePage), "meaning and purpose")]
-    [TestCase(typeof(HomePage), "Kierkegaard")]
-    [TestCase(typeof(HomePage), "stoic")]
-    [TestCase(typeof(HomePage), "Competition")]
+    [TestCase(typeof(ProofPage), "id=\"rule\"")]
+    [TestCase(typeof(ProofPage), "First principles.")]
+    [TestCase(typeof(ProofPage), "This startup runs on one rule.")]
+    [TestCase(typeof(ProofPage), "meaning and purpose")]
+    [TestCase(typeof(ProofPage), "Kierkegaard")]
+    [TestCase(typeof(ProofPage), "stoic")]
+    [TestCase(typeof(ProofPage), "Competition")]
     [TestCase(typeof(HomePage), "Custom agents")]
     [TestCase(typeof(IdentitiesPage), "Never lie.")]
     [TestCase(typeof(HomePage), "class=\"band band-strip reveal\"")]
-    [TestCase(typeof(HomePage), "The guide")]
     [TestCase(typeof(BuiltOnItPage), "The guide")]
     [TestCase(typeof(HomePage), "closed Docker container")]
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
@@ -386,8 +385,11 @@ public class SitePagesTests
         Assert.That(cut.FindAll(".panel.reveal"), Has.Count.GreaterThanOrEqualTo(6));
     }
 
-    /// <summary>The landing shows the short film; How it works the detailed one; neither the other's.</summary>
-    [TestCase(typeof(HomePage), "film-short", "film-detail")]
+    /// <summary>
+    /// The architecture page shows the short film (since F128.1, when it left the landing); How it works the detailed
+    /// one; neither the other's.
+    /// </summary>
+    [TestCase(typeof(ArchitecturePage), "film-short", "film-detail")]
     [TestCase(typeof(HowItWorksPage), "film-detail", "film-short")]
     public void APage_ShowsItsFilm(Type page, string film, string notThisOne)
     {
