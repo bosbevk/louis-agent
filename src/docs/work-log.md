@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 82 | 73 |
-| Fixes (`FX`) | 107 | 6 |
+| Fixes (`FX`) | 108 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -215,10 +215,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (97 done)
+## Fixes (98 done)
 
 | Id | When | What |
 |---|---|---|
+| FX116 | 2026-11-09 | On a phone the guide is a sheet over the bottom half of the screen, so the page it walks stays in view |
 | FX115 | 2026-11-09 | On a phone the guide opens full screen again, above the header: the bottom bar lost its blur, which had trapped the panel |
 | FX114 | 2026-11-09 | With a page's tour, the folded corner offers the tour alone, which opens the guide; "Ask the guide" goes |
 | FX113 | 2026-11-09 | On a phone the tour and the guide's button sit side by side in a slim bar across the bottom, and the page's room ends above it |
