@@ -52,10 +52,13 @@ department for the hand-off (F106.3.5).
 
 `packs/web/louis-agent.pack.triage.web` (F106.3.4, ADR 0086) is the demo a site plays: `TriagePlayer` fetches a run
 file, reads it with `TriageRunFile` (the recorder's own lines), and plays it a step at a time, a reading beat apart:
-`TriageStage` lights the agent at work among the workflow and the five agents, `StepPopup` says who took the step,
-what it did, why in its own words and what that kind of step is (`StepWords`), the steps so far gather in a list a
-visitor and the guide can read, and the site's ending shows once the case is closed. Back and next stop the play;
-play again starts it over. The words are `TriageWords`, English by default and a site's own when given; the styles
+The player lays out two columns (F122): on the left the site's `Intro`, the stage and the controls, with the site's
+`Actions` at the end of the controls and its ending under them once the case is closed; on the right `StepPopup`, which
+says who took the step, what it did, why in its own words and what that kind of step is (`StepWords`), and under it
+the steps so far, a list a visitor and the guide can read, scrolling inside the column. `TriageStage` draws the team
+as swimlanes: a lane per agent, the one at work lit, each step played a numbered dot in its agent's lane joined in
+order, a dot showing its step; where the dots go is `Runs/SwimlaneLayout`, plain code with its own tests. Back and
+next stop the play; play again starts it over. The words are `TriageWords`, English by default and a site's own when given; the styles
 are `Styles/pack-triage/_demo.scss`, which a site forwards. It references the framework's web, never the pack, so it
 keeps its own copy of a step (`TriageStepView`), and `louis-agent.pack.triage.web.tests` writes a step with the
 recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/triage-demo` until

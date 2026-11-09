@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 82 | 73 |
+| Features (`F`) | 83 | 73 |
 | Fixes (`FX`) | 111 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
@@ -128,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (82 done)
+## Features (83 done)
 
 | Id | When | What |
 |---|---|---|
+| F122 | 2026-11-09 | The demos in one place: a Demos menu in the header and a Demos button in the hero lead to `/demos`, a tile per demo; the triage demo moves to `/triage-demo`, two columns with the team as swimlanes, one whole section (a band may stay unpaged); `docs/demos.md` explains each demo for the guide; the recordings end with a plain small guide button inside their window |
 | F121 | 2026-11-09 | Every page served as HTML, for search engines: a page declares a `PageDescription` beside its title (all of the three sites' pages do, held by a test per site), and the framework's `MapLouisAgentSite` renders it with `HtmlRenderer` into the site's `index.html` on its first request, with its own title, description, link card, canonical link and words, kept until the next deploy (ADR 0109); a chat or admin page keeps the plain shell, an unknown address 404 |
 | F106.3.4 | 2026-11-09 | The triage demo on /try: one real triage of the order service, recorded by a script that does the workflow's part, played step by step by the triage pack's new web views (the stage, a popup per step, the steps as a list), the hero's "Watch a triage" leading there; found FX107 and FX108 |
 | F106.3.2 | 2026-11-09 | The triage identity: the manager's voice, the sorter, investigator and reviewer as roles, each ending with a typed tool of the triage pack (`SortCase` new), loaded by the coding catalogue; the convertibility check shared; an eval per role at a specialist's level (an eval mode names its depth), passed live on Haiku for about R0.15 |
