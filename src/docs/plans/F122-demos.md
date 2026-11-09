@@ -103,6 +103,14 @@ sequenceDiagram
   shaped as **two columns** ("both text lists can be under one another in the second column"): on the left the
   kicker, heading, intro, the six agents and Back / Next / Play it again; on the right the current step's card at
   the top and the list of steps under it, scrolling inside the column so the page fits a slide.
+- **The triage team as swimlanes** (Louis: "can we have swimlanes for these buttons", his pick of three, "lanes with
+  steps"): a lane per agent, each step a numbered dot in its agent's lane joined by one line, a dot showing its step;
+  where the dots go is `SwimlaneLayout`, plain code with its own tests.
+- **The triage page stays one section** (Louis at 1080p: "this must be one section"): the framework's `Band` gains
+  `Paged="false"`, which the frame's module never pages; the swimlanes scale to 24% of the screen's height.
+- **"Ask the guide what happened" joins the controls' row** at its end once the case is closed (Louis: "move this
+  button to"), through the player's new `Actions` slot; the offer line stays under them.
+- **The menu at the end of the bar opens its list right-aligned** (Louis: "bug", the Demos list ran off the screen).
 - **The triage demo is at `/triage-demo`** (Louis: "should just say triage-demo"), no redirect from `/try` (ADR 0049).
 - **The recording's closing button is a plain small button** (Louis on `/coding-agent`: "too big just button",
   "the panel should leave space for the button"): "Ask the guide about one" takes the small line style of "Play it

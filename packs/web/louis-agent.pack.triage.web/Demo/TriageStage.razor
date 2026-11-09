@@ -1,7 +1,23 @@
-@* The team on the stage (F106.3.4): the workflow and the five agents, the one at work lit. *@
-<div class="triage-stage" role="img" aria-label="@AriaLabel">
-    @foreach (string agent in AgentWords.Stage)
+@* The team as swimlanes (F122, Louis's pick of three): a lane per agent with its name, the agent at work lit, each
+   step played a numbered dot in its agent's lane joined by one line, the step on screen lit; a dot shows its step. *@
+<svg class="triage-stage" viewBox="0 0 @Width @SwimlaneLayout.Height" role="img" aria-label="@AriaLabel">
+    @for (int lane = 0; lane < AgentWords.Stage.Count; lane++)
     {
-        <div class="stage-agent @(agent == Lit ? "is-lit" : "")" data-agent="@agent">@AgentWords.Of(agent, Words)</div>
+        string agent = AgentWords.Stage[lane];
+        <g class="stage-agent @(agent == Lit ? "is-lit" : "")" data-agent="@agent">
+            <rect class="lane" x="0" y="@(lane * SwimlaneLayout.LaneHeight)" width="@Width"
+                  height="@SwimlaneLayout.LaneHeight" />
+            <text class="lane-name" x="10" y="@(lane * SwimlaneLayout.LaneHeight + SwimlaneLayout.LaneHeight / 2)">
+                @AgentWords.Of(agent, Words)
+            </text>
+        </g>
     }
-</div>
+    <path class="lane-line" d="@SwimlaneLayout.Line(Dots)" />
+    @foreach (var dot in Dots)
+    {
+        <g class="lane-dot @(dot.Step == Current ? "is-current" : "")" @onclick="() => OnPick.InvokeAsync(dot.Step)">
+            <circle cx="@dot.X" cy="@dot.Y" r="11" />
+            <text x="@dot.X" y="@dot.Y">@(dot.Step + 1)</text>
+        </g>
+    }
+</svg>

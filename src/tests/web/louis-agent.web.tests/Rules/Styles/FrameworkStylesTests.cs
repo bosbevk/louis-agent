@@ -153,6 +153,15 @@ public partial class FrameworkStylesTests
     public void ARecordingsEnding_FitsInsideItsWindow(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
+    /// <summary>
+    /// The menu at the end of the bar opens its list towards the page (F122, Louis: "bug", the Demos list cut off at
+    /// the screen's right edge): right-aligned under its label instead of left.
+    /// </summary>
+    [Test]
+    public void TheLastMenu_OpensItsListTowardsThePage() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+            Does.Contain(".site-menu:last-child .site-menu-list { left: auto; right: -14px; }"));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

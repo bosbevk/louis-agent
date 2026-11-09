@@ -8,15 +8,17 @@
 <PageTitle>Watch a triage · louis-agent</PageTitle>
 <PageDescription Text="Watch a team of louis-agent agents triage a real error: sort it, find the cause, fix it on a branch with a test and review the fix." />
 
-<Band Id="top" Kicker="The triage team">
+<Band Id="top" Kicker="The triage team" Paged="false">
     <TriagePlayer Source="recordings/triage-run.jsonl">
         <Intro>
             <h2 class="chrome">Watch a team triage a real error.</h2>
             <p class="lede">A made-up order service failed on a retired discount code. A team of agents sorts the error, decides what it gets, finds the cause, fixes it on a branch with a test, and reviews the fix, while code between them checks every step. This is that run, recorded once and played back. Nothing runs while you watch.</p>
         </Intro>
+        <Actions>
+            <GuideButton Class="is-plain" Question="I watched the triage team fix the order service. What just happened, and could I get a team like that?">Ask the guide what happened</GuideButton>
+        </Actions>
         <Ending>
             <p class="recorded-offer">Want a team like this on your own services? <a href="/contact">Ask for yours</a>.</p>
-            <GuideButton Class="is-plain" Question="I watched the triage team fix the order service. What just happened, and could I get a team like that?">Ask the guide what happened</GuideButton>
         </Ending>
     </TriagePlayer>
 </Band>

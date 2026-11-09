@@ -13,24 +13,31 @@
 }
 .triage-side .triage-steps { min-height: 0; overflow-y: auto; padding-right: 6px; }
 
-/* The stage: the workflow and five agents in the order a case meets them, the manager as the hub. */
-.triage-stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.stage-agent {
-    border: 1px solid var(--bs-border-color);
-    border-radius: 10px;
-    padding: 14px 10px;
-    text-align: center;
-    font: 600 13px var(--bs-font-monospace);
-    color: var(--bs-tertiary-color);
-    background: var(--bs-secondary-bg);
-    transition: color .3s, border-color .3s, box-shadow .3s, transform .3s;
+/* The stage as swimlanes (F122): a lane per agent in the order a case meets them, its name at the left, the lane at
+   work lit; the steps as numbered dots joined by one line, the step on screen filled. */
+/* The picture scales down evenly to a share of the screen's height, so the column fits a short screen whole. */
+.triage-stage { display: block; width: 100%; height: auto; max-height: 24dvh; overflow: visible; }
+.triage-stage .lane { fill: none; stroke: var(--bs-border-color); stroke-width: 1; transition: fill .3s; }
+.triage-stage .lane-name {
+    font: 600 12px var(--bs-font-monospace);
+    fill: var(--bs-tertiary-color);
+    dominant-baseline: central;
+    transition: fill .3s;
 }
-.stage-agent.is-lit {
-    color: var(--bs-emphasis-color);
-    border-color: var(--bs-emphasis-color);
-    box-shadow: 0 0 0 3px rgba(var(--bs-emphasis-color-rgb), .12);
-    transform: translateY(-2px);
+.triage-stage .stage-agent.is-lit .lane { fill: rgba(var(--bs-emphasis-color-rgb), .06); }
+.triage-stage .stage-agent.is-lit .lane-name { fill: var(--bs-emphasis-color); }
+.triage-stage .lane-line { fill: none; stroke: var(--bs-secondary-color); stroke-width: 1.5; }
+.triage-stage .lane-dot { cursor: pointer; }
+.triage-stage .lane-dot circle { fill: var(--bs-secondary-bg); stroke: var(--bs-border-color); stroke-width: 1.5; }
+.triage-stage .lane-dot text {
+    font: 600 11px var(--bs-font-monospace);
+    fill: var(--bs-secondary-color);
+    text-anchor: middle;
+    dominant-baseline: central;
 }
+.triage-stage .lane-dot:hover circle { stroke: var(--bs-emphasis-color); }
+.triage-stage .lane-dot.is-current circle { fill: var(--bs-emphasis-color); stroke: var(--bs-emphasis-color); }
+.triage-stage .lane-dot.is-current text { fill: var(--bs-body-bg); }
 
 /* The popup: who, what, why, and what that kind of step is, rising in as each step lands. */
 .step-popup {
@@ -69,6 +76,8 @@
     font-size: 13px;
 }
 .triage-controls button:disabled { opacity: .4; }
+/* The site's buttons at the end of the controls' row once the case is closed (F122). */
+.triage-actions { margin-left: auto; }
 
 /* The steps so far: what the guide reads of the page, and a visitor's record of the run. */
 .triage-steps {
@@ -81,7 +90,18 @@
     color: var(--bs-secondary-color);
 }
 .triage-steps li.is-current { color: var(--bs-emphasis-color); }
-.triage-end { border-top: 1px solid var(--bs-border-color); padding-top: 14px; }
+/* The site's ending under the controls: its words on the left and its button at the right end of the same line, as
+   the coding agent's recording ends (Louis: "move the button to there"), wrapping under them when narrow. */
+.triage-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid var(--bs-border-color);
+    padding-top: 14px;
+}
+.triage-end p { margin: 0; }
 
 @media (max-width: 900px) {
     .triage-player { grid-template-columns: minmax(0, 1fr); }

@@ -65,6 +65,48 @@ public class TriagePlayerTests
         });
     }
 
+    /// <summary>
+    /// The stage is swimlanes (F122): a dot per step played, the one on screen lit, and a click on a dot shows that
+    /// step.
+    /// </summary>
+    [Test]
+    public void ADot_ShowsItsStep()
+    {
+        using var ctx = Context();
+        var cut = Render(ctx);
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+
+        cut.FindAll(".triage-stage .lane-dot")[2].Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".triage-stage .lane-dot"), Has.Count.EqualTo(9));
+            Assert.That(cut.FindAll(".triage-stage .lane-dot.is-current"), Has.Count.EqualTo(1));
+            Assert.That(cut.Find(".triage-stage .lane-dot.is-current").TextContent.Trim(), Is.EqualTo("3"));
+            Assert.That(cut.Find(".triage-stage .is-lit").GetAttribute("data-agent"), Is.EqualTo("manager"));
+        });
+    }
+
+    /// <summary>
+    /// The site's actions join the controls once the case is closed (F122, Louis: "move this button to" the end of
+    /// the controls' row), and not before.
+    /// </summary>
+    [Test]
+    public void TheSitesActions_JoinTheControls_OnceTheCaseIsClosed()
+    {
+        using var ctx = Context();
+        RenderFragment ask = builder => builder.AddMarkupContent(0, "<button class=\"ask\">Ask</button>");
+
+        var cut = ctx.Render<TriagePlayer>(parameters => parameters
+            .Add(player => player.Source, Source)
+            .Add(player => player.Pace, 0)
+            .Add(player => player.Actions, ask)
+            .Add(player => player.Ending, Offer));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
+        Assert.That(cut.FindAll(".triage-controls .triage-actions .ask"), Has.Count.EqualTo(1));
+    }
+
     /// <summary>Played through, every step is in the list, the last one is shown, and the ending follows.</summary>
     [Test]
     public void TheRun_PlaysThrough_ToItsEnding()

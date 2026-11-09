@@ -6,11 +6,16 @@
         @Intro
         @if (Current is { } step)
         {
-            <TriageStage Lit="@step.Agent" Words="Words" />
+            <TriageStage Lit="@step.Agent" Played="PlayedAgents" Total="Steps.Count" Current="_at" OnPick="Pick"
+                         Words="Words" />
             <div class="triage-controls">
                 <button class="triage-back" type="button" @onclick="Back" disabled="@AtStart">@Words.Back</button>
                 <button class="triage-next" type="button" @onclick="Next" disabled="@AtEnd">@Words.Next</button>
                 <button class="triage-again" type="button" @onclick="PlayAsync">@Words.PlayAgain</button>
+                @if (_ended && Actions is not null)
+                {
+                    <span class="triage-actions">@Actions</span>
+                }
             </div>
         }
         @if (_ended)

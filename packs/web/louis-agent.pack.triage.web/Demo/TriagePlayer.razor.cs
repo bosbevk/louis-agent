@@ -40,6 +40,9 @@ public partial class TriagePlayer : IDisposable
     /// <summary>The site's words about the run, at the top of the first column above the stage (F122).</summary>
     [Parameter] public RenderFragment? Intro { get; set; }
 
+    /// <summary>The site's buttons, at the end of the controls' row once the case is closed (F122).</summary>
+    [Parameter] public RenderFragment? Actions { get; set; }
+
     private IReadOnlyList<TriageStepView> Steps => _steps ?? [];
 
     private TriageStepView? Current => _at >= 0 && _at < Steps.Count ? Steps[_at] : null;
@@ -89,6 +92,16 @@ public partial class TriagePlayer : IDisposable
 
     /// <summary>Shows the next step, and stops the play.</summary>
     private void Next() => Move(1);
+
+    /// <summary>Shows the step a visitor picked on the swimlanes (F122), and stops the play.</summary>
+    private void Pick(int step)
+    {
+        _stop?.Cancel();
+        _at = Math.Clamp(step, 0, Math.Max(0, _played - 1));
+    }
+
+    /// <summary>The agents of the steps played so far, for the swimlanes.</summary>
+    private IReadOnlyList<string> PlayedAgents => Shown.Select(step => step.Agent).ToList();
 
     /// <summary>Moves by one step within the steps played so far, the play stopped.</summary>
     private void Move(int by)
