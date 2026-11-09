@@ -1,0 +1,10 @@
+@* What the page is about and what it is, in the page's head (F121, F123): shown by the browser and read by a search
+   engine from the HTML the framework serves. One HeadContent for both, since Blazor keeps only the last one a page
+   renders. Each schema is written whole as markup, since a component may not hold a script tag of its own. *@
+<HeadContent>
+    <meta name="description" content="@Description" />
+    @foreach (var script in Scripts)
+    {
+        @((MarkupString)script)
+    }
+</HeadContent>

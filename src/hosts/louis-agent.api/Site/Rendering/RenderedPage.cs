@@ -9,5 +9,5 @@ namespace LouisAgent.Api.Site.Rendering;
 /// What the page is about, from its description meta tag; empty when it declares none.
 /// </param>
 /// <param name="Body">The page's HTML, without its head.</param>
-/// <param name="Schemas">Its JSON-LD scripts, each whole, from its <c>PageSchema</c>s; none when it has none.</param>
+/// <param name="Schemas">Its JSON-LD scripts, each whole, from its <c>PageHead</c>; none when it has none.</param>
 public sealed record RenderedPage(string Title, string Description, string Body, IReadOnlyList<string>? Schemas = null);

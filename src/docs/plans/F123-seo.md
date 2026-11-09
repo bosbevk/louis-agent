@@ -105,7 +105,12 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+- **One `PageHead`, not a `PageSchema` beside `PageDescription`** (step 3, Louis's pick of three, 2026-11-09). Blazor
+  keeps only the last `HeadContent` a page renders, so the landing's three `PageSchema`s pushed its description out of
+  the head, and the API served the plain shell (`TwoHeads_OnlyTheLastReachesTheHead` holds it). `PageDescription` became
+  `PageHead` (`Description`, and an optional `Schemas` list) by Rider's rename on every page, and `PageSchema` went;
+  over a description component that also takes schemas (a name that says less than it does) and two components joined
+  by a named section (coupled, and a schema without a description would never show).
 
 ## Sources (step 4 fills it)
 
