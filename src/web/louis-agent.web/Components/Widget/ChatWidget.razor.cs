@@ -158,23 +158,24 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>
     /// Sends the message, with the page the visitor is reading when this page hasn't gone with a message yet (F115):
     /// read at send time, so it is the page as rendered, not the one before a move. Every message carries the section
-    /// on their screen (F118, Louis: "see it did not know where I was"); a later one from the same page carries only
-    /// that, so the page's words go once.
+    /// on their screen (F118, Louis: "see it did not know where I was") and the card open there (FX106), so "this" is
+    /// what they look at; a later one from the same page carries only those, so the page's words go once.
     /// </summary>
     private async Task SendAsync()
     {
         var inView = await Module.InvokeAsync<PageArea?>("inView");
+        var open = await Module.InvokeAsync<PageArea?>("openCard");
         string here = PageAddress;
         Page? page = null;
         if (_pageSentFor != here)
         {
             page = await Module.InvokeAsync<Page?>("pageText");
-            page = page is null ? null : page with { InView = inView };
+            page = page is null ? null : page with { InView = inView, Open = open };
             _pageSentFor = here;
         }
-        else if (inView is not null)
+        else if (inView is not null || open is not null)
         {
-            page = new Page(here, "", "", [], inView);
+            page = new Page(here, "", "", [], inView, open);
         }
 
         // Every place by its own address (ADR 0107), so the guide names what it sends the visitor to as it reads it.

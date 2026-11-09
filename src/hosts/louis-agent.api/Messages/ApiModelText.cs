@@ -20,11 +20,14 @@ public enum ApiModelText
     [Description("\nIts areas:\n{List}")]
     PageAreas,
 
-    [Description("\nOn their screen now: the section {Id}, \"{Heading}\", of the page {Url} they are reading")]
+    [Description("\nOn their screen now: the section {Id}, \"{Heading}\", of the page {Url} they are reading{Open}")]
     PageInView,
 
-    [Description("[On their screen now: the section {Id}, \"{Heading}\", of the page {Url}, whose words came with an earlier message]")]
+    [Description("[On their screen now: the section {Id}, \"{Heading}\", of the page {Url}, whose words came with an earlier message{Open}]")]
     PageInViewOnly,
+
+    [Description("\nOpen on it: the card {Id}, \"{Heading}\". When they say \"this\", they mean that card.")]
+    PageCardOpen,
 
     [Description("\n[Page truncated: showing {Shown} of {Length} chars]")]
     PageTruncated,

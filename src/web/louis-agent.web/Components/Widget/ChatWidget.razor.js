@@ -31,6 +31,14 @@ export function inView() {
     return { id: at.id, heading: fold(at.querySelector(".kicker, h1, h2, h3")?.textContent) };
 }
 
+// The card open on the visitor's screen (FX106), by its id and title, or null: what they opened is what "this" means,
+// not a card the guide opened earlier. A deck opens one card at a time, so the first open one is it.
+export function openCard() {
+    const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
+    const card = document.querySelector("[data-card][id][aria-expanded='true']");
+    return card ? { id: card.id, heading: fold(card.querySelector(".card-title")?.textContent) } : null;
+}
+
 // A section paged sideways on this visitor's screen (F118) lists its pages, each by what it holds, so the guide can
 // turn to the page it talks about: "parts/2", "page 2 of 3: Your program, The hosts, ...".
 const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
