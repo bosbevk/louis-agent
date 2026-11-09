@@ -17,6 +17,8 @@ public class LandingPageTests
 
         Assert.That(cut.FindAll("section"), Has.Count.EqualTo(10), "the hero, the showcase, seven sections and the call to action");
         Assert.That(cut.Find("h1").TextContent, Is.EqualTo("Elke vraag op pad na 'n antwoord"));
+        var described = cut.FindComponents<LouisAgent.Web.Components.Site.Meta.PageDescription>().Single();
+        Assert.That(described.Instance.Text, Does.StartWith("Puls is"), "what a search engine shows (F121)");
         Assert.That(ctx.JSInterop.Invocations.Select(i => i.Identifier), Is.EqualTo(new[] { "import", "start" }), "its own module (CL31), started once");
         Snapshots.Match("Pages/LandingPage.html", cut.Markup);
     }
