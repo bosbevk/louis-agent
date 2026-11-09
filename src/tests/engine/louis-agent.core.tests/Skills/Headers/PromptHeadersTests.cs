@@ -76,6 +76,7 @@ public class PromptHeadersTests
     [TestCase("---\nname: acme-cook\ndescription: A cook.\ntoolset: files\n---\n# Cook\n", "toolset")]
     [TestCase("---\nname: acme-baker\ndescription: A cook.\n---\n# Cook\n", "acme-baker")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  level: chef\n---\n# Cook\n", "chef")]
+    [TestCase("---\nname: acme-cook\ndescription: A cook.\nmetadata:\n  load: sometimes\n---\n# Cook\n", "sometimes")]
     [TestCase("---\nname: acme-cook\n---\n# Cook\n", "description")]
     [TestCase("---\nname: acme-cook\ndescription: A cook.\n# Cook\n", "---")]
     [TestCase("---\nname: [acme\n---\n# Cook\n", "acme-cook.md")]
@@ -86,7 +87,27 @@ public class PromptHeadersTests
         Assert.That(refused!.Message, Does.Contain(Path).And.Contain(named));
     }
 
+    /// <summary>
+    /// A skill's header says how it loads (F129): always beside its voice, or on demand when the agent reads it; a
+    /// prompt that isn't a skill says neither.
+    /// </summary>
+    [TestCase("always", SkillLoad.Always)]
+    [TestCase("on-demand", SkillLoad.OnDemand)]
+    public void ASkillsHeader_SaysHowItLoads(string load, SkillLoad expected)
+    {
+        var file = PromptHeaders.Split("agent/acme/skills/menu.md",
+            $"---\nname: menu\ndescription: The menu.\nmetadata:\n  level: agent\n  load: {load}\n---\n# Menu\n");
+
+        Assert.That(file.Header!.Load, Is.EqualTo(expected));
+    }
+
+    /// <summary>A prompt that names no load is no skill, so it has none.</summary>
+    [Test]
+    public void APromptWithoutLoad_HasNone() =>
+        Assert.That(PromptHeaders.Split(Path, Cook).Header!.Load, Is.Null);
+
     /// <summary>Two headers are the same when every field is, the toolsets in order.</summary>
     private static bool SameHeader(PromptHeader a, PromptHeader b) =>
-        (a.Name, a.Description, a.Level) == (b.Name, b.Description, b.Level) && a.Toolsets.SequenceEqual(b.Toolsets);
+        (a.Name, a.Description, a.Level, a.Load) == (b.Name, b.Description, b.Level, b.Load) &&
+        a.Toolsets.SequenceEqual(b.Toolsets);
 }
