@@ -22,6 +22,12 @@ public enum AgentToolMessage
         "Error: this tool call was cut off by the output limit before its arguments were complete, so it was NOT run. Retrying the same call will fail the same way. Split large content into chunks of at most ~300 lines: WriteWorkspaceFile with the first chunk, then AppendToFile for each following chunk, one call at a time, until done.")]
     TruncatedCall,
 
+    [Description("Error: {Tool} was NOT run: it needs every argument below. Call it again with them:\n{Missing}")]
+    ArgumentsMissing,
+
+    [Description("- {Name}: {Meaning}")]
+    ArgumentMissing,
+
     [Description(
         "[{Tool} returned {Chars} chars, too large to include verbatim. If exact content is needed, call it again with narrower arguments (e.g. a specific file path).]")]
     OversizedResultNote,
