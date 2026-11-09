@@ -1,28 +1,29 @@
 @page "/coding-agent"
 
 @* The coding agent at work (F120): a session recorded once, played back in the framework's chat view, then the offer.
-   The live chat stays closed to visitors (FX88), so this is the door the header and the hero lead to. *@
+   One slide, side by side (FX105): the words on the left, read while the session plays in the window on the right. The
+   live chat stays closed to visitors (FX88), so this is the door the header and the hero lead to. *@
 
 <PageTitle>The coding agent · louis-agent</PageTitle>
 
 <Band Id="top" Kicker="The coding agent">
-    <h2 class="chrome">Watch it fix a real bug.</h2>
-    <p class="lede">A small invoice matcher, and bank payments that don't find their invoices. The agent runs the tests, reads the code, fixes it and runs the tests again. This is the session as it happened, played back. Nothing runs while you watch.</p>
-    <RecordedChat Source="recordings/coding-session.sse" Question="@Question" Title="the coding agent · toolsets: files, git, dotnet" PlayAgain="Play it again" Currency="Rand">
-        <Ending>
-            <p class="recorded-offer">Want an agent like this on your own code? <a href="/contact">Ask for yours</a>.</p>
-            <GuideButton Question="I watched the coding agent fix the invoice matcher. Could I get an agent like that for my team?">Ask the guide about one</GuideButton>
-        </Ending>
-    </RecordedChat>
-</Band>
-
-<Band Id="watched" Kicker="What you just watched">
-    <h3>Real tools, a real bill, and you stay in charge.</h3>
-    <ul class="rules">
-        <li><strong>Every tool is a pack.</strong> It listed the projects, read the files, ran the tests, wrote the fix and built it with the files, git and dotnet packs, the same ones it uses in Rider, the terminal and the API.</li>
-        <li><strong>It checked its own work.</strong> Two tests failed before the fix and all four passed after it, and it said which ones and why.</li>
-        <li><strong>It left the commit to you.</strong> The fix sits in the working tree, and it said so. Pushing always stays with you.</li>
-        <li><strong>It cost about R0.10.</strong> Seven requests on Claude Haiku, priced by the usage ledger and shown under the answer, as every turn is.</li>
-        <li><strong>The live agent stays closed here.</strong> It runs shell commands and writes files, so on this site it runs only for its owner, behind a key. A recording shows you the same work without handing a stranger a shell.</li>
-    </ul>
+    <div class="watch-grid">
+        <div class="watch-text">
+            <h2 class="chrome">Watch it fix a real bug.</h2>
+            <p class="lede">A small invoice matcher, and bank payments that don't find their invoices. This is the session as it happened, played back. Nothing runs while you watch.</p>
+            <ul class="rules">
+                <li><strong>Every tool is a pack.</strong> It reads the files, runs the tests and writes the fix with the files, git and dotnet packs, the same ones it uses in Rider and the terminal.</li>
+                <li><strong>It checks its own work.</strong> Two tests fail before the fix and all four pass after it, and it says which and why.</li>
+                <li><strong>It leaves the commit to you.</strong> The fix sits in the working tree, and it says so.</li>
+                <li><strong>It cost about R0.10.</strong> Seven requests on Claude Haiku, priced by the usage ledger, the bill under the answer.</li>
+            </ul>
+            <p class="band-note">The live agent runs shell commands, so here it runs only for its owner, behind a key.</p>
+        </div>
+        <RecordedChat Source="recordings/coding-session.sse" Question="@Question" Title="the coding agent · toolsets: files, git, dotnet" PlayAgain="Play it again" Currency="Rand">
+            <Ending>
+                <p class="recorded-offer">Want an agent like this on your own code? <a href="/contact">Ask for yours</a>.</p>
+                <GuideButton Question="I watched the coding agent fix the invoice matcher. Could I get an agent like that for my team?">Ask the guide about one</GuideButton>
+            </Ending>
+        </RecordedChat>
+    </div>
 </Band>
