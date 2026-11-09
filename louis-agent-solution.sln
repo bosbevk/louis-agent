@@ -748,6 +748,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{A0F24CB3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.film-export.tests", "src\tests\tools\louis-agent.film-export.tests\louis-agent.film-export.tests.csproj", "{BEE46A5F-0760-4608-AC80-624684EF6B6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site-api", "src\site\louis-agent.site-api\louis-agent.site-api.csproj", "{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2390,6 +2392,18 @@ Global
 		{BEE46A5F-0760-4608-AC80-624684EF6B6E}.Release|x64.Build.0 = Release|Any CPU
 		{BEE46A5F-0760-4608-AC80-624684EF6B6E}.Release|x86.ActiveCfg = Release|Any CPU
 		{BEE46A5F-0760-4608-AC80-624684EF6B6E}.Release|x86.Build.0 = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|x64.Build.0 = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Debug|x86.Build.0 = Debug|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|x64.ActiveCfg = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|x64.Build.0 = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|x86.ActiveCfg = Release|Any CPU
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2606,5 +2620,6 @@ Global
 		{1852C72B-2C3D-4074-A41D-0E6AAA1CFB0D} = {96F8B655-6CD4-4746-B45F-D3D0BE65FABB}
 		{A0F24CB3-4B05-E528-1874-946966460398} = {5D60F9F9-CB46-D329-5BCB-1BBFA2648C82}
 		{BEE46A5F-0760-4608-AC80-624684EF6B6E} = {A0F24CB3-4B05-E528-1874-946966460398}
+		{240EC5F9-7EE8-433B-8FA9-A8847DBE949D} = {692DBA3A-6F0E-5CF7-9085-83E3D6DC4241}
 	EndGlobalSection
 EndGlobal

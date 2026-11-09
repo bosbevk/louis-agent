@@ -1,0 +1,30 @@
+using LouisAgent.Api;
+using LouisAgent.Api.Site;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Telemetry;
+using LouisAgent.Core.Web;
+using LouisAgent.SiteApi;
+
+// The framework's site's host (F124): the site's pages as HTML, and the API the guide in the corner runs on. It loads
+// the guide and its three packs, so a visitor reaches nothing else.
+var host = AgentHost.Build(SiteCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
+    Providers: [AnthropicProvider.Instance]));
+var builder = WebApplication.CreateBuilder(args);
+builder.AddLouisAgentApi(host);
+var app = builder.Build();
+
+// The key check comes before any route; the guide's open door (OPEN_IDENTITY) lets a visitor in without one.
+app.UseLouisAgentKey();
+
+// The site's files, and any other path loads the app: a page meant for search as its own HTML (F121), rendered with
+// the words its pages read; the landing's sections sit under /home.
+app.MapStaticAssets();
+app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly, services =>
+{
+    services.AddSingleton(new LouisAgent.Web.Text.ChatText());
+    services.AddSingleton(new HttpClient());
+}, home: "home");
+
+app.MapLouisAgentApi(host);
+app.Run();

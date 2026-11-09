@@ -7,8 +7,8 @@ using LouisAgent.FilmExport.Messages;
 namespace LouisAgent.FilmExport.Rendering;
 
 /// <summary>
-/// The site, running on a spare port for as long as an export needs it, from the code as it is now: since F109.1 its
-/// pages are the code-review app's, served by the coding API host.
+/// The site, running on a spare port for as long as an export needs it, from the code as it is now: since F124 the
+/// framework's site, served by its own host.
 /// </summary>
 public sealed class SiteProcess : IDisposable
 {
@@ -42,7 +42,7 @@ public sealed class SiteProcess : IDisposable
         foreach (string argument in new[]
                  {
                      "run", "--no-launch-profile", "--project",
-                     Path.Combine(repoRoot, "demos/louis-agent/hosts/louis-agent.coding-api"),
+                     Path.Combine(repoRoot, "src/site/louis-agent.site-api"),
                  })
             start.ArgumentList.Add(argument);
 
