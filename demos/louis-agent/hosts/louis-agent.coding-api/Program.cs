@@ -21,7 +21,8 @@ builder.AddLouisAgentAccounts(AccountsOptions.FromEnvironment());
 var app = builder.Build();
 
 // The accounts first (the tenant from the host, who the cookie says), then the key check, which takes a signed-in
-// person in place of the key. The agent can run shell commands and write files, so the key check comes before any route.
+// person in place of the key. The agent can run shell commands and write files, so the key check comes before any
+// route.
 app.UseLouisAgentAccounts();
 app.UseLouisAgentKey();
 
