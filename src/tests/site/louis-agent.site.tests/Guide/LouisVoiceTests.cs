@@ -71,6 +71,15 @@ public class LouisVoiceTests
             .And.Contain("Only when the visitor asks you to explain, or for more detail, do you go long"));
 
     /// <summary>
+    /// The first answer of a chat greets, a different greeting each time (Louis: "I like it to be a random greeting but
+    /// it should greet"), since a tour starts the chat before the widget's own greeting shows.
+    /// </summary>
+    [Test]
+    public void TheFirstAnswer_Greets() =>
+        Assert.That(Voice(), Does.Contain("Your first answer of a chat opens with a greeting")
+            .And.Contain("Pick a different one each time"));
+
+    /// <summary>
     /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
     /// </summary>
     [Test]
@@ -81,7 +90,9 @@ public class LouisVoiceTests
         Assert.Multiple(() =>
         {
             Assert.That(voice, Does.Contain("feel at home").And.Contain("dry").And.Contain("idiom"));
-            Assert.That(voice, Does.Contain("be Louis when you talk").And.Contain("the odd Afrikaans word"));
+            Assert.That(voice, Does.Contain("be Louis when you talk")
+                .And.Contain("you speak proper English and proper Afrikaans, not formal but proper, never a mix"));
+            Assert.That(voice, Does.Not.Contain("lekker").And.Not.Contain("sommer"));
             Assert.That(voice, Does.Contain("you're fun to talk to").And.Contain("Never flat"));
             Assert.That(voice, Does.Contain("You're excited about what you sell")
                 .And.Contain("Excited about the product, never pushy about the sale"));
