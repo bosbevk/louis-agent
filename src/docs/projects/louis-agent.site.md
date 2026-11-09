@@ -48,7 +48,10 @@ What we build · Pricing · Demos · Contact · The framework. `/` is one page t
 steps and the facts a buyer trusts), custom agents, the demos, one band of proof (built on a framework of its own,
 measured, with links into it) and a strip that asks a business for theirs. The framework's rule moved to
 `/framework/measured`, its short film and four concepts to `/framework/architecture`. `/what-we-build` and
-`/pricing` (two plans, each a tile with its price) are the selling pages; `/contact`, and the demos: `/demos`,
+`/pricing` (two plans, each a tile with its price) are the selling pages; `/contact`, and the demos: `/demos`, the
+showroom's three first (F128.2: `/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`, one
+`BusinessDemo` each, a made-up business's conversation recorded by `src/site/recordings/record-showroom.sh` and
+played as its customer sees it, [louis-agent.identity.showroom](louis-agent.identity.showroom.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages
 sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):

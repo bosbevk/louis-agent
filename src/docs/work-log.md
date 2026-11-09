@@ -12,17 +12,16 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 86 | 79 |
+| Features (`F`) | 88 | 78 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (111 in the TODO)
+## Open (110 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F128 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 done (the work log), F128.2 (three business demos: a law practice, a restaurant, a doctor's practice) | Now |
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
 | F129 | An identity's prompts: the skills split out of the voice file into `prompts/agent/skills/*.md`, and the `Prompts` folder renamed `prompts`, for every identity and the engine that loads them; its own plan | Next, after F124 |
 | F130 | The framework's own site at `framework.louis-agent.dev`: what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there from the selling site; its own plan | Next, after F128 |
@@ -134,10 +133,12 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (86 done)
+## Features (88 done)
 
 | Id | When | What |
 |---|---|---|
+| F128 | 2026-11-10 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 and F128.2, both below (ADR 0112, ADR 0113) |
+| F128.2 | 2026-11-10 | Three business demos: Wheatfield Kitchen, Koringland Attorneys and Graanveld Family Practice, made up, each an identity on the leads pack (`louis-agent.identity.showroom`), recorded once with real booking mails and played on its own page (`/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`), first on the demos list; the leads pack names no one; `RecordedChat` plays several turns and can hide its work; the practices never advise |
 | F128.1 | 2026-11-09 | The site sells (ADR 0112, ADR 0113): the facts made true (one Container App, the guide's three packs, 100+ ADRs, the film re-exported); the business pages named for what they sell and the framework's pages under `/framework/…` with redirects; `/pricing` (two plans) and `/what-we-build`; the menu led by what we sell; the hero, landing and last strip offer first; the guide became Louis, labelled AI, tuned live (his story, help first, fun, three sentences, proper English or Afrikaans, a greeting by the time); a chat may hide its work (`ShowWork`); tiles may wear the eval screens' four colours; the loader shows again on a hard reload |
 | F124 | 2026-11-09 | The framework's website leaves the code-review demo for `src/site/` (ADR 0111, ADR 0074 amended): `louis-agent.site` (the visitor area), the guide renamed `louis-agent.identity.guide` (`louis-agent-guide`), and its own host `louis-agent.site-api`, whose catalogue is the guide on the docs, leads and site packs, so louis-agent.dev runs no coding agent; `SiteBoundaryTests` lets only `src/site/` use packs and an identity, and nothing else in `src/` reference it; its own image (the ASP.NET runtime, the docs, its price tables), compose on 5080 (code review's API on 5082) and Azure yaml at half the CPU; code review keeps the chat (now at `/`) and the admin; the film export moves to `src/tools/` and the films to `src/docs/films` |
 | F123 | 2026-11-09 | Found by search: a page writes its head through one `PageHead`, its description and its schema.org facts as JSON-LD (Blazor keeps only the last `HeadContent`, so `PageDescription` became `PageHead` on every page); the prerender carries them and adds a breadcrumb for every page under the landing; the landing names the organisation, the website and the software, with a 180 by 180 Apple touch icon; `/csharp-ai-agent-framework` compares louis-agent, on your own hardware, with Microsoft Agent Framework and Semantic Kernel from their own docs (ADR 0110); a how-to for Search Console |
