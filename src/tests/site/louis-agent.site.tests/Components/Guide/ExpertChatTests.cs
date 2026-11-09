@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Site.Components.Guide;
+using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -61,8 +62,30 @@ public class ExpertChatTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".widget-title").TextContent, Is.EqualTo("Ask the guide"));
+            Assert.That(cut.Find(".widget-title").TextContent, Is.EqualTo("Louis · AI"));
             Assert.That(opened.Body, Does.Contain($"\"identity\":\"{GuideIdentityName.LouisAgentGuide.Wire()}\""));
+        });
+    }
+
+    /// <summary>
+    /// The guide is Louis, labelled AI (F128.1, Louis's pick of three: "Louis, labelled AI"), so nobody takes it for
+    /// the man himself: it says so in its first words, and asks what brings the visitor (step 5) in his own plain way.
+    /// </summary>
+    [Test]
+    public void TheGuide_IsLouis_SaysItIsAI_AndAsksWhatBringsYou()
+    {
+        using var ctx = Context(out _);
+        ctx.Services.AddSingleton(new GuideDoor());
+
+        var widget = ctx.Render<ExpertChat>().FindComponent<ChatWidget>().Instance;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(widget.Title, Is.EqualTo("Louis · AI"));
+            Assert.That(widget.Greeting, Does.StartWith("Hi, I'm Louis.").And.Contain("AI"));
+            Assert.That(widget.Greeting, Does.Contain("What brings you here?"));
+            Assert.That(widget.Greeting, Does.Not.Contain(";"));
+            Assert.That(widget.ButtonText, Is.EqualTo("Ask Louis"));
         });
     }
 }
