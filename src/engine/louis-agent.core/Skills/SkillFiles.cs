@@ -45,6 +45,12 @@ public static class SkillFiles
     /// </summary>
     internal const string PendingFunctionsFolder = FunctionsFolder + "/pending";
 
+    /// <summary>
+    /// The folder of an identity's skills, beside its voice (F129, ADR 0114): <c>agent/{identity}/skills/</c>. Written
+    /// out, as <see cref="FunctionsFolder"/> is.
+    /// </summary>
+    internal static string SkillsOf(string identity) => $"agent/{identity}/skills/";
+
     /// <summary>A pending function skill's file: <c>agent/functions/pending/{name}.md</c>.</summary>
     internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
 

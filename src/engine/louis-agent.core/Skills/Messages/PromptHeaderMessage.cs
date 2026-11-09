@@ -35,4 +35,7 @@ public enum PromptHeaderMessage
 
     [Description("{Path}: '{Load}' is not how a skill loads. Supported: {Supported}.")]
     LoadUnknown,
+
+    [Description("{Path}: an identity's skill says how it loads under metadata: load: always, or load: on-demand.")]
+    LoadMissing,
 }

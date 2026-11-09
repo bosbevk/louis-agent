@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
-
+using LouisAgent.Core.Agent.EngineTools.Skills.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Messages;
@@ -8,12 +9,17 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Skills.Headers.Identities;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Hosting.Prompts;
-/// <summary>The system prompt assembled from skill files (S, CL15, from AgentHost): the principles, the role, the guides, the function skills.</summary>
+
+/// <summary>
+/// The system prompt assembled from skill files (S, CL15, from AgentHost): the principles, the role, the identity's
+/// skills (F129), the guides, the function skills.
+/// </summary>
 public static class SkillLoader
 {
     private static readonly ILogger Log = AgentLogging.For<CompositeSkillProvider>();
@@ -25,9 +31,10 @@ public static class SkillLoader
     public static ISkillProvider Load(AgentOptions agent) => Load(agent, ToolsetCatalog.All);
 
     /// <summary>
-    /// Loads the system prompt for a toolset profile (F5): role, default.md (the router), the guide of each of
-    /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
-    /// toolset, every function skill the agent wrote (agent/functions/*.md in the skills folder; CL9). Our own skill files are plain markdown read by
+    /// Loads the system prompt for a toolset profile (F5): the role, at level 0 its identity's skills (F129: the always
+    /// ones, then the list of the on-demand ones), the guide of each of <paramref name="toolsets"/> and no other
+    /// (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills toolset, every function skill the
+    /// agent wrote (agent/functions/*.md in the skills folder; CL9). Our own skill files are plain markdown read by
     /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
     /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
     /// wrote (its function files) comes from the skills folder (<see cref="SkillFolder"/>).
@@ -57,17 +64,23 @@ public static class SkillLoader
             composite.AddProvider(MarkdownSkillProvider.FromText(RoleCatalog.ModeParts(mode.Text).Voice));
         else
             AddBuiltIn(agent, composite, roleFile);
+
         // A language mode ({product}/voice-{xx}) says how it talks; its product's shared voice.md routes (CL9 step 6)
-        if (level == RoleLevel.Agent && (role ?? agent.DefaultVoice) is { } named && RoleCatalog.LanguageOf(named) is not null)
+        if (level == RoleLevel.Agent && (role ?? agent.DefaultVoice) is { } named &&
+            RoleCatalog.LanguageOf(named) is not null)
             AddBuiltIn(agent, composite, RoleCatalog.FileName(RoleCatalog.SharedOf(named), RoleLevel.Agent));
+        // The identity's skills beside its voice (F129, ADR 0114): the always ones whole, the on-demand ones listed
+        if (level == RoleLevel.Agent && roleFile is not null && (role ?? agent.DefaultVoice) is { } opened)
+            AddSkills(composite, IdentitySkills.OfMode(opened));
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
         foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
             AddBuiltIn(agent, composite, fileName);
 
-        // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
-        // tools. A profile without it (a product's chats with only their own toolsets) gets its mode and its guides, no skill file.
+        // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with
+        // its tools. A profile without it (a product's chats with only their own toolsets) gets its mode and its
+        // guides, no skill file.
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
@@ -99,6 +112,31 @@ public static class SkillLoader
         SkillFolder.Read(agent, fileName) is { } file
             ? (file.FromDisk ? file.Text : PromptCatalog.Get(fileName)?.Body ?? file.Text, file.FromDisk)
             : null;
+
+    /// <summary>
+    /// Puts an identity's always skills in the prompt, then one short list of the on-demand ones, each by its name and
+    /// the line that says when to read it.
+    /// </summary>
+    private static void AddSkills(CompositeSkillProvider composite, IReadOnlyList<IdentitySkill> skills)
+    {
+        foreach (var skill in skills.Where(s => s.Load == SkillLoad.Always))
+            composite.AddProvider(MarkdownSkillProvider.FromText(skill.Body));
+
+        var onDemand = skills.Where(s => s.Load == SkillLoad.OnDemand)
+            .Select(s => MessageText.Format(SkillReadToolMessage.OnDemandSkill,
+                new
+                {
+                    s.Name,
+                    s.Description
+                }))
+            .ToList();
+        if (onDemand.Count == 0) return;
+        composite.AddProvider(MarkdownSkillProvider.FromText(string.Join("\n",
+        [
+            MessageText.Format(SkillReadToolMessage.OnDemandHeading), "",
+            MessageText.Format(SkillReadToolMessage.OnDemandIntro), "", .. onDemand
+        ])));
+    }
 
     /// <summary>Adds a skill file to the prompt (<see cref="Read"/>); a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)

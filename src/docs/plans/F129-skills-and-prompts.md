@@ -106,6 +106,11 @@ Skill 7 (context engineering): what is always in the prompt and what is read whe
   step 3, not in step 7, which keeps the guide, the write-up and the work log.
 - **2026-11-10, step 1:** "prompts", Louis: "if the was an enum we would not have had this problem": the folder's
   name is one constant, `EmbeddedPrompts.Folder`, and `PromptFolderTests` refuses it written anywhere else.
+- **2026-11-10, step 3, unattended pick (Louis's "finish unattended"):** `Skills/Headers/` would have held eight
+  files, over the folder rule's six. Of three ways (a subfolder `Headers/Identities/`; a new `Skills/Identities/`
+  with the Skills rule loosened to let it use `Headers/`; or moving `SkillLoad` and the skill types out of `Skills/`)
+  the pick is the subfolder: `IdentitySkill` and `IdentitySkills` read the catalogue's headers, so they sit under
+  them, and no architecture rule changes. The on-demand list is a `SkillReadToolMessage`, so the golden pins it.
 
 ---
 [Plans](README.md)
