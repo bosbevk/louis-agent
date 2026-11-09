@@ -11,9 +11,12 @@ namespace LouisAgent.Site.Tests.Host;
 /// </summary>
 public class SiteCatalogTests
 {
-    /// <summary>The guide is the one identity, so it is the default, and the packs are exactly its three.</summary>
+    /// <summary>
+    /// The guide is the first identity, so it is the default, and the packs are exactly its three: the showroom's
+    /// businesses (F128.2) use only the leads pack, one of them, and open only with the site's key.
+    /// </summary>
     [Test]
-    public void TheCatalogue_IsTheGuide_OnItsThreePacks()
+    public void TheCatalogue_IsTheGuideFirst_OnItsThreePacks()
     {
         var packs = SiteCatalog.Packs(new DocsOptions { Root = "test-docs" },
             new LeadsOptions { To = "a@example.test" });
@@ -21,8 +24,10 @@ public class SiteCatalogTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(SiteCatalog.Identities.Select(identity => identity.Name), Is.EqualTo(new[] { guide.Name }));
+            Assert.That(SiteCatalog.Identities[0].Name, Is.EqualTo(guide.Name));
             Assert.That(packs.Select(pack => pack.Name), Is.EquivalentTo(guide.Packs), "every pack it names, no more");
+            Assert.That(SiteCatalog.Identities.SelectMany(identity => identity.Packs).Distinct(),
+                Is.SubsetOf(guide.Packs), "no identity on the site reaches a pack the guide doesn't load");
         });
     }
 

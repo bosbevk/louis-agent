@@ -25,6 +25,7 @@
     <!-- The site's host, for its catalogue (F124). -->
     <ProjectReference Include="..\..\..\site\louis-agent.site-api\louis-agent.site-api.csproj" />
     <ProjectReference Include="..\..\..\site\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />
+    <ProjectReference Include="..\..\..\site\louis-agent.identity.showroom\louis-agent.identity.showroom.csproj" />
     <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\..\web\louis-agent.web.testing\louis-agent.web.testing.csproj" />
     <ProjectReference Include="..\..\shared\louis-agent.testing\louis-agent.testing.csproj" />

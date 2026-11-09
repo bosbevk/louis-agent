@@ -18,6 +18,7 @@
         <ProjectReference Include="..\..\hosts\louis-agent.api\louis-agent.api.csproj" />
         <!-- The guide and the three packs it answers with. -->
         <ProjectReference Include="..\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />
+        <ProjectReference Include="..\louis-agent.identity.showroom\louis-agent.identity.showroom.csproj" />
         <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
         <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.leads\louis-agent.pack.leads.csproj" />
         <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.site\louis-agent.pack.site.csproj" />
