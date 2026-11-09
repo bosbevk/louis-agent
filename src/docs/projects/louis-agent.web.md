@@ -181,11 +181,21 @@ on hover or on focus, CSS only.
 a page declares a `GraphSpec` (`Graphs/`: nodes with an id, a label, a note and a column; edges between ids, with a
 word when one helps), `GraphLayout.Place` puts the columns across the width on one row grid, orders each by its
 neighbours and hands the arrows to `EdgeRouter`, which draws each as a connector (right-angle bends, one track per
-gap, back arrows under the drawing, loops to the right, words on flat pieces with room), and the view writes one SVG
+gap, back arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words
+that cross it and the bend just after a word, F119), and the view writes one SVG
 that scales to its box. Its root carries `reveal`, so the frame's module adds `.in` as it enters and the styles beside it make each arrow
 draw itself and each box rise, a column at a time, once; fully drawn at rest. The SVG's text goes out as markup from
 the code-behind, since Razor keeps the `text` tag for itself. `GraphLayoutTests` holds the numbers, `GraphViewTests`
 the markup.
+
+**`Components/Recorded/RecordedChat`** plays a recorded session in the chat's own view (F120,
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)): a site gives it a `.sse` file of the stream
+the API sent, the question it answered, a title, the currency for the bill and an ending, and a visitor watches the
+agent think, call its tools and answer, then sees the ending and a play-again button. It reads the file with
+`SessionStreamReader`, waits by each event's kind (`Chats/Replay/RecordingPace`: thinking fast, the answer at reading
+speed, a beat per tool) and folds the events with `Chats/Replay/TurnReplay`, the loop the eval studio's replay shares,
+into a `MessageList`. Its window is the framework's `web/tools/_window` mixin, which a site's own animated panels use
+too. `RecordedChatTests`, `RecordingPaceTests` and `TurnReplayTests` hold it.
 
 **`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
 motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width
