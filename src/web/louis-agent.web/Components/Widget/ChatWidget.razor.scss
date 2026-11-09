@@ -74,17 +74,20 @@
     .chat-widget:not(.is-open) .widget-button { height: 40px; padding: 0 16px; font-size: 14px; animation: none; }
 }
 
-/* On a phone the panel is the whole screen, square to its edges, and the round button goes while it is open: the
-   panel's own head closes it (FX69). From the width the bottom bar starts at (FX115), so the panel never opens
-   squeezed above the bar. */
+/* On a phone the panel is a sheet over the bottom half of the screen (FX116, Louis: "only half the screen must be
+   agent chat space"), Material's bottom sheet: the page the guide walks stays in view above it. The round button
+   goes while it is open, the panel's own head closes it (FX69). From the width the bottom bar starts at (FX115). */
 @media (max-width: 720px) {
     .chat-widget.is-open .widget-button { display: none; }
     .widget-panel {
         position: fixed;
-        inset: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: 100vw;
-        height: 100dvh;
+        height: 50dvh;
         border: 0;
-        border-radius: 0;
+        border-top: 1px solid var(--web-border-hover);
+        border-radius: 14px 14px 0 0;
     }
 }
