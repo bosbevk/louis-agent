@@ -27,7 +27,8 @@ public class PagePrerendererTests
             builder.CloseComponent();
             builder.OpenComponent<HeadContent>(2);
             builder.AddComponentParameter(3, "ChildContent", (RenderFragment)(b =>
-                b.AddMarkupContent(0, "<meta name=\"description\" content=\"Every number from the ledger.\" />")));
+                b.AddMarkupContent(0, "<meta name=\"description\" content=\"Every number from the ledger.\" />" +
+                                      "<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>")));
             builder.CloseComponent();
             builder.AddMarkupContent(4, $"<h2>Every number</h2><p>Served at {Navigation.Uri}</p>");
         }
@@ -56,6 +57,9 @@ public class PagePrerendererTests
             Assert.That(page.Description, Is.EqualTo("Every number from the ledger."));
             Assert.That(page.Body, Does.Contain("<h2>Every number</h2>"));
             Assert.That(page.Body, Does.Not.Contain("<title>").And.Not.Contain("name=\"description\""));
+            Assert.That(page.Schemas,
+                Is.EqualTo(new[] { "<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>" }),
+                "its structured data comes out of the head whole (F123)");
         });
     }
 
