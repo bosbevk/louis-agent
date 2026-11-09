@@ -3,9 +3,9 @@ using System.Xml.Linq;
 namespace LouisAgent.Core.Tests;
 
 /// <summary>
-/// The framework's own website sits in <c>src/site/</c> (F124), built on the framework the way a customer's site is: it
-/// may use packs and an identity, which nothing else in <c>src/</c> does, and nothing else in <c>src/</c> uses it, so the
-/// engine, the hosts and the web can leave for their own repository without it.
+/// The framework's own website sits in <c>src/site/</c> (F124), built on the framework the way a customer's site is:
+/// it may use packs and an identity, which nothing else in <c>src/</c> does, and nothing else in <c>src/</c> uses it,
+/// so the engine, the hosts and the web can leave for their own repository without it.
 /// </summary>
 /// <remarks>
 /// A fence like <c>ArchitectureTests</c>: it reads every project file under <c>src/</c> and follows each project
@@ -16,7 +16,7 @@ public class SiteBoundaryTests
 {
     private static readonly string[] SiteFolders = ["src/site/", "src/tests/site/"];
 
-    /// <summary>No project of the framework references the site: the site leans on the framework, never the reverse.</summary>
+    /// <summary>No project of the framework references the site: the site leans on the framework, never back.</summary>
     [Test]
     public void NothingElseInSrc_ReferencesTheSite()
     {
@@ -52,7 +52,7 @@ public class SiteBoundaryTests
             .Where(project => !RepoPath(project).Contains("/bin/", StringComparison.Ordinal) &&
                               !RepoPath(project).Contains("/obj/", StringComparison.Ordinal));
 
-    /// <summary>Where each of a project's references points, from the repository's root, with forward slashes.</summary>
+    /// <summary>Where each of a project's references points, from the repository's root.</summary>
     private static IEnumerable<string> Targets(string project)
     {
         string folder = Path.GetDirectoryName(project)!;
