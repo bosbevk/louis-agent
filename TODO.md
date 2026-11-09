@@ -18,11 +18,13 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (107)
+## Open (108)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
 | F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended); built on the framework like any site, its guide answers questions about the framework | Next, after F123 | — |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 | — |
+| F126 | Code review becomes a web pack that runs in the admin portal (`packs/web/`), out of the code-review demo app | Parked | — |
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
