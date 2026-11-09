@@ -70,8 +70,7 @@ public static class SkillLoader
             RoleCatalog.LanguageOf(named) is not null)
             AddBuiltIn(agent, composite, RoleCatalog.FileName(RoleCatalog.SharedOf(named), RoleLevel.Agent));
         // The identity's skills beside its voice (F129, ADR 0114): the always ones whole, the on-demand ones listed
-        if (level == RoleLevel.Agent && roleFile is not null && (role ?? agent.DefaultVoice) is { } opened)
-            AddSkills(composite, IdentitySkills.OfMode(opened));
+        AddSkills(composite, SkillsOf(agent, role, level));
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -112,6 +111,13 @@ public static class SkillLoader
         SkillFolder.Read(agent, fileName) is { } file
             ? (file.FromDisk ? file.Text : PromptCatalog.Get(fileName)?.Body ?? file.Text, file.FromDisk)
             : null;
+
+    /// <summary>
+    /// The skills of the identity a session speaks for (F129): its mode's, named or the default, at level 0 only,
+    /// since below it a role is no identity's voice. The prompt carries them, and its engine's ReadSkill reads them.
+    /// </summary>
+    public static IReadOnlyList<IdentitySkill> SkillsOf(AgentOptions agent, string? role, RoleLevel level) =>
+        level == RoleLevel.Agent && (role ?? agent.DefaultVoice) is { } mode ? IdentitySkills.OfMode(mode) : [];
 
     /// <summary>
     /// Puts an identity's always skills in the prompt, then one short list of the on-demand ones, each by its name and

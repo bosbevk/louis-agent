@@ -18,4 +18,7 @@ public enum SkillReadToolMessage
 
     [Description("- `{Name}`: {Description}")]
     OnDemandSkill,
+
+    [Description("There is no skill '{Name}' to read. The ones you can read: {Available}.")]
+    SkillUnknown,
 }

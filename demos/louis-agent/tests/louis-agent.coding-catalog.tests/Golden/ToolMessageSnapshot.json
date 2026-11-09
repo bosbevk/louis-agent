@@ -239,6 +239,7 @@
   "SkillReloadUnavailable": "Error: skill reloading is not available in this host.",
   "SkillSectionsInvalid": "Error: <Declared> '## Skill:' section(s) found but only <Valid> are valid. Each needs a '- Description:' line and an '- Execution:' line followed by a ```bash code block.",
   "SkillTemplateEmpty": "Error: Skill '<Name>' template is empty after substitution.",
+  "SkillUnknown": "There is no skill '<Name>' to read. The ones you can read: <Available>.",
   "SkillsReloaded": "Skills reloaded. Available skills: <Skills>",
   "SourceFileNotFound": "Source file not found: <Path>",
   "StepLine": "<Number>. <Agent> (<Kind>, <At>): <Summary> <Why>",

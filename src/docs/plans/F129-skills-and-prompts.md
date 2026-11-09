@@ -111,6 +111,11 @@ Skill 7 (context engineering): what is always in the prompt and what is read whe
   with the Skills rule loosened to let it use `Headers/`; or moving `SkillLoad` and the skill types out of `Skills/`)
   the pick is the subfolder: `IdentitySkill` and `IdentitySkills` read the catalogue's headers, so they sit under
   them, and no architecture rule changes. The on-demand list is a `SkillReadToolMessage`, so the golden pins it.
+- **2026-11-10, step 4, unattended pick:** the plan said `ReadSkill` is registered for every session, like
+  `GetToday`. An engine is built per role, so of three ways (every session, all identities' skills; every session,
+  the tool finding the session's identity at run time; or only an engine whose identity has an on-demand skill,
+  holding only that identity's) the pick is the last: no session is told of a tool it can't use (the coding agent's
+  tools are unchanged), and one identity can't read another's skills in a host that serves several (the showroom).
 
 ---
 [Plans](README.md)
