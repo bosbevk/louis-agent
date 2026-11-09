@@ -24,5 +24,20 @@ with the model key and nothing else from `config/`. The host reads every `.env` 
 script never mounts `config/` itself. It saves the stream over the old recording. Read the new file for anything
 private before you commit it. If the question changes, change it on the page too.
 
+## The triage run
+
+The site's `/try` page (F106.3.4) plays `wwwroot/recordings/triage-run.jsonl`: one real triage of the order service's
+`order-total 1003` error, step by step, in the triage pack's own format, until F106.3.3's workflow runs triages live.
+`record-triage.sh` does what the workflow will: it collects the error, asks the sorter, the manager, the investigator,
+the manager again, the coder (the coding identity, on a fresh clone of `samples/order-service`) and the reviewer, each
+with the brief the workflow will hand it, commits the coder's change on its branch, checks the fix in code (the tests,
+the request) and closes the case by the reviewer's verdict. The agents' steps are their own typed tool calls; the
+code's steps say what the code did. Each agent's stream goes beside the run, in `triage-streams/`. It is one paid run
+on Haiku, a few rand, so ask Louis first:
+
+```bash
+bash demos/louis-agent/recordings/record-triage.sh
+```
+
 ---
 [Docs index](../docs/README.md) · Related: [the site's project doc](../docs/projects/louis-agent.code-review.md)

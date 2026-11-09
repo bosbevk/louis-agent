@@ -1,0 +1,483 @@
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_faa91abfe1ed437381d93fd0cb265308","role":"assistant","toolsets":["files","git","dotnet","triage"],"session_role":"triage-investigator"}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'m opening the file to see"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" what's in it."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: content_block_start
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01XuFJge8DvmibovU1CsaASX","name":"ReadWorkspaceFile","input":{"relativePath":"src/OrderService/Api/OrderTotal.cs"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_016e1V1Kdu1F4KfRjVhRU4v7","name":"FileHistory","input":{"relativePath":"src/OrderService/Api/OrderTotal.cs","count":5}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: content_block_start
+data: {"type":"content_block_start","index":3,"content_block":{"type":"tool_result","tool_use_id":"toolu_01XuFJge8DvmibovU1CsaASX","content":"namespace OrderService;\r\n\r\npublic sealed partial class OrderApi\r\n{\r\n    private static readonly Dictionary<string, decimal> DiscountRates = new()\r\n    {\r\n        [\"WELCOME10\"] = 0.10m,\r\n        [\"VIP20\"] = 0.20m,\r\n    };\r\n\r\n    /// <summary>GET /orders/{id}/total - the amount to charge, after any discount code.</summary>\r\n    public decimal GetOrderTotal(int id)\r\n    {\r\n        Order order = _orders.Get(id);\r\n        decimal subtotal = Subtotal(order);\r\n        if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;\r\n\r\n        decimal rate = DiscountRates[order.DiscountCode];\r\n        return Math.Round(subtotal * (1 - rate), 2);\r\n    }\r\n}\r\n","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":3}
+
+event: content_block_start
+data: {"type":"content_block_start","index":4,"content_block":{"type":"tool_result","tool_use_id":"toolu_016e1V1Kdu1F4KfRjVhRU4v7","content":"b5756ed  2026-11-09  Sample  The order service","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":4}
+
+event: content_block_start
+data: {"type":"content_block_start","index":5,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"I'"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"m checking which line hol"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"ds the `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"DiscountRates`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" lookup by"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" counting down"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" through the file, and it l"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"ands on line 18."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"I'm w"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"ondering whether to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" p"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"ull up"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" order 1003's data to see"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" S"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"UMMER25 code,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" though"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" the runbook already fl"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"ags it as retired."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" I'll"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" search for SUMMER25"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" to confirm it's a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" data"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" problem rather than a code one"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":","}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" ke"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"eping in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" mind that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" as"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" investigator I only report and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" don"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"'t apply the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":" au"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"to-fix."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":5,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":5}
+
+event: content_block_start
+data: {"type":"content_block_start","index":6,"content_block":{"type":"tool_use","id":"toolu_0117SQ1Rn9WurgC266Q4bbF4","name":"SearchWorkspace","input":{"query":"SUMMER25"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":6}
+
+event: content_block_start
+data: {"type":"content_block_start","index":7,"content_block":{"type":"tool_use","id":"toolu_01D7cQRTU1KV7TDLPoUnsL34","name":"SearchWorkspace","input":{"query":"DiscountCode"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":7}
+
+event: content_block_start
+data: {"type":"content_block_start","index":8,"content_block":{"type":"tool_result","tool_use_id":"toolu_0117SQ1Rn9WurgC266Q4bbF4","content":"No matches found.","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":8}
+
+event: content_block_start
+data: {"type":"content_block_start","index":9,"content_block":{"type":"tool_result","tool_use_id":"toolu_01D7cQRTU1KV7TDLPoUnsL34","content":"tests/OrderService.Tests/OrderApiTests.cs:27: public void GetOrderTotal_AppliesTheDiscountCode() =>\nsrc/OrderService/Orders.cs:9: int Id, string Customer, IReadOnlyList<OrderItem> Items, string DiscountCode, string PaymentRef, bool Refunded,\nsrc/OrderService/Api/DiscountLabel.cs:11: string code = order.DiscountCode;\nsrc/OrderService/Api/OrderTotal.cs:16: if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;\nsrc/OrderService/Api/OrderTotal.cs:18: decimal rate = DiscountRates[order.DiscountCode];","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":9}
+
+event: content_block_start
+data: {"type":"content_block_start","index":10,"content_block":{"type":"tool_use","id":"toolu_01E9KYJV3vYNZxuapY5iki4D","name":"ReportInvestigation","input":{"runId":"triage-order-total","where":"OrderService.OrderApi.GetOrderTotal in src/OrderService/Api/OrderTotal.cs, line 18 (`DiscountRates[order.DiscountCode]`)","cause":"Order 1003 carries discount code 'SUMMER25', which is not in the hard-coded DiscountRates table (only WELCOME10 and VIP20); the indexer throws KeyNotFoundException instead of treating an unknown/retired code as no discount, as the runbook expects.","area":"code","confidence":"high"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":10}
+
+event: content_block_start
+data: {"type":"content_block_start","index":11,"content_block":{"type":"tool_result","tool_use_id":"toolu_01E9KYJV3vYNZxuapY5iki4D","content":"Recorded step 4 of run triage-order-total: The investigator found the cause in OrderService.OrderApi.GetOrderTotal in src/OrderService/Api/OrderTotal.cs, line 18 (`DiscountRates[order.DiscountCode]`): Order 1003 carries discount code 'SUMMER25', which is not in the hard-coded DiscountRates table (only WELCOME10 and VIP20); the indexer throws KeyNotFoundException instead of treating an unknown/retired code as no discount, as the runbook expects.","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":11}
+
+event: content_block_start
+data: {"type":"content_block_start","index":12,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"The cause is in `Get"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"OrderTotal` at"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"src/OrderService/"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"Api/OrderTotal"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":".cs`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":", line 18:"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" `decimal rate = D"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"iscountRates[order."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"DiscountCode];`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":". I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" re"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ported it as a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" code iss"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ue with"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" high confidence.\n\n-"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" Order 1003 carries the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" discount code `SUMM"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ER25`."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" The `DiscountRates"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"` table only has `WELC"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"OME10` (0"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":".10) and `VIP"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"20` (0.20),"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" so the dictionary index"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"er throws `KeyN"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"otFoundException` for any"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" other"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" code.\n- The runbook"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" expects an unknown or ret"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ired code to give no discount,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" with"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" the total equal to the subt"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"otal. The"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" code does not do that."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" Line 16 already"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" returns the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" subtotal when the code is"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" empty,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" but n"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"othing hand"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"les a code that is present"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" miss"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ing from the table.\n- I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" searched the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" work"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"space for `SUMM"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ER25` and found no"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" match"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":","}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" so the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" code is"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" not def"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ined in the repository"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":". That"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" f"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"its the run"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"book's note"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" that marketing retires codes"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" without telling engineering."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"\n\nI"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" did not run"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" the test suite or change"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" any"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" files"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":", as"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" my"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" role is read"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"-only. The fix the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" runbook describes is to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" use a lookup that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" returns no discount for unkn"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"own codes, le"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"aving the `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"WELCOME10`"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":", `VIP20` and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" no-code totals un"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"changed. The"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" aff"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ected order and the or"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ders team"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" should conf"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"irm that"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"SUMMER25` order"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" is"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" me"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":"ant to be charged at full"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":12,"delta":{"type":"text_delta","text":" price."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":12}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":10,"cache_creation_input_tokens":2719,"cache_read_input_tokens":95563,"output_tokens":1274,"requests":4,"cost":0.001934,"currency":"USD","unpriced":0,"display_cost":0.031985,"display_currency":"ZAR","display_symbol":"R","rate_as_of":"2026-11-06"}}
+
+event: message_stop
+data: {"type":"message_stop"}
+
