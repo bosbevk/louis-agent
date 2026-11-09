@@ -22,7 +22,10 @@ namespace LouisAgent.Api.Site;
 /// a crawler walking every section of a page costs one render.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
-internal sealed class SitePageHandler(SiteRoutes routes, PagePrerenderer prerenderer, Uri? publicUrl,
+internal sealed class SitePageHandler(
+    SiteRoutes routes,
+    PagePrerenderer prerenderer,
+    Uri? publicUrl,
     IWebHostEnvironment environment)
 {
     private static readonly ILogger Log = AgentLogging.For<SitePageHandler>();
@@ -45,7 +48,7 @@ internal sealed class SitePageHandler(SiteRoutes routes, PagePrerenderer prerend
         var rendered = await _rendered.GetOrAdd(page, _ => RenderAsync(page, new Uri(site, route)));
         if (rendered is null || rendered.Description.Length == 0) return Html(_index.Value, StatusCodes.Status200OK);
 
-        return Html(PageShell.Fill(_index.Value, rendered, site, address), StatusCodes.Status200OK);
+        return Html(PageShell.Fill(_index.Value, rendered, site, address, route), StatusCodes.Status200OK);
     }
 
     /// <summary>
@@ -56,7 +59,11 @@ internal sealed class SitePageHandler(SiteRoutes routes, PagePrerenderer prerend
         var rendered = await prerenderer.RenderAsync(page, at);
         if (rendered is null)
             Log.Log(LogLevel.Warning, ApiLogMessage.PagePrerenderFailed,
-                new { Page = page.Name, Route = at.AbsolutePath });
+                new
+                {
+                    Page = page.Name,
+                    Route = at.AbsolutePath
+                });
         return rendered;
     }
 

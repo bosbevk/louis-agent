@@ -27,9 +27,26 @@ public class PagePrerendererTests
             builder.CloseComponent();
             builder.OpenComponent<HeadContent>(2);
             builder.AddComponentParameter(3, "ChildContent", (RenderFragment)(b =>
-                b.AddMarkupContent(0, "<meta name=\"description\" content=\"Every number from the ledger.\" />")));
+                b.AddMarkupContent(0, "<meta name=\"description\" content=\"Every number from the ledger.\" />" +
+                                      "<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>")));
             builder.CloseComponent();
             builder.AddMarkupContent(4, $"<h2>Every number</h2><p>Served at {Navigation.Uri}</p>");
+        }
+    }
+
+    /// <summary>A page whose description and structured data come from two components, each with a head.</summary>
+    private sealed class TwoHeadsPage : ComponentBase
+    {
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenComponent<HeadContent>(0);
+            builder.AddComponentParameter(1, "ChildContent", (RenderFragment)(b =>
+                b.AddMarkupContent(0, "<meta name=\"description\" content=\"Every number from the ledger.\" />")));
+            builder.CloseComponent();
+            builder.OpenComponent<HeadContent>(2);
+            builder.AddComponentParameter(3, "ChildContent", (RenderFragment)(b =>
+                b.AddMarkupContent(0, "<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>")));
+            builder.CloseComponent();
         }
     }
 
@@ -56,6 +73,25 @@ public class PagePrerendererTests
             Assert.That(page.Description, Is.EqualTo("Every number from the ledger."));
             Assert.That(page.Body, Does.Contain("<h2>Every number</h2>"));
             Assert.That(page.Body, Does.Not.Contain("<title>").And.Not.Contain("name=\"description\""));
+            Assert.That(page.Schemas,
+                Is.EqualTo(new[] { "<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>" }),
+                "its structured data comes out of the head whole (F123)");
+        });
+    }
+
+    /// <summary>
+    /// Blazor keeps only the last head a page writes, so a second one pushes the description out and the page would be
+    /// served as the plain shell (F123): why a page writes its whole head through the framework's one <c>PageHead</c>.
+    /// </summary>
+    [Test]
+    public async Task TwoHeads_OnlyTheLastReachesTheHead()
+    {
+        var page = await Prerenderer().RenderAsync(typeof(TwoHeadsPage), Address);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page!.Description, Is.Empty, "the first head is gone");
+            Assert.That(page.Schemas, Has.Count.EqualTo(1), "the last head is kept");
         });
     }
 

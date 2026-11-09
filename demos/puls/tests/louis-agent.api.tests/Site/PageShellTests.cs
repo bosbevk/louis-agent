@@ -21,7 +21,7 @@ public class PageShellTests
     [Test]
     public void TheHead_IsThePages()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof/rand");
+        string html = PageShell.Fill(Index, Page, Site, "/proof/rand", "/proof");
 
         Assert.Multiple(() =>
         {
@@ -41,7 +41,7 @@ public class PageShellTests
     [Test]
     public void TheWords_SitInsideTheApp()
     {
-        string html = PageShell.Fill(Index, Page, Site, "/proof");
+        string html = PageShell.Fill(Index, Page, Site, "/proof", "/proof");
 
         int app = html.IndexOf("<div id=\"app\">", StringComparison.Ordinal);
         Assert.Multiple(() =>
@@ -57,8 +57,31 @@ public class PageShellTests
     [Test]
     public void NoDescription_KeepsTheSites()
     {
-        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof");
+        string html = PageShell.Fill(Index, Page with { Description = "" }, Site, "/proof", "/proof");
 
         Assert.That(html, Does.Contain("<meta name=\"description\" content=\"An AI agent framework in C#"));
+    }
+
+    /// <summary>
+    /// The page's structured data goes into the head (F123), and every page under the landing gets a breadcrumb of
+    /// the site, then the page, at the page's own address; the landing gets none.
+    /// </summary>
+    [Test]
+    public void TheHead_CarriesTheStructuredData_AndABreadcrumb()
+    {
+        var page = Page with { Schemas = ["<script type=\"application/ld+json\">{\"@type\":\"WebSite\"}</script>"] };
+
+        string html = PageShell.Fill(Index, page, Site, "/proof/rand", "/proof");
+        string landing = PageShell.Fill(Index, page with { Title = "louis-agent" }, Site, "/home/custom", "/");
+
+        string head = html[..html.IndexOf("</head>", StringComparison.Ordinal)];
+        Assert.Multiple(() =>
+        {
+            Assert.That(head, Does.Contain("{\"@type\":\"WebSite\"}</script>"));
+            Assert.That(head, Does.Contain("\"@type\":\"BreadcrumbList\""));
+            Assert.That(head, Does.Contain("\"name\":\"louis-agent\",\"item\":\"https://louis-agent.dev/\""));
+            Assert.That(head, Does.Contain("\"name\":\"Measured\",\"item\":\"https://louis-agent.dev/proof\""));
+            Assert.That(landing, Does.Not.Contain("BreadcrumbList"));
+        });
     }
 }

@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 83 | 74 |
+| Features (`F`) | 84 | 75 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
@@ -22,6 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
+| F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended); built on the framework like any site, its guide answers questions about the framework | Next, after F123 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
@@ -130,10 +131,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 | CL60 | Simpler evals: `eval.json` and `samples.jsonl`, a fingerprint for the versions, transcripts optional, the unused checks and promptfoo out, a schema for hand editing | Cleanups |
 
-## Features (83 done)
+## Features (84 done)
 
 | Id | When | What |
 |---|---|---|
+| F123 | 2026-11-09 | Found by search: a page writes its head through one `PageHead`, its description and its schema.org facts as JSON-LD (Blazor keeps only the last `HeadContent`, so `PageDescription` became `PageHead` on every page); the prerender carries them and adds a breadcrumb for every page under the landing; the landing names the organisation, the website and the software, with a 180 by 180 Apple touch icon; `/csharp-ai-agent-framework` compares louis-agent, on your own hardware, with Microsoft Agent Framework and Semantic Kernel from their own docs (ADR 0110); a how-to for Search Console |
 | F122 | 2026-11-09 | The demos in one place: a Demos menu in the header and a Demos button in the hero lead to `/demos`, a tile per demo; the triage demo moves to `/triage-demo`, two columns with the team as swimlanes, one whole section (a band may stay unpaged); `docs/demos.md` explains each demo for the guide; the recordings end with a plain small guide button inside their window |
 | F121 | 2026-11-09 | Every page served as HTML, for search engines: a page declares a `PageDescription` beside its title (all of the three sites' pages do, held by a test per site), and the framework's `MapLouisAgentSite` renders it with `HtmlRenderer` into the site's `index.html` on its first request, with its own title, description, link card, canonical link and words, kept until the next deploy (ADR 0109); a chat or admin page keeps the plain shell, an unknown address 404 |
 | F106.3.4 | 2026-11-09 | The triage demo on /try: one real triage of the order service, recorded by a script that does the workflow's part, played step by step by the triage pack's new web views (the stage, a popup per step, the steps as a list), the hero's "Watch a triage" leading there; found FX107 and FX108 |

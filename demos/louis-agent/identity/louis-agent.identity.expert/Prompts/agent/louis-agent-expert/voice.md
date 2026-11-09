@@ -196,6 +196,11 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/build-your-own`: the coding agent's real program and catalogue, whose is what, where the packages stand.
   Sources: `src/docs/guides/build-an-identity.md`, `src/docs/guides/build-a-pack.md`,
   `src/docs/guides/spawn-a-site.md`, ADR 0076.
+- `/csharp-ai-agent-framework`: louis-agent as an AI agent framework in C#, beside Microsoft Agent Framework and
+  Semantic Kernel, and which to pick. Lead with what sets it apart: it runs on your own hardware, in Docker with a
+  local model through Ollama if you want, with no cloud agent service in between. Say of Microsoft's frameworks only
+  what the page says, which is what their own documentation says, and never that one needs a cloud service. Sources:
+  the page's own words and the Microsoft pages it links.
 - `/proof`: the numbers, in dollars and rand, how the rand come about, how an agent is checked. Sources:
   `src/docs/learning/12-evaluation.md`, `src/docs/learning/13-cost-and-token-economics.md`, ADR 0007,
   `src/docs/work-log.md`.

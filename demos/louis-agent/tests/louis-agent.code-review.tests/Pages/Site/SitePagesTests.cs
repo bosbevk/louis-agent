@@ -20,6 +20,8 @@ public class SitePagesTests
     [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]
     [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
     [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
+    [TestCase(typeof(CsharpAgentFrameworkPage), "/csharp-ai-agent-framework",
+        "An AI agent framework in C#, on your own hardware.")]
     [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
     [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
@@ -215,7 +217,8 @@ public class SitePagesTests
             builder.OpenComponent<HomePage>(0);
             builder.CloseComponent();
         };
-        var cut = ctx.Render<CascadingValue<PageAreas>>(parameters => parameters.Add(c => c.Value, areas).AddChildContent(page));
+        var cut = ctx.Render<CascadingValue<PageAreas>>(parameters =>
+            parameters.Add(c => c.Value, areas).AddChildContent(page));
         var targets = areas.Items.Select(entry => entry.Id).ToList();
 
         Assert.That(targets, Has.Count.GreaterThanOrEqualTo(5), "the sections list themselves");
@@ -247,7 +250,9 @@ public class SitePagesTests
             {
                 code.Remove();
             }
-            return (page.Name, Text: cut.Nodes.OfType<IElement>().Select(node => node.TextContent).Aggregate("", string.Concat));
+
+            return (page.Name,
+                Text: cut.Nodes.OfType<IElement>().Select(node => node.TextContent).Aggregate("", string.Concat));
         }).Where(page => page.Text.Contains(';')).Select(page => page.Name).ToList();
 
         Assert.That(pages, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
@@ -255,8 +260,8 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// Every id on a page names one place (F118): a card takes its id from its title, and the guide opens it by that id,
-    /// so a card named like a band beside it would send the visitor to the wrong one.
+    /// Every id on a page names one place (F118): a card takes its id from its title, and the guide opens it by that
+    /// id, so a card named like a band beside it would send the visitor to the wrong one.
     /// </summary>
     [Test]
     public void EveryIdOnAPage_NamesOnePlace()
@@ -322,13 +327,18 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             // The web's id is read from its section: the bare word is a toolset's wire name (ADR 0043).
-            Assert.That(cut.FindAll(".band").Select(band => band.Id), Is.EqualTo(new[] { "top", "loop", web.Id, "rules" }));
+            Assert.That(cut.FindAll(".band").Select(band => band.Id),
+                Is.EqualTo(new[] { "top", "loop", web.Id, "rules" }));
             Assert.That(cut.Find("section#loop").QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
             Assert.That(web.QuerySelectorAll("figure.graph"), Has.Length.EqualTo(1));
-            Assert.That(web.TextContent, Does.Contain("runs without the web").And.Contain("turns an agent into a website"));
-            Assert.That(web.TextContent, Does.Contain("WebAssembly").And.Contain("same address").And.Contain("server-sent events"));
-            Assert.That(web.TextContent, Does.Contain("guide in the corner").And.Contain("its own address").And.Contain("signs in"));
-            Assert.That(cut.Find("section#loop").TextContent, Does.Not.Contain("WebAssembly"), "the web's parts left the loop");
+            Assert.That(web.TextContent,
+                Does.Contain("runs without the web").And.Contain("turns an agent into a website"));
+            Assert.That(web.TextContent,
+                Does.Contain("WebAssembly").And.Contain("same address").And.Contain("server-sent events"));
+            Assert.That(web.TextContent,
+                Does.Contain("guide in the corner").And.Contain("its own address").And.Contain("signs in"));
+            Assert.That(cut.Find("section#loop").TextContent, Does.Not.Contain("WebAssembly"),
+                "the web's parts left the loop");
         });
     }
 
