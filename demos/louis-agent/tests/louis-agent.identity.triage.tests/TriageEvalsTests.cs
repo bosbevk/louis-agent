@@ -15,7 +15,7 @@ namespace LouisAgent.Identities.Triage.Tests;
 /// </summary>
 public class TriageEvalsTests
 {
-    /// <summary>Each role's eval: its folder, the role, its toolsets, its tool and the field it must end with.</summary>
+    /// <summary>Each role's eval: its folder, the role, its toolsets, its tool and the field it ends with.</summary>
     private static readonly object[] Roles =
     [
         new object[] { "Sorter", TriageRole.Sorter, "triage", "SortCase", "department" },
