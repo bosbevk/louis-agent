@@ -13,7 +13,7 @@ public class ForwardedHeadersTests
     [TestCase("louis-agent-app.yaml")]
     public void TheApp_ReadsTheForwardedScheme(string yaml)
     {
-        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "demos/puls/deploy/azure", yaml))
+        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure", yaml))
             .Select(line => line.Trim()).ToList();
         int name = lines.IndexOf("- name: ASPNETCORE_FORWARDEDHEADERS_ENABLED");
 

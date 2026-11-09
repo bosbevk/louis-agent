@@ -61,8 +61,9 @@ $Providers = @('google', 'microsoft', 'linkedin')
 # keys the app runs without, each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
 $Apps = @{
     'louis-agent-app' = @{
-        Image = 'louis-agent-coding'; Dockerfile = 'demos\louis-agent\docker\images\Dockerfile.api'
-        Config = 'demos\louis-agent\config'; Yaml = 'louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
+        # The framework's site since F124: its own host, image, settings and yaml, all under src/site.
+        Image = 'louis-agent-site'; Dockerfile = 'src\site\docker\Dockerfile'
+        Config = 'src\site\config'; Yaml = 'src\site\deploy\azure\louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
         Share = 'louis-agent-workspace'; Hostname = 'louis-agent.dev'; Suffix = '-louis-agent'
         WhenSet = @{ RESEND_API_KEY = 'resend-api-key' }
     }
@@ -279,7 +280,7 @@ switch ($Verb) {
                 $whenSetLines += "            secretRef: $($AppInfo.WhenSet[$key])"
             }
         }
-        $template = Join-Path $Here $AppInfo.Yaml
+        $template = Join-Path $Repo $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
         (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n")) |
             Set-Content $resolved -Encoding utf8 -NoNewline

@@ -195,8 +195,16 @@ green, for his review:
 - **The films' recorded hashes are renewed for the move.** The hash includes each file's path; the films didn't change,
   only where their files live. A real re-export follows once the site has its own host (step 7).
 - **`SiteRoutesTests` went back to code review**: it holds that app's router and admin frame, not the site's.
-- **The film export tool moves to `src/tools/`** (Louis: "move the film export to here"), with its tests, as its own
-  commit after this step.
+- **The film export tool moves to `src/tools/`** (Louis: "move the film export to here"), with its tests, its encoder's
+  Dockerfile and the films themselves (`src/docs/films`, where the README and the runtime view show them).
+- **The graphs stay in the site** (Louis asked to move them to the framework, then: "no sorry i see it is there").
+- **Step 8 was mostly done in step 4**: the chat at `/` and its layout came with the move; step 8 only took the site's home
+  word off the coding API.
+- **The site's image carries its price tables and the docs**, so in Azure the share keeps only the logs, and the yaml
+  drops the workspace, skills, data and browser settings.
+- **The site asks Azure for half what the coding agent did**: 0.5 CPU, 1 GiB and 2 GiB of disk (Container Apps ties the
+  disk to the CPU). The guide reads docs and calls a model; it builds nothing. Louis to check against the month's cost.
+- **The site's `.env.secrets` is Louis's to create** from its example: no key was copied from the demo's.
 
 ## Steps
 

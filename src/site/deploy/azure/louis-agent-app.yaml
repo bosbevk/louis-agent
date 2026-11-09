@@ -1,10 +1,10 @@
-# louis-agent-app: the louis-agent demo's web app (the framework's site, the code-review chat behind it) on Azure
-# Container Apps, beside Puls in the same environment puls-env the Bicep build made (F109.2; split from Puls's
-# folder later, Louis's pick), deployed with deploy.ps1 -App louis-agent-app (the how-to is README.md here).
+# louis-agent-app: the framework's website, louis-agent.dev (F124: its own host since the site left the louis-agent
+# demo), on Azure Container Apps in the environment puls-env the Bicep build made (F109.2), deployed with
+# demos/puls/deploy/azure/deploy.ps1 -App louis-agent-app (the how-to is README.md there).
 #   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
-# One container: the coding API serving the app, on the image demos/louis-agent/docker/images/Dockerfile.api builds.
-# Since FX122 (Louis's option A) it runs alone: no VM, so no headless browser or SearXNG (web search falls back to
-# what needs no server), no Mongo (the eval studio keeps its runs in memory) and no accounts. No secret value lives
+# One container: the site's host (src/site/louis-agent.site-api), on the image src/site/docker/Dockerfile builds, with
+# the guide and its three packs and nothing else: no coding agent, eval studio or accounts. It carries the docs the
+# guide reads and its price tables, so the share keeps only the logs. Since FX122 it runs alone. No secret value lives
 # here: every value is in the vault puls-keys, the app's secrets are references to it by URL, read with the identity
 # the Bicep build made for this app, and deploy.ps1 update writes the `secrets:` block from the names the vault
 # holds; this app's own keys carry the suffix -louis-agent.
@@ -36,11 +36,9 @@ properties:
   template:
     revisionSuffix: 'REVISION'
     containers:
-      # The app. Its settings mirror the api service in demos/louis-agent/docker/docker-compose.yml, less what only
-      # a PC needs (the repositories mount, the git line-ending config for a Windows checkout); its workspace is the
-      # share, not a checkout, and its web is the VM's.
+      # The site. Its settings mirror the site service in src/site/docker/docker-compose.yml.
       - name: louis-agent-app
-        image: acrpulsza.azurecr.io/louis-agent-coding:TAG
+        image: acrpulsza.azurecr.io/louis-agent-site:TAG
         env:
           # Its name in Application Insights (F52): the collector's address and protocol come from the environment's
           # OpenTelemetry agent (the Bicep build), never from here.
@@ -54,18 +52,8 @@ properties:
             value: Africa/Johannesburg
           - name: HOST_CULTURE
             value: en-ZA
-          - name: WORKSPACE_ROOT
-            value: /workspace
-          - name: CONFIG_DIRECTORY
-            value: /workspace/config
-          - name: SKILLS_DIRECTORY
-            value: /workspace/skills
           - name: LOG_DIRECTORY
             value: /logs
-          - name: PRICES_FILE
-            value: /workspace/config/prices.json
-          - name: RATES_FILE
-            value: /workspace/config/rates.json
           - name: USAGE_IN_CHAT
             value: 'true'
           - name: LLM_PROVIDER
@@ -84,10 +72,7 @@ properties:
             value: louis-agent-guide
           - name: OPEN_SESSIONS_PER_DAY
             value: '20'
-          # What the agent's fetcher tells the sites it reads for a user: who reads and why; never a person.
-          - name: BROWSER_USER_AGENT
-            value: "louis-agent/1.0 (+https://louis-agent.dev; reads a page on a user's behalf)"
-          # The docs the expert reads (F109.3): the copy the image carries, laid out as the repo.
+          # The docs the guide reads (F109.3): the copy the image carries, laid out as the repo.
           - name: DOCS_ROOT
             value: /app/docs
           # The guide's lead mail (F112): Louis's address and the verified sender. Resend's key goes in at WHEN SET below,
@@ -102,21 +87,17 @@ properties:
           # deploy.ps1 update still fills PROVIDERS for a provider whose keys the vault holds, and none is set.
           # PROVIDERS
         resources:
-          cpu: 1
-          memory: 2Gi
-          ephemeralStorage: 4Gi
-        # The share louis-agent-workspace (storage louis-agent-vol on the environment, from the Bicep build): config/
-        # with the price tables at the paths above, skills/ for what the agent writes, logs/ for the run files and the
-        # usage ledger, data/ for what an eval run saves.
+          # The guide reads docs and calls a model; it builds nothing, so half of what the coding agent had (F124).
+          cpu: 0.5
+          memory: 1Gi
+          # Container Apps ties the disk to the CPU: half a CPU allows 2 GiB.
+          ephemeralStorage: 2Gi
+        # The share louis-agent-workspace (storage louis-agent-vol on the environment, from the Bicep build): logs/ for
+        # the run files and the usage ledger, kept across revisions. The image carries the rest.
         volumeMounts:
-          - volumeName: louis-agent-vol
-            mountPath: /workspace
           - volumeName: louis-agent-vol
             subPath: logs
             mountPath: /logs
-          - volumeName: louis-agent-vol
-            subPath: data
-            mountPath: /data
         probes:
           - type: Startup
             tcpSocket:

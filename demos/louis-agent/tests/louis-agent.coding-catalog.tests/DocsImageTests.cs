@@ -22,11 +22,13 @@ public class DocsImageTests
     public void TheImage_CarriesTheDocs(string line) =>
         Assert.That(Lines("demos/louis-agent/docker/images/Dockerfile.api"), Does.Contain(line));
 
-    /// <summary>On the PC the repo is the docs root, mounted as the workspace; in Azure the image's copy.</summary>
+    /// <summary>
+    /// On the PC the repo is the docs root, mounted as the workspace; in Azure the framework's site's image's copy.
+    /// </summary>
     [Test]
     public void EveryWayTheAppRuns_NamesTheDocsRoot()
     {
         Assert.That(Lines("demos/louis-agent/docker/docker-compose.yml"), Does.Contain("DOCS_ROOT: /workspace"));
-        Assert.That(Lines("demos/puls/deploy/azure/louis-agent-app.yaml"), Does.Contain("value: /app/docs"));
+        Assert.That(Lines("src/site/deploy/azure/louis-agent-app.yaml"), Does.Contain("value: /app/docs"));
     }
 }
