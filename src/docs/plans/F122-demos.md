@@ -99,8 +99,10 @@ sequenceDiagram
 ## Approved during the build
 
 - **`/try` side by side, like `/coding-agent`** (Louis's pick of three, 2026-11-09, on the triage demo outgrowing a
-  1080p screen as its step list fills), then replaced the same day: **"split this in two sections"**, the words
-  (kicker, heading, intro) one section and the player the next, its list scrolling inside it so it fits a slide.
+  1080p screen as its step list fills), then replaced the same day: **"split this in two sections"**, and then
+  shaped as **two columns** ("both text lists can be under one another in the second column"): on the left the
+  kicker, heading, intro, the six agents and Back / Next / Play it again; on the right the current step's card at
+  the top and the list of steps under it, scrolling inside the column so the page fits a slide.
 - **The triage demo is at `/triage-demo`** (Louis: "should just say triage-demo"), no redirect from `/try` (ADR 0049).
 - **The recording's closing button is a plain small button** (Louis on `/coding-agent`: "too big just button",
   "the panel should leave space for the button"): "Ask the guide about one" takes the small line style of "Play it
