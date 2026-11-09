@@ -87,6 +87,15 @@ public partial class FrameworkStylesTests
     public void TheSpotlight_DimsThePage_AndRingsTheArea(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
+    /// <summary>
+    /// A section paged sideways keeps its heading with what follows it (FX110), so at 1080p a page never holds only a
+    /// section's title while its content starts on the next.
+    /// </summary>
+    [Test]
+    public void APagedSection_KeepsItsHeadingWithItsContent() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+            Does.Contain(".is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }"));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()
