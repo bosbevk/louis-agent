@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The triage pack's own web views: the demo a visitor watches (F106.3.4, ADR 0086). It references the framework's web,
+       never the pack: the pack runs on the server and this in the browser, so the two share only the run's JSON, which
+       louis-agent.pack.triage.web.tests holds together. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Packs.Triage.Web</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- A component Razor can't find would be drawn as a plain HTML tag, and the build would still pass. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+  </ItemGroup>
+
+</Project>

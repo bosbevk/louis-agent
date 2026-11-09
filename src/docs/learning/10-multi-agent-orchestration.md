@@ -85,6 +85,26 @@ What the numbers say:
 - **Mistakes found by looking:** `AGENT_FUNCTION=louis` loaded every skill file into Puls's prompt (fixed: skill files
   come with the `skills` toolset); the model guessed a peer name from an example (fixed: an empty name means the only peer).
 
+## A triage team, recorded by hand before the workflow exists (F106.3.4, 2026-11-09)
+
+**What it means.** The site's `/try` page plays one real triage: a sorter routes an error, a manager decides, an
+investigator finds the cause, a coder fixes it on a branch with a test, code checks the fix, and a reviewer keeps it.
+The workflow that will run that in code (F106.3.3) waits on the engine's typed delegation, so a short script did the
+workflow's part by hand, once: it asked each agent in turn with the brief the workflow will hand it, and each agent
+ended its turn with a typed tool call the triage pack saved as a step.
+
+**What the five tries taught.** Orchestration fails at the joins, not in the agents:
+- The container's git saw line endings as changes, so the coder never committed, and the script still recorded a fix.
+  A recording, like a workflow, must check what happened in code before it says so; the script now stops instead.
+- The coding agent leaves commits to a person, by its own voice. That is right for a chat and wrong for a pipeline,
+  so the commit became the workflow's job: deterministic steps belong in code, judgement in the agents.
+- A reviewer couldn't switch branch on the container's older git (FX107), and an investigator left out an argument
+  three times because the refusal never named its choices (FX108). Both are tool problems an eval of one agent
+  wouldn't show; a run across agents found them in an afternoon.
+
+**Where it sits in the skill map:** multi-agent orchestration (skill 10), a hub of roles with typed results; and
+testing and shipping (skill 18), since the same run file a live workflow writes is what the page plays.
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and

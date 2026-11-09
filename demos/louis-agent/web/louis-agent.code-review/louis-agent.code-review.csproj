@@ -26,6 +26,8 @@
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.evals\louis-agent.web.evals.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj" />
+    <!-- F106.3.4: the triage pack's demo, played on /try. -->
+    <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.triage.web\louis-agent.pack.triage.web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

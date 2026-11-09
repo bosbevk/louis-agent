@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 80 | 73 |
+| Features (`F`) | 81 | 73 |
 | Fixes (`FX`) | 100 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
@@ -128,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (80 done)
+## Features (81 done)
 
 | Id | When | What |
 |---|---|---|
+| F106.3.4 | 2026-11-09 | The triage demo on /try: one real triage of the order service, recorded by a script that does the workflow's part, played step by step by the triage pack's new web views (the stage, a popup per step, the steps as a list), the hero's "Watch a triage" leading there; found FX107 and FX108 |
 | F106.3.2 | 2026-11-09 | The triage identity: the manager's voice, the sorter, investigator and reviewer as roles, each ending with a typed tool of the triage pack (`SortCase` new), loaded by the coding catalogue; the convertibility check shared; an eval per role at a specialist's level (an eval mode names its depth), passed live on Haiku for about R0.15 |
 | F120 | 2026-11-09 | Watch the coding agent work: the site's doors lead to `/coding-agent`, where the agent fixing a sample's two bugs, recorded once on Haiku for about R0.10, plays in the framework's chat view (`RecordedChat`, a shared replay loop, a pace by kind), then the offer; the live chat stays behind the key (ADR 0108); a diagram's gaps fit their own words |
 | F119 | 2026-11-09 | How it works splits the loop from the web: the web's slide says the agent runs without it and the web turns an agent into a website, names how the site, the guide, the API and the accounts work with the engine, and has its own diagram; a sitemap of every page and place, held to the pages by a test |
