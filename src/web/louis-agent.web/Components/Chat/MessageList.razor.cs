@@ -20,16 +20,23 @@ public partial class MessageList : IAsyncDisposable
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
     /// <summary>What to show while the chat has no turn (the app's welcome).</summary>
-    [Parameter] public RenderFragment? Empty { get; set; }
+    [Parameter]
+    public RenderFragment? Empty { get; set; }
 
     /// <summary>What to show instead of the turns, when the app's view isn't the chat.</summary>
-    [Parameter] public RenderFragment? Content { get; set; }
+    [Parameter]
+    public RenderFragment? Content { get; set; }
 
     /// <summary>Classes after <c>messages</c>; <c>hidden</c> while a site shows something else instead.</summary>
-    [Parameter] public string? Class { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
 
     [Parameter] public RenderFragment<Turn>? UserActions { get; set; }
     [Parameter] public RenderFragment<Turn>? AnswerActions { get; set; }
+
+    /// <summary>Whether the answers show what they thought and the tools they called; off, their words alone.</summary>
+    [Parameter]
+    public bool ShowWork { get; set; } = true;
 
     private ElementReference _messages;
     private ChatModel? _shown;

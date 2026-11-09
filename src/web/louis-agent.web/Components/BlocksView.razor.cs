@@ -12,5 +12,18 @@ public partial class BlocksView
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
     /// <summary>The images a tool gave in this turn: all an answer may show, besides a shop's own photos.</summary>
-    [Parameter] public IReadOnlySet<string>? Shown { get; set; }
+    [Parameter]
+    public IReadOnlySet<string>? Shown { get; set; }
+
+    /// <summary>
+    /// Whether the answer shows its work: what it thought and the tools it called. Off, a visitor sees the words and a
+    /// thinking label alone (F128.1), and nothing else is drawn, so it isn't in the page to read either.
+    /// </summary>
+    [Parameter]
+    public bool ShowWork { get; set; } = true;
+
+    /// <summary>What a thinking block says on its label: thinking now, or how long it thought.</summary>
+    private string ThinkingLabel(Block block) => block.ThinkingSeconds is { } seconds
+        ? string.Format(Text.ThoughtFor, Math.Max(1, Math.Round(seconds)))
+        : Text.Thinking;
 }

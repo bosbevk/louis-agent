@@ -86,6 +86,7 @@ public class ExpertChatTests
             Assert.That(widget.Greeting, Does.Contain("What brings you here?"));
             Assert.That(widget.Greeting, Does.Not.Contain(";"));
             Assert.That(widget.ButtonText, Is.EqualTo("Ask Louis"));
+            Assert.That(widget.ShowWork, Is.False, "a visitor sees his words, not his tool calls or thinking");
         });
     }
 }

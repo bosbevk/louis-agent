@@ -18,13 +18,22 @@ public partial class TurnView : IAsyncDisposable
     [Parameter] public bool Streaming { get; set; }
 
     /// <summary>A site's actions under the user's message, such as copy and edit; none by default.</summary>
-    [Parameter] public RenderFragment<Turn>? UserActions { get; set; }
+    [Parameter]
+    public RenderFragment<Turn>? UserActions { get; set; }
 
     /// <summary>A site's actions under a finished answer, such as copy and regenerate; none by default.</summary>
-    [Parameter] public RenderFragment<Turn>? AnswerActions { get; set; }
+    [Parameter]
+    public RenderFragment<Turn>? AnswerActions { get; set; }
 
     /// <summary>The currency costs are shown in (F14); a change re-draws finished turns too.</summary>
-    [Parameter] public CurrencyChoice? Currency { get; set; }
+    [Parameter]
+    public CurrencyChoice? Currency { get; set; }
+
+    /// <summary>
+    /// Whether the answer shows what it thought and the tools it called; off, its words alone (F128.1).
+    /// </summary>
+    [Parameter]
+    public bool ShowWork { get; set; } = true;
 
     private Turn? _renderedTurn;
     private bool _wasStreaming;
@@ -37,7 +46,8 @@ public partial class TurnView : IAsyncDisposable
     /// </summary>
     protected override void OnParametersSet()
     {
-        _shouldRender = Streaming || _wasStreaming || !ReferenceEquals(Turn, _renderedTurn) || Currency != _renderedCurrency;
+        _shouldRender = Streaming || _wasStreaming || !ReferenceEquals(Turn, _renderedTurn) ||
+                        Currency != _renderedCurrency;
         _renderedTurn = Turn;
         _renderedCurrency = Currency;
         _wasStreaming = Streaming;
