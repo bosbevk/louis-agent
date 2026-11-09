@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 86 | 79 |
-| Fixes (`FX`) | 115 | 6 |
+| Fixes (`FX`) | 116 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -225,10 +225,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (105 done)
+## Fixes (106 done)
 
 | Id | When | What |
 |---|---|---|
+| FX124 | 2026-11-10 | A section's own address opens from a link, a reload or a search again: the site's router carries the place page itself (lost in F124's move), without the framework's admin pages |
 | FX123 | 2026-11-09 | A release numbers its revision from every revision the app has, so one made by hand in Azure never stops the next |
 | FX122 | 2026-11-09 | The louis-agent site runs alone on Azure, sleeping when unused, with no VM and no databases; Puls is not deployed (Louis's option A, after the SQL free offer ran out and took the site down) |
 | FX121 | 2026-11-09 | The guide's spotlight on a site's hero rings what the hero holds, not the whole screen-tall section |
