@@ -52,7 +52,9 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter, EditorRequired]
     public string Identity { get; set; } = "";
 
-    /// <summary>The toolsets the session asks for; none by default, since the identity's own packs come with it.</summary>
+    /// <summary>
+    /// The toolsets the session asks for; none by default, since the identity's own packs come with it.
+    /// </summary>
     [Parameter]
     public IEnumerable<string> Toolsets { get; set; } = [];
 
@@ -80,13 +82,31 @@ public partial class ChatWidget : IAsyncDisposable
     [Parameter]
     public string CloseLabel { get; set; } = "Close the chat";
 
-    /// <summary>The words on the page's tour button above the corner's own (F118); none, and there is no tour.</summary>
+    /// <summary>
+    /// The words on the page's tour button, alone in the folded corner since FX114 (F118); none, and there is no tour.
+    /// </summary>
     [Parameter]
     public string? TourLabel { get; set; }
 
     /// <summary>What the tour asks the guide.</summary>
     [Parameter]
     public string TourQuestion { get; set; } = "Walk me through this page, one section at a time.";
+
+    /// <summary>
+    /// The words on the tour's button once a conversation has started (FX117), which picks it up again; none, and the
+    /// tour always starts afresh.
+    /// </summary>
+    [Parameter]
+    public string? ResumeLabel { get; set; }
+
+    /// <summary>
+    /// What resuming tells the guide; the page the visitor is on now goes with it, as with every message.
+    /// </summary>
+    [Parameter]
+    public string ResumeQuestion { get; set; } = "Let's carry on with the tour.";
+
+    /// <summary>A conversation has started and the site offers to pick it up again.</summary>
+    private bool CanResume => ResumeLabel is not null && Runner.Chat is { Turns.Count: > 0 };
 
     private ChatRunner Runner { get; set; } = default!;
 
@@ -106,7 +126,9 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>The way in from a button anywhere on the site (F118), when the site has one.</summary>
     private GuideDoor? Door => Services.GetService<GuideDoor>();
 
-    /// <summary>A button asked the guide a question: the panel opens and it goes as if the visitor had typed it.</summary>
+    /// <summary>
+    /// A button asked the guide a question: the panel opens and it goes as if the visitor had typed it.
+    /// </summary>
     private void OnAsked(string question) => InvokeAsync(async () =>
     {
         _open = true;
@@ -124,7 +146,8 @@ public partial class ChatWidget : IAsyncDisposable
     {
         if (block.ToolName != ShowPageTool || block.ToolInput is null || Addresses is not { } addresses) return;
         using var input = JsonDocument.Parse(block.ToolInput);
-        if (!input.RootElement.TryGetProperty("path", out var pathElement) || pathElement.GetString() is not { } path) return;
+        if (!input.RootElement.TryGetProperty("path", out var pathElement)) return;
+        if (pathElement.GetString() is not { } path) return;
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
         if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));
@@ -179,7 +202,9 @@ public partial class ChatWidget : IAsyncDisposable
         }
 
         // Every place by its own address (ADR 0107), so the guide names what it sends the visitor to as it reads it.
-        Runner.Page = page is not null && Addresses is { } addresses ? GuidePlaces.Addressed(page, addresses, here) : page;
+        Runner.Page = page is not null && Addresses is { } addresses
+            ? GuidePlaces.Addressed(page, addresses, here)
+            : page;
         await Runner.SendAsync();
     }
 

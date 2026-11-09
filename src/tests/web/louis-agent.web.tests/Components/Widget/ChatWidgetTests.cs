@@ -42,7 +42,10 @@ public class ChatWidgetTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/messages")
-            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") }
+            ? new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(sse, Encoding.UTF8, "text/event-stream")
+            }
             : FixtureApi.Answer(request));
         var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
         ctx.Services.AddSingleton(settings);
@@ -100,7 +103,8 @@ public class ChatWidgetTests
         {
             Assert.That(ctx.Services.GetRequiredService<NavigationManager>().Uri, Does.EndWith("/identities"));
             Assert.That(shown.Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
-            Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }), "the bar shows the place's own address (ADR 0107)");
+            Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }),
+                "the bar shows the place's own address (ADR 0107)");
         });
     }
 
@@ -182,6 +186,42 @@ public class ChatWidgetTests
         });
     }
 
+    /// <summary>
+    /// A visitor who closes the guide mid-tour can pick it up again (FX117, Louis: "when the user clicks out he should
+    /// be able to resume tour", "he must continue from where they left off or from the new page"): once a
+    /// conversation has started, the folded corner offers the resume label, and it opens the guide on the same
+    /// conversation and tells it to carry on, with the page the visitor is on now.
+    /// </summary>
+    [Test]
+    public void AfterATourStarted_TheCornerResumesIt()
+    {
+        using var ctx = Context(out var handler);
+        ctx.Services.AddSingleton(new GuideDoor());
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide")
+            .Add(w => w.TourLabel, "Tour this page")
+            .Add(w => w.ResumeLabel, "Resume the tour"));
+        cut.Find(".widget-tour").Click();
+        // The first answer has streamed to its end, as a visitor would wait, before the guide is closed.
+        cut.WaitForState(() => cut.FindAll(".turn .markdown").Count > 0 && cut.FindAll("button.stop").Count == 0,
+            TimeSpan.FromSeconds(10));
+
+        cut.Find(".widget-button").Click();
+        string folded = cut.WaitForElement(".widget-tour", TimeSpan.FromSeconds(10)).TextContent;
+        cut.Find(".widget-tour").Click();
+        cut.WaitForState(() => handler.Requests.Count(r => r.Url.EndsWith("/messages")) == 2, TimeSpan.FromSeconds(10));
+
+        var sent = handler.Requests.Where(r => r.Url.EndsWith("/messages")).Select(r => r.Body!).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(folded, Does.Contain("Resume the tour"));
+            Assert.That(cut.FindAll(".widget-panel"), Is.Not.Empty, "the guide is open again");
+            Assert.That(handler.Requests.Count(r => r.Method == HttpMethod.Post && r.Url.EndsWith("/v1/sessions")),
+                Is.EqualTo(1), "on the same conversation");
+            Assert.That(sent[1], Does.Contain("carry on with the tour"));
+        });
+    }
+
     private static IRenderedComponent<ChatWidget> Render(BunitContext ctx) =>
         ctx.Render<ChatWidget>(parameters => parameters
             .Add(w => w.Identity, "guide")
@@ -254,7 +294,9 @@ public class ChatWidgetTests
             .Select(call => call.Arguments[0]), Does.Contain(FrameworkScripts.Composer));
     }
 
-    /// <summary>A question opens a session as the widget's identity, with no toolsets of its own, and the turn shows.</summary>
+    /// <summary>
+    /// A question opens a session as the widget's identity, with no toolsets of its own, and the turn shows.
+    /// </summary>
     [Test]
     public void AQuestion_OpensASession_AsTheIdentity()
     {
@@ -281,7 +323,8 @@ public class ChatWidgetTests
     {
         using var ctx = Context(out var handler);
         var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
-        module.Setup<Page>("pageText").SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own.", []));
+        module.Setup<Page>("pageText")
+            .SetResult(new Page("/build-your-own", "Build your own", "A few lines of your own.", []));
         var cut = Render(ctx);
         cut.Find("button.widget-button").Click();
 
@@ -326,13 +369,16 @@ public class ChatWidgetTests
         Assert.That(bodies, Has.All.Contain("\"open\":{\"id\":\"louis-agent-pack-leads\""));
     }
 
-    /// <summary>Types a message into the widget's composer, sends it and waits for the turn to show and the stream to end.</summary>
+    /// <summary>
+    /// Types a message into the widget's composer, sends it and waits for the turn to show and the stream to end.
+    /// </summary>
     private static void Send(IRenderedComponent<ChatWidget> cut, string text)
     {
         int turns = cut.FindAll(".turn").Count;
         cut.Find("#composer-input").Input(text);
         cut.Find("button.send").Click();
-        cut.WaitForState(() => cut.FindAll(".turn").Count > turns && cut.FindAll("button.send").Count == 1, TimeSpan.FromSeconds(10));
+        cut.WaitForState(() => cut.FindAll(".turn").Count > turns && cut.FindAll("button.send").Count == 1,
+            TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
@@ -346,6 +392,7 @@ public class ChatWidgetTests
 
         ctx.Render<ChatWidget>(parameters => parameters.Add(widget => widget.Toolsets, new[] { "docs" }));
 
-        Assert.That(handler.Requests.Where(r => r.Method == HttpMethod.Get && r.Url.EndsWith("/v1/rates")), Is.Not.Empty);
+        Assert.That(handler.Requests.Where(r => r.Method == HttpMethod.Get && r.Url.EndsWith("/v1/rates")),
+            Is.Not.Empty);
     }
 }
