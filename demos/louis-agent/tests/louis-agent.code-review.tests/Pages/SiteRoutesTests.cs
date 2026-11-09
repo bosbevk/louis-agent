@@ -3,23 +3,21 @@ using System.Net.Http.Json;
 using System.Reflection;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
-using LouisAgent.CodeReview.Layout;
-using LouisAgent.CodeReview.Pages;
 using LouisAgent.Web.Api;
-using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Pages.Admin;
 using LouisAgent.Web.Storage;
-using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
+using LouisAgent.CodeReview.Layout;
+using LouisAgent.CodeReview.Pages;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.CodeReview.Tests.Pages;
 
 /// <summary>
 /// The framework's admin pages reach the code-review app through its router, inside its admin frame, as they reach
-/// every site: its controls become admin screens, so this is where they'll open.
+/// every site: its controls become admin screens, so this is where they'll open; and the chat is the app's root.
 /// </summary>
 public class SiteRoutesTests
 {
@@ -40,11 +38,11 @@ public class SiteRoutesTests
     }
 
     /// <summary>
-    /// The site's landing page is the root and the chat lives at /chat, each in its own layout (F109.1): the site's
-    /// pages in the site's frame, which the router draws by default, the chat in a bare one.
+    /// The chat is the root and lives at /chat too (F124: the framework's site left this app), in its own bare
+    /// layout, which the router also draws by default.
     /// </summary>
     [Test]
-    public void TheRoot_IsTheLanding_AndTheChatIsAtChat()
+    public void TheRoot_IsTheChat()
     {
         var chatRoutes = typeof(ChatPage).GetCustomAttributes<RouteAttribute>().Select(route => route.Template)
             .ToList();
@@ -54,11 +52,9 @@ public class SiteRoutesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(chatRoutes, Does.Not.Contain("/"), "the root is the landing page's");
-            Assert.That(chatRoutes, Does.Contain("/chat"));
-            Assert.That(chatLayout, Is.EqualTo(typeof(ChatLayout)), "the chat draws without the site's frame");
-            Assert.That(router, Does.Contain("DefaultLayout=\"@typeof(SiteLayout)\""),
-                "every other page is in the site's frame");
+            Assert.That(chatRoutes, Does.Contain("/").And.Contain("/chat"));
+            Assert.That(chatLayout, Is.EqualTo(typeof(ChatLayout)), "the chat draws in its bare frame");
+            Assert.That(router, Does.Contain("DefaultLayout=\"@typeof(ChatLayout)\""));
         });
     }
 

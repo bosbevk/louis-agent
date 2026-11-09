@@ -23,7 +23,7 @@ COPY --from=build /src/src/docs/ /app/docs/src/docs/
 COPY --from=build /src/demos/louis-agent/docs/ /app/docs/demos/louis-agent/docs/
 COPY --from=build /src/demos/puls/docs/ /app/docs/demos/puls/docs/
 COPY --from=build /src/packs/docs/ /app/docs/packs/docs/
-RUN rm -rf /app/docs/demos/louis-agent/docs/films
+RUN rm -rf /app/docs/src/docs/films
 ENV DOCS_ROOT=/app/docs
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080

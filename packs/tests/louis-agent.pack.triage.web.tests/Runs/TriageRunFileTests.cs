@@ -13,7 +13,7 @@ namespace LouisAgent.Packs.Triage.Web.Tests.Runs;
 public class TriageRunFileTests
 {
     private static string Recording => Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot/recordings/triage-run.jsonl");
+        "src/site/louis-agent.site/wwwroot/recordings/triage-run.jsonl");
 
     /// <summary>The recorded run reads as its steps, in order, from the error collected to the case closed.</summary>
     [Test]

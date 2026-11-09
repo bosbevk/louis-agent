@@ -1,20 +1,23 @@
 # louis-agent.code-review — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:** louis-agent.api (same origin) ·
-> **References:** louis-agent.web (with Markdig), highlight.js (from a CDN)
+> **Kind:** Blazor WebAssembly app · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:**
+> `louis-agent.coding-api` (same origin), on 127.0.0.1:5082 · **References:** louis-agent.web (with Markdig),
+> highlight.js (from a CDN)
 
 ## Purpose
 
-The browser front end for the coding agent: chat with it, browse the workspace, review and commit changes, and review and
-merge branches, on top of louis-agent.api. It's a small site on [the framework's web](../../../../src/docs/projects/louis-agent.web.md),
-the second real user of its frames, and since F109.1 the coding agent's landing page as well: the
-framework's site, its pages and films, with the chat behind *Try it*.
+The browser front end for the coding agent: chat with it, browse the workspace, review and commit changes, and review
+and merge branches, on top of the coding agent's API. It's a small site on
+[the framework's web](../../../../src/docs/projects/louis-agent.web.md), the second real user of its frames. From
+F109.1 to F124 it also carried the framework's website; that is now the framework's own,
+[louis-agent.site](../../../../src/docs/projects/louis-agent.site.md) in `src/site/`, and this app is the chat and the
+admin, on this PC.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    Page["Pages/ChatPage: a thin page"] --> Shell["ChatShell (framework)"]
+    Page["Pages/ChatPage: a thin page, at / and /chat"] --> Shell["ChatShell (framework)"]
     Admin["Layout/AdminLayout"] --> AdminShell["AdminShell (framework)"]
     Screen["Screen page (framework)"] --> Views["PackViews"]
     Views --> Files["FilesView (packs/web)"]
@@ -27,18 +30,23 @@ flowchart LR
     Git --> Api
 ```
 
-- **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs' screens. A coding agent has no
-  use for credits, a language menu, a place or projects, so `ChatPage` turns those off, along with what only says it's coming.
+- **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs'
+  screens, at the root and at `/chat`. A coding agent has no use for credits, a language menu, a place or projects, so
+  `ChatPage` turns those off, along with what only says it's coming.
 - **A session** gets every toolset the API can load.
-- **Files, Changes and Branches aren't this app's.** They're the files and git packs' views, under `packs/web/`, and open as admin screens
-  at `/admin/screens/{name}`. `Program.cs` registers them with `FilesWebViews.AddTo` and `GitWebViews.AddTo`.
-- **A Review or Ask button opens this chat with the prompt as a draft,** and nothing is sent until the person sends it (`ChatHandoff`).
-- **Themes** are `retro`, the default, and `paper`: Sass that sets the framework's colour names, built to `wwwroot/css/themes/`, loaded after
-  `app.css` and swapped while the page runs. `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
+- **Files, Changes and Branches aren't this app's.** They're the files and git packs' views, under `packs/web/`, and
+  open as admin screens at `/admin/screens/{name}`. `Program.cs` registers them with `FilesWebViews.AddTo` and
+  `GitWebViews.AddTo`.
+- **A Review or Ask button opens this chat with the prompt as a draft,** and nothing is sent until the person sends it
+  (`ChatHandoff`).
+- **Themes** are `console`, the default, the framework's colours as they are, and `retro` to switch to: Sass that sets
+  the framework's colour names, built to `wwwroot/css/themes/`, loaded after `app.css` and swapped while the page runs.
+  `wwwroot/js/theme.js` keeps the choice in this browser and across tabs.
 
 ## Diagrams
 
-**Flow:** the architecture is under *How it works*; this is reviewing a change, the job it's for. The button only fills the message box, and nothing goes to the model until the person sends it.
+**Flow:** the architecture is under *How it works*; this is reviewing a change, the job it's for. The button only fills
+the message box, and nothing goes to the model until the person sends it.
 
 ```mermaid
 sequenceDiagram
@@ -61,154 +69,46 @@ sequenceDiagram
     P-->>R: the review, as it comes
 ```
 
-## The site's pages and films
-
-Since F113 a grid that carried a summary and a story each is a deck of cards that open (the framework's `CardDeck`):
-the agents on Built on it, the identities that exist, the general tools and the cook's packs, and how the rand come
-about on Proof. The card shows the title, a line and, for an identity, its project's name as a tag, so the page still
-names every identity and pack; the story slides in under the row on a click, and `SitePagesTests` holds that it waits
-for the click.
-
-Since F111 every page that explains a part of the framework shows one animated diagram of it, drawn by the framework's
-`GraphView` from data in `Graphs/` (`IdentityGraph`, `PacksGraph`, `ArchitectureGraph`, `TurnGraph`, `ProgramGraph`
-under `Framework/`, `ProofGraph` and `DemosGraph`), each held to the code by a test in `Graphs/`: the identity's parts
-to the page's list, the architecture's boxes to the solution file's groups, the turn's pipeline to the middleware's
-order, the demos to the folders under `demos/`; `SitePagesTests` fails a page that explains and shows none.
-
-Since F109.1 the app is also the coding agent's landing page, the demo of the framework it runs on, and since F109.4
-the site tells the whole architecture ([ADR 0100](../../../../src/docs/adr/0100-the-site-tells-the-whole-architecture.md)):
-`/` (one page that moves, F110: the lockup and the menu on the right in the frame; a section index on the left and a
-progress line the frame's module drives; the hero, 100% C# and South Africa up front, the numbers, the short film as
-the map of the whole framework, the four concepts, what's built on it, the custom-agents band, the contact strip, each
-block revealing as it enters), `/how-it-works` (the detailed film, one turn through core; the
-parts in the order a turn meets them; the rules every turn keeps), `/architecture` (every project that ships, by
-family), `/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/csharp-ai-agent-framework`
-(written for what people search, F123: louis-agent as an AI agent framework in C# on your own hardware, beside
-Microsoft Agent Framework and Semantic Kernel, each claim about theirs from their own pages and linked, ADR 0110),
-`/proof` (the numbers in dollars
-and rand, and how the rand come about), `/built-on-it` (the two demos, what the framework stands on with each licence,
-the hosts), `/whats-coming` (the planned features by id, each marked planned) and `/contact`, every one in the site's
-frame (`SiteLayout` on the framework's `SiteShell`), the chat at `/chat` in its own bare layout. The pages are written
-from the docs the guide in the corner reads, every number from the ledger or an eval run, and each claim is held to
-the repo by a test (below); what's planned is on its own page, labelled, never as shipped. The repository is private,
-so no page links to it. The landing's `PageHead` carries the site's facts for search engines (`Content/SiteFacts.cs`:
-the organisation, the website and the framework as software, F123), and `wwwroot/apple-touch-icon.png`, 180 by 180
-from the brand's avatar, is both the phone's home-screen icon and the organisation's logo.
-
-**The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its
-container, a floor seen from above (`perspective` on the camera, the camera's moves a `transform` animation on the
-floor), each part a slab raised off the floor, the turn as a light flying above them with its shadow on the floor, a
-flat detail card top right, a caption strip at the bottom. `_short.scss` (36 s, six scenes) and `_detail.scss` (60 s,
-ten scenes) add where each part stands, the camera's keyframes, when each part lights up, the light's path and when
-each card and caption shows, under `.film-short` and `.film-detail`, every keyframe name ending in the film's letter.
-The detailed film's six slabs inside core are the chat pipeline's middleware in its real order, outermost first
-(`ChatPipeline.cs`), and `DetailedMovieTests` holds that order. The films are the content, so a visitor's
-reduced-motion setting stills the hero's typing and never a film (FX35).
-
-**The exports for GitHub** (`docs/films/`) are rendered from the same CSS frame by frame by
-`tools/louis-agent.film-export`, which starts `louis-agent.coding-api` on a spare port, seeks each animation in a
-headless Chrome and encodes the frames in Docker; `films.sha256` records what each was made of, and
-`FilmExportTests` fails until a changed film is re-exported ([ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md)).
-
-```mermaid
-sequenceDiagram
-    actor D as A developer
-    participant E as louis-agent.film-export
-    participant H as louis-agent.coding-api, serving the app
-    participant W as WebPEncoder, in Docker
-    D->>E: dotnet run, after a film's files changed
-    E->>H: SiteProcess starts it on a spare port
-    E->>H: FilmRenderer opens the page, waits for the film, seeks each frame
-    E->>W: the frames
-    W-->>E: short.webp and detail.webp
-    E->>E: FilmHash writes films.sha256, which FilmExportTests holds the sources to
-```
-
 ## Structure
 
 | Path | What's in it |
 |---|---|
-| `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/chat` and `/chat/{id}`; the page for an unknown address |
-| `Pages/Site/` | The site's pages (F109.1, F109.4): the landing, how it works, proof, built on it, what's coming, contact; under `Framework/`, architecture, identities, packs and build your own; under `Agents/`, the coding agent's page, `/coding-agent`, where the framework's `RecordedChat` plays `wwwroot/recordings/coding-session.sse`, the agent fixing the invoice matcher sample, recorded once for about R0.10 and shown with the bill in rand at that day's rate, then the offer ([ADR 0108](../../../../src/docs/adr/0108-the-public-watches-the-coding-agent-recorded.md), [how to record it again](../../recordings/README.md)); the triage team's page, `/triage-demo`, in two columns with the team as swimlanes, one whole section; and the demo index, `/demos`, a tile per demo (F122). The header's Demos menu lists the index and both demos, and the hero's Demos button leads to the index; [the demos](../demos.md) explains each for the guide. Every section is the framework's `Band` with an id in words (F117), so the guide can take a visitor to an area, and `SitePagesTests` holds that no page has a nameless one |
-| `Components/Architecture/` | The Architecture page's families, one component each: `Framework/` (the engine, the hosts, the web, the evals) and `OnIt/` (the packs, the demos, where it runs) |
-| `Components/Movies/` | The two films, CSS alone: the short one on the landing, the detailed one on How it works, each pinned to a golden; `FilmFrame`, the frame a page plays a film in, with its pause button outside the film |
-| `Layout/SiteLayout.razor`, `Layout/AdminLayout.razor`, `Layout/ChatLayout.razor` | The site's frame, on the framework's `SiteShell`, the router's default; this site's admin frame, on `AdminShell`; the chat's bare layout |
-| `Components/Guide/` | `ExpertChat`: the framework's `ChatWidget` wrapped once with the expert identity and the site's words, placed in the frame's corner by `SiteLayout` and placeable on any page (F109.3) |
-| `Components/Landing/` | The landing's parts: the hero, the proof tiles, built on it, the contact strip and `ChatLink`, the way to the coding agent (its chat when `SiteDoors` opens it, else its recorded session at `/coding-agent`, FX88, F120); under `Live/`, the two animated panels: the hero's turn (`live-turn`, its own class since FX71) and `LiveLead`, the guide taking a lead as an animated chat on the same styles beside the custom-agents tiles (F116, the shape of Louis's own chat with made-up details). The custom-agents band is the page's own |
-| `Styles/site/landing/_motion.scss`, `wwwroot/brand/mark.svg` | The look of the landing's motion (the index, the progress line, the reveal keyframes `site-rise` and `site-unmask`, the compact header), which the frame's module drives (F110); the app's own copy of the mark for the lockup |
+| `Pages/ChatPage.razor`, `Pages/NotFound.razor` | The thin chat page, at `/`, `/chat` and `/chat/{id}`; the page for an unknown address |
+| `Layout/ChatLayout.razor`, `Layout/AdminLayout.razor`, `Layout/AccountLayout.razor` | The chat's bare layout, the router's default; this app's admin frame, on `AdminShell`; its account frame |
 | `Components/EmptyChat.razor`, `Components/ThemeSwitcher.razor` | The boot screen above the message box; the theme picker, listing `themes.json` |
-| `Styles/app.scss`, `Styles/site/`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, then the site's look (F109.1: its values and elements right after the framework's, hung off the frame's root `.site` so the chat keeps the framework's; the landing, the films and its phone rules after the packs'), this site's few rules, and the two themes: `console`, the default, the framework's colours as they are, and `retro` to switch to; the picker's list is `wwwroot/css/themes/themes.json` ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
+| `Styles/app.scss`, `Styles/chat/_boot.scss`, `Styles/themes/` | The list of the framework's and the packs' Sass, this app's few rules, and the two themes ([ADR 0085](../../../../src/docs/adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/index.html`, `wwwroot/js/theme.js`, `wwwroot/css/themes/themes.json` | The host page, the theme's script, and the list of themes. The other CSS is built, and isn't in git |
 | `packs/web/louis-agent.pack.files.web`, `packs/web/louis-agent.pack.git.web` | Not in this project: the views it registers, with their records, calls and Sass |
 
 ## Configuration
 
-None of its own: it's served by the API on the same origin. The coding agent's program, `louis-agent.coding-api`, references it. If the API
-needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admin's key on the admin page; each stays in this browser.
-
-## The slogan
-
-**100% C#, because you can.** It sits under the brand in the header (the frame's `Tagline` slot, FX79) and in the
-footer, and it is the one line the site says about itself.
-
-## The one rule
-
-**First principles.** The startup runs on one rule, and the landing says so under the hero (FX81): every decision
-starts from what is certainly true and builds up from there, not from what everyone else does. Measure before you
-assume. Write down why. Adopt what is proven, and build only what nobody has. The decision records (`src/docs/adr/`)
-are the rule at work: each says what was true, what was chosen, and why.
-
-## What the site sells, and how to reach Louis
-
-The guide answers questions about buying from this section (FX72), so it holds the site's public offer in full:
-
-- **What we sell today: web hosting with an AI agent, for small businesses.** A website for a person or a small local
-  company, hosted and kept running by Louis, with an agent in its corner like the site's own guide. It knows the
-  business (its hours, prices, services and story, from files the owner can read and change), answers customers day
-  and night, and points them to the right place or person. Every answer it gives is measured, so the owner sees what
-  it costs. Every agent runs in its own closed Docker container that sees only what it is handed.
-- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know, plus a
-  once-off fee to build the site. The exact figures, the building fee's too, come from a short call. This is the
-  one public price; anything else (a custom agent, the framework, a licence) is not published yet and is asked for
-  on the Contact page.
-- **Your first files, written with you:** an agent is a few Markdown files (its voice, its roles and what it knows
-  about the business), and Louis can write a customer's first Markdown files with them, for a fee, so the agent starts
-  out sounding like them. Its price comes from the short call.
-- **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
-  spreadsheet, an accounting package), hosted and measured, every change checked by evals.
-- **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
-  subject already filled in, or WhatsApp on 066 391 2470 (WhatsApp Business), which the page's WhatsApp buttons open
-  as a chat (`https://wa.me/27663912470`), with WhatsApp's own mark, green and words, as its brand guidelines ask
-  ([ADR 0102](../../../../src/docs/adr/0102-third-party-marks-follow-their-owners-guidelines.md)). Say what the agent should do, which systems it needs to reach, and where
-  it should run.
+None of its own: it's served by the coding agent's API on the same origin, `louis-agent.coding-api`, which references
+it. If the API needs `AGENT_API_KEY` it's entered under *Settings* in the sidebar, and the admin's key on the admin
+page; each stays in this browser.
 
 ## Extending it
 
-A control for a pack goes in that pack's web project as a screen ([Build a pack](../../../../src/docs/guides/build-a-pack.md)), not here. A theme is
-[Change the code-review web app](../guides/change-the-web-app.md). What would be the same on every site goes in the framework
-([ADR 0084](../../../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md)).
+A control for a pack goes in that pack's web project as a screen
+([Build a pack](../../../../src/docs/guides/build-a-pack.md)), not here. A theme is
+[Change the code-review web app](../guides/change-the-web-app.md). What would be the same on every site goes in the
+framework ([ADR 0084](../../../../src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md)).
 
 ## Tests
 
-`demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page against the stub API and
-pins the empty page and the page with a turn to golden files; `Pages/SiteRoutesTests` opens a screen's address through this site's router;
-`Pages/Site/*Tests` render the site's pages and hold them to the repo (`SiteMapTests`: every project the solution ships is named on a page; `IdentitiesPageTests` and `PacksPageTests`: every identity and pack folder; `BuildYourOwnTests`: the real program; `ProofPageTests`: the rand at the rates file's rate and date; `StandsOnTests`: every package named is referenced, and no page links to the private repository; `WhatsComingTests`: every planned feature is an open TODO row, marked planned), `Components/Guide/GuideKnowsTheSiteTests` holds the expert's voice to every page's address, and
-`Layout/SiteLayoutTests` the frame's links; `Movies/*Tests` pin each film's scenes, its names against the code, and its markup to a golden, and `Movies/FilmExportTests` holds the README's exported films to the films as they are (the hash in `docs/films/films.sha256`); `Styles/StylesheetTests` reads what the build made. The packs' views are tested in `packs/tests/`.
+`demos/louis-agent/tests/louis-agent.code-review.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the whole page
+against the stub API, pins the empty page and the page with a turn to golden files, and holds that the chat is the
+root and stays; `Pages/SiteRoutesTests` opens a screen's address through this app's router; `Styles/ThemeTests` and
+`Styles/SettingsStyleTests` read what the build made. The packs' views are tested in `packs/tests/`.
 
 ## Limits and plans
 
-- Screens with real data haven't been seen in a browser yet, only their tests. The eval pages move in F59.10, and this site gets them then.
+- Screens with real data haven't been seen in a browser yet, only their tests.
 - The chat keeps nothing on the server between restarts beyond what the API's session holds; a chat that ended says so.
-- The contact page's three mail links go to Louis's address (FX72), in its early-access panel, the custom-agents
-  section and the hosted-site offer; *Build your own* says the packages aren't on NuGet yet, and has to change the
-  day they are.
-- *Try it* and the hero's button lead to the chat until the triage demo (F106.3) gives them a page of their own; the
-  brand mark waits for its files (the site keeps its wordmark); the short film's export grew to about 7 MB with its
-  twelve parts, where the old one was under 3 MB.
 
 ## Related docs
 
-[README § Web app](../../../../README.md#web-app) · [Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · [ADR 0066](../adr/0066-the-site-is-static-razor.md) · [ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md)
+[Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) ·
+[louis-agent.site](../../../../src/docs/projects/louis-agent.site.md)
 
 ---
 [Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · Next: [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)

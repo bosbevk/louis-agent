@@ -17,7 +17,7 @@ Set up `config/` first ([SETUP.md](../../../src/docs/SETUP.md)): at least `ANTHR
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
-Open **http://127.0.0.1:5080**.
+Open **http://127.0.0.1:5082**.
 
 - **Chats** — answers stream with collapsible thinking, tool cards (click for input and result) and highlighted code.
   📎 attaches text files. Enter sends, Shift+Enter is a new line, **Stop** ends a reply.

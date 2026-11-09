@@ -49,26 +49,27 @@ public class DeployFilesTests
     private static readonly string Script = File.ReadAllText(
         Path.Combine(TestPaths.RepoRoot, "demos/puls/deploy/azure/deploy.ps1"));
 
-    /// <summary>The second app's yaml, from Puls's, with what's its own.</summary>
+    /// <summary>The framework's site's yaml (F124: it moved to src/site with the site), with what's its own.</summary>
     private static readonly string[] CodingApp = File.ReadAllLines(
-        Path.Combine(TestPaths.RepoRoot, "demos/puls/deploy/azure/louis-agent-app.yaml"));
+        Path.Combine(TestPaths.RepoRoot, "src/site/deploy/azure/louis-agent-app.yaml"));
 
     /// <summary>
     /// The script knows the one app it deploys since FX122 (Louis's option A: Puls is not deployed), and its image,
-    /// yaml and host.
+    /// Dockerfile and yaml (the framework's site's since F124) and host.
     /// </summary>
     [TestCase("[ValidateSet('louis-agent-app')]")]
-    [TestCase("louis-agent-coding")]
-    [TestCase("louis-agent-app.yaml")]
+    [TestCase("Image = 'louis-agent-site'")]
+    [TestCase("Dockerfile = 'src\\site\\docker\\Dockerfile'")]
+    [TestCase("Yaml = 'src\\site\\deploy\\azure\\louis-agent-app.yaml'")]
     [TestCase("louis-agent.dev")]
     public void TheScript_KnowsBothApps(string text) => Assert.That(Script, Does.Contain(text));
 
     /// <summary>
     /// The app's yaml names its own app, image, identity placeholder, share and keys, and keeps the markers the
-    /// script fills; since FX122 it names no VM, Mongo or accounts.
+    /// script fills; since FX122 it names no VM, Mongo or accounts, and since F124 it runs the site's image.
     /// </summary>
     [TestCase("name: louis-agent-app")]
-    [TestCase("image: acrpulsza.azurecr.io/louis-agent-coding:TAG")]
+    [TestCase("image: acrpulsza.azurecr.io/louis-agent-site:TAG")]
     [TestCase("'APP_IDENTITY_ID': {}")]
     [TestCase("storageName: louis-agent-vol")]
     [TestCase("secretRef: agent-api-key-louis-agent")]
@@ -77,6 +78,22 @@ public class DeployFilesTests
     [TestCase("# PROVIDERS")]
     public void TheSecondAppsYaml_NamesWhatIsItsOwn(string line) =>
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
+
+    /// <summary>
+    /// The site runs the guide alone (F124), so it mounts no workspace: the image carries the docs and the price
+    /// tables, and the share keeps only the logs.
+    /// </summary>
+    [Test]
+    public void TheSitesYaml_MountsTheLogsOnly()
+    {
+        var lines = CodingApp.Select(l => l.Trim()).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(lines, Does.Not.Contain("- name: WORKSPACE_ROOT").And.Not.Contain("mountPath: /workspace"));
+            Assert.That(lines, Does.Contain("mountPath: /logs"));
+        });
+    }
 
     /// <summary>
     /// A release numbers its revision from every revision the app has (FX123): a revision made outside the script

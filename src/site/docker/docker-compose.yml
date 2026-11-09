@@ -1,0 +1,35 @@
+# The framework's website (F124): the site's host, the same image louis-agent.dev runs, as the review copy on this PC.
+#   docker compose -f src/site/docker/docker-compose.yml up -d --build
+# The settings are src/site/config/: .env.anthropic (the guide's model, tracked), and the git-ignored .env and
+# .env.secrets (copy .env.secrets.example; the guide answers only with ANTHROPIC_API_KEY set). To see its logs and
+# traces, start the dashboard first (demos/louis-agent/docker/docker-compose.observability.yml).
+services:
+  site:
+    build:
+      context: ../../..
+      dockerfile: src/site/docker/Dockerfile
+    image: louis-agent-site:latest
+    container_name: louis_agent_site
+    env_file:
+      - path: ../config/.env.anthropic
+      - path: ../config/.env
+        required: false
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      OTEL_SERVICE_NAME: louis-agent-site
+      # The usage ledger and the run logs, kept on the host after the container is removed.
+      LOG_DIRECTORY: /logs
+      # The guide's lead mail (F112): RESEND_API_KEY comes from .env.secrets when it is there, else the lead goes to
+      # the log and the guide says so. Without these the guide's identity can't open (FX90).
+      LEADS_TO: louismarais0@gmail.com
+      LEADS_FROM: guide@louis-agent.dev
+      # The guide's door (F109.3): the guide answers a visitor without a sign-in, this many times a day per address.
+      OPEN_IDENTITY: louis-agent-guide
+      OPEN_SESSIONS_PER_DAY: "50"
+    # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
+    ports:
+      - "127.0.0.1:${SITE_PORT:-5080}:8080"
+    volumes:
+      - ../logs:/logs

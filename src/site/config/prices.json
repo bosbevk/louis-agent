@@ -1,0 +1,29 @@
+// Prices for the usage ledger's costs (F2), per million tokens. Tracked: prices aren't secret, and every clone and
+// container prices the same way. PRICES_FILE can point to another table.
+//
+// Copied from https://platform.claude.com/docs/en/about-claude/pricing on the as_of date. When prices change, update
+// them and as_of: records keep the cost and the as_of they were written with, so history isn't rewritten.
+//
+// Models are matched by longest prefix ("claude-haiku-4-5" also prices "claude-haiku-4-5-20251001"). A model that
+// isn't listed is recorded with cost null ("price unknown"), never as free. long_prompt: higher prices for the whole
+// request once its prompt (input + cache reads + cache writes) is over above_tokens.
+{
+  "as_of": "2026-10-10",
+  "currency": "USD",
+  "models": {
+    "claude-haiku-5-5": {
+      "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20,
+      "long_prompt": {
+        "above_tokens": 100000,
+        "input": 0.50, "output": 2.50, "cache_read": 0.05, "cache_write_5m": 0.625, "cache_write_1h": 1.00
+      }
+    },
+    "claude-haiku-4-5": { "input": 1.00, "output": 5.00, "cache_read": 0.10, "cache_write_5m": 1.25, "cache_write_1h": 2.00 },
+    "claude-sonnet-5-5": { "input": 2.00, "output": 10.00, "cache_read": 0.10, "cache_write_5m": 2.50, "cache_write_1h": 4.00 },
+    "claude-opus-5-5": { "input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write_5m": 5.00, "cache_write_1h": 8.00 },
+
+    // Local models (the Ollama profile): free to run, so priced at 0 on purpose, unlike an unlisted model.
+    "llama": { "input": 0, "output": 0, "cache_read": 0, "cache_write_5m": 0, "cache_write_1h": 0 },
+    "qwen": { "input": 0, "output": 0, "cache_read": 0, "cache_write_5m": 0, "cache_write_1h": 0 }
+  }
+}

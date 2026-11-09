@@ -1,0 +1,10 @@
+{
+  "Source": "Styles",
+  "Target": "wwwroot/css",
+  "Arguments": "--style=expanded --no-error-css --no-source-map",
+  "GenerateScopedCss": true,
+  "IncludePaths": [
+    "../../web/louis-agent.web/Styles",
+    "../../../packs/web/louis-agent.pack.triage.web/Styles"
+  ]
+}

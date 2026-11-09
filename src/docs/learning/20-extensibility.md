@@ -484,3 +484,30 @@ again: is this the page's problem, or the framework's?
   line in the voice naming it, held by a test; the guide's answers come from that doc, not from the page alone.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md).
+
+## The framework's site gets its own place (F124, 2026-11-09)
+
+The framework's website had lived for three features inside the coding agent's demo app. Louis saw it in the solution
+tree and said it plainly: the website is the framework's, the code review is a demo. F124 moved it to `src/site/` with
+its guide and a host of its own. Most of the work was moving files, and that is where the lessons were.
+
+- **A composition root decides what the public can reach.** The site used to run on the coding agent's program, so
+  louis-agent.dev carried a coding agent with a shell, files and git, even though no page ever used it. Its own host
+  names the guide and three packs, nothing more. The safest tool is the one that isn't loaded.
+- **An exception to a rule is a rule of its own.** `src/` had held only the framework. The site needs packs and an
+  identity, so instead of quietly breaking the rule, `SiteBoundaryTests` says both halves: only `src/site/` may use
+  them, and nothing else in `src/` may use the site. The engine can still leave for its own repository.
+- **Move and rename in separate commits.** The guide moved in one step and was renamed `louis-agent-guide` in the
+  next, so each diff says one thing. Rider moved namespaces, renamed classes and found the uses; `git mv` kept each
+  file's history.
+- **Tooling has edges, and the tests find them.** Rider's namespace fix dropped the `using` lines it could not resolve,
+  turned a file-scoped namespace into a block, and once wrote a stale buffer after an edit. Building and running the
+  tests after each tool call found every one; reading the tool's "applied" alone would not have.
+- **Hashes that include paths change when files move.** The films' record hashes each file's path with its text, on
+  purpose. Moving the files changed the record without changing the films, so the record was renewed and the commit
+  says why.
+- **Ship what you checked.** The site's image was built and run on this PC before the deploy files changed, because a
+  merge releases it straight away.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a host is a few lines that name what it serves, and a folder
+rule held by a test lets the framework grow a site without growing into it.

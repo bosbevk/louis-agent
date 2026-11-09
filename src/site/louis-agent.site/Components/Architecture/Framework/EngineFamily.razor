@@ -1,0 +1,16 @@
+@* The engine's family on the Architecture page: core, the libraries that sit on it, and the one developer tool. *@
+<Band Id="engine" Kicker="src/engine · the engine">
+    <h3>Core, and what sits on it.</h3>
+    <p class="lede">The engine holds the loop and everything around it, and names no product. What a host may add is a library of its own on core, so a program that needs no web access or tracer doesn't carry them.</p>
+    <ul class="rules">
+        <li><strong><code>louis-agent.core</code></strong> The engine: the tool loop, streaming, the skills, the seam the providers plug into, the usage ledger, handing work to other sessions, and the guards around every tool. It ships no agent and no tools.</li>
+        <li><strong><code>louis-agent.composition</code></strong> The contracts a pack, an identity and the engine agree on. A pack or an identity references only this, never core.</li>
+        <li><strong><code>louis-agent.choices</code></strong> One parser for every name that is one of a fixed set: a toolset, a role, a provider. Nothing is matched on a loose string.</li>
+        <li><strong><code>louis-agent.session-stream</code></strong> Reads a session's server-sent events into records, for the engine's sub-sessions, the web apps and the eval runner alike.</li>
+        <li><strong><code>louis-agent.core.web</code></strong> Web access on core: the browser, the fetcher, the robots policy, search, rendering, and the recorders that make a web eval replayable.</li>
+        <li><strong><code>louis-agent.core.telemetry</code></strong> Every request traced through OpenTelemetry, and the collector's log sink.</li>
+        <li><strong><code>louis-agent.core.anthropic</code> · <code>louis-agent.core.ollama</code> · <code>louis-agent.core.openai</code></strong> One model provider each: Claude, a local model through Ollama, any server that speaks OpenAI's chat API. A program hands in the ones its agent may talk to.</li>
+        <li><strong><code>louis-agent.usage-probe</code></strong> In <code>src/tools</code>, a developer's tool: what a provider reports as token usage, and what the ledger makes of it.</li>
+        <li><strong><code>louis-agent.film-export</code></strong> In <code>src/tools</code> too: renders this site's films to WebP for the README, frame by frame.</li>
+    </ul>
+</Band>

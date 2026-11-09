@@ -1,0 +1,57 @@
+@page "/build-your-own"
+
+<PageTitle>Build your own · louis-agent</PageTitle>
+<PageHead Description="Build your own agent on louis-agent in a few lines of C#: the coding agent's real program and catalogue, and what each part owns." />
+
+<Band Id="top" Kicker="Build your own">
+    <h2 class="chrome">A few lines of your own.</h2>
+    <GraphView Spec="ProgramGraph.Spec" Title="Your program, the catalogue it names, the host it starts" />
+    <p class="lede">The framework is the engine, the hosts and the packs. Your project says who its agent is and what it can do, and starts a host. This is how our own coding agent does it, exactly as the code stands.</p>
+</Band>
+
+<Band Id="program" Kicker="The whole program">
+    <pre class="listing"><code>using LouisAgent.Core.Web;
+using LouisAgent.Core.Anthropic;
+using LouisAgent.Core.Ollama;
+using LouisAgent.Core.OpenAi;
+using LouisAgent.Core.Telemetry;
+using LouisAgent.Core.Hosting;
+using LouisAgent.Cli;
+using LouisAgent.Coding;
+
+// Usage: louis-agent.coding-cli [prompt]. It loads what this demo's catalogue names.
+await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.Create, OtlpTelemetry.Instance,
+    Providers: [AnthropicProvider.Instance, OllamaProvider.Instance, OpenAiCompatibleProvider.Instance]));</code></pre>
+    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own. The last argument is what the host gets besides the catalogue: the web for its agent, a tracer for its turns and the model providers it may talk to, each a library of its own. Leave one out and the host runs without it.</p>
+</Band>
+
+<Band Id="loads" Kicker="What it loads">
+    <pre class="listing"><code>public static AgentCatalog Create() =>
+    new([new CodingIdentity(), new GuideIdentity(), new TriageIdentity()], Packs());
+
+// The packs:
+new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
+new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads), new SitePack(),</code></pre>
+    <p class="band-note">The identities are who it is: the coding agent, the guide in this page's corner, and the triage team that will fix a service's errors. The packs are what it can do. <a href="/packs">Every pack</a></p>
+</Band>
+
+<Band Id="whose" Kicker="Whose is what">
+    <div class="grid-2">
+        <article class="panel">
+            <h3>The framework</h3>
+            <p>The engine: the loop, streaming, the providers, the usage ledger, the guards, and handing work to other sessions. The hosts, as libraries: a CLI, Rider's protocol, an HTTP API and an MCP server. The general packs, and the harness your evals run on.</p>
+        </article>
+        <article class="panel">
+            <h3>Yours</h3>
+            <p>Your program, a few lines. Your identity: its voice, its modes and its roles, as markdown. Your own packs for the tools nobody else has. Your settings, your images, your evals and your web app, in your own project.</p>
+        </article>
+    </div>
+</Band>
+
+<Band Id="stands" Kicker="Where it stands">
+    <div class="panel">
+        <h3>The packages aren't on NuGet yet.</h3>
+        <p>The repository is private while they get there. What's proved so far: a test packs the git pack and the two small packages it needs into a local feed, and a plain console app runs it from there with no engine in its dependencies.</p>
+        <p class="band-note"><a href="/whats-coming">What's coming</a> · <a href="/contact">Tell us what you'd build</a></p>
+    </div>
+</Band>

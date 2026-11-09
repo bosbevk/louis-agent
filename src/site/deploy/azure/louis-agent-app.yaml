@@ -1,0 +1,128 @@
+# louis-agent-app: the framework's website, louis-agent.dev (F124: its own host since the site left the louis-agent
+# demo), on Azure Container Apps in the environment puls-env the Bicep build made (F109.2), deployed with
+# demos/puls/deploy/azure/deploy.ps1 -App louis-agent-app (the how-to is README.md there).
+#   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
+# One container: the site's host (src/site/louis-agent.site-api), on the image src/site/docker/Dockerfile builds, with
+# the guide and its three packs and nothing else: no coding agent, eval studio or accounts. It carries the docs the
+# guide reads and its price tables, so the share keeps only the logs. Since FX122 it runs alone. No secret value lives
+# here: every value is in the vault puls-keys, the app's secrets are references to it by URL, read with the identity
+# the Bicep build made for this app, and deploy.ps1 update writes the `secrets:` block from the names the vault
+# holds; this app's own keys carry the suffix -louis-agent.
+name: louis-agent-app
+resourceGroup: rg-puls-za
+location: South Africa North
+type: Microsoft.App/containerApps
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    'APP_IDENTITY_ID': {}
+properties:
+  environmentId: ENVIRONMENT_ID
+  workloadProfileName: Consumption
+  configuration:
+    # SECRETS
+    activeRevisionsMode: Single
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: Auto
+      allowInsecure: false
+      traffic:
+        - latestRevision: true
+          weight: 100
+    registries:
+      - server: acrpulsza.azurecr.io
+        identity: system-environment
+  template:
+    revisionSuffix: 'REVISION'
+    containers:
+      # The site. Its settings mirror the site service in src/site/docker/docker-compose.yml.
+      - name: louis-agent-app
+        image: acrpulsza.azurecr.io/louis-agent-site:TAG
+        env:
+          # Its name in Application Insights (F52): the collector's address and protocol come from the environment's
+          # OpenTelemetry agent (the Bicep build), never from here.
+          - name: OTEL_SERVICE_NAME
+            value: louis-agent
+          # Container Apps ends https at its ingress, so the app reads the visitor's scheme from X-Forwarded-Proto (FX68):
+          # without it a sign-in provider is told to send the person back to http://, and Google refuses the address.
+          - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+            value: 'true'
+          - name: HOST_TIME_ZONE
+            value: Africa/Johannesburg
+          - name: HOST_CULTURE
+            value: en-ZA
+          - name: LOG_DIRECTORY
+            value: /logs
+          - name: USAGE_IN_CHAT
+            value: 'true'
+          - name: LLM_PROVIDER
+            value: anthropic
+          - name: LLM_MODEL
+            value: claude-haiku-5-5
+          - name: ANTHROPIC_API_KEY
+            secretRef: anthropic-api-key
+          # The key every /v1 call needs unless a signed-in person makes it (F61.2), and the admin's: this app's own.
+          - name: AGENT_API_KEY
+            secretRef: agent-api-key-louis-agent
+          - name: ADMIN_API_KEY
+            secretRef: admin-api-key-louis-agent
+          # The guide's door (F109.3): a visitor opens the guide without a sign-in, this many times a day per address.
+          - name: OPEN_IDENTITY
+            value: louis-agent-guide
+          - name: OPEN_SESSIONS_PER_DAY
+            value: '20'
+          # The docs the guide reads (F109.3): the copy the image carries, laid out as the repo.
+          - name: DOCS_ROOT
+            value: /app/docs
+          # The guide's lead mail (F112): Louis's address and the verified sender. Resend's key goes in at WHEN SET below,
+          # put there by the release only once the vault holds resend-api-key (FX87; a secretRef the vault lacks fails
+          # the release, FX86); until then the lead goes to the log and the guide says so.
+          - name: LEADS_TO
+            value: louismarais0@gmail.com
+          - name: LEADS_FROM
+            value: guide@louis-agent.dev
+          # WHEN SET
+          # No accounts since FX122 (Louis: "we will not use that now"): no database, so no sign-in providers either;
+          # deploy.ps1 update still fills PROVIDERS for a provider whose keys the vault holds, and none is set.
+          # PROVIDERS
+        resources:
+          # The guide reads docs and calls a model; it builds nothing, so half of what the coding agent had (F124).
+          cpu: 0.5
+          memory: 1Gi
+          # Container Apps ties the disk to the CPU: half a CPU allows 2 GiB.
+          ephemeralStorage: 2Gi
+        # The share louis-agent-workspace (storage louis-agent-vol on the environment, from the Bicep build): logs/ for
+        # the run files and the usage ledger, kept across revisions. The image carries the rest.
+        volumeMounts:
+          - volumeName: louis-agent-vol
+            subPath: logs
+            mountPath: /logs
+        probes:
+          - type: Startup
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            failureThreshold: 120
+            timeoutSeconds: 3
+          - type: Readiness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 48
+            timeoutSeconds: 5
+          - type: Liveness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+    scale:
+      # Nothing runs while nobody is on it, as Puls: the first visitor waits for a cold start of some seconds.
+      minReplicas: 0
+      maxReplicas: 1
+    volumes:
+      - name: louis-agent-vol
+        storageType: AzureFile
+        storageName: louis-agent-vol

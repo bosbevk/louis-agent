@@ -27,6 +27,8 @@ thing still belongs to the demo: core writes skill files, and the running demo o
 - **The solution's groups and the folders on disk are the same map.** Anything the solution lists sits at the path its
   groups spell, so the tree a person reads in Rider is the tree on disk.
 - **`src/` holds only the framework:** `engine/`, `hosts/`, `web/`, `evals/`, `tools/`, `tests/` and `docs/`, grouped by function.
+  The one exception is the framework's own website, `src/site/`, built on the framework like any site, which ships no
+  package and which nothing else in `src/` references ([ADR 0111](0111-the-frameworks-website-lives-in-src-site.md)).
 - **`packs/` holds tools and nothing else.** What proves a pack sits apart in `packs-evals/`, so someone can take the tools
   without the evals or not own them, and its tests in `packs-tests/`.
 - **Anything that names a product is a demo of the framework, under `demos/`**, as someone's own project would be, by

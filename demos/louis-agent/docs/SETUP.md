@@ -51,7 +51,7 @@ These are read only by this stack's compose file.
 | Setting | Meaning |
 |---|---|
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
-| `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
+| `API_PORT` | Host port for the API and web app (default `5082`, always bound to `127.0.0.1`; the framework's site has 5080) |
 
 ---
 [Docs index](README.md) · Related: [Configuration](../../../src/docs/SETUP.md) · [Quick start](QUICK_START_AGENT.md)

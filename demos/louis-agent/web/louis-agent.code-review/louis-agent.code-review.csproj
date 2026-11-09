@@ -18,23 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
-    <!-- The expert identity's name, for the guide in the corner (F109.3); the identity itself runs on the API. -->
-    <ProjectReference Include="..\..\identity\louis-agent.identity.expert\louis-agent.identity.expert.csproj" />
     <!-- CL30: the account pages and their client; a site that has accounts opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.accounts\louis-agent.web.accounts.csproj" />
     <!-- CL57: the eval studio's pages and their client; a site that has the studio opts in here. -->
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web.evals\louis-agent.web.evals.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.git.web\louis-agent.pack.git.web.csproj" />
-    <!-- F106.3.4: the triage pack's demo, played on /triage-demo. -->
-    <ProjectReference Include="..\..\..\..\packs\web\louis-agent.pack.triage.web\louis-agent.pack.triage.web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- The principles every agent reads first, shown on the Identities page as they are (FX74, Louis: "this should be
-         public"). The engine's own file, embedded here by link, so the page can never drift from it; a test holds the
-         two equal. When the engine ships as a package the page reads the package's copy instead. -->
-    <EmbeddedResource Include="..\..\..\..\src\engine\louis-agent.core\Prompts\shared\principles.md" Link="Content\principles.md" LogicalName="principles.md" />
   </ItemGroup>
 
   <ItemGroup>

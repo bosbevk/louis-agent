@@ -12,17 +12,19 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 84 | 76 |
+| Features (`F`) | 85 | 78 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (107 in the TODO)
+## Open (110 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended); built on the framework like any site, its guide answers questions about the framework | Next, after F123 |
+| F128 | The website advertises the framework: every page and section reviewed so it follows the framework and sells it, the landing flowing with the walkthrough; findings with three options each, then the rewrite | Next, after F124 |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
+| F129 | An identity's prompts: the skills split out of the voice file into `prompts/agent/skills/*.md`, and the `Prompts` folder renamed `prompts`, for every identity and the engine that loads them; its own plan | Next, after F124 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
@@ -131,10 +133,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (84 done)
+## Features (85 done)
 
 | Id | When | What |
 |---|---|---|
+| F124 | 2026-11-09 | The framework's website leaves the code-review demo for `src/site/` (ADR 0111, ADR 0074 amended): `louis-agent.site` (the visitor area), the guide renamed `louis-agent.identity.guide` (`louis-agent-guide`), and its own host `louis-agent.site-api`, whose catalogue is the guide on the docs, leads and site packs, so louis-agent.dev runs no coding agent; `SiteBoundaryTests` lets only `src/site/` use packs and an identity, and nothing else in `src/` reference it; its own image (the ASP.NET runtime, the docs, its price tables), compose on 5080 (code review's API on 5082) and Azure yaml at half the CPU; code review keeps the chat (now at `/`) and the admin; the film export moves to `src/tools/` and the films to `src/docs/films` |
 | F123 | 2026-11-09 | Found by search: a page writes its head through one `PageHead`, its description and its schema.org facts as JSON-LD (Blazor keeps only the last `HeadContent`, so `PageDescription` became `PageHead` on every page); the prerender carries them and adds a breadcrumb for every page under the landing; the landing names the organisation, the website and the software, with a 180 by 180 Apple touch icon; `/csharp-ai-agent-framework` compares louis-agent, on your own hardware, with Microsoft Agent Framework and Semantic Kernel from their own docs (ADR 0110); a how-to for Search Console |
 | F122 | 2026-11-09 | The demos in one place: a Demos menu in the header and a Demos button in the hero lead to `/demos`, a tile per demo; the triage demo moves to `/triage-demo`, two columns with the team as swimlanes, one whole section (a band may stay unpaged); `docs/demos.md` explains each demo for the guide; the recordings end with a plain small guide button inside their window |
 | F121 | 2026-11-09 | Every page served as HTML, for search engines: a page declares a `PageDescription` beside its title (all of the three sites' pages do, held by a test per site), and the framework's `MapLouisAgentSite` renders it with `HtmlRenderer` into the site's `index.html` on its first request, with its own title, description, link card, canonical link and words, kept until the next deploy (ADR 0109); a chat or admin page keeps the plain shell, an unknown address 404 |

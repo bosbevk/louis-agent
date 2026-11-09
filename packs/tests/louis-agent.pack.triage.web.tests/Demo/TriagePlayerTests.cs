@@ -15,7 +15,7 @@ public class TriagePlayerTests
     private const string Source = "recordings/triage-run.jsonl";
 
     private static string Recording => File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-        "demos/louis-agent/web/louis-agent.code-review/wwwroot/recordings/triage-run.jsonl"));
+        "src/site/louis-agent.site/wwwroot/recordings/triage-run.jsonl"));
 
     /// <summary>A context whose site serves the recorded run at <see cref="Source"/>, or nothing.</summary>
     private static BunitContext Context(bool served = true)

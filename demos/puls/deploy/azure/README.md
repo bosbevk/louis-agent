@@ -13,9 +13,10 @@ setup before that: `deploy.ps1 infra`, `vm` and `sql-access` would create those 
 `build`, `workspace`, `secrets`, `update`, `release`, `domain` and `logs` apply, with `-App louis-agent-app`, now the
 default.
 
-Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the two apps' definitions
-(`puls-app.yaml`, `louis-agent-app.yaml`), the VM's files and one script; the Bicep build in `config/azure/` is
-everything else. No secret value is in any file here. The louis-agent demo's app lives beside Puls on purpose, to be
+Everything here is in resource group `rg-puls-za` (South Africa North). This folder is Puls's definition
+(`puls-app.yaml`), the VM's files and one script; the framework's site's definition is its own,
+`src/site/deploy/azure/louis-agent-app.yaml` (F124), and the Bicep build in `config/azure/` is everything else. No
+secret value is in any file here. The louis-agent app lives beside Puls on purpose, to be
 split later ([ADR 0098](../../../../src/docs/adr/0098-the-demos-app-runs-beside-puls-split-later.md)): every verb
 that touches an app takes `-App puls-app` (the default) or `-App louis-agent-app`.
 
@@ -40,8 +41,9 @@ one IP, and the F58 tunnel that served a placeholder from the PC; both are gone,
 
 The deployment is `puls-build`; it creates what is missing and updates what exists, and its outputs (the VM's private
 IP, the environment's id and static IP, the SQL server's address) are what the verbs read back, never a value copied
-by hand. The apps themselves are `puls-app.yaml` and `louis-agent-app.yaml`, deployed by `deploy.ps1 release` and
-`deploy.ps1 release -App louis-agent-app` into `puls-env`.
+by hand. The apps themselves are `puls-app.yaml` and the site's `louis-agent-app.yaml`, deployed by `deploy.ps1
+release` and `deploy.ps1 release -App louis-agent-app` into `puls-env`. Since F124 the louis-agent app is the
+framework's site, its image `louis-agent-site` built from `src/site/docker/Dockerfile`.
 
 ## First time
 
@@ -67,9 +69,8 @@ by hand. The apps themselves are `puls-app.yaml` and `louis-agent-app.yaml`, dep
    | CNAME | `www` | the app's own address (`puls-app.<env>.southafricanorth.azurecontainerapps.io`) |
    | TXT | `asuid.www` | the same verification id (`www` validates by its CNAME, no token) |
 
-8. The louis-agent app, once Puls's secrets are in the vault (F109.2): `deploy.ps1 workspace -App louis-agent-app`
-   (its price tables into its share), `deploy.ps1 secrets -App louis-agent-app` (its two keys from
-   `demos/louis-agent/config/.env.secrets`, and its providers once registered for `louis-agent.dev`),
+8. The louis-agent app, once Puls's secrets are in the vault (F109.2): `deploy.ps1 secrets -App louis-agent-app` (its
+   keys from `src/site/config/.env.secrets`; since F124 its image carries its price tables, so no `workspace`),
    `deploy.ps1 release -App louis-agent-app`, then `deploy.ps1 domain -App louis-agent-app` and the same for
    `-Hostname www.louis-agent.dev`, with the records above on `louis-agent.dev`. Cloudflare imports the old host's
    records when a zone is added: a proxied wildcard and apex and a mail setup had to go first (2026-11-08).
@@ -152,9 +153,9 @@ from the names the vault holds, so no value is ever on the app or in a file unde
 | `admin-api-key` | `config/.env.secrets` `ADMIN_API_KEY` | the admin portal |
 | `mongo-url` | `config/.env.mongo`'s user and password at the VM's private IP | the eval store, the shop prices, the recipe library |
 | `accounts-sql-url` | `config/.env.sql`'s password, the admin `pulsadmin`, the server from the outputs | the accounts (Identity's tables, F61.1) |
-| `agent-api-key-louis-agent`, `admin-api-key-louis-agent`, `auth-…-louis-agent` | `demos/louis-agent/config/.env.secrets`, by `secrets -App louis-agent-app` | the louis-agent app's own keys and providers; it references `anthropic-api-key`, `mongo-url` and `accounts-sql-url` by the same names as Puls (F109.2) |
+| `agent-api-key-louis-agent`, `admin-api-key-louis-agent`, `auth-…-louis-agent` | `src/site/config/.env.secrets`, by `secrets -App louis-agent-app` | the louis-agent app's own keys and providers; it references `anthropic-api-key`, `mongo-url` and `accounts-sql-url` by the same names as Puls (F109.2) |
 | `auth-google-client-id` and `-secret`, `auth-microsoft-…`, `auth-linkedin-…` | `config/.env.secrets` `AUTH_*` | the sign-in providers (F61.3); a pair is set together or not at all |
-| `resend-api-key` | `demos/louis-agent/config/.env.secrets` `RESEND_API_KEY`, by `secrets -App louis-agent-app` | the guide's lead mail (F112): without it the lead goes to the log and the guide says so. Resend verifies the sender once Louis adds the DNS records it gives for `louis-agent.dev`. `release` names it in the app's yaml only once the vault holds it (FX86, FX87), so after `secrets` the next release turns the mail on, no hand edit |
+| `resend-api-key` | `src/site/config/.env.secrets` `RESEND_API_KEY`, by `secrets -App louis-agent-app` | the guide's lead mail (F112): without it the lead goes to the log and the guide says so. Resend verifies the sender once Louis adds the DNS records it gives for `louis-agent.dev`. `release` names it in the app's yaml only once the vault holds it (FX86, FX87), so after `secrets` the next release turns the mail on, no hand edit |
 
 `deploy.ps1 secrets` copies them all, prints only their names, and skips one whose value is missing. No value may hold
 `&` or `|` (az is a batch file on Windows, and cmd would cut it there). To rotate one: change it locally, run
@@ -190,14 +191,14 @@ password, database `puls_accounts`, encryption on. A new home IP means `sql-acce
 
 ## The share's layout
 
-`puls-app-workspace` is mounted at `/workspace`, with `logs/` also at `/logs` and `data/` at `/data`; the louis-agent
-app's `louis-agent-workspace` the same way, with `skills/` for what the agent writes. `deploy.ps1 workspace -App …`
-copies the price tables into an app's share:
+`puls-app-workspace` is mounted at `/workspace`, with `logs/` also at `/logs` and `data/` at `/data`; since F124 the
+louis-agent app mounts only `logs/` of `louis-agent-workspace`, at `/logs`, and its image carries the rest.
+`deploy.ps1 workspace -App …` copies the price tables into Puls's share:
 
 | Folder | Holds |
 |---|---|
 | `config/` | `prices.json` and `rates.json`, as `PRICES_FILE` and `RATES_FILE` expect; `deploy.ps1 workspace` copies them from the app's `config/` when they change |
-| (not on the share) | The docs the louis-agent app's expert reads are the image's own copy at `/app/docs` (`DOCS_ROOT`), laid out as the repo, films left out; a new revision carries the docs as they were at its commit |
+| (not on the share) | The docs the louis-agent app's guide reads are the image's own copy at `/app/docs` (`DOCS_ROOT`), laid out as the repo, films left out, and its price tables at `/app/config`; a new revision carries them as they were at its commit |
 | `logs/` | The run files (`agent-api-*.log`), the usage ledger (`usage-YYYY-MM.jsonl`) and the tool-result records |
 | `data/` | `shop-stores.json`, the shops' store-per-town cache (F34), the pages an eval run saves |
 

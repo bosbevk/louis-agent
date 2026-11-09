@@ -1,0 +1,46 @@
+using LouisAgent.Identities.Guide;
+using LouisAgent.Packs.Docs;
+using LouisAgent.Packs.Leads;
+using LouisAgent.SiteApi;
+
+namespace LouisAgent.Site.Tests.Host;
+
+/// <summary>
+/// The framework's site runs on a host of its own (F124), and the public site reaches only what that host names: the
+/// guide in the corner and its three packs, never the coding agent's shell, files or git.
+/// </summary>
+public class SiteCatalogTests
+{
+    /// <summary>The guide is the one identity, so it is the default, and the packs are exactly its three.</summary>
+    [Test]
+    public void TheCatalogue_IsTheGuide_OnItsThreePacks()
+    {
+        var packs = SiteCatalog.Packs(new DocsOptions { Root = "test-docs" },
+            new LeadsOptions { To = "a@example.test" });
+        var guide = new GuideIdentity();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(SiteCatalog.Identities.Select(identity => identity.Name), Is.EqualTo(new[] { guide.Name }));
+            Assert.That(packs.Select(pack => pack.Name), Is.EquivalentTo(guide.Packs), "every pack it names, no more");
+        });
+    }
+
+    /// <summary>
+    /// The program serves the site as HTML and the API the guide's chat uses, and opts into nothing else: no
+    /// accounts, no eval studio.
+    /// </summary>
+    [Test]
+    public void TheProgram_ServesTheSite_AndNothingElse()
+    {
+        string program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/site/louis-agent.site-api/Program.cs"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(program, Does.Contain("MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly"));
+            Assert.That(program, Does.Contain("MapLouisAgentApi(host)").And.Contain("SiteCatalog.Create()"));
+            Assert.That(program, Does.Not.Contain("Accounts").And.Not.Contain("Evals"));
+        });
+    }
+}

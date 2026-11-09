@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <!-- The framework's site's own host (F124): the site as HTML, and the API its guide's chat runs on. Its catalogue is
+         the guide and its three packs, so the public site reaches nothing else. -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.SiteApi</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- The framework's API and the engine's web and telemetry; this program says what it loads. -->
+        <ProjectReference Include="..\..\engine\louis-agent.core.web\louis-agent.core.web.csproj" />
+        <ProjectReference Include="..\..\engine\louis-agent.core.telemetry\louis-agent.core.telemetry.csproj" />
+        <!-- The guide's model: Anthropic's, the one provider this program composes. -->
+        <ProjectReference Include="..\..\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj" />
+        <ProjectReference Include="..\..\hosts\louis-agent.api\louis-agent.api.csproj" />
+        <!-- The guide and the three packs it answers with. -->
+        <ProjectReference Include="..\louis-agent.identity.guide\louis-agent.identity.guide.csproj" />
+        <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
+        <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.leads\louis-agent.pack.leads.csproj" />
+        <ProjectReference Include="..\..\..\packs\tools\louis-agent.pack.site\louis-agent.pack.site.csproj" />
+        <!-- The web app this program serves. Its files reach this project's output through this reference. -->
+        <ProjectReference Include="..\louis-agent.site\louis-agent.site.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+    </ItemGroup>
+
+</Project>

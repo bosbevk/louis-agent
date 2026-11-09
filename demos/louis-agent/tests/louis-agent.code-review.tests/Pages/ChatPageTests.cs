@@ -32,7 +32,8 @@ public class ChatPageTests
         ctx.Services.AddSingleton(new ChatText());
         ctx.Services.AddSingleton(new ChatHandoff("chat"));
         // The theme picker reads css/themes/themes.json on its own client.
-        ctx.Services.AddSingleton(new HttpClient(new StubHandler(FixtureApi.Answer)) { BaseAddress = new Uri("http://localhost/") });
+        ctx.Services.AddSingleton(
+            new HttpClient(new StubHandler(FixtureApi.Answer)) { BaseAddress = new Uri("http://localhost/") });
         return ctx;
     }
 
@@ -42,6 +43,27 @@ public class ChatPageTests
         var cut = ctx.Render<ChatPage>();
         cut.WaitForState(() => cut.FindAll("#composer-input").Count > 0, TimeSpan.FromSeconds(10));
         return cut;
+    }
+
+    /// <summary>
+    /// Since the framework's site left this app (F124), the chat is the app: it answers at the root as well as /chat,
+    /// and stays where it is, since the app is no longer public.
+    /// </summary>
+    [Test]
+    public void TheChat_IsTheAppsRoot_AndStays()
+    {
+        using var ctx = Context();
+        var navigation = ctx.Services.GetRequiredService<NavigationManager>();
+
+        Render(ctx);
+
+        var routes = typeof(ChatPage).GetCustomAttributes(typeof(RouteAttribute), false).Cast<RouteAttribute>()
+            .Select(route => route.Template);
+        Assert.Multiple(() =>
+        {
+            Assert.That(routes, Does.Contain("/").And.Contain("/chat"));
+            Assert.That(navigation.Uri, Is.EqualTo(navigation.BaseUri), "the chat doesn't send anyone away");
+        });
     }
 
     /// <summary>The empty page shows its boot screen with the message box, and matches its golden file.</summary>
@@ -80,10 +102,11 @@ public class ChatPageTests
 
         var cut = Render(ctx);
 
-        Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")), Is.EqualTo(new[]
-        {
-            "admin/screens/workspace-files", "admin/screens/git-changes", "admin/screens/git-branches"
-        }));
+        Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
+            Is.EqualTo(new[]
+            {
+                "admin/screens/workspace-files", "admin/screens/git-changes", "admin/screens/git-branches"
+            }));
     }
 
     /// <summary>The theme picker sits with the frame's settings.</summary>
@@ -107,7 +130,8 @@ public class ChatPageTests
 
         var cut = Render(ctx);
 
-        cut.WaitForAssertion(() => Assert.That(cut.Find("#composer-input").GetAttribute("value"), Is.EqualTo("Review this")),
+        cut.WaitForAssertion(
+            () => Assert.That(cut.Find("#composer-input").GetAttribute("value"), Is.EqualTo("Review this")),
             TimeSpan.FromSeconds(10));
         Assert.That(cut.FindAll(".empty"), Has.Count.EqualTo(1), "still an empty chat: nothing was sent");
     }
@@ -123,7 +147,9 @@ public class ChatPageTests
         cut.Find("#send-button").Click();
         // The turn is over when the Stop button has given way to Send again and the chat was saved to localStorage.
         cut.WaitForState(() => cut.FindAll(".turn").Count > 0 && cut.FindAll("button.stop").Count == 0
-            && ctx.JSInterop.Invocations.Any(i => i.Identifier == "localStorage.setItem"), TimeSpan.FromSeconds(30));
+                                                              && ctx.JSInterop.Invocations.Any(i =>
+                                                                  i.Identifier == "localStorage.setItem"),
+            TimeSpan.FromSeconds(30));
 
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
         Assert.That(cut.Find(".user-text").TextContent, Is.EqualTo(SessionStreamFixture.Question));
