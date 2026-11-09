@@ -101,7 +101,11 @@ Skill 7 (context engineering): what is always in the prompt and what is read whe
 
 ## Approved during the build
 
-(none yet)
+- **2026-11-10, after step 2:** Louis asked whether loading on demand is the usual practice, and on hearing it is
+  (progressive disclosure, Anthropic's Agent Skills), "then we should make it an ADR": ADR 0114 is written before
+  step 3, not in step 7, which keeps the guide, the write-up and the work log.
+- **2026-11-10, step 1:** "prompts", Louis: "if the was an enum we would not have had this problem": the folder's
+  name is one constant, `EmbeddedPrompts.Folder`, and `PromptFolderTests` refuses it written anywhere else.
 
 ---
 [Plans](README.md)
