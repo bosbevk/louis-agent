@@ -1,0 +1,26 @@
+@* A recorded triage, played (F106.3.4): the stage and the popup for the step on screen, the controls, the steps so far
+   as a list a visitor and the guide can read, and the site's ending once the case is closed. *@
+<div class="triage-player">
+    @if (Current is { } step)
+    {
+        <div class="triage-scene">
+            <TriageStage Lit="@step.Agent" Words="Words" />
+            <StepPopup Step="step" Words="Words" />
+        </div>
+        <div class="triage-controls">
+            <button class="triage-back" type="button" @onclick="Back" disabled="@AtStart">@Words.Back</button>
+            <button class="triage-next" type="button" @onclick="Next" disabled="@AtEnd">@Words.Next</button>
+            <button class="triage-again" type="button" @onclick="PlayAsync">@Words.PlayAgain</button>
+        </div>
+    }
+    <ol class="triage-steps">
+        @foreach (var shown in Shown)
+        {
+            <li class="@(shown == Current ? "is-current" : "")"><strong>@AgentWords.Of(shown.Agent, Words)</strong> @shown.Summary</li>
+        }
+    </ol>
+    @if (_ended)
+    {
+        <div class="triage-end">@Ending</div>
+    }
+</div>

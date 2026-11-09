@@ -31,7 +31,9 @@ public class TriageRunFileTests
         });
     }
 
-    /// <summary>A step the pack writes reads back field for field, so the web's copy can't drift from the pack's.</summary>
+    /// <summary>
+    /// A step the pack writes reads back field for field, so the web's copy can't drift from the pack's.
+    /// </summary>
     [Test]
     public void APacksStep_ReadsBackFieldForField()
     {

@@ -1,0 +1,10 @@
+@* One step, explained (F106.3.4): who took it, what it did, its reason, and what that kind of step is. *@
+<aside class="step-popup" role="status" aria-live="polite">
+    <p class="popup-who">@AgentWords.Of(Step.Agent, Words) · @Words.Step @Step.Number</p>
+    <p class="popup-what">@Step.Summary</p>
+    @if (!string.IsNullOrWhiteSpace(Step.Why))
+    {
+        <p class="popup-why">@Step.Why</p>
+    }
+    <p class="popup-kind">@StepWords.Of(Step.Kind, Words)</p>
+</aside>

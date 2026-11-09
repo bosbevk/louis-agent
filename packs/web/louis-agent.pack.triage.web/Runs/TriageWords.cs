@@ -42,4 +42,34 @@ public sealed record TriageWords
 
     /// <summary>The case closed.</summary>
     public string Finished { get; init; } = "The case is closed. Nothing is ever pushed: a person merges the fix.";
+
+    /// <summary>The code between the agents: it reads the log, commits, checks and closes.</summary>
+    public string Workflow { get; init; } = "The workflow";
+
+    /// <summary>The agent that routes an error to its department.</summary>
+    public string Sorter { get; init; } = "The sorter";
+
+    /// <summary>The hub that decides and checks everyone.</summary>
+    public string Manager { get; init; } = "The manager";
+
+    /// <summary>The agent that finds the cause.</summary>
+    public string Investigator { get; init; } = "The investigator";
+
+    /// <summary>The coding agent that fixes it.</summary>
+    public string Coder { get; init; } = "The coder";
+
+    /// <summary>The agent that judges the fix.</summary>
+    public string Reviewer { get; init; } = "The reviewer";
+
+    /// <summary>The control that shows the step before.</summary>
+    public string Back { get; init; } = "Back";
+
+    /// <summary>The control that shows the next step.</summary>
+    public string Next { get; init; } = "Next";
+
+    /// <summary>The control that plays the run from the start.</summary>
+    public string PlayAgain { get; init; } = "Play it again";
+
+    /// <summary>What the step counter says before the number.</summary>
+    public string Step { get; init; } = "step";
 }
