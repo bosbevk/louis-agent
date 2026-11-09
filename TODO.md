@@ -18,10 +18,11 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (104)
+## Open (105)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
+| F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended) | Next, after F123 | — |
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
