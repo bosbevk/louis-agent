@@ -98,7 +98,7 @@ public class SitePagesTests
     }
 
     /// <summary>What's new is on the page: a demo is built on the framework, a pack never needs the engine.</summary>
-    [TestCase(typeof(HomePage), "An AI agent framework")]
+    [TestCase(typeof(HomePage), "AI agent framework")]
     [TestCase(typeof(HomePage), "100% C#")]
     [TestCase(typeof(HomePage), "South Africa")]
     [TestCase(typeof(HomePage), "one person")]
@@ -178,13 +178,11 @@ public class SitePagesTests
     }
 
     /// <summary>
-    /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
-    /// the tour button", then "switch these buttons"): the tour first, then the demos (F122, Louis: "just have a button
-    /// there then called demos", "which takes you to the demo index"), and nothing else; the line above says the guide
-    /// can walk you through.
+    /// The hero sells (F128.1, Louis's pick 1A): the website with an agent, from R500 a month, then "Ask for yours"
+    /// and "See one work", with the tour Louis liked (F118) kept beside them, and Louis taking a lead in the aside.
     /// </summary>
     [Test]
-    public void TheStartSlide_OffersTheTour()
+    public void TheHero_SellsTheWebsiteWithAnAgent()
     {
         using var ctx = new BunitContext();
 
@@ -193,12 +191,17 @@ public class SitePagesTests
         var actions = cut.Find(".hero .actions").Children.ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(actions, Has.Count.EqualTo(2));
-            Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
-            Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Demos"));
+            Assert.That(cut.Find(".hero .kicker").TextContent, Does.Contain("from R500 a month"));
+            Assert.That(cut.Find(".hero h1").TextContent, Does.Contain("website"));
+            Assert.That(actions, Has.Count.EqualTo(3));
+            Assert.That(actions[0].TextContent.Trim(), Is.EqualTo("Ask for yours"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("See one work"));
+            Assert.That(actions[2].TextContent, Does.Contain("Take the tour"));
+            Assert.That(actions[0].GetAttribute("href"), Is.EqualTo("/contact"));
             Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
-            Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
+            Assert.That(actions[2].ClassList, Does.Contain("guide-button"));
+            Assert.That(cut.FindAll(".hero .live-lead"), Has.Count.EqualTo(1), "Louis taking a lead, beside it");
+            Assert.That(cut.Find(".hero .live-lead .turn-head").TextContent, Does.Contain("Louis · AI"));
         });
     }
 
