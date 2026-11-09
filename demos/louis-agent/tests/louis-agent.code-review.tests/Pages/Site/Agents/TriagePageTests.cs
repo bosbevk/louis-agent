@@ -5,7 +5,7 @@ namespace LouisAgent.CodeReview.Tests.Pages.Site.Agents;
 
 /// <summary>
 /// The triage demo's page (F106.3.4): a visitor watches the triage team handle one real error of the made-up order
-/// service, recorded once, step by step, then gets the offer. The hero's "Watch a triage" leads here (Louis's pick).
+/// service, recorded once, step by step, then gets the offer. The Demos menu and the demo index lead here (F122).
 /// </summary>
 public class TriagePageTests
 {

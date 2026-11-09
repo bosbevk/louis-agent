@@ -159,9 +159,9 @@ public class SitePagesTests
 
     /// <summary>
     /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
-    /// the tour button", then "switch these buttons"): the tour first, then the coding agent, which leads to its
-    /// recorded session while the live chat is closed (F120), and nothing else; the line above says the guide can walk
-    /// you through.
+    /// the tour button", then "switch these buttons"): the tour first, then the demos (F122, Louis: "just have a button
+    /// there then called demos", "which takes you to the demo index"), and nothing else; the line above says the guide
+    /// can walk you through.
     /// </summary>
     [Test]
     public void TheStartSlide_OffersTheTour()
@@ -176,8 +176,8 @@ public class SitePagesTests
             Assert.That(actions, Has.Count.EqualTo(2));
             Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
             Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Watch a triage"));
-            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/triage-demo"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Demos"));
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/demos"));
             Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
         });
     }

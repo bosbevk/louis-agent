@@ -81,8 +81,9 @@ public class SiteLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find(".site-nav .site-menu-label").TextContent, Is.EqualTo("The framework"));
-            Assert.That(cut.FindAll(".site-nav .site-menu a").Select(a => a.GetAttribute("href")),
+            var menu = cut.FindAll(".site-nav .site-menu")[0];
+            Assert.That(menu.QuerySelector(".site-menu-label")!.TextContent, Is.EqualTo("The framework"));
+            Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[] { "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own" }));
             Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
         });
@@ -131,22 +132,26 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// While the live chat is closed to visitors (FX88), the header's way in leads to the recorded session (F120,
-    /// Louis's pick "Watch it work"), never to /chat.
+    /// The demos are a menu of their own (F122, Louis: "add this to a menu called demos and list them there, then take
+    /// these buttons out"): the index and each demo, and no "Watch it work" beside the menu; never /chat, which stays
+    /// closed to visitors (FX88).
     /// </summary>
     [Test]
-    public void TheHeader_LeadsToTheRecording_WhileTheChatIsClosed()
+    public void TheHeader_ListsTheDemos_InAMenu()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<SiteLayout>();
 
+        var demos = cut.FindAll(".site-nav .site-menu")
+            .Single(menu => menu.QuerySelector(".site-menu-label")!.TextContent == "Demos");
         Assert.Multiple(() =>
         {
             Assert.That(SiteDoors.CodingAgent, Is.False, "the live chat is closed today");
-            Assert.That(cut.FindAll(".site-actions a[href='/chat']"), Is.Empty);
-            Assert.That(cut.Find(".site-actions a[href='/coding-agent']").TextContent.Trim(),
-                Is.EqualTo("Watch it work"));
+            Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
+                Is.EqualTo(new[] { "/demos", "/coding-agent", "/triage-demo" }));
+            Assert.That(cut.FindAll(".site-actions"), Is.Empty, "no Watch it work");
+            Assert.That(cut.FindAll("a[href='/chat']"), Is.Empty);
         });
     }
 
