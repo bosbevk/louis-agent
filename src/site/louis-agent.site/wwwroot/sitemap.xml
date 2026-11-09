@@ -235,6 +235,12 @@
     <loc>https://louis-agent.dev/framework/whats-coming/site-demos</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/pricing</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/pricing/quoted</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/triage-demo</loc>
   </url>
 </urlset>

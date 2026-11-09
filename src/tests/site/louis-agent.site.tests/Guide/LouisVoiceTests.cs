@@ -44,6 +44,24 @@ public class LouisVoiceTests
         Assert.That(Voice(), Does.Contain("Never say or suggest you are a person").And.Contain("WhatsApp"));
 
     /// <summary>
+    /// It helps first and doesn't push (Louis: "a bit too eager to pass on details and get the sale, we should tone it
+    /// down a bit"): no pitch in every answer, and no asking for details before the visitor wants to go ahead.
+    /// </summary>
+    [Test]
+    public void TheVoice_DoesNotPush()
+    {
+        string voice = Voice();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("you don't push").And.Contain("Most answers need no pitch at all"));
+            Assert.That(voice,
+                Does.Contain("Never ask for a name, a number or an address until they've said they want"));
+            Assert.That(voice, Does.Not.Contain("take the lead").And.Not.Contain("one small nudge"));
+        });
+    }
+
+    /// <summary>
     /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
     /// </summary>
     [Test]
@@ -54,6 +72,8 @@ public class LouisVoiceTests
         Assert.Multiple(() =>
         {
             Assert.That(voice, Does.Contain("feel at home").And.Contain("dry").And.Contain("idiom"));
+            Assert.That(voice, Does.Contain("be Louis when you talk").And.Contain("the odd Afrikaans word"));
+            Assert.That(voice, Does.Contain("you're fun to talk to").And.Contain("Never flat"));
             Assert.That(voice, Does.Not.Contain("bubbly"));
         });
     }
