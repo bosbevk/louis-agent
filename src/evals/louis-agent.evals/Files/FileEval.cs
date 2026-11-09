@@ -101,11 +101,11 @@ public sealed class FileEval : IEval
     /// <inheritdoc />
     public IReadOnlyList<ICheck> Checks { get; }
 
-    /// <summary>The modes the file names, each a role and the toolsets its sessions open with.</summary>
+    /// <summary>The modes the file names, each a role, the toolsets its sessions open with and their level.</summary>
     public ValueTask<IReadOnlyList<EvalMode>>
         ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
-            [.. _file.Modes.Select(mode => new EvalMode(mode.Name, mode.Role, mode.Toolsets))]);
+            [.. _file.Modes.Select(mode => new EvalMode(mode.Name, mode.Role, mode.Toolsets, mode.Depth))]);
 
     /// <summary>
     /// The file's checks in its order, each from its catalogue entry with the folder and the checks before it; a type

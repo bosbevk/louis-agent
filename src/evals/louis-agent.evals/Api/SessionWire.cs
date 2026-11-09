@@ -16,6 +16,7 @@ internal static class SessionWire
         string Run,
         string? Location,
         string? Llm,
+        int Depth,
         ReplayBody Replay);
 
     /// <summary><c>Web</c> is null (left out) when the instance's WEB_REPLAY decides; <c>Model</c> is always sent.</summary>

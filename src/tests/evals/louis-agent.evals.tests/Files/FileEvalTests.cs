@@ -63,6 +63,24 @@ public class FileEvalTests
     }
 
     /// <summary>
+    /// A mode can name its depth (F106.3.2 step 7, Louis's pick): a specialist role lives at depth 1, so an eval of a
+    /// role opens its session there; a mode that names none stays at 0, a voice's level.
+    /// </summary>
+    [Test]
+    public async Task AModeNamesItsDepth_ElseItIsAVoicesLevel()
+    {
+        // The sample's one mode at depth 1, and a second mode that names no depth.
+        string toolsets = $"\"toolsets\": [\"{SampleToolset.Alpha}\"]";
+        string second = $"{{ \"name\": \"{SampleMode.Beta}\", \"role\": \"{SampleRole.Alpha}\", \"toolsets\": [] }}";
+        using var folder = SampleFolder(EvalFile.Replace(toolsets + " }", toolsets + ", \"depth\": 1 }, " + second));
+
+        var eval = FileEval.Load(folder.Root, Catalog, Readers, Source);
+        var modes = await eval.ModesAsync(null!, CancellationToken.None);
+
+        Assert.That(modes.Select(mode => mode.Depth), Is.EqualTo(new[] { 1, 0 }));
+    }
+
+    /// <summary>
     /// A check the file renames grades under the name the file gives it, so a stored run reads the same.
     /// </summary>
     [Test]

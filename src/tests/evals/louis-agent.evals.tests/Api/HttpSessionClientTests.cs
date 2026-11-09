@@ -57,6 +57,19 @@ public class HttpSessionClientTests
         Assert.That(body.GetProperty("run").GetString(), Is.EqualTo("run_7:puls-cook:2"));
     }
 
+    /// <summary>
+    /// The mode's depth goes with the session (F106.3.2 step 7): a role's eval opens its session at a specialist's
+    /// level, and a voice's eval at 0.
+    /// </summary>
+    [Test]
+    public async Task TheModesDepth_IsSent()
+    {
+        var role = await OpenBody(Request() with { Mode = Mode with { Depth = 1 } });
+        var voice = await OpenBody(Request());
+
+        Assert.That((role.GetProperty("depth").GetInt32(), voice.GetProperty("depth").GetInt32()), Is.EqualTo((1, 0)));
+    }
+
     [Test]
     public async Task ANullPlaceIsLeftOut_SoTheApisDefaultsHold()
     {
