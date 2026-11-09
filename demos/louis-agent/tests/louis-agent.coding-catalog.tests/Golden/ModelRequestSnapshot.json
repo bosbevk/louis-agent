@@ -2351,7 +2351,7 @@
     },
     {
       "Name": "SwitchBranch",
-      "Description": "Check out an existing branch (git checkout), changing the working tree to match that branch's state. Uncommitted changes that conflict with the switch will block it rather than being silently discarded. Use CreateBranch instead if the branch does not exist yet.",
+      "Description": "Switch to an existing branch (git switch), changing the working tree to match that branch's state. Uncommitted changes that conflict with the switch will block it rather than being silently discarded. Use CreateBranch instead if the branch does not exist yet.",
       "Schema": {
         "type": "object",
         "properties": {

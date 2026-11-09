@@ -28,11 +28,13 @@ public sealed class GitBranchTools(GitRunner git)
         return Refused(nameof(branchName), branchName) ?? git.Run(["checkout", "-b", branchName]);
     }
 
-    [Description("Check out an existing branch (git checkout), changing the working tree to match that branch's state. Uncommitted changes that conflict with the switch will block it rather than being silently discarded. Use CreateBranch instead if the branch does not exist yet.")]
+    [Description("Switch to an existing branch (git switch), changing the working tree to match that branch's state. Uncommitted changes that conflict with the switch will block it rather than being silently discarded. Use CreateBranch instead if the branch does not exist yet.")]
     public string SwitchBranch(
         [Description("Name of the branch to switch to")] string branchName)
     {
-        return Refused(nameof(branchName), branchName) ?? git.Run(["checkout", EndOfOptions, branchName]);
+        // `switch`, never `checkout` (FX107): checkout takes a name that is no branch as a file and throws its changes
+        // away, and on git 2.43 refuses --end-of-options outright; switch only ever names a branch.
+        return Refused(nameof(branchName), branchName) ?? git.Run(["switch", EndOfOptions, branchName]);
     }
 
     [Description("Delete a local branch (git branch -d, or -D when force is true). The safe default (force: false) refuses to delete a branch with unmerged commits; set force: true only when you specifically intend to discard that branch's unmerged work, since it cannot be recovered afterward through this tool. This only deletes the local branch reference — it does not touch any remote branch of the same name.")]
