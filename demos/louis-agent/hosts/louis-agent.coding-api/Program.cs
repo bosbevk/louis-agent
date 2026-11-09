@@ -25,14 +25,15 @@ var app = builder.Build();
 app.UseLouisAgentAccounts();
 app.UseLouisAgentKey();
 
-// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}: a page meant for
-// search as its own HTML (F121), rendered with the words its pages read; the landing's sections sit under /home.
+// The code-review app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}. Its pages are
+// the chat and the admin, none meant for search, so each answers the plain shell; the framework's site has its own
+// host since F124.
 app.MapStaticAssets();
 app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
 {
     services.AddSingleton(new LouisAgent.Web.Text.ChatText());
     services.AddSingleton(new HttpClient());
-}, home: "home");
+});
 
 app.MapLouisAgentAccounts();
 app.MapLouisAgentApi(host);
