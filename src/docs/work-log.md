@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 78 | 73 |
-| Fixes (`FX`) | 95 | 5 |
+| Fixes (`FX`) | 96 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -214,6 +214,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX104 | 2026-11-09 | The offer names its fees: a once-off fee to build the site beside the monthly price, and Louis writing a customer's first Markdown files, for a fee, on the landing, the Contact page and in the guide |
 | FX103 | 2026-11-08 | Every page's footer links to Louis's LinkedIn profile, LinkedIn's mark small beside the word |
 | FX102 | 2026-11-08 | The guide lights what it talks about, offers a walkthrough or one section, walks it one stop per answer, and sells and takes the lead at its end |
 | FX101 | 2026-11-08 | The chat follows the answer to its end until the reader scrolls up, however much text arrives at once |

@@ -162,9 +162,13 @@ The guide answers questions about buying from this section (FX72), so it holds t
   business (its hours, prices, services and story, from files the owner can read and change), answers customers day
   and night, and points them to the right place or person. Every answer it gives is measured, so the owner sees what
   it costs. Every agent runs in its own closed Docker container that sees only what it is handed.
-- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know. The exact figure
-  comes from a short call. This is the one public price; anything else (a custom agent, the framework, a licence) is
-  not published yet and is asked for on the Contact page.
+- **The price: R500 to R1,000 a month**, by the size of the site and how much the agent has to know, plus a
+  once-off fee to build the site. The exact figures, the building fee's too, come from a short call. This is the
+  one public price; anything else (a custom agent, the framework, a licence) is not published yet and is asked for
+  on the Contact page.
+- **Your first files, written with you:** an agent is a few Markdown files (its voice, its roles and what it knows
+  about the business), and Louis can write a customer's first Markdown files with them, for a fee, so the agent starts
+  out sounding like them. Its price comes from the short call.
 - **Custom agents** for a bigger business: an identity that knows it, packs that reach its own systems (a mailbox, a
   spreadsheet, an accounting package), hosted and measured, every change checked by evals.
 - **How to reach Louis:** louis.marais@live.com, which every mail link on the Contact page (`/contact`) opens with a
