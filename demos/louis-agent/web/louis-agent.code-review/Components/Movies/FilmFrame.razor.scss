@@ -1,11 +1,12 @@
 /* ---- A film's frame (F109.1, step 7): the film as it is, and a pause button in the frame's corner. Scoped: the
    film inside is reached under ::deep. ---- */
-/* The film fits a slide's page on any screen (FX112): it scales to its frame's width, so the frame is never wider
-   than a page is high at 16:9. A page of a paged section is the framework's 100dvh - 330px, less the film's margin. */
+/* The film fits a slide's page under its section's heading on any screen (FX112, FX118): it scales to its frame's
+   width, so the frame is never wider than the room under a heading is high at 16:9. A page of a paged section is the
+   framework's 100dvh - 330px; a kicker and a heading take about 150px more, and the film's margin the rest. */
 .film-frame {
     position: relative;
     width: 100%;
-    max-width: calc((100dvh - 350px - var(--site-bar, 0px)) * 16 / 9);
+    max-width: calc((100dvh - 500px - var(--site-bar, 0px)) * 16 / 9);
     margin-inline: auto;
 }
 
