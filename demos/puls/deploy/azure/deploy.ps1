@@ -294,10 +294,12 @@ switch ($Verb) {
         Write-Host "Watch it come up with: deploy.ps1 logs"
     }
     'release' {
-        $latest = Read-Az containerapp show -n $App -g $ResourceGroup --query 'properties.latestRevisionName' -o tsv
-        if ($LASTEXITCODE -ne 0 -or -not $latest) { $next = 'v001' }
-        elseif ($latest -match '--v(\d+)$') { $next = 'v{0:D3}' -f ([int]$Matches[1] + 1) }
-        else { throw "Could not read $App's latest revision ($latest)." }
+        # The next vNNN after the highest the app has had (FX123): a revision made outside this script carries Azure's
+        # own name (louis-agent-app--0000001), so the latest alone can't say; none at all, and it is the first.
+        $revisions = @(Read-Az containerapp revision list -n $App -g $ResourceGroup --all --query '[].name' -o tsv)
+        $numbers = @($revisions | Where-Object { $_ -match '--v(\d+)$' } | ForEach-Object { [int]($_ -replace '^.*--v', '') })
+        $highest = if ($numbers.Count -gt 0) { [int]($numbers | Measure-Object -Maximum).Maximum } else { 0 }
+        $next = 'v{0:D3}' -f ($highest + 1)
         Write-Host "Release: image tagged $Tag, then $App revision $next."
         & $PSCommandPath build -App $App -Tag $Tag
         & $PSCommandPath update -App $App -Tag $Tag -Revision $next
