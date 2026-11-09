@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F126 mockup: A re-graded run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--page:#070708;--panel:#0d0e10;--menu:#15171a;--border:#2c2f35;--border-strong:#3a3e45;--hair:rgba(255,255,255,.06);--subtle:rgba(255,255,255,.03);
+--text:#e6e8eb;--emph:#ffffff;--soft:#c9ccd1;--muted:#9aa0a8;--faint:#7c828a;--solid:#e6e8eb;--on-solid:#070708;
+--cta:linear-gradient(180deg,#ffffff 0%,#b9bec6 100%);--ok:#6cbf94;--ok-bg:rgba(108,191,148,.12);--info:#7fa8e8;--info-bg:rgba(127,168,232,.12);--bad:#d9675f;--bad-text:#e8a39c;--warn:#d4a72c;--flip-bg:#1b1d21;color-scheme:dark}
+body{margin:0;font-family:Geist,system-ui,sans-serif;color:var(--text);background:var(--page)}
+a{color:var(--emph)}a:hover{color:var(--emph)}
+.pg{min-height:100%;background:var(--page);font-family:Geist,system-ui,sans-serif;color:var(--text)}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:18px 32px;background:var(--panel);border-bottom:1px solid var(--border);font-size:14px}
+.top a{color:var(--muted);text-decoration:none}.top .sep{color:var(--faint)}.top b{font-weight:600}
+.addr{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:var(--muted);background:var(--hair);padding:3px 8px;border-radius:6px}
+.pill{font-size:12px;color:var(--muted);background:var(--hair);padding:4px 10px;border-radius:999px}
+.grow{flex:1 1 auto}
+.main{max-width:1120px;margin:0 auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px}
+.pad{padding:18px 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--border-strong);background:var(--panel);font:inherit;font-size:14px;font-weight:600;color:var(--text);text-decoration:none;cursor:pointer}
+.btn.dark{background:var(--solid);color:var(--on-solid);border-color:var(--solid)}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.blue{color:var(--emph)}
+h1{margin:0;font-size:26px;font-weight:700}h2{margin:0;font-size:17px;font-weight:600}h3{margin:0;font-size:15px;font-weight:600}
+code,.mono{font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.mark{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
+.mark.no{border:2px solid var(--bad)}.mark.flip{background:var(--flip-bg);border-color:var(--emph)}
+.mark .t{flex:1 1 auto;display:flex;flex-direction:column;gap:3px}.mark .t b{font-size:14px;font-weight:600}.mark .t span{font-size:13px;color:var(--muted)}
+.dot{flex:none;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--on-solid);font-size:12px;font-weight:700}
+.dot.y{background:var(--ok)}.dot.n{background:var(--bad)}.dot.f{background:var(--emph)}
+.note{font-size:12px;color:var(--muted);margin:0}
+.top .actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.main{max-width:1120px!important}
+.hero{display:flex;flex-direction:column;gap:6px}
+.hero .big{font-size:44px;font-weight:700;line-height:1}
+.hero .big small{font-size:22px;color:var(--muted);font-weight:500}
+.delta{font-size:14px;font-weight:600}
+.meta{font-size:12px;color:var(--muted)}
+.heroRow{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between}
+.stats{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.stats>div{padding:14px 18px;border-left:1px solid var(--hair)}.stats>div:first-child{border-left:0}
+.stats dt{font-size:13px;color:var(--muted)}.stats dd{margin:4px 0 0;font-size:18px;font-weight:600}
+.stats.compact{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:none;border:0;border-radius:0}.stats.compact>div{padding:0;border:0}.stats.compact dd{font-size:13px;margin-top:2px}
+.split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:stretch}
+.kv{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--hair);font-size:14px}
+.kv b{text-align:right;white-space:nowrap}
+.list{overflow:hidden}
+.bar{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;flex-wrap:wrap}
+.item{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--hair);text-decoration:none;color:inherit;align-items:flex-start}
+.item:last-child{border-bottom:0}
+.item .body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
+.item .head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.item .name{font-size:15px;font-weight:600}
+.item.wait{color:var(--faint)}
+.group{padding:10px 16px;border-bottom:1px solid var(--hair);background:var(--subtle)}
+.label{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.dot.w{background:var(--border-strong)}.dot.e{background:var(--border)}.dot.g{background:var(--faint)}
+.cols{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.cols>.wide{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.cols>.side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.main>.heroRow,.main>.hero{padding-bottom:20px;border-bottom:1px solid var(--border)}
+.card .hero,.card .stats.compact,.card .btns{border-top:1px solid var(--hair);padding-top:14px}
+.card[role=dialog]>*+*{border-top:1px solid var(--hair);padding-top:14px}
+.card[role=dialog] .btns{margin-top:auto}
+.frame{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100%}
+.sb{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 12px;gap:4px}
+.sb .brand{display:flex;flex-direction:column;padding:2px 10px 18px;margin-bottom:6px;border-bottom:1px solid var(--hair);text-decoration:none;color:var(--text)}
+.sb .brand b{font-size:16px;font-weight:700}.sb .brand span{font-size:12px;color:var(--muted)}
+.sb .sl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+.sb a.lk{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 10px;border-radius:8px;color:var(--soft);text-decoration:none;font-size:14px}
+.sb a.lk.on{background:var(--solid);color:var(--on-solid);font-weight:600}
+.sb .ft{margin-top:auto;border-top:1px solid var(--hair);padding-top:10px}
+.col{display:flex;flex-direction:column;min-width:0}
+.col>.main{flex:1 1 auto;width:100%;box-sizing:border-box}
+.pfoot{border-top:1px solid var(--border);background:var(--panel);padding:14px 32px;font-size:12px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+.sechead{display:flex;align-items:center;gap:12px;margin-top:4px}
+.sechead::after{content:"";flex:1 1 auto;height:1px;background:var(--border)}
+/* Our styles: the framework's Console look (src/web/louis-agent.web/Styles/web/settings/_colours.scss, layout/_shell.scss). */
+body,.pg{background:var(--page);color:var(--text)}
+a{color:var(--text)}a:hover{color:var(--emph)}
+.card,.stats{background:var(--panel);border-color:var(--border);border-radius:16px}
+.stats.compact{background:none}
+.top{background:transparent;border-bottom:1px solid var(--border)}
+.top b{color:var(--emph)}
+h1{font-weight:800;letter-spacing:-.4px;color:var(--emph)}h2,h3{color:var(--emph)}
+.hero .big{font-weight:800;letter-spacing:-.6px;color:var(--emph)}
+.btn{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);border-radius:11px;font-weight:700}
+.btn:hover{border-color:rgba(255,255,255,.45);color:var(--emph)}
+.btn.dark{background:var(--cta);color:var(--on-solid);border:0;box-shadow:0 6px 16px -8px rgba(255,255,255,.7)}
+.btn.sm{height:36px;min-height:36px;font-size:13px}
+.pill{background:var(--hair);color:var(--muted)}
+.addr{background:var(--hair);color:var(--muted)}
+.bad{color:var(--bad-text)}.ok{color:var(--ok)}.blue{color:var(--emph)}
+.dot.y{background:var(--solid);color:var(--on-solid)}.dot.n{background:var(--bad);color:var(--on-solid)}.dot.f{background:var(--emph);color:var(--on-solid);box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+.mark{background:var(--subtle);border-color:var(--border)}.mark.no{border-color:var(--bad)}.mark.flip{background:var(--flip-bg);border:1px solid var(--emph)}
+.sb{background:var(--menu);border-right-color:var(--border);padding:20px 14px 16px}
+.sb .brand{border-bottom-color:var(--border)}.sb .brand b{font-size:21px;font-weight:800;letter-spacing:-.6px;color:var(--emph)}.sb .brand span{color:var(--muted)}
+.sb .sl{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)}
+.sb a.lk{color:var(--text);border-radius:10px}
+.sb a.lk.on{background:rgba(255,255,255,.07);color:var(--emph);font-weight:600;box-shadow:inset 3px 0 0 var(--emph)}
+.sb .ft{border-top-color:var(--border)}
+.pfoot{background:var(--menu);border-top-color:var(--border);color:var(--faint)}
+.label,.sechead .label{color:var(--faint);font-weight:700;letter-spacing:1.2px;font-size:11px}
+.sechead::after{background:var(--border)}
+.item{border-bottom-color:var(--hair)}.kv{border-bottom-color:var(--hair)}.bar{border-bottom-color:var(--border)}
+.group{background:var(--subtle);border-bottom-color:var(--hair)}
+.main>.heroRow,.main>.hero{border-bottom-color:var(--border)}
+.card .hero,.card .stats.compact,.card .btns,.card[role=dialog]>*+*{border-top-color:var(--hair)}
+.stats>div{border-left-color:var(--hair)}
+code,.mono{color:var(--soft)}
+details summary{color:var(--text)}
+/* Indicators (Louis, 2026-11-09): green for met and better, red for not met and worse, blue for your flips; only on marks, dots and deltas. */
+.dot.y{background:var(--ok);color:var(--on-solid)}
+.dot.f{background:var(--info);color:var(--on-solid);box-shadow:0 0 0 3px var(--info-bg)}
+.ok{color:var(--ok)}.blue{color:var(--info)}
+.mark.flip{background:var(--info-bg);border:1px solid var(--info)}
+.mark.no{background:rgba(217,103,95,.08)}
+.pill.live{background:rgba(212,167,44,.15);color:var(--warn)}
+/* Amber: not wrong, but look at this (spends money, out of date, the judge may be wrong). */
+.warn{color:var(--warn)}
+.btn.spend{border-color:rgba(212,167,44,.55);color:var(--warn);background:rgba(212,167,44,.06)}
+.btn.spend:hover{border-color:var(--warn);color:var(--warn)}
+.btn.spendsolid{background:var(--warn);color:var(--on-solid);border:0}
+.notice{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;border:1px solid rgba(212,167,44,.45);background:rgba(212,167,44,.08);font-size:13px;color:var(--text)}
+.notice::before{content:"!";flex:none;width:18px;height:18px;border-radius:50%;background:var(--warn);color:var(--on-solid);font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div class="pg frame" style="min-height:960px"><aside class="sb" aria-label="Admin"><a class="brand" href="Main.dc.html"><b>louis-agent.dev</b><span>Admin</span></a>
+<div class="sl">Measure</div><a class="lk on" href="Main.dc.html">Evals</a>
+<div class="sl">Build</div><a class="lk" href="#">Prompts</a>
+<div class="sl">Packs</div><a class="lk" href="#">Uploads</a><a class="lk" href="#">Reports</a>
+<div class="ft"><a class="lk" href="#">← Back to the chat</a></div></aside><div class="col"><header class="top"><a href="Main.dc.html">Evals</a> <span class="sep">/</span> <b>Guide · re-graded [WHEN]</b><span class="pill">re-graded · no agent asked</span><span class="addr">/admin/evals/guide/runs/[NEW RUN]</span><div class="actions"><a class="btn sm" href="Run.dc.html">Open the run it re-graded</a><a class="btn sm" href="Regraded.dc.html">Re-grade</a><a class="btn sm spend" href="Live.dc.html">Run live</a></div></header><main class="main"><div class="heroRow"><div class="hero"><span class="big">5<small> of 7 passed</small></span><span class="delta muted">The same as the run it re-graded</span><span class="meta">The same answers, graded with guide.eval.json as it is now (commit [COMMIT]). The agent was not asked again.</span></div></div><dl class="stats"><div><dt>Cost</dt><dd>[COST]</dd></div><div><dt>Judge calls</dt><dd>1</dd></div><div><dt>Marks reused</dt><dd>19 of 21</dd></div><div><dt>Facts checked</dt><dd>15, free</dd></div></dl><div class="sechead"><span class="label">What changed in the file, and what it did</span></div><section class="card pad" style="display:flex;flex-direction:column;gap:10px"><div class="mark"><span class="dot y">+</span><div class="t"><b>guide-invoices · turn 1 · new criterion "Names the contact page"</b><span>Judged: met. "It ends with: the contact page has Louis's details." One judge call.</span></div></div><div class="mark"><span class="dot g">−</span><div class="t"><b>guide-walkthrough · turn 3 · criterion "Lights the area it talks about" taken out</b><span>The turn's fact <code>used ShowPage</code> already proves it. Your flip on it stays with the old run.</span></div></div><div class="mark"><span class="dot y">=</span><div class="t"><b>19 marks reused</b><span>Same criterion, same answer: the judge's mark (and any flip of yours) carries over, free. A reworded criterion counts as new and is judged again.</span></div></div><div class="mark"><span class="dot y">✓</span><div class="t"><b>15 facts checked again</b><span>Facts are code: always checked again, always free.</span></div></div></section><div class="sechead"><span class="label">Re-grade, replay or a live run: which one when</span></div><section class="card pad" style="display:flex;flex-direction:column;gap:10px"><table style="border-collapse:collapse;font-size:13px;width:100%"><thead><tr><th style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:left">Button</th><th style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:left">What runs again</th><th style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:left">Costs</th><th style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:left">Use it after</th></tr></thead><tbody><tr><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Re-grade</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Only the grading, on the stored answers</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Judge calls for new or reworded criteria only</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">you changed the eval file</td></tr><tr><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Replay free</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The agent, with the model's and the web's recorded answers played back</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Nothing; marks reused where the answer is the same</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">you changed our code, not a prompt</td></tr><tr><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top"><b>Run live</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">Everything, against the real model, web and site</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">The agent's calls plus a judge call per criterion; asks first</td><td style="padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top">you changed a prompt, a tool or the model</td></tr></tbody></table></section></main><footer class="pfoot"><span>louis-agent · eval host</span><span>Signed in as an admin</span><span class="grow"></span><span>[VERSION]</span></footer></div></div>
+</body>
+</html>
