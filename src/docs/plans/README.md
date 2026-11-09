@@ -12,6 +12,7 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F106.3.4-the-demo-on-a-recording.md](F106.3.4-the-demo-on-a-recording.md) | *F106.3.4 The triage demo, on a recorded run* | 2026-11-09 | Before F106.3.3, which waits on F39 Part A and F43; a script records one real run |
 | [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
 | [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
 | [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |
