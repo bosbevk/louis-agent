@@ -281,6 +281,46 @@ filling a list the test already held, and the test says the day a project is add
 - **A film's layout needs eyes once more.** The export's poster frame showed a slab under the caption strip in the
   wide shot; the tests hold the words, not the picture. Concept: *18 Testing and shipping* in the [goal](../GOAL.md).
 
+## A site a crawler can read (F121, 2026-11-09)
+
+A Blazor WebAssembly site is a program the browser runs. Before F121 every address on every site answered the same
+file, the landing's title and an empty `<div id="app">`, and the page only appeared once the app had downloaded and
+started. A person never noticed. A crawler that runs no script, a link preview on WhatsApp or LinkedIn, an AI crawler,
+saw every page as the landing with no words. The sitemap of F119 pointed them at 71 places that all said nothing.
+
+**What changed.** The API now renders each page itself, once, and serves it as HTML: the page's own title,
+description, link card, canonical link and words inside `#app`. The app still starts and replaces that body, so a
+person sees no difference. Measured with `curl` on the review copy: `/how-it-works` went from the landing's title and
+an empty body to its own title, a canonical link to itself and all four sections' words.
+
+- **Prerendering, in one call.** *Prerendering* means producing a page's HTML on the server before any script runs.
+  ASP.NET Core ships the tool, `HtmlRenderer`, which renders a component outside a browser. Beside the page it renders
+  Blazor's `HeadOutlet`, so whatever the page puts in the head (its `PageTitle`, its `PageDescription`) comes out too.
+  A host's program says `MapLouisAgentSite(...)` where it said `MapFallbackToFile("index.html")`, and that is all a
+  site does.
+- **Render once, keep it.** A page is rendered the first time it is asked for and kept until the process restarts.
+  A deploy restarts it, so the cache can't go stale: there is nothing to invalidate. Louis chose this over a publish
+  step that writes files, which would need its own step in the build, and over a test that writes them into git,
+  which would put generated HTML in every diff.
+- **Opt in by saying what the page is about.** Only a page with a `PageDescription` is prerendered. The chat, the
+  admin screens and the account pages have nothing to rank, and some can't render without their live services. So
+  "is this page for search?" is answered by the page itself, in one line it needs anyway, not by a list in the host.
+- **Fail to the old behaviour, loudly.** A page that throws while rendering, because it injects something its site
+  didn't register, answers the plain shell, as before F121, and one warning goes to the log. A crawler gets less, and
+  nobody gets an error page. The chat page does exactly this on the review copy, and that is expected.
+- **Test against the real file.** `PageShellTests` fill the code-review site's actual `index.html`, not a sample, so
+  a change to that file that breaks the filling fails a test rather than a search ranking months later.
+
+**What didn't work at first.** `MapFallback` was given a method that took an `HttpContext` and returned a task. ASP.NET
+binds that shape as a plain request delegate, so the method's result was thrown away and every page answered an empty
+200. Taking the `HttpRequest` instead makes it a real endpoint whose result is written. A test through the test server
+caught it, where a unit test of the method would have passed. And the standard HTML encoder escaped the site's "·"
+into `&#183;`, valid but noisy in a title, so the shell escapes only the four characters HTML needs.
+
+**Left as it is.** Once the app starts, the head holds the description twice, the shell's and the one Blazor's head
+outlet adds. Both say the same thing, and a crawler that runs no script sees one. Concept: *18 Testing and shipping*
+in the [goal](../GOAL.md), with [ADR 0109](../adr/0109-a-page-is-served-as-html.md).
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

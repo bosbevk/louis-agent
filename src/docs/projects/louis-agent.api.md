@@ -20,7 +20,7 @@ flowchart LR
     Engine -- "updates" --> SSE["ITurnStreamFormat<br/>(Streaming/Claude) → SSE events"] --> Client
     Client -- "/v1/workspace/*" --> WS["WorkspaceEndpoints"] --> Files[("Workspace")]
     Client -- "/v1/git/*" --> Git["Endpoints/Git/"] --> Files
-    Static["MapStaticAssets + index.html fallback"] --> Client
+    Static["MapStaticAssets + MapLouisAgentSite<br/>(each page as HTML)"] --> Client
 ```
 
 - **Start-up** (`ApiStartup.cs`, called by a demo's program): `AgentHost.Build()`, the services with `ApiMap.AddApi` (the engine, `AgentSessions` and
@@ -33,6 +33,12 @@ flowchart LR
   `DELETE`, an action is `POST /v1/{resource}/{verb}`. A route needs the key unless the code marks it
   (`RouteAccess.Open` for the prices, the rates and the feeds, `AdminKey` for `/v1/admin`); a `/v1` path no route matches is a
   JSON `404`. `ApiRoutesSnapshot.json` pins the table, and `ApiRouteRuleTests` checks the rule on it.
+- **The site's pages as HTML** (F121, [ADR 0109](../adr/0109-a-page-is-served-as-html.md)): a program calls
+  `MapLouisAgentSite` with its web app's assembly and the services its pages inject, in place of an `index.html`
+  fallback. A page's address (or a section's under it) answers the site's `index.html` with the page's own title,
+  description, link card, canonical link and body, rendered by `HtmlRenderer` the first time and kept until the
+  process restarts; a page that declares no `PageDescription`, or fails to render (logged once), answers the plain
+  shell; an address that names no page, the shell with a 404. The public address is the request's own.
 - **Prices** (`GET /v1/prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
 - **Rates** (`GET /v1/rates`, public, F14): the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for
@@ -152,6 +158,7 @@ sequenceDiagram
 | `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
+| `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names; `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts) |
 | `Endpoints/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `Endpoints/Git/GitChangesEndpoints.cs` | `GET /v1/git/status`, `GET /v1/git/diff`, `POST /v1/git/stage` · `unstage` · `discard`: the working tree and the index |
 | `Endpoints/Git/GitCommitsEndpoints.cs` | `POST /v1/git/commits` (`201` with `Location`), `GET /v1/git/commits?count=` (the log across branches), `GET /v1/git/commits/{sha}` |
@@ -205,7 +212,11 @@ manuals, the trends, the tool failures, and one store contract run against the i
 `BENCHMARKS_MONGO_URL` is set, MongoDB (CI sets it); since CL57 those are the studio's tests, in `louis-agent.api.evals.tests`. The routes (CL20): `ApiRoutesSnapshot.json` pins every route, its
 method and who may call it, `ApiRouteRuleTests` checks ADR 0039's rule on that table, and the in-memory host
 (`ApiTestHost`) runs the key gate (`AgentKeyGateTests`), a session's `201` (`SessionCreatedTests`) and the git
-resources in a temporary repository (`GitResourceTests`). A streamed turn is still checked by hand, in the browser.
+resources in a temporary repository (`GitResourceTests`). The site's pages (F121): `PagePrerendererTests` render a
+sample page, `PageShellTests` fill the code-review site's real `index.html`, and `SitePagesTests` ask the test server
+for a page, a section, a page with no description, one that throws and an address with no page, and the canonical
+link from the request's own address. A streamed turn is still
+checked by hand, in the browser.
 
 ## Limits and plans
 
