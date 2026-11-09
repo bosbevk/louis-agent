@@ -43,14 +43,18 @@ pipeline to the middleware's order, the demos to the folders under `demos/` (F11
 
 The site tells the whole architecture ([ADR 0100](../adr/0100-the-site-tells-the-whole-architecture.md)): `/` (one page
 that moves, F110: the hero, the one rule, the numbers, the short film as the map of the whole framework, the four
-concepts, what's built on it, the custom-agents band, the contact strip), `/how-it-works` (the detailed film, one turn
-through core, the rules every turn keeps), `/architecture` (every project that ships, by family, `src/site` among them),
-`/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/csharp-ai-agent-framework` (written for
-what people search, F123), `/proof` (the numbers in dollars and rand), `/built-on-it`, `/whats-coming` (planned
-features by id, each marked planned), `/contact`, and the demos: `/demos`, `/coding-agent` (the coding agent fixing a
-bug, recorded once and played back, [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and
-`/triage-demo`. The pages are written from the docs the guide reads, every number from the ledger or an eval run, each
-claim held to the repo by a test; the repository is private, so no page links to it. The landing's `PageHead` carries
+concepts, what's built on it, the custom-agents band, the contact strip), `/contact`, and the demos: `/demos`,
+`/coding-agent` (the coding agent fixing a bug, recorded once and played back,
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages
+sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
+`/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
+`/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,
+`/framework/packs`, `/framework/build-your-own` (a real program and catalogue), `/framework/measured` (the numbers in
+dollars and rand), `/framework/built-on-it` and `/framework/whats-coming` (planned features by id, each marked
+planned). `/csharp-ai-agent-framework` stays where search found it (F123). The site's host sends each old address on,
+section and all, with a permanent redirect (`MovedPages` in `louis-agent.site-api`), and `SiteLinksTests` holds every
+link on the site to a place on it. The pages are written from the docs the guide reads, every number from the ledger
+or an eval run, each claim held to the repo by a test; the repository is private, so no page links to it. The landing's `PageHead` carries
 the site's facts for search engines (`Content/SiteFacts.cs`, F123).
 
 **The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its

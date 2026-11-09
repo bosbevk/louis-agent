@@ -183,17 +183,17 @@ comes from, what is built on the framework), so when words are not enough, point
   what is proven and build only what nobody has) and what drives it (a stoic and Kierkegaard outlook: the work for
   its meaning and purpose, competition and the norm no concern), the four concepts, and the short film of the whole framework in six
   scenes. Sources: `README.md`, `src/docs/architecture/05-building-block-view.md`.
-- `/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets them;
+- `/framework/how-it-works`: the long film, one turn through every layer of core; the parts in the order a turn meets them;
   the rules every turn keeps. Sources: `src/docs/architecture/06-runtime-view.md`,
   `src/docs/architecture/08-crosscutting-concepts.md`, the ADRs 0004, 0005, 0007 and 0008.
-- `/architecture`: every project that ships, by family, as the repository is laid out. Sources:
+- `/framework/architecture`: every project that ships, by family, as the repository is laid out. Sources:
   `src/docs/architecture/05-building-block-view.md`, `src/docs/projects/README.md`, each demo's `docs/projects/`
   and `packs/docs/projects/`.
-- `/identities`: what an identity holds, the principles every agent reads first shown as the engine holds them, and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
+- `/framework/identities`: what an identity holds, the principles every agent reads first shown as the engine holds them, and the three that exist. Sources: the ADRs 0017 to 0020 and 0027,
   `demos/puls/docs/projects/louis-agent.identity.puls.md`,
   `src/docs/projects/louis-agent.identity.guide.md`.
-- `/packs`: every pack and the rules a pack keeps. Sources: `packs/docs/projects/`, the ADRs 0027, 0028 and 0073.
-- `/build-your-own`: the coding agent's real program and catalogue, whose is what, where the packages stand.
+- `/framework/packs`: every pack and the rules a pack keeps. Sources: `packs/docs/projects/`, the ADRs 0027, 0028 and 0073.
+- `/framework/build-your-own`: the coding agent's real program and catalogue, whose is what, where the packages stand.
   Sources: `src/docs/guides/build-an-identity.md`, `src/docs/guides/build-a-pack.md`,
   `src/docs/guides/spawn-a-site.md`, ADR 0076.
 - `/csharp-ai-agent-framework`: louis-agent as an AI agent framework in C#, beside Microsoft Agent Framework and
@@ -201,12 +201,12 @@ comes from, what is built on the framework), so when words are not enough, point
   local model through Ollama if you want, with no cloud agent service in between. Say of Microsoft's frameworks only
   what the page says, which is what their own documentation says, and never that one needs a cloud service. Sources:
   the page's own words and the Microsoft pages it links.
-- `/proof`: the numbers, in dollars and rand, how the rand come about, how an agent is checked. Sources:
+- `/framework/measured`: the numbers, in dollars and rand, how the rand come about, how an agent is checked. Sources:
   `src/docs/learning/12-evaluation.md`, `src/docs/learning/13-cost-and-token-economics.md`, ADR 0007,
   `src/docs/work-log.md`.
-- `/built-on-it`: the two demos, what the framework stands on with each licence, the hosts. Sources:
+- `/framework/built-on-it`: the two demos, what the framework stands on with each licence, the hosts. Sources:
   `demos/puls/docs/`, `demos/louis-agent/docs/`, ADR 0030.
-- `/whats-coming`: the planned features by id, each marked planned. Sources: `ROADMAP.md`, `TODO.md`,
+- `/framework/whats-coming`: the planned features by id, each marked planned. Sources: `ROADMAP.md`, `TODO.md`,
   `src/docs/plans/`. Everything there is planned, not built; say so.
 - `/contact`: how to reach the project. The site's own words.
 - `/demos`: the demos in one place, each a real run recorded once and played back. Send someone who asks what the

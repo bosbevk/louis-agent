@@ -29,11 +29,12 @@ public sealed record FilmSource(
     ]);
 
     /// <summary>The 60-second film on the how-it-works page.</summary>
-    public static FilmSource Detail { get; } = new(FilmName.Detail, "/how-it-works", ".movie", TimeSpan.FromSeconds(60),
-    [
-        Site + "Components/Movies/DetailedMovie.razor", Site + "Styles/site/movie/_stage.scss",
-        Site + "Styles/site/movie/_detail.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
-    ]);
+    public static FilmSource Detail { get; } = new(FilmName.Detail, "/framework/how-it-works", ".movie",
+        TimeSpan.FromSeconds(60),
+        [
+            Site + "Components/Movies/DetailedMovie.razor", Site + "Styles/site/movie/_stage.scss",
+            Site + "Styles/site/movie/_detail.scss", Site + "Styles/site/settings/_tokens.scss", Colours,
+        ]);
 
     /// <summary>Every film the site has.</summary>
     public static IReadOnlyList<FilmSource> All { get; } = [Short, Detail];

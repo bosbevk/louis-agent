@@ -49,15 +49,15 @@ public class SiteLayoutTests
     }
 
     /// <summary>The menu leads to each page, from every page.</summary>
-    [TestCase("/how-it-works")]
-    [TestCase("/architecture")]
-    [TestCase("/identities")]
-    [TestCase("/packs")]
-    [TestCase("/build-your-own")]
+    [TestCase("/framework/how-it-works")]
+    [TestCase("/framework/architecture")]
+    [TestCase("/framework/identities")]
+    [TestCase("/framework/packs")]
+    [TestCase("/framework/build-your-own")]
     [TestCase("/csharp-ai-agent-framework")]
-    [TestCase("/proof")]
-    [TestCase("/built-on-it")]
-    [TestCase("/whats-coming")]
+    [TestCase("/framework/measured")]
+    [TestCase("/framework/built-on-it")]
+    [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
     public void TheMenu_LeadsToThePage(string address)
     {
@@ -86,8 +86,8 @@ public class SiteLayoutTests
             Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
-                    "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own",
-                    "/csharp-ai-agent-framework"
+                    "/framework/how-it-works", "/framework/architecture", "/framework/identities",
+                    "/framework/packs", "/framework/build-your-own", "/csharp-ai-agent-framework"
                 }));
             Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
         });

@@ -15,17 +15,18 @@ public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
     [TestCase(typeof(HomePage), "/", "First principles.")]
-    [TestCase(typeof(HowItWorksPage), "/how-it-works", "One turn, through every layer.")]
-    [TestCase(typeof(ArchitecturePage), "/architecture", "The whole framework, as the repository is laid out.")]
-    [TestCase(typeof(IdentitiesPage), "/identities", "Who an agent is, as files.")]
-    [TestCase(typeof(PacksPage), "/packs", "What an agent can do is a package.")]
-    [TestCase(typeof(BuildYourOwnPage), "/build-your-own", "A few lines of your own.")]
+    [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
+    [TestCase(typeof(ArchitecturePage), "/framework/architecture",
+        "The whole framework, as the repository is laid out.")]
+    [TestCase(typeof(IdentitiesPage), "/framework/identities", "Who an agent is, as files.")]
+    [TestCase(typeof(PacksPage), "/framework/packs", "What an agent can do is a package.")]
+    [TestCase(typeof(BuildYourOwnPage), "/framework/build-your-own", "A few lines of your own.")]
     [TestCase(typeof(CsharpAgentFrameworkPage), "/csharp-ai-agent-framework",
         "An AI agent framework in C#, on your own hardware.")]
-    [TestCase(typeof(ProofPage), "/proof", "Every number here comes from the ledger or an eval run.")]
-    [TestCase(typeof(BuiltOnItPage), "/built-on-it", "Three agents run on the engine today.")]
+    [TestCase(typeof(ProofPage), "/framework/measured", "Every number here comes from the ledger or an eval run.")]
+    [TestCase(typeof(BuiltOnItPage), "/framework/built-on-it", "Three agents run on the engine today.")]
     [TestCase(typeof(ContactPage), "/contact", "An agent for your business, built for you.")]
-    [TestCase(typeof(WhatsComingPage), "/whats-coming", "Planned, and said so.")]
+    [TestCase(typeof(WhatsComingPage), "/framework/whats-coming", "Planned, and said so.")]
     public void APage_IsAtItsAddress_WithItsHeading(Type page, string address, string heading)
     {
         using var ctx = new BunitContext();
@@ -101,8 +102,8 @@ public class SitePagesTests
     [TestCase(typeof(HomePage), "100% C#")]
     [TestCase(typeof(HomePage), "South Africa")]
     [TestCase(typeof(HomePage), "one person")]
-    [TestCase(typeof(HomePage), "href=\"/identities\"")]
-    [TestCase(typeof(HomePage), "href=\"/architecture\"")]
+    [TestCase(typeof(HomePage), "href=\"/framework/identities\"")]
+    [TestCase(typeof(HomePage), "href=\"/framework/architecture\"")]
     [TestCase(typeof(HomePage), "id=\"custom\"")]
     [TestCase(typeof(HomePage), "id=\"rule\"")]
     [TestCase(typeof(HomePage), "First principles.")]

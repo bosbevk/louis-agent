@@ -39,6 +39,19 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
   (B1).
 
+## Open on purpose
+
+The guide is more open than most agents on business sites (Louis, 2026-11-09: "quite open if compared to how other
+online agents is configured, but that is on purpose"). Many site agents follow a script or a short list of topics,
+turn away anything off it, and never say what they read. This one needs no sign-in (ADR 0099), follows the visitor's
+own questions across the whole framework, reads the docs and says where an answer came from, gives a developer the
+full technical answer, and says plainly when the docs don't cover something. That is the point: the site sells agents,
+and an agent that answers freely and honestly is the demo.
+
+What stays closed is held in code, not by narrowing what it talks about. Its host loads only its three packs, so it has
+no files, git or shell. It sends a lead only on the visitor's yes. It never quotes Louis's own money, numbers, risks or
+notes. A cap limits what a visitor can spend (ADR 0099).
+
 ## Tests
 
 `GuideIdentityTests` and `SiteCatalogTests` in `src/tests/site/louis-agent.site.tests` hold its name, its voice's

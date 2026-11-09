@@ -25,66 +25,6 @@
     <loc>https://louis-agent.dev/home/contact</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/architecture</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/engine</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/hosts</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/web</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/site</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/evals</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/packs</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/demos</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/architecture/where-it-runs</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/build-your-own</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/build-your-own/program</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/build-your-own/loads</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/build-your-own/whose</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/build-your-own/stands</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it/puls</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it/the-coding-agent</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it/the-guide</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it/stands-on</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/built-on-it/hosts</loc>
-  </url>
-  <url>
     <loc>https://louis-agent.dev/coding-agent</loc>
   </url>
   <url>
@@ -112,129 +52,189 @@
     <loc>https://louis-agent.dev/demos</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/how-it-works</loc>
+    <loc>https://louis-agent.dev/framework/architecture</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/how-it-works/loop</loc>
+    <loc>https://louis-agent.dev/framework/architecture/engine</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/how-it-works/web</loc>
+    <loc>https://louis-agent.dev/framework/architecture/hosts</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/how-it-works/rules</loc>
+    <loc>https://louis-agent.dev/framework/architecture/web</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities</loc>
+    <loc>https://louis-agent.dev/framework/architecture/site</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/parts</loc>
+    <loc>https://louis-agent.dev/framework/architecture/evals</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/the-principles</loc>
+    <loc>https://louis-agent.dev/framework/architecture/packs</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/levels</loc>
+    <loc>https://louis-agent.dev/framework/architecture/demos</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/puls</loc>
+    <loc>https://louis-agent.dev/framework/architecture/where-it-runs</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/the-coding-agent</loc>
+    <loc>https://louis-agent.dev/framework/build-your-own</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/the-guide</loc>
+    <loc>https://louis-agent.dev/framework/build-your-own/program</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/the-triage-team</loc>
+    <loc>https://louis-agent.dev/framework/build-your-own/loads</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/identities/yours</loc>
+    <loc>https://louis-agent.dev/framework/build-your-own/whose</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs</loc>
+    <loc>https://louis-agent.dev/framework/build-your-own/stands</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/general</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-files</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it/puls</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-git</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it/the-coding-agent</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-dotnet</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it/the-guide</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-shell</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it/stands-on</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-web</loc>
+    <loc>https://louis-agent.dev/framework/built-on-it/hosts</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-paymo</loc>
+    <loc>https://louis-agent.dev/framework/how-it-works</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-devops</loc>
+    <loc>https://louis-agent.dev/framework/how-it-works/loop</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-docs</loc>
+    <loc>https://louis-agent.dev/framework/how-it-works/web</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-triage</loc>
+    <loc>https://louis-agent.dev/framework/how-it-works/rules</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-leads</loc>
+    <loc>https://louis-agent.dev/framework/identities</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-site</loc>
+    <loc>https://louis-agent.dev/framework/identities/parts</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/cook</loc>
+    <loc>https://louis-agent.dev/framework/identities/the-principles</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-where-to-buy</loc>
+    <loc>https://louis-agent.dev/framework/identities/levels</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-shop-prices</loc>
+    <loc>https://louis-agent.dev/framework/identities/puls</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-recipes</loc>
+    <loc>https://louis-agent.dev/framework/identities/the-coding-agent</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/louis-agent-pack-calculator</loc>
+    <loc>https://louis-agent.dev/framework/identities/the-guide</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/packs/rules</loc>
+    <loc>https://louis-agent.dev/framework/identities/the-triage-team</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/proof</loc>
+    <loc>https://louis-agent.dev/framework/identities/yours</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/proof/rand</loc>
+    <loc>https://louis-agent.dev/framework/measured</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/proof/priced-in-dollars-once</loc>
+    <loc>https://louis-agent.dev/framework/measured/rand</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/proof/rand-for-display-with-the-rate-s-date</loc>
+    <loc>https://louis-agent.dev/framework/measured/priced-in-dollars-once</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/proof/checks</loc>
+    <loc>https://louis-agent.dev/framework/measured/rand-for-display-with-the-rate-s-date</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/measured/checks</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/general</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-files</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-git</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-dotnet</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-shell</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-web</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-paymo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-devops</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-docs</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-triage</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-leads</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-site</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/cook</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-where-to-buy</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-shop-prices</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-recipes</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/louis-agent-pack-calculator</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/packs/rules</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/whats-coming</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/whats-coming/framework-track</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/whats-coming/sale</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/framework/whats-coming/site-demos</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/triage-demo</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/whats-coming</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/whats-coming/framework-track</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/whats-coming/sale</loc>
-  </url>
-  <url>
-    <loc>https://louis-agent.dev/whats-coming/site-demos</loc>
   </url>
 </urlset>

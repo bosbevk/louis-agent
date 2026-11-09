@@ -17,6 +17,9 @@ var app = builder.Build();
 // The key check comes before any route; the guide's open door (OPEN_IDENTITY) lets a visitor in without one.
 app.UseLouisAgentKey();
 
+// The framework's pages moved under /framework, so their old addresses are sent on first.
+app.MapMovedPages();
+
 // The site's files, and any other path loads the app: a page meant for search as its own HTML (F121), rendered with
 // the words its pages read; the landing's sections sit under /home.
 app.MapStaticAssets();

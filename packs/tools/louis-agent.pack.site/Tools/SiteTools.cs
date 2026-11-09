@@ -21,11 +21,13 @@ public sealed class SiteTools
     /// <summary>Takes the visitor to a page of this site, or to an area of it.</summary>
     [Description(
         "Opens a place of this site in the visitor's browser by its own address, and lights it up: a page, a section " +
-        "of one, a card, which opens, or a page of a section paged sideways, which turns to it. Use it when the right " +
-        "place exists for what they ask; then say in one line what to look at. The page you are on lists its places " +
+        "of one, a card, which opens, or a page of a section paged sideways, which turns to it. Use it when the " +
+        "right place exists for what they ask; then say in one line what to look at. The page you are on lists its places " +
         "by their addresses.")]
     public string ShowPage(
-        [Description("The place's address as the page lists it, such as /packs, /identities/levels, /identities/puls, /home/rule or /how-it-works/loop/2.")]
+        [Description(
+            "The place's address as the page lists it, such as /framework/packs, /framework/identities/levels, " +
+            "/framework/identities/puls, /home/rule or /framework/how-it-works/loop/2.")]
         string path)
     {
         if (!IsSiteAddress(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });

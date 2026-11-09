@@ -4,7 +4,7 @@ using LouisAgent.Web.Components.Site.Addresses;
 using Microsoft.AspNetCore.Components;
 using LouisAgent.Site.Pages;
 
-namespace LouisAgent.Site.Tests.Pages;
+namespace LouisAgent.Site.Tests.Pages.Meta;
 
 /// <summary>
 /// The site's sitemap lists every page and every place on it by its own address (F119, ADR 0107), so a search engine

@@ -2,7 +2,7 @@ using System.Reflection;
 using LouisAgent.Site.Pages;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Site.Tests.Pages;
+namespace LouisAgent.Site.Tests.Pages.Claims;
 
 /// <summary>
 /// The site says only what is true today (F128.1): what FX122 and F124 changed (one Container App and no VM or

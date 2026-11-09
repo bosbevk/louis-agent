@@ -1,4 +1,4 @@
-@page "/how-it-works"
+@page "/framework/how-it-works"
 
 <PageTitle>How the engine works · louis-agent</PageTitle>
 <PageHead Description="One turn through every layer of the louis-agent engine, the loop from the guards to the ledger, and how the web works with the backend." />
@@ -15,10 +15,10 @@
         <li><strong>Your program.</strong> A few lines in a project of your own: they name the catalogue, who the agent is and what it can do, and start a host. A demo is such a project, and so is a customer's.</li>
         <li><strong>The hosts, as libraries.</strong> A terminal, Rider's AI chat, an HTTP API, an MCP server that hands the tools to another client. Each maps the agent's stream to its protocol and holds no behaviour of its own.</li>
         <li><strong>The engine.</strong> The loop: streaming, the providers, the usage ledger, handing work to other sessions, and the guards around every tool and fetch. It holds no agent and no tools, and names no product and no country. Everything goes through one <code>IChatClient</code> from Microsoft.Extensions.AI, so the provider is configuration: Claude by default, Ollama or an OpenAI-compatible endpoint by a setting.</li>
-        <li><strong>The identity.</strong> Who an agent is: its voice, its modes and its roles, as markdown. Every identity's prompt opens with the same principles file. <a href="/identities">Identities</a></li>
-        <li><strong>The packs.</strong> What an agent can do: toolsets and their guides, each pack its own package. A pack needs only the contracts, never the engine, never knows another pack or an identity, and can be served over MCP as it is. <a href="/packs">Packs</a></li>
-        <li><strong>The eval harness.</strong> What proves it: every check a C# eval on one harness, kept beside the identity or pack it proves, recording what the model answered and read so a run re-scores for nothing. <a href="/proof">Measured</a></li>
-        <li><strong>Where it runs.</strong> Docker on your own hardware, or a Container App in Azure released from GitHub after green CI. <a href="/architecture">The whole map</a></li>
+        <li><strong>The identity.</strong> Who an agent is: its voice, its modes and its roles, as markdown. Every identity's prompt opens with the same principles file. <a href="/framework/identities">Identities</a></li>
+        <li><strong>The packs.</strong> What an agent can do: toolsets and their guides, each pack its own package. A pack needs only the contracts, never the engine, never knows another pack or an identity, and can be served over MCP as it is. <a href="/framework/packs">Packs</a></li>
+        <li><strong>The eval harness.</strong> What proves it: every check a C# eval on one harness, kept beside the identity or pack it proves, recording what the model answered and read so a run re-scores for nothing. <a href="/framework/measured">Measured</a></li>
+        <li><strong>Where it runs.</strong> Docker on your own hardware, or a Container App in Azure released from GitHub after green CI. <a href="/framework/architecture">The whole map</a></li>
     </ul>
 </Band>
 

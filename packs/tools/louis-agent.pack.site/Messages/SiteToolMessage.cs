@@ -9,6 +9,8 @@ public enum SiteToolMessage
     [Description("Shown: the visitor's browser is now on {Path}. Say in one line what to look at there.")]
     Shown,
 
-    [Description("Not shown: '{Path}' isn't a page of this site. Give an address from the page's list: a page such as /packs, or a place on one such as /identities/levels.")]
+    [Description(
+        "Not shown: '{Path}' isn't a page of this site. Give an address from the page's list: a page such as " +
+        "/framework/packs, or a place on one such as /framework/identities/levels.")]
     NotASitePage,
 }
