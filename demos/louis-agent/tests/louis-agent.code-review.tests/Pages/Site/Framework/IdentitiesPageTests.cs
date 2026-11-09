@@ -8,7 +8,10 @@ namespace LouisAgent.CodeReview.Tests.Pages.Site.Framework;
 /// </summary>
 public class IdentitiesPageTests
 {
-    /// <summary>Every identity project under <c>demos/*/identity/</c> is on the page.</summary>
+    /// <summary>
+    /// Every identity project under <c>demos/*/identity/</c>, and the guide under <c>src/site/</c> (F124), is on the
+    /// page.
+    /// </summary>
     [Test]
     public void EveryIdentity_IsOnThePage()
     {
@@ -17,6 +20,7 @@ public class IdentitiesPageTests
         var cut = ctx.Render<IdentitiesPage>();
         var identities = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
             .Select(demo => Path.Combine(demo, "identity")).Where(Directory.Exists)
+            .Append(Path.Combine(TestPaths.RepoRoot, "src", "site"))
             .SelectMany(folder => Directory.GetDirectories(folder, "louis-agent.identity.*"))
             .Select(Path.GetFileName).ToList();
 
@@ -24,7 +28,9 @@ public class IdentitiesPageTests
         Assert.That(identities.Where(identity => !cut.Markup.Contains(identity)), Is.Empty);
     }
 
-    /// <summary>The page says what an identity is made of: the principles first, a voice, roles and the packs it names.</summary>
+    /// <summary>
+    /// The page says what an identity is made of: the principles first, a voice, roles and the packs it names.
+    /// </summary>
     [TestCase("principles")]
     [TestCase("voice")]
     [TestCase("role")]

@@ -1,6 +1,6 @@
 using System.Reflection;
 using LouisAgent.CodeReview.Pages.Site;
-using LouisAgent.Identities.Expert;
+using LouisAgent.Identities.Guide;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.CodeReview.Tests.Components.Guide;
@@ -14,7 +14,7 @@ public class GuideKnowsTheSiteTests
     /// <summary>The expert's voice, read the way the engine reads it: from the identity's embedded prompts.</summary>
     private static string TheVoice()
     {
-        var identity = new ExpertIdentity();
+        var identity = new GuideIdentity();
         using var stream = identity.Prompts.GetFileInfo($"agent/{identity.DefaultVoice}.md").CreateReadStream();
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
@@ -52,8 +52,8 @@ public class GuideKnowsTheSiteTests
     }
 
     /// <summary>
-    /// A plain-words answer ends with no file path (FX77, Louis: "do not do this"): the doc is named only to a developer,
-    /// and the chat's tool cards already show what was read.
+    /// A plain-words answer ends with no file path (FX77, Louis: "do not do this"): the doc is named only to a
+    /// developer, and the chat's tool cards already show what was read.
     /// </summary>
     [Test]
     public void TheVoice_NamesADoc_OnlyForADeveloper()

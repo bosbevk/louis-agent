@@ -27,7 +27,7 @@ public class OpenDoorTests
     private static async Task<HttpResponseMessage> OpenAsync(HttpClient client, object body) =>
         await client.PostAsJsonAsync("/v1/sessions", body);
 
-    /// <summary>The open identity's session opens with no key, in that identity, and its own calls pass after.</summary>
+    /// <summary>The open identity's session opens with no key, in that identity, and its own calls pass.</summary>
     [Test]
     public async Task AVisitor_OpensTheGuide_AndItsCallsPass()
     {
@@ -50,7 +50,9 @@ public class OpenDoorTests
         });
     }
 
-    /// <summary>The body's toolsets are not the visitor's to choose: the session gets the identity's own, nothing more.</summary>
+    /// <summary>
+    /// The body's toolsets are not the visitor's to choose: the session gets the identity's own, nothing more.
+    /// </summary>
     [Test]
     public async Task TheGuidesSession_GetsOnlyTheIdentitysToolsets()
     {
@@ -84,7 +86,9 @@ public class OpenDoorTests
         }
     }
 
-    /// <summary>Past the day's cap the door says so with a 429, and a session of someone else's is still not reachable.</summary>
+    /// <summary>
+    /// Past the day's cap the door says so with a 429, and a session of someone else's is still not reachable.
+    /// </summary>
     [Test]
     public async Task PastTheCap_TheDoorSays429_AndAnotherSessionStaysClosed()
     {
@@ -114,7 +118,9 @@ public class OpenDoorTests
         });
     }
 
-    /// <summary>A shut door (no identity named, or no cap) changes nothing: the guide is behind the key like the rest.</summary>
+    /// <summary>
+    /// A shut door (no identity named, or no cap) changes nothing: the guide is behind the key like the rest.
+    /// </summary>
     [Test]
     public async Task AShutDoor_ChangesNothing()
     {
@@ -128,9 +134,11 @@ public class OpenDoorTests
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 
-    /// <summary>The settings: the identity's name and a whole number of sessions; anything else keeps the door shut.</summary>
-    [TestCase("louis-agent-expert", "20", "louis-agent-expert", 20, true)]
-    [TestCase("louis-agent-expert", "lots", "louis-agent-expert", 0, false)]
+    /// <summary>
+    /// The settings: the identity's name and a whole number of sessions; anything else keeps the door shut.
+    /// </summary>
+    [TestCase("louis-agent-guide", "20", "louis-agent-guide", 20, true)]
+    [TestCase("louis-agent-guide", "lots", "louis-agent-guide", 0, false)]
     [TestCase("", "20", null, 20, false)]
     [TestCase(null, null, null, 0, false)]
     public void TheSettings_NameTheIdentityAndTheCap(string? identity, string? cap, string? expectedIdentity,

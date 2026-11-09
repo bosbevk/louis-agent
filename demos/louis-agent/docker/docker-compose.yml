@@ -129,8 +129,8 @@ services:
       TRIAGE_RUNS: /workspace/demos/louis-agent/data/triage/runs
       TRIAGE_PEOPLE: /workspace/demos/louis-agent/data/triage/people
       TRIAGE_DEPARTMENTS: /workspace/demos/louis-agent/config/departments.yaml
-      # The guide's door (F109.3): the expert answers a visitor without a sign-in, this many times a day per address.
-      OPEN_IDENTITY: louis-agent-expert
+      # The guide's door (F109.3): the guide answers a visitor without a sign-in, this many times a day per address.
+      OPEN_IDENTITY: louis-agent-guide
       OPEN_SESSIONS_PER_DAY: "50"
     # Localhost only: the agent can run shell commands and write files. AGENT_API_KEY in .env.secrets is required
     # (FX18): without it the container refuses to start, unless AGENT_AUTH=off in config/.env says so on purpose.

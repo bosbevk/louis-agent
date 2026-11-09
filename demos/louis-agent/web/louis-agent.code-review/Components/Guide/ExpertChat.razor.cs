@@ -1,5 +1,5 @@
 using LouisAgent.Choices;
-using LouisAgent.Identities.Expert;
+using LouisAgent.Identities.Guide;
 
 namespace LouisAgent.CodeReview.Components.Guide;
 
@@ -11,5 +11,5 @@ namespace LouisAgent.CodeReview.Components.Guide;
 public partial class ExpertChat
 {
     /// <summary>Who answers: the expert identity, by the name the demo's catalogue runs it under.</summary>
-    private static string Identity => ExpertIdentityName.LouisAgentExpert.Wire();
+    private static string Identity => GuideIdentityName.LouisAgentGuide.Wire();
 }

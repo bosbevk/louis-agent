@@ -27,7 +27,7 @@ await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.
 
 <Band Id="loads" Kicker="What it loads">
     <pre class="listing"><code>public static AgentCatalog Create() =>
-    new([new CodingIdentity(), new ExpertIdentity(), new TriageIdentity()], Packs());
+    new([new CodingIdentity(), new GuideIdentity(), new TriageIdentity()], Packs());
 
 // The packs:
 new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),

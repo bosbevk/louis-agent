@@ -79,9 +79,9 @@ properties:
             secretRef: agent-api-key-louis-agent
           - name: ADMIN_API_KEY
             secretRef: admin-api-key-louis-agent
-          # The guide's door (F109.3): a visitor opens the expert without a sign-in, this many times a day per address.
+          # The guide's door (F109.3): a visitor opens the guide without a sign-in, this many times a day per address.
           - name: OPEN_IDENTITY
-            value: louis-agent-expert
+            value: louis-agent-guide
           - name: OPEN_SESSIONS_PER_DAY
             value: '20'
           # What the agent's fetcher tells the sites it reads for a user: who reads and why; never a person.

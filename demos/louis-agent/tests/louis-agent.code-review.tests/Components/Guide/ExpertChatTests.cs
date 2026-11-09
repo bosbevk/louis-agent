@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.CodeReview.Components.Guide;
-using LouisAgent.Identities.Expert;
+using LouisAgent.Identities.Guide;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Storage;
@@ -63,7 +63,7 @@ public class ExpertChatTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".widget-title").TextContent, Is.EqualTo("Ask the guide"));
-            Assert.That(opened.Body, Does.Contain($"\"identity\":\"{ExpertIdentityName.LouisAgentExpert.Wire()}\""));
+            Assert.That(opened.Body, Does.Contain($"\"identity\":\"{GuideIdentityName.LouisAgentGuide.Wire()}\""));
         });
     }
 }
