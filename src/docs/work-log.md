@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 83 | 73 |
-| Fixes (`FX`) | 113 | 6 |
+| Fixes (`FX`) | 114 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -216,10 +216,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (103 done)
+## Fixes (104 done)
 
 | Id | When | What |
 |---|---|---|
+| FX122 | 2026-11-09 | The louis-agent site runs alone on Azure, sleeping when unused, with no VM and no databases; Puls is not deployed (Louis's option A, after the SQL free offer ran out and took the site down) |
 | FX121 | 2026-11-09 | The guide's spotlight on a site's hero rings what the hero holds, not the whole screen-tall section |
 | FX120 | 2026-11-09 | The guide can open where a link on the visitor's screen leads: the page it reads lists its links by the address each opens |
 | FX119 | 2026-11-09 | The custom agents' section opens with a paragraph under its heading, so its first page is never a heading alone |
