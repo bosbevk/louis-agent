@@ -32,7 +32,7 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
             GuideFile: PackToolset.Guide(TriageToolset.Triage.Wire()),
             MissingSettings: _ => Missing(options),
             ToolTypes: [typeof(TriageTools), typeof(RunTools)],
-            CreateTools: _ => Tools(options)),
+            CreateTools: ctx => Tools(options, () => ctx.InATrial)),
     ];
 
     /// <inheritdoc />
@@ -49,14 +49,17 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
         .. options.Departments is null ? [TriageOptions.DepartmentsSetting] : Array.Empty<string>(),
     ];
 
-    /// <summary>Both tool classes over one recorder, on the system clock, with the departments' names for the sorter.</summary>
-    private static IReadOnlyList<object> Tools(TriageOptions options)
+    /// <summary>
+    /// Both tool classes over one recorder, on the system clock, with the departments' names for the sorter, and
+    /// whether this turn is an eval's trial, read on each call.
+    /// </summary>
+    private static IReadOnlyList<object> Tools(TriageOptions options, Func<bool> inATrial)
     {
         var recorder = new FileTriageRecorder(options.Runs!);
         var departments = DepartmentsFile.Read(options.Departments!).Select(d => d.Name).ToList();
         return
         [
-            new TriageTools(recorder, departments, TimeProvider.System),
+            new TriageTools(recorder, departments, TimeProvider.System, inATrial),
             new RunTools(recorder, options.People!, TimeProvider.System)
         ];
     }

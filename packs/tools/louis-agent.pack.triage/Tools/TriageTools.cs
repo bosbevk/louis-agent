@@ -19,11 +19,16 @@ namespace LouisAgent.Packs.Triage.Tools;
 /// A tool, not a prompt rule (ADR 0080): asking a model to end with a typed tool call is what makes its answer a
 /// record the code can check. Every value is a plain string parsed once into its enum (ADR 0024); a bad one is
 /// refused as text with the choices, never a thrown exception (the pack contract). The run id arrives as a
-/// parameter, since a tool reads nothing from the session.
+/// parameter, since a tool reads nothing from the session. In an eval's trial (<c>inATrial</c>, read on every call)
+/// an unknown run starts with its first step, so a scenario needs no run made first (F106.3.2 step 7).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-public sealed class TriageTools(ITriageRecorder recorder, IReadOnlyList<string> departments, TimeProvider time)
+public sealed class TriageTools(
+    ITriageRecorder recorder,
+    IReadOnlyList<string> departments,
+    TimeProvider time,
+    Func<bool>? inATrial = null)
 {
     /// <summary>The sorter's ending: which department the error belongs to (F106.3.2).</summary>
     [Description(
@@ -127,7 +132,10 @@ public sealed class TriageTools(ITriageRecorder recorder, IReadOnlyList<string> 
         string why, T result, CancellationToken cancellationToken)
     {
         if (!PlainId.Is(runId)) return MessageText.Format(TriageToolMessage.BadRunId, new { RunId = runId });
+        // An eval's trial has no run behind its fresh session, so there an unknown run starts with this step (Louis's
+        // pick A); a real chat's unknown run is a mistyped id, refused so no stray run appears.
         var run = await recorder.ReadAsync(runId, cancellationToken);
+        if (run is null && inATrial?.Invoke() == true) run = TriageRun.Of(runId, []);
         if (run is null) return MessageText.Format(TriageToolMessage.NoSuchRun, new { RunId = runId });
 
         var step = new TriageStep(runId, run.Steps.Count + 1, agent, kind, summary, why, time.GetUtcNow(),
