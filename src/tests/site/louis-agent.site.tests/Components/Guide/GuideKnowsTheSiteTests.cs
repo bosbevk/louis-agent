@@ -6,18 +6,27 @@ using LouisAgent.Site.Pages;
 namespace LouisAgent.Site.Tests.Components.Guide;
 
 /// <summary>
-/// The guide knows the site it sits on (F109.4): its voice names every page, with the docs each was written from, so a
-/// question about what a page says goes to its source and a new page can't be left out of the guide's map.
+/// The guide knows the site it sits on (F109.4): its voice and its skills name every page, with the docs each was
+/// written from, so a question about what a page says goes to its source and a new page can't be left out of the
+/// guide's map.
 /// </summary>
 public class GuideKnowsTheSiteTests
 {
-    /// <summary>The expert's voice, read the way the engine reads it: from the identity's embedded prompts.</summary>
-    private static string TheVoice()
+    /// <summary>
+    /// The guide's voice and its skills (F129: the docs map and the site's pages are read on demand), read the way the
+    /// engine reads them: from the identity's embedded prompts.
+    /// </summary>
+    private static string WhatTheGuideReads()
     {
         var identity = new GuideIdentity();
-        using var stream = identity.Prompts.GetFileInfo($"agent/{identity.DefaultVoice}.md").CreateReadStream();
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
+        string folder = $"agent/{identity.Name}";
+        var files = new[] { $"{folder}/voice.md" }.Concat(identity.Prompts.GetDirectoryContents($"{folder}/skills")
+            .Select(skill => $"{folder}/skills/{skill.Name}"));
+        return string.Join('\n', files.Select(path =>
+        {
+            using var reader = new StreamReader(identity.Prompts.GetFileInfo(path).CreateReadStream());
+            return reader.ReadToEnd();
+        }));
     }
 
     /// <summary>Every address of the site's pages is in the voice, as a backticked path.</summary>
@@ -29,7 +38,7 @@ public class GuideKnowsTheSiteTests
             .SelectMany(type => type.GetCustomAttributes<RouteAttribute>())
             .Select(route => $"`{route.Template}`").ToList();
 
-        string voice = TheVoice();
+        string voice = WhatTheGuideReads();
 
         Assert.That(addresses, Has.Count.GreaterThanOrEqualTo(10), "the pages were found");
         Assert.That(addresses.Where(address => !voice.Contains(address)), Is.Empty);
@@ -48,7 +57,7 @@ public class GuideKnowsTheSiteTests
     [TestCase("never send twice")]
     public void TheVoice_SellsWhatTheSiteSells(string words)
     {
-        Assert.That(TheVoice(), Does.Contain(words));
+        Assert.That(WhatTheGuideReads(), Does.Contain(words));
     }
 
     /// <summary>
@@ -58,7 +67,7 @@ public class GuideKnowsTheSiteTests
     [Test]
     public void TheVoice_NamesADoc_OnlyForADeveloper()
     {
-        string voice = TheVoice();
+        string voice = WhatTheGuideReads();
 
         Assert.Multiple(() =>
         {
@@ -84,7 +93,7 @@ public class GuideKnowsTheSiteTests
         string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/docs/projects/louis-agent.site.md"));
 
-        Assert.That(TheVoice(), Does.Contain("src/docs/projects/louis-agent.site.md"));
+        Assert.That(WhatTheGuideReads(), Does.Contain("src/docs/projects/louis-agent.site.md"));
         Assert.That(doc, Does.Contain(words));
     }
 
@@ -101,7 +110,7 @@ public class GuideKnowsTheSiteTests
     {
         string doc = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/docs/demos.md"));
 
-        Assert.That(TheVoice(), Does.Contain("- `/demos`:").And.Contain("demos/louis-agent/docs/demos.md"));
+        Assert.That(WhatTheGuideReads(), Does.Contain("- `/demos`:").And.Contain("demos/louis-agent/docs/demos.md"));
         Assert.That(doc, Does.Contain(words));
     }
 }

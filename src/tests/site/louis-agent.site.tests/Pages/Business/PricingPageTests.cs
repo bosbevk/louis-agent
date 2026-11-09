@@ -10,13 +10,20 @@ namespace LouisAgent.Site.Tests.Pages.Business;
 /// </summary>
 public class PricingPageTests
 {
-    /// <summary>Louis's voice, its lines joined, as the engine reads it.</summary>
-    private static string Voice()
+    /// <summary>
+    /// Louis's voice and his map of the site's pages (a skill he reads on demand, F129), their lines joined, as the
+    /// engine reads them.
+    /// </summary>
+    private static string Voice() => string.Join(' ',
+        new[] { "voice.md", "skills/site-map.md" }.Select(Text).SelectMany(text =>
+            text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries)));
+
+    /// <summary>One of the guide's prompt files, whole.</summary>
+    private static string Text(string path)
     {
         using var reader = new StreamReader(new GuideIdentity().Prompts
-            .GetFileInfo("agent/louis-agent-guide/voice.md").CreateReadStream());
-        return string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
-            StringSplitOptions.RemoveEmptyEntries));
+            .GetFileInfo($"agent/louis-agent-guide/{path}").CreateReadStream());
+        return reader.ReadToEnd();
     }
 
     /// <summary>Each plan is a tile with its name, its price as the big number, a month, and what it holds.</summary>
