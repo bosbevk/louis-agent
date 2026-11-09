@@ -7,6 +7,8 @@
     .site h1 { font-size: 44px; }
     .site h2 { font-size: 30px; }
     .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* The coding agent's page stacks: the words, then the window (FX105). */
+    .watch-grid { grid-template-columns: minmax(0, 1fr); --recorded-height: 60dvh; }
 }
 
 @media (max-width: 600px) {

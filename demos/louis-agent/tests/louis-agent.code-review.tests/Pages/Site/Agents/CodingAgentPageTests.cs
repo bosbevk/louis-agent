@@ -36,6 +36,28 @@ public class CodingAgentPageTests
     }
 
     /// <summary>
+    /// The page is one slide, side by side (FX105, Louis's pick of three): the words and what the visitor is watching
+    /// on the left, read while the session plays in the window on the right.
+    /// </summary>
+    [Test]
+    public void ThePage_IsOneSlide_TheWordsBesideTheWindow()
+    {
+        using var ctx = SitePageContext.Create();
+
+        var cut = ctx.Render<CodingAgentPage>();
+
+        var columns = cut.Find(".band .watch-grid").Children;
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".band"), Has.Count.EqualTo(1), "one slide");
+            Assert.That(columns, Has.Length.EqualTo(2));
+            Assert.That(columns[0].QuerySelector("h2.chrome"), Is.Not.Null, "the heading on the left");
+            Assert.That(columns[0].QuerySelectorAll(".rules li"), Has.Length.EqualTo(4), "what you're watching");
+            Assert.That(columns[1].ClassList, Does.Contain("recorded-chat"), "the window on the right");
+        });
+    }
+
+    /// <summary>
     /// The recording is a whole session: it runs the tests, writes the fix, runs them again and ends its turn, and it
     /// answers the question the page shows, which is the one the script asked.
     /// </summary>
