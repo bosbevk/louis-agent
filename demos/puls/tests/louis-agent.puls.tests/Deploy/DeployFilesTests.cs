@@ -79,6 +79,15 @@ public class DeployFilesTests
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
 
     /// <summary>
+    /// A release numbers its revision from every revision the app has (FX123): a revision made outside the script
+    /// carries Azure's own name (louis-agent-app--0000001), so the latest alone can't say which vNNN comes next and
+    /// the release stopped; the highest vNNN among them all can.
+    /// </summary>
+    [TestCase("containerapp revision list -n $App -g $ResourceGroup --all --query '[].name' -o tsv")]
+    [TestCase("Measure-Object -Maximum")]
+    public void TheRelease_NumbersFromEveryRevision(string text) => Assert.That(Script, Does.Contain(text));
+
+    /// <summary>
     /// The site runs alone (FX122, Louis's option A, "we do not need dbs"): its yaml points at no VM, no Mongo and no
     /// accounts database, so the VM and the SQL server can go without breaking a release.
     /// </summary>
