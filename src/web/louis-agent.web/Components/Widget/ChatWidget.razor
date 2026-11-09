@@ -22,7 +22,13 @@
             </div>
         </section>
     }
-    @if (!_open && TourLabel is not null)
+    @* Closed mid-tour, the same button picks the conversation up (FX117): it tells the guide to carry on, and the
+       message carries the page the visitor is on now, so the guide goes on where it stopped or walks the new page. *@
+    @if (!_open && TourLabel is not null && CanResume)
+    {
+        <GuideButton Question="@ResumeQuestion" Class="widget-tour">@ResumeLabel</GuideButton>
+    }
+    else if (!_open && TourLabel is not null)
     {
         <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
     }

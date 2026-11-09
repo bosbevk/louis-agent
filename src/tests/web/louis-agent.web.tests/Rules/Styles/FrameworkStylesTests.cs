@@ -58,14 +58,16 @@ public partial class FrameworkStylesTests
             Does.Contain(".work-hidden .work { visibility: hidden; border: 0; }"));
 
     /// <summary>
-    /// On a phone the chat widget's panel is the whole screen and the round button goes while it is open (FX69), so
-    /// nothing is clipped at the panel's edge and only the head's × closes it.
+    /// On a phone the chat widget's panel is a sheet over the bottom half of the screen (FX116, Louis: "only half the
+    /// screen must be agent chat space"), so the page the guide walks stays in view above it, and the round button
+    /// goes while it is open (FX69): only the head's × closes it.
     /// </summary>
     [TestCase(".chat-widget.is-open .widget-button { display: none; }")]
     [TestCase("animation: widget-pulse")]
     [TestCase(".site-nav { margin-left: auto;")]
     [TestCase("border-radius: 999px;\n    background: var(--web-cta);")]
-    [TestCase("position: fixed;\n        inset: 0;\n        width: 100vw;\n        height: 100dvh;")]
+    [TestCase("position: fixed;\n        left: 0;\n        right: 0;\n        bottom: 0;\n" +
+              "        width: 100vw;\n        height: 50dvh;")]
     [TestCase(".site-corner { position: fixed; right: 24px; bottom: 72px;")]
     [TestCase(".markdown p { margin: 0 0 10px; }")]
     public void TheWidgetsPanel_FillsAPhone(string rule) =>
