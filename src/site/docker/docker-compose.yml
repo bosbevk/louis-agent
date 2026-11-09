@@ -19,6 +19,8 @@ services:
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       OTEL_SERVICE_NAME: louis-agent-site
+      # The clock Louis greets by, as in Azure: the site's visitors are mostly South African.
+      HOST_TIME_ZONE: Africa/Johannesburg
       # The usage ledger and the run logs, kept on the host after the container is removed.
       LOG_DIRECTORY: /logs
       # The guide's lead mail (F112): RESEND_API_KEY comes from .env.secrets when it is there, else the lead goes to

@@ -77,7 +77,10 @@ public class LouisVoiceTests
     [Test]
     public void TheFirstAnswer_Greets() =>
         Assert.That(Voice(), Does.Contain("Your first answer of a chat opens with a greeting")
-            .And.Contain("Pick a different one each time"));
+            .And.Contain("Greet by the time of day: call `GetToday` before your first answer")
+            .And.Contain("then say who you are")
+            .And.Contain("A proper greeting, never slang")
+            .And.Not.Contain("Howzit"));
 
     /// <summary>
     /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
