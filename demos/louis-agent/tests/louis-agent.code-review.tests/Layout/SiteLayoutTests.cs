@@ -150,7 +150,9 @@ public class SiteLayoutTests
         });
     }
 
-    /// <summary>The guide sits in the frame's corner, folded, on every page.</summary>
+    /// <summary>
+    /// The guide sits in the frame's corner, folded, on every page, offered as the page's tour alone (FX114).
+    /// </summary>
     [Test]
     public void TheCorner_HoldsTheGuide_Folded()
     {
@@ -158,9 +160,8 @@ public class SiteLayoutTests
 
         var cut = ctx.Render<SiteLayout>();
 
-        Assert.That(cut.FindAll(".site-corner .chat-widget button.widget-button"), Has.Count.EqualTo(1));
-        Assert.That(cut.Find(".site-corner button.widget-button").GetAttribute("aria-label"),
-            Is.EqualTo("Ask the guide"));
+        Assert.That(cut.FindAll(".site-corner .chat-widget button.widget-tour"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".site-corner button.widget-button"), Is.Empty);
         Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
     }
 

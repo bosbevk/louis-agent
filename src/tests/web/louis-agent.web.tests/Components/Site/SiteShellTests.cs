@@ -165,7 +165,8 @@ public class SiteShellTests
         string rules = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/SiteShell.razor.scss"));
 
-        Assert.That(rules, Does.Contain(".site-main ::deep > section {").And.Contain("min-height: calc(100dvh - 160px);"));
+        Assert.That(rules, Does.Contain(".site-main ::deep > section {")
+            .And.Contain("min-height: calc(100dvh - 160px - var(--site-bar, 0px));"));
         Assert.That(rules, Does.Not.Contain("section:last-of-type"));
     }
 

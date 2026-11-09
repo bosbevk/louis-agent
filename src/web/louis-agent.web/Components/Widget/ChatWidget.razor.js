@@ -40,19 +40,34 @@ export function openCard() {
 }
 
 // A section paged sideways on this visitor's screen (F118) lists its pages, each by what it holds, so the guide can
-// turn to the page it talks about: "parts/2", "page 2 of 3: Your program, The hosts, ...".
+// turn to the page it talks about: "parts/2", "page 2 of 3: Your program, The hosts, ...". The count is the pager's,
+// and an item that flows on to the next page (a long list) names that page too, by the first named thing on it, so a
+// page that only continues something is never left out of a walkthrough (FX109).
 const stepOf = (body) => body.clientWidth + (parseFloat(getComputedStyle(body).columnGap) || 0);
+const named = "strong, h3, h4, .card-title, figcaption";
 const pagesOf = (area, fold) => {
     const body = area.matches(".is-paged") ? area.querySelector(".band-body") : null;
     if (!body) return [];
-    const step = stepOf(body), left = body.getBoundingClientRect().left - body.scrollLeft, pages = [];
+    const step = stepOf(body), left = body.getBoundingClientRect().left - body.scrollLeft;
+    const pageOf = (rect) => Math.floor((rect.left - left + 1) / step);
+    const count = Math.max(1, Math.round((body.scrollWidth + step - body.clientWidth) / step));
+    const pages = Array.from({ length: count }, () => []);
     for (const item of body.children) {
-        const page = Math.floor((item.getBoundingClientRect().left - left + 1) / step);
-        const name = fold(item.querySelector("strong, h3, h4, .card-title, figcaption")?.textContent ?? item.textContent).slice(0, 40);
-        if (name) (pages[page] ??= []).push(name);
+        const name = fold(item.querySelector(named)?.textContent ?? item.textContent).slice(0, 40);
+        // An item cut across pages has a box on each of them; the first holds its name, a later one the first named
+        // thing inside it on that page, else the item's name as continued.
+        [...item.getClientRects()].map(pageOf).forEach((page, k) => {
+            const inside = k === 0
+                ? null
+                : [...item.querySelectorAll(named)].find((e) => pageOf(e.getBoundingClientRect()) === page);
+            const label = k === 0 ? name : fold(inside?.textContent).slice(0, 40) || (name && `${name} (continued)`);
+            if (label && pages[page] && !pages[page].includes(label)) pages[page].push(label);
+        });
     }
-    return pages.map((names, k) => ({ id: `${area.id}/${k + 1}`, heading: `page ${k + 1} of ${pages.length}: ${names.join(", ")}` }))
-        .filter(Boolean);
+    return pages.map((names, k) => ({
+        id: `${area.id}/${k + 1}`,
+        heading: `page ${k + 1} of ${count}: ${names.join(", ") || "continued"}`,
+    }));
 };
 
 // Takes the visitor to an area the guide named (F117, F118): waits for the page to have it (the router draws the new
@@ -109,7 +124,8 @@ const turnTo = (target) => {
 const turnToPage = (band, page) => {
     const body = band.matches(".is-paged") ? band.querySelector(".band-body") : null;
     if (!body || !(page >= 1)) return;
-    body.scrollTo({ left: (page - 1) * stepOf(body), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    body.scrollTo({ left: (page - 1) * stepOf(body), behavior: still ? "auto" : "smooth" });
 };
 
 // The box around what a place holds (F118, Louis: "highlight only this section, the section right around the actual
@@ -121,7 +137,8 @@ const boxOf = (target) => {
     const parts = paged
         ? [target.querySelector(".band-body"), target.querySelector(".band-pager:not([hidden])")]
         : [...(target.querySelector(".band-body")?.children ?? [])];
-    const rects = parts.filter(Boolean).map(part => part.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0);
+    const rects = parts.filter(Boolean).map(part => part.getBoundingClientRect())
+        .filter(r => r.width > 0 && r.height > 0);
     if (rects.length === 0) return target.getBoundingClientRect();
     const top = Math.min(...rects.map(r => r.top)), bottom = Math.max(...rects.map(r => r.bottom));
     const left = Math.min(...rects.map(r => r.left)), right = Math.max(...rects.map(r => r.right));

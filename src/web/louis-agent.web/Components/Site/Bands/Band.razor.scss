@@ -8,7 +8,7 @@
 .band.is-paged { display: block; }
 .is-paged .band-body {
     display: block;
-    height: calc(100dvh - 330px);
+    height: calc(100dvh - 330px - var(--site-bar, 0px));
     columns: 1;
     column-gap: 64px;
     column-fill: auto;
@@ -18,6 +18,8 @@
 .is-paged .band-body ::deep .panel,
 .is-paged .band-body ::deep li,
 .is-paged .band-body ::deep figure { break-inside: avoid; margin-bottom: 20px; }
+/* A heading travels with what follows it, so a page never holds only a section's title (FX110). */
+.is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }
 
 /* The pager under a paged band: back, "1 / 3", on. Hidden until the module shows it. */
 .band-pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 18px; }
@@ -33,5 +35,14 @@
     line-height: 1;
     transition: color .2s, border-color .2s;
 }
-.band-page:hover:not(:disabled), .band-page:focus-visible { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
-.band-pages { min-width: 4ch; text-align: center; font: 500 12px/1 var(--bs-font-monospace); letter-spacing: .1em; color: var(--bs-tertiary-color); }
+.band-page:hover:not(:disabled), .band-page:focus-visible {
+    color: var(--bs-emphasis-color);
+    border-color: var(--bs-emphasis-color);
+}
+.band-pages {
+    min-width: 4ch;
+    text-align: center;
+    font: 500 12px/1 var(--bs-font-monospace);
+    letter-spacing: .1em;
+    color: var(--bs-tertiary-color);
+}

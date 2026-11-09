@@ -87,6 +87,35 @@ public partial class FrameworkStylesTests
     public void TheSpotlight_DimsThePage_AndRingsTheArea(string rule) =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
+    /// <summary>
+    /// A section paged sideways keeps its heading with what follows it (FX110), so at 1080p a page never holds only a
+    /// section's title while its content starts on the next.
+    /// </summary>
+    [Test]
+    public void APagedSection_KeepsItsHeadingWithItsContent() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+            Does.Contain(".is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }"));
+
+    /// <summary>
+    /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
+    /// above itself holds the header and the menu, never the bottom of the slide before.
+    /// </summary>
+    [Test]
+    public void TheSitesHeader_StaysOnTop() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
+            Does.Contain("position: sticky;\n    top: 0;"));
+
+    /// <summary>
+    /// On a phone the corner's two buttons sit side by side in a slim bar across the bottom (FX113, Louis's pick of
+    /// three), and a slide's room, a paged section's page and the way up end above it, so the bar covers nothing.
+    /// </summary>
+    [TestCase(".site { --site-bar: 60px; padding-bottom: var(--site-bar); }")]
+    [TestCase("min-height: calc(100dvh - 160px - var(--site-bar, 0px));")]
+    [TestCase("height: calc(100dvh - 330px - var(--site-bar, 0px));")]
+    [TestCase(".chat-widget:not(.is-open) { flex-direction: row;")]
+    public void OnAPhone_TheCornerIsABarAtTheBottom(string rule) =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()

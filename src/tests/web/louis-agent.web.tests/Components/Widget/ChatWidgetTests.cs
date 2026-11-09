@@ -158,6 +158,30 @@ public class ChatWidgetTests
         });
     }
 
+    /// <summary>
+    /// With a tour, the folded corner offers the tour alone (FX114, Louis: "we can take ask the guide out, just have
+    /// tour this page"): the tour opens the guide, and the guide's own button is back only as its close.
+    /// </summary>
+    [Test]
+    public void WithATour_TheFoldedCornerIsTheTourAlone()
+    {
+        using var ctx = Context(out _);
+        ctx.Services.AddSingleton(new GuideDoor());
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide")
+            .Add(w => w.TourLabel, "Tour this page"));
+
+        var folded = cut.FindAll(".chat-widget > button").Select(b => b.ClassName).ToList();
+        cut.Find(".widget-tour").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(folded, Has.Count.EqualTo(1));
+            Assert.That(folded[0], Does.Contain("widget-tour"));
+            Assert.That(cut.FindAll(".widget-button"), Has.Count.EqualTo(1), "open, the guide can be closed");
+        });
+    }
+
     private static IRenderedComponent<ChatWidget> Render(BunitContext ctx) =>
         ctx.Render<ChatWidget>(parameters => parameters
             .Add(w => w.Identity, "guide")

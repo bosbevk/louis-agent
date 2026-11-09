@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.CodeReview.Components.Guide;
 using LouisAgent.Identities.Expert;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -29,26 +30,33 @@ public class ExpertChatTests
         return ctx;
     }
 
-    /// <summary>Folded, the button says what it is in words, since it is the site's selling point (FX71).</summary>
+    /// <summary>
+    /// Folded, the corner offers the page's tour alone, in words (FX114, Louis: "just have tour this page"); the tour
+    /// is what opens the guide.
+    /// </summary>
     [Test]
-    public void TheButton_SaysAskTheGuide()
+    public void Folded_TheCornerOffersTheTour()
     {
         using var ctx = Context(out _);
+        ctx.Services.AddSingleton(new GuideDoor());
         var cut = ctx.Render<ExpertChat>();
 
-        Assert.That(cut.Find("button.widget-button").TextContent.Trim(), Is.EqualTo("Ask the guide"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find("button.widget-tour").TextContent, Does.Contain("Tour this page"));
+            Assert.That(cut.FindAll("button.widget-button"), Is.Empty);
+        });
     }
 
-    /// <summary>Opened, it carries the site's words; a question opens a session as the expert.</summary>
+    /// <summary>Opened by the tour, it carries the site's words and opens a session as the expert.</summary>
     [Test]
     public void TheGuide_SpeaksTheSitesWords_AndOpensAsTheExpert()
     {
         using var ctx = Context(out var handler);
+        ctx.Services.AddSingleton(new GuideDoor());
         var cut = ctx.Render<ExpertChat>();
 
-        cut.Find("button.widget-button").Click();
-        cut.Find("#composer-input").Input("What is a pack?");
-        cut.Find("button.send").Click();
+        cut.Find("button.widget-tour").Click();
         cut.WaitForState(() => cut.FindAll(".turn").Count > 0, TimeSpan.FromSeconds(10));
         var opened = handler.Requests.Single(r => r.Method == HttpMethod.Post && r.Url.EndsWith("/v1/sessions"));
 
