@@ -75,8 +75,9 @@
 }
 
 /* On a phone the panel is the whole screen, square to its edges, and the round button goes while it is open: the
-   panel's own head closes it (FX69). */
-@media (max-width: 600px) {
+   panel's own head closes it (FX69). From the width the bottom bar starts at (FX115), so the panel never opens
+   squeezed above the bar. */
+@media (max-width: 720px) {
     .chat-widget.is-open .widget-button { display: none; }
     .widget-panel {
         position: fixed;
