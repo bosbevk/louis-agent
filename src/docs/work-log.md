@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F128 | The website advertises the framework: every page and section reviewed so it follows the framework and sells it, the landing flowing with the walkthrough; findings with three options each, then the rewrite | Next, after F124 |
+| F128 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 (the facts, the menu, what we build, pricing, the guide's greeting, the landing), F128.2 (three business demos: a law practice, a restaurant, a doctor's practice) | Now |
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
 | F129 | An identity's prompts: the skills split out of the voice file into `prompts/agent/skills/*.md`, and the `Prompts` folder renamed `prompts`, for every identity and the engine that loads them; its own plan | Next, after F124 |
 | F106 | The framework's track, before the agents | Now |
