@@ -6,6 +6,7 @@ using LouisAgent.Core.Telemetry;
 using LouisAgent.Accounts;
 using LouisAgent.Accounts.Config;
 using LouisAgent.Api;
+using LouisAgent.Api.Site;
 using LouisAgent.Api.Evals;
 using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
@@ -24,9 +25,14 @@ var app = builder.Build();
 app.UseLouisAgentAccounts();
 app.UseLouisAgentKey();
 
-// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}.
+// The web app's files, and any path that isn't an API route loads it, such as /chat/{sessionId}: a page meant for
+// search as its own HTML (F121), rendered with the words its pages read; the landing's sections sit under /home.
 app.MapStaticAssets();
-app.MapFallbackToFile("index.html");
+app.MapLouisAgentSite(typeof(LouisAgent.CodeReview.App).Assembly, services =>
+{
+    services.AddSingleton(new LouisAgent.Web.Text.ChatText());
+    services.AddSingleton(new HttpClient());
+}, home: "home");
 
 app.MapLouisAgentAccounts();
 app.MapLouisAgentApi(host);

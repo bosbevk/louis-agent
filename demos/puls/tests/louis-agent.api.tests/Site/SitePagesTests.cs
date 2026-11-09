@@ -54,8 +54,22 @@ public class SitePagesTests
         protected override void OnInitialized() => throw new InvalidOperationException("broken");
     }
 
+    /// <summary>A site that names no public address gets canonical links on the address it was asked at.</summary>
+    [Test]
+    public async Task NoPublicAddress_UsesTheRequests()
+    {
+        var (app, client, root) = await StartAsync(publicUrl: null);
+        await using var _ = app;
+
+        string html = await client.GetStringAsync("/sample");
+
+        Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"http://localhost/sample\" />"));
+        Directory.Delete(root, recursive: true);
+    }
+
     /// <summary>A test server with this assembly as the site, its index.html in a web root of its own.</summary>
-    private static async Task<(WebApplication App, HttpClient Client, string Root)> StartAsync()
+    private static async Task<(WebApplication App, HttpClient Client, string Root)> StartAsync(
+        string? publicUrl = "https://site.test/")
     {
         string root = Path.Combine(Path.GetTempPath(), "site-pages-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -63,7 +77,8 @@ public class SitePagesTests
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { WebRootPath = root });
         builder.WebHost.UseTestServer();
         var app = builder.Build();
-        app.MapLouisAgentSite(typeof(SitePagesTests).Assembly, _ => { }, new Uri("https://site.test/"), "home");
+        app.MapLouisAgentSite(typeof(SitePagesTests).Assembly, _ => { },
+            publicUrl is null ? null : new Uri(publicUrl), "home");
         await app.StartAsync();
         return (app, app.GetTestClient(), root);
     }

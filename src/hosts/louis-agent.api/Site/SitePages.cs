@@ -16,11 +16,11 @@ public static class SitePages
     /// <summary>
     /// Maps every address that isn't a file to the site's pages: <paramref name="site"/> is the site's assembly, whose
     /// routes name its pages; <paramref name="services"/> registers what its pages ask for;
-    /// <paramref name="publicUrl"/> is where the site is served (its canonical links); <paramref name="home"/> is the
-    /// word its landing's sections sit under, when it has one.
+    /// <paramref name="publicUrl"/> is where the site is served (its canonical links), the address each request came
+    /// to when none is given; <paramref name="home"/> is the word its landing's sections sit under, when it has one.
     /// </summary>
     public static WebApplication MapLouisAgentSite(this WebApplication app, Assembly site,
-        Action<IServiceCollection> services, Uri publicUrl, string? home = null)
+        Action<IServiceCollection> services, Uri? publicUrl = null, string? home = null)
     {
         var handler = new SitePageHandler(SiteRoutes.Of(site, home), new PagePrerenderer(services), publicUrl,
             app.Environment);

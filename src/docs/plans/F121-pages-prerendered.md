@@ -123,7 +123,17 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+- **No `SITE_URL` setting.** A host's public address defaults to the address each request came to (behind Azure's
+  proxy, its forwarded scheme and host), so there is one setting fewer to keep right; a host can still pass one.
+- **Only a page that declares a description is served as HTML.** A chat, an admin screen or an account page renders
+  nothing a search engine wants, and some can't render without their live services: they answer the plain shell, as
+  before. A page that fails is logged once a deploy (the chat page does, as expected).
+- **A section's address renders its page**, canonical at the section's own address, as the sitemap lists it; the page
+  is rendered once per process whatever address under it is asked for.
+- **Once the app starts, the head holds the description twice** (the shell's and the page's own, the same text): a
+  crawler that runs no script sees one, and Blazor's head outlet adds rather than replaces. Left as it is.
+- **Checked on the review copy with `curl`:** every page answers its own title, canonical address and sections;
+  `/chat` the plain shell; an unknown address 404; in Chrome the app starts and takes over as before.
 
 ---
 [Docs index](../README.md) · Related: [plans](README.md), [ADR 0107](../adr/0107-every-section-has-an-address.md)
