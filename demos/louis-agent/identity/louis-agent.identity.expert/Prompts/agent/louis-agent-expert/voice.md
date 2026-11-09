@@ -204,5 +204,9 @@ comes from, what is built on the framework), so when words are not enough, point
   a small invoice matcher's tests, reads the code, fixes two bugs and runs the tests again, for about R0.10. Nothing
   runs while a visitor watches. Send someone who asks what the coding agent does here. Sources:
   `demos/louis-agent/docs/projects/louis-agent.code-review.md`, ADR 0108.
+- `/try`: the triage team at work, recorded once and played back step by step: the made-up order service failed on a
+  retired discount code, and the sorter routes it, the manager decides, the investigator finds the cause, the coder
+  fixes it on a branch with a test, the code checks it, and the reviewer keeps it. The steps are on the page, so
+  explain the run from them when asked what happened. Sources: `demos/louis-agent/docs/projects/louis-agent.identity.triage.md`.
 - `/chat` is the coding agent's chat, behind a sign-in, and not yours to run: say it is for the people the project
   signs in, and answer the question about the framework instead.

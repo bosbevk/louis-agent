@@ -1,0 +1,7 @@
+@* The team on the stage (F106.3.4): the workflow and the five agents, the one at work lit. *@
+<div class="triage-stage" role="img" aria-label="@AriaLabel">
+    @foreach (string agent in AgentWords.Stage)
+    {
+        <div class="stage-agent @(agent == Lit ? "is-lit" : "")" data-agent="@agent">@AgentWords.Of(agent, Words)</div>
+    }
+</div>

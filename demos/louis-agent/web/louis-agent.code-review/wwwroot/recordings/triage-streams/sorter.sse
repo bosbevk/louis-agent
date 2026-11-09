@@ -1,0 +1,72 @@
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_8169b582041f4b7580f517070a4763d7","role":"assistant","toolsets":["triage"],"session_role":"triage-sorter"}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01YXBxvhGg8aiQbPNMH7XLZv","name":"SortCase","input":{"runId":"triage-order-total","department":"code","why":"The stack points at OrderService.OrderApi.GetOrderTotal in src/OrderService/Api/OrderTotal.cs, a dictionary lookup in the order service's own code that failed on a missing key 'SUMMER25'."}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: content_block_start
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01YXBxvhGg8aiQbPNMH7XLZv","content":"Recorded step 2 of run triage-order-total: The sorter sent the error to the code department.","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"The error bel"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ongs to the code"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" department. The stack points at `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"OrderService.Order"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Api.GetOrder"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Total` in `src"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"/OrderService/Api"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"/OrderTotal."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"cs`, where"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" a dictionary lookup"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" failed on the missing key `"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"SUMMER25`."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" That is the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" order service's own code, not the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" hosting configuration."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":6,"cache_creation_input_tokens":777,"cache_read_input_tokens":7524,"output_tokens":277,"requests":2,"cost":0.000311,"currency":"USD","unpriced":0,"display_cost":0.005143,"display_currency":"ZAR","display_symbol":"R","rate_as_of":"2026-11-06"}}
+
+event: message_stop
+data: {"type":"message_stop"}
+

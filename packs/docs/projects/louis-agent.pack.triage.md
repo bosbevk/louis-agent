@@ -48,6 +48,19 @@ department for the hand-off (F106.3.5).
 - **Two tool classes, one toolset** (ADR 0034): the decision tools and the run tools are apart by responsibility and
   each under the size limit; the model sees one toolset.
 
+## Its web views
+
+`packs/web/louis-agent.pack.triage.web` (F106.3.4, ADR 0086) is the demo a site plays: `TriagePlayer` fetches a run
+file, reads it with `TriageRunFile` (the recorder's own lines), and plays it a step at a time, a reading beat apart:
+`TriageStage` lights the agent at work among the workflow and the five agents, `StepPopup` says who took the step,
+what it did, why in its own words and what that kind of step is (`StepWords`), the steps so far gather in a list a
+visitor and the guide can read, and the site's ending shows once the case is closed. Back and next stop the play;
+play again starts it over. The words are `TriageWords`, English by default and a site's own when given; the styles
+are `Styles/pack-triage/_demo.scss`, which a site forwards. It references the framework's web, never the pack, so it
+keeps its own copy of a step (`TriageStepView`), and `louis-agent.pack.triage.web.tests` writes a step with the
+recorder's options and reads it back field for field. The louis-agent site plays a recorded run on `/try` until
+F106.3.3's workflow runs live.
+
 ## Tests
 
 `packs/tests/louis-agent.pack.triage.tests`: the feed over a small log; the recorder (steps saved out of order come
