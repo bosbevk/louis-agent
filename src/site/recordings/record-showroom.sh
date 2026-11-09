@@ -26,8 +26,13 @@ done
 MSYS_NO_PATHCONV=1 docker run -d --rm --name louis_agent_showroom -p "127.0.0.1:$port:8080" "${env_files[@]}" \
   -e AGENT_AUTH=off -e HOST_TIME_ZONE=Africa/Johannesburg -e LEADS_TO=louismarais0@gmail.com \
   -e LEADS_FROM=guide@louis-agent.dev "${mail[@]}" louis-agent-site:latest >/dev/null
-trap 'docker stop louis_agent_showroom >/dev/null' EXIT
-until curl -fs "http://127.0.0.1:$port/health" >/dev/null; do sleep 2; done
+trap 'docker stop louis_agent_showroom >/dev/null 2>&1 || true' EXIT
+# Ready within two minutes, or say so: a host that stops at start-up is gone, and would be waited on for ever.
+for _ in $(seq 60); do
+  if curl -fs "http://127.0.0.1:$port/health" >/dev/null; then break; fi
+  sleep 2
+done
+curl -fs "http://127.0.0.1:$port/health" >/dev/null || { echo "The site's host did not start." >&2; exit 1; }
 
 # One session as the business, each turn's stream saved as it came, as {business}-{n}.sse.
 record() {

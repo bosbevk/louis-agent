@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Leads;
@@ -29,6 +30,19 @@ public class SiteCatalogTests
             Assert.That(SiteCatalog.Identities.SelectMany(identity => identity.Packs).Distinct(),
                 Is.SubsetOf(guide.Packs), "no identity on the site reaches a pack the guide doesn't load");
         });
+    }
+
+    /// <summary>
+    /// The catalogue builds as the host builds it, so the host starts (F128.2: the showroom's three voices once shared
+    /// one prompts folder, each prompt was registered three times, and the host stopped at start-up).
+    /// </summary>
+    [Test]
+    public void TheCatalogue_Builds_AsTheHostBuildsIt()
+    {
+        var packs = SiteCatalog.Packs(new DocsOptions { Root = "test-docs" },
+            new LeadsOptions { To = "a@example.test" });
+
+        Assert.DoesNotThrow(() => _ = new AgentCatalog(SiteCatalog.Identities, packs));
     }
 
     /// <summary>

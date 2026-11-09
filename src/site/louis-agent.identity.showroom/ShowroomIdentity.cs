@@ -21,9 +21,12 @@ public abstract class ShowroomIdentity(ShowroomIdentityName name) : IAgentIdenti
     /// <inheritdoc/>
     public string DefaultVoice => $"{Name}/voice";
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Its own prompts alone, from its own folder: the three share one project, and a prompt path has one home in a
+    /// catalogue, so each must carry only its voice.
+    /// </summary>
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(ShowroomIdentity).Assembly, "Prompts");
+        new ManifestEmbeddedFileProvider(typeof(ShowroomIdentity).Assembly, $"Prompts/{name.Wire()}");
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } =
