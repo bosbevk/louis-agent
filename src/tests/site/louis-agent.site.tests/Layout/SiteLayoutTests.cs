@@ -59,6 +59,8 @@ public class SiteLayoutTests
     [TestCase("/framework/built-on-it")]
     [TestCase("/framework/whats-coming")]
     [TestCase("/contact")]
+    [TestCase("/what-we-build")]
+    [TestCase("/pricing")]
     public void TheMenu_LeadsToThePage(string address)
     {
         using var ctx = Context();
@@ -69,8 +71,25 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The framework's pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"), so
-    /// the bar stays one line with What's coming on it; the comparison with Microsoft's frameworks is the last (F123).
+    /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Pricing, Demos, Contact, and
+    /// the framework last.
+    /// </summary>
+    [Test]
+    public void TheMenu_LeadsWithWhatWeSell()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<SiteLayout>();
+
+        var items = cut.Find(".site-nav").Children
+            .Select(item => (item.QuerySelector(".site-menu-label") ?? item).TextContent.Trim());
+        Assert.That(items, Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework" }));
+    }
+
+    /// <summary>
+    /// The framework's pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"),
+    /// since F128.1 with Measured, Built on it and What's coming inside it; the comparison with Microsoft's frameworks
+    /// is the last (F123).
     /// </summary>
     [Test]
     public void TheFrameworksPages_AreOneGroup()
@@ -81,15 +100,16 @@ public class SiteLayoutTests
 
         Assert.Multiple(() =>
         {
-            var menu = cut.FindAll(".site-nav .site-menu")[0];
-            Assert.That(menu.QuerySelector(".site-menu-label")!.TextContent, Is.EqualTo("The framework"));
+            var menu = cut.FindAll(".site-nav .site-menu")
+                .Single(group => group.QuerySelector(".site-menu-label")!.TextContent == "The framework");
             Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
                     "/framework/how-it-works", "/framework/architecture", "/framework/identities",
-                    "/framework/packs", "/framework/build-your-own", "/csharp-ai-agent-framework"
+                    "/framework/packs", "/framework/build-your-own", "/framework/measured",
+                    "/framework/built-on-it", "/framework/whats-coming", "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(3), "the rest stand in the bar");
         });
     }
 
