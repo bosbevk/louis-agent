@@ -56,7 +56,7 @@ public class SitemapTests
             .ToList();
         var rule = new SiteAddresses("home", pages.Select(page => page.Route!));
 
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var addresses = new List<string>();
         foreach (var (type, route) in pages)
         {

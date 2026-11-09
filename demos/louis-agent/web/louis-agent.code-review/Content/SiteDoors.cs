@@ -1,8 +1,8 @@
 namespace LouisAgent.CodeReview.Content;
 
 /// <summary>
-/// What the site opens to a visitor today (FX88). The coding agent's chat stays closed until it is ready for a
-/// stranger: until then its links say "Coming soon" and its page sends a visitor back to the landing.
+/// What the site opens to a visitor today (FX88). The coding agent's live chat stays closed to strangers: its links
+/// lead to the recorded session instead (F120, ADR 0108), and the chat's page sends a visitor back to the landing.
 /// </summary>
 /// <remarks>
 /// One place that says what is open, read by the link and by the page, so the two can't disagree. A flag in code and

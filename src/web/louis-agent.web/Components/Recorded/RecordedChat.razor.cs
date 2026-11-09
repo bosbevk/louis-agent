@@ -2,6 +2,7 @@ using System.Net.Http;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Chats.Replay;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 
@@ -45,6 +46,9 @@ public partial class RecordedChat : IDisposable
 
     /// <summary>How fast it plays: 1 as recorded, 0 for no waits at all.</summary>
     [Parameter] public double Pace { get; set; } = 1;
+
+    /// <summary>The currency the bill shows in, as the live chat's does; none shows the ledger's own dollars.</summary>
+    [Parameter] public CurrencyChoice? Currency { get; set; }
 
     /// <summary>What shows when the play is over: the site's offer.</summary>
     [Parameter] public RenderFragment? Ending { get; set; }

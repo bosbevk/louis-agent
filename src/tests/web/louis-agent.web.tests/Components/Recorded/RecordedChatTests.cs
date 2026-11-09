@@ -3,6 +3,7 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Testing;
 using LouisAgent.Web.Text;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -77,6 +78,23 @@ public class RecordedChatTests
 
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".offer"), Has.Count.EqualTo(1)));
         Assert.That(cut.FindAll(".recorded-chat .turn").Count, Is.LessThanOrEqualTo(1), "one turn, played again");
+    }
+
+    /// <summary>The bill shows in the site's currency, as the live chat's does, when the site gives one.</summary>
+    [Test]
+    public void TheBill_ShowsInTheSitesCurrency()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Source, Source)
+            .Add(chat => chat.Question, SessionStreamFixture.Question)
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.Currency, new CurrencyChoice("ZAR", "R", 18m, "2026-11-06", "USD")));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".recorded-end"), Has.Count.EqualTo(1)));
+        Assert.That(cut.Find(".recorded-chat .messages").TextContent, Does.Contain("R"));
+        Assert.That(cut.Find(".recorded-chat .messages").TextContent, Does.Not.Contain("$"));
     }
 
     /// <summary>A recording the site can't serve shows the ending at once, never an empty window that waits.</summary>
