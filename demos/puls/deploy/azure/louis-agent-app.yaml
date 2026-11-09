@@ -3,12 +3,11 @@
 # folder later, Louis's pick), deployed with deploy.ps1 -App louis-agent-app (the how-to is README.md here).
 #   deploy.ps1 update -App louis-agent-app -Tag 2026-11-08-1200 -Revision v001
 # One container: the coding API serving the app, on the image demos/louis-agent/docker/images/Dockerfile.api builds.
-# Its browser and search are on the VM puls-services at its private address (VM_IP), its accounts on Azure SQL in
-# the same database as Puls's under its own tenant. No secret value lives here: every value is in the vault
-# puls-keys, the app's secrets are references to it by URL, read with the identity the Bicep build made for this
-# app, and deploy.ps1 update writes the `secrets:` block from the names the vault holds. What is shared with Puls
-# (the model key, the VM's Mongo, the accounts' SQL) is referenced by the same name; what is this app's own
-# (its API keys, its sign-in providers) carries the suffix -louis-agent.
+# Since FX122 (Louis's option A) it runs alone: no VM, so no headless browser or SearXNG (web search falls back to
+# what needs no server), no Mongo (the eval studio keeps its runs in memory) and no accounts. No secret value lives
+# here: every value is in the vault puls-keys, the app's secrets are references to it by URL, read with the identity
+# the Bicep build made for this app, and deploy.ps1 update writes the `secrets:` block from the names the vault
+# holds; this app's own keys carry the suffix -louis-agent.
 name: louis-agent-app
 resourceGroup: rg-puls-za
 location: South Africa North
@@ -73,7 +72,6 @@ properties:
             value: anthropic
           - name: LLM_MODEL
             value: claude-haiku-5-5
-          # The model key is the one Puls uses: one account, one secret.
           - name: ANTHROPIC_API_KEY
             secretRef: anthropic-api-key
           # The key every /v1 call needs unless a signed-in person makes it (F61.2), and the admin's: this app's own.
@@ -86,22 +84,9 @@ properties:
             value: louis-agent-expert
           - name: OPEN_SESSIONS_PER_DAY
             value: '20'
-          # The web it reads: SearXNG and the headless browser on the VM, at its private address.
-          - name: WEB_SEARCH_PROVIDER
-            value: searxng
-          - name: SEARXNG_URL
-            value: http://VM_IP:8080
-          - name: BROWSER_URL
-            value: http://VM_IP:9222
-          # What the browser tells the sites it reads for a user: who reads and why; never a person.
+          # What the agent's fetcher tells the sites it reads for a user: who reads and why; never a person.
           - name: BROWSER_USER_AGENT
             value: "louis-agent/1.0 (+https://louis-agent.dev; reads a page on a user's behalf)"
-          # The eval store: the VM's Mongo, this app's own database on it; the URL carries the password, so it is a
-          # secret (the same one Puls references).
-          - name: EVALS_MONGO_URL
-            secretRef: mongo-url
-          - name: EVALS_MONGO_DATABASE
-            value: louis_agent_benchmarks
           # The docs the expert reads (F109.3): the copy the image carries, laid out as the repo.
           - name: DOCS_ROOT
             value: /app/docs
@@ -113,17 +98,8 @@ properties:
           - name: LEADS_FROM
             value: guide@louis-agent.dev
           # WHEN SET
-          # The accounts (F61): the same Azure SQL database as Puls's, every account on this host this app's tenant,
-          # the cookie on the domain.
-          - name: ACCOUNTS_SQL_URL
-            secretRef: accounts-sql-url
-          - name: ACCOUNTS_TENANT
-            value: louis-agent
-          - name: ACCOUNTS_COOKIE_DOMAIN
-            value: louis-agent.dev
-          # The sign-in providers (F61.3): deploy.ps1 update puts one pair of lines here for each provider whose two
-          # secrets are set for this app (auth-google-client-id-louis-agent and -secret-louis-agent, and so on); a
-          # provider with no keys names no secret the app lacks and stays off.
+          # No accounts since FX122 (Louis: "we will not use that now"): no database, so no sign-in providers either;
+          # deploy.ps1 update still fills PROVIDERS for a provider whose keys the vault holds, and none is set.
           # PROVIDERS
         resources:
           cpu: 1

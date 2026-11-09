@@ -9,8 +9,7 @@ namespace LouisAgent.Puls.Tests.Deploy;
 /// <remarks>Plain string checks on the file's lines, no regex (ADR 0057).</remarks>
 public class ForwardedHeadersTests
 {
-    /// <summary>The app's yaml sets the switch, and sets it on.</summary>
-    [TestCase("puls-app.yaml")]
+    /// <summary>The app's yaml sets the switch, and sets it on (Puls's app is not deployed since FX122).</summary>
     [TestCase("louis-agent-app.yaml")]
     public void TheApp_ReadsTheForwardedScheme(string yaml)
     {

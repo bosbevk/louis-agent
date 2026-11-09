@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="af">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Puls · binnekort</title>
+    <meta name="description" content="Puls kom binnekort. Puls is coming soon." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/png" href="icon-192.png" />
+    <style>
+        :root { --bg: #0d1014; --fg: #eef1f5; --muted: #9aa4b2; --line: #2a313b; }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body {
+            display: grid;
+            place-items: center;
+            background: radial-gradient(ellipse at top, #18202a, var(--bg) 60%);
+            color: var(--fg);
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            text-align: center;
+            padding: 24px;
+        }
+        main { max-width: 520px; }
+        img { width: 72px; height: 72px; border-radius: 18px; }
+        h1 { font-size: clamp(40px, 9vw, 64px); margin: 18px 0 6px; letter-spacing: -.02em; }
+        p { margin: 6px 0; color: var(--muted); font-size: 18px; line-height: 1.5; }
+        .en { font-size: 15px; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 18px; }
+    </style>
+</head>
+<body>
+    <main>
+        <img src="icon-192.png" alt="" />
+        <h1>Puls</h1>
+        <p>Kom binnekort.</p>
+        <p class="en">Coming soon.</p>
+    </main>
+</body>
+</html>

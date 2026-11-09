@@ -1,8 +1,7 @@
-# Deploys Puls and the louis-agent demo's app to Azure (F109.5, F109.2): the same `deploy.ps1 release` Louis runs on
-# his PC, from GitHub, so a merge reaches mypuls.co.za and louis-agent.dev without anyone's machine. By itself on the
-# merge (the push to main; CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow"
-# button. Each app is released even when the other's release failed: they are two apps on one
-# environment, and one's bad day is not the other's. The how-to, Louis's one-time Azure setup and the roll-back are in
+# Deploys the louis-agent demo's app to Azure (F109.5, F109.2): the same `deploy.ps1 release` Louis runs on his PC,
+# from GitHub, so a merge reaches louis-agent.dev without anyone's machine. By itself on the merge (the push to main;
+# CI ran on the pull request, FX93), and any time from the Actions tab's "Run workflow" button. Since FX122 it is the
+# only app: Puls is not deployed. The how-to, Louis's one-time Azure setup and the roll-back are in
 # demos/puls/deploy/azure/README.md, "Deploying from GitHub"; the why in ADR 0097.
 name: Deploy the apps
 
@@ -53,13 +52,8 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # The images build in the registry (az acr build), so the runner needs no Docker; each revision is the next one.
-      - name: Release Puls
-        shell: pwsh
-        run: ./demos/puls/deploy/azure/deploy.ps1 release -App puls-app
-
+      # The image builds in the registry (az acr build), so the runner needs no Docker; each revision is the next one.
       - name: Release the louis-agent app
-        if: ${{ !cancelled() }}
         shell: pwsh
         run: ./demos/puls/deploy/azure/deploy.ps1 release -App louis-agent-app
 
@@ -69,10 +63,6 @@ jobs:
           {
             echo "### Deploy the apps"
             echo "Commit: \`$(git rev-parse --short HEAD)\`"
-            echo "Running revisions of puls-app:"
-            echo '```'
-            az containerapp revision list -n puls-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true
-            echo '```'
             echo "Running revisions of louis-agent-app:"
             echo '```'
             az containerapp revision list -n louis-agent-app -g rg-puls-za --query "[?properties.active].{revision:name, healthy:properties.healthState, created:properties.createdTime}" -o table || true

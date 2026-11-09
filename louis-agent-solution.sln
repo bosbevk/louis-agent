@@ -96,7 +96,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10
 	ProjectSection(SolutionItems) = preProject
 		demos\puls\deploy\azure\README.md = demos\puls\deploy\azure\README.md
 		demos\puls\deploy\azure\deploy.ps1 = demos\puls\deploy\azure\deploy.ps1
-		demos\puls\deploy\azure\puls-app.yaml = demos\puls\deploy\azure\puls-app.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0190}"

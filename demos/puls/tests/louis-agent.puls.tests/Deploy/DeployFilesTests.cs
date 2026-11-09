@@ -53,29 +53,42 @@ public class DeployFilesTests
     private static readonly string[] CodingApp = File.ReadAllLines(
         Path.Combine(TestPaths.RepoRoot, "demos/puls/deploy/azure/louis-agent-app.yaml"));
 
-    /// <summary>The script knows both apps by name, and the second one's image, yaml and host.</summary>
-    [TestCase("'puls-app', 'louis-agent-app'")]
+    /// <summary>
+    /// The script knows the one app it deploys since FX122 (Louis's option A: Puls is not deployed), and its image,
+    /// yaml and host.
+    /// </summary>
+    [TestCase("[ValidateSet('louis-agent-app')]")]
     [TestCase("louis-agent-coding")]
     [TestCase("louis-agent-app.yaml")]
     [TestCase("louis-agent.dev")]
     public void TheScript_KnowsBothApps(string text) => Assert.That(Script, Does.Contain(text));
 
     /// <summary>
-    /// The second app's yaml names its own app, image, identity placeholder, share, tenant, cookie domain and keys,
-    /// and keeps the markers the script fills.
+    /// The app's yaml names its own app, image, identity placeholder, share and keys, and keeps the markers the
+    /// script fills; since FX122 it names no VM, Mongo or accounts.
     /// </summary>
     [TestCase("name: louis-agent-app")]
     [TestCase("image: acrpulsza.azurecr.io/louis-agent-coding:TAG")]
     [TestCase("'APP_IDENTITY_ID': {}")]
     [TestCase("storageName: louis-agent-vol")]
-    [TestCase("value: louis-agent")]
-    [TestCase("value: louis-agent.dev")]
     [TestCase("secretRef: agent-api-key-louis-agent")]
     [TestCase("secretRef: admin-api-key-louis-agent")]
     [TestCase("# SECRETS")]
     [TestCase("# PROVIDERS")]
     public void TheSecondAppsYaml_NamesWhatIsItsOwn(string line) =>
         Assert.That(CodingApp.Select(l => l.Trim()), Does.Contain(line));
+
+    /// <summary>
+    /// The site runs alone (FX122, Louis's option A, "we do not need dbs"): its yaml points at no VM, no Mongo and no
+    /// accounts database, so the VM and the SQL server can go without breaking a release.
+    /// </summary>
+    [TestCase("VM_IP")]
+    [TestCase("EVALS_MONGO_URL")]
+    [TestCase("ACCOUNTS_SQL_URL")]
+    [TestCase("SEARXNG_URL")]
+    [TestCase("BROWSER_URL")]
+    public void TheAppsYaml_NeedsNoVmAndNoDatabase(string text) =>
+        Assert.That(string.Join("\n", CodingApp), Does.Not.Contain(text));
 
     /// <summary>
     /// The guide's mail key (FX87): the script copies RESEND_API_KEY from the app's .env.secrets into the vault, and

@@ -37,19 +37,19 @@ public class DeployWorkflowTests
     }
 
     /// <summary>
-    /// Both apps deploy from the same merge (F109.2, Louis: "this agent must also deploy like this"): a release of
-    /// Puls, a release of the louis-agent app, each tried even when the other fails, and the summary lists both.
+    /// The merge deploys the louis-agent app alone (FX122, Louis: "remove everything puls related from azure and
+    /// deployments"): one release, of that app, and the summary lists its revisions; Puls is not released.
     /// </summary>
     [Test]
-    public void TheWorkflow_ReleasesBothApps()
+    public void TheWorkflow_ReleasesTheSiteAlone()
     {
-        var calls = Trimmed().Where(line => line.Contains("deploy.ps1 release", StringComparison.Ordinal)).ToList();
+        var calls = Trimmed().Where(line => line.StartsWith("run:", StringComparison.Ordinal) &&
+                                            line.Contains("deploy.ps1 release", StringComparison.Ordinal)).ToList();
 
-        Assert.That(calls, Has.Exactly(1).Contains("-App puls-app"));
-        Assert.That(calls, Has.Exactly(1).Contains("-App louis-agent-app"));
-        Assert.That(Trimmed(), Has.Some.Contains("-n puls-app -g rg-puls-za"));
+        Assert.That(calls, Has.Count.EqualTo(1));
+        Assert.That(calls[0], Does.Contain("-App louis-agent-app"));
         Assert.That(Trimmed(), Has.Some.Contains("-n louis-agent-app -g rg-puls-za"));
-        Assert.That(Trimmed(), Has.Some.Contains("if: ${{ !cancelled() }}"), "the second app is tried when the first fails");
+        Assert.That(Trimmed(), Has.None.Contains("puls-app"));
     }
 
     /// <summary>

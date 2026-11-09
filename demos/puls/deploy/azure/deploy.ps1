@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Deploys Puls to Azure (rg-puls-za), and since F109.2 the louis-agent demo's app beside it: the Bicep build in
-config/azure and each app's revisions, as verbs that are each a few az commands with the names filled in (CL19, F61.4).
-Every verb that touches an app takes -App puls-app (the default) or -App louis-agent-app; infra, vm and sql-access are
-the build's and ignore it.
+Deploys the louis-agent demo's app to Azure (rg-puls-za): its revisions, as verbs that are each a few az commands with
+the names filled in (CL19, F61.4). Since FX122 (Louis's option A, 2026-11-09) it is the only app: Puls's app is gone,
+and the site runs alone, sleeping when unused, with no VM and no database. infra, vm and sql-access are the old Bicep
+build's (the VM, Mongo and SQL that A removed): don't run them, they would create those again.
 
 .DESCRIPTION
   deploy.ps1 infra   [-WhatIf] [-Ip 1.2.3.4]     deploys demos/puls/config/azure/main.bicep: the network, the VM, the environment,
@@ -14,10 +14,9 @@ the build's and ignore it.
                                                   files to the VM through run-command, and restarts its services
   deploy.ps1 build   [-App ...] [-Tag 2026-11-08-1200]   builds the app's image (louis-agent-puls, louis-agent-coding) in the registry
   deploy.ps1 workspace [-App ...]                 copies config/prices.json and rates.json from the app's config into its share
-  deploy.ps1 secrets [-App ...]                   puts the app's secrets in the vault puls-keys, from its config/.env.secrets
-                                                  (Puls's: .env.mongo and .env.sql and the deployment's outputs too, the
-                                                  values both apps share); never printed, a missing value skipped by name
-  deploy.ps1 update  [-App ...] -Tag ... -Revision v021   fills TAG, REVISION, VM_IP, ENVIRONMENT_ID, the app's identity, the
+  deploy.ps1 secrets [-App ...]                   puts the app's secrets in the vault puls-keys, from its config/.env.secrets;
+                                                  never printed, a missing value skipped by name
+  deploy.ps1 update  [-App ...] -Tag ... -Revision v021   fills TAG, REVISION, ENVIRONMENT_ID, the app's identity, the
                                                   secrets the vault holds, the providers and the keys it runs without into the app's yaml and creates or updates it
   deploy.ps1 release [-App ...] [-Tag ...]        build, then update as the next revision after the one Azure runs
   deploy.ps1 domain  [-App ...] [-Hostname ...]   prints the DNS records Cloudflare needs, then adds the hostname (the app's
@@ -32,9 +31,9 @@ param(
     [Parameter(Mandatory = $true, Position = 0)]
     [ValidateSet('infra', 'vm', 'build', 'workspace', 'secrets', 'update', 'release', 'domain', 'sql-access', 'logs')]
     [string]$Verb,
-    # Which app a verb works on (F109.2): Puls, or the louis-agent demo's app beside it; the table below says what is each one's.
-    [ValidateSet('puls-app', 'louis-agent-app')]
-    [string]$App = 'puls-app',
+    # Which app a verb works on: the louis-agent demo's app, the only one since FX122.
+    [ValidateSet('louis-agent-app')]
+    [string]$App = 'louis-agent-app',
     [string]$Ip,
     # build and release make one from the date and time when none is given, so two releases on one day keep both images
     # and either can be rolled back to; update needs the tag of an image already built (review, 2026-10-24).
@@ -61,11 +60,6 @@ $Providers = @('google', 'microsoft', 'linkedin')
 # its share, its domain, the suffix on the vault secrets that are its own (the rest both apps share), and WhenSet: the
 # keys the app runs without, each env var with its vault secret, named in the yaml only once the vault holds it (FX87).
 $Apps = @{
-    'puls-app' = @{
-        Image = 'louis-agent-puls'; Dockerfile = 'demos\puls\docker\images\Dockerfile.puls'
-        Config = 'demos\puls\config'; Yaml = 'puls-app.yaml'; IdentityOutput = 'appIdentityId'
-        Share = 'puls-app-workspace'; Hostname = 'mypuls.co.za'; Suffix = ''; WhenSet = @{}
-    }
     'louis-agent-app' = @{
         Image = 'louis-agent-coding'; Dockerfile = 'demos\louis-agent\docker\images\Dockerfile.api'
         Config = 'demos\louis-agent\config'; Yaml = 'louis-agent-app.yaml'; IdentityOutput = 'codingAppIdentityId'
@@ -152,8 +146,8 @@ function Get-Secrets {
     $secretsFile = Join-Path $AppConfig '.env.secrets'
     $suffix = $AppInfo.Suffix
     $wanted = @()
-    # This app's own keys, suffixed for the second app; the model key, the VM's Mongo and the accounts' SQL are the
-    # values both apps share, set once with Puls's config.
+    # The model key, and this app's own keys, suffixed as they were beside Puls (FX122: no Mongo or SQL secret now).
+    $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
     $wanted += @{ name = "agent-api-key$suffix"; value = Get-EnvValue $secretsFile 'AGENT_API_KEY' }
     $wanted += @{ name = "admin-api-key$suffix"; value = Get-EnvValue $secretsFile 'ADMIN_API_KEY' }
     foreach ($provider in $Providers) {
@@ -167,23 +161,6 @@ function Get-Secrets {
     }
     # The keys the app runs without (FX87), each from its env var.
     foreach ($key in $AppInfo.WhenSet.Keys) { $wanted += @{ name = $AppInfo.WhenSet[$key]; value = Get-EnvValue $secretsFile $key } }
-    if ($App -ne 'puls-app') { return $wanted }
-    $mongoFile = Join-Path $Config '.env.mongo'
-    $sqlFile = Join-Path $Config '.env.sql'
-    $vmIp = Get-Output 'vmPrivateIp'
-    $sqlServer = Get-Output 'sqlServerFqdn'
-    $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
-    # The VM's Mongo, at its private address.
-    $user = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_USERNAME'
-    $password = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_PASSWORD'
-    $mongo = $null
-    if ($user -and $password) { $mongo = "mongodb://${user}:${password}@${vmIp}:27017/?authSource=admin" }
-    $wanted += @{ name = 'mongo-url'; value = $mongo }
-    # Azure SQL: the admin the Bicep build made, with the same password as the PC's SQL Server (config/.env.sql).
-    $sqlPassword = Get-EnvValue $sqlFile 'MSSQL_SA_PASSWORD'
-    $sql = $null
-    if ($sqlPassword) { $sql = "Server=tcp:${sqlServer},1433;Database=puls_accounts;User Id=pulsadmin;Password=${sqlPassword};Encrypt=True;TrustServerCertificate=False;Connection Timeout=60" }
-    $wanted += @{ name = 'accounts-sql-url'; value = $sql }
     return $wanted
 }
 
@@ -256,7 +233,6 @@ switch ($Verb) {
     'update' {
         if (-not $Revision) { throw 'update needs -Revision (vNNN, one more than the running revision; Single mode refuses a repeat).' }
         if (-not $Tag) { throw 'update needs -Tag: the tag of an image already built (deploy.ps1 build; or release, which does both).' }
-        $vmIp = Get-Output 'vmPrivateIp'
         $environmentId = Get-Output 'environmentId'
         $identityId = Get-Output $AppInfo.IdentityOutput
         $vaultUri = (Get-Output 'vaultUri').TrimEnd('/')
@@ -271,7 +247,7 @@ switch ($Verb) {
         $inVault = @(Read-Az keyvault secret list --vault-name $Vault --query '[].name' -o tsv)
         if ($LASTEXITCODE -ne 0) { throw "Could not list ${Vault}: deploy.ps1 secrets first, and check your role on the vault." }
         $suffix = $AppInfo.Suffix
-        $names = @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix", 'mongo-url', 'accounts-sql-url')
+        $names = @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix")
         foreach ($provider in $Providers) { $names += "auth-$provider-client-id$suffix"; $names += "auth-$provider-client-secret$suffix" }
         $names += @($AppInfo.WhenSet.Values)
         $secrets = @('    secrets:')
@@ -282,8 +258,8 @@ switch ($Verb) {
                 $secrets += "        identity: $identityId"
             }
         }
-        foreach ($name in @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix", 'mongo-url', 'accounts-sql-url')) {
-            if ($inVault -notcontains $name) { throw "The vault $Vault has no $name yet: deploy.ps1 secrets first (the shared ones with -App puls-app)." }
+        foreach ($name in @('anthropic-api-key', "agent-api-key$suffix", "admin-api-key$suffix")) {
+            if ($inVault -notcontains $name) { throw "The vault $Vault has no $name yet: deploy.ps1 secrets first." }
         }
         $providerLines = @()
         foreach ($provider in $Providers) {
@@ -305,7 +281,7 @@ switch ($Verb) {
         }
         $template = Join-Path $Here $AppInfo.Yaml
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
-        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('VM_IP', $vmIp).Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n")) |
+        (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'").Replace('ENVIRONMENT_ID', $environmentId).Replace('APP_IDENTITY_ID', $identityId).Replace('    # SECRETS', ($secrets -join "`n")).Replace('          # PROVIDERS', ($providerLines -join "`n")).Replace('          # WHEN SET', ($whenSetLines -join "`n")) |
             Set-Content $resolved -Encoding utf8 -NoNewline
         if ($inPlace) {
             Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."

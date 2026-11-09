@@ -6,6 +6,13 @@
 > the layout is what it is in [ADR 0095](../../../../src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md),
 > the diagrams in [ARCHITECTURE.md](ARCHITECTURE.md).
 
+**Since FX122 (2026-11-09, Louis's option A): only the louis-agent app is deployed.** It runs alone on Container
+Apps, sleeping when nobody visits, with no VM, no Mongo, no SQL and no accounts; Puls's app is deleted and not
+released, and `mypuls.co.za` gets a static "coming soon" page. The VM, SQL and Puls sections below describe the
+setup before that: `deploy.ps1 infra`, `vm` and `sql-access` would create those again, so don't run them. Only
+`build`, `workspace`, `secrets`, `update`, `release`, `domain` and `logs` apply, with `-App louis-agent-app`, now the
+default.
+
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the two apps' definitions
 (`puls-app.yaml`, `louis-agent-app.yaml`), the VM's files and one script; the Bicep build in `config/azure/` is
 everything else. No secret value is in any file here. The louis-agent demo's app lives beside Puls on purpose, to be
