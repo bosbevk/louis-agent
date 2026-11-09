@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 79 | 73 |
-| Fixes (`FX`) | 97 | 5 |
+| Fixes (`FX`) | 98 | 5 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -215,6 +215,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX106 | 2026-11-09 | The guide knows the card open on the visitor's screen, so "this pack" is the one they opened |
 | FX105 | 2026-11-09 | The coding agent's page is one slide, side by side: the words on the left, the recorded session in a full-height window on the right |
 | FX104 | 2026-11-09 | The offer names its fees: a once-off fee to build the site beside the monthly price, and Louis writing a customer's first Markdown files, for a fee, on the landing, the Contact page and in the guide |
 | FX103 | 2026-11-08 | Every page's footer links to Louis's LinkedIn profile, LinkedIn's mark small beside the word |
