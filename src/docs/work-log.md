@@ -12,17 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 84 | 77 |
+| Features (`F`) | 84 | 78 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (108 in the TODO)
+## Open (109 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended); built on the framework like any site, its guide answers questions about the framework | Next, after F123 |
+| F128 | The website advertises the framework: every page and section reviewed so it follows the framework and sells it, the landing flowing with the walkthrough; findings with three options each, then the rewrite | Next, after F124 |
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
 | F126 | Code review becomes a web pack that runs in the admin portal (`packs/web/`), out of the code-review demo app | Parked |
 | F106 | The framework's track, before the agents | Now |
