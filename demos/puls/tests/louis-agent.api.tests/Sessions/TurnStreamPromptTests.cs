@@ -10,15 +10,20 @@ namespace LouisAgent.Api.Tests.Sessions;
 /// </summary>
 public class TurnStreamPromptTests
 {
-    /// <summary>A message with a page ends with the page's block: where the visitor is, and what the page says.</summary>
+    /// <summary>
+    /// A message with a page ends with the page's block: where the visitor is, and what the page says.
+    /// </summary>
     [Test]
     public void APage_BecomesABlockAfterTheWords()
     {
-        var request = new SendMessageRequest("which page am I on?", null, new PageRequest("/build-your-own", "Build your own", "A few lines of your own."));
+        var request = new SendMessageRequest("which page am I on?", null,
+            new PageRequest("/build-your-own", "Build your own", "A few lines of your own."));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Is.EqualTo("which page am I on?\n\n[The visitor is reading /build-your-own (Build your own). The page says:\nA few lines of your own.]"));
+        Assert.That(prompt, Is.EqualTo("which page am I on?\n\n" +
+                                       "[The visitor is reading /build-your-own (Build your own). " +
+                                       "The page says:\nA few lines of your own.]"));
     }
 
     /// <summary>A long page is cut at 6,000 characters and the block says so.</summary>
@@ -45,11 +50,35 @@ public class TurnStreamPromptTests
     public void ThePagesAreas_EndTheBlock()
     {
         var request = new SendMessageRequest("where are the levels?", null,
-            new PageRequest("/identities", "Identities", "Who an agent is.", [new PageAreaRequest("/identities/parts", "What an identity holds"), new PageAreaRequest("/identities/levels", "The three that exist")]));
+            new PageRequest("/identities", "Identities", "Who an agent is.",
+            [
+                new PageAreaRequest("/identities/parts", "What an identity holds"),
+                new PageAreaRequest("/identities/levels", "The three that exist")
+            ]));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n/identities/parts What an identity holds\n/identities/levels The three that exist]"));
+        Assert.That(prompt, Does.EndWith("The page says:\nWho an agent is.\nIts areas:\n" +
+                                         "/identities/parts What an identity holds\n" +
+                                         "/identities/levels The three that exist]"));
+    }
+
+    /// <summary>
+    /// A page's links follow its areas (FX120, Louis: "agent cannot navigate it"): each by the address it opens and its
+    /// words, so the guide can take the visitor where a link on their screen leads.
+    /// </summary>
+    [Test]
+    public void ThePagesLinks_FollowItsAreas()
+    {
+        var request = new SendMessageRequest("show me the triage one", null,
+            new PageRequest("/demos", "Demos", "Watch the agents at work.", [new PageAreaRequest("/demos", "Demos")],
+                Links: [new PageAreaRequest("/triage-demo", "Watch it"),
+                    new PageAreaRequest("/contact", "Ask for yours")]));
+
+        string prompt = TurnStream.BuildPrompt(request);
+
+        Assert.That(prompt, Does.EndWith(
+            "Its areas:\n/demos Demos\nIts links:\n/triage-demo Watch it\n/contact Ask for yours]"));
     }
 
     /// <summary>
@@ -60,11 +89,14 @@ public class TurnStreamPromptTests
     public void TheSectionInView_IsNamed()
     {
         var request = new SendMessageRequest("what is this?", null,
-            new PageRequest("/", "louis-agent", "An AI agent framework.", [new PageAreaRequest("/home/built", "Built on it")], new PageAreaRequest("/home/built", "Built on it")));
+            new PageRequest("/", "louis-agent", "An AI agent framework.",
+                [new PageAreaRequest("/home/built", "Built on it")],
+                new PageAreaRequest("/home/built", "Built on it")));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Does.EndWith("/home/built Built on it\nOn their screen now: the section /home/built, \"Built on it\", of the page / they are reading]"));
+        Assert.That(prompt, Does.EndWith("/home/built Built on it\nOn their screen now: the section /home/built, " +
+                                         "\"Built on it\", of the page / they are reading]"));
     }
 
     /// <summary>
@@ -77,11 +109,14 @@ public class TurnStreamPromptTests
     public void OnTheSamePage_OnlyTheSectionInViewTravels()
     {
         var request = new SendMessageRequest("contact page?", null,
-            new PageRequest("/", null, null, null, new PageAreaRequest("/home/contact", "Building an agent for a .NET team?")));
+            new PageRequest("/", null, null, null,
+                new PageAreaRequest("/home/contact", "Building an agent for a .NET team?")));
 
         string prompt = TurnStream.BuildPrompt(request);
 
-        Assert.That(prompt, Is.EqualTo("contact page?\n\n[On their screen now: the section /home/contact, \"Building an agent for a .NET team?\", of the page /, whose words came with an earlier message]"));
+        Assert.That(prompt, Is.EqualTo("contact page?\n\n[On their screen now: the section /home/contact, " +
+                                       "\"Building an agent for a .NET team?\", of the page /, " +
+                                       "whose words came with an earlier message]"));
     }
 
     /// <summary>

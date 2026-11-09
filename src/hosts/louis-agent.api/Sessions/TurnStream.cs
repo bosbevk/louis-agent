@@ -27,7 +27,9 @@ namespace LouisAgent.Api.Sessions;
 /// </summary>
 internal static class TurnStream
 {
-    /// <summary>How much of the page the visitor is reading goes to the model (F115): enough for a site's page, not a book.</summary>
+    /// <summary>
+    /// How much of the page the visitor is reading goes to the model (F115): enough for a site's page, not a book.
+    /// </summary>
     private const int MaxPageChars = 6_000;
 
     /// <summary>
@@ -78,7 +80,9 @@ internal static class TurnStream
             ? MessageText.Format(ApiModelText.PageCardOpen, new { Id = id, Heading = open.Heading ?? "" })
             : "";
 
-    /// <summary>The section on the visitor's screen as a line after the areas (F118), nothing when none is named.</summary>
+    /// <summary>
+    /// The section on the visitor's screen as a line after the areas (F118), nothing when none is named.
+    /// </summary>
     private static string InViewOf(PageRequest page)
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
@@ -99,8 +103,21 @@ internal static class TurnStream
     }
 
     /// <summary>
-    /// The page as one block: where the visitor is, what the page says, cut with a note when it is long, its areas and
-    /// the section on their screen. A page without words is a later message from the same page (F118): only the
+    /// The page's links as lines of "address words" after its areas (FX120), so the guide can open where a link on the
+    /// visitor's screen leads; nothing when the page has none.
+    /// </summary>
+    private static string LinksOf(PageRequest page)
+    {
+        var links = (page.Links ?? []).Where(link => !string.IsNullOrWhiteSpace(link.Id)).ToList();
+        if (links.Count == 0) return "";
+        return MessageText.Format(ApiModelText.PageLinks,
+            new { List = string.Join("\n", links.Select(link => $"{link.Id} {link.Heading}".TrimEnd())) });
+    }
+
+    /// <summary>
+    /// The page as one block: where the visitor is, what the page says, cut with a note when it is long, its areas,
+    /// its links and the section on their screen. A page without words is a later message from the same page (F118):
+    /// only the
     /// section on their screen, or nothing.
     /// </summary>
     private static string PageBlock(PageRequest page)
@@ -109,7 +126,15 @@ internal static class TurnStream
         if (text.Length == 0) return InViewOnly(page);
         string shown = text.Length <= MaxPageChars ? text : text[..MaxPageChars];
         string block = MessageText.Format(ApiModelText.Page,
-            new { Url = page.Url ?? "", Title = page.Title ?? "", Text = shown, Areas = AreasOf(page), InView = InViewOf(page) });
+            new
+            {
+                Url = page.Url ?? "",
+                Title = page.Title ?? "",
+                Text = shown,
+                Areas = AreasOf(page),
+                Links = LinksOf(page),
+                InView = InViewOf(page)
+            });
         if (text.Length <= MaxPageChars) return block;
         return block + MessageText.Format(ApiModelText.PageTruncated, new
         {

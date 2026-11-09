@@ -16,8 +16,20 @@ export function pageText() {
         const [first, ...later] = pagesOf(area, fold);
         return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later];
     });
-    return { url: location.pathname, title: document.title, text, areas };
+    return { url: location.pathname, title: document.title, text, areas, links: linksOf(main, fold) };
 }
+
+// The page's links within the site (FX120), each once, by the address it opens and its words, so the guide can take
+// the visitor where a link on their screen leads; a link with no words names its address.
+const linksOf = (main, fold) => {
+    const seen = new Set();
+    return [...main.querySelectorAll("a[href^='/']")].flatMap((a) => {
+        const href = a.getAttribute("href");
+        if (seen.has(href)) return [];
+        seen.add(href);
+        return [{ id: href, heading: fold(a.textContent).slice(0, 60) || href }];
+    }).slice(0, 40);
+};
 
 // The section on the visitor's screen (F118): the last whose top has passed the line just under the header, the same
 // rule the section index lights by; at the page's end, the last section. Sent with every message, so "this" is known.
