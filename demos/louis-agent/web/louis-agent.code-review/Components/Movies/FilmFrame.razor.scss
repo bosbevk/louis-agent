@@ -1,6 +1,13 @@
 /* ---- A film's frame (F109.1, step 7): the film as it is, and a pause button in the frame's corner. Scoped: the
    film inside is reached under ::deep. ---- */
-.film-frame { position: relative; }
+/* The film fits a slide's page on any screen (FX112): it scales to its frame's width, so the frame is never wider
+   than a page is high at 16:9. A page of a paged section is the framework's 100dvh - 330px, less the film's margin. */
+.film-frame {
+    position: relative;
+    width: 100%;
+    max-width: calc((100dvh - 350px) * 16 / 9);
+    margin-inline: auto;
+}
 
 /* Paused: every animation under the film's stage stands where it is. !important, because each part sets its
    play state through its animation shorthand and this must win over all of them. */

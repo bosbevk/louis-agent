@@ -56,4 +56,17 @@ public class FilmFrameTests
         Assert.That(cut.FindAll($".film-frame > .movie > .stage.{film}"), Has.Count.EqualTo(1));
         Assert.That(cut.FindAll(".movie button"), Is.Empty, "the control is outside the film");
     }
+
+    /// <summary>
+    /// The film fits a slide's page whatever the screen's height (FX112): the frame is never wider than the page is
+    /// high at 16:9, so the film, which scales to its frame's width, never overflows a page and leaves one empty.
+    /// </summary>
+    [Test]
+    public void TheFrame_IsNeverWiderThanAPageIsHigh()
+    {
+        string styles = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "demos/louis-agent/web/louis-agent.code-review/Components/Movies/FilmFrame.razor.scss"));
+
+        Assert.That(styles, Does.Contain("max-width: calc((100dvh - 350px) * 16 / 9);"));
+    }
 }
