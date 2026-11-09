@@ -82,13 +82,18 @@ progress line the frame's module drives; the hero, 100% C# and South Africa up f
 the map of the whole framework, the four concepts, what's built on it, the custom-agents band, the contact strip, each
 block revealing as it enters), `/how-it-works` (the detailed film, one turn through core; the
 parts in the order a turn meets them; the rules every turn keeps), `/architecture` (every project that ships, by
-family), `/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/proof` (the numbers in dollars
+family), `/identities`, `/packs`, `/build-your-own` (a real program and catalogue), `/csharp-ai-agent-framework`
+(written for what people search, F123: louis-agent as an AI agent framework in C# on your own hardware, beside
+Microsoft Agent Framework and Semantic Kernel, each claim about theirs from their own pages and linked, ADR 0110),
+`/proof` (the numbers in dollars
 and rand, and how the rand come about), `/built-on-it` (the two demos, what the framework stands on with each licence,
 the hosts), `/whats-coming` (the planned features by id, each marked planned) and `/contact`, every one in the site's
 frame (`SiteLayout` on the framework's `SiteShell`), the chat at `/chat` in its own bare layout. The pages are written
 from the docs the guide in the corner reads, every number from the ledger or an eval run, and each claim is held to
 the repo by a test (below); what's planned is on its own page, labelled, never as shipped. The repository is private,
-so no page links to it.
+so no page links to it. The landing's `PageHead` carries the site's facts for search engines (`Content/SiteFacts.cs`:
+the organisation, the website and the framework as software, F123), and `wwwroot/apple-touch-icon.png`, 180 by 180
+from the brand's avatar, is both the phone's home-screen icon and the organisation's logo.
 
 **The two films** are CSS alone. `Styles/site/movie/_stage.scss` is what they share: a 1280×720 stage scaled to its
 container, a floor seen from above (`perspective` on the camera, the camera's moves a `transform` animation on the
