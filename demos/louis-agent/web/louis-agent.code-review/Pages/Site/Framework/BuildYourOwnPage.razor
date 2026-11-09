@@ -25,12 +25,13 @@ await CliHost.RunAsync(args, CodingCatalog.Create(), new HostServices(WebAccess.
 </Band>
 
 <Band Id="loads" Kicker="What it loads">
-    <pre class="listing"><code>public static AgentCatalog Create() => new([new CodingIdentity(), new ExpertIdentity()], Packs());
+    <pre class="listing"><code>public static AgentCatalog Create() =>
+    new([new CodingIdentity(), new ExpertIdentity(), new TriageIdentity()], Packs());
 
 // The packs:
 new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads), new SitePack(),</code></pre>
-    <p class="band-note">The identities are who it is: the coding agent, and the guide in this page's corner. The packs are what it can do. <a href="/packs">Every pack</a></p>
+new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads), new SitePack(),</code></pre>
+    <p class="band-note">The identities are who it is: the coding agent, the guide in this page's corner, and the triage team that will fix a service's errors. The packs are what it can do. <a href="/packs">Every pack</a></p>
 </Band>
 
 <Band Id="whose" Kicker="Whose is what">

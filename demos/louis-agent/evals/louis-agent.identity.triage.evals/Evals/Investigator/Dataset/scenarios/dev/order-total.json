@@ -1,0 +1,19 @@
+{
+  "id": "order-total",
+  "input": [
+    {
+      "role": "user",
+      "content": "Run id: eval-investigator-order-total.\n\nThe department's repository is demos/louis-agent/samples/order-service in your workspace.\n\nThe error:\n\n{\"id\":\"327a7e0ac8b8\",\"service\":\"order-service\",\"method\":\"order-total\",\"arguments\":\"1003\",\"exception_type\":\"System.Collections.Generic.KeyNotFoundException\",\"message\":\"The given key 'SUMMER25' was not present in the dictionary.\",\"stack_trace\":\"   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)\\n   at OrderService.OrderApi.GetOrderTotal(Int32 id) in src/OrderService/Api/OrderTotal.cs:line 18\\n   at Program.<Main>$(String[] args) in src/OrderService/Program.cs:line 13\"}\n\nThe method's runbook:\n\n## Method: order-total\n\n**What it does:** GET /orders/{id}/total, the amount to charge: the subtotal minus the order's discount code, rounded to 2 decimals (Api/OrderTotal.cs). The checkout calls it before taking payment, so a failure blocks the sale.\n\n**Discount codes in force:** WELCOME10 (10%), VIP20 (20%). Marketing retires codes without telling engineering, so orders can carry a code that is no longer in the table.\n\n**Expected (acknowledge, no action):** OrderService.OrderNotFoundException, an unknown order id (a 404).\n\n**Auto-fixable:** any other exception, for example a KeyNotFoundException for a retired discount code.\n\n**Expected behaviour:** an unknown or retired discount code gives no discount (the total is the subtotal) instead of failing. Totals for orders with WELCOME10, VIP20 or no code must not change.\n\nFind the cause and report it."
+    }
+  ],
+  "metadata": {
+    "place": null,
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {},
+    "categories": [
+      "role:investigator",
+      "area:code"
+    ]
+  }
+}

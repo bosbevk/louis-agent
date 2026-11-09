@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "name": "triage-investigator",
+  "identity": "triage",
+  "version": 1,
+  "proves": "The triage team's investigator reads the code behind an error and ends with ReportInvestigation, putting the cause in the code's area.",
+  "manual": "manual.md",
+  "modes": [
+    { "name": "investigator", "role": "triage-investigator", "toolsets": ["triage", "files", "git", "dotnet"], "depth": 1 }
+  ],
+  "checks": [
+    { "type": "no-error", "name": "investigator-no-error" },
+    { "type": "tool-used", "parameters": { "tool": "ReportInvestigation" } },
+    { "type": "tool-used-with", "parameters": { "tool": "ReportInvestigation", "field": "area", "value": "code" } }
+  ]
+}

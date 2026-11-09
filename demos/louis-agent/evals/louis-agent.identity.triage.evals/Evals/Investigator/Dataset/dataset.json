@@ -1,0 +1,9 @@
+{
+  "name": "triage-investigator",
+  "version": 1,
+  "covers": "The investigator's cause and area: one error of the order service whose cause is in its own code, for the dev split.",
+  "content_hash": "098bceb3303a0e162f18791fd2ee6f09b98a4ad00984e32a71b0bc444250169d",
+  "changes": [
+    "2026-11-09: first version, order-total 1003's KeyNotFoundException for the retired code SUMMER25, with its runbook"
+  ]
+}

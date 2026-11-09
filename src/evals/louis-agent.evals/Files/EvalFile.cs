@@ -23,8 +23,11 @@ public sealed record EvalFile(
     IReadOnlyList<CheckEntryFile> Checks,
     string? Manual = null);
 
-/// <summary>One mode the eval runs in: its name, the role a session opens with, and the toolsets it names.</summary>
-public sealed record EvalModeFile(string Name, string Role, IReadOnlyList<string> Toolsets);
+/// <summary>
+/// One mode the eval runs in: its name, the role a session opens with, the toolsets it names, and the level it opens
+/// at: 0 for a voice, 1 for a specialist role (F106.3.2), since a role lives at its own level.
+/// </summary>
+public sealed record EvalModeFile(string Name, string Role, IReadOnlyList<string> Toolsets, int Depth = 0);
 
 /// <summary>
 /// One check the eval grades with: its catalogue type, a name only where a stored run already carries one that

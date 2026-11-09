@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 79 | 73 |
-| Fixes (`FX`) | 98 | 5 |
+| Features (`F`) | 80 | 73 |
+| Fixes (`FX`) | 98 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (104 in the TODO)
+## Open (105 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -70,6 +70,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
+| FX83 | The paymo and devops packs' async tools take no CancellationToken; the catalogue's convertibility test names the two as the known gap | Next |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
@@ -127,10 +128,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (79 done)
+## Features (80 done)
 
 | Id | When | What |
 |---|---|---|
+| F106.3.2 | 2026-11-09 | The triage identity: the manager's voice, the sorter, investigator and reviewer as roles, each ending with a typed tool of the triage pack (`SortCase` new), loaded by the coding catalogue; the convertibility check shared; an eval per role at a specialist's level (an eval mode names its depth), passed live on Haiku for about R0.15 |
 | F120 | 2026-11-09 | Watch the coding agent work: the site's doors lead to `/coding-agent`, where the agent fixing a sample's two bugs, recorded once on Haiku for about R0.10, plays in the framework's chat view (`RecordedChat`, a shared replay loop, a pace by kind), then the offer; the live chat stays behind the key (ADR 0108); a diagram's gaps fit their own words |
 | F119 | 2026-11-09 | How it works splits the loop from the web: the web's slide says the agent runs without it and the web turns an agent into a website, names how the site, the guide, the API and the accounts work with the engine, and has its own diagram; a sitemap of every page and place, held to the pages by a test |
 | F118 | 2026-11-08 | A site of slides from the framework's parts: the section index from the bands, slides or a flowing page as a layout option, a section that pages sideways when it holds more, the hero, tiles and closing strip as framework parts; every place its own address (ADR 0107); the guide reads the section in view, opens a card, turns a page, lights a place with a spotlight, and walks a page from a tour button on every page |

@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Packs.Triage.Runs;
 using LouisAgent.Packs.Triage.Runs.Steps;
 using LouisAgent.Packs.Triage.Tools;
+using LouisAgent.Packs.Triage.Tools.Choices;
 using LouisAgent.Packs.Triage.Tools.Results;
 using Microsoft.Extensions.Time.Testing;
 
@@ -27,7 +28,28 @@ public class TriageToolsTests
         _recorder = new FileTriageRecorder(_root);
         await _recorder.SaveAsync(new TriageStep("run-1", 1, TriageAgent.Code, TriageStepKind.Collected,
             "Error abc123 read from the feed.", "", Now));
-        _tools = new TriageTools(_recorder, new FakeTimeProvider(Now.AddMinutes(1)));
+        _tools = new TriageTools(_recorder, ["code", "ops"], new FakeTimeProvider(Now.AddMinutes(1)));
+    }
+
+    /// <summary>The sorter's ending (F106.3.2): a department it was given is saved as Sorted; another is refused with the names.</summary>
+    [Test]
+    public async Task ASorting_KeepsTheDepartment_AndRefusesOneNotGiven()
+    {
+        string said = await _tools.SortCase("run-1", "ops", "The stack is in the hosting configuration.");
+        string refused = await _tools.SortCase("run-1", "marketing", "no");
+
+        var run = await _recorder.ReadAsync("run-1");
+        var sorting = JsonSerializer.Deserialize<Sorting>(run!.Steps[1].Result!, FileTriageRecorder.Json)!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(said, Does.StartWith("Recorded step 2 of run run-1"));
+            Assert.That(run.Steps[1].Agent, Is.EqualTo(TriageAgent.Sorter));
+            Assert.That(run.Steps[1].Kind, Is.EqualTo(TriageStepKind.Sorted));
+            Assert.That(sorting, Is.EqualTo(new Sorting("ops", "The stack is in the hosting configuration.")));
+            Assert.That(refused, Does.Contain("is not a department").And.Contain("code, ops"));
+            Assert.That(run.Steps, Has.Count.EqualTo(2));
+        });
     }
 
     [TearDown]
@@ -102,6 +124,28 @@ public class TriageToolsTests
             Assert.That(await _tools.ReportReview("run-1", true, "\n"), Does.Contain("needs a reason"));
             Assert.That(await _tools.DecideCase("run-9", "ignore", "fine"), Does.Contain("no run 'run-9'"));
             Assert.That(await _tools.DecideCase("../x", "ignore", "fine"), Does.Contain("not a run id"));
+        });
+    }
+
+    /// <summary>
+    /// In an eval's trial a role's tool starts a run it doesn't know (F106.3.2 step 7, Louis's pick A), so a scenario
+    /// can end with the tool without a run made first; a bad run id is still refused, and outside a trial an unknown
+    /// run still is (above).
+    /// </summary>
+    [Test]
+    public async Task InATrial_ARolesToolStartsTheRun()
+    {
+        var inATrial = new TriageTools(_recorder, ["code", "ops"], new FakeTimeProvider(Now), () => true);
+
+        string said = await inATrial.SortCase("trial-7", "code", "The stack is in the order code.");
+        string bad = await inATrial.SortCase("../x", "code", "no");
+
+        var run = await _recorder.ReadAsync("trial-7");
+        Assert.Multiple(() =>
+        {
+            Assert.That(said, Does.StartWith("Recorded step 1 of run trial-7"));
+            Assert.That(run?.Steps.Single().Kind, Is.EqualTo(TriageStepKind.Sorted));
+            Assert.That(bad, Does.Contain("not a run id"));
         });
     }
 }

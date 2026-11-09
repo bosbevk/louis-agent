@@ -28,12 +28,14 @@ public class SolutionLayoutTests
     [TestCase("packs/web", "louis-agent.pack.recipes.web", "louis-agent.pack.files.web", "louis-agent.pack.git.web")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
+    [TestCase("demos/louis-agent/evals", "louis-agent.identity.triage.evals")]
     [TestCase("demos/puls/web", "louis-agent.puls")]
     [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner", "louis-agent.puls-api")]
     [TestCase("demos/starter/web", "louis-agent.starter")]
     [TestCase("demos/starter/hosts", "louis-agent.starter-api")]
     [TestCase("demos/starter/tests", "louis-agent.starter.tests", "louis-agent.starter.integration-tests")]
-    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.expert")]
+    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding", "louis-agent.identity.expert",
+        "louis-agent.identity.triage")]
     [TestCase("demos/louis-agent/tools", "louis-agent.film-export")]
     [TestCase("demos/louis-agent/web", "louis-agent.code-review")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
@@ -57,7 +59,7 @@ public class SolutionLayoutTests
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
     [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests",
-        "louis-agent.code-review.tests",
+        "louis-agent.code-review.tests", "louis-agent.identity.triage.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
     [TestCase("packs/tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests",
         "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests",

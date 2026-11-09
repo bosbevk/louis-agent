@@ -114,7 +114,7 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     /// <summary>Turns the session we want into the body the API expects when a session opens.</summary>
     private static SessionWire.OpenBody Body(SessionRequest request) =>
         new(request.Mode.Toolsets, request.Mode.Role, request.TimeZone, request.Task, request.RunTag, request.Place,
-            request.Mode.Llm,
+            request.Mode.Llm, request.Mode.Depth,
             new SessionWire.ReplayBody(request.Replay.Web, request.Replay.Of, request.Replay.Model));
 
     /// <summary>

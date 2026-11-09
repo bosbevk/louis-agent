@@ -17,6 +17,8 @@
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.anthropic\louis-agent.core.anthropic.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.ollama\louis-agent.core.ollama.csproj" />
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core.openai\louis-agent.core.openai.csproj" />
+        <!-- F106.3.2: the triage team's evals, one per role, folders of files copied beside the runner, where it finds them. -->
+        <ProjectReference Include="..\..\evals\louis-agent.identity.triage.evals\louis-agent.identity.triage.evals.csproj" />
     </ItemGroup>
 
 </Project>

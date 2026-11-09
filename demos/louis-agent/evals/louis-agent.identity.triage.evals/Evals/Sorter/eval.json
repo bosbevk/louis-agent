@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "name": "triage-sorter",
+  "identity": "triage",
+  "version": 1,
+  "proves": "The triage team's sorter reads an error and ends with SortCase, naming the department whose code threw.",
+  "manual": "manual.md",
+  "modes": [
+    { "name": "sorter", "role": "triage-sorter", "toolsets": ["triage"], "depth": 1 }
+  ],
+  "checks": [
+    { "type": "no-error", "name": "sorter-no-error" },
+    { "type": "tool-used", "parameters": { "tool": "SortCase" } },
+    { "type": "tool-used-with", "parameters": { "tool": "SortCase", "field": "department", "value": "code" } }
+  ]
+}

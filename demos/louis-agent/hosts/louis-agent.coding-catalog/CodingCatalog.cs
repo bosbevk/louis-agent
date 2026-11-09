@@ -3,7 +3,9 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Identities.Coding;
 using LouisAgent.Identities.Expert;
+using LouisAgent.Identities.Triage;
 using LouisAgent.Packs.Docs;
+using LouisAgent.Packs.Triage;
 using LouisAgent.Packs.Leads;
 using LouisAgent.Packs.Site;
 using LouisAgent.Packs.DevOps;
@@ -28,19 +30,21 @@ public static class CodingCatalog
     {
         HostEnvironment.Load();
         return Packs(PaymoOptions.FromEnvironment(), DevOpsOptions.FromEnvironment(), DocsOptions.FromEnvironment(),
-            LeadsOptions.FromEnvironment());
+            TriageOptions.FromEnvironment(), LeadsOptions.FromEnvironment());
     }
 
     /// <summary>The same list with the settings given, so the golden files hold it without this machine's keys.</summary>
-    public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps, DocsOptions docs, LeadsOptions leads) =>
+    public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps, DocsOptions docs,
+        TriageOptions triage, LeadsOptions leads) =>
     [
         new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-        new DevOpsPack(devOps), new DocsPack(docs), new LeadsPack(leads), new SitePack(),
+        new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads), new SitePack(),
     ];
 
     /// <summary>
-    /// The catalogue a program hands to its host: the coding agent first, so it is the default, and the expert
-    /// beside it (F109.3), which a session opens as by name.
+    /// The catalogue a program hands to its host: the coding agent first, so it is the default, the expert beside
+    /// it (F109.3), and the triage team (F106.3.2), each opened as by name.
     /// </summary>
-    public static AgentCatalog Create() => new([new CodingIdentity(), new ExpertIdentity()], Packs());
+    public static AgentCatalog Create() =>
+        new([new CodingIdentity(), new ExpertIdentity(), new TriageIdentity()], Packs());
 }

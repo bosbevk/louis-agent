@@ -1,8 +1,6 @@
 ---
 name: triage
-description: End a triage role's work with a typed result, raise a case to a person, and read a run back.
-metadata:
-  level: toolset
+description: The triage toolset's guide, loaded with it. How a triage role ends its work with a typed result, raises a case to a person, and reads a run back.
 ---
 # Triage
 
