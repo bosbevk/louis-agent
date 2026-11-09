@@ -173,6 +173,26 @@ public class GitToolsTests
 
     // ---- Each command's form, pinned on real git ----
 
+    /// <summary>
+    /// Switching names a branch, never a file (FX107): with no branch of that name and a file that has it, the switch
+    /// is refused and the file keeps its change. `git checkout` would have thrown the change away, and on git 2.43,
+    /// the API image's, it refused `--end-of-options` altogether, so a reviewer could not reach the coder's branch.
+    /// </summary>
+    [Test]
+    public void SwitchingToAName_NeverTouchesAFileOfThatName()
+    {
+        File.WriteAllText(Path.Combine(_repo, "readme.md"), "Changed\n");
+
+        string said = _branches.SwitchBranch("readme.md");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(File.ReadAllText(Path.Combine(_repo, "readme.md")), Is.EqualTo("Changed\n"));
+            Assert.That(said, Does.Contain("Exit Code"));
+            Assert.That(_branches.GetCurrentBranch(), Is.EqualTo("main"));
+        });
+    }
+
     [Test]
     public void Branches_CreateSwitchAndDelete()
     {
