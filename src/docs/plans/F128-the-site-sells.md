@@ -21,8 +21,9 @@ it works for you" band with the facts a buyer trusts.
 
 | Child | Done when |
 |---|---|
-| **F128.1 The site sells** (`feature/F128.1-the-site-sells`) | The wrong facts are right; the menu, a What we build page and a Pricing page lead; the guide asks what brings the visitor; the landing opens with the offer and tells the story offer first, framework as proof; all at 1920×1080 and phone width |
+| **F128.1 The site sells** (`feature/F128.1-the-site-sells`), done 2026-11-09 | The wrong facts are right; the menu, a What we build page and a Pricing page lead; the guide asks what brings the visitor; the landing opens with the offer and tells the story offer first, framework as proof; all at 1920×1080 and phone width |
 | **F128.2 Three business demos** (`feature/F128.2-business-demos`) | A law practice, a restaurant and a doctor's practice each have a made-up site's agent, recorded answering a customer and booking, played on its own demo page, first on the demos list; the law and doctor agents never advise, they book and pass on |
 
 ---
-[Plans](README.md) · Related: [F128.1](F128.1-the-site-sells.md)
+[Plans](README.md) · Related: [ADR 0112](../adr/0112-the-site-sells-first.md) (F128.1, done) ·
+[ADR 0113](../adr/0113-the-guide-is-louis-and-says-it-is-the-ai.md)
