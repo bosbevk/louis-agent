@@ -3,6 +3,7 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Chats.Replay;
 
 namespace LouisAgent.Web.Evals.Admin.Explorer.Replay;
 
@@ -37,24 +38,21 @@ public static class TurnReplays
     }
 
     /// <summary>
-    /// Plays the events into a turn at their own rhythm, three times faster, and asks for a redraw every third event
-    /// or after any pause.
+    /// Plays the events into a turn at their own rhythm, three times faster, through the framework's replay loop
+    /// (F120), which asks for a redraw every third event, after any pause and at the end.
     /// </summary>
-    public static async Task PlayAsync(Turn turn, IReadOnlyList<TurnEventRow> events, Action redraw,
+    public static Task PlayAsync(Turn turn, IReadOnlyList<TurnEventRow> events, Action redraw,
         CancellationToken stop)
     {
+        // Each event waits a third of the gap since the one before it, so the pace follows the stored times.
         DateTimeOffset? last = events[0].At;
-        int since = 0;
+        var steps = new List<ReplayStep>();
         foreach (var e in events)
         {
-            int wait = ReplayPace.WaitMs(e.At, last);
+            steps.Add(new ReplayStep(SessionEvent.From(e.Type, e.Data), ReplayPace.WaitMs(e.At, last)));
             last = e.At ?? last;
-            if (wait > 0) await Task.Delay(wait, stop);
-            TurnStream.Apply(turn, SessionEvent.From(e.Type, e.Data));
-            if (++since % 3 != 0 && wait == 0) continue;
-
-            redraw();
-            since = 0;
         }
+
+        return TurnReplay.PlayAsync(turn, steps, redraw, stop);
     }
 }

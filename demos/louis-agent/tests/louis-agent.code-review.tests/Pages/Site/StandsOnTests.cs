@@ -28,7 +28,7 @@ public class StandsOnTests
     /// <summary>Every page of the site, rendered.</summary>
     private static List<string> ThePages()
     {
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var pages = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any());

@@ -131,11 +131,11 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The header's way into the chat says "Coming soon" and leads nowhere while the chat is closed to visitors (FX88,
-    /// Louis: "have this as coming soon and make it not accessible until the feature is done"); open, it leads to /chat.
+    /// While the live chat is closed to visitors (FX88), the header's way in leads to the recorded session (F120,
+    /// Louis's pick "Watch it work"), never to /chat.
     /// </summary>
     [Test]
-    public void TheHeader_SaysComingSoon_WhileTheChatIsClosed()
+    public void TheHeader_LeadsToTheRecording_WhileTheChatIsClosed()
     {
         using var ctx = Context();
 
@@ -143,9 +143,10 @@ public class SiteLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(SiteDoors.CodingAgent, Is.False, "the chat is closed today");
+            Assert.That(SiteDoors.CodingAgent, Is.False, "the live chat is closed today");
             Assert.That(cut.FindAll(".site-actions a[href='/chat']"), Is.Empty);
-            Assert.That(cut.Find(".site-actions .is-soon").TextContent.Trim(), Is.EqualTo("Coming soon"));
+            Assert.That(cut.Find(".site-actions a[href='/coding-agent']").TextContent.Trim(),
+                Is.EqualTo("Watch it work"));
         });
     }
 
@@ -163,22 +164,26 @@ public class SiteLayoutTests
         Assert.That(cut.FindAll(".widget-panel"), Is.Empty);
     }
 
-    /// <summary>While the chat is closed, a chat link is a "Coming soon" pill wherever it was told to go: no link, no address.</summary>
+    /// <summary>
+    /// While the chat is closed, a chat link leads to the recorded session with its own words, wherever it was told
+    /// to go, so no door on the site is a dead end.
+    /// </summary>
     [Test]
-    public void AChatLink_IsAComingSoonPill_WhileTheChatIsClosed()
+    public void AChatLink_LeadsToTheRecording_WhileTheChatIsClosed()
     {
         using var ctx = Context();
 
         var cut = ctx.Render<ChatLink>(parameters => parameters
             .Add(link => link.Address, "https://agent.example/chat")
             .Add(link => link.Class, "btn btn-fill")
+            .Add(link => link.Watch, "Watch it work")
             .AddChildContent("Try it"));
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll("a"), Is.Empty);
-            Assert.That(cut.Find("span.btn.is-soon").TextContent, Is.EqualTo("Coming soon"));
-            Assert.That(cut.Find("span").GetAttribute("aria-disabled"), Is.EqualTo("true"));
+            Assert.That(cut.Find("a.btn.btn-fill").GetAttribute("href"), Is.EqualTo("/coding-agent"));
+            Assert.That(cut.Find("a").TextContent, Is.EqualTo("Watch it work"));
+            Assert.That(cut.Markup, Does.Not.Contain("Coming soon"));
         });
     }
 }

@@ -160,6 +160,34 @@ A counter that's down costing a chat nothing is proved by a test, not on the run
 **What it can't tell you:** whether an answer used a recipe, since the pack never sees answers, or how often someone reads the
 open feed directly. Those stay with the eval's saved events and aren't counted.
 
+## A recorded session is the stream, played again (F120, 2026-11-09)
+
+**What it means.** The coding agent's page on the site shows the agent fixing a real bug: thinking, calling its
+tools, reading the test output, writing the fix, running the tests again, with the bill at the end. None of it runs
+while a visitor watches. It is one session, recorded once, played back.
+
+**Why it works so simply.** The API already streams every turn as events (server-sent events: one small message per
+change, `content_block_delta` for a few words, `content_block_start` for a tool call). The chat draws a turn by
+folding those events into it, one at a time. So a recording is nothing more than that stream saved to a file, and
+playing it is the same fold with a wait between events. A visitor sees exactly what the live chat drew, because it
+is the same code. This is the payoff of a single event contract (ADR 0047): the stream is the observable truth of a
+turn, so it can be logged, tested, replayed in the eval studio and now shown on a website, all from one format.
+
+**What had to be added.** A stream carries no times, so the replay waits by kind: a few words of the answer at
+reading pace, thinking faster, a beat for each tool call and its result (`RecordingPace`). The loop that applies the
+events and asks for a redraw every few was already in the eval studio; it moved into the framework (`TurnReplay`),
+and both use it.
+
+**What to watch.** A recording is honest only if it is clean. The first try at recording mounted the demo's config
+folder, and the host loads every `.env` file in it, so the container picked up the private key and the git identity.
+It was caught before any session opened, and the script now mounts only the two price files. The session itself ran
+on a sample project in a fresh git copy, never on this repo, and its file was read for anything private before it
+was committed. A recording also ages: when the agent changes, the page shows the old session until it is recorded
+again.
+
+**Where it sits in the skill map:** observability (skill 17), a turn as an event stream you can replay; and
+human-in-the-loop (skill 16), since the live agent with a shell stays behind the owner's key (ADR 0108).
+
 ## Sources
 
 OpenTelemetry, *.NET getting started* and the *GenAI semantic conventions* (`invoke_agent`) · W3C, *Trace Context*

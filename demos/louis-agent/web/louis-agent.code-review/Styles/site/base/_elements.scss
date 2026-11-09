@@ -75,8 +75,6 @@
     .btn-line:hover { border-color: var(--bs-emphasis-color); color: var(--bs-emphasis-color); }
     .btn-dark { background: var(--bs-body-bg); color: var(--bs-emphasis-color); }
     .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
-    /* A door that isn't open yet (FX88): the button's shape, faded, and no answer to the pointer. */
-    .btn.is-soon { opacity: .5; cursor: default; pointer-events: none; }
 
     .panel {
         border: 1px solid var(--bs-border-color);

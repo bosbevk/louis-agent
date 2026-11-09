@@ -41,6 +41,8 @@ public class GuideKnowsTheSiteTests
     /// </summary>
     [TestCase("What we sell today")]
     [TestCase("R500 to R1,000 a month")]
+    [TestCase("once-off fee to build the site")]
+    [TestCase("first Markdown files")]
     [TestCase("closed Docker container")]
     [TestCase("When someone is interested, you can tell Louis yourself.")]
     [TestCase("never send twice")]
@@ -73,6 +75,8 @@ public class GuideKnowsTheSiteTests
     /// </summary>
     [TestCase("What the site sells, and how to reach Louis")]
     [TestCase("R500 to R1,000 a month")]
+    [TestCase("once-off fee to build the site")]
+    [TestCase("first Markdown files")]
     [TestCase("louis.marais@live.com")]
     [TestCase("066 391 2470")]
     public void TheDocTheVoiceNames_HoldsTheOffer(string words)

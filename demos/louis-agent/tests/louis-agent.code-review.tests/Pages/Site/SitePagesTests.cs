@@ -118,6 +118,10 @@ public class SitePagesTests
     [TestCase(typeof(HowItWorksPage), "closed Docker container")]
     [TestCase(typeof(HomePage), "What we sell today")]
     [TestCase(typeof(HomePage), "R500 to R1,000 a month")]
+    [TestCase(typeof(HomePage), "once-off fee to build the site")]
+    [TestCase(typeof(HomePage), "first Markdown files")]
+    [TestCase(typeof(ContactPage), "once-off fee to build the site")]
+    [TestCase(typeof(ContactPage), "first Markdown files")]
     [TestCase(typeof(ContactPage), "Custom agents")]
     [TestCase(typeof(ContactPage), "What we sell today")]
     [TestCase(typeof(ContactPage), "R500 to R1,000 a month")]
@@ -155,8 +159,9 @@ public class SitePagesTests
 
     /// <summary>
     /// The start slide's way in is the guide's tour (F118, Louis: "just have the coming soon and then the flashy take
-    /// the tour button", then "switch these buttons"): the tour first, then the coding agent's chat, and nothing else;
-    /// the line above says the guide can walk you through.
+    /// the tour button", then "switch these buttons"): the tour first, then the coding agent, which leads to its
+    /// recorded session while the live chat is closed (F120), and nothing else; the line above says the guide can walk
+    /// you through.
     /// </summary>
     [Test]
     public void TheStartSlide_OffersTheTour()
@@ -171,7 +176,8 @@ public class SitePagesTests
             Assert.That(actions, Has.Count.EqualTo(2));
             Assert.That(actions[0].ClassList, Does.Contain("guide-button"));
             Assert.That(actions[0].TextContent, Does.Contain("Take the tour"));
-            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Coming soon"));
+            Assert.That(actions[1].TextContent.Trim(), Is.EqualTo("Watch the coding agent"));
+            Assert.That(actions[1].GetAttribute("href"), Is.EqualTo("/coding-agent"));
             Assert.That(cut.Find(".hero .muted").TextContent, Does.Contain("walk you through"));
         });
     }
@@ -208,7 +214,7 @@ public class SitePagesTests
     [Test]
     public void NoPage_JoinsClausesWithASemicolon()
     {
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var pages = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
@@ -238,7 +244,7 @@ public class SitePagesTests
     [Test]
     public void EveryIdOnAPage_NamesOnePlace()
     {
-        using var ctx = new BunitContext();
+        using var ctx = SitePageContext.Create();
         var pages = typeof(HomePage).Assembly.GetTypes()
             .Where(type => type.Namespace?.StartsWith(typeof(HomePage).Namespace!) == true)
             .Where(type => type.GetCustomAttributes<RouteAttribute>().Any()).ToList();
