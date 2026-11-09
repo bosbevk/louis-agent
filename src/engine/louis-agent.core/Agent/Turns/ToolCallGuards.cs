@@ -55,6 +55,15 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
             return TruncatedCallMessage;
         }
 
+        // A call that left out an argument the tool needs isn't run: the model hears what it missed, in the tool's
+        // own words with its choices, rather than the framework's "missing a value for the required parameter" (FX108).
+        if (MissingArguments.Message(context.Function, context.Arguments) is { } missing)
+        {
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed,
+                new { Tool = context.Function.Name, ErrorType = nameof(MissingArguments), Reason = missing }, tag: Tag);
+            return missing;
+        }
+
         object? result;
         try
         {
