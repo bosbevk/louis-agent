@@ -99,8 +99,12 @@ sequenceDiagram
 ## Approved during the build
 
 - **`/try` side by side, like `/coding-agent`** (Louis's pick of three, 2026-11-09, on the triage demo outgrowing a
-  1080p screen as its step list fills): the words on the left, and on the right one window, the framework's
-  `_window` mixin, holding the stage, the step's popup and the list, which scrolls inside it. Step 3 takes it.
+  1080p screen as its step list fills), then replaced the same day: **"split this in two sections"**, the words
+  (kicker, heading, intro) one section and the player the next, its list scrolling inside it so it fits a slide.
+- **The triage demo is at `/triage-demo`** (Louis: "should just say triage-demo"), no redirect from `/try` (ADR 0049).
+- **The recording's closing button is a plain small button** (Louis on `/coding-agent`: "too big just button",
+  "the panel should leave space for the button"): "Ask the guide about one" takes the small line style of "Play it
+  again", and the recorded chat's window keeps room for its ending, so both fit inside it.
 
 ---
 [Docs index](../README.md) · Related: [plans](README.md), [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)
