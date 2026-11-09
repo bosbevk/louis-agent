@@ -55,6 +55,7 @@ public class SiteLayoutTests
     [TestCase("/identities")]
     [TestCase("/packs")]
     [TestCase("/build-your-own")]
+    [TestCase("/csharp-ai-agent-framework")]
     [TestCase("/proof")]
     [TestCase("/built-on-it")]
     [TestCase("/whats-coming")]
@@ -69,8 +70,8 @@ public class SiteLayoutTests
     }
 
     /// <summary>
-    /// The framework's five pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"),
-    /// so the bar stays one line with What's coming on it.
+    /// The framework's pages sit in one group (FX73, Louis: "if the menu gets too long we should group some items"), so
+    /// the bar stays one line with What's coming on it; the comparison with Microsoft's frameworks is the last (F123).
     /// </summary>
     [Test]
     public void TheFrameworksPages_AreOneGroup()
@@ -84,7 +85,11 @@ public class SiteLayoutTests
             var menu = cut.FindAll(".site-nav .site-menu")[0];
             Assert.That(menu.QuerySelector(".site-menu-label")!.TextContent, Is.EqualTo("The framework"));
             Assert.That(menu.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
-                Is.EqualTo(new[] { "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own" }));
+                Is.EqualTo(new[]
+                {
+                    "/how-it-works", "/architecture", "/identities", "/packs", "/build-your-own",
+                    "/csharp-ai-agent-framework"
+                }));
             Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4), "the rest stand in the bar");
         });
     }
@@ -111,7 +116,7 @@ public class SiteLayoutTests
         Assert.That(cut.Find(".site-footer").TextContent, Does.Contain("100% C#, because you can"));
     }
 
-    /// <summary>The brand is the lockup (F110): the mark, its own copy, then the name, as the brand README says.</summary>
+    /// <summary>The brand is the lockup (F110): the mark, its copy, then the name, as the brand guide says.</summary>
     [Test]
     public void TheBrand_IsTheLockup()
     {

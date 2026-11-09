@@ -114,5 +114,19 @@ sequenceDiagram
 
 ## Sources (step 4 fills it)
 
+Read 2026-11-09 for `/csharp-ai-agent-framework`; the page says of Microsoft's frameworks only what these say, and links
+each.
+
+| Claim on the page | Source |
+|---|---|
+| Agent Framework is "the direct successor" to Semantic Kernel and AutoGen, "created by the same teams"; .NET and Python, Go "in public preview"; MCP clients for tools | [Agent Framework overview](https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview) |
+| Graph-based workflows with checkpointing, streaming, human in the loop; middleware; built-in OpenTelemetry; several providers; Foundry hosted agents and A2A in hosting; MIT | [microsoft/agent-framework](https://github.com/microsoft/agent-framework) |
+| Semantic Kernel is "a lightweight, open-source development kit" for C#, Python and Java | [Semantic Kernel overview](https://learn.microsoft.com/en-us/semantic-kernel/overview/) |
+| "Semantic Kernel is now Microsoft Agent Framework", its "enterprise-ready successor"; Agent Framework "now available at version 1.0"; MIT | [microsoft/semantic-kernel](https://github.com/microsoft/semantic-kernel) |
+
+Not stated on any of them, so not claimed: that either builds on Microsoft.Extensions.AI, or tracks a request's cost.
+The page leads with Louis's selling point (2026-11-09, "running on your own hardware, no foundry etc"), held to the
+repo by `CsharpAgentFrameworkPageTests`: the Ollama provider, and the API and Ollama in one compose file.
+
 ---
 [Docs index](../README.md) · Related: [plans](README.md), [ADR 0109](../adr/0109-a-page-is-served-as-html.md)
