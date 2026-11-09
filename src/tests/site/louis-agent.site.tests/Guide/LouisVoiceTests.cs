@@ -62,6 +62,15 @@ public class LouisVoiceTests
     }
 
     /// <summary>
+    /// Three short sentences at most (Louis: "keep the response to max 3 short sentences, only when the visitor asks to
+    /// explain or give more detail then explain long").
+    /// </summary>
+    [Test]
+    public void AnAnswer_IsThreeShortSentences_UnlessTheyAskForMore() =>
+        Assert.That(Voice(), Does.Contain("Every answer is three short sentences or fewer")
+            .And.Contain("Only when the visitor asks you to explain, or for more detail, do you go long"));
+
+    /// <summary>
     /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
     /// </summary>
     [Test]
@@ -74,6 +83,8 @@ public class LouisVoiceTests
             Assert.That(voice, Does.Contain("feel at home").And.Contain("dry").And.Contain("idiom"));
             Assert.That(voice, Does.Contain("be Louis when you talk").And.Contain("the odd Afrikaans word"));
             Assert.That(voice, Does.Contain("you're fun to talk to").And.Contain("Never flat"));
+            Assert.That(voice, Does.Contain("You're excited about what you sell")
+                .And.Contain("Excited about the product, never pushy about the sale"));
             Assert.That(voice, Does.Not.Contain("bubbly"));
         });
     }
