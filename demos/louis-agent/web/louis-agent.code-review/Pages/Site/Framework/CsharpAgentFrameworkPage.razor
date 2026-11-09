@@ -1,0 +1,60 @@
+@page "/csharp-ai-agent-framework"
+
+<PageTitle>C# AI agent framework · louis-agent</PageTitle>
+<PageHead Description="louis-agent is an AI agent framework in C# that runs on your own hardware. How it compares with Microsoft Agent Framework and Semantic Kernel." />
+
+@* Written for what people type into a search engine (F123): what louis-agent is, and a fair comparison with
+   Microsoft's two frameworks, each claim about theirs from their own pages (read 2026-11-09, linked below). *@
+<Band Id="top" Kicker="C# agent framework">
+    <h2 class="chrome">An AI agent framework in C#, on your own hardware.</h2>
+    <p class="lede">louis-agent is an AI agent framework written in 100% C#, on .NET 10 and Microsoft.Extensions.AI. It runs where you run it: in Docker on your own machine or your own server, with a local model through Ollama, or with Anthropic or any OpenAI-compatible service when you choose one. No cloud agent service sits between your agent and your data.</p>
+    <p class="band-note">This page says what it is, what Microsoft's two frameworks for agents are, and how to choose. What it says about theirs comes from their own documentation, linked at each claim.</p>
+</Band>
+
+<Band Id="ours" Kicker="louis-agent">
+    <div class="grid-2">
+        <article class="panel">
+            <h3>Your own hardware</h3>
+            <p>One Docker Compose file starts the agent's hosts, its website and Ollama beside them. With a local model, the model runs on your machine too. Hosting it for you is an offer, never a requirement.</p>
+        </article>
+        <article class="panel">
+            <h3>Every turn, seen and priced</h3>
+            <p>Thinking, every tool call and every guard stream as they happen, and the turn ends with its bill, in dollars and rand, from a usage ledger priced by a dated table. <a href="/proof">Measured</a></p>
+        </article>
+        <article class="panel">
+            <h3>An agent is files</h3>
+            <p>Its voice, its roles and its rules are Markdown in an identity. What it can do is a pack of tools, a package any identity can use and any MCP client can call. <a href="/identities">Identities</a> · <a href="/packs">Packs</a></p>
+        </article>
+        <article class="panel">
+            <h3>One engine, four hosts</h3>
+            <p>A command line, Rider's agent protocol, an HTTP API and an MCP server, each a library that a few lines of your own start. Its evals are C# too. <a href="/build-your-own">Build your own</a></p>
+        </article>
+    </div>
+    <p class="band-note">Where it stands: one person in South Africa builds it, the packages aren't on NuGet yet and the repository is private. Workflows, where one agent hands work to another and decides on what comes back, are <a href="/whats-coming">planned</a>.</p>
+</Band>
+
+<Band Id="agent-framework" Kicker="Microsoft Agent Framework" Short="Agent Framework">
+    <h2 class="chrome">Microsoft Agent Framework</h2>
+    <p class="lede">Microsoft calls it the direct successor to Semantic Kernel and AutoGen, made by the same teams. It builds agents and multi-agent workflows in .NET and Python, with Go in public preview. <a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview" target="_blank" rel="noopener">Microsoft Learn</a></p>
+    <p class="band-note">Its README lists graph-based workflows with checkpointing, streaming and human in the loop, middleware, built-in OpenTelemetry tracing, several model providers, and hosting that includes A2A and Foundry hosted agents. It uses MCP for tools, and it is MIT licensed. <a href="https://github.com/microsoft/agent-framework" target="_blank" rel="noopener">Its repository</a></p>
+</Band>
+
+<Band Id="semantic-kernel" Kicker="Semantic Kernel">
+    <h2 class="chrome">Semantic Kernel</h2>
+    <p class="lede">Microsoft describes it as a lightweight, open-source development kit for building AI agents in C#, Python and Java. <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/" target="_blank" rel="noopener">Microsoft Learn</a></p>
+    <p class="band-note">Its README now opens with "Semantic Kernel is now Microsoft Agent Framework" and calls that its enterprise-ready successor. It is MIT licensed. <a href="https://github.com/microsoft/semantic-kernel" target="_blank" rel="noopener">Its repository</a></p>
+</Band>
+
+<Band Id="choose" Kicker="Which to pick">
+    <div class="grid-2">
+        <article class="panel">
+            <h3>Pick Microsoft Agent Framework</h3>
+            <p>When you want Microsoft's own framework and its support, Python beside .NET, multi-agent workflows today, or Foundry to host your agents.</p>
+        </article>
+        <article class="panel">
+            <h3>Pick louis-agent</h3>
+            <p>When your agent must run on your own hardware with no cloud agent service in between, when you want every turn's cost in front of you in rand, or when you want a website with an agent built and hosted for you by one person you can talk to.</p>
+        </article>
+    </div>
+    <p class="band-note">Read on 9 November 2026 from Microsoft's own pages: <a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview" target="_blank" rel="noopener">Agent Framework overview</a>, <a href="https://github.com/microsoft/agent-framework" target="_blank" rel="noopener">its README</a>, <a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/" target="_blank" rel="noopener">Semantic Kernel overview</a>, <a href="https://github.com/microsoft/semantic-kernel" target="_blank" rel="noopener">its README</a>. <a href="/contact">Talk to Louis</a></p>
+</Band>

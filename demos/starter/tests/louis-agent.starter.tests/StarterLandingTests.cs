@@ -18,6 +18,6 @@ public class StarterLandingTests
 
         var cut = ctx.Render<LandingPage>();
 
-        Assert.That(cut.FindComponents<PageDescription>().Single().Instance.Text, Does.Contain("louis-agent"));
+        Assert.That(cut.FindComponents<PageHead>().Single().Instance.Description, Does.Contain("louis-agent"));
     }
 }

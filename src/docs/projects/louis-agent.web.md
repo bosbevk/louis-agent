@@ -78,7 +78,10 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   with every place by its address and the place on the visitor's screen, and its page tool takes an address: it
   scrolls there, opens a card or turns a page, and lights it with a spotlight that dims the rest. A site lists every
   page and place in its `sitemap.xml`, which a site test writes from the rendered pages and holds to them (F119). A
-  page meant for search declares a `PageDescription` beside its `PageTitle` (`Components/Site/Meta/`), and the API's
+  page meant for search declares a `PageHead` beside its `PageTitle` (`Components/Site/Meta/`): its description and
+  any structured data, in one head since Blazor keeps only the last one a page writes. The facts are schema.org
+  records under `Meta/Schema/` (an organisation, a website, a piece of software, a breadcrumb), written as JSON-LD by
+  `SchemaJson` (F123, [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md)). The API's
   `MapLouisAgentSite` serves it as HTML with its own head and words, for crawlers that run no script (F121, ADR 0109).
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.

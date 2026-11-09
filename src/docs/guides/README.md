@@ -11,6 +11,7 @@
 |---|---|
 | [Build a pack](build-a-pack.md) | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests |
 | [Spawn a site](spawn-a-site.md) | Make a new site with a chat and an admin from the starter, then make it yours |
+| [Get a site found](get-a-site-found.md) | Make a site show up in search: what the framework does, what a site adds, Search Console, the sitemap, links |
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it; the rules for modes, roles and minions |
 | [Add an eval](add-an-eval.md) | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, pick its checks, and list it with `EVALS=` |
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |

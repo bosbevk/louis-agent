@@ -83,8 +83,8 @@ StreamGoldenTests`. Read the golden's diff before you commit it. A new format is
 The API serves whatever web app the program references, and nothing in the API names one, so keep it that way. A program calls
 `AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapLouisAgentSite` (each page of its web app
 served as HTML, F121), then `MapLouisAgentApi`, which refuses to map without the key check. `MapLouisAgentSite` takes
-the web app's assembly and the services its pages inject; a page that declares a `PageDescription` is rendered once per
-process and served with its own title, description, canonical link and words, any other page the plain `index.html`.
+the web app's assembly and the services its pages inject; a page that declares a `PageHead` is rendered once per
+process and served with its own title, description, structured data, canonical link and words, any other page the plain `index.html`.
 
 ## The whole program
 

@@ -28,7 +28,7 @@ public class PageDescriptionsTests
                 builder.OpenComponent(0, page);
                 builder.CloseComponent();
             });
-            return cut.FindComponents<PageDescription>().Select(found => found.Instance.Text).ToList();
+            return cut.FindComponents<PageHead>().Select(found => found.Instance.Description).ToList();
         });
 
         Assert.Multiple(() =>

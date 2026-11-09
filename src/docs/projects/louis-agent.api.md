@@ -37,8 +37,11 @@ flowchart LR
   `MapLouisAgentSite` with its web app's assembly and the services its pages inject, in place of an `index.html`
   fallback. A page's address (or a section's under it) answers the site's `index.html` with the page's own title,
   description, link card, canonical link and body, rendered by `HtmlRenderer` the first time and kept until the
-  process restarts; a page that declares no `PageDescription`, or fails to render (logged once), answers the plain
-  shell; an address that names no page, the shell with a 404. The public address is the request's own.
+  process restarts; a page that declares no `PageHead`, or fails to render (logged once), answers the plain
+  shell; an address that names no page, the shell with a 404. The public address is the request's own. The page's
+  JSON-LD scripts go into the served head as they are, and every page under the landing gets a `BreadcrumbList` of
+  the site's name (`og:site_name`) and the page's title at its route (`PageBreadcrumb`, F123,
+  [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md)).
 - **Prices** (`GET /v1/prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
 - **Rates** (`GET /v1/rates`, public, F14): the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for

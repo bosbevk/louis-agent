@@ -321,6 +321,33 @@ into `&#183;`, valid but noisy in a title, so the shell escapes only the four ch
 outlet adds. Both say the same thing, and a crawler that runs no script sees one. Concept: *18 Testing and shipping*
 in the [goal](../GOAL.md), with [ADR 0109](../adr/0109-a-page-is-served-as-html.md).
 
+## Facts a search engine reads (F123, 2026-11-09)
+
+F121 let a crawler read every page. F123 tells it what it is reading. Louis's goal was page one for "c# agent
+framework", and nobody can promise that: Google ranks mostly by links from other sites. So the work was the part code
+can do, and a how-to for the part only a person can.
+
+- **Structured data.** A search engine reads facts about a page from *JSON-LD*: a script in the head, in the words of
+  schema.org, that says "this is an organisation, its logo is here, its LinkedIn is there" or "this page sits under
+  this site". It is the same idea as an agent's tool returning a typed result instead of loose text: a machine reads
+  facts best when they come as facts. The framework's records write them, the landing says who runs the site and what
+  the software is, and the API adds a breadcrumb to every other page by itself.
+- **The bug a curl found.** Three facts on the landing, each from its own head component, and the landing was served
+  as the empty shell again. Blazor keeps only the *last* `HeadContent` a page renders, so the facts pushed the
+  description out, and with no description the API serves the shell (F121's opt-in rule). The unit tests passed,
+  because each rendered one component alone. Only `curl` of the real page, then a test with two heads, showed it. Fixed
+  by Louis's pick: one `PageHead` writes the whole head, renamed by Rider on every page of the three sites.
+- **A fair comparison is a rule, not a tone.** The page for the search compares louis-agent with Microsoft Agent
+  Framework and Semantic Kernel. Every claim about theirs is taken from their own pages, read on a date the page shows,
+  and linked. What their pages don't say (Microsoft.Extensions.AI, cost tracking) isn't claimed either way. Every
+  claim about ours is held to the repo by a test. It leads with Louis's selling point: it runs on your own hardware,
+  with no cloud agent service in between.
+- **The part no code does.** Search Console, the sitemap submitted, the important pages asked for first, and links
+  from real places. The [how-to](../guides/get-a-site-found.md) lists them in order.
+
+Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a test of the parts is not a test of the page, and a
+`curl` of what ships is part of the check. With [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

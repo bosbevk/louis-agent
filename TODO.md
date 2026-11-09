@@ -22,6 +22,7 @@ known limitations below are facts about today, not tasks.
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
+| F124 | The framework's website out of the code-review demo, into `src/site/louis-agent.site`, documented as the framework's own (an ADR; ADR 0074 amended); built on the framework like any site, its guide answers questions about the framework | Next, after F123 | — |
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
 | F44 | The engine as a product | Now | [feature doc](src/docs/features/F12-response-speed.md) |
