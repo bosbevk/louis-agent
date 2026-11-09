@@ -1,0 +1,104 @@
+# F122 The demos, in one place
+
+> **Plan** (2026-11-09) for a Demos menu, a demo index and the docs the guide explains the demos from. Louis's asks of
+> 2026-11-09 are below. Branch `feature/F122-demos`.
+
+## Context
+
+The site has two demos, each recorded once and played back: the coding agent fixing a bug (`/coding-agent`, F120,
+ADR 0108) and the triage team at work (`/try`, F106.3.4). The header's "Watch it work" leads to the first, the hero's
+"Watch a triage" to the second, and nothing lists both.
+
+**Louis's asks (2026-11-09):** "we need to add this to a menu called demos and list them there, then take these
+buttons out" (the header's "Watch it work" and the hero's "Watch a triage"); "just have a button there then called
+demos", "which takes you to the demo index"; "make sure we have documentation on the demos, and the agent can
+explain them".
+
+**Done when:** the header has a Demos menu listing the demo index and each demo, and no "Watch it work"; the hero has
+"Take the tour" and a "Demos" button to `/demos`; `/demos` lists both demos with what each shows, served as HTML
+(F121) and in the sitemap; a doc explains each demo, the guide's voice names `/demos` and the doc, and the guide,
+asked about the demos live, explains them and takes the visitor there; checked at 1080p and on a phone.
+
+## Design
+
+- **A doc per demo, in one file.** `demos/louis-agent/docs/demos.md` (an explanation): for each demo what it
+  shows, how it was made (recorded once on Haiku, the script, what it cost), what is real and what is played back,
+  and what it would mean for a business. The guide reads it with `ReadDoc`; the image already copies the demo's docs.
+- **The index is a page of the site.** `/demos`, `DemosPage` in `Pages/Site/Agents/`, the framework's `TileRow` and
+  `Tile` (reused, ADR 0084) with one tile per demo and its link, a `PageTitle` and a `PageDescription`.
+- **The menu is the framework's `SiteMenu`**, the same as "The framework": "All demos", "The coding agent", "The
+  triage team". The header's action slot is left empty (the `ChatLink` goes).
+- **The hero's second button** is "Demos" to `/demos`.
+- **The guide's voice** names `/demos` with the new doc as its source, and the two demo lines name it too.
+
+### Interface
+
+```mermaid
+classDiagram
+    class DemosPage { route /demos }
+    class TileRow
+    class Tile { Title Href }
+    class SiteMenu { Label }
+    class SiteLayout
+    DemosPage --> TileRow
+    TileRow --> Tile
+    SiteLayout --> SiteMenu
+```
+
+```csharp
+// demos/louis-agent/web/louis-agent.code-review/Pages/Site/Agents/DemosPage.razor: markup only
+@page "/demos"
+```
+
+### Architecture
+
+```mermaid
+flowchart LR
+    hero["Hero: Demos"] --> index["/demos"]
+    menu["Header: Demos menu"] --> index
+    menu --> coding["/coding-agent"]
+    menu --> triage["/try"]
+    index --> coding
+    index --> triage
+    guide["The guide"] -->|ReadDoc| doc["docs/demos.md"]
+    guide -->|ShowPage| index
+```
+
+### Communication
+
+```mermaid
+sequenceDiagram
+    participant V as Visitor
+    participant G as Guide
+    participant D as Docs
+    V->>G: what are the demos?
+    G->>D: ReadDoc demos/louis-agent/docs/demos.md
+    G-->>V: ShowPage /demos, and what each shows
+```
+
+### Types
+
+| Type or file | Folder | Namespace | Step |
+|---|---|---|---|
+| `demos.md` | `demos/louis-agent/docs/` | — | 1 new |
+| the expert's `voice.md` | `demos/louis-agent/identity/louis-agent.identity.expert/Prompts/agent/louis-agent-expert/` | — | 1 changed |
+| `DemosPage` | `demos/louis-agent/web/louis-agent.code-review/Pages/Site/Agents/` | `LouisAgent.CodeReview.Pages.Site.Agents` | 2 new |
+| `SiteLayout`, `Hero` | the site's `Layout/`, `Components/Landing/` | unchanged | 3 changed |
+
+## Steps
+
+1. **The demos explained.** `docs/demos.md`; the voice names `/demos` and the doc; the guide's golden files.
+   Test: the guide's site tests (every page named, its sources exist).
+2. **The index.** `/demos` with a tile per demo, its title and description; the sitemap regenerated. Tests: the
+   page's tiles and links, the page descriptions test, the sitemap test.
+3. **The menu and the hero.** The Demos menu; "Watch it work" and "Watch a triage" go; the hero's "Demos". Tests:
+   the layout's and the hero's.
+4. **Checked and written down.** At 1080p and a phone in Chrome; the guide asked live about the demos; the site's
+   design doc, the work log, the plan deleted.
+
+## Approved during the build
+
+(none yet)
+
+---
+[Docs index](../README.md) · Related: [plans](README.md), [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)
