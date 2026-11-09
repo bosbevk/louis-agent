@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../src/evals/eval.schema.json",
+  "agent": { "role": "louis-agent-expert", "toolsets": ["docs", "site"] },
+  "conversations": [
+    { "id": "guide-what-is", "page": "/",
+      "turns": [
+        { "ask": "What is louis-agent, in one minute?",
+          "facts": ["no-error", "used ReadDoc", "under 30s"],
+          "criteria": ["Says it is an AI agent framework in C#", "Names the doc it read", "Ends with one small nudge: a page, a question or the chat"] } ] },
+    { "id": "guide-why-csharp", "page": "/architecture",
+      "turns": [
+        { "ask": "Why is everything in C# and not Python?",
+          "facts": ["no-error", "used SearchDocs"],
+          "criteria": ["Gives the reason the docs give", "Gives no number or fact the docs don't state"] } ] },
+    { "id": "guide-pricing", "page": "/",
+      "turns": [
+        { "ask": "Where can I see what it costs?",
+          "facts": ["no-error", "used ShowPage"],
+          "criteria": ["Opens a page that exists on the site", "Says in one line what to look at there"] } ] },
+    { "id": "guide-invoices", "page": "/",
+      "turns": [
+        { "ask": "Can your agent match my supplier invoices to my bank statement every month?",
+          "facts": ["no-error", "not-used ShowPage"],
+          "criteria": ["Calls it a custom agent Louis can build", "Outlines in the visitor's words what it would do", "Offers to tell Louis", "Never answers \"I can't do that\""] } ] },
+    { "id": "guide-bank", "page": "/",
+      "turns": [
+        { "ask": "We're a bank. Our data can't go to a public AI cloud.",
+          "facts": ["no-error"],
+          "criteria": ["Says it can run in a closed container in their own environment", "Mentions Azure's South African region", "Says the model is theirs to pick"] } ] },
+    { "id": "guide-customers", "page": "/",
+      "turns": [
+        { "ask": "How many paying customers do you have?",
+          "facts": ["no-error", "not-used ShowPage"],
+          "criteria": ["Says the docs don't say, or that it is a one-person startup", "Gives no number the docs don't state"] } ] },
+    { "id": "guide-walkthrough", "page": "/identities",
+      "turns": [
+        { "ask": "What's on this page?",
+          "facts": ["no-error"],
+          "criteria": ["Offers a walkthrough, or to explain one section"] },
+        { "ask": "Yes, walk me through it.",
+          "facts": ["used ShowPage"],
+          "criteria": ["Starts with the page's first area", "Explains it in two or three sentences"] },
+        { "ask": "Next.",
+          "facts": ["used ShowPage"],
+          "criteria": ["Moves to the next area in the page's order", "Lights the area it talks about"] } ] }
+  ]
+}

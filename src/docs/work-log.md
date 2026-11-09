@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 85 | 77 |
+| Features (`F`) | 85 | 78 |
 | Fixes (`FX`) | 115 | 6 |
-| Cleanups (`CL`) | 27 | 27 |
+| Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (108 in the TODO)
+## Open (110 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -44,6 +44,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F72 | Open from the recipes evals | Now |
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
+| F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
@@ -131,7 +132,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
-| CL60 | Simpler evals: `eval.json` and `samples.jsonl`, a fingerprint for the versions, transcripts optional, the unused checks and promptfoo out, a schema for hand editing | Cleanups |
 
 ## Features (85 done)
 
