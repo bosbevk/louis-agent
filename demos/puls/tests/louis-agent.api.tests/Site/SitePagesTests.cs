@@ -100,7 +100,9 @@ public class SitePagesTests
             Assert.That(html, Does.Contain("<title>Sample · site</title>"));
             Assert.That(html, Does.Contain("content=\"A sample page of the site.\""));
             Assert.That(html, Does.Contain("<link rel=\"canonical\" href=\"https://site.test/sample\" />"));
-            Assert.That(html, Does.Contain("<h2>Sample words</h2>").And.Not.Contain("Loading"));
+            Assert.That(html, Does.Contain("Loading").And.Contain("<div class=\"prerendered\" hidden>"),
+                "the loader shows, the words wait out of sight (F128.1)");
+            Assert.That(html, Does.Contain("<h2>Sample words</h2>"));
         });
         Directory.Delete(root, recursive: true);
     }
