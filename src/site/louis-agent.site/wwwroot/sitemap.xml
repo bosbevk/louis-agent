@@ -243,4 +243,13 @@
   <url>
     <loc>https://louis-agent.dev/triage-demo</loc>
   </url>
+  <url>
+    <loc>https://louis-agent.dev/what-we-build</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/what-we-build/custom</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/what-we-build/start</loc>
+  </url>
 </urlset>

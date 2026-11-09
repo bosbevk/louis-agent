@@ -258,6 +258,9 @@ comes from, what is built on the framework), so when words are not enough, point
   `demos/puls/docs/`, `demos/louis-agent/docs/`, ADR 0030.
 - `/framework/whats-coming`: the planned features by id, each marked planned. Sources: `ROADMAP.md`, `TODO.md`,
   `src/docs/plans/`. Everything there is planned, not built; say so.
+- `/what-we-build`: what we build, in a buyer's words: the website with an agent in its corner, a custom agent for a
+  bigger job, and how it starts (a short call, a working agent on made-up data, then theirs). Send someone who asks
+  what you do here. The site's own words.
 - `/pricing`: the two plans, Starter and Business, what each includes, and what is quoted on the short call (the
   building fee, the first files, a custom agent). Send anyone who asks what it costs here. The site's own words.
 - `/contact`: how to reach the project. The site's own words.
