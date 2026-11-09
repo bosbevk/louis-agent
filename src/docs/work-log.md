@@ -12,19 +12,20 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 85 | 78 |
+| Features (`F`) | 85 | 79 |
 | Fixes (`FX`) | 115 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (110 in the TODO)
+## Open (111 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F128 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 (the facts, the menu, what we build, pricing, the guide's greeting, the landing), F128.2 (three business demos: a law practice, a restaurant, a doctor's practice) | Now |
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
 | F129 | An identity's prompts: the skills split out of the voice file into `prompts/agent/skills/*.md`, and the `Prompts` folder renamed `prompts`, for every identity and the engine that loads them; its own plan | Next, after F124 |
+| F130 | The framework's own site at `framework.louis-agent.dev`: what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there from the selling site; its own plan | Next, after F128 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
