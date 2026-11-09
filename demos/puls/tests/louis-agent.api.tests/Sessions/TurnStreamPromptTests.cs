@@ -84,6 +84,31 @@ public class TurnStreamPromptTests
         Assert.That(prompt, Is.EqualTo("contact page?\n\n[On their screen now: the section /home/contact, \"Building an agent for a .NET team?\", of the page /, whose words came with an earlier message]"));
     }
 
+    /// <summary>
+    /// A card open on the visitor's screen is named with the section (FX106, Louis's screenshot: on the leads pack's
+    /// card, "tell me about this pack" got the .NET pack the guide had opened before), so "this" is the card they
+    /// opened.
+    /// </summary>
+    [Test]
+    public void AnOpenCard_IsNamed_AsWhatThisMeans()
+    {
+        var card = new PageAreaRequest("/packs/louis-agent-pack-leads", "louis-agent.pack.leads");
+        var first = new SendMessageRequest("tell me about this pack", null,
+            new PageRequest("/packs", "Packs", "The packs.", [], new PageAreaRequest("/packs/general", "General tools"),
+                card));
+        var later = new SendMessageRequest("tell me about this pack", null,
+            new PageRequest("/packs", null, null, null, new PageAreaRequest("/packs/general", "General tools"), card));
+
+        string open = "Open on it: the card /packs/louis-agent-pack-leads, \"louis-agent.pack.leads\". When they say " +
+                      "\"this\", they mean that card.";
+        Assert.Multiple(() =>
+        {
+            Assert.That(TurnStream.BuildPrompt(first), Does.EndWith($"of the page /packs they are reading\n{open}]"));
+            Assert.That(TurnStream.BuildPrompt(later),
+                Does.EndWith($"whose words came with an earlier message\n{open}]"));
+        });
+    }
+
     /// <summary>Without a page the prompt is the words alone, as before.</summary>
     [Test]
     public void NoPage_LeavesThePromptAlone()
