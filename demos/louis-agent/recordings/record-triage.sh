@@ -156,8 +156,12 @@ if [ "$ahead" -lt 1 ]; then
 fi
 commit="$(git -C "$work/repo" log -1 --format='%h %s' "$branch")"
 # Its reason is its own words about its tests: the sentence where the test reproduced the bug and the one where they
-# all pass, so a visitor reads what it proved, not where the answer happened to stop.
-proved="$(python -I "$(dirname "$0")/coder-proof.py" <<< "$coder")"
+# all pass, so a visitor reads what it proved, not where the answer happened to stop. The answer streams sentences back
+# to back, sometimes with no space after the full stop ("Now the fix:The diff"), so it is split after . ! ? or : before
+# a capital letter; of the sentences about its tests, the first and the last are kept, word for word.
+proved="$(sed -E 's/([.!?:])[[:space:]]*([A-Z])/\1\n\2/g' <<< "$coder" \
+  | grep -E 'reproduces|fails with|tests? pass' \
+  | awk '{ line[NR] = $0 } END { if (NR == 1) printf "%s", line[1]; if (NR > 1) printf "%s %s", line[1], line[NR] }')"
 step "$(( $(steps) + 1 ))" coder fixed "The coder fixed it on $branch, with a test, and the code committed it (${commit%% *})." \
   "$proved"
 git -C "$work/repo" checkout -q "$branch"
