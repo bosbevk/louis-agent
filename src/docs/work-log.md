@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 89 | 77 |
+| Features (`F`) | 90 | 77 |
 | Fixes (`FX`) | 119 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 done; F127.2 next, the demos as working three-page websites a visitor can try live | Now |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
@@ -132,10 +132,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (89 done)
+## Features (90 done)
 
 | Id | When | What |
 |---|---|---|
+| F127.1 | 2026-11-10 | The demo showroom: a site's demos in an area of the framework (ADR 0115), a rail of every demo grouped by what a visitor comes for, a stage per demo in its colour whose parts each have an address, `/demos` its start featuring the guesthouse; a business's agent plays on a mock of its own website (sample brand, three looks, real Pexels photos, a real menu), held to its agent's facts by a test, and shows the website with the guide's own `ShowPage` (the guide's spotlight on a section, a press on a card), told as the recording plays; cues a visitor clicks to play from a turn; notes of what a custom agent could add; the guesthouse in the doctor's place and leading; the coding agent and the triage team on the stage; a place's address loaded afresh draws in its page's layout (`PlaceLayout`) |
 | F129 | 2026-11-10 | An identity's skills, and `prompts/`: every `Prompts` folder is `prompts`, named once (`EmbeddedPrompts.Folder`); a skill beside its voice (`prompts/agent/{identity}/skills/`) says in its header whether it loads `always` (after the voice) or `on-demand` (listed, read with the engine's `ReadSkill`, a session's only when its identity has one); the guide keeps who Louis is, an always index of the pages, and reads the docs map and the page map on demand, its fixed prefix 14% smaller, measured live (ADR 0114) |
 | F128 | 2026-11-10 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 and F128.2, both below (ADR 0112, ADR 0113) |
 | F128.2 | 2026-11-10 | Three business demos: Wheatfield Kitchen, Koringland Attorneys and Graanveld Family Practice, made up, each an identity on the leads pack (`louis-agent.identity.showroom`), recorded once with real booking mails and played on its own page (`/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`), first on the demos list; the leads pack names no one; `RecordedChat` plays several turns and can hide its work; the practices never advise |
