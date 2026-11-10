@@ -105,6 +105,18 @@ public class BusinessDemoTests
         return cut;
     }
 
+    /// <summary>
+    /// Presses Try it yourself until the live chat is there. The ended recording can redraw once more just after the
+    /// button is found, so a press may land on the drawing before; pressing again does no harm, since Try only goes
+    /// live.
+    /// </summary>
+    private static void TryIt(IRenderedComponent<BusinessDemo> cut) =>
+        cut.WaitForAssertion(() =>
+        {
+            if (cut.FindAll(".demo-try") is [var button, ..]) button.Click();
+            Assert.That(cut.FindAll(".live-chat"), Is.Not.Empty);
+        }, TimeSpan.FromSeconds(5));
+
     /// <summary>Try it yourself waits for the play to end, then sits beside Play it again.</summary>
     [Test]
     public void TryItYourself_ShowsOnceThePlayHasEnded()
@@ -133,7 +145,7 @@ public class BusinessDemoTests
         var cut = Played(ctx);
         var before = cut.Find(".mock-address").TextContent;
 
-        cut.Find(".demo-try").Click();
+        TryIt(cut);
 
         Assert.Multiple(() =>
         {
@@ -147,13 +159,34 @@ public class BusinessDemoTests
         });
     }
 
+    /// <summary>
+    /// While the visitor tries it live, the cues wait (Louis's pick of three, after a cue clicked live crashed the
+    /// page), and they come back with the recording.
+    /// </summary>
+    [Test]
+    public void TheCues_WaitWhileLive()
+    {
+        using var ctx = Context();
+        var cut = Played(ctx);
+
+        TryIt(cut);
+        var live = cut.Find(".demo-cues").ClassList.Contains("is-waiting");
+        cut.Find(".live-leave").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(live, Is.True);
+            Assert.That(cut.Find(".demo-cues").ClassList, Does.Not.Contain("is-waiting"));
+        });
+    }
+
     /// <summary>Watch the recording takes the visitor back to the recorded conversation.</summary>
     [Test]
     public void WatchingTheRecording_SwapsBack()
     {
         using var ctx = Context();
         var cut = Played(ctx);
-        cut.Find(".demo-try").Click();
+        TryIt(cut);
 
         cut.Find(".live-leave").Click();
 

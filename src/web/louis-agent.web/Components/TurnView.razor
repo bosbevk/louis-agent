@@ -37,7 +37,7 @@
         {
             <div class="error">@Turn.Error</div>
         }
-        @if (Turn.Usage is { } usage)
+        @if (ShowUsage && Turn.Usage is { } usage)
         {
             <div class="usage" title="@UsageFormat.Detail(usage, Currency)">@UsageFormat.Line(usage, Currency)</div>
         }

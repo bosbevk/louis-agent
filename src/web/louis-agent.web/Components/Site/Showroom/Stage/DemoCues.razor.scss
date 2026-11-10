@@ -55,6 +55,9 @@
 .cue:hover { border-color: glow.tint(var(--accent), 50%); }
 .cue-go:hover::after, .cue-go:focus-visible::after { opacity: .75; }
 .cue-go:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* While the visitor tries the agent live (F127.2), the cues wait: dimmed, no hint, no pointer. */
+.is-waiting .cue-go { opacity: .45; cursor: default; }
+.is-waiting .cue-go::after { display: none; }
 .cue-n {
     flex: none;
     display: flex;

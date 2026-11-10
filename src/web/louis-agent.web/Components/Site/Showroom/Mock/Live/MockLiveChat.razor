@@ -2,7 +2,9 @@
    question to tap, its notice, the way back to the recording when the demo offers one, and its message box, rounded,
    with its send button in the business's colour. *@
 <div class="live-chat">
-    <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" ShowWork="false">
+    @* A customer never sees tokens on a business's website: no work, no usage line (Louis: "hide it in the demo"). *@
+    <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" ShowWork="false"
+                 ShowUsage="false">
         <Empty>
             <button class="live-hint" type="button" @onclick="AskHintAsync">
                 <span class="live-hint-tap">@Words.TapToAsk</span>
@@ -20,7 +22,7 @@
     <div class="live-composer">
         <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
                   Streaming="Runner.Streaming" CanSend="Runner.CanSend"
-                  Placeholder="@(Placeholder ?? Words.AskTheBusiness)" OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
-                  SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
+                  Placeholder="@(Placeholder ?? Words.AskTheBusiness)" OnSend="SendAsync" OnStop="Runner.StopAsync"
+                  SendLabel="↑" StopLabel="■" SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
     </div>
 </div>

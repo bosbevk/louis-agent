@@ -38,6 +38,10 @@ public partial class MessageList : IAsyncDisposable
     [Parameter]
     public bool ShowWork { get; set; } = true;
 
+    /// <summary>Whether a finished answer shows what it used and cost; off on a business's website (F127.2).</summary>
+    [Parameter]
+    public bool ShowUsage { get; set; } = true;
+
     private ElementReference _messages;
     private ChatModel? _shown;
     private bool _wasStreaming;

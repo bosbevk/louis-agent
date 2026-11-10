@@ -150,7 +150,8 @@ public partial class BusinessDemo
     /// <summary>
     /// A clicked cue plays the conversation from its turn (Louis: "this should be clickable so visitors can rewind").
     /// </summary>
-    private Task PlayFrom(int turn) => _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
+    private Task PlayFrom(int turn) =>
+        _trying ? Task.CompletedTask : _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
 
     /// <summary>
     /// Notes the turn the play has reached, so the cues light up to it; a play from the start brings the website
@@ -178,6 +179,8 @@ public partial class BusinessDemo
     {
         _trying = true;
         _shown = null;
+        // The recorded chat goes with the swap; a new one is drawn on the way back.
+        _chat = null;
     }
 
     /// <summary>Back to the recording, which plays again from its start.</summary>

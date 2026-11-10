@@ -149,7 +149,10 @@ public class MockLiveChatTests
         });
     }
 
-    /// <summary>A question opens a session as the business, with no toolsets of its own, and the turn shows.</summary>
+    /// <summary>
+    /// A question opens a session as the business, with no toolsets of its own, and the turn shows, without a usage
+    /// line (F127.2, Louis: "hide it in the demo").
+    /// </summary>
     [Test]
     public void AQuestion_OpensASession_AsTheBusiness()
     {
@@ -162,6 +165,7 @@ public class MockLiveChatTests
         Assert.That(opened.Body,
             Does.Contain("\"identity\":\"seemeeu-guesthouse\"").And.Contain("\"toolsets\":[]"));
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
+        Assert.That(cut.FindAll(".usage"), Is.Empty, "a customer never sees tokens on a business's website");
     }
 
     /// <summary>

@@ -35,6 +35,13 @@ public partial class TurnView : IAsyncDisposable
     [Parameter]
     public bool ShowWork { get; set; } = true;
 
+    /// <summary>
+    /// Whether a finished answer shows what it used and cost; off on a business's website, where a customer never
+    /// sees tokens (F127.2).
+    /// </summary>
+    [Parameter]
+    public bool ShowUsage { get; set; } = true;
+
     private Turn? _renderedTurn;
     private bool _wasStreaming;
     private bool _shouldRender = true;
