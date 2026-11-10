@@ -17,7 +17,7 @@ public class MockWidgetTests
 
     /// <summary>The widget's button that reads <paramref name="label"/>.</summary>
     private static AngleSharp.Dom.IElement Button(IRenderedComponent<MockWidget> cut, string label) =>
-        cut.Find($".mock-widget-head button.mock-tool[aria-label='{label}']");
+        cut.Find($".mock-widget-head button.window-tool[aria-label='{label}']");
 
     /// <summary>
     /// Minimised, the chat folds to its head and its button says Restore; pressed again, it comes back.

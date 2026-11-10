@@ -54,26 +54,9 @@
     background: rgba(var(--web-overlay-rgb), .06);
 }
 
-/* Its buttons to minimise and maximise it (F127.2, Louis: "we should have an minimize and maximize"), at the head's
-   end, in the brand's light colour. Minimised, only the head shows, so the whole website does; maximised, the chat
-   covers the mock, its conversation as tall as the mock allows. */
-.mock-widget-tools { display: flex; gap: 4px; margin-left: auto; }
-.mock-tool {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: 0;
-    border-radius: 7px;
-    font-size: 13px;
-    line-height: 1;
-    color: inherit;
-    background: color-mix(in srgb, var(--mock-on-brand) 14%, transparent);
-    cursor: pointer;
-}
-.mock-tool:hover { background: color-mix(in srgb, var(--mock-on-brand) 26%, transparent); }
-.mock-tool:focus-visible { outline: 2px solid var(--mock-on-brand); outline-offset: 1px; }
+/* Minimised and maximised (F127.2, Louis: "we should have an minimize and maximize"; the buttons are the chat window's
+   own, WindowButtons, in the head's brand-light colour): minimised, only the head shows, so the whole website does;
+   maximised, the chat covers the mock, its conversation as tall as the mock allows. */
 .mock-widget.is-min .mock-widget-body { display: none; }
 .mock-widget.is-max {
     inset: 12px;

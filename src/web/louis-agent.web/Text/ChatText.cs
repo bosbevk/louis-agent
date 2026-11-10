@@ -147,6 +147,16 @@ public sealed record ChatText
     public string AskAnything { get; init; } = "Ask anything…";
     public string SendTitle { get; init; } = "Send (Enter)";
     public string StopTitle { get; init; } = "Stop";
+
+    /// <summary>A chat window folds to its head (F127.2).</summary>
+    public string Minimise { get; init; } = "Minimise";
+
+    /// <summary>A chat window spreads wide (F127.2).</summary>
+    public string Maximise { get; init; } = "Maximise";
+
+    /// <summary>A minimised or maximised chat window goes back as it came (F127.2).</summary>
+    public string Restore { get; init; } = "Restore";
+
     public string AddToMessage { get; init; } = "Add";
     public string UploadFile { get; init; } = "Upload a file";
     public string AddScreenshot { get; init; } = "Add a screenshot";

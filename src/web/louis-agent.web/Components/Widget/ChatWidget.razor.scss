@@ -57,7 +57,14 @@
     background: var(--bs-secondary-bg);
 }
 .widget-title { font: 600 14px var(--bs-font-sans-serif); color: var(--bs-emphasis-color); }
+.widget-head-tools { display: flex; align-items: center; gap: 8px; color: var(--bs-secondary-color); }
 .widget-close { font-size: 18px; line-height: 1; }
+
+/* Minimised and maximised (F127.2, Louis: "should also have minimize and maximize"): minimised, only the head shows,
+   so the page the guide walks does; maximised, a large window to read the conversation. */
+.widget-panel.is-min { height: auto; }
+.widget-panel.is-min ::deep .widget-list, .widget-panel.is-min .widget-composer { display: none; }
+.widget-panel.is-max { width: min(960px, calc(100vw - 48px)); height: calc(100vh - 120px); }
 
 /* The list fills what the head and the composer leave, and scrolls on its own. */
 ::deep .widget-list { flex: 1; min-height: 0; overflow: auto; padding: 14px; }
@@ -90,4 +97,6 @@
         border-top: 1px solid var(--web-border-hover);
         border-radius: 14px 14px 0 0;
     }
+    .widget-panel.is-min { height: auto; }
+    .widget-panel.is-max { height: 100dvh; border-radius: 0; }
 }
