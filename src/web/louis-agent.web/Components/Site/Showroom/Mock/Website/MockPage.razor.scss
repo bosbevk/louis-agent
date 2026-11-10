@@ -6,6 +6,8 @@
     from { opacity: 0; transform: translateY(6px); }
 }
 .mock-page-heading { margin: 22px 0 8px; font: 600 28px/1.1 var(--mock-face); color: var(--mock-brand); }
+/* A page's own opening words, before its sections. */
+.mock-view ::deep > p { max-width: 62ch; margin: 0 0 14px; font-size: 14px; line-height: 1.6; }
 .mock-back {
     margin-top: 18px;
     padding: 0;

@@ -34,9 +34,6 @@ public partial class LawPracticeDemoPage
     /// <summary>Koringland Attorneys' sample brand: a deep navy, warm paper, and near-black ink.</summary>
     private static readonly MockColours Brand = new("#1f2f4f", "#f4efe4", "#f7f5f0", "#1d2433");
 
-    /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["What we do", "A first consultation", "What to bring"];
-
     /// <summary>What a custom agent could add for a law practice.</summary>
     private static readonly DemoNote[] Notes =
     [

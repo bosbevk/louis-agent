@@ -1,14 +1,19 @@
 {
   "url": "/",
   "title": "Seemeeu Guesthouse · Guesthouse in Yzerfontein",
-  "text": "Seemeeu Guesthouse. Rooms, Breakfast, The beach, Staying with us. Four rooms, five minutes from the beach. Breakfast on the stoep from 07:30. Dogs welcome in the garden room. Book a room. Four rooms, breakfast included. The beach, a five-minute walk. Dogs in the garden room. Wifi in every room. Our rooms: four rooms, each with its own bathroom, breakfast included. The sea-view doubles, R1,450 a night: two doubles, looking out to sea. The family room, R1,850 a night: a double and two singles. The garden room, R1,250 a night: a double with its own gate to the fenced garden. Dogs welcome here, R150 a night a dog. Breakfast on the stoep: from 07:30 to 10:00, a full farm breakfast, or yoghurt, fruit and fresh bread. The beach and around: the beach is a five-minute walk. Sixteen Mile Beach and the harbour are a short drive, and the West Coast National Park about twenty minutes away. Staying with us: check-in from 14:00, check-out by 10:00. Two nights at least over a weekend from December to February. Parking in the yard, and wifi in every room.",
+  "text": "Seemeeu Guesthouse. Home, Rooms, Stay. Four rooms, five minutes from the beach. Breakfast on the stoep from 07:30. Dogs welcome in the garden room. Book a room. Four rooms, breakfast included. The beach, a five-minute walk. Dogs in the garden room. Wifi in every room. Welcome to Seemeeu: a guesthouse five minutes from the beach in Yzerfontein, with breakfast on the stoep every morning. Four rooms: each with its own bathroom, one for a family, one for a dog. Breakfast and the beach. Rooms: each with its own bathroom, four rooms, breakfast included. The sea-view doubles, R1,450 a night: two doubles, looking out to sea. The family room, R1,850 a night: a double and two singles. The garden room, R1,250 a night: a double with its own gate to the fenced garden. Dogs welcome here, R150 a night a dog. Stay: breakfast on the stoep, from 07:30 to 10:00, a full farm breakfast, or yoghurt, fruit and fresh bread. The beach and around: the beach is a five-minute walk. Sixteen Mile Beach and the harbour are a short drive, and the West Coast National Park about twenty minutes away. Staying with us: check-in from 14:00, check-out by 10:00. Two nights at least over a weekend from December to February. Parking in the yard, and wifi in every room.",
   "areas": [
-    { "id": "/rooms", "heading": "Our rooms" },
+    { "id": "/welcome", "heading": "Welcome to Seemeeu" },
+    { "id": "/welcome/rooms", "heading": "Four rooms" },
+    { "id": "/welcome/stay", "heading": "Breakfast and the beach" },
+    { "id": "/rooms", "heading": "Rooms (page)" },
+    { "id": "/rooms/choose", "heading": "Each with its own bathroom" },
     { "id": "/rooms/sea-view", "heading": "The sea-view doubles" },
     { "id": "/rooms/family", "heading": "The family room" },
     { "id": "/rooms/garden", "heading": "The garden room" },
-    { "id": "/breakfast", "heading": "Breakfast on the stoep" },
-    { "id": "/the-beach", "heading": "The beach and around" },
-    { "id": "/find-us", "heading": "Staying with us" }
+    { "id": "/stay", "heading": "Stay (page)" },
+    { "id": "/stay/breakfast", "heading": "Breakfast on the stoep" },
+    { "id": "/stay/the-beach", "heading": "The beach and around" },
+    { "id": "/stay/staying", "heading": "Staying with us" }
   ]
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 
@@ -30,6 +31,26 @@ public partial class MockCard
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>The place the mock's agent showed, handed down by the mock.</summary>
+    /// <summary>
+    /// A page of its own the card opens (F127.2), by its address: <c>/practice/wills</c>; none for a card that's all
+    /// there is.
+    /// </summary>
+    [Parameter]
+    public string? Opens { get; set; }
+
+    /// <summary>The mock the card is on, which goes to the page it opens; none outside a mock.</summary>
+    [CascadingParameter]
+    private SiteMock? Mock { get; set; }
+
+    [Inject] private IServiceProvider Services { get; set; } = null!;
+
+    /// <summary>The site's words, or the English ones.</summary>
+    private ShowroomText Text => Services.GetService<ShowroomText>() ?? new ShowroomText();
+
+    /// <summary>Opens the card's page, as a visitor's click.</summary>
+    private Task OpenAsync() =>
+        Opens is not null && Mock is not null ? Mock.GoAsync(Opens) : Task.CompletedTask;
+
     [CascadingParameter(Name = SiteMock.ShownPlace)]
     public string? Shown { get; set; }
 

@@ -67,10 +67,6 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public MockFont Font { get; set; }
 
-    /// <summary>The words of its menu.</summary>
-    [Parameter]
-    public IReadOnlyList<string> NavItems { get; set; } = [];
-
     /// <summary>Its hero's line: "Fresh bread before seven."</summary>
     [Parameter, EditorRequired]
     public string HeroLine { get; set; } = "";
@@ -105,10 +101,6 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>A few facts in a strip under its hero: "Open from six".</summary>
     [Parameter]
     public IReadOnlyList<string> Facts { get; set; } = [];
-
-    /// <summary>Its places, under the facts: its sections and cards, each with its own address.</summary>
-    [Parameter]
-    public RenderFragment? Places { get; set; }
 
     /// <summary>
     /// Its pages (F127.2): each a <see cref="MockPage"/> with its address, its menu word and its sections, in the order
@@ -146,7 +138,7 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>The page the website is on.</summary>
     private string CurrentPage => _map.PageOf(Here);
 
-    /// <summary>Whether the hero shows: on home, or on a site of one long page.</summary>
+    /// <summary>Whether the hero shows: on home, or before a site has written any page.</summary>
     private bool ShowsHome => !_map.Any || CurrentPage == MockPaths.Home;
 
     /// <summary>The pages its menu lists.</summary>

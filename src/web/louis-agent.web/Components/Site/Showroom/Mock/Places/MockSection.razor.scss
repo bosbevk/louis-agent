@@ -12,6 +12,9 @@
     color: var(--mock-brand);
 }
 .mock-section ::deep p { margin: 0 0 8px; }
+/* A list in a section (F127.2: what a will covers, an estate's steps), set close as the words around it. */
+.mock-section ::deep ul, .mock-section ::deep ol { margin: 0 0 8px; padding-left: 20px; }
+.mock-section ::deep li { margin: 0 0 3px; }
 /* A section with a real photo (Louis: "more detail and images"): the photo beside its words, in a frame casting the
    business's colour, the side swapping from one such section to the next; its cards run under both. */
 .mock-section.has-photo {

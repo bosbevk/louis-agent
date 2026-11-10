@@ -59,10 +59,6 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public string Tagline { get; set; } = "";
 
-    /// <summary>The words of its website's menu.</summary>
-    [Parameter]
-    public IReadOnlyList<string> NavItems { get; set; } = [];
-
     /// <summary>Its website's hero line, from what its agent knows.</summary>
     [Parameter, EditorRequired]
     public string HeroLine { get; set; } = "";
@@ -91,9 +87,11 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public IReadOnlyList<string> Facts { get; set; } = [];
 
-    /// <summary>Its website's places, each at its address, the places its agent can show.</summary>
+    /// <summary>
+    /// Its website's pages (F127.2), each with its places at their addresses, the pages and places its agent can show.
+    /// </summary>
     [Parameter, EditorRequired]
-    public RenderFragment Places { get; set; } = null!;
+    public RenderFragment Pages { get; set; } = null!;
 
     /// <summary>The kind of business, as the notes' heading names it: "guesthouse".</summary>
     [Parameter, EditorRequired]
@@ -146,4 +144,9 @@ public partial class BusinessDemo
 
     /// <summary>A ShowPage call played from the recording takes the website there; any other call, nowhere.</summary>
     private void Show(Block call) => _shown = ShowPageCall.PathOf(call) ?? _shown;
+
+    /// <summary>
+    /// A visitor clicked through the website (F127.2): it stays where they went, until its agent shows the next place.
+    /// </summary>
+    private void Go(string path) => _shown = path;
 }

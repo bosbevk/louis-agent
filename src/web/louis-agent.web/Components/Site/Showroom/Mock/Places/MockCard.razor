@@ -16,4 +16,9 @@
     {
         <p class="mock-card-words">@ChildContent</p>
     }
+    @* A card with a page of its own opens it (F127.2), as a visitor's click. *@
+    @if (Opens is not null)
+    {
+        <button class="mock-card-open" type="button" @onclick="OpenAsync">@Text.ReadMore →</button>
+    }
 </article>

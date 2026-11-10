@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Site.Showroom.Mock;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
 using Microsoft.AspNetCore.Components;
 
@@ -12,15 +13,35 @@ namespace LouisAgent.Web.Tests.Components.Site.Showroom.Mock.Website;
 public class MockPagesTests
 {
     /// <summary>
-    /// One page of the test website: its address, its menu word, whether it's in the menu, its parent.
+    /// One page of the test website: its address, its menu word, whether it's in the menu, its parent, and what's on
+    /// it (a line of its own words unless given).
     /// </summary>
-    private sealed record TestPage(string Path, string Label, bool InMenu = true, string? Parent = null);
+    private sealed record TestPage(
+        string Path,
+        string Label,
+        bool InMenu = true,
+        string? Parent = null,
+        RenderFragment? Content = null);
+
+    /// <summary>The Stay page's card that opens the house rules, a page of their own.</summary>
+    private static readonly RenderFragment RulesCard = builder =>
+    {
+        builder.OpenComponent<MockCard>(0);
+        builder.AddComponentParameter(1, nameof(MockCard.Path), "/stay/the-house");
+        builder.AddComponentParameter(2, nameof(MockCard.Title), "The house");
+        builder.AddComponentParameter(3, nameof(MockCard.Opens), "/stay/rules");
+        builder.CloseComponent();
+    };
 
     private static readonly TestPage[] Guesthouse =
     [
-        new("/", "Home"), new("/rooms", "Rooms"), new("/stay", "Stay"),
+        new("/", "Home"), new("/rooms", "Rooms"), new("/stay", "Stay", Content: RulesCard),
         new("/stay/rules", "House rules", InMenu: false, Parent: "/stay"),
     ];
+
+    /// <summary>A line of a page's own words.</summary>
+    private static RenderFragment WordsOf(string label) =>
+        words => words.AddMarkupContent(0, $"<p class=\"words\">{label}'s words</p>");
 
     /// <summary>The pages as a site writes them, each with a line of its own words.</summary>
     private static RenderFragment Pages(IEnumerable<TestPage> pages) => builder =>
@@ -33,8 +54,7 @@ public class MockPagesTests
             builder.AddComponentParameter(2, nameof(MockPage.Label), page.Label);
             builder.AddComponentParameter(3, nameof(MockPage.InMenu), page.InMenu);
             builder.AddComponentParameter(4, nameof(MockPage.Parent), page.Parent);
-            builder.AddComponentParameter(5, nameof(MockPage.ChildContent),
-                (RenderFragment)(words => words.AddMarkupContent(0, $"<p class=\"words\">{page.Label}'s words</p>")));
+            builder.AddComponentParameter(5, nameof(MockPage.ChildContent), page.Content ?? WordsOf(page.Label));
             builder.CloseComponent();
         }
     };
@@ -142,6 +162,29 @@ public class MockPagesTests
         back.Click();
 
         Assert.That((label, OnScreen(cut)), Is.EqualTo(("← Stay", "/stay")));
+    }
+
+    /// <summary>
+    /// A card can open a page of its own (Louis: "navigate to the will and estates page"): its Read more goes there,
+    /// as a visitor's click, and the page's way back returns.
+    /// </summary>
+    [Test]
+    public void ACardThatOpensAPage_GoesThere()
+    {
+        using var ctx = new BunitContext();
+        var went = new List<string>();
+        var cut = Mock(ctx, "/stay", went);
+
+        var open = cut.Find(".mock-view[data-page='/stay'] article.mock-card button.mock-card-open");
+        string label = open.TextContent;
+        open.Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(label, Is.EqualTo("Read more →"));
+            Assert.That(OnScreen(cut), Is.EqualTo("/stay/rules"));
+            Assert.That(went, Is.EqualTo(new[] { "/stay/rules" }));
+        });
     }
 
     /// <summary>A place the agent shows after a visitor's click wins: the website goes where the agent says.</summary>

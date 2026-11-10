@@ -1,14 +1,27 @@
 {
   "url": "/",
   "title": "Koringland Attorneys · Attorneys in Malmesbury",
-  "text": "Koringland Attorneys. What we do, A first consultation, What to bring. Wills, property and family law, in English and Afrikaans. Monday to Friday, 08:00 to 17:00. At the office or by video call. Book a consultation. Monday to Friday. At the office or by video call. English and Afrikaans. A first consultation R650. What we do: four areas of law, for people, families, farms and small businesses. Wills and estates: a will, and an estate after a death. Property transfers: conveyancing. Family law: divorce, maintenance and custody. Contracts: for small businesses and farms. A first consultation: thirty minutes, R650, at the office or by video call. After that, the attorney quotes the matter before any work starts. What to bring: an ID, and any papers about the matter: a title deed, a contract, a court letter.",
+  "text": "Koringland Attorneys. Home, What we do, Consultations. Wills, property and family law, in English and Afrikaans. Monday to Friday, 08:00 to 17:00. At the office or by video call. Book a consultation. A practice for the Swartland: wills, property and family law for people, families, farms and small businesses, in English and Afrikaans. What we do: four areas of law. A first consultation: thirty minutes, at the office or by video call. What we do: four areas of law, for people, families, farms and small businesses. Wills and estates: a will, and an estate after a death (opens a page of its own). Property transfers: conveyancing. Family law: divorce, maintenance and custody. Contracts: for small businesses and farms. Wills and estates: a will says who gets what, and who sees to it. What a will covers. Without a will. After a divorce. Married in community of property. When someone dies: the estate. Fees: a will from R1,800, drawn up in a week, the signed original kept in the safe at no charge, a first consultation is 30 minutes, R650. Consultations: a first consultation, thirty minutes, R650, at the office or by video call. After that, the attorney quotes the matter before any work starts. What to bring: an ID, and any papers about the matter: a title deed, a contract, a court letter. When we're open: Monday to Friday, 08:00 to 17:00, in English and Afrikaans.",
   "areas": [
-    { "id": "/practice", "heading": "What we do" },
-    { "id": "/practice/wills", "heading": "Wills and estates" },
-    { "id": "/practice/property", "heading": "Property transfers" },
-    { "id": "/practice/family", "heading": "Family law" },
-    { "id": "/practice/contracts", "heading": "Contracts" },
-    { "id": "/consultation", "heading": "A first consultation" },
-    { "id": "/what-to-bring", "heading": "What to bring" }
+    { "id": "/welcome", "heading": "A practice for the Swartland" },
+    { "id": "/welcome/practice", "heading": "What we do" },
+    { "id": "/welcome/consultations", "heading": "A first consultation" },
+    { "id": "/practice", "heading": "What we do (page)" },
+    { "id": "/practice/areas", "heading": "Four areas of law" },
+    { "id": "/practice/areas/wills", "heading": "Wills and estates" },
+    { "id": "/practice/areas/property", "heading": "Property transfers" },
+    { "id": "/practice/areas/family", "heading": "Family law" },
+    { "id": "/practice/areas/contracts", "heading": "Contracts" },
+    { "id": "/practice/wills", "heading": "Wills and estates (page)" },
+    { "id": "/practice/wills/covers", "heading": "What a will covers" },
+    { "id": "/practice/wills/without", "heading": "Without a will" },
+    { "id": "/practice/wills/after-divorce", "heading": "After a divorce" },
+    { "id": "/practice/wills/in-community", "heading": "Married in community of property?" },
+    { "id": "/practice/wills/estate", "heading": "When someone dies: the estate" },
+    { "id": "/practice/wills/fees", "heading": "Fees" },
+    { "id": "/consultations", "heading": "Consultations (page)" },
+    { "id": "/consultations/first", "heading": "A first consultation" },
+    { "id": "/consultations/what-to-bring", "heading": "What to bring" },
+    { "id": "/consultations/hours", "heading": "When we're open" }
   ]
 }

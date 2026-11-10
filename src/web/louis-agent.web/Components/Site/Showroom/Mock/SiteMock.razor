@@ -20,16 +20,12 @@
                 <span class="mock-tagline">@Tagline</span>
             }
         </span>
-        @* Its menu: its pages, which a visitor can click through (F127.2); a site of one page still names its words. *@
+        @* Its menu: its pages, which a visitor can click through (F127.2). *@
         <span class="mock-nav">
             @foreach (var entry in MenuPages)
             {
                 <button class="@NavClass(entry)" type="button" aria-current="@CurrentMark(entry)"
                         @onclick="() => GoAsync(entry.Path)">@entry.Label</button>
-            }
-            @foreach (var item in NavItems)
-            {
-                <span>@item</span>
             }
         </span>
     </div>
@@ -76,9 +72,8 @@
                 </ul>
             }
         }
-        @* The places learn the place its agent showed; the pages, their mock and the page it's on. *@
+        @* Its pages learn their mock and the page it's on; their places, the place its agent showed. *@
         <CascadingValue Name="@ShownPlace" Value="Shown">
-            @Places
             <CascadingValue Value="this" IsFixed="true">
                 <CascadingValue Name="@CurrentPageName" Value="CurrentPage">@Pages</CascadingValue>
             </CascadingValue>

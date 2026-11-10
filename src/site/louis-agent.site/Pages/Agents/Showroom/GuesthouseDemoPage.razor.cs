@@ -35,9 +35,6 @@ public partial class GuesthouseDemoPage
     /// <summary>Seemeeu Guesthouse's sample brand: a deep sea blue, sand, and dark slate ink.</summary>
     private static readonly MockColours Brand = new("#0e4f63", "#f7f1e3", "#fbf8f1", "#1c2b33");
 
-    /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["Rooms", "Breakfast", "The beach", "Staying with us"];
-
     /// <summary>
     /// What a custom agent could add for a guesthouse (Louis: "we could integrate with the booking system if they
     /// have one etc. Custom Agent").
