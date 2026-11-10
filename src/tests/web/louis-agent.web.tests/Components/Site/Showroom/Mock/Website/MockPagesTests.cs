@@ -1,6 +1,8 @@
+using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Tests.Components.Site.Showroom.Mock.Website;
@@ -223,5 +225,35 @@ public class MockPagesTests
         cut.Render(parameters => parameters.Add(mock => mock.Shown, "/rooms/garden"));
 
         Assert.That(OnScreen(cut), Is.EqualTo("/rooms"));
+    }
+
+    /// <summary>
+    /// What a live agent reads (F127.2): its module reads the words of the page the website is on and every page's
+    /// places, told that page's address and the business's name, and the menu goes with them as its links, so the
+    /// agent sees the business's website, not the site it sits in.
+    /// </summary>
+    [Test]
+    public async Task ALiveAgent_ReadsThePageItsOn_ItsPlaces_AndItsMenu()
+    {
+        using var ctx = new BunitContext();
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Mock);
+        module.Setup<Page?>("pageOf", _ => true).SetResult(new Page("/stay", "Seemeeu", "Stay's words",
+            [new PageArea("/stay/the-house", "The house")]));
+        var cut = Mock(ctx, "/stay/the-house");
+
+        var page = await cut.InvokeAsync(() => cut.Instance.ReadPageAsync());
+
+        var asked = module.Invocations.Single(call => call.Identifier == "pageOf");
+        Assert.Multiple(() =>
+        {
+            Assert.That(asked.Arguments.Skip(1), Is.EqualTo(new object[] { "/stay", "Seemeeu" }));
+            Assert.That(page!.Text, Is.EqualTo("Stay's words"));
+            Assert.That(page.Areas, Is.EqualTo(new[] { new PageArea("/stay/the-house", "The house") }));
+            Assert.That(page.Links,
+                Is.EqualTo(new[]
+                {
+                    new PageArea("/", "Home"), new PageArea("/rooms", "Rooms"), new PageArea("/stay", "Stay")
+                }), "the menu, without the page off it");
+        });
     }
 }

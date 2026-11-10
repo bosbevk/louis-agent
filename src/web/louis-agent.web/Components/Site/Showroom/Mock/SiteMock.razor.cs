@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
@@ -175,10 +176,26 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>Counts a change of page, so the bar loads like a browser; the page it starts on is none.</summary>
     private void NotePage()
     {
-        string page = CurrentPage;
+        var page = CurrentPage;
         if (_pageNoted is not null && page != _pageNoted) _pageChanges++;
         _pageNoted = page;
     }
+
+    /// <summary>
+    /// What its live agent reads (F127.2), as the guide reads a real page: the words of the page the website is on,
+    /// every page's places by their addresses, and its menu as the links, so the agent sees this website and can send
+    /// the visitor anywhere on it.
+    /// </summary>
+    public async Task<Page?> ReadPageAsync()
+    {
+        var page = await Module.InvokeAsync<Page?>("pageOf", _page, CurrentPage, Title);
+        return page is null
+            ? null
+            : page with { Links = [.. MenuPages.Select(entry => new PageArea(entry.Path, entry.Label))] };
+    }
+
+    /// <summary>The website's title as a browser tab shows it: its name, and its tagline when it has one.</summary>
+    private string Title => Tagline is null ? Business : $"{Business} · {Tagline}";
 
     /// <summary>A page goes.</summary>
     internal void Unregister(MockPage page) => _map.Remove(page);
@@ -210,7 +227,7 @@ public partial class SiteMock : IAsyncDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // The first page drawn is where the mock starts: nothing to scroll from.
-        string page = CurrentPage;
+        var page = CurrentPage;
         if (firstRender) _pageDrawn = page;
         if (page != _pageDrawn)
         {

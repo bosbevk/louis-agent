@@ -26,6 +26,9 @@ public sealed record ShowroomText
     /// <summary>A mock website's card that opens a page of its own (F127.2).</summary>
     public string ReadMore { get; init; } = "Read more";
 
+    /// <summary>The live chat's message box on a mock website, before the visitor types (F127.2).</summary>
+    public string AskTheBusiness { get; init; } = "Ask a question…";
+
     /// <summary>The heading over a demo's cues.</summary>
     public string WhatToWatch { get; init; } = "What to watch";
 
