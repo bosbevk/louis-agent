@@ -76,6 +76,17 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public RenderFragment? Scene { get; set; }
 
+    /// <summary>
+    /// A real photo for its hero, from the site's own address (<c>images/showroom/bakery.webp</c>), worn with its
+    /// brand; the scene when it has none.
+    /// </summary>
+    [Parameter]
+    public string? HeroPhoto { get; set; }
+
+    /// <summary>What the hero's photo shows, for a screen reader.</summary>
+    [Parameter]
+    public string HeroPhotoAlt { get; set; } = "";
+
     /// <summary>Its hero's call to action: "Book a table"; none for a hero without one.</summary>
     [Parameter]
     public string? HeroAction { get; set; }

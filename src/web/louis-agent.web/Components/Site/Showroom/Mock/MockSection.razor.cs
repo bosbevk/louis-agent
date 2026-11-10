@@ -20,6 +20,10 @@ public partial class MockSection
     [Parameter, EditorRequired]
     public string Heading { get; set; } = "";
 
+    /// <summary>A real photo beside its words, from the site's own address; none for words alone.</summary>
+    [Parameter]
+    public string? Photo { get; set; }
+
     /// <summary>Its words, under the heading; none for a section of cards alone.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -32,6 +36,14 @@ public partial class MockSection
     [CascadingParameter(Name = SiteMock.ShownPlace)]
     public string? Shown { get; set; }
 
-    /// <summary>A section, lit when it is the place its agent showed.</summary>
-    private string Classes => Shown == Path ? "mock-section is-shown" : "mock-section";
+    /// <summary>A section, its photo beside its words when it has one, lit when its agent shows it.</summary>
+    private string Classes => string.Join(' ', ClassNames());
+
+    /// <summary>The section's class names, one at a time.</summary>
+    private IEnumerable<string> ClassNames()
+    {
+        yield return "mock-section";
+        if (Photo is not null) yield return "has-photo";
+        if (Shown == Path) yield return "is-shown";
+    }
 }

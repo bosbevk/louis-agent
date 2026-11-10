@@ -136,6 +136,36 @@ public class SiteMockTests
         });
     }
 
+    /// <summary>
+    /// A real photo for the hero, worn with the business's own brand (F127.1, Louis: "real images with real branding,
+    /// but also not real"): the photo, and over it a badge with the business's mark and name.
+    /// </summary>
+    [Test]
+    public void AHeroPhoto_WearsTheBusinesssBrand()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteMock>(parameters => parameters
+            .Add(mock => mock.Address, "bakery.example")
+            .Add(mock => mock.Business, "The Bakery")
+            .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
+            .Add(mock => mock.Mark, "<svg class=\"mark\"></svg>")
+            .Add(mock => mock.HeroLine, "Fresh before seven.")
+            .Add(mock => mock.HeroPhoto, "images/bakery.webp")
+            .Add(mock => mock.HeroPhotoAlt, "The bakery's counter at dawn")
+            .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
+
+        var scene = cut.Find(".mock-hero .mock-scene");
+        Assert.Multiple(() =>
+        {
+            Assert.That(scene.QuerySelector("img.mock-photo")!.GetAttribute("src"), Is.EqualTo("images/bakery.webp"));
+            Assert.That(scene.QuerySelector("img.mock-photo")!.GetAttribute("alt"),
+                Is.EqualTo("The bakery's counter at dawn"));
+            Assert.That(scene.QuerySelector(".mock-photo-badge svg.mark"), Is.Not.Null);
+            Assert.That(scene.QuerySelector(".mock-photo-badge")!.TextContent, Does.Contain("The Bakery"));
+        });
+    }
+
     /// <summary>A website with no look of its own is the split one; with no facts or scene, it draws none.</summary>
     [Test]
     public void WithoutALook_TheMockIsSplit_AndDrawsNoEmptyParts()

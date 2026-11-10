@@ -40,7 +40,20 @@
                     <span class="mock-action">@HeroAction</span>
                 }
             </div>
-            @if (Scene is not null)
+            @if (HeroPhoto is not null)
+            {
+                <div class="mock-scene is-photo">
+                    <img class="mock-photo" src="@HeroPhoto" alt="@HeroPhotoAlt" />
+                    <span class="mock-photo-badge">
+                        @if (Mark is not null)
+                        {
+                            <span class="mock-mark" aria-hidden="true">@Mark</span>
+                        }
+                        <b>@Business</b>
+                    </span>
+                </div>
+            }
+            else if (Scene is not null)
             {
                 <div class="mock-scene" aria-hidden="true">@Scene</div>
             }

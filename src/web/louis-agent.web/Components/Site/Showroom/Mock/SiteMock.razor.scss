@@ -87,6 +87,40 @@
 }
 .mock-scene { flex: 0 0 42%; }
 .mock-scene ::deep svg { display: block; width: 100%; height: auto; }
+/* A real photo for the hero, worn with the business's brand (Louis: "real images with real branding, but also not
+   real"): cut to fit, washed from the bottom in its brand colour, with a badge of its mark and name. */
+.mock-scene.is-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: 0 24px 50px -26px var(--mock-brand);
+}
+.mock-scene.is-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
+}
+.mock-photo { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.mock-photo-badge {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px 5px 5px;
+    border-radius: 999px;
+    font: 600 11.5px/1 var(--mock-face);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+    box-shadow: 0 8px 20px -8px rgba(var(--web-shadow-rgb), .6);
+}
+.mock-photo-badge .mock-mark { width: 24px; height: 24px; }
 .mock-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
 .mock-facts li {
     padding: 6px 12px;
@@ -106,6 +140,7 @@
 }
 .look-editorial .mock-hero-line { font-size: 34px; font-weight: 600; letter-spacing: -.01em; color: var(--mock-ink); }
 .look-editorial .mock-scene { flex-basis: 26%; }
+.look-editorial .mock-photo { aspect-ratio: 4 / 5; }
 .look-editorial .mock-action { border-radius: 4px; }
 
 /* Banner: the scene a wide band across the top of the page, under the widget too, with the words in a panel over its
@@ -118,6 +153,9 @@
 }
 .look-banner .mock-scene { height: 250px; }
 .look-banner .mock-scene ::deep svg { height: 100%; }
+.look-banner .mock-scene.is-photo { border-radius: 0; box-shadow: none; }
+.look-banner .mock-photo { aspect-ratio: auto; }
+.look-banner .mock-photo-badge { top: 14px; bottom: auto; left: 24px; }
 .look-banner .mock-hero-words {
     position: absolute;
     left: 24px;

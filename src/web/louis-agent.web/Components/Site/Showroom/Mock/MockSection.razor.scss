@@ -12,6 +12,24 @@
     color: var(--mock-brand);
 }
 .mock-section ::deep p { margin: 0 0 8px; }
+/* A section with a real photo (Louis: "more detail and images"): the photo beside its words, in a frame casting the
+   business's colour, the side swapping from one such section to the next; its cards run under both. */
+.mock-section.has-photo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 6px 22px;
+    align-items: center;
+}
+.mock-section.has-photo:nth-of-type(even) .mock-section-photo { order: 2; }
+.mock-section-photo img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 16px 34px -18px var(--mock-brand);
+}
+.mock-section.has-photo .mock-cards { grid-column: 1 / -1; }
 .mock-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));

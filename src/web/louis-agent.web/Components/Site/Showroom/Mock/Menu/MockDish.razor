@@ -1,0 +1,12 @@
+@* A dish on a mocked menu (F127.1): its name, a dotted leader to its price, and a few words under them. *@
+<li class="mock-dish">
+    <span class="mock-dish-line">
+        <span class="mock-dish-name">@Name</span>
+        <span class="mock-dish-leader" aria-hidden="true"></span>
+        <span class="mock-dish-price">@Price</span>
+    </span>
+    @if (ChildContent is not null)
+    {
+        <span class="mock-dish-words">@ChildContent</span>
+    }
+</li>

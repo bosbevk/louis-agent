@@ -1,4 +1,6 @@
 using LouisAgent.Web.Components.Site.Showroom.Mock;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Menu;
+using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Tests.Components.Site.Showroom;
 
@@ -40,6 +42,84 @@ public class MockPlacesTests
             .Add(place => place.Heading, "Our bread"));
 
         Assert.That(cut.FindAll(".mock-cards"), Is.Empty);
+    }
+
+    /// <summary>
+    /// A card with a photo (Louis: "like having a real image of the room") shows it first, named by the card's title.
+    /// </summary>
+    [Test]
+    public void ACardWithAPhoto_ShowsItFirst()
+    {
+        using var ctx = new BunitContext();
+
+        var card = ctx.Render<MockCard>(parameters => parameters
+            .Add(place => place.Path, "/bread/rye")
+            .Add(place => place.Title, "Rye")
+            .Add(place => place.Photo, "images/rye.webp")).Find("article.mock-card");
+
+        var photo = card.FirstElementChild!;
+        Assert.That((card.ClassList.Contains("has-photo"), photo.LocalName, photo.ClassName,
+                photo.GetAttribute("src"), photo.GetAttribute("alt")),
+            Is.EqualTo((true, "img", "mock-card-photo", "images/rye.webp", "Rye")));
+    }
+
+    /// <summary>A section with a photo shows it beside its words, named by the section's heading.</summary>
+    [Test]
+    public void ASectionWithAPhoto_ShowsItBesideItsWords()
+    {
+        using var ctx = new BunitContext();
+
+        var section = ctx.Render<MockSection>(parameters => parameters
+            .Add(place => place.Path, "/bread")
+            .Add(place => place.Heading, "Our bread")
+            .Add(place => place.Photo, "images/bread.webp")
+            .Add(place => place.ChildContent, "<p class=\"words\">Baked at dawn.</p>")).Find("section.mock-section");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(section.ClassList, Does.Contain("has-photo"));
+            Assert.That(section.QuerySelector(".mock-section-photo img")!.GetAttribute("src"),
+                Is.EqualTo("images/bread.webp"));
+            Assert.That(section.QuerySelector(".mock-section-photo img")!.GetAttribute("alt"), Is.EqualTo("Our bread"));
+            Assert.That(section.QuerySelector(".mock-section-words .words"), Is.Not.Null);
+        });
+    }
+
+    /// <summary>
+    /// A real menu (Louis: "like having a real menu"): its courses, each dish with its price and a few words, the
+    /// price set off by a dotted leader as a printed menu sets it.
+    /// </summary>
+    [Test]
+    public void AMenu_ListsItsCourses_AndEachDishWithItsPrice()
+    {
+        using var ctx = new BunitContext();
+
+        var menu = ctx.Render<MockMenu>(parameters => parameters
+            .Add(m => m.ChildContent, builder =>
+            {
+                builder.OpenComponent<MockCourse>(0);
+                builder.AddComponentParameter(1, nameof(MockCourse.Name), "Bread");
+                builder.AddComponentParameter(2, nameof(MockCourse.ChildContent), (RenderFragment)(dishes =>
+                {
+                    dishes.OpenComponent<MockDish>(0);
+                    dishes.AddComponentParameter(1, nameof(MockDish.Name), "Rye");
+                    dishes.AddComponentParameter(2, nameof(MockDish.Price), "R45");
+                    dishes.AddComponentParameter(3, nameof(MockDish.ChildContent), (RenderFragment)(words =>
+                        words.AddContent(0, "Dark and sour.")));
+                    dishes.CloseComponent();
+                }));
+                builder.CloseComponent();
+            })).Find(".mock-menu");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(menu.QuerySelector(".mock-course h4")!.TextContent, Is.EqualTo("Bread"));
+            Assert.That(menu.QuerySelector(".mock-course li.mock-dish .mock-dish-name")!.TextContent,
+                Is.EqualTo("Rye"));
+            Assert.That(menu.QuerySelector(".mock-dish .mock-dish-leader"), Is.Not.Null);
+            Assert.That(menu.QuerySelector(".mock-dish .mock-dish-price")!.TextContent, Is.EqualTo("R45"));
+            Assert.That(menu.QuerySelector(".mock-dish .mock-dish-words")!.TextContent, Is.EqualTo("Dark and sour."));
+        });
     }
 
     /// <summary>A card of a title and a price alone (a dish) draws no empty words under them.</summary>

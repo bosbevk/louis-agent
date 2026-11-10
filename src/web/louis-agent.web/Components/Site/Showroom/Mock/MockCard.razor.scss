@@ -40,6 +40,14 @@
 @media (prefers-reduced-motion: reduce) {
     .mock-card.is-shown, .mock-card.is-shown::after { animation: none; }
 }
+/* A card's real photo runs to its edges under the brand's band, cut to fit, never stretched. */
+.mock-card-photo {
+    display: block;
+    width: calc(100% + 28px);
+    margin: -12px -14px 10px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
 .mock-card-head { display: flex; flex-direction: column; gap: 3px; }
 .mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }
 .mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }

@@ -21,6 +21,10 @@ public partial class MockCard
     [Parameter]
     public string? Note { get; set; }
 
+    /// <summary>A real photo of it, from the site's own address; none for a card of words alone.</summary>
+    [Parameter]
+    public string? Photo { get; set; }
+
     /// <summary>Its few words; none for a card of a title and a note alone.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -29,6 +33,14 @@ public partial class MockCard
     [CascadingParameter(Name = SiteMock.ShownPlace)]
     public string? Shown { get; set; }
 
-    /// <summary>A card, lit when it is the place its agent showed.</summary>
-    private string Classes => Shown == Path ? "mock-card is-shown" : "mock-card";
+    /// <summary>A card, with its photo when it has one, pressed when it is the place its agent showed.</summary>
+    private string Classes => string.Join(' ', ClassNames());
+
+    /// <summary>The card's class names, one at a time.</summary>
+    private IEnumerable<string> ClassNames()
+    {
+        yield return "mock-card";
+        if (Photo is not null) yield return "has-photo";
+        if (Shown == Path) yield return "is-shown";
+    }
 }
