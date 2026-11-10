@@ -85,11 +85,16 @@ public partial class RecordedChat : IDisposable
         if (firstRender) await PlayAsync();
     }
 
+    /// <summary>Plays the conversation from the start, as the play-again button asks.</summary>
+    private Task PlayAsync() => PlayFromAsync(1);
+
     /// <summary>
-    /// Plays the conversation from the start, into a fresh chat, one turn after another; a play already going stops
-    /// first.
+    /// Plays the conversation from a turn, by its number from one (F127.1, Louis: "this should be clickable so visitors
+    /// can rewind"), into a fresh chat, one turn after another; a play already going stops first. The turns before it
+    /// show at once, each still told as it starts, so what keeps step beside the play (the cues, a mock website)
+    /// catches up; that turn plays at its pace.
     /// </summary>
-    private async Task PlayAsync()
+    public async Task PlayFromAsync(int from)
     {
         _stop?.Cancel();
         _stop = new CancellationTokenSource();
@@ -104,10 +109,10 @@ public partial class RecordedChat : IDisposable
             // Each turn says it starts, so what follows the play (a showroom's cues) keeps step with it.
             for (int number = 1; number <= Turns.Count; number++)
             {
-                // A breath before the next question, as a person reads the answer and types.
-                if (number > 1 && TurnGap > 0) await Task.Delay(TurnGap, stop);
+                // A breath before the next question, as a person reads the answer and types; none while catching up.
+                if (number > from && TurnGap > 0) await Task.Delay(TurnGap, stop);
                 await TurnStarted.InvokeAsync(number);
-                await PlayTurnAsync(Turns[number - 1], stop);
+                await PlayTurnAsync(Turns[number - 1], number < from ? 0 : Pace, stop);
             }
         }
         catch (OperationCanceledException)
@@ -119,8 +124,10 @@ public partial class RecordedChat : IDisposable
         StateHasChanged();
     }
 
-    /// <summary>Adds one turn's question to the chat and plays its recording into it, read once and kept.</summary>
-    private async Task PlayTurnAsync(RecordedTurn recorded, CancellationToken stop)
+    /// <summary>
+    /// Adds one turn's question to the chat and plays its recording into it at a pace, read once and kept.
+    /// </summary>
+    private async Task PlayTurnAsync(RecordedTurn recorded, double pace, CancellationToken stop)
     {
         if (!_recordings.TryGetValue(recorded.Source, out var events))
             _recordings[recorded.Source] = events = await ReadAsync(recorded.Source, stop);
@@ -128,7 +135,7 @@ public partial class RecordedChat : IDisposable
         var turn = new Turn { UserText = recorded.Question };
         _chat.Turns.Add(turn);
         StateHasChanged();
-        await TurnReplay.PlayAsync(turn, RecordingPace.Steps(events, Pace), () => _ = InvokeAsync(StateHasChanged),
+        await TurnReplay.PlayAsync(turn, RecordingPace.Steps(events, pace), () => _ = InvokeAsync(StateHasChanged),
             stop, call => _ = InvokeAsync(() => ToolCalled.InvokeAsync(call)));
     }
 

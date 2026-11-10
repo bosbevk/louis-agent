@@ -103,6 +103,34 @@ public class RecordedChatTests
         Assert.That(cut.FindAll(".recorded-chat .turn").Count, Is.LessThanOrEqualTo(1), "one turn, played again");
     }
 
+    /// <summary>
+    /// Played from a later turn (F127.1, Louis: "this should be clickable so visitors can rewind"), the turns before it
+    /// show at once, each told as it starts, and the chosen turn plays at its pace.
+    /// </summary>
+    [Test]
+    public async Task PlayedFromATurn_TheTurnsBefore_ShowAtOnce()
+    {
+        using var ctx = Context();
+        string answer = await AnswerAsync();
+        var started = new List<int>();
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns,
+                [new RecordedTurn("First question", Source), new RecordedTurn("Second one", Source)])
+            .Add(chat => chat.Pace, 50)
+            .Add(chat => chat.Ending, Offer)
+            .Add(chat => chat.TurnStarted, (int turn) => started.Add(turn)));
+
+        _ = cut.InvokeAsync(() => cut.Instance.PlayFromAsync(2));
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.That(cut.FindAll(".recorded-chat .turn"), Has.Count.EqualTo(2));
+            Assert.That(cut.FindAll(".recorded-chat .turn")[0].TextContent, Does.Contain(answer[..40]));
+        });
+        Assert.That((started.TakeLast(2), cut.FindAll(".offer").Count), Is.EqualTo((new[] { 1, 2 }, 0)),
+            "the first turn at once, the second still playing at its pace");
+    }
+
     /// <summary>The bill shows in the site's currency, as the live chat's does, when the site gives one.</summary>
     [Test]
     public void TheBill_ShowsInTheSitesCurrency()

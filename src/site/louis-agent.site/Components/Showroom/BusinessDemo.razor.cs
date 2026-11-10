@@ -111,6 +111,14 @@ public partial class BusinessDemo
     /// <summary>The place on its website its agent last showed; none at home.</summary>
     private string? _shown;
 
+    /// <summary>The recorded chat, which a clicked cue plays from its turn.</summary>
+    private RecordedChat? _chat;
+
+    /// <summary>
+    /// A clicked cue plays the conversation from its turn (Louis: "this should be clickable so visitors can rewind").
+    /// </summary>
+    private Task PlayFrom(int turn) => _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
+
     /// <summary>
     /// Notes the turn the play has reached, so the cues light up to it; a play from the start brings the website
     /// home.

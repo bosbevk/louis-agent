@@ -23,6 +23,27 @@ public class DemoCuesTests
             .Add(cues => cues.Heading, "What to watch"));
 
     /// <summary>
+    /// A cue is a way back into the play (F127.1, Louis: "this should be clickable so visitors can rewind"): each is a
+    /// button with the site's hint, and a click tells the page its turn.
+    /// </summary>
+    [Test]
+    public void ClickingACue_TellsItsTurn()
+    {
+        using var ctx = new BunitContext();
+        int? chosen = null;
+        var cut = ctx.Render<DemoCues>(parameters => parameters
+            .Add(cues => cues.Cues, Cues)
+            .Add(cues => cues.Reached, 3)
+            .Add(cues => cues.Hint, "Watch from here")
+            .Add(cues => cues.Chosen, (int turn) => chosen = turn));
+
+        cut.FindAll("ol.cues-list > li > button.cue-go")[1].Click();
+
+        Assert.That((chosen, cut.Find("button.cue-go").GetAttribute("title")),
+            Is.EqualTo(((int?)2, "Watch from here")));
+    }
+
+    /// <summary>
     /// Every cue up to the turn reached is lit, the newest pulses, and the rest wait, numbered in order.
     /// </summary>
     [Test]
