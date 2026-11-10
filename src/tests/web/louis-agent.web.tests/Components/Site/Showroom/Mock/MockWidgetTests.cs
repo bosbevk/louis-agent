@@ -20,6 +20,27 @@ public class MockWidgetTests
         cut.Find($".mock-widget-head button.window-tool[aria-label='{label}']");
 
     /// <summary>
+    /// A live chat says so in the head (F127.2, as mockup 4 draws it), so a visitor knows a real agent answers; a
+    /// recording says nothing.
+    /// </summary>
+    [Test]
+    public void ALiveChat_SaysLive_ARecordingDoesnt()
+    {
+        using var ctx = new BunitContext();
+        var recording = Widget(ctx);
+        var live = ctx.Render<MockWidget>(parameters => parameters
+            .Add(widget => widget.Label, "The Bakery · ask us")
+            .Add(widget => widget.Live, true)
+            .AddChildContent("<div class=\"chat\">Hello</div>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(recording.FindAll(".mock-live-tag"), Is.Empty);
+            Assert.That(live.Find(".mock-widget-head .mock-live-tag").TextContent, Is.EqualTo("Live"));
+        });
+    }
+
+    /// <summary>
     /// Minimised, the chat folds to its head and its button says Restore; pressed again, it comes back.
     /// </summary>
     [Test]

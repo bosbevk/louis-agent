@@ -50,6 +50,16 @@ public partial class MockLiveChat : IDisposable
     [Parameter]
     public string Hint { get; set; } = "";
 
+    /// <summary>
+    /// What its message box says before the visitor types; the showroom's words unless the demo names its own.
+    /// </summary>
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    /// <summary>Told when the visitor goes back to the recording; none, and the chat offers no way back.</summary>
+    [Parameter]
+    public EventCallback Left { get; set; }
+
     /// <summary>Told of each tool the agent calls as the turn streams, so the demo shows the place it named.</summary>
     [Parameter]
     public EventCallback<Block> ToolCalled { get; set; }
@@ -81,6 +91,13 @@ public partial class MockLiveChat : IDisposable
         if (page?.Url != _pageSentFor) Runner.Page = page;
         _pageSentFor = page?.Url;
         await Runner.SendAsync();
+    }
+
+    /// <summary>The hint, tapped: it goes as if the visitor had typed it.</summary>
+    private Task AskHintAsync()
+    {
+        Runner.Draft = Hint;
+        return SendAsync();
     }
 
     private Task<string> OpenSessionAsync() => Api.CreateSessionAsync([], identity: Identity);

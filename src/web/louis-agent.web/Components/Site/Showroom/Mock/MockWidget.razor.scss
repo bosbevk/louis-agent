@@ -41,6 +41,15 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--web-ok) 25%, transparent);
     animation: mock-online 2s ease-in-out infinite;
 }
+/* A live chat says so (F127.2, mockup 4): a small tag after the label, in the head's own brand-light colour. */
+.mock-live-tag {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font: 700 10px/1.2 var(--bs-font-monospace);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid color-mix(in srgb, var(--mock-on-brand) 45%, transparent);
+}
 @keyframes mock-online {
     50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--web-ok) 0%, transparent); }
 }

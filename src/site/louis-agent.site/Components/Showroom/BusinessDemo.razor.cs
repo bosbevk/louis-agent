@@ -1,5 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
+using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
@@ -112,6 +113,17 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public IReadOnlyList<DemoCue> Cues { get; set; } = [];
 
+    /// <summary>
+    /// The business's identity, by the name the site's catalogue knows, for a visitor to try live:
+    /// <c>seemeeu-guesthouse</c>.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Identity { get; set; } = "";
+
+    /// <summary>A first question for a visitor trying it live, from what its agent knows.</summary>
+    [Parameter, EditorRequired]
+    public string Hint { get; set; } = "";
+
     /// <summary>The turn the play has reached; none before it starts.</summary>
     private int _reached;
 
@@ -126,6 +138,14 @@ public partial class BusinessDemo
 
     /// <summary>The recorded chat, which a clicked cue plays from its turn.</summary>
     private RecordedChat? _chat;
+
+    /// <summary>Whether the visitor is trying the agent live rather than watching the recording.</summary>
+    private bool _trying;
+
+    [Inject] private IServiceProvider Services { get; set; } = null!;
+
+    /// <summary>The showroom's words, the site's own when it has them.</summary>
+    private ShowroomText Words => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
     /// <summary>
     /// A clicked cue plays the conversation from its turn (Louis: "this should be clickable so visitors can rewind").
@@ -149,4 +169,17 @@ public partial class BusinessDemo
     /// A visitor clicked through the website (F127.2): it stays where they went, until its agent shows the next place.
     /// </summary>
     private void Go(string path) => _shown = path;
+
+    /// <summary>
+    /// The visitor tries the agent themselves (F127.2): the live chat takes the recording's place, and the website goes
+    /// home, where a new customer would start.
+    /// </summary>
+    private void Try()
+    {
+        _trying = true;
+        _shown = null;
+    }
+
+    /// <summary>Back to the recording, which plays again from its start.</summary>
+    private void Watch() => _trying = false;
 }

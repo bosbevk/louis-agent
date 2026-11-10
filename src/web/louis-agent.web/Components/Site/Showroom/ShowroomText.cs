@@ -29,6 +29,18 @@ public sealed record ShowroomText
     /// <summary>The live chat's message box on a mock website, before the visitor types (F127.2).</summary>
     public string AskTheBusiness { get; init; } = "Ask a question…";
 
+    /// <summary>A recorded demo's offer, once it has played, to chat with its agent live (F127.2).</summary>
+    public string TryItYourself { get; init; } = "Try it yourself";
+
+    /// <summary>A live try's way back to the recorded conversation.</summary>
+    public string WatchTheRecording { get; init; } = "Watch the recording";
+
+    /// <summary>Before a live chat's first question, what its hint invites.</summary>
+    public string TapToAsk { get; init; } = "Tap to ask";
+
+    /// <summary>A mock widget's head when a real agent answers in it.</summary>
+    public string Live { get; init; } = "Live";
+
     /// <summary>The heading over a demo's cues.</summary>
     public string WhatToWatch { get; init; } = "What to watch";
 

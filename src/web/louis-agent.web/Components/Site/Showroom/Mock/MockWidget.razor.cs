@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Widget;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
@@ -22,9 +23,18 @@ public partial class MockWidget
     [Parameter]
     public string Label { get; set; } = "";
 
+    /// <summary>Whether a live agent answers in it, rather than a recording (F127.2).</summary>
+    [Parameter]
+    public bool Live { get; set; }
+
     /// <summary>The agent: its recorded chat, or a live one.</summary>
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
+
+    [Inject] private IServiceProvider Services { get; set; } = null!;
+
+    /// <summary>The showroom's words, the site's own when it has them.</summary>
+    private ShowroomText Text => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
     /// <summary>How big the chat sits now; in its corner until the visitor says otherwise.</summary>
     private ChatWindowSize Size { get; set; } = ChatWindowSize.Normal;

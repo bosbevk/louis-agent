@@ -126,7 +126,11 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public string AgentLabel { get; set; } = "";
 
-    /// <summary>The agent: its recorded chat.</summary>
+    /// <summary>Whether its agent answers live, so its widget says so (F127.2); a recording until then.</summary>
+    [Parameter]
+    public bool Live { get; set; }
+
+    /// <summary>The agent: its recorded chat, or a live one.</summary>
     [Parameter, EditorRequired]
     public RenderFragment Agent { get; set; } = null!;
 

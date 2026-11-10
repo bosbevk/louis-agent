@@ -1,0 +1,16 @@
+@use "web/tools/glow";
+
+/* Try it yourself (F127.2, mockup 4): once the recording has played, the button a visitor's eye should land on, beside
+   Play it again, lit in the stage's own accent (--accent, from the stage) as its offer is. */
+.demo-try {
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--web-on-primary);
+    background: glow.shade(var(--accent), 100deg);
+    @include glow.glow(var(--accent), 24px, -10px);
+}
+.demo-try::before { content: "✦ "; }
+.demo-try:hover { filter: brightness(1.08); }

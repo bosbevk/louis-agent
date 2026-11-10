@@ -65,8 +65,12 @@ public class MockLiveChatTests
         return ctx;
     }
 
-    /// <summary>The guesthouse's mock with its agent live, what it shows kept in <paramref name="shown"/>.</summary>
-    private static IRenderedComponent<SiteMock> Mock(BunitContext ctx, List<Block>? shown = null)
+    /// <summary>
+    /// The guesthouse's mock with its agent live, what it shows kept in <paramref name="shown"/>; with
+    /// <paramref name="left"/>, it offers the way back to the recording and counts each time it's taken.
+    /// </summary>
+    private static IRenderedComponent<SiteMock> Mock(BunitContext ctx, List<Block>? shown = null,
+        List<bool>? left = null)
     {
         RenderFragment live = builder =>
         {
@@ -75,6 +79,10 @@ public class MockLiveChatTests
             builder.AddComponentParameter(2, nameof(MockLiveChat.Hint), Hint);
             builder.AddComponentParameter(3, nameof(MockLiveChat.ToolCalled),
                 EventCallback.Factory.Create<Block>(new object(), block => shown?.Add(block)));
+            builder.AddComponentParameter(4, nameof(MockLiveChat.Placeholder), "Ask Seemeeu…");
+            if (left is not null)
+                builder.AddComponentParameter(5, nameof(MockLiveChat.Left),
+                    EventCallback.Factory.Create(new object(), () => left.Add(true)));
             builder.CloseComponent();
         };
         return ctx.Render<SiteMock>(parameters => parameters
@@ -85,7 +93,9 @@ public class MockLiveChatTests
             .Add(mock => mock.Agent, live));
     }
 
-    /// <summary>Before the first question the chat offers one to ask.</summary>
+    /// <summary>
+    /// Before the first question the chat offers one to tap (as mockup 4 draws it), in a box that names the business.
+    /// </summary>
     [Test]
     public void BeforeTheFirstQuestion_TheHintShows()
     {
@@ -93,7 +103,50 @@ public class MockLiveChatTests
 
         var cut = Mock(ctx);
 
-        Assert.That(cut.Find(".mock-widget-body .live-hint").TextContent, Is.EqualTo(Hint));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".mock-widget-body button.live-hint .live-hint-words").TextContent,
+                Is.EqualTo(Hint));
+            Assert.That(cut.Find(".mock-widget-body .live-hint-tap").TextContent, Is.EqualTo("Tap to ask"));
+            Assert.That(cut.Find("#composer-input").GetAttribute("placeholder"), Is.EqualTo("Ask Seemeeu…"));
+        });
+    }
+
+    /// <summary>Tapping the hint asks it, as if the visitor had typed it.</summary>
+    [Test]
+    public void TappingTheHint_AsksIt()
+    {
+        using var ctx = Context(out var handler);
+        var cut = Mock(ctx);
+
+        cut.Find("button.live-hint").Click();
+        cut.WaitForState(() => cut.FindAll(".turn").Count == 1 && cut.FindAll("button.send").Count == 1,
+            TimeSpan.FromSeconds(10));
+
+        var sent = handler.Requests.Single(r => r.Url.EndsWith("/messages")).Body!;
+        Assert.That(sent, Does.Contain(Hint));
+    }
+
+    /// <summary>
+    /// The way back to the recording is offered when the demo asks for one, and taking it tells the demo; without it,
+    /// there's none.
+    /// </summary>
+    [Test]
+    public void TheWayBack_IsOffered_AndTaken()
+    {
+        using var ctx = Context(out _);
+        var left = new List<bool>();
+        var without = Mock(ctx);
+        var with = Mock(ctx, left: left);
+
+        with.Find("button.live-leave").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(without.FindAll(".live-leave"), Is.Empty);
+            Assert.That(with.Find(".live-leave").TextContent, Is.EqualTo("Watch the recording"));
+            Assert.That(left, Has.Count.EqualTo(1));
+        });
     }
 
     /// <summary>A question opens a session as the business, with no toolsets of its own, and the turn shows.</summary>

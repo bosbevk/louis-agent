@@ -1,14 +1,26 @@
-@* A business's agent, live, in the corner of its mocked website (F127.2): the chat's own list with a first question
-   to ask, its notice and its message box, rounded, with its send button in the business's colour. *@
+@* A business's agent, live, in the corner of its mocked website (F127.2, mockup 4): the chat's own list with a first
+   question to tap, its notice, the way back to the recording when the demo offers one, and its message box, rounded,
+   with its send button in the business's colour. *@
 <div class="live-chat">
     <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" ShowWork="false">
-        <Empty><p class="live-hint">@Hint</p></Empty>
+        <Empty>
+            <button class="live-hint" type="button" @onclick="AskHintAsync">
+                <span class="live-hint-tap">@Words.TapToAsk</span>
+                <span class="live-hint-words">@Hint</span>
+            </button>
+        </Empty>
     </MessageList>
     <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
+    @if (Left.HasDelegate)
+    {
+        <div class="live-back">
+            <button class="live-leave" type="button" @onclick="Left">@Words.WatchTheRecording</button>
+        </div>
+    }
     <div class="live-composer">
         <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
-                  Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Words.AskTheBusiness"
-                  OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
+                  Streaming="Runner.Streaming" CanSend="Runner.CanSend"
+                  Placeholder="@(Placeholder ?? Words.AskTheBusiness)" OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
                   SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
     </div>
 </div>
