@@ -84,6 +84,25 @@
    beside the frame, out of the frame's layer, so it stays above the guide's spotlight as the site's corner does. */
 .showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }
 
+/* An open guide takes the rail's place on a wide screen (Louis's pick of three): the rail's column widens to the
+   guide's width and the demos step aside, the guide fills the column from under the bar to the bottom, and the open
+   panel covers none of the stage. The demos come back when it closes. */
+.showroom, .showroom-corner { --guide-width: 412px; }
+@media (min-width: 901px) {
+    .showroom:has(~ .showroom-corner .chat-widget.is-open) {
+        .showroom-body { grid-template-columns: var(--guide-width) minmax(0, 1fr); }
+        ::deep .demo-rail { visibility: hidden; }
+    }
+    .showroom-corner:has(.chat-widget.is-open) {
+        top: 74px;
+        left: 16px;
+        bottom: 16px;
+        width: calc(var(--guide-width) - 32px);
+        ::deep .chat-widget { height: 100%; }
+        ::deep .widget-panel { flex: 1; min-height: 0; width: 100%; height: auto; }
+    }
+}
+
 @media (max-width: 900px) {
     .showroom-body { grid-template-columns: minmax(0, 1fr); }
     .showroom-corner { left: auto; right: 24px; }

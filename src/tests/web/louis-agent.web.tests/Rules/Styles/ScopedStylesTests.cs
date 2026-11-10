@@ -52,6 +52,16 @@ public class ScopedStylesTests
             "move each rule beside the component that draws its element, or under ::deep");
     }
 
+    /// <summary>
+    /// The scope lands outside what a pseudo-class holds (F127.1, the showroom's open guide): Blazor writes
+    /// <c>.showroom:has(~ .showroom-corner .chat-widget.is-open)[b-…]</c>, so the rule lands on <c>.showroom</c>,
+    /// not on the class named inside <c>:has</c>.
+    /// </summary>
+    [TestCase(".frame:has(~ .corner .widget.is-open) { }", "frame")]
+    [TestCase(".frame:has(~ .corner .widget.is-open) .body { }", "body")]
+    public void TheScope_LandsOutsideAPseudoClassesArguments(string scss, string subject) =>
+        Assert.That(ScopedSelectors.Subjects(scss).Single().Subject, Is.EqualTo(subject));
+
     /// <summary>The selectors in one style file whose scope lands on nothing its component draws.</summary>
     private static IEnumerable<string> Astray(string file)
     {

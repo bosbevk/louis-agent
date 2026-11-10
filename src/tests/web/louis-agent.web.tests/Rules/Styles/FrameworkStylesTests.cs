@@ -143,6 +143,20 @@ public partial class FrameworkStylesTests
     }
 
     /// <summary>
+    /// An open guide takes the rail's place on a wide screen (F127.1, Louis's pick of three): the rail's column widens
+    /// to the guide's width and the demos step aside, so the open panel covers none of the stage; they come back when
+    /// it closes.
+    /// </summary>
+    [Test]
+    public void AnOpenGuide_TakesTheRailsPlace()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n");
+
+        Assert.That(rules, Does.Contain(".showroom:has(~ .showroom-corner .chat-widget.is-open) {")
+            .And.Contain(".showroom-body { grid-template-columns: var(--guide-width) minmax(0, 1fr); }"));
+    }
+
+    /// <summary>
     /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
     /// above itself holds the header and the menu, never the bottom of the slide before.
     /// </summary>
