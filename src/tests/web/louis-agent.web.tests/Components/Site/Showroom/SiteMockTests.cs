@@ -1,4 +1,6 @@
 using LouisAgent.Web.Components.Site.Showroom.Mock;
+using LouisAgent.Web.Scripts;
+using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Tests.Components.Site.Showroom;
 
@@ -144,6 +146,70 @@ public class SiteMockTests
 
         Assert.That((cut.Find(".site-mock").ClassList.Contains("look-split"), cut.FindAll(".mock-facts").Count,
             cut.FindAll(".mock-scene").Count, cut.FindAll(".mock-action").Count), Is.EqualTo((true, 0, 0, 0)));
+    }
+
+    /// <summary>The mock's places for the tests: a section, and a card in it.</summary>
+    private static readonly RenderFragment Places = builder =>
+    {
+        builder.OpenComponent<MockSection>(0);
+        builder.AddComponentParameter(1, nameof(MockSection.Path), "/bread");
+        builder.AddComponentParameter(2, nameof(MockSection.Heading), "Our bread");
+        builder.AddComponentParameter(3, nameof(MockSection.Cards), (RenderFragment)(cards =>
+        {
+            cards.OpenComponent<MockCard>(0);
+            cards.AddComponentParameter(1, nameof(MockCard.Path), "/bread/rye");
+            cards.AddComponentParameter(2, nameof(MockCard.Title), "Rye");
+            cards.CloseComponent();
+        }));
+        builder.CloseComponent();
+    };
+
+    /// <summary>The bakery's mock with its places, showing <paramref name="shown"/>.</summary>
+    private static IRenderedComponent<SiteMock> Showing(BunitContext ctx, string? shown) =>
+        ctx.Render<SiteMock>(parameters => parameters
+            .Add(mock => mock.Address, "bakery.example")
+            .Add(mock => mock.Business, "The Bakery")
+            .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
+            .Add(mock => mock.HeroLine, "Fresh before seven.")
+            .Add(mock => mock.Places, Places)
+            .Add(mock => mock.Shown, shown)
+            .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
+
+    /// <summary>
+    /// A place its agent showed (F127.1, Louis: "the agent can navigate the website basically"): its address in the
+    /// mock's bar, the place lit, and the mock's own page scrolled to it.
+    /// </summary>
+    [Test]
+    public void AShownPlace_IsInTheBar_LitAndScrolledTo()
+    {
+        using var ctx = new BunitContext();
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Mock);
+        module.SetupVoid("showPlace", _ => true);
+
+        var cut = Showing(ctx, "/bread/rye");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".mock-address").TextContent, Is.EqualTo("bakery.example/bread/rye"));
+            Assert.That(cut.FindAll(".is-shown").Select(place => place.GetAttribute("data-place")),
+                Is.EqualTo(new[] { "/bread/rye" }));
+            Assert.That(module.Invocations.Where(call => call.Identifier == "showPlace")
+                .Select(call => call.Arguments[1]), Is.EqualTo(new[] { "/bread/rye" }));
+        });
+    }
+
+    /// <summary>With nothing shown, the bar has the website's address, nothing is lit, and its page stays.</summary>
+    [Test]
+    public void NothingShown_LightsNothing()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+        var cut = Showing(ctx, null);
+
+        Assert.That((cut.Find(".mock-address").TextContent, cut.FindAll(".is-shown").Count,
+                ctx.JSInterop.Invocations.Count(call => call.Identifier == "showPlace")),
+            Is.EqualTo(("bakery.example", 0, 0)));
     }
 
     /// <summary>The agent sits in a widget in the corner, under its label.</summary>

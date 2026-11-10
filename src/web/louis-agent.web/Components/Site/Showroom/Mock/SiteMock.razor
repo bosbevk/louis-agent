@@ -1,11 +1,12 @@
 @* A business's website, mocked (F127.1, Louis's pick 3a, made fuller: "a bit bland, we need to sell it"): a browser bar
    with its address, its header with its sample brand (its mark, its name and tagline, its typeface), then its page,
    which scrolls inside the mock: the hero in the business's look with its scene and a call to action, a strip of
-   facts and its places. Its agent sits in a widget in the corner, where its customers would meet it. *@
+   facts and its places. Its agent sits in a widget in the corner, where its customers would meet it, and the place
+   it shows is in the bar, lit, and scrolled to. *@
 <div class="@Classes" style="@ColourStyle">
     <div class="mock-chrome" aria-hidden="true">
         <i></i><i></i><i></i>
-        <span class="mock-address">@Address</span>
+        <span class="mock-address">@Address@Shown</span>
     </div>
     <div class="mock-header">
         @if (Mark is not null)
@@ -26,7 +27,7 @@
             }
         </span>
     </div>
-    <div class="mock-page">
+    <div class="mock-page" @ref="_page">
         <div class="mock-hero">
             <div class="mock-hero-words">
                 <p class="mock-hero-line">@HeroLine</p>
@@ -53,7 +54,7 @@
                 }
             </ul>
         }
-        @Places
+        <CascadingValue Name="@ShownPlace" Value="Shown">@Places</CascadingValue>
     </div>
     <div class="mock-widget">
         <div class="mock-widget-head">

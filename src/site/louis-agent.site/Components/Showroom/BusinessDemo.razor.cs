@@ -1,3 +1,4 @@
+using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
@@ -12,8 +13,9 @@ namespace LouisAgent.Site.Components.Showroom;
 /// page names its business, its brand, its turns and its cues; the shape is this one.
 /// </summary>
 /// <remarks>
-/// The page's one piece of state is the turn the play has reached: the recorded chat says each turn as it starts, and
-/// the cues light up to it, so the two never know each other.
+/// The page's two pieces of state are the turn the play has reached and the place its agent last showed: the recorded
+/// chat says each turn as it starts and each tool call as it plays, the cues light up to the one and the website goes
+/// to the other, so none of the three knows the others (Mediator).
 /// </remarks>
 public partial class BusinessDemo
 {
@@ -106,6 +108,19 @@ public partial class BusinessDemo
     /// <summary>The widget's title on the business's website.</summary>
     private string AgentLabel => $"{Business} · ask us";
 
-    /// <summary>Notes the turn the play has reached, so the cues light up to it.</summary>
-    private void Reach(int turn) => _reached = turn;
+    /// <summary>The place on its website its agent last showed; none at home.</summary>
+    private string? _shown;
+
+    /// <summary>
+    /// Notes the turn the play has reached, so the cues light up to it; a play from the start brings the website
+    /// home.
+    /// </summary>
+    private void Reach(int turn)
+    {
+        _reached = turn;
+        if (turn == 1) _shown = null;
+    }
+
+    /// <summary>A ShowPage call played from the recording takes the website there; any other call, nowhere.</summary>
+    private void Show(Block call) => _shown = ShowPageCall.PathOf(call) ?? _shown;
 }

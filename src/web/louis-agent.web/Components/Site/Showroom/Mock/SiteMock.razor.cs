@@ -1,5 +1,7 @@
 using LouisAgent.Choices;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
@@ -15,10 +17,21 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 /// <see cref="MockColours"/>, set on the mock as variables its styles read, its mark, tagline, <see cref="MockFont"/>
 /// and <see cref="MockLook"/>), so its look is its own and never the site's theme. The page keeps clear of the widget
 /// and lays itself out by the mock's own width, not the screen's, since the stage beside the rail is narrower than
-/// the screen.
+/// the screen. The place its agent shows is handed down to the places as a cascading value, so a site writes its
+/// places once and never says which is lit; the mock scrolls its own page there through a module beside it.
 /// </remarks>
-public partial class SiteMock
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0093-a-script-is-a-module-beside-its-component.md">ADR 0093: a script is a module beside its component</seealso>
+public partial class SiteMock : IAsyncDisposable
 {
+    /// <summary>The name its places know the shown place by, handed down to them.</summary>
+    public const string ShownPlace = "MockShown";
+
+    private JsModule? _module;
+    private ElementReference _page;
+    private string? _scrolledTo;
+
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+
     /// <summary>The business's address in the browser bar: <c>the-bakery.example</c>.</summary>
     [Parameter, EditorRequired]
     public string Address { get; set; } = "";
@@ -75,6 +88,12 @@ public partial class SiteMock
     [Parameter]
     public RenderFragment? Places { get; set; }
 
+    /// <summary>
+    /// The place its agent showed, by its address on the business's site (<c>/rooms/garden</c>); none at home.
+    /// </summary>
+    [Parameter]
+    public string? Shown { get; set; }
+
     /// <summary>The widget's title: "The Bakery · ask us".</summary>
     [Parameter]
     public string AgentLabel { get; set; } = "";
@@ -82,6 +101,24 @@ public partial class SiteMock
     /// <summary>The agent: its recorded chat.</summary>
     [Parameter, EditorRequired]
     public RenderFragment Agent { get; set; } = null!;
+
+    /// <summary>The module beside the mock that scrolls its page, imported the first time a place is shown.</summary>
+    private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.Mock);
+
+    /// <summary>Scrolls the mock's own page to a newly shown place, once a render has drawn it lit.</summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Shown == _scrolledTo) return;
+        _scrolledTo = Shown;
+        if (Shown is not null) await Module.InvokeVoidAsync("showPlace", _page, Shown);
+    }
+
+    /// <summary>Lets the module go with the mock.</summary>
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null) await _module.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
 
     /// <summary>The mock's classes: a mock, in its business's typeface and look.</summary>
     private string Classes => $"site-mock font-{Font.Wire()} look-{Look.Wire()}";

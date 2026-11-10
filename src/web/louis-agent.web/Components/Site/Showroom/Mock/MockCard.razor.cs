@@ -24,4 +24,11 @@ public partial class MockCard
     /// <summary>Its few words; none for a card of a title and a note alone.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>The place the mock's agent showed, handed down by the mock.</summary>
+    [CascadingParameter(Name = SiteMock.ShownPlace)]
+    public string? Shown { get; set; }
+
+    /// <summary>A card, lit when it is the place its agent showed.</summary>
+    private string Classes => Shown == Path ? "mock-card is-shown" : "mock-card";
 }

@@ -10,12 +10,12 @@
     <Player>
         <SiteMock Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
                   NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel" Look="Look"
-                  Scene="Scene" HeroAction="@HeroAction" Facts="Facts" Places="Places">
+                  Scene="Scene" HeroAction="@HeroAction" Facts="Facts" Places="Places" Shown="@_shown">
             <Agent>
                 @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading speed,
                    and the visitor's next question comes after a breath, as they read and type. *@
                 <RecordedChat Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false" Pace="2.5"
-                              TurnGap="2200" TurnStarted="Reach" />
+                              TurnGap="2200" TurnStarted="Reach" ToolCalled="Show" />
             </Agent>
         </SiteMock>
     </Player>

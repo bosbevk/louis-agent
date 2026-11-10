@@ -3,6 +3,7 @@ using System.Reflection;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Site.Pages.Agents.Showroom;
+using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Showroom;
@@ -123,6 +124,37 @@ public class ShowroomPagesTests
             Assert.That(mock.QuerySelectorAll(".mock-facts li"), Has.Length.EqualTo(4));
             Assert.That(mock.QuerySelectorAll("[data-place]").Select(place => place.GetAttribute("data-place")),
                 Is.EqualTo(places));
+        });
+    }
+
+    /// <summary>
+    /// A business's website goes where its agent shows (Louis: "the agent can navigate the website basically"): a
+    /// ShowPage call played from the recording puts the place in the mock's bar and lights it, and the play starting
+    /// again brings the website home.
+    /// </summary>
+    [Test]
+    public async Task ABusinessWebsite_GoesWhereItsAgentShows()
+    {
+        using var ctx = new BunitContext();
+        var cut = Render(ctx, typeof(GuesthouseDemoPage));
+        var chat = cut.FindComponent<RecordedChat>().Instance;
+        var call = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "ShowPage",
+            ToolInput = "{\"path\":\"/rooms/garden\"}",
+        };
+
+        await cut.InvokeAsync(() => chat.ToolCalled.InvokeAsync(call));
+        string shown = cut.Find(".site-mock .mock-address").TextContent;
+        var lit = cut.FindAll(".site-mock .is-shown").Select(place => place.GetAttribute("data-place")).ToList();
+        await cut.InvokeAsync(() => chat.TurnStarted.InvokeAsync(1));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shown, Is.EqualTo("seemeeu.example/rooms/garden"));
+            Assert.That(lit, Is.EqualTo(new[] { "/rooms/garden" }));
+            Assert.That(cut.Find(".site-mock .mock-address").TextContent, Is.EqualTo("seemeeu.example"));
         });
     }
 
