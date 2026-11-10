@@ -99,6 +99,53 @@ public class SiteMockTests
             .And.Contain("--mock-page: #fff8ef").And.Contain("--mock-ink: #3b2a1d"));
     }
 
+    /// <summary>
+    /// A fuller website (F127.1, Louis: "a bit bland, we need to sell it ... give each one a different look"): a page
+    /// that scrolls inside the mock, its hero in the business's look with the scene the site drew and a call to action,
+    /// a strip of facts, then the places the site wrote.
+    /// </summary>
+    [Test]
+    public void ThePage_HasTheHeroInItsLook_TheFacts_AndThePlaces()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteMock>(parameters => parameters
+            .Add(mock => mock.Address, "bakery.example")
+            .Add(mock => mock.Business, "The Bakery")
+            .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
+            .Add(mock => mock.Look, MockLook.Banner)
+            .Add(mock => mock.HeroLine, "Fresh before seven.")
+            .Add(mock => mock.HeroAction, "Order bread")
+            .Add(mock => mock.Scene, "<svg class=\"oven\"></svg>")
+            .Add(mock => mock.Facts, ["Open from six", "Rye on Fridays"])
+            .Add(mock => mock.Places, "<section class=\"bread\">Bread</section>")
+            .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
+
+        var page = cut.Find(".site-mock > .mock-page");
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".site-mock").ClassList, Does.Contain("look-banner"));
+            Assert.That(page.Children.Select(child => child.ClassName),
+                Is.EqualTo(new[] { "mock-hero", "mock-facts", "bread" }));
+            Assert.That(page.QuerySelector(".mock-hero .mock-action")!.TextContent, Is.EqualTo("Order bread"));
+            Assert.That(page.QuerySelector(".mock-hero .mock-scene svg.oven"), Is.Not.Null);
+            Assert.That(page.QuerySelectorAll(".mock-facts li").Select(li => li.TextContent),
+                Is.EqualTo(new[] { "Open from six", "Rye on Fridays" }));
+        });
+    }
+
+    /// <summary>A website with no look of its own is the split one; with no facts or scene, it draws none.</summary>
+    [Test]
+    public void WithoutALook_TheMockIsSplit_AndDrawsNoEmptyParts()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Mock(ctx);
+
+        Assert.That((cut.Find(".site-mock").ClassList.Contains("look-split"), cut.FindAll(".mock-facts").Count,
+            cut.FindAll(".mock-scene").Count, cut.FindAll(".mock-action").Count), Is.EqualTo((true, 0, 0, 0)));
+    }
+
     /// <summary>The agent sits in a widget in the corner, under its label.</summary>
     [Test]
     public void TheAgent_SitsInTheCornersWidget()

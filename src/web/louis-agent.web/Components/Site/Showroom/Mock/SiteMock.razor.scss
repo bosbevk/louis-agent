@@ -1,14 +1,19 @@
 @use "web/tools/faces";
 
 /* A business's website, mocked (F127.1): the page in the business's own colours (--mock-*, set on it from the
-   page's data), a browser bar of its page's shades, its header in its brand colour, its hero in a serif of its own,
-   and its agent in a widget in the corner, under a head in its brand colour. The mock casts a shadow in the demo's
-   colour, so it sits on the lit stage. The chat keeps the framework's own look, as the real widget does; only its
-   window bar goes, since the widget has its own head. */
+   page's data), a browser bar of its page's shades, its header in its brand colour, then its page, which scrolls inside
+   the mock and keeps clear of the agent's widget in the corner (--widget-room). The mock lays itself out by its own
+   width (a container), since it sits on a stage narrower than the screen. It casts a shadow in the demo's colour, so
+   it sits on the lit stage. The chat keeps the framework's own look, as the real widget does; only its window bar
+   goes, since the widget has its own head. */
 .site-mock {
+    --widget-room: 392px;
     position: relative;
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    height: 660px;
     overflow: hidden;
-    min-height: 620px;
     border-radius: 14px;
     color: var(--mock-ink);
     background: var(--mock-page);
@@ -16,6 +21,7 @@
 }
 .mock-chrome {
     display: flex;
+    flex: none;
     align-items: center;
     gap: 6px;
     padding: 8px 10px;
@@ -38,6 +44,7 @@
 }
 .mock-header {
     display: flex;
+    flex: none;
     align-items: center;
     gap: 22px;
     padding: 14px 22px;
@@ -52,19 +59,81 @@
 .mock-header .mock-mark { width: 34px; height: 34px; }
 .mock-widget-head .mock-mark { width: 20px; height: 20px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
-.mock-hero { max-width: 50%; padding: 36px 24px; }
-.mock-hero-line { margin: 0; font-size: 28px; font-weight: 400; line-height: 1.12; color: var(--mock-brand); }
 
-/* The business's typeface (its sample brand): its class sets --mock-face, which its header and hero wear. */
+/* The business's typeface (its sample brand): its class sets --mock-face, which its header, hero and places wear. */
 @include faces.classes;
 .mock-header, .mock-hero { font-family: var(--mock-face); }
+
+/* The page: the hero, a strip of facts, then the places, beside the widget's room. */
+.mock-page {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 var(--widget-room) 28px 24px;
+    scrollbar-width: thin;
+}
+.mock-hero { display: flex; align-items: center; gap: 22px; padding: 28px 0 22px; }
+.mock-hero-words { flex: 1 1 0; min-width: 0; }
+.mock-hero-line { margin: 0; font-size: 28px; font-weight: 400; line-height: 1.12; color: var(--mock-brand); }
 .mock-hero-note { margin: 10px 0 0; font-size: 13.5px; color: color-mix(in srgb, var(--mock-ink) 75%, transparent); }
+.mock-action {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font: 600 13px/1 var(--bs-font-sans-serif);
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+}
+.mock-scene { flex: 0 0 42%; }
+.mock-scene ::deep svg { display: block; width: 100%; height: auto; }
+.mock-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.mock-facts li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mock-brand);
+    background: color-mix(in srgb, var(--mock-brand) 10%, var(--mock-page));
+}
+
+/* Editorial: a big heading in the business's ink, the scene small at its side, a double rule under the hero, and a
+   squarer button. */
+.look-editorial .mock-hero {
+    align-items: flex-start;
+    margin-bottom: 18px;
+    border-bottom: 3px double color-mix(in srgb, var(--mock-ink) 35%, transparent);
+}
+.look-editorial .mock-hero-line { font-size: 34px; font-weight: 600; letter-spacing: -.01em; color: var(--mock-ink); }
+.look-editorial .mock-scene { flex-basis: 26%; }
+.look-editorial .mock-action { border-radius: 4px; }
+
+/* Banner: the scene a wide band across the top of the page, under the widget too, with the words in a panel over its
+   lower part. */
+.look-banner .mock-hero {
+    position: relative;
+    display: block;
+    margin: 0 calc(-1 * var(--widget-room)) 18px -24px;
+    padding: 0;
+}
+.look-banner .mock-scene { height: 250px; }
+.look-banner .mock-scene ::deep svg { height: 100%; }
+.look-banner .mock-hero-words {
+    position: absolute;
+    left: 24px;
+    bottom: 18px;
+    max-width: 420px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--mock-page) 90%, transparent);
+}
+.look-banner .mock-hero-line { font-size: 24px; }
 
 .mock-widget {
     position: absolute;
     right: 16px;
     bottom: 16px;
-    width: min(380px, 58%);
+    width: 360px;
     overflow: hidden;
     border-radius: 14px;
     background: var(--bs-secondary-bg);
@@ -91,10 +160,16 @@
 .mock-widget-body ::deep .recorded-chat { border: 0; border-radius: 0; }
 .mock-widget-body ::deep .recorded-bar { display: none; }
 
-@media (max-width: 900px) {
-    .site-mock { min-height: 640px; }
+/* A narrow mock (a phone, or a small stage): the page takes the whole width, the hero stacks, and the widget sits
+   across the bottom, with room under the page's end so its last place can scroll up above the widget. */
+@container (max-width: 760px) {
     .mock-nav { display: none; }
-    .mock-hero { max-width: 100%; padding: 18px 16px; }
+    .mock-page { padding: 0 16px 360px; }
+    .mock-hero { flex-direction: column; align-items: stretch; padding: 18px 0; }
     .mock-hero-line { font-size: 21px; }
-    .mock-widget { left: 10px; right: 10px; bottom: 10px; width: auto; --recorded-height: 380px; }
+    .look-editorial .mock-hero-line { font-size: 24px; }
+    .look-banner .mock-hero { margin: 0 -16px 16px; }
+    .look-banner .mock-scene { height: 170px; }
+    .look-banner .mock-hero-words { position: static; max-width: none; border-radius: 0; }
+    .mock-widget { left: 10px; right: 10px; bottom: 10px; width: auto; --recorded-height: 300px; }
 }

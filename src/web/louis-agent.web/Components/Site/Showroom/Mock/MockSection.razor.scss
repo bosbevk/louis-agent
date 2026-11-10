@@ -1,0 +1,20 @@
+/* A section of a mocked business's website (F127.1): its heading in the business's typeface and brand colour, a thin
+   rule in its ink above it, its words, and its cards in a row that wraps. */
+.mock-section {
+    padding: 22px 0 6px;
+    border-top: 1px solid color-mix(in srgb, var(--mock-ink) 14%, transparent);
+    font-size: 13.5px;
+    line-height: 1.55;
+}
+.mock-section-heading {
+    margin: 0 0 6px;
+    font: 600 19px/1.2 var(--mock-face);
+    color: var(--mock-brand);
+}
+.mock-section ::deep p { margin: 0 0 8px; }
+.mock-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}

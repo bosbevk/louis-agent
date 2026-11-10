@@ -1,0 +1,10 @@
+@* A section of a mocked business's website (F127.1): its heading, its words, then its cards in a row, at its own
+   address on the business's site, so its agent can show it. *@
+<section class="mock-section" data-place="@Path">
+    <h3 class="mock-section-heading">@Heading</h3>
+    @ChildContent
+    @if (Cards is not null)
+    {
+        <div class="mock-cards">@Cards</div>
+    }
+</section>

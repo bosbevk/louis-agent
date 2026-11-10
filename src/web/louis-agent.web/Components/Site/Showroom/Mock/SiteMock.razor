@@ -1,6 +1,7 @@
-@* A business's website, mocked (F127.1, Louis's pick 3a): a browser bar with its address, its header with its sample
-   brand (its mark, its name and tagline, its typeface) and one hero line in its own colours, and its agent in a widget
-   in the corner, where its customers would meet it. *@
+@* A business's website, mocked (F127.1, Louis's pick 3a, made fuller: "a bit bland, we need to sell it"): a browser bar
+   with its address, its header with its sample brand (its mark, its name and tagline, its typeface), then its page,
+   which scrolls inside the mock: the hero in the business's look with its scene and a call to action, a strip of
+   facts and its places. Its agent sits in a widget in the corner, where its customers would meet it. *@
 <div class="@Classes" style="@ColourStyle">
     <div class="mock-chrome" aria-hidden="true">
         <i></i><i></i><i></i>
@@ -25,12 +26,34 @@
             }
         </span>
     </div>
-    <div class="mock-hero">
-        <p class="mock-hero-line">@HeroLine</p>
-        @if (HeroNote is not null)
+    <div class="mock-page">
+        <div class="mock-hero">
+            <div class="mock-hero-words">
+                <p class="mock-hero-line">@HeroLine</p>
+                @if (HeroNote is not null)
+                {
+                    <p class="mock-hero-note">@HeroNote</p>
+                }
+                @if (HeroAction is not null)
+                {
+                    <span class="mock-action">@HeroAction</span>
+                }
+            </div>
+            @if (Scene is not null)
+            {
+                <div class="mock-scene" aria-hidden="true">@Scene</div>
+            }
+        </div>
+        @if (Facts.Count > 0)
         {
-            <p class="mock-hero-note">@HeroNote</p>
+            <ul class="mock-facts">
+                @foreach (var fact in Facts)
+                {
+                    <li>@fact</li>
+                }
+            </ul>
         }
+        @Places
     </div>
     <div class="mock-widget">
         <div class="mock-widget-head">

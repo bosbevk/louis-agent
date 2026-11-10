@@ -1,0 +1,12 @@
+@* A card on a mocked business's website (F127.1): its title with a note such as its price, and a few words, at its
+   own address on the business's site, so its agent can show it. *@
+<article class="mock-card" data-place="@Path">
+    <div class="mock-card-head">
+        <b class="mock-card-title">@Title</b>
+        @if (Note is not null)
+        {
+            <span class="mock-card-note">@Note</span>
+        }
+    </div>
+    <p class="mock-card-words">@ChildContent</p>
+</article>
