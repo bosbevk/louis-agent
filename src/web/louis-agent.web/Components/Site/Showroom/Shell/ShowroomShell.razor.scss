@@ -101,6 +101,8 @@
         width: calc(var(--guide-width) - 32px);
         ::deep .chat-widget { height: 100%; }
         ::deep .widget-panel { flex: 1; min-height: 0; width: 100%; height: auto; }
+        /* Docked, it already fills the column, so a window's minimise and maximise mean nothing here (F127.2). */
+        ::deep .window-tools { display: none; }
     }
 }
 
