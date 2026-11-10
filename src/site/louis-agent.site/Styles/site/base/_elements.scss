@@ -12,6 +12,8 @@
     h1, h2, h3, h4 { margin: 0; color: var(--bs-emphasis-color); letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
     h1 { font-size: 60px; font-weight: 700; letter-spacing: -.03em; line-height: 1.04; }
     h2 { font-size: 40px; font-weight: 700; }
+    /* A page's title in its top band is its one h1 (FX125), at a section heading's size: only the hero is bigger. */
+    .band h1 { font-size: 40px; letter-spacing: -.02em; line-height: 1.1; }
     h3 { font-size: 22px; font-weight: 600; }
     h4 { font-size: 17px; font-weight: 600; }
     p { margin: 0; }

@@ -11,7 +11,10 @@
         {
             <span class="kicker">@Kicker</span>
         }
-        @ChildContent
+        @* The band hands itself down, so a title in it knows whether it heads the page (FX125). *@
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
     </div>
     <div class="band-pager" hidden>
         <button type="button" class="band-page" data-step="-1" aria-label="Previous page">‹</button>

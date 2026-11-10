@@ -36,7 +36,7 @@ public class CsharpAgentFrameworkPageTests
         Assert.Multiple(() =>
         {
             Assert.That(route, Is.EqualTo("/csharp-ai-agent-framework"));
-            Assert.That(cut.Find("h2").TextContent, Does.Contain("AI agent framework in C#"));
+            Assert.That(cut.Find("h1").TextContent, Does.Contain("AI agent framework in C#"));
             Assert.That(cut.Markup, Does.Contain("Microsoft Agent Framework").And.Contain("Semantic Kernel"));
             Assert.That(Sources.Where(source => !links.Contains(source)), Is.Empty, "every source is linked");
             Assert.That(cut.Markup, Does.Not.Contain(";"), "no semicolons in the site's words");

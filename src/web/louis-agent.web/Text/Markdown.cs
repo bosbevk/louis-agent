@@ -20,20 +20,30 @@ public static class Markdown
 
     /// <param name="markdown">The text to show.</param>
     /// <param name="shown">The exact URLs of the images a tool gave in this turn (FX22); none by default.</param>
-    public static MarkupString ToHtml(string markdown, IReadOnlySet<string>? shown = null)
+    /// <param name="topHeading">
+    /// The level a "# " heading becomes (FX125): 1 for an answer, 2 for a document shown inside a page, whose own h1
+    /// is the page's title; every level under it moves down with it, never past h6.
+    /// </param>
+    public static MarkupString ToHtml(string markdown, IReadOnlySet<string>? shown = null, int topHeading = 1)
     {
         MarkdownDocument document = Parse(markdown);
 
-        // For the same reason, only plain web/mail links survive (no javascript: or data: URLs). A browser loads an image
-        // by itself, so a model-written image could send the chat's data to any host. Two rules show one, and only these:
-        // the URL is exactly one a tool returned in this turn (FX22: the recipe page's image; a model can't invent a URL
-        // that passes), or its host is a shop's own image host (the cook's product photos, F33, kept so chats saved before
-        // FX22 still show them). Any other image becomes a link, loaded only if the user clicks it.
+        // A document inside a page moves its headings down, so the page keeps its one h1 (FX125).
+        foreach (var heading in document.Descendants<HeadingBlock>())
+            heading.Level = Math.Min(6, heading.Level + topHeading - 1);
+
+        // As raw HTML stays text, only plain web/mail links survive (no javascript: or data: URLs). A browser loads
+        // an image by itself, so a model-written image could send the chat's data to any host. Two rules show one,
+        // and only these: the URL is exactly one a tool returned in this turn (FX22: the recipe page's image; a model
+        // can't invent a URL that passes), or its host is a shop's own image host (the cook's product photos, F33,
+        // kept so chats saved before FX22 still show them). Any other image becomes a link, loaded only if the user
+        // clicks it.
         foreach (var link in document.Descendants<LinkInline>())
         {
             if (!IsSafeUrl(link.Url)) link.Url = "#";
             if (link.IsImage && !(IsToolImage(link.Url, shown) || IsShopImage(link.Url))) link.IsImage = false;
-            // A shop's photo opens its original in a dialog when clicked (the chat shell's module): the same file, without the size.
+            // A shop's photo opens its original in a dialog when clicked (the chat shell's module): the same file,
+            // without the size.
             if (link.IsImage) link.GetAttributes().AddProperty("data-original", WithoutSize(link.Url!));
         }
 

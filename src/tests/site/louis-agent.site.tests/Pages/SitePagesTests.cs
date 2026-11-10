@@ -14,7 +14,7 @@ namespace LouisAgent.Site.Tests.Pages;
 public class SitePagesTests
 {
     /// <summary>Each page of the menu is at its address and opens with its heading.</summary>
-    [TestCase(typeof(HomePage), "/", "Your best employee, at ten at night.")]
+    [TestCase(typeof(HomePage), "/", "A website that talks to your customers.")]
     [TestCase(typeof(HowItWorksPage), "/framework/how-it-works", "One turn, through every layer.")]
     [TestCase(typeof(ArchitecturePage), "/framework/architecture",
         "The whole framework, as the repository is laid out.")]
@@ -42,7 +42,7 @@ public class SitePagesTests
         Assert.Multiple(() =>
         {
             Assert.That(routes, Is.EqualTo(new[] { address }));
-            Assert.That(cut.Find("h2.chrome").TextContent, Is.EqualTo(heading));
+            Assert.That(cut.Find("h1.chrome").TextContent, Is.EqualTo(heading));
         });
     }
 
