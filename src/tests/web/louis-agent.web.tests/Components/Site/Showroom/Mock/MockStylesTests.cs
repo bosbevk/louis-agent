@@ -76,6 +76,25 @@ public partial class MockStylesTests
     }
 
     /// <summary>
+    /// A page change fades the new page in (still, for less motion), and on a narrow mock the menu stays, a row of its
+    /// own that scrolls sideways, so a visitor on a phone can click through the pages too.
+    /// </summary>
+    [Test]
+    public void APage_FadesIn_AndANarrowMockKeepsItsMenu()
+    {
+        string page = Styles("Website/MockPage.razor.scss");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule(page, ".mock-view"), Does.Contain("animation: mock-page-in"));
+            Assert.That(page, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                                           "    .mock-view { animation: none; }"));
+            Assert.That(Narrow(Styles("SiteMock.razor.scss")),
+                Does.Not.Contain(".mock-nav { display: none; }").And.Contain("overflow-x: auto;"));
+        });
+    }
+
+    /// <summary>
     /// Minimised, the chat shows only its head; maximised, it covers the whole mock, a phone's narrow one too.
     /// </summary>
     [Test]

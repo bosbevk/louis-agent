@@ -1,0 +1,24 @@
+/* A page of a mock website (F127.2): the one on screen fades in as a page change does, still for less motion; a page
+   other than home opens with its heading in the business's face and colour, under a way back to its parent when it's
+   off the menu. */
+.mock-view { animation: mock-page-in .35s var(--web-ease) both; }
+@keyframes mock-page-in {
+    from { opacity: 0; transform: translateY(6px); }
+}
+.mock-page-heading { margin: 22px 0 8px; font: 600 28px/1.1 var(--mock-face); color: var(--mock-brand); }
+.mock-back {
+    margin-top: 18px;
+    padding: 0;
+    border: 0;
+    font: 600 12px/1 var(--mock-face);
+    letter-spacing: .06em;
+    color: var(--mock-brand);
+    background: none;
+    cursor: pointer;
+}
+.mock-back:hover { text-decoration: underline; }
+.mock-back:focus-visible { outline: 2px solid var(--mock-brand); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .mock-view { animation: none; }
+}

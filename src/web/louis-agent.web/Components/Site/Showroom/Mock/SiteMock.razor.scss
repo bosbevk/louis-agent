@@ -54,6 +54,10 @@
 .mock-name { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; }
 .mock-tagline { font-size: 11.5px; letter-spacing: .04em; opacity: .8; }
 .mock-nav { display: flex; gap: 18px; margin-left: auto; font-size: 13px; opacity: .85; }
+/* Its menu's words are its pages (F127.2), buttons a visitor clicks; the page it's on is underlined. */
+.mock-nav-item { padding: 4px 0; border: 0; font: inherit; color: inherit; background: none; cursor: pointer; }
+.mock-nav-item:hover, .mock-nav-item.is-current { box-shadow: inset 0 -2px 0 currentColor; }
+.mock-nav-item:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .mock-mark { display: inline-flex; flex: none; }
 .mock-header .mock-mark { width: 34px; height: 34px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
@@ -191,9 +195,11 @@
 }
 
 /* A narrow mock (a phone, or a small stage): the page takes the whole width and the hero stacks, with room under the
-   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). */
+   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). The menu
+   keeps its pages in a row of its own under the name, scrolling sideways, so a phone can click through them too. */
 @container (max-width: 760px) {
-    .mock-nav { display: none; }
+    .mock-header { flex-wrap: wrap; row-gap: 8px; }
+    .mock-nav { flex-basis: 100%; margin-left: 0; overflow-x: auto; white-space: nowrap; }
     .mock-page { padding: 0 16px 280px; }
     .mock-hero { flex-direction: column; align-items: stretch; padding: 18px 0; }
     .mock-hero-line { font-size: 21px; }

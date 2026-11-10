@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -7,9 +8,9 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
 /// <summary>
 /// A mock of a business's own website (F127.1, Louis's pick 3a, made fuller): a browser bar with its address, its name
-/// and menu in its brand colour, then a page that scrolls inside the mock (a hero in its look, a strip of facts and its
-/// places), and its agent chatting in a widget in the corner. A visitor sees the agent where its customers would meet
-/// it, on a website like their own.
+/// and menu in its brand colour, then a page that scrolls inside the mock (on home a hero in its look and a strip of
+/// facts, then its pages, F127.2, only the one it's on showing), and its agent chatting in a widget in the corner. A
+/// visitor sees the agent where its customers would meet it, on a website like their own, and can click through it.
 /// </summary>
 /// <remarks>
 /// Device mock-up, as product pages show an app in a phone or a browser (the research: Copilot Studio's demo website,
@@ -18,7 +19,10 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 /// and <see cref="MockLook"/>), so its look is its own and never the site's theme. The page keeps clear of the widget
 /// and lays itself out by the mock's own width, not the screen's, since the stage beside the rail is narrower than
 /// the screen. The place its agent shows is handed down to the places as a cascading value, so a site writes its
-/// places once and never says which is lit; the mock scrolls its own page there through a module beside it.
+/// places once and never says which is lit; the mock scrolls its own page there through a module beside it. Its pages
+/// register with it as Microsoft's TabSet example has its tabs do (<see cref="MockPage"/>), and the page it's on is
+/// handed down the same way. Where it is has two sources, its agent and a visitor's click; the agent's next place
+/// wins, so the recording and the visitor never fight over the website.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0093-a-script-is-a-module-beside-its-component.md">ADR 0093: a script is a module beside its component</seealso>
 public partial class SiteMock : IAsyncDisposable
@@ -26,9 +30,16 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>The name its places know the shown place by, handed down to them.</summary>
     public const string ShownPlace = "MockShown";
 
+    /// <summary>The name its pages know the page it's on by, handed down to them.</summary>
+    public const string CurrentPageName = "MockCurrentPage";
+
+    private readonly MockSiteMap _map = new();
     private JsModule? _module;
     private ElementReference _page;
     private string? _scrolledTo;
+    private string? _went;
+    private string? _shownBefore;
+    private string? _pageDrawn;
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
 
@@ -100,6 +111,17 @@ public partial class SiteMock : IAsyncDisposable
     public RenderFragment? Places { get; set; }
 
     /// <summary>
+    /// Its pages (F127.2): each a <see cref="MockPage"/> with its address, its menu word and its sections, in the order
+    /// its menu reads.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Pages { get; set; }
+
+    /// <summary>Told where a visitor's click went, by the page's address, so the site can follow.</summary>
+    [Parameter]
+    public EventCallback<string> Went { get; set; }
+
+    /// <summary>
     /// The place its agent showed, by its address on the business's site (<c>/rooms/garden</c>); none at home.
     /// </summary>
     [Parameter]
@@ -116,9 +138,68 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>The module beside the mock that scrolls its page, imported the first time a place is shown.</summary>
     private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.Mock);
 
-    /// <summary>Scrolls the mock's own page to a newly shown place, once a render has drawn it lit.</summary>
+    /// <summary>
+    /// Where the website is: where a visitor's click went, else the place its agent showed; none at home.
+    /// </summary>
+    private string? Here => _went ?? Shown;
+
+    /// <summary>The page the website is on.</summary>
+    private string CurrentPage => _map.PageOf(Here);
+
+    /// <summary>Whether the hero shows: on home, or on a site of one long page.</summary>
+    private bool ShowsHome => !_map.Any || CurrentPage == MockPaths.Home;
+
+    /// <summary>The pages its menu lists.</summary>
+    private IEnumerable<MockPage> MenuPages => _map.Menu;
+
+    /// <summary>A menu word's classes: the page the website is on is marked.</summary>
+    private string NavClass(MockPage page) => page.Path == CurrentPage ? "mock-nav-item is-current" : "mock-nav-item";
+
+    /// <summary>The current page's menu word says so, for a screen reader.</summary>
+    private string? CurrentMark(MockPage page) => page.Path == CurrentPage ? "page" : null;
+
+    /// <summary>A page says it's there; the menu draws again with it.</summary>
+    internal void Register(MockPage page)
+    {
+        if (_map.Add(page)) StateHasChanged();
+    }
+
+    /// <summary>A page goes.</summary>
+    internal void Unregister(MockPage page) => _map.Remove(page);
+
+    /// <summary>A page's word in the menu, for a way back to it.</summary>
+    internal string? LabelOf(string? path) => _map.LabelOf(path);
+
+    /// <summary>A visitor's click: the website goes there, and the site hears of it.</summary>
+    internal async Task GoAsync(string path)
+    {
+        _went = path;
+        StateHasChanged();
+        await Went.InvokeAsync(path);
+    }
+
+    /// <summary>A place its agent newly showed wins over where a visitor's click went.</summary>
+    protected override void OnParametersSet()
+    {
+        if (Shown == _shownBefore) return;
+        _shownBefore = Shown;
+        _went = null;
+    }
+
+    /// <summary>
+    /// On a new page the mock's own page goes to its top, then to a newly shown place, once a render has drawn it lit.
+    /// </summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // The first page drawn is where the mock starts: nothing to scroll from.
+        string page = CurrentPage;
+        if (firstRender) _pageDrawn = page;
+        if (page != _pageDrawn)
+        {
+            _pageDrawn = page;
+            await Module.InvokeVoidAsync("toTop", _page);
+        }
+
         if (Shown == _scrolledTo) return;
         _scrolledTo = Shown;
         if (Shown is not null) await Module.InvokeVoidAsync("showPlace", _page, Shown);

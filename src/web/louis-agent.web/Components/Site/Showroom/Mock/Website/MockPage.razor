@@ -1,0 +1,14 @@
+@* A page of a mock website (F127.2, Louis: "3 pagers with working pages and sections"): only the page its mock is on
+   shows, the others stay drawn but hidden, so what the live agent reads can list every page's places. A page other than
+   home opens with its heading, under a way back to its parent when it's off the menu. *@
+<div class="mock-view" data-page="@Path" hidden="@(!IsCurrent)">
+    @if (!IsHome)
+    {
+        @if (Parent is not null)
+        {
+            <button class="mock-back" type="button" @onclick="BackAsync">← @ParentLabel</button>
+        }
+        <h2 class="mock-page-heading">@Label</h2>
+    }
+    @ChildContent
+</div>
