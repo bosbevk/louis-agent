@@ -49,11 +49,15 @@ steps and the facts a buyer trusts), custom agents, the demos, one band of proof
 measured, with links into it) and a strip that asks a business for theirs. The framework's rule moved to
 `/framework/measured`, its short film and four concepts to `/framework/architecture`. `/what-we-build` and
 `/pricing` (two plans, each a tile with its price) are the selling pages; `/contact`, and the demos: `/demos`, the
-showroom's three first (F128.2: `/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`, one
-`BusinessDemo` each, a made-up business's conversation recorded by `src/site/recordings/record-showroom.sh` and
-played as its customer sees it, [louis-agent.identity.showroom](louis-agent.identity.showroom.md)),
+showroom's three first, the guesthouse leading (F128.2: `/restaurant-demo`, `/law-practice-demo`, and since F127.1
+`/guesthouse-demo` in place of the doctor's practice, whose old address redirects there; one `BusinessDemo` each, a
+made-up business's conversation recorded by `src/site/recordings/record-showroom.sh` and played as its customer sees
+it, on a full mock of its own website in a look of its own, written in `Components/Showroom/Websites/` as its scene
+and its places; when the recording's agent calls `ShowPage` the mock goes to that place,
+[louis-agent.identity.showroom](louis-agent.identity.showroom.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
-[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
+since F127.1 on the same stage, in their own players. The framework's own pages
 sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
 `/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
 `/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,

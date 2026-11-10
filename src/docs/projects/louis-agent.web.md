@@ -83,6 +83,21 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   records under `Meta/Schema/` (an organisation, a website, a piece of software, a breadcrumb), written as JSON-LD by
   `SchemaJson` (F123, [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md)). The API's
   `MapLouisAgentSite` serves it as HTML with its own head and words, for crawlers that run no script (F121, ADR 0109).
+  A place's address opened afresh draws in its page's own layout: `PlaceLayout` gives the router's `RouteView` the
+  layout of the page the address names (F127.1).
+- **A site's showroom** (F127.1, [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md)), under
+  `Components/Site/Showroom/`: the area a site shows its demos in. `Shell/` is the frame (`ShowroomShell`: a slim
+  bar, `DemoRail` grouped by what a visitor comes for, `DemoChips` on a phone, the corner beside the frame, the whole
+  frame in the colour of the demo on screen; an open guide takes the rail's place). `Stage/` is a demo's page
+  (`DemoStage`: kicker, the page's one h1, lede, player, `DemoCues` lit in step with the play and each a button that
+  plays from its turn, `DemoNotes` of what a custom agent could add, the offer; each part a section with its own
+  address). `Start/` is the showroom's start (`ShowroomStart`: a big start for the main demo, a cover per demo).
+  `Mock/` is a business's website (`SiteMock`: a browser bar, its sample brand, a page that scrolls inside the mock
+  in one of three `MockLook`s with a hero photo worn with its brand, facts and its places, `MockSection` and
+  `MockCard` with photos, `Menu/` for a real menu, and its agent's widget in the corner). A site registers its
+  `ShowroomDemos` and may register `ShowroomText`. The recorded chat tells its page each tool call as it plays
+  (`RecordedChat.ToolCalled`, read with `ShowPageCall`, shared with the guide's widget), so a mock goes to the place
+  its agent showed, a section under the guide's spotlight and a card pressed.
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.
 

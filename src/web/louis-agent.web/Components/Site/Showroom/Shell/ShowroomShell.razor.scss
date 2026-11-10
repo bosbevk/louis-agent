@@ -1,0 +1,128 @@
+@use "web/tools/accents";
+@use "web/tools/glow";
+
+/* The showroom's frame (F127.1, Louis: "it can be themed colourful and fancy"): lit from the top right in the colour of
+   the demo on screen (--accent, from its class), a faint purple and blue in the far corners, and a fine grid that fades
+   out. The bar stays on top and the rail beside the stage; on a phone the chips take the rail's place and the corner
+   is a bar across the bottom, as the landing's is (FX113). */
+@include accents.classes;
+
+.showroom {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    color: var(--bs-body-color);
+    background:
+        radial-gradient(1100px 520px at 75% -10%, glow.tint(var(--accent), 30%), transparent 62%),
+        radial-gradient(800px 440px at 105% 95%, glow.tint(var(--web-purple), 14%), transparent 60%),
+        radial-gradient(700px 400px at -5% 105%, glow.tint(var(--bs-info), 10%), transparent 60%),
+        var(--bs-body-bg);
+}
+.showroom::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .35;
+    background-image:
+        linear-gradient(rgba(var(--web-overlay-rgb), .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--web-overlay-rgb), .035) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse at 70% 0%, var(--web-bright) 30%, transparent 75%);
+}
+
+/* The slim bar (Louis's pick 2a): the brand, the showroom's pill in the demo's colour, the way back, the one offer. */
+.showroom-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: rgba(var(--bs-body-bg-rgb), .7);
+    backdrop-filter: blur(10px);
+}
+.showroom-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--bs-emphasis-color);
+    text-decoration: none;
+}
+.showroom-pill {
+    padding: 5px 9px;
+    border-radius: 999px;
+    font: 600 11px/1 var(--bs-font-monospace);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--web-on-primary);
+    background: glow.shade(var(--accent), 90deg);
+    @include glow.glow(var(--accent), 14px, -2px);
+}
+.showroom-grow { flex: 1; }
+.showroom-back {
+    padding: 6px 12px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 9px;
+    font-size: 13px;
+    color: var(--web-soft-text);
+    text-decoration: none;
+}
+.showroom-back:hover { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
+
+/* The rail beside the stage; the stage takes what's left, and keeps room at its bottom for the corner (--corner-room),
+   so a demo's offer never ends under the guide's button. */
+.showroom { --corner-room: 104px; }
+.showroom-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+.showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }
+/* On a wide screen the corner sits at the bottom of the rail, where no demo is (Louis: "why is that there?"). It stands
+   beside the frame, out of the frame's layer, so it stays above the guide's spotlight as the site's corner does. */
+.showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }
+
+/* An open guide takes the rail's place on a wide screen (Louis's pick of three): the rail's column widens to the
+   guide's width and the demos step aside, the guide fills the column from under the bar to the bottom, and the open
+   panel covers none of the stage. The demos come back when it closes. */
+.showroom, .showroom-corner { --guide-width: 412px; }
+@media (min-width: 901px) {
+    .showroom:has(~ .showroom-corner .chat-widget.is-open) {
+        .showroom-body { grid-template-columns: var(--guide-width) minmax(0, 1fr); }
+        ::deep .demo-rail { visibility: hidden; }
+    }
+    .showroom-corner:has(.chat-widget.is-open) {
+        top: 74px;
+        left: 16px;
+        bottom: 16px;
+        width: calc(var(--guide-width) - 32px);
+        ::deep .chat-widget { height: 100%; }
+        ::deep .widget-panel { flex: 1; min-height: 0; width: 100%; height: auto; }
+    }
+}
+
+@media (max-width: 900px) {
+    .showroom-body { grid-template-columns: minmax(0, 1fr); }
+    .showroom-corner { left: auto; right: 24px; }
+    .showroom-bar { padding: 10px 16px; gap: 10px; }
+}
+
+@media (max-width: 720px) {
+    /* The corner is a bar across the bottom here, and the frame already ends above it. */
+    .showroom { --site-bar: 60px; --corner-room: 16px; padding-bottom: var(--site-bar); }
+    .showroom-corner {
+        --site-bar: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--site-bar);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border-top: 1px solid var(--bs-border-color);
+        background: rgba(var(--bs-body-bg-rgb), .96);
+    }
+}

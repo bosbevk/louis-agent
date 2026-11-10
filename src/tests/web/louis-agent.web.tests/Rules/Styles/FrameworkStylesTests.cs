@@ -90,6 +90,26 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
     /// <summary>
+    /// The spotlight stays on the screen (F127.1, Louis: "make sure this works", a tour of a demo page): the script
+    /// keeps the ring inside the screen's width, and a ring that fills it comes in without growing, so a place as wide
+    /// as the screen never gives the page a sideways scroll. The script itself is checked in the browser.
+    /// </summary>
+    [Test]
+    public void TheSpotlight_StaysOnTheScreen()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n");
+        string script = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/ChatWidget.razor.js"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules, Does.Contain(".area-spotlight.is-wide { animation-name: area-spotlight-wide; }"));
+            Assert.That(script, Does.Contain("document.documentElement.clientWidth")
+                .And.Contain("light.classList.toggle(\"is-wide\""));
+        });
+    }
+
+    /// <summary>
     /// A section paged sideways keeps its heading with what follows it (FX110), so at 1080p a page never holds only a
     /// section's title while its content starts on the next.
     /// </summary>
@@ -107,6 +127,81 @@ public partial class FrameworkStylesTests
     public void APagedSection_StartsAMovedCardOnTheNextPage() =>
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
             Does.Contain(".is-paged .band-body ::deep .is-new-page { break-before: column; }"));
+
+    /// <summary>
+    /// The showroom's corner keeps off the demo (F127.1, Louis: "why is that there?"): on a wide screen it sits at the
+    /// bottom of the rail, where no demo is, and the stage keeps room at its bottom besides, so a demo's offer never
+    /// ends under the guide's button.
+    /// </summary>
+    [Test]
+    public void TheShowroomsCorner_KeepsOffTheDemo()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText));
+
+        Assert.That(rules, Does.Contain(".showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }")
+            .And.Contain(".showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }"));
+    }
+
+    /// <summary>
+    /// An open guide takes the rail's place on a wide screen (F127.1, Louis's pick of three): the rail's column widens
+    /// to the guide's width and the demos step aside, so the open panel covers none of the stage; they come back when
+    /// it closes.
+    /// </summary>
+    [Test]
+    public void AnOpenGuide_TakesTheRailsPlace()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n");
+
+        Assert.That(rules, Does.Contain(".showroom:has(~ .showroom-corner .chat-widget.is-open) {")
+            .And.Contain(".showroom-body { grid-template-columns: var(--guide-width) minmax(0, 1fr); }"));
+    }
+
+    /// <summary>
+    /// The place a mock website's agent shows pops with the guide's own spotlight (F127.1, Louis: "make it pop more
+    /// when the selection happens", "with an animation like we have"): the same animation, its ring in the business's
+    /// colour and the rest of the mock's page dimmed, and nothing stays after it ("remove the line afterwards"); none
+    /// for less motion.
+    /// </summary>
+    [Test]
+    public void AShownPlace_PopsWithTheGuidesSpotlight()
+    {
+        string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss")).ReplaceLineEndings("\n");
+        int light = mock.IndexOf(".mock-page ::deep .mock-section.is-shown::after {", StringComparison.Ordinal);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(light, Is.GreaterThan(0));
+            Assert.That(mock[light..mock.IndexOf('}', light)],
+                Does.Contain("animation: area-spotlight 4s var(--web-ease) both;")
+                    .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
+            Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                                           "    .mock-page ::deep .mock-section.is-shown::after { display: none; }"));
+        });
+    }
+
+    /// <summary>
+    /// A card the agent shows is pressed, not ringed (F127.1, Louis: "this is press boxes so do not show the ring
+    /// around this type rather the press, the others without the press gets the ring"): it sinks and springs back as
+    /// a tap would, a ripple of the business's colour spreading from its middle; still, for less motion.
+    /// </summary>
+    [Test]
+    public void AShownCard_IsPressed_NotRinged()
+    {
+        string card = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+                "src/web/louis-agent.web/Components/Site/Showroom/Mock/Places/MockCard.razor.scss"))
+            .ReplaceLineEndings("\n");
+        string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(card, Does.Contain("animation: mock-press").And.Contain("animation: mock-ripple"));
+            Assert.That(card, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                                           "    .mock-card.is-shown, .mock-card.is-shown::after { animation: none; }"));
+            Assert.That(mock, Does.Not.Contain("::deep .is-shown::after"), "the spotlight's ring is for sections only");
+        });
+    }
 
     /// <summary>
     /// A window's three dots wear a Mac window's colours (FX128, Louis: "those 3 dots at the top could have the mac

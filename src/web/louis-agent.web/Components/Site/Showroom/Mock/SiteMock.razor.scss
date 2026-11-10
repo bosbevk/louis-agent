@@ -1,0 +1,202 @@
+@use "web/tools/faces";
+
+/* A business's website, mocked (F127.1): the page in the business's own colours (--mock-*, set on it from the
+   page's data), a browser bar of its page's shades, its header in its brand colour, then its page, which scrolls inside
+   the mock and keeps clear of the agent's widget in the corner (--widget-room). The mock lays itself out by its own
+   width (a container), since it sits on a stage narrower than the screen. It casts a shadow in the demo's colour, so
+   it sits on the lit stage. The widget draws itself (MockWidget). */
+.site-mock {
+    --widget-room: 392px;
+    position: relative;
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    height: 660px;
+    overflow: hidden;
+    border-radius: 14px;
+    color: var(--mock-ink);
+    background: var(--mock-page);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08), 0 30px 60px -30px var(--accent);
+}
+.mock-chrome {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--mock-page) 75%, var(--mock-ink));
+    background: color-mix(in srgb, var(--mock-page) 88%, var(--mock-ink));
+}
+.mock-chrome i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--mock-page) 62%, var(--mock-ink));
+}
+.mock-address {
+    margin-left: 10px;
+    padding: 3px 12px;
+    border-radius: 7px;
+    font: 12px var(--bs-font-monospace);
+    color: color-mix(in srgb, var(--mock-ink) 70%, transparent);
+    background: var(--mock-page);
+}
+.mock-header {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 22px;
+    padding: 14px 22px;
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+}
+.mock-names { display: flex; flex-direction: column; line-height: 1.15; }
+.mock-name { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; }
+.mock-tagline { font-size: 11.5px; letter-spacing: .04em; opacity: .8; }
+.mock-nav { display: flex; gap: 18px; margin-left: auto; font-size: 13px; opacity: .85; }
+.mock-mark { display: inline-flex; flex: none; }
+.mock-header .mock-mark { width: 34px; height: 34px; }
+.mock-mark ::deep svg { width: 100%; height: 100%; }
+
+/* The business's typeface (its sample brand): its class sets --mock-face, which its header, hero and places wear. */
+@include faces.classes;
+.mock-header, .mock-hero { font-family: var(--mock-face); }
+
+/* The page: the hero, a strip of facts, then the places, beside the widget's room. */
+.mock-page {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 var(--widget-room) 28px 24px;
+    scrollbar-width: thin;
+}
+.mock-hero { display: flex; align-items: center; gap: 22px; padding: 28px 0 22px; }
+.mock-hero-words { flex: 1 1 0; min-width: 0; }
+.mock-hero-line { margin: 0; font-size: 28px; font-weight: 400; line-height: 1.12; color: var(--mock-brand); }
+.mock-hero-note { margin: 10px 0 0; font-size: 13.5px; color: color-mix(in srgb, var(--mock-ink) 75%, transparent); }
+.mock-action {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font: 600 13px/1 var(--bs-font-sans-serif);
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+}
+.mock-scene { flex: 0 0 42%; }
+.mock-scene ::deep svg { display: block; width: 100%; height: auto; }
+/* A real photo for the hero, worn with the business's brand (Louis: "real images with real branding, but also not
+   real"): cut to fit, washed from the bottom in its brand colour, with a badge of its mark and name. */
+.mock-scene.is-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: 0 24px 50px -26px var(--mock-brand);
+}
+.mock-scene.is-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, color-mix(in srgb, var(--mock-brand) 60%, transparent), transparent 55%);
+}
+/* Its height capped, so a wide mock keeps a compact hero beside its words. */
+.mock-photo { display: block; width: 100%; height: 100%; max-height: 260px; aspect-ratio: 4 / 3; object-fit: cover; }
+.mock-photo-badge {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px 5px 5px;
+    border-radius: 999px;
+    font: 600 11.5px/1 var(--mock-face);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--mock-on-brand);
+    background: var(--mock-brand);
+    box-shadow: 0 8px 20px -8px rgba(var(--web-shadow-rgb), .6);
+}
+.mock-photo-badge .mock-mark { width: 24px; height: 24px; }
+.mock-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.mock-facts li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mock-brand);
+    background: color-mix(in srgb, var(--mock-brand) 10%, var(--mock-page));
+}
+
+/* Editorial: a big heading in the business's ink, the scene small at its side, a double rule under the hero, and a
+   squarer button. */
+.look-editorial .mock-hero {
+    align-items: center;
+    margin-bottom: 18px;
+    border-bottom: 3px double color-mix(in srgb, var(--mock-ink) 35%, transparent);
+}
+.look-editorial .mock-hero-line { font-size: 34px; font-weight: 600; letter-spacing: -.01em; color: var(--mock-ink); }
+.look-editorial .mock-scene { flex-basis: 36%; align-self: center; }
+.look-editorial .mock-action { border-radius: 4px; }
+
+/* Banner: the scene a wide band across the top of the page, under the widget too, with the words in a panel over its
+   lower part. */
+.look-banner .mock-hero {
+    position: relative;
+    display: block;
+    margin: 0 calc(-1 * var(--widget-room)) 18px -24px;
+    padding: 0;
+}
+.look-banner .mock-scene { height: 250px; }
+.look-banner .mock-scene ::deep svg { height: 100%; }
+.look-banner .mock-scene.is-photo { border-radius: 0; box-shadow: none; }
+.look-banner .mock-photo { aspect-ratio: auto; }
+.look-banner .mock-photo-badge { top: 14px; bottom: auto; left: 24px; }
+.look-banner .mock-hero-words {
+    position: absolute;
+    z-index: 2;
+    left: 24px;
+    bottom: 18px;
+    max-width: 420px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--mock-page) 90%, transparent);
+}
+.look-banner .mock-hero-line { font-size: 24px; }
+
+/* A section its agent shows pops with the guide's own spotlight (Louis: "make it pop more when the selection happens",
+   "with an animation like we have"): the same animation, springing in and fading after four seconds, its ring in the
+   business's colour, and the rest of the mock's page dimmed around it (the page clips the dim, so the header, the
+   chat and the visitor's page stay bright). Nothing stays after it (Louis: "remove the line afterwards"): the bar
+   keeps the place's address, which is all a visitor who asked for less motion sees. A card is pressed instead, in
+   its own styles ("this is press boxes ... rather the press"). */
+.mock-page ::deep .mock-section.is-shown { position: relative; }
+.mock-page ::deep .mock-section.is-shown::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 14px;
+    box-shadow: 0 0 0 3px var(--mock-brand), 0 0 48px color-mix(in srgb, var(--mock-brand) 45%, transparent),
+        0 0 0 200vmax rgba(var(--web-backdrop-rgb), .45);
+    animation: area-spotlight 4s var(--web-ease) both;
+}
+@media (prefers-reduced-motion: reduce) {
+    .mock-page ::deep .mock-section.is-shown::after { display: none; }
+}
+
+/* A narrow mock (a phone, or a small stage): the page takes the whole width and the hero stacks, with room under the
+   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). */
+@container (max-width: 760px) {
+    .mock-nav { display: none; }
+    .mock-page { padding: 0 16px 360px; }
+    .mock-hero { flex-direction: column; align-items: stretch; padding: 18px 0; }
+    .mock-hero-line { font-size: 21px; }
+    .look-editorial .mock-hero-line { font-size: 24px; }
+    .look-banner .mock-hero { margin: 0 -16px 16px; }
+    .look-banner .mock-scene { height: 170px; }
+    .look-banner .mock-hero-words { position: static; max-width: none; border-radius: 0; }
+}

@@ -1,0 +1,22 @@
+@* The showroom's frame (F127.1): a slim bar of its own, the demos as chips on a phone, the rail beside the stage on a
+   wider screen, and the corner. It wears the colour of the demo on screen, so everything in it is lit in it. The
+   corner stands beside the frame, not in it: the frame is a layer of its own, and the guide's spotlight would dim a
+   corner inside it. *@
+<div class="@Classes">
+    <header class="showroom-bar">
+        <a class="showroom-brand" href="@BrandHref">@Brand</a>
+        <span class="showroom-pill">@Text.Demos</span>
+        <span class="showroom-grow"></span>
+        <a class="showroom-back" href="@BackHref">← @Text.BackToSite</a>
+        @Offer
+    </header>
+    <DemoChips Demos="Demos" Current="Current" Text="Text" />
+    <div class="showroom-body">
+        <DemoRail Demos="Demos" Current="Current" Text="Text" />
+        <main class="showroom-stage">@ChildContent</main>
+    </div>
+</div>
+@if (Corner is not null)
+{
+    <div class="showroom-corner">@Corner</div>
+}

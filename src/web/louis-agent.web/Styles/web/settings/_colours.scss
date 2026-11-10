@@ -1,6 +1,7 @@
 /* The framework's colours: what a site with none of its own looks like. Black and white with metallic greys, set in Geist,
-   the static site's Console theme. The only colours in it are a muted red for errors, an amber for warnings, and the
-   eval screens' green and blue (F128.1), which a tile may also wear as an accent with the red and the amber. A site
+   the static site's Console theme. The only colours in it are a muted red for errors, an amber for warnings, the
+   eval screens' green and blue (F128.1), which a tile may also wear as an accent with the red and the amber, and a
+   purple (F127.1), the fifth accent, so each of a showroom's demos has its own. A site
    lists this first and its own colours after, so the same name set twice gives the site's. The names are Bootstrap's, and
    a --web- name where it has none; a site that sets some of them keeps these for the rest. */
 
@@ -13,6 +14,7 @@
     @include colours.both(bs-warning, #d4a72c);
     @include colours.both(bs-info, #7fa8e8);             // the eval screens' blue
     @include colours.both(web-ok, #6cbf94);              // the eval screens' green; Bootstrap's success is your messages' grey
+    @include colours.both(web-purple, #a98be0);          // the fifth accent (F127.1): a demo of the showroom's own
     @include colours.both(bs-body-bg, #070708);          // the page
     @include colours.both(bs-secondary-bg, #0d0e10);     // a panel
     @include colours.both(bs-tertiary-bg, #15171a);      // the menu

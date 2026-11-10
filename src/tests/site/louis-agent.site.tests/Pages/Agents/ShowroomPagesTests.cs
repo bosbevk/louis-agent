@@ -12,7 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Site.Tests.Pages.Agents;
 
 /// <summary>
-/// The showroom's demos (F128.2): a restaurant, a law practice and a doctor's practice, each on its own page, its
+/// The showroom's demos (F128.2): a restaurant, a law practice and a guesthouse (since F127.1, in place of the doctor's
+/// practice), each on its own page, its
 /// conversation recorded once and played as its customer would see it, said to be made up, then the offer; first on
 /// the demos list and the menu.
 /// </summary>
@@ -33,7 +34,7 @@ public class ShowroomPagesTests
     /// sees it.</summary>
     [TestCase(typeof(RestaurantDemoPage), "/restaurant-demo", "Wheatfield Kitchen")]
     [TestCase(typeof(LawPracticeDemoPage), "/law-practice-demo", "Koringland Attorneys")]
-    [TestCase(typeof(DoctorsPracticeDemoPage), "/doctors-practice-demo", "Graanveld Family Practice")]
+    [TestCase(typeof(GuesthouseDemoPage), "/guesthouse-demo", "Seemeeu Guesthouse")]
     public void APage_PlaysItsBusinesssConversation(Type page, string address, string business)
     {
         var routes = page.GetCustomAttributes(typeof(RouteAttribute), false).Cast<RouteAttribute>();
@@ -55,7 +56,7 @@ public class ShowroomPagesTests
     /// <summary>Each conversation's questions are word for word what the recording script asks.</summary>
     [TestCase(typeof(RestaurantDemoPage))]
     [TestCase(typeof(LawPracticeDemoPage))]
-    [TestCase(typeof(DoctorsPracticeDemoPage))]
+    [TestCase(typeof(GuesthouseDemoPage))]
     public void TheQuestions_AreTheScripts(Type page)
     {
         string script = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/site/recordings/record-showroom.sh"));
@@ -66,14 +67,15 @@ public class ShowroomPagesTests
             Is.Empty, "word for word, and no apostrophe, so the script quotes it plainly");
     }
 
-    /// <summary>The three come first on the demos list.</summary>
+    /// <summary>The three come first on the demos list, the guesthouse leading (Louis: "make the guesthouse the main
+    /// one").</summary>
     [Test]
     public void TheDemos_ListTheBusinessesFirst()
     {
-        var links = Render(typeof(DemosPage)).FindAll("article.panel a").Select(a => a.GetAttribute("href")).ToList();
+        var links = Render(typeof(DemosPage)).FindAll("a.start-cover").Select(a => a.GetAttribute("href")).ToList();
 
         Assert.That(links.Take(3),
-            Is.EqualTo(new[] { "/restaurant-demo", "/law-practice-demo", "/doctors-practice-demo" }));
+            Is.EqualTo(new[] { "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo" }));
     }
 
     /// <summary>The menu's demos list them first too.</summary>
@@ -95,7 +97,7 @@ public class ShowroomPagesTests
         Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
             Is.EqualTo(new[]
             {
-                "/demos", "/restaurant-demo", "/law-practice-demo", "/doctors-practice-demo", "/coding-agent",
+                "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                 "/triage-demo"
             }));
     }

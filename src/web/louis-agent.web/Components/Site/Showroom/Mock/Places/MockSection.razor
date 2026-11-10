@@ -1,0 +1,16 @@
+@* A section of a mocked business's website (F127.1): a real photo beside its words when it has one, its heading and
+   its words, then its cards in a row, at its own address on the business's site, so its agent can show it. *@
+<section class="@Classes" data-place="@Path">
+    @if (Photo is not null)
+    {
+        <div class="mock-section-photo"><img src="@Photo" alt="@Heading" loading="lazy" /></div>
+    }
+    <div class="mock-section-words">
+        <h3 class="mock-section-heading">@Heading</h3>
+        @ChildContent
+    </div>
+    @if (Cards is not null)
+    {
+        <div class="mock-cards">@Cards</div>
+    }
+</section>

@@ -12,6 +12,7 @@ namespace LouisAgent.Site.Tests.Host;
 public class MovedPagesTests
 {
     /// <summary>An old address leads to its new one, with its section and its page of a section kept.</summary>
+    [TestCase("/doctors-practice-demo", "/guesthouse-demo")]
     [TestCase("/how-it-works", "/framework/how-it-works")]
     [TestCase("/how-it-works/loop/2", "/framework/how-it-works/loop/2")]
     [TestCase("/architecture", "/framework/architecture")]

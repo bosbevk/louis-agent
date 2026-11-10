@@ -9,6 +9,21 @@ The site's demos are at `/demos`. Each one is a real run of agents built on the 
 back in the browser. Nothing runs and nothing is paid for while a visitor watches. The live agents run shell commands
 and write files, so they run only for the people the project signs in, behind a key.
 
+The demos live in a showroom of their own: a rail of every demo down the left, grouped as *For your business* and
+*Agents at work*, and each demo on a stage in its own colour. `/demos` is its start, and features the guesthouse.
+
+## Websites with an agent (`/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`)
+
+Three made-up businesses, each with a mock of its own website in its own sample brand, real photos and its agent in a
+widget in the corner: Seemeeu Guesthouse in Yzerfontein, Wheatfield Kitchen in Malmesbury (with a full menu), and
+Koringland Attorneys. A customer's conversation with the agent was recorded once and plays back at a person's pace.
+The agent answers only from the business's own facts, and every price on the website is one the agent knows. While
+it answers it shows the website: it opens the place that answers the question (the garden room, the children's menu,
+the wills page) with the same tool the site's own guide uses, and the place is lit. It passes a booking on to the
+owner only after the customer says yes; the law practice never gives legal advice. *What to watch* beside each
+demo lists the moments that matter, and a click on one plays the demo from there. Under each, *Make it yours* says
+what a custom agent could add for such a business, such as booking straight into the booking system it already uses.
+
 ## The coding agent fixing a bug (`/coding-agent`)
 
 **What it shows.** The coding agent gets a small C# library that matches bank payments to their invoices, and a

@@ -1,27 +1,21 @@
 @page "/demos"
+@layout ShowroomLayout
 
-@* The demo index (F122, Louis: "a button there called demos", "which takes you to the demo index"): one tile per demo,
-   each saying what it shows and leading to it. The demos are explained for the guide in docs/demos.md. *@
+@* The demo index (F122, Louis: "a button there called demos", "which takes you to the demo index"); since F127.1 the
+   showroom's start: a big start for the guesthouse (Louis: "make the guesthouse the main one") with a look at its
+   website, then a cover for every demo, drawn from the site's demos. The demos are explained for the guide in
+   docs/demos.md. *@
 
 <PageTitle>See an agent work · louis-agent</PageTitle>
-<PageHead Description="Watch agents on websites like yours: a restaurant, a law practice and a doctor's practice answering customers, and agents fixing real bugs." />
+<PageHead Description="Watch agents on websites like yours: a guesthouse, a restaurant and a law practice answering customers, and agents fixing real bugs." />
 
-<Band Id="top" Kicker="Demos">
-    <BandTitle Class="chrome">Watch the agents at work.</BandTitle>
-    <p class="lede">Each demo is a real run, recorded once and played back. Nothing runs while you watch, and every word on screen is what the agents said.</p>
-    <TileRow>
-        <Tile Title="A restaurant" Accent="TileAccent.Green">A family asks about Sunday lunch at ten at night, and books a table. <a href="/restaurant-demo">Watch it</a></Tile>
-        <Tile Title="A law practice" Accent="TileAccent.Blue" Delay="1">A question it must not advise on, and a first consultation booked instead. <a href="/law-practice-demo">Watch it</a></Tile>
-        <Tile Title="A doctor's practice" Accent="TileAccent.Yellow" Delay="2">A worried parent, no medical advice, the emergency numbers, and an appointment. <a href="/doctors-practice-demo">Watch it</a></Tile>
-    </TileRow>
-    <p class="band-note">Made-up businesses, real agents: this is what a website with an agent does for yours.</p>
-</Band>
-
-<Band Id="at-work" Kicker="Agents at work">
-    <h2 class="chrome">Agents that do the work, not just talk.</h2>
-    <TileRow Columns="2">
-        <Tile Title="The coding agent fixes a bug">A small invoice matcher whose payments don't find their invoices. It runs the tests, reads the code, fixes two bugs and runs the tests again, for about R0.10. <a href="/coding-agent">Watch it</a></Tile>
-        <Tile Title="A triage team handles an error" Delay="1">An order service fails on a retired discount code. A team sorts the error, finds the cause, fixes it on a branch with a test and reviews the fix. <a href="/triage-demo">Watch it</a></Tile>
-    </TileRow>
-    <p class="band-note">Want an agent like these on your own work? <a href="/contact">Ask for yours</a>.</p>
-</Band>
+<ShowroomStart Featured="/guesthouse-demo" Kicker="Start here" Play="Start with the guesthouse">
+    <Title>Watch the agents at work.</Title>
+    <Lede>
+        Each demo is a real run, recorded once and played back. Nothing runs while you watch, and every word on screen
+        is what the agents said. Made-up businesses, real agents: this is what a website with an agent does for yours.
+    </Lede>
+    <Preview>
+        <img src="images/showroom/seemeeu-banner.webp" alt="Waves breaking on the rocks at Yzerfontein beach" />
+    </Preview>
+</ShowroomStart>

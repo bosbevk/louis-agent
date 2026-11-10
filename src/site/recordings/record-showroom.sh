@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Records the showroom's three conversations (F128.2) for the site's demo pages: a restaurant, a law practice and a
-# doctor's practice, each a few turns with its made-up business's agent. A few cents a business on the site's model.
-# Run from the repo root, with the site's image built:
+# guesthouse (F127.1, in place of the doctor's practice), each a few turns with its made-up business's agent. A few
+# cents a business on the site's model. Run from the repo root, with the site's image built:
 #   docker compose -f src/site/docker/docker-compose.yml build
 #   bash src/site/recordings/record-showroom.sh            # a dry run: no mail goes out, nothing is saved
 #   SEND_MAIL=1 bash src/site/recordings/record-showroom.sh  # the recording: each booking mails LEADS_TO, once
+#   ONLY=seemeeu-guesthouse SEND_MAIL=1 bash src/site/recordings/record-showroom.sh  # one business alone
 # The site's own image runs on a spare port, open on localhost only, its settings files handed to Docker as they are,
 # so no key is read here. Each page's questions are word for word the ones below (ShowroomPagesTests).
 set -euo pipefail
@@ -36,21 +37,46 @@ for _ in $(seq 60); do
 done
 curl -fs "http://127.0.0.1:$port/health" >/dev/null || { echo "The site's host did not start." >&2; exit 1; }
 
-# One session as the business, each turn's stream saved as it came, as {business}-{n}.sse.
+# One session as the business, each turn's stream saved as it came, as {business}-{n}.sse. The agent can pass a
+# booking on (leads) and show a place on its website (site, F127.1); the first question carries the website's page,
+# its words and its places, as the guide's widget sends the page in view (pages/{business}.json, held to the mock's
+# places by ShowroomPagesTests).
 record() {
   local business="$1"
   shift
-  local session
+  # With ONLY set, only that business is recorded; the others keep their recordings.
+  if [ -n "${ONLY:-}" ] && [ "$business" != "$ONLY" ]; then return; fi
+  local session page
   session=$(curl -s -X POST "http://127.0.0.1:$port/v1/sessions" -H "content-type: application/json" \
-    -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\"],\"time_zone\":\"Africa/Johannesburg\"}" |
+    -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\",\"site\"],\"time_zone\":\"Africa/Johannesburg\"}" |
     sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
-  local turn=0
+  page=$(cat "src/site/recordings/pages/$business.json")
+  local turn=0 body status shown
+  body="$(mktemp)"
   for question in "$@"; do
     turn=$((turn + 1))
-    curl -s -N -X POST "http://127.0.0.1:$port/v1/sessions/$session/messages" -H "content-type: application/json" \
-      -d "{\"message\":\"$question\"}" > "$out/$business-$turn.sse"
-    echo "$business $turn: $(grep -o '"text_delta","text":"[^"]*"' "$out/$business-$turn.sse" | sed 's/.*"text":"//; s/"$//' | tr -d '\n')"
+    # The body goes through a file, as bytes, so no shell on any system changes a character of the page's words.
+    if [ "$turn" = "1" ]; then
+      printf '{"message":"%s","page":%s}' "$question" "$page" > "$body"
+    else
+      printf '{"message":"%s"}' "$question" > "$body"
+    fi
+    status=$(curl -s -N -o "$out/$business-$turn.sse" -w "%{http_code}" -X POST \
+      "http://127.0.0.1:$port/v1/sessions/$session/messages" -H "content-type: application/json" \
+      --data-binary "@$body")
+    # A turn the host refused is said, with what it answered, and the business stops there.
+    if [ "$status" != "200" ]; then
+      echo "$business $turn: the host answered $status: $(head -c 300 "$out/$business-$turn.sse")" >&2
+      return
+    fi
+    echo "$business $turn: $(grep -o '"text_delta","text":"[^"]*"' "$out/$business-$turn.sse" |
+      sed 's/.*"text":"//; s/"$//' | tr -d '\n')"
+    # Where the agent took the visitor on its website, if it did.
+    shown=$(grep -o '"name":"ShowPage","input":{"path":"[^"]*"' "$out/$business-$turn.sse" |
+      sed 's/.*"path":"//; s/"$//' | tr '\n' ' ' || true)
+    if [ -n "$shown" ]; then echo "  shown: $shown"; fi
   done
+  rm -f "$body"
 }
 
 record wheatfield-kitchen \
@@ -65,10 +91,10 @@ record koringland-attorneys \
   'Anna de Villiers, anna@example.com' \
   'Yes, please send it.'
 
-record graanveld-family-practice \
-  'Hi, my son has had a fever since yesterday. What medicine should I give him?' \
-  'Can he see a doctor tomorrow morning?' \
-  'Jacques Louw, jacques@example.com, it is for my son Pieter.' \
-  'Yes please.'
+record seemeeu-guesthouse \
+  'Hi, do you have a sea-view room for this Friday and Saturday night? We are two, and we would like to bring our dog.' \
+  'Then the garden room, please. Is the beach far, and what time is breakfast?' \
+  'Marike Botha, marike@example.com' \
+  'Yes please, send it.'
 
 echo "Saved to $out. Read each for anything private before committing."

@@ -1,14 +1,24 @@
 @page "/law-practice-demo"
+@layout ShowroomLayout
 
 <PageTitle>A law practice's agent · louis-agent</PageTitle>
 <PageHead Description="Watch a law practice's website agent answer a question it must not advise on, and book a first consultation instead, recorded once and played back." />
 
-<BusinessDemo Kicker="A law practice" Business="Koringland Attorneys" Title="koringland.example · the agent in the corner" Turns="Conversation"
+<BusinessDemo Accent="TileAccent.Blue" Kicker="A law practice" Business="Koringland Attorneys" Turns="Conversation" Cues="WhatToWatch"
               Heading="It books the attorney. It never plays one."
-              Lede="Someone asks Koringland Attorneys how to change their will after a divorce. The agent doesn't advise. It explains what a first consultation is and books one.">
-    <Points>
-        <li><strong>It never gives legal advice.</strong> Not what the law says, not what to do. That is the attorney's work.</li>
-        <li><strong>It knows the practice.</strong> What it does, its hours, the fee for a first consultation and what to bring.</li>
-        <li><strong>It asks before it sends.</strong> The request goes to the practice only after the client says yes.</li>
-    </Points>
+              Lede="Someone asks Koringland Attorneys how to change their will after a divorce. The agent doesn't advise. It explains what a first consultation is and books one."
+              Address="koringland.example" Colours="Brand" Font="MockFont.Slab" Tagline="Attorneys · Malmesbury"
+              NavItems="Menu" HeroLine="Wills, property and family law, in English and Afrikaans."
+              HeroNote="Monday to Friday, 08:00 to 17:00. At the office or by video call."
+              Look="MockLook.Editorial" HeroAction="Book a consultation" Facts="Facts" KindOf="practice"
+              CustomNotes="Notes"
+              HeroPhoto="images/showroom/koringland-study.webp" HeroPhotoAlt="The practice's study, lined with law books">
+    <Places><KoringlandPlaces /></Places>
+    <Mark>
+        @* Koringland Attorneys' sample mark: a cream shield with a serif K in its navy. *@
+        <svg viewBox="0 0 32 32">
+            <path d="M16 2.5l11 4v8.2c0 7-4.8 12.4-11 14.8C9.8 27.1 5 21.7 5 14.7V6.5z" fill="#f4efe4" />
+            <text x="16" y="20.5" font-family="Georgia, serif" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2f4f">K</text>
+        </svg>
+    </Mark>
 </BusinessDemo>

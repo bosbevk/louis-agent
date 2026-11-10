@@ -1,0 +1,112 @@
+@use "web/tools/accents";
+@use "web/tools/glow";
+
+/* The showroom's start (F127.1, step 9, the mockup's third screen): the main demo's feature lit in its colour from the
+   top left, its title fading from white into the colour, a bright way in, and a look at its website in a browser frame
+   casting the colour's shadow; then a glowing cover for every demo that lifts with its glow on hover. Every gradient
+   stays within one colour; the motion stops on request. */
+@include accents.classes;
+
+.start-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+    margin: 26px 32px 0;
+    padding: 30px;
+    border: 1px solid glow.tint(var(--accent), 40%);
+    border-radius: 20px;
+    background:
+        radial-gradient(560px 300px at 0% 0%, glow.tint(var(--accent), 26%), transparent 70%),
+        rgba(var(--bs-body-bg-rgb), .8);
+    @include glow.glow(var(--accent), 50px, -24px);
+}
+.start-words { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.start-kicker {
+    font: 500 11.5px/1 var(--bs-font-monospace);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.start-title {
+    margin: 0;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+    padding-bottom: .1em;
+    @include glow.text-fade(var(--accent));
+}
+.start-lede { margin: 0; max-width: 560px; font-size: 15px; color: var(--web-soft-text); }
+.start-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    color: var(--web-on-primary);
+    text-decoration: none;
+    background: glow.shade(var(--accent), 100deg);
+    box-shadow: 0 12px 30px -12px var(--accent);
+    transition: transform .2s var(--web-ease, ease-out), box-shadow .2s;
+}
+.start-play:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px var(--accent); }
+.start-preview {
+    display: block;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--bs-secondary-bg);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08), 0 30px 60px -30px var(--accent);
+    transition: transform .3s var(--web-ease, ease-out);
+}
+.start-preview:hover { transform: translateY(-3px); }
+.start-dots { display: flex; gap: 6px; padding: 9px 11px; background: rgba(var(--web-overlay-rgb), .06); }
+.start-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(var(--web-overlay-rgb), .25); }
+.start-preview ::deep :is(svg, img) { display: block; width: 100%; height: 240px; object-fit: cover; }
+
+.start-all { display: flex; flex-direction: column; gap: 12px; padding: 26px 32px var(--corner-room, 32px); }
+.start-all-heading, .start-group {
+    margin: 0;
+    font: 500 11.5px/1 var(--bs-font-monospace);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
+.start-group { margin-top: 8px; color: var(--bs-secondary-color); }
+.start-covers { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.start-cover {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(var(--bs-secondary-bg-rgb), .85);
+    transition: transform .2s var(--web-ease, ease-out), box-shadow .2s;
+}
+.start-cover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -20px var(--accent); }
+.start-sign {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--web-on-primary);
+    background: glow.shade(var(--accent), 135deg);
+}
+.start-name { padding: 11px 14px 0; font-size: 14px; font-weight: 600; color: var(--bs-emphasis-color); }
+.start-line { padding: 2px 14px 13px; font-size: 12.5px; color: var(--bs-secondary-color); }
+
+@media (prefers-reduced-motion: reduce) {
+    .start-play, .start-preview, .start-cover { transition: none; }
+}
+@media (max-width: 900px) {
+    .start-feature { grid-template-columns: minmax(0, 1fr); margin: 16px 16px 0; padding: 20px; }
+    .start-title { font-size: 30px; }
+    .start-all { padding: 20px 16px var(--corner-room, 16px); }
+}

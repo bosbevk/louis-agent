@@ -1,0 +1,47 @@
+@use "web/tools/accents";
+@use "web/tools/glow";
+
+/* The chips (F127.1): on a phone, under the bar, a row that scrolls sideways on its own (the page never does). Each
+   chip has a glowing dot in its demo's colour; the one on screen is filled with it. */
+@include accents.classes;
+
+.demo-chips {
+    display: none;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--bs-border-color);
+    scrollbar-width: none;
+}
+.demo-chip {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 999px;
+    font-size: 12.5px;
+    white-space: nowrap;
+    color: var(--web-soft-text);
+    text-decoration: none;
+    background: rgba(var(--bs-secondary-bg-rgb), .7);
+}
+.chip-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+.demo-chip.is-current {
+    border-color: transparent;
+    font-weight: 600;
+    color: var(--web-on-primary);
+    background: glow.shade(var(--accent), 90deg);
+}
+.demo-chip.is-current .chip-dot { background: var(--web-on-primary); box-shadow: none; }
+
+@media (max-width: 900px) {
+    .demo-chips { display: flex; }
+}

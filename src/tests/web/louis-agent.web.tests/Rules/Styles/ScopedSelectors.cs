@@ -44,12 +44,30 @@ internal static class ScopedSelectors
         string scoped = deep < 0 ? selector : selector[..deep].Trim();
         if (scoped.Length == 0) return "";
 
-        string compound = scoped.Replace('>', ' ').Replace('+', ' ').Replace('~', ' ')
+        string compound = WithoutArguments(scoped).Replace('>', ' ').Replace('+', ' ').Replace('~', ' ')
             .Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1];
         int dot = compound.IndexOf('.');
         if (dot < 0) return null;
 
         return new string(compound[(dot + 1)..].TakeWhile(c => char.IsLetterOrDigit(c) || c is '-' or '_').ToArray());
+    }
+
+    /// <summary>
+    /// The selector without what its pseudo-classes hold (<c>:has(…)</c>, <c>:not(…)</c>): Blazor puts the scope
+    /// outside them, so a class named inside one is never where a rule lands.
+    /// </summary>
+    private static string WithoutArguments(string selector)
+    {
+        var kept = new System.Text.StringBuilder();
+        int depth = 0;
+        foreach (char c in selector)
+        {
+            if (c == '(') depth++;
+            if (depth == 0) kept.Append(c);
+            if (c == ')') depth--;
+        }
+
+        return kept.ToString();
     }
 
     /// <summary>Every rule's selector text at the top level or inside an at-rule such as <c>@media</c>.</summary>

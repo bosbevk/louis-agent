@@ -1,71 +1,44 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_d0e37180e54542d6997c5cb6e5b1d6f0","role":"assistant","toolsets":["leads"],"session_role":"wheatfield-kitchen/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_d09f950961c5496b8d842280e78d10ba","role":"assistant","toolsets":["leads","site"],"session_role":"wheatfield-kitchen/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I need"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm going to ask for"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to get"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the name first, then the contact"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" details"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" name and contact details"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", since we"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" before"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" already know it"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" conf"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s five people for"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"irming, so"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Sunday at 12:"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'll ask for"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"30. I'll ke"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the name first."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ep it br"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" The day"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ief and sk"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", time, and party"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ip rep"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" size are"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" already sett"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"led: Sunday at"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 12:30 for"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" five people. I'll keep"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the message"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" short,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" at three sentences or"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" f"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ewer."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"eating the greeting."}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -83,25 +56,43 @@ event: content_block_delta
 data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" gl"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ad to p"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ad to pass that on."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ass that on:"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" S"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Sunday at"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"unday at 12:30 "}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 12:30 "}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"for five is"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"for five,"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" no"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" including two children. May I have"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ted,"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" your name first?"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and the owner will confirm"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" What name"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" should I put"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" request"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" under?"}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}

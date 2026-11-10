@@ -20,16 +20,6 @@
    Both columns run the same height, top to bottom, the tiles sharing it evenly (Louis: "they must align in height"). */
 .custom-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; align-items: stretch; }
 .custom-grid > .tiles { grid-auto-rows: 1fr; }
-/* The coding agent's page (FX105): the words on the left, read while the recorded session plays on the right, the
-   window as tall as the slide leaves room for. */
-.watch-grid {
-    display: grid;
-    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
-    gap: 32px;
-    align-items: start;
-    --recorded-height: clamp(320px, calc(100dvh - 380px), 760px);
-}
-.watch-text { display: flex; flex-direction: column; gap: 18px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 
 /* Code shown as it stands in the repo: it scrolls inside its own box rather than widening the page. */

@@ -5,8 +5,8 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Identities.Showroom;
 
 /// <summary>
-/// A made-up business's agent for the site's demos (F128.2): its name, its voice under that name, and the leads pack,
-/// which passes a booking on to the owner.
+/// A made-up business's agent for the site's demos (F128.2): its name, its voice under that name, the leads pack,
+/// which passes a booking on to the owner, and the site pack, which shows the visitor a place on its website (F127.1).
 /// </summary>
 /// <remarks>
 /// A small base class, since the three businesses differ only in their names and their voices' words: each is one line

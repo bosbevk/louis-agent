@@ -1,0 +1,54 @@
+/* A card on a mocked business's website (F127.1): a soft panel of the business's page with a band of its brand colour
+   on top, its title in the business's typeface, its note (a price) under it in the brand colour, and its words. The
+   note goes under the title, since a card in a row of three has no room beside it. */
+.mock-card {
+    position: relative;
+    overflow: hidden;
+    padding: 12px 14px;
+    border-top: 3px solid var(--mock-brand);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
+}
+
+/* A card its agent shows is pressed, as a visitor's tap would press it, not ringed (Louis: "this is press boxes so do
+   not show the ring around this type rather the press"): it sinks and springs back, and a ripple of the business's
+   colour spreads from its middle and fades. Still, for a visitor who asked for less motion. */
+.mock-card.is-shown { animation: mock-press .9s ease-out both; }
+.mock-card.is-shown::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: var(--mock-brand);
+    opacity: 0;
+    animation: mock-ripple 1.2s ease-out;
+}
+@keyframes mock-press {
+    0%, 100% { transform: scale(1); }
+    22% { transform: scale(.94); }
+    55% { transform: scale(1.02); }
+}
+@keyframes mock-ripple {
+    0% { opacity: .35; transform: scale(0); }
+    100% { opacity: 0; transform: scale(16); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .mock-card.is-shown, .mock-card.is-shown::after { animation: none; }
+}
+/* A card's real photo runs to its edges under the brand's band, cut to fit, never stretched. */
+.mock-card-photo {
+    display: block;
+    width: calc(100% + 28px);
+    margin: -12px -14px 10px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+.mock-card-head { display: flex; flex-direction: column; gap: 3px; }
+.mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }
+.mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }
+.mock-card-words { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; opacity: .85; }

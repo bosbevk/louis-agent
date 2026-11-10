@@ -1,14 +1,32 @@
 @page "/restaurant-demo"
+@layout ShowroomLayout
 
 <PageTitle>A restaurant's agent · louis-agent</PageTitle>
 <PageHead Description="Watch a restaurant's website agent answer a family about Sunday lunch and pass their table request on, recorded once and played back." />
 
-<BusinessDemo Kicker="A restaurant" Business="Wheatfield Kitchen" Title="wheatfieldkitchen.example · the agent in the corner" Turns="Conversation"
+<BusinessDemo Accent="TileAccent.Green" Kicker="A restaurant" Business="Wheatfield Kitchen" Turns="Conversation" Cues="WhatToWatch"
               Heading="A table for Sunday, at ten at night."
-              Lede="A family of five asks Wheatfield Kitchen about Sunday lunch, long after the kitchen has closed. The agent answers from what the owner told it, and passes the table on.">
-    <Points>
-        <li><strong>It knows the restaurant.</strong> The hours, the menu and its prices, the stoep and the parking, from a few files the owner can change.</li>
-        <li><strong>It never promises a table.</strong> It can't see the bookings, so it takes the request and the owner confirms.</li>
-        <li><strong>It asks before it sends.</strong> The details go to the owner only after the family says yes.</li>
-    </Points>
+              Lede="A family of five asks Wheatfield Kitchen about Sunday lunch, long after the kitchen has closed. The agent answers from what the owner told it, and passes the table on."
+              Address="wheatfieldkitchen.example" Colours="Brand" Font="MockFont.Serif" Tagline="Country kitchen · Malmesbury"
+              NavItems="Menu" HeroLine="Country cooking from the Swartland's own farms."
+              HeroNote="Lunch Tuesday to Sunday, 12:00 to 15:00. Dinner Thursday to Saturday."
+              Look="MockLook.Split" HeroAction="Book a table" Facts="Facts" KindOf="restaurant" CustomNotes="Notes"
+              HeroPhoto="images/showroom/wheatfield-room.webp" HeroPhotoAlt="The dining room, wooden tables in the morning sun">
+    <Places><WheatfieldPlaces /></Places>
+    <Mark>
+        @* Wheatfield Kitchen's sample mark: a wheat ear in cream on its green. *@
+        <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15" fill="#f6f1e7" />
+            <path d="M16 27V8" stroke="#2f5d45" stroke-width="1.6" stroke-linecap="round" />
+            <g fill="#2f5d45">
+                <ellipse cx="13.4" cy="11" rx="2" ry="3.3" transform="rotate(-28 13.4 11)" />
+                <ellipse cx="18.6" cy="11" rx="2" ry="3.3" transform="rotate(28 18.6 11)" />
+                <ellipse cx="13.4" cy="15.6" rx="2" ry="3.3" transform="rotate(-28 13.4 15.6)" />
+                <ellipse cx="18.6" cy="15.6" rx="2" ry="3.3" transform="rotate(28 18.6 15.6)" />
+                <ellipse cx="13.4" cy="20.2" rx="2" ry="3.3" transform="rotate(-28 13.4 20.2)" />
+                <ellipse cx="18.6" cy="20.2" rx="2" ry="3.3" transform="rotate(28 18.6 20.2)" />
+                <ellipse cx="16" cy="7" rx="1.7" ry="2.8" />
+            </g>
+        </svg>
+    </Mark>
 </BusinessDemo>

@@ -1,0 +1,57 @@
+@use "web/tools/glow";
+
+/* What a custom agent could add (F127.1): a panel lit from the left in the demo's colour (--accent, from the stage),
+   its kicker in the colour, its heading, and the notes as cards in a row, each led by a plus in the colour. Every
+   gradient stays within the one colour. */
+.demo-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 24px;
+    border: 1px solid glow.tint(var(--accent), 30%);
+    border-radius: 16px;
+    background:
+        radial-gradient(520px 220px at 0% 0%, glow.tint(var(--accent), 14%), transparent 70%),
+        rgba(var(--bs-secondary-bg-rgb), .7);
+}
+.notes-kicker {
+    font: 500 11.5px/1 var(--bs-font-monospace);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.notes-heading { margin: 4px 0 10px; font-size: 21px; font-weight: 700; color: var(--bs-emphasis-color); }
+.notes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.note {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px 14px 44px;
+    position: relative;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    background: rgba(var(--bs-body-bg-rgb), .55);
+}
+.note::before {
+    content: "+";
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font: 700 15px/20px var(--bs-font-sans-serif);
+    text-align: center;
+    color: var(--web-on-primary);
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+}
+.note-title { font-size: 14px; color: var(--bs-emphasis-color); }
+.note-text { font-size: 13px; line-height: 1.5; color: var(--bs-secondary-color); }

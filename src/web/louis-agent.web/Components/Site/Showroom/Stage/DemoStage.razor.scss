@@ -1,0 +1,96 @@
+@use "web/tools/accents";
+@use "web/tools/glow";
+
+/* A demo's stage (F127.1, Louis: "colourful and fancy"): a strip that runs from the demo's colour into nothing, the
+   kicker in it, the title fading from white into it, the player and the cues side by side, and the offer as a bar of
+   the colour with a shine crossing it every few seconds (still when the visitor asks for less motion). Each gradient
+   stays within the one colour. */
+@include accents.classes;
+
+.demo-stage { display: flex; flex-direction: column; padding-bottom: 28px; }
+.stage-strip {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), glow.tint(var(--accent), 30%) 70%, transparent);
+}
+.stage-head { padding: 22px 32px 6px; max-width: 900px; }
+.stage-kicker {
+    font: 500 11.5px/1 var(--bs-font-monospace);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.stage-title {
+    margin: 8px 0 0;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+    padding-bottom: .1em;
+    @include glow.text-fade(var(--accent));
+}
+.stage-lede { margin: 8px 0 0; font-size: 15px; color: var(--web-soft-text); max-width: 680px; }
+
+.stage-body { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; padding: 16px 32px; }
+.stage-body.is-alone { grid-template-columns: minmax(0, 1fr); }
+.stage-player { min-width: 0; }
+/* A place's heading only a screen reader and the guide's tour read: the player and the offer show what they are. */
+.stage-place {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* What a custom agent could add, between the demo and the offer. */
+.stage-notes { margin: 8px 32px 12px; }
+
+.stage-offer {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 32px 0;
+    padding: 16px 20px;
+    border-radius: 14px;
+    font-weight: 600;
+    color: var(--web-on-primary);
+    background: glow.shade(var(--accent), 100deg);
+    @include glow.glow(var(--accent), 40px, -16px);
+}
+.stage-offer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, rgba(var(--web-overlay-rgb), .45) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: stage-shine 3.5s ease-in-out infinite;
+}
+@keyframes stage-shine { 60%, 100% { transform: translateX(100%); } }
+/* The offer's way in, which the page writes: a dark button at the bar's end, over the shine. */
+.stage-offer ::deep a {
+    position: relative;
+    z-index: 1;
+    margin-left: auto;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    color: var(--web-bright);
+    background: var(--web-on-primary);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.stage-offer ::deep a:hover { box-shadow: 0 0 0 2px var(--web-bright); }
+
+@media (max-width: 900px) {
+    .stage-head { padding: 16px 16px 4px; }
+    .stage-title { font-size: 26px; }
+    .stage-body { grid-template-columns: minmax(0, 1fr); padding: 12px 16px; }
+    .stage-offer { margin: 8px 16px 0; flex-wrap: wrap; }
+    .stage-notes { margin: 8px 16px 12px; }
+}

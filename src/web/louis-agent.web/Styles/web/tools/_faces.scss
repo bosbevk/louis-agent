@@ -1,0 +1,15 @@
+/* The typefaces a mocked business's website may wear (F127.1, its sample brand): each MockFont's class, by its wire
+   name, sets --mock-face, from the fonts a browser already has, so a mock loads nothing. Written where it's included:
+   a tool writes no CSS of its own. */
+$all: (
+    "serif": (Georgia, "Times New Roman", serif),
+    "slab": (Rockwell, "Roboto Slab", "Courier New", serif),
+    "sans": ("Segoe UI", Helvetica, Arial, sans-serif),
+    "rounded": (Nunito, "Varela Round", "Trebuchet MS", sans-serif),
+);
+
+@mixin classes {
+    @each $name, $face in $all {
+        .font-#{$name} { --mock-face: #{$face}; }
+    }
+}

@@ -511,3 +511,40 @@ its guide and a host of its own. Most of the work was moving files, and that is 
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a host is a few lines that name what it serves, and a folder
 rule held by a test lets the framework grow a site without growing into it.
+
+## A showroom the framework owns, a site only fills (F127.1, 2026-11-10)
+
+The demos were the site's best selling point and its plainest pages. F127.1 gave them a room of their own: a rail of
+every demo, a stage per demo in its colour, and a business's agent playing on a mock of the business's own website.
+It was built unattended, with Louis looking in and steering by screenshot, and grew from ten planned steps to about
+thirty commits as each look led to the next idea.
+
+- **Put the area in the framework, and let the site bring only data and words.** The frame, the stage, the start and
+  the mock website live in `louis-agent.web`. The site registers its demos as a list (`ShowroomDemos`) and fills
+  slots. The rail, the phone's chips, the start's covers and the sitemap all read that one list, so a new demo is one
+  line and one page. That is the same Bridge-and-slots idea as the site frame (F118), and it is why the guesthouse
+  could replace the doctor's practice in an hour.
+- **A slot beats a parameter for anything a site draws.** The mock takes its places, its scene and its notes as
+  render fragments: the site writes its own markup, the framework draws the frame round it. Where the framework must
+  know something about what the site drew (which place is lit), a cascading value hands it down, so the site never
+  says "this one is shown".
+- **Reuse the live path in the replay.** The business agents show their website with the guide's own `ShowPage`
+  tool, and the recorded chat tells its page about each tool call exactly as the live runner does. Nothing in the
+  demo is faked: the agent really called the tool, with the page the recording sent, the way a customer's site
+  would. Reading the call moved into one class (`ShowPageCall`), shared by the widget and the showroom.
+- **Hold the page and the agent to each other with a test.** A mock website that says R1,450 while the agent says
+  R1,250 would undo the demo. A test reads every price and time on each mock and finds it in that agent's voice, and
+  another holds the page a recording sends to the places the mock draws.
+- **A refresh is a different road from a click.** A place's address worked when clicked, because Blazor never
+  reloads. Loaded afresh, the router's catch-all drew it in the default layout, outside the showroom. The fix
+  (`PlaceLayout`) uses the router's own `DefaultLayout`, so nothing of how Blazor draws a page was copied.
+- **Look at it, on the real screen.** Several bugs only showed in the browser: a corner inside a stacking context went
+  under the guide's light, a ring on a full-width place gave the page a sideways scroll, a tall photo left a hero
+  empty, a positioned photo covered the words on it. Every one was a style the tests passed.
+- **What I'd do differently.** Twice I wrote throwaway stubs with `printf` instead of an edit, and twice I wrote code
+  before its test had failed and had to put a stub back to see it fail. Chrome froze three times, most likely from
+  checking pages inside a frame of the site itself or from a tab left open while its container restarted; I stopped
+  both.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): an area of the framework a site fills with data, words and
+slots, and a replay that speaks the live runner's events, so a demo is the real thing played back.

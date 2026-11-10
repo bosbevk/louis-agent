@@ -4,8 +4,9 @@ namespace LouisAgent.SiteApi;
 
 /// <summary>
 /// The framework's pages moved under <c>/framework</c> (F128.1), so the site sells first and those pages can later
-/// move whole to the framework's own site. An old address from a bookmark or a search result is sent on, for good, to
-/// where its place is now, with its section and its page of a section kept.
+/// move whole to the framework's own site, and the doctor's practice's demo gave way to the guesthouse's (F127.1). An
+/// old address from a bookmark or a search result is sent on, for good, to where its place is now, with its section and
+/// its page of a section kept.
 /// </summary>
 public static class MovedPages
 {
@@ -19,7 +20,8 @@ public static class MovedPages
         ["/build-your-own"] = "/framework/build-your-own",
         ["/proof"] = "/framework/measured",
         ["/built-on-it"] = "/framework/built-on-it",
-        ["/whats-coming"] = "/framework/whats-coming"
+        ["/whats-coming"] = "/framework/whats-coming",
+        ["/doctors-practice-demo"] = "/guesthouse-demo"
     };
 
     /// <summary>Where an old address lives now, or null when it never moved.</summary>

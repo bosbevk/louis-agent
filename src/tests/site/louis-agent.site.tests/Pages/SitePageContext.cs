@@ -1,4 +1,5 @@
 using System.Net;
+using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Web.Text;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,8 @@ internal static class SitePageContext
         ctx.Services.AddSingleton(new ChatText());
         var nothing = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
         ctx.Services.AddSingleton(new HttpClient(nothing) { BaseAddress = new Uri("http://site.test/") });
+        // The site's demos, as Program.cs registers them, for the showroom's start (F127.1).
+        ctx.Services.AddSingleton(SiteDemos.All);
         return ctx;
     }
 }

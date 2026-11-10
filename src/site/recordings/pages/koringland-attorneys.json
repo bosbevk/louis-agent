@@ -1,0 +1,14 @@
+{
+  "url": "/",
+  "title": "Koringland Attorneys · Attorneys in Malmesbury",
+  "text": "Koringland Attorneys. What we do, A first consultation, What to bring. Wills, property and family law, in English and Afrikaans. Monday to Friday, 08:00 to 17:00. At the office or by video call. Book a consultation. Monday to Friday. At the office or by video call. English and Afrikaans. A first consultation R650. What we do: four areas of law, for people, families, farms and small businesses. Wills and estates: a will, and an estate after a death. Property transfers: conveyancing. Family law: divorce, maintenance and custody. Contracts: for small businesses and farms. A first consultation: thirty minutes, R650, at the office or by video call. After that, the attorney quotes the matter before any work starts. What to bring: an ID, and any papers about the matter: a title deed, a contract, a court letter.",
+  "areas": [
+    { "id": "/practice", "heading": "What we do" },
+    { "id": "/practice/wills", "heading": "Wills and estates" },
+    { "id": "/practice/property", "heading": "Property transfers" },
+    { "id": "/practice/family", "heading": "Family law" },
+    { "id": "/practice/contracts", "heading": "Contracts" },
+    { "id": "/consultation", "heading": "A first consultation" },
+    { "id": "/what-to-bring", "heading": "What to bring" }
+  ]
+}

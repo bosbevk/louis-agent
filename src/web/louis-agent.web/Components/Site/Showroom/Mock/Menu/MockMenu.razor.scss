@@ -1,0 +1,41 @@
+/* A real menu (F127.1, Louis: "like having a real menu"): a card of the business's page with a thin rule of its brand
+   colour, its courses in columns, each course's name in the business's typeface over a rule, and each dish set as a
+   printed menu sets it, a dotted leader running from its name to its price, its words quiet under them. The courses
+   and the dishes are drawn by their own components, reached under ::deep. */
+.mock-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px 28px;
+    margin-top: 14px;
+    padding: 20px 22px;
+    border: 1px solid color-mix(in srgb, var(--mock-brand) 30%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--mock-page) 94%, var(--mock-ink));
+}
+.mock-menu ::deep .mock-course-name {
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--mock-brand) 35%, transparent);
+    font: 600 13px/1.2 var(--mock-face);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--mock-brand);
+}
+.mock-menu ::deep .mock-dishes {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.mock-menu ::deep .mock-dish { display: flex; flex-direction: column; gap: 1px; }
+.mock-menu ::deep .mock-dish-line { display: flex; align-items: baseline; gap: 6px; }
+.mock-menu ::deep .mock-dish-name { font: 600 13.5px/1.3 var(--mock-face); }
+.mock-menu ::deep .mock-dish-leader {
+    flex: 1;
+    min-width: 12px;
+    border-bottom: 1px dotted color-mix(in srgb, var(--mock-ink) 40%, transparent);
+}
+.mock-menu ::deep .mock-dish-price { font-size: 13px; font-weight: 700; color: var(--mock-brand); }
+.mock-menu ::deep .mock-dish-words { font-size: 12px; font-style: italic; line-height: 1.45; opacity: .75; }

@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Choices;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Site.Tiles;
@@ -40,15 +41,8 @@ public partial class Tile
     /// </summary>
     private string Classes => (Value is null ? "panel reveal" : "panel reveal stat") + AccentClass;
 
-    /// <summary>The class an accent's colour hangs on, one per colour, read like a table (ADR 0051).</summary>
-    private string AccentClass => Accent switch
-    {
-        TileAccent.Red => " accent-red",
-        TileAccent.Green => " accent-green",
-        TileAccent.Blue => " accent-blue",
-        TileAccent.Yellow => " accent-yellow",
-        _ => "",
-    };
+    /// <summary>The class an accent's colour hangs on, named for the colour; none for a plain tile.</summary>
+    private string AccentClass => Accent == TileAccent.None ? "" : $" accent-{Accent.Wire()}";
 
     /// <summary>The delay the site's reveal reads, left off the first tile.</summary>
     private string? DelayValue => Delay > 0 ? Delay.ToString(CultureInfo.InvariantCulture) : null;

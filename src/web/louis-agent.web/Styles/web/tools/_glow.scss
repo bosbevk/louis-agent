@@ -1,0 +1,26 @@
+// The showroom's light (F127.1, Louis: "it can be themed colourful and fancy"): a soft glow and a gradient from one
+// colour, read from a variable so it follows the demo on screen. A gradient stays within one colour, white into it or
+// it into a lighter shade, never through several (Louis: "glows and gradient works just not rainbow").
+
+// The colour, see-through: how strong it shows, as a percentage.
+@function tint($colour, $strength) {
+    @return color-mix(in srgb, #{$colour} #{$strength}, transparent);
+}
+
+// The colour run into a lighter shade of itself.
+@function shade($colour, $angle: 135deg) {
+    @return linear-gradient(#{$angle}, #{$colour}, color-mix(in srgb, #{$colour} 50%, var(--web-bright)));
+}
+
+// A glow under the element in its colour.
+@mixin glow($colour, $blur: 28px, $spread: -10px) {
+    box-shadow: 0 10px $blur $spread $colour;
+}
+
+// Text that runs from white into the colour, as a headline does.
+@mixin text-fade($colour) {
+    background: linear-gradient(90deg, var(--web-bright) 40%, #{$colour});
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}

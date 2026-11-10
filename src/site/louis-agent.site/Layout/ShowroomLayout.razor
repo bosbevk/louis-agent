@@ -1,0 +1,10 @@
+@inherits LayoutComponentBase
+@* The framework's showroom, filled with what's this site's own (F127.1): its name, its one offer and its guide in the
+   corner. The demo pages name it; the site's demos are registered in Program.cs. *@
+
+<ShowroomShell>
+    <Brand><img class="site-mark" src="brand/mark.svg" alt="" width="22" height="22" />louis-agent</Brand>
+    <Offer><a class="btn btn-fill" href="/contact">Ask for yours</a></Offer>
+    <Corner><ExpertChat /></Corner>
+    <ChildContent>@Body</ChildContent>
+</ShowroomShell>

@@ -15,6 +15,7 @@
     @include colours.both(bs-warning, #ffc107);
     @include colours.both(bs-info, #5aa9e6);             // a tile's blue accent (F128.1), soft beside the orange
     @include colours.both(web-ok, #38b449);              // a tile's green accent: Puls's own green
+    @include colours.both(web-purple, #9b7fe0);          // the fifth accent (F127.1), soft beside the orange
     @include colours.both(bs-body-bg, #1c1f22);          // the chat: deep charcoal
     @include colours.both(bs-secondary-bg, #25292d);     // cards and the composer: a step lighter
     @include colours.both(bs-tertiary-bg, #16191b);      // the menu: a step darker than the chat
