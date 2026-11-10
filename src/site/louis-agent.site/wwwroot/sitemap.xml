@@ -250,7 +250,25 @@
     <loc>https://louis-agent.dev/guesthouse-demo</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/guesthouse-demo/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/guesthouse-demo/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/guesthouse-demo/ask</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/law-practice-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/law-practice-demo/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/law-practice-demo/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/law-practice-demo/ask</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/pricing</loc>
@@ -260,6 +278,15 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/restaurant-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo/ask</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/triage-demo</loc>

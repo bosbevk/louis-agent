@@ -33,7 +33,7 @@ public class DemoStageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find("section.demo-stage").ClassList, Does.Contain("accent-green"));
+            Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain("accent-green"));
             Assert.That(cut.Find(".stage-head .stage-kicker").TextContent, Is.EqualTo("A bakery"));
             Assert.That(cut.FindAll("h1").Select(h => h.TextContent), Is.EqualTo(new[] { "Bread at dawn." }));
             Assert.That(cut.Find(".stage-head .stage-lede").TextContent, Does.StartWith("A baker's agent"));
@@ -55,6 +55,26 @@ public class DemoStageTests
             Assert.That(body.QuerySelector(".stage-player .player")!.TextContent, Is.EqualTo("The chat"));
             Assert.That(cut.Find(".stage-body + .stage-offer a").GetAttribute("href"), Is.EqualTo("/contact"));
         });
+    }
+
+    /// <summary>
+    /// The stage gives the guide's tour its places (F127.1, Louis: "make sure this works"), each a section with an id
+    /// and a heading, so a walkthrough stops at the story, the demo, what to watch and the offer, one at a time.
+    /// </summary>
+    [Test]
+    public void TheStage_GivesTheTourItsPlaces()
+    {
+        using var ctx = new BunitContext();
+
+        var places = Stage(ctx).FindAll("section[id]")
+            .Select(section => (section.Id, section.QuerySelector("h1, h2")?.TextContent.Trim())).ToList();
+
+        Assert.That(places,
+            Is.EqualTo(new[]
+            {
+                ("top", "Bread at dawn."), ("the-demo", "The demo"), ("what-to-watch", null),
+                ("ask", "Ask for yours"),
+            }), "the cues bring their own heading, so the stage writes none for them");
     }
 
     /// <summary>A demo without cues (its player shows its own steps) gives the player the whole width.</summary>

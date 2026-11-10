@@ -91,6 +91,9 @@ const pagesOf = (area, fold) => {
 // seconds if the area never appears.
 const headerRoom = 96;
 const spotlightPad = 14;
+const spotlightEdge = 4;
+// How far the ring reaches past each side as it comes in: half of the 4% it grows by (the styles' scale of 1.04).
+const spotlightGrow = 0.02;
 const spotlightMs = 4000;
 export function showArea(name, pageAddress, address) {
     // "parts/2" is the area "parts", turned to its second page.
@@ -199,13 +202,20 @@ const spotlight = (area) => {
     document.body.append(light);
     lit = light;
     const until = performance.now() + spotlightMs;
-    // Lays the light over what the area holds, a little wider, in page coordinates, until its time is up.
+    // Lays the light over what the area holds, a little wider, in page coordinates, until its time is up. It keeps
+    // inside the screen's width (F127.1): a ring past the edge gives the page a sideways scroll, so a place as wide as
+    // the screen (a demo's stage) gets a ring that stops at the edge, and comes in without growing if growing would
+    // cross it.
     const follow = () => {
         if (lit !== light) return;
-        const r = boxOf(area);
+        const r = boxOf(area), screen = document.documentElement.clientWidth;
+        const left = Math.max(spotlightEdge, r.left - spotlightPad);
+        const right = Math.min(screen - spotlightEdge, r.left + r.width + spotlightPad);
+        const grow = (right - left) * spotlightGrow;
+        light.classList.toggle("is-wide", left - grow < 0 || right + grow > screen);
         light.style.top = `${scrollY + r.top - spotlightPad}px`;
-        light.style.left = `${scrollX + r.left - spotlightPad}px`;
-        light.style.width = `${r.width + 2 * spotlightPad}px`;
+        light.style.left = `${scrollX + left}px`;
+        light.style.width = `${right - left}px`;
         light.style.height = `${r.height + 2 * spotlightPad}px`;
         if (performance.now() < until) requestAnimationFrame(follow);
         else { light.remove(); lit = null; }

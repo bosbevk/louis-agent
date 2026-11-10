@@ -5,6 +5,7 @@
    from the colour into white. */
 .demo-cues { display: flex; flex-direction: column; gap: 10px; }
 .cues-heading {
+    margin: 0;
     font: 500 11.5px/1 var(--bs-font-monospace);
     letter-spacing: .16em;
     text-transform: uppercase;

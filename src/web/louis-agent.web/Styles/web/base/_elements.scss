@@ -35,6 +35,13 @@ html:has(.layout-slides) { scroll-snap-type: y mandatory; }
     70% { opacity: 1; }
     100% { opacity: 0; }
 }
+/* A ring that would grow past the screen's edge (a demo's stage, as wide as the screen) comes in without growing. */
+.area-spotlight.is-wide { animation-name: area-spotlight-wide; }
+@keyframes area-spotlight-wide {
+    0% { opacity: 0; }
+    15%, 70% { opacity: 1; }
+    100% { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
     .area-spotlight { animation: none; }
 }

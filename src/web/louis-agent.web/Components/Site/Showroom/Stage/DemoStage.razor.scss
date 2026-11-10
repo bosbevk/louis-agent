@@ -34,6 +34,16 @@
 .stage-body { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; padding: 16px 32px; }
 .stage-body.is-alone { grid-template-columns: minmax(0, 1fr); }
 .stage-player { min-width: 0; }
+/* A place's heading only a screen reader and the guide's tour read: the player and the offer show what they are. */
+.stage-place {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
 
 .stage-offer {
     position: relative;

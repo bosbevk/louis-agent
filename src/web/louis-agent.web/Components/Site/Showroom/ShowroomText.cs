@@ -23,4 +23,10 @@ public sealed record ShowroomText
 
     /// <summary>The heading over a demo's cues.</summary>
     public string WhatToWatch { get; init; } = "What to watch";
+
+    /// <summary>The demo's place on its stage, as the guide's tour names it.</summary>
+    public string TheDemo { get; init; } = "The demo";
+
+    /// <summary>The offer's place on a demo's stage, as the guide's tour names it.</summary>
+    public string TheOffer { get; init; } = "Ask for yours";
 }

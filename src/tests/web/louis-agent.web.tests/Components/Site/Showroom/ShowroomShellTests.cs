@@ -104,6 +104,20 @@ public class ShowroomShellTests
         });
     }
 
+    /// <summary>
+    /// The corner stands beside the lit frame, not in it (F127.1, Louis's screenshot of a tour's last stop): the frame is
+    /// a layer of its own for its grid, and a corner inside it went under the guide's spotlight, dimmed with the page.
+    /// </summary>
+    [Test]
+    public void TheCorner_StandsBesideTheFrame()
+    {
+        using var ctx = new BunitContext();
+
+        var corner = Shell(ctx, "/bakery-demo").Find(".showroom-corner");
+
+        Assert.That(corner.Closest(".showroom"), Is.Null);
+    }
+
     /// <summary>On a phone the same demos are chips, in the site's order, each in its colour.</summary>
     [Test]
     public void ThePhonesChips_AreTheSameDemos()

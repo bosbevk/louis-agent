@@ -90,6 +90,26 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"), Does.Contain(rule));
 
     /// <summary>
+    /// The spotlight stays on the screen (F127.1, Louis: "make sure this works", a tour of a demo page): the script
+    /// keeps the ring inside the screen's width, and a ring that fills it comes in without growing, so a place as wide
+    /// as the screen never gives the page a sideways scroll. The script itself is checked in the browser.
+    /// </summary>
+    [Test]
+    public void TheSpotlight_StaysOnTheScreen()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n");
+        string script = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Widget/ChatWidget.razor.js"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(rules, Does.Contain(".area-spotlight.is-wide { animation-name: area-spotlight-wide; }"));
+            Assert.That(script, Does.Contain("document.documentElement.clientWidth")
+                .And.Contain("light.classList.toggle(\"is-wide\""));
+        });
+    }
+
+    /// <summary>
     /// A section paged sideways keeps its heading with what follows it (FX110), so at 1080p a page never holds only a
     /// section's title while its content starts on the next.
     /// </summary>

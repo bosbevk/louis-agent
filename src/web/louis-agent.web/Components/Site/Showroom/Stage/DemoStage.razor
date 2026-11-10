@@ -1,24 +1,31 @@
 @* A demo page's stage (F127.1): the strip in its colour, the kicker, the title as the page's one h1, the lede, then
-   the player with the cues beside it, and the offer under them. *@
-<section id="top" class="@Classes">
+   the player with the cues beside it, and the offer under them. Each part is a place of its own, a section with an id
+   and a heading, so the guide's tour stops at the story, the demo, what to watch and the offer, one at a time. *@
+<div class="@Classes">
     <div class="stage-strip" aria-hidden="true"></div>
-    <div class="stage-head">
+    <section id="top" class="stage-head">
         <span class="stage-kicker">@Kicker</span>
         <h1 class="stage-title">@Title</h1>
         @if (Lede is not null)
         {
             <p class="stage-lede">@Lede</p>
         }
-    </div>
+    </section>
     <div class="@BodyClasses">
-        <div class="stage-player">@Player</div>
+        <section id="the-demo" class="stage-player">
+            <h2 class="stage-place">@Text.TheDemo</h2>
+            @Player
+        </section>
         @if (Cues is not null)
         {
-            <aside class="stage-cues">@Cues</aside>
+            <section id="what-to-watch" class="stage-cues">@Cues</section>
         }
     </div>
     @if (Offer is not null)
     {
-        <div class="stage-offer">@Offer</div>
+        <section id="ask" class="stage-offer">
+            <h2 class="stage-place">@Text.TheOffer</h2>
+            @Offer
+        </section>
     }
-</section>
+</div>

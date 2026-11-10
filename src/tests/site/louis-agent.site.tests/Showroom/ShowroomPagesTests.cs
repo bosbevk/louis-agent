@@ -69,7 +69,7 @@ public class ShowroomPagesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.Find("section.demo-stage").ClassList, Does.Contain(accent));
+            Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain(accent));
             Assert.That(cut.Find(".site-mock .mock-address").TextContent, Is.EqualTo(address));
             Assert.That(cut.Find(".site-mock .mock-header .mock-mark svg"), Is.Not.Null, "its sample brand's mark");
             Assert.That(cut.Find(".site-mock .mock-tagline").TextContent, Is.Not.Empty, "its tagline");

@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Site.Showroom.Stage;
 
@@ -12,11 +13,18 @@ namespace LouisAgent.Web.Components.Site.Showroom.Stage;
 /// <remarks>
 /// A page fills slots in a fixed order, so every demo reads the same way and a new one only writes its words. The
 /// stage wears its colour as an accent class, so the strip, the title's fade, the cues and the offer all draw with
-/// <c>--accent</c> and change together.
+/// <c>--accent</c> and change together. Each part is a section with an id and a heading, the shape the guide's tour
+/// walks on every page, so a demo needs nothing of its own to be toured; the player and the offer have a heading only
+/// a screen reader and the guide read.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0107-every-section-has-an-address.md">ADR 0107: every section has an address</seealso>
 public partial class DemoStage
 {
+    /// <summary>The site's services, where its showroom words are.</summary>
+    [Inject]
+    private IServiceProvider Services { get; set; } = null!;
+
     /// <summary>The demo's colour, the same it wears in the rail.</summary>
     [Parameter]
     public TileAccent Accent { get; set; }
@@ -44,6 +52,9 @@ public partial class DemoStage
     /// <summary>The site's offer, under the demo.</summary>
     [Parameter]
     public RenderFragment? Offer { get; set; }
+
+    /// <summary>The site's words for the stage's places, English when it registered none.</summary>
+    private ShowroomText Text => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
     /// <summary>The stage's classes: a stage, in its demo's colour.</summary>
     private string Classes => $"demo-stage accent-{Accent.Wire()}";

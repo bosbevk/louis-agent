@@ -80,7 +80,8 @@
 .showroom { --corner-room: 104px; }
 .showroom-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
 .showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }
-/* On a wide screen the corner sits at the bottom of the rail, where no demo is (Louis: "why is that there?"). */
+/* On a wide screen the corner sits at the bottom of the rail, where no demo is (Louis: "why is that there?"). It stands
+   beside the frame, out of the frame's layer, so it stays above the guide's spotlight as the site's corner does. */
 .showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }
 
 @media (max-width: 900px) {
@@ -93,6 +94,7 @@
     /* The corner is a bar across the bottom here, and the frame already ends above it. */
     .showroom { --site-bar: 60px; --corner-room: 16px; padding-bottom: var(--site-bar); }
     .showroom-corner {
+        --site-bar: 60px;
         left: 0;
         right: 0;
         bottom: 0;
