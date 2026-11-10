@@ -16,7 +16,7 @@ public static class SiteDemos
         new ShowroomDemo("/law-practice-demo", "A law practice", "No advice, a consultation", DemoGroup.ForYourBusiness,
             TileAccent.Blue, "⚖"),
         new ShowroomDemo("/guesthouse-demo", "A guesthouse", "A weekend by the sea, with the dog",
-            DemoGroup.ForYourBusiness, TileAccent.Yellow, "⌂"),
+            DemoGroup.ForYourBusiness, TileAccent.Yellow, "🛏"),
         new ShowroomDemo("/coding-agent", "The coding agent", "Fixes a real bug", DemoGroup.AgentsAtWork,
             TileAccent.Red, "{ }"),
         new ShowroomDemo("/triage-demo", "The triage team", "Sorts and fixes an error", DemoGroup.AgentsAtWork,
