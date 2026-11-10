@@ -1,0 +1,24 @@
+@* A demo page's stage (F127.1): the strip in its colour, the kicker, the title as the page's one h1, the lede, then
+   the player with the cues beside it, and the offer under them. *@
+<section id="top" class="@Classes">
+    <div class="stage-strip" aria-hidden="true"></div>
+    <div class="stage-head">
+        <span class="stage-kicker">@Kicker</span>
+        <h1 class="stage-title">@Title</h1>
+        @if (Lede is not null)
+        {
+            <p class="stage-lede">@Lede</p>
+        }
+    </div>
+    <div class="@BodyClasses">
+        <div class="stage-player">@Player</div>
+        @if (Cues is not null)
+        {
+            <aside class="stage-cues">@Cues</aside>
+        }
+    </div>
+    @if (Offer is not null)
+    {
+        <div class="stage-offer">@Offer</div>
+    }
+</section>
