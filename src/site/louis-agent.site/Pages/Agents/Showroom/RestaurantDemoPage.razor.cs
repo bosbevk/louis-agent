@@ -25,8 +25,9 @@ public partial class RestaurantDemoPage
     /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
     private static readonly DemoCue[] WhatToWatch =
     [
-        new(1, "It answers at ten at night, from the restaurant's own hours and menu."),
+        new(1, "It answers at ten at night, and shows the children's menu for the two small kids."),
         new(2, "It never promises a table: it takes the request for the owner to confirm."),
+        new(3, "It reads the request back before it sends anything."),
         new(4, "It sends the details only after the family says yes."),
     ];
 

@@ -1,14 +1,14 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_65de3e3718264a0aa61ef4f47548b1e8","role":"assistant","toolsets":["leads"],"session_role":"seemeeu-guesthouse/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_da22a0e98c59463a85e376f9e946b597","role":"assistant","toolsets":["leads","site"],"session_role":"seemeeu-guesthouse/voice"}}
 
 event: content_block_start
-data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01Wfxq4NvNsUXAn51aB33AFA","name":"SendLead","input":{"name":"Marike Botha","contact":"marike@example.com","wants":"Garden room for this Friday and Saturday night, two guests and one dog (R150 a dog). They asked about a sea-view room first, but the garden room is the one that welcomes dogs."}}}
+data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01X4eMQUK2MCBu8c93ZH9yJo","name":"SendLead","input":{"name":"Marike Botha","contact":"marike@example.com","wants":"Garden room for this Friday and Saturday night, two guests and one dog (R1,250 a night plus R150 for the dog)."}}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":0}
 
 event: content_block_start
-data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01Wfxq4NvNsUXAn51aB33AFA","content":"Sent to the owner at 2026-11-10 08:15:20Z: Marike Botha, marike@example.com, about Garden room for this Friday and Saturday night, two guests and one dog (R150 a dog). They asked about a sea-view room first, but the garden room is the one that welcomes dogs.. Tell them they will hear back.","is_error":false}}
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01X4eMQUK2MCBu8c93ZH9yJo","content":"Sent to the owner at 2026-11-10 09:50:46Z: Marike Botha, marike@example.com, about Garden room for this Friday and Saturday night, two guests and one dog (R1,250 a night plus R150 for the dog).. Tell them they will hear back.","is_error":false}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
@@ -17,34 +17,40 @@ event: content_block_start
 data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your request for"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the garden room this"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" request is"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" Friday and Saturday"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" sent to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" night, for"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the owner,"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" two guests and one dog,"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" Marike. They'll be"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" has been sent to the owner"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":". They"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" will be in touch at"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" in touch at"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" marike@example.com to conf"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"irm."}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"irm,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" since I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" can't see the bookings and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" can't promise the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" room yet."}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":2}

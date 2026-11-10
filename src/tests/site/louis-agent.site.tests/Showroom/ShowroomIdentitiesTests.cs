@@ -25,11 +25,14 @@ public class ShowroomIdentitiesTests
             StringSplitOptions.RemoveEmptyEntries));
     }
 
-    /// <summary>Each is named for its business, finds its voice and uses the leads pack alone.</summary>
+    /// <summary>
+    /// Each is named for its business, finds its voice, and uses the leads pack to pass a booking on and the site pack
+    /// to show its website (F127.1, Louis: "the agent can navigate the website basically").
+    /// </summary>
     [TestCase(0, "wheatfield-kitchen")]
     [TestCase(1, "koringland-attorneys")]
     [TestCase(2, "seemeeu-guesthouse")]
-    public void ABusiness_HasItsName_ItsVoice_AndTheLeadsPack(int at, string name)
+    public void ABusiness_HasItsName_ItsVoice_AndTheLeadsAndSitePacks(int at, string name)
     {
         var business = Businesses[at];
 
@@ -38,9 +41,19 @@ public class ShowroomIdentitiesTests
             Assert.That(business.Name, Is.EqualTo(name));
             Assert.That(business.DefaultVoice, Is.EqualTo($"{name}/voice"));
             Assert.That(business.Prompts.GetFileInfo($"agent/{name}/voice.md").Exists, Is.True);
-            Assert.That(business.Packs, Is.EqualTo(new[] { "leads" }));
+            Assert.That(business.Packs, Is.EqualTo(new[] { "leads", "site" }));
         });
     }
+
+    /// <summary>
+    /// Every voice shows the visitor its website (Louis: "first show them the room and then they book it"): a place
+    /// that answers what they ask is opened with ShowPage before the answer.
+    /// </summary>
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public void EveryVoice_ShowsItsWebsite_BeforeItAnswers(int at) =>
+        Assert.That(Voice(Businesses[at]), Does.Contain("open it with `ShowPage` first"));
 
     /// <summary>
     /// Every voice says it is an AI, is made up, and passes a booking on only after the customer's yes.

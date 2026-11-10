@@ -1,14 +1,14 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_d0e37180e54542d6997c5cb6e5b1d6f0","role":"assistant","toolsets":["leads"],"session_role":"wheatfield-kitchen/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_d09f950961c5496b8d842280e78d10ba","role":"assistant","toolsets":["leads","site"],"session_role":"wheatfield-kitchen/voice"}}
 
 event: content_block_start
-data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01CykKXZsfNBnNhvH5H1ahbp","name":"SendLead","input":{"name":"Sam Botha","contact":"sam@example.com","wants":"Table for Sunday lunch at 12:30 for five people, including two small children."}}}
+data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01GhLFSzFc6h2UDrb6dq9CRG","name":"SendLead","input":{"name":"Sam Botha","contact":"sam@example.com","wants":"Table for lunch this Sunday at 12:30 for five people, two of them small children."}}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":0}
 
 event: content_block_start
-data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01CykKXZsfNBnNhvH5H1ahbp","content":"Sent to the owner at 2026-11-09 22:47:39Z: Sam Botha, sam@example.com, about Table for Sunday lunch at 12:30 for five people, including two small children.. Tell them they will hear back.","is_error":false}}
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01GhLFSzFc6h2UDrb6dq9CRG","content":"Sent to the owner at 2026-11-10 09:50:22Z: Sam Botha, sam@example.com, about Table for lunch this Sunday at 12:30 for five people, two of them small children.. Tell them they will hear back.","is_error":false}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
@@ -17,37 +17,28 @@ event: content_block_start
 data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your request has been sent to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" request has been sent to"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the owner, Sam."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the owner, Sam,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" for"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" Sunday lunch at"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" 12:30 for five people"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":". They"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" They"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" will be"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" in touch at"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" in touch at sam@example"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" sam@example.com to conf"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":".com to confirm the table"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"irm the table."}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" for Sunday at 12"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":":30."}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":2}

@@ -37,23 +37,46 @@ for _ in $(seq 60); do
 done
 curl -fs "http://127.0.0.1:$port/health" >/dev/null || { echo "The site's host did not start." >&2; exit 1; }
 
-# One session as the business, each turn's stream saved as it came, as {business}-{n}.sse.
+# One session as the business, each turn's stream saved as it came, as {business}-{n}.sse. The agent can pass a
+# booking on (leads) and show a place on its website (site, F127.1); the first question carries the website's page,
+# its words and its places, as the guide's widget sends the page in view (pages/{business}.json, held to the mock's
+# places by ShowroomPagesTests).
 record() {
   local business="$1"
   shift
   # With ONLY set, only that business is recorded; the others keep their recordings.
   if [ -n "${ONLY:-}" ] && [ "$business" != "$ONLY" ]; then return; fi
-  local session
+  local session page
   session=$(curl -s -X POST "http://127.0.0.1:$port/v1/sessions" -H "content-type: application/json" \
-    -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\"],\"time_zone\":\"Africa/Johannesburg\"}" |
+    -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\",\"site\"],\"time_zone\":\"Africa/Johannesburg\"}" |
     sed -n 's/.*"session_id":"\([^"]*\)".*/\1/p')
-  local turn=0
+  page=$(cat "src/site/recordings/pages/$business.json")
+  local turn=0 body status shown
+  body="$(mktemp)"
   for question in "$@"; do
     turn=$((turn + 1))
-    curl -s -N -X POST "http://127.0.0.1:$port/v1/sessions/$session/messages" -H "content-type: application/json" \
-      -d "{\"message\":\"$question\"}" > "$out/$business-$turn.sse"
-    echo "$business $turn: $(grep -o '"text_delta","text":"[^"]*"' "$out/$business-$turn.sse" | sed 's/.*"text":"//; s/"$//' | tr -d '\n')"
+    # The body goes through a file, as bytes, so no shell on any system changes a character of the page's words.
+    if [ "$turn" = "1" ]; then
+      printf '{"message":"%s","page":%s}' "$question" "$page" > "$body"
+    else
+      printf '{"message":"%s"}' "$question" > "$body"
+    fi
+    status=$(curl -s -N -o "$out/$business-$turn.sse" -w "%{http_code}" -X POST \
+      "http://127.0.0.1:$port/v1/sessions/$session/messages" -H "content-type: application/json" \
+      --data-binary "@$body")
+    # A turn the host refused is said, with what it answered, and the business stops there.
+    if [ "$status" != "200" ]; then
+      echo "$business $turn: the host answered $status: $(head -c 300 "$out/$business-$turn.sse")" >&2
+      return
+    fi
+    echo "$business $turn: $(grep -o '"text_delta","text":"[^"]*"' "$out/$business-$turn.sse" |
+      sed 's/.*"text":"//; s/"$//' | tr -d '\n')"
+    # Where the agent took the visitor on its website, if it did.
+    shown=$(grep -o '"name":"ShowPage","input":{"path":"[^"]*"' "$out/$business-$turn.sse" |
+      sed 's/.*"path":"//; s/"$//' | tr '\n' ' ' || true)
+    if [ -n "$shown" ]; then echo "  shown: $shown"; fi
   done
+  rm -f "$body"
 }
 
 record wheatfield-kitchen \

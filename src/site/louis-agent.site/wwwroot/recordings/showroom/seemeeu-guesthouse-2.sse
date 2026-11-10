@@ -1,56 +1,110 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_65de3e3718264a0aa61ef4f47548b1e8","role":"assistant","toolsets":["leads"],"session_role":"seemeeu-guesthouse/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_da22a0e98c59463a85e376f9e946b597","role":"assistant","toolsets":["leads","site"],"session_role":"seemeeu-guesthouse/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm going"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm we"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to give the answer as"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ighing how"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a five"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to answer the"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"-minute walk to"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" two questions,"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the beach and"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the beach distance and the bre"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" breakfast from"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"akfast h"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 07:30 to 10"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ours, while"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":":00 on the stoep"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" keeping to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", in three sentences at"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one place per answer. I'"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" most. Then"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"m thinking about"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'll move"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" answ"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ering both"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" lead flow on by"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" in"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" asking for their"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" text and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" name, one question"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" showing just"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" at a time."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one place,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and I'm chec"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king what the list all"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ows."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'll show"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the breakfast page"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the second"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" question and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" answer the beach dist"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ance in text. I'm also"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" thinking about offering to p"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ass along"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the garden room"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" booking, which would"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" need a name, cont"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"act details, and conf"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"irmed dates."}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -62,49 +116,88 @@ event: content_block_start
 data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"The beach is a"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"The beach is"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" five-minute walk from the"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a five-minute walk from"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" guesthouse."}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the guesthouse, and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Breakfast is served"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" I've"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" from 07:30 to "}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" opened that"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"10:00 on the sto"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" section for you. Breakf"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ep."}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ast is served on"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" If you'"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the stoep from 07:"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"d like the"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"30 to 10:00,"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" owner to conf"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" either"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"irm the garden room for"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a full farm breakfast"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Friday and Saturday with"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" or yoghurt, f"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ruit and fresh bread"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Shall I take"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" your"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" dog, what is your name?"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" name and a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" way for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the owner to reach you,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" so they"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" can conf"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"irm the garden room for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Friday and Saturday"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"?"}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_018s5ab8EWaeYniDvfPbdARF","name":"ShowPage","input":{"path":"/the-beach"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: content_block_start
+data: {"type":"content_block_start","index":3,"content_block":{"type":"tool_result","tool_use_id":"toolu_018s5ab8EWaeYniDvfPbdARF","content":"Shown: the visitor's browser is now on /the-beach. Say in one line what to look at there.","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":3}
 
 event: message_delta
 data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}

@@ -16,4 +16,5 @@ public enum ShowroomIdentityName
 public enum ShowroomPack
 {
     Leads,
+    Site,
 }

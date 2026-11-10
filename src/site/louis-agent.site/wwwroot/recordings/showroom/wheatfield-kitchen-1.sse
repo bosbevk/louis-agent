@@ -1,59 +1,59 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_d0e37180e54542d6997c5cb6e5b1d6f0","role":"assistant","toolsets":["leads"],"session_role":"wheatfield-kitchen/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_d09f950961c5496b8d842280e78d10ba","role":"assistant","toolsets":["leads","site"],"session_role":"wheatfield-kitchen/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm conf"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm checking whether the"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"irming the restaurant is"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" rest"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" open Tuesday through"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"aurant is open for"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Sunday for"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" lunch on Sunday"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" lunch, "}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", which"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"12:00 "}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" it"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"to 15:00, and that"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is, and that"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I can't promise a table but"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a family of five with two small k"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" can pass along"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ids would"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a request. There"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" want the children's page, so I"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s a family of five with two k"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll show that with"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ids, so I"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a ShowPage call to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll mention the children's men"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" /children first"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"u. I"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", then answ"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll keep it to"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"er after the result com"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" three sentences and answ"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"es back."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"er in English."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -62,70 +62,79 @@ event: content_block_stop
 data: {"type":"content_block_stop","index":0}
 
 event: content_block_start
-data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and wel"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"come to"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Wheatfield K"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"itchen."}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" We"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" are open for lunch on"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Sunday, from 12:"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"00 to 15:00,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and we"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" have a children's menu."}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" I can't see"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the bookings, but"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" I can pass a table request for"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" five,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" including the"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" two children, to the owner,"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" who will confirm. Would"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" you like me"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to do that?"}}
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01KnJyJKTo9DvYd4YDRgjPkQ","name":"ShowPage","input":{"path":"/children"}}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_result","tool_use_id":"toolu_01KnJyJKTo9DvYd4YDRgjPkQ","content":"Shown: the visitor's browser is now on /children. Say in one line what to look at there.","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: content_block_start
+data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Hello,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" and welcome! Yes"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":", we ser"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ve lunch on"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" Sundays, from 12"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":":00 to 15:00"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":". I've op"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ened the children's menu for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" you, where each dish is R"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"75."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" If"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" you'd like a table for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" five, t"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ell me your name, how the ow"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ner can reach you, and a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" day and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" time, and I'll pass"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" it on for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" confirmation."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":3}
 
 event: message_delta
 data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}

@@ -25,8 +25,9 @@ public partial class LawPracticeDemoPage
     /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
     private static readonly DemoCue[] WhatToWatch =
     [
-        new(1, "It gives no legal advice: it explains what a first consultation is instead."),
-        new(2, "It never promises a time: the practice confirms the consultation."),
+        new(1, "It gives no legal advice: it shows its wills page and offers a first consultation."),
+        new(2, "It asks for one thing at a time, starting with a name."),
+        new(3, "It reads the request back before it sends anything."),
         new(4, "The request goes to the practice only after the client says yes."),
     ];
 

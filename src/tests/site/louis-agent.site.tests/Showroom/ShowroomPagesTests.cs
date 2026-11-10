@@ -1,5 +1,6 @@
 using System.Net;
 using System.Reflection;
+using System.Text.Json;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Site.Pages.Agents.Showroom;
@@ -63,7 +64,7 @@ public class ShowroomPagesTests
 
     /// <summary>
     /// A business's demo plays on a mock of its own website, in its colour, with its own address, its sample brand's
-    /// mark, and three cues of what to watch beside it.
+    /// mark, and four cues of what to watch beside it, the first its agent showing its website.
     /// </summary>
     [TestCase(typeof(RestaurantDemoPage), "accent-green", "wheatfieldkitchen.example")]
     [TestCase(typeof(LawPracticeDemoPage), "accent-blue", "koringland.example")]
@@ -80,7 +81,9 @@ public class ShowroomPagesTests
             Assert.That(cut.Find(".site-mock .mock-address").TextContent, Is.EqualTo(address));
             Assert.That(cut.Find(".site-mock .mock-header .mock-mark svg"), Is.Not.Null, "its sample brand's mark");
             Assert.That(cut.Find(".site-mock .mock-tagline").TextContent, Is.Not.Empty, "its tagline");
-            Assert.That(cut.FindAll(".stage-cues .cues-list > li"), Has.Count.EqualTo(3));
+            Assert.That(cut.FindAll(".stage-cues .cues-list > li"), Has.Count.EqualTo(4));
+            Assert.That(cut.Find(".stage-cues .cues-list > li").TextContent, Does.Contain("shows"),
+                "the first cue is the agent showing its website (Louis: \"first show them the room\")");
             Assert.That(cut.FindAll("h1"), Has.Count.EqualTo(1));
             var chat = cut.FindComponent<RecordedChat>().Instance;
             Assert.That((chat.Pace, chat.TurnGap), Is.EqualTo((2.5, 2200)),
@@ -157,6 +160,36 @@ public class ShowroomPagesTests
             Assert.That(cut.Find(".site-mock .mock-address").TextContent, Is.EqualTo("seemeeu.example"));
         });
     }
+
+    /// <summary>
+    /// The page a recording sends with its first question, as the guide's widget sends the page in view, lists the
+    /// website's places by their addresses, the same as the mock draws: the agent can only show what the visitor sees.
+    /// </summary>
+    [TestCase(typeof(RestaurantDemoPage), "wheatfield-kitchen")]
+    [TestCase(typeof(LawPracticeDemoPage), "koringland-attorneys")]
+    [TestCase(typeof(GuesthouseDemoPage), "seemeeu-guesthouse")]
+    public void TheRecordingsPage_ListsTheWebsitesPlaces(Type page, string business)
+    {
+        using var ctx = new BunitContext();
+        var sent = JsonSerializer.Deserialize<RecordedPage>(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            $"src/site/recordings/pages/{business}.json")), new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+
+        var places = Render(ctx, page).FindAll(".site-mock [data-place]")
+            .Select(place => place.GetAttribute("data-place"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sent.Areas.Select(area => area.Id), Is.EqualTo(places));
+            Assert.That(sent.Url, Is.EqualTo("/"));
+            Assert.That(sent.Text, Is.Not.Empty);
+        });
+    }
+
+    /// <summary>A page as a recording sends it: its address, title, words and places, as the API reads it.</summary>
+    private sealed record RecordedPage(string Url, string Title, string Text, List<RecordedArea> Areas);
+
+    /// <summary>One place on a recorded page: its address and its heading.</summary>
+    private sealed record RecordedArea(string Id, string Heading);
 
     /// <summary>
     /// A website says only what its agent knows: every price and every time on it is in the business's voice, so the

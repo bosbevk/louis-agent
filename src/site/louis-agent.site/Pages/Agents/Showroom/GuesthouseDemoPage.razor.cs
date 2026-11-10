@@ -26,8 +26,9 @@ public partial class GuesthouseDemoPage
     /// <summary>What to watch for, each lit as the play reaches its turn.</summary>
     private static readonly DemoCue[] WhatToWatch =
     [
-        new(1, "It knows the house: dogs stay in the garden room, so it offers that one instead."),
-        new(2, "It answers like a local: the beach, breakfast on the stoep, the park nearby."),
+        new(1, "It shows the garden room: dogs stay there, so it offers that one instead."),
+        new(2, "It shows the beach, and answers like a local about breakfast on the stoep."),
+        new(3, "It reads the booking back before it sends anything."),
         new(4, "The booking goes to the owner only after the guest says yes."),
     ];
 
