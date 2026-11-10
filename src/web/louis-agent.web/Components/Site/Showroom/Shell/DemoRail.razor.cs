@@ -27,15 +27,6 @@ public partial class DemoRail
     [Parameter, EditorRequired]
     public ShowroomText Text { get; set; } = null!;
 
-    /// <summary>A group's heading in the site's words.</summary>
-    /// <remarks>A switch on the group, one arm each (ADR 0051).</remarks>
-    private string NameOf(DemoGroup group) => group switch
-    {
-        DemoGroup.ForYourBusiness => Text.ForYourBusiness,
-        DemoGroup.AgentsAtWork => Text.AgentsAtWork,
-        _ => group.Wire(),
-    };
-
     /// <summary>A cover's classes: its colour, and lit when it's on screen.</summary>
     private string ClassesOf(ShowroomDemo demo) =>
         $"demo-cover accent-{demo.Accent.Wire()}{(demo == Current ? " is-current" : "")}";

@@ -72,7 +72,7 @@ public class ShowroomPagesTests
     [Test]
     public void TheDemos_ListTheBusinessesFirst()
     {
-        var links = Render(typeof(DemosPage)).FindAll("article.panel a").Select(a => a.GetAttribute("href")).ToList();
+        var links = Render(typeof(DemosPage)).FindAll("a.start-cover").Select(a => a.GetAttribute("href")).ToList();
 
         Assert.That(links.Take(3),
             Is.EqualTo(new[] { "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo" }));

@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+
 namespace LouisAgent.Web.Components.Site.Showroom;
 
 /// <summary>
@@ -29,4 +31,13 @@ public sealed record ShowroomText
 
     /// <summary>The offer's place on a demo's stage, as the guide's tour names it.</summary>
     public string TheOffer { get; init; } = "Ask for yours";
+
+    /// <summary>A group of demos by its name in the site's words, for the rail and the start alike.</summary>
+    /// <remarks>A switch on the group, one arm each (ADR 0051).</remarks>
+    public string NameOf(DemoGroup group) => group switch
+    {
+        DemoGroup.ForYourBusiness => ForYourBusiness,
+        DemoGroup.AgentsAtWork => AgentsAtWork,
+        _ => group.Wire(),
+    };
 }

@@ -3,7 +3,7 @@
 <nav class="demo-rail" aria-label="@Text.AllDemos">
     @foreach (var group in Demos.Groups)
     {
-        <span class="rail-group">@NameOf(group.Key)</span>
+        <span class="rail-group">@Text.NameOf(group.Key)</span>
         @foreach (var demo in group)
         {
             <a class="@ClassesOf(demo)" href="@demo.Address" aria-current="@CurrentMark(demo)">
