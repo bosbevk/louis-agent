@@ -29,7 +29,9 @@ insides belongs here; anything else is a pack.
 **Skill files we control are plain markdown, always.** That covers every file in `prompts/` and the function skills the agent
 writes into a demo's `skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears. Every
 file in `prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063), read once
-by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it.
+by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it. An identity's skills
+sit beside its voice in `agent/{identity}/skills/`, each with `metadata.load` (`always` or `on-demand`, ADR 0114):
+`SkillLoader` puts the always ones after the voice and lists the others, which the engine's `ReadSkill` reads.
 
 **The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we must read
 someone else's skill format. A copy of `MarkdownSkillProvider` under another name is not one.

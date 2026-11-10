@@ -24,9 +24,12 @@ split it (all always, all on demand, or both), **both**, with the skills beside 
   has (ADR 0063) and `metadata.load`: `always` or `on-demand`, parsed once into the `SkillLoad` enum.
 - **An always skill goes in the prompt after the voice**, before the toolset guides: what the agent needs on every
   turn (who it is, how it answers).
-- **An on-demand skill is listed by name and description**, and the model reads its body with `ReadSkill`, an engine
-  tool registered for every session like `GetToday`: reference material a question needs now and then (a docs map, a
-  page map, a price list).
+- **An on-demand skill is listed by name (`{identity}/{skill}`) and description**, and the model reads its body with
+  `ReadSkill`, the engine's own tool: reference material a question needs now and then (a docs map, a page map, a
+  price list). A session gets the tool only when its identity has such a skill, holding only that identity's, so no
+  other session is told of it and, in a host of several identities, none reads another's.
+- **What the model must know exists stays in.** It reads a skill only when it thinks of it, so when the point is to
+  act on a thing (a page to open), a short index of those things loads always and only the detail is on demand.
 - **The description says when to read it.** It is the only part the model sees until it asks, so a vague one means the
   skill is never read.
 
@@ -34,8 +37,10 @@ split it (all always, all on demand, or both), **both**, with the skills beside 
 
 - The prompt every message carries shrinks by what the on-demand skills hold; a question that needs one costs one more
   tool call and its round trip.
-- Whether the model reads a skill when it should is measured, not assumed: F129's live check asks the same questions
-  before and after the split, and an eval can hold it later.
+- Whether the model reads a skill when it should is measured, not assumed: F129's live check asked the same six
+  questions before and after the split. With both of the guide's maps on demand it stopped opening the framework's
+  pages, which is where the index rule above comes from; with the index it opens them again, and its fixed prefix is
+  about 14% smaller (7,667 tokens against 8,909). An eval can hold it later.
 - A new identity starts with its voice alone and splits off a skill when the voice grows; the voice stays the mode
   (`RoleCatalog` reads only `agent/{identity}/*.md` as modes, never `skills/`).
 - The skills stay plain markdown with the Agent Skills spec's header, so an identity's skills can be handed to another

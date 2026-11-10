@@ -220,6 +220,30 @@ banned word is described, never quoted. A rule about tone pushes the other way t
 test (`LouisVoiceTests`) holds the rules in place, but only a live chat shows whether the model keeps them; that
 check is F126's eval.
 
+## Load it when it's needed (F129)
+
+**What it was.** The guide's voice had grown to 296 lines, and every message carried all of it: who Louis is, how he
+answers, and two maps (the docs, the site's pages) a question needs now and then. F129 lets an identity keep skills
+beside its voice, each saying in its header whether it is `always` in the prompt or read `on-demand` with
+`ReadSkill`, the way Anthropic's Agent Skills load theirs (ADR 0114). The name for it is **progressive disclosure**:
+the prompt carries a skill's name and one line on when it matters, and the rest is fetched just in time.
+
+**What the live check showed.** The same six questions, before and after, on the local site:
+
+| | Before | Both maps on demand | Page index always |
+|---|---|---|---|
+| System prompt | 31,782 characters | 24,784 | 26,403 |
+| Fixed prefix | about 8,909 tokens | — | about 7,667 (−14%) |
+| "Where can I read how packs work?" | opens the packs page | searches the docs, opens nothing | opens the packs page |
+| "Which page shows the price?" | opens it | reads the map, then opens it | opens it |
+
+**What it taught.** A model reads a skill only when it thinks of it, and it can't think of what it doesn't know exists.
+With the page map out of sight the guide no longer knew the packs page was there, and the voice (rightly) forbids
+guessing a page, so it stopped sending people to it. The fix is the same idea one level finer: an index of the pages,
+one line each, stays in; what each page says and its sources stay out. An on-demand skill costs a round trip, so it
+pays only for what most turns don't need. And the saving was measured, not assumed: a test can hold the shape, but
+only a live run shows whether the model still reaches for the right thing.
+
 ## Where skill 7 stands
 
 GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured
@@ -236,6 +260,8 @@ that retrieves, ranks and budgets (F9).
 - Why a check needs a control with the same tools, a count for each way of being wrong, and a right answer for the
   empty case, and why re-scoring stored answers is free.
 - Why an example in a prompt is copied, why a tone rule needs its opposite beside it, and why the time is a tool.
+- What progressive disclosure is, why an on-demand skill needs a description that says when, and why the model must
+  still see an index of what exists to think of reading it.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

@@ -126,6 +126,14 @@ What to know when you write one:
 - **More than one language?** Split the file: `voice-en.md` and `voice-af.md` hold only the voice, each in its language,
   and `voice.md` holds only the shared routing. A session then names `acme/voice-en`, which loads its voice and then
   `voice.md`; `acme/voice` on its own is no longer a mode. Puls is laid out this way.
+- **Grown too long? Split off skills.** What the agent doesn't need on every turn goes in a skill beside the voice,
+  `prompts/agent/acme/skills/{name}.md` ([ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md)):
+  the same header, plus `metadata.load`. `always` puts it in the prompt right after the voice; `on-demand` lists it by
+  its name (`acme/{name}`) and description, and the agent reads it with `ReadSkill`, a tool a session gets only when
+  its identity has such a skill. The description is all the model sees until it reads one, so say when to read it.
+  If the model must know a thing exists to think of reading about it (a page to open), keep a short index of those
+  always, and the detail on demand. The guide is laid out this way: its voice, an always index of the site's pages,
+  and the docs map and what each page says on demand.
 
 ## 4. Add a specialist (when the work needs one)
 
