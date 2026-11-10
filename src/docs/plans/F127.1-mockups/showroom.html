@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo showroom mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* F127.1 mockups: the showroom's look (Louis, 2026-11-10: "it's demos, it can be themed colourful and fancy").
+   Every colour is one of the five accents; the demo's own is --demo, set on its stage. */
+:root{--page:#060609;--panel:#0d0e12;--menu:#15161c;--border:#262833;--border-strong:#363948;
+--text:#e6e8eb;--emph:#fff;--soft:#c9ccd1;--muted:#9aa0a8;--faint:#7c828a;
+--green:#6cbf94;--blue:#7fa8e8;--yellow:#e0b43a;--red:#e0706a;--purple:#a98be0;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 Geist,system-ui,sans-serif;color:var(--text);background:var(--page)}
+.doc{max-width:1200px;margin:0 auto;padding:32px 24px 80px}
+.doc>h1{font-size:34px;line-height:1.1;margin:0 0 6px;background:linear-gradient(90deg,#fff,var(--green),var(--blue),var(--yellow),var(--red),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.doc>h2{font-size:22px;margin:44px 0 6px;color:var(--emph)}
+.doc>p,.caption{color:var(--soft)}.caption{font-size:13px;color:var(--muted);margin:8px 0 24px}
+code{font-family:'Geist Mono',monospace;font-size:13px}
+.kicker{font:500 11.5px/1 'Geist Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.g{--c:var(--green)}.b{--c:var(--blue)}.y{--c:var(--yellow)}.r{--c:var(--red)}.p{--c:var(--purple)}
+
+/* ---------- the showroom frame ---------- */
+.frame{border:1px solid var(--border-strong);border-radius:16px;overflow:hidden;margin:14px 0 4px;box-shadow:0 30px 80px -40px var(--demo)}
+.sr{position:relative;display:grid;grid-template-columns:240px 1fr;min-height:640px;font-size:14px;isolation:isolate;
+  background:
+    radial-gradient(900px 420px at 72% -8%, color-mix(in srgb,var(--demo) 34%,transparent), transparent 62%),
+    radial-gradient(700px 380px at 105% 90%, color-mix(in srgb,var(--purple) 20%,transparent), transparent 60%),
+    radial-gradient(600px 360px at -5% 105%, color-mix(in srgb,var(--blue) 16%,transparent), transparent 60%),
+    #07070b}
+.sr::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.35;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;
+  mask-image:radial-gradient(ellipse at 70% 0%,#000 30%,transparent 75%)}
+.bar{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);background:rgba(10,10,14,.6);backdrop-filter:blur(10px)}
+.bar b{color:var(--emph)}.bar .sp{flex:1}
+.demos-pill{font:600 11px/1 'Geist Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:999px;color:#08080b;
+  background:linear-gradient(90deg,var(--green),var(--blue),var(--yellow),var(--red),var(--purple))}
+.ghost{border:1px solid var(--border-strong);border-radius:9px;padding:6px 12px;font-size:13px;color:var(--soft)}
+.solid{border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;color:#08080b;background:linear-gradient(180deg,#fff,#c9cdd4)}
+
+/* the rail */
+.rail{border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:4px;background:rgba(8,8,12,.55)}
+.rail .grp{margin:12px 8px 6px}
+.cover{display:flex;gap:11px;align-items:center;padding:8px;border-radius:12px;border:1px solid transparent;transition:transform .2s}
+.cover:hover{transform:translateX(3px)}
+.art{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#08080b;
+  background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 45%,#fff));box-shadow:0 8px 22px -8px var(--c), inset 0 1px 0 rgba(255,255,255,.5)}
+.nm{display:flex;flex-direction:column;line-height:1.25}.nm b{color:var(--emph);font-size:13.5px}.nm span{font-size:12px;color:var(--muted)}
+.cover.on{background:linear-gradient(90deg,color-mix(in srgb,var(--c) 22%,transparent),transparent 85%);border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 0 30px -12px var(--c)}
+.cover.on::after{content:"";margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c)}
+
+/* the stage */
+.stage{display:flex;flex-direction:column;padding-bottom:22px}
+.strip{height:4px;background:linear-gradient(90deg,var(--demo),color-mix(in srgb,var(--demo) 30%,transparent) 70%,transparent)}
+.head{padding:20px 28px 6px}
+.head h3{margin:6px 0 0;font-size:32px;line-height:1.08;letter-spacing:-.02em;background:linear-gradient(90deg,#fff 40%,var(--demo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.head p{margin:8px 0 0;color:var(--soft);font-size:14.5px;max-width:660px}
+.head .kicker{color:var(--demo)}
+.body{display:grid;grid-template-columns:1fr 260px;gap:22px;padding:14px 28px}
+
+/* the cues */
+.cues{display:flex;flex-direction:column;gap:10px;position:relative}
+.cue{display:flex;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--muted);background:rgba(13,14,18,.75)}
+.cue .n{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:12px}
+.cue.lit{color:var(--emph);border-color:color-mix(in srgb,var(--demo) 60%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--demo) 18%,transparent),rgba(13,14,18,.8));box-shadow:0 10px 30px -14px var(--demo)}
+.cue.lit .n{border:none;color:#08080b;background:var(--demo);box-shadow:0 0 14px var(--demo)}
+.cue.now{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 1px var(--demo),0 10px 40px -8px var(--demo)}}
+.progress{height:3px;border-radius:3px;background:var(--border);overflow:hidden;margin:2px 0 4px}
+.progress i{display:block;height:100%;width:62%;background:linear-gradient(90deg,var(--demo),#fff)}
+
+/* the offer */
+.offer{margin:6px 28px 0;padding:15px 18px;border-radius:14px;display:flex;align-items:center;gap:12px;font-weight:600;color:#08080b;position:relative;overflow:hidden;
+  background:linear-gradient(100deg,var(--demo),color-mix(in srgb,var(--demo) 55%,#fff))}
+.offer::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-100%);animation:shine 3.5s ease-in-out infinite}
+@keyframes shine{60%,100%{transform:translateX(100%)}}
+.offer .sp{flex:1}.offer .go{background:#08080b;color:#fff;border-radius:9px;padding:7px 13px;font-size:13px;position:relative;z-index:1}
+
+/* the business's website, mocked */
+.mock{border-radius:12px;overflow:hidden;background:#f6f1e7;color:#2b2418;position:relative;min-height:390px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 30px 60px -30px var(--demo)}
+.mock .chrome{display:flex;gap:6px;align-items:center;padding:8px 10px;background:#e7e0d2;border-bottom:1px solid #d2c9b6}
+.mock .chrome i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.mock .chrome i:nth-child(1){background:#ff5f57}.mock .chrome i:nth-child(2){background:#febc2e}.mock .chrome i:nth-child(3){background:#28c840}
+.mock .url{margin-left:10px;font:12px 'Geist Mono',monospace;background:#fff;border-radius:7px;padding:3px 12px;color:#5a503e}
+.mock .site{display:flex;align-items:center;gap:18px;padding:13px 18px;background:#2f5d45;color:#f6f1e7}
+.mock .site b{font-size:15px;letter-spacing:.08em}.mock .site span{font-size:12.5px;opacity:.85}
+.mock .hero{padding:30px 22px;max-width:56%}
+.mock .hero h5{margin:0;font-size:24px;line-height:1.12;color:#22402f;font-family:Georgia,serif}
+.mock .hero p{color:#5a503e;font-size:13px;margin:8px 0 0}
+.widget{position:absolute;right:14px;bottom:14px;width:262px;background:#fff;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.28);overflow:hidden;font-size:12.5px}
+.widget .wh{background:#2f5d45;color:#fff;padding:9px 12px;font-weight:600;display:flex;gap:8px;align-items:center}
+.widget .wh i{width:8px;height:8px;border-radius:50%;background:#7ee2a8;box-shadow:0 0 8px #7ee2a8}
+.msgs{padding:10px;display:flex;flex-direction:column;gap:7px;background:#faf8f3}
+.bub{padding:8px 11px;border-radius:12px;max-width:88%;line-height:1.35}
+.bub.u{align-self:flex-end;background:#2f5d45;color:#fff;border-bottom-right-radius:4px}
+.bub.a{align-self:flex-start;background:#ece6d9;color:#2b2418;border-bottom-left-radius:4px}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:8px 11px;background:#ece6d9;border-radius:12px}
+.typing i{width:6px;height:6px;border-radius:50%;background:#8a7f6a;animation:dot 1.2s infinite}.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes dot{50%{transform:translateY(-3px);opacity:.5}}
+
+/* the work window */
+.work{border-radius:12px;background:#0a0b0f;font:12.5px/1.6 'Geist Mono',monospace;color:var(--soft);min-height:390px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 30px 60px -30px var(--demo)}
+.work .t{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--muted);background:#0f1015}
+.work .ln{padding:2px 14px}.ok{color:var(--green)}.bad{color:var(--red)}.dim{color:var(--faint)}
+
+/* the start screen */
+.start{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.feature{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;align-items:center;border-radius:18px;padding:24px;border:1px solid color-mix(in srgb,var(--green) 40%,transparent);
+  background:radial-gradient(500px 260px at 0% 0%,color-mix(in srgb,var(--green) 26%,transparent),transparent 70%),rgba(13,14,18,.8)}
+.feature h3{margin:8px 0 6px;font-size:34px;line-height:1.05;background:linear-gradient(90deg,#fff,var(--green),var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.play{display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:12px 18px;border-radius:12px;font-weight:700;color:#08080b;background:linear-gradient(100deg,var(--green),#c8f5dc);box-shadow:0 12px 30px -12px var(--green)}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{border-radius:14px;overflow:hidden;background:rgba(13,14,18,.85);border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -20px var(--c)}
+.card .pic{height:92px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:#08080b;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.55),transparent 45%),linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 40%,#08080b))}
+.card .tx{padding:11px 13px;font-size:12.5px;color:var(--muted)}.card .tx b{display:block;color:var(--emph);font-size:13.5px}
+
+/* the phone */
+.phone{width:390px;border-radius:30px;overflow:hidden;margin:14px 0 4px;border:8px solid #1a1b22;box-shadow:0 30px 70px -30px var(--demo)}
+.phone .sr{grid-template-columns:1fr;min-height:0}
+.chips{display:flex;gap:8px;overflow:hidden;padding:10px 12px;border-bottom:1px solid var(--border)}
+.chip{flex:none;display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid var(--border-strong);font-size:12px;color:var(--soft);background:rgba(13,14,18,.7)}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.chip.on{color:#08080b;border-color:transparent;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 50%,#fff));font-weight:600}
+.chip.on i{background:#08080b;box-shadow:none}
+.phone .head{padding:14px 14px 4px}.phone .head h3{font-size:24px}
+.phone .body{grid-template-columns:1fr;padding:12px 14px}
+.phone .mock{min-height:330px}.phone .widget{width:228px}.phone .mock .hero{max-width:100%;padding:16px}
+.phone .offer{margin:4px 14px 0}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--soft);margin:10px 0}
+.legend span{display:flex;gap:7px;align-items:center}.legend i{width:14px;height:14px;border-radius:4px;background:var(--c);box-shadow:0 0 10px var(--c)}
+@media (prefers-reduced-motion:reduce){.offer::after,.cue.now,.typing i{animation:none}.cover,.card{transition:none}}
+@media (max-width:900px){.sr{grid-template-columns:1fr}.rail{display:none}.body{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}.feature{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="doc">
+<span class="kicker">F127.1 · the mockups · <a href="../F127.1-demo-showroom.md" style="color:var(--soft)">the plan</a></span>
+<h1>The demo showroom</h1>
+<p>Louis's picks (2026-11-10): the rail and the mocked website combined, purple as the fifth accent, a slim bar of its
+own, a mock of a header, one hero line and the agent, and a look that is colourful and fancy. Each demo's colour lights
+its stage like stage lighting; everything moving stops when the visitor asks for less motion.</p>
+<div class="legend"><span class="g"><i></i>A restaurant</span><span class="b"><i></i>A law practice</span><span class="y"><i></i>A doctor's practice</span><span class="r"><i></i>The coding agent</span><span class="p"><i></i>The triage team (the new fifth accent)</span></div>
+
+<h2>1. A business demo, 1920 × 1080: <code>/restaurant-demo</code></h2>
+<div class="frame" style="--demo:var(--green)"><div class="sr">
+  <div class="bar"><b>louis-agent</b><span class="demos-pill">Demos</span><span class="sp"></span><span class="ghost">← Back to the site</span><span class="solid">Ask for yours</span></div>
+  <nav class="rail">
+    <span class="kicker grp">For your business</span>
+    <div class="cover on g"><div class="art">🍽</div><div class="nm"><b>A restaurant</b><span>Sunday lunch at ten at night</span></div></div>
+    <div class="cover b"><div class="art">⚖</div><div class="nm"><b>A law practice</b><span>No advice, a consultation</span></div></div>
+    <div class="cover y"><div class="art">✚</div><div class="nm"><b>A doctor's practice</b><span>A worried parent, an appointment</span></div></div>
+    <span class="kicker grp">Agents at work</span>
+    <div class="cover r"><div class="art">{ }</div><div class="nm"><b>The coding agent</b><span>Fixes a real bug</span></div></div>
+    <div class="cover p"><div class="art">⇄</div><div class="nm"><b>The triage team</b><span>Sorts and fixes an error</span></div></div>
+  </nav>
+  <section class="stage">
+    <div class="strip"></div>
+    <div class="head"><span class="kicker">A restaurant · Wheatfield Kitchen</span><h3>A table for Sunday, at ten at night.</h3><p>A family of five asks about Sunday lunch long after the kitchen has closed. The agent answers from the restaurant's own facts and books the table on their yes.</p></div>
+    <div class="body">
+      <div class="mock">
+        <div class="chrome"><i></i><i></i><i></i><span class="url">wheatfield-kitchen.co.za</span></div>
+        <div class="site"><b>WHEATFIELD KITCHEN</b><span>Menu</span><span>Sunday lunch</span><span>Find us</span></div>
+        <div class="hero"><h5>Country cooking in the heart of the Swartland.</h5><p>Open Tuesday to Sunday. Sunday lunch from 12:00 to 15:00.</p></div>
+        <div class="widget"><div class="wh"><i></i>Wheatfield Kitchen · ask us</div><div class="msgs">
+          <div class="bub u">Are you open for lunch on Sunday? We're a family of five, with two small kids.</div>
+          <div class="bub a">Good evening! Yes, Sunday lunch is 12:00 to 15:00, and there's a children's menu. Shall I pass a table for five on to the team?</div>
+          <div class="bub u">Yes please, 12:30.</div>
+          <div class="typing"><i></i><i></i><i></i></div>
+        </div></div>
+      </div>
+      <div class="cues"><span class="kicker">What to watch</span>
+        <div class="progress"><i></i></div>
+        <div class="cue lit"><span class="n">1</span>It answers at ten at night, from the restaurant's own hours and menu.</div>
+        <div class="cue lit now"><span class="n">2</span>It asks before it books, and books only on their yes.</div>
+        <div class="cue"><span class="n">3</span>It never takes a payment: the booking goes to the team.</div>
+      </div>
+    </div>
+    <div class="offer"><span>Want an agent like this on your own website? From R500 a month.</span><span class="sp"></span><span class="go">Ask for yours →</span></div>
+  </section>
+</div></div>
+<p class="caption">The green of the restaurant lights the stage from the top right; purple and blue glow faintly in the
+corners, so the showroom is colourful whichever demo plays. The cue that just lit pulses; the bar over the cues fills
+as the recording plays. The offer's shine runs across it every few seconds.</p>
+
+<h2>2. An agent at work, 1920 × 1080: <code>/coding-agent</code></h2>
+<div class="frame" style="--demo:var(--red)"><div class="sr" style="min-height:560px">
+  <div class="bar"><b>louis-agent</b><span class="demos-pill">Demos</span><span class="sp"></span><span class="ghost">← Back to the site</span><span class="solid">Ask for yours</span></div>
+  <nav class="rail">
+    <span class="kicker grp">For your business</span>
+    <div class="cover g"><div class="art">🍽</div><div class="nm"><b>A restaurant</b><span>Sunday lunch at ten at night</span></div></div>
+    <div class="cover b"><div class="art">⚖</div><div class="nm"><b>A law practice</b><span>No advice, a consultation</span></div></div>
+    <div class="cover y"><div class="art">✚</div><div class="nm"><b>A doctor's practice</b><span>A worried parent, an appointment</span></div></div>
+    <span class="kicker grp">Agents at work</span>
+    <div class="cover on r"><div class="art">{ }</div><div class="nm"><b>The coding agent</b><span>Fixes a real bug</span></div></div>
+    <div class="cover p"><div class="art">⇄</div><div class="nm"><b>The triage team</b><span>Sorts and fixes an error</span></div></div>
+  </nav>
+  <section class="stage">
+    <div class="strip"></div>
+    <div class="head"><span class="kicker">The coding agent</span><h3>Watch it fix a real bug.</h3><p>A small invoice matcher whose payments don't find their invoices. The session as it happened, played back.</p></div>
+    <div class="body">
+      <div class="work"><div class="t">the coding agent · toolsets: files, git, dotnet</div>
+        <div class="ln">› RunTests  InvoiceMatcher.Tests</div><div class="ln bad">  ✗ 2 failed  ✓ 2 passed</div>
+        <div class="ln">› ReadFile  src/Matching/AmountMatch.cs</div>
+        <div class="ln">› EditFile  round to cents before comparing</div>
+        <div class="ln">› RunTests  InvoiceMatcher.Tests</div><div class="ln ok">  ✓ 4 passed</div>
+        <div class="ln dim">  7 requests · about R0.10</div></div>
+      <div class="cues"><span class="kicker">What to watch</span><div class="progress"><i style="width:80%"></i></div>
+        <div class="cue lit"><span class="n">1</span>Every tool is a pack: files, git and dotnet.</div>
+        <div class="cue lit now"><span class="n">2</span>It checks its own work: two tests fail before, four pass after.</div>
+        <div class="cue"><span class="n">3</span>It leaves the commit to you, for about R0.10.</div></div>
+    </div>
+    <div class="offer"><span>Want an agent like this on your own code?</span><span class="sp"></span><span class="go">Ask for yours →</span></div>
+  </section>
+</div></div>
+<p class="caption">The same frame in red. The coding agent and the triage team keep their own players in the stage, with no mock website.</p>
+
+<h2>3. The start, 1920 × 1080: <code>/demos</code></h2>
+<div class="frame" style="--demo:var(--purple)"><div class="sr" style="min-height:500px">
+  <div class="bar"><b>louis-agent</b><span class="demos-pill">Demos</span><span class="sp"></span><span class="ghost">← Back to the site</span><span class="solid">Ask for yours</span></div>
+  <nav class="rail">
+    <span class="kicker grp">For your business</span>
+    <div class="cover g"><div class="art">🍽</div><div class="nm"><b>A restaurant</b><span>Sunday lunch at ten at night</span></div></div>
+    <div class="cover b"><div class="art">⚖</div><div class="nm"><b>A law practice</b><span>No advice, a consultation</span></div></div>
+    <div class="cover y"><div class="art">✚</div><div class="nm"><b>A doctor's practice</b><span>A worried parent, an appointment</span></div></div>
+    <span class="kicker grp">Agents at work</span>
+    <div class="cover r"><div class="art">{ }</div><div class="nm"><b>The coding agent</b><span>Fixes a real bug</span></div></div>
+    <div class="cover p"><div class="art">⇄</div><div class="nm"><b>The triage team</b><span>Sorts and fixes an error</span></div></div>
+  </nav>
+  <section class="start">
+    <div class="feature"><div><span class="kicker" style="color:var(--green)">Start here</span><h3>Watch the agents at work.</h3><p style="margin:0;color:var(--soft);font-size:14.5px">Each demo is a real run, recorded once and played back. Nothing runs while you watch.</p><span class="play">▶ Start with the restaurant</span></div>
+      <div class="mock" style="min-height:190px;--demo:var(--green)"><div class="chrome"><i></i><i></i><i></i><span class="url">wheatfield-kitchen.co.za</span></div><div class="site"><b>WHEATFIELD KITCHEN</b></div><div class="widget" style="width:200px"><div class="wh"><i></i>ask us</div><div class="msgs"><div class="bub u">Open on Sunday?</div><div class="bub a">Yes, 12:00 to 15:00!</div></div></div></div></div>
+    <div class="cards">
+      <div class="card g"><div class="pic">🍽</div><div class="tx"><b>A restaurant</b>Books a table on a yes</div></div>
+      <div class="card b"><div class="pic">⚖</div><div class="tx"><b>A law practice</b>No advice, a consultation</div></div>
+      <div class="card y"><div class="pic">✚</div><div class="tx"><b>A doctor's practice</b>The emergency numbers first</div></div>
+      <div class="card r"><div class="pic">{ }</div><div class="tx"><b>The coding agent</b>Fixes a real bug</div></div>
+      <div class="card p"><div class="pic">⇄</div><div class="tx"><b>The triage team</b>Sorts and fixes an error</div></div>
+    </div>
+  </section>
+</div></div>
+<p class="caption">The start is lit in all five colours: a big start for the restaurant, then a glowing cover per demo
+(drawn in CSS from the demo's colour and sign, no image files), each lifting with its glow on hover.</p>
+
+<h2>4. A phone, 390 px: <code>/restaurant-demo</code></h2>
+<div class="phone" style="--demo:var(--green)"><div class="sr">
+  <div class="bar" style="padding:10px 14px"><b>louis-agent</b><span class="demos-pill">Demos</span><span class="sp"></span><span class="ghost">Site</span></div>
+  <div class="chips"><span class="chip on g"><i></i>Restaurant</span><span class="chip b"><i></i>Law</span><span class="chip y"><i></i>Doctor</span><span class="chip r"><i></i>Coding</span><span class="chip p"><i></i>Triage</span></div>
+  <section class="stage">
+    <div class="strip"></div>
+    <div class="head"><span class="kicker">A restaurant</span><h3>A table for Sunday, at ten at night.</h3></div>
+    <div class="body">
+      <div class="mock"><div class="chrome"><i></i><i></i><i></i><span class="url">wheatfield-kitchen.co.za</span></div><div class="site"><b>WHEATFIELD KITCHEN</b></div><div class="hero"><h5 style="font-size:18px">Country cooking in the Swartland.</h5></div>
+        <div class="widget"><div class="wh"><i></i>ask us</div><div class="msgs"><div class="bub u">Open for lunch on Sunday? A family of five.</div><div class="bub a">Good evening! Yes, 12:00 to 15:00. Shall I pass a table on?</div></div></div></div>
+      <div class="cues"><div class="cue lit now"><span class="n">1</span>It answers at ten at night.</div><div class="cue"><span class="n">2</span>It books only on their yes.</div></div>
+    </div>
+    <div class="offer"><span>An agent like this, from R500 a month.</span><span class="sp"></span><span class="go">Ask →</span></div>
+  </section>
+</div></div>
+<p class="caption">The rail becomes glowing chips that scroll sideways (the page never does); the stage stacks.</p>
+</div>
+</body>
+</html>

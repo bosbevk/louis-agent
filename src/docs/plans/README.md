@@ -12,6 +12,7 @@ built or comes next, and every plan as it was is at the tag
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F127.1-demo-showroom.md](F127.1-demo-showroom.md) | *F127.1 The demo showroom* (F127's first child) | 2026-11-10 | Louis's picks: the rail and the mocked website combined, purple as the fifth accent, a slim bar of its own, a mock of a header, a hero line and the agent, colourful and fancy; [mockups](F127.1-mockups/showroom.html); unattended |
 | [F40-sales-playground.md](F40-sales-playground.md) | Draft: *F40 The sales playground* (Phase 4) | not yet | Moved whole out of the old platform plan on 2026-11-07 (CL56); rewritten into the plan Louis approves when it starts |
 | [F07-budgets.md](F07-budgets.md) | Draft: *F7 Cost you can see and stop* (Phase 5) | not yet | The same |
 | [F39-orchestration.md](F39-orchestration.md) | Draft: *F39 Orchestration* (Phase 6) | not yet | The same |

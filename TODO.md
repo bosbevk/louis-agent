@@ -22,7 +22,7 @@ known limitations below are facts about today, not tasks.
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 | — |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 the demo showroom first | Now | [F127.1 plan](src/docs/plans/F127.1-demo-showroom.md) |
 | F130 | The framework's own site at `framework.louis-agent.dev`: what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there from the selling site; its own plan | Next, after F128 | — |
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now | [draft](src/docs/plans/phase-10-engine-package.md) |
