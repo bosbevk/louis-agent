@@ -72,6 +72,7 @@ known limitations below are facts about today, not tasks.
 | F83 | The cook's unconfirmed prices | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md) |
 | F84 | A shorter cook report | Puls | — |
 | FX59 | binary attachments sent as files, not text | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
+| FX129 | the cook's role text says it has `web`, but its header's toolsets don't list it, so a session in that role doesn't get it; one of the two is wrong (found 2026-11-10 while writing ADR 0117) | Puls | — |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
 | FX66 | Both Azure apps keep their data-protection keys (which sign the sign-in cookie) in the container, so every cold start after scaling to zero makes new keys and signs everyone out (the start-up log warns); the keys go to each app's share, one setting (found 2026-11-08, F109.2) | Now | — |
