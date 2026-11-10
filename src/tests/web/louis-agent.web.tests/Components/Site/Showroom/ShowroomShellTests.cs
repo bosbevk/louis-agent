@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Shell;
 using LouisAgent.Web.Components.Site.Tiles;
@@ -105,8 +106,9 @@ public class ShowroomShellTests
     }
 
     /// <summary>
-    /// The corner stands beside the lit frame, not in it (F127.1, Louis's screenshot of a tour's last stop): the frame is
-    /// a layer of its own for its grid, and a corner inside it went under the guide's spotlight, dimmed with the page.
+    /// The corner stands beside the lit frame, not in it (F127.1, Louis's screenshot of a tour's last stop): the frame
+    /// is a layer of its own for its grid, and a corner inside it went under the guide's spotlight, dimmed with the
+    /// page.
     /// </summary>
     [Test]
     public void TheCorner_StandsBesideTheFrame()
@@ -116,6 +118,22 @@ public class ShowroomShellTests
         var corner = Shell(ctx, "/bakery-demo").Find(".showroom-corner");
 
         Assert.That(corner.Closest(".showroom"), Is.Null);
+    }
+
+    /// <summary>
+    /// At a place's address (<c>/bakery-demo/the-demo</c>, opened again after a tour), the demo is still the one on
+    /// screen: lit in the rail, and the frame in its colour.
+    /// </summary>
+    [Test]
+    public void AtAPlacesAddress_ItsDemoIsStillCurrent()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new SiteAddresses("home", Demos.All.Select(demo => demo.Address)));
+
+        var cut = Shell(ctx, "/bakery-demo/the-demo");
+
+        Assert.That((cut.Find(".showroom").ClassList.Contains("accent-green"),
+            cut.Find("nav.demo-rail a[aria-current='page']").GetAttribute("href")), Is.EqualTo((true, "/bakery-demo")));
     }
 
     /// <summary>On a phone the same demos are chips, in the site's order, each in its colour.</summary>

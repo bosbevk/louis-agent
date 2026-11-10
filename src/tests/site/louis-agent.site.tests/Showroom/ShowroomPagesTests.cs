@@ -4,6 +4,7 @@ using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Site.Pages.Agents.Showroom;
 using LouisAgent.Web.Components.Recorded;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Tiles;
 using LouisAgent.Web.Text;
@@ -43,6 +44,21 @@ public class ShowroomPagesTests
     [TestCase(typeof(GuesthouseDemoPage))]
     public void ABusinessDemo_DrawsInTheShowroom(Type page) =>
         Assert.That(page.GetCustomAttribute<LayoutAttribute>()?.LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
+
+    /// <summary>
+    /// A place on a demo page, opened afresh (Louis: "when you refresh the page it loses the demo container"), draws
+    /// in the showroom too: the site's router gives its place page the layout of the page the address names.
+    /// </summary>
+    [TestCase("restaurant-demo/the-demo")]
+    [TestCase("law-practice-demo/what-to-watch")]
+    [TestCase("guesthouse-demo/ask")]
+    public void APlaceOnADemo_DrawsInTheShowroom(string path)
+    {
+        var place = new RouteData(typeof(SitePlaces), new Dictionary<string, object?> { ["Path"] = path });
+
+        Assert.That(PlaceLayout.Of(place, typeof(SiteLayout), SiteAddresses.From("home", typeof(App).Assembly)),
+            Is.EqualTo(typeof(ShowroomLayout)));
+    }
 
     /// <summary>
     /// A business's demo plays on a mock of its own website, in its colour, with its own address, its sample brand's

@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,8 +60,18 @@ public partial class ShowroomShell
     /// <summary>The site's words, else the framework's English.</summary>
     private ShowroomText Text => Services.GetService<ShowroomText>() ?? new ShowroomText();
 
-    /// <summary>The demo on screen; none on the start.</summary>
-    private ShowroomDemo? Current => Demos.At(Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath);
+    /// <summary>The demo on screen, at its own address or a place's on it; none on the start.</summary>
+    private ShowroomDemo? Current => Demos.At(Page);
+
+    /// <summary>The page on screen: a place's address read back to its page, when the site has addresses.</summary>
+    private string Page
+    {
+        get
+        {
+            string path = Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
+            return Services.GetService<SiteAddresses>()?.Read(path)?.Page ?? path;
+        }
+    }
 
     /// <summary>
     /// The frame's classes: a site's frame, so the site's own look (its type, its buttons, its panels) reaches in as
