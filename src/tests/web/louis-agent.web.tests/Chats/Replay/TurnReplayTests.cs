@@ -33,6 +33,26 @@ public class TurnReplayTests
         });
     }
 
+    /// <summary>
+    /// Each tool call is told once, the moment it starts, as the live runner tells it (F127.1): a showroom's mock
+    /// website goes where its agent's ShowPage call says.
+    /// </summary>
+    [Test]
+    public async Task EachToolCall_IsToldOnce_AsItStarts()
+    {
+        var events = await SessionStreamFixture.EventsAsync();
+        var expected = new Turn();
+        foreach (var streamEvent in events) TurnStream.Apply(expected, streamEvent);
+        var told = new List<string?>();
+
+        await TurnReplay.PlayAsync(new Turn(), events.Select(e => new ReplayStep(e, 0)).ToList(), () => { },
+            CancellationToken.None, call => told.Add(call.ToolUseId));
+
+        var calls = expected.Blocks.Where(block => block.Kind == BlockKind.Tool).Select(b => b.ToolUseId).ToList();
+        Assert.That(calls, Is.Not.Empty, "the recorded turn calls tools");
+        Assert.That(told, Is.EqualTo(calls));
+    }
+
     /// <summary>The last event is always drawn, even when it falls between redraws.</summary>
     [Test]
     public async Task TheEnd_IsAlwaysDrawn()

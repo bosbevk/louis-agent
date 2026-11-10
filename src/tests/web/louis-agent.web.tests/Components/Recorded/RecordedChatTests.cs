@@ -54,6 +54,27 @@ public class RecordedChatTests
     private static async Task<string> AnswerAsync() =>
         (await SessionStreamFixture.ReplayAsync()).Blocks.Last(block => block.Kind == BlockKind.Text).Text;
 
+    /// <summary>
+    /// Each tool call in the recording is told to the page as it plays (F127.1), so a showroom's mock website can go
+    /// where its agent's ShowPage call says.
+    /// </summary>
+    [Test]
+    public async Task EachToolCall_IsToldToThePage()
+    {
+        using var ctx = Context();
+        var told = new List<string?>();
+        var expected = (await SessionStreamFixture.ReplayAsync()).Blocks.Where(block => block.Kind == BlockKind.Tool)
+            .Select(block => block.ToolUseId).ToList();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, OneTurn)
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.ToolCalled, (Block call) => told.Add(call.ToolUseId)));
+        cut.WaitForElement(".recorded-end");
+
+        Assert.That(told, Is.EqualTo(expected).And.Not.Empty);
+    }
+
     /// <summary>The question shows, and the recorded answer types out in the chat's own view.</summary>
     [Test]
     public async Task TheRecording_PlaysInTheChatsView()

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Addresses;
@@ -29,12 +28,6 @@ public partial class ChatWidget : IAsyncDisposable
 {
     /// <summary>Where the widget's own chats are kept, apart from the chat page's.</summary>
     private const string ChatsKey = "louis-agent.widget-chats";
-
-    /// <summary>
-    /// The site pack's tool that names a page to show (F117). The web names the tool and never the pack, which it
-    /// can't reference (ADR 0027): a pack is data to the web, and this is the one call it acts on.
-    /// </summary>
-    private const string ShowPageTool = "ShowPage";
 
     private bool _open;
     private JsModule? _module;
@@ -151,10 +144,7 @@ public partial class ChatWidget : IAsyncDisposable
     /// </summary>
     private void OnToolCalled(Block block)
     {
-        if (block.ToolName != ShowPageTool || block.ToolInput is null || Addresses is not { } addresses) return;
-        using var input = JsonDocument.Parse(block.ToolInput);
-        if (!input.RootElement.TryGetProperty("path", out var pathElement)) return;
-        if (pathElement.GetString() is not { } path) return;
+        if (ShowPageCall.PathOf(block) is not { } path || Addresses is not { } addresses) return;
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
         if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));

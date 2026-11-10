@@ -72,6 +72,13 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public EventCallback<int> TurnStarted { get; set; }
 
+    /// <summary>
+    /// Told of each tool call as it plays, the moment it starts (F127.1): a showroom's mock website goes where its
+    /// agent's ShowPage call says, as the guide's widget does live.
+    /// </summary>
+    [Parameter]
+    public EventCallback<Block> ToolCalled { get; set; }
+
     /// <summary>Starts playing once the window is on the page.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -122,7 +129,7 @@ public partial class RecordedChat : IDisposable
         _chat.Turns.Add(turn);
         StateHasChanged();
         await TurnReplay.PlayAsync(turn, RecordingPace.Steps(events, Pace), () => _ = InvokeAsync(StateHasChanged),
-            stop);
+            stop, call => _ = InvokeAsync(() => ToolCalled.InvokeAsync(call)));
     }
 
     /// <summary>
