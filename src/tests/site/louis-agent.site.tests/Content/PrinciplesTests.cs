@@ -15,7 +15,7 @@ public class PrinciplesTests
     public void TheSitesCopy_IsTheEnginesFile()
     {
         string engines = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/engine/louis-agent.core/Prompts/shared/principles.md"));
+            "src/engine/louis-agent.core/prompts/shared/principles.md"));
 
         Assert.That(Principles.Markdown.ReplaceLineEndings("\n"), Is.EqualTo(engines.ReplaceLineEndings("\n")));
     }

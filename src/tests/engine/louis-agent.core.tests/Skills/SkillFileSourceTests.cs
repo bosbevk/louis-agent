@@ -6,8 +6,8 @@ using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Skills;
 
-// F5 step 4b: the built-in skill files ship inside louis-agent.core, so a host needs no Skills/ folder. CL8 step 4: they
-// live in core's Prompts/ and are read only from the assembly, by their real paths; a copy on disk is never read.
+// F5 step 4b: the built-in skill files ship inside louis-agent.core, so a host needs no Skills/ folder. CL8 step 4:
+// they live in core's prompts/ and are read only from the assembly, by their real paths; a copy on disk is never read.
 public class SkillFileSourceTests
 {
     private string _dir = null!;
@@ -33,7 +33,8 @@ public class SkillFileSourceTests
     [Test]
     public void AFolder_ListsItsFiles()
     {
-        // CL15: the roles here are the tests' own (Prompts/), registered as an identity's are; Puls's live in its identity.
+        // CL15: the roles here are the tests' own (prompts/), registered as an identity's are; Puls's live in its
+        // identity.
         Assert.That(SkillFileSource.Files(CoreToolset.Specialists.Wire()),
             Is.EqualTo(new[] { "testprod-specialist.md" }));
         Assert.That(SkillFileSource.Files(CoreToolset.Minions.Wire()),
@@ -50,7 +51,8 @@ public class SkillFileSourceTests
     [Test]
     public void ACopyOnDisk_OfABuiltIn_IsIgnored()
     {
-        // CL8 step 4: a wording change is a rebuild; a stale copy in a mounted folder can't change what the model reads.
+        // CL8 step 4: a wording change is a rebuild; a stale copy in a mounted folder can't change what the model
+        // reads.
         Directory.CreateDirectory(Path.Combine(_dir, "toolsets"));
         File.WriteAllText(Path.Combine(_dir, "toolsets", "git.md"), "# Git Skills\n\nOur own version.");
 

@@ -21,7 +21,7 @@ site's demo pages. Nothing runs for a visitor.
 - `ShowroomIdentity`: the base the three share, its name from `ShowroomIdentityName`, its voice
   `{name}/voice`, and one pack, `leads`. `RestaurantIdentity` (Wheatfield Kitchen), `LawPracticeIdentity`
   (Koringland Attorneys) and `DoctorsPracticeIdentity` (Graanveld Family Practice) each say only which they are.
-- `Prompts/agent/{name}/voice.md`: the business's made-up facts (hours, services, prices), how it answers (three
+- `prompts/agent/{name}/voice.md`: the business's made-up facts (hours, services, prices), how it answers (three
   short sentences, proper English or Afrikaans, a greeting once), and how it passes a booking on: name, contact and
   what they want, repeated back, and `SendLead` only after the customer's yes. Each says it is an AI and a made-up
   business when asked. The two practices never give advice; the doctor's sends an emergency to 10177 or 112.

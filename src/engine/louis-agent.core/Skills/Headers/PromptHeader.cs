@@ -11,4 +11,5 @@ public sealed record PromptHeader(
     string Name,
     string Description,
     RoleLevel? Level,
-    IReadOnlyList<string> Toolsets);
+    IReadOnlyList<string> Toolsets,
+    SkillLoad? Load = null);

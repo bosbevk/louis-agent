@@ -6,7 +6,7 @@
 | Term | Meaning |
 |---|---|
 | **Engine** | `AgentEngine`: one conversation loop with its tools and system prompt; built per toolset list and shared by the sessions that use it |
-| **Guide** | A toolset's markdown in `src/engine/louis-agent.core/Prompts/toolsets/{toolset}.md`, in the system prompt only when the toolset is loaded |
+| **Guide** | A toolset's markdown in `src/engine/louis-agent.core/prompts/toolsets/{toolset}.md`, in the system prompt only when the toolset is loaded |
 | **Host** | A program that puts the engine in front of someone: the CLI, the ACP server (Rider), the HTTP API, the MCP server |
 | **Language** | A mode in one language (`puls/voice-af`, `puls/voice-en`): only the voice; its product's shared `voice.md` (the routing) loads after it (CL9) |
 | **Ledger** | The usage ledger: one JSON line per model request, with its tokens and cost |
@@ -16,7 +16,7 @@
 | **Principles** | `shared/principles.md`: never lie, cheat, steal or murder; first in every agent's prompt (ADR 0020) |
 | **Prefix** | The start of every request (tools, system prompt) that stays the same and is cached |
 | **Puls** | The general assistant in Afrikaans or English, which answers the web itself and hands cooking to its cook |
-| **Role** | What a session is, in its level's folder under `src/engine/louis-agent.core/Prompts/`: a mode at level 0 (`agent/`), a specialist's role at level 1 (`specialists/`), a minion's function at level 2 (`minions/`); `RoleCatalog` in the code, `role` on the API |
+| **Role** | What a session is, in its level's folder under `src/engine/louis-agent.core/prompts/`: a mode at level 0 (`agent/`), a specialist's role at level 1 (`specialists/`), a minion's function at level 2 (`minions/`); `RoleCatalog` in the code, `role` on the API |
 | **Router** | The routing part of a mode (CL9): after its voice, in the same file, it sends a task to the toolset it needs; level 0 only |
 | **Runbook** | The orchestrator's instructions for one API method of the service it watches |
 | **Session** | One conversation with its own history, toolsets and role, fixed when it opens |

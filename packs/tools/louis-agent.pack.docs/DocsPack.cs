@@ -36,7 +36,7 @@ public sealed class DocsPack(DocsOptions options) : IAgentPack
     ];
 
     /// <inheritdoc />
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(DocsPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(DocsPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

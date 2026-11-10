@@ -21,7 +21,7 @@ site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demo
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in `src/engine/louis-agent.core/Prompts/` |
+| What | Public C# methods on a pack's tool classes in `packs/tools/louis-agent.pack.{name}/` | Markdown in `src/engine/louis-agent.core/prompts/` |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
@@ -64,7 +64,7 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);
 4. **with the `skills` toolset only**, every function skill the agent wrote.
 
-The combined text is the system prompt. The built-in files are in `src/engine/louis-agent.core/Prompts/` and read only from the
+The combined text is the system prompt. The built-in files are in `src/engine/louis-agent.core/prompts/` and read only from the
 assembly (ADR 0018), so a wording change is a rebuild.
 
 ## A chat turn

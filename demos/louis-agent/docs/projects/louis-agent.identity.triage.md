@@ -14,7 +14,7 @@ voice is the mode, the three are `specialists/triage-*.md`, and the packs are na
 
 - `TriageIdentity`: the name `triage`, the voice `triage/voice` as the default, the packs `triage`, `files`, `git`
   and `dotnet` by its own enum.
-- `Prompts/agent/triage/voice.md`: the manager as the hub, how it decides (the runbooks come with the case as its
+- `prompts/agent/triage/voice.md`: the manager as the hub, how it decides (the runbooks come with the case as its
   brief; expected, a person, a fix or a hand-off; a report is a claim until the code checked it), how it ends
   (`DecideCase`, `RaiseToPerson`), and its routing (`triage`, `specialists`).
 - The roles, each ending with its typed tool: the **sorter** (`triage`) with `SortCase` and the department; the

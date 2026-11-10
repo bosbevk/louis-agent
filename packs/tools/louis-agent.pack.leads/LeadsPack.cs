@@ -10,7 +10,8 @@ namespace LouisAgent.Packs.Leads;
 
 /// <summary>
 /// The guide's way to tell the owner someone is interested (F112): one toolset, <c>leads</c>, with one tool that sends
-/// a lead. Off without <c>LEADS_TO</c>; without <c>RESEND_API_KEY</c> the lead goes to the log and the model is told so.
+/// a lead. Off without <c>LEADS_TO</c>; without <c>RESEND_API_KEY</c> the lead goes to the log and the model is told
+/// so.
 /// </summary>
 /// <remarks>
 /// The same shape as every pack (ADR 0027): a list of toolsets and the files the model reads, naming no identity and no
@@ -19,7 +20,8 @@ namespace LouisAgent.Packs.Leads;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
-public sealed class LeadsPack(LeadsOptions options, ILoggerFactory? loggers = null, HttpClient? http = null) : IAgentPack
+public sealed class LeadsPack(LeadsOptions options, ILoggerFactory? loggers = null, HttpClient? http = null)
+    : IAgentPack
 {
     /// <inheritdoc />
     public string Name => LeadsToolset.Leads.Wire();
@@ -36,7 +38,7 @@ public sealed class LeadsPack(LeadsOptions options, ILoggerFactory? loggers = nu
     ];
 
     /// <inheritdoc />
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(LeadsPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(LeadsPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

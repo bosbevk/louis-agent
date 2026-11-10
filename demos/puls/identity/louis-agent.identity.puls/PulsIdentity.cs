@@ -22,13 +22,16 @@ public sealed class PulsIdentity : IAgentIdentity
     /// <inheritdoc/>
     public string DefaultVoice => $"{Name}/voice-af";
 
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(PulsIdentity).Assembly);
 
     /// <summary>
     /// Where to buy and shop prices (F50.2) and the recipes (F35); CL16 adds <c>cooking</c>, later <c>places</c>.
     /// </summary>
     public IReadOnlyList<string> Packs =>
-        [PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire(), PulsPack.Calculator.Wire()];
+    [
+        PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire(),
+        PulsPack.Calculator.Wire()
+    ];
 }
 
 /// <summary>

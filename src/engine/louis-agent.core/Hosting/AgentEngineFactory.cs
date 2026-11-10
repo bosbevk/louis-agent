@@ -11,6 +11,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -200,9 +201,12 @@ public sealed class AgentEngineFactory
         var guided = tool is null ? resolved : [];
         // A session's own model (F30) brings its provider's client, usage mapping, tool support and thinking; the
         // ledger, prices and display currency are the instance's.
+        // ReadSkill comes only with an identity that has a skill to read on demand, and holds only its skills (F129).
+        var tools = ToolsetCatalog.BuildTools(resolved, Context);
+        var skills = new SkillReadTools(SkillLoader.SkillsOf(_agent, role, level));
         var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient,
             _agent,
-            model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
+            model?.SupportsTools ?? _supportsTools, toolsets: skills.HasAny ? [.. tools, skills] : tools, _usageSink,
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
             clock: _clock, replay: _replay)
         {

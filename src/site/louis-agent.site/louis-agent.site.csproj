@@ -30,7 +30,7 @@
     <!-- The principles every agent reads first, shown on the Identities page as they are (FX74, Louis: "this should be
          public"). The engine's own file, embedded here by link, so the page can never drift from it; a test holds the
          two equal. When the engine ships as a package the page reads the package's copy instead. -->
-    <EmbeddedResource Include="..\..\engine\louis-agent.core\Prompts\shared\principles.md" Link="Content\principles.md" LogicalName="principles.md" />
+    <EmbeddedResource Include="..\..\engine\louis-agent.core\prompts\shared\principles.md" Link="Content\principles.md" LogicalName="principles.md" />
   </ItemGroup>
 
   <ItemGroup>

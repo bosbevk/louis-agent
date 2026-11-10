@@ -78,11 +78,11 @@ that name serves it, our compiled pack today or an MCP server one day. An identi
 
 ## 3. Write its mode
 
-A mode is what the agent the user talks to (level 0) reads: one markdown file under `Prompts/agent/acme/`. Its first
+A mode is what the agent the user talks to (level 0) reads: one markdown file under `prompts/agent/acme/`. Its first
 `# ` section is the **voice**: who the agent is and how it talks. Everything from the second `# ` heading on is the
 **routing**: which work goes to which toolset or specialist.
 
-`Prompts/agent/acme/voice.md`:
+`prompts/agent/acme/voice.md`:
 
 ```markdown
 ---
@@ -126,11 +126,19 @@ What to know when you write one:
 - **More than one language?** Split the file: `voice-en.md` and `voice-af.md` hold only the voice, each in its language,
   and `voice.md` holds only the shared routing. A session then names `acme/voice-en`, which loads its voice and then
   `voice.md`; `acme/voice` on its own is no longer a mode. Puls is laid out this way.
+- **Grown too long? Split off skills.** What the agent doesn't need on every turn goes in a skill beside the voice,
+  `prompts/agent/acme/skills/{name}.md` ([ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md)):
+  the same header, plus `metadata.load`. `always` puts it in the prompt right after the voice; `on-demand` lists it by
+  its name (`acme/{name}`) and description, and the agent reads it with `ReadSkill`, a tool a session gets only when
+  its identity has such a skill. The description is all the model sees until it reads one, so say when to read it.
+  If the model must know a thing exists to think of reading about it (a page to open), keep a short index of those
+  always, and the detail on demand. The guide is laid out this way: its voice, an always index of the site's pages,
+  and the docs map and what each page says on demand.
 
 ## 4. Add a specialist (when the work needs one)
 
 A specialist (level 1) is a sub-session the mode hands a piece of work to, with only the toolsets that work needs.
-Its role file is `Prompts/specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
+Its role file is `prompts/specialists/acme-estimator.md`: what it does, and how it reports back to the agent that
 called it.
 
 ```markdown
@@ -165,8 +173,8 @@ One line with the amount and the unit to buy, then the sums, then anything you a
   instance that has the role. Usually that is the instance itself, as Puls's compose does (`AGENT_PEERS: puls=http://puls:8080`).
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
-`Prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
-`Prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
+`prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
+`prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
 (`minions/puls-minion-find-recipe.md`, which a specialist would start with `FindRecipes` as its tool; the cook no longer does, ADR 0081) and its price lookup
 (`minions/puls-minion-web-price-lookup.md`) are the worked examples when you need one; a role that lists `minions` in
 its header is refused where `MINION_LLMS` isn't set.

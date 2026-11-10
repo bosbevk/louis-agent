@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
@@ -517,7 +518,7 @@ public partial class ArchitectureTests
     {
         string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         var pieces = new SortedSet<string>(StringComparer.Ordinal);
-        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, "Prompts"), "*.md",
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, EmbeddedPrompts.Folder), "*.md",
                      SearchOption.AllDirectories))
             Add(Path.GetRelativePath(core, file), File.ReadAllText(file));
         foreach (string file in Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories))

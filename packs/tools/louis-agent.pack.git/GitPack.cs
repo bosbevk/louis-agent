@@ -42,7 +42,7 @@ public sealed class GitPack : IAgentPack
     public bool ComesBeforeTheEngine => true;
 
     /// <inheritdoc/>
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(GitPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(GitPack).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];

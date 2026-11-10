@@ -164,7 +164,7 @@ The last line is the same report as data (the classes in the portal's shape, eac
 
 The bar is **90% of each class** (a class of four needs all four); a class with no labels is untested and does not pass; a class of fewer than ten is marked *few labels*. After that, for each answer where the judge differed: the scenario, the run, which way you labelled it, which way the judge went (*can't tell* counts as a disagreement) and its reason. Read those first: a disagreement is either the judge's mistake or yours, and the judge's reason says which.
 
-If a class is under the bar, stop and decide: a clearer prompt (`Prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
+If a class is under the bar, stop and decide: a clearer prompt (`prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
 
 ## Reviewing answers yourself
 

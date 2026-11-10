@@ -15,7 +15,8 @@ public enum PromptHeaderMessage
     NotYaml,
 
     [Description(
-        "{Path}: the header has '{Key}', which nothing reads. It takes name, description and metadata (level, toolsets).")]
+        "{Path}: the header has '{Key}', which nothing reads. It takes name, description and metadata (level, " +
+        "toolsets, load).")]
     KeyUnknown,
 
     [Description("{Path}: the header's '{Key}' must be text, such as toolsets: web, shops?")]
@@ -25,9 +26,16 @@ public enum PromptHeaderMessage
     NameNotTheFiles,
 
     [Description(
-        "{Path}: the header needs a description of at most {Limit} characters: what the prompt does and when it is loaded.")]
+        "{Path}: the header needs a description of at most {Limit} characters: what the prompt does and when it is " +
+        "loaded.")]
     DescriptionMissing,
 
     [Description("{Path}: '{Level}' is not a level. Supported: {Supported}.")]
     LevelUnknown,
+
+    [Description("{Path}: '{Load}' is not how a skill loads. Supported: {Supported}.")]
+    LoadUnknown,
+
+    [Description("{Path}: an identity's skill says how it loads under metadata: load: always, or load: on-demand.")]
+    LoadMissing,
 }

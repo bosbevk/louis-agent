@@ -41,7 +41,7 @@ public sealed class FilesPack : IAgentPack
     public bool ComesBeforeTheEngine => true;
 
     /// <inheritdoc/>
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(FilesPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(FilesPack).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];

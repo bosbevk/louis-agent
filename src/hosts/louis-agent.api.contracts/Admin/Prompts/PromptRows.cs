@@ -5,7 +5,7 @@ namespace LouisAgent.Api.Contracts.Admin.Prompts;
 public sealed record PromptsReply(IReadOnlyList<PromptRow> Prompts);
 
 /// <summary>
-/// One built-in prompt as its header says it: its path under <c>Prompts/</c>, its name and description, the level a
+/// One built-in prompt as its header says it: its path under <c>prompts/</c>, its name and description, the level a
 /// mode, role or minion runs at (none for a guide or the principles), and the toolsets it always loads.
 /// </summary>
 public sealed record PromptRow(

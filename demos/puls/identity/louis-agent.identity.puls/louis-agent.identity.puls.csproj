@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Step 3 moves Puls's prompts here from core's Prompts/, byte for byte. -->
-    <EmbeddedResource Include="Prompts\**\*.md" />
+    <!-- Step 3 moves Puls's prompts here from core's prompts/, byte for byte. -->
+    <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>
