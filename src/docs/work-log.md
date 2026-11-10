@@ -12,19 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 89 | 78 |
+| Features (`F`) | 89 | 77 |
 | Fixes (`FX`) | 119 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (110 in the TODO)
+## Open (109 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR | Next, after F124 |
-| F130 | The framework's own site at `framework.louis-agent.dev`: what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there from the selling site; its own plan | Next, after F128 |
-| F131 | The showroom at `demos.louis-agent.dev`: the demos (F127.1's showroom) on a subdomain of their own; the host name's DNS and certificate, the showroom served at its root, canonical links, sitemap and robots per host, the old addresses redirected for good, the guide's page index and the site's links moved; about 5 to 7 steps on the same app, 8 to 10 as a site project of its own; its own plan | Next, after F127.1 |
+| F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
