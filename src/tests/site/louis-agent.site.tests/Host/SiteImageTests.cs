@@ -30,6 +30,23 @@ public class SiteImageTests
         Assert.That(Lines("src/site/docker/docker-compose.yml"),
             Does.Contain("- \"127.0.0.1:${SITE_PORT:-5080}:8080\""));
 
+    /// <summary>
+    /// On the PC the site shows costs in rand, as in Azure (F127.1, Louis: "display in rands"): the same culture, so
+    /// the guide's line under an answer reads R, not the dollars it is charged in.
+    /// </summary>
+    [Test]
+    public void TheSite_ShowsRand_OnThePCAsInAzure()
+    {
+        string[] azure = Lines("src/site/deploy/azure/louis-agent-app.yaml");
+        int culture = Array.IndexOf(azure, "- name: HOST_CULTURE");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(azure[culture + 1], Is.EqualTo("value: en-ZA"));
+            Assert.That(Lines("src/site/docker/docker-compose.yml"), Does.Contain("HOST_CULTURE: en-ZA"));
+        });
+    }
+
     /// <summary>The coding agent's API moves aside to 5082, so the two run together (Louis's pick 2A).</summary>
     [Test]
     public void TheCodingApi_MovesTo5082() =>

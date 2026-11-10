@@ -21,6 +21,8 @@ services:
       OTEL_SERVICE_NAME: louis-agent-site
       # The clock Louis greets by, as in Azure: the site's visitors are mostly South African.
       HOST_TIME_ZONE: Africa/Johannesburg
+      # Costs in rand, as in Azure (Louis: "display in rands"): the region the guide's cost line shows in.
+      HOST_CULTURE: en-ZA
       # The usage ledger and the run logs, kept on the host after the container is removed.
       LOG_DIRECTORY: /logs
       # The guide's lead mail (F112): RESEND_API_KEY comes from .env.secrets when it is there, else the lead goes to
