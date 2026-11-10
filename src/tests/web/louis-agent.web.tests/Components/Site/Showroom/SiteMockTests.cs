@@ -20,6 +20,46 @@ public class SiteMockTests
             .Add(mock => mock.AgentLabel, "The Bakery · ask us")
             .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
 
+    /// <summary>
+    /// A business's sample brand (Louis: "can we have sample branding in the demos also"): its mark before its name in
+    /// the header and before the label in the widget's head, its tagline under the name, and a typeface of its own.
+    /// </summary>
+    [Test]
+    public void ABusinesssSampleBrand_IsWornOnItsSite()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<SiteMock>(parameters => parameters
+            .Add(mock => mock.Address, "bakery.example")
+            .Add(mock => mock.Business, "The Bakery")
+            .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
+            .Add(mock => mock.Mark, "<svg class=\"mark\"></svg>")
+            .Add(mock => mock.Tagline, "Baked at dawn")
+            .Add(mock => mock.Font, MockFont.Slab)
+            .Add(mock => mock.HeroLine, "Fresh before seven.")
+            .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".mock-header .mock-mark svg.mark"), Is.Not.Null);
+            Assert.That(cut.Find(".mock-widget-head .mock-mark svg.mark"), Is.Not.Null);
+            Assert.That(cut.Find(".mock-header .mock-tagline").TextContent, Is.EqualTo("Baked at dawn"));
+            Assert.That(cut.Find(".site-mock").ClassList, Does.Contain("font-slab"));
+        });
+    }
+
+    /// <summary>A business with no mark, tagline or typeface of its own gets none, and the serif.</summary>
+    [Test]
+    public void WithoutABrand_TheMockIsPlain()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Mock(ctx);
+
+        Assert.That((cut.FindAll(".mock-mark").Count, cut.FindAll(".mock-tagline").Count,
+            cut.Find(".site-mock").ClassList.Contains("font-serif")), Is.EqualTo((0, 0, true)));
+    }
+
     /// <summary>The browser bar shows the business's own address.</summary>
     [Test]
     public void TheBrowserBar_ShowsTheBusinesssAddress()
