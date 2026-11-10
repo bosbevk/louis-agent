@@ -157,6 +157,29 @@ public partial class FrameworkStylesTests
     }
 
     /// <summary>
+    /// The place a mock website's agent shows pops with the guide's own spotlight (F127.1, Louis: "make it pop more
+    /// when the selection happens", "with an animation like we have"): the same animation, its ring in the business's
+    /// colour and the rest of the mock's page dimmed, then the quiet ring stays; none for less motion.
+    /// </summary>
+    [Test]
+    public void AShownPlace_PopsWithTheGuidesSpotlight()
+    {
+        string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss")).ReplaceLineEndings("\n");
+        int light = mock.IndexOf(".mock-page ::deep .is-shown::after {", StringComparison.Ordinal);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(light, Is.GreaterThan(0));
+            Assert.That(mock[light..mock.IndexOf('}', light)],
+                Does.Contain("animation: area-spotlight 4s var(--web-ease) both;")
+                    .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
+            Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                "    .mock-page ::deep .is-shown::after { display: none; }"));
+        });
+    }
+
+    /// <summary>
     /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
     /// above itself holds the header and the menu, never the bottom of the slide before.
     /// </summary>
