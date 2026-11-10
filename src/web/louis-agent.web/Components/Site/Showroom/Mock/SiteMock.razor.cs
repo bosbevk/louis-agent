@@ -40,6 +40,8 @@ public partial class SiteMock : IAsyncDisposable
     private string? _went;
     private string? _shownBefore;
     private string? _pageDrawn;
+    private string? _pageNoted;
+    private int _pageChanges;
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
 
@@ -150,10 +152,32 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>The current page's menu word says so, for a screen reader.</summary>
     private string? CurrentMark(MockPage page) => page.Path == CurrentPage ? "page" : null;
 
-    /// <summary>A page says it's there; the menu draws again with it.</summary>
+    /// <summary>The address's classes: new after a page change, so it glows.</summary>
+    private string AddressClass => _pageChanges > 0 ? "mock-address is-new" : "mock-address";
+
+    /// <summary>The address's key: a new one on each page change, so it's drawn afresh and glows again.</summary>
+    private string AddressKey => $"address-{_pageChanges}";
+
+    /// <summary>The loading line's key: a new one on each page change, so it runs again.</summary>
+    private string LoadingKey => $"loading-{_pageChanges}";
+
+    /// <summary>
+    /// A page says it's there; the menu draws again with it. The pages arrive as the website first draws, so the page
+    /// it lands on is where it starts, not a change.
+    /// </summary>
     internal void Register(MockPage page)
     {
-        if (_map.Add(page)) StateHasChanged();
+        if (!_map.Add(page)) return;
+        _pageNoted = CurrentPage;
+        StateHasChanged();
+    }
+
+    /// <summary>Counts a change of page, so the bar loads like a browser; the page it starts on is none.</summary>
+    private void NotePage()
+    {
+        string page = CurrentPage;
+        if (_pageNoted is not null && page != _pageNoted) _pageChanges++;
+        _pageNoted = page;
     }
 
     /// <summary>A page goes.</summary>
@@ -166,6 +190,7 @@ public partial class SiteMock : IAsyncDisposable
     internal async Task GoAsync(string path)
     {
         _went = path;
+        NotePage();
         StateHasChanged();
         await Went.InvokeAsync(path);
     }
@@ -176,6 +201,7 @@ public partial class SiteMock : IAsyncDisposable
         if (Shown == _shownBefore) return;
         _shownBefore = Shown;
         _went = null;
+        NotePage();
     }
 
     /// <summary>

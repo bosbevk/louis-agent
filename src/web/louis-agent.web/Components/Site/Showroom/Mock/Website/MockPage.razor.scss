@@ -1,9 +1,10 @@
 /* A page of a mock website (F127.2): the one on screen fades in as a page change does, still for less motion; a page
    other than home opens with its heading in the business's face and colour, under a way back to its parent when it's
    off the menu. */
-.mock-view { animation: mock-page-in .35s var(--web-ease) both; }
+/* It slides up into place as the bar's loading line runs (F127.2, "load like a browser"). */
+.mock-view { animation: mock-page-in .55s var(--web-ease) .1s both; }
 @keyframes mock-page-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(18px); }
 }
 .mock-page-heading { margin: 22px 0 8px; font: 600 28px/1.1 var(--mock-face); color: var(--mock-brand); }
 /* A page's own opening words, before its sections. */

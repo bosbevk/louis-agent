@@ -4,9 +4,15 @@
    action and a strip of facts, then its pages (F127.2), only the one it's on showing. Its agent sits in a widget in
    the corner, where its customers would meet it, and the place it shows is in the bar, lit, and scrolled to. *@
 <div class="@Classes" style="@ColourStyle">
+    @* A page change loads like a browser (F127.2): its address glows and a loading line runs under the bar, both drawn
+       afresh on each change, so they play again. *@
     <div class="mock-chrome" aria-hidden="true">
         <i></i><i></i><i></i>
-        <span class="mock-address">@Address@Here</span>
+        <span class="@AddressClass" @key="AddressKey">@Address@Here</span>
+        @if (_pageChanges > 0)
+        {
+            <span class="mock-loading" @key="LoadingKey"></span>
+        }
     </div>
     <div class="mock-header">
         @if (Mark is not null)

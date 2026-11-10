@@ -150,6 +150,31 @@ public class MockPagesTests
         });
     }
 
+    /// <summary>
+    /// A page change loads like a browser (Louis: "we need a clear transition effect when this happens"; his pick of
+    /// three): the new address glows in the bar and a loading line runs under it, each drawn afresh on every change so
+    /// its animation plays again; a website's first page loads without them.
+    /// </summary>
+    [Test]
+    public void APageChange_LoadsLikeABrowser()
+    {
+        using var ctx = new BunitContext();
+        var cut = Mock(ctx);
+        int atFirst = cut.FindAll(".mock-chrome .mock-loading").Count;
+
+        cut.FindAll(".mock-nav button.mock-nav-item").Single(item => item.TextContent == "Stay").Click();
+        var line = cut.Find(".mock-chrome .mock-loading");
+        cut.FindAll(".mock-nav button.mock-nav-item").Single(item => item.TextContent == "Rooms").Click();
+        var again = cut.Find(".mock-chrome .mock-loading");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(atFirst, Is.Zero);
+            Assert.That(cut.Find(".mock-chrome .mock-address").ClassList, Does.Contain("is-new"));
+            Assert.That(again, Is.Not.SameAs(line), "drawn afresh, so its animation plays again");
+        });
+    }
+
     /// <summary>A page off the menu has a way back to its parent, by the parent's name, which goes there.</summary>
     [Test]
     public void APageOffTheMenu_GoesBackToItsParent()

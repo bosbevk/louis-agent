@@ -19,6 +19,7 @@
     box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08), 0 30px 60px -30px var(--accent);
 }
 .mock-chrome {
+    position: relative;
     display: flex;
     flex: none;
     align-items: center;
@@ -28,9 +29,7 @@
     background: color-mix(in srgb, var(--mock-page) 88%, var(--mock-ink));
 }
 .mock-chrome i {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 10px; height: 10px; border-radius: 50%;
     background: color-mix(in srgb, var(--mock-page) 62%, var(--mock-ink));
 }
 .mock-address {
@@ -40,6 +39,22 @@
     font: 12px var(--bs-font-monospace);
     color: color-mix(in srgb, var(--mock-ink) 70%, transparent);
     background: var(--mock-page);
+}
+/* A page change loads like a browser (F127.2, Louis's pick of three): the new address glows in the business's colour
+   and a loading line runs under the bar, then fades; for less motion, only the address changes. */
+.mock-address.is-new { animation: mock-address-new 1s ease-out both; }
+@keyframes mock-address-new {
+    from { box-shadow: 0 0 0 2px var(--mock-brand); color: var(--mock-brand); }
+}
+.mock-loading {
+    position: absolute; inset: auto 0 -1px; height: 3px; transform-origin: left;
+    background: var(--mock-brand); box-shadow: 0 0 10px var(--mock-brand);
+    animation: mock-loading .65s var(--web-ease) both;
+}
+@keyframes mock-loading { 0% { transform: scaleX(0); } 75% { transform: scaleX(1); opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .mock-loading { display: none; }
+    .mock-address.is-new { animation: none; }
 }
 .mock-header {
     display: flex;

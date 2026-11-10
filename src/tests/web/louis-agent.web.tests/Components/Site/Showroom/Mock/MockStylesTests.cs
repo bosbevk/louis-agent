@@ -95,6 +95,27 @@ public partial class MockStylesTests
     }
 
     /// <summary>
+    /// A page change loads like a browser: a loading line in the business's colour runs under the bar, the new
+    /// address glows, and the new page slides up into place; for less motion, only the address changes.
+    /// </summary>
+    [Test]
+    public void APageChange_LoadsLikeABrowser()
+    {
+        string mock = Styles("SiteMock.razor.scss");
+        string page = Styles("Website/MockPage.razor.scss");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule(mock, ".mock-loading"),
+                Does.Contain("background: var(--mock-brand);").And.Contain("animation: mock-loading"));
+            Assert.That(Rule(mock, ".mock-address.is-new"), Does.Contain("animation: mock-address-new"));
+            Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                                           "    .mock-loading { display: none; }"));
+            Assert.That(page, Does.Contain("from { opacity: 0; transform: translateY(18px); }"));
+        });
+    }
+
+    /// <summary>
     /// Minimised, the chat shows only its head; maximised, it covers the whole mock, a phone's narrow one too.
     /// </summary>
     [Test]
