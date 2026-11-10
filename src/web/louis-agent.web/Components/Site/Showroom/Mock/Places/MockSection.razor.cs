@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Components.Site.Showroom.Mock;
+namespace LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 
 /// <summary>
 /// A section of a mocked business's website (F127.1): its heading, its words and its cards, at its own address on the

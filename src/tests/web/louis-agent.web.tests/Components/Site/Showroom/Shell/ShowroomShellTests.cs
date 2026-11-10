@@ -5,7 +5,7 @@ using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Shell;
 
 /// <summary>
 /// F127.1: the showroom's frame. A slim bar of its own (Louis's pick 2a), a rail of every demo grouped by what a

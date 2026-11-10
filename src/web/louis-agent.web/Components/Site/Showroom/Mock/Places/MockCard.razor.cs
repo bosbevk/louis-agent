@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Components.Site.Showroom.Mock;
+namespace LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 
 /// <summary>
 /// A card on a mocked business's website (F127.1): a room, a dish, an area of practice, with its title, a note such as

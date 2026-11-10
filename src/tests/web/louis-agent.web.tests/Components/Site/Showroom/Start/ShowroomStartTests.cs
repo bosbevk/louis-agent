@@ -3,7 +3,7 @@ using LouisAgent.Web.Components.Site.Showroom.Start;
 using LouisAgent.Web.Components.Site.Tiles;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Start;
 
 /// <summary>
 /// F127.1, step 9: the showroom's start. A big start for the main demo (the research: "a big start screen for the main

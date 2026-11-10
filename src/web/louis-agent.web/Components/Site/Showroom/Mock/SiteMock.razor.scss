@@ -4,8 +4,7 @@
    page's data), a browser bar of its page's shades, its header in its brand colour, then its page, which scrolls inside
    the mock and keeps clear of the agent's widget in the corner (--widget-room). The mock lays itself out by its own
    width (a container), since it sits on a stage narrower than the screen. It casts a shadow in the demo's colour, so
-   it sits on the lit stage. The chat keeps the framework's own look, as the real widget does; only its window bar
-   goes, since the widget has its own head. */
+   it sits on the lit stage. The widget draws itself (MockWidget). */
 .site-mock {
     --widget-room: 392px;
     position: relative;
@@ -57,7 +56,6 @@
 .mock-nav { display: flex; gap: 18px; margin-left: auto; font-size: 13px; opacity: .85; }
 .mock-mark { display: inline-flex; flex: none; }
 .mock-header .mock-mark { width: 34px; height: 34px; }
-.mock-widget-head .mock-mark { width: 20px; height: 20px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
 
 /* The business's typeface (its sample brand): its class sets --mock-face, which its header, hero and places wear. */
@@ -190,39 +188,8 @@
     .mock-page ::deep .mock-section.is-shown::after { display: none; }
 }
 
-.mock-widget {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    width: 360px;
-    overflow: hidden;
-    border-radius: 14px;
-    background: var(--bs-secondary-bg);
-    box-shadow: 0 18px 40px rgba(var(--web-shadow-rgb), .35);
-    --recorded-height: 400px;
-}
-.mock-widget-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--mock-on-brand);
-    background: var(--mock-brand);
-}
-.mock-live {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--web-ok);
-    box-shadow: 0 0 8px var(--web-ok);
-}
-.mock-widget-body ::deep .recorded-chat { border: 0; border-radius: 0; }
-.mock-widget-body ::deep .recorded-bar { display: none; }
-
-/* A narrow mock (a phone, or a small stage): the page takes the whole width, the hero stacks, and the widget sits
-   across the bottom, with room under the page's end so its last place can scroll up above the widget. */
+/* A narrow mock (a phone, or a small stage): the page takes the whole width and the hero stacks, with room under the
+   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). */
 @container (max-width: 760px) {
     .mock-nav { display: none; }
     .mock-page { padding: 0 16px 360px; }
@@ -232,5 +199,4 @@
     .look-banner .mock-hero { margin: 0 -16px 16px; }
     .look-banner .mock-scene { height: 170px; }
     .look-banner .mock-hero-words { position: static; max-width: none; border-radius: 0; }
-    .mock-widget { left: 10px; right: 10px; bottom: 10px; width: auto; --recorded-height: 300px; }
 }

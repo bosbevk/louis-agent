@@ -1,7 +1,7 @@
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
 /// F127.1: a demo page is a stage in its demo's colour: a strip, the kicker, the title as the page's one h1, the lede,

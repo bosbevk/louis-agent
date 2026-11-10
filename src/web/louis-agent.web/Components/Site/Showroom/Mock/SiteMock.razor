@@ -69,14 +69,5 @@
         }
         <CascadingValue Name="@ShownPlace" Value="Shown">@Places</CascadingValue>
     </div>
-    <div class="mock-widget">
-        <div class="mock-widget-head">
-            @if (Mark is not null)
-            {
-                <span class="mock-mark" aria-hidden="true">@Mark</span>
-            }
-            <i class="mock-live" aria-hidden="true"></i>@AgentLabel
-        </div>
-        <div class="mock-widget-body">@Agent</div>
-    </div>
+    <MockWidget Mark="Mark" Label="@AgentLabel">@Agent</MockWidget>
 </div>

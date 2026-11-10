@@ -1,6 +1,6 @@
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
 /// F127.1: beside a demo, a few short cues of what to watch, each about a turn of the recording; they light as the

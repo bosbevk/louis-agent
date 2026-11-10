@@ -189,7 +189,8 @@ public partial class FrameworkStylesTests
     public void AShownCard_IsPressed_NotRinged()
     {
         string card = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
-            "src/web/louis-agent.web/Components/Site/Showroom/Mock/MockCard.razor.scss")).ReplaceLineEndings("\n");
+                "src/web/louis-agent.web/Components/Site/Showroom/Mock/Places/MockCard.razor.scss"))
+            .ReplaceLineEndings("\n");
         string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss"));
 

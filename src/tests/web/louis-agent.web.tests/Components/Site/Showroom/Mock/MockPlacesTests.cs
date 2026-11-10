@@ -1,8 +1,8 @@
-using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Menu;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Mock;
 
 /// <summary>
 /// F127.1: a mock website's places, each with its own address on the business's site (<c>/rooms/garden</c>), so its

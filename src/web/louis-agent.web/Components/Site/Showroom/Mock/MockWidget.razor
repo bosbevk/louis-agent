@@ -1,0 +1,12 @@
+@* The agent's widget in the corner of a mocked business's website (F127.1): a head in the business's brand colour
+   with its mark, a live dot and its label, and the agent under it. *@
+<div class="mock-widget">
+    <div class="mock-widget-head">
+        @if (Mark is not null)
+        {
+            <span class="mock-mark" aria-hidden="true">@Mark</span>
+        }
+        <i class="mock-live" aria-hidden="true"></i>@Label
+    </div>
+    <div class="mock-widget-body">@ChildContent</div>
+</div>

@@ -1,6 +1,6 @@
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Stage;
 
 /// <summary>
 /// F127.1 (Louis: "we must make notes on the demo screen for instance we could integrate with the booking system if

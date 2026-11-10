@@ -1,8 +1,9 @@
 using LouisAgent.Web.Components.Site.Showroom.Mock;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Places;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Web.Tests.Components.Site.Showroom;
+namespace LouisAgent.Web.Tests.Components.Site.Showroom.Mock;
 
 /// <summary>
 /// F127.1 (Louis's pick 3a): a business's agent plays where its customers would meet it, on a mock of the business's
