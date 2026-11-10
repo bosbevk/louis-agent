@@ -2,11 +2,11 @@
    var(--accent) whatever the colour, and a new colour is one line here. Written where it's included: a tool writes
    no CSS of its own. */
 $all: (
-    red: var(--bs-danger),
-    green: var(--web-ok),
-    blue: var(--bs-info),
-    yellow: var(--bs-warning),
-    purple: var(--web-purple),
+    "red": var(--bs-danger),
+    "green": var(--web-ok),
+    "blue": var(--bs-info),
+    "yellow": var(--bs-warning),
+    "purple": var(--web-purple),
 );
 
 @mixin classes {
