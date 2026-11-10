@@ -548,3 +548,38 @@ thirty commits as each look led to the next idea.
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): an area of the framework a site fills with data, words and
 slots, and a replay that speaks the live runner's events, so a demo is the real thing played back.
+
+## The demos as working websites, tried live (F127.2, 2026-11-10)
+
+F127.2 turned each demo into a small website of three pages that its agent moves through, and let a visitor try the
+agent themselves when the recording ends. It was built unattended over a day, Louis steering by screenshot, and it
+changed shape twice on the way: once when a planned second pack turned out to break a rule, and once when the guide's
+last step grew into three features of its own.
+
+- **Let the parts register themselves.** A site writes each page as a `MockPage` inside its mock, and each tells the
+  mock it's there (Microsoft's TabSet pattern). The menu, the page an address is on and what a live agent reads all
+  come from that one list, so a site writes its pages once and never lists them a second time.
+- **One path, two players.** The live chat hands each `ShowPage` call to the demo exactly as the recording does, so
+  the website moves the same way for both. A recording is the live runner's events played back, and the live chat is
+  the runner itself: nothing is written twice.
+- **When a plan breaks a rule, the rule wins.** The plan named a second leads pack for the demos. The catalogue
+  refused it: two tools called `SendLead`, and tool names are unique so packs stay convertible to MCP. Of the three
+  ways round, Louis picked the one that says what's true: the identity says it's a demonstration, the turn carries
+  who it runs as (an ambient value, like the user's place), and the one pack marks the lead.
+- **Ask the plumbing what it already does.** The guide's step began as a tool the browser would carry out. Louis
+  asked how Puls talks to its cook, and the answer was that it already calls another agent through the API. The
+  design moved onto that path, then grew: one address for every agent call (`identity`, `identity.specialist`), its
+  own ADR (0117) and children (F127.3 to F127.5). Asking "what do we already do?" saved building a second way.
+- **A brand is data the framework can serve.** A brand's faces are a class of three roles, its header one of three
+  treatments, its colours five; the faces are the framework's own files, fetched only by a page that wears them.
+  Sass dropped the quotes from the font lists, which would have broken a family named "Bodoni 72": a test now reads
+  the build, not the source.
+- **The browser finds what the tests can't.** In Chrome, a cue clicked while live crashed the page (the demo still held
+  the recorded chat the swap had disposed), and a usage line showed a customer tokens. Both became tests, and Louis
+  picked the fixes. A test that failed only sometimes was the test's own fault: a late redraw swallowed its click.
+- **What I'd do differently.** I wrote the faces map before its tests had run, so four of them passed at once. Chrome
+  froze twice more after a container rebuild with a tab open: close the tab first, and open a fresh one after.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): parts that register with their whole, one player for the
+recorded and the live, and a brand as data the framework serves. It also touches *4 Tool design* (a tool the browser
+carries out, and one that marks its result) and *15 Safety* (an allow-list of identities under one cap).

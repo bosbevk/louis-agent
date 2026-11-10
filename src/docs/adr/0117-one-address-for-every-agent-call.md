@@ -65,7 +65,8 @@ toolsets of its own: the role brings them.
 its tools) · [ADR 0006](0006-toolsets-per-session.md) · [ADR 0027](0027-engine-identities-and-packs.md) ·
 [ADR 0021](0021-minions-one-task-one-tool.md) · [ADR 0047](0047-protocol-v2-one-event-contract.md) ·
 [ADR 0049](0049-nothing-is-compatible-before-a-sale.md) · the plan page for F127.3 to F127.5
-(https://claude.ai/artifact/TdTWru63EMWhCC7EiJjQk9) · [F127.2's plan](../plans/F127.2-interactive-demos.md)
+(https://claude.ai/artifact/TdTWru63EMWhCC7EiJjQk9) · F127.2 in the [work log](../work-log.md), whose plan held the
+first draft
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

@@ -119,7 +119,10 @@ open identities and a cap (`OPEN_IDENTITIES`, by commas, and `OPEN_SESSIONS_PER_
 gate asks `OpenDoor` first, a visitor with no key and no sign-in may open one of those identities' sessions a few
 times a day from one address across them all, the request is narrowed in code to the identity the door admitted and
 its own toolsets and tagged `open-door` on the ledger, the calls on that session pass, and past the
-cap the answer is a 429 ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md)).
+cap the answer is a 429 ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
+[ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)). A session knows who it runs as
+(`AgentSession.Who`), and each turn sets it ambient (`TurnIdentity`, with the user's place and the rest, in
+`Sessions/Streaming/TurnAmbience`), so a pack can tell a demonstration's turn from a real one.
 
 ## Diagrams
 

@@ -98,6 +98,19 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   `ShowroomDemos` and may register `ShowroomText`. The recorded chat tells its page each tool call as it plays
   (`RecordedChat.ToolCalled`, read with `ShowPageCall`, shared with the guide's widget), so a mock goes to the place
   its agent showed, a section under the guide's spotlight and a card pressed.
+- **A mock website of pages, tried live** (F127.2, [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)).
+  `Mock/Website/`: a site writes each page as a `MockPage` inside its mock, which registers with it (TabSet) and keeps
+  its list in `MockSiteMap`; the page an address is on is the longest page path it starts with (`MockPaths`), and a
+  card with a page of its own opens it (`MockCard.Opens`). A visitor clicks through the menu, and a page change loads
+  like a browser. `Mock/Head/MockHead` is the header, wearing its brand: `MockFont`'s class gives three faces
+  (`--mock-face`, `--mock-text`, `--mock-caps`, from `web/tools/faces`), `MockHeader` one of three treatments,
+  `MockColours.Label` its small capitals' colour; the pairings' faces are the framework's own woff2 files under
+  `wwwroot/fonts/showroom/`, each beside its `OFL.txt`, declared in `web/showroom/fonts`, which a site lists, so a
+  page fetches only the faces it wears. `Mock/Live/MockLiveChat` is the business's agent live in the widget, on
+  `ChatRunner`, opened as its identity, sending `SiteMock.ReadPageAsync` (the page's words, every page's places by
+  address, the menu as links) with each new page; the widget then says Live, the hint is a question to tap, the cues
+  wait (`DemoCues.Waiting`) and no usage line shows (`MessageList.ShowUsage`, passed to `TurnView`). The mock's chat
+  and the guide's minimise and maximise with the same `WindowButtons` (`ChatWindowSize`).
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.
 
