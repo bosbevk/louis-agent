@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 88 | 78 |
-| Fixes (`FX`) | 117 | 6 |
+| Fixes (`FX`) | 118 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -230,6 +230,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX126 | 2026-11-10 | A card a page break would cut in two starts on the next page of a paged section (a forced break the frame's script sets, as Chrome ignores `break-inside: avoid` there); one taller than a page still runs on |
 | FX125 | 2026-11-10 | Every page has one h1: the framework's `BandTitle` heads the page in its top band and is an h2 elsewhere, and a document inside a page starts its headings at h2 |
 | FX124 | 2026-11-10 | A section's own address opens from a link, a reload or a search again: the site's router carries the place page itself (lost in F124's move), without the framework's admin pages |
 | FX123 | 2026-11-09 | A release numbers its revision from every revision the app has, so one made by hand in Azure never stops the next |

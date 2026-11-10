@@ -112,13 +112,31 @@ const count = (band) => {
     on.disabled = page >= pages;
     pager.hidden = pages <= 1;
 };
+// A card a page break cuts in two, but that fits on a page, starts on the next page instead (FX126): Chrome ignores
+// break-inside: avoid for a card inside a grid, and keeps a forced break. In page order, as each move pushes the rest
+// on; a card taller than a page still runs on, so nothing is ever cut off. Only blocks: a link that wraps has a box per
+// line, and a cut is pieces in two columns, not two lines.
+const keepWhole = (band) => {
+    const body = $(".band-body", band);
+    if (!body) return;
+    for (const part of $$(":scope > * > *, :scope .panel, :scope figure", body)) {
+        if (getComputedStyle(part).display.startsWith("inline")) continue;
+        const pieces = [...part.getClientRects()];
+        const columns = new Set(pieces.map(piece => Math.round(piece.left))).size;
+        const height = pieces.reduce((sum, piece) => sum + piece.height, 0);
+        if (columns > 1 && height <= body.clientHeight) part.classList.add("is-new-page");
+    }
+};
 const paginate = () => {
     $$(".layout-slides .site-main > section.band").forEach(band => {
         if (!band.dataset.measured) {
             band.dataset.measured = "1";
             // A band that must stay whole (F122, data-whole) is never paged, however tall it is.
             const tall = band.getBoundingClientRect().height > slideRoom() + 2;
-            if (tall && !band.hasAttribute("data-whole")) band.classList.add("is-paged");
+            if (tall && !band.hasAttribute("data-whole")) {
+                band.classList.add("is-paged");
+                keepWhole(band);
+            }
             // The count follows the body however it is turned: its pager, or the guide naming a page.
             const body = $(".band-body", band);
             if (body && !body.dataset.counted) {
@@ -133,6 +151,7 @@ const paginate = () => {
 const remeasure = () => {
     $$(".site-main > section.band").forEach(band => {
         band.classList.remove("is-paged");
+        $$(".is-new-page", band).forEach(part => part.classList.remove("is-new-page"));
         delete band.dataset.measured;
         const pager = $(".band-pager", band);
         if (pager) pager.hidden = true;
