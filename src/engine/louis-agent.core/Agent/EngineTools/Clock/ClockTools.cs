@@ -1,4 +1,4 @@
-
+using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using LouisAgent.Core.Sessions;
@@ -7,11 +7,13 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Agent.EngineTools.Clock.Messages;
 
 namespace LouisAgent.Core.Agent.EngineTools.Clock;
+
 /// <summary>
-/// Today's date and the time (F22): a model doesn't know what day it is, so "this week", "recent" or "how long ago" would
-/// be guesses. Registered for every session by the engine, like ExecuteSkill, since a chat's sessions may load no
+/// Today's date and the time (F22): a model doesn't know what day it is, so "this week", "recent" or "how long ago"
+/// would be guesses. Registered for every session by the engine, like ExecuteSkill, since a chat's sessions may load no
 /// toolset that has it. In the user's time zone when they shared it (<see cref="UserPlace"/>), else the host's
-/// (<c>HOST_TIME_ZONE</c>, CL15; core names no country), else the machine's own.
+/// (<c>HOST_TIME_ZONE</c>, CL15; core names no country), else the machine's own. Since FX127 it names the part of
+/// the day too, so a greeting follows the clock.
 /// </summary>
 public sealed class ClockTools(TimeProvider? time = null, string? hostTimeZone = null)
 {
@@ -22,7 +24,8 @@ public sealed class ClockTools(TimeProvider? time = null, string? hostTimeZone =
 
     [Description(
         "Today's date and the time now where the user is (the host's time zone unless they shared another), with " +
-        "the weekday and the week number. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline.")]
+        "the weekday, the week number and the part of the day. Use it for anything relative to today: 'this week', " +
+        "'recent', 'how long ago', a deadline, a greeting.")]
     public string GetToday()
     {
         TimeZoneInfo zone = UserPlace.FindTimeZone(UserPlace.Current?.TimeZone) ?? _host;
@@ -37,6 +40,20 @@ public sealed class ClockTools(TimeProvider? time = null, string? hostTimeZone =
             Offset = now.ToString("zzz", invariant),
             Iso = now.ToString("yyyy-MM-dd'T'HH:mm:sszzz", invariant),
             Week = ISOWeek.GetWeekOfYear(now.DateTime),
+            Part = PartOf(now.Hour).Wire(),
         });
     }
+
+    /// <summary>
+    /// The part of the day an hour falls in (FX127), said for the model so it never judges 01:40 itself.
+    /// </summary>
+    /// <remarks>Guard arms from the night's end, read like the table in <see cref="PartOfDay"/>.</remarks>
+    private static PartOfDay PartOf(int hour) => hour switch
+    {
+        < 5 => PartOfDay.Night,
+        < 12 => PartOfDay.Morning,
+        < 18 => PartOfDay.Afternoon,
+        < 22 => PartOfDay.Evening,
+        _ => PartOfDay.Night,
+    };
 }

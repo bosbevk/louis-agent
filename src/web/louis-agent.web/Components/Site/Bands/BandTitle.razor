@@ -1,0 +1,10 @@
+@* A band's heading (FX125): the page's one h1 in the band at its top, an h2 in any other. The class is the site's look,
+   as the h2 a page used to write had. *@
+@if (HeadsThePage)
+{
+    <h1 class="@Class">@ChildContent</h1>
+}
+else
+{
+    <h2 class="@Class">@ChildContent</h2>
+}

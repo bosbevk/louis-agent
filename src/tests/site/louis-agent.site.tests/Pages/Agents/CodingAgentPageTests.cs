@@ -29,7 +29,7 @@ public class CodingAgentPageTests
         Assert.Multiple(() =>
         {
             Assert.That(route, Is.EqualTo("/coding-agent"));
-            Assert.That(cut.Find("h2.chrome").TextContent, Is.EqualTo("Watch it fix a real bug."));
+            Assert.That(cut.Find("h1.chrome").TextContent, Is.EqualTo("Watch it fix a real bug."));
             Assert.That(cut.FindAll(".recorded-chat"), Has.Count.EqualTo(1));
             Assert.That(cut.Markup, Does.Not.Contain(";"), "no semicolons in the site's words");
         });
@@ -51,7 +51,7 @@ public class CodingAgentPageTests
         {
             Assert.That(cut.FindAll(".band"), Has.Count.EqualTo(1), "one slide");
             Assert.That(columns, Has.Length.EqualTo(2));
-            Assert.That(columns[0].QuerySelector("h2.chrome"), Is.Not.Null, "the heading on the left");
+            Assert.That(columns[0].QuerySelector("h1.chrome"), Is.Not.Null, "the heading on the left");
             Assert.That(columns[0].QuerySelectorAll(".rules li"), Has.Length.EqualTo(4), "what you're watching");
             Assert.That(columns[1].ClassList, Does.Contain("recorded-chat"), "the window on the right");
         });

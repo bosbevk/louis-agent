@@ -5,7 +5,7 @@
 @media (max-width: 900px) {
     :root { --site-gutter: 24px; }
     .site h1 { font-size: 44px; }
-    .site h2 { font-size: 30px; }
+    .site h2, .site .band h1 { font-size: 30px; }
     .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     /* The coding agent's page stacks: the words, then the window (FX105). */
     .watch-grid { grid-template-columns: minmax(0, 1fr); --recorded-height: 60dvh; }
@@ -14,7 +14,7 @@
 @media (max-width: 600px) {
     :root { --site-gutter: 16px; }
     .site h1 { font-size: 36px; }
-    .site h2 { font-size: 26px; }
+    .site h2, .site .band h1 { font-size: 26px; }
     .grid-2, .grid-3, .custom-grid { grid-template-columns: minmax(0, 1fr); }
     .turn-body { min-height: 0; font-size: 12px; }
 }

@@ -1191,7 +1191,7 @@
     },
     {
       "Name": "GetToday",
-      "Description": "Today's date and the time now where the user is (the host's time zone unless they shared another), with the weekday and the week number. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline.",
+      "Description": "Today's date and the time now where the user is (the host's time zone unless they shared another), with the weekday, the week number and the part of the day. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline, a greeting.",
       "Schema": {
         "type": "object",
         "properties": {}

@@ -20,6 +20,9 @@
 .is-paged .band-body ::deep figure { break-inside: avoid; margin-bottom: 20px; }
 /* A heading travels with what follows it, so a page never holds only a section's title (FX110). */
 .is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }
+/* A card a page break would cut in two, but that fits on a page, starts on the next one (FX126): the frame's script
+   marks it, since Chrome ignores the break-inside above for a card inside a grid; a forced break it keeps. */
+.is-paged .band-body ::deep .is-new-page { break-before: column; }
 
 /* The pager under a paged band: back, "1 / 3", on. Hidden until the module shows it. */
 .band-pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 18px; }

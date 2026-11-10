@@ -99,6 +99,16 @@ public partial class FrameworkStylesTests
             Does.Contain(".is-paged .band-body ::deep > :is(.kicker, h1, h2, h3, .lede) { break-after: avoid; }"));
 
     /// <summary>
+    /// A card the frame's script finds cut in two by a page break, but that fits on a page, starts on the next page
+    /// (FX126, the Starter plan on a phone): a forced break, since Chrome ignores break-inside: avoid there. The
+    /// script itself is checked in the browser.
+    /// </summary>
+    [Test]
+    public void APagedSection_StartsAMovedCardOnTheNextPage() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+            Does.Contain(".is-paged .band-body ::deep .is-new-page { break-before: column; }"));
+
+    /// <summary>
     /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
     /// above itself holds the header and the menu, never the bottom of the slide before.
     /// </summary>

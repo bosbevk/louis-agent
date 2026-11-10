@@ -20,6 +20,18 @@ public class MarkdownTests
         Assert.That(html, Does.Contain("<table>").And.Contain("<th>Bestanddeel</th>").And.Contain("<td>R24,99</td>"));
     }
 
+    /// <summary>
+    /// A document shown inside a page starts its headings below the page's own (FX125): its "# " is an h2 when told
+    /// to start there, and every level under it moves down with it, never past h6.
+    /// </summary>
+    [Test]
+    public void ADocumentInsideAPage_StartsItsHeadingsWhereItIsTold()
+    {
+        string html = Markdown.ToHtml("# Principles\n\n## Never lie\n\n###### Deep", topHeading: 2).Value;
+
+        Assert.That(html, Does.Contain("<h2").And.Contain("<h3").And.Contain("<h6").And.Not.Contain("<h1"));
+    }
+
     /// <summary>A link renders with its address.</summary>
     [Test]
     public void ALink_Renders_WithItsAddress()
@@ -47,7 +59,8 @@ public class MarkdownTests
 
         Assert.That(html, Does.Contain("<img"));
         Assert.That(html, Does.Contain("src=\"https://catalog.sixty60.co.za/a/b.jpg?w=300\""));
-        Assert.That(html, Does.Contain("data-original=\"https://catalog.sixty60.co.za/a/b.jpg\""), "the same file, without the size");
+        Assert.That(html, Does.Contain("data-original=\"https://catalog.sixty60.co.za/a/b.jpg\""),
+            "the same file, without the size");
     }
 
     /// <summary>
@@ -68,10 +81,14 @@ public class MarkdownTests
     [Test]
     public void AnImage_WhoseQueryHoldsItsKey_KeepsItInTheOriginal_WithoutTheSize()
     {
-        // Woolworths' image URL carries its file's key (o=…) beside the size (w, q): the dialog's original keeps the key.
-        string html = Html("![produk](https://assets.woolworthsstatic.co.za/Brown-Onions.jpg?V=lIVo&o=eyJidWNrZXQ&w=310&q=85)");
+        // Woolworths' image URL carries its file's key (o=…) beside the size (w, q): the dialog's original keeps the
+        // key.
+        string html =
+            Html("![produk](https://assets.woolworthsstatic.co.za/Brown-Onions.jpg?V=lIVo&o=eyJidWNrZXQ&w=310&q=85)");
 
-        Assert.That(html, Does.Contain("data-original=\"https://assets.woolworthsstatic.co.za/Brown-Onions.jpg?V=lIVo&amp;o=eyJidWNrZXQ\""));
+        Assert.That(html,
+            Does.Contain(
+                "data-original=\"https://assets.woolworthsstatic.co.za/Brown-Onions.jpg?V=lIVo&amp;o=eyJidWNrZXQ\""));
     }
 
     /// <summary>A host that only ends like a shop's becomes a link.</summary>

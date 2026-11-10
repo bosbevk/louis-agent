@@ -16,8 +16,11 @@ public static class Principles
     /// <summary>The file as the engine holds it, front matter included.</summary>
     public static string Markdown { get; } = Read();
 
-    /// <summary>The principles rendered for the page: the body without its front matter.</summary>
-    public static MarkupString Html { get; } = Web.Text.Markdown.ToHtml(Body(Markdown));
+    /// <summary>
+    /// The principles rendered for the page: the body without its front matter, its headings under the page's own
+    /// title (FX125: one h1 a page).
+    /// </summary>
+    public static MarkupString Html { get; } = Web.Text.Markdown.ToHtml(Body(Markdown), topHeading: 2);
 
     private static string Read()
     {
