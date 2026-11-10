@@ -55,7 +55,7 @@ public class ShowroomIdentitiesTests
             Is.EqualTo(new[]
             {
                 ("louis-agent-guide", false), ("wheatfield-kitchen", true), ("koringland-attorneys", true),
-                ("seemeeu-guesthouse", true),
+                ("seemeeu-guesthouse", true)
             }));
 
     /// <summary>
@@ -69,6 +69,17 @@ public class ShowroomIdentitiesTests
         Assert.That(Voice(Businesses[at]), Does.Contain("open it with `ShowPage` first"));
 
     /// <summary>
+    /// Every voice knows its website has pages (F127.2): the list marks them "(page)", opening a place takes the
+    /// visitor to its page, and a place on another page is opened when the talk moves there.
+    /// </summary>
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public void EveryVoice_KnowsItsWebsitesPages(int at) =>
+        Assert.That(Voice(Businesses[at]), Does.Contain("`(page)`").And.Contain("goes to that place's page")
+            .And.Contain("another page"));
+
+    /// <summary>
     /// Every voice says it is an AI, is made up, and passes a booking on only after the customer's yes.
     /// </summary>
     [TestCase(0)]
@@ -76,7 +87,7 @@ public class ShowroomIdentitiesTests
     [TestCase(2)]
     public void EveryVoice_IsHonest_AndBooksOnlyAfterAYes(int at)
     {
-        string voice = Voice(Businesses[at]);
+        var voice = Voice(Businesses[at]);
 
         Assert.Multiple(() =>
         {

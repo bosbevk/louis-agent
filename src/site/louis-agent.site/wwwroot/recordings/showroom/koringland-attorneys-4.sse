@@ -1,14 +1,14 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_bdce4b60c80042a3ac097d1d753efa16","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_955225769c734e1bbaf9bd43ac3616f1","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
 
 event: content_block_start
-data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01FrNEdyjg6oTXNyiyuz7zwK","name":"SendLead","input":{"name":"Anna de Villiers","contact":"anna@example.com","wants":"A first consultation about changing her will after her divorce, on a Thursday morning if possible."}}}
+data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_01JWQqoYwYYzVAy6pCA97dbL","name":"SendLead","input":{"name":"Anna de Villiers","contact":"anna@example.com","wants":"A first consultation about changing her will after her divorce, on a Thursday morning if possible."}}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":0}
 
 event: content_block_start
-data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01FrNEdyjg6oTXNyiyuz7zwK","content":"Sent to the owner at 2026-11-10 09:50:32Z: Anna de Villiers, anna@example.com, about A first consultation about changing her will after her divorce, on a Thursday morning if possible.. Tell them they will hear back.","is_error":false}}
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_01JWQqoYwYYzVAy6pCA97dbL","content":"Sent at 2026-11-10 14:59:53Z: Anna de Villiers, anna@example.com, about A first consultation about changing her will after her divorce, on a Thursday morning if possible.. This is a demonstration business, so it went to the people behind the demonstration, not to a real owner. Tell them so, plainly, in one sentence.","is_error":false}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
@@ -17,34 +17,64 @@ event: content_block_start
 data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your request has been sent to"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Your request has been sent,"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the pract"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" Anna. I"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ice, Anna, so"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" should"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" you"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" be"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" will hear back at"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" pl"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" anna@example.com. The"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ain with"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" att"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" you: this is a demonst"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"orneys will confirm the"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ration business"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" time, as I"}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":", so it went to the people beh"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" can't see their diaries."}}
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ind the demonstration, not"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" to a real pract"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ice,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" the Ko"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ringland attorneys won"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"'t be the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" "}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"ones to confirm a"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" Thursday time"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"."}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":2}
