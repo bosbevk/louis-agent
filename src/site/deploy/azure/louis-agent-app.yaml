@@ -67,9 +67,10 @@ properties:
             secretRef: agent-api-key-louis-agent
           - name: ADMIN_API_KEY
             secretRef: admin-api-key-louis-agent
-          # The guide's door (F109.3): a visitor opens the guide without a sign-in, this many times a day per address.
-          - name: OPEN_IDENTITY
-            value: louis-agent-guide
+          # The guide's door (F109.3): a visitor opens the guide, or a showroom business to try it (F127.2), without a
+          # sign-in, this many times a day per address across them all.
+          - name: OPEN_IDENTITIES
+            value: louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys
           - name: OPEN_SESSIONS_PER_DAY
             value: '20'
           # The docs the guide reads (F109.3): the copy the image carries, laid out as the repo.

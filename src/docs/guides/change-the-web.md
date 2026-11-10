@@ -89,7 +89,7 @@ extension method beside what uses it (the git pack's views have `AgentApiGit`). 
 `<ChatWidget Identity="the-identity" Title="…" Greeting="…" Placeholder="…" ButtonText="…" />` anywhere in a page
 or a layout: a site's frame has a `Corner` slot fixed lower right for it. The identity is one the host's catalogue
 runs (`GET /v1/identities`); a visitor with no key or sign-in reaches it only through the host's door
-(`OPEN_IDENTITY`, `OPEN_SESSIONS_PER_DAY`, ADR 0099). A site wraps the tag once with its own words as a component
+(`OPEN_IDENTITIES`, `OPEN_SESSIONS_PER_DAY`, ADR 0099). A site wraps the tag once with its own words as a component
 of its own, so a page places that and nothing is configured twice. `ChatWidgetTests` pins it folded and open.
 
 ## Make a page move

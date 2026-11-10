@@ -35,9 +35,9 @@ Nothing runs for a visitor.
   as the guide's widget sends the page in view: `src/site/recordings/pages/{name}.json`, its words and its places by
   their addresses on the mock's site (`/rooms/garden`). The agent learns its places from that page, and the
   recording's `ShowPage` calls take the mock there when it plays.
-- The site's host lists them after Louis, so he stays the default and the only one open to visitors
-  (`OPEN_IDENTITY`); a showroom session needs the site's key. The leads pack's texts name no owner, so the same tool
-  that sends Louis a lead sends a practice its booking request.
+- The site's host lists them after Louis, so he stays the default. Since F127.2 the door opens them to visitors too
+  (`OPEN_IDENTITIES`), so a visitor can try a business's agent live, under the same daily cap as the guide. The
+  leads pack's texts name no owner, so the same tool that sends Louis a lead sends a practice its booking request.
 
 ## Tests
 

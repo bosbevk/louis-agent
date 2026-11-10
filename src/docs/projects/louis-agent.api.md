@@ -114,10 +114,11 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 **A session names its identity, and a door lets a visitor in (F109.3).** A host runs the identities its catalogue
 holds; a session's request may carry `identity`, and the session opens in that identity's default voice unless it
-names a role, the replies say who, and `GET /v1/identities` lists them (the first is the default). A host may name one
-open identity and a cap (`OPEN_IDENTITY`, `OPEN_SESSIONS_PER_DAY`): the key gate asks `OpenDoor` first, a visitor with
-no key and no sign-in may open that identity's session a few times a day from one address, the request is narrowed in
-code to the identity's own toolsets and tagged `open-door` on the ledger, the calls on that session pass, and past the
+names a role, the replies say who, and `GET /v1/identities` lists them (the first is the default). A host may name
+open identities and a cap (`OPEN_IDENTITIES`, by commas, and `OPEN_SESSIONS_PER_DAY`, since F127.2 a list): the key
+gate asks `OpenDoor` first, a visitor with no key and no sign-in may open one of those identities' sessions a few
+times a day from one address across them all, the request is narrowed in code to the identity the door admitted and
+its own toolsets and tagged `open-door` on the ledger, the calls on that session pass, and past the
 cap the answer is a 429 ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md)).
 
 ## Diagrams

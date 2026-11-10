@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
 var app = builder.Build();
 
-// The key check comes before any route; the guide's open door (OPEN_IDENTITY) lets a visitor in without one.
+// The key check comes before any route; the open door (OPEN_IDENTITIES: the guide and the showroom's businesses)
+// lets a visitor in without one.
 app.UseLouisAgentKey();
 
 // The framework's pages moved under /framework, so their old addresses are sent on first.
