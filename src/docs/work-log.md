@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 89 | 77 |
-| Fixes (`FX`) | 119 | 6 |
+| Fixes (`FX`) | 120 | 6 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -230,6 +230,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX128 | 2026-11-10 | The landing's lead chat says who speaks (a Visitor tag in blue, a Louis tag in green), and a window's three dots wear a Mac window's red, amber and green |
 | FX127 | 2026-11-10 | `GetToday` names the part of the day, the guide greets by it, and a visitor never gets an ADR's number |
 | FX126 | 2026-11-10 | A card a page break would cut in two starts on the next page of a paged section (a forced break the frame's script sets, as Chrome ignores `break-inside: avoid` there); one taller than a page still runs on |
 | FX125 | 2026-11-10 | Every page has one h1: the framework's `BandTitle` heads the page in its top band and is an h2 elsewhere, and a document inside a page starts its headings at h2 |

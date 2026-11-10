@@ -28,6 +28,25 @@
 .ln-arg { color: var(--bs-tertiary-color); }
 .ln-answer { color: var(--bs-body-color); }
 .ln-cost { color: var(--bs-secondary-color); padding-top: 10px; }
+
+/* Who speaks, in the lead chat (FX128, Louis: "so I can see clearly who the agent is and the visitor is"): a tag
+   before each line, the visitor's in blue with its words in blue, Louis's in green with his in white. */
+.ln-who {
+    display: inline-block;
+    min-width: 8ch;
+    margin-right: 10px;
+    padding: 0 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: 1px;
+}
+.live-lead .ln-prompt { color: var(--bs-info); }
+.live-lead .ln-prompt .ln-who { color: var(--bs-info); background: rgba(var(--bs-info-rgb), .16); }
+.live-lead .ln-answer { color: var(--bs-emphasis-color); }
+.live-lead .ln-answer .ln-who { color: var(--web-ok); background: rgba(var(--web-ok-rgb), .16); }
 .ln-cost strong { color: var(--bs-emphasis-color); }
 
 .turn-bill { margin-top: auto; padding-top: 14px; }

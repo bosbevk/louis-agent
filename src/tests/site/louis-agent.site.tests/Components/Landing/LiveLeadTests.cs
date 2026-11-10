@@ -21,12 +21,33 @@ public class LiveLeadTests
         var lines = cut.FindAll(".turn-body .ln").Select(line => line.TextContent.Trim()).ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(lines.First(), Does.StartWith("›"), "the visitor opens");
-            Assert.That(lines.Count(line => line.StartsWith("›")), Is.GreaterThanOrEqualTo(4),
+            Assert.That(cut.Find(".turn-body .ln").ClassList, Does.Contain("ln-prompt"), "the visitor opens");
+            Assert.That(cut.FindAll(".ln-prompt"), Has.Count.GreaterThanOrEqualTo(4),
                 "the visitor speaks several times");
             Assert.That(string.Join(" ", lines), Does.Contain("SendLead"), "the tool is named");
             Assert.That(lines.Last(line => !line.StartsWith("turn:")), Does.Contain("Louis"),
                 "the guide says the lead reached Louis");
+        });
+    }
+
+    /// <summary>
+    /// Every line says who speaks (FX128, Louis: "so I can see clearly who the agent is and the visitor is"): the
+    /// visitor's lines are tagged Visitor, Louis's answers Louis, each tag its own colour.
+    /// </summary>
+    [Test]
+    public void EveryLine_SaysWhoSpeaks()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<LiveLead>();
+
+        var visitor = cut.FindAll(".ln-prompt").Select(line => line.QuerySelector(".ln-who")?.TextContent).ToList();
+        var louis = cut.FindAll(".ln-answer").Select(line => line.QuerySelector(".ln-who")?.TextContent).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(visitor, Has.Count.GreaterThanOrEqualTo(4).And.All.EqualTo("Visitor"));
+            Assert.That(louis, Has.Count.GreaterThanOrEqualTo(4).And.All.EqualTo("Louis"));
+            Assert.That(cut.Markup, Does.Not.Contain("›"), "the tag says it, not a sign");
         });
     }
 
