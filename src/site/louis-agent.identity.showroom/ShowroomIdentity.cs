@@ -31,4 +31,10 @@ public abstract class ShowroomIdentity(ShowroomIdentityName name) : IAgentIdenti
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } =
         Enum.GetValues<ShowroomPack>().Select(pack => pack.Wire()).ToList();
+
+    /// <summary>
+    /// A made-up business, so it's a demonstration (F127.2): a booking tried on it reaches the people behind the
+    /// showroom, marked a demo, and the visitor hears it was one.
+    /// </summary>
+    public bool IsDemonstration => true;
 }

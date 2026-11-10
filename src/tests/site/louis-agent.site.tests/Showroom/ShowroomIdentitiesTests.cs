@@ -46,6 +46,19 @@ public class ShowroomIdentitiesTests
     }
 
     /// <summary>
+    /// A showroom business says it's a demonstration (F127.2, Louis's pick "the identity says so"), so a booking
+    /// tried on it is marked a demo; the guide isn't one, so its leads stay real.
+    /// </summary>
+    [Test]
+    public void TheBusinesses_AreDemonstrations_AndTheGuideIsNot() =>
+        Assert.That(SiteCatalog.Identities.Select(identity => (identity.Name, identity.IsDemonstration)),
+            Is.EqualTo(new[]
+            {
+                ("louis-agent-guide", false), ("wheatfield-kitchen", true), ("koringland-attorneys", true),
+                ("seemeeu-guesthouse", true),
+            }));
+
+    /// <summary>
     /// Every voice shows the visitor its website (Louis: "first show them the room and then they book it"): a place
     /// that answers what they ask is opened with ShowPage before the answer.
     /// </summary>

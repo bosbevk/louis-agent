@@ -12,7 +12,8 @@ public sealed class FakeIdentity(
     string name = "fakeid",
     IReadOnlyList<string>? packs = null,
     IReadOnlyDictionary<string, string>? prompts = null,
-    string? voice = null) : IAgentIdentity
+    string? voice = null,
+    bool demonstration = false) : IAgentIdentity
 {
     public string Name => name;
 
@@ -24,4 +25,7 @@ public sealed class FakeIdentity(
     public IReadOnlyList<string> Packs => packs ?? [];
 
     public string? DefaultVoice => voice;
+
+    /// <summary>Whether this test identity plays a demonstration (F127.2).</summary>
+    public bool IsDemonstration => demonstration;
 }

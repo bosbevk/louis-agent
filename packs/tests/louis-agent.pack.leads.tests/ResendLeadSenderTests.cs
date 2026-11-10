@@ -15,9 +15,15 @@ public class ResendLeadSenderTests
     private static readonly DateTimeOffset At = new(2026, 11, 8, 12, 40, 0, TimeSpan.Zero);
     private static readonly Lead Thandi = new("Thandi", "082 000 0000", "a bakery in Paarl", At);
 
-    private static LeadsOptions Options() => new() { To = "louis@example.test", From = "guide@louis-agent.dev", ApiKey = "re_test_key" };
+    private static LeadsOptions Options() => new()
+    {
+        To = "louis@example.test",
+        From = "guide@louis-agent.dev",
+        ApiKey = "re_test_key"
+    };
 
-    private static (ResendLeadSender Sender, StubHandler Handler) Sender(HttpStatusCode status, string body = "{\"id\":\"1\"}")
+    private static (ResendLeadSender Sender, StubHandler Handler) Sender(HttpStatusCode status,
+        string body = "{\"id\":\"1\"}")
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(status) { Content = new StringContent(body) });
         return (new ResendLeadSender(new HttpClient(handler), Options()), handler);
@@ -63,7 +69,35 @@ public class ResendLeadSenderTests
             Assert.That(root.GetProperty("from").GetString(), Is.EqualTo("guide@louis-agent.dev"));
             Assert.That(root.GetProperty("to")[0].GetString(), Is.EqualTo("louis@example.test"));
             Assert.That(root.GetProperty("subject").GetString(), Is.EqualTo("Lead from the site: Thandi"));
-            Assert.That(root.GetProperty("text").GetString(), Does.Contain("Reach them: 082 000 0000").And.Contain("Wants: a bakery in Paarl").And.Contain("2026-11-08 12:40:00Z"));
+            Assert.That(root.GetProperty("text").GetString(),
+                Does.Contain("Reach them: 082 000 0000").And.Contain("Wants: a bakery in Paarl").And
+                    .Contain("2026-11-08 12:40:00Z"));
+        });
+    }
+
+    /// <summary>
+    /// A demonstration's lead (F127.2, Louis's pick "mails you, marked demo") is marked in its subject, with the
+    /// business it was tried on, and in its body, so a try-out on the showroom never reads as a real customer's.
+    /// </summary>
+    [Test]
+    public async Task ADemoLead_IsMarkedDemo_InItsSubjectAndBody()
+    {
+        var (sender, handler) = Sender(HttpStatusCode.OK);
+
+        await sender.SendAsync(Thandi with
+        {
+            Identity = "seemeeu-guesthouse",
+            Demonstration = true
+        },
+            CancellationToken.None);
+
+        using var body = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.Multiple(() =>
+        {
+            Assert.That(body.RootElement.GetProperty("subject").GetString(),
+                Is.EqualTo("[demo] seemeeu-guesthouse: Thandi"));
+            Assert.That(body.RootElement.GetProperty("text").GetString(),
+                Does.Contain("Wants: a bakery in Paarl").And.Contain("a showroom demo"));
         });
     }
 
@@ -71,11 +105,14 @@ public class ResendLeadSenderTests
     [Test]
     public async Task ARefusal_BecomesTheToolsFailedText()
     {
-        var (sender, _) = Sender(HttpStatusCode.UnprocessableEntity, "{\"message\":\"The from address is not verified\"}");
+        var (sender, _) = Sender(HttpStatusCode.UnprocessableEntity,
+            "{\"message\":\"The from address is not verified\"}");
         var tools = new LeadTools(sender, TimeProvider.System);
 
         string answer = await tools.SendLead("Thandi", "082 000 0000", "a bakery in Paarl");
 
-        Assert.That(answer, Does.StartWith("Not sent: the mail service answered 422 from the mail service: {\"message\":\"The from address is not verified\"}"));
+        Assert.That(answer,
+            Does.StartWith("Not sent: the mail service answered 422 from the mail service: " +
+                           "{\"message\":\"The from address is not verified\"}"));
     }
 }

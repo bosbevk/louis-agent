@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
@@ -33,10 +34,16 @@ internal sealed class AgentSession(
     StreamFormat format = StreamFormat.Claude,
     SessionReplay? replay = null,
     SessionOpener? opener = null,
-    string? identity = null)
+    TurnIdentity? who = null)
 {
-    /// <summary>Who this session is (F109.3): the identity it named, or the one its role belongs to.</summary>
-    public string? Identity { get; } = identity;
+    /// <summary>
+    /// Who this session is (F109.3): the identity it named, or the one its role belongs to, and whether it's a
+    /// demonstration (F127.2); each turn runs as it.
+    /// </summary>
+    public TurnIdentity? Who { get; } = who;
+
+    /// <summary>Who this session is, by name.</summary>
+    public string? Identity => Who?.Name;
 
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;

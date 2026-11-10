@@ -3,21 +3,15 @@ using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Net.ServerSentEvents;
 using System.Threading.Channels;
-using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Api.Sessions.Requests.Pages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Sessions;
-using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Delegation;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
-using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -68,7 +62,13 @@ internal static class TurnStream
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
         return MessageText.Format(ApiModelText.PageInViewOnly,
-            new { Url = page.Url ?? "", Id = id, Heading = inView.Heading ?? "", Open = OpenOf(page) });
+            new
+            {
+                Url = page.Url ?? "",
+                Id = id,
+                Heading = inView.Heading ?? "",
+                Open = OpenOf(page)
+            });
     }
 
     /// <summary>
@@ -77,7 +77,11 @@ internal static class TurnStream
     /// </summary>
     private static string OpenOf(PageRequest page) =>
         page.Open is { Id: { Length: > 0 } id } open
-            ? MessageText.Format(ApiModelText.PageCardOpen, new { Id = id, Heading = open.Heading ?? "" })
+            ? MessageText.Format(ApiModelText.PageCardOpen, new
+            {
+                Id = id,
+                Heading = open.Heading ?? ""
+            })
             : "";
 
     /// <summary>
@@ -87,7 +91,13 @@ internal static class TurnStream
     {
         if (page.InView is not { Id: { Length: > 0 } id } inView) return "";
         return MessageText.Format(ApiModelText.PageInView,
-            new { Id = id, Heading = inView.Heading ?? "", Url = page.Url ?? "", Open = OpenOf(page) }).TrimEnd();
+            new
+            {
+                Id = id,
+                Heading = inView.Heading ?? "",
+                Url = page.Url ?? "",
+                Open = OpenOf(page)
+            }).TrimEnd();
     }
 
     /// <summary>
@@ -180,13 +190,7 @@ internal static class TurnStream
             while (true)
             {
                 Task<bool> next;
-                using (usage.Activate())
-                using (SessionAttachments.Use(session.Attachments))
-                using (AgentTools.Use(session.Engine.Tools.Select(t => t.Name)))
-                using (UserPlace.Use(session.Place))
-                using (SessionReplay.Use(session.Replay))
-                using (SubSessionRegistry.Use(session.SubSessions))
-                using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
+                using (TurnAmbience.Enter(session, usage, e => subSessions.Writer.TryWrite(e)))
                     next = updates.MoveNextAsync().AsTask();
 
                 while (!next.IsCompleted)

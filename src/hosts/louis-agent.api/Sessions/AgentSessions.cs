@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Sessions;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Api.Messages;
@@ -110,10 +111,14 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         DropIdle(DateTimeOffset.UtcNow);
 
         var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
-            place, llm, tool, format, replay, opener, (who ?? engines.Catalog.IdentityOf(role))?.Name);
+            place, llm, tool, format, replay, opener, Who(who ?? engines.Catalog.IdentityOf(role)));
         _sessions[session.Id] = session;
         return session;
     }
+
+    /// <summary>Who a session in this identity runs as; none for a session of no identity.</summary>
+    private static TurnIdentity? Who(IAgentIdentity? identity) =>
+        identity is null ? null : TurnIdentity.Of(identity);
 
     /// <summary>The identity a session names, or null for none named; one this instance lacks is refused.</summary>
     /// <remarks>Guard clauses: none named, a known one, then the refusal.</remarks>

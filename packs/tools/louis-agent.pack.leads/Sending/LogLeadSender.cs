@@ -23,7 +23,8 @@ public sealed class LogLeadSender(ILogger<LogLeadSender> log) : ILeadSender
     /// <inheritdoc />
     public Task SendAsync(Lead lead, CancellationToken cancellationToken)
     {
-        log.Log(LogLevel.Information, LeadsLogMessage.Logged,
+        var line = lead.Demonstration ? LeadsLogMessage.LoggedDemo : LeadsLogMessage.Logged;
+        log.Log(LogLevel.Information, line,
             new
             {
                 lead.Name,

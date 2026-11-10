@@ -2,6 +2,7 @@ using System.Reflection;
 using Description = System.ComponentModel.DescriptionAttribute;
 using LouisAgent.Choices;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Sessions;
 using LouisAgent.Packs.Leads.Messages;
 using LouisAgent.Packs.Leads.Sending;
 using LouisAgent.Packs.Leads.Tools;
@@ -121,4 +122,55 @@ public class LeadToolsTests
     /// <summary>The toolset's wire name is what a session asks for.</summary>
     [Test]
     public void TheToolset_IsNamedLeads() => Assert.That(LeadsToolset.Leads.Wire(), Is.EqualTo("leads"));
+
+    /// <summary>
+    /// A demonstration's lead (F127.2, Louis's pick "mails you, marked demo"; the identity says so): sent during a
+    /// demonstration identity's turn, it's marked a demo with that identity's name, and the model hears it was one, so
+    /// it tells the visitor no real business will answer.
+    /// </summary>
+    [Test]
+    public async Task ADemoLead_IsMarked_AndTheModelHearsItWasADemo()
+    {
+        var sender = new RecordingSender();
+
+        string answer;
+        using (TurnIdentity.Use(new TurnIdentity("seemeeu-guesthouse", true)))
+            answer = await Tools(sender).SendLead("Thandi", "082 000 0000", "a room for Friday");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((sender.Sent.Single().Identity, sender.Sent.Single().Demonstration),
+                Is.EqualTo(("seemeeu-guesthouse", true)));
+            Assert.That(answer, Does.StartWith("Sent at 2026-11-08 12:40:00Z: Thandi, 082 000 0000")
+                .And.Contain("demonstration"));
+        });
+    }
+
+    /// <summary>A lead sent in a turn that's no demonstration (the guide's) is a real one, with its identity.</summary>
+    [Test]
+    public async Task ARealIdentitysLead_IsNoDemo()
+    {
+        var sender = new RecordingSender();
+
+        using (TurnIdentity.Use(new TurnIdentity("louis-agent-guide", false)))
+            await Tools(sender).SendLead("Thandi", "082 000 0000", "a bakery site");
+
+        Assert.That((sender.Sent.Single().Identity, sender.Sent.Single().Demonstration),
+            Is.EqualTo(("louis-agent-guide", false)));
+    }
+
+    /// <summary>A demonstration's lead that only went to the log says so, and that it was a demonstration.</summary>
+    [Test]
+    public async Task TheLogSender_SaysADemoWasNotMailed()
+    {
+        var tools = new LeadTools(
+            new LogLeadSender(Microsoft.Extensions.Logging.Abstractions.NullLogger<LogLeadSender>.Instance),
+            new FixedClock());
+
+        string answer;
+        using (TurnIdentity.Use(new TurnIdentity("seemeeu-guesthouse", true)))
+            answer = await tools.SendLead("Thandi", "082 000 0000", "a room for Friday");
+
+        Assert.That(answer, Does.StartWith("Not mailed: this instance has no mail key").And.Contain("demonstration"));
+    }
 }

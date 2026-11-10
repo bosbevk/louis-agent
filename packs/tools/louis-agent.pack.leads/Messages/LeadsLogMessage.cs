@@ -8,4 +8,7 @@ public enum LeadsLogMessage
 {
     [Description("Lead (not sent, no mail key): {Name} · {Contact} · {Wants} · {At}")]
     Logged,
+
+    [Description("Demo lead (not sent, no mail key): {Name} · {Contact} · {Wants} · {At}")]
+    LoggedDemo,
 }
