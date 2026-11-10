@@ -12,17 +12,6 @@
     color: var(--mock-brand);
 }
 .mock-section ::deep p { margin: 0 0 8px; }
-/* The place its agent showed: ringed in the business's brand colour and faintly tinted with it. */
-.mock-section {
-    border-radius: 4px;
-    outline: 2px solid transparent;
-    outline-offset: 8px;
-    transition: outline-color .4s ease, background .4s ease;
-}
-.mock-section.is-shown {
-    outline-color: var(--mock-brand);
-    background: color-mix(in srgb, var(--mock-brand) 6%, transparent);
-}
 .mock-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));

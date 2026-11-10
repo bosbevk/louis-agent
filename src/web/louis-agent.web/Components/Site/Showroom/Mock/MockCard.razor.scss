@@ -6,12 +6,6 @@
     border-top: 3px solid var(--mock-brand);
     border-radius: 10px;
     background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
-    transition: box-shadow .4s ease, background .4s ease;
-}
-/* The place its agent showed: ringed in the business's brand colour, lifted a little, with a soft shadow of it. */
-.mock-card.is-shown {
-    box-shadow: 0 0 0 3px var(--mock-brand), 0 12px 26px -12px var(--mock-brand);
-    background: var(--mock-page);
 }
 .mock-card-head { display: flex; flex-direction: column; gap: 3px; }
 .mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }

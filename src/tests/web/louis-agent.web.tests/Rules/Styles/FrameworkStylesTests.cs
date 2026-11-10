@@ -159,7 +159,8 @@ public partial class FrameworkStylesTests
     /// <summary>
     /// The place a mock website's agent shows pops with the guide's own spotlight (F127.1, Louis: "make it pop more
     /// when the selection happens", "with an animation like we have"): the same animation, its ring in the business's
-    /// colour and the rest of the mock's page dimmed, then the quiet ring stays; none for less motion.
+    /// colour and the rest of the mock's page dimmed, and nothing stays after it ("remove the line afterwards"); none
+    /// for less motion.
     /// </summary>
     [Test]
     public void AShownPlace_PopsWithTheGuidesSpotlight()
@@ -176,6 +177,9 @@ public partial class FrameworkStylesTests
                     .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
             Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                 "    .mock-page ::deep .is-shown::after { display: none; }"));
+            Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
+                Does.Not.Contain(".mock-section.is-shown").And.Not.Contain(".mock-card.is-shown"),
+                "no ring stays on a place once its spotlight fades");
         });
     }
 
