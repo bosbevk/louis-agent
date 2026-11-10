@@ -98,6 +98,7 @@ public class TilesTests
     [TestCase(TileAccent.Green, "accent-green")]
     [TestCase(TileAccent.Blue, "accent-blue")]
     [TestCase(TileAccent.Yellow, "accent-yellow")]
+    [TestCase(TileAccent.Purple, "accent-purple")]
     public void ATile_WearsItsAccent(TileAccent accent, string kind)
     {
         using var ctx = new BunitContext();

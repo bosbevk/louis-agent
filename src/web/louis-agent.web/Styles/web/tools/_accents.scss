@@ -1,0 +1,16 @@
+/* The accents a tile or a demo wears (F128.1, F127.1): each colour's class sets --accent, so a rule draws in
+   var(--accent) whatever the colour, and a new colour is one line here. Written where it's included: a tool writes
+   no CSS of its own. */
+$all: (
+    red: var(--bs-danger),
+    green: var(--web-ok),
+    blue: var(--bs-info),
+    yellow: var(--bs-warning),
+    purple: var(--web-purple),
+);
+
+@mixin classes {
+    @each $name, $colour in $all {
+        .accent-#{$name} { --accent: #{$colour}; }
+    }
+}
