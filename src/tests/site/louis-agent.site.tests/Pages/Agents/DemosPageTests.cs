@@ -29,7 +29,8 @@ public class DemosPageTests
             Assert.That(typeof(DemosPage).GetCustomAttributes(typeof(LayoutAttribute), false)
                 .Cast<LayoutAttribute>().Single().LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
             Assert.That(cut.Find("#top a.start-play").GetAttribute("href"), Is.EqualTo("/guesthouse-demo"));
-            Assert.That(cut.Find("#top .start-preview svg"), Is.Not.Null, "a look at the guesthouse's website");
+            Assert.That(cut.Find("#top .start-preview img").GetAttribute("src"),
+                Is.EqualTo("images/showroom/seemeeu-banner.webp"), "a look at the guesthouse");
             Assert.That(cut.FindAll("h1"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll("a.start-cover").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]

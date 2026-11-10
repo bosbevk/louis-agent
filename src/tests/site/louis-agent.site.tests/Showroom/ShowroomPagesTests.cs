@@ -124,12 +124,51 @@ public class ShowroomPagesTests
         Assert.Multiple(() =>
         {
             Assert.That(mock.ClassList, Does.Contain(look));
-            Assert.That(mock.QuerySelector(".mock-scene svg"), Is.Not.Null, "its scene");
+            Assert.That(mock.QuerySelector(".mock-scene img.mock-photo"), Is.Not.Null, "its hero's photo");
+            Assert.That(mock.QuerySelector(".mock-scene .mock-photo-badge svg"), Is.Not.Null, "worn with its mark");
             Assert.That(mock.QuerySelector(".mock-action")?.TextContent, Is.Not.Empty, "its call to action");
             Assert.That(mock.QuerySelectorAll(".mock-facts li"), Has.Length.EqualTo(4));
             Assert.That(mock.QuerySelectorAll("[data-place]").Select(place => place.GetAttribute("data-place")),
                 Is.EqualTo(places));
         });
+    }
+
+    /// <summary>
+    /// A business's website shows real photos (Louis: "more detail and images", "like having a real image of the
+    /// room"), each one the site serves: the guesthouse its banner, rooms, breakfast and beach; the restaurant its
+    /// dining room, its five dishes and its wine; the law practice its rooms and what to bring.
+    /// </summary>
+    [TestCase(typeof(GuesthouseDemoPage), 6)]
+    [TestCase(typeof(RestaurantDemoPage), 7)]
+    [TestCase(typeof(LawPracticeDemoPage), 3)]
+    public void ABusinessWebsite_ShowsRealPhotos(Type page, int photos)
+    {
+        using var ctx = new BunitContext();
+
+        var sources = Render(ctx, page).FindAll(".site-mock .mock-page img").Select(img => img.GetAttribute("src")!)
+            .ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sources, Has.Count.EqualTo(photos));
+            Assert.That(sources.Where(src => !File.Exists(Path.Combine(TestPaths.RepoRoot,
+                "src/site/louis-agent.site/wwwroot", src))), Is.Empty, "every photo is one the site serves");
+        });
+    }
+
+    /// <summary>
+    /// The restaurant's website has a real menu (Louis: "like having a real menu"): starters, mains, puddings and the
+    /// children's, every dish with its price, each one its agent knows.
+    /// </summary>
+    [Test]
+    public void TheRestaurant_HasARealMenu()
+    {
+        using var ctx = new BunitContext();
+
+        var menu = Render(ctx, typeof(RestaurantDemoPage)).Find(".site-mock");
+
+        Assert.That((menu.QuerySelectorAll(".mock-course").Length, menu.QuerySelectorAll(".mock-dish").Length),
+            Is.EqualTo((4, 14)));
     }
 
     /// <summary>

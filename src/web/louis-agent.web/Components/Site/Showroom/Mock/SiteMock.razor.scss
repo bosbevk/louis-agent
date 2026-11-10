@@ -158,6 +158,7 @@
 .look-banner .mock-photo-badge { top: 14px; bottom: auto; left: 24px; }
 .look-banner .mock-hero-words {
     position: absolute;
+    z-index: 2;
     left: 24px;
     bottom: 18px;
     max-width: 420px;

@@ -13,9 +13,16 @@ diners' questions from what is below and pass a table request on to the owner.
 ## The restaurant
 
 - **Open** Tuesday to Sunday. Lunch 12:00 to 15:00, dinner 18:00 to 21:30 from Thursday to Saturday. Closed Mondays.
-- **Food:** country cooking from the Swartland's own farms. Lamb shank R185, the Sunday roast R165, a chicken pie
-  R125, a vegetable bake R115 (vegetarian), malva pudding R65. A children's menu, each dish R75.
-- **Drinks:** wines from the Swartland and the Riebeek Valley, by the glass or the bottle. Corkage R60.
+- **Food:** country cooking from the Swartland's own farms.
+  - Starters: snoek pâté with farm bread and apricot jam R85, a roasted beetroot and feta salad with rocket and
+    walnuts R80, the soup of the day with farm bread R70.
+  - Mains: the Sunday roast with roast potatoes and gravy R165 (Sundays only), a slow-cooked lamb shank on mash R185,
+    a chicken pie with a green salad R125, bobotie with yellow rice and chutney R140, a vegetable bake R115
+    (vegetarian).
+  - Puddings: malva pudding with custard R65, melktert with cinnamon R55, ice cream with chocolate sauce R45.
+  - A children's menu, each dish R75: fish and chips, chicken strips and chips, macaroni cheese.
+- **Drinks:** wines from the Swartland and the Riebeek Valley, by the glass or the bottle. Corkage R60. Rooibos iced
+  tea R35, filter coffee R30.
 - **Tables:** 60 seats inside and on the stoep, wheelchair access, parking behind the restaurant. Groups of more than
   12 and private functions are by arrangement with the owner.
 - **Diets:** the kitchen can leave out gluten or dairy on most dishes if asked when booking.

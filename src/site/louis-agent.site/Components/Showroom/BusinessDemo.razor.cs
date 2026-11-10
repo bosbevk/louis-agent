@@ -75,9 +75,13 @@ public partial class BusinessDemo
     [Parameter]
     public MockLook Look { get; set; }
 
-    /// <summary>Its website's scene, drawn for it.</summary>
+    /// <summary>Its website's hero photo, from the site's own images, worn with its brand.</summary>
     [Parameter, EditorRequired]
-    public RenderFragment Scene { get; set; } = null!;
+    public string HeroPhoto { get; set; } = "";
+
+    /// <summary>What the hero's photo shows, for a screen reader.</summary>
+    [Parameter, EditorRequired]
+    public string HeroPhotoAlt { get; set; } = "";
 
     /// <summary>Its website's call to action: "Book a table".</summary>
     [Parameter, EditorRequired]
