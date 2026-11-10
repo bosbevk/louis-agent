@@ -8,12 +8,13 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 public sealed record MockColours
 {
     /// <summary>The colours, each checked.</summary>
-    public MockColours(string brand, string onBrand, string page, string ink)
+    public MockColours(string brand, string onBrand, string page, string ink, string? label = null)
     {
         Brand = Checked(brand, nameof(brand));
         OnBrand = Checked(onBrand, nameof(onBrand));
         Page = Checked(page, nameof(page));
         Ink = Checked(ink, nameof(ink));
+        Label = label is null ? OnBrand : Checked(label, nameof(label));
     }
 
     /// <summary>The business's brand colour: its header and its customer's messages.</summary>
@@ -27,6 +28,12 @@ public sealed record MockColours
 
     /// <summary>The page's text.</summary>
     public string Ink { get; }
+
+    /// <summary>
+    /// Its small capitals' colour (F127.2): the tagline, the menu and the labels; the text on the brand colour unless
+    /// the brand has its own.
+    /// </summary>
+    public string Label { get; }
 
     /// <summary>A colour as six hex digits after a <c>#</c>, or a refusal naming the parameter.</summary>
     private static string Checked(string colour, string name) =>

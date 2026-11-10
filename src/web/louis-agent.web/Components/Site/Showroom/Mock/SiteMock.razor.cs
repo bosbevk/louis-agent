@@ -78,6 +78,10 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public string? HeroNote { get; set; }
 
+    /// <summary>Its header: a band of its brand colour unless it has one of its own (F127.2).</summary>
+    [Parameter]
+    public MockHeader Header { get; set; }
+
     /// <summary>Its look: its words beside its scene unless it has a look of its own.</summary>
     [Parameter]
     public MockLook Look { get; set; }
@@ -150,12 +154,6 @@ public partial class SiteMock : IAsyncDisposable
 
     /// <summary>The pages its menu lists.</summary>
     private IEnumerable<MockPage> MenuPages => _map.Menu;
-
-    /// <summary>A menu word's classes: the page the website is on is marked.</summary>
-    private string NavClass(MockPage page) => page.Path == CurrentPage ? "mock-nav-item is-current" : "mock-nav-item";
-
-    /// <summary>The current page's menu word says so, for a screen reader.</summary>
-    private string? CurrentMark(MockPage page) => page.Path == CurrentPage ? "page" : null;
 
     /// <summary>The address's classes: new after a page change, so it glows.</summary>
     private string AddressClass => _pageChanges > 0 ? "mock-address is-new" : "mock-address";
@@ -251,11 +249,11 @@ public partial class SiteMock : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>The mock's classes: a mock, in its business's typeface and look.</summary>
-    private string Classes => $"site-mock font-{Font.Wire()} look-{Look.Wire()}";
+    /// <summary>The mock's classes: a mock, in its business's faces, look and header.</summary>
+    private string Classes => $"site-mock font-{Font.Wire()} look-{Look.Wire()} head-{Header.Wire()}";
 
     /// <summary>The business's colours as the variables the mock's styles read.</summary>
     private string ColourStyle =>
         $"--mock-brand: {Colours.Brand}; --mock-on-brand: {Colours.OnBrand}; --mock-page: {Colours.Page}; " +
-        $"--mock-ink: {Colours.Ink}";
+        $"--mock-ink: {Colours.Ink}; --mock-label: {Colours.Label}";
 }

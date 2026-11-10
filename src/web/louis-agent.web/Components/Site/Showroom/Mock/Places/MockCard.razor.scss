@@ -63,6 +63,6 @@
     object-fit: cover;
 }
 .mock-card-head { display: flex; flex-direction: column; gap: 3px; }
-.mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }
+.mock-card-title { font: 600 16px/1.2 var(--mock-face); }
 .mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }
 .mock-card-words { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; opacity: .85; }

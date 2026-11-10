@@ -68,6 +68,10 @@ public partial class BusinessDemo
     [Parameter]
     public string? HeroNote { get; set; }
 
+    /// <summary>Its website's header, as its brand wears it (F127.2).</summary>
+    [Parameter]
+    public MockHeader Header { get; set; }
+
     /// <summary>Its website's look (Louis: "give each one a different look").</summary>
     [Parameter]
     public MockLook Look { get; set; }

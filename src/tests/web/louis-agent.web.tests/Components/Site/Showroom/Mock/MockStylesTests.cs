@@ -89,8 +89,9 @@ public partial class MockStylesTests
             Assert.That(Rule(page, ".mock-view"), Does.Contain("animation: mock-page-in"));
             Assert.That(page, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
                                            "    .mock-view { animation: none; }"));
-            Assert.That(Narrow(Styles("SiteMock.razor.scss")),
-                Does.Not.Contain(".mock-nav { display: none; }").And.Contain("overflow-x: auto;"));
+            Assert.That(Narrow(Styles("Head/MockHead.razor.scss")),
+                Does.Not.Contain(".mock-nav { display: none; }").And.Contain("overflow-x: auto;"),
+                "the header lays its menu out itself since step 9");
         });
     }
 

@@ -1,15 +1,58 @@
-/* The typefaces a mocked business's website may wear (F127.1, its sample brand): each MockFont's class, by its wire
-   name, sets --mock-face, from the fonts a browser already has, so a mock loads nothing. Written where it's included:
-   a tool writes no CSS of its own. */
+/* The faces a mocked business's website may wear (F127.1, its sample brand): each MockFont's class, by its wire name,
+   sets --mock-face (its display face, for its wordmark and headings), --mock-text (its text) and --mock-caps (its small
+   capitals: the tagline, the menu, the labels). A serif, a slab, a sans or a rounded face is one face in all three
+   roles, from the fonts a browser already has. Since F127.2 a brand may wear a pairing the framework serves itself
+   (web/showroom/fonts), each with a fallback a browser has until it loads. Written where it's included: a tool writes
+   no CSS of its own. */
+@use "sass:map";
+@use "sass:meta";
+
 $all: (
-    "serif": (Georgia, "Times New Roman", serif),
-    "slab": (Rockwell, "Roboto Slab", "Courier New", serif),
-    "sans": ("Segoe UI", Helvetica, Arial, sans-serif),
-    "rounded": (Nunito, "Varela Round", "Trebuchet MS", sans-serif),
+    "serif": (
+        display: (Georgia, "Times New Roman", serif),
+        text: (Georgia, "Times New Roman", serif),
+        label: (Georgia, "Times New Roman", serif),
+    ),
+    "slab": (
+        display: (Rockwell, "Roboto Slab", "Courier New", serif),
+        text: (Rockwell, "Roboto Slab", "Courier New", serif),
+        label: (Rockwell, "Roboto Slab", "Courier New", serif),
+    ),
+    "sans": (
+        display: ("Segoe UI", Helvetica, Arial, sans-serif),
+        text: ("Segoe UI", Helvetica, Arial, sans-serif),
+        label: ("Segoe UI", Helvetica, Arial, sans-serif),
+    ),
+    "rounded": (
+        display: (Nunito, "Varela Round", "Trebuchet MS", sans-serif),
+        text: (Nunito, "Varela Round", "Trebuchet MS", sans-serif),
+        label: (Nunito, "Varela Round", "Trebuchet MS", sans-serif),
+    ),
+    "cormorant": (
+        display: ("Cormorant Garamond", Georgia, serif),
+        text: ("Jost", "Segoe UI", sans-serif),
+        label: ("Jost", "Segoe UI", sans-serif),
+    ),
+    "gloock": (
+        display: ("Gloock", Georgia, serif),
+        text: ("Lora", Georgia, serif),
+        label: ("Josefin Sans", "Segoe UI", sans-serif),
+    ),
+    "bodoni": (
+        display: ("Bodoni Moda", Didot, "Bodoni 72", Georgia, serif),
+        text: ("Hanken Grotesk", "Segoe UI", sans-serif),
+        label: ("Hanken Grotesk", "Segoe UI", sans-serif),
+    ),
 );
 
+// Each list is written as Sass would print it, quotes kept (meta.inspect): a plain interpolation drops them, and a
+// family like "Bodoni 72" is no longer one without them.
 @mixin classes {
-    @each $name, $face in $all {
-        .font-#{$name} { --mock-face: #{$face}; }
+    @each $name, $faces in $all {
+        .font-#{$name} {
+            --mock-face: #{meta.inspect(map.get($faces, display))};
+            --mock-text: #{meta.inspect(map.get($faces, text))};
+            --mock-caps: #{meta.inspect(map.get($faces, label))};
+        }
     }
 }

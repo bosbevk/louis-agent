@@ -31,8 +31,11 @@ public partial class RestaurantDemoPage
         new(4, "It sends the details only after the family says yes."),
     ];
 
-    /// <summary>Wheatfield Kitchen's sample brand: a farm green, cream, and dark brown ink.</summary>
-    private static readonly MockColours Brand = new("#2f5d45", "#f6f1e7", "#f6f1e7", "#2b2418");
+    /// <summary>
+    /// Wheatfield Kitchen's sample brand, a Swartland farm bistro (F127.2, mockup 0): olive, linen and its brown ink,
+    /// its labels in harvest gold and its mark in wheat.
+    /// </summary>
+    private static readonly MockColours Brand = new("#2c4a34", "#f7f0e1", "#f7f0e1", "#2b2418", "#9c7a2f");
 
     /// <summary>What a custom agent could add for a restaurant.</summary>
     private static readonly DemoNote[] Notes =

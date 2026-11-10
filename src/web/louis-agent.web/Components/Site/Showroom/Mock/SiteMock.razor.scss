@@ -14,6 +14,7 @@
     height: 660px;
     overflow: hidden;
     border-radius: 14px;
+    font-family: var(--mock-text);
     color: var(--mock-ink);
     background: var(--mock-page);
     box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08), 0 30px 60px -30px var(--accent);
@@ -56,30 +57,14 @@
     .mock-loading { display: none; }
     .mock-address.is-new { animation: none; }
 }
-.mock-header {
-    display: flex;
-    flex: none;
-    align-items: center;
-    gap: 22px;
-    padding: 14px 22px;
-    color: var(--mock-on-brand);
-    background: var(--mock-brand);
-}
-.mock-names { display: flex; flex-direction: column; line-height: 1.15; }
-.mock-name { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; }
-.mock-tagline { font-size: 11.5px; letter-spacing: .04em; opacity: .8; }
-.mock-nav { display: flex; gap: 18px; margin-left: auto; font-size: 13px; opacity: .85; }
-/* Its menu's words are its pages (F127.2), buttons a visitor clicks; the page it's on is underlined. */
-.mock-nav-item { padding: 4px 0; border: 0; font: inherit; color: inherit; background: none; cursor: pointer; }
-.mock-nav-item:hover, .mock-nav-item.is-current { box-shadow: inset 0 -2px 0 currentColor; }
-.mock-nav-item:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+/* The header draws itself (MockHead); the hero's photo badge wears the mark here. */
 .mock-mark { display: inline-flex; flex: none; }
-.mock-header .mock-mark { width: 34px; height: 34px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
 
-/* The business's typeface (its sample brand): its class sets --mock-face, which its header, hero and places wear. */
+/* The business's faces (its sample brand): its class sets --mock-face, its display face, which its header, hero and
+   places' headings wear; --mock-text, the page's text; and --mock-caps, its small capitals (F127.2). */
 @include faces.classes;
-.mock-header, .mock-hero { font-family: var(--mock-face); }
+.mock-hero { font-family: var(--mock-face); }
 
 /* The page: the hero, a strip of facts, then the places, beside the widget's room. */
 .mock-page {
@@ -140,11 +125,13 @@
 }
 .mock-photo-badge .mock-mark { width: 24px; height: 24px; }
 .mock-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+/* The facts in the brand's small capitals (F127.2, mockup 0). */
 .mock-facts li {
     padding: 6px 12px;
     border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+    font: 600 10.5px/1.3 var(--mock-caps);
+    letter-spacing: .12em;
+    text-transform: uppercase;
     color: var(--mock-brand);
     background: color-mix(in srgb, var(--mock-brand) 10%, var(--mock-page));
 }
@@ -210,11 +197,9 @@
 }
 
 /* A narrow mock (a phone, or a small stage): the page takes the whole width and the hero stacks, with room under the
-   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). The menu
-   keeps its pages in a row of its own under the name, scrolling sideways, so a phone can click through them too. */
+   page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). The header
+   lays itself out (MockHead). */
 @container (max-width: 760px) {
-    .mock-header { flex-wrap: wrap; row-gap: 8px; }
-    .mock-nav { flex-basis: 100%; margin-left: 0; overflow-x: auto; white-space: nowrap; }
     .mock-page { padding: 0 16px 280px; }
     .mock-hero { flex-direction: column; align-items: stretch; padding: 18px 0; }
     .mock-hero-line { font-size: 21px; }

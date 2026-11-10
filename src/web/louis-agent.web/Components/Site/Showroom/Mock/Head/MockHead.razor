@@ -1,0 +1,23 @@
+@* A mocked business's header (F127.1, apart from its mock since F127.2): its mark, its wordmark and tagline in its
+   brand's faces, and its menu, its pages, which a visitor can click through. Its mock's class picks the treatment, a
+   band of its brand colour, a rule over it, or a double line under it. *@
+<div class="mock-header">
+    @if (Mark is not null)
+    {
+        <span class="mock-mark" aria-hidden="true">@Mark</span>
+    }
+    <span class="mock-names">
+        <b class="mock-name">@Business</b>
+        @if (Tagline is not null)
+        {
+            <span class="mock-tagline">@Tagline</span>
+        }
+    </span>
+    <span class="mock-nav">
+        @foreach (var entry in Menu)
+        {
+            <button class="@NavClass(entry)" type="button" aria-current="@CurrentMark(entry)"
+                    @onclick="() => Went.InvokeAsync(entry.Path)">@entry.Label</button>
+        }
+    </span>
+</div>

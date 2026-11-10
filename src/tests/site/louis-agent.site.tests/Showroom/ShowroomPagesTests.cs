@@ -97,6 +97,30 @@ public class ShowroomPagesTests
     }
 
     /// <summary>
+    /// Each business wears its own brand (F127.2 step 9, mockup 0, Louis: "world class and fancy"): its faces, its
+    /// header and its labels' colour, a coastal guesthouse in Atlantic and sand, a farm bistro in olive and wheat, a
+    /// country firm in midnight and brass.
+    /// </summary>
+    [TestCase(typeof(GuesthouseDemoPage), "font-cormorant", "head-band", "--mock-brand: #0b3a4a",
+        "--mock-label: #8fbfb9")]
+    [TestCase(typeof(RestaurantDemoPage), "font-gloock", "head-lined", "--mock-brand: #2c4a34",
+        "--mock-label: #9c7a2f")]
+    [TestCase(typeof(LawPracticeDemoPage), "font-bodoni", "head-ruled", "--mock-brand: #14213d",
+        "--mock-label: #b08d57")]
+    public void ABusiness_WearsItsOwnBrand(Type page, string faces, string header, string brand, string label)
+    {
+        using var ctx = new BunitContext();
+
+        var mock = Render(ctx, page).Find(".site-mock");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(mock.ClassList, Does.Contain(faces).And.Contain(header));
+            Assert.That(mock.GetAttribute("style"), Does.Contain(brand).And.Contain(label));
+        });
+    }
+
+    /// <summary>
     /// A business's website is a full one, each in a look of its own (Louis: "a bit bland, we need to sell it ... give
     /// each one a different look"): its scene, a call to action, four facts, then its places, each at its address on
     /// the business's site, the places its agent can show.

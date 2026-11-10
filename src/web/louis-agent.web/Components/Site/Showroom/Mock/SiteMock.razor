@@ -1,3 +1,4 @@
+@using LouisAgent.Web.Components.Site.Showroom.Mock.Head
 @* A business's website, mocked (F127.1, Louis's pick 3a, made fuller: "a bit bland, we need to sell it"): a browser bar
    with its address, its header with its sample brand (its mark, its name and tagline, its typeface) and its menu, then
    its page, which scrolls inside the mock: on home the hero in the business's look with its scene and a call to
@@ -14,27 +15,8 @@
             <span class="mock-loading" @key="LoadingKey"></span>
         }
     </div>
-    <div class="mock-header">
-        @if (Mark is not null)
-        {
-            <span class="mock-mark" aria-hidden="true">@Mark</span>
-        }
-        <span class="mock-names">
-            <b class="mock-name">@Business</b>
-            @if (Tagline is not null)
-            {
-                <span class="mock-tagline">@Tagline</span>
-            }
-        </span>
-        @* Its menu: its pages, which a visitor can click through (F127.2). *@
-        <span class="mock-nav">
-            @foreach (var entry in MenuPages)
-            {
-                <button class="@NavClass(entry)" type="button" aria-current="@CurrentMark(entry)"
-                        @onclick="() => GoAsync(entry.Path)">@entry.Label</button>
-            }
-        </span>
-    </div>
+    <MockHead Mark="Mark" Business="@Business" Tagline="@Tagline" Menu="MenuPages" Current="@CurrentPage"
+              Went="GoAsync" />
     <div class="mock-page" @ref="_page">
         @if (ShowsHome)
         {
