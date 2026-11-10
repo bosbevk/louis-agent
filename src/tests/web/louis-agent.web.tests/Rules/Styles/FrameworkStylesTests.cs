@@ -167,7 +167,7 @@ public partial class FrameworkStylesTests
     {
         string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss")).ReplaceLineEndings("\n");
-        int light = mock.IndexOf(".mock-page ::deep .is-shown::after {", StringComparison.Ordinal);
+        int light = mock.IndexOf(".mock-page ::deep .mock-section.is-shown::after {", StringComparison.Ordinal);
 
         Assert.Multiple(() =>
         {
@@ -176,10 +176,29 @@ public partial class FrameworkStylesTests
                 Does.Contain("animation: area-spotlight 4s var(--web-ease) both;")
                     .And.Contain("0 0 0 3px var(--mock-brand)").And.Contain("0 0 0 200vmax"));
             Assert.That(mock, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
-                "    .mock-page ::deep .is-shown::after { display: none; }"));
-            Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
-                Does.Not.Contain(".mock-section.is-shown").And.Not.Contain(".mock-card.is-shown"),
-                "no ring stays on a place once its spotlight fades");
+                                           "    .mock-page ::deep .mock-section.is-shown::after { display: none; }"));
+        });
+    }
+
+    /// <summary>
+    /// A card the agent shows is pressed, not ringed (F127.1, Louis: "this is press boxes so do not show the ring
+    /// around this type rather the press, the others without the press gets the ring"): it sinks and springs back as
+    /// a tap would, a ripple of the business's colour spreading from its middle; still, for less motion.
+    /// </summary>
+    [Test]
+    public void AShownCard_IsPressed_NotRinged()
+    {
+        string card = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Mock/MockCard.razor.scss")).ReplaceLineEndings("\n");
+        string mock = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/web/louis-agent.web/Components/Site/Showroom/Mock/SiteMock.razor.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(card, Does.Contain("animation: mock-press").And.Contain("animation: mock-ripple"));
+            Assert.That(card, Does.Contain("@media (prefers-reduced-motion: reduce) {\n" +
+                                           "    .mock-card.is-shown, .mock-card.is-shown::after { animation: none; }"));
+            Assert.That(mock, Does.Not.Contain("::deep .is-shown::after"), "the spotlight's ring is for sections only");
         });
     }
 

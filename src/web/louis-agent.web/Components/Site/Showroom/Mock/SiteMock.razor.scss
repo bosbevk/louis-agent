@@ -129,13 +129,14 @@
 }
 .look-banner .mock-hero-line { font-size: 24px; }
 
-/* The place its agent shows pops with the guide's own spotlight (Louis: "make it pop more when the selection happens",
+/* A section its agent shows pops with the guide's own spotlight (Louis: "make it pop more when the selection happens",
    "with an animation like we have"): the same animation, springing in and fading after four seconds, its ring in the
    business's colour, and the rest of the mock's page dimmed around it (the page clips the dim, so the header, the
    chat and the visitor's page stay bright). Nothing stays after it (Louis: "remove the line afterwards"): the bar
-   keeps the place's address, which is all a visitor who asked for less motion sees. */
-.mock-page ::deep .is-shown { position: relative; }
-.mock-page ::deep .is-shown::after {
+   keeps the place's address, which is all a visitor who asked for less motion sees. A card is pressed instead, in
+   its own styles ("this is press boxes ... rather the press"). */
+.mock-page ::deep .mock-section.is-shown { position: relative; }
+.mock-page ::deep .mock-section.is-shown::after {
     content: "";
     position: absolute;
     inset: -8px;
@@ -147,7 +148,7 @@
     animation: area-spotlight 4s var(--web-ease) both;
 }
 @media (prefers-reduced-motion: reduce) {
-    .mock-page ::deep .is-shown::after { display: none; }
+    .mock-page ::deep .mock-section.is-shown::after { display: none; }
 }
 
 .mock-widget {
