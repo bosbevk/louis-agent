@@ -59,6 +59,12 @@ public partial class RecordedChat : IDisposable
     [Parameter]
     public RenderFragment? Ending { get; set; }
 
+    /// <summary>
+    /// Told as each turn starts, by its number from one (F127.1): a showroom's cues light in step with it.
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> TurnStarted { get; set; }
+
     /// <summary>Starts playing once the window is on the page.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -81,8 +87,12 @@ public partial class RecordedChat : IDisposable
         // A page that goes away, or a second play, stops this one where it is.
         try
         {
-            foreach (var recorded in Turns)
-                await PlayTurnAsync(recorded, stop);
+            // Each turn says it starts, so what follows the play (a showroom's cues) keeps step with it.
+            for (int number = 1; number <= Turns.Count; number++)
+            {
+                await TurnStarted.InvokeAsync(number);
+                await PlayTurnAsync(Turns[number - 1], stop);
+            }
         }
         catch (OperationCanceledException)
         {

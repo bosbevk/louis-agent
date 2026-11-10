@@ -135,6 +135,25 @@ public class RecordedChatTests
         Assert.That(cut.FindAll(".recorded-chat .tool, .recorded-chat .delegation"), Is.Empty);
     }
 
+    /// <summary>
+    /// Each turn says when it starts, by its number from one (F127.1), so a showroom's cues light in step with the
+    /// play.
+    /// </summary>
+    [Test]
+    public void EachTurn_SaysWhenItStarts()
+    {
+        using var ctx = Context();
+        var started = new List<int>();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, [OneTurn[0], OneTurn[0]])
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.TurnStarted, (int turn) => started.Add(turn)));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".recorded-end"), Has.Count.EqualTo(1)));
+        Assert.That(started, Is.EqualTo(new[] { 1, 2 }));
+    }
+
     /// <summary>A recording the site can't serve shows the ending at once, never an empty window that waits.</summary>
     [Test]
     public void AMissingRecording_GoesStraightToTheEnding()

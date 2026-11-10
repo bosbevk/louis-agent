@@ -1,0 +1,12 @@
+@* What to watch (F127.1): a demo's few short cues, lit as the play reaches their turn, the newest pulsing, a bar over
+   them filling. *@
+<div class="demo-cues">
+    <span class="cues-heading">@Heading</span>
+    <div class="cues-progress" aria-hidden="true"><i style="@ProgressStyle"></i></div>
+    <ol class="cues-list">
+        @foreach (var row in Rows)
+        {
+            <li class="@row.Classes"><span class="cue-n">@row.Number</span><span>@row.Text</span></li>
+        }
+    </ol>
+</div>
