@@ -32,11 +32,11 @@ public partial class GuesthouseDemoPage
         new(4, "The booking goes to the owner only after the guest says yes."),
     ];
 
-    /// <summary>Seemeeu Guesthouse's sample brand: a deep sea blue, sand, and dark slate ink.</summary>
-    private static readonly MockColours Brand = new("#0e4f63", "#f7f1e3", "#fbf8f1", "#1c2b33");
-
-    /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["Rooms", "Breakfast", "The beach", "Staying with us"];
+    /// <summary>
+    /// Seemeeu Guesthouse's sample brand, a coastal boutique (F127.2, mockup 0): Atlantic, sand, salt and its slate
+    /// ink, its labels in sea glass.
+    /// </summary>
+    private static readonly MockColours Brand = new("#0b3a4a", "#e9dcc3", "#fbf8f2", "#14262d", "#8fbfb9");
 
     /// <summary>
     /// What a custom agent could add for a guesthouse (Louis: "we could integrate with the booking system if they

@@ -30,6 +30,7 @@ public partial class ChatWidget : IAsyncDisposable
     private const string ChatsKey = "louis-agent.widget-chats";
 
     private bool _open;
+    private ChatWindowSize _size;
     private JsModule? _module;
     private string? _pageSentFor;
 
@@ -127,11 +128,13 @@ public partial class ChatWidget : IAsyncDisposable
     private GuideDoor? Door => Services.GetService<GuideDoor>();
 
     /// <summary>
-    /// A button asked the guide a question: the panel opens and it goes as if the visitor had typed it.
+    /// A button asked the guide a question: the panel opens and it goes as if the visitor had typed it. A minimised
+    /// panel comes back, so the answer is never hidden (F127.2).
     /// </summary>
     private void OnAsked(string question) => InvokeAsync(async () =>
     {
         _open = true;
+        if (_size == ChatWindowSize.Minimised) _size = ChatWindowSize.Normal;
         Runner.Draft = question;
         StateHasChanged();
         await SendAsync();
@@ -213,7 +216,20 @@ public partial class ChatWidget : IAsyncDisposable
 
     private Task<string> OpenSessionAsync() => Api.CreateSessionAsync(Toolsets, identity: Identity);
 
-    private void Toggle() => _open = !_open;
+    /// <summary>Opens or folds the panel; a panel that opens again comes as it first did.</summary>
+    private void Toggle()
+    {
+        _open = !_open;
+        _size = ChatWindowSize.Normal;
+    }
+
+    /// <summary>The panel's classes: its size, as the styles read it (F127.2).</summary>
+    private string PanelClasses => _size switch
+    {
+        ChatWindowSize.Minimised => "widget-panel is-min",
+        ChatWindowSize.Maximised => "widget-panel is-max",
+        _ => "widget-panel",
+    };
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 }

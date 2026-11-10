@@ -1,101 +1,65 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_bdce4b60c80042a3ac097d1d753efa16","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_955225769c734e1bbaf9bd43ac3616f1","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I have"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I have their"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" her"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" name and contact, but"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" name and contact details"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I still need the matter and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", so"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" what"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" timing. They"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" m"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" left is what"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"entioned"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" she wants:"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Thursday morning, and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a Thursday morning cons"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the matter is chang"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ultation about upd"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ing a"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ating her"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" will after divorce."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" will after her divorce. I"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I should read"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll repeat that"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" that back to them in"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" back to her and ask if"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one sentence and ask wh"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" it"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ether I can"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s right"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" send the"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" consultation request"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", keeping it br"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" keep it short and"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" not"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" go"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" into more"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" detail than she g"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ave me"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":","}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" since \""}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"a will change after my divorce"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\" is how"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" she put"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" it."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ief."}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -107,52 +71,46 @@ event: content_block_start
 data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Thank"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Thank you, Anna."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" you, Anna. May"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Sh"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" I send the pract"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"all I send this"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ice this"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to the practice:"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" request: a first consultation about"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a first"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" chang"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" consultation about"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ing your will after your divorce"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" changing your will after your divor"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", on a Thursday mor"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ce, on a Thursday"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ning if"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" morning if"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" possible, with"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" poss"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ible, with the practice cont"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" re"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"acting you at an"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ply to"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"na@example.com to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" anna@example.com? The"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" practice will confirm the"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" time."}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" confirm?"}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}

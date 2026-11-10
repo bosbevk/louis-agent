@@ -1,4 +1,6 @@
 using LouisAgent.Choices;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -7,9 +9,9 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 
 /// <summary>
 /// A mock of a business's own website (F127.1, Louis's pick 3a, made fuller): a browser bar with its address, its name
-/// and menu in its brand colour, then a page that scrolls inside the mock (a hero in its look, a strip of facts and its
-/// places), and its agent chatting in a widget in the corner. A visitor sees the agent where its customers would meet
-/// it, on a website like their own.
+/// and menu in its brand colour, then a page that scrolls inside the mock (on home a hero in its look and a strip of
+/// facts, then its pages, F127.2, only the one it's on showing), and its agent chatting in a widget in the corner. A
+/// visitor sees the agent where its customers would meet it, on a website like their own, and can click through it.
 /// </summary>
 /// <remarks>
 /// Device mock-up, as product pages show an app in a phone or a browser (the research: Copilot Studio's demo website,
@@ -18,7 +20,10 @@ namespace LouisAgent.Web.Components.Site.Showroom.Mock;
 /// and <see cref="MockLook"/>), so its look is its own and never the site's theme. The page keeps clear of the widget
 /// and lays itself out by the mock's own width, not the screen's, since the stage beside the rail is narrower than
 /// the screen. The place its agent shows is handed down to the places as a cascading value, so a site writes its
-/// places once and never says which is lit; the mock scrolls its own page there through a module beside it.
+/// places once and never says which is lit; the mock scrolls its own page there through a module beside it. Its pages
+/// register with it as Microsoft's TabSet example has its tabs do (<see cref="MockPage"/>), and the page it's on is
+/// handed down the same way. Where it is has two sources, its agent and a visitor's click; the agent's next place
+/// wins, so the recording and the visitor never fight over the website.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0093-a-script-is-a-module-beside-its-component.md">ADR 0093: a script is a module beside its component</seealso>
 public partial class SiteMock : IAsyncDisposable
@@ -26,9 +31,18 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>The name its places know the shown place by, handed down to them.</summary>
     public const string ShownPlace = "MockShown";
 
+    /// <summary>The name its pages know the page it's on by, handed down to them.</summary>
+    public const string CurrentPageName = "MockCurrentPage";
+
+    private readonly MockSiteMap _map = new();
     private JsModule? _module;
     private ElementReference _page;
     private string? _scrolledTo;
+    private string? _went;
+    private string? _shownBefore;
+    private string? _pageDrawn;
+    private string? _pageNoted;
+    private int _pageChanges;
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
 
@@ -56,10 +70,6 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public MockFont Font { get; set; }
 
-    /// <summary>The words of its menu.</summary>
-    [Parameter]
-    public IReadOnlyList<string> NavItems { get; set; } = [];
-
     /// <summary>Its hero's line: "Fresh bread before seven."</summary>
     [Parameter, EditorRequired]
     public string HeroLine { get; set; } = "";
@@ -67,6 +77,10 @@ public partial class SiteMock : IAsyncDisposable
     /// <summary>A few words under the hero's line; none for a hero of one line.</summary>
     [Parameter]
     public string? HeroNote { get; set; }
+
+    /// <summary>Its header: a band of its brand colour unless it has one of its own (F127.2).</summary>
+    [Parameter]
+    public MockHeader Header { get; set; }
 
     /// <summary>Its look: its words beside its scene unless it has a look of its own.</summary>
     [Parameter]
@@ -95,9 +109,16 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public IReadOnlyList<string> Facts { get; set; } = [];
 
-    /// <summary>Its places, under the facts: its sections and cards, each with its own address.</summary>
+    /// <summary>
+    /// Its pages (F127.2): each a <see cref="MockPage"/> with its address, its menu word and its sections, in the order
+    /// its menu reads.
+    /// </summary>
     [Parameter]
-    public RenderFragment? Places { get; set; }
+    public RenderFragment? Pages { get; set; }
+
+    /// <summary>Told where a visitor's click went, by the page's address, so the site can follow.</summary>
+    [Parameter]
+    public EventCallback<string> Went { get; set; }
 
     /// <summary>
     /// The place its agent showed, by its address on the business's site (<c>/rooms/garden</c>); none at home.
@@ -109,16 +130,113 @@ public partial class SiteMock : IAsyncDisposable
     [Parameter]
     public string AgentLabel { get; set; } = "";
 
-    /// <summary>The agent: its recorded chat.</summary>
+    /// <summary>Whether its agent answers live, so its widget says so (F127.2); a recording until then.</summary>
+    [Parameter]
+    public bool Live { get; set; }
+
+    /// <summary>The agent: its recorded chat, or a live one.</summary>
     [Parameter, EditorRequired]
     public RenderFragment Agent { get; set; } = null!;
 
     /// <summary>The module beside the mock that scrolls its page, imported the first time a place is shown.</summary>
     private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.Mock);
 
-    /// <summary>Scrolls the mock's own page to a newly shown place, once a render has drawn it lit.</summary>
+    /// <summary>
+    /// Where the website is: where a visitor's click went, else the place its agent showed; none at home.
+    /// </summary>
+    private string? Here => _went ?? Shown;
+
+    /// <summary>The page the website is on.</summary>
+    private string CurrentPage => _map.PageOf(Here);
+
+    /// <summary>Whether the hero shows: on home, or before a site has written any page.</summary>
+    private bool ShowsHome => !_map.Any || CurrentPage == MockPaths.Home;
+
+    /// <summary>The pages its menu lists.</summary>
+    private IEnumerable<MockPage> MenuPages => _map.Menu;
+
+    /// <summary>The address's classes: new after a page change, so it glows.</summary>
+    private string AddressClass => _pageChanges > 0 ? "mock-address is-new" : "mock-address";
+
+    /// <summary>The address's key: a new one on each page change, so it's drawn afresh and glows again.</summary>
+    private string AddressKey => $"address-{_pageChanges}";
+
+    /// <summary>The loading line's key: a new one on each page change, so it runs again.</summary>
+    private string LoadingKey => $"loading-{_pageChanges}";
+
+    /// <summary>
+    /// A page says it's there; the menu draws again with it. The pages arrive as the website first draws, so the page
+    /// it lands on is where it starts, not a change.
+    /// </summary>
+    internal void Register(MockPage page)
+    {
+        if (!_map.Add(page)) return;
+        _pageNoted = CurrentPage;
+        StateHasChanged();
+    }
+
+    /// <summary>Counts a change of page, so the bar loads like a browser; the page it starts on is none.</summary>
+    private void NotePage()
+    {
+        var page = CurrentPage;
+        if (_pageNoted is not null && page != _pageNoted) _pageChanges++;
+        _pageNoted = page;
+    }
+
+    /// <summary>
+    /// What its live agent reads (F127.2), as the guide reads a real page: the words of the page the website is on,
+    /// every page's places by their addresses, and its menu as the links, so the agent sees this website and can send
+    /// the visitor anywhere on it.
+    /// </summary>
+    public async Task<Page?> ReadPageAsync()
+    {
+        var page = await Module.InvokeAsync<Page?>("pageOf", _page, CurrentPage, Title);
+        return page is null
+            ? null
+            : page with { Links = [.. MenuPages.Select(entry => new PageArea(entry.Path, entry.Label))] };
+    }
+
+    /// <summary>The website's title as a browser tab shows it: its name, and its tagline when it has one.</summary>
+    private string Title => Tagline is null ? Business : $"{Business} · {Tagline}";
+
+    /// <summary>A page goes.</summary>
+    internal void Unregister(MockPage page) => _map.Remove(page);
+
+    /// <summary>A page's word in the menu, for a way back to it.</summary>
+    internal string? LabelOf(string? path) => _map.LabelOf(path);
+
+    /// <summary>A visitor's click: the website goes there, and the site hears of it.</summary>
+    internal async Task GoAsync(string path)
+    {
+        _went = path;
+        NotePage();
+        StateHasChanged();
+        await Went.InvokeAsync(path);
+    }
+
+    /// <summary>A place its agent newly showed wins over where a visitor's click went.</summary>
+    protected override void OnParametersSet()
+    {
+        if (Shown == _shownBefore) return;
+        _shownBefore = Shown;
+        _went = null;
+        NotePage();
+    }
+
+    /// <summary>
+    /// On a new page the mock's own page goes to its top, then to a newly shown place, once a render has drawn it lit.
+    /// </summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // The first page drawn is where the mock starts: nothing to scroll from.
+        var page = CurrentPage;
+        if (firstRender) _pageDrawn = page;
+        if (page != _pageDrawn)
+        {
+            _pageDrawn = page;
+            await Module.InvokeVoidAsync("toTop", _page);
+        }
+
         if (Shown == _scrolledTo) return;
         _scrolledTo = Shown;
         if (Shown is not null) await Module.InvokeVoidAsync("showPlace", _page, Shown);
@@ -131,11 +249,11 @@ public partial class SiteMock : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>The mock's classes: a mock, in its business's typeface and look.</summary>
-    private string Classes => $"site-mock font-{Font.Wire()} look-{Look.Wire()}";
+    /// <summary>The mock's classes: a mock, in its business's faces, look and header.</summary>
+    private string Classes => $"site-mock font-{Font.Wire()} look-{Look.Wire()} head-{Header.Wire()}";
 
     /// <summary>The business's colours as the variables the mock's styles read.</summary>
     private string ColourStyle =>
         $"--mock-brand: {Colours.Brand}; --mock-on-brand: {Colours.OnBrand}; --mock-page: {Colours.Page}; " +
-        $"--mock-ink: {Colours.Ink}";
+        $"--mock-ink: {Colours.Ink}; --mock-label: {Colours.Label}";
 }

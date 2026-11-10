@@ -26,4 +26,14 @@ public enum LeadsToolMessage
         "Not mailed: this instance has no mail key, so the lead went to the log only ({Name}, {Contact}, about " +
         "{Wants}). Tell them to use the contact page.")]
     Logged,
+
+    [Description(
+        "Sent at {At}: {Name}, {Contact}, about {Wants}. This is a demonstration business, so it went to the people " +
+        "behind the demonstration, not to a real owner. Tell them so, plainly, in one sentence.")]
+    SentDemo,
+
+    [Description(
+        "Not mailed: this instance has no mail key, so the lead went to the log only ({Name}, {Contact}, about " +
+        "{Wants}). This is a demonstration business, so no real owner would have had it. Tell them so.")]
+    LoggedDemo,
 }

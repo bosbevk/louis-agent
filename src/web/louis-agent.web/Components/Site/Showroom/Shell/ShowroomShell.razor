@@ -7,6 +7,11 @@
         <a class="showroom-brand" href="@BrandHref">@Brand</a>
         <span class="showroom-pill">@Text.Demos</span>
         <span class="showroom-grow"></span>
+        @* On a demo, a way back to all of them (F127.2); the start is all of them, so it has none. *@
+        @if (Current is not null)
+        {
+            <a class="showroom-demos" href="@DemosHref">← @Text.AllDemos</a>
+        }
         <a class="showroom-back" href="@BackHref">← @Text.BackToSite</a>
         @Offer
     </header>

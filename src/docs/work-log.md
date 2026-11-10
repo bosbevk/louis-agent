@@ -12,17 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 90 | 78 |
-| Fixes (`FX`) | 120 | 6 |
+| Features (`F`) | 91 | 79 |
+| Fixes (`FX`) | 120 | 7 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (110 in the TODO)
+## Open (112 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 done; F127.2 next, the demos as working three-page websites a visitor can try live | Now |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; next F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions | Now |
+| F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
@@ -72,6 +73,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F83 | The cook's unconfirmed prices | Puls |
 | F84 | A shorter cook report | Puls |
 | FX59 | binary attachments sent as files, not text | Puls |
+| FX129 | the cook's role text says it has `web`, but its header's toolsets don't list it | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
@@ -137,6 +139,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| F127.2 | 2026-11-10 | The demos as working websites, tried live (ADR 0116): each business's mock website has three pages that register with it (`MockPage`, `MockPaths`), a menu a visitor clicks through, Wills and estates opened from its card, and a page change that loads like a browser; the agents' voices know their pages and the conversations were recorded again, each moving between pages and sections; Try it yourself swaps the recording for `MockLiveChat`, the business's agent live in the same corner, reading the mock's page, with a tap-to-ask hint, a Live tag, cues that wait and no usage line; `OPEN_IDENTITIES` opens the guide and the three businesses under one cap, the session narrowed to the identity admitted; a demonstration's lead marked `[demo]` by its identity (`IsDemonstration`, `TurnIdentity`); the three brands reworked (mockup 0) with self-hosted OFL faces, `MockHeader` and a label colour; minimise and maximise on both chats; the guide's demo help became F127.3 to F127.5 (ADR 0117) |
 | F127.1 | 2026-11-10 | The demo showroom: a site's demos in an area of the framework (ADR 0115), a rail of every demo grouped by what a visitor comes for, a stage per demo in its colour whose parts each have an address, `/demos` its start featuring the guesthouse; a business's agent plays on a mock of its own website (sample brand, three looks, real Pexels photos, a real menu), held to its agent's facts by a test, and shows the website with the guide's own `ShowPage` (the guide's spotlight on a section, a press on a card), told as the recording plays; cues a visitor clicks to play from a turn; notes of what a custom agent could add; the guesthouse in the doctor's place and leading; the coding agent and the triage team on the stage; a place's address loaded afresh draws in its page's layout (`PlaceLayout`) |
 | F129 | 2026-11-10 | An identity's skills, and `prompts/`: every `Prompts` folder is `prompts`, named once (`EmbeddedPrompts.Folder`); a skill beside its voice (`prompts/agent/{identity}/skills/`) says in its header whether it loads `always` (after the voice) or `on-demand` (listed, read with the engine's `ReadSkill`, a session's only when its identity has one); the guide keeps who Louis is, an always index of the pages, and reads the docs map and the page map on demand, its fixed prefix 14% smaller, measured live (ADR 0114) |
 | F128 | 2026-11-10 | The site sells websites with agents and custom agents, the framework as the proof: F128.1 and F128.2, both below (ADR 0112, ADR 0113) |

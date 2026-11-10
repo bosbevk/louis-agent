@@ -1,5 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Recorded;
+using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
@@ -59,10 +60,6 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public string Tagline { get; set; } = "";
 
-    /// <summary>The words of its website's menu.</summary>
-    [Parameter]
-    public IReadOnlyList<string> NavItems { get; set; } = [];
-
     /// <summary>Its website's hero line, from what its agent knows.</summary>
     [Parameter, EditorRequired]
     public string HeroLine { get; set; } = "";
@@ -70,6 +67,10 @@ public partial class BusinessDemo
     /// <summary>A few words under the hero line, from what its agent knows.</summary>
     [Parameter]
     public string? HeroNote { get; set; }
+
+    /// <summary>Its website's header, as its brand wears it (F127.2).</summary>
+    [Parameter]
+    public MockHeader Header { get; set; }
 
     /// <summary>Its website's look (Louis: "give each one a different look").</summary>
     [Parameter]
@@ -91,9 +92,11 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public IReadOnlyList<string> Facts { get; set; } = [];
 
-    /// <summary>Its website's places, each at its address, the places its agent can show.</summary>
+    /// <summary>
+    /// Its website's pages (F127.2), each with its places at their addresses, the pages and places its agent can show.
+    /// </summary>
     [Parameter, EditorRequired]
-    public RenderFragment Places { get; set; } = null!;
+    public RenderFragment Pages { get; set; } = null!;
 
     /// <summary>The kind of business, as the notes' heading names it: "guesthouse".</summary>
     [Parameter, EditorRequired]
@@ -114,6 +117,17 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public IReadOnlyList<DemoCue> Cues { get; set; } = [];
 
+    /// <summary>
+    /// The business's identity, by the name the site's catalogue knows, for a visitor to try live:
+    /// <c>seemeeu-guesthouse</c>.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Identity { get; set; } = "";
+
+    /// <summary>A first question for a visitor trying it live, from what its agent knows.</summary>
+    [Parameter, EditorRequired]
+    public string Hint { get; set; } = "";
+
     /// <summary>The turn the play has reached; none before it starts.</summary>
     private int _reached;
 
@@ -129,10 +143,19 @@ public partial class BusinessDemo
     /// <summary>The recorded chat, which a clicked cue plays from its turn.</summary>
     private RecordedChat? _chat;
 
+    /// <summary>Whether the visitor is trying the agent live rather than watching the recording.</summary>
+    private bool _trying;
+
+    [Inject] private IServiceProvider Services { get; set; } = null!;
+
+    /// <summary>The showroom's words, the site's own when it has them.</summary>
+    private ShowroomText Words => Services.GetService<ShowroomText>() ?? new ShowroomText();
+
     /// <summary>
     /// A clicked cue plays the conversation from its turn (Louis: "this should be clickable so visitors can rewind").
     /// </summary>
-    private Task PlayFrom(int turn) => _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
+    private Task PlayFrom(int turn) =>
+        _trying ? Task.CompletedTask : _chat?.PlayFromAsync(turn) ?? Task.CompletedTask;
 
     /// <summary>
     /// Notes the turn the play has reached, so the cues light up to it; a play from the start brings the website
@@ -146,4 +169,24 @@ public partial class BusinessDemo
 
     /// <summary>A ShowPage call played from the recording takes the website there; any other call, nowhere.</summary>
     private void Show(Block call) => _shown = ShowPageCall.PathOf(call) ?? _shown;
+
+    /// <summary>
+    /// A visitor clicked through the website (F127.2): it stays where they went, until its agent shows the next place.
+    /// </summary>
+    private void Go(string path) => _shown = path;
+
+    /// <summary>
+    /// The visitor tries the agent themselves (F127.2): the live chat takes the recording's place, and the website goes
+    /// home, where a new customer would start.
+    /// </summary>
+    private void Try()
+    {
+        _trying = true;
+        _shown = null;
+        // The recorded chat goes with the swap; a new one is drawn on the way back.
+        _chat = null;
+    }
+
+    /// <summary>Back to the recording, which plays again from its start.</summary>
+    private void Watch() => _trying = false;
 }

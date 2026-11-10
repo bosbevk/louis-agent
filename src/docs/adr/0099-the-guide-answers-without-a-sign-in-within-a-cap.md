@@ -37,6 +37,8 @@ answers without a sign-in, within a cap per address per day; not behind a sign-i
 
 - [ADR 0039](0039-api-routes-under-v1.md), [ADR 0027](0027-engine-identities-and-packs.md), [ADR 0080](0080-a-tool-when-it-improves-the-prompt.md)
 - The feature's record: [ADR 0100](0100-the-site-tells-the-whole-architecture.md) and [the work log](../work-log.md); the tests: `OpenDoorTests`
+- [ADR 0116](0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md) (F127.2): the door takes a list of
+  identities, the showroom's businesses beside the guide, under one cap
 
 ---
 [Docs index](../README.md) · Related: [ADRs](README.md)

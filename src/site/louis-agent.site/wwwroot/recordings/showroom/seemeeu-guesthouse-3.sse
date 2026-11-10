@@ -1,5 +1,5 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_da22a0e98c59463a85e376f9e946b597","role":"assistant","toolsets":["leads","site"],"session_role":"seemeeu-guesthouse/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_233103652a914edeb5f9c8e7fdcd5d65","role":"assistant","toolsets":["leads","site"],"session_role":"seemeeu-guesthouse/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
@@ -8,82 +8,58 @@ event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I need"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to conf"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to repeat the"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"irm the"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" booking details"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" details"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" back and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" back to"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" get"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user and ask for permission before"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" yes before"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" going"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" "}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" send anything. It"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ahead. The boo"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s a Friday and Sa"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king is"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"turday night st"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" for a garden room this"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ay for two guests with"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Friday and Saturday"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a dog, and since"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" night, two"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" guests and"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" don't have a specific date"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one dog, at R1,"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", I'll ref"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"250 plus R150."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"er to it"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I don"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" as \"this Friday and"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'t have ex"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"act dates, so I'll"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" confirm \""}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"this Friday and Satur"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"day night\" with"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" them and ask whether they want"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" me to send it. I won't"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" call y"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"et."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Saturday night.\""}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -95,46 +71,58 @@ event: content_block_start
 data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Thank you,"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Thank you, Marike."}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Marike. I"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" So"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" have"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" I'd pass on"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" that"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" you"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" down"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" as Marike Botha at"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" marike@example.com, w"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"anting the garden room for this"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"d like the garden room for this"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Friday and Saturday"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" night for two guests and"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" night, for"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" one dog. May I send that"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" two gu"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ests and"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a dog, to"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" mar"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ike@example.com. May I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" send it"}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the owner so"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the owner now"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" they can confirm?"}}
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"?"}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}

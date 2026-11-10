@@ -1,3 +1,6 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Packs.Leads.Messages;
+
 namespace LouisAgent.Packs.Leads.Sending;
 
 /// <summary>
@@ -7,10 +10,23 @@ namespace LouisAgent.Packs.Leads.Sending;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record ResendMessage(string From, IReadOnlyList<string> To, string Subject, string Text)
 {
-    /// <summary>The mail for a lead: one line a subject, the three fields and the time as the body.</summary>
-    public static ResendMessage Of(Lead lead, LeadsOptions options) => new(
-        options.From,
-        [options.To!],
-        $"Lead from the site: {lead.Name}",
-        $"Name: {lead.Name}\nReach them: {lead.Contact}\nWants: {lead.Wants}\nAt: {lead.At:u}\n\nSent by the guide on louis-agent.dev.");
+    /// <summary>
+    /// The mail for a lead: one line a subject, the three fields and the time as the body; a demonstration's
+    /// (F127.2) marked a demo in both.
+    /// </summary>
+    public static ResendMessage Of(Lead lead, LeadsOptions options)
+    {
+        bool demo = lead.Demonstration;
+        var fields = new
+        {
+            lead.Identity,
+            lead.Name,
+            lead.Contact,
+            lead.Wants,
+            At = lead.At.ToString("u")
+        };
+        return new ResendMessage(options.From, [options.To!],
+            MessageText.Format(demo ? LeadsMailText.DemoSubject : LeadsMailText.Subject, fields),
+            MessageText.Format(demo ? LeadsMailText.DemoBody : LeadsMailText.Body, fields));
+    }
 }

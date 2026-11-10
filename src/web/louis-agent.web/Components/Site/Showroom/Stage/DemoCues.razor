@@ -1,13 +1,15 @@
 @* What to watch (F127.1): a demo's few short cues, lit as the play reaches their turn, the newest pulsing, a bar over
-   them filling. Each is a button: a click plays the demo from its turn, so a visitor can go back to a moment. *@
-<div class="demo-cues">
+   them filling. Each is a button: a click plays the demo from its turn, so a visitor can go back to a moment. While
+   the visitor tries the agent live, they wait (F127.2). *@
+<div class="@Classes">
     <h2 class="cues-heading">@Heading</h2>
     <div class="cues-progress" aria-hidden="true"><i style="@ProgressStyle"></i></div>
     <ol class="cues-list">
         @foreach (var row in Rows)
         {
             <li class="@row.Classes">
-                <button class="cue-go" type="button" title="@Hint" @onclick="() => Chosen.InvokeAsync(row.Turn)">
+                <button class="cue-go" type="button" title="@Hint" disabled="@Waiting"
+                        @onclick="() => Chosen.InvokeAsync(row.Turn)">
                     <span class="cue-n">@row.Number</span><span>@row.Text</span>
                 </button>
             </li>

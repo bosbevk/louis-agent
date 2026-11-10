@@ -27,6 +27,11 @@ after the visitor's yes (the rule is in the guide's voice).
 - `LeadsPack`: toolset `leads`, off without `LEADS_TO`; the sender picked by `RESEND_API_KEY`; the guide
   (`prompts/toolsets/leads.md`) says to ask for the three things one at a time, repeat them back, and send on yes, once.
   The decision is [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).
+- A demonstration's lead (F127.2): the turn carries who it runs as (`TurnIdentity`, ambient, from
+  `louis-agent.composition`), and when that identity is a demonstration (a showroom business), the lead names it, the
+  mail's subject is `[demo] {Identity}: {Name}` (`LeadsMailText`), and the reply tells the model it was a
+  demonstration (`SentDemo`, `LoggedDemo`), so it tells the visitor. One pack, one `SendLead`
+  ([ADR 0116](../../../src/docs/adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)).
 
 ## Settings
 
@@ -39,7 +44,8 @@ after the visitor's yes (the rule is in the guide's voice).
 ## Tests
 
 `packs/tests/louis-agent.pack.leads.tests`: the tool's refusals, its send and its truth about the log, the Resend
-sender's request and its failure, the pack's settings and the sender the key picks.
+sender's request and its failure, the pack's settings and the sender the key picks, and a demonstration's lead: its
+`[demo]` subject and body, and the reply that says it was a demonstration.
 
 ---
 [Docs index](../../../src/docs/README.md) · Related: [the docs pack](louis-agent.pack.docs.md), [the projects](../../../src/docs/projects/README.md)

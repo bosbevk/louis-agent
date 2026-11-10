@@ -5,20 +5,25 @@
 <PageHead Description="Watch a law practice's website agent answer a question it must not advise on, and book a first consultation instead, recorded once and played back." />
 
 <BusinessDemo Accent="TileAccent.Blue" Kicker="A law practice" Business="Koringland Attorneys" Turns="Conversation" Cues="WhatToWatch"
+              Identity="koringland-attorneys" Hint="What does a will cost, and how do I book a first consultation?"
               Heading="It books the attorney. It never plays one."
               Lede="Someone asks Koringland Attorneys how to change their will after a divorce. The agent doesn't advise. It explains what a first consultation is and books one."
-              Address="koringland.example" Colours="Brand" Font="MockFont.Slab" Tagline="Attorneys · Malmesbury"
-              NavItems="Menu" HeroLine="Wills, property and family law, in English and Afrikaans."
+              Address="koringland.example" Colours="Brand" Font="MockFont.Bodoni" Header="MockHeader.Ruled"
+              Tagline="Attorneys · Malmesbury"
+              HeroLine="Wills, property and family law, in English and Afrikaans."
               HeroNote="Monday to Friday, 08:00 to 17:00. At the office or by video call."
               Look="MockLook.Editorial" HeroAction="Book a consultation" Facts="Facts" KindOf="practice"
               CustomNotes="Notes"
               HeroPhoto="images/showroom/koringland-study.webp" HeroPhotoAlt="The practice's study, lined with law books">
-    <Places><KoringlandPlaces /></Places>
+    <Pages><KoringlandSite /></Pages>
     <Mark>
-        @* Koringland Attorneys' sample mark: a cream shield with a serif K in its navy. *@
-        <svg viewBox="0 0 32 32">
-            <path d="M16 2.5l11 4v8.2c0 7-4.8 12.4-11 14.8C9.8 27.1 5 21.7 5 14.7V6.5z" fill="#f4efe4" />
-            <text x="16" y="20.5" font-family="Georgia, serif" font-size="13" font-weight="700" text-anchor="middle" fill="#1f2f4f">K</text>
+        @* Koringland Attorneys' sample mark (mockup 0): a midnight shield edged in brass, a Bodoni K in vellum, and a
+           wheat sprig under it for the Swartland. *@
+        <svg viewBox="0 0 48 48">
+            <path d="M24 3.5l16 5.5v12c0 10.2-6.9 18.2-16 21.5C14.9 39.2 8 31.2 8 21V9z" fill="#14213d" />
+            <path d="M24 6.6l13.2 4.5v9.9c0 8.6-5.7 15.4-13.2 18.3c-7.5-2.9-13.2-9.7-13.2-18.3v-9.9z" fill="none" stroke="#b08d57" stroke-width=".8" />
+            <text x="24" y="27" font-family="'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif" font-size="17" text-anchor="middle" fill="#e7d3a8">K</text>
+            <path d="M24 30.5v5M24 32.6c-1.4-.6-2.3-1.6-2.7-2.9M24 32.6c1.4-.6 2.3-1.6 2.7-2.9" fill="none" stroke="#b08d57" stroke-width=".9" stroke-linecap="round" />
         </svg>
     </Mark>
 </BusinessDemo>

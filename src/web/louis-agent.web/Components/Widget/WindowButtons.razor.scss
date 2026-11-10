@@ -1,0 +1,19 @@
+/* A chat window's buttons to minimise and maximise it (F127.2): at its head's end, in the head's own colour, so they
+   sit as well on the guide's plain head as on a business's brand-coloured one. */
+.window-tools { display: flex; gap: 4px; margin-left: auto; }
+.window-tool {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    font-size: 13px;
+    line-height: 1;
+    color: inherit;
+    background: color-mix(in srgb, currentColor 14%, transparent);
+    cursor: pointer;
+}
+.window-tool:hover { background: color-mix(in srgb, currentColor 26%, transparent); }
+.window-tool:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }

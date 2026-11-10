@@ -69,8 +69,10 @@ internal sealed class SessionHandlers(AgentHostContext host)
     public async Task<CreatedAnswer> CreateSession(CreateSessionRequest? request, AgentSessions sessions,
         ClaimsPrincipal principal, HttpContext context, OpenDoor door, AgentEngineFactory engines)
     {
-        // A visitor the door admitted (F109.3) gets the open identity and its own toolsets, whatever the body asked.
-        if (OpenDoor.IsMarked(context)) request = NarrowToTheOpenIdentity(request, door, engines);
+        // A visitor the door admitted (F109.3) gets the open identity it admitted, and that identity's own toolsets,
+        // whatever the body asked.
+        string? admitted = OpenDoor.AdmittedIdentity(context);
+        if (admitted is not null) request = NarrowToTheOpenIdentity(request, admitted, engines);
         if (request?.InvalidTag() is { } invalid)
             return Bad(MessageText.Format(ApiUserText.InvalidTag,
                 new
@@ -107,7 +109,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
             return Bad(ex.Message);
         }
 
-        if (OpenDoor.IsMarked(context)) door.Admit(session.Id);
+        if (admitted is not null) door.Admit(session.Id);
         if (opener is not null)
             Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
                 new
@@ -193,13 +195,13 @@ internal sealed class SessionHandlers(AgentHostContext host)
     private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 
     /// <summary>
-    /// What a visitor's session is allowed to be: the open identity, the toolsets of its own packs and nothing more,
-    /// tagged for the ledger; the place they shared stays, since it only tells the guide where they are.
+    /// What a visitor's session is allowed to be: the open identity the door admitted, the toolsets of its own packs
+    /// and nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they
+    /// are.
     /// </summary>
-    private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, OpenDoor door,
+    private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, string identity,
         AgentEngineFactory engines)
     {
-        string identity = door.Options.Identity!;
         var packs = engines.Catalog.Identity(identity)?.Packs ?? [];
         var toolsets = engines.Catalog.Packs.Where(p => packs.Contains(p.Name, StringComparer.OrdinalIgnoreCase))
             .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToList();

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Sessions;
 using LouisAgent.Packs.Leads.Messages;
 using LouisAgent.Packs.Leads.Sending;
 
@@ -36,7 +37,11 @@ public sealed class LeadTools(ILeadSender sender, TimeProvider time)
         if (string.IsNullOrWhiteSpace(contact)) return MessageText.Format(LeadsToolMessage.NoContact);
         if (string.IsNullOrWhiteSpace(wants)) return MessageText.Format(LeadsToolMessage.NoWants);
 
-        var lead = new Lead(name.Trim(), contact.Trim(), wants.Trim(), time.GetUtcNow());
+        // Who it's for (F127.2): the identity the turn runs as, and whether that's a demonstration, so a try-out's
+        // booking is marked a demo; outside a turn, no one's and no demo.
+        var who = TurnIdentity.Current;
+        var lead = new Lead(name.Trim(), contact.Trim(), wants.Trim(), time.GetUtcNow(), who?.Name,
+            who?.IsDemonstration == true);
         try
         {
             await sender.SendAsync(lead, cancellationToken);
@@ -47,10 +52,12 @@ public sealed class LeadTools(ILeadSender sender, TimeProvider time)
             return MessageText.Format(LeadsToolMessage.Failed, new { Reason = failure.Message });
         }
 
-        // The truth to the model: a lead that only went to the log was not mailed to anyone.
+        // The truth to the model: a lead that only went to the log was not mailed to anyone, and a demonstration's
+        // went to no real owner (F127.2), so the visitor hears that from it.
+        bool demo = lead.Demonstration;
         if (!sender.Mails)
         {
-            return MessageText.Format(LeadsToolMessage.Logged,
+            return MessageText.Format(demo ? LeadsToolMessage.LoggedDemo : LeadsToolMessage.Logged,
                 new
                 {
                     lead.Name,
@@ -59,7 +66,7 @@ public sealed class LeadTools(ILeadSender sender, TimeProvider time)
                 });
         }
 
-        return MessageText.Format(LeadsToolMessage.Sent,
+        return MessageText.Format(demo ? LeadsToolMessage.SentDemo : LeadsToolMessage.Sent,
             new
             {
                 At = lead.At.ToString("u"),

@@ -30,7 +30,8 @@ a regex. ADR 0012 left open whether the real orchestrator keeps core or moves to
 ## Links
 
 [Platform plan](../../../ROADMAP.md) (Phase 6) · [0012](../../../demos/louis-agent/docs/adr/0012-one-orchestrator-per-microservice.md) ·
-[0021](0021-minions-one-task-one-tool.md) · [0027](0027-engine-identities-and-packs.md)
+[0021](0021-minions-one-task-one-tool.md) · [0027](0027-engine-identities-and-packs.md) ·
+[0117](0117-one-address-for-every-agent-call.md) (amends the tools: one address for every agent call)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

@@ -23,6 +23,28 @@ public class DemoCuesTests
             .Add(cues => cues.Heading, "What to watch"));
 
     /// <summary>
+    /// While the visitor tries the agent live, the cues wait (F127.2, Louis's pick of three): each button is disabled,
+    /// so nothing jumps away from a live conversation, and the list says it waits.
+    /// </summary>
+    [Test]
+    public void WaitingCues_CantBeClicked()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<DemoCues>(parameters => parameters
+            .Add(cues => cues.Cues, Cues)
+            .Add(cues => cues.Reached, 3)
+            .Add(cues => cues.Waiting, true));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("button.cue-go").Select(button => button.HasAttribute("disabled")),
+                Is.All.True);
+            Assert.That(cut.Find(".demo-cues").ClassList, Does.Contain("is-waiting"));
+        });
+    }
+
+    /// <summary>
     /// A cue is a way back into the play (F127.1, Louis: "this should be clickable so visitors can rewind"): each is a
     /// button with the site's hint, and a click tells the page its turn.
     /// </summary>

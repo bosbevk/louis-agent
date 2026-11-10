@@ -1,98 +1,50 @@
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_bdce4b60c80042a3ac097d1d753efa16","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
+data: {"type":"message_start","message":{"session_id":"sess_955225769c734e1bbaf9bd43ac3616f1","role":"assistant","toolsets":["leads","site"],"session_role":"koringland-attorneys/voice"}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm checking the w"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm we"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ills area"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ighing a"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" on"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" question about what go"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"es in a will after divorce"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" site, since the question"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":","}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is about what goes in"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" which I can't adv"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a will after"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ise on direct"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a divorce."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ly. Instead I can"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" That's legal advice I sh"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" point to the fir"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ouldn't give, so I"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"m's \"After a divorce"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll point"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\" page and open it for"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" them, with an"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ward a consultation. I'"}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" offer to book"}}
 
 event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"m"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" going"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to p"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ull up"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the w"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ills page and then write a"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" short reply."}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm calling the t"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ool to open"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the wills page so I"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" can send"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the user there"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", and I"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'ll write the re"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ply once the result com"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"es back."}}
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a consultation."}}
 
 event: content_block_delta
 data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
@@ -101,100 +53,130 @@ event: content_block_stop
 data: {"type":"content_block_stop","index":0}
 
 event: content_block_start
-data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_018TsLLWVgG8tKLGZEvdrt6f","name":"ShowPage","input":{"path":"/practice/wills"}}}
+data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Good morning."}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" What"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" go"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"es in your will is"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" adv"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ice I"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" can't give,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" but the page"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" \"After a divorce\" section"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" explains how"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" law treats a will"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" made"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" before"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a divorce,"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" so I'll"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" open it for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" you."}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":1}
 
 event: content_block_start
-data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_result","tool_use_id":"toolu_018TsLLWVgG8tKLGZEvdrt6f","content":"Shown: the visitor's browser is now on /practice/wills. Say in one line what to look at there.","is_error":false}}
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_01G7qwMcojn8tefJUB9ogGNj","name":"ShowPage","input":{"path":"/practice/wills/after-divorce"}}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":2}
 
 event: content_block_start
-data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Good morning. I"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" can"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'t adv"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ise on"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" what your"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" will should say"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":", because"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" that needs an attorney who"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" can"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" look at your situ"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ation. The"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" Wills and est"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ates area"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" is now"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" open on"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" your screen, and our"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" attorneys can"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" help you"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" with a will"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":". Would you like me"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" to ar"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"range a first consultation ("}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"R"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"650, 30 minutes"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":", at the office or by video call"}}
-
-event: content_block_delta
-data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":")?"}}
+data: {"type":"content_block_start","index":3,"content_block":{"type":"tool_result","tool_use_id":"toolu_01G7qwMcojn8tefJUB9ogGNj","content":"Shown: the visitor's browser is now on /practice/wills/after-divorce. Say in one line what to look at there.","is_error":false}}
 
 event: content_block_stop
 data: {"type":"content_block_stop","index":3}
+
+event: content_block_start
+data: {"type":"content_block_start","index":4,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":"There"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" it"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" is, on the page's \"After"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" a divorce\" section. For"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" your own"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" case, an attorney can"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" adv"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":"ise you in"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" a first consultation, which"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" is 30 minutes for"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" R650, if"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" you'd like me"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" to p"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":"ass on"}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":" a request."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":4}
 
 event: message_delta
 data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}

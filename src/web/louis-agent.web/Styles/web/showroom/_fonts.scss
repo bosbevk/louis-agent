@@ -1,0 +1,26 @@
+/* The faces a mocked business's brand may wear (F127.2, Louis's pick: self-host the fonts), the framework's own files
+   (wwwroot/fonts/showroom, each family beside its SIL Open Font License): the Latin subset of each, variable in
+   weight. A browser fetches a face only when a page wears it, so they load on the demo pages alone, and no third party
+   sees a visitor. Each shows its fallback until it has loaded (font-display: swap). The paths are from where a site's
+   CSS ends up, wwwroot/css/app.css, to the framework's static files. */
+$root: "../_content/louis-agent.web/fonts/showroom";
+
+@mixin face($family, $file, $weight, $style: normal) {
+    @font-face {
+        font-family: "#{$family}";
+        font-style: $style;
+        font-weight: $weight;
+        font-display: swap;
+        src: url("#{$root}/#{$file}.woff2") format("woff2");
+    }
+}
+
+@include face("Cormorant Garamond", "cormorant-garamond/cormorant-garamond", 500 700);
+@include face("Cormorant Garamond", "cormorant-garamond/cormorant-garamond-italic", 500 700, italic);
+@include face("Jost", "jost/jost", 400 600);
+@include face("Gloock", "gloock/gloock", 400);
+@include face("Lora", "lora/lora", 400 600);
+@include face("Lora", "lora/lora-italic", 400 600, italic);
+@include face("Josefin Sans", "josefin-sans/josefin-sans", 500 700);
+@include face("Bodoni Moda", "bodoni-moda/bodoni-moda", 400 600);
+@include face("Hanken Grotesk", "hanken-grotesk/hanken-grotesk", 400 600);

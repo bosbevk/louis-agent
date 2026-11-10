@@ -1,16 +1,23 @@
 {
   "url": "/",
   "title": "Wheatfield Kitchen · Country kitchen in Malmesbury",
-  "text": "Wheatfield Kitchen. Menu, For the children, Wine, Find us. Country cooking from the Swartland's own farms. Lunch Tuesday to Sunday, 12:00 to 15:00. Dinner Thursday to Saturday. Book a table. Lunch Tuesday to Sunday. Dinner Thursday to Saturday. Sixty seats, on the stoep too. Wheelchair access. The menu: country cooking from the Swartland's own farms. The kitchen can leave out gluten or dairy on most dishes, if you ask when you book. Starters: snoek pâté, R85, with farm bread and apricot jam. Beetroot and feta salad, R80, roasted beetroot, rocket and walnuts. Soup of the day, R70, with farm bread. Mains: the Sunday roast, R165, on Sundays, with roast potatoes and gravy. Lamb shank, R185, slow-cooked, on mash. Chicken pie, R125, with a green salad. Bobotie, R140, with yellow rice and chutney. Vegetable bake, R115, vegetarian. Puddings: malva pudding, R65, with custard. Melktert, R55, with cinnamon. Ice cream, R45, with chocolate sauce. For the children: a children's menu, each dish R75: fish and chips, chicken strips and chips, macaroni cheese. Wine: wines from the Swartland and the Riebeek Valley, by the glass or the bottle. Corkage R60. Not drinking? Rooibos iced tea R35, and filter coffee R30. Find us: open Tuesday to Sunday, lunch 12:00 to 15:00, and dinner 18:00 to 21:30 from Thursday to Saturday. Closed Mondays. Sixty seats inside and on the stoep, wheelchair access, and parking behind the restaurant. Groups of more than twelve, and private functions, by arrangement with the owner.",
+  "text": "Wheatfield Kitchen. Home, Menu, Visit. Country cooking from the Swartland's own farms. Lunch Tuesday to Sunday, 12:00 to 15:00. Dinner Thursday to Saturday. Book a table. Lunch Tuesday to Sunday. Dinner Thursday to Saturday. Sixty seats, on the stoep too. Wheelchair access. A country kitchen in Malmesbury: lunch from Tuesday to Sunday, dinner from Thursday to Saturday, sixty seats inside and on the stoep. The menu. Book a table. Menu: from the kitchen, country cooking from the Swartland's own farms. The kitchen can leave out gluten or dairy on most dishes, if you ask when you book. Starters: snoek pâté R85, with farm bread and apricot jam. Beetroot and feta salad R80, roasted beetroot, rocket and walnuts. Soup of the day R70, with farm bread. Mains: the Sunday roast R165, on Sundays, with roast potatoes and gravy. Lamb shank R185, slow-cooked, on mash. Chicken pie R125, with a green salad. Bobotie R140, with yellow rice and chutney. Vegetable bake R115, vegetarian. Puddings: malva pudding R65, with custard. Melktert R55, with cinnamon. Ice cream R45, with chocolate sauce. For the children: a children's menu, each dish R75: fish and chips, chicken strips and chips, macaroni cheese. Wine: wines from the Swartland and the Riebeek Valley, by the glass or the bottle. Corkage R60. Not drinking? Rooibos iced tea R35, and filter coffee R30. Visit: when we're open, Tuesday to Sunday, lunch 12:00 to 15:00, and dinner 18:00 to 21:30 from Thursday to Saturday. Closed Mondays. Find us: sixty seats inside and on the stoep, wheelchair access, and parking behind the restaurant. Book a table: ask in the chat and the owner confirms your table. Groups of more than twelve, and private functions, by arrangement with the owner.",
   "areas": [
-    { "id": "/menu", "heading": "The menu" },
+    { "id": "/welcome", "heading": "A country kitchen in Malmesbury" },
+    { "id": "/welcome/menu", "heading": "The menu" },
+    { "id": "/welcome/visit", "heading": "Book a table" },
+    { "id": "/menu", "heading": "Menu (page)" },
+    { "id": "/menu/food", "heading": "From the kitchen" },
     { "id": "/menu/sunday-roast", "heading": "The Sunday roast" },
     { "id": "/menu/lamb-shank", "heading": "Lamb shank" },
     { "id": "/menu/chicken-pie", "heading": "Chicken pie" },
     { "id": "/menu/vegetable-bake", "heading": "Vegetable bake" },
     { "id": "/menu/malva-pudding", "heading": "Malva pudding" },
-    { "id": "/children", "heading": "For the children" },
-    { "id": "/wine", "heading": "Wine" },
-    { "id": "/find-us", "heading": "Find us" }
+    { "id": "/menu/children", "heading": "For the children" },
+    { "id": "/menu/wine", "heading": "Wine" },
+    { "id": "/visit", "heading": "Visit (page)" },
+    { "id": "/visit/hours", "heading": "When we're open" },
+    { "id": "/visit/find-us", "heading": "Find us" },
+    { "id": "/visit/book", "heading": "Book a table" }
   ]
 }

@@ -157,6 +157,23 @@ public partial class FrameworkStylesTests
     }
 
     /// <summary>
+    /// Docked in the rail's column, the guide has no minimise or maximise (F127.2, Louis: "minimize and maximise do
+    /// not make sense here"): it already fills the column, and closing it is the way back to the demos.
+    /// </summary>
+    [Test]
+    public void TheDockedGuide_HasNoWindowButtons()
+    {
+        string shell = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+                "src/web/louis-agent.web/Components/Site/Showroom/Shell/ShowroomShell.razor.scss"))
+            .ReplaceLineEndings("\n");
+        int docked = shell.IndexOf(".showroom-corner:has(.chat-widget.is-open) {", StringComparison.Ordinal);
+
+        Assert.That(docked, Is.GreaterThan(0));
+        Assert.That(shell[docked..shell.IndexOf("\n    }", docked, StringComparison.Ordinal)],
+            Does.Contain("::deep .window-tools { display: none; }"));
+    }
+
+    /// <summary>
     /// The place a mock website's agent shows pops with the guide's own spotlight (F127.1, Louis: "make it pop more
     /// when the selection happens", "with an animation like we have"): the same animation, its ring in the business's
     /// colour and the rest of the mock's page dimmed, and nothing stays after it ("remove the line afterwards"); none

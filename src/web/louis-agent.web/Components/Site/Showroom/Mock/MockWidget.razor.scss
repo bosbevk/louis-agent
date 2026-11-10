@@ -1,27 +1,35 @@
 /* The agent's widget in the corner of a mocked business's website (F127.1): a panel over the mock's bottom right,
    under a head in the business's brand colour (--mock-*, from the mock) with its mark and a live dot. The chat keeps
    the framework's own look, as the real widget does; only its window bar goes, since the widget has its own head. On
-   a narrow mock it sits across the bottom. */
+   a narrow mock it sits across the bottom. It pops (F127.2, Louis: "looks a bit too flat"): a glow in the business's
+   colour, a head in a gradient of that one colour, a breathing live dot and the agent's answers in bubbles; and it
+   sits above everything the mock draws, so no badge or banner word ever covers it. */
 .mock-widget {
     position: absolute;
     right: 16px;
     bottom: 16px;
+    z-index: 3;
     width: 360px;
     overflow: hidden;
     border-radius: 14px;
     background: var(--bs-secondary-bg);
-    box-shadow: 0 18px 40px rgba(var(--web-shadow-rgb), .35);
+    box-shadow: 0 0 0 1px rgba(var(--web-overlay-rgb), .08),
+        0 0 0 4px color-mix(in srgb, var(--mock-brand) 22%, transparent),
+        0 22px 44px -10px rgba(var(--web-shadow-rgb), .55),
+        0 0 44px -8px color-mix(in srgb, var(--mock-brand) 75%, transparent);
     --recorded-height: 400px;
 }
 .mock-widget-head {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 12px;
+    padding: 10px 12px;
     font-size: 13px;
     font-weight: 600;
     color: var(--mock-on-brand);
-    background: var(--mock-brand);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--mock-brand) 80%, var(--mock-on-brand)),
+        var(--mock-brand) 55%, color-mix(in srgb, var(--mock-brand) 70%, rgb(var(--web-shadow-rgb))));
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--mock-on-brand) 15%, transparent);
 }
 .mock-mark { display: inline-flex; flex: none; width: 20px; height: 20px; }
 .mock-mark ::deep svg { width: 100%; height: 100%; }
@@ -30,11 +38,47 @@
     height: 8px;
     border-radius: 50%;
     background: var(--web-ok);
-    box-shadow: 0 0 8px var(--web-ok);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--web-ok) 25%, transparent);
+    animation: mock-online 2s ease-in-out infinite;
+}
+/* A live chat says so (F127.2, mockup 4): a small tag after the label, in the head's own brand-light colour. */
+.mock-live-tag {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font: 700 10px/1.2 var(--bs-font-monospace);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid color-mix(in srgb, var(--mock-on-brand) 45%, transparent);
+}
+@keyframes mock-online {
+    50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--web-ok) 0%, transparent); }
 }
 .mock-widget-body ::deep .recorded-chat { border: 0; border-radius: 0; }
 .mock-widget-body ::deep .recorded-bar { display: none; }
+/* The agent's answers in bubbles of their own, as the visitor's questions already are. */
+.mock-widget-body ::deep .assistant-message .markdown {
+    padding: 8px 12px;
+    border: 1px solid rgba(var(--web-overlay-rgb), .08);
+    border-radius: 14px 14px 14px 4px;
+    background: rgba(var(--web-overlay-rgb), .06);
+}
 
+/* Minimised and maximised (F127.2, Louis: "we should have an minimize and maximize"; the buttons are the chat window's
+   own, WindowButtons, in the head's brand-light colour): minimised, only the head shows, so the whole website does;
+   maximised, the chat covers the mock, its conversation as tall as the mock allows. */
+.mock-widget.is-min .mock-widget-body { display: none; }
+.mock-widget.is-max {
+    inset: 12px;
+    width: auto;
+    --recorded-height: 540px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mock-live { animation: none; }
+}
+
+/* A narrow mock (a phone): the chat across the bottom, about two fifths of the mock, so the place its agent shows
+   stays in view above it (the phone check, 2026-11-10). */
 @container (max-width: 760px) {
-    .mock-widget { left: 10px; right: 10px; bottom: 10px; width: auto; --recorded-height: 300px; }
+    .mock-widget { left: 10px; right: 10px; bottom: 10px; width: auto; --recorded-height: 180px; }
 }

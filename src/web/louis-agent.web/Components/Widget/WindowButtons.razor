@@ -1,0 +1,12 @@
+@* The buttons a chat window has to minimise and maximise it (F127.2, Louis: "we should have an minimize and maximize"),
+   each saying Restore while its size is on; the guide's widget and a mock website's chat share them. *@
+<span class="window-tools">
+    <button class="window-tool" type="button" @onclick="ToggleMinimisedAsync" aria-label="@MinimiseLabel"
+            title="@MinimiseLabel" aria-pressed="@Pressed(ChatWindowSize.Minimised)">
+        <span aria-hidden="true">@(Size == ChatWindowSize.Minimised ? "▴" : "–")</span>
+    </button>
+    <button class="window-tool" type="button" @onclick="ToggleMaximisedAsync" aria-label="@MaximiseLabel"
+            title="@MaximiseLabel" aria-pressed="@Pressed(ChatWindowSize.Maximised)">
+        <span aria-hidden="true">@(Size == ChatWindowSize.Maximised ? "⤡" : "⤢")</span>
+    </button>
+</span>

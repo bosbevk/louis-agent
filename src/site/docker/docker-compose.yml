@@ -29,8 +29,9 @@ services:
       # the log and the guide says so. Without these the guide's identity can't open (FX90).
       LEADS_TO: louismarais0@gmail.com
       LEADS_FROM: guide@louis-agent.dev
-      # The guide's door (F109.3): the guide answers a visitor without a sign-in, this many times a day per address.
-      OPEN_IDENTITY: louis-agent-guide
+      # The guide's door (F109.3): the guide, or a showroom business to try it (F127.2), answers a visitor without a
+      # sign-in, this many times a day per address across them all.
+      OPEN_IDENTITIES: louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys
       OPEN_SESSIONS_PER_DAY: "50"
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:

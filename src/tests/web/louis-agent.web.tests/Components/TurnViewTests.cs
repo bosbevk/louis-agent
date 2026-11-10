@@ -34,6 +34,28 @@ public class TurnViewTests
         Snapshots.Match("Components/TurnView.html", cut.Markup);
     }
 
+    /// <summary>
+    /// A chat on a business's website shows no usage line (F127.2, Louis: "hide it in the demo"): a customer never
+    /// sees tokens; told to show it, a finished turn has one.
+    /// </summary>
+    [Test]
+    public async Task AFinishedTurn_ShowsItsUsage_UnlessToldNot()
+    {
+        var turn = await SessionStreamFixture.ReplayAsync();
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ChatText());
+
+        var shown = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn));
+        var hidden = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn).Add(x => x.ShowUsage, false));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(shown.FindAll(".assistant-message > .usage"), Has.Count.EqualTo(1));
+            Assert.That(hidden.FindAll(".assistant-message > .usage"), Is.Empty);
+        });
+    }
+
     /// <summary>A streaming turn shows what the specialist is doing.</summary>
     [Test]
     public async Task AStreamingTurn_ShowsWhatTheSpecialistIsDoing()
@@ -51,7 +73,9 @@ public class TurnViewTests
         ctx.Services.AddSingleton(new ChatText
         {
             RolePhases = new Dictionary<string, RolePhases>
-            { [SessionStreamFixture.CookRole] = new("Looking for ingredients", "Building the recipe") }
+            {
+                [SessionStreamFixture.CookRole] = new("Looking for ingredients", "Building the recipe")
+            }
         });
 
         var cut = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn).Add(x => x.Streaming, true));

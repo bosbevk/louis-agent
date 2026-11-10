@@ -35,6 +35,16 @@ public partial class DemoCues
     [Parameter]
     public EventCallback<int> Chosen { get; set; }
 
+    /// <summary>
+    /// Whether the cues wait, while the visitor tries the agent live (F127.2): none can be clicked until they go back
+    /// to the recording.
+    /// </summary>
+    [Parameter]
+    public bool Waiting { get; set; }
+
+    /// <summary>The list's classes: waiting while the visitor tries the agent live.</summary>
+    private string Classes => Waiting ? "demo-cues is-waiting" : "demo-cues";
+
     /// <summary>One cue as it's drawn: its number, its words, its classes and the turn a click plays from.</summary>
     private sealed record Row(int Number, string Text, string Classes, int Turn);
 

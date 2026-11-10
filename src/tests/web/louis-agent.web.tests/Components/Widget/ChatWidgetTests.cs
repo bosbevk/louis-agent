@@ -58,28 +58,28 @@ public class ChatWidgetTests
 
     /// <summary>A turn in which the model calls ShowPage for the levels on Identities, and nothing else.</summary>
     private const string ShowPageStream = """
-        event: message_start
-        data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
+                                          event: message_start
+                                          data: {"type":"message_start","message":{"session_id":"sess_fixture","role":"assistant"}}
 
-        event: content_block_start
-        data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities/levels"}}}
+                                          event: content_block_start
+                                          data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_show","name":"ShowPage","input":{"path":"/identities/levels"}}}
 
-        event: content_block_stop
-        data: {"type":"content_block_stop","index":0}
+                                          event: content_block_stop
+                                          data: {"type":"content_block_stop","index":0}
 
-        event: content_block_start
-        data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_show","content":"Shown: the visitor's browser is now on /identities#levels.","is_error":false}}
+                                          event: content_block_start
+                                          data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_show","content":"Shown: the visitor's browser is now on /identities#levels.","is_error":false}}
 
-        event: content_block_stop
-        data: {"type":"content_block_stop","index":1}
+                                          event: content_block_stop
+                                          data: {"type":"content_block_stop","index":1}
 
-        event: message_delta
-        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1,"output_tokens":1,"requests":1}}
+                                          event: message_delta
+                                          data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1,"output_tokens":1,"requests":1}}
 
-        event: message_stop
-        data: {"type":"message_stop"}
+                                          event: message_stop
+                                          data: {"type":"message_stop"}
 
-        """;
+                                          """;
 
     /// <summary>
     /// The guide takes the visitor to a page (F117, Louis: "I want this agent to take you to a page", "direct you to a
@@ -228,6 +228,49 @@ public class ChatWidgetTests
             .Add(w => w.Title, "Ask the guide")
             .Add(w => w.Greeting, "Ask me anything about this framework.")
             .Add(w => w.Placeholder, "Your question…"));
+
+    /// <summary>
+    /// The open chat minimises to its head and maximises to a large window, and comes back (F127.2, Louis: "should
+    /// also have minimize and maximize"), with the buttons a mock website's chat has.
+    /// </summary>
+    [Test]
+    public void TheOpenChat_Minimises_AndMaximises()
+    {
+        using var ctx = Context(out _);
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+
+        cut.Find(".widget-head button.window-tool[aria-label='Minimise']").Click();
+        var folded = cut.Find(".widget-panel").ClassList.ToList();
+        cut.Find(".widget-head button.window-tool[aria-label='Maximise']").Click();
+        var spread = cut.Find(".widget-panel").ClassList.ToList();
+        cut.Find(".widget-head button.window-tool[aria-label='Restore']").Click();
+        var back = cut.Find(".widget-panel").ClassList.ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(folded, Does.Contain("is-min"));
+            Assert.That(spread, Does.Contain("is-max").And.Not.Contain("is-min"));
+            Assert.That(back, Does.Not.Contain("is-min").And.Not.Contain("is-max"));
+        });
+    }
+
+    /// <summary>A question at the door brings a minimised chat back, so its answer is never hidden.</summary>
+    [Test]
+    public void AQuestionAtTheDoor_BringsAMinimisedChatBack()
+    {
+        using var ctx = Context(out _);
+        var door = new GuideDoor();
+        ctx.Services.AddSingleton(door);
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+        cut.Find(".widget-head button.window-tool[aria-label='Minimise']").Click();
+
+        cut.InvokeAsync(() => door.Ask("Walk me through this page."));
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".widget-panel").ClassList, Does.Not.Contain("is-min")),
+            TimeSpan.FromSeconds(10));
+    }
 
     /// <summary>Folded, it is one button that says what it opens, and nothing else is drawn.</summary>
     [Test]

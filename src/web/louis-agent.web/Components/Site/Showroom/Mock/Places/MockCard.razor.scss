@@ -10,6 +10,20 @@
     background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
 }
 
+/* A card with a page of its own opens it (F127.2): a quiet link in the brand colour under its words. */
+.mock-card-open {
+    margin-top: 8px;
+    padding: 0;
+    border: 0;
+    font: 600 12px/1 var(--mock-face);
+    letter-spacing: .04em;
+    color: var(--mock-brand);
+    background: none;
+    cursor: pointer;
+}
+.mock-card-open:hover { text-decoration: underline; }
+.mock-card-open:focus-visible { outline: 2px solid var(--mock-brand); outline-offset: 2px; }
+
 /* A card its agent shows is pressed, as a visitor's tap would press it, not ringed (Louis: "this is press boxes so do
    not show the ring around this type rather the press"): it sinks and springs back, and a ripple of the business's
    colour spreads from its middle and fades. Still, for a visitor who asked for less motion. */
@@ -49,6 +63,6 @@
     object-fit: cover;
 }
 .mock-card-head { display: flex; flex-direction: column; gap: 3px; }
-.mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }
+.mock-card-title { font: 600 16px/1.2 var(--mock-face); }
 .mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }
 .mock-card-words { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; opacity: .85; }

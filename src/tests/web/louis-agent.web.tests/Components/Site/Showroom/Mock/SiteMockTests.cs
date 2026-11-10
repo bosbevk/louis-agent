@@ -1,5 +1,6 @@
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Places;
+using LouisAgent.Web.Components.Site.Showroom.Mock.Website;
 using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 
@@ -12,12 +13,34 @@ namespace LouisAgent.Web.Tests.Components.Site.Showroom.Mock;
 /// </summary>
 public class SiteMockTests
 {
+    /// <summary>A website's page, as a site writes it: its address, its menu word and what's on it.</summary>
+    private static RenderFragment Page(string path, string label, RenderFragment? content = null) => builder =>
+    {
+        builder.OpenComponent<MockPage>(0);
+        builder.AddComponentParameter(1, nameof(MockPage.Path), path);
+        builder.AddComponentParameter(2, nameof(MockPage.Label), label);
+        builder.AddComponentParameter(3, nameof(MockPage.ChildContent), content);
+        builder.CloseComponent();
+    };
+
+    /// <summary>A website's page holding a piece of markup.</summary>
+    private static RenderFragment Page(string path, string label, string markup) =>
+        Page(path, label, builder => builder.AddMarkupContent(0, markup));
+
+    /// <summary>The bakery's three pages, each empty.</summary>
+    private static readonly RenderFragment ThreePages = builder =>
+    {
+        builder.AddContent(0, Page("/", "Home"));
+        builder.AddContent(1, Page("/bread", "Bread"));
+        builder.AddContent(2, Page("/cakes", "Cakes"));
+    };
+
     private static IRenderedComponent<SiteMock> Mock(BunitContext ctx) =>
         ctx.Render<SiteMock>(parameters => parameters
             .Add(mock => mock.Address, "bakery.example")
             .Add(mock => mock.Business, "The Bakery")
             .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
-            .Add(mock => mock.NavItems, ["Bread", "Cakes"])
+            .Add(mock => mock.Pages, ThreePages)
             .Add(mock => mock.HeroLine, "Fresh before seven.")
             .Add(mock => mock.HeroNote, "Open every day from six.")
             .Add(mock => mock.AgentLabel, "The Bakery · ask us")
@@ -72,7 +95,7 @@ public class SiteMockTests
         Assert.That(Mock(ctx).Find(".mock-chrome .mock-address").TextContent, Is.EqualTo("bakery.example"));
     }
 
-    /// <summary>The business's header has its name and its menu, and its hero line follows.</summary>
+    /// <summary>The business's header has its name and its menu of its pages, and its hero line follows.</summary>
     [Test]
     public void TheBusinesssHeader_AndHero_AreItsOwn()
     {
@@ -83,8 +106,8 @@ public class SiteMockTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.Find(".mock-header .mock-name").TextContent, Is.EqualTo("The Bakery"));
-            Assert.That(cut.FindAll(".mock-header .mock-nav span").Select(s => s.TextContent),
-                Is.EqualTo(new[] { "Bread", "Cakes" }));
+            Assert.That(cut.FindAll(".mock-header .mock-nav button").Select(s => s.TextContent),
+                Is.EqualTo(new[] { "Home", "Bread", "Cakes" }));
             Assert.That(cut.Find(".mock-hero .mock-hero-line").TextContent, Is.EqualTo("Fresh before seven."));
             Assert.That(cut.Find(".mock-hero .mock-hero-note").TextContent, Is.EqualTo("Open every day from six."));
         });
@@ -105,7 +128,7 @@ public class SiteMockTests
     /// <summary>
     /// A fuller website (F127.1, Louis: "a bit bland, we need to sell it ... give each one a different look"): a page
     /// that scrolls inside the mock, its hero in the business's look with the scene the site drew and a call to action,
-    /// a strip of facts, then the places the site wrote.
+    /// a strip of facts, then the home page the site wrote.
     /// </summary>
     [Test]
     public void ThePage_HasTheHeroInItsLook_TheFacts_AndThePlaces()
@@ -121,7 +144,7 @@ public class SiteMockTests
             .Add(mock => mock.HeroAction, "Order bread")
             .Add(mock => mock.Scene, "<svg class=\"oven\"></svg>")
             .Add(mock => mock.Facts, ["Open from six", "Rye on Fridays"])
-            .Add(mock => mock.Places, "<section class=\"bread\">Bread</section>")
+            .Add(mock => mock.Pages, Page("/", "Home", "<section class=\"bread\">Bread</section>"))
             .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
 
         var page = cut.Find(".site-mock > .mock-page");
@@ -129,7 +152,8 @@ public class SiteMockTests
         {
             Assert.That(cut.Find(".site-mock").ClassList, Does.Contain("look-banner"));
             Assert.That(page.Children.Select(child => child.ClassName),
-                Is.EqualTo(new[] { "mock-hero", "mock-facts", "bread" }));
+                Is.EqualTo(new[] { "mock-hero", "mock-facts", "mock-view" }));
+            Assert.That(page.QuerySelector(".mock-view .bread"), Is.Not.Null);
             Assert.That(page.QuerySelector(".mock-hero .mock-action")!.TextContent, Is.EqualTo("Order bread"));
             Assert.That(page.QuerySelector(".mock-hero .mock-scene svg.oven"), Is.Not.Null);
             Assert.That(page.QuerySelectorAll(".mock-facts li").Select(li => li.TextContent),
@@ -179,8 +203,8 @@ public class SiteMockTests
             cut.FindAll(".mock-scene").Count, cut.FindAll(".mock-action").Count), Is.EqualTo((true, 0, 0, 0)));
     }
 
-    /// <summary>The mock's places for the tests: a section, and a card in it.</summary>
-    private static readonly RenderFragment Places = builder =>
+    /// <summary>The mock's home page for the tests: a section on it, and a card in that.</summary>
+    private static readonly RenderFragment Places = Page("/", "Home", builder =>
     {
         builder.OpenComponent<MockSection>(0);
         builder.AddComponentParameter(1, nameof(MockSection.Path), "/bread");
@@ -193,7 +217,7 @@ public class SiteMockTests
             cards.CloseComponent();
         }));
         builder.CloseComponent();
-    };
+    });
 
     /// <summary>The bakery's mock with its places, showing <paramref name="shown"/>.</summary>
     private static IRenderedComponent<SiteMock> Showing(BunitContext ctx, string? shown) =>
@@ -202,7 +226,7 @@ public class SiteMockTests
             .Add(mock => mock.Business, "The Bakery")
             .Add(mock => mock.Colours, new MockColours("#7a3b1d", "#fff8ef", "#fff8ef", "#3b2a1d"))
             .Add(mock => mock.HeroLine, "Fresh before seven.")
-            .Add(mock => mock.Places, Places)
+            .Add(mock => mock.Pages, Places)
             .Add(mock => mock.Shown, shown)
             .Add(mock => mock.Agent, "<div class=\"chat\">The recorded chat</div>"));
 
@@ -251,7 +275,7 @@ public class SiteMockTests
 
         var widget = Mock(ctx).Find(".site-mock > .mock-widget");
 
-        Assert.That((widget.QuerySelector(".mock-widget-head")!.TextContent.Trim(),
+        Assert.That((widget.QuerySelector(".mock-widget-head .mock-widget-label")!.TextContent,
                 widget.QuerySelector(".mock-widget-body .chat")!.TextContent),
             Is.EqualTo(("The Bakery · ask us", "The recorded chat")));
     }

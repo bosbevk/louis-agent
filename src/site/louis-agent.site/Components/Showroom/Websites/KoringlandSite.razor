@@ -1,0 +1,85 @@
+@* Koringland Attorneys' website (F127.1; three pages since F127.2): home, what the practice does with a card an area,
+   Wills and estates as a page of its own opened from its card (Louis: "navigate to the will and estates page"), and
+   consultations, the first one and what to bring each beside a photo. Every fact is one its agent knows, and the
+   website informs in outline: it advises no one. *@
+<MockPage Path="/" Label="Home">
+    <MockSection Path="/welcome" Heading="A practice for the Swartland">
+        <ChildContent>
+            <p>Wills, property and family law for people, families, farms and small businesses, in English and
+                Afrikaans.</p>
+        </ChildContent>
+        <Cards>
+            <MockCard Path="/welcome/practice" Title="What we do" Opens="/practice">Four areas of law.</MockCard>
+            <MockCard Path="/welcome/consultations" Title="A first consultation" Opens="/consultations">
+                Thirty minutes, at the office or by video call.
+            </MockCard>
+        </Cards>
+    </MockSection>
+</MockPage>
+<MockPage Path="/practice" Label="What we do">
+    <MockSection Path="/practice/areas" Heading="Four areas of law">
+        <ChildContent>
+            <p>For people, families, farms and small businesses.</p>
+        </ChildContent>
+        <Cards>
+            <MockCard Path="/practice/areas/wills" Title="Wills and estates" Opens="/practice/wills">
+                A will, and an estate after a death.
+            </MockCard>
+            <MockCard Path="/practice/areas/property" Title="Property transfers">Conveyancing.</MockCard>
+            <MockCard Path="/practice/areas/family" Title="Family law">Divorce, maintenance and custody.</MockCard>
+            <MockCard Path="/practice/areas/contracts" Title="Contracts">For small businesses and farms.</MockCard>
+        </Cards>
+    </MockSection>
+</MockPage>
+<MockPage Path="/practice/wills" Label="Wills and estates" InMenu="false" Parent="/practice">
+    <p>A will says who gets what, and who sees to it. We draw up wills for families, farmers and businesses in the
+        Swartland, and wind up estates when the time comes.</p>
+    <MockSection Path="/practice/wills/covers" Heading="What a will covers">
+        <ul>
+            <li>Who inherits what: the house, the farm, the savings, a keepsake.</li>
+            <li>Your executor, the person who winds up your estate.</li>
+            <li>A guardian for children under 18, and a trust to hold what they inherit until they're older.</li>
+        </ul>
+        <p>You sign every page, and two witnesses of 14 or older sign with you. A witness, or their spouse, shouldn't
+            be an heir.</p>
+    </MockSection>
+    <MockSection Path="/practice/wills/without" Heading="Without a will">
+        <p>The Intestate Succession Act decides for you. Your spouse and children share by a set formula, and your
+            spouse gets at least R250,000. A partner you never married may get nothing.</p>
+    </MockSection>
+    <MockSection Path="/practice/wills/after-divorce" Heading="After a divorce">
+        <p>A divorce doesn't cancel your will. If you die within three months of it, the will is read as if your former
+            spouse had died before you, unless it clearly says otherwise. After those three months, the will counts as
+            written, your former spouse included. So change it within the three months.</p>
+    </MockSection>
+    <MockSection Path="/practice/wills/in-community" Heading="Married in community of property?">
+        <p>Half the joint estate is your spouse's own. Your will can only leave your half.</p>
+    </MockSection>
+    <MockSection Path="/practice/wills/estate" Heading="When someone dies: the estate">
+        <ol>
+            <li>The death is reported to the Master of the High Court within 14 days.</li>
+            <li>The Master appoints the executor, with letters of executorship.</li>
+            <li>The executor lists what the estate owns and owes, and calls on creditors in the Gazette.</li>
+            <li>The account lies open for 21 days, then the heirs are paid.</li>
+        </ol>
+        <p>Most estates take six to twelve months. The executor's fee is at most 3.5% of the estate, plus VAT.</p>
+    </MockSection>
+    <MockSection Path="/practice/wills/fees" Heading="Fees">
+        <p>A will from R1,800, drawn up in a week. We keep your signed original in our safe at no charge. A first
+            consultation is 30 minutes, R650.</p>
+    </MockSection>
+</MockPage>
+<MockPage Path="/consultations" Label="Consultations">
+    <MockSection Path="/consultations/first" Heading="A first consultation"
+                 Photo="images/showroom/koringland-consultation.webp">
+        <p>Thirty minutes, R650, at the office or by video call. After that, the attorney quotes the matter before any
+            work starts.</p>
+    </MockSection>
+    <MockSection Path="/consultations/what-to-bring" Heading="What to bring"
+                 Photo="images/showroom/koringland-papers.webp">
+        <p>An ID, and any papers about the matter: a title deed, a contract, a court letter.</p>
+    </MockSection>
+    <MockSection Path="/consultations/hours" Heading="When we're open">
+        <p>Monday to Friday, 08:00 to 17:00, in English and Afrikaans.</p>
+    </MockSection>
+</MockPage>

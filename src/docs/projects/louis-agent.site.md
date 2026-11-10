@@ -54,7 +54,11 @@ showroom's three first, the guesthouse leading (F128.2: `/restaurant-demo`, `/la
 made-up business's conversation recorded by `src/site/recordings/record-showroom.sh` and played as its customer sees
 it, on a full mock of its own website in a look of its own, written in `Components/Showroom/Websites/` as its scene
 and its places; when the recording's agent calls `ShowPage` the mock goes to that place,
-[louis-agent.identity.showroom](louis-agent.identity.showroom.md)),
+[louis-agent.identity.showroom](louis-agent.identity.showroom.md); since F127.2 each website has three pages a
+visitor clicks through, Wills and estates a fourth opened from its card, each business wears a brand of its own
+(mockup 0's marks, faces and headers), and once the recording ends *Try it yourself* puts the visitor in a live chat
+with the business's agent in the same corner, the page naming its identity and a first question,
+[ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
 since F127.1 on the same stage, in their own players. The framework's own pages

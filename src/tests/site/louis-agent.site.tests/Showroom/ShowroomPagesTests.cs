@@ -97,6 +97,30 @@ public class ShowroomPagesTests
     }
 
     /// <summary>
+    /// Each business wears its own brand (F127.2 step 9, mockup 0, Louis: "world class and fancy"): its faces, its
+    /// header and its labels' colour, a coastal guesthouse in Atlantic and sand, a farm bistro in olive and wheat, a
+    /// country firm in midnight and brass.
+    /// </summary>
+    [TestCase(typeof(GuesthouseDemoPage), "font-cormorant", "head-band", "--mock-brand: #0b3a4a",
+        "--mock-label: #8fbfb9")]
+    [TestCase(typeof(RestaurantDemoPage), "font-gloock", "head-lined", "--mock-brand: #2c4a34",
+        "--mock-label: #9c7a2f")]
+    [TestCase(typeof(LawPracticeDemoPage), "font-bodoni", "head-ruled", "--mock-brand: #14213d",
+        "--mock-label: #b08d57")]
+    public void ABusiness_WearsItsOwnBrand(Type page, string faces, string header, string brand, string label)
+    {
+        using var ctx = new BunitContext();
+
+        var mock = Render(ctx, page).Find(".site-mock");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(mock.ClassList, Does.Contain(faces).And.Contain(header));
+            Assert.That(mock.GetAttribute("style"), Does.Contain(brand).And.Contain(label));
+        });
+    }
+
+    /// <summary>
     /// A business's website is a full one, each in a look of its own (Louis: "a bit bland, we need to sell it ... give
     /// each one a different look"): its scene, a call to action, four facts, then its places, each at its address on
     /// the business's site, the places its agent can show.
@@ -104,19 +128,24 @@ public class ShowroomPagesTests
     [TestCase(typeof(RestaurantDemoPage), "look-split",
         new[]
         {
-            "/menu", "/menu/sunday-roast", "/menu/lamb-shank", "/menu/chicken-pie", "/menu/vegetable-bake",
-            "/menu/malva-pudding", "/children", "/wine", "/find-us",
+            "/welcome", "/welcome/menu", "/welcome/visit", "/menu/food", "/menu/sunday-roast", "/menu/lamb-shank",
+            "/menu/chicken-pie", "/menu/vegetable-bake", "/menu/malva-pudding", "/menu/children", "/menu/wine",
+            "/visit/hours", "/visit/find-us", "/visit/book",
         })]
     [TestCase(typeof(LawPracticeDemoPage), "look-editorial",
         new[]
         {
-            "/practice", "/practice/wills", "/practice/property", "/practice/family", "/practice/contracts",
-            "/consultation", "/what-to-bring",
+            "/welcome", "/welcome/practice", "/welcome/consultations", "/practice/areas", "/practice/areas/wills",
+            "/practice/areas/property", "/practice/areas/family", "/practice/areas/contracts",
+            "/practice/wills/covers", "/practice/wills/without", "/practice/wills/after-divorce",
+            "/practice/wills/in-community", "/practice/wills/estate", "/practice/wills/fees",
+            "/consultations/first", "/consultations/what-to-bring", "/consultations/hours",
         })]
     [TestCase(typeof(GuesthouseDemoPage), "look-banner",
         new[]
         {
-            "/rooms", "/rooms/sea-view", "/rooms/family", "/rooms/garden", "/breakfast", "/the-beach", "/find-us"
+            "/welcome", "/welcome/rooms", "/welcome/stay", "/rooms/choose", "/rooms/sea-view", "/rooms/family",
+            "/rooms/garden", "/stay/breakfast", "/stay/the-beach", "/stay/staying",
         })]
     public void ABusinessWebsite_HasItsLook_AndItsPlaces(Type page, string look, string[] places)
     {
@@ -134,6 +163,45 @@ public class ShowroomPagesTests
             Assert.That(mock.QuerySelectorAll("[data-place]").Select(place => place.GetAttribute("data-place")),
                 Is.EqualTo(places));
         });
+    }
+
+    /// <summary>
+    /// A business's website has three pages a visitor can click through (F127.2, Louis: "3 pagers with working pages
+    /// and sections"): home, its offer and a visit page, in its own words.
+    /// </summary>
+    [TestCase(typeof(GuesthouseDemoPage), new[] { "Home", "Rooms", "Stay" })]
+    [TestCase(typeof(RestaurantDemoPage), new[] { "Home", "Menu", "Visit" })]
+    [TestCase(typeof(LawPracticeDemoPage), new[] { "Home", "What we do", "Consultations" })]
+    public void ABusinessWebsite_HasThreePages(Type page, string[] menu)
+    {
+        using var ctx = new BunitContext();
+
+        var words = Render(ctx, page).FindAll(".site-mock .mock-nav button").Select(item => item.TextContent);
+
+        Assert.That(words, Is.EqualTo(menu));
+    }
+
+    /// <summary>
+    /// The law practice's Wills and estates opens from its card as a page of its own (Louis: "navigate to the will and
+    /// estates page, this one is good for page transition"), off the menu, and goes back to What we do.
+    /// </summary>
+    [Test]
+    public void TheLawPractice_OpensWillsAndEstates_FromItsCard_AndGoesBack()
+    {
+        using var ctx = new BunitContext();
+        var cut = Render(ctx, typeof(LawPracticeDemoPage));
+
+        string OnScreen() => cut.FindAll(".site-mock .mock-view").Single(view => !view.HasAttribute("hidden"))
+            .GetAttribute("data-page")!;
+
+        cut.FindAll(".site-mock .mock-nav button").Single(item => item.TextContent == "What we do").Click();
+        cut.Find("[data-place='/practice/areas/wills'] button.mock-card-open").Click();
+        string wills = OnScreen();
+        string heading = cut.Find(".mock-view[data-page='/practice/wills'] h2.mock-page-heading").TextContent;
+        cut.Find(".mock-view[data-page='/practice/wills'] button.mock-back").Click();
+
+        Assert.That((wills, heading, OnScreen()),
+            Is.EqualTo(("/practice/wills", "Wills and estates", "/practice")));
     }
 
     /// <summary>
@@ -207,7 +275,8 @@ public class ShowroomPagesTests
 
     /// <summary>
     /// The page a recording sends with its first question, as the guide's widget sends the page in view, lists the
-    /// website's places by their addresses, the same as the mock draws: the agent can only show what the visitor sees.
+    /// website's pages and places by their addresses, the same as the mock draws: the agent can only show what the
+    /// visitor sees.
     /// </summary>
     [TestCase(typeof(RestaurantDemoPage), "wheatfield-kitchen")]
     [TestCase(typeof(LawPracticeDemoPage), "koringland-attorneys")]
@@ -218,8 +287,9 @@ public class ShowroomPagesTests
         var sent = JsonSerializer.Deserialize<RecordedPage>(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             $"src/site/recordings/pages/{business}.json")), new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
 
-        var places = Render(ctx, page).FindAll(".site-mock [data-place]")
-            .Select(place => place.GetAttribute("data-place"));
+        // Every page but home, then the places on it, in the order the mock draws them.
+        var places = Render(ctx, page).FindAll(".site-mock .mock-view:not([data-page='/']), .site-mock [data-place]")
+            .Select(place => place.GetAttribute("data-place") ?? place.GetAttribute("data-page"));
 
         Assert.Multiple(() =>
         {
