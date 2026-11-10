@@ -30,7 +30,7 @@ public class DemosPageTests
             Assert.That(links,
                 Is.EqualTo(new[]
                 {
-                    "/restaurant-demo", "/law-practice-demo", "/guesthouse-demo", "/coding-agent", "/triage-demo"
+                    "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent", "/triage-demo"
                 }));
             Assert.That(cut.Markup, Does.Not.Contain(";"), "no semicolons in the site's words");
         });

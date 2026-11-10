@@ -30,9 +30,9 @@ public class ShowroomPagesTests
         Assert.That(demos,
             Is.EqualTo(new[]
             {
+                ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
                 ("/restaurant-demo", DemoGroup.ForYourBusiness, TileAccent.Green),
                 ("/law-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Blue),
-                ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
                 ("/coding-agent", DemoGroup.AgentsAtWork, TileAccent.Red),
                 ("/triage-demo", DemoGroup.AgentsAtWork, TileAccent.Purple),
             }));

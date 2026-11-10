@@ -67,14 +67,15 @@ public class ShowroomPagesTests
             Is.Empty, "word for word, and no apostrophe, so the script quotes it plainly");
     }
 
-    /// <summary>The three come first on the demos list.</summary>
+    /// <summary>The three come first on the demos list, the guesthouse leading (Louis: "make the guesthouse the main
+    /// one").</summary>
     [Test]
     public void TheDemos_ListTheBusinessesFirst()
     {
         var links = Render(typeof(DemosPage)).FindAll("article.panel a").Select(a => a.GetAttribute("href")).ToList();
 
         Assert.That(links.Take(3),
-            Is.EqualTo(new[] { "/restaurant-demo", "/law-practice-demo", "/guesthouse-demo" }));
+            Is.EqualTo(new[] { "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo" }));
     }
 
     /// <summary>The menu's demos list them first too.</summary>
@@ -96,7 +97,7 @@ public class ShowroomPagesTests
         Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
             Is.EqualTo(new[]
             {
-                "/demos", "/restaurant-demo", "/law-practice-demo", "/guesthouse-demo", "/coding-agent",
+                "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                 "/triage-demo"
             }));
     }
