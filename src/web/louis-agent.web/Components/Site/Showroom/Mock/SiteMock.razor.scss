@@ -171,12 +171,14 @@
    business's colour, and the rest of the mock's page dimmed around it (the page clips the dim, so the header, the
    chat and the visitor's page stay bright). Nothing stays after it (Louis: "remove the line afterwards"): the bar
    keeps the place's address, which is all a visitor who asked for less motion sees. A card is pressed instead, in
-   its own styles ("this is press boxes ... rather the press"). */
+   its own styles ("this is press boxes ... rather the press"). The ring starts at the section's own top line and
+   reaches out only at its sides and bottom (F127.2, Louis's pick of four), so it never cuts into the photo of the
+   section above. */
 .mock-page ::deep .mock-section.is-shown { position: relative; }
 .mock-page ::deep .mock-section.is-shown::after {
     content: "";
     position: absolute;
-    inset: -8px;
+    inset: 0 -8px -8px;
     z-index: 1;
     pointer-events: none;
     border-radius: 14px;
@@ -192,7 +194,7 @@
    page's end so its last place can scroll up above the widget, which sits across the bottom (MockWidget). */
 @container (max-width: 760px) {
     .mock-nav { display: none; }
-    .mock-page { padding: 0 16px 360px; }
+    .mock-page { padding: 0 16px 280px; }
     .mock-hero { flex-direction: column; align-items: stretch; padding: 18px 0; }
     .mock-hero-line { font-size: 21px; }
     .look-editorial .mock-hero-line { font-size: 24px; }

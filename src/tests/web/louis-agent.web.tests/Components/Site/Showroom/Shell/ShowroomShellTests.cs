@@ -106,6 +106,23 @@ public class ShowroomShellTests
     }
 
     /// <summary>
+    /// A demo has a way back to all the demos (F127.2, Louis: "should also have a button back to demos"), beside the
+    /// way back to the site; the start, which is all the demos, has none.
+    /// </summary>
+    [TestCase("/bakery-demo", 1)]
+    [TestCase("/demos", 0)]
+    public void ADemo_HasAWayBackToAllTheDemos(string path, int links)
+    {
+        using var ctx = new BunitContext();
+
+        var back = Shell(ctx, path).FindAll(".showroom-bar a.showroom-demos");
+
+        Assert.That(back, Has.Count.EqualTo(links));
+        if (links == 0) return;
+        Assert.That((back[0].GetAttribute("href"), back[0].TextContent), Is.EqualTo(("/demos", "← All demos")));
+    }
+
+    /// <summary>
     /// The corner stands beside the lit frame, not in it (F127.1, Louis's screenshot of a tour's last stop): the frame
     /// is a layer of its own for its grid, and a corner inside it went under the guide's spotlight, dimmed with the
     /// page.

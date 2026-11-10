@@ -1,8 +1,9 @@
+using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Site.Layout;
 using LouisAgent.Site.Pages.Agents;
 using LouisAgent.Site.Pages.Agents.Showroom;
-using LouisAgent.Site.Tests.Pages;
 using LouisAgent.Web.Components.Recorded;
+using LouisAgent.Web.Components.Site.Meta;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -100,5 +101,23 @@ public class ShowroomPagesTests
                 "/demos", "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo", "/coding-agent",
                 "/triage-demo"
             }));
+    }
+
+    /// <summary>
+    /// The guesthouse says beach (F127.2, Louis: "should say beach"): its heading, its line in the demos' list and its
+    /// description for search all read "a weekend by the beach".
+    /// </summary>
+    [Test]
+    public void TheGuesthouse_SaysBeach()
+    {
+        var cut = Render(typeof(GuesthouseDemoPage));
+        string line = SiteDemos.All.At("/guesthouse-demo")!.Line;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find("h1").TextContent, Is.EqualTo("A weekend by the beach, with the dog."));
+            Assert.That(line, Is.EqualTo("A weekend by the beach, with the dog"));
+            Assert.That(cut.FindComponent<PageHead>().Instance.Description, Does.Contain("a weekend by the beach"));
+        });
     }
 }

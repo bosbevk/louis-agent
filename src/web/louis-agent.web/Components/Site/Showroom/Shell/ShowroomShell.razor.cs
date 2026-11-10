@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Components.Site.Showroom.Shell;
 
 /// <summary>
-/// A site's showroom for its demos (F127.1): a slim bar with the brand, the way back to the site and one offer, every
-/// demo in a rail grouped by what a visitor comes for (chips on a phone), the demo on screen in the stage, and a
-/// corner for the site's guide. The frame wears the colour of the demo on screen, so its light, the pill and all
-/// within follow it.
+/// A site's showroom for its demos (F127.1): a slim bar with the brand, the way back to the site (and on a demo, to
+/// all the demos) and one offer, every demo in a rail grouped by what a visitor comes for (chips on a phone), the demo
+/// on screen in the stage, and a corner for the site's guide. The frame wears the colour of the demo on screen, so its
+/// light, the pill and all within follow it.
 /// </summary>
 /// <remarks>
 /// Template Method, in Razor (Gang of Four), as <see cref="SiteShell"/> is for the landing: the frame stays here and a
@@ -33,6 +33,10 @@ public partial class ShowroomShell
     /// <summary>Where the way back leads: the rest of the site.</summary>
     [Parameter]
     public string BackHref { get; set; } = "/";
+
+    /// <summary>Where a demo's way back to all the demos leads: the showroom's start.</summary>
+    [Parameter]
+    public string DemosHref { get; set; } = "/demos";
 
     /// <summary>The site's one offer, at the end of the bar.</summary>
     [Parameter]

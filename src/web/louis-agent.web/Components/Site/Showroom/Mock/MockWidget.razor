@@ -1,12 +1,22 @@
 @* The agent's widget in the corner of a mocked business's website (F127.1): a head in the business's brand colour
-   with its mark, a live dot and its label, and the agent under it. *@
-<div class="mock-widget">
+   with its mark, a live dot, its label and the buttons to minimise and maximise it (F127.2), and the agent under it. *@
+<div class="@Classes">
     <div class="mock-widget-head">
         @if (Mark is not null)
         {
             <span class="mock-mark" aria-hidden="true">@Mark</span>
         }
-        <i class="mock-live" aria-hidden="true"></i>@Label
+        <i class="mock-live" aria-hidden="true"></i><span class="mock-widget-label">@Label</span>
+        <span class="mock-widget-tools">
+            <button class="mock-tool" type="button" @onclick="ToggleMinimised" aria-label="@MinimiseLabel"
+                    title="@MinimiseLabel" aria-pressed="@Pressed(MockWidgetSize.Minimised)">
+                <span aria-hidden="true">@(Size == MockWidgetSize.Minimised ? "▴" : "–")</span>
+            </button>
+            <button class="mock-tool" type="button" @onclick="ToggleMaximised" aria-label="@MaximiseLabel"
+                    title="@MaximiseLabel" aria-pressed="@Pressed(MockWidgetSize.Maximised)">
+                <span aria-hidden="true">@(Size == MockWidgetSize.Maximised ? "⤡" : "⤢")</span>
+            </button>
+        </span>
     </div>
     <div class="mock-widget-body">@ChildContent</div>
 </div>

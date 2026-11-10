@@ -20,8 +20,17 @@ public sealed record ShowroomText
     /// <summary>The way out of the showroom, back to the rest of the site.</summary>
     public string BackToSite { get; init; } = "Back to the site";
 
-    /// <summary>The name the rail goes by for a screen reader.</summary>
+    /// <summary>The rail's name for a screen reader, and a demo's way back to all of them.</summary>
     public string AllDemos { get; init; } = "All demos";
+
+    /// <summary>A mock website's chat folds to its head.</summary>
+    public string Minimise { get; init; } = "Minimise";
+
+    /// <summary>A mock website's chat covers the website.</summary>
+    public string Maximise { get; init; } = "Maximise";
+
+    /// <summary>A minimised or maximised chat goes back to its corner.</summary>
+    public string Restore { get; init; } = "Restore";
 
     /// <summary>The heading over a demo's cues.</summary>
     public string WhatToWatch { get; init; } = "What to watch";

@@ -12,7 +12,7 @@ public static class SiteDemos
 {
     /// <summary>The five, registered once in <c>Program.cs</c> for the showroom to draw.</summary>
     public static ShowroomDemos All { get; } = new([
-        new ShowroomDemo("/guesthouse-demo", "A guesthouse", "A weekend by the sea, with the dog",
+        new ShowroomDemo("/guesthouse-demo", "A guesthouse", "A weekend by the beach, with the dog",
             DemoGroup.ForYourBusiness, TileAccent.Yellow, "🛏"),
         new ShowroomDemo("/restaurant-demo", "A restaurant", "Sunday lunch at ten at night", DemoGroup.ForYourBusiness,
             TileAccent.Green, "🍽"),

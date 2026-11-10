@@ -251,7 +251,7 @@ public class SiteMockTests
 
         var widget = Mock(ctx).Find(".site-mock > .mock-widget");
 
-        Assert.That((widget.QuerySelector(".mock-widget-head")!.TextContent.Trim(),
+        Assert.That((widget.QuerySelector(".mock-widget-head .mock-widget-label")!.TextContent,
                 widget.QuerySelector(".mock-widget-body .chat")!.TextContent),
             Is.EqualTo(("The Bakery · ask us", "The recorded chat")));
     }
