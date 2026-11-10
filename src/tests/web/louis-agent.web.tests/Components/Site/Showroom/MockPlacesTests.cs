@@ -42,6 +42,20 @@ public class MockPlacesTests
         Assert.That(cut.FindAll(".mock-cards"), Is.Empty);
     }
 
+    /// <summary>A card of a title and a price alone (a dish) draws no empty words under them.</summary>
+    [Test]
+    public void ACardWithoutWords_DrawsNone()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<MockCard>(parameters => parameters
+            .Add(place => place.Path, "/bread/rye")
+            .Add(place => place.Title, "Rye")
+            .Add(place => place.Note, "R45"));
+
+        Assert.That(cut.FindAll(".mock-card-words"), Is.Empty);
+    }
+
     /// <summary>A card carries its address, its title, its note (a price) and its words.</summary>
     [Test]
     public void ACard_HasItsAddress_ItsTitle_ItsNote_AndItsWords()

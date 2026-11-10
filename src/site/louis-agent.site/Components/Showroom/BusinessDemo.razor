@@ -3,10 +3,14 @@
    offer. The business is made up and says so; the conversation is real, recorded once. *@
 <DemoStage Accent="Accent" Kicker="@KickerLine">
     <Title>@Heading</Title>
-    <Lede>@Lede <span class="stage-made-up">@Business is a made-up business. The conversation is real, recorded once and played back. Nothing runs while you watch.</span></Lede>
+    <Lede>
+        @Lede <span class="stage-made-up">@Business is a made-up business. The conversation is real, recorded once
+            and played back. Nothing runs while you watch.</span>
+    </Lede>
     <Player>
         <SiteMock Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
-                  NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel">
+                  NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel" Look="Look"
+                  Scene="Scene" HeroAction="@HeroAction" Facts="Facts" Places="Places">
             <Agent>
                 @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading speed,
                    and the visitor's next question comes after a breath, as they read and type. *@

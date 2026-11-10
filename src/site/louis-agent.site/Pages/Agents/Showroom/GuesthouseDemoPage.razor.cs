@@ -35,5 +35,12 @@ public partial class GuesthouseDemoPage
     private static readonly MockColours Brand = new("#0e4f63", "#f7f1e3", "#fbf8f1", "#1c2b33");
 
     /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["Rooms", "Breakfast", "The beach", "Find us"];
+    private static readonly string[] Menu = ["Rooms", "Breakfast", "The beach", "Staying with us"];
+
+    /// <summary>The facts under its hero, each one its agent knows.</summary>
+    private static readonly string[] Facts =
+    [
+        "Four rooms, breakfast included", "The beach, a five-minute walk", "Dogs in the garden room",
+        "Wifi in every room"
+    ];
 }

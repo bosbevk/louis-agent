@@ -70,18 +70,8 @@ public class ShowroomPagesTests
     public void ABusinessDemo_PlaysOnItsOwnWebsite(Type page, string accent, string address)
     {
         using var ctx = new BunitContext();
-        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new ChatText());
-        ctx.Services.AddSingleton(new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound)))
-        {
-            BaseAddress = new Uri("http://site.test/"),
-        });
 
-        var cut = ctx.Render(builder =>
-        {
-            builder.OpenComponent(0, page);
-            builder.CloseComponent();
-        });
+        var cut = Render(ctx, page);
 
         Assert.Multiple(() =>
         {
@@ -94,6 +84,94 @@ public class ShowroomPagesTests
             var chat = cut.FindComponent<RecordedChat>().Instance;
             Assert.That((chat.Pace, chat.TurnGap), Is.EqualTo((2.5, 2200)),
                 "at a person's pace (Louis: \"slow it down like realtime\"), a breath before each question");
+        });
+    }
+
+    /// <summary>
+    /// A business's website is a full one, each in a look of its own (Louis: "a bit bland, we need to sell it ... give
+    /// each one a different look"): its scene, a call to action, four facts, then its places, each at its address on
+    /// the business's site, the places its agent can show.
+    /// </summary>
+    [TestCase(typeof(RestaurantDemoPage), "look-split",
+        new[]
+        {
+            "/menu", "/menu/sunday-roast", "/menu/lamb-shank", "/menu/chicken-pie", "/menu/vegetable-bake",
+            "/menu/malva-pudding", "/children", "/wine", "/find-us",
+        })]
+    [TestCase(typeof(LawPracticeDemoPage), "look-editorial",
+        new[]
+        {
+            "/practice", "/practice/wills", "/practice/property", "/practice/family", "/practice/contracts",
+            "/consultation", "/what-to-bring",
+        })]
+    [TestCase(typeof(GuesthouseDemoPage), "look-banner",
+        new[]
+        {
+            "/rooms", "/rooms/sea-view", "/rooms/family", "/rooms/garden", "/breakfast", "/the-beach", "/find-us"
+        })]
+    public void ABusinessWebsite_HasItsLook_AndItsPlaces(Type page, string look, string[] places)
+    {
+        using var ctx = new BunitContext();
+
+        var mock = Render(ctx, page).Find(".site-mock");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(mock.ClassList, Does.Contain(look));
+            Assert.That(mock.QuerySelector(".mock-scene svg"), Is.Not.Null, "its scene");
+            Assert.That(mock.QuerySelector(".mock-action")?.TextContent, Is.Not.Empty, "its call to action");
+            Assert.That(mock.QuerySelectorAll(".mock-facts li"), Has.Length.EqualTo(4));
+            Assert.That(mock.QuerySelectorAll("[data-place]").Select(place => place.GetAttribute("data-place")),
+                Is.EqualTo(places));
+        });
+    }
+
+    /// <summary>
+    /// A website says only what its agent knows: every price and every time on it is in the business's voice, so the
+    /// page and the agent never tell a visitor two different things.
+    /// </summary>
+    [TestCase(typeof(RestaurantDemoPage), "wheatfield-kitchen")]
+    [TestCase(typeof(LawPracticeDemoPage), "koringland-attorneys")]
+    [TestCase(typeof(GuesthouseDemoPage), "seemeeu-guesthouse")]
+    public void EveryPriceAndTime_OnAWebsite_IsOneItsAgentKnows(Type page, string business)
+    {
+        using var ctx = new BunitContext();
+        string voice = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            $"src/site/louis-agent.identity.showroom/prompts/{business}/agent/{business}/voice.md"));
+
+        // Each innermost element's words apart, so a fact never runs into the next one's.
+        var texts = Render(ctx, page).Find(".site-mock .mock-page").QuerySelectorAll("*")
+            .Where(element => element.ChildElementCount == 0).Select(element => element.TextContent);
+
+        var figures = texts.SelectMany(text => text.Split([' ', '\n', '–'], StringSplitOptions.RemoveEmptyEntries))
+            .Select(word => word.Trim('.', ',', ';', ':', '(', ')'))
+            .Where(word => IsPrice(word) || IsTime(word))
+            .ToList();
+        Assert.That(figures, Is.Not.Empty);
+        Assert.That(figures.Where(figure => !voice.Contains(figure, StringComparison.Ordinal)), Is.Empty);
+    }
+
+    /// <summary>A price in rand: R and a digit, such as <c>R1,450</c>.</summary>
+    private static bool IsPrice(string word) => word.Length > 1 && word[0] == 'R' && char.IsAsciiDigit(word[1]);
+
+    /// <summary>A time of day, such as <c>07:30</c>.</summary>
+    private static bool IsTime(string word) =>
+        word.Contains(':') && word.All(c => char.IsAsciiDigit(c) || c == ':');
+
+    /// <summary>A demo page, drawn with its chat's recordings missing: it shows its website and plays nothing.</summary>
+    private static IRenderedComponent<IComponent> Render(BunitContext ctx, Type page)
+    {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ChatText());
+        ctx.Services.AddSingleton(new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound)))
+        {
+            BaseAddress = new Uri("http://site.test/"),
+        });
+
+        return ctx.Render(builder =>
+        {
+            builder.OpenComponent(0, page);
+            builder.CloseComponent();
         });
     }
 }

@@ -1,5 +1,6 @@
 /* A card on a mocked business's website (F127.1): a soft panel of the business's page with a band of its brand colour
-   on top, its title in the business's typeface, its note (a price) in the brand colour, and its words. */
+   on top, its title in the business's typeface, its note (a price) under it in the brand colour, and its words. The
+   note goes under the title, since a card in a row of three has no room beside it. */
 .mock-card {
     padding: 12px 14px;
     border-top: 3px solid var(--mock-brand);
@@ -7,7 +8,7 @@
     background: color-mix(in srgb, var(--mock-page) 90%, var(--mock-ink));
     transition: box-shadow .4s ease, background .4s ease;
 }
-.mock-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.mock-card-head { display: flex; flex-direction: column; gap: 3px; }
 .mock-card-title { font: 600 14.5px/1.25 var(--mock-face); }
-.mock-card-note { flex: none; font-size: 13px; font-weight: 600; color: var(--mock-brand); }
+.mock-card-note { font-size: 13px; font-weight: 600; color: var(--mock-brand); }
 .mock-card-words { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; opacity: .85; }

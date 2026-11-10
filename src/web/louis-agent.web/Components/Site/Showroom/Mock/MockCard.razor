@@ -8,5 +8,8 @@
             <span class="mock-card-note">@Note</span>
         }
     </div>
-    <p class="mock-card-words">@ChildContent</p>
+    @if (ChildContent is not null)
+    {
+        <p class="mock-card-words">@ChildContent</p>
+    }
 </article>

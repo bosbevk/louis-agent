@@ -14,7 +14,7 @@
 .mock-section ::deep p { margin: 0 0 8px; }
 .mock-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 12px;
     margin-top: 12px;
 }

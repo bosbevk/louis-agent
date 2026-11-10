@@ -34,5 +34,9 @@ public partial class LawPracticeDemoPage
     private static readonly MockColours Brand = new("#1f2f4f", "#f4efe4", "#f7f5f0", "#1d2433");
 
     /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["Wills and estates", "Property", "Family law", "Contact"];
+    private static readonly string[] Menu = ["What we do", "A first consultation", "What to bring"];
+
+    /// <summary>The facts under its hero, each one its agent knows.</summary>
+    private static readonly string[] Facts =
+        ["Monday to Friday", "At the office or by video call", "English and Afrikaans", "A first consultation R650"];
 }

@@ -69,6 +69,26 @@ public partial class BusinessDemo
     [Parameter]
     public string? HeroNote { get; set; }
 
+    /// <summary>Its website's look (Louis: "give each one a different look").</summary>
+    [Parameter]
+    public MockLook Look { get; set; }
+
+    /// <summary>Its website's scene, drawn for it.</summary>
+    [Parameter, EditorRequired]
+    public RenderFragment Scene { get; set; } = null!;
+
+    /// <summary>Its website's call to action: "Book a table".</summary>
+    [Parameter, EditorRequired]
+    public string HeroAction { get; set; } = "";
+
+    /// <summary>A few facts under its website's hero, from what its agent knows.</summary>
+    [Parameter, EditorRequired]
+    public IReadOnlyList<string> Facts { get; set; } = [];
+
+    /// <summary>Its website's places, each at its address, the places its agent can show.</summary>
+    [Parameter, EditorRequired]
+    public RenderFragment Places { get; set; } = null!;
+
     /// <summary>The conversation, a turn at a time.</summary>
     [Parameter, EditorRequired]
     public IReadOnlyList<RecordedTurn> Turns { get; set; } = [];

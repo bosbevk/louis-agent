@@ -21,7 +21,7 @@ public partial class MockCard
     [Parameter]
     public string? Note { get; set; }
 
-    /// <summary>Its few words.</summary>
+    /// <summary>Its few words; none for a card of a title and a note alone.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 }

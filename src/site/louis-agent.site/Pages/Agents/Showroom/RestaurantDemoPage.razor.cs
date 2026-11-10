@@ -34,5 +34,11 @@ public partial class RestaurantDemoPage
     private static readonly MockColours Brand = new("#2f5d45", "#f6f1e7", "#f6f1e7", "#2b2418");
 
     /// <summary>Its website's menu.</summary>
-    private static readonly string[] Menu = ["Menu", "Sunday lunch", "Wines", "Find us"];
+    private static readonly string[] Menu = ["Menu", "For the children", "Wine", "Find us"];
+
+    /// <summary>The facts under its hero, each one its agent knows.</summary>
+    private static readonly string[] Facts =
+    [
+        "Lunch Tuesday to Sunday", "Dinner Thursday to Saturday", "Sixty seats, on the stoep too", "Wheelchair access"
+    ];
 }
