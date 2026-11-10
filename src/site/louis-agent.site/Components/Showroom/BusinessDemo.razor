@@ -1,17 +1,24 @@
-@* A showroom business's demo (F128.2): what the business is and what to watch for on the left, its conversation
-   recorded once and played as its customer would see it on the right, then the offer. *@
-<Band Id="top" Kicker="@Kicker">
-    <div class="watch-grid">
-        <div class="watch-text">
-            <BandTitle Class="chrome">@Heading</BandTitle>
-            <p class="lede">@Lede</p>
-            <ul class="rules">@Points</ul>
-            <p class="band-note">@Business is a made-up business, here to show what a website with an agent does. The conversation is real, recorded once and played back. Nothing runs while you watch.</p>
-        </div>
-        <RecordedChat Turns="Turns" Title="@Title" PlayAgain="Play it again" ShowWork="false">
-            <Ending>
-                <p class="recorded-offer">Want an agent like this on your own website? <a href="/contact">Ask for yours</a>, from R500 a month.</p>
-            </Ending>
-        </RecordedChat>
-    </div>
-</Band>
+@* A showroom business's demo (F128.2, in the showroom since F127.1): its stage in its colour, its conversation played
+   on a mock of its own website with its sample brand, the cues of what to watch lit as the play reaches them, and the
+   offer. The business is made up and says so; the conversation is real, recorded once. *@
+<DemoStage Accent="Accent" Kicker="@KickerLine">
+    <Title>@Heading</Title>
+    <Lede>@Lede <span class="stage-made-up">@Business is a made-up business. The conversation is real, recorded once and played back. Nothing runs while you watch.</span></Lede>
+    <Player>
+        <SiteMock Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
+                  NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel">
+            <Agent>
+                @* A little slower than recorded (Louis: "slow this down just a bit"), so a visitor reads along. *@
+                <RecordedChat Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false" Pace="1.4"
+                              TurnStarted="Reach" />
+            </Agent>
+        </SiteMock>
+    </Player>
+    <Cues>
+        <DemoCues Cues="Cues" Reached="_reached" Heading="What to watch" />
+    </Cues>
+    <Offer>
+        <span>Want an agent like this on your own website? From R500 a month.</span>
+        <a href="/contact">Ask for yours →</a>
+    </Offer>
+</DemoStage>

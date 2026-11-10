@@ -62,6 +62,9 @@ public partial class ShowroomShell
     /// <summary>The demo on screen; none on the start.</summary>
     private ShowroomDemo? Current => Demos.At(Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath);
 
-    /// <summary>The frame's classes: the showroom, in the colour of the demo on screen or the start's.</summary>
-    private string Classes => $"showroom accent-{(Current?.Accent ?? StartAccent).Wire()}";
+    /// <summary>
+    /// The frame's classes: a site's frame, so the site's own look (its type, its buttons, its panels) reaches in as
+    /// it does in <see cref="SiteShell"/>; the showroom; and the colour of the demo on screen or the start's.
+    /// </summary>
+    private string Classes => $"site showroom accent-{(Current?.Accent ?? StartAccent).Wire()}";
 }

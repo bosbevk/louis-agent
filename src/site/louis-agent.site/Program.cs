@@ -1,4 +1,5 @@
 using LouisAgent.Site;
+using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget.Door;
@@ -26,5 +27,8 @@ builder.Services.AddSingleton(new ChatText()); // the shared components' words, 
 // routes.
 builder.Services.AddSingleton(SiteAddresses.From("home", typeof(App).Assembly));
 builder.Services.AddSingleton<GuideDoor>(); // "Take the tour" and any other button that asks the guide in the corner
+
+// The showroom's demos (F127.1): the rail, the phone's chips and the start's covers are drawn from them.
+builder.Services.AddSingleton(SiteDemos.All);
 
 await builder.Build().RunAsync();
