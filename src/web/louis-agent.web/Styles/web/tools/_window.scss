@@ -18,4 +18,14 @@
     color: var(--bs-tertiary-color);
 }
 
-@mixin dot { width: 10px; height: 10px; border-radius: 50%; background: var(--web-border-hover); }
+// The title bar's three dots, in a Mac window's colours (FX128, Louis: "those 3 dots at the top could have the mac
+// colors"): the framework's own red, amber and green, in that order.
+@mixin dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--web-border-hover);
+    &:nth-child(1) { background: var(--bs-danger); }
+    &:nth-child(2) { background: var(--bs-warning); }
+    &:nth-child(3) { background: var(--web-ok); }
+}
