@@ -56,7 +56,8 @@ it, on a full mock of its own website in a look of its own, written in `Componen
 and its places; when the recording's agent calls `ShowPage` the mock goes to that place,
 [louis-agent.identity.showroom](louis-agent.identity.showroom.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
-[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`. The framework's own pages
+[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
+since F127.1 on the same stage, in their own players. The framework's own pages
 sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
 `/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
 `/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,

@@ -1,4 +1,5 @@
 using LouisAgent.SessionStream;
+using LouisAgent.Site.Layout;
 using LouisAgent.Site.Pages.Agents;
 using Microsoft.AspNetCore.Components;
 
@@ -29,31 +30,32 @@ public class CodingAgentPageTests
         Assert.Multiple(() =>
         {
             Assert.That(route, Is.EqualTo("/coding-agent"));
-            Assert.That(cut.Find("h1.chrome").TextContent, Is.EqualTo("Watch it fix a real bug."));
+            Assert.That(cut.FindAll("h1").Select(h => h.TextContent), Is.EqualTo(new[] { "Watch it fix a real bug." }));
             Assert.That(cut.FindAll(".recorded-chat"), Has.Count.EqualTo(1));
             Assert.That(cut.Markup, Does.Not.Contain(";"), "no semicolons in the site's words");
         });
     }
 
     /// <summary>
-    /// The page is one slide, side by side (FX105, Louis's pick of three): the words and what the visitor is watching
-    /// on the left, read while the session plays in the window on the right.
+    /// The page is in the showroom (F127.1, step 8): its stage in the coding agent's red, the session playing in its
+    /// work window, what it shows beside it (every tool a pack, it checks its own work, it leaves the commit, its
+    /// cost), and the offer under them.
     /// </summary>
     [Test]
-    public void ThePage_IsOneSlide_TheWordsBesideTheWindow()
+    public void ThePage_IsAShowroomStage_TheWindowBesideWhatItShows()
     {
         using var ctx = SitePageContext.Create();
 
         var cut = ctx.Render<CodingAgentPage>();
 
-        var columns = cut.Find(".band .watch-grid").Children;
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll(".band"), Has.Count.EqualTo(1), "one slide");
-            Assert.That(columns, Has.Length.EqualTo(2));
-            Assert.That(columns[0].QuerySelector("h1.chrome"), Is.Not.Null, "the heading on the left");
-            Assert.That(columns[0].QuerySelectorAll(".rules li"), Has.Length.EqualTo(4), "what you're watching");
-            Assert.That(columns[1].ClassList, Does.Contain("recorded-chat"), "the window on the right");
+            Assert.That(typeof(CodingAgentPage).GetCustomAttributes(typeof(LayoutAttribute), false)
+                .Cast<LayoutAttribute>().Single().LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
+            Assert.That(cut.Find(".demo-stage").ClassList, Does.Contain("accent-red"));
+            Assert.That(cut.Find("#the-demo .recorded-chat"), Is.Not.Null, "the work window");
+            Assert.That(cut.FindAll("#what-to-watch .work-notes li"), Has.Count.EqualTo(4), "what it shows");
+            Assert.That(cut.Find("#ask a").GetAttribute("href"), Is.EqualTo("/contact"));
         });
     }
 

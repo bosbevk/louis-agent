@@ -25,6 +25,15 @@
     <loc>https://louis-agent.dev/coding-agent</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/coding-agent/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/coding-agent/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/coding-agent/ask</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/contact</loc>
   </url>
   <url>
@@ -290,6 +299,12 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/triage-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/triage-demo/the-demo</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/triage-demo/ask</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/what-we-build</loc>
