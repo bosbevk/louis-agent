@@ -7,9 +7,7 @@ public enum ShowroomIdentityName
 {
     [WireName("wheatfield-kitchen")] WheatfieldKitchen,
     [WireName("koringland-attorneys")] KoringlandAttorneys,
-
-    [WireName("graanveld-family-practice")]
-    GraanveldFamilyPractice,
+    [WireName("seemeeu-guesthouse")] SeemeeuGuesthouse,
 }
 
 /// <summary>

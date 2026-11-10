@@ -12,19 +12,22 @@
 ## Purpose
 
 A business owner understands a website with an agent best by watching one answer a business like theirs (F128.2,
-Louis's pick 4A: "not a bakery, say a laywers practice, restaurant, and a doctors practice"). These are three
-made-up businesses' agents, recorded once each answering a customer and passing a booking on, and played on the
-site's demo pages. Nothing runs for a visitor.
+Louis's pick 4A: "not a bakery, say a laywers practice, restaurant, and a doctors practice"; since F127.1 a
+guesthouse in the doctor's place: "we should just change doctor to something else", since the law practice already
+shows an agent that never advises). These are three made-up businesses' agents, recorded once each answering a
+customer and passing a booking on, and played in the site's showroom on a mock of each business's own website.
+Nothing runs for a visitor.
 
 ## How it works
 
 - `ShowroomIdentity`: the base the three share, its name from `ShowroomIdentityName`, its voice
   `{name}/voice`, and one pack, `leads`. `RestaurantIdentity` (Wheatfield Kitchen), `LawPracticeIdentity`
-  (Koringland Attorneys) and `DoctorsPracticeIdentity` (Graanveld Family Practice) each say only which they are.
+  (Koringland Attorneys) and `GuesthouseIdentity` (Seemeeu Guesthouse, in Yzerfontein) each say only which they are.
 - `prompts/agent/{name}/voice.md`: the business's made-up facts (hours, services, prices), how it answers (three
   short sentences, proper English or Afrikaans, a greeting once), and how it passes a booking on: name, contact and
   what they want, repeated back, and `SendLead` only after the customer's yes. Each says it is an AI and a made-up
-  business when asked. The two practices never give advice; the doctor's sends an emergency to 10177 or 112.
+  business when asked. The law practice never gives advice; the guesthouse never promises a room it can't see, and
+  knows dogs stay in the garden room.
 - The site's host lists them after Louis, so he stays the default and the only one open to visitors
   (`OPEN_IDENTITY`); a showroom session needs the site's key. The leads pack's texts name no owner, so the same tool
   that sends Louis a lead sends a practice its booking request.

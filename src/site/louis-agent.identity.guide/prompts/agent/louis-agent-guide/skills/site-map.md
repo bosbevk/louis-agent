@@ -56,11 +56,12 @@ comes from, what is built on the framework), so when words are not enough, point
 - `/demos`: the demos in one place, each a real run recorded once and played back. Send someone who asks what the
   framework can do, or for a demo, here, and explain each demo from its doc: what it shows, how it was made, what is
   real and what it would mean for their business. Sources: `demos/louis-agent/docs/demos.md`.
-- `/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`: three made-up businesses' agents (Wheatfield
-  Kitchen, Koringland Attorneys, Graanveld Family Practice), each a real conversation recorded once: a customer asks,
-  the agent answers from the business's own facts and passes a booking on after their yes, and the practices never
-  give advice. The best answer to "what would it do for a business like mine?": send a restaurant, a lawyer or a
-  doctor to theirs. Sources: `src/docs/projects/louis-agent.identity.showroom.md`.
+- `/restaurant-demo`, `/law-practice-demo`, `/guesthouse-demo`: three made-up businesses' agents (Wheatfield
+  Kitchen, Koringland Attorneys, Seemeeu Guesthouse in Yzerfontein), each a real conversation recorded once and
+  played on a mock of the business's own website: a customer asks, the agent answers from the business's own facts
+  and passes a booking on after their yes, the law practice never gives advice, and the guesthouse knows which room
+  takes the dog. The best answer to "what would it do for a business like mine?": send a restaurant, a lawyer or a
+  guesthouse to theirs. Sources: `src/docs/projects/louis-agent.identity.showroom.md`.
 - `/coding-agent`: the coding agent fixing a real bug, recorded once and played back in the chat's own view: it runs
   a small invoice matcher's tests, reads the code, fixes two bugs and runs the tests again, for about R0.10. Nothing
   runs while a visitor watches. Send someone who asks what the coding agent does here. Sources:

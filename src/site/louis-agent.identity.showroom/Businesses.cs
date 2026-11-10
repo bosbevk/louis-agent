@@ -12,7 +12,7 @@ public sealed class RestaurantIdentity() : ShowroomIdentity(ShowroomIdentityName
 public sealed class LawPracticeIdentity() : ShowroomIdentity(ShowroomIdentityName.KoringlandAttorneys);
 
 /// <summary>
-/// Graanveld Family Practice, a made-up doctor's practice: it answers the practice's hours and services and passes an
-/// appointment request on, never gives medical advice, and sends an emergency to the emergency number.
+/// Seemeeu Guesthouse, a made-up guesthouse in Yzerfontein (F127.1, in place of the doctor's practice): it answers the
+/// rooms, the dogs, breakfast and the beach, never promises a room it can't see, and passes a booking request on.
 /// </summary>
-public sealed class DoctorsPracticeIdentity() : ShowroomIdentity(ShowroomIdentityName.GraanveldFamilyPractice);
+public sealed class GuesthouseIdentity() : ShowroomIdentity(ShowroomIdentityName.SeemeeuGuesthouse);

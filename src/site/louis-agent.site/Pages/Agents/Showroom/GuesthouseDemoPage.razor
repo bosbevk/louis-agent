@@ -1,0 +1,21 @@
+@page "/guesthouse-demo"
+@layout ShowroomLayout
+
+<PageTitle>A guesthouse's agent · louis-agent</PageTitle>
+<PageHead Description="Watch a guesthouse's website agent answer a couple about a weekend by the sea with their dog, and pass their booking request on, recorded once and played back." />
+
+<BusinessDemo Accent="TileAccent.Yellow" Kicker="A guesthouse" Business="Seemeeu Guesthouse" Turns="Conversation" Cues="WhatToWatch"
+              Heading="A weekend by the sea, with the dog."
+              Lede="A couple asks Seemeeu Guesthouse about a weekend away with their dog. The agent knows which room takes dogs, answers like a local, and passes the booking on."
+              Address="seemeeu.example" Colours="Brand" Font="MockFont.Sans" Tagline="Guesthouse · Yzerfontein"
+              NavItems="Menu" HeroLine="Four rooms, five minutes from the beach."
+              HeroNote="Breakfast on the stoep from 07:30. Dogs welcome in the garden room.">
+    <Mark>
+        @* Seemeeu Guesthouse's sample mark: a gull over a wave, in its sea blue on sand. *@
+        <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15" fill="#f7f1e3" />
+            <path d="M8.5 13.5q3.5-3.6 7.5 0q4-3.6 7.5 0" fill="none" stroke="#0e4f63" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M4.5 21.5q2.9-2.6 5.8 0t5.8 0t5.8 0t5.8 0" fill="none" stroke="#0e4f63" stroke-width="2" stroke-linecap="round" />
+        </svg>
+    </Mark>
+</BusinessDemo>

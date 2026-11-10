@@ -5,15 +5,16 @@ using LouisAgent.SiteApi;
 namespace LouisAgent.Site.Tests.Showroom;
 
 /// <summary>
-/// Three made-up businesses' agents for the site's demos (F128.2): a restaurant, a law practice and a doctor's
-/// practice, each a voice with its business's facts and the leads pack to pass a booking on. A practice's agent never
-/// advises, every agent says it is an AI, and the site's host loads them behind its key, after Louis.
+/// Three made-up businesses' agents for the site's demos (F128.2): a restaurant, a law practice and, since F127.1, a
+/// guesthouse in place of the doctor's practice (Louis: "we should just change doctor to something else"), each a
+/// voice with its business's facts and the leads pack to pass a booking on. The practice's agent never advises, the
+/// guesthouse's never promises a room, every agent says it is an AI, and the site's host loads them after Louis.
 /// </summary>
 public class ShowroomIdentitiesTests
 {
     /// <summary>The three, by their own names.</summary>
     private static readonly IAgentIdentity[] Businesses =
-        [new RestaurantIdentity(), new LawPracticeIdentity(), new DoctorsPracticeIdentity()];
+        [new RestaurantIdentity(), new LawPracticeIdentity(), new GuesthouseIdentity()];
 
     /// <summary>A voice, its lines joined, as the engine reads it.</summary>
     private static string Voice(IAgentIdentity identity)
@@ -27,7 +28,7 @@ public class ShowroomIdentitiesTests
     /// <summary>Each is named for its business, finds its voice and uses the leads pack alone.</summary>
     [TestCase(0, "wheatfield-kitchen")]
     [TestCase(1, "koringland-attorneys")]
-    [TestCase(2, "graanveld-family-practice")]
+    [TestCase(2, "seemeeu-guesthouse")]
     public void ABusiness_HasItsName_ItsVoice_AndTheLeadsPack(int at, string name)
     {
         var business = Businesses[at];
@@ -60,11 +61,14 @@ public class ShowroomIdentitiesTests
         });
     }
 
-    /// <summary>A practice's agent never advises: it books and passes on.</summary>
+    /// <summary>
+    /// What each business's agent must not do: the practice's never advises, the guesthouse's never promises a room
+    /// it can't see; each books and passes on.
+    /// </summary>
     [TestCase(1, "never give legal advice")]
-    [TestCase(2, "never give medical advice")]
-    [TestCase(2, "emergency")]
-    public void APracticesVoice_NeverAdvises(int at, string words) =>
+    [TestCase(2, "Never promise a room")]
+    [TestCase(2, "Dogs")]
+    public void EachVoice_KnowsWhatItMustNotDo(int at, string words) =>
         Assert.That(Voice(Businesses[at]), Does.Contain(words));
 
     /// <summary>The site's host loads them after Louis, so he stays the default and the one open to visitors.</summary>
@@ -74,7 +78,7 @@ public class ShowroomIdentitiesTests
         Assert.That(SiteCatalog.Identities.Select(identity => identity.Name),
             Is.EqualTo(new[]
             {
-                "louis-agent-guide", "wheatfield-kitchen", "koringland-attorneys", "graanveld-family-practice"
+                "louis-agent-guide", "wheatfield-kitchen", "koringland-attorneys", "seemeeu-guesthouse"
             }));
     }
 }

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Records the showroom's three conversations (F128.2) for the site's demo pages: a restaurant, a law practice and a
-# doctor's practice, each a few turns with its made-up business's agent. A few cents a business on the site's model.
-# Run from the repo root, with the site's image built:
+# guesthouse (F127.1, in place of the doctor's practice), each a few turns with its made-up business's agent. A few
+# cents a business on the site's model. Run from the repo root, with the site's image built:
 #   docker compose -f src/site/docker/docker-compose.yml build
 #   bash src/site/recordings/record-showroom.sh            # a dry run: no mail goes out, nothing is saved
 #   SEND_MAIL=1 bash src/site/recordings/record-showroom.sh  # the recording: each booking mails LEADS_TO, once
+#   ONLY=seemeeu-guesthouse SEND_MAIL=1 bash src/site/recordings/record-showroom.sh  # one business alone
 # The site's own image runs on a spare port, open on localhost only, its settings files handed to Docker as they are,
 # so no key is read here. Each page's questions are word for word the ones below (ShowroomPagesTests).
 set -euo pipefail
@@ -40,6 +41,8 @@ curl -fs "http://127.0.0.1:$port/health" >/dev/null || { echo "The site's host d
 record() {
   local business="$1"
   shift
+  # With ONLY set, only that business is recorded; the others keep their recordings.
+  if [ -n "${ONLY:-}" ] && [ "$business" != "$ONLY" ]; then return; fi
   local session
   session=$(curl -s -X POST "http://127.0.0.1:$port/v1/sessions" -H "content-type: application/json" \
     -d "{\"identity\":\"$business\",\"toolsets\":[\"leads\"],\"time_zone\":\"Africa/Johannesburg\"}" |
@@ -65,10 +68,10 @@ record koringland-attorneys \
   'Anna de Villiers, anna@example.com' \
   'Yes, please send it.'
 
-record graanveld-family-practice \
-  'Hi, my son has had a fever since yesterday. What medicine should I give him?' \
-  'Can he see a doctor tomorrow morning?' \
-  'Jacques Louw, jacques@example.com, it is for my son Pieter.' \
-  'Yes please.'
+record seemeeu-guesthouse \
+  'Hi, do you have a sea-view room for this Friday and Saturday night? We are two, and we would like to bring our dog.' \
+  'Then the garden room, please. Is the beach far, and what time is breakfast?' \
+  'Marike Botha, marike@example.com' \
+  'Yes please, send it.'
 
 echo "Saved to $out. Read each for anything private before committing."

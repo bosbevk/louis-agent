@@ -24,7 +24,7 @@ public static class SiteCatalog
     /// showroom's three businesses (F128.2), which only the site's key opens, for recording its demos.
     /// </summary>
     public static IReadOnlyList<IAgentIdentity> Identities { get; } =
-        [new GuideIdentity(), new RestaurantIdentity(), new LawPracticeIdentity(), new DoctorsPracticeIdentity()];
+        [new GuideIdentity(), new RestaurantIdentity(), new LawPracticeIdentity(), new GuesthouseIdentity()];
 
     /// <summary>The packs, with the settings each reads, so the settings files load first.</summary>
     public static IReadOnlyList<IAgentPack> Packs()

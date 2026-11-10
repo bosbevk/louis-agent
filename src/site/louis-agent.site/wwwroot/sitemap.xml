@@ -52,9 +52,6 @@
     <loc>https://louis-agent.dev/demos/at-work</loc>
   </url>
   <url>
-    <loc>https://louis-agent.dev/doctors-practice-demo</loc>
-  </url>
-  <url>
     <loc>https://louis-agent.dev/framework/architecture</loc>
   </url>
   <url>
@@ -248,6 +245,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/framework/whats-coming/site-demos</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/guesthouse-demo</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/law-practice-demo</loc>

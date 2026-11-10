@@ -31,7 +31,7 @@ public class ShowroomPagesTests
             {
                 ("/restaurant-demo", DemoGroup.ForYourBusiness, TileAccent.Green),
                 ("/law-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Blue),
-                ("/doctors-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
+                ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
                 ("/coding-agent", DemoGroup.AgentsAtWork, TileAccent.Red),
                 ("/triage-demo", DemoGroup.AgentsAtWork, TileAccent.Purple),
             }));
@@ -40,7 +40,7 @@ public class ShowroomPagesTests
     /// <summary>A business's demo page draws in the showroom, not the landing's frame.</summary>
     [TestCase(typeof(RestaurantDemoPage))]
     [TestCase(typeof(LawPracticeDemoPage))]
-    [TestCase(typeof(DoctorsPracticeDemoPage))]
+    [TestCase(typeof(GuesthouseDemoPage))]
     public void ABusinessDemo_DrawsInTheShowroom(Type page) =>
         Assert.That(page.GetCustomAttribute<LayoutAttribute>()?.LayoutType, Is.EqualTo(typeof(ShowroomLayout)));
 
@@ -50,7 +50,7 @@ public class ShowroomPagesTests
     /// </summary>
     [TestCase(typeof(RestaurantDemoPage), "accent-green", "wheatfieldkitchen.example")]
     [TestCase(typeof(LawPracticeDemoPage), "accent-blue", "koringland.example")]
-    [TestCase(typeof(DoctorsPracticeDemoPage), "accent-yellow", "graanveld.example")]
+    [TestCase(typeof(GuesthouseDemoPage), "accent-yellow", "seemeeu.example")]
     public void ABusinessDemo_PlaysOnItsOwnWebsite(Type page, string accent, string address)
     {
         using var ctx = new BunitContext();

@@ -16,7 +16,7 @@ someone through one.
 - `/pricing`: the two plans, Starter and Business, and what is quoted on the short call.
 - `/contact`: how to reach the real Louis.
 - `/demos`: every demo in one place.
-- `/restaurant-demo`, `/law-practice-demo`, `/doctors-practice-demo`: three made-up businesses' agents at work.
+- `/restaurant-demo`, `/law-practice-demo`, `/guesthouse-demo`: three made-up businesses' agents at work.
 - `/coding-agent`: the coding agent fixing a real bug, recorded once.
 - `/triage-demo`: the triage team at work on a failed order, recorded once.
 - `/framework/how-it-works`: one turn through every layer of the engine.

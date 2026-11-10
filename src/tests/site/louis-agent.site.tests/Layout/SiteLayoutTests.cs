@@ -175,7 +175,7 @@ public class SiteLayoutTests
             Assert.That(demos.QuerySelectorAll("a").Select(a => a.GetAttribute("href")),
                 Is.EqualTo(new[]
                 {
-                    "/demos", "/restaurant-demo", "/law-practice-demo", "/doctors-practice-demo", "/coding-agent",
+                    "/demos", "/restaurant-demo", "/law-practice-demo", "/guesthouse-demo", "/coding-agent",
                     "/triage-demo"
                 }));
             Assert.That(cut.FindAll(".site-actions"), Is.Empty, "no Watch it work");
