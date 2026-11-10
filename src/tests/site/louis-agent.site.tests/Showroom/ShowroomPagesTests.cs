@@ -158,7 +158,7 @@ public class ShowroomPagesTests
     private static bool IsTime(string word) =>
         word.Contains(':') && word.All(c => char.IsAsciiDigit(c) || c == ':');
 
-    /// <summary>A demo page, drawn with its chat's recordings missing: it shows its website and plays nothing.</summary>
+    /// <summary>A demo page, its recordings missing: it shows its website and plays nothing.</summary>
     private static IRenderedComponent<IComponent> Render(BunitContext ctx, Type page)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;

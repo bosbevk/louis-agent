@@ -5,7 +5,8 @@ namespace LouisAgent.Site.Components.Showroom;
 
 /// <summary>
 /// The site's demos in its showroom (F127.1), in the rail's order: the three made-up businesses, the guesthouse leading
-/// (Louis: "make the guesthouse the main one"), then the agents at work. Each has its own colour everywhere it shows (Louis's pick 1a: purple, the fifth accent, is the triage team's).
+/// (Louis: "make the guesthouse the main one"), then the agents at work. Each has its own colour everywhere it shows
+/// (Louis's pick 1a: purple, the fifth accent, is the triage team's).
 /// </summary>
 public static class SiteDemos
 {
