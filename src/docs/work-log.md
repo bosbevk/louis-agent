@@ -18,7 +18,7 @@
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (110 in the TODO)
+## Open (111 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -72,6 +72,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F83 | The cook's unconfirmed prices | Puls |
 | F84 | A shorter cook report | Puls |
 | FX59 | binary attachments sent as files, not text | Puls |
+| FX129 | the cook's role text says it has `web`, but its header's toolsets don't list it | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
