@@ -1,0 +1,28 @@
+@* A business's website, mocked (F127.1, Louis's pick 3a): a browser bar with its address, its header and one hero line
+   in its own colours, and its agent in a widget in the corner, where its customers would meet it. *@
+<div class="site-mock" style="@ColourStyle">
+    <div class="mock-chrome" aria-hidden="true">
+        <i></i><i></i><i></i>
+        <span class="mock-address">@Address</span>
+    </div>
+    <div class="mock-header">
+        <b class="mock-name">@Business</b>
+        <span class="mock-nav">
+            @foreach (var item in NavItems)
+            {
+                <span>@item</span>
+            }
+        </span>
+    </div>
+    <div class="mock-hero">
+        <p class="mock-hero-line">@HeroLine</p>
+        @if (HeroNote is not null)
+        {
+            <p class="mock-hero-note">@HeroNote</p>
+        }
+    </div>
+    <div class="mock-widget">
+        <div class="mock-widget-head"><i class="mock-live" aria-hidden="true"></i>@AgentLabel</div>
+        <div class="mock-widget-body">@Agent</div>
+    </div>
+</div>

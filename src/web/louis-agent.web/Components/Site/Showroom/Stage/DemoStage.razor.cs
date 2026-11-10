@@ -21,7 +21,7 @@ public partial class DemoStage
     [Parameter]
     public TileAccent Accent { get; set; }
 
-    /// <summary>What the demo is, over the title: "A restaurant · Wheatfield Kitchen".</summary>
+    /// <summary>What the demo is, over the title: "A bakery · The Bakery".</summary>
     [Parameter]
     public string Kicker { get; set; } = "";
 
