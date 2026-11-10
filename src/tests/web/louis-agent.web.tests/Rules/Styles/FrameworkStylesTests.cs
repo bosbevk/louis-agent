@@ -204,6 +204,17 @@ public partial class FrameworkStylesTests
     }
 
     /// <summary>
+    /// A window's three dots wear a Mac window's colours (FX128, Louis: "those 3 dots at the top could have the mac
+    /// colors"), from the framework's own red, amber and green, in that order.
+    /// </summary>
+    [Test]
+    public void AWindowsDots_WearTheMacColours() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
+            Does.Contain("&:nth-child(1) { background: var(--bs-danger); }\n" +
+                         "    &:nth-child(2) { background: var(--bs-warning); }\n" +
+                         "    &:nth-child(3) { background: var(--web-ok); }"));
+
+    /// <summary>
     /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
     /// above itself holds the header and the menu, never the bottom of the slide before.
     /// </summary>
