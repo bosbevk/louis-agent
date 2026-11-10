@@ -75,8 +75,9 @@ public class ShowroomPagesTests
             Assert.That(cut.Find(".site-mock .mock-tagline").TextContent, Is.Not.Empty, "its tagline");
             Assert.That(cut.FindAll(".stage-cues .cues-list > li"), Has.Count.EqualTo(3));
             Assert.That(cut.FindAll("h1"), Has.Count.EqualTo(1));
-            Assert.That(cut.FindComponent<RecordedChat>().Instance.Pace, Is.EqualTo(1.4),
-                "a little slower than recorded (Louis: \"slow this down just a bit\"), so a visitor reads along");
+            var chat = cut.FindComponent<RecordedChat>().Instance;
+            Assert.That((chat.Pace, chat.TurnGap), Is.EqualTo((2.5, 2200)),
+                "at a person's pace (Louis: \"slow it down like realtime\"), a breath before each question");
         });
     }
 }

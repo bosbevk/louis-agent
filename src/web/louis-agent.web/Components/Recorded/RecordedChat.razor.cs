@@ -60,6 +60,13 @@ public partial class RecordedChat : IDisposable
     public RenderFragment? Ending { get; set; }
 
     /// <summary>
+    /// How long a turn waits after the one before, in milliseconds, as a person reads the answer and types (F127.1,
+    /// Louis: "slow it down like realtime"); none by default.
+    /// </summary>
+    [Parameter]
+    public int TurnGap { get; set; }
+
+    /// <summary>
     /// Told as each turn starts, by its number from one (F127.1): a showroom's cues light in step with it.
     /// </summary>
     [Parameter]
@@ -90,6 +97,8 @@ public partial class RecordedChat : IDisposable
             // Each turn says it starts, so what follows the play (a showroom's cues) keeps step with it.
             for (int number = 1; number <= Turns.Count; number++)
             {
+                // A breath before the next question, as a person reads the answer and types.
+                if (number > 1 && TurnGap > 0) await Task.Delay(TurnGap, stop);
                 await TurnStarted.InvokeAsync(number);
                 await PlayTurnAsync(Turns[number - 1], stop);
             }

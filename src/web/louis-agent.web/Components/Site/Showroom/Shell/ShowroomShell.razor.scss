@@ -75,18 +75,23 @@
 }
 .showroom-back:hover { color: var(--bs-emphasis-color); border-color: var(--bs-emphasis-color); }
 
-/* The rail beside the stage; the stage takes what's left. */
+/* The rail beside the stage; the stage takes what's left, and keeps room at its bottom for the corner (--corner-room),
+   so a demo's offer never ends under the guide's button. */
+.showroom { --corner-room: 104px; }
 .showroom-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
-.showroom-stage { min-width: 0; }
-.showroom-corner { position: fixed; right: 24px; bottom: 24px; z-index: 25; }
+.showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }
+/* On a wide screen the corner sits at the bottom of the rail, where no demo is (Louis: "why is that there?"). */
+.showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }
 
 @media (max-width: 900px) {
     .showroom-body { grid-template-columns: minmax(0, 1fr); }
+    .showroom-corner { left: auto; right: 24px; }
     .showroom-bar { padding: 10px 16px; gap: 10px; }
 }
 
 @media (max-width: 720px) {
-    .showroom { --site-bar: 60px; padding-bottom: var(--site-bar); }
+    /* The corner is a bar across the bottom here, and the frame already ends above it. */
+    .showroom { --site-bar: 60px; --corner-room: 16px; padding-bottom: var(--site-bar); }
     .showroom-corner {
         left: 0;
         right: 0;

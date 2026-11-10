@@ -8,9 +8,10 @@
         <SiteMock Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
                   NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel">
             <Agent>
-                @* A little slower than recorded (Louis: "slow this down just a bit"), so a visitor reads along. *@
-                <RecordedChat Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false" Pace="1.4"
-                              TurnStarted="Reach" />
+                @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading speed,
+                   and the visitor's next question comes after a breath, as they read and type. *@
+                <RecordedChat Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false" Pace="2.5"
+                              TurnGap="2200" TurnStarted="Reach" />
             </Agent>
         </SiteMock>
     </Player>

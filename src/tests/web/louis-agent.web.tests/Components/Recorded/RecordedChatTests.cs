@@ -154,6 +154,25 @@ public class RecordedChatTests
         Assert.That(started, Is.EqualTo(new[] { 1, 2 }));
     }
 
+    /// <summary>
+    /// With a gap between turns (F127.1, Louis: "slow it down like realtime"), the next question waits, as a person
+    /// reads the answer and types, instead of following it at once.
+    /// </summary>
+    [Test]
+    public void AGapBetweenTurns_HoldsTheNextQuestion()
+    {
+        using var ctx = Context();
+
+        var cut = ctx.Render<RecordedChat>(parameters => parameters
+            .Add(chat => chat.Turns, [OneTurn[0], OneTurn[0]])
+            .Add(chat => chat.Pace, 0)
+            .Add(chat => chat.TurnGap, 60_000));
+
+        cut.WaitForAssertion(() => Assert.That(cut.Markup, Does.Contain("recorded")));
+        Thread.Sleep(400);
+        Assert.That(cut.FindAll(".recorded-end"), Is.Empty, "the second turn still waits");
+    }
+
     /// <summary>A recording the site can't serve shows the ending at once, never an empty window that waits.</summary>
     [Test]
     public void AMissingRecording_GoesStraightToTheEnding()

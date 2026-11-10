@@ -109,6 +109,20 @@ public partial class FrameworkStylesTests
             Does.Contain(".is-paged .band-body ::deep .is-new-page { break-before: column; }"));
 
     /// <summary>
+    /// The showroom's corner keeps off the demo (F127.1, Louis: "why is that there?"): on a wide screen it sits at the
+    /// bottom of the rail, where no demo is, and the stage keeps room at its bottom besides, so a demo's offer never
+    /// ends under the guide's button.
+    /// </summary>
+    [Test]
+    public void TheShowroomsCorner_KeepsOffTheDemo()
+    {
+        string rules = string.Concat(Rules().Select(File.ReadAllText));
+
+        Assert.That(rules, Does.Contain(".showroom-corner { position: fixed; left: 24px; bottom: 24px; z-index: 25; }")
+            .And.Contain(".showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }"));
+    }
+
+    /// <summary>
     /// The site's header stays at the top of the screen (FX111): a slide lands under it, so the room a slide leaves
     /// above itself holds the header and the menu, never the bottom of the slide before.
     /// </summary>
