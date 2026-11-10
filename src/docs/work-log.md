@@ -12,18 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 91 | 78 |
+| Features (`F`) | 91 | 79 |
 | Fixes (`FX`) | 120 | 7 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (111 in the TODO)
+## Open (112 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
 | F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; next F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions | Now |
-| F131 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
+| F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
@@ -45,6 +45,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F73 | Check the 47 new own-prices rows | Now |
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
+| F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
