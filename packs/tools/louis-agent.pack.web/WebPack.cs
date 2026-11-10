@@ -29,7 +29,8 @@ public sealed class WebPack : IAgentPack
                 var fetcher = context.NewFetcher();
                 return
                 [
-                    new WebTools(context.WebSearch, fetcher, context.Renderer), new QuoteTools(fetcher, context.Renderer),
+                    new WebTools(context.WebSearch, fetcher, context.Renderer),
+                    new QuoteTools(fetcher, context.Renderer),
                     new CurrencyTools(context.CurrencyRates)
                 ];
             },
@@ -40,7 +41,7 @@ public sealed class WebPack : IAgentPack
     public bool ComesBeforeTheEngine => true;
 
     /// <inheritdoc/>
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(WebPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(WebPack).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];

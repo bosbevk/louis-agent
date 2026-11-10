@@ -1,4 +1,5 @@
 using LouisAgent.Core.Web;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -42,7 +43,8 @@ public static class TestPaths
         Path.Combine(RepoRoot, "src/tests/shared/louis-agent.testing/Fixtures/skills");
 
     /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
-    public static string Prompts { get; } = Path.Combine(RepoRoot, "src", "engine", "louis-agent.core", "Prompts");
+    public static string Prompts { get; } =
+        Path.Combine(RepoRoot, "src", "engine", "louis-agent.core", EmbeddedPrompts.Folder);
 
     public static AgentOptions Agent() => new()
     {
@@ -52,8 +54,8 @@ public static class TestPaths
     };
 
     /// <summary>
-    /// The tool objects of the named toolsets, core's or the fake pack's, built as a session's are (F5: an engine has only the
-    /// toolsets it is given). <paramref name="webSearch"/> replaces the configured search provider.
+    /// The tool objects of the named toolsets, core's or the fake pack's, built as a session's are (F5: an engine has
+    /// only the toolsets it is given). <paramref name="webSearch"/> replaces the configured search provider.
     /// </summary>
     public static IReadOnlyList<object> Toolsets(AgentOptions options, IEnumerable<string> names,
         IWebSearchProvider? webSearch = null)

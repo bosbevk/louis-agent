@@ -382,11 +382,15 @@ public class AgentEngineFactoryTests
             Does.Contain(CoreToolset.Specialists.Wire()));
     }
 
-    /// <summary>With no toolsets an engine has only the tools every session gets.</summary>
+    /// <summary>
+    /// With no toolsets an engine has only the tools every session gets, and ReadSkill, since the test product has a
+    /// skill to read on demand (F129).
+    /// </summary>
     [Test]
-    public void NoToolsets_GivesOnlyExecuteSkill()
+    public void NoToolsets_GivesOnlyTheEnginesOwnTools()
     {
-        Assert.That(Names(Factory().GetOrCreate([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
+        Assert.That(Names(Factory().GetOrCreate([])),
+            Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "ReadSkill" }));
     }
 
     /// <summary>

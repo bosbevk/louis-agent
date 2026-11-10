@@ -5,12 +5,15 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests;
 
-// src/docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in core's Prompts/,
-// in the folder of the level that reads it, or in toolsets/ when every level shares it; the repo's Skills/ holds only
-// what the agent writes. Read from the folders, so a misplaced file fails here before a session ever loads it.
+// src/docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in core's
+// prompts/, in the folder of the level that reads it, or in toolsets/ when every level shares it; the repo's Skills/
+// holds only what the agent writes. Read from the folders, so a misplaced file fails here before a session ever loads
+// it.
 public class SkillsLayoutTests
 {
-    /// <summary>The folders under Prompts/ a built-in file may be in: a level's, its function skills', or the shared guides'.</summary>
+    /// <summary>
+    /// The folders under prompts/ a built-in file may be in: a level's, its function skills', or the shared guides'.
+    /// </summary>
     private static readonly string[] PromptFolders =
     [
         RoleCatalog.AgentFolder, SkillFiles.FunctionsFolder, RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder,
@@ -38,20 +41,22 @@ public class SkillsLayoutTests
             .Select(f => f.File);
 
         Assert.That(misplaced, Is.Empty,
-            "Prompts/ holds agent/{product}/, agent/functions/, specialists/, minions/ and toolsets/ only");
+            "prompts/ holds agent/{product}/, agent/functions/, specialists/, minions/ and toolsets/ only");
     }
 
     [Test]
     public void EveryPrompt_IsEmbedded_AndNothingElseIs()
     {
         Assert.That(SkillFileSource.CoreFiles, Is.EquivalentTo(FilesUnder(TestPaths.Prompts)),
-            "the csproj embeds Prompts/** and only that (CL15: the registered test roles are beside them, not among them)");
+            "the csproj embeds prompts/** and only that " +
+            "(CL15: the registered test roles are beside them, not among them)");
     }
 
     [Test]
     public void ALanguageFile_IsOnlyItsVoice_AndItsProductHasTheSharedPart()
     {
-        // CL9 step 6: {product}/voice-{xx}.md is how the product talks in one language; {product}/voice.md holds the rest.
+        // CL9 step 6: {product}/voice-{xx}.md is how the product talks in one language; {product}/voice.md holds the
+        // rest.
         foreach (string mode in RoleCatalog.Available(RoleLevel.Agent)
                      .Where(m => RoleCatalog.LanguageOf(m) is not null))
         {
@@ -96,6 +101,6 @@ public class SkillsLayoutTests
                                                       StringComparison.Ordinal)
                                                   && !f.StartsWith("tools/", StringComparison.Ordinal));
 
-        Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/louis-agent.core/Prompts/");
+        Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/louis-agent.core/prompts/");
     }
 }

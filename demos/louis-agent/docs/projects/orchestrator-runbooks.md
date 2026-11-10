@@ -22,7 +22,7 @@ run. "Skill" names the mechanism; "runbook" names what these skills are for.
 ## Where they live
 
 ```
-src/engine/louis-agent.core/Prompts/agent/louis-agent/
+src/engine/louis-agent.core/prompts/agent/louis-agent/
 └── voice-orchestrator.md      the workflow every error goes through (the same for all services; built into core, CL9)
 
 demos/louis-agent/hosts/louis-agent.orchestrator/Skills/

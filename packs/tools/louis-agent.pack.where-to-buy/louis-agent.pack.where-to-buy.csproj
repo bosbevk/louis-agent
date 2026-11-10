@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Prompts\**\*.md" />
+    <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>

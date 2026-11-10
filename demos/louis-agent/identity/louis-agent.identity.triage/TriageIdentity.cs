@@ -26,7 +26,7 @@ public sealed class TriageIdentity : IAgentIdentity
 
     /// <inheritdoc/>
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(TriageIdentity).Assembly, "Prompts");
+        EmbeddedPrompts.Of(typeof(TriageIdentity).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } =

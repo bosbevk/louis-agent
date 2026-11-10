@@ -17,14 +17,15 @@ public sealed class DevOpsPack(DevOpsOptions options) : IAgentPack
             GuideFile: PackToolset.Guide(DevOpsToolset.DevOps.Wire()),
             MissingSettings: _ => options.Missing(),
             ToolTypes: [typeof(DevOpsTools)],
-            CreateTools: _ => [new DevOpsTools(options.ApiKey!, options.Organization!, options.Project!, options.Team)]),
+            CreateTools: _ =>
+                [new DevOpsTools(options.ApiKey!, options.Organization!, options.Project!, options.Team)]),
     ];
 
     /// <inheritdoc/>
     public bool ComesBeforeTheEngine => true;
 
     /// <inheritdoc/>
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(DevOpsPack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(DevOpsPack).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Requires => [];

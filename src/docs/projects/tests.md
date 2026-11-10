@@ -79,8 +79,8 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
 | `FileSizeTests.cs` | A file holds at most 200 lines, a test file 400, over every project (*Separate by concern*): a ratchet whose `Oversized` list names the files S still has to split and can only shrink |
-| `SkillsLayoutTests.cs` | Skill files follow the levels (CL8): every built-in prompt in a known folder of `Prompts/` and embedded, no name at two levels, a guide per toolset, and the repo's `Skills/` holding only what the agent writes |
-| `TestPrompts.cs` | The `[SetUpFixture]` that registers the tests' own prompts (`Prompts/`: a product, a specialist, a minion) before the first is read; the shared fakes are in `src/tests/shared/louis-agent.testing` (below) |
+| `SkillsLayoutTests.cs` | Skill files follow the levels (CL8): every built-in prompt in a known folder of `prompts/` and embedded, no name at two levels, a guide per toolset, and the repo's `Skills/` holding only what the agent writes |
+| `TestPrompts.cs` | The `[SetUpFixture]` that registers the tests' own prompts (`prompts/`: a product, a specialist, a minion) before the first is read; the shared fakes are in `src/tests/shared/louis-agent.testing` (below) |
 
 - HTTP is stubbed with handlers, so Paymo, DevOps and web tests never call out.
 - A few tests skip themselves when an external tool (git, pip, a live network) isn't available.

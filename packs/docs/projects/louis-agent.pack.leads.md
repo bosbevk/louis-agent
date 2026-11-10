@@ -25,7 +25,7 @@ after the visitor's yes (the rule is in the guide's voice).
   token. A sender says whether it `Mails`, and the tool tells the model when a lead only reached the log, so the
   guide never says Louis has it when he doesn't.
 - `LeadsPack`: toolset `leads`, off without `LEADS_TO`; the sender picked by `RESEND_API_KEY`; the guide
-  (`Prompts/toolsets/leads.md`) says to ask for the three things one at a time, repeat them back, and send on yes, once.
+  (`prompts/toolsets/leads.md`) says to ask for the three things one at a time, repeat them back, and send on yes, once.
   The decision is [ADR 0101](../../../src/docs/adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md).
 
 ## Settings

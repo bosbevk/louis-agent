@@ -57,10 +57,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <!-- CL8 step 4: the built-in prompts live in Prompts/, one folder per level beside toolsets/, and are read only from
+      <!-- CL8 step 4: the built-in prompts live in prompts/, one folder per level beside toolsets/, and are read only from
            the assembly (Skills/SkillFileSource), by their own paths through the manifest. What the agent writes stays on
            disk, in the skills folder (SKILLS_DIRECTORY, else the repo's Skills/). -->
-      <EmbeddedResource Include="Prompts\**\*.md;Prompts\**\*.json" />
+      <EmbeddedResource Include="prompts\**\*.md;prompts\**\*.json" />
     </ItemGroup>
 
     <ItemGroup>

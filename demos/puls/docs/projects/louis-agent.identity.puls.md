@@ -16,7 +16,7 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 ## How it works
 
 - **One class, the rest is content.** `PulsIdentity` answers three questions: its name (`puls`), its prompts (a
-  `ManifestEmbeddedFileProvider` over `Prompts/`, so the files keep their folder paths) and its packs
+  `ManifestEmbeddedFileProvider` over `prompts/`, so the files keep their folder paths) and its packs
   (`where-to-buy`, `shop-prices`, `recipes`, `web` and `calculator`).
 - **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the packs it names; the
   catalogue checks that each pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
@@ -120,19 +120,19 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `PulsIdentity.cs` | The identity: name, prompts, packs |
 | `PulsRole.cs` | The roles Puls offers a session as an enum (the cook, researcher, analyst, historian, reader and the price-lookup and find-recipe minions), each a file of the identity; written with `.Wire()` (F18 step 7.5.4) |
 | `PulsPack.cs` | The packs Puls names as an enum of its own, never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
-| `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
-| `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one (by each line's English name; the labels and the lines Puls says are its voice's, so the routing holds no language), what isn't available yet; no mode of its own |
+| `prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
+| `prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one (by each line's English name; the labels and the lines Puls says are its voice's, so the routing holds no language), what isn't available yet; no mode of its own |
 | `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 15, F50.2: its two modes, the cook's tools now `where-to-buy` and `shop-prices`, and ten checks: general checks over Puls's readers under the cook's names, the where-to-buy pack's two shop rules, `unpriced-items` (the general `tool-rows-marked` on `EstimatePrices`, measured, never fails), `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 60 labels, and `Transcripts/` |
 | `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
 | `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b, F49.3): `RandTotal` (`rand-total`), `RandPrices` (`rand-prices`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, `RecipeLinkLine` (`recipe-link`, string methods over the cook's link line, F35.2), and their list |
 | `Evals/Checks/Cook/` | The scenario's expectations (`Expectations/`: the route, the town, the people, the budget), the scoring of prices and servings (`Scoring/`), and `CookMode` |
 | `Evals/Checks/Shared/` | Reading a turn (`TurnView`), the shops and their links (`Shops`, `PriceLinks`, `RecipeLinks`), and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
 | `Evals/Checks/Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`; ADR 0009) |
-| `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
-| `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
-| `Prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
-| `Prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` (F30); runs only where the instance sets `MINION_LLMS` |
-| `Prompts/minions/puls-minion-find-recipe.md` | One dish's recipe page on the recipe sites, with `FindRecipes` and no site named: one line per site that has it, `{name} · {site} · {link}`, or `none · tried: {sites}` (F35.2 step 2b); the cook reads the link itself |
+| `prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
+| `prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
+| `prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
+| `prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` (F30); runs only where the instance sets `MINION_LLMS` |
+| `prompts/minions/puls-minion-find-recipe.md` | One dish's recipe page on the recipe sites, with `FindRecipes` and no site named: one line per site that has it, `{name} · {site} · {link}`, or `none · tried: {sites}` (F35.2 step 2b); the cook reads the link itself |
 | `louis-agent.identity.puls.csproj` | References core alone (`ArchitectureTests` holds it), and the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob); the item that copies `Evals/`'s files is in the evals project's csproj |
 
 ## Configuration

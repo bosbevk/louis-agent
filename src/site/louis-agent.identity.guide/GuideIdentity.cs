@@ -23,7 +23,7 @@ public sealed class GuideIdentity : IAgentIdentity
 
     /// <inheritdoc/>
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(GuideIdentity).Assembly, "Prompts");
+        EmbeddedPrompts.Of(typeof(GuideIdentity).Assembly);
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } = Enum.GetValues<GuidePack>().Select(pack => pack.Wire()).ToList();

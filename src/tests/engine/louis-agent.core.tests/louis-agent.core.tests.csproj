@@ -7,12 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <!-- CL15: the test roles in Prompts/ (a product with its languages, a specialist, a minion), embedded like core's. -->
+    <!-- CL15: the test roles in prompts/ (a product with its languages, a specialist, a minion), embedded like core's. -->
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Prompts\**\*.md" />
+    <EmbeddedResource Include="prompts\**\*.md" />
   </ItemGroup>
 
   <ItemGroup>

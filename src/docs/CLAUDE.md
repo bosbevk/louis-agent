@@ -193,7 +193,7 @@ modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-a
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../../TODO.md#known-limitations); when work removes one, delete it there.
-**Further reading:** [the architecture](architecture/README.md), a demo's `config/.env.example` (settings), [the coding agent's mode](../../demos/louis-agent/identity/louis-agent.identity.coding/Prompts/agent/louis-agent/voice.md).
+**Further reading:** [the architecture](architecture/README.md), a demo's `config/.env.example` (settings), [the coding agent's mode](../../demos/louis-agent/identity/louis-agent.identity.coding/prompts/agent/louis-agent/voice.md).
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](../../demos/louis-agent/docs/projects/orchestrator-runbooks.md)

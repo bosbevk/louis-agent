@@ -26,10 +26,12 @@ toolset.**
 (`Agent/EngineTools/`, registered by `AgentEngine` because it needs the registry). Only something that needs the engine's own
 insides belongs here; anything else is a pack.
 
-**Skill files we control are plain markdown, always.** That covers every file in `Prompts/` and the function skills the agent
+**Skill files we control are plain markdown, always.** That covers every file in `prompts/` and the function skills the agent
 writes into a demo's `skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears. Every
-file in `Prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063), read once
-by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it.
+file in `prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063), read once
+by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it. An identity's skills
+sit beside its voice in `agent/{identity}/skills/`, each with `metadata.load` (`always` or `on-demand`, ADR 0114):
+`SkillLoader` puts the always ones after the voice and lists the others, which the engine's `ReadSkill` reads.
 
 **The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we must read
 someone else's skill format. A copy of `MarkdownSkillProvider` under another name is not one.
@@ -51,7 +53,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
 | `Telemetry/` | A turn's span on our own source (`TurnSpans`, F52), the last-chance handler for a crash, and the seam for what a host does with telemetry (CL33): `IHostTelemetry` (the log sinks, start, flush) and `NoTelemetry`. The OpenTelemetry tracer and the collector's sink are `louis-agent.core.telemetry`'s, handed in through `HostServices` |
 | `Pricing/` | `Prices/` (the price table and its loader, a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates and their loader, the display currency; `Mappers/`: a provider's reply into our format) |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, `HostServices` (what a program hands in: web, telemetry, discovery, CL33/CL57), the ledger and the tools-only client at the top; `Discovery/` (the seam for tools found outside the engine, with its Null Object; Rider's is the ACP server's); `Engines/` (the factory's cache and the key it holds engines by), `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, `HostServices` (what a program hands in: web, telemetry, discovery, CL33/CL57), the ledger and the tools-only client at the top; `Discovery/` (the seam for tools found outside the engine, with its Null Object; Rider's is the ACP server's); `Engines/` (the factory's cache and the key it holds engines by), `EnvFiles/` (the .env files a host loads), `prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
@@ -63,7 +65,7 @@ The rules:
    `Guardrails` → `Config`, `Messages`, `Logging`. Delegation and web access never reference the agent loop or a model;
    `Agent` never references a provider's SDK (provider differences stay in `Llm/{Name}Provider/`, as in *Changing the
    LLM*).
-3. **Prompts are content, not code:** system prompt text and procedures stay in `Prompts/`, in the folder of the level
+3. **Prompts are content, not code:** system prompt text and procedures stay in `prompts/`, in the folder of the level
    that reads them (`agent/`, `specialists/`, `minions/`; `toolsets/` for what every level shares), embedded and read
    only from the assembly; C# only loads them. `SkillsLayoutTests` fails on a misplaced file.
 4. **Hosts stay thin:** a host project maps the agent's stream to its protocol and holds no agent behaviour. Its
@@ -103,7 +105,7 @@ Log.Log(LogLevel.Information, McpLogMessage.ToolNameTaken, new { Name = name }, 
   for what happened, not for its wording.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([src/CLAUDE.md](../../CLAUDE.md#each-hosts-own-texts)).
-- **Not messages:** prompts (system prompt and procedures in `Prompts/`; the orchestrator's triage and fix prompts),
+- **Not messages:** prompts (system prompt and procedures in `prompts/`; the orchestrator's triage and fix prompts),
   keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
   layout, and key=value or table formatting.
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `*ToolMessage` enum's template (the shared one

@@ -36,7 +36,7 @@ public sealed class TriagePack(TriageOptions options) : IAgentPack
     ];
 
     /// <inheritdoc />
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(TriagePack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(TriagePack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

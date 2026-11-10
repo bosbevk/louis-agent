@@ -36,7 +36,7 @@ public sealed class CalculatorPack : IAgentPack
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =
-        new ManifestEmbeddedFileProvider(typeof(CalculatorPack).Assembly, "Prompts");
+        EmbeddedPrompts.Of(typeof(CalculatorPack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

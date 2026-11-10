@@ -33,7 +33,7 @@ public sealed class SitePack : IAgentPack
     ];
 
     /// <inheritdoc />
-    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(SitePack).Assembly, "Prompts");
+    public IFileProvider Prompts { get; } = EmbeddedPrompts.Of(typeof(SitePack).Assembly);
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];

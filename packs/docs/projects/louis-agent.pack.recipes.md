@@ -15,7 +15,7 @@ any identity can use it, and it could be served as an MCP server unchanged
 
 ## How it works
 
-- **One toolset, `recipes`.** `RecipesPack` defines it with its guide (`Prompts/toolsets/recipes.md`) and its two
+- **One toolset, `recipes`.** `RecipesPack` defines it with its guide (`prompts/toolsets/recipes.md`) and its two
   tools. It loads only where `RECIPE_SOURCES` names a site and `BROWSER_URL` gives a browser; otherwise
   `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.
 - **A search.** `RecipeTools.FindRecipes(query, source, maxResults)` with no `source` hands the search to `RecipeScatter`:
@@ -161,7 +161,7 @@ sequenceDiagram
 | `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |
 | `../louis-agent.pack.recipes.checks/Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the list for the check catalogue |
 | `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage`, `RecipeCheckMessage` (the check's reasons) |
-| `Prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
+| `prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
 
 ## Configuration
 

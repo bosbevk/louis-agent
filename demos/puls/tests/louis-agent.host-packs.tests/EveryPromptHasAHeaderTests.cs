@@ -13,7 +13,9 @@ namespace LouisAgent.HostPacks.Tests;
 /// </summary>
 public class EveryPromptHasAHeaderTests
 {
-    /// <summary>Every prompt the hosts can load, by its path under <c>Prompts/</c>, the folders' READMEs aside.</summary>
+    /// <summary>
+    /// Every prompt the hosts can load, by its path under <c>prompts/</c>, the folders' READMEs aside.
+    /// </summary>
     private static IEnumerable<(string Path, string Text)> Prompts()
     {
         var everything = Plugins.FromSettings(
@@ -24,7 +26,9 @@ public class EveryPromptHasAHeaderTests
             .Where(prompt => !prompt.Path.EndsWith("README.md", StringComparison.Ordinal));
     }
 
-    /// <summary>Each prompt has a header, which the reader takes: its name is its file's, its description there.</summary>
+    /// <summary>
+    /// Each prompt has a header, which the reader takes: its name is its file's, its description there.
+    /// </summary>
     [Test]
     public void EveryBuiltInPrompt_OpensWithAHeader()
     {

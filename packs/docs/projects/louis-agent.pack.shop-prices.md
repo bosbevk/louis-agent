@@ -16,7 +16,7 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ## How it works
 
-- **One toolset, `shop-prices`.** `ShopPricesPack` defines it with its guide (`Prompts/toolsets/shop-prices.md`) and
+- **One toolset, `shop-prices`.** `ShopPricesPack` defines it with its guide (`prompts/toolsets/shop-prices.md`) and
   one tool. It needs no setting, so it loads wherever it is named.
 - **The tables.** Two price files ship embedded in `Prices/Data/`: Stats SA's average prices for August 2026 (P0141,
   220 products in 463 packs, nationally and per province) and 36 rows of our own for what Stats SA doesn't price

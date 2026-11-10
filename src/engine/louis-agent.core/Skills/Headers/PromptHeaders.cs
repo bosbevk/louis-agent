@@ -36,7 +36,8 @@ public static class PromptHeaders
 
     private const string Fence = "---";
 
-    private static readonly string[] Keys = ["name", "description", "metadata"], MetadataKeys = ["level", "toolsets"];
+    private static readonly string[] Keys = ["name", "description", "metadata"],
+        MetadataKeys = ["level", "toolsets", "load"];
 
     /// <summary>The file's header, when it has one, and its body.</summary>
     public static PromptFile Split(string path, string text)
@@ -70,7 +71,8 @@ public static class PromptHeaders
 
         var metadata = Child(root, "metadata") as YamlMappingNode;
         if (metadata is not null) Known(path, metadata, MetadataKeys);
-        return new PromptHeader(name, description, LevelOf(path, metadata), ToolsetsOf(path, metadata));
+        return new PromptHeader(name, description, LevelOf(path, metadata), ToolsetsOf(path, metadata),
+            LoadOf(path, metadata));
     }
 
     /// <summary>The YAML's top mapping; an empty header is an empty one.</summary>
@@ -106,6 +108,19 @@ public static class PromptHeaders
             Path = path,
             Level = level,
             Supported = string.Join(", ", SettingChoice.Names<RoleLevel>())
+        });
+    }
+
+    /// <summary>How a skill loads (F129), by its wire name; none for a prompt that isn't a skill.</summary>
+    private static SkillLoad? LoadOf(string path, YamlMappingNode? metadata)
+    {
+        if (metadata is null || Text(path, metadata, "load") is not { } load) return null;
+        if (SettingChoice.TryParse(load, out SkillLoad? parsed)) return parsed;
+        throw Refuse(PromptHeaderMessage.LoadUnknown, new
+        {
+            Path = path,
+            Load = load,
+            Supported = string.Join(", ", SettingChoice.Names<SkillLoad>())
         });
     }
 

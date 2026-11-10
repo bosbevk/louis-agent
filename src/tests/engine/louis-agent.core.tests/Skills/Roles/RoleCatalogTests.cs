@@ -8,9 +8,10 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
-// F21 step 1: a session names its role (its personality before CL13); the prompt starts with that one instead of personality.md, and a name
-// never reaches outside its level's folder (CL8: Skills/agent/, Skills/specialists/). CL15 step 3: the mechanism is
-// tested on the tests' own roles (Prompts/: testprod); Puls's content is tested with Puls, in its identity's tests.
+// F21 step 1: a session names its role (its personality before CL13); the prompt starts with that one instead of
+// personality.md, and a name never reaches outside its level's folder (CL8: Skills/agent/, Skills/specialists/).
+// CL15 step 3: the mechanism is tested on the tests' own roles (prompts/: testprod); Puls's content is tested with
+// Puls, in its identity's tests.
 public class RoleCatalogTests
 {
     private const string Modes =
@@ -30,7 +31,11 @@ public class RoleCatalogTests
     [TearDown]
     public void TearDown() => Directory.Delete(_skills, recursive: true);
 
-    private AgentOptions Options() => new() { SkillsDirectory = _skills, DefaultVoice = "testprod/voice-en" };
+    private AgentOptions Options() => new()
+    {
+        SkillsDirectory = _skills,
+        DefaultVoice = "testprod/voice-en"
+    };
 
     [Test]
     public void NoName_IsTheDefaultMode()
@@ -47,7 +52,8 @@ public class RoleCatalogTests
     public void AMode_IsOneFile_ItsVoiceThenItsRouting()
     {
         // CL9: a level-0 session loads one file; its voice frames everything after it, its routing follows.
-        string docs = SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af").Documentation;
+        string docs = SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af")
+            .Documentation;
 
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
@@ -96,20 +102,24 @@ public class RoleCatalogTests
     [Test]
     public void Core_EmbedsNoRoleOfAProduct_UntilAnIdentityBringsIt()
     {
-        // CL15 step 3 (the cut): Puls's modes, specialists and minions live in its identity. Without it registered (these
-        // tests register only their own roles) no level lists a Puls role; the identity's tests show the other side.
+        // CL15 step 3 (the cut): Puls's modes, specialists and minions live in its identity. Without it registered
+        // (these tests register only their own roles) no level lists a Puls role; the identity's tests show the other
+        // side.
         foreach (var level in Enum.GetValues<RoleLevel>())
             Assert.That(RoleCatalog.Available(level), Has.None.StartsWith("puls"), $"level {level}");
         Assert.That(SkillFileSource.CoreFiles, Has.None.Contains("puls"), "core's own prompts name no product file");
-        Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "puls/voice-af"));
+        Assert.Throws<RoleException>(() =>
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "puls/voice-af"));
     }
 
     [TestCase("af", "# Testprod - Stem")]
     [TestCase("en", "# Testprod - Voice")]
     public void ALanguage_LoadsItsVoice_ThenTheProductsShared(string code, string voice)
     {
-        // CL9 step 6 (Louis: "a puls/voice.md for shared things"): the language file says how the product talks, voice.md routes.
-        string docs = SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], $"testprod/voice-{code}").Documentation;
+        // CL9 step 6 (Louis: "a puls/voice.md for shared things"): the language file says how the product talks,
+        // voice.md routes.
+        string docs = SkillLoader
+            .Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], $"testprod/voice-{code}").Documentation;
 
         Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.GreaterThan(0));
         Assert.That(docs.IndexOf(voice, StringComparison.Ordinal),
@@ -121,7 +131,8 @@ public class RoleCatalogTests
     public void AProductsSharedVoice_IsNotAModeOnItsOwn()
     {
         Assert.That(RoleCatalog.Available(RoleLevel.Agent), Is.EqualTo(Modes.Split(", ")));
-        Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice"));
+        Assert.Throws<RoleException>(() =>
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice"));
         Assert.That(RoleCatalog.LanguageOf("louis-agent/voice"), Is.Null, "the coding agent's mode is whole");
     }
 
@@ -131,7 +142,8 @@ public class RoleCatalogTests
     public void OnlyAMode_IsANameAtLevelZero(string name)
     {
         // CL9: a mode is agent/{product}/{mode}.md; a function skill, a product folder or an old name isn't one.
-        var ex = Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], name));
+        var ex = Assert.Throws<RoleException>(() =>
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], name));
 
         Assert.That(ex!.Message, Does.EndWith($"Available: {Modes}."));
     }
@@ -149,7 +161,8 @@ public class RoleCatalogTests
     {
         // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist", RoleLevel.Agent));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist",
+                RoleLevel.Agent));
 
         Assert.That(ex!.Message,
             Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));
@@ -159,7 +172,8 @@ public class RoleCatalogTests
     public void TheAgentsVoice_IsRefusedAtLevelOne_NamingTheRolesThereAre()
     {
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af", RoleLevel.Specialist));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod/voice-af",
+                RoleLevel.Specialist));
 
         Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod-specialist"));
     }
@@ -167,10 +181,15 @@ public class RoleCatalogTests
     [Test]
     public void OnlyLevelZero_HasTheRouter()
     {
-        // The router picks toolsets and delegates; a specialist's toolsets were chosen for it (F21), and so are a minion's.
-        Assert.That(SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Agent).Documentation,
+        // The router picks toolsets and delegates; a specialist's toolsets were chosen for it (F21), and so are a
+        // minion's.
+        Assert.That(
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Agent)
+                .Documentation,
             Does.Contain("# Testprod - Routing"));
-        Assert.That(SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Specialist).Documentation,
+        Assert.That(
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], level: RoleLevel.Specialist)
+                .Documentation,
             Does.Not.Contain("# Testprod - Routing"));
     }
 

@@ -1,30 +1,31 @@
-
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Core.Skills;
+
 /// <summary>
-/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>Prompts/</c>, embedded with a manifest so they
-/// keep their folder paths (<c>toolsets/web.md</c>), and from CL15 the identities' and packs' prompts the host registers
-/// with <see cref="Use"/> before the first read, all read only from their assemblies. A copy on disk never overrides
-/// one, so a wording change is a rebuild. Files the agent writes stay on disk (<c>AgentHost</c>). Static, so there is
-/// one reader (ADR 0018), and lazy, so the host can register prompts first: a new provider after the first read fails
-/// loudly, and one already registered is skipped, so a host or test that builds twice is fine.
+/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>prompts/</c>, embedded with a manifest so
+/// they keep their folder paths (<c>toolsets/web.md</c>), and from CL15 the identities' and packs' prompts the host
+/// registers with <see cref="Use"/> before the first read, all read only from their assemblies. A copy on disk never
+/// overrides one, so a wording change is a rebuild. Files the agent writes stay on disk (<c>AgentHost</c>). Static, so
+/// there is one reader (ADR 0018), and lazy, so the host can register prompts first: a new provider after the first
+/// read fails loudly, and one already registered is skipped, so a host or test that builds twice is fine.
 /// </summary>
 public static class SkillFileSource
 {
-    // The csproj embeds Prompts/**; the provider serves them from that folder, by their paths under it.
-    private const string Root = "Prompts";
-
-    private static readonly ManifestEmbeddedFileProvider Core = new(typeof(SkillFileSource).Assembly, Root);
+    // The csproj embeds prompts/**; the provider serves them from that folder, by their paths under it.
+    private static readonly IFileProvider Core = EmbeddedPrompts.Of(typeof(SkillFileSource).Assembly);
     private static readonly List<IFileProvider> Extra = [];
     private static readonly Lock Gate = new();
     private static CompositeFileProvider? _provider;
     private static IReadOnlyList<string>? _embeddedFiles;
 
-    /// <summary>Registers identities' and packs' prompts (CL15): before the first read, and each provider once.</summary>
+    /// <summary>
+    /// Registers identities' and packs' prompts (CL15): before the first read, and each provider once.
+    /// </summary>
     public static void Use(IEnumerable<IFileProvider> prompts)
     {
         lock (Gate)
@@ -54,7 +55,10 @@ public static class SkillFileSource
         }
     }
 
-    /// <summary>Every built-in prompt's path under <c>Prompts/</c>, with forward slashes, sorted: core's and the registered ones'.</summary>
+    /// <summary>
+    /// Every built-in prompt's path under <c>prompts/</c>, with forward slashes, sorted: core's and the registered
+    /// ones'.
+    /// </summary>
     public static IReadOnlyList<string> EmbeddedFiles
     {
         get
@@ -63,10 +67,14 @@ public static class SkillFileSource
         }
     }
 
-    /// <summary>Core's own prompts' paths, whatever was registered: what the catalogue checks a pack's paths against.</summary>
+    /// <summary>
+    /// Core's own prompts' paths, whatever was registered: what the catalogue checks a pack's paths against.
+    /// </summary>
     public static IReadOnlyList<string> CoreFiles { get; } = FilesOf(Core).Order(StringComparer.Ordinal).ToList();
 
-    /// <summary>The file names directly in <paramref name="folder"/> (not its subfolders); none when it isn't there.</summary>
+    /// <summary>
+    /// The file names directly in <paramref name="folder"/> (not its subfolders); none when it isn't there.
+    /// </summary>
     public static IReadOnlyList<string> Files(string folder) =>
         Provider.GetDirectoryContents(folder).Where(f => !f.IsDirectory).Select(f => f.Name)
             .Order(StringComparer.Ordinal).ToList();

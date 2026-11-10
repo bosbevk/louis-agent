@@ -12,12 +12,12 @@ chat to see the change.
 
 | Prompt | Level | What it holds |
 |---|---|---|
-| `Prompts/agent/puls/voice-af.md`, `voice-en.md` | 0, a mode per language | How Puls talks: its voice only |
-| `Prompts/agent/puls/voice.md` | 0, shared | The routing: which requests go to which toolset and specialist, loaded after the voice |
-| `Prompts/specialists/puls-{name}.md` | 1, a role | A specialist's function and how it reports back; a header may add toolsets |
-| `Prompts/minions/puls-minion.md`, `puls-minion-{function}.md` | 2 | What every minion is, then one minion's function |
+| `prompts/agent/puls/voice-af.md`, `voice-en.md` | 0, a mode per language | How Puls talks: its voice only |
+| `prompts/agent/puls/voice.md` | 0, shared | The routing: which requests go to which toolset and specialist, loaded after the voice |
+| `prompts/specialists/puls-{name}.md` | 1, a role | A specialist's function and how it reports back; a header may add toolsets |
+| `prompts/minions/puls-minion.md`, `puls-minion-{function}.md` | 2 | What every minion is, then one minion's function |
 
-`Prompts/shared/principles.md` in core opens every one of them
+`prompts/shared/principles.md` in core opens every one of them
 ([ADR 0020](../../../../src/docs/adr/0020-principles-for-every-agent.md)).
 
 ## Change what Puls says or does

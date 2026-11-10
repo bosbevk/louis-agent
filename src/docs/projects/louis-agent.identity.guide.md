@@ -24,7 +24,7 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   answers from, since F112 the leads pack, whose one tool mails Louis a lead when a visitor is interested and has said
   yes ([ADR 0101](../adr/0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md)), and since F117 the site pack, whose
   one tool takes the visitor to a page or an area of it (the widget hears it and moves the browser).
-- `Prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
+- `prompts/agent/louis-agent-guide/voice.md`: who it is (since F128.1, Louis, the AI version of the man who made
   louis-agent, with his own story told as "I": Malmesbury, Yzerfontein, the PC at 10, .NET for twenty years, four
   kids, the outdoors, a stoic who reads Kierkegaard; it talks like him, plain, dry and at home, with an idiom where it
   helps; the widget's title reads "Louis · AI", it says it is the AI the moment that matters, never adds to his story,
@@ -36,9 +36,13 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   what an agent does for a business in the owner's words), how it answers (reads before it speaks, names the doc for a
   developer only, since FX77, says what the docs don't say, numbers only from a doc, plain words, only what works
   today), what stays Louis's (the roadmap's money, numbers and risks and the TODO's notes are never quoted; any other
-  price question goes to the contact page) and where things are in the docs root, so the first tool call goes to the
-  right folder; and, since F109.4, the site's map: each page, what it says and the docs it was written from, so a
-  question about a page's claim goes to its source.
+  price question goes to the contact page).
+- Its skills beside the voice, in `skills/` (since F129,
+  [ADR 0114](../adr/0114-an-identitys-skills-load-always-or-on-demand.md)): `site-pages.md`, always in the prompt, the
+  index of every page, one line each, so it knows which page to open; and two it reads with `ReadSkill` when a
+  question needs them: `docs-map.md`, where things are in the docs root, so a search goes to the right folder, and
+  `site-map.md` (since F109.4), what each page says and the docs it was written from, so a question about a page's
+  claim goes to its source. Splitting them off made its fixed prefix about 14% smaller, measured live.
 - Its knowledge is the `docs` toolset over `DOCS_ROOT` (the site's image carries the docs; the PC mounts the repo's),
   so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
   (B1).
@@ -59,8 +63,9 @@ notes. A cap limits what a visitor can spend (ADR 0099).
 ## Tests
 
 `GuideIdentityTests` and `SiteCatalogTests` in `src/tests/site/louis-agent.site.tests` hold its name, its voice's
-path, its three packs and the site's catalogue to the guide alone; `GuideKnowsTheSiteTests` holds the voice to every
-page of the site; `CodingCatalogTests` holds it beside the coding identity in the coding agent's catalogue.
+path, its three packs and the site's catalogue to the guide alone; `GuideKnowsTheSiteTests` holds the voice and its
+skills to every page of the site; `GuideSkillsTests` holds the split (every page in the always index, the two maps on
+demand); `CodingCatalogTests` holds it beside the coding identity in the coding agent's catalogue.
 
 ---
 [Docs index](../README.md) · Related: [louis-agent.site](louis-agent.site.md)
