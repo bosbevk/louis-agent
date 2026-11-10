@@ -19,7 +19,28 @@ public class ClockToolsTests
 
         string today = new ClockTools(time, Johannesburg).GetToday();
 
-        Assert.That(today, Is.EqualTo("Tuesday 13 October 2026, 22:15 in Africa/Johannesburg (UTC+02:00). ISO: 2026-10-13T22:15:00+02:00. Week 42."));
+        Assert.That(today,
+            Is.EqualTo(
+                "Tuesday 13 October 2026, 22:15 in Africa/Johannesburg (UTC+02:00). ISO: 2026-10-13T22:15:00+02:00. " +
+                "Week 42. Part of the day: night."));
+    }
+
+    /// <summary>
+    /// FX127: the part of the day is said, not left to the model to judge from the hour (at 01:40 the guide said "good
+    /// morning" in one chat and "good evening" in the next).
+    /// </summary>
+    [TestCase(23, 40, "night")]
+    [TestCase(3, 0, "morning")]
+    [TestCase(10, 0, "afternoon")]
+    [TestCase(16, 0, "evening")]
+    [TestCase(19, 59, "evening")]
+    [TestCase(20, 0, "night")]
+    public void GetToday_SaysThePartOfTheDay(int utcHour, int utcMinute, string part)
+    {
+        // Johannesburg is UTC+2: 23:40 UTC is 01:40 there.
+        var time = new FakeTimeProvider(new DateTimeOffset(2026, 11, 10, utcHour, utcMinute, 0, TimeSpan.Zero));
+
+        Assert.That(new ClockTools(time, Johannesburg).GetToday(), Does.EndWith($"Part of the day: {part}."));
     }
 
     [Test]
@@ -28,9 +49,13 @@ public class ClockToolsTests
         // CL15: core names no country; an invoice clerk in Berlin gets Berlin's time (CEST, UTC+2 in October).
         var time = new FakeTimeProvider(new DateTimeOffset(2026, 10, 13, 20, 15, 0, TimeSpan.Zero));
 
-        Assert.That(new ClockTools(time, "Europe/Berlin").GetToday(), Does.StartWith("Tuesday 13 October 2026, 22:15 in Europe/Berlin"));
-        Assert.That(new ClockTools(time).GetToday(), Does.Contain($" in {TimeZoneInfo.Local.Id} "), "unset: the machine's own zone");
-        Assert.That(AgentOptions.FromEnvironment(name => name == "HOST_TIME_ZONE" ? " Africa/Johannesburg " : null).HostTimeZone, Is.EqualTo(Johannesburg));
+        Assert.That(new ClockTools(time, "Europe/Berlin").GetToday(),
+            Does.StartWith("Tuesday 13 October 2026, 22:15 in Europe/Berlin"));
+        Assert.That(new ClockTools(time).GetToday(), Does.Contain($" in {TimeZoneInfo.Local.Id} "),
+            "unset: the machine's own zone");
+        Assert.That(
+            AgentOptions.FromEnvironment(name => name == "HOST_TIME_ZONE" ? " Africa/Johannesburg " : null)
+                .HostTimeZone, Is.EqualTo(Johannesburg));
         Assert.That(AgentOptions.FromEnvironment(_ => null).HostTimeZone, Is.Null);
     }
 
@@ -39,7 +64,8 @@ public class ClockToolsTests
     {
         // Review of step 3: "Africa/Johannesberg" fell back to the machine's zone in silence and reached the model's
         // place line misspelled, two hours off on "vanaand". Every other setting refuses to start when it's wrong.
-        var error = Assert.Throws<ArgumentException>(() => AgentOptions.FromEnvironment(name => name == "HOST_TIME_ZONE" ? "Africa/Johannesberg" : null))!;
+        var error = Assert.Throws<ArgumentException>(() =>
+            AgentOptions.FromEnvironment(name => name == "HOST_TIME_ZONE" ? "Africa/Johannesberg" : null))!;
 
         Assert.That(error.Message, Does.Contain("HOST_TIME_ZONE").And.Contain("Africa/Johannesberg"));
     }
@@ -74,6 +100,7 @@ public class ClockToolsTests
         using (UserPlace.Use(new UserPlace("Nêrens", "Mars/Olympus")))
             Assert.That(new ClockTools(time, Johannesburg).GetToday(), Does.Contain("22:15 in Africa/Johannesburg"));
         Assert.That(UserPlace.FindTimeZone("Mars/Olympus"), Is.Null);
-        Assert.That(new ClockTools(time, "Mars/Olympus").GetToday(), Does.Contain($" in {TimeZoneInfo.Local.Id} "), "a bad setting: the machine's own, not a crash");
+        Assert.That(new ClockTools(time, "Mars/Olympus").GetToday(), Does.Contain($" in {TimeZoneInfo.Local.Id} "),
+            "a bad setting: the machine's own, not a crash");
     }
 }

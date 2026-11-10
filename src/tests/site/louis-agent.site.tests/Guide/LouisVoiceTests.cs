@@ -84,6 +84,21 @@ public class LouisVoiceTests
             .And.Not.Contain("Howzit"));
 
     /// <summary>
+    /// The greeting follows the part of the day the clock names (FX127): at 01:40 it said "good morning" in one chat
+    /// and "good evening" in the next, and at night it is "good evening".
+    /// </summary>
+    [Test]
+    public void TheGreeting_FollowsThePartOfTheDay_TheClockNames() =>
+        Assert.That(Voice(), Does.Contain("by the part of the day it names").And.Contain("at night, good evening"));
+
+    /// <summary>
+    /// A visitor never gets a decision record's number (FX127): the guide once told one about "ADR 0027".
+    /// </summary>
+    [Test]
+    public void AVisitor_GetsNoDecisionNumbers() =>
+        Assert.That(Voice(), Does.Contain("no ADR or its number"));
+
+    /// <summary>
     /// It talks like him: plain, at home, dry, with an idiom where one helps, and no more bubbly guide.
     /// </summary>
     [Test]
