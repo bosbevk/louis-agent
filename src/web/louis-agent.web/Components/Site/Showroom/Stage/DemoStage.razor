@@ -21,6 +21,10 @@
             <section id="what-to-watch" class="stage-cues">@Cues</section>
         }
     </div>
+    @if (Notes is not null)
+    {
+        <section id="make-it-yours" class="stage-notes">@Notes</section>
+    }
     @if (Offer is not null)
     {
         <section id="ask" class="stage-offer">

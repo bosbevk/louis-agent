@@ -45,6 +45,9 @@
     white-space: nowrap;
 }
 
+/* What a custom agent could add, between the demo and the offer. */
+.stage-notes { margin: 8px 32px 12px; }
+
 .stage-offer {
     position: relative;
     overflow: hidden;
@@ -89,4 +92,5 @@
     .stage-title { font-size: 26px; }
     .stage-body { grid-template-columns: minmax(0, 1fr); padding: 12px 16px; }
     .stage-offer { margin: 8px 16px 0; flex-wrap: wrap; }
+    .stage-notes { margin: 8px 16px 12px; }
 }

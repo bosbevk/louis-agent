@@ -1,0 +1,15 @@
+@* What a custom agent could add for a business like the demo's (F127.1): a kicker, the heading the guide's tour reads,
+   and a card a note, each with its title over its line. *@
+<div class="demo-notes">
+    <span class="notes-kicker">@Kicker</span>
+    <h2 class="notes-heading">@Heading</h2>
+    <ul class="notes-list">
+        @foreach (var note in Notes)
+        {
+            <li class="note">
+                <b class="note-title">@note.Title</b>
+                <span class="note-text">@note.Text</span>
+            </li>
+        }
+    </ul>
+</div>

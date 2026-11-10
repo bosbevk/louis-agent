@@ -38,6 +38,20 @@ public partial class GuesthouseDemoPage
     /// <summary>Its website's menu.</summary>
     private static readonly string[] Menu = ["Rooms", "Breakfast", "The beach", "Staying with us"];
 
+    /// <summary>
+    /// What a custom agent could add for a guesthouse (Louis: "we could integrate with the booking system if they
+    /// have one etc. Custom Agent").
+    /// </summary>
+    private static readonly DemoNote[] Notes =
+    [
+        new("Book into your booking system",
+            "If you take bookings online, it sees which rooms are free and holds one in the system you already use, " +
+            "instead of passing a request on."),
+        new("Take the deposit",
+            "It sends the guest a secure payment link, so the booking is confirmed the moment the deposit is paid."),
+        new("Answer on WhatsApp", "The same agent, with the same facts, answers your guests on WhatsApp too."),
+    ];
+
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =
     [

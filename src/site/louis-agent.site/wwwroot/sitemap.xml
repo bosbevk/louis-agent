@@ -265,6 +265,9 @@
     <loc>https://louis-agent.dev/guesthouse-demo/what-to-watch</loc>
   </url>
   <url>
+    <loc>https://louis-agent.dev/guesthouse-demo/make-it-yours</loc>
+  </url>
+  <url>
     <loc>https://louis-agent.dev/guesthouse-demo/ask</loc>
   </url>
   <url>
@@ -275,6 +278,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/law-practice-demo/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/law-practice-demo/make-it-yours</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/law-practice-demo/ask</loc>
@@ -293,6 +299,9 @@
   </url>
   <url>
     <loc>https://louis-agent.dev/restaurant-demo/what-to-watch</loc>
+  </url>
+  <url>
+    <loc>https://louis-agent.dev/restaurant-demo/make-it-yours</loc>
   </url>
   <url>
     <loc>https://louis-agent.dev/restaurant-demo/ask</loc>

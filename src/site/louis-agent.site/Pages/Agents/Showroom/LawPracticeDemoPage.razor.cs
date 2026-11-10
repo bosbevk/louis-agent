@@ -37,6 +37,17 @@ public partial class LawPracticeDemoPage
     /// <summary>Its website's menu.</summary>
     private static readonly string[] Menu = ["What we do", "A first consultation", "What to bring"];
 
+    /// <summary>What a custom agent could add for a law practice.</summary>
+    private static readonly DemoNote[] Notes =
+    [
+        new("Book into the diaries",
+            "It sees when the attorneys are free and books the first consultation straight into the diary."),
+        new("Collect the papers first",
+            "It asks for the ID and the documents before the meeting and files them with the matter."),
+        new("Call back when it's urgent",
+            "An arrest or a court date this week goes straight to an attorney's phone, for a call back today."),
+    ];
+
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =
         ["Monday to Friday", "At the office or by video call", "English and Afrikaans", "A first consultation R650"];

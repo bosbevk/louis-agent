@@ -84,6 +84,9 @@ public class ShowroomPagesTests
             Assert.That(cut.FindAll(".stage-cues .cues-list > li"), Has.Count.EqualTo(4));
             Assert.That(cut.Find(".stage-cues .cues-list > li").TextContent, Does.Contain("shows"),
                 "the first cue is the agent showing its website (Louis: \"first show them the room\")");
+            Assert.That(cut.Find("#make-it-yours h2").TextContent, Does.StartWith("A custom agent for your"),
+                "what a custom agent could add (Louis: \"integrate with the booking system if they have one\")");
+            Assert.That(cut.FindAll("#make-it-yours li.note"), Has.Count.EqualTo(3));
             Assert.That(cut.Find(".stage-cues button.cue-go").GetAttribute("title"), Is.EqualTo("Watch from here"),
                 "a cue plays from its turn (Louis: \"this should be clickable so visitors can rewind\")");
             Assert.That(cut.FindAll("h1"), Has.Count.EqualTo(1));

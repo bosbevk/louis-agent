@@ -10,12 +10,13 @@
     <Player>
         <SiteMock Address="@Address" Business="@Business" Colours="Colours" Font="Font" Mark="Mark" Tagline="@Tagline"
                   NavItems="NavItems" HeroLine="@HeroLine" HeroNote="@HeroNote" AgentLabel="@AgentLabel" Look="Look"
-                  HeroPhoto="@HeroPhoto" HeroPhotoAlt="@HeroPhotoAlt" HeroAction="@HeroAction" Facts="Facts" Places="Places" Shown="@_shown">
+                  HeroPhoto="@HeroPhoto" HeroPhotoAlt="@HeroPhotoAlt" HeroAction="@HeroAction" Facts="Facts"
+                  Places="Places" Shown="@_shown">
             <Agent>
                 @* At a person's pace (Louis: "slow it down like realtime"): the agent writes at an easy reading speed,
                    and the visitor's next question comes after a breath, as they read and type. *@
-                <RecordedChat @ref="_chat" Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false" Pace="2.5"
-                              TurnGap="2200" TurnStarted="Reach" ToolCalled="Show" />
+                <RecordedChat @ref="_chat" Turns="Turns" Title="@Address" PlayAgain="Play it again" ShowWork="false"
+                              Pace="2.5" TurnGap="2200" TurnStarted="Reach" ToolCalled="Show" />
             </Agent>
         </SiteMock>
     </Player>
@@ -23,6 +24,10 @@
         <DemoCues Cues="Cues" Reached="_reached" Heading="What to watch" Hint="Watch from here"
                   Chosen="PlayFrom" />
     </Cues>
+    <Notes>
+        <DemoNotes Kicker="Make it yours" Heading="@($"A custom agent for your {KindOf} could also")"
+                   Notes="CustomNotes" />
+    </Notes>
     <Offer>
         <span>Want an agent like this on your own website? From R500 a month.</span>
         <a href="/contact">Ask for yours →</a>

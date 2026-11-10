@@ -95,6 +95,17 @@ public partial class BusinessDemo
     [Parameter, EditorRequired]
     public RenderFragment Places { get; set; } = null!;
 
+    /// <summary>The kind of business, as the notes' heading names it: "guesthouse".</summary>
+    [Parameter, EditorRequired]
+    public string KindOf { get; set; } = "";
+
+    /// <summary>
+    /// What a custom agent could add for a business like this one (Louis: "we could integrate with the booking system
+    /// if they have one etc. Custom Agent").
+    /// </summary>
+    [Parameter, EditorRequired]
+    public IReadOnlyList<DemoNote> CustomNotes { get; set; } = [];
+
     /// <summary>The conversation, a turn at a time.</summary>
     [Parameter, EditorRequired]
     public IReadOnlyList<RecordedTurn> Turns { get; set; } = [];

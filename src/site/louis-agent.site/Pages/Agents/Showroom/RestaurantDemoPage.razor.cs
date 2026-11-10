@@ -37,6 +37,19 @@ public partial class RestaurantDemoPage
     /// <summary>Its website's menu.</summary>
     private static readonly string[] Menu = ["Menu", "For the children", "Wine", "Find us"];
 
+    /// <summary>What a custom agent could add for a restaurant.</summary>
+    private static readonly DemoNote[] Notes =
+    [
+        new("Book into your table system",
+            "If you use a booking system, it books the table straight in and sends the confirmation, instead of " +
+            "passing a request on."),
+        new("Know today's specials",
+            "It reads the day's specials and what has sold out from your kitchen, so it never offers what isn't " +
+            "there."),
+        new("Remind your guests",
+            "It reminds the guests the day before and asks them to confirm, so fewer tables stand empty."),
+    ];
+
     /// <summary>The facts under its hero, each one its agent knows.</summary>
     private static readonly string[] Facts =
     [

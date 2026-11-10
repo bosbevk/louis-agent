@@ -77,6 +77,27 @@ public class DemoStageTests
             }), "the cues bring their own heading, so the stage writes none for them");
     }
 
+    /// <summary>
+    /// A stage with notes of what a custom agent could add sets them as a place of their own between the demo and the
+    /// offer, so the guide's tour stops there too.
+    /// </summary>
+    [Test]
+    public void Notes_StandBetweenTheDemoAndTheOffer()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = ctx.Render<DemoStage>(parameters => parameters
+            .Add(stage => stage.Accent, TileAccent.Green)
+            .Add(stage => stage.Title, "Bread at dawn.")
+            .Add(stage => stage.Player, "<div class=\"player\">The chat</div>")
+            .Add(stage => stage.Notes, "<div class=\"notes\">Make it yours</div>")
+            .Add(stage => stage.Offer, "<a href=\"/contact\">Ask for yours</a>"));
+
+        Assert.That(cut.FindAll(".demo-stage > *")
+                .Select(part => string.IsNullOrEmpty(part.Id) ? part.ClassName : part.Id),
+            Is.EqualTo(new[] { "stage-strip", "top", "stage-body is-alone", "make-it-yours", "ask" }));
+    }
+
     /// <summary>A demo without cues (its player shows its own steps) gives the player the whole width.</summary>
     [Test]
     public void WithoutCues_ThePlayerHasTheWholeWidth()

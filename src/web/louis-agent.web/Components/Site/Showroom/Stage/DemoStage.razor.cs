@@ -49,6 +49,10 @@ public partial class DemoStage
     [Parameter]
     public RenderFragment? Cues { get; set; }
 
+    /// <summary>What a custom agent could add, between the demo and the offer; none for a demo without.</summary>
+    [Parameter]
+    public RenderFragment? Notes { get; set; }
+
     /// <summary>The site's offer, under the demo.</summary>
     [Parameter]
     public RenderFragment? Offer { get; set; }
