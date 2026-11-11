@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (112)
+## Open (113)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -46,6 +46,7 @@ known limitations below are facts about today, not tasks.
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Next, after F127.5 (Louis, 2026-11-10) | [plan](src/docs/plans/F125-an-agentic-site.md) |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now | [plan](src/docs/plans/F126-evals-redesigned.md) |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now | [plan](src/docs/plans/F131-the-chat-on-any-website.md) |
+| F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next | [draft](src/docs/plans/F133-self-serve-sites.md) |
 | F48 | Recipe maths and a teaching cook | Next | [plan](demos/puls/docs/plans/F48-cook-and-teacher.md) |
 | F46 | Localisation | Next | — |
 | F50 | Puls's local specialists | Next | — |
