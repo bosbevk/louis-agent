@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "title": "CL60.3 the sequences: one chart in memory",
+  "caption": "Steps hold steps: a loop or an alt is a step with steps inside it, so a nested block needs no special case.",
+  "flow": {
+    "nodes": [
+      { "id": "source", "label": "DiagramSource\nkind sequence", "icon": "file", "tone": "teal" },
+      { "id": "spec", "label": "SequenceSpec\nnumbered false", "icon": "book", "tone": "teal" },
+      { "id": "heads", "label": "Participant x5\nProgram.cs, the builder, …", "icon": "users", "tone": "teal" },
+      { "id": "msg", "label": "MessageStep\nP to S: AddLouisAgent(…)", "icon": "message", "tone": "teal" },
+      { "id": "reply", "label": "ReplyStep\nH to B: AgentHostContext", "icon": "message", "tone": "teal" },
+      { "id": "note", "label": "NoteStep\nover S", "icon": "info", "tone": "teal" },
+      { "id": "loop", "label": "BlockStep loop\nup to 10 tool rounds", "icon": "branch", "tone": "teal" },
+      { "id": "inner", "label": "its own steps", "icon": "message", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "source", "to": "spec" },
+      { "from": "spec", "to": "heads" },
+      { "from": "spec", "to": "msg" },
+      { "from": "spec", "to": "reply" },
+      { "from": "spec", "to": "note" },
+      { "from": "spec", "to": "loop" },
+      { "from": "loop", "to": "inner" }
+    ]
+  }
+}

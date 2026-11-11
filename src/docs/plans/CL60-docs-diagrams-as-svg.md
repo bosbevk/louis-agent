@@ -42,7 +42,7 @@ from its source, and when the last Mermaid block is gone a test keeps it gone.
 |---|---|---|
 | **CL60.1 The renderer and the overviews** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl601-2026-11-11-partly-unattended)) | The diagram sources as records, the SVG writer with the theme, the card layout and its icons, the flow layout reused, the tool that writes every SVG, the test that holds them; an overview picture at the top of every project doc | Every project doc opens with its overview SVG, light and dark; the test fails on any SVG that doesn't match its JSON |
 | **CL60.2 The flows** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl602-2026-11-11-and-12-unattended)) | The 72 flowcharts redrawn as flow sources, the layout grown for what they need that the site's diagrams never did (a group around boxes, more than six columns, a note box) | No `flowchart` block left in the docs |
-| **CL60.3 The sequences** | A sequence layout (lifelines, messages, replies, a note, a loop or an alt box), and the 43 sequence diagrams redrawn | No `sequenceDiagram` block left |
+| **CL60.3 The sequences** ([plan](CL60.3-the-sequences.md)) | A sequence layout (lifelines, messages, replies, a note, a loop or an alt box), and the 43 sequence diagrams redrawn | No `sequenceDiagram` block left |
 | **CL60.4 The classes, and the rule** | A class layout (a card per type, its members, the arrows that mean implements, holds and calls), the 11 class diagrams redrawn, the plans README's "as mermaid" rule rewritten, a test that no Mermaid block is left anywhere, an ADR | No Mermaid in the repo; the ADR records the rule |
 
 Each child is about ten steps; CL60.2 and CL60.3 may split again if a group of docs needs more.
@@ -68,4 +68,4 @@ the icons are Tabler Icons (MIT); an overview's cards are written by hand. See
   CL60.4 still rewrites the rest.
 
 ---
-[Docs index](../README.md) · [Plans](README.md) · Next: CL60.3, the sequences
+[Docs index](../README.md) · [Plans](README.md) · Next: [CL60.3](CL60.3-the-sequences.md)
