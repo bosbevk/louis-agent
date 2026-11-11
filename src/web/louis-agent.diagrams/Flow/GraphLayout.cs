@@ -162,20 +162,33 @@ public static class GraphLayout
         return crossings;
     }
 
-    /// <summary>A box's height: a line more for each label line after the first, and the note's lines.</summary>
-    private static double HeightOf(GraphNode node)
+    /// <summary>A box's height: its head, and under it its members, each a line (CL60.4).</summary>
+    private static double HeightOf(GraphNode node) =>
+        HeadOf(node) + (node.Members is { Count: > 0 } members
+            ? FlowText.MemberTop + members.Count * FlowText.MemberStep + FlowText.MemberEnd
+            : 0);
+
+    /// <summary>
+    /// A box's head, its label and note: a line more for each label line after the first, and the note's lines.
+    /// </summary>
+    public static double HeadOf(GraphNode node)
     {
         double label = BoxHeight + FlowText.LabelStep * (FlowText.LabelLines(node).Count - 1);
         return node.Note is null ? label : label + NoteLine * NoteLines(node.Note).Count;
     }
 
     /// <summary>
-    /// A box's width: its label's longest line and the room beside it, and its icon's badge when it has one, at
-    /// least the site's box.
+    /// A box's width: its label's longest line and the room beside it, and its icon's badge when it has one, or its
+    /// longest member if that is wider, at least the site's box.
     /// </summary>
-    private static double WidthOf(GraphNode node) =>
-        Math.Max(BoxWidth, FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad
-            + (node.Icon is null ? 0 : FlowText.IconRoom));
+    private static double WidthOf(GraphNode node)
+    {
+        double label = FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad
+                       + (node.Icon is null ? 0 : FlowText.IconRoom);
+        double members = (node.Members ?? []).Select(member => member.Length).DefaultIfEmpty(0).Max()
+                         * FlowText.WordChar + 2 * LabelPad;
+        return Math.Max(BoxWidth, Math.Max(label, members));
+    }
 
     /// <summary>
     /// The note as the lines the box shows (FX85, Louis: "need wrapping"), wrapped at <see cref="NoteWidth"/>

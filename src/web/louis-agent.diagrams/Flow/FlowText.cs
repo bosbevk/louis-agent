@@ -65,6 +65,12 @@ public static class FlowText
     /// <summary>How far a label's next line stands under the one before (CL60.2).</summary>
     public const double LabelStep = 16;
 
+    /// <summary>
+    /// A box's members (CL60.4): how far each stands under the one before, the room between the divider and the
+    /// first, and the room under the last.
+    /// </summary>
+    public const double MemberStep = 14, MemberTop = 8, MemberEnd = 10;
+
     /// <summary>A label's lines: a <c>\n</c> breaks it, as a docs flowchart's <c>&lt;br/&gt;</c> did.</summary>
     public static IReadOnlyList<string> LabelLines(GraphNode node) => node.Label.Split('\n');
 
@@ -73,7 +79,14 @@ public static class FlowText
     /// note's lines.
     /// </summary>
     public static double LabelY(PlacedNode node) =>
-        node.Node.Note is null ? node.H / 2 + 5 - (LabelLines(node.Node).Count - 1) * LabelStep / 2 : 28;
+        node.Node.Note is null ? HeadHeight(node) / 2 + 5 - (LabelLines(node.Node).Count - 1) * LabelStep / 2 : 28;
+
+    /// <summary>
+    /// How tall a placed box's head is: the whole box, or with members (CL60.4), the part above the divider, where the
+    /// label and the badge stand.
+    /// </summary>
+    public static double HeadHeight(PlacedNode node) =>
+        node.Node.Members is { Count: > 0 } ? GraphLayout.HeadOf(node.Node) : node.H;
 
     /// <summary>Where the note's first line sits, under however many lines the label has.</summary>
     public static double NoteY(PlacedNode node) => NoteTop + (LabelLines(node.Node).Count - 1) * LabelStep;

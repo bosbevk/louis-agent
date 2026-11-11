@@ -76,7 +76,8 @@ internal sealed class FlowRenderer : IDiagramRenderer
         if (node.Node.Icon is { } icon)
         {
             // The badge stands in the middle of the box's height; the icon in it is drawn a little smaller.
-            double centreX = node.X + FlowText.BadgeLeft + FlowText.BadgeSize / 2, centreY = node.Y + node.H / 2;
+            double centreX = node.X + FlowText.BadgeLeft + FlowText.BadgeSize / 2;
+            double centreY = node.Y + FlowText.HeadHeight(node) / 2;
             writer.Circle(centreX, centreY, FlowText.BadgeSize / 2, "badge" + tone)
                 .Icon(centreX - BadgeIcon / 2, centreY - BadgeIcon / 2, BadgeIcon, icon, "badge-icon");
             (x, anchor) = (FlowText.LabelLeft(node), "start");
@@ -89,6 +90,15 @@ internal sealed class FlowRenderer : IDiagramRenderer
         var lines = node.Node.Note is { } note ? GraphLayout.NoteLines(note) : [];
         for (int at = 0; at < lines.Count; at++)
             writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note", anchor);
+
+        // A class chart's members (CL60.4): a divider under the head, then each member from the left.
+        if (node.Node.Members is not { Count: > 0 } members) return;
+        double divider = node.Y + FlowText.HeadHeight(node);
+        string y = SvgWriter.N(divider);
+        writer.Path($"M {SvgWriter.N(node.X)} {y} L {SvgWriter.N(node.X + node.W)} {y}", "frame", arrow: false);
+        for (int at = 0; at < members.Count; at++)
+            writer.Text(node.X + GraphLayout.LabelPad, divider + FlowText.MemberTop + 10 + FlowText.MemberStep * at,
+                members[at], "word" + tone, "start");
     }
 
     /// <summary>
