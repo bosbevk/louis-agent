@@ -44,6 +44,7 @@ from its source, and when the last Mermaid block is gone a test keeps it gone.
 | **CL60.2 The flows** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl602-2026-11-11-and-12-unattended)) | The 72 flowcharts redrawn as flow sources, the layout grown for what they need that the site's diagrams never did (a group around boxes, more than six columns, a note box) | No `flowchart` block left in the docs |
 | **CL60.3 The sequences** ([plan](CL60.3-the-sequences.md)) | A sequence layout (lifelines, messages, replies, a note, a loop or an alt box), and the 43 sequence diagrams redrawn | No `sequenceDiagram` block left |
 | **CL60.4 The classes, and the rule** | A class layout (a card per type, its members, the arrows that mean implements, holds and calls), the 11 class diagrams redrawn, the plans README's "as mermaid" rule rewritten, a test that no Mermaid block is left anywhere, an ADR | No Mermaid in the repo; the ADR records the rule |
+| **CL60.5 An interface diagram on every project doc** (added 2026-11-12, Louis) | Each project doc, the framework's, the packs' and each demo's, gains its interface design: its public types and interfaces, what implements and holds what, drawn with CL60.4's class layout from the code itself | A test fails on any project doc without its interface diagram |
 
 Each child is about ten steps; CL60.2 and CL60.3 may split again if a group of docs needs more.
 
@@ -66,6 +67,11 @@ the icons are Tabler Icons (MIT); an overview's cards are written by hand. See
   refuses. Of three (rewrite that part of the rule now; let plans keep Mermaid until CL60.4, against Louis's "plans
   drawn the same way"; leave it, so the next plan fails), Claude's pick: **those two are flow pictures now**, and
   CL60.4 still rewrites the rest.
+- **An interface diagram on every project doc** (Louis, 2026-11-12, during CL60.3: "each projecs doc needs an
+  interface diagram"). About fifty new diagrams, each written from the project's own types, and they want the class
+  layout CL60.4 builds. Of three (fold them into CL60.4, far past its ten steps; draw them now as flow pictures and
+  again as classes, the work twice; a child of their own after CL60.4), Claude's pick while unattended: **CL60.5**,
+  its own plan, held by a test like the overviews' (`EveryProjectDoc_ShowsItsOverview`).
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Next: [CL60.3](CL60.3-the-sequences.md)
