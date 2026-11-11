@@ -73,21 +73,7 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 **Architecture:** an eval only says what it asks and how it grades, and the harness does the rest. The API on the far side is an ordinary client's view of the agent, so an eval proves what a user would get.
 
-```mermaid
-flowchart TD
-    eval["IEval: FileEval, reading a folder of files"] --> dataset["Datasets: dataset.json and the scenarios"]
-    eval --> modes["EvalMode: the toolsets and role a session opens with"]
-    runner["EvalRunner"] --> eval
-    runner --> client["ISessionClient"]
-    client --> http["HttpSessionClient"]
-    client --> canned["CannedSessionClient: the stub, no model"]
-    http -->|"HTTP and SSE"| api["louis-agent.api"]
-    runner --> trial["Trial and Transcript"]
-    trial --> checks["ICheck: general checks, the model judge, a person's review"]
-    checks --> grade["Grade: score, outcome, reason"]
-    runner --> summary["RunSummary: the roll-up"]
-    runner --> writer["ProtocolWriter: one JSON line an event, on stdout"]
-```
+![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 
 **Flow:** one run. A failed transport is tried once more, and an infrastructure failure is kept apart from a failing answer, so it never counts against the agent.
 

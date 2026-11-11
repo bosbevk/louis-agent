@@ -34,16 +34,7 @@ studio's replies are built here (`Replies/`, the `Of` factories), its texts in `
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A program: MapLouisAgentApi, then MapLouisAgentEvals"] --> api["louis-agent.api: MapApi, MapAdmin (prompts, imports, screens), MapAdminGroup"]
-    program --> evals["louis-agent.api.evals: EvalsStartup"]
-    evals -->|MapAdminGroup| api
-    evals --> routes["EvalAdminEndpoints: runs, drafts, reviews, calibrations, notes, studio, trends"]
-    evals --> stores["Mongo stores: runs, reviews, drafts, calibrations"]
-    evals --> runner["EvalProcess: the runner dll, BENCHMARK_API_URL"]
-    routes --> replies["Replies: the contracts' Of factories"]
-```
+![The eval studio on the API: what a program maps, and what the studio holds](diagrams/louis-agent.api.evals-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

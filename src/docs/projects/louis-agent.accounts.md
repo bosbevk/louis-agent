@@ -77,17 +77,7 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
 
 ### Diagrams
 
-```mermaid
-flowchart LR
-    browser["Browser app (F61.2)"] -->|"POST /account/login?useCookies=true"| identity["Identity's routes (MapIdentityApi)"]
-    browser -->|"GET /account/me, PUT /profile, POST /logout, DELETE /account"| ours["AccountHandlers"]
-    identity --> managers["UserManager / SignInManager"]
-    ours --> managers
-    managers --> store["AccountUserStore: within CurrentTenant"]
-    tenant["UseTenant: host -> HostTenantResolver -> CurrentTenant"] --> store
-    store --> db["AccountsDbContext: SQL Server"]
-    managers -->|"confirm, reset links"| mail["IEmailSender: LogEmailSender"]
-```
+![Accounts: the browser's calls through Identity's routes and ours to the store](diagrams/louis-agent.accounts-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

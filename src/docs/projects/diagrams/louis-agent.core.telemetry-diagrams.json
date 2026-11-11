@@ -1,0 +1,114 @@
+{
+  "kind": "flow",
+  "title": "Telemetry: the log sink and the tracer, out to the collector",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A host\u0027s program:\nHostServices(\u2026,\nOtlpTelemetry.Instance)"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost.Build (core)"
+      },
+      {
+        "id": "logging",
+        "icon": "file",
+        "tone": "violet",
+        "label": "AgentLogging (core)"
+      },
+      {
+        "id": "otlp",
+        "icon": "settings",
+        "tone": "green",
+        "label": "OtlpTelemetry (this library)"
+      },
+      {
+        "id": "handler",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "LastChance (core), told what\nto flush"
+      },
+      {
+        "id": "tracer",
+        "icon": "chart",
+        "tone": "green",
+        "label": "TracerProvider:\nTurnSpans.Source, M.E.AI,\nASP.NET Core, HttpClient"
+      },
+      {
+        "id": "filter",
+        "icon": "shield",
+        "tone": "green",
+        "label": "OwnTrafficFilter"
+      },
+      {
+        "id": "exporter",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "OTLP exporter"
+      },
+      {
+        "id": "collector",
+        "icon": "server",
+        "tone": "red",
+        "label": "the collector"
+      },
+      {
+        "id": "turn",
+        "icon": "message",
+        "tone": "violet",
+        "label": "TurnRunner (core):\nTurnSpans.Start"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "host"
+      },
+      {
+        "from": "host",
+        "to": "logging",
+        "word": "AddSinks"
+      },
+      {
+        "from": "host",
+        "to": "otlp",
+        "word": "Start"
+      },
+      {
+        "from": "otlp",
+        "to": "handler"
+      },
+      {
+        "from": "otlp",
+        "to": "tracer"
+      },
+      {
+        "from": "tracer",
+        "to": "filter"
+      },
+      {
+        "from": "filter",
+        "to": "exporter"
+      },
+      {
+        "from": "exporter",
+        "to": "collector"
+      },
+      {
+        "from": "logging",
+        "to": "collector",
+        "word": "the sink"
+      },
+      {
+        "from": "turn",
+        "to": "tracer"
+      }
+    ],
+    "direction": "down"
+  }
+}

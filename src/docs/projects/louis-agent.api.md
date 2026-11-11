@@ -15,15 +15,7 @@ louis-agent a whole task.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Client["Web app · curl · orchestrator"] -- "POST /v1/sessions/{id}/messages" --> Turn["StreamTurnAsync"]
-    Turn --> Engine["AgentEngine.StreamPromptAsync"]
-    Engine -- "updates" --> SSE["ITurnStreamFormat<br/>(Streaming/Claude) → SSE events"] --> Client
-    Client -- "/v1/workspace/*" --> WS["WorkspaceEndpoints"] --> Files[("Workspace")]
-    Client -- "/v1/git/*" --> Git["Endpoints/Git/"] --> Files
-    Static["MapStaticAssets + MapLouisAgentSite<br/>(each page as HTML)"] --> Client
-```
+![louis-agent.api: How it works](diagrams/louis-agent.api-how-it-works.svg)
 
 - **Start-up** (`ApiStartup.cs`, called by a demo's program): `AgentHost.Build()`, the services with `ApiMap.AddApi` (the engine, `AgentSessions` and
   a `WorkspaceBoundary` for path checks); decide the auth with core's `HostAuth` (FX18: no `AGENT_API_KEY` stops

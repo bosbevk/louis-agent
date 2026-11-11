@@ -1,0 +1,137 @@
+{
+  "kind": "flow",
+  "title": "Web access: from a host's program to IWebAccess and the parts behind it",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A host\u0027s program:\nHostServices(WebAccess.Create,\n\u2026)"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost.Build (core)"
+      },
+      {
+        "id": "factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AgentEngineFactory:\nservices.WebOrNone(options,\nreplay)"
+      },
+      {
+        "id": "seam",
+        "icon": "code",
+        "tone": "violet",
+        "label": "IWebAccess (core)"
+      },
+      {
+        "id": "wa",
+        "icon": "world",
+        "tone": "green",
+        "label": "WebAccess (this library)"
+      },
+      {
+        "id": "none",
+        "icon": "box",
+        "tone": "violet",
+        "label": "NoWebAccess (core): every part\nsays it isn\u0027t set up"
+      },
+      {
+        "id": "robots",
+        "icon": "shield",
+        "tone": "green",
+        "label": "RobotsPolicy"
+      },
+      {
+        "id": "browser",
+        "icon": "browser",
+        "tone": "green",
+        "label": "RobotsWebBrowser \u2192\nRecordedWebBrowser \u2192\nChromeWebBrowser"
+      },
+      {
+        "id": "search",
+        "icon": "search",
+        "tone": "green",
+        "label": "RecordedSearchProvider \u2192 the\nprovider the settings name"
+      },
+      {
+        "id": "renderer",
+        "icon": "file",
+        "tone": "green",
+        "label": "PageRendererFactory \u2192 Chrome\nor Tavily"
+      },
+      {
+        "id": "fetcher",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "PageFetcher per call"
+      },
+      {
+        "id": "ctx",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "ToolsetContext / IPackContext"
+      },
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "teal",
+        "label": "a pack\u0027s tools"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "host"
+      },
+      {
+        "from": "host",
+        "to": "factory"
+      },
+      {
+        "from": "factory",
+        "to": "seam"
+      },
+      {
+        "from": "seam",
+        "to": "wa"
+      },
+      {
+        "from": "seam",
+        "to": "none"
+      },
+      {
+        "from": "wa",
+        "to": "robots"
+      },
+      {
+        "from": "wa",
+        "to": "browser"
+      },
+      {
+        "from": "wa",
+        "to": "search"
+      },
+      {
+        "from": "wa",
+        "to": "renderer"
+      },
+      {
+        "from": "wa",
+        "to": "fetcher"
+      },
+      {
+        "from": "ctx",
+        "to": "seam"
+      },
+      {
+        "from": "pack",
+        "to": "ctx"
+      }
+    ],
+    "direction": "down"
+  }
+}

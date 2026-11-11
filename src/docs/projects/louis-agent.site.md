@@ -17,13 +17,7 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
 
 ## How it runs
 
-```mermaid
-flowchart LR
-    visitor["A visitor"] -->|https louis-agent.dev| host
-    host["louis-agent.site-api: SiteCatalog, MapLouisAgentSite, the API"] --> pages["louis-agent.site: the pages as HTML, then the app"]
-    host --> guide["The guide: docs, leads, site packs"]
-    guide --> model["Anthropic"]
-```
+![louis-agent.site: How it runs](diagrams/louis-agent.site-how-it-runs.svg)
 
 - **The host is a few lines** (`src/site/louis-agent.site-api/Program.cs`): `SiteCatalog` is the guide alone, so it is
   the default, on exactly the three packs it names; the program serves the site's pages as HTML (F121) and the API the

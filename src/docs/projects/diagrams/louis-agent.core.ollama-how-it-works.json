@@ -1,0 +1,47 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.core.ollama: How it works",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A program: HostServices(\u2026,\nProviders:\n[OllamaProvider.Instance, \u2026])"
+      },
+      {
+        "id": "factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory (core)"
+      },
+      {
+        "id": "provider",
+        "icon": "chip",
+        "tone": "green",
+        "label": "OllamaProvider (this library)"
+      },
+      {
+        "id": "sdk",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "OllamaSharp: OllamaApiClient\nover the long-timeout\nHttpClient"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "factory"
+      },
+      {
+        "from": "factory",
+        "to": "provider"
+      },
+      {
+        "from": "provider",
+        "to": "sdk"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -1,0 +1,203 @@
+<svg viewBox="-24 -24 1305 550" width="1305" height="550" role="img" aria-label="The tests: what CI runs, and the two testing libraries they share" xmlns="http://www.w3.org/2000/svg">
+  <title>The tests: what CI runs, and the two testing libraries they share</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1305" height="550" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1257" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">The tests:</tspan>
+    <tspan class="title-rest">what CI runs, and the two testing libraries they share</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-green" d="M 147 214 L 147 268 Q 147 292 171 292 L 759 292 Q 771 292 771 304 L 771 316" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 147 214 L 147 268 Q 147 292 171 292 L 447 292 Q 459 292 459 304 L 459 316" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 459 214 L 459 250 Q 459 274 483 274 L 750 274 Q 771 274 771 295 L 771 316" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 459 214 L 459 316" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 771 214 L 771 316" marker-end="url(#arrow-green)" />
+    <path class="edge tone-amber" d="M 1083 214 L 1083 235 Q 1083 256 1062 256 L 795 256 Q 771 256 771 280 L 771 316" marker-end="url(#arrow-amber)" />
+    <path class="edge tone-blue" d="M 615 52 L 615 64 Q 615 76 603 76 L 171 76 Q 147 76 147 100 L 147 130" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 615 52 L 615 64 Q 615 76 603 76 L 483 76 Q 459 76 459 100 L 459 130" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 615 52 L 615 64 Q 615 76 627 76 L 747 76 Q 771 76 771 100 L 771 130" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 615 52 L 615 64 Q 615 76 627 76 L 1059 76 Q 1083 76 1083 100 L 1083 130" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="153" y="80" width="155" height="18" rx="4" />
+    <text class="word tone-blue" x="230.5" y="92" text-anchor="middle">Category!=Integration</text>
+    <rect class="word-chip tone-blue" x="1089" y="80" width="162" height="30" rx="4" />
+    <text class="word tone-blue" x="1170" y="92" text-anchor="middle">Category=Integration,</text>
+    <text class="word tone-blue" x="1170" y="104" text-anchor="middle">INTEGRATION_REQUIRED=1</text>
+    <rect class="box tone-blue" x="530" y="0" width="170" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="558" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(550 18) scale(0.6667)">
+      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+    </g>
+    <text class="label tone-blue" x="582" y="31" text-anchor="start">CI, on Ubuntu</text>
+    <rect class="box tone-green" x="0" y="130" width="294" height="84" rx="10" />
+    <circle class="badge tone-green" cx="28" cy="172" r="14" />
+    <g class="badge-icon" transform="translate(20 164) scale(0.6667)">
+      <path d="M7 8l-4 4l4 4" />
+      <path d="M17 8l4 4l-4 4" />
+      <path d="M14 4l-4 16" />
+    </g>
+    <text class="label tone-green" x="52" y="169" text-anchor="start">src/tests: engine, hosts, web,</text>
+    <text class="label tone-green" x="52" y="185" text-anchor="start">evals</text>
+    <rect class="box tone-green" x="312" y="130" width="294" height="84" rx="10" />
+    <circle class="badge tone-green" cx="340" cy="172" r="14" />
+    <g class="badge-icon" transform="translate(332 164) scale(0.6667)">
+      <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+    </g>
+    <text class="label tone-green" x="364" y="177" text-anchor="start">demos/*/tests: each demo's own</text>
+    <rect class="box tone-green" x="631.6" y="130" width="278.8" height="84" rx="10" />
+    <circle class="badge tone-green" cx="659.6" cy="172" r="14" />
+    <g class="badge-icon" transform="translate(651.6 164) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-green" x="683.6" y="177" text-anchor="start">packs/tests: each pack's own</text>
+    <rect class="box tone-amber" x="943.6" y="130" width="278.8" height="84" rx="10" />
+    <circle class="badge tone-amber" cx="971.6" cy="172" r="14" />
+    <g class="badge-icon" transform="translate(963.6 164) scale(0.6667)">
+      <path d="M5 7l5 5l-5 5" />
+      <path d="M12 19l7 0" />
+    </g>
+    <text class="label tone-amber" x="995.6" y="161" text-anchor="start">*.integration-tests: start a</text>
+    <text class="label tone-amber" x="995.6" y="177" text-anchor="start">process, open Mongo, need a</text>
+    <text class="label tone-amber" x="995.6" y="193" text-anchor="start">tool</text>
+    <rect class="box tone-teal" x="334.8" y="316" width="248.4" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="362.8" cy="358" r="14" />
+    <g class="badge-icon" transform="translate(354.8 350) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-teal" x="386.8" y="347" text-anchor="start">louis-agent.web.testing:</text>
+    <text class="label tone-teal" x="386.8" y="363" text-anchor="start">FixtureApi, Snapshots,</text>
+    <text class="label tone-teal" x="386.8" y="379" text-anchor="start">SassStylesheet</text>
+    <rect class="box tone-teal" x="631.6" y="316" width="278.8" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="659.6" cy="358" r="14" />
+    <g class="badge-icon" transform="translate(651.6 350) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-teal" x="683.6" y="347" text-anchor="start">louis-agent.testing:</text>
+    <text class="label tone-teal" x="683.6" y="363" text-anchor="start">FakeChatClient, StubHandler,</text>
+    <text class="label tone-teal" x="683.6" y="379" text-anchor="start">TestPaths</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="482" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="492.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="482" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="492.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-teal" x="231.2" y="482" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="492.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-amber" x="408" y="482" width="12" height="12" rx="3" />
+  <text class="legend" x="426" y="492.5" text-anchor="start">files and data</text>
+</svg>

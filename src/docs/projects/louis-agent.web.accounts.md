@@ -47,31 +47,7 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    subgraph site["A site"]
-        program["Program.cs: AddLouisAgentAccounts()"]
-        layout["AccountLayout.razor"]
-        css["index.html: the site's styles bundle"]
-    end
-    subgraph wa["louis-agent.web.accounts"]
-        client["Client/: AccountApi, AccountState, AccountMenu"]
-        comps["Components/, Pages/, Layout/AccountFrame, Text/AccountText"]
-    end
-    subgraph web["louis-agent.web"]
-        seam["Components/Chat/Header/Menu/: IAccountMenu, NoAccounts"]
-        menu["ProfileMenu"]
-        frames["SiteFrames"]
-    end
-    contracts["louis-agent.accounts.contracts"]
-    site --> wa
-    site --> web
-    wa --> web
-    wa --> contracts
-    menu --> seam
-    client -. implements .-> seam
-    comps --> frames
-```
+![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

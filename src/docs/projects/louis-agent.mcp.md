@@ -14,16 +14,7 @@ call at a time. (To have louis-agent do a whole task itself, use the API's sessi
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Client["MCP client<br/>(its own model)"] -- "tools/list, tools/call,<br/>resources/list, resources/read" --> Server["MCP server<br/>(stdio or Streamable HTTP)"]
-    Server --> Prims["McpPrimitives<br/>one setup, both transports"]
-    Prims --> Sync["EngineToolSync<br/>engine tools → MCP tools"]
-    Prims --> Feeds["FeedResources<br/>catalogue feeds → feed://{name}"]
-    Sync --> Engine["AgentEngine<br/>(BuildToolHost: no model)"]
-    Server --> Skills["SkillsToolProvider<br/>list_skills · get_skill_info · get_skill_documentation"]
-    Engine -- "ToolsChanged" --> Sync -- "notifications/tools/list_changed" --> Client
-```
+![The MCP server: from a client's call to the engine's tools, and the notice back when they change](diagrams/louis-agent.mcp-how-it-works.svg)
 
 - **Start-up:** `AgentHost.BuildToolHost()` — the same engine, skills and agent-built tools as the other hosts, with a
   stand-in chat client that refuses to be called.

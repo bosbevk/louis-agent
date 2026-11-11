@@ -13,19 +13,7 @@ protocol to and from `AgentEngine`; behaviour changes belong here.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Env["config/.env + .env.secrets<br/>+ LLM profile .env.{LLM_PROFILE}<br/>(AgentHost.LoadEnvironment)"] --> Opts["LlmOptions + AgentOptions"]
-    Opts --> Skills["SkillLoader.Load<br/>→ CompositeSkillProvider<br/>(system prompt + skills)"]
-    Opts --> Factory["LlmClientFactory<br/>→ IChatClient"]
-    Skills --> Engine["AgentEngine"]
-    Factory --> Engine
-    Engine --> Loop["FunctionInvokingChatClient<br/>(≤ 10 tool rounds per message)"]
-    Loop --> Guards["ToolCallGuards.InvokeAsync<br/>log · run · guard result"]
-    Guards --> Tools["Tool classes<br/>(files, git, dotnet, scripts, web, Paymo, DevOps, skills)"]
-    Loop --> Rec["UsageRecordingChatClient<br/>one record per model request"]
-    Rec --> Ledger["JsonlUsageSink<br/>{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"]
-```
+![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)
 
 1. **Bootstrap** (`AgentHost.Build()`): load `config/.env.secrets` then `config/.env` (searching upward from the working
    directory; variables already set win), bind `LlmOptions` and `AgentOptions`, start file logging, load skills, create

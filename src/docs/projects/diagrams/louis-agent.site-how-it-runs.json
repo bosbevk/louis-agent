@@ -1,0 +1,58 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.site: How it runs",
+  "flow": {
+    "nodes": [
+      {
+        "id": "visitor",
+        "icon": "user",
+        "tone": "blue",
+        "label": "A visitor"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.site-api:\nSiteCatalog,\nMapLouisAgentSite, the API"
+      },
+      {
+        "id": "pages",
+        "icon": "browser",
+        "tone": "green",
+        "label": "louis-agent.site: the pages as\nHTML, then the app"
+      },
+      {
+        "id": "guide",
+        "icon": "message",
+        "tone": "violet",
+        "label": "The guide: docs, leads, site\npacks"
+      },
+      {
+        "id": "model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Anthropic"
+      }
+    ],
+    "edges": [
+      {
+        "from": "visitor",
+        "to": "host",
+        "word": "https louis-agent.dev"
+      },
+      {
+        "from": "host",
+        "to": "pages"
+      },
+      {
+        "from": "host",
+        "to": "guide"
+      },
+      {
+        "from": "guide",
+        "to": "model"
+      }
+    ],
+    "direction": "down"
+  }
+}

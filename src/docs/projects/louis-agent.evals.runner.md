@@ -54,19 +54,7 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 **Architecture:** the API never references an eval. It starts this program and reads what it writes, so a new eval is a folder of files.
 
-```mermaid
-flowchart TD
-    api["louis-agent.api: EvalProcess, RunnerProcess"] -->|"starts it, reads stdout"| host["EvalRunnerHost"]
-    program["A demo's program: what it knows, in RunnerCatalogs"] --> host
-    host --> args["CommandLine"]
-    host --> catalog["EvalCatalog"]
-    catalog --> folders["EvalFolders: every eval.json under EvalFiles"]
-    host -->|"run"| runner["EvalRunner, in the harness"]
-    host -->|"--check"| check["CheckCommand"]
-    host -->|"--import-promptfoo, --export-promptfoo"| prompt["PromptfooImport, PromptfooExport"]
-    host -->|"--label-sheet, --calibrate"| judge["LabelSheetCommand, CalibrateCommand"]
-    runner -->|"protocol v2, on stdout"| api
-```
+![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
 **Flow:** a run from the Evals page. A re-score is the same, but the API hands over the stored run on stdin and no model is asked.
 

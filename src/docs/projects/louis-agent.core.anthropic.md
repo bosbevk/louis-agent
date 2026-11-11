@@ -32,17 +32,7 @@ provider for its mapper and its markers; with no providers it says every name is
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A program: HostServices(…, Providers: [AnthropicProvider.Instance, …])"] --> host["AgentHost.Build (core)"]
-    host --> factory["LlmClientFactory (core): by LLM_PROVIDER's name"]
-    factory --> provider["AnthropicProvider (this library)"]
-    provider --> sdk["Anthropic SDK: AnthropicClient.AsIChatClient"]
-    provider --> budget["ThinkingBudget (older models)"]
-    provider --> mapper["AnthropicUsageMapper"]
-    provider --> caching["AnthropicPromptCaching"]
-    factory --> wrap["PromptCachingChatClient (core)"]
-```
+![Claude's provider: from a program through the client factory to the SDK and its parts](diagrams/louis-agent.core.anthropic-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

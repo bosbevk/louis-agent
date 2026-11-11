@@ -121,25 +121,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 **Architecture:** a site is a small program on top of this library. It says who it is and what it uses, and the framework does the rest. The [eval pages](louis-agent.web.evals.md) have
 diagrams of their own.
 
-```mermaid
-flowchart TD
-    subgraph site["A site"]
-        program["Program.cs: its words, SiteFrames, PackViews"]
-        page["Its chat page, with what goes in the slots"]
-        layout["Its admin layout, with what goes in the slots"]
-    end
-    page --> shell["ChatShell"]
-    layout --> admin["AdminShell"]
-    shell --> runner["ChatRunner"]
-    shell --> views["TurnView, DelegationCard, WorkPanel"]
-    runner --> stream["TurnStream: events become a Turn"]
-    runner --> store["ChatStore: localStorage"]
-    runner --> api["AgentApi"]
-    admin --> menu["PackMenu"]
-    admin --> screen["Screen page and ScreenTable, or a pack's view from PackViews"]
-    screen --> api
-    api -->|"HTTP and SSE, on the same origin"| server["louis-agent.api"]
-```
+![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/louis-agent.web-diagrams.svg)
 
 **Flow:** sending a message. `ChatRunner` holds all of it, so no chat page has its own copy.
 

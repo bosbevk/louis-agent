@@ -1,0 +1,82 @@
+{
+  "kind": "flow",
+  "title": "The eval studio on the API: what a program maps, and what the studio holds",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A program: MapLouisAgentApi,\nthen MapLouisAgentEvals"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.api: MapApi,\nMapAdmin (prompts, imports,\nscreens), MapAdminGroup"
+      },
+      {
+        "id": "evals",
+        "icon": "checks",
+        "tone": "green",
+        "label": "louis-agent.api.evals:\nEvalsStartup"
+      },
+      {
+        "id": "routes",
+        "icon": "code",
+        "tone": "green",
+        "label": "EvalAdminEndpoints: runs,\ndrafts, reviews, calibrations,\nnotes, studio, trends"
+      },
+      {
+        "id": "stores",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Mongo stores: runs, reviews,\ndrafts, calibrations"
+      },
+      {
+        "id": "runner",
+        "icon": "terminal",
+        "tone": "red",
+        "label": "EvalProcess: the runner dll,\nBENCHMARK_API_URL"
+      },
+      {
+        "id": "replies",
+        "icon": "file",
+        "tone": "teal",
+        "label": "Replies: the contracts\u0027 Of\nfactories"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "api"
+      },
+      {
+        "from": "program",
+        "to": "evals"
+      },
+      {
+        "from": "evals",
+        "to": "api",
+        "word": "MapAdminGroup"
+      },
+      {
+        "from": "evals",
+        "to": "routes"
+      },
+      {
+        "from": "evals",
+        "to": "stores"
+      },
+      {
+        "from": "evals",
+        "to": "runner"
+      },
+      {
+        "from": "routes",
+        "to": "replies"
+      }
+    ],
+    "direction": "down"
+  }
+}

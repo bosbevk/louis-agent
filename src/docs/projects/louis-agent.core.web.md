@@ -40,21 +40,7 @@ What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `We
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A host's program: HostServices(WebAccess.Create, …)"] --> host["AgentHost.Build (core)"]
-    host --> factory["AgentEngineFactory: services.WebOrNone(options, replay)"]
-    factory --> seam["IWebAccess (core)"]
-    seam --> wa["WebAccess (this library)"]
-    seam --> none["NoWebAccess (core): every part says it isn't set up"]
-    wa --> robots["RobotsPolicy"]
-    wa --> browser["RobotsWebBrowser → RecordedWebBrowser → ChromeWebBrowser"]
-    wa --> search["RecordedSearchProvider → the provider the settings name"]
-    wa --> renderer["PageRendererFactory → Chrome or Tavily"]
-    wa --> fetcher["PageFetcher per call"]
-    ctx["ToolsetContext / IPackContext"] --> seam
-    pack["a pack's tools"] --> ctx
-```
+![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

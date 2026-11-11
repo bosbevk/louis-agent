@@ -39,16 +39,7 @@ You: exit
 
 **Architecture:** the host is one small call on top of core. All the agent's work is in the engine, and `ConsoleChat` only draws it.
 
-```mermaid
-flowchart TD
-    program["Your program<br/>(the coding agent's: louis-agent.coding-cli)"] -->|"args and AgentCatalog"| host["CliHost"]
-    host -->|"AgentHost.Build"| engine["AgentEngine (core)"]
-    host --> chat["ConsoleChat"]
-    chat -->|"StreamPromptAsync"| engine
-    chat -->|"HandleUserCommand"| engine
-    chat --> out["stdout: the answer, thinking and tool lines"]
-    chat --> err["stderr: the usage line"]
-```
+![The terminal host: from your program through ConsoleChat to the engine and the output](diagrams/louis-agent.cli-diagrams.svg)
 
 **Flow:** one line typed in the interactive loop. A single prompt from a script goes straight to the engine and then exits.
 

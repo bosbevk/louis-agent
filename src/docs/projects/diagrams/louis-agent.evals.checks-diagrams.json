@@ -1,0 +1,104 @@
+{
+  "kind": "flow",
+  "title": "The check contract: who lists checks, and how a check is built, reads and grades",
+  "flow": {
+    "nodes": [
+      {
+        "id": "catalog",
+        "icon": "book",
+        "tone": "teal",
+        "label": "CheckCatalog",
+        "group": "contract"
+      },
+      {
+        "id": "type",
+        "icon": "code",
+        "tone": "teal",
+        "label": "ICheckType and CheckType: a\ncheck named by its type",
+        "group": "contract"
+      },
+      {
+        "id": "check",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "ICheck",
+        "group": "contract"
+      },
+      {
+        "id": "reads",
+        "icon": "message",
+        "tone": "teal",
+        "label": "Trial, Transcript, TurnFacts,\nEngineEvents",
+        "group": "contract"
+      },
+      {
+        "id": "grade",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "Grade and Verdict",
+        "group": "contract"
+      },
+      {
+        "id": "harness",
+        "icon": "checks",
+        "tone": "green",
+        "label": "louis-agent.evals: the general\nchecks"
+      },
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "green",
+        "label": "A pack\u0027s checks project"
+      },
+      {
+        "id": "identity",
+        "icon": "users",
+        "tone": "blue",
+        "label": "An identity\u0027s judges"
+      }
+    ],
+    "edges": [
+      {
+        "from": "catalog",
+        "to": "type"
+      },
+      {
+        "from": "type",
+        "to": "check",
+        "word": "builds"
+      },
+      {
+        "from": "check",
+        "to": "reads",
+        "word": "reads"
+      },
+      {
+        "from": "check",
+        "to": "grade",
+        "word": "returns"
+      },
+      {
+        "from": "harness",
+        "to": "catalog",
+        "word": "lists its entries"
+      },
+      {
+        "from": "pack",
+        "to": "catalog",
+        "word": "lists its entries"
+      },
+      {
+        "from": "identity",
+        "to": "catalog",
+        "word": "lists its entries"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "contract",
+        "label": "This project"
+      }
+    ]
+  }
+}

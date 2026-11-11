@@ -1,0 +1,103 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs:\nAddLouisAgentAccounts()",
+        "group": "site"
+      },
+      {
+        "id": "layout",
+        "icon": "file",
+        "tone": "blue",
+        "label": "AccountLayout.razor",
+        "group": "site"
+      },
+      {
+        "id": "css",
+        "icon": "code",
+        "tone": "blue",
+        "label": "index.html: the site's\nstyles bundle",
+        "group": "site"
+      },
+      {
+        "id": "client",
+        "icon": "user",
+        "tone": "green",
+        "label": "Client/: AccountApi,\nAccountState, AccountMenu",
+        "group": "wa"
+      },
+      {
+        "id": "comps",
+        "icon": "box",
+        "tone": "green",
+        "label": "Components/, Pages/,\nLayout/AccountFrame,\nText/AccountText",
+        "group": "wa"
+      },
+      {
+        "id": "menu",
+        "icon": "users",
+        "tone": "violet",
+        "label": "ProfileMenu",
+        "group": "web"
+      },
+      {
+        "id": "seam",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Components/Chat/Header/\nMenu/: IAccountMenu,\nNoAccounts",
+        "group": "web"
+      },
+      {
+        "id": "frames",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "SiteFrames",
+        "group": "web"
+      },
+      {
+        "id": "contracts",
+        "icon": "file",
+        "tone": "teal",
+        "label": "louis-agent.accounts.contracts"
+      }
+    ],
+    "edges": [
+      {
+        "from": "client",
+        "to": "seam",
+        "word": "implements"
+      },
+      {
+        "from": "client",
+        "to": "contracts"
+      },
+      {
+        "from": "comps",
+        "to": "frames"
+      },
+      {
+        "from": "menu",
+        "to": "seam"
+      }
+    ],
+    "groups": [
+      {
+        "id": "site",
+        "label": "A site, which uses both libraries"
+      },
+      {
+        "id": "wa",
+        "label": "louis-agent.web.accounts, which uses louis-agent.web"
+      },
+      {
+        "id": "web",
+        "label": "louis-agent.web"
+      }
+    ]
+  }
+}

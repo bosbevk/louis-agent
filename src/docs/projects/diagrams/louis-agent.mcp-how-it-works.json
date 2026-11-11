@@ -1,0 +1,88 @@
+{
+  "kind": "flow",
+  "title": "The MCP server: from a client's call to the engine's tools, and the notice back when they change",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Client",
+        "icon": "cloud",
+        "tone": "blue",
+        "label": "MCP client\n(its own model)"
+      },
+      {
+        "id": "Server",
+        "icon": "server",
+        "tone": "green",
+        "label": "MCP server\n(stdio or Streamable HTTP)"
+      },
+      {
+        "id": "Prims",
+        "icon": "settings",
+        "tone": "green",
+        "label": "McpPrimitives\none setup, both transports"
+      },
+      {
+        "id": "Feeds",
+        "icon": "file",
+        "tone": "teal",
+        "label": "FeedResources\ncatalogue feeds \u2192\nfeed://{name}"
+      },
+      {
+        "id": "Sync",
+        "icon": "branch",
+        "tone": "green",
+        "label": "EngineToolSync\nengine tools \u2192 MCP tools"
+      },
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine\n(BuildToolHost: no model)"
+      },
+      {
+        "id": "Skills",
+        "icon": "book",
+        "tone": "teal",
+        "label": "SkillsToolProvider\nlist_skills \u00B7 get_skill_info \u00B7\nget_skill_documentation"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Client",
+        "to": "Server",
+        "word": "tools/list, tools/call,\nresources/list,\nresources/read"
+      },
+      {
+        "from": "Server",
+        "to": "Prims"
+      },
+      {
+        "from": "Prims",
+        "to": "Sync"
+      },
+      {
+        "from": "Prims",
+        "to": "Feeds"
+      },
+      {
+        "from": "Sync",
+        "to": "Engine"
+      },
+      {
+        "from": "Server",
+        "to": "Skills"
+      },
+      {
+        "from": "Engine",
+        "to": "Sync",
+        "word": "ToolsChanged"
+      },
+      {
+        "from": "Sync",
+        "to": "Client",
+        "word": "notifications/tools/list_changed"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -36,17 +36,7 @@ seam with its Null Object.
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A host's program: HostServices(…, OtlpTelemetry.Instance)"] --> host["AgentHost.Build (core)"]
-    host -->|AddSinks| logging["AgentLogging (core)"]
-    host -->|Start| otlp["OtlpTelemetry (this library)"]
-    otlp --> handler["LastChance (core), told what to flush"]
-    otlp --> tracer["TracerProvider: TurnSpans.Source, M.E.AI, ASP.NET Core, HttpClient"]
-    tracer --> filter["OwnTrafficFilter"] --> exporter["OTLP exporter"] --> collector["the collector"]
-    logging -->|the sink| collector
-    turn["TurnRunner (core): TurnSpans.Start"] --> tracer
-```
+![Telemetry: the log sink and the tracer, out to the collector](diagrams/louis-agent.core.telemetry-diagrams.svg)
 
 ```mermaid
 sequenceDiagram

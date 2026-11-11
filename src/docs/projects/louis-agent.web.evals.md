@@ -34,17 +34,7 @@ Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-o
 
 Where the pieces sit, and what a site adds:
 
-```mermaid
-flowchart TD
-    site["A site's Program.cs and frame"] -->|"EvalPages.AddTo, SiteKinds"| states["Scoped states: reviewer, review queue, notes"]
-    site -->|"EvalLinks, LiveRunStrip"| frame["AdminShell, through AdminFrame"]
-    frame --> pages["Pages: Running, Reviewing, Building"]
-    pages --> parts["Components: the parts, markup only"]
-    parts --> logic["Admin/: plain classes, the sums and the words"]
-    parts --> states
-    pages --> api["AgentApi"]
-    api -->|"/v1/admin/..."| server["louis-agent.api"]
-```
+![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
 
 What happens when someone starts a run and watches it:
 

@@ -1,0 +1,94 @@
+{
+  "kind": "flow",
+  "title": "Accounts: the browser's calls through Identity's routes and ours to the store",
+  "flow": {
+    "nodes": [
+      {
+        "id": "browser",
+        "label": "Browser app (F61.2)",
+        "icon": "browser",
+        "tone": "blue"
+      },
+      {
+        "id": "identity",
+        "label": "Identity\u0027s routes\n(MapIdentityApi)",
+        "icon": "shield",
+        "tone": "blue"
+      },
+      {
+        "id": "ours",
+        "label": "AccountHandlers",
+        "icon": "settings",
+        "tone": "green"
+      },
+      {
+        "id": "managers",
+        "label": "UserManager / SignInManager",
+        "icon": "settings",
+        "tone": "violet"
+      },
+      {
+        "id": "store",
+        "label": "AccountUserStore: within\nCurrentTenant",
+        "icon": "users",
+        "tone": "teal"
+      },
+      {
+        "id": "tenant",
+        "label": "UseTenant: host -\u003E\nHostTenantResolver -\u003E\nCurrentTenant",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "db",
+        "label": "AccountsDbContext: SQL Server",
+        "icon": "database",
+        "tone": "amber"
+      },
+      {
+        "id": "mail",
+        "label": "IEmailSender: LogEmailSender",
+        "icon": "mail",
+        "tone": "red"
+      }
+    ],
+    "edges": [
+      {
+        "from": "browser",
+        "to": "identity",
+        "word": "POST /account/login"
+      },
+      {
+        "from": "browser",
+        "to": "ours",
+        "word": "GET /account/me\nPUT /profile\nPOST /logout\nDELETE /account"
+      },
+      {
+        "from": "identity",
+        "to": "managers"
+      },
+      {
+        "from": "ours",
+        "to": "managers"
+      },
+      {
+        "from": "managers",
+        "to": "store"
+      },
+      {
+        "from": "tenant",
+        "to": "store"
+      },
+      {
+        "from": "store",
+        "to": "db"
+      },
+      {
+        "from": "managers",
+        "to": "mail",
+        "word": "confirm, reset links"
+      }
+    ],
+    "direction": "down"
+  }
+}

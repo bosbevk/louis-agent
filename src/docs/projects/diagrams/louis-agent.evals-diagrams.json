@@ -1,0 +1,137 @@
+{
+  "kind": "flow",
+  "title": "The eval harness: what the runner uses, and where a run's events go",
+  "flow": {
+    "nodes": [
+      {
+        "id": "eval",
+        "icon": "checks",
+        "tone": "blue",
+        "label": "IEval: FileEval, reading a\nfolder of files"
+      },
+      {
+        "id": "dataset",
+        "icon": "file",
+        "tone": "amber",
+        "label": "Datasets: dataset.json and the\nscenarios"
+      },
+      {
+        "id": "modes",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "EvalMode: the toolsets and\nrole a session opens with"
+      },
+      {
+        "id": "runner",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "EvalRunner"
+      },
+      {
+        "id": "client",
+        "icon": "code",
+        "tone": "teal",
+        "label": "ISessionClient"
+      },
+      {
+        "id": "http",
+        "icon": "world",
+        "tone": "green",
+        "label": "HttpSessionClient"
+      },
+      {
+        "id": "canned",
+        "icon": "box",
+        "tone": "green",
+        "label": "CannedSessionClient: the stub,\nno model"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "trial",
+        "icon": "message",
+        "tone": "teal",
+        "label": "Trial and Transcript"
+      },
+      {
+        "id": "checks",
+        "icon": "checks",
+        "tone": "green",
+        "label": "ICheck: general checks, the\nmodel judge, a person\u0027s review"
+      },
+      {
+        "id": "grade",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "Grade: score, outcome, reason"
+      },
+      {
+        "id": "summary",
+        "icon": "book",
+        "tone": "teal",
+        "label": "RunSummary: the roll-up"
+      },
+      {
+        "id": "writer",
+        "icon": "terminal",
+        "tone": "amber",
+        "label": "ProtocolWriter: one JSON line\nan event, on stdout"
+      }
+    ],
+    "edges": [
+      {
+        "from": "eval",
+        "to": "dataset"
+      },
+      {
+        "from": "eval",
+        "to": "modes"
+      },
+      {
+        "from": "runner",
+        "to": "eval"
+      },
+      {
+        "from": "runner",
+        "to": "client"
+      },
+      {
+        "from": "client",
+        "to": "http"
+      },
+      {
+        "from": "client",
+        "to": "canned"
+      },
+      {
+        "from": "http",
+        "to": "api",
+        "word": "HTTP and SSE"
+      },
+      {
+        "from": "runner",
+        "to": "trial"
+      },
+      {
+        "from": "trial",
+        "to": "checks"
+      },
+      {
+        "from": "checks",
+        "to": "grade"
+      },
+      {
+        "from": "runner",
+        "to": "summary"
+      },
+      {
+        "from": "runner",
+        "to": "writer"
+      }
+    ]
+  }
+}

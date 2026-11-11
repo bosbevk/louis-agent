@@ -60,22 +60,7 @@ sequenceDiagram
 
 **Architecture:** the flow is under *How it works*; these are the pieces. Rider starts one container per chat, and everything goes over its stdin and stdout.
 
-```mermaid
-flowchart TD
-    rider["Rider"] -->|"stdin: one JSON-RPC message a line"| server["AcpServer"]
-    host["AcpHost"] -->|"AgentHost.Build"| engine["AgentEngine (core)"]
-    host --> server
-    server -->|"session/prompt"| handler["PromptHandler"]
-    handler --> builder["PromptBuilder"]
-    handler --> roots["GitRoots"]
-    builder --> paths["ContainerPaths"]
-    handler -->|"HandleUserCommand, StreamPromptAsync"| engine
-    handler --> relay["TurnRelay"]
-    relay --> cards["ToolCards"]
-    relay --> writer["JsonRpcWriter"]
-    server --> writer
-    writer -->|"stdout: session/update"| rider
-```
+![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
 
 ## Structure
 

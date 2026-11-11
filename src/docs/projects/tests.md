@@ -15,21 +15,7 @@ A test that starts a real process, opens Mongo or needs the Puls stack is an int
 
 **Architecture:** where the tests live, and what they share. A test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.
 
-```mermaid
-flowchart TD
-    shared["louis-agent.testing: FakeChatClient, StubHandler, TestPaths"]
-    web["louis-agent.web.testing: FixtureApi, Snapshots, SassStylesheet"]
-    framework["src/tests: engine, hosts, web, evals"] --> shared
-    framework --> web
-    demos["demos/*/tests: each demo's own"] --> shared
-    demos --> web
-    packs["packs/tests: each pack's own"] --> shared
-    integration["*.integration-tests: start a process, open Mongo, need a tool"] --> shared
-    ci["CI, on Ubuntu"] -->|"Category!=Integration"| framework
-    ci --> demos
-    ci --> packs
-    ci -->|"Category=Integration, INTEGRATION_REQUIRED=1"| integration
-```
+![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 
 **Flow:** a golden file. It pins what a component draws or what the model reads, so a change has to be looked at before it's accepted.
 

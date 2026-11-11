@@ -1,0 +1,67 @@
+{
+  "kind": "flow",
+  "title": "How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API",
+  "flow": {
+    "nodes": [
+      {
+        "id": "ApiPrograms",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "The programs that serve a site\npuls-api, coding-api"
+      },
+      {
+        "id": "Sites",
+        "icon": "browser",
+        "tone": "green",
+        "label": "The sites\nlouis-agent.puls,\nlouis-agent.code-review,\nlouis-agent.starter"
+      },
+      {
+        "id": "PacksWeb",
+        "icon": "box",
+        "tone": "teal",
+        "label": "packs/web\na pack\u0027s own views, for the\nsites that use them"
+      },
+      {
+        "id": "Web",
+        "icon": "world",
+        "tone": "violet",
+        "label": "louis-agent.web\nwhat every site shares"
+      },
+      {
+        "id": "Api",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ApiPrograms",
+        "to": "Sites"
+      },
+      {
+        "from": "ApiPrograms",
+        "to": "Api"
+      },
+      {
+        "from": "Sites",
+        "to": "PacksWeb"
+      },
+      {
+        "from": "Sites",
+        "to": "Web"
+      },
+      {
+        "from": "PacksWeb",
+        "to": "Web"
+      },
+      {
+        "from": "Web",
+        "to": "Api",
+        "word": "HTTP and SSE, at run\ntime",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

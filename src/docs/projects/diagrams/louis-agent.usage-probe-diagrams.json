@@ -1,0 +1,125 @@
+{
+  "kind": "flow",
+  "title": "The usage probe: each command and the parts it uses",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs"
+      },
+      {
+        "id": "factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory"
+      },
+      {
+        "id": "client",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "IChatClient"
+      },
+      {
+        "id": "mapper",
+        "icon": "code",
+        "tone": "green",
+        "label": "IUsageMapper"
+      },
+      {
+        "id": "provider",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The real provider"
+      },
+      {
+        "id": "report",
+        "icon": "chart",
+        "tone": "green",
+        "label": "UsageReport"
+      },
+      {
+        "id": "gaps",
+        "icon": "search",
+        "tone": "green",
+        "label": "CacheGaps"
+      },
+      {
+        "id": "ledger",
+        "icon": "database",
+        "tone": "amber",
+        "label": "usage-YYYY-MM.jsonl"
+      },
+      {
+        "id": "prices",
+        "icon": "file",
+        "tone": "amber",
+        "label": "PriceTableLoader"
+      },
+      {
+        "id": "env",
+        "icon": "settings",
+        "tone": "green",
+        "label": "EnvFile"
+      },
+      {
+        "id": "file",
+        "icon": "file",
+        "tone": "amber",
+        "label": "config/.env"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "factory",
+        "word": "no job named"
+      },
+      {
+        "from": "factory",
+        "to": "client"
+      },
+      {
+        "from": "factory",
+        "to": "mapper"
+      },
+      {
+        "from": "client",
+        "to": "provider"
+      },
+      {
+        "from": "program",
+        "to": "report",
+        "word": "--ledger"
+      },
+      {
+        "from": "program",
+        "to": "gaps",
+        "word": "--cache-gaps"
+      },
+      {
+        "from": "gaps",
+        "to": "report"
+      },
+      {
+        "from": "report",
+        "to": "ledger"
+      },
+      {
+        "from": "report",
+        "to": "prices"
+      },
+      {
+        "from": "program",
+        "to": "env",
+        "word": "--host-culture"
+      },
+      {
+        "from": "env",
+        "to": "file"
+      }
+    ],
+    "direction": "down"
+  }
+}
