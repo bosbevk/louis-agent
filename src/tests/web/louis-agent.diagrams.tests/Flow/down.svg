@@ -40,7 +40,7 @@
   </defs>
   <rect class="ground" x="-24" y="-24" width="406" height="370" rx="14" />
   <path class="edge" d="M 179 52 L 179 142" marker-end="url(#arrow)" />
-  <text class="word" x="179" y="77.5" text-anchor="middle">starts</text>
+  <text class="word" x="206" y="77.5" text-anchor="middle">starts</text>
   <path class="edge" d="M 179 210 L 179 232 Q 179 240 171 240 L 93 240 Q 85 240 85 248 L 85 270" marker-end="url(#arrow)" />
   <path class="edge" d="M 179 210 L 179 232 Q 179 240 187 240 L 265 240 Q 273 240 273 248 L 273 270" marker-end="url(#arrow)" />
   <rect class="box" x="94" y="0" width="170" height="52" rx="10" />

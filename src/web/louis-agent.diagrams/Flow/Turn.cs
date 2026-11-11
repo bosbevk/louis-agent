@@ -14,8 +14,30 @@ namespace LouisAgent.Diagrams.Flow;
 /// </remarks>
 internal static class Turn
 {
-    /// <summary>The drawing turned over its diagonal.</summary>
-    public static PlacedGraph Back(PlacedGraph placed) => new(placed.Height, placed.Width,
+    /// <summary>How far right of its line a turned arrow's word starts.</summary>
+    private const double Beside = 6;
+
+    /// <summary>
+    /// The drawing turned over its diagonal. An arrow's word, which stood on its flat piece, now starts just right of
+    /// its upright line, in the gap between two rows where no box stands, and the drawing grows to hold every word.
+    /// </summary>
+    public static PlacedGraph Back(PlacedGraph placed)
+    {
+        var turned = Turned(placed);
+        var edges = turned.Edges.Select(edge => edge with { WordX = edge.WordX + Beside + Half(edge) }).ToList();
+        double right = edges.Count == 0 ? 0 : edges.Max(edge => edge.WordX + Half(edge));
+        return turned with
+        {
+            Width = Math.Max(turned.Width, (int)Math.Ceiling(right + Beside)),
+            Edges = edges
+        };
+    }
+
+    /// <summary>Half a word's width, in the code font an arrow's word is drawn in.</summary>
+    private static double Half(PlacedEdge edge) => (edge.Edge.Word?.Length ?? 0) * FlowText.WordChar / 2;
+
+    /// <summary>Every point of the drawing swapped over its diagonal.</summary>
+    private static PlacedGraph Turned(PlacedGraph placed) => new(placed.Height, placed.Width,
         [
             .. placed.Nodes.Select(node => node with
             {

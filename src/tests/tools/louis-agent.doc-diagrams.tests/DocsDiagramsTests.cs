@@ -1,3 +1,6 @@
+using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Sources;
+
 namespace LouisAgent.DocDiagrams.Tests;
 
 /// <summary>
@@ -64,6 +67,21 @@ public class DocsDiagramsTests
                 .Contains($"{DiagramSync.Folder}/{Path.GetFileNameWithoutExtension(doc)}.svg"));
 
         Assert.That(bare.Select(Relative), Is.Empty, "a project doc without its overview");
+    }
+
+    /// <summary>
+    /// In every flow picture, no word leaves the drawing or sits on a box, and no line crosses a box it doesn't join.
+    /// </summary>
+    [Test]
+    public void EveryFlow_KeepsItsWordsAndLinesClear()
+    {
+        var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
+            .Where(pair => pair.source.Flow is not null)
+            .SelectMany(pair => Clearance.Faults(GraphLayout.Place(pair.source.Flow!))
+                .Select(fault => $"{Path.GetFileNameWithoutExtension(pair.json)}: {fault}")).ToList();
+
+        // The whole list, one fault a line: a list cut short hides the picture still to fix.
+        Assert.That(faults, Is.Empty, string.Join('\n', faults));
     }
 
     /// <summary>The docs have pictures at all, so the tests above can't pass by finding none.</summary>

@@ -135,6 +135,52 @@ public class FlowShapesTests
         Assert.That(numbers, Has.All.InRange(0d, Math.Max(placed.Width, placed.Height)));
     }
 
+    /// <summary>
+    /// An arrow past a rank whose box stands in its way goes round, along a lane under the drawing, and crosses no
+    /// box; an arrow with a clear way keeps it.
+    /// </summary>
+    [Test]
+    public void AnArrowWithABoxInItsWay_GoesRound()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A"), new GraphNode("b", "B"), new GraphNode("c", "C")],
+            [new GraphEdge("a", "b"), new GraphEdge("b", "c"), new GraphEdge("a", "c", "past b")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var b = placed.Nodes.Single(node => node.Node.Id == "b");
+        var past = placed.Edges.Single(edge => edge.Edge.Word == "past b");
+        var ys = past.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
+            .Where((_, at) => at % 2 == 1).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(ys.Max(), Is.GreaterThan(b.Y + b.H), "the lane runs under the box in its way");
+            Assert.That(past.WordY, Is.GreaterThan(b.Y + b.H), "its word sits on the lane");
+            Assert.That(placed.Edges.Single(edge => edge.Edge.To == "b").Path, Does.Not.Contain("Q"),
+                "a clear arrow runs straight");
+        });
+    }
+
+    /// <summary>Down, an arrow's word starts just right of its line, and the drawing holds it.</summary>
+    [Test]
+    public void ADownChart_PutsAWordBesideItsLine()
+    {
+        const string word = "a rather long word on the arrow";
+        var spec = new GraphSpec([new GraphNode("a", "A"), new GraphNode("b", "B")], [new GraphEdge("a", "b", word)],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        var a = placed.Nodes.Single(node => node.Node.Id == "a");
+        var edge = placed.Edges.Single();
+        double left = edge.WordX - word.Length * FlowText.WordChar / 2;
+        Assert.Multiple(() =>
+        {
+            Assert.That(left, Is.GreaterThan(a.X + a.W / 2), "it starts right of the line");
+            Assert.That(edge.WordX + word.Length * FlowText.WordChar / 2, Is.LessThanOrEqualTo(placed.Width));
+        });
+    }
+
     /// <summary>The SVG draws each of a label's lines as its own words, inside the box.</summary>
     [Test]
     public void EachLine_IsDrawnInsideTheBox()

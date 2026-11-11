@@ -12,6 +12,11 @@ public static class FlowText
     /// <summary>Where the note's first line sits, from the box's top, each line one step lower.</summary>
     public const double NoteTop = 44, NoteStep = 12;
 
+    /// <summary>
+    /// How wide a character of an arrow's word is: the 600 10px code font, a pixel apart, in capitals (CL60.2).
+    /// </summary>
+    public const double WordChar = 7;
+
     /// <summary>How far a label's next line stands under the one before (CL60.2).</summary>
     public const double LabelStep = 16;
 

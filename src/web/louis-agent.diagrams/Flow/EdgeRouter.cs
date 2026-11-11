@@ -80,14 +80,24 @@ internal static class EdgeRouter
             .ToList();
         var forward = edges.Except(self).Except(back).Except(down).ToList();
 
-        var placed = new List<PlacedEdge>();
-        placed.AddRange(Forward(forward, byId));
-        placed.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
-        if (back.Count > 0) placed.AddRange(Back(back, byId, height, self));
-        placed.AddRange(self.Select(edge => SelfLoop(edge, byId[edge.From])));
+        var plans = new List<Plan>();
+        plans.AddRange(Forward(forward, byId));
+        plans.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
+        if (back.Count > 0) plans.AddRange(Back(back, byId, height, self));
+        int backLanes = back.Select(edge => edge.To).Distinct().Count();
+
+        // An arrow whose way would cross a box it doesn't join, as a docs chart's arrow past a rank can (CL60.2),
+        // takes a detour: down its gap, along a lane of its own under the drawing, and up the gap by its target.
+        double firstFree = height + BackLane + Step * backLanes;
+        int detours = 0;
+        var placed = plans.Select(plan => Connector(Crosses(plan, byId)
+            ? Detour(plan, byId[plan.Edge.From], byId[plan.Edge.To], firstFree + Step * detours++)
+            : plan)).ToList();
+        placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From]))));
 
         // Room for the lanes under the drawing, and for a track or a loop past the last column.
-        if (back.Count > 0) height += BackLane + Step * (back.Select(edge => edge.To).Distinct().Count() - 1) + 8;
+        if (back.Count > 0) height += BackLane + Step * (backLanes - 1) + 8;
+        if (detours > 0) height = firstFree + Step * (detours - 1) + 8;
         double reach = placed.Count == 0
             ? 0
             : placed.Max(edge => Math.Max(edge.WordX + 4 * (edge.Edge.Word?.Length ?? 0), edge.Right));
@@ -102,7 +112,7 @@ internal static class EdgeRouter
     /// neighbouring columns the track stands where <see cref="RoomsFor"/> puts it, the spare room shared either side;
     /// an arrow that skips a column bends in the middle.
     /// </summary>
-    private static IEnumerable<PlacedEdge> Forward(List<GraphEdge> forward,
+    private static IEnumerable<Plan> Forward(List<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId)
     {
         var wordsOut = WordsOut(forward);
@@ -114,7 +124,7 @@ internal static class EdgeRouter
             double x2 = to.X, y2 = to.Y + to.H / 2;
             double track = Track(x1, x2, forward, byId);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
-            yield return Connector(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)],
+            yield return new Plan(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)],
                 bySource ? (x1 + track) / 2 : (track + x2) / 2, bySource ? y1 : y2);
         }
     }
@@ -133,8 +143,9 @@ internal static class EdgeRouter
         var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
             .ToList();
         var (source, target) = RoomsFor(gap, forward);
-        // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle.
-        if (x2 - x1 < source + target) return (x1 + x2) / 2;
+        // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle; half
+        // a pixel's slack, since a gap sized to its rooms exactly can come out a hair short in floating point.
+        if (x2 - x1 + 0.5 < source + target) return (x1 + x2) / 2;
         return x1 + source + (x2 - x1 - source - target) / 2;
     }
 
@@ -143,7 +154,7 @@ internal static class EdgeRouter
     /// under the drawing and one entry in the box's bottom middle. A second target's set is nested outside the first,
     /// so two sets never cross, and the tracks all start past any loop to itself and its word.
     /// </summary>
-    private static IEnumerable<PlacedEdge> Back(List<GraphEdge> back, IReadOnlyDictionary<string, PlacedNode> byId,
+    private static IEnumerable<Plan> Back(List<GraphEdge> back, IReadOnlyDictionary<string, PlacedNode> byId,
         double height, List<GraphEdge> self)
     {
         var targets = back.Select(edge => edge.To).Distinct().ToList();
@@ -157,7 +168,7 @@ internal static class EdgeRouter
             double x1 = from.X + from.W, y1 = from.Y + from.H * 0.8;
             double track = rightEdge + pastLoops + Step + Step * at, lane = height + BackLane + Step * at;
             double entry = to.X + to.W / 2, y2 = to.Y + to.H;
-            yield return Connector(edge, [(x1, y1), (track, y1), (track, lane), (entry, lane), (entry, y2)],
+            yield return new Plan(edge, [(x1, y1), (track, y1), (track, lane), (entry, lane), (entry, y2)],
                 (track + entry) / 2, lane + 4);
         }
     }
@@ -166,22 +177,60 @@ internal static class EdgeRouter
     /// An arrow inside a column (a pipeline a turn runs down): a straight drop from the box's bottom middle to the next
     /// box's top middle, its word beside it in the gap. Rising, it climbs the same way, from the top to the bottom.
     /// </summary>
-    private static PlacedEdge Down(GraphEdge edge, PlacedNode from, PlacedNode to)
+    private static Plan Down(GraphEdge edge, PlacedNode from, PlacedNode to)
     {
         bool falls = to.Y >= from.Y;
         double x = from.X + from.W / 2, y1 = falls ? from.Y + from.H : from.Y, y2 = falls ? to.Y : to.Y + to.H;
-        return Connector(edge, [(x, y1), (x, y2)], x + 8 + 4 * (edge.Word?.Length ?? 0), (y1 + y2) / 2 + 4);
+        return new Plan(edge, [(x, y1), (x, y2)], x + 8 + 4 * (edge.Word?.Length ?? 0), (y1 + y2) / 2 + 4);
     }
 
     /// <summary>
     /// An arrow from a box to itself: out of its right side near the top, round and back in near the bottom, its word
     /// beside it.
     /// </summary>
-    private static PlacedEdge SelfLoop(GraphEdge edge, PlacedNode box)
+    private static Plan SelfLoop(GraphEdge edge, PlacedNode box)
     {
         double x = box.X + box.W, y1 = box.Y + box.H * 0.3, y2 = box.Y + box.H * 0.7, reach = x + SelfReach;
-        return Connector(edge, [(x, y1), (reach, y1), (reach, y2), (x, y2)], reach + 8 + 4 * (edge.Word?.Length ?? 0),
+        return new Plan(edge, [(x, y1), (reach, y1), (reach, y2), (x, y2)], reach + 8 + 4 * (edge.Word?.Length ?? 0),
             box.Y + box.H / 2 + 4);
+    }
+
+    /// <summary>An arrow's way before it is drawn: its corners, and where its word sits.</summary>
+    private sealed record Plan(GraphEdge Edge, (double X, double Y)[] Points, double WordX, double WordY);
+
+    /// <summary>Whether a straight piece of the way passes through a box the arrow doesn't join, a pixel in.</summary>
+    private static bool Crosses(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId) =>
+        byId.Values.Where(box => box.Node.Id != plan.Edge.From && box.Node.Id != plan.Edge.To).Any(box =>
+            plan.Points.Zip(plan.Points.Skip(1)).Any(piece =>
+                Math.Min(piece.First.X, piece.Second.X) < box.X + box.W - 1
+                && Math.Max(piece.First.X, piece.Second.X) > box.X + 1
+                && Math.Min(piece.First.Y, piece.Second.Y) < box.Y + box.H - 1
+                && Math.Max(piece.First.Y, piece.Second.Y) > box.Y + 1));
+
+    /// <summary>
+    /// The way round: out of the source's right side into the gap beside it, down to a lane under the drawing, along
+    /// it to the gap by the target, and up into the target's near side; inside one column, down the gap beside it.
+    /// Every piece runs in a gap or under the boxes, so it crosses none. Its word sits on the lane.
+    /// </summary>
+    private static Plan Detour(Plan plan, PlacedNode from, PlacedNode to, double lane)
+    {
+        double x1 = from.X + from.W, y1 = from.Y + from.H / 2, y2 = to.Y + to.H / 2, out1 = x1 + Step;
+        if (to.X == from.X)
+            return plan with
+            {
+                Points = [(x1, y1), (out1, y1), (out1, y2), (to.X + to.W, y2)],
+                WordX = out1 + 8 + 4 * (plan.Edge.Word?.Length ?? 0),
+                WordY = (y1 + y2) / 2 + 4
+            };
+
+        bool ahead = to.X > from.X;
+        double x2 = ahead ? to.X : to.X + to.W, in2 = ahead ? x2 - Step : x2 + Step;
+        return plan with
+        {
+            Points = [(x1, y1), (out1, y1), (out1, lane), (in2, lane), (in2, y2), (x2, y2)],
+            WordX = (out1 + in2) / 2,
+            WordY = lane + 4
+        };
     }
 
     /// <summary>
@@ -189,8 +238,9 @@ internal static class EdgeRouter
     /// the corner, or less when a piece is shorter; the length is the pieces' sum, close enough for the stroke that
     /// draws it.
     /// </summary>
-    private static PlacedEdge Connector(GraphEdge edge, (double X, double Y)[] points, double wordX, double wordY)
+    private static PlacedEdge Connector(Plan plan)
     {
+        var (edge, points, wordX, wordY) = plan;
         var path = new System.Text.StringBuilder($"M {N(points[0].X)} {N(points[0].Y)}");
         double length = 0;
         for (int at = 1; at < points.Length; at++)
