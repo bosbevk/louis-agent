@@ -32,6 +32,12 @@ internal static class SvgStyle
             fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
           }
           .icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+          .frame { fill: none; stroke: var(--line); stroke-width: 1; }
+          .card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+          .title { fill: var(--text); font: 600 13px var(--mono); }
+          .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+          .code { fill: var(--text); font: 11px var(--mono); }
+          .text { fill: var(--quiet); font: 11px var(--mono); }
           """);
 
     /// <summary>One palette as the picture's colour variables.</summary>

@@ -38,10 +38,13 @@ internal sealed class SvgWriter
         return this;
     }
 
-    /// <summary>A path, ending in the arrowhead when it is an arrow.</summary>
-    public SvgWriter Path(string data, string cls, bool arrow)
+    /// <summary>
+    /// A path, ending in the arrowhead when it is an arrow, and starting in one too when it points back as well.
+    /// </summary>
+    public SvgWriter Path(string data, string cls, bool arrow, bool arrowAtStart = false)
     {
         var path = new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", data));
+        if (arrowAtStart) path.Add(new XAttribute("marker-start", $"url(#{ArrowId})"));
         if (arrow) path.Add(new XAttribute("marker-end", $"url(#{ArrowId})"));
         _shapes.Add(path);
         return this;

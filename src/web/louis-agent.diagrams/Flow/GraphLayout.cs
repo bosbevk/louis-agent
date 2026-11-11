@@ -131,28 +131,10 @@ public static class GraphLayout
         node.Note is null ? BoxHeight : BoxHeight + NoteLine * NoteLines(node.Note).Count;
 
     /// <summary>
-    /// The note as the lines the box shows (FX85, Louis: "need wrapping"): words taken in order while a line holds
-    /// <see cref="NoteWidth"/> characters, a word too long for any line on one of its own.
+    /// The note as the lines the box shows (FX85, Louis: "need wrapping"), wrapped at <see cref="NoteWidth"/>
+    /// characters as every diagram's words are (<see cref="TextWrap"/>).
     /// </summary>
-    public static IReadOnlyList<string> NoteLines(string note)
-    {
-        var lines = new List<string>();
-        var line = "";
-        foreach (string word in note.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-        {
-            if (line.Length > 0 && line.Length + 1 + word.Length > NoteWidth)
-            {
-                lines.Add(line);
-                line = word;
-                continue;
-            }
-
-            line = line.Length == 0 ? word : $"{line} {word}";
-        }
-
-        if (line.Length > 0) lines.Add(line);
-        return lines;
-    }
+    public static IReadOnlyList<string> NoteLines(string note) => TextWrap.Lines(note, NoteWidth);
 
     /// <summary>A column's height on the grid: a row per box, a gap between rows.</summary>
     private static double ColumnHeight(IEnumerable<GraphNode> column, double row)

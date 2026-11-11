@@ -20,7 +20,13 @@
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
-.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }</style>
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
