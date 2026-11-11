@@ -1,0 +1,65 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.calculator: two sums, one bad",
+  "caption": "A bad sum says why: and the others still answer.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "green",
+        "label": "CalculatorTools"
+      },
+      {
+        "id": "A",
+        "icon": "code",
+        "tone": "green",
+        "label": "Arithmetic"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "M",
+        "to": "T",
+        "text": "Calculate([\u0022500*3/2\u0022, \u00222\u002Bx\u0022])"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "A",
+        "text": "500*3/2"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "T",
+        "text": "750"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "A",
+        "text": "2\u002Bx"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "T",
+        "text": "refused before the evaluator sees it"
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "M",
+        "text": "one line per sum, each result beside its sum"
+      }
+    ]
+  }
+}

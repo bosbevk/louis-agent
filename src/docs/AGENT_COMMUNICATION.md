@@ -67,28 +67,7 @@ machine may run it open on purpose (FX18).
 A session is one conversation with its own history. Sessions live in memory (a restart ends them) and are dropped
 after 4 hours idle. One message is answered at a time per session.
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant A as louis-agent.api
-    participant E as AgentEngine
-    participant M as Model
-
-    C->>A: POST /v1/sessions
-    A-->>C: 201 { "session_id": "sess_…" }
-    C->>A: POST /v1/sessions/{id}/messages { "message": "…" }
-    A-->>C: 200 text/event-stream (stays open)
-    A->>E: StreamPromptAsync(history, message)
-    loop up to 10 tool rounds
-        E->>M: history + tools
-        M-->>E: thinking, text, tool calls (streamed)
-        E-->>A: updates
-        A-->>C: SSE events as they happen
-        E->>E: run each tool call, add the result
-    end
-    A-->>C: message_delta (stop_reason, usage), message_stop
-    C->>A: DELETE /v1/sessions/{id} (when done)
-```
+![Sessions: a client opens a session, sends a message and reads the reply as it streams, up to ten tool rounds a turn](diagrams/AGENT_COMMUNICATION-sessions-talking-to-the-agent.svg)
 
 | Endpoint | Request | Reply |
 |---|---|---|
@@ -273,37 +252,7 @@ louis-agent.api's `/v1/prices` and `/v1/rates` (`PRICES_URL`, `RATES_URL`), so b
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
 (`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
 
-```mermaid
-sequenceDiagram
-    participant Log as Service error log<br/>(logs/errors.jsonl)
-    participant O as Orchestrator<br/>(its own model + runbooks)
-    participant A as louis-agent.api
-    participant L as louis-agent<br/>(AgentEngine + coding tools)
-    participant G as Service repository
-
-    O->>Log: read new error events
-    O->>O: triage with the method's runbook:<br/>expected / auto-fixable / escalate
-    alt auto-fixable
-        O->>G: check out main (stash any leftovers)
-        O->>A: POST /v1/sessions { task: fix:<error id>, run, service }
-        O->>A: POST /v1/sessions/{id}/messages (the fix request)
-        A->>L: run the task
-        L->>G: branch, edit, test, build, commit
-        A-->>O: SSE: every tool call, then text ending in FIX-RESULT
-        opt no FIX-RESULT yet (tool rounds ran out)
-            O->>A: "Continue the fix … Finish with the FIX-RESULT line."
-            A-->>O: SSE … FIX-RESULT
-        end
-        O->>A: DELETE /v1/sessions/{id}
-        O->>G: VerifyFixCommit (git), ReplayRequest, RunServiceTests
-        O->>O: DECISION: fixed, or escalate if any check fails
-    else expected
-        O->>O: AcknowledgeError → DECISION: ignored
-    else escalate
-        O->>O: EscalateToHuman → DECISION: escalated
-    end
-    O->>G: check out main again for the next error
-```
+![Agent to agent: the orchestrator triages each error, asks louis-agent for a fix through a session, and checks the fix before it counts](diagrams/AGENT_COMMUNICATION-agent-to-agent-the-orchestrator-and-louis-agent.svg)
 
 ### The messages between them
 

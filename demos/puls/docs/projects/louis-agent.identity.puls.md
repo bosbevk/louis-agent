@@ -52,26 +52,7 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 ![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 
-**Flow:** what a session is made of, and how a cooking question gets to the cook. A role that's off comes back to Puls as a tool error, which it has to report.
-
-```mermaid
-sequenceDiagram
-    participant W as The web app
-    participant E as The engine
-    participant V as Puls: principles, voice-af, voice
-    participant C as The cook: puls-cook
-    participant T as Its tools
-    W->>E: opens with puls/voice-af, agents and web
-    E->>V: reads the principles, then the voice, then the routing
-    W->>V: a cooking question
-    V->>E: AskAgent("puls.cook")
-    E->>E: is the role known, and in ROLES_ENABLED?
-    E->>C: a sub-session, with only its role and its toolsets' guides
-    C->>T: FindRecipes, ReadRecipe, FindBranches, EstimatePrices, Calculate
-    T-->>C: the results
-    C-->>V: its answer
-    V-->>W: the answer, in the user's language
-```
+![A cooking question: the session reads Puls's prompts, Puls asks the cook, and the cook's tools answer through it](diagrams/louis-agent.identity.puls-diagrams-2.svg)
 
 ## Design notes
 

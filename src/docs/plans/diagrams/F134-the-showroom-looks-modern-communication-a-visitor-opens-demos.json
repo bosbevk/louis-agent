@@ -1,0 +1,77 @@
+{
+  "kind": "sequence",
+  "title": "F134 the showroom: a visitor opens /demos",
+  "caption": "One icon view everywhere: the start and the rail ask the same view, and the page goes out as HTML with inline SVG.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Visitor"
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "green",
+        "label": "DemosPage"
+      },
+      {
+        "id": "S",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ShowroomStart"
+      },
+      {
+        "id": "R",
+        "icon": "code",
+        "tone": "violet",
+        "label": "DemoRail"
+      },
+      {
+        "id": "I",
+        "icon": "code",
+        "tone": "violet",
+        "label": "DemoIconView"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "P",
+        "text": "GET /demos"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "S",
+        "text": "Featured, words, Preview"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "S",
+        "text": "Demos.Groups"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "I",
+        "text": "Icon, Size (each cover\u0027s badge)"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "I",
+        "text": "Icon, Size (each rail item)"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "V",
+        "text": "HTML with inline SVG"
+      }
+    ]
+  }
+}

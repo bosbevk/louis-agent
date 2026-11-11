@@ -1,0 +1,114 @@
+{
+  "kind": "sequence",
+  "title": "Phase 7: one invoice match, drafted, checked, approved and audited",
+  "caption": "A write waits for a person: validation answers every problem at once, and an approved write is audited beside the ledger.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "C",
+        "label": "demo-invoice-clerk, on demo-agent",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "D",
+        "label": "The draft tool",
+        "icon": "file",
+        "tone": "green"
+      },
+      {
+        "id": "V",
+        "label": "Validation in code",
+        "icon": "checks",
+        "tone": "green"
+      },
+      {
+        "id": "P",
+        "label": "Approval policy, on ToolEffect",
+        "icon": "shield",
+        "tone": "violet"
+      },
+      {
+        "id": "R",
+        "label": "The control room",
+        "icon": "browser",
+        "tone": "green"
+      },
+      {
+        "id": "L",
+        "label": "Audit log, beside the ledger",
+        "icon": "file",
+        "tone": "amber"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "C",
+        "to": "D",
+        "text": "draft for invoice 7, customer and VAT number"
+      },
+      {
+        "step": "message",
+        "from": "D",
+        "to": "V",
+        "text": "check against the customer directory"
+      },
+      {
+        "step": "reply",
+        "from": "V",
+        "to": "C",
+        "text": "every problem at once, with the valid options"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "D",
+        "text": "second draft, corrected"
+      },
+      {
+        "step": "message",
+        "from": "D",
+        "to": "V",
+        "text": "check again"
+      },
+      {
+        "step": "reply",
+        "from": "V",
+        "to": "D",
+        "text": "valid"
+      },
+      {
+        "step": "message",
+        "from": "D",
+        "to": "P",
+        "text": "its effect is a write outside the workspace"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "R",
+        "text": "Ask, as ToolApprovalRequestContent streamed to the host"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "P",
+        "text": "a clerk approves"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "L",
+        "text": "who, which customer, which tool, arguments, approval"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "C",
+        "text": "applied, with its result"
+      }
+    ],
+    "numbered": true
+  }
+}

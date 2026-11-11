@@ -73,31 +73,7 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ![The shop-prices pack: its tools, the prices and the estimate](diagrams/louis-agent.pack.shop-prices-diagrams.svg)
 
-**Flow:** pricing a shopping list. A line it can't match is `?`, never R0, and the agent copies the credit line under its list.
-
-```mermaid
-sequenceDiagram
-    participant M as The model
-    participant T as ShopPriceTools
-    participant C as PriceBookCache
-    participant A as BasketEstimate
-    participant E as PriceEstimator
-    participant B as PriceBook
-    participant P as EstimatePrinter
-    M->>T: EstimatePrices(items, province, serves)
-    T->>C: the book
-    C-->>T: from the store, or the shipped tables if it fails
-    T->>A: Of(lines, book, region, serves)
-    loop each line
-        A->>E: BasketItem: its words, size and packs
-        E->>B: the product whose name fits best
-        B-->>E: the product
-        E-->>A: the province's price or the national one, from the nearest pack, scaled
-    end
-    A-->>T: the rows, the total and the price per person
-    T->>P: Print
-    P-->>M: the table, the total, what it couldn't price, the credit
-```
+![Pricing a shopping list: each line is matched to a product in the price book and priced for the province, then printed with the total and the credit](diagrams/louis-agent.pack.shop-prices-diagrams-2.svg)
 
 ## Structure
 

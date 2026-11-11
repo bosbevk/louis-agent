@@ -450,46 +450,7 @@ the fix is confirmed. The rule and branch names are made up.
 
 #### Communication: one error is fixed and confirmed
 
-```mermaid
-sequenceDiagram
-    participant H as louis-agent.orchestrator (host)
-    participant F as IErrorFeed (triage pack)
-    participant R as ITriageRecorder (triage pack)
-    participant W as TriageWorkflow (voorman)
-    participant C as RouteClassifier (engine)
-    participant K as ChildAgentClient (engine)
-    participant P as peer louis-agent.api (PACKS=fixing)
-    participant X as ConfirmFix (fixing pack)
-    H->>P: GET /roles, once at start-up
-    P-->>H: specialists include voorman-fixer (if not, the host stops and names PACKS=fixing)
-    H->>F: ReadNewAsync()
-    F-->>H: [e42] (processed ids skipped)
-    H->>W: HandleAsync(e42, run)
-    W->>C: ClassifyAsync<Decision>(principles + voorman voice + runbooks, error fenced as data)
-    C-->>W: Decision(Fixable, rule order-total)
-    W->>K: OpenAsync(role voorman-fixer, depth 1, parent triage_e42#1)
-    K->>P: POST /sessions (this peer's own key)
-    W->>K: AskAsync<FixResult>(brief: error, expected behaviour, branch fix/order-total-e42)
-    K->>P: POST /sessions/{id}/messages
-    P-->>K: SSE: tool calls, then ReportFixResult(Fixed, commit, branch, tests)
-    K-->>W: ChildReply<FixResult> (usage rolled up into the turn)
-    W->>X: CheckAsync(FixResult, expected branch)
-    alt CONFIRMED
-        X-->>W: commit on the branch, replay 200, tests pass
-        W->>R: RecordAsync(e42, Fixable, Fixed)
-        W->>F: MarkProcessedAsync(e42)
-    else NOT CONFIRMED
-        W->>K: ContinueAsync(child, what failed), once
-        W->>X: CheckAsync again
-        Note over W: still failing: the agent for the exceptions gets the findings (B5)
-        W->>R: RecordAsync(e42, Fixable, Escalated)
-        W->>F: MarkProcessedAsync(e42)
-    end
-    W->>K: CloseAsync(child)
-    K->>P: DELETE /sessions/{id}
-    W-->>H: TriageOutcome
-    Note over W,F: Unknown, or Deferred over the F7 budget: recorded, never marked processed, read again next poll
-```
+![One error fixed and confirmed: the workflow classifies the error, a child on the peer fixes it, code confirms the fix, and the outcome is recorded](diagrams/F39-orchestration-communication-one-error-is-fixed-and-confirmed.svg)
 
 The same function in Puls: a Puls turn calls `AskAgent("puls.cook", …)`, which opens the cook through
 `ChildAgentClient.OpenAsync(role puls-cook)` on the same transport, limiter and roll-up, and the cook's prose report

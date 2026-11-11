@@ -301,36 +301,7 @@ On `puls`, after step 4:
 
 #### Communication: one `demo-invoice-batch` run, one invoice shown
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant R as Control room (louis-agent.web)
-    participant A as puls: louis-agent.api
-    participant N as simulation runner (own process)
-    participant V as demo/voice session (on puls)
-    participant D as demo-invoice-clerk (on demo-agent)
-    participant C as CustomerTools (customers pack)
-    participant L as Usage ledger
-    R->>A: start demo-invoice-batch, 1 repeat (on Louis's go)
-    A->>N: dotnet louis-agent.simulation.runner.dll simulate demo-invoice-batch --repeat 1
-    N-->>A: @protocol version 1
-    loop each of the ten invoices
-        N->>A: POST /sessions (role demo/voice, toolsets agents, tag run:mode:repeat)
-        N->>V: Match inv-07.pdf to a customer
-        V->>D: AskAgent(demo.invoice-clerk, brief: inv-07.pdf, attachments)
-        D->>D: ReadDocument(inv-07.pdf): its workspace holds the invoices only
-        D->>C: FindCustomer(the VAT number on the invoice)
-        C-->>D: one customer, framed as data
-        D-->>V: the match, with the VAT number it checked
-        V-->>N: the session stream, the sub-session's events included
-        N->>N: SessionStreamReader, then MatchedRight, NoCustomerSaid, VatChecked against the answer key
-        N-->>A: @sse, @turn, then @conversation with its grades
-        A-->>R: live: the turn as it streams, then each grade
-    end
-    N-->>A: @mode_done
-    A->>L: the run's rows, by its tag
-    A-->>R: the run recorded: its grades and its cost per invoice (BenchmarkTrends)
-```
+![One invoice batch run: for each invoice the runner opens a session, the clerk matches it to a customer, and the runner grades the match; the cost comes from the ledger](diagrams/F40-sales-playground-communication-one-demo-invoice-batch-run-one-invoice-shown.svg)
 
 #### Namespaces (new, moved, changed)
 

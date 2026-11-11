@@ -23,42 +23,11 @@ one database, a tenant per app; every secret value is in the vault.
 No value is ever in a file under git or on the app: it goes from the git-ignored config files into the vault, and
 the app's secrets are references the identity resolves.
 
-```mermaid
-sequenceDiagram
-    participant L as Louis's PC (config/.env.secrets, .env.mongo, .env.sql)
-    participant S as deploy.ps1 secrets
-    participant V as Key Vault puls-keys
-    participant U as deploy.ps1 update
-    participant A as puls-app (identity puls-app-identity)
-    L->>S: the values, and the VM's IP and the SQL server from the outputs
-    S->>V: one secret per value (mongo-url and accounts-sql-url built here)
-    U->>V: which names exist?
-    U->>A: a secrets block of keyVaultUrl references, env lines only for secrets that exist
-    A->>V: read each reference with the identity (Key Vault Secrets User)
-```
+![A secret's path: from the git-ignored files through the deploy script into the vault, and back to the app by reference](diagrams/ARCHITECTURE-a-secret-s-path.svg)
 
 ## A chat, from the domain to the model
 
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant CF as Cloudflare DNS (DNS-only records)
-    participant A as puls-app
-    participant SQL as Azure SQL
-    participant VM as puls-services
-    participant M as Anthropic
-    B->>CF: mypuls.co.za?
-    CF-->>B: 4.253.73.61 (A), www a CNAME to the app's own address
-    B->>A: GET / over HTTPS
-    A-->>B: the Puls web app
-    B->>A: POST /account/login
-    A->>SQL: the user (the database resumes after a pause; EF retries)
-    A-->>B: Set-Cookie
-    B->>A: POST /v1/sessions (cookie + X-Requested-With)
-    A->>VM: 27017 Mongo (runs, prices, recipes), 9222 Chrome, 8080 SearXNG
-    A->>M: the model's answer
-    A-->>B: streamed
-```
+![A chat from the domain to the model: DNS points at the app, the app signs the person in, and it reaches the services and the model behind it](diagrams/ARCHITECTURE-a-chat-from-the-domain-to-the-model.svg)
 
 ## What the network lets through
 

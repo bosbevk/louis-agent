@@ -170,27 +170,7 @@ none.
 
 One invoice match, drafted, checked, approved and audited (the draft tool's name is F41's plan's to choose):
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as demo-invoice-clerk, on demo-agent
-    participant D as The draft tool
-    participant V as Validation in code
-    participant P as Approval policy, on ToolEffect
-    participant R as The control room
-    participant L as Audit log, beside the ledger
-    C->>D: draft for invoice 7, customer and VAT number
-    D->>V: check against the customer directory
-    V-->>C: every problem at once, with the valid options
-    C->>D: second draft, corrected
-    D->>V: check again
-    V-->>D: valid
-    D->>P: its effect is a write outside the workspace
-    P->>R: Ask, as ToolApprovalRequestContent streamed to the host
-    R-->>P: a clerk approves
-    P->>L: who, which customer, which tool, arguments, approval
-    P-->>C: applied, with its result
-```
+![One invoice match: the draft is checked until valid, a person approves the write, and the approval is audited beside the ledger](diagrams/phase-7-checked-and-guarded-phase-7-checked-and-guarded-fx4-append-only-history-f41-drafts-and-approvals-f42-safety-and-audit.svg)
 
 **Its plans start from these parts**, in order (one commit each, test first, stop after each):
 

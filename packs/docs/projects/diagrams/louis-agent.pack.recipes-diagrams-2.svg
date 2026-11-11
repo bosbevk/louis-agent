@@ -1,0 +1,281 @@
+<svg viewBox="-24 -24 1447.4 1381" width="1447.4" height="1381" role="img" aria-label="louis-agent.pack.recipes: searching, then reading a recipe" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.pack.recipes: searching, then reading a recipe</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1447.4" height="1381" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1399.4" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.pack.recipes:</tspan>
+    <tspan class="title-rest">searching, then reading a recipe</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <rect class="group" x="39.2" y="380" width="1313.4" height="782" rx="8" />
+    <rect class="group" x="53.2" y="762" width="1285.4" height="392" rx="8" />
+    <path class="edge dashed" d="M 67.2 52 L 67.2 1178" />
+    <path class="edge dashed" d="M 359.2 52 L 359.2 1178" />
+    <path class="edge dashed" d="M 672.2 52 L 672.2 1178" />
+    <path class="edge dashed" d="M 899.8 52 L 899.8 1178" />
+    <path class="edge dashed" d="M 1127.4 52 L 1127.4 1178" />
+    <path class="edge dashed" d="M 1324.6 52 L 1324.6 1178" />
+    <rect class="word-chip" x="39.2" y="380" width="37" height="20" rx="6" />
+    <text class="word" x="57.7" y="394" text-anchor="middle">alt</text>
+    <text class="word" x="82.2" y="394" text-anchor="start">it's our own link</text>
+    <path class="edge dashed" d="M 39.2 592 L 1352.6 592" />
+    <rect class="word-chip" x="39.2" y="592" width="44" height="20" rx="6" />
+    <text class="word" x="61.2" y="606" text-anchor="middle">else</text>
+    <text class="word" x="89.2" y="606" text-anchor="start">it's a page out there</text>
+    <rect class="word-chip" x="53.2" y="762" width="37" height="20" rx="6" />
+    <text class="word" x="71.7" y="776" text-anchor="middle">alt</text>
+    <text class="word" x="96.2" y="776" text-anchor="start">it publishes a whole Recipe</text>
+    <path class="edge dashed" d="M 53.2 918 L 1338.6 918" />
+    <rect class="word-chip" x="53.2" y="918" width="44" height="20" rx="6" />
+    <text class="word" x="75.2" y="932" text-anchor="middle">else</text>
+    <text class="word" x="103.2" y="932" text-anchor="start">it has words but no recipe</text>
+    <path class="edge dashed" d="M 53.2 1032 L 1338.6 1032" />
+    <rect class="word-chip" x="53.2" y="1032" width="44" height="20" rx="6" />
+    <text class="word" x="75.2" y="1046" text-anchor="middle">else</text>
+    <text class="word" x="103.2" y="1046" text-anchor="start">it has no data, but shows a recipe</text>
+    <path class="edge tone-red" d="M 67.2 102 L 357.2 102" marker-end="url(#arrow-red)" />
+    <rect class="word-chip tone-red" x="142.2" y="76" width="142" height="22" rx="4" />
+    <text class="word tone-red" x="213.2" y="90" text-anchor="middle">FindRecipes(query)</text>
+    <path class="edge tone-green" d="M 359.2 158 L 670.2 158" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="371.2" y="118" width="289" height="36" rx="4" />
+    <text class="word tone-green" x="515.7" y="132" text-anchor="middle">asks several sites, some kept for pages</text>
+    <text class="word tone-green" x="515.7" y="146" text-anchor="middle">outside the library</text>
+    <path class="edge tone-green" d="M 672.2 200 L 897.8 200" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="715" y="174" width="142" height="22" rx="4" />
+    <text class="word tone-green" x="786" y="188" text-anchor="middle">each site's search</text>
+    <path class="edge dashed tone-violet" d="M 899.8 242 L 674.2 242" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="750" y="216" width="72" height="22" rx="4" />
+    <text class="word tone-violet" x="786" y="230" text-anchor="middle">the hits</text>
+    <path class="edge dashed tone-green" d="M 672.2 284 L 361.2 284" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="420.2" y="258" width="191" height="22" rx="4" />
+    <text class="word tone-green" x="515.7" y="272" text-anchor="middle">merged, in a random order</text>
+    <path class="edge dashed tone-green" d="M 359.2 326 L 69.2 326" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="79.2" y="300" width="268" height="22" rx="4" />
+    <text class="word tone-green" x="213.2" y="314" text-anchor="middle">a numbered list, framed as untrusted</text>
+    <path class="edge tone-red" d="M 67.2 368 L 357.2 368" marker-end="url(#arrow-red)" />
+    <rect class="word-chip tone-red" x="152.7" y="342" width="121" height="22" rx="4" />
+    <text class="word tone-red" x="213.2" y="356" text-anchor="middle">ReadRecipe(url)</text>
+    <path class="edge tone-green" d="M 359.2 454 L 1322.6 454" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="711.4" y="414" width="261" height="36" rx="4" />
+    <text class="word tone-green" x="841.9" y="428" text-anchor="middle">reads the kept copy, and no browser</text>
+    <text class="word tone-green" x="841.9" y="442" text-anchor="middle">opens</text>
+    <path class="edge dashed tone-amber" d="M 1324.6 496 L 361.2 496" marker-end="url(#arrow-amber)" />
+    <rect class="word-chip tone-amber" x="798.9" y="470" width="86" height="22" rx="4" />
+    <text class="word tone-amber" x="841.9" y="484" text-anchor="middle">the Recipe</text>
+    <path class="edge tone-green" d="M 359.2 538 L 1125.4 538" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="700.3" y="512" width="86" height="22" rx="4" />
+    <text class="word tone-green" x="743.3" y="526" text-anchor="middle">the Recipe</text>
+    <path class="edge dashed tone-green" d="M 1127.4 580 L 69.2 580" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="459.8" y="554" width="275" height="22" rx="4" />
+    <text class="word tone-green" x="597.3" y="568" text-anchor="middle">ingredients and numbered method lines</text>
+    <path class="edge tone-green" d="M 359.2 666 L 1322.6 666" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="704.4" y="626" width="275" height="36" rx="4" />
+    <text class="word tone-green" x="841.9" y="640" text-anchor="middle">is it a page already found to have no</text>
+    <text class="word tone-green" x="841.9" y="654" text-anchor="middle">recipe?</text>
+    <path class="edge tone-green" d="M 359.2 708 L 897.8 708" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="569" y="682" width="121" height="22" rx="4" />
+    <text class="word tone-green" x="629.5" y="696" text-anchor="middle">visits the page</text>
+    <path class="edge dashed tone-violet" d="M 899.8 750 L 361.2 750" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="593.5" y="724" width="72" height="22" rx="4" />
+    <text class="word tone-violet" x="629.5" y="738" text-anchor="middle">the page</text>
+    <path class="edge tone-green" d="M 359.2 822 L 1322.6 822" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="707.9" y="796" width="268" height="22" rx="4" />
+    <text class="word tone-green" x="841.9" y="810" text-anchor="middle">KeepAsync, if it's from a table site</text>
+    <path class="edge tone-green" d="M 359.2 864 L 1125.4 864" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="623.3" y="838" width="240" height="22" rx="4" />
+    <text class="word tone-green" x="743.3" y="852" text-anchor="middle">the Recipe, from SchemaOrgRecipe</text>
+    <path class="edge dashed tone-green" d="M 1127.4 906 L 69.2 906" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="459.8" y="880" width="275" height="22" rx="4" />
+    <text class="word tone-green" x="597.3" y="894" text-anchor="middle">ingredients and numbered method lines</text>
+    <path class="edge tone-green" d="M 359.2 978 L 1322.6 978" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="700.9" y="952" width="282" height="22" rx="4" />
+    <text class="word tone-green" x="841.9" y="966" text-anchor="middle">ExcludeAsync, so nobody opens it again</text>
+    <path class="edge dashed tone-green" d="M 359.2 1020 L 69.2 1020" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="86.2" y="994" width="254" height="22" rx="4" />
+    <text class="word tone-green" x="213.2" y="1008" text-anchor="middle">says there's no recipe on the page</text>
+    <path class="edge tone-green" d="M 359.2 1092 L 1322.6 1092" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="735.9" y="1066" width="212" height="22" rx="4" />
+    <text class="word tone-green" x="841.9" y="1080" text-anchor="middle">KeepAsync, from its headings</text>
+    <path class="edge dashed tone-green" d="M 359.2 1134 L 69.2 1134" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="89.7" y="1108" width="247" height="22" rx="4" />
+    <text class="word tone-green" x="213.2" y="1122" text-anchor="middle">the page's text, cut and labelled</text>
+    <rect class="box tone-red" x="0" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-red" cx="28" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(20 18) scale(0.6667)">
+      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+    </g>
+    <text class="label tone-red" x="52" y="30" text-anchor="start">The model</text>
+    <rect class="box tone-green" x="284.4" y="0" width="149.6" height="52" rx="10" />
+    <circle class="badge tone-green" cx="312.4" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(304.4 18) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-green" x="336.4" y="30" text-anchor="start">RecipeTools</text>
+    <rect class="box tone-green" x="589.8" y="0" width="164.8" height="52" rx="10" />
+    <circle class="badge tone-green" cx="617.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(609.8 18) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label tone-green" x="641.8" y="30" text-anchor="start">RecipeScatter</text>
+    <rect class="box tone-violet" x="794.6" y="0" width="210.4" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="822.6" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(814.6 18) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-violet" x="846.6" y="30" text-anchor="start">The guarded browser</text>
+    <rect class="box tone-green" x="1045" y="0" width="164.8" height="52" rx="10" />
+    <circle class="badge tone-green" cx="1073" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1065 18) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-green" x="1097" y="30" text-anchor="start">RecipePrinter</text>
+    <rect class="box tone-amber" x="1249.8" y="0" width="149.6" height="52" rx="10" />
+    <circle class="badge tone-amber" cx="1277.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1269.8 18) scale(0.6667)">
+      <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+      <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+      <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+    </g>
+    <text class="label tone-amber" x="1301.8" y="30" text-anchor="start">The library</text>
+  </g>
+  <rect class="swatch tone-green" x="0" y="1260" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1270.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="126.4" y="1260" width="12" height="12" rx="3" />
+  <text class="legend" x="144.4" y="1270.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-red" x="260" y="1260" width="12" height="12" rx="3" />
+  <text class="legend" x="278" y="1270.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="436.8" y="1260" width="12" height="12" rx="3" />
+  <text class="legend" x="454.8" y="1270.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="1296" width="1399.4" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1306) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1318">
+    <tspan class="note-head">Data comes before text:</tspan>
+    <tspan class="note-rest">a page with no recipe data comes back as its text, labelled as such.</tspan>
+  </text>
+</svg>

@@ -89,45 +89,7 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
 
 ![The recipes pack: its tools, its sources and the library](diagrams/louis-agent.pack.recipes-diagrams.svg)
 
-**Flow:** the model searches, then reads one recipe. Data comes before text: a page with no recipe data comes back as its text, labelled as such.
-
-```mermaid
-sequenceDiagram
-    participant M as The model
-    participant T as RecipeTools
-    participant S as RecipeScatter
-    participant B as The guarded browser
-    participant P as RecipePrinter
-    participant L as The library
-    M->>T: FindRecipes(query)
-    T->>S: asks several sites, some kept for pages outside the library
-    S->>B: each site's search
-    B-->>S: the hits
-    S-->>T: merged, in a random order
-    T-->>M: a numbered list, framed as untrusted
-    M->>T: ReadRecipe(url)
-    alt it's our own link
-        T->>L: reads the kept copy, and no browser opens
-        L-->>T: the Recipe
-        T->>P: the Recipe
-        P-->>M: ingredients and numbered method lines
-    else it's a page out there
-        T->>L: is it a page already found to have no recipe?
-        T->>B: visits the page
-        B-->>T: the page
-        alt it publishes a whole Recipe
-            T->>L: KeepAsync, if it's from a table site
-            T->>P: the Recipe, from SchemaOrgRecipe
-            P-->>M: ingredients and numbered method lines
-        else it has words but no recipe
-            T->>L: ExcludeAsync, so nobody opens it again
-            T-->>M: says there's no recipe on the page
-        else it has no data, but shows a recipe
-            T->>L: KeepAsync, from its headings
-            T-->>M: the page's text, cut and labelled
-        end
-    end
-```
+![Searching, then reading a recipe: the search asks several sites at once, and a read takes the library's copy or the page's own recipe data first](diagrams/louis-agent.pack.recipes-diagrams-2.svg)
 
 ## Structure
 

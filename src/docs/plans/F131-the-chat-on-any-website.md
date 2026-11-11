@@ -92,24 +92,7 @@ classDiagram
 
 ### Communication: a visitor asks, the guide moves them, the answer carries on
 
-```mermaid
-sequenceDiagram
-    participant P as embed.js (host page)
-    participant F as Frame (ChatWidget)
-    participant A as API (site door)
-    P->>F: open (first click)
-    F->>P: send: give me the page
-    P-->>F: page text and areas (private parts left out)
-    F->>A: POST /v1/sessions/{id}/messages + page, site key
-    A-->>F: SSE: text, ShowPage("/menu#specials")
-    F->>P: ShowPage input
-    P->>P: full page load of /menu (WordPress)
-    Note over A: the turn keeps running (F131.3)
-    P->>F: new frame on /menu, chat still open
-    F->>A: GET /v1/sessions/{id}/stream
-    A-->>F: missed events, then live to the end
-    P->>P: scroll to #specials and glow
-```
+![The guide moves a visitor: the frame asks with the page, the guide sends them to another page, and the new frame picks up the turn it missed](diagrams/F131-the-chat-on-any-website-communication-a-visitor-asks-the-guide-moves-them-the-answer-carries-on.svg)
 
 ### Objects in memory: one embedded session
 

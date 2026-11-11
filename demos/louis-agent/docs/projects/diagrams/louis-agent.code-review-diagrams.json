@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.code-review: reviewing a change",
+  "caption": "Nothing goes to the model until it's sent: the button only fills the message box, and the person sends it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "tone": "blue",
+        "label": "Reviewer",
+        "actor": true
+      },
+      {
+        "id": "V",
+        "icon": "branch",
+        "tone": "green",
+        "label": "GitChangesView"
+      },
+      {
+        "id": "A",
+        "icon": "settings",
+        "tone": "green",
+        "label": "ReviewActions"
+      },
+      {
+        "id": "H",
+        "icon": "message",
+        "tone": "green",
+        "label": "ChatHandoff"
+      },
+      {
+        "id": "C",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "ChatPage and ChatShell"
+      },
+      {
+        "id": "P",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentApi"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "V",
+        "text": "opens /admin/screens/git-changes, presses Review"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "A",
+        "text": "Diff(path, staged, untracked)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "V",
+        "text": "the prompt and its title"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "H",
+        "text": "OpenChatWith(prompt)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "C",
+        "text": "goes to the chat"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "H",
+        "text": "Take"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "C",
+        "text": "the draft, once"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "R",
+        "text": "the prompt in the message box"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "C",
+        "text": "reads it, changes it, sends it"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "P",
+        "text": "StreamMessageAsync"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "R",
+        "text": "the review, as it comes"
+      }
+    ]
+  }
+}

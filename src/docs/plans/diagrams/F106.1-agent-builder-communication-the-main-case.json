@@ -1,0 +1,126 @@
+{
+  "kind": "sequence",
+  "title": "F106.1 a builder for the common path: the main case",
+  "caption": "One call builds the context: the builder checks the catalogue, the host builds the engine, and the context is registered once.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs"
+      },
+      {
+        "id": "S",
+        "icon": "box",
+        "tone": "teal",
+        "label": "IServiceCollection"
+      },
+      {
+        "id": "B",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LouisAgentBuilder"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost"
+      },
+      {
+        "id": "D",
+        "icon": "box",
+        "tone": "violet",
+        "label": "the service provider"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "S",
+        "text": "AddLouisAgent(agent =\u003E \u2026)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "B",
+        "text": "new LouisAgentBuilder()"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "B",
+        "text": "the lambda: AddAnthropic(), AddWeb(), AddPack\u003CCalculatorPack\u003E(), AddIdentity\u003CPulsIdentity\u003E()"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "B",
+        "text": "Build()"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "B",
+        "text": "BuildCatalog() \u2192 new AgentCatalog(identities, packs), checked"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "B",
+        "text": "BuildServices() \u2192 new HostServices(web, telemetry, discovery, providers)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "H",
+        "text": "Build(catalog, services)"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "B",
+        "text": "AgentHostContext"
+      },
+      {
+        "step": "reply",
+        "from": "B",
+        "to": "S",
+        "text": "AgentHostContext"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "S",
+        "text": "AddSingleton(context), AddSingleton(context.Engine), AddSingleton(context.Engines), AddSingleton(catalog)"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "S",
+        "text": "AddLouisAgentApi()"
+      },
+      {
+        "step": "note",
+        "over": [
+          "S"
+        ],
+        "text": "registers the API\u0027s services; the context comes from DI when the app builds"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "D",
+        "text": "Build(), MapLouisAgentApi()"
+      },
+      {
+        "step": "reply",
+        "from": "D",
+        "to": "P",
+        "text": "the AgentHostContext, resolved once"
+      }
+    ]
+  }
+}

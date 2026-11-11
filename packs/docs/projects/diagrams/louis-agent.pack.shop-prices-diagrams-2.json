@@ -1,0 +1,126 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.shop-prices: pricing a shopping list",
+  "caption": "A line it can't match is ?, never R0: and the agent copies the credit line under its list.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "green",
+        "label": "ShopPriceTools"
+      },
+      {
+        "id": "C",
+        "icon": "database",
+        "tone": "amber",
+        "label": "PriceBookCache"
+      },
+      {
+        "id": "A",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "BasketEstimate"
+      },
+      {
+        "id": "E",
+        "icon": "settings",
+        "tone": "green",
+        "label": "PriceEstimator"
+      },
+      {
+        "id": "B",
+        "icon": "book",
+        "tone": "amber",
+        "label": "PriceBook"
+      },
+      {
+        "id": "P",
+        "icon": "file",
+        "tone": "green",
+        "label": "EstimatePrinter"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "M",
+        "to": "T",
+        "text": "EstimatePrices(items, province, serves)"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "C",
+        "text": "the book"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "T",
+        "text": "from the store, or the shipped tables if it fails"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "A",
+        "text": "Of(lines, book, region, serves)"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each line",
+        "steps": [
+          {
+            "step": "message",
+            "from": "A",
+            "to": "E",
+            "text": "BasketItem: its words, size and packs"
+          },
+          {
+            "step": "message",
+            "from": "E",
+            "to": "B",
+            "text": "the product whose name fits best"
+          },
+          {
+            "step": "reply",
+            "from": "B",
+            "to": "E",
+            "text": "the product"
+          },
+          {
+            "step": "reply",
+            "from": "E",
+            "to": "A",
+            "text": "the province\u0027s price or the national one, from the nearest pack, scaled"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "T",
+        "text": "the rows, the total and the price per person"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "P",
+        "text": "Print"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "M",
+        "text": "the table, the total, what it couldn\u0027t price, the credit"
+      }
+    ]
+  }
+}

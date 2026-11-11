@@ -154,26 +154,7 @@ classDiagram
 
 ### Communication: one live run of one conversation with a follow-up
 
-```mermaid
-sequenceDiagram
-    participant P as Louis on the Evals page
-    participant H as Eval host
-    participant A as Agent API
-    participant J as Judge
-    participant S as RunStore
-    P->>H: Run live (after the ask: estimate, repeats)
-    H->>A: open a session (role, toolsets, place or page)
-    H->>A: turn 1 ask
-    A-->>H: answer, tool calls, cost
-    H->>A: turn 2 ask (same session)
-    A-->>H: answer, tool calls, cost
-    H->>H: Facts per turn (free)
-    H->>J: criteria with the transcript
-    J-->>H: {criterion, met, reason} each
-    H->>S: save the run
-    P->>H: flip a mark
-    H->>S: keep the flip with the run
-```
+![One live run with a follow-up: two turns in one session, facts checked in code, the judge grading the criteria, and the run and its flips stored](diagrams/F126-evals-redesigned-communication-one-live-run-of-one-conversation-with-a-follow-up.svg)
 
 ### Objects in memory: one run
 

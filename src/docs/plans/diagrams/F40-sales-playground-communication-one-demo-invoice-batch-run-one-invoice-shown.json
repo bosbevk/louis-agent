@@ -1,0 +1,163 @@
+{
+  "kind": "sequence",
+  "title": "F40 the sales playground: one invoice batch run",
+  "caption": "Ten invoices, each matched by a clerk: the runner grades each match, and the run's cost comes from the ledger by its tag.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "label": "Control room (louis-agent.web)",
+        "icon": "chart",
+        "tone": "blue"
+      },
+      {
+        "id": "A",
+        "label": "puls: louis-agent.api",
+        "icon": "server",
+        "tone": "violet"
+      },
+      {
+        "id": "N",
+        "label": "simulation runner (own process)",
+        "icon": "terminal",
+        "tone": "green"
+      },
+      {
+        "id": "V",
+        "label": "demo/voice session (on puls)",
+        "icon": "message",
+        "tone": "teal"
+      },
+      {
+        "id": "D",
+        "label": "demo-invoice-clerk (on demo-agent)",
+        "icon": "user",
+        "tone": "green"
+      },
+      {
+        "id": "C",
+        "label": "CustomerTools (customers pack)",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "L",
+        "label": "Usage ledger",
+        "icon": "chart",
+        "tone": "amber"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "start demo-invoice-batch, 1 repeat (on Louis's go)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "N",
+        "text": "dotnet louis-agent.simulation.runner.dll simulate demo-invoice-batch --repeat 1"
+      },
+      {
+        "step": "reply",
+        "from": "N",
+        "to": "A",
+        "text": "@protocol version 1"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each of the ten invoices",
+        "steps": [
+          {
+            "step": "message",
+            "from": "N",
+            "to": "A",
+            "text": "POST /sessions (role demo/voice, toolsets agents, tag run:mode:repeat)"
+          },
+          {
+            "step": "message",
+            "from": "N",
+            "to": "V",
+            "text": "Match inv-07.pdf to a customer"
+          },
+          {
+            "step": "message",
+            "from": "V",
+            "to": "D",
+            "text": "AskAgent(demo.invoice-clerk, brief: inv-07.pdf, attachments)"
+          },
+          {
+            "step": "message",
+            "from": "D",
+            "to": "D",
+            "text": "ReadDocument(inv-07.pdf): its workspace holds the invoices only"
+          },
+          {
+            "step": "message",
+            "from": "D",
+            "to": "C",
+            "text": "FindCustomer(the VAT number on the invoice)"
+          },
+          {
+            "step": "reply",
+            "from": "C",
+            "to": "D",
+            "text": "one customer, framed as data"
+          },
+          {
+            "step": "reply",
+            "from": "D",
+            "to": "V",
+            "text": "the match, with the VAT number it checked"
+          },
+          {
+            "step": "reply",
+            "from": "V",
+            "to": "N",
+            "text": "the session stream, the sub-session's events included"
+          },
+          {
+            "step": "message",
+            "from": "N",
+            "to": "N",
+            "text": "SessionStreamReader, then MatchedRight, NoCustomerSaid, VatChecked against the answer key"
+          },
+          {
+            "step": "reply",
+            "from": "N",
+            "to": "A",
+            "text": "@sse, @turn, then @conversation with its grades"
+          },
+          {
+            "step": "reply",
+            "from": "A",
+            "to": "R",
+            "text": "live: the turn as it streams, then each grade"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "N",
+        "to": "A",
+        "text": "@mode_done"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "L",
+        "text": "the run's rows, by its tag"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "R",
+        "text": "the run recorded: its grades and its cost per invoice (BenchmarkTrends)"
+      }
+    ],
+    "numbered": true
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "kind": "sequence",
+  "title": "Sessions: talking to the agent",
+  "caption": "One conversation, one message at a time: the reply streams as Server-Sent Events, up to ten tool rounds a turn.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "C",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Client"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Model"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "C",
+        "to": "A",
+        "text": "POST /v1/sessions"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "C",
+        "text": "201 { \u0022session_id\u0022: \u0022sess_\u2026\u0022 }"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "A",
+        "text": "POST /v1/sessions/{id}/messages { \u0022message\u0022: \u0022\u2026\u0022 }"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "C",
+        "text": "200 text/event-stream (stays open)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "E",
+        "text": "StreamPromptAsync(history, message)"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "up to 10 tool rounds",
+        "steps": [
+          {
+            "step": "message",
+            "from": "E",
+            "to": "M",
+            "text": "history \u002B tools"
+          },
+          {
+            "step": "reply",
+            "from": "M",
+            "to": "E",
+            "text": "thinking, text, tool calls (streamed)"
+          },
+          {
+            "step": "reply",
+            "from": "E",
+            "to": "A",
+            "text": "updates"
+          },
+          {
+            "step": "reply",
+            "from": "A",
+            "to": "C",
+            "text": "SSE events as they happen"
+          },
+          {
+            "step": "message",
+            "from": "E",
+            "to": "E",
+            "text": "run each tool call, add the result"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "C",
+        "text": "message_delta (stop_reason, usage), message_stop"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "A",
+        "text": "DELETE /v1/sessions/{id} (when done)"
+      }
+    ]
+  }
+}

@@ -1,0 +1,232 @@
+<svg viewBox="-24 -24 1302.2 1057" width="1302.2" height="1057" role="img" aria-label="F106.1 a builder for the common path: the main case" xmlns="http://www.w3.org/2000/svg">
+  <title>F106.1 a builder for the common path: the main case</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1302.2" height="1057" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1254.2" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F106.1 a builder for the common path:</tspan>
+    <tspan class="title-rest">the main case</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed" d="M 71 52 L 71 854" />
+    <path class="edge dashed" d="M 286 52 L 286 854" />
+    <path class="edge dashed" d="M 585 52 L 585 854" />
+    <path class="edge dashed" d="M 929 52 L 929 854" />
+    <path class="edge dashed" d="M 1145.2 52 L 1145.2 854" />
+    <path class="edge tone-blue" d="M 71 102 L 284 102" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="83" y="76" width="191" height="22" rx="4" />
+    <text class="word tone-blue" x="178.5" y="90" text-anchor="middle">AddLouisAgent(agent =&gt; …)</text>
+    <path class="edge tone-teal" d="M 286 144 L 583 144" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="347" y="118" width="177" height="22" rx="4" />
+    <text class="word tone-teal" x="435.5" y="132" text-anchor="middle">new LouisAgentBuilder()</text>
+    <path class="edge tone-teal" d="M 286 214 L 583 214" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="298" y="160" width="275" height="50" rx="4" />
+    <text class="word tone-teal" x="435.5" y="174" text-anchor="middle">the lambda: AddAnthropic(), AddWeb(),</text>
+    <text class="word tone-teal" x="435.5" y="188" text-anchor="middle">AddPack&lt;CalculatorPack&gt;(),</text>
+    <text class="word tone-teal" x="435.5" y="202" text-anchor="middle">AddIdentity&lt;PulsIdentity&gt;()</text>
+    <path class="edge tone-teal" d="M 286 256 L 583 256" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="403" y="230" width="65" height="22" rx="4" />
+    <text class="word tone-teal" x="435.5" y="244" text-anchor="middle">Build()</text>
+    <path class="edge tone-violet" d="M 585 312 L 613 312 L 613 328 L 587 328" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="621" y="272" width="296" height="36" rx="4" />
+    <text class="word tone-violet" x="629" y="286" text-anchor="start">BuildCatalog() → new</text>
+    <text class="word tone-violet" x="629" y="300" text-anchor="start">AgentCatalog(identities, packs), checked</text>
+    <path class="edge tone-violet" d="M 585 384 L 613 384 L 613 400 L 587 400" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="621" y="344" width="289" height="36" rx="4" />
+    <text class="word tone-violet" x="629" y="358" text-anchor="start">BuildServices() → new HostServices(web,</text>
+    <text class="word tone-violet" x="629" y="372" text-anchor="start">telemetry, discovery, providers)</text>
+    <path class="edge tone-violet" d="M 585 442 L 927 442" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="665" y="416" width="184" height="22" rx="4" />
+    <text class="word tone-violet" x="757" y="430" text-anchor="middle">Build(catalog, services)</text>
+    <path class="edge dashed tone-violet" d="M 929 484 L 587 484" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="693" y="458" width="128" height="22" rx="4" />
+    <text class="word tone-violet" x="757" y="472" text-anchor="middle">AgentHostContext</text>
+    <path class="edge dashed tone-violet" d="M 585 526 L 288 526" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="371.5" y="500" width="128" height="22" rx="4" />
+    <text class="word tone-violet" x="435.5" y="514" text-anchor="middle">AgentHostContext</text>
+    <path class="edge tone-teal" d="M 286 610 L 314 610 L 314 626 L 288 626" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="322" y="542" width="226" height="64" rx="4" />
+    <text class="word tone-teal" x="330" y="556" text-anchor="start">AddSingleton(context),</text>
+    <text class="word tone-teal" x="330" y="570" text-anchor="start">AddSingleton(context.Engine),</text>
+    <text class="word tone-teal" x="330" y="584" text-anchor="start">AddSingleton(context.Engines),</text>
+    <text class="word tone-teal" x="330" y="598" text-anchor="start">AddSingleton(catalog)</text>
+    <path class="edge tone-blue" d="M 71 668 L 284 668" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="107.5" y="642" width="142" height="22" rx="4" />
+    <text class="word tone-blue" x="178.5" y="656" text-anchor="middle">AddLouisAgentApi()</text>
+    <rect class="word-chip" x="159" y="684" width="254" height="58" rx="6" />
+    <text class="word" x="286" y="702" text-anchor="middle">registers the API's services; the</text>
+    <text class="word" x="286" y="716" text-anchor="middle">context comes from DI when the app</text>
+    <text class="word" x="286" y="730" text-anchor="middle">builds</text>
+    <path class="edge tone-blue" d="M 71 784 L 1143.2 784" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="505.6" y="758" width="205" height="22" rx="4" />
+    <text class="word tone-blue" x="608.1" y="772" text-anchor="middle">Build(), MapLouisAgentApi()</text>
+    <path class="edge dashed tone-violet" d="M 1145.2 826 L 73 826" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="477.6" y="800" width="261" height="22" rx="4" />
+    <text class="word tone-violet" x="608.1" y="814" text-anchor="middle">the AgentHostContext, resolved once</text>
+    <rect class="box tone-blue" x="0" y="0" width="142" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="28" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(20 18) scale(0.6667)">
+      <path d="M5 7l5 5l-5 5" />
+      <path d="M12 19l7 0" />
+    </g>
+    <text class="label tone-blue" x="52" y="30" text-anchor="start">Program.cs</text>
+    <rect class="box tone-teal" x="184.6" y="0" width="202.8" height="52" rx="10" />
+    <circle class="badge tone-teal" cx="212.6" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(204.6 18) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-teal" x="236.6" y="30" text-anchor="start">IServiceCollection</text>
+    <rect class="box tone-violet" x="487.4" y="0" width="195.2" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="515.4" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(507.4 18) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-violet" x="539.4" y="30" text-anchor="start">LouisAgentBuilder</text>
+    <rect class="box tone-violet" x="861.8" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="889.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(881.8 18) scale(0.6667)">
+      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M7 8l0 .01" />
+      <path d="M7 16l0 .01" />
+    </g>
+    <text class="label tone-violet" x="913.8" y="30" text-anchor="start">AgentHost</text>
+    <rect class="box tone-violet" x="1036.2" y="0" width="218" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="1064.2" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1056.2 18) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-violet" x="1088.2" y="30" text-anchor="start">the service provider</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="936" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="946.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-violet" x="104.8" y="936" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="946.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="238.4" y="936" width="12" height="12" rx="3" />
+  <text class="legend" x="256.4" y="946.5" text-anchor="start">contracts and state</text>
+  <rect class="notebar" x="0" y="972" width="1254.2" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 982) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="994">
+    <tspan class="note-head">One call builds the context:</tspan>
+    <tspan class="note-rest">the builder checks the catalogue, the host builds the engine, and the context is registered once.</tspan>
+  </text>
+</svg>

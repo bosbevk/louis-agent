@@ -26,26 +26,7 @@ references no other pack.
 
 ![The general packs: from a catalogue to their tools and what they reach](diagrams/general-packs-diagrams.svg)
 
-**Flow:** a session that names a toolset, and a tool it calls. A toolset that lacks a setting is listed with what it lacks, and a session can't open with it.
-
-```mermaid
-sequenceDiagram
-    participant S as A session
-    participant F as AgentEngineFactory
-    participant C as ToolsetCatalog
-    participant P as The pack's toolset
-    participant M as The model
-    participant G as ToolCallGuards
-    participant O as The tool
-    S->>F: an engine with these toolsets
-    F->>C: finds each by name
-    C->>P: MissingSettings, CreateTools
-    P-->>F: the tools, and the guide for the prompt
-    M->>G: calls a tool, arguments as data
-    G->>O: runs it
-    O-->>G: the result
-    G-->>M: the result, summarised if it's too long
-```
+![A session and a tool call: the factory finds each toolset and builds its tools, and the guards run a call the model makes](diagrams/general-packs-diagrams-2.svg)
 
 **Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.

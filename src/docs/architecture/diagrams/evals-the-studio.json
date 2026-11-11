@@ -1,0 +1,137 @@
+{
+  "kind": "sequence",
+  "title": "The evals: the studio",
+  "caption": "Git keeps what's finished: a draft is checked by the runner, tried on a replay for $0, and published as a commit on its own branch.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "tone": "blue",
+        "label": "Person (Studio page)",
+        "actor": true
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "API (Endpoints/Admin/Studio)"
+      },
+      {
+        "id": "S",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Draft store (eval_drafts)"
+      },
+      {
+        "id": "R",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "Runner (child process)"
+      },
+      {
+        "id": "G",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "Git (temporary index)"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "GET evals/checks"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "R",
+        "text": "--checks"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "A",
+        "text": "check types, kinds, schemas, readers"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "PUT evals/drafts/{id} (eval.json, rubrics)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "S",
+        "text": "keep the draft"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "POST drafts/{id}/verdict"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "A",
+        "text": "DraftFolder writes the folder"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "R",
+        "text": "--check {folder}"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "A",
+        "text": "one line per problem, then ok"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "POST drafts/{id}/try {replay, samples}"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "R",
+        "text": "run {eval} --folder --samples --replay {run}"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "A",
+        "text": "protocol lines (a replay, $0)"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "POST drafts/{id}/publish"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "R",
+        "text": "--check {folder} (must pass)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "G",
+        "text": "hash the files, write a tree, commit on eval/{identity}-{name}"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "P",
+        "text": "the branch (push and pull request are yours) or a zip"
+      }
+    ]
+  }
+}

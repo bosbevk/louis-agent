@@ -1,0 +1,71 @@
+{
+  "kind": "sequence",
+  "title": "F125 an agentic site: the guide searches over MCP",
+  "caption": "The guide's search goes over MCP: the answer comes back with a card and the next steps offered.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "W",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Widget"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "green",
+        "label": "API (guide)"
+      },
+      {
+        "id": "M",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.mcp"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "W",
+        "to": "A",
+        "text": "\u0022what does a turn cost?\u0022 \u002B page block"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "M",
+        "text": "tools/call docs_search(\u0022turn cost\u0022)"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "A",
+        "text": "hits: id, heading, snippet, url"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "M",
+        "text": "tools/call docs_fetch(id)"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "A",
+        "text": "the doc"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "W",
+        "text": "ShowCard(cost, ...) \u002B answer \u002B Offer([\u0022Show me the proof page\u0022, \u0022Talk to Louis\u0022])"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "W",
+        "text": "draws the card and the buttons"
+      }
+    ]
+  }
+}

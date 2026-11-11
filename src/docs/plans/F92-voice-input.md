@@ -123,27 +123,7 @@ classDiagram
 
 **Communication**
 
-```mermaid
-sequenceDiagram
-    actor P as Person
-    participant B as Browser (recorder.js)
-    participant A as API
-    participant F as SpeechClientFactory
-    participant W as Whisper
-    participant L as Ledger
-    P->>B: holds the mic, talks, lets go
-    B->>A: POST /v1/sessions/{id}/transcriptions (webm clip, language hint)
-    A->>A: checks size and length, else 400 with the reason
-    A->>F: Create(options)
-    F-->>A: ISpeechToTextClient
-    A->>W: GetTextAsync(stream)
-    W-->>A: text
-    A->>L: speech row (seconds, provider, price or null)
-    A-->>B: 200 TranscriptionResult (text, language, seconds)
-    B->>P: text in the box
-    P->>B: fixes a word, presses send
-    B->>A: POST /v1/sessions/{id}/messages (text, as today)
-```
+![One clip to text: the API checks the clip, Whisper turns it into text, the ledger counts it, and the person fixes it before sending](diagrams/F92-voice-input-diagrams-3.svg)
 
 **Objects (one transcription)**
 

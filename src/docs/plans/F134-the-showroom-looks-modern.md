@@ -93,20 +93,7 @@ classDiagram
 
 ### Communication (a visitor opens /demos)
 
-```mermaid
-sequenceDiagram
-    participant V as Visitor
-    participant P as DemosPage
-    participant S as ShowroomStart
-    participant R as DemoRail
-    participant I as DemoIconView
-    V->>P: GET /demos
-    P->>S: Featured, words, Preview
-    S->>S: Demos.Groups
-    S->>I: Icon, Size (each cover's badge)
-    R->>I: Icon, Size (each rail item)
-    P-->>V: HTML with inline SVG
-```
+![A visitor opens /demos: the start and the rail ask the one icon view, and the page goes out as HTML with inline SVG](diagrams/F134-the-showroom-looks-modern-communication-a-visitor-opens-demos.svg)
 
 ### Objects (the index in memory)
 

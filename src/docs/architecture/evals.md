@@ -175,37 +175,7 @@ turns, tokens, seconds, cost) are measured beside the grades and never decide a 
 
 ## How a run talks
 
-```mermaid
-sequenceDiagram
-  actor Admin
-  participant Portal
-  participant API
-  participant Runner as Runner (child process)
-  participant Agent as Agent sessions (same API)
-  participant Judge
-  participant Store as Mongo store
-  participant Ledger as Usage ledger
-
-  Admin->>Portal: Run puls-cook, repeat 3
-  Portal->>API: POST /v1/admin/evals/puls-cook/runs
-  API->>Runner: start: run puls-cook --repeat 3 (BENCHMARK_RUN = run id)
-  Runner-->>API: protocol line (eval, version, graders, dataset)
-  loop each mode, repeat and scenario
-    Runner-->>API: mode, question
-    Runner->>Agent: POST /v1/sessions (role, toolsets, replay), then the message
-    Agent->>Ledger: one row per model request
-    Agent-->>Runner: the turn's stream (SSE)
-    Runner-->>API: sse lines, then turn
-    Runner->>Judge: the answer and the rubric (model checks only)
-    Judge-->>Runner: label and reason
-    Runner-->>API: conversation (grades, outcome, metrics)
-    API->>Store: run, conversation, turn as they arrive
-  end
-  Runner-->>API: mode-done (pass@k, pass^k), summary
-  API->>Ledger: read this run's rows
-  API->>Store: each conversation's tokens and cost, the run's end
-  Portal->>API: GET /v1/admin/evals/runs/current/events (live) and the run's pages
-```
+![How a run talks: the API starts the runner, the runner asks agent sessions and the judge, and every line is stored as it arrives, the cost read from the ledger at the end](diagrams/evals-how-a-run-talks.svg)
 
 The other three conversations use the same pieces:
 
@@ -251,30 +221,7 @@ is the one reader and judge, started as a process for each question, and git is 
 `DraftFolder` writes it out as one folder, with the samples and transcripts kept for it from runs (F49.4), and the
 check, the try, the publish and the promptfoo export all read that folder.
 
-```mermaid
-sequenceDiagram
-  actor P as Person (Studio page)
-  participant A as API (Endpoints/Admin/Studio)
-  participant S as Draft store (eval_drafts)
-  participant R as Runner (child process)
-  participant G as Git (temporary index)
-  P->>A: GET evals/checks
-  A->>R: --checks
-  R-->>A: check types, kinds, schemas, readers
-  P->>A: PUT evals/drafts/{id} (eval.json, rubrics)
-  A->>S: keep the draft
-  P->>A: POST drafts/{id}/verdict
-  A->>A: DraftFolder writes the folder
-  A->>R: --check {folder}
-  R-->>A: one line per problem, then ok
-  P->>A: POST drafts/{id}/try {replay, samples}
-  A->>R: run {eval} --folder --samples --replay {run}
-  R-->>A: protocol lines (a replay, $0)
-  P->>A: POST drafts/{id}/publish
-  A->>R: --check {folder} (must pass)
-  A->>G: hash the files, write a tree, commit on eval/{identity}-{name}
-  A-->>P: the branch (push and pull request are yours) or a zip
-```
+![The studio: a draft is kept, checked by the runner, tried on a replay, and published as a commit on its own branch](diagrams/evals-the-studio.svg)
 
 | Method | Route | Does |
 |---|---|---|

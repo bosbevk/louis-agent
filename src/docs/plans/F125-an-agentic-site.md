@@ -86,19 +86,7 @@ classDiagram
 
 ### Communication: a visitor asks, the guide searches over MCP
 
-```mermaid
-sequenceDiagram
-    participant W as Widget
-    participant A as API (guide)
-    participant M as louis-agent.mcp
-    W->>A: "what does a turn cost?" + page block
-    A->>M: tools/call docs_search("turn cost")
-    M-->>A: hits: id, heading, snippet, url
-    A->>M: tools/call docs_fetch(id)
-    M-->>A: the doc
-    A-->>W: ShowCard(cost, ...) + answer + Offer(["Show me the proof page", "Talk to Louis"])
-    W->>W: draws the card and the buttons
-```
+![The guide searches over MCP: it searches and fetches the docs through the MCP server, and answers with a card and the next steps](diagrams/F125-an-agentic-site-communication-a-visitor-asks-the-guide-searches-over-mcp.svg)
 
 ### Objects in memory: one guide turn over MCP
 

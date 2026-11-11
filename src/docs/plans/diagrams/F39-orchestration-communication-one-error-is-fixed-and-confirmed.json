@@ -1,0 +1,232 @@
+{
+  "kind": "sequence",
+  "title": "F39 orchestration: one error fixed and confirmed",
+  "caption": "A fix counts once code confirms it: one more try if it fails, then the agent for exceptions, and every outcome recorded.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "H",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "louis-agent.orchestrator (host)"
+      },
+      {
+        "id": "F",
+        "icon": "file",
+        "tone": "amber",
+        "label": "IErrorFeed (triage pack)"
+      },
+      {
+        "id": "R",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ITriageRecorder (triage pack)"
+      },
+      {
+        "id": "W",
+        "icon": "branch",
+        "tone": "green",
+        "label": "TriageWorkflow (voorman)"
+      },
+      {
+        "id": "C",
+        "icon": "search",
+        "tone": "violet",
+        "label": "RouteClassifier (engine)"
+      },
+      {
+        "id": "K",
+        "icon": "users",
+        "tone": "violet",
+        "label": "ChildAgentClient (engine)"
+      },
+      {
+        "id": "P",
+        "icon": "server",
+        "tone": "red",
+        "label": "peer louis-agent.api (PACKS=fixing)"
+      },
+      {
+        "id": "X",
+        "icon": "checks",
+        "tone": "green",
+        "label": "ConfirmFix (fixing pack)"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "H",
+        "to": "P",
+        "text": "GET /roles, once at start-up"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "H",
+        "text": "specialists include voorman-fixer (if not, the host stops and names PACKS=fixing)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "F",
+        "text": "ReadNewAsync()"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "H",
+        "text": "[e42] (processed ids skipped)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "W",
+        "text": "HandleAsync(e42, run)"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "C",
+        "text": "ClassifyAsync\u003CDecision\u003E(principles \u002B voorman voice \u002B runbooks, error fenced as data)"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "W",
+        "text": "Decision(Fixable, rule order-total)"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "K",
+        "text": "OpenAsync(role voorman-fixer, depth 1, parent triage_e42#1)"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "P",
+        "text": "POST /sessions (this peer\u0027s own key)"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "K",
+        "text": "AskAsync\u003CFixResult\u003E(brief: error, expected behaviour, branch fix/order-total-e42)"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "P",
+        "text": "POST /sessions/{id}/messages"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "K",
+        "text": "SSE: tool calls, then ReportFixResult(Fixed, commit, branch, tests)"
+      },
+      {
+        "step": "reply",
+        "from": "K",
+        "to": "W",
+        "text": "ChildReply\u003CFixResult\u003E (usage rolled up into the turn)"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "X",
+        "text": "CheckAsync(FixResult, expected branch)"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "CONFIRMED",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "X",
+            "to": "W",
+            "text": "commit on the branch, replay 200, tests pass"
+          },
+          {
+            "step": "message",
+            "from": "W",
+            "to": "R",
+            "text": "RecordAsync(e42, Fixable, Fixed)"
+          },
+          {
+            "step": "message",
+            "from": "W",
+            "to": "F",
+            "text": "MarkProcessedAsync(e42)"
+          }
+        ],
+        "else": [
+          {
+            "label": "NOT CONFIRMED",
+            "steps": [
+              {
+                "step": "message",
+                "from": "W",
+                "to": "K",
+                "text": "ContinueAsync(child, what failed), once"
+              },
+              {
+                "step": "message",
+                "from": "W",
+                "to": "X",
+                "text": "CheckAsync again"
+              },
+              {
+                "step": "note",
+                "over": [
+                  "W"
+                ],
+                "text": "still failing: the agent for the exceptions gets the findings (B5)"
+              },
+              {
+                "step": "message",
+                "from": "W",
+                "to": "R",
+                "text": "RecordAsync(e42, Fixable, Escalated)"
+              },
+              {
+                "step": "message",
+                "from": "W",
+                "to": "F",
+                "text": "MarkProcessedAsync(e42)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "K",
+        "text": "CloseAsync(child)"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "P",
+        "text": "DELETE /sessions/{id}"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "H",
+        "text": "TriageOutcome"
+      },
+      {
+        "step": "note",
+        "over": [
+          "W",
+          "F"
+        ],
+        "text": "Unknown, or Deferred over the F7 budget: recorded, never marked processed, read again next poll"
+      }
+    ]
+  }
+}

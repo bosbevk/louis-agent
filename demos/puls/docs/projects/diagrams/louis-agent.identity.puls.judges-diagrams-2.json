@@ -1,0 +1,71 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.puls.judges: judging one trial",
+  "caption": "Shown and counted, not yet required: a judge counts only once its calibration passes.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "The runner"
+      },
+      {
+        "id": "C",
+        "icon": "checks",
+        "tone": "green",
+        "label": "MealForPeopleCheck"
+      },
+      {
+        "id": "E",
+        "icon": "checks",
+        "tone": "green",
+        "label": "EvaluatorCheck"
+      },
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The judge\u0027s model"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "C",
+        "text": "the trial"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "E",
+        "text": "the last answer, and what the scenario expects"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "M",
+        "text": "the rubric, CookAsk\u0027s people and town, the answer"
+      },
+      {
+        "step": "reply",
+        "from": "M",
+        "to": "E",
+        "text": "yes or no, with a reason"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "C",
+        "text": "MealVerdict"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "R",
+        "text": "a Grade, Unknown if there\u0027s no verdict"
+      }
+    ]
+  }
+}

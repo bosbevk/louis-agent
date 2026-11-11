@@ -31,28 +31,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 
 ![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 
-**Flow:** start-up. Which agent a host runs is a setting, not a build, and any mistake stops it before an engine exists.
-
-```mermaid
-sequenceDiagram
-    participant H as The host's program
-    participant P as Plugins
-    participant S as SettingChoice
-    participant C as AgentCatalog
-    participant A as AgentHost
-    H->>P: FromEnvironment
-    P->>P: loads config/.env, reads IDENTITIES and PACKS
-    P->>S: each name, once
-    alt a name nobody knows
-        S-->>H: stops, with HostPacksErrorMessage naming the supported ones
-    else
-        P->>P: creates each identity, and each pack it or PACKS names, once
-        P->>C: the identities and the packs
-        C->>C: refuses a name twice, a missing pack, a cycle, a shared path or tool name
-        C-->>H: the catalogue
-        H->>A: Build(catalogue)
-    end
-```
+![Start-up: the plugins read the names from the settings, build the identities and packs, and the catalogue checks them before the host builds](diagrams/louis-agent.host-packs-diagrams-2.svg)
 
 ## Structure
 

@@ -27,21 +27,7 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 
 ![Puls's judges: from the runner's catalogue to a model's verdict](diagrams/louis-agent.identity.puls.judges-diagrams.svg)
 
-**Flow:** judging one trial. It's shown and counted, but not required until its calibration passes.
-
-```mermaid
-sequenceDiagram
-    participant R as The runner
-    participant C as MealForPeopleCheck
-    participant E as EvaluatorCheck
-    participant M as The judge's model
-    R->>C: the trial
-    C->>E: the last answer, and what the scenario expects
-    E->>M: the rubric, CookAsk's people and town, the answer
-    M-->>E: yes or no, with a reason
-    E-->>C: MealVerdict
-    C-->>R: a Grade, Unknown if there's no verdict
-```
+![Judging one trial: the check asks the judge's model with the rubric and the answer, and turns its verdict into a grade](diagrams/louis-agent.identity.puls.judges-diagrams-2.svg)
 
 ## Extending it
 
