@@ -73,6 +73,10 @@ properties:
             value: louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys
           - name: OPEN_SESSIONS_PER_DAY
             value: '20'
+          # The guide asks a showroom business on this same container (F127.3.1, Louis's pick 2 A): itself, on
+          # localhost, so the call never leaves the replica and reaches the sessions it holds.
+          - name: AGENT_PEERS
+            value: self=http://localhost:8080
           # The docs the guide reads (F109.3): the copy the image carries, laid out as the repo.
           - name: DOCS_ROOT
             value: /app/docs

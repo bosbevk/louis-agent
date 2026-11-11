@@ -16,7 +16,11 @@ public class SkillLoaderTests
         "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills"
     ];
 
-    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills, DefaultVoice = "testprod/voice-en" };
+    private static AgentOptions Options() => new()
+    {
+        SkillsDirectory = TestPaths.Skills,
+        DefaultVoice = "testprod/voice-en"
+    };
 
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
         TestTools.Catalog.Toolsets.Where(t => names.Contains(t.Name)).ToList();
@@ -53,14 +57,19 @@ public class SkillLoaderTests
         }
     }
 
+    /// <summary>
+    /// The toolset that hands work on is called specialists (CL9 step 5; Louis: "this should say specialists since we
+    /// call them that now"), F30's minions get their own, and <c>agents</c>, its name before CL9, is since F127.3.1 the
+    /// toolset that asks another agent by its address, with a guide of its own.
+    /// </summary>
     [Test]
     public void TheToolsetThatHandsWorkOn_IsCalledSpecialists()
     {
-        // CL9 step 5 (Louis: "this should say specialists since we call them that now"); F30's minions get their own.
         var specialists = ToolsetCatalog.Find(CoreToolset.Specialists.Wire());
+        var agents = ToolsetCatalog.Find(CoreToolset.Agents.Wire());
 
         Assert.That(specialists?.GuideFile, Is.EqualTo("toolsets/specialists.md"));
-        Assert.That(ToolsetCatalog.Find("agents"), Is.Null, "the old name is gone");
+        Assert.That(agents?.GuideFile, Is.EqualTo("toolsets/agents.md"));
     }
 
     [TestCase(null, RoleLevel.Agent)]

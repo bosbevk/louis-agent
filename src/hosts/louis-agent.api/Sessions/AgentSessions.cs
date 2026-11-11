@@ -45,6 +45,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// </summary>
     public static readonly string SpecialistsToolset = CoreToolset.Specialists.Wire();
 
+    /// <summary>The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.</summary>
+    public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
+
     /// <summary>
     /// A session nobody has used for this long is dropped at the next create, with the sub-sessions it kept.
     /// </summary>
@@ -104,6 +107,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
                 new { Toolset = SpecialistsToolset }));
+        if (depth > 0 && plain.Contains(AgentsToolset))
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+                new { Toolset = AgentsToolset }));
         if (depth == MinionDepth && plain.Contains(MinionsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
                 new { Toolset = MinionsToolset }));

@@ -10,4 +10,5 @@ public enum CoreToolset
     Specialists,
     Minions,
     Skills,
+    Agents,
 }

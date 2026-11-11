@@ -196,14 +196,16 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
     /// <summary>
     /// What a visitor's session is allowed to be: the open identity the door admitted, the toolsets of its own packs
-    /// and nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they
-    /// are.
+    /// and, when it may ask other agents (F127.3.1), the <c>agents</c> toolset where this instance can reach them,
+    /// nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they are.
     /// </summary>
     private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, string identity,
         AgentEngineFactory engines)
     {
         var who = engines.Catalog.Identity(identity);
         List<string> toolsets = who is null ? [] : [.. engines.Catalog.ToolsetsOf(who)];
+        // Optional: an instance with no AGENT_PEERS leaves it out, and the visitor still gets the identity.
+        if (who is { Calls.Count: > 0 }) toolsets.Add(AgentSessions.AgentsToolset + ToolsetCatalog.OptionalMark);
         return new CreateSessionRequest(null, null, OpenDoorService, toolsets, Location: request?.Location,
             TimeZone: request?.TimeZone, Identity: identity);
     }

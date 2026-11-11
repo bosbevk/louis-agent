@@ -47,4 +47,10 @@ public sealed record ToolsetContext(
 
     /// <summary>The guarded browser (F33), one per process so every engine shares it and its recordings; none without Chrome.</summary>
     public IWebBrowser? Browser => Web.Browser;
+
+    /// <summary>
+    /// The identities this instance runs, which the <c>agents</c> toolset asks among (F127.3.1); none for a host
+    /// given no identity.
+    /// </summary>
+    public IReadOnlyList<IAgentIdentity> Identities { get; init; } = [];
 }

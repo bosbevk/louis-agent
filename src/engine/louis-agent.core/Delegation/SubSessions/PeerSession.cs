@@ -75,7 +75,8 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
                 var entry = new OpenSubSession(peer, kept, agent, loaded, reported, () => DeleteAsync(peer, kept))
                 {
                     Kind = kind.Kind,
-                    Llm = kind.Llm
+                    Llm = kind.Llm,
+                    Address = kind.Address
                 };
                 string handle = await registry.AddAsync(entry);
                 sessionId = null;

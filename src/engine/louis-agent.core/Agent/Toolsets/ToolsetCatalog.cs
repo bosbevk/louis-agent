@@ -2,7 +2,6 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
-
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
@@ -12,6 +11,7 @@ using LouisAgent.Core.Delegation;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;
+
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
 /// <see cref="Resolve"/> checks each name before any tool is built.
@@ -41,6 +41,14 @@ public static class ToolsetCatalog
                 .OfType<string>().ToList(),
             ToolTypes: [typeof(MinionTools)],
             CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
+
+        // F127.3.1: ask another agent by its address; the asker's Calls and the identities this instance runs decide.
+        new(CoreToolset.Agents.Wire(),
+            "Ask another agent by its address: an identity in its own voice, or one of its roles",
+            GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
+            MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
+            ToolTypes: [typeof(AskAgentTools)],
+            CreateTools: ctx => [new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink)]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
@@ -110,7 +118,11 @@ public static class ToolsetCatalog
         var unknown = requested.Where(n => Find(NameOf(n), toolsets) is null).ToList();
         if (unknown.Count > 0)
             throw new ToolsetException(MessageText.Format(AgentErrorMessage.UnknownToolsets,
-                new { Names = string.Join(", ", unknown), Valid = string.Join(", ", toolsets.Select(t => t.Name)) }));
+                new
+                {
+                    Names = string.Join(", ", unknown),
+                    Valid = string.Join(", ", toolsets.Select(t => t.Name))
+                }));
 
         var optional = requested.Where(IsOptional).Select(NameOf).ToHashSet(StringComparer.Ordinal);
         var resolved = toolsets.Where(t => requested.Select(NameOf).Contains(t.Name, StringComparer.Ordinal)).ToList();
@@ -122,7 +134,11 @@ public static class ToolsetCatalog
         foreach (var skipped in unavailable.Where(x => optional.Contains(x.Toolset.Name)))
         {
             Log.Log(LogLevel.Information, AgentLogMessage.OptionalToolsetSkipped,
-                new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
+                new
+                {
+                    skipped.Toolset.Name,
+                    Settings = string.Join(", ", skipped.Missing)
+                });
             resolved.Remove(skipped.Toolset);
         }
 
@@ -130,7 +146,11 @@ public static class ToolsetCatalog
         if (refused.Count > 0)
             throw new ToolsetException(string.Join(" ", refused.Select(x =>
                 MessageText.Format(AgentErrorMessage.ToolsetSettingsMissing,
-                    new { x.Toolset.Name, Settings = string.Join(", ", x.Missing) }))));
+                    new
+                    {
+                        x.Toolset.Name,
+                        Settings = string.Join(", ", x.Missing)
+                    }))));
 
         return resolved;
     }

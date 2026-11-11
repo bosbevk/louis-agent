@@ -107,7 +107,8 @@ public sealed class AgentEngineFactory
         var replay = _replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);
         Context = new ToolsetContext(agent, (services ?? HostServices.None).WebOrNone(agent, replay), rates,
-            usageSink, replay);
+            usageSink, replay)
+        { Identities = Catalog.Identities };
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>

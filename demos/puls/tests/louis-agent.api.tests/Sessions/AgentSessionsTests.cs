@@ -199,7 +199,8 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
 
     /// <summary>
-    /// A sub-session can't delegate further, the tree stops at the minion, and the old "agents" name is refused.
+    /// A sub-session can't delegate further, by either toolset, and the tree stops at the minion. (CL9's old name
+    /// for the specialists, <c>agents</c>, is since F127.3.1 the toolset that asks another agent.)
     /// </summary>
     [Test]
     public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
@@ -208,12 +209,11 @@ public class AgentSessionsTests
 
         Assert.That(() => sessions.Create([CoreToolset.Specialists.Wire()], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
+        Assert.That(() => sessions.Create([CoreToolset.Agents.Wire()], depth: 1),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
         Assert.That(() => sessions.Create([TestToolset.Files.Wire()], depth: 3),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
         Assert.That(sessions.Create([TestToolset.Files.Wire()], depth: 1).Depth, Is.EqualTo(1));
-        // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
-        Assert.That(() => sessions.Create(["agents"]),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain(CoreToolset.Specialists.Wire()));
     }
 
     /// <summary>

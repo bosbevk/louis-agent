@@ -127,4 +127,15 @@ public enum SubSessionToolMessage
 
     [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
     AddressNotCallable,
+
+    [Description(
+        "Error: '{Address}' is no agent's address. Write the agent's name, or its name and a role after a dot " +
+        "(acme.cook), in lowercase letters, digits and dashes.")]
+    AddressInvalid,
+
+    [Description("Error: this chat speaks for no agent, so it may ask none.")]
+    AskerNone,
+
+    [Description("{Answer}\n\n[Answered by {Address}]")]
+    AgentAnswer,
 }

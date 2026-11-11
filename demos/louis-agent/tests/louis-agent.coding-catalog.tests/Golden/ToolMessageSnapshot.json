@@ -1,8 +1,10 @@
 {
+  "AddressInvalid": "Error: '<Address>' is no agent's address. Write the agent's name, or its name and a role after a dot (acme.cook), in lowercase letters, digits and dashes.",
   "AddressNoVoice": "Error: <Identity> has no voice of its own to answer in. Ask one of its roles: <Roles>.",
   "AddressNotCallable": "Error: <Asker> may not call <Address>. The agents it may call: <Calls>.",
   "AddressUnknownIdentity": "Error: no agent here is called '<Identity>'. The agents here: <Identities>.",
   "AddressUnknownRole": "Error: <Identity> has no role '<Role>'. Its roles: <Roles>.",
+  "AgentAnswer": "<Answer>\n\n[Answered by <Address>]",
   "AgentToolApproved": "- <Name> [approved]: <Description>",
   "AgentToolNotLoaded": "- <Name> [pending from an earlier session, not loaded]",
   "AgentToolPending": "- <Name> [pending, active this session]: <Description>",
@@ -10,6 +12,7 @@
   "ApprovedToolExists": "Error: an approved tool named '<Name>' already exists; choose another name.",
   "ArgumentMissing": "- <Name>: <Meaning>",
   "ArgumentsMissing": "Error: <Tool> was NOT run: it needs every argument below. Call it again with them:\n<Missing>",
+  "AskerNone": "Error: this chat speaks for no agent, so it may ask none.",
   "AttachmentUnknown": "No attachment named '<Name>' in this conversation. Attached: <Attached>.",
   "BadDepartment": "'<Name>' in <File> is not a department name, or repeats one: letters, digits, dashes and underscores, each once.",
   "BadRunId": "'<RunId>' is not a run id: letters, digits, dashes and underscores only, up to 64 of them.",

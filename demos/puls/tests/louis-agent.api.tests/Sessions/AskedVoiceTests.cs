@@ -1,6 +1,7 @@
 using LouisAgent.Api.Sessions;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Packs.Calculator;
@@ -38,4 +39,11 @@ public class AskedVoiceTests
             Assert.That(session.Engine.Tools.Select(tool => tool.Name), Has.None.EqualTo("StartSubSession"));
         });
     }
+
+    /// <summary>An asked agent can't ask further: one level down, the <c>agents</c> toolset is refused.</summary>
+    [Test]
+    public void AnAskedAgent_CantAskFurther() =>
+        Assert.That(() => Sessions().Create([CoreToolset.Agents.Wire()], depth: 1,
+                identity: TestBusiness.Identity.Name),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("can't load the 'agents' toolset"));
 }

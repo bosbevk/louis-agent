@@ -58,10 +58,12 @@ internal static class ApiTestHost
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
         DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null,
         IReadOnlyList<IAgentPack>? morePacks = null, bool evals = true,
-        IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null)
+        IReadOnlyList<IAgentIdentity>? moreIdentities = null, OpenDoorOptions? openDoor = null,
+        IReadOnlyDictionary<string, Uri>? agentPeers = null)
     {
         // The same services as ApiStartup, on an in-memory test server instead of a port.
-        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities);
+        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel(), morePacks, moreIdentities,
+            agentPeers);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host, openDoor ?? OpenDoorOptions.Shut);
@@ -124,13 +126,15 @@ internal static class ApiTestHost
     public static AgentHostContext BareHost() => HostContext(RepoRoot, new NoModel());
 
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
-        IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null)
+        IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
+        IReadOnlyDictionary<string, Uri>? agentPeers = null)
     {
         var options = new AgentOptions
         {
             WorkspaceRoot = workspaceRoot,
             SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
-            RatesUrl = null
+            RatesUrl = null,
+            AgentPeers = agentPeers ?? new Dictionary<string, Uri>()
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         // A test may add an identity beside Puls's (F109.3: a session names its identity).
