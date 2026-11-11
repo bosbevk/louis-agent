@@ -116,6 +116,8 @@ public class SequenceBlocksTests
             var loop = (BlockStep)DiagramReader.Read(json).Sequence!.Steps[1];
             Assert.That(((BlockStep)loop.Steps[1]).Else!.Single().Label, Is.EqualTo("it fails"));
             Assert.That(json, Does.Contain("\"block\": \"alt\""));
+            // A loop is the first kind, but written all the same, so a person reading the file sees what it is.
+            Assert.That(json, Does.Contain("\"block\": \"loop\""));
             Assert.That(() => DiagramReader.Read(stranger),
                 Throws.TypeOf<InvalidDataException>().With.Message.Contains("'ghost'"));
         });

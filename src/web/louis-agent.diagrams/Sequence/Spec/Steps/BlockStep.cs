@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 /// <summary>
@@ -5,6 +7,8 @@ namespace LouisAgent.Diagrams.Sequence.Spec.Steps;
 /// follow in <c>Else</c>, each with its own steps.
 /// </summary>
 public sealed record BlockStep(
+    // Written always, though loop is the first kind, so a person reading the file sees what the block is.
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     BlockKind Block,
     string Label,
     IReadOnlyList<SequenceStep> Steps,
