@@ -212,8 +212,8 @@ on hover or on focus, CSS only; the one at the end of the bar opens its list rig
 (F122).
 
 **`Components/Graphs/GraphView`** draws a diagram from data (F111, the rules in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md)):
-a page declares a `GraphSpec` (`Graphs/`: nodes with an id, a label, a note and a column; edges between ids, with a
-word when one helps), `GraphLayout.Place` puts the columns across the width on one row grid, orders each by its
+a page declares a `GraphSpec` (in `louis-agent.diagrams`' `Flow/` since CL60.1, plain C# the docs' tool draws with
+too: nodes with an id, a label, a note and a column; edges between ids, with a word when one helps), `GraphLayout.Place` puts the columns across the width on one row grid, orders each by its
 neighbours and hands the arrows to `EdgeRouter`, which draws each as a connector (right-angle bends, one track per
 gap, back arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words
 that cross it and the bend just after a word, F119), and the view writes one SVG

@@ -1,6 +1,6 @@
+using LouisAgent.Diagrams.Flow;
 using LouisAgent.Site.Graphs;
 using LouisAgent.Site.Graphs.Framework;
-using LouisAgent.Web.Graphs;
 
 namespace LouisAgent.Site.Tests.Graphs;
 

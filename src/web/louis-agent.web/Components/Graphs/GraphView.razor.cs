@@ -1,6 +1,6 @@
 using System.Globalization;
-using LouisAgent.Web.Graphs;
-using LouisAgent.Web.Graphs.Placed;
+using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Placed;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Graphs;
@@ -22,13 +22,16 @@ public partial class GraphView
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     /// <summary>The boxes and arrows to draw.</summary>
-    [Parameter, EditorRequired] public GraphSpec Spec { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public GraphSpec Spec { get; set; } = default!;
 
     /// <summary>What the diagram shows, in a few words: the caption, and what a screen reader says.</summary>
-    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = "";
 
     /// <summary>The width the diagram is laid out at; the SVG scales to its box from there.</summary>
-    [Parameter] public int Width { get; set; } = 880;
+    [Parameter]
+    public int Width { get; set; } = 880;
 
     private PlacedGraph Placed => GraphLayout.Place(Spec, Width);
 
@@ -73,7 +76,8 @@ public partial class GraphView
     }
 
     /// <summary>The word on an arrow, just above its middle.</summary>
-    private MarkupString Word(PlacedEdge edge, string word) => Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
+    private MarkupString Word(PlacedEdge edge, string word) =>
+        Words("word", edge.WordX, edge.WordY - 7, word, EdgeStyle(edge));
 
     /// <summary>
     /// An SVG text element, centred on a point. Written as markup here because Razor keeps the <c>text</c> tag for

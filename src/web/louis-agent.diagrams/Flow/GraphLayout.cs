@@ -1,6 +1,6 @@
-using LouisAgent.Web.Graphs.Placed;
+using LouisAgent.Diagrams.Flow.Placed;
 
-namespace LouisAgent.Web.Graphs;
+namespace LouisAgent.Diagrams.Flow;
 
 /// <summary>
 /// Gives every box and arrow of a diagram its place (F111): the columns left to right across the width, a column's
@@ -18,11 +18,15 @@ public static class GraphLayout
 {
     private const double BoxWidth = 170;
     private const double BoxHeight = 52;
+
     /// <summary>What a line of the note adds to a box; the note wraps at <see cref="NoteWidth"/> characters of the code font.</summary>
     private const double NoteLine = 12;
+
     /// <summary>How many characters of the 10px code font fit a line inside the box.</summary>
     public const int NoteWidth = 25;
+
     private const double Gap = 18;
+
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
     private const double MinColumnGap = 60;
 
@@ -83,7 +87,9 @@ public static class GraphLayout
     private static List<GraphNode> ByNeighbours(List<GraphNode> column, List<GraphNode> beside,
         IReadOnlyList<GraphEdge> edges, Func<GraphEdge, string> mine, Func<GraphEdge, string> theirs)
     {
-        var place = beside.Select((node, index) => (node.Id, index)).ToDictionary(pair => pair.Id, pair => (double)pair.index);
+        var place = beside.Select((node, index) => (node.Id, index))
+            .ToDictionary(pair => pair.Id, pair => (double)pair.index);
+
         double Key(GraphNode node, int own)
         {
             var joined = edges.Where(edge => mine(edge) == node.Id && place.ContainsKey(theirs(edge)))
@@ -94,7 +100,9 @@ public static class GraphLayout
         var sorted = column.Select((node, index) => (node, key: Key(node, index))).OrderBy(pair => pair.key)
             .Select(pair => pair.node).ToList();
         // The data's order stands unless the sort takes crossings away: a column already clear keeps the order it was given.
-        return Crossings(sorted, beside, edges, mine, theirs) < Crossings(column, beside, edges, mine, theirs) ? sorted : column;
+        return Crossings(sorted, beside, edges, mine, theirs) < Crossings(column, beside, edges, mine, theirs)
+            ? sorted
+            : column;
     }
 
     /// <summary>How many pairs of arrows between the two columns cross each other.</summary>
@@ -108,11 +116,13 @@ public static class GraphLayout
         int crossings = 0;
         for (int a = 0; a < arrows.Count; a++)
             for (int b = a + 1; b < arrows.Count; b++)
-                if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0) crossings++;
+                if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0)
+                    crossings++;
         return crossings;
     }
 
-    private static double HeightOf(GraphNode node) => node.Note is null ? BoxHeight : BoxHeight + NoteLine * NoteLines(node.Note).Count;
+    private static double HeightOf(GraphNode node) =>
+        node.Note is null ? BoxHeight : BoxHeight + NoteLine * NoteLines(node.Note).Count;
 
     /// <summary>
     /// The note as the lines the box shows (FX85, Louis: "need wrapping"): words taken in order while a line holds
@@ -155,14 +165,15 @@ public static class GraphLayout
         var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
             .ToDictionary(pair => pair.Id, pair => pair.at);
         var forward = spec.Edges.Where(edge => columnOf.ContainsKey(edge.From) && columnOf.ContainsKey(edge.To)
-            && columnOf[edge.To] > columnOf[edge.From]).ToList();
+                                                                               && columnOf[edge.To] >
+                                                                               columnOf[edge.From]).ToList();
 
         double Gap(int gap)
         {
             var neighbours = forward.Where(edge => columnOf[edge.From] == gap && columnOf[edge.To] == gap + 1).ToList();
             var (source, target) = EdgeRouter.RoomsFor(neighbours, forward);
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
-                || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
+                                                 || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
             return Math.Max(MinColumnGap, Math.Max(source + target, EdgeRouter.GapFor(skipping)));
         }
 

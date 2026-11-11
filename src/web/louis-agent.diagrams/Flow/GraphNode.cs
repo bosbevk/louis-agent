@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Graphs;
+namespace LouisAgent.Diagrams.Flow;
 
 /// <summary>
 /// One box of a diagram: its id (what an edge names), the words on it, an optional line under them, and the column it

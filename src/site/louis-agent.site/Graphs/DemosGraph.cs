@@ -1,4 +1,4 @@
-using LouisAgent.Web.Graphs;
+using LouisAgent.Diagrams.Flow;
 
 namespace LouisAgent.Site.Graphs;
 

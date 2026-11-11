@@ -1,5 +1,5 @@
+using LouisAgent.Diagrams.Flow;
 using LouisAgent.Web.Components.Graphs;
-using LouisAgent.Web.Graphs;
 
 namespace LouisAgent.Web.Tests.Components.Graphs;
 
@@ -20,7 +20,8 @@ public class GraphViewTests
         [new GraphEdge("who", "voice"), new GraphEdge("who", "roles"), new GraphEdge("who", "packs", "names")]);
 
     private static IRenderedComponent<GraphView> Render(BunitContext ctx) =>
-        ctx.Render<GraphView>(parameters => parameters.Add(view => view.Spec, Identity()).Add(view => view.Title, "An identity, as files"));
+        ctx.Render<GraphView>(parameters =>
+            parameters.Add(view => view.Spec, Identity()).Add(view => view.Title, "An identity, as files"));
 
     /// <summary>Every box is a group, every arrow a path, the one word on its arrow, the root ready to reveal.</summary>
     [Test]
@@ -51,8 +52,10 @@ public class GraphViewTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(cut.FindAll("g.node").Select(node => node.GetAttribute("style")), Is.EquivalentTo(new[] { "--col: 0", "--col: 1", "--col: 1", "--col: 1" }));
-            Assert.That(cut.FindAll("path.edge").Select(edge => edge.GetAttribute("style")), Has.All.Contains("--len: ").And.All.EndsWith("--col: 0"));
+            Assert.That(cut.FindAll("g.node").Select(node => node.GetAttribute("style")),
+                Is.EquivalentTo(new[] { "--col: 0", "--col: 1", "--col: 1", "--col: 1" }));
+            Assert.That(cut.FindAll("path.edge").Select(edge => edge.GetAttribute("style")),
+                Has.All.Contains("--len: ").And.All.EndsWith("--col: 0"));
         });
     }
 

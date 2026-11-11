@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Graphs.Placed;
+namespace LouisAgent.Diagrams.Flow.Placed;
 
 /// <summary>
 /// An arrow with its path: the SVG path of its connector, straight pieces that bend at right angles, about how long

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Diagrams</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.diagrams.tests" />
+  </ItemGroup>
+
+  <!-- CL60.1 (Louis's pick P1 A): the framework's diagrams as plain C#, with no Blazor and no ASP.NET, so the site's
+       GraphView and the docs' tool draw with the same code (ADR 0092: what is reused together is one project). It
+       references no project and no package. -->
+
+</Project>
