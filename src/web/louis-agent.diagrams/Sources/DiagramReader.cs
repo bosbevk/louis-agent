@@ -128,32 +128,27 @@ public static class DiagramReader
             });
     }
 
-    /// <summary>A sequence has a step at least, and every step names participants the chart has.</summary>
+    /// <summary>
+    /// A sequence has a step at least, a note stands over someone, and every step names participants the chart has.
+    /// </summary>
     private static void CheckSequence(SequenceSpec sequence)
     {
         if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps, new { });
+        if (sequence.Steps.OfType<NoteStep>().FirstOrDefault(note => note.Over.Count == 0) is { } bare)
+            throw Refused(DiagramMessage.NoteOverNoOne, new { bare.Text });
 
         var ids = sequence.Participants.Select(head => head.Id).ToHashSet(StringComparer.Ordinal);
-        var stray = sequence.Steps.Select(Ends)
-            .FirstOrDefault(ends => !ids.Contains(ends.From) || !ids.Contains(ends.To));
+        var stray = sequence.Steps
+            .SelectMany(step => step.Names().Where(id => !ids.Contains(id)).Select(id => (Step: step, Id: id)))
+            .FirstOrDefault();
         if (stray == default) return;
         throw Refused(DiagramMessage.UnknownParticipant,
             new
             {
-                stray.From,
-                stray.To,
-                Id = ids.Contains(stray.From) ? stray.To : stray.From
+                stray.Id,
+                Step = stray.Step.ToString()
             });
     }
-
-    /// <summary>Who a step runs between.</summary>
-    private static (string From, string To) Ends(SequenceStep step) =>
-        step switch
-        {
-            MessageStep message => (message.From, message.To),
-            ReplyStep reply => (reply.From, reply.To),
-            _ => throw new NotSupportedException(step.GetType().Name)
-        };
 
     /// <summary>The refusal, its text from the message enum.</summary>
     private static InvalidDataException Refused(DiagramMessage message, object values) =>

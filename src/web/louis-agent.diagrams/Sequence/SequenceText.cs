@@ -65,4 +65,21 @@ public static class SequenceText
         double left = row.Self ? row.FromX + SelfOut + WordPad : (row.FromX + row.ToX) / 2 - width / 2;
         return (left, row.Y + TextTop - WordPad / 2, width, height);
     }
+
+    /// <summary>How far a note reaches past the outermost lifelines it stands over, and its room above.</summary>
+    public const double NoteReach = 16, NoteTop = 4;
+
+    /// <summary>How wide a note is: its words, or the span of its lifelines and a reach each side, the wider.</summary>
+    public static double NoteWidth(IReadOnlyList<string> lines, double span) =>
+        Math.Max(WordsWidth(lines), span + 2 * NoteReach);
+
+    /// <summary>How tall a note's panel is for its lines.</summary>
+    public static double NoteHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * WordPad;
+
+    /// <summary>The panel a note stands on, centred over the lifelines it names.</summary>
+    public static (double X, double Y, double W, double H) NoteBox(PlacedRow row)
+    {
+        double width = NoteWidth(row.Lines, row.ToX - row.FromX);
+        return ((row.FromX + row.ToX) / 2 - width / 2, row.Y + NoteTop, width, NoteHeight(row.Lines));
+    }
 }

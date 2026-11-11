@@ -31,8 +31,11 @@ public enum DiagramMessage
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
 
-    [Description("The step from '{From}' to '{To}' names '{Id}', which no participant in the diagram has.")]
+    [Description("A step names '{Id}', which no participant in the diagram has: \"{Step}\".")]
     UnknownParticipant,
+
+    [Description("A note stands over the lifelines it names, so it names one at least: \"{Text}\".")]
+    NoteOverNoOne,
 
     [Description("A sequence needs at least one step: a message, a reply, a note or a block.")]
     NoSteps,
