@@ -30,6 +30,11 @@ internal static class Clearance
                                                               && Segments(other.Path).Any(piece =>
                                                                   Covers(piece, x, y, w, h))))
                 yield return $"the word '{word}' lies on the line {other.Edge.From}>{other.Edge.To}";
+            // Each pair of words once: this word against the words of the arrows after it.
+            foreach (var other in placed.Edges.SkipWhile(other => other != edge).Skip(1)
+                         .Where(other => other.Edge.Word is { } otherWord
+                                         && Overlap((x, y, w, h), WordBox(other, otherWord))))
+                yield return $"the word '{word}' overlaps the word '{other.Edge.Word}'";
         }
     }
 
@@ -50,6 +55,11 @@ internal static class Clearance
             .ToList();
         return points.Zip(points.Skip(1));
     }
+
+    /// <summary>Whether two words' ground overlaps.</summary>
+    private static bool Overlap((double X, double Y, double W, double H) a,
+        (double X, double Y, double W, double H) b) =>
+        a.X < b.X + b.W && b.X < a.X + a.W && a.Y < b.Y + b.H && b.Y < a.Y + a.H;
 
     /// <summary>Whether a straight piece passes through the ground a word covers.</summary>
     private static bool Covers(((double X, double Y) A, (double X, double Y) B) piece, double x, double y, double w,

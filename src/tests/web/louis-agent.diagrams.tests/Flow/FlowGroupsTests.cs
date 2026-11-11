@@ -122,6 +122,37 @@ public class FlowGroupsTests
         Assert.That(Math.Abs(at["b"].X - at["a"].X), Is.LessThan(at["wide"].W));
     }
 
+    /// <summary>
+    /// Arrows from outside into a group bend outside its frame, not along its margin (Louis, of the checks chart).
+    /// </summary>
+    [Test]
+    public void ArrowsIntoAGroup_BendOutsideItsFrame()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("general", "the general checks"), new GraphNode("pack", "a pack's checks"),
+                new GraphNode("catalog", "CheckCatalog", Group: "project"),
+                new GraphNode("check", "ICheck", Group: "project")
+            ],
+            [
+                new GraphEdge("general", "catalog", "lists its entries"),
+                new GraphEdge("pack", "catalog", "lists its entries"),
+                new GraphEdge("catalog", "check")
+            ],
+            FlowDirection.Down,
+            [new GraphGroup("project", "This project")]);
+
+        var placed = GraphLayout.Place(spec);
+
+        var frame = placed.Groups.Single();
+        var into = placed.Edges.First(edge => edge.Edge.To == "catalog" && edge.Path.Contains('Q'));
+        // The bend is the height the path runs along at: the one y two of its points share.
+        var ys = into.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
+            .Where((_, at) => at % 2 == 1).ToList();
+        double bend = ys.GroupBy(y => y).Where(same => same.Count() > 1).Select(same => same.Key).Single();
+        Assert.That(bend, Is.LessThan(frame.Y), "it runs along above the frame, then drops in");
+    }
+
     /// <summary>A diagram without groups has no frame, so the site's diagrams draw as before.</summary>
     [Test]
     public void NoGroups_NoFrames() =>

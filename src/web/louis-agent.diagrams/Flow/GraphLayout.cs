@@ -181,6 +181,7 @@ public static class GraphLayout
     /// </summary>
     private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned)
     {
+        var groupOf = spec.Nodes.ToDictionary(node => node.Id, node => node.Group);
         var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
             .ToDictionary(pair => pair.Id, pair => pair.at);
         var forward = spec.Edges.Where(edge => columnOf.ContainsKey(edge.From) && columnOf.ContainsKey(edge.To)
@@ -191,10 +192,12 @@ public static class GraphLayout
         {
             var neighbours = forward.Where(edge => columnOf[edge.From] == gap && columnOf[edge.To] == gap + 1).ToList();
             var (source, target) = EdgeRouter.RoomsFor(neighbours, forward, turned);
+            var (frameOut, frameIn) = EdgeRouter.FrameRooms(neighbours, id => groupOf[id], turned);
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
                                                  || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
-            return Math.Max(MinColumnGap,
-                Math.Max(source + target + EdgeRouter.TracksRoom(neighbours), EdgeRouter.GapFor(skipping, turned)));
+            return Math.Max(MinColumnGap, Math.Max(source + target + frameOut + frameIn
+                                                   + EdgeRouter.TracksRoom(neighbours),
+                EdgeRouter.GapFor(skipping, turned)));
         }
 
         return Enumerable.Range(0, Math.Max(0, columns.Count - 1)).Select(Gap).ToList();

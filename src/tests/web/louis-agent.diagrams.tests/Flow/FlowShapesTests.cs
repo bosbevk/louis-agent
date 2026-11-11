@@ -264,35 +264,27 @@ public class FlowShapesTests
     }
 
     /// <summary>
-    /// Down, a word whose right side another line runs through stands left of its own line instead (the accounts
-    /// chart: the tenant's line through the GET and PUT word).
+    /// A box that both sends and receives an arrow back sends from a little above its middle and receives a little
+    /// below, so the two never share a stretch (the MCP chart's EngineToolSync).
     /// </summary>
     [Test]
-    public void AWordWithALineOnItsRight_StandsOnItsLeft()
+    public void ABoxWithArrowsBackBothWays_SendsAndReceivesApart()
     {
         var spec = new GraphSpec(
+            [new GraphNode("client", "Client"), new GraphNode("sync", "Sync"), new GraphNode("engine", "Engine")],
             [
-                new GraphNode("browser", "Browser app"), new GraphNode("tenant", "UseTenant"),
-                new GraphNode("identity", "Identity's routes"), new GraphNode("handlers", "AccountHandlers"),
-                new GraphNode("managers", "UserManager"), new GraphNode("store", "AccountUserStore")
-            ],
-            [
-                new GraphEdge("browser", "identity", "POST /account/login"),
-                new GraphEdge("browser", "handlers", "GET /account/me, PUT\n/profile, POST /logout,\nDELETE /account"),
-                new GraphEdge("identity", "managers"), new GraphEdge("handlers", "managers"),
-                new GraphEdge("managers", "store"), new GraphEdge("tenant", "store")
+                new GraphEdge("client", "sync"), new GraphEdge("sync", "engine"), new GraphEdge("sync", "client"),
+                new GraphEdge("engine", "sync")
             ],
             FlowDirection.Down);
 
         var placed = GraphLayout.Place(spec);
 
-        var word = placed.Edges.Single(edge => edge.Edge.Word?.StartsWith("GET") == true);
-        var tenant = placed.Edges.Single(edge => edge.Edge.From == "tenant");
-        double width = FlowText.WordWidth(word.Edge.Word!);
-        var xs = tenant.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .Where((_, at) => at % 2 == 0).ToList();
-        Assert.That(xs.Where(x => x > word.WordX - width / 2 && x < word.WordX + width / 2), Is.Empty,
-            "the tenant's line passes clear of the word");
+        string First(string path) => string.Join(' ', path.Split(' ').Skip(1).Take(2));
+        string Last(string path) => string.Join(' ', path.Split(' ').TakeLast(2));
+        var outOf = placed.Edges.Single(edge => edge.Edge is { From: "sync", To: "client" });
+        var into = placed.Edges.Single(edge => edge.Edge is { From: "engine", To: "sync" });
+        Assert.That(First(outOf.Path), Is.Not.EqualTo(Last(into.Path)));
     }
 
     /// <summary>Down, an arrow's word starts just right of its line, and the drawing holds it.</summary>

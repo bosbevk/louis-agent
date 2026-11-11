@@ -24,7 +24,18 @@ internal static class Turn
     public static PlacedGraph Back(PlacedGraph placed)
     {
         var turned = Turned(placed);
-        var edges = turned.Edges.Select(edge => edge with { WordX = Beside(edge, turned.Edges) }).ToList();
+        // One word at a time, each clear of the lines and of the words already placed.
+        var words = new List<(double Left, double Right, double Top, double Bottom)>();
+        var edges = new List<PlacedEdge>();
+        foreach (var edge in turned.Edges)
+        {
+            var beside = edge with { WordX = Beside(edge, turned.Edges, words) };
+            edges.Add(beside);
+            if (beside.Edge.Word is { } word)
+                words.Add((beside.WordX - Half(beside), beside.WordX + Half(beside), beside.WordY - 16,
+                    beside.WordY - 16 + FlowText.WordStep * FlowText.WordLines(word).Count));
+        }
+
         double left = edges.Count == 0 ? 0 : Math.Min(0, edges.Min(edge => edge.WordX - Half(edge)) - BesideGap);
         double right = edges.Count == 0 ? 0 : edges.Max(edge => edge.WordX + Half(edge));
         // A word left of a line by the drawing's edge moves everything right a little to stay inside.
@@ -37,21 +48,30 @@ internal static class Turn
     }
 
     /// <summary>
-    /// Where a word stands beside its upright line: on its right, unless another line runs through it there and the
-    /// left is clear (Louis: no word under a line).
+    /// Where a word stands beside its upright line: on its right, unless another line or word is there and the left
+    /// is clear (Louis: no word under a line). When neither side is wholly clear, the side clear of words wins, since
+    /// a word over a word can't be read at all.
     /// </summary>
-    private static double Beside(PlacedEdge edge, IReadOnlyList<PlacedEdge> all)
+    private static double Beside(PlacedEdge edge, IReadOnlyList<PlacedEdge> all,
+        IReadOnlyList<(double Left, double Right, double Top, double Bottom)> words)
     {
         double rightX = edge.WordX + BesideGap + Half(edge), leftX = edge.WordX - BesideGap - Half(edge);
         if (edge.Edge.Word is not { } word) return rightX;
         double top = edge.WordY - 16, bottom = top + FlowText.WordStep * FlowText.WordLines(word).Count;
 
-        bool Clear(double middle) => !all.Where(other => other != edge).SelectMany(other => Pieces(other.Path))
+        bool ClearOfLines(double middle) => !all.Where(other => other != edge)
+            .SelectMany(other => Pieces(other.Path))
             .Any(piece => Math.Min(piece.A.X, piece.B.X) < middle + Half(edge)
                           && Math.Max(piece.A.X, piece.B.X) > middle - Half(edge)
                           && Math.Min(piece.A.Y, piece.B.Y) < bottom && Math.Max(piece.A.Y, piece.B.Y) > top);
 
-        return Clear(rightX) || !Clear(leftX) ? rightX : leftX;
+        bool ClearOfWords(double middle) => !words.Any(other => other.Left < middle + Half(edge)
+                                                                && other.Right > middle - Half(edge)
+                                                                && other.Top < bottom && other.Bottom > top);
+
+        if (ClearOfLines(rightX) && ClearOfWords(rightX)) return rightX;
+        if (ClearOfLines(leftX) && ClearOfWords(leftX)) return leftX;
+        return ClearOfWords(rightX) || !ClearOfWords(leftX) ? rightX : leftX;
     }
 
     /// <summary>A path's straight pieces, a curve's corner counted as the point it turns at.</summary>

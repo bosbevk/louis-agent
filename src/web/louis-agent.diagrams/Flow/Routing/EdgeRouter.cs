@@ -169,7 +169,9 @@ internal static class EdgeRouter
         // Every arrow from the same column's right edge to the same column's left edge shares this gap.
         var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
             .ToList();
-        var (source, target) = RoomsFor(gap, forward, turned);
+        var (words, wordsIn) = RoomsFor(gap, forward, turned);
+        var (frameOut, frameIn) = FrameRooms(gap, id => byId[id].Node.Group, turned);
+        double source = words + frameOut, target = wordsIn + frameIn;
         // Several sources feeding several boxes each bend on a track of their own, top to bottom (CL60.2), so a
         // reader can follow who feeds whom; the room for those tracks comes off the gap first.
         var sources = TrackOrder(gap, byId);
@@ -201,6 +203,20 @@ internal static class EdgeRouter
     }
 
     /// <summary>
+    /// The room a group's frame takes out of a gap an arrow crosses into or out of it (Louis, of the checks chart): on
+    /// the source's side the frame's margin when an arrow leaves a group, on the target's side its margin, and its
+    /// label once turned back, when one enters a group; so the bend stands outside every frame.
+    /// </summary>
+    public static (double Source, double Target) FrameRooms(IEnumerable<GraphEdge> between,
+        Func<string, string?> groupOf, bool turned)
+    {
+        var arrows = between.ToList();
+        bool leaves = arrows.Any(edge => groupOf(edge.From) is { } group && group != groupOf(edge.To));
+        bool enters = arrows.Any(edge => groupOf(edge.To) is { } group && group != groupOf(edge.From));
+        return (leaves ? Bands.Pad + 8 : 0, enters ? Bands.Pad + 8 + (turned ? Bands.LabelRoom : 0) : 0);
+    }
+
+    /// <summary>
     /// The room a gap's arrows need for tracks of their own: none when one box feeds the rest or all feed one box,
     /// where they join on one track (Louis: "conformity"); otherwise a step for each source after the first.
     /// </summary>
@@ -220,15 +236,19 @@ internal static class EdgeRouter
         double height)
     {
         var targets = back.Select(edge => edge.To).Distinct().ToList();
+        var sources = back.Select(edge => edge.From).ToHashSet();
         foreach (var edge in back)
         {
             var from = byId[edge.From];
             var to = byId[edge.To];
             int at = targets.IndexOf(edge.To);
             // Straight out of the source's bottom middle to the lane, in a chart that runs down its right side
-            // (Louis, of the runner and MCP charts); a box in the way sends it on a detour instead.
-            double x1 = from.X + from.W / 2, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
-            double entry = to.X + to.W / 2, y2 = to.Y + to.H;
+            // (Louis, of the runner and MCP charts); a box in the way sends it on a detour instead. A box that both
+            // sends and receives one sends a little before its middle and receives a little after, so the two
+            // never share a stretch.
+            double outAt = targets.Contains(edge.From) ? 0.4 : 0.5, inAt = sources.Contains(edge.To) ? 0.6 : 0.5;
+            double x1 = from.X + from.W * outAt, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
+            double entry = to.X + to.W * inAt, y2 = to.Y + to.H;
             yield return new Plan(edge, [(x1, y1), (x1, lane), (entry, lane), (entry, y2)], (x1 + entry) / 2,
                 lane + 4);
         }

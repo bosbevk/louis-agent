@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 948 252" width="948" height="252" role="img" aria-label="A system in groups" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 996 252" width="996" height="252" role="img" aria-label="A system in groups" xmlns="http://www.w3.org/2000/svg">
   <title>A system in groups</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
@@ -38,24 +38,24 @@
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="948" height="252" rx="14" />
-  <rect class="group" x="218" y="0" width="682" height="98" rx="12" />
-  <text class="group-label" x="230" y="18" text-anchor="start">louis-agent</text>
-  <rect class="group" x="706" y="106" width="194" height="98" rx="12" />
-  <text class="group-label" x="718" y="124" text-anchor="start">logs/</text>
-  <path class="edge" d="M 170 60 L 230 60" marker-end="url(#arrow)" />
-  <path class="edge" d="M 400 60 L 460 60" marker-end="url(#arrow)" />
-  <path class="edge" d="M 630 60 L 718 60" marker-end="url(#arrow)" />
-  <path class="edge dashed" d="M 630 60 L 686 60 Q 694 60 694 68 L 694 158 Q 694 166 702 166 L 718 166" marker-end="url(#arrow)" />
-  <text class="word" x="662" y="53" text-anchor="middle">writes</text>
+  <rect class="ground" x="-24" y="-24" width="996" height="252" rx="14" />
+  <rect class="group" x="226" y="0" width="722" height="98" rx="12" />
+  <text class="group-label" x="238" y="18" text-anchor="start">louis-agent</text>
+  <rect class="group" x="754" y="106" width="194" height="98" rx="12" />
+  <text class="group-label" x="766" y="124" text-anchor="start">logs/</text>
+  <path class="edge" d="M 170 60 L 238 60" marker-end="url(#arrow)" />
+  <path class="edge" d="M 408 60 L 468 60" marker-end="url(#arrow)" />
+  <path class="edge" d="M 638 60 L 766 60" marker-end="url(#arrow)" />
+  <path class="edge dashed" d="M 638 60 L 714 60 Q 722 60 722 68 L 722 158 Q 722 166 730 166 L 766 166" marker-end="url(#arrow)" />
+  <text class="word" x="680" y="53" text-anchor="middle">writes</text>
   <rect class="box" x="0" y="34" width="170" height="52" rx="10" />
   <text class="label" x="85" y="65" text-anchor="middle">Developer</text>
-  <rect class="box" x="230" y="34" width="170" height="52" rx="10" />
-  <text class="label" x="315" y="65" text-anchor="middle">A host</text>
-  <rect class="box" x="460" y="34" width="170" height="52" rx="10" />
-  <text class="label" x="545" y="65" text-anchor="middle">The engine</text>
-  <rect class="box" x="718" y="34" width="170" height="52" rx="10" />
-  <text class="label" x="803" y="65" text-anchor="middle">The tools</text>
-  <rect class="box" x="718" y="140" width="170" height="52" rx="10" />
-  <text class="label" x="803" y="171" text-anchor="middle">The ledger</text>
+  <rect class="box" x="238" y="34" width="170" height="52" rx="10" />
+  <text class="label" x="323" y="65" text-anchor="middle">A host</text>
+  <rect class="box" x="468" y="34" width="170" height="52" rx="10" />
+  <text class="label" x="553" y="65" text-anchor="middle">The engine</text>
+  <rect class="box" x="766" y="34" width="170" height="52" rx="10" />
+  <text class="label" x="851" y="65" text-anchor="middle">The tools</text>
+  <rect class="box" x="766" y="140" width="170" height="52" rx="10" />
+  <text class="label" x="851" y="171" text-anchor="middle">The ledger</text>
 </svg>
