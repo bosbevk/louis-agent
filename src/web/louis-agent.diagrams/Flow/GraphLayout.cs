@@ -28,6 +28,9 @@ public static class GraphLayout
     /// <summary>How many characters of the 10px code font fit a line inside the box.</summary>
     public const int NoteWidth = 25;
 
+    /// <summary>How wide a character of the label's 600 12px code font is, and the room beside a line.</summary>
+    public const double LabelCharWidth = 7.6, LabelPad = 14;
+
     private const double Gap = 18;
 
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
@@ -46,8 +49,10 @@ public static class GraphLayout
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
         var gaps = Gaps(spec, columns);
-        width = Math.Max(width, (int)Math.Ceiling(columns.Count * BoxWidth + gaps.Sum()));
-        var lefts = Lefts(gaps, columns.Count, width);
+        // A column is as wide as its widest box: a label's longest line, never less than the site's box.
+        var widths = columns.Select(column => column.Max(WidthOf)).ToList();
+        width = Math.Max(width, (int)Math.Ceiling(widths.Sum() + gaps.Sum()));
+        var lefts = Lefts(gaps, widths, width);
         // Every box sits on one row grid, each row as tall as the tallest box, a shorter column centred on it (Louis:
         // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
         // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
@@ -62,7 +67,7 @@ public static class GraphLayout
             foreach (var node in columns[at])
             {
                 double h = HeightOf(node);
-                nodes.Add(new PlacedNode(node, x, y + (row - h) / 2, BoxWidth, h));
+                nodes.Add(new PlacedNode(node, x, y + (row - h) / 2, widths[at], h));
                 y += row + Gap;
             }
         }
@@ -132,8 +137,16 @@ public static class GraphLayout
         return crossings;
     }
 
-    private static double HeightOf(GraphNode node) =>
-        node.Note is null ? BoxHeight : BoxHeight + NoteLine * NoteLines(node.Note).Count;
+    /// <summary>A box's height: a line more for each label line after the first, and the note's lines.</summary>
+    private static double HeightOf(GraphNode node)
+    {
+        double label = BoxHeight + FlowText.LabelStep * (FlowText.LabelLines(node).Count - 1);
+        return node.Note is null ? label : label + NoteLine * NoteLines(node.Note).Count;
+    }
+
+    /// <summary>A box's width: its label's longest line and the room beside it, never less than the site's box.</summary>
+    private static double WidthOf(GraphNode node) =>
+        Math.Max(BoxWidth, FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad);
 
     /// <summary>
     /// The note as the lines the box shows (FX85, Louis: "need wrapping"), wrapped at <see cref="NoteWidth"/>
@@ -177,17 +190,17 @@ public static class GraphLayout
     /// Where each column starts: the first at the left edge and the last at the right, each gap its own room plus an
     /// even share of what the width has to spare; one column alone stands in the middle.
     /// </summary>
-    private static List<double> Lefts(List<double> gaps, int count, int width)
+    private static List<double> Lefts(List<double> gaps, List<double> widths, int width)
     {
-        if (count == 1) return [(width - BoxWidth) / 2];
+        if (widths.Count == 1) return [(width - widths[0]) / 2];
 
-        double spare = gaps.Count == 0 ? 0 : (width - count * BoxWidth - gaps.Sum()) / gaps.Count;
+        double spare = gaps.Count == 0 ? 0 : (width - widths.Sum() - gaps.Sum()) / gaps.Count;
         var lefts = new List<double>();
         double x = 0;
-        for (int at = 0; at < count; at++)
+        for (int at = 0; at < widths.Count; at++)
         {
             lefts.Add(x);
-            if (at < gaps.Count) x += BoxWidth + gaps[at] + spare;
+            if (at < gaps.Count) x += widths[at] + gaps[at] + spare;
         }
 
         return lefts;

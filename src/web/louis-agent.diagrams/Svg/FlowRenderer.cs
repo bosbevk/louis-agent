@@ -32,10 +32,12 @@ internal sealed class FlowRenderer : IDiagramRenderer
         {
             double middle = node.X + node.W / 2;
             writer.Box(node.X, node.Y, node.W, node.H, 10, "box");
-            writer.Text(middle, node.Y + FlowText.LabelY(node), node.Node.Label, "label");
+            var label = FlowText.LabelLines(node.Node);
+            for (int at = 0; at < label.Count; at++)
+                writer.Text(middle, node.Y + FlowText.LabelY(node) + FlowText.LabelStep * at, label[at], "label");
             var lines = node.Node.Note is { } note ? GraphLayout.NoteLines(note) : [];
             for (int at = 0; at < lines.Count; at++)
-                writer.Text(middle, node.Y + FlowText.NoteTop + FlowText.NoteStep * at, lines[at], "note");
+                writer.Text(middle, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note");
         }
 
         if (source.Caption is not { } caption)
