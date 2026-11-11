@@ -4,12 +4,19 @@ using LouisAgent.Orchestrator.Client;
 
 namespace LouisAgent.Orchestrator.Tests;
 
+/// <summary>
+/// How the orchestrator reads louis-agent's answer: the stream folded into text, tool calls, a stop reason and what it
+/// used, and the FIX-RESULT line a fix ends with, even when the model wrote it as broken JSON.
+/// </summary>
 public class LouisAgentClientTests
 {
     /// <summary>The stream as the client reads it: the same SSE text, as bytes.</summary>
     private static MemoryStream Bytes(string sse) => new(System.Text.Encoding.UTF8.GetBytes(sse));
 
-    // The shape louis-agent.api streams (see the Claude format in src/hosts/louis-agent.api/Sessions/Streaming/Claude).
+    /// <summary>
+    /// A fix as louis-agent.api streams it (the Claude format in src/hosts/louis-agent.api/Sessions/Streaming/Claude):
+    /// a failed tool call, then the answer with its FIX-RESULT line.
+    /// </summary>
     private const string Stream = """
                                   event: message_start
                                   data: {"type":"message_start","message":{"session_id":"sess_1","role":"assistant"}}
@@ -40,6 +47,9 @@ public class LouisAgentClientTests
 
                                   """;
 
+    /// <summary>
+    /// The answer's text, each tool call with its result, and how the turn ended, with progress as it goes.
+    /// </summary>
     [Test]
     public async Task ReadStream_CollectsTextToolCallsAndStopReason()
     {
@@ -56,10 +66,10 @@ public class LouisAgentClientTests
         Assert.That(progress, Has.Some.Contains("error"));
     }
 
+    /// <summary>The turn's usage comes from message_delta, with Claude's field names (F3).</summary>
     [Test]
     public async Task ReadStream_ReadsTheTurnsUsageFromMessageDelta()
     {
-        // F3: louis-agent.api puts the turn's usage on message_delta, with Claude's field names.
         const string stream = """
                               event: message_delta
                               data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1900,"cache_creation_input_tokens":3000,"cache_read_input_tokens":26000,"output_tokens":412,"requests":3,"cost":0.0061,"currency":"USD","unpriced":0}}
@@ -72,6 +82,7 @@ public class LouisAgentClientTests
         Assert.That(reply.Currency, Is.EqualTo("USD"));
     }
 
+    /// <summary>Usage the API couldn't price has no cost, never a cost of 0.</summary>
     [Test]
     public async Task ReadStream_UnpricedUsage_HasNoCost()
     {
@@ -87,10 +98,13 @@ public class LouisAgentClientTests
             Is.EqualTo(((decimal?)null, 1, (string?)null)));
     }
 
+    /// <summary>
+    /// A failed reply keeps its error and what it used: the requests made before the failure were charged, and the
+    /// error event carries them (FX6).
+    /// </summary>
     [Test]
     public async Task ReadStream_FailedReply_KeepsTheErrorAndItsUsage()
     {
-        // FX6: the requests made before a failure were charged; the error event carries them.
         const string stream = """
                               event: error
                               data: {"type":"error","error":{"type":"api_error","message":"HttpRequestException: 529 overloaded"},"usage":{"input_tokens":1200,"cache_creation_input_tokens":0,"cache_read_input_tokens":24000,"output_tokens":300,"requests":2,"cost":0.004,"currency":"USD","unpriced":0}}
@@ -103,15 +117,16 @@ public class LouisAgentClientTests
         Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 2, 1_200, 0, 24_000, 300, 0.004m, 0)));
     }
 
+    /// <summary>An API that records no usage leaves it empty, and the orchestrator works as before.</summary>
     [Test]
     public async Task ReadStream_NoUsage_IsNull()
     {
-        // An API that doesn't record usage, or an older one: the orchestrator works as before.
         var reply = await LouisAgentClient.ReadStreamAsync(Bytes(Stream));
 
         Assert.That(reply.Usage, Is.Null);
     }
 
+    /// <summary>Text blocks split by a tool call stay apart, never run together.</summary>
     [Test]
     public async Task ReadStream_KeepsTextBlocksApart()
     {
@@ -137,6 +152,7 @@ public class LouisAgentClientTests
         Assert.That(reply.Text, Is.EqualTo("Let me look at the code:\n\nNow the fix."));
     }
 
+    /// <summary>An error event ends up as the reply's error.</summary>
     [Test]
     public async Task ReadStream_ReportsAnErrorEvent()
     {
@@ -150,6 +166,7 @@ public class LouisAgentClientTests
         Assert.That(reply.Error, Is.EqualTo("prompt is too long"));
     }
 
+    /// <summary>The FIX-RESULT line at the end of a streamed answer reads into its fields.</summary>
     [Test]
     public async Task ParseFixResult_ReadsTheStreamedResultLine()
     {
@@ -162,6 +179,7 @@ public class LouisAgentClientTests
         Assert.That(result.Branch, Is.EqualTo("fix/x"));
     }
 
+    /// <summary>With more than one line the last counts, and backticks around the JSON are fine.</summary>
     [Test]
     public void ParseFixResult_UsesTheLastLine_AndAcceptsBackticks()
     {
@@ -176,11 +194,14 @@ public class LouisAgentClientTests
         Assert.That(result.Reason, Is.EqualTo("tests keep failing"));
     }
 
+    /// <summary>
+    /// A summary with unescaped quotes still reads (FX8, from the full demo of 2026-10-11): valid in every way but the
+    /// quotes around "Cher", so not valid JSON, and the orchestrator read "none" and asked louis-agent to continue
+    /// three times.
+    /// </summary>
     [Test]
     public void ParseFixResult_UnescapedQuotesInTheSummary_StillReadsTheResult()
     {
-        // FX8, from the full demo of 2026-10-11: valid in every way but the quotes around "Cher", so not valid JSON. The
-        // orchestrator read "none" and asked louis-agent to continue three times.
         const string text = """
                             Committed the fix.
                             FIX-RESULT: {"status":"fixed","commit":"13eb2b0","branch":"fix/customer-initials-9c8637c0128d","tests":"16/16 passed","summary":"Single-word names now return one initial and multi-word names use the first and last word, so order 1012 ("Cher") no longer throws IndexOutOfRangeException."}
@@ -194,6 +215,7 @@ public class LouisAgentClientTests
             null)));
     }
 
+    /// <summary>A failure's reason with unescaped quotes still reads.</summary>
     [Test]
     public void ParseFixResult_UnescapedQuotesInAReason_StillReadsTheFailure()
     {
@@ -206,13 +228,17 @@ public class LouisAgentClientTests
             Is.EqualTo(("failed", "the \"Cher\" case needs a product decision", "15/16 passed")));
     }
 
+    /// <summary>No line, a line that isn't JSON at all, or one without a status: no result.</summary>
     [TestCase("All done, no result line.")]
     [TestCase("FIX-RESULT: {not json}")]
     [TestCase("FIX-RESULT: {\"commit\":\"abc1234\"}")]
     public void ParseFixResult_WithoutAValidLine_IsNull(string text) =>
         Assert.That(LouisAgentClient.ParseFixResult(text), Is.Null);
 
-    // CL3: the texts that reach the models moved into OrchestratorToolMessage; these pin the ones no other test reads.
+    /// <summary>
+    /// A request the API refuses is reported with its status and body. The texts that reach the models moved into
+    /// OrchestratorToolMessage (CL3); this and the next pin the ones no other test reads.
+    /// </summary>
     [Test]
     public async Task AFailedRequest_IsReportedWithItsStatusAndBody()
     {
@@ -223,6 +249,7 @@ public class LouisAgentClientTests
         Assert.That(reply.Error, Is.EqualTo("HTTP 404: no session sess_1"));
     }
 
+    /// <summary>The follow-up after a fix with no result asks for the FIX-RESULT line.</summary>
     [Test]
     public void TheFollowUp_AsksForTheFixResult()
     {
@@ -230,8 +257,10 @@ public class LouisAgentClientTests
             Is.EqualTo("Continue the fix from where you stopped. Finish with the FIX-RESULT line."));
     }
 
+    /// <summary>An API that has no such session.</summary>
     private sealed class Failing : HttpMessageHandler
     {
+        /// <summary>Every request gets a 404 naming the session.</summary>
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken) =>
             Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
