@@ -44,7 +44,7 @@ flowchart LR
     Engine -- "tool calls" --> Repo
     Api -- "/v1/workspace, /v1/git" --> Repo
     Orch -. "verifies: git, replay, tests" .-> Repo
-    Api -- "StartSubSession:<br/>sessions + SSE (F5)" --> Peer["another louis-agent.api<br/>(a specialist, e.g. Puls's)"]
+    Api -- "AskAgent:<br/>sessions + SSE (F5, F127.3.1)" --> Peer["another agent's address<br/>(this API or a peer)"]
 ```
 
 Every host is a thin adapter around the same `AgentEngine`: it turns its protocol's input into a prompt and the
@@ -127,7 +127,7 @@ sequenceDiagram
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /v1/sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `role`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201` with `Location: /v1/sessions/{id}` and `{ "session_id", "created_at", "toolsets", "depth", "role", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, role, LLM profile or time zone |
+| `POST /v1/sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `role`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `AskAgent` for a sub-session | `201` with `Location: /v1/sessions/{id}` and `{ "session_id", "created_at", "toolsets", "depth", "role", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, role, LLM profile or time zone |
 | `POST /v1/sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
 | `POST /v1/sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
 | `GET /v1/sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
@@ -207,16 +207,18 @@ curl -N -X POST http://127.0.0.1:5080/v1/sessions/$SID/messages \
      -H "Content-Type: application/json" -d '{"message":"What branch am I on?"}'
 ```
 
-While a turn delegates (`StartSubSession`, F5), the specialist's own stream is passed through as it happens, one
-`sub_session` event per event of the sub-session, so a client can show the delegated work live (Puls's Werk panel):
+While a turn asks another agent (`AskAgent`, F5 and F127.3.1), that agent's own stream is passed through as it
+happens, one `sub_session` event per event of the sub-session, so a client can show the work live (the delegation
+card, Puls's Werk panel):
 
 ```text
 event: sub_session
 data: {"type":"sub_session","tool_use_id":"toolu_…","agent":"puls","event":"content_block_start","data":{…}}
 ```
 
-`tool_use_id` is the `StartSubSession` call it belongs to; `event` and `data` are the sub-session's own event, in the
-shapes above. When the specialist finishes, its answer comes back as that call's `tool_result`.
+`tool_use_id` is the `AskAgent` call it belongs to; `event` and `data` are the sub-session's own event, in the shapes
+above. The sub-session's `message_start` names its role (`session_role`) and the toolsets it loaded, since the call
+names only an address. When the agent finishes, its answer comes back as that call's `tool_result`.
 
 ### Workspace and git endpoints
 
@@ -431,28 +433,37 @@ cost can be totalled across both.
 A failed or timed-out request fails that error, not the run: the error stays unprocessed and is triaged again on the
 next poll ([FX7](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
 
-## Agent to agent: Puls and its specialists
+## Agent to agent: one address for every call
 
-Puls (F5, F20–F22) is the same API built with its own web app. Its chats load the `specialists` and `web` toolsets, so for a cooking
-task the model calls `StartSubSession(toolsets, message, role, attachments)`, and the tool:
+An agent asks another agent by its address ([ADR 0117](adr/0117-one-address-for-every-agent-call.md), F127.3.1):
+`{identity}` for an identity in its own voice (`seemeeu-guesthouse`), `{identity}.{role}` for one of its roles
+(`puls.cook`). An identity lists the addresses it may ask in code (`IAgentIdentity.Calls`), and its prompt lists
+them too, so what the model reads is what the code checks. Its chats load core's `agents` toolset, and the model
+calls `AskAgent(address, message, attachments)`, which:
 
-1. opens `POST /v1/sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
-   `role` (always named: the peer never derives one, CL10), the parent turn
-   (`{session}#{turn}`) and the user's place;
-2. sends the task with the named attachments, which come from the session, never through the model's output;
-3. reads the specialist's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
+1. reads the address and refuses one the asker doesn't list, naming the ones it may ask;
+2. opens `POST /v1/sessions` on the peer in `AGENT_PEERS` (`self` for this same API), with the identity, the role,
+   `depth: 1`, the parent turn (`{session}#{turn}`) and the user's place; the asked agent's own files decide its
+   toolsets, never the asker;
+3. sends the message with the named attachments, which come from the session, never through the model's output;
+4. reads the asked agent's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
    tool rounds used), asks once more in the same session (FX11);
-4. keeps the session open for the chat under a handle (`sub-1`), named in the answer's footer, and returns the answer
-   and a usage line as the tool's result (F26). A follow-up on that work is `ContinueSubSession(handle, message)`: a
-   second message in the same session, with its context and cached prefix. The chat's session owns its open
-   sub-sessions (at most 3; the oldest closed when a fourth starts) and deletes them on the peer when it is deleted or
-   dropped as idle; `GET /v1/sessions/{id}` lists them. Outside a chat (an MCP call) the session is deleted at once, as
-   before.
+5. returns the answer with a line under it, built in code from the agent's own tool calls:
+   `[Answered by acme, did: SendLead, ShowPlace]` (`no tools` when it only answered, `(failed)` after one that failed).
 
-A sub-session can't delegate again (`specialists` at depth 1 is a `400`); a turn may make at most 3 sub-session calls
-(starts and continues), each stops after 5
-minutes, and a specialist's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`, FX14). The specialist's usage records
-carry `parent`, so a ledger can total a chat with its specialists. Measured against one agent answering everything:
+The chat keeps one conversation per address (at most 3; the oldest closed when a fourth starts), so asking the same
+address again carries on where it left off, with its context and cached prefix. If that agent is still answering an
+earlier message (`409`), the asker is told to wait; if its session is gone (`404`), a new one starts in the same call
+and the answer says so. `ReadAgentWork(address)` reads what an asked agent did, step by step (what it said, each tool
+call with what it sent and what came back, never its thinking), the latest 12,000 characters when it is long. The
+chat's session deletes its kept agents on the peer when it is deleted or dropped as idle; `GET /v1/sessions/{id}`
+lists them. Outside a chat (an MCP call) the session is deleted at once.
+
+An asked agent can't ask further (`agents` at depth 1 is a `400`); a turn may make at most 3 asks (first asks and
+follow-ups alike), each stops after 5 minutes, and an asked agent's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`,
+FX14). Its usage records carry `parent`, so a ledger can total a chat with the agents it asked. An asker that relays
+answers whole (`IAgentIdentity.RelaysAnswersWhole`, Puls) shows the answer as it is and ends its turn there
+([ADR 0079](adr/0079-show-a-specialists-report.md)). Measured against one agent answering everything:
 [the delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md).
 
 ## What changes next

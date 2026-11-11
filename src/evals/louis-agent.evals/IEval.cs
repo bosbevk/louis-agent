@@ -73,5 +73,6 @@ public interface IEval
     /// What the protocol records about one turn: who answered, its calls, its hosts and its error; read from the
     /// engine's events unless the eval says its own.
     /// </summary>
-    TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => TurnFacts.Of(turn);
+    TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+        TurnFacts.Of(turn, earlier);
 }

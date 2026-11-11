@@ -6,11 +6,11 @@
   "proves": "Puls's cook reads a recipe from a real page with ReadRecipe, links a site we may read, shows its photo, and writes the amounts and steps the page gave.",
   "manual": "manual.md",
   "modes": [
-    { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
+    { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["agents", "web"] }
   ],
   "checks": [
     { "type": "no-error" },
-    { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] } },
+    { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["agents"] } },
     { "type": "tool-used", "parameters": { "tool": "ReadRecipe" } },
     { "type": "recipe-from-source", "parameters": { "reader": "recipe-link" } },
     { "type": "image-shown", "name": "recipe-image", "parameters": { "reader": "recipe-photos", "key": "recipe_image" } },

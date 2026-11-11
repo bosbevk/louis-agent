@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:52:02.408Z","mode":"delegated","repeat":1,"task":"web-2","turn":1,"session":"sess_ca4ca83a3996485082070da2a8443699","text":"Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne."}
 {"event":"sse","t":"2026-10-29T00:52:02.409Z","mode":"delegated","repeat":1,"task":"web-2","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_ca4ca83a3996485082070da2a8443699","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:52:04.743Z","mode":"delegated","repeat":1,"task":"web-2","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

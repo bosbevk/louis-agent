@@ -4,6 +4,7 @@ using System.Text.Json;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Identities.Puls;
 using Microsoft.AspNetCore.TestHost;
 
@@ -32,6 +33,7 @@ public class OpenDoorTests
     private static Microsoft.AspNetCore.Builder.WebApplication Host(OpenDoorOptions door) =>
         ApiTestHost.Build(Key, moreIdentities: [Guide, Shop], openDoor: door);
 
+    /// <summary>Asks the API to open a session with this body, with no key.</summary>
     private static async Task<HttpResponseMessage> OpenAsync(HttpClient client, object body) =>
         await client.PostAsJsonAsync("/v1/sessions", body);
 
@@ -80,6 +82,27 @@ public class OpenDoorTests
 
         Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         Assert.That(body.RootElement.GetProperty("toolsets").EnumerateArray(), Is.Empty);
+    }
+
+    /// <summary>
+    /// An open identity that may ask other agents (F127.3.1, the site's guide) gets the <c>agents</c> toolset beside
+    /// its own, where this instance can reach an agent; one that names none doesn't (the shop, above).
+    /// </summary>
+    [Test]
+    public async Task AnOpenIdentityThatCallsOthers_GetsTheAgentsToolset()
+    {
+        var caller = new FakeIdentity("caller", voice: "puls/voice-en", calls: ["shop"]);
+        await using var app = ApiTestHost.Build(Key, moreIdentities: [caller, Shop],
+            openDoor: new OpenDoorOptions(["caller"], 2),
+            agentPeers: new Dictionary<string, Uri> { ["self"] = new("http://localhost:8080/") });
+        await app.StartAsync();
+
+        using var opened = await OpenAsync(app.GetTestClient(), new { identity = "caller" });
+        using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
+
+        Assert.That(opened.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+        Assert.That(body.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
+            Is.EqualTo(new[] { CoreToolset.Agents.Wire() }));
     }
 
     /// <summary>Any identity the door doesn't name, or none, is behind the key as before.</summary>

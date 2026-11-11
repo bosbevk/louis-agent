@@ -66,12 +66,12 @@ internal static class TrialBuilder
                 """{"type":"error","error":{"type":"api_error","message":"overloaded"},"usage":{"cost":COST,"unpriced":0}}"""
                     .Replace("COST", cost)));
 
-    /// <summary>The start of a StartSubSession call to a role, as the stream sends it.</summary>
-    public static SessionEvent Call(string role) =>
+    /// <summary>The start of an AskAgent call to an address, as the stream sends it (F127.3.1).</summary>
+    public static SessionEvent Call(string address) =>
         SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}"""
-                    .Replace("ROLE", role)));
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":"ADDRESS","message":"Kook iets"}}}"""
+                    .Replace("ADDRESS", address)));
 
     /// <summary>The start of the agent's own call to a tool, with its input as JSON, as the stream sends it.</summary>
     public static SessionEvent ToolCall(string tool, string input = "{}") =>
@@ -98,13 +98,13 @@ internal static class TrialBuilder
                 """{"tool_use_id":"t0","agent":"puls","event":"error","data":{"type":"error","error":{"type":"api_error","message":"overloaded"}}}"""));
 
     /// <summary>
-    /// A specialist's own StartSubSession call, carried as a sub_session event (it is not the turn's route).
+    /// A specialist's own AskAgent call, carried as a sub_session event (it is not the turn's route).
     /// </summary>
-    public static SessionEvent SubCall(string role) =>
+    public static SessionEvent SubCall(string address) =>
         SessionEvent.From("sub_session",
             Json(
-                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}}"""
-                    .Replace("ROLE", role)));
+                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"AskAgent","input":{"address":"ADDRESS"}}}}"""
+                    .Replace("ADDRESS", address)));
 
     /// <summary>A specialist's call to a tool, with its input as JSON, carried as a sub_session event.</summary>
     public static SessionEvent SubToolCall(string tool, string input = "{}") =>

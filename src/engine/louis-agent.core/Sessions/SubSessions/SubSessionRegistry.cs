@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Sessions.SubSessions;
 
 /// <summary>
 /// A chat's open sub-sessions, by handle (F26): the host (the API's session) owns one and makes it current for each
-/// turn, like <see cref="SessionAttachments"/>; <see cref="SpecialistTools.StartSubSession"/> then keeps a specialist
-/// open instead of deleting it, and <see cref="SpecialistTools.ContinueSubSession"/> finds it again. With none current
-/// (an MCP call, the CLI) nothing is kept.
+/// turn, like <see cref="SessionAttachments"/>; the delegation tools (<c>AskAgent</c>, <c>StartMinion</c>) then
+/// keep a child open instead of deleting it, and find it again for a follow-up. With none current (an MCP call, the
+/// CLI) nothing is kept.
 /// </summary>
 /// <remarks>
 /// The limits are in code: at most <see cref="DefaultCap"/> open per chat (the oldest is closed when another opens),
@@ -36,10 +36,15 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
     /// <summary>The open sub-sessions, oldest first.</summary>
     public IReadOnlyList<OpenSubSession> Open
     {
-        get { lock (_lock) return _open.ToArray(); }
+        get
+        {
+            lock (_lock) return [.. _open];
+        }
     }
 
-    /// <summary>Keeps <paramref name="entry"/> under the next handle, closing the oldest past the cap; returns the handle.</summary>
+    /// <summary>
+    /// Keeps <paramref name="entry"/> under the next handle, closing the oldest past the cap; returns the handle.
+    /// </summary>
     public async Task<string> AddAsync(OpenSubSession entry)
     {
         List<OpenSubSession> evicted = [];
@@ -54,6 +59,7 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
                 _open.RemoveAt(0);
             }
         }
+
         foreach (var old in evicted) await old.Close();
         return handle;
     }
@@ -61,13 +67,28 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
     /// <summary>The open sub-session with this handle, or null.</summary>
     public OpenSubSession? Find(string handle)
     {
-        lock (_lock) return _open.FirstOrDefault(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+        lock (_lock)
+            return _open.FirstOrDefault(o =>
+                string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Swaps the entry with this handle for what <paramref name="change"/> makes of it, if it is still kept.
+    /// </summary>
+    public void Update(string handle, Func<OpenSubSession, OpenSubSession> change)
+    {
+        lock (_lock)
+        {
+            int at = _open.FindIndex(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (at >= 0) _open[at] = change(_open[at]);
+        }
     }
 
     /// <summary>Forgets a sub-session without closing it (the peer already dropped it).</summary>
     public bool Remove(string handle)
     {
-        lock (_lock) return _open.RemoveAll(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase)) > 0;
+        lock (_lock)
+            return _open.RemoveAll(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase)) > 0;
     }
 
     /// <summary>Closes every open sub-session on its peer and empties the registry: the chat is over.</summary>
@@ -76,9 +97,10 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
         OpenSubSession[] all;
         lock (_lock)
         {
-            all = _open.ToArray();
+            all = [.. _open];
             _open.Clear();
         }
+
         foreach (var open in all) await open.Close();
     }
 

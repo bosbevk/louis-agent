@@ -2,6 +2,7 @@ using System.Diagnostics;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Orchestrator.Tools.Checks;
@@ -10,11 +11,17 @@ using LouisAgent.Testing;
 
 namespace LouisAgent.Orchestrator.IntegrationTests;
 
+/// <summary>
+/// The orchestrator's checks against a real git repository: a fix's commit is verified on its branch, and a run
+/// returns to main whatever a fix left behind. They need git, and skip without it.
+/// </summary>
 [Category("Integration")]
 public class OrchestratorGitIntegrationTests
 {
+    /// <summary>This test's repository, made fresh and removed after.</summary>
     private string _dir = null!;
 
+    /// <summary>A fresh folder for each test.</summary>
     [SetUp]
     public void SetUp()
     {
@@ -22,6 +29,7 @@ public class OrchestratorGitIntegrationTests
         Directory.CreateDirectory(_dir);
     }
 
+    /// <summary>Removes the repository, git's read-only objects too.</summary>
     [TearDown]
     public void TearDown()
     {
@@ -31,6 +39,10 @@ public class OrchestratorGitIntegrationTests
         Directory.Delete(_dir, recursive: true);
     }
 
+    /// <summary>
+    /// A commit on the fix branch verifies; one on main, one that doesn't exist, and an argument that isn't a commit
+    /// don't.
+    /// </summary>
     [Test]
     public void VerifyFixCommit_PassesForACommitOnTheFixBranch_AndFailsForOneOnMain()
     {
@@ -51,6 +63,7 @@ public class OrchestratorGitIntegrationTests
         Assert.That(checks.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
     }
 
+    /// <summary>Going back to main stashes what a fix left uncommitted, under a name that says where from.</summary>
     [Test]
     public void ReturnToMain_StashesLeftoversAndChecksOutMain()
     {
@@ -64,6 +77,7 @@ public class OrchestratorGitIntegrationTests
         Assert.That(Git("stash", "list"), Does.Contain("uncommitted changes left on fix/half-done"));
     }
 
+    /// <summary>A repository on main with one commit, ignoring the service's logs.</summary>
     private void InitRepo()
     {
         Git("init", "-b", "main");
@@ -76,6 +90,7 @@ public class OrchestratorGitIntegrationTests
         Git("commit", "-m", "initial");
     }
 
+    /// <summary>A feed over an error log holding these lines, already read.</summary>
     private JsonLinesErrorFeed FeedWith(params string[] events)
     {
         string log = Path.Combine(_dir, "errors.jsonl");
@@ -85,6 +100,7 @@ public class OrchestratorGitIntegrationTests
         return feed;
     }
 
+    /// <summary>The methods these tests' service has runbooks for.</summary>
     private static readonly HashSet<string> Methods = ["get-order", "order-total", "refund"];
 
     /// <summary>The orchestrator's settings over this test's repository.</summary>
@@ -95,8 +111,10 @@ public class OrchestratorGitIntegrationTests
         SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
     };
 
+    /// <summary>The comms log in this test's folder.</summary>
     private CommsLog Comms() => new(Path.Combine(_dir, "state", "agent-comms.md"));
 
+    /// <summary>The orchestrator's tools over this feed, with a client pointed at nothing.</summary>
     private ServiceTools Tools(JsonLinesErrorFeed feed)
     {
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
@@ -106,6 +124,7 @@ public class OrchestratorGitIntegrationTests
     /// <summary>The checks of a fix, over the same repository and methods.</summary>
     private FixChecks Checks() => new(Options(), Methods, Comms());
 
+    /// <summary>Runs git in the repository and hands back what it printed.</summary>
     private string Git(params string[] args)
     {
         var psi = new ProcessStartInfo("git")
@@ -121,6 +140,7 @@ public class OrchestratorGitIntegrationTests
         return output.Trim();
     }
 
+    /// <summary>Whether git runs on this machine at all.</summary>
     private static bool GitAvailable()
     {
         try

@@ -1,7 +1,8 @@
 # 10 · Multi-agent orchestration: what Puls taught (draft)
 
 > **Skill:** #10 in the [goal](../GOAL.md)'s map · **Stages:** F5 sub-sessions (live delegation), F21 personalities and
-> roles, F22 role tools, F20's Werk panel (2026-10-13) · **Status:** a first draft by Claude for Louis to edit
+> roles, F22 role tools, F20's Werk panel (2026-10-13), F127.3.1 one address for every agent call (2026-11-11) ·
+> **Status:** a first draft by Claude for Louis to edit
 
 ## Before and after
 
@@ -9,8 +10,9 @@
 (109 tools), in one voice ("Louis's Minion") whatever the host.
 
 **After,** Puls is a router that does no work itself. It reads the request, picks the toolsets and the **role** from one
-table (`default.md`), and hands the task to a specialist on a peer (`StartSubSession`), which runs with only those tools
-and a personality that is its job description. The user watches the work beside the answer.
+table (`default.md`), and hands the task to a specialist on a peer (`StartSubSession` then, `AskAgent("puls.cook")`
+since F127.3.1, below), which runs with only those tools and a personality that is its job description. The user
+watches the work beside the answer.
 
 | Prompt (fixed prefix, estimated) | Tools | Tokens |
 |---|---|---|
@@ -104,6 +106,38 @@ ended its turn with a typed tool call the triage pack saved as a step.
 
 **Where it sits in the skill map:** multi-agent orchestration (skill 10), a hub of roles with typed results; and
 testing and shipping (skill 18), since the same run file a live workflow writes is what the page plays.
+
+## One address for every agent call (F127.3.1, 2026-11-11)
+
+**What it means.** An agent now asks another agent the way you'd phone someone: by name. `AskAgent("seemeeu-guesthouse",
+"may I bring my dog?")` asks a business in its own voice, and `AskAgent("puls.cook", …)` asks one of Puls's roles.
+The asker never picks the other side's tools, model or prompt: the address says who answers, and that agent's own
+files decide how. Asking the same address again carries on the same conversation. Under every answer sits a line,
+`[Answered by seemeeu-guesthouse, did: SendLead]`, and `ReadAgentWork` gives the steps behind it when someone asks.
+The old `StartSubSession`, where the model chose a role and toolsets itself, is gone ([ADR 0117](../adr/0117-one-address-for-every-agent-call.md)).
+
+**Why this way.** A tool with fewer choices is safer and easier for a model to use well (skill 4). On a public site
+the guide must not be able to open a session with any toolset it likes, so the choices sit in code: who an identity
+may ask is its `Calls`, checked before anything is sent (skill 15). What the asker's model reads is kept small on
+purpose (skill 7): the answer and one line of facts, and the detail only when asked (Lazy Load). The session wire
+became shared records, so core, the API and the web send and read one shape (skill 11).
+
+**What the build taught.**
+- **An allow-list in code isn't enough on its own.** The first live run had the guide say it "had no line" to the
+  business: the code would have let it ask, but its prompt never said so. Now the prompt lists the same `Calls` the
+  code checks, so what the model reads and what the code allows can't drift apart.
+- **Who answers decides its prompt, not how deep it sits.** A business asked by the guide opens one level down, but
+  in its own voice, because a role's level now comes from its file's folder. Depth only stops it asking further.
+- **Say what was done from facts.** The line under an answer is built from the agent's own tool calls, so the guide
+  says "Seemeeu sent your booking" only when `SendLead` really ran, never because the answer sounded like it.
+- **A choice per identity, not per instance.** Puls shows its cook's answer whole and ends its turn (ADR 0079); the
+  guide keeps the last word. They share an instance, so the switch moved from a setting into each identity.
+- **Recorded data follows a rename honestly.** Puls is paused, so its 109 eval transcripts were rewritten onto
+  `AskAgent` by one checked script, every other line byte-for-byte as recorded, and the before-and-after eval waits
+  for Puls's return (F135). Two live guide runs cost $0.0053 together.
+
+**Where it sits in the skill map:** multi-agent orchestration (skill 10), one way to name every agent call; tool
+design (4), context engineering (7), safety (15) and protocols (11) as above.
 
 ## Next
 

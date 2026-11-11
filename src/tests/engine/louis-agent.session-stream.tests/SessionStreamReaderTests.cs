@@ -1,11 +1,12 @@
 using LouisAgent.Testing;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.SessionStream;
 
 namespace LouisAgent.SessionStream.Tests;
 
-/// <summary>The reader against the recorded Puls turn (its expected counts sit beside it), and against small streams.</summary>
+/// <summary>
+/// The reader against the recorded Puls turn (its expected counts sit beside it), and against small streams.
+/// </summary>
 [TestFixture]
 public class SessionStreamReaderTests
 {
@@ -40,17 +41,15 @@ public class SessionStreamReaderTests
             Is.EqualTo(Expected().GetProperty("specialist_tools").EnumerateArray().Select(n => n.GetString())));
     }
 
+    /// <summary>The route is the address the turn's ask named (F127.3.1).</summary>
     [Test]
-    public async Task TheRoleIsTheOneTheStartedSubSessionNamed()
+    public async Task TheRouteIsTheAddressTheAskNamed()
     {
         var events = await ReadRecordedTurnAsync();
 
-        var start = events.SelectMany(ToolUses).First(t => t.Name == "StartSubSession").Input;
-        var role = start.TryGetProperty("role", out var r)
-            ? r.GetString()
-            : start.GetProperty("personality").GetString();
+        var ask = events.SelectMany(ToolUses).First(t => t.Name == "AskAgent").Input;
 
-        Assert.That(role, Is.EqualTo(Expected().GetProperty("role").GetString()));
+        Assert.That(ask.GetProperty("address").GetString(), Is.EqualTo(Expected().GetProperty("role").GetString()));
     }
 
     [Test]
@@ -272,7 +271,7 @@ public class SessionStreamReaderTests
                 s.Data.GetProperty("content_block").TryGetProperty("input", out var input) ? input : default)
         ],
         SubSessionStreamed s => ToolUses(s.Inner),
-        _ => [],
+        _ => []
     };
 
     private static IEnumerable<string> ToolUseNames(SessionEvent e) => ToolUses(e).Select(t => t.Name);

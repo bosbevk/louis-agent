@@ -60,8 +60,7 @@ That is the whole eval: no manual, no dataset folder, no version, no check types
 example with seven conversations is [F126-mockups/guide.eval.json](F126-mockups/guide.eval.json).
 
 - **Six facts**, words in the file parsed once into an enum (ADR 0024) and told by one switch: `no-error`,
-  `routed-to {role}`, `continued {role}` (the follow-up went back to the same specialist with `ContinueSubSession`,
-  F26), `used {tool}`, `not-used {tool}`, `under {seconds}s`. Never C# per eval.
+  `routed-to {role}`, `continued {role}` (the follow-up asked the same address again with `AskAgent`, F26, F127.3.1), `used {tool}`, `not-used {tool}`, `under {seconds}s`. Never C# per eval.
 - **Criteria** go to the judge, by default one call per criterion with the transcript; `"judge": "per-conversation"`
   in the file asks once for all of a conversation's criteria. Each answer is `{criterion, met, reason}`; never a score.
 - A conversation **passes** when every fact and every criterion of every turn is met. The run's number is how many

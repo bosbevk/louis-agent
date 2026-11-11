@@ -5,7 +5,7 @@ using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Info;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
@@ -20,7 +20,7 @@ using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
-using Microsoft.Extensions.AI;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -83,7 +83,7 @@ public class AgentSessionsTests
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
                 [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
-            },
+            }
         };
 
     /// <summary>
@@ -191,29 +191,26 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// Marking specialists as optional doesn't sneak delegation into a sub-session.
+    /// Marking the agents toolset as optional doesn't sneak delegation into a sub-session.
     /// </summary>
     [Test]
     public void AnOptionalMark_DoesntGetPastTheDelegationRules() =>
-        Assert.That(() => Sessions().Create(["specialists?"], depth: 1),
+        Assert.That(() => Sessions().Create([CoreToolset.Agents.Wire() + "?"], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
 
     /// <summary>
-    /// A sub-session can't delegate further, the tree stops at the minion, and the old "agents" name is refused.
+    /// A sub-session can't ask another agent (F127.3.1), and the tree stops at the minion.
     /// </summary>
     [Test]
-    public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
+    public void ASubSession_CantAskAnotherAgent_AndDepthStopsAtTheMinion()
     {
         var sessions = Sessions();
 
-        Assert.That(() => sessions.Create([CoreToolset.Specialists.Wire()], depth: 1),
+        Assert.That(() => sessions.Create([CoreToolset.Agents.Wire()], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
         Assert.That(() => sessions.Create([TestToolset.Files.Wire()], depth: 3),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
         Assert.That(sessions.Create([TestToolset.Files.Wire()], depth: 1).Depth, Is.EqualTo(1));
-        // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
-        Assert.That(() => sessions.Create(["agents"]),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain(CoreToolset.Specialists.Wire()));
     }
 
     /// <summary>
@@ -259,18 +256,19 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A role opens only at its own level: the cook as a specialist, Puls's voice at the top.
+    /// A role opens at its own level: the cook as a specialist, never at the top; Puls's voice at the top, and since
+    /// F127.3.1 also one level down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
     public void ARole_OpensOnlyAtItsOwnLevel()
     {
-        // CL8: a session's level is its depth; the cook is a specialist (level 1), Puls's voice is level 0's.
+        // CL8: a session's level is its depth, except a voice asked at depth 1 (F127.3.1, pick 1 A).
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
             sessions.Create([TestToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
-        Assert.Throws<RoleException>(() =>
-            sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af"));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af").Role,
+            Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create([TestToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
             Is.EqualTo(PulsRole.Cook.Wire()));
@@ -332,7 +330,7 @@ public class AgentSessionsTests
     {
         // F18 step 4a: resolved once when the session opens (ReplayResolution), then kept for its turns.
         var replay =
-            new LouisAgent.Core.Sessions.Replay.SessionReplay(WebReplayMode.Record,
+            new SessionReplay(WebReplayMode.Record,
                 "run_1:cook:1/bobotie", false);
 
         Assert.That(Sessions().Create([TestToolset.Files.Wire()], replay: replay).Replay, Is.EqualTo(replay));
@@ -528,7 +526,8 @@ public class AgentSessionsTests
         // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
         // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
-        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        // The reader, which declares no toolsets of its own: the cook's header brings the web (F127.3.1).
+        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Reader.Wire());
         var withWeb = sessions.Create([TestToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
             role: PulsRole.Cook.Wire());
 

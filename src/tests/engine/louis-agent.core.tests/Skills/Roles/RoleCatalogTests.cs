@@ -1,7 +1,5 @@
-using LouisAgent.Testing;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
@@ -161,8 +159,7 @@ public class RoleCatalogTests
     {
         // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist",
-                RoleLevel.Agent));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist"));
 
         Assert.That(ex!.Message,
             Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));
@@ -193,30 +190,25 @@ public class RoleCatalogTests
             Does.Not.Contain("# Testprod - Routing"));
     }
 
+    /// <summary>
+    /// The guide every identity that asks other agents reads (F127.3.1) says how to ask, follow up and read the work,
+    /// and names no product: a product's briefing and its specialists stay in its own voice, as Puls's do. The
+    /// specialists' guide it replaced is gone.
+    /// </summary>
     [Test]
-    public void TheSpecialistsGuide_IsTheMechanism_NotAProductsProtocol()
+    public void TheAgentsGuide_IsTheMechanism_NotAProductsProtocol()
     {
-        // CL15 step 3: the guide every identity with specialists reads says how to start, continue and relay; Puls's
-        // briefing labels, its roles table, its waiting roles and its Afrikaans lines moved to Puls's own routing.
-        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
 
-        Assert.That(guide, Does.Contain("Every sub-session costs money"), "the one choosing is told the cost");
-        Assert.That(guide,
-            Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
-        Assert.That(guide, Does.Contain("Continue, don't answer it yourself"));
-        Assert.That(guide,
-            Does.Contain("## Relaying a report").And.Contain("as the specialist wrote it").And
-                .Contain("every table row"));
-        Assert.That(guide,
-            Does.Contain("The footer the tool adds under the report").And.Contain("never in your answer"));
-        Assert.That(guide, Does.Contain("Pass `role`").And.Not.Contain("personality").IgnoreCase,
-            "CL14: the model's word is role");
-        Assert.That(guide,
-            Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Vir hoeveel").And.Not.Contain("stemming").And.Not
-                .Contain("Counting is the analyst's"));
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"),
-            "CL10: a role is named, never derived");
-        Assert.That(SkillFileSource.ReadEmbedded("specialists/roles.json"), Is.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(guide, Does.Contain("`AskAgent(address, message)`").And.Contain("`ReadAgentWork(address)`"));
+            Assert.That(guide, Does.Contain("Asking the same address again carries on"));
+            Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("seemeeu").IgnoreCase);
+            Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Is.Null);
+            Assert.That(SkillFileSource.ReadEmbedded("specialists/roles.json"), Is.Null,
+                "CL10: a role is named, never derived");
+        });
     }
 
     [Test]

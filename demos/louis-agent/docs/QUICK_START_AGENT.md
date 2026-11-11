@@ -4,8 +4,7 @@
 > [Setup](../../../src/docs/SETUP.md), choosing a model in [Models](../../../src/docs/MODELS.md), how it works in [Architecture](../../../src/docs/architecture/README.md).
 
 Louis Agent is an AI agent that works on your repository with real tools: it reads, searches and edits files, runs git,
-`dotnet`, Python, PowerShell and bash, searches the web, and (with keys) works with Azure DevOps and Paymo. You see its
-thinking and every tool call as it works.
+`dotnet`, Python, PowerShell and bash, and searches the web. You see its thinking and every tool call as it works.
 
 Set up `config/` first ([SETUP.md](../../../src/docs/SETUP.md)): at least `ANTHROPIC_API_KEY` in `config/.env.secrets`.
 
@@ -81,16 +80,6 @@ Create a branch feature/email-notifications and commit the current changes with 
 **Research**
 ```
 Search the web for the latest Microsoft.Extensions.AI release notes and summarise what's new
-```
-
-**Azure DevOps** (with `DEVOPS_API_KEY` and `DEVOPS_ORGANIZATION` / `DEVOPS_PROJECT`)
-```
-Show me all blockers in the current sprint
-```
-
-**Paymo** (with `PAYMO_API_KEY`)
-```
-Log 2 hours on ticket 1234567 – fixed the login redirect
 ```
 
 ## Reading what it did

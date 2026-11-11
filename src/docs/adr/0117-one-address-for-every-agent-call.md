@@ -1,6 +1,8 @@
 # ADR 0117: One address for every agent call
 
-**Status:** Accepted (2026-11-10, Louis's picks during F127.2); built in F127.3 to F127.5
+**Status:** Accepted (2026-11-10, Louis's picks during F127.2); `AskAgent` on one instance built in F127.3.1
+(2026-11-11); an agent on another server (F127.3.2), the guide mentoring (F127.4) and the minions (F127.5) to come.
+Amends [ADR 0079](0079-show-a-specialists-report.md).
 
 ## Context
 
@@ -47,6 +49,29 @@ toolsets of its own: the role brings them.
   for a visitor is `AskAgent`, and what differs is what the visitor sees (the business's own chat on the demo) and that
   the open door counts it against that visitor (F127.4).
 
+## What F127.3.1 settled (2026-11-11)
+
+Louis's picks during the build, each a rule now:
+
+- **A role's level comes from its file's folder,** not from who asks: a business asked at depth 1 opens in its own
+  voice from `agent/`, with its own packs and no `agents` toolset, so it can't ask further.
+- **The prompt lists the identity's `Calls`** after the agents guide, from the same list the code checks. The first
+  live run showed why: told of no address, the guide said it had no line to the business.
+- **One kept conversation per address per chat** (`AgentLine`): asking again carries on; a busy one (`409`) says
+  wait and keeps it; a gone one (`404`) starts over in the same call, and the answer says so.
+- **The line under each answer is built in code** from the asked agent's own tool calls (`DidLine`,
+  `[Answered by acme, did: SendLead]`), so the asker says what was done from facts, never from the agent's words.
+- **`ReadAgentWork(address)`** reads an asked agent's steps on demand (Lazy Load), without its thinking, the latest
+  12,000 characters under a line that says how much was cut.
+- **An identity says whether it relays answers whole** (`IAgentIdentity.RelaysAnswersWhole`), in place of
+  `SHOW_SPECIALIST_REPORTS`: Puls does, the guide doesn't (this amends ADR 0079).
+- **The triage team and Puls ask by address** (`TriageCall`, `PulsCall`); the evals read a turn's route as the
+  address it asked first, and a follow-up as an address an earlier turn asked. The cook's file names `web`, which
+  Puls's `StartSubSession` used to send.
+- **Puls is paused** (2026-11-11), so its 109 recorded eval transcripts were rewritten onto `AskAgent` by one checked
+  script instead of being recorded again, and the recipes eval before and after waits for Puls's return (F135).
+- **`StartMinion` stays as it is** until F127.5 puts the minions on the address.
+
 ## Consequences
 
 - A new agent-to-agent call is a line in an identity's `Calls`, not a new tool. Any identity can ask another
@@ -55,7 +80,7 @@ toolsets of its own: the role brings them.
   choosing.
 - Puls moves onto `AskAgent`: its voice, the specialists guide, the web's delegation card and the evals' tool checks
   change, and the recipes eval runs before and after to prove nothing was lost. Puls's stored replay answers name the
-  old tools and are recorded again.
+  old tools and are recorded again (both wait for F135, since Puls is paused).
 - A role file not named for its identity can't be addressed; a test holds the naming.
 - We keep one address grammar, parsed in one place and tested once.
 
@@ -64,6 +89,7 @@ toolsets of its own: the role brings them.
 [ADR 0031](0031-orchestration-is-an-engine-function.md) (delegation is one function in the engine; this ADR amends
 its tools) · [ADR 0006](0006-toolsets-per-session.md) · [ADR 0027](0027-engine-identities-and-packs.md) ·
 [ADR 0021](0021-minions-one-task-one-tool.md) · [ADR 0047](0047-protocol-v2-one-event-contract.md) ·
+[ADR 0079](0079-show-a-specialists-report.md) (amended: who relays an answer whole) ·
 [ADR 0049](0049-nothing-is-compatible-before-a-sale.md) · the plan page for F127.3 to F127.5
 (https://claude.ai/artifact/TdTWru63EMWhCC7EiJjQk9) · F127.2 in the [work log](../work-log.md), whose plan held the
 first draft

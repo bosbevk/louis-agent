@@ -11,7 +11,7 @@
     "time_zone": "Africa/Johannesburg",
     "follow_ups": [],
     "expected": {
-      "routes_to": "puls-cook",
+      "routes_to": "puls.cook",
       "town": "Stellenbosch",
       "serves": 4,
       "shop": "pnp",

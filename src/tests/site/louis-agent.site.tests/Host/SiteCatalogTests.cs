@@ -1,4 +1,7 @@
+using LouisAgent.Composition.Agents;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Leads;
@@ -43,6 +46,24 @@ public class SiteCatalogTests
             new LeadsOptions { To = "a@example.test" });
 
         Assert.DoesNotThrow(() => _ = new AgentCatalog(SiteCatalog.Identities, packs));
+    }
+
+    /// <summary>
+    /// The guide may ask the showroom's three businesses, and nobody else (F127.3.1 step 5), and each address it
+    /// names reaches a business this site runs, in its own voice.
+    /// </summary>
+    [Test]
+    public void TheGuide_CallsTheShowroomsBusinesses_EachOneThisSiteRuns()
+    {
+        IAgentIdentity guide = new GuideIdentity();
+        var showroom = SiteCatalog.Identities.Where(identity => identity.IsDemonstration)
+            .Select(identity => identity.Name);
+
+        Assert.That(guide.Calls, Is.EquivalentTo(showroom), "the businesses, no more");
+        foreach (string call in guide.Calls)
+            Assert.That(AgentAddress.TryParse(call, out var address) &&
+                        AgentAddresses.Resolve(address, SiteCatalog.Identities, out _) is
+                        { Kind: AddressKind.Identity }, Is.True, call);
     }
 
     /// <summary>

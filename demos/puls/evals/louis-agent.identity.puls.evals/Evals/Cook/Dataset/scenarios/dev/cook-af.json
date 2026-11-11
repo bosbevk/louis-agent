@@ -13,7 +13,7 @@
       "Maak dit eerder vir ses mense. Wat kos dit nou?"
     ],
     "expected": {
-      "routes_to": "puls-cook",
+      "routes_to": "puls.cook",
       "town": "Stellenbosch",
       "serves": [
         4,

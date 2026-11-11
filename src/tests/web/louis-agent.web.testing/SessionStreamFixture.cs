@@ -2,7 +2,6 @@ using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Testing;
 using LouisAgent.Web.Chats;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Web.Testing;
 
@@ -14,8 +13,14 @@ namespace LouisAgent.Web.Testing;
 public static class SessionStreamFixture
 {
     /// <summary>
-    /// The role the recording's cook ran as (recorded data stays as recorded): the goldens and the tests that replay
-    /// the turn read it, so they name it here, once.
+    /// The address the recording's turn asked (F127.3.1, its hand-over rewritten onto AskAgent): the card names it,
+    /// so the goldens and the tests that replay the turn read it from here, once.
+    /// </summary>
+    public const string CookAddress = "puls.cook";
+
+    /// <summary>
+    /// The role the recording's cook ran as, which its own stream reports (recorded data stays as recorded): what the
+    /// work-status phrases are keyed by.
     /// </summary>
     public const string CookRole = "puls-cook";
 
@@ -29,24 +34,44 @@ public static class SessionStreamFixture
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 
-    /// <summary>The stream's events, in order, as the API client hands them to the page.</summary>
-    public static async Task<List<SessionEvent>> EventsAsync()
+    /// <summary>
+    /// A second recording (F127.3.1, 2026-11-11): the site's guide asking Seemeeu, one of the showroom's businesses,
+    /// with <c>AskAgent</c> over the site's own address, Seemeeu's events relayed under the call.
+    /// </summary>
+    public static string AskStreamFile => Path.Combine(Folder, "ask-agent.sse");
+
+    /// <summary>What the visitor asked the guide in the second recording.</summary>
+    public const string AskQuestion =
+        "I want to stay at the Seemeeu guesthouse with my dog. Can you ask them whether dogs are allowed, and in " +
+        "which room?";
+
+    /// <summary>The Puls stream's events, in order, as the API client hands them to the page.</summary>
+    public static Task<List<SessionEvent>> EventsAsync() => EventsAsync(StreamFile);
+
+    /// <summary>
+    /// The Puls turn the stream folds into, with every thinking block's seconds fixed: the page measures them with the
+    /// clock, which a snapshot can't depend on.
+    /// </summary>
+    public static Task<Turn> ReplayAsync() => ReplayAsync(StreamFile, Question);
+
+    /// <summary>The guide's turn that asked Seemeeu, folded the same way.</summary>
+    public static Task<Turn> ReplayAskAsync() => ReplayAsync(AskStreamFile, AskQuestion);
+
+    /// <summary>A recording's events, in order.</summary>
+    private static async Task<List<SessionEvent>> EventsAsync(string file)
     {
         var events = new List<SessionEvent>();
-        await using var stream = File.OpenRead(StreamFile);
+        await using var stream = File.OpenRead(file);
         await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None))
             events.Add(streamEvent);
         return events;
     }
 
-    /// <summary>
-    /// The turn the stream folds into, with every thinking block's seconds fixed: the page measures them with the
-    /// clock, which a snapshot can't depend on.
-    /// </summary>
-    public static async Task<Turn> ReplayAsync()
+    /// <summary>A recording folded into the turn the page would show, its thinking seconds fixed.</summary>
+    private static async Task<Turn> ReplayAsync(string file, string question)
     {
-        var turn = new Turn { UserText = Question };
-        foreach (var streamEvent in await EventsAsync()) TurnStream.Apply(turn, streamEvent);
+        var turn = new Turn { UserText = question };
+        foreach (var streamEvent in await EventsAsync(file)) TurnStream.Apply(turn, streamEvent);
         FixThinking(turn);
         return turn;
     }

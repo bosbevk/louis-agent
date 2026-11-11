@@ -115,8 +115,8 @@ services:
       PRICES_FILE: /workspace/demos/louis-agent/config/prices.json
       # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
       RATES_FILE: /workspace/demos/louis-agent/config/rates.json
-      # Sub-sessions (F5): peers StartSubSession may call, from config/.env (empty: none). The general assistant that
-      # delegates everything is Puls (demos/puls/docker/docker-compose.puls.yml); this is the code-review app, with every toolset.
+      # Peers AskAgent may ask (F127.3.1), from config/.env (empty: none). The general assistant that delegates
+      # everything is Puls (demos/puls/docker/docker-compose.puls.yml); this is the code-review app, with every toolset.
       AGENT_PEERS: ${AGENT_PEERS:-}
       # The docs the expert reads (F109.3): the repo, mounted at /workspace, holds them as the image's /app/docs does.
       DOCS_ROOT: /workspace

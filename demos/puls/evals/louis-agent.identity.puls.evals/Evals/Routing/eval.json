@@ -14,13 +14,13 @@
     {
       "name": "delegated",
       "role": "puls/voice-af",
-      "toolsets": ["specialists", "web"]
+      "toolsets": ["agents", "web"]
     }
   ],
   "checks": [
     {
       "type": "routed-to",
-      "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] }
+      "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["agents"] }
     }
   ]
 }

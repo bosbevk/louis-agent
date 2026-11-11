@@ -8,10 +8,20 @@ namespace LouisAgent.Web.Tests.Chats;
 public class ImageSourcesTests
 {
     /// <summary>A tool call whose result gave these images.</summary>
-    private static Block Tool(params string[] images) => new() { Kind = BlockKind.Tool, ToolName = "FetchUrl", Images = [.. images] };
+    private static Block Tool(params string[] images) => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = "FetchUrl",
+        Images = [.. images]
+    };
 
     /// <summary>A delegation call holding this sub-turn.</summary>
-    private static Block Delegating(Turn sub) => new() { Kind = BlockKind.Tool, ToolName = "StartSubSession", SubTurn = sub };
+    private static Block Delegating(Turn sub) => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = "AskAgent",
+        SubTurn = sub
+    };
 
     /// <summary>A turn with no images has none.</summary>
     [Test]
@@ -22,10 +32,25 @@ public class ImageSourcesTests
     public void ItIsTheUnionOfTheTurnsBlocks_AndEverySubTurnsRecursively()
     {
         var minion = new Turn { Blocks = { Tool("https://c.example/3.jpg") } };
-        var specialist = new Turn { Blocks = { Tool("https://b.example/2.jpg", "https://a.example/1.jpg"), Delegating(minion) } };
-        var turn = new Turn { Blocks = { Tool("https://a.example/1.jpg"), Delegating(specialist) } };
+        var specialist = new Turn
+        {
+            Blocks =
+            {
+                Tool("https://b.example/2.jpg", "https://a.example/1.jpg"),
+                Delegating(minion)
+            }
+        };
+        var turn = new Turn
+        {
+            Blocks =
+            {
+                Tool("https://a.example/1.jpg"),
+                Delegating(specialist)
+            }
+        };
 
-        Assert.That(ImageSources.Of(turn), Is.EquivalentTo(new[] { "https://a.example/1.jpg", "https://b.example/2.jpg", "https://c.example/3.jpg" }));
+        Assert.That(ImageSources.Of(turn),
+            Is.EquivalentTo(new[] { "https://a.example/1.jpg", "https://b.example/2.jpg", "https://c.example/3.jpg" }));
     }
 
     /// <summary>It's per turn: a later turn can't reuse an earlier one's image.</summary>

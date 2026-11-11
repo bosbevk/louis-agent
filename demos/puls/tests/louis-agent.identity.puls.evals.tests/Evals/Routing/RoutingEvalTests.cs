@@ -25,7 +25,8 @@ public class RoutingEvalTests
     private const string Source = "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing";
 
     /// <summary>The toolsets that hand a question on to another agent.</summary>
-    private static readonly string[] Delegating = [CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire()];
+    private static readonly string[] Delegating =
+        [CoreToolset.Minions.Wire(), CoreToolset.Agents.Wire()];
 
     /// <summary>It is the identity's eval, under its dataset's name, at the version its trend carries.</summary>
     [Test]
@@ -46,13 +47,16 @@ public class RoutingEvalTests
     [Test]
     public async Task TheBaseline_IsEveryToolsetPulsHas_ButTheDelegatingOnes()
     {
-        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), $"{PackKind.DotNet.Wire()},{PackKind.Git.Wire()},{PackKind.Files.Wire()},{PackKind.Shell.Wire()}").Toolsets.Select(toolset => toolset.Name);
+        var puls = Plugins
+            .FromSettings(PulsIdentityName.Puls.Wire(),
+                $"{PackKind.DotNet.Wire()},{PackKind.Git.Wire()},{PackKind.Files.Wire()},{PackKind.Shell.Wire()}")
+            .Toolsets.Select(toolset => toolset.Name);
 
         var modes = await Load().ModesAsync(null!, CancellationToken.None);
 
         Assert.That(modes.Select(mode => mode.Role).Distinct(), Is.EqualTo(new[] { "puls/voice-af" }));
         Assert.That(modes[0].Toolsets, Is.EquivalentTo(puls.Except(Delegating)));
-        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Specialists.Wire(), TestToolset.Web.Wire() }));
+        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Agents.Wire(), TestToolset.Web.Wire() }));
     }
 
     /// <summary>Its one check is the route, required, where only the specialists hand a question on.</summary>
@@ -84,7 +88,7 @@ public class RoutingEvalTests
         }
 
         Assert.That(scenarios.Where(scenario => RouteOf(scenario) is not null).Select(RouteOf).Distinct(),
-            Is.EqualTo(new[] { PulsRole.Cook.Wire() }));
+            Is.EqualTo(new[] { PulsCall.Cook.Wire() }));
         Assert.That(scenarios.Where(scenario => RouteOf(scenario) is not null).Select(scenario => scenario.Id),
             Has.All.StartWith(kinds.Single(kind => kind.Any(scenario => RouteOf(scenario) is not null)).Key));
     }

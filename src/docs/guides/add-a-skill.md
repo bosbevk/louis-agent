@@ -9,7 +9,7 @@ A function skill is `demos/louis-agent/skills/agent/functions/{name}.md`, on dis
 drop one in. What the agent writes waits in `demos/louis-agent/skills/agent/functions/pending/` (git-ignored), active only in the engine
 that wrote it, until you type `/approve {name}` in the chat, which moves it up; `/reject {name}` deletes it and `/tools`
 lists what is pending (FX20, as agent-built tools do). Every approved one loads with the **skills** toolset, no setting
-needed (CL9 retired `AGENT_FUNCTION`); a session without it (Puls's chats: `specialists` and `web`) gets its mode and
+needed (CL9 retired `AGENT_FUNCTION`); a session without it (Puls's chats: `agents` and `web`) gets its mode and
 its toolsets' guides, no skill file. A name that is a built-in prompt (a toolset's guide) is refused: what is embedded
 is built in (`SkillFiles.IsBuiltIn`).
 

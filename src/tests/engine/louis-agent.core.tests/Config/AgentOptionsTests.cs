@@ -1,4 +1,3 @@
-using LouisAgent.Testing;
 using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tests.Config;
@@ -56,10 +55,7 @@ public class AgentOptionsTests
     [Test]
     public void Constructor_AllowsPropertyInitialization()
     {
-        var options = new AgentOptions
-        {
-            WorkspaceRoot = "/test/workspace",
-        };
+        var options = new AgentOptions { WorkspaceRoot = "/test/workspace" };
 
         Assert.That(options.WorkspaceRoot, Is.EqualTo("/test/workspace"));
     }
@@ -69,7 +65,8 @@ public class AgentOptionsTests
     [Test]
     public void BrowserUserAgent_IsRead_AndAnEmptyOneIsNone()
     {
-        // FX21: an identity names itself to the sites its browser reads for a user; unset or blank, Chrome's own is sent.
+        // FX21: an identity names itself to the sites its browser reads for a user; unset or blank, Chrome's own is
+        // sent.
         Assert.That(
             With(("BROWSER_USER_AGENT", "Puls/1.0 (+https://example.test; reads a page on a user's behalf)"))
                 .BrowserUserAgent,
@@ -81,7 +78,8 @@ public class AgentOptionsTests
     [Test]
     public void TheReplaySettings_AreRead_TrimmedAndNullWhenBlank()
     {
-        // F18 step 4a: WEB_REPLAY is the text SessionReplay.DefaultMode parses; REPLAY_DIRECTORY decides whether recordings are kept.
+        // F18 step 4a: WEB_REPLAY is the text SessionReplay.DefaultMode parses; REPLAY_DIRECTORY decides whether
+        // recordings are kept.
         var set = With(("WEB_REPLAY", " record "), ("REPLAY_DIRECTORY", " /data/replay "));
         Assert.That((set.WebReplay, set.ReplayDirectory, set.KeepsRecordings),
             Is.EqualTo(("record", "/data/replay", true)));
@@ -158,5 +156,23 @@ public class AgentOptionsTests
 
         Assert.That(stderr.ToString(),
             Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ROLES_ENABLED"));
+    }
+
+    /// <summary>
+    /// AGENT_PEERS is name=url pairs by commas: names lower-cased, a url given a trailing slash, and a broken pair or a
+    /// url that isn't http(s) left out.
+    /// </summary>
+    [Test]
+    public void Peers_AreParsedFromAgentPeers()
+    {
+        var peers = AgentOptions.ParsePeers(
+            "coder=http://coder:8080, Writer = https://w.example/api ,bad,=http://x,ftp=ftp://x");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(peers.Keys, Is.EquivalentTo(new[] { "coder", "writer" }));
+            Assert.That(peers["coder"].ToString(), Is.EqualTo("http://coder:8080/"));
+            Assert.That(peers["writer"].ToString(), Is.EqualTo("https://w.example/api/"));
+        });
     }
 }

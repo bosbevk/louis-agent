@@ -88,6 +88,8 @@ public class HumanReviewAppliesTests
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
         public IReadOnlyList<ICheck> Checks { get; } = graders;
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
+
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            new(null, null, 0, 0, [], null);
     }
 }

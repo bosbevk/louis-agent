@@ -1,15 +1,9 @@
-using LouisAgent.Testing;
-using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
-using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Agent.EngineTools.Scripts;
-using LouisAgent.Composition.Tools.Scripts;
-using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools.Scripts;
 
@@ -44,11 +38,15 @@ public class ScriptToolTests
 
     private AgentEngine Engine(IChatClient? client = null)
     {
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
+        var options = new AgentOptions
+        {
+            WorkspaceRoot = _skillsDir,
+            SkillsDirectory = _skillsDir
+        };
         var engine = new AgentEngine(SkillLoader.Load(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,
-            SkillReloader = () => SkillLoader.Load(options),
+            SkillReloader = () => SkillLoader.Load(options)
         };
         engine.LoadApprovedTools();
         return engine;
@@ -127,7 +125,11 @@ public class ScriptToolTests
         Assert.That(wrongType, Does.Contain("must be a integer"));
 
         Assert.That(
-            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown),
+            tool.TryBuildInput(new Dictionary<string, object?>
+            {
+                ["a"] = 1,
+                ["c"] = 2
+            }, out _, out _, out var unknown),
             Is.False);
         Assert.That(unknown, Does.Contain("unknown parameter 'c'"));
     }
@@ -151,7 +153,7 @@ public class ScriptToolTests
         var engine = Engine();
 
         Assert.That(engine.CreateTool("# Tool: Nope"), Does.Contain("invalid tool definition"));
-        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "StartSubSession")), Does.Contain("built-in tool"));
+        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "AskAgent")), Does.Contain("built-in tool"));
     }
 
     [Test]

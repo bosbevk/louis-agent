@@ -16,8 +16,7 @@ public class DemosGraphTests
     [Test]
     public void EveryDemo_IsABox()
     {
-        var demos = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
-            .Select(Path.GetFileName).OrderBy(name => name).ToList();
+        var demos = TestPaths.Demos().Select(Path.GetFileName).OrderBy(name => name).ToList();
 
         var boxes = DemosGraph.Spec.Nodes.Where(node => node.Column == 1).Select(node => node.Id.Split('/')[1])
             .OrderBy(id => id).ToList();

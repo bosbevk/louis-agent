@@ -1,11 +1,12 @@
 {
   "name": "puls-recipes",
-  "version": 3,
+  "version": 4,
   "covers": "Puls's cook reading a recipe from a page: ten South African dishes to work on (five asked in Afrikaans, five in English, for four to ten people, any shop) and three held out (two in Afrikaans, one in English); each answer is a recipe from a real page.",
-  "content_hash": "b26c986cdeeb79fd2d0b23cffb56bf95b8807f134ef4f408a9bc7c6ebde17eec",
+  "content_hash": "c261101ef4f2dd624a2c1d1dc04940997a663c4edddaf8d2b8644bf564757ede",
   "changes": [
     "2026-11-04: first version, the recipes eval of F35.2 step 4: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei and koeksisters to work on; umngqusho, sosaties and bredie held out",
     "2026-11-06: half of the dev dishes ask for a recipe and name no people, since a recipe is now given as the page wrote it",
-    "2026-11-06: an English question opens in the English voice, as a chat in English does"
+    "2026-11-06: an English question opens in the English voice, as a chat in English does",
+    "2026-11-11: F127.3.1 - routes_to is the address Puls asks (puls.cook, was the role puls-cook), now that a hand-over is AskAgent(address)"
   ]
 }

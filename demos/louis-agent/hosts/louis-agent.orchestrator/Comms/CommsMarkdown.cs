@@ -1,5 +1,6 @@
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 
 namespace LouisAgent.Orchestrator.Comms;
 

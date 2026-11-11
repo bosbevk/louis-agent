@@ -1,18 +1,19 @@
 namespace LouisAgent.Core.Sessions;
 
-
 /// <summary>
-/// The files the user attached in this conversation, by name (F22): the host (the API's session) sets them for a turn,
-/// and <see cref="SpecialistTools.StartSubSession"/> forwards the ones the model names to the specialist. The model passes
-/// names, not contents, so a large file isn't copied through the model's output. Held in an <see cref="AsyncLocal{T}"/>,
-/// like <see cref="SubSessionFeed"/>; empty by default.
+/// The files the user attached in this conversation, by name (F22): the host (the API's session) sets them for a
+/// turn, and <c>AskAgent</c> forwards the ones the model names to the agent it asks. The model passes names, not
+/// contents, so a large file isn't copied through the model's output. Held in an <see cref="AsyncLocal{T}"/>, like
+/// <see cref="SubSessions.SubSessionFeed"/>; empty by default.
 /// </summary>
 public static class SessionAttachments
 {
     private static readonly IReadOnlyDictionary<string, string> None = new Dictionary<string, string>();
     private static readonly AsyncLocal<IReadOnlyDictionary<string, string>?> CurrentAttachments = new();
 
-    /// <summary>Makes <paramref name="attachments"/> (name → content) this flow's attachments until the result is disposed.</summary>
+    /// <summary>
+    /// Makes <paramref name="attachments"/> (name → content) this flow's attachments until the result is disposed.
+    /// </summary>
     public static IDisposable Use(IReadOnlyDictionary<string, string> attachments)
     {
         var previous = CurrentAttachments.Value;

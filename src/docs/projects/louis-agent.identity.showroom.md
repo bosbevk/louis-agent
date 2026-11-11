@@ -44,7 +44,10 @@ Nothing runs for a visitor who watches; since F127.2 a visitor can try each agen
   records one business, and `SEND_MAIL=1` lets its booking mail Louis; the recordings were made again in F127.2, so
   each moves between pages and sections.
 - The site's host lists them after Louis, so he stays the default. Since F127.2 the door opens them to visitors too
-  (`OPEN_IDENTITIES`), so a visitor can try a business's agent live, under the same daily cap as the guide. The
+  (`OPEN_IDENTITIES`), so a visitor can try a business's agent live, under the same daily cap as the guide. Since
+  F127.3.1 the guide can ask one for a visitor (`AskAgent("seemeeu-guesthouse", …)`): the business opens one level
+  down in its own voice, with its own packs and nothing to ask further with, since a role's level comes from its
+  file's folder, not from who asks. The
   leads pack's texts name no owner, so the same tool that sends Louis a lead sends a practice its booking request.
 
 ## Tests

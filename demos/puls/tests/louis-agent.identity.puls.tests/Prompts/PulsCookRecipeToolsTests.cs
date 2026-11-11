@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
@@ -98,7 +97,8 @@ public class PulsCookRecipeToolsTests
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("Your first tool calls, together in one round, are `GetToday`, `FindRecipes` and"));
+        Assert.That(cook,
+            Does.Contain("Your first tool calls, together in one round, are `GetToday`, `FindRecipes` and"));
         Assert.That(cook, Does.Not.Contain("no branch lookup until the recipe is read"));
         Assert.That(cook, Does.Not.Contain("after the recipe page is read"));
     }
@@ -109,7 +109,8 @@ public class PulsCookRecipeToolsTests
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("[Voortrekker Street, Malmesbury](https://www.google.com/maps/dir/?api=1&destination="));
+        Assert.That(cook,
+            Does.Contain("[Voortrekker Street, Malmesbury](https://www.google.com/maps/dir/?api=1&destination="));
         Assert.That(cook, Does.Contain("copy its link as the tool wrote it, and never build one"));
     }
 
@@ -141,7 +142,8 @@ public class PulsCookRecipeToolsTests
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("A variant of the dish is the dish, unless the task asks for a particular kind"));
+        Assert.That(cook,
+            Does.Contain("A variant of the dish is the dish, unless the task asks for a particular kind"));
         Assert.That(cook, Does.Contain("Never `WebSearch` while a hit that fits is left"));
     }
 
@@ -268,21 +270,22 @@ public class PulsCookRecipeToolsTests
     }
 
     /// <summary>
-    /// The opening line names every toolset the cook gets: the header's (recipes, and F50.2's where to buy and shop
-    /// prices) and the one Puls hands it.
+    /// The opening line names every toolset the cook gets, all from its header: the web (Puls sent it before
+    /// F127.3.1; an ask sends none), recipes, and F50.2's where to buy and shop prices.
     /// </summary>
     [Test]
     public void TheCooksOpeningLine_NamesEveryToolsetItGets()
     {
         var header = PromptCatalog.Get("specialists/puls-cook.md")!.Header!;
 
-        Assert.That(Cook(), Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices` and `calculator`)"));
+        Assert.That(Cook(),
+            Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices` and `calculator`)"));
         Assert.That(header.Toolsets,
             Is.EqualTo(new[]
             {
-                RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire()
-            }), "web comes from Puls, the rest from the header, all required");
+                PulsToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(),
+                PulsToolset.ShopPrices.Wire(), PulsToolset.Calculator.Wire()
+            }), "every one from the header, all required");
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.EqualTo(header.Toolsets));
     }
 }

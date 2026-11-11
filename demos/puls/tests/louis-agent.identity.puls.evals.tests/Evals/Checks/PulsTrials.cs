@@ -18,11 +18,12 @@ internal static class PulsTrials
 
     /// <summary>The cook's mode: Puls hands a meal to its cook.</summary>
     public static readonly EvalMode CookEvalMode =
-        new(CookMode.Cook.Wire(), Role, [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
+        new(CookMode.Cook.Wire(), Role, [PulsToolset.Agents.Wire(), PulsToolset.Web.Wire()]);
 
     /// <summary>The tools mode: Puls answers a meal itself, with the shop tools.</summary>
     public static readonly EvalMode ToolsEvalMode =
-        new(CookMode.Tools.Wire(), Role, [PulsToolset.Web.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire()]);
+        new(CookMode.Tools.Wire(), Role,
+            [PulsToolset.Web.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire()]);
 
     /// <summary>A trial of a scenario with the given <c>expected</c> JSON and place (none by default).</summary>
     public static Trial Trial(EvalMode mode, string task, string expected, string? place,
@@ -40,11 +41,11 @@ internal static class PulsTrials
     public static TurnTranscript Turn(int number, IReadOnlyList<SessionEvent> events, TurnFailure? failure = null) =>
         new(number, "sess_1", "q", events, TimeSpan.FromSeconds(1), failure);
 
-    /// <summary>Puls starting a sub-session with this role, as the stream carries it.</summary>
-    public static SessionEvent Start(string role) =>
+    /// <summary>Puls asking the agent at this address, as the stream carries it (F127.3.1).</summary>
+    public static SessionEvent Start(string address) =>
         Event("content_block_start",
-            """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"ROLE"}}}"""
-                .Replace("ROLE", role));
+            """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":"ADDRESS"}}}"""
+                .Replace("ADDRESS", address));
 
     /// <summary>Puls fetching a page itself, as the stream carries it.</summary>
     public static SessionEvent Fetch(string url) =>

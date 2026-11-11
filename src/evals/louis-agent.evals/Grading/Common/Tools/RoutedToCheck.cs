@@ -57,7 +57,7 @@ public sealed class RoutedToCheck(
             return ValueTask.FromResult(Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.TurnFailed)));
 
         var expected = expectedRole(trial);
-        var actual = EngineEvents.RoutedRole(first);
+        var actual = EngineEvents.RoutedAddress(first);
         if (actual == expected)
             return ValueTask.FromResult(Verdict.Pass(Name, Version, MessageText.Format(
                 expected is null ? CommonGradeMessage.AnsweredAsExpected : CommonGradeMessage.RoutedPass,

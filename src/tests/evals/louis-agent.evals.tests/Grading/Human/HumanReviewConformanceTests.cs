@@ -94,6 +94,8 @@ public class HumanReviewConformanceTests
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
         public IReadOnlyList<ICheck> Checks { get; } = graders;
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
+
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotSupportedException();
     }
 }

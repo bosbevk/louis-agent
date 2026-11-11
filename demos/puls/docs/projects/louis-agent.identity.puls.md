@@ -22,13 +22,16 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   catalogue checks that each pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
   are read through the same reader as core's (`SkillFileSource`).
 - **A chat.** The web app opens a session with `role: "puls/voice-af"` (or `puls/voice-en`) and the toolsets
-  `specialists` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
-  shared routing (`voice.md`). Puls answers the world itself with `web`, and hands every cooking question to the cook
-  with `StartSubSession`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`).
+  `agents` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
+  shared routing (`voice.md`). Puls answers the world itself with `web`, and asks the cook every cooking question
+  with `AskAgent("puls.cook", …)`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`). The addresses it may
+  ask are its `Calls` (`PulsCall`: the cook, the researcher, the analyst, the historian and the reader), and it sets
+  `RelaysAnswersWhole`, so the cook's answer is shown as it is and Puls's turn ends there
+  ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)).
 - **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
-  ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `recipes`,
-  `where-to-buy`, `shop-prices` and `calculator`, required (no `?`): a cook that can't read recipes, find a shop, estimate a list or do its sums is refused,
-  not left without them. It gets `web` from Puls. A role that needs a toolset always lists it under
+  ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `web`,
+  `recipes`, `where-to-buy`, `shop-prices` and `calculator`, required (no `?`): a cook that can't read the web or recipes, find a shop, estimate a list or do its sums is refused,
+  not left without them. Its own file names `web` since F127.3.1, since an ask sends no toolsets. A role that needs a toolset always lists it under
   `metadata.toolsets` ([ADR 0025](../../../../src/docs/adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook`, `puls-minion-web-price-lookup` and `puls-minion-find-recipe`, the ones that passed
@@ -68,10 +71,10 @@ sequenceDiagram
     participant V as Puls: principles, voice-af, voice
     participant C as The cook: puls-cook
     participant T as Its tools
-    W->>E: opens with puls/voice-af, specialists and web
+    W->>E: opens with puls/voice-af, agents and web
     E->>V: reads the principles, then the voice, then the routing
     W->>V: a cooking question
-    V->>E: StartSubSession(puls-cook)
+    V->>E: AskAgent("puls.cook")
     E->>E: is the role known, and in ROLES_ENABLED?
     E->>C: a sub-session, with only its role and its toolsets' guides
     C->>T: FindRecipes, ReadRecipe, FindBranches, EstimatePrices, Calculate
@@ -138,7 +141,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 ## Configuration
 
 None of its own. A Puls stack (`demos/puls/docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
-`AGENT_PEERS` (itself), `SHOW_SPECIALIST_REPORTS=true` ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
+`AGENT_PEERS` (itself), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
 [ADR 0038](../../../../src/docs/adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
 (`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](../../../../packs/docs/projects/louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
 ([louis-agent.pack.recipes](../../../../packs/docs/projects/louis-agent.pack.recipes.md)). Every setting is in [Setup](../../../../src/docs/SETUP.md).

@@ -5,6 +5,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Packs.Triage.Feed;
 using static LouisAgent.Orchestrator.Comms.CommsMarkdown;
 

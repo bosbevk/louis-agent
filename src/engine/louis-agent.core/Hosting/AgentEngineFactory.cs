@@ -14,7 +14,6 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.EngineTools.Skills;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
@@ -107,7 +106,8 @@ public sealed class AgentEngineFactory
         var replay = _replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);
         Context = new ToolsetContext(agent, (services ?? HostServices.None).WebOrNone(agent, replay), rates,
-            usageSink, replay);
+            usageSink, replay)
+        { Identities = Catalog.Identities };
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>
@@ -121,12 +121,12 @@ public sealed class AgentEngineFactory
 
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
     public IReadOnlyList<string> Available =>
-        Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
+        [.. Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name)];
 
     /// <summary>
     /// The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).
     /// </summary>
-    public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
+    public IReadOnlyList<string> SessionLlms => [.. _sessionLlms.Keys];
 
     /// <summary>The named roles a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailableRoles(RoleLevel level) => RoleFiles.Enabled(_agent, level);
@@ -150,6 +150,10 @@ public sealed class AgentEngineFactory
     /// instance's own model), before anything is built. A full cache drops its least recently used profile (on a
     /// specialist the model chooses the lists, so they are many).
     /// </summary>
+    /// <param name="toolsets">The toolsets the session loads, by name; an optional one ends in <c>?</c>.</param>
+    /// <param name="role">The session's role or mode; null for the default mode.</param>
+    /// <param name="level">Where the role is: a mode at level 0, a specialist's or a minion's role below it.</param>
+    /// <param name="llm">The LLM profile the session names; null for the instance's own model.</param>
     /// <param name="tool">
     /// A minion's one tool (F30): the engine keeps only it, with no toolset guide and no router, so a small model
     /// reads a prompt it can follow. It must be a tool of <paramref name="toolsets"/>, else
@@ -168,7 +172,7 @@ public sealed class AgentEngineFactory
             throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
                 new
                 {
-                    Tool = key.Tool,
+                    key.Tool,
                     Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name))
                 }));
 
@@ -204,7 +208,9 @@ public sealed class AgentEngineFactory
         // ReadSkill comes only with an identity that has a skill to read on demand, and holds only its skills (F129).
         var tools = ToolsetCatalog.BuildTools(resolved, Context);
         var skills = new SkillReadTools(SkillLoader.SkillsOf(_agent, role, level));
-        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient,
+        // Whom a mode may ask (F127.3.1): its identity's Calls; below level 0 nobody, since agents is refused there.
+        var calls = level == RoleLevel.Agent ? Catalog.IdentityOf(role ?? DefaultVoice)?.Calls : null;
+        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level, calls), model?.Client ?? _chatClient,
             _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: skills.HasAny ? [.. tools, skills] : tools, _usageSink,
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
@@ -214,11 +220,11 @@ public sealed class AgentEngineFactory
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
             ReservedToolNames = Catalog.ToolNames,
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
-            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level),
+            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level, calls),
             Thinking = model is null ? _thinking : model.Thinking,
             Display = _display,
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.
-            Name = role ?? DefaultVoice ?? AgentLogging.ServiceName,
+            Name = role ?? DefaultVoice ?? AgentLogging.ServiceName
         };
         // Approved agent-built tools come with the skills toolset (CreateTool, /approve).
         if (selfExtension) engine.LoadApprovedTools();
@@ -240,7 +246,7 @@ public sealed class AgentEngineFactory
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,
             // About four characters a token: an estimate of the fixed prefix every request of this profile sends.
-            PrefixTokens = (engine.SkillDocumentation.Length + toolsJson.Length) / 4,
+            PrefixTokens = (engine.SkillDocumentation.Length + toolsJson.Length) / 4
         });
         return engine;
     }

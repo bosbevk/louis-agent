@@ -1,4 +1,7 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Agents;
+using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Identities.Guide;
 using LouisAgent.Identities.Triage;
 
@@ -27,6 +30,30 @@ public class CodingCatalogTests
             Assert.That(triage.Packs.Where(pack => !loaded.Contains(pack)), Is.Empty,
                 "a pack the team names and nobody loads");
             Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(TriageIdentityPack.Triage.Wire()));
+        });
+    }
+
+    /// <summary>
+    /// The manager's calls (F127.3.1) each reach one of the team's roles here, one level down, in the order of its
+    /// roles.
+    /// </summary>
+    [Test]
+    public void TheTriageManagersCalls_EachReachOneOfItsRoles()
+    {
+        var catalog = CodingPrompts.Catalog;
+        IAgentIdentity triage = catalog.Identity(TriageIdentityName.Triage.Wire())!;
+
+        var reached = triage.Calls
+            .Select(call => AgentAddress.TryParse(call, out var address)
+                ? AgentAddresses.Resolve(address, catalog.Identities, out _)
+                : null)
+            .ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(reached.Select(agent => agent?.Kind), Has.All.EqualTo(AddressKind.Specialist));
+            Assert.That(reached.Select(agent => agent?.Role),
+                Is.EqualTo(Enum.GetValues<TriageRole>().Select(role => role.Wire())));
         });
     }
 

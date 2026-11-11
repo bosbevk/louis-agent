@@ -1,7 +1,6 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
@@ -28,7 +27,11 @@ public class PulsIdentityTests
 
         Assert.That(puls.Name, Is.EqualTo(PulsIdentityName.Puls.Wire()));
         Assert.That(puls.Packs,
-            Is.EqualTo(new[] { PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire(), PulsPack.Calculator.Wire() }),
+            Is.EqualTo(new[]
+            {
+                PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(),
+                PulsPack.Web.Wire(), PulsPack.Calculator.Wire()
+            }),
             "the cook's branches, prices (F50.2) and recipes are packs Puls names, in the identity's own enum " +
             "(ADR 0043), in this order");
         // Step 3: its prompts are its own, embedded with their paths (the manifest lines in its csproj work).
@@ -36,9 +39,12 @@ public class PulsIdentityTests
         Assert.That(puls.Prompts.GetFileInfo("specialists/puls-cook.md").Exists, Is.True, "a specialist");
         Assert.That(puls.Prompts.GetFileInfo("minions/puls-minion.md").Exists, Is.True, "a minion base (F30, kept)");
         // The catalogue refuses an identity whose pack isn't there; with the packs, all are in.
-        Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "packs named, none registered");
+        Assert.Throws<AgentCatalogException>(() => _ = new AgentCatalog([puls], []), "packs named, none registered");
         var catalog = new AgentCatalog([puls],
-            [new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions()), new CalculatorPack()]);
+        [
+            new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+            new RecipesPack(new RecipesOptions()), new CalculatorPack()
+        ]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
         Assert.That(catalog.Toolsets.Select(t => t.Name),
             Does.Contain(WhereToBuyToolset.WhereToBuy.Wire()).And.Contain(ShopPricesToolset.ShopPrices.Wire()));
@@ -58,8 +64,8 @@ public class PulsIdentityTests
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
             Is.EqualTo(new[]
             {
-                RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
-                PulsPack.Calculator.Wire()
+                PulsPack.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+                ShopPricesToolset.ShopPrices.Wire(), PulsPack.Calculator.Wire()
             }));
 
         foreach (string role in RoleCatalog.Available(RoleLevel.Specialist)

@@ -23,7 +23,7 @@ public sealed class Block
     public List<string> Images { get; set; } = [];
 
     /// <summary>
-    /// For a <c>StartSubSession</c> call (F5): the specialist's own turn (its thinking, tool calls and answer), folded
+    /// For an <c>AskAgent</c> call (F5): the asked agent's own turn (its thinking, tool calls and answer), folded
     /// from the sub-session events the API streams while the call runs. Null for other tools, and for older chats.
     /// </summary>
     public Turn? SubTurn { get; set; }

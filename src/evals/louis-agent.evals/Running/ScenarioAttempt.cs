@@ -1,8 +1,6 @@
 using LouisAgent.Composition.Logging;
-using LouisAgent.Core.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
@@ -71,7 +69,7 @@ public sealed class ScenarioAttempt(
             for (int number = 1; number <= scenario.Input.Messages.Count; number++)
             {
                 var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, openFailure,
-                    scenario.Input.Messages[number - 1],
+                    scenario.Input.Messages[number - 1], turns,
                     cancellationToken);
                 turns.Add(turn.Transcript);
                 facts.Add(turn.Facts);
@@ -131,6 +129,7 @@ public sealed class ScenarioAttempt(
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat,
         string task, int number,
         string? session, TurnFailure? openFailure, string message,
+        IReadOnlyList<TurnTranscript> earlier,
         CancellationToken cancellationToken)
     {
         protocol.Question(mode.Name, repeat, task, number, session ?? string.Empty, message);
@@ -166,7 +165,8 @@ public sealed class ScenarioAttempt(
 
         var duration = clock.GetUtcNow() - started;
         var transcript = new TurnTranscript(number, session ?? string.Empty, message, events, duration, failure);
-        var facts = eval.TurnFactsOf(transcript, mode);
+        // The conversation's turns so far, so a turn that asks an agent again is told from one that asks it first.
+        var facts = eval.TurnFactsOf(transcript, mode, earlier);
         // The answer through the one reader of the engine's events: the runner's own loop called GetString() on each
         // delta's text, which throws on a number, so one odd delta stopped the run; AnswerOf skips it (F18 step 4.5a,
         // ADR 0030).

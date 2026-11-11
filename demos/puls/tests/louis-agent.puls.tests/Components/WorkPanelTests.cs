@@ -1,5 +1,3 @@
-using LouisAgent.Web.Testing;
-using LouisAgent.Testing;
 using LouisAgent.Web.Components.Chat.Panels;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Chats;
@@ -19,8 +17,13 @@ public class WorkPanelTests
     public async Task TheCooksWork_MatchesTheGoldenFile()
     {
         var turn = await SessionStreamFixture.ReplayAsync();
-        var chat = new ChatModel { SessionId = "sess_fixture", Title = "Ete vir vier", Turns = [turn] };
-        using var ctx = new BunitContext();
+        var chat = new ChatModel
+        {
+            SessionId = "sess_fixture",
+            Title = "Ete vir vier",
+            Turns = [turn]
+        };
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(PulsText.Afrikaans);
 
         var cut = ctx.Render<WorkPanel>(p => p
@@ -29,10 +32,10 @@ public class WorkPanelTests
             .Add(x => x.Avatar, "brand/puls-icon-tile.svg"));
 
         Assert.That(cut.Find(".work-count").TextContent, Is.EqualTo("1"));
-        Assert.That(cut.Find(".work-who strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole));
+        Assert.That(cut.Find(".work-who strong").TextContent, Is.EqualTo(SessionStreamFixture.CookAddress));
         Assert.That(cut.FindAll(".work-step"),
             Has.Count.EqualTo(
-                turn.Blocks.Single(b => b.ToolName == "StartSubSession").SubTurn!.Blocks.Count(b =>
+                turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName).SubTurn!.Blocks.Count(b =>
                     b.Kind == BlockKind.Tool)));
         Snapshots.Match("Components/WorkPanel.html", cut.Markup);
     }

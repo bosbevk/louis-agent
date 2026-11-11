@@ -1,4 +1,3 @@
-using LouisAgent.Composition.Tools;
 using System.Text.Json;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Store;
@@ -67,11 +66,11 @@ public class EvalToolsTests
     {
         var tools = EvalTools.Of(
         [
-            Use("t1", "StartSubSession"),
+            Use("t1", "AskAgent"),
             Inner(Use("s1", "WebSearch")), Inner(Result("s1", true, Limit)),
             Inner(Use("s2", "WebSearch")), Inner(Result("s2", true, Limit)),
             Inner(Use("s3", "FetchUrl")), Inner(Result("s3", false, "URL: https://…")),
-            Result("t1", false, "the cook's answer"),
+            Result("t1", false, "the cook's answer")
         ]);
 
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((4, 2)));
@@ -85,7 +84,7 @@ public class EvalToolsTests
         [
             Use("a", "WebSearch"), Result("a", true, Limit),
             Use("b", "WebSearch"), Result("b", true, Limit),
-            Use("c", "FetchUrl"), Result("c", true, "Error: 404 Not Found for https://x"),
+            Use("c", "FetchUrl"), Result("c", true, "Error: 404 Not Found for https://x")
         ]);
 
         Assert.That(tools.Reasons.Select(r => (r.Tool, r.Count)),

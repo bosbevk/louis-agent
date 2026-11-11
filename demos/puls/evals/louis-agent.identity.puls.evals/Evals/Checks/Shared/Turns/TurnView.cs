@@ -9,21 +9,19 @@ public sealed record ToolCall(string Name, JsonElement Input);
 
 /// <summary>
 /// What one turn says, as the Python's <c>read_turn</c> read it: its answer, the calls Puls made, the calls its
-/// specialists made, the role it handed to, the sub-session it continued, its error, and the results its tools
-/// returned.
+/// specialists made, the address it asked, its error, and the results its tools returned.
 /// </summary>
 /// <remarks>
-/// The answer, the role and the error come from <see cref="EngineEvents"/>, the one reader of them, so a check and the
-/// protocol's facts can't disagree; the calls, the results and the handle are read here, since only an identity cares
-/// about them. A specialist's error is the specialist's, not the turn's; an empty handle counts as none, as the
-/// Python's truthiness read it.
+/// The answer, the address and the error come from <see cref="EngineEvents"/>, the one reader of them, so a check and
+/// the protocol's facts can't disagree; the calls and the results are read here, since only an identity cares about
+/// them. A specialist's error is the specialist's, not the turn's; an empty error counts as none, as the Python's
+/// truthiness read it.
 /// </remarks>
 public sealed record TurnView(
     string Answer,
     IReadOnlyList<ToolCall> Calls,
     IReadOnlyList<ToolCall> SpecialistCalls,
     string? Role,
-    string? Continued,
     string? Error,
     IReadOnlyList<string> Results,
     IReadOnlyList<string> SpecialistResults)
@@ -33,8 +31,8 @@ public sealed record TurnView(
         From(new TurnTranscript(1, string.Empty, string.Empty, events.ToList(), TimeSpan.Zero, null));
 
     /// <summary>
-    /// Reads a turn: the answer, the role and the error from <see cref="EngineEvents"/>; its calls, results and
-    /// sub-session handle here.
+    /// Reads a turn: the answer, the address and the error from <see cref="EngineEvents"/>; its calls and results
+    /// here.
     /// </summary>
     public static TurnView From(TurnTranscript turn)
     {
@@ -42,7 +40,6 @@ public sealed record TurnView(
         var specialistCalls = new List<ToolCall>();
         var results = new List<string>();
         var specialistResults = new List<string>();
-        string? continued = null;
 
         void Read(SessionEvent streamEvent, bool specialist)
         {
@@ -57,8 +54,6 @@ public sealed record TurnView(
                         string name = Str(block, "name") ?? "";
                         var input = Object(block, "input") ?? Empty;
                         (specialist ? specialistCalls : calls).Add(new ToolCall(name, input));
-                        if (!specialist && name == "ContinueSubSession" && continued is null)
-                            continued = Str(input, "handle");
                     }
 
                     break;
@@ -69,8 +64,7 @@ public sealed record TurnView(
         }
 
         foreach (var streamEvent in turn.Events) Read(streamEvent, specialist: false);
-        return new TurnView(EngineEvents.AnswerOf(turn), calls, specialistCalls, EngineEvents.RoutedRole(turn),
-            Truthy(continued),
+        return new TurnView(EngineEvents.AnswerOf(turn), calls, specialistCalls, EngineEvents.RoutedAddress(turn),
             Truthy(EngineEvents.ErrorTextOf(turn)), results, specialistResults);
     }
 

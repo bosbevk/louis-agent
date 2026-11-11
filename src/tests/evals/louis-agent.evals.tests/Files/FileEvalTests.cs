@@ -128,7 +128,7 @@ public class FileEvalTests
             Call(SampleRole.Alpha), ToolCall("ReadPage", """{"url": "https://www.example.com/a"}"""), Error()
         ]);
 
-        var facts = ((IEval)FileEval.Load(folder.Root, Catalog, Readers, Source)).TurnFactsOf(turn, Mode);
+        var facts = ((IEval)FileEval.Load(folder.Root, Catalog, Readers, Source)).TurnFactsOf(turn, Mode, []);
 
         Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error),
             Is.EqualTo((SampleRole.Alpha, 2, 0, "overloaded")));

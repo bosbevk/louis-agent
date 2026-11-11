@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:51:53.872Z","mode":"delegated","repeat":1,"task":"numbers-2","turn":1,"session":"sess_2a075317f8cb4296af02f17beb0bf444","text":"Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?"}
 {"event":"sse","t":"2026-10-29T00:51:53.872Z","mode":"delegated","repeat":1,"task":"numbers-2","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_2a075317f8cb4296af02f17beb0bf444","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:51:58.636Z","mode":"delegated","repeat":1,"task":"numbers-2","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

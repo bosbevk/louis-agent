@@ -1,4 +1,3 @@
-using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Agent.Toolsets;
@@ -8,8 +7,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Testing.Replay;
-using LouisAgent.Core.Web.Replay;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -26,7 +23,7 @@ public class AgentEngineFactoryTests
         SkillsDirectory = TestPaths.Skills,
         DefaultVoice = "testprod/voice-en",
         AgentPeers = peer is null ? [] : new Dictionary<string, Uri> { ["coder"] = peer },
-        RatesUrl = null,
+        RatesUrl = null
     };
 
     /// <summary>A factory on the fake model, with the cache size given.</summary>
@@ -60,7 +57,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }),
             "another role is refused");
 
-        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
+        var refused = Assert.Throws<RoleException>(() =>
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-other", RoleLevel.Specialist))!;
         Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod-specialist."),
             "named as unknown, with what's on");
@@ -115,13 +112,14 @@ public class AgentEngineFactoryTests
         string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
         try
         {
-            AgentEngineFactory Factory() => new(new FakeChatClient(), new AgentOptions
-            {
-                WorkspaceRoot = TestPaths.RepoRoot,
-                RatesUrl = null,
-                ReplayDirectory = folder,
-                HostTimeZone = "Africa/Johannesburg",
-            }, catalog: TestTools.Catalog);
+            AgentEngineFactory Factory() => new(new FakeChatClient(),
+                new AgentOptions
+                {
+                    WorkspaceRoot = TestPaths.RepoRoot,
+                    RatesUrl = null,
+                    ReplayDirectory = folder,
+                    HostTimeZone = "Africa/Johannesburg"
+                }, catalog: TestTools.Catalog);
 
             async Task<string> TodayAsync() =>
                 (await Factory().GetOrCreate([TestToolset.Files.Wire()]).Tools
@@ -300,7 +298,7 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
+        Assert.Throws<RoleException>(() =>
             factory.GetOrCreate([TestToolset.Files.Wire()], "nobody-here"));
         Assert.That(factory.Profiles, Is.Empty);
     }
@@ -347,7 +345,7 @@ public class AgentEngineFactoryTests
 
         Assert.That(() => factory.GetOrCreate([TestToolset.Files.Wire(), "nope"]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names"));
-        Assert.That(() => factory.GetOrCreate([CoreToolset.Specialists.Wire()]),
+        Assert.That(() => factory.GetOrCreate([CoreToolset.Agents.Wire()]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
         Assert.That(factory.Profiles, Is.Empty);
     }
@@ -377,9 +375,9 @@ public class AgentEngineFactoryTests
     public void Available_ListsOnlyToolsetsWhoseSettingsAreSet()
     {
         Assert.That(Factory().Available,
-            Does.Contain(TestToolset.Files.Wire()).And.Not.Contain(CoreToolset.Specialists.Wire()));
+            Does.Contain(TestToolset.Files.Wire()).And.Not.Contain(CoreToolset.Agents.Wire()));
         Assert.That(Factory(peer: new Uri("http://coder.test/")).Available,
-            Does.Contain(CoreToolset.Specialists.Wire()));
+            Does.Contain(CoreToolset.Agents.Wire()));
     }
 
     /// <summary>

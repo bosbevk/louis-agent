@@ -19,6 +19,7 @@ using LouisAgent.Core.OpenAi;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools.Checks;
 using LouisAgent.Orchestrator.Messages;
@@ -38,11 +39,9 @@ var llm = LlmOptions.FromEnvironment();
 
 var (skills, methods) = OrchestratorSkills.Load(options.SkillsDirectory, options.Service);
 var feed = new JsonLinesErrorFeed(options.ErrorLogPath, options.StateDirectory);
-using var http = new HttpClient
-{
-    BaseAddress = options.LouisAgentUrl,
-    Timeout = TimeSpan.FromMinutes(30)
-};
+using var http = new HttpClient();
+http.BaseAddress = options.LouisAgentUrl;
+http.Timeout = TimeSpan.FromMinutes(30);
 var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
 
 // LOG_DIRECTORY and USAGE_LEDGER come from the environment, so triage lands in the same usage ledger as the fixes.

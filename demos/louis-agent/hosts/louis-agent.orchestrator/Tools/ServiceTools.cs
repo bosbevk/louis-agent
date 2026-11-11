@@ -5,6 +5,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Messages;
 using LouisAgent.Orchestrator.Tools.Records;

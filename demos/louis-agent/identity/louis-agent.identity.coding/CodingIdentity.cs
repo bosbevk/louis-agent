@@ -41,6 +41,4 @@ public enum CodingPack
     DotNet,
     Shell,
     Web,
-    Paymo,
-    DevOps,
 }

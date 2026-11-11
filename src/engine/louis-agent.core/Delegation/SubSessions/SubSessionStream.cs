@@ -1,10 +1,10 @@
-
 using System.Text;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Core.Delegation.SubSessions;
-/// <summary>A sub-session's SSE stream read to the end (S, CL15, from SpecialistTools), through the one session-stream
+
+/// <summary>A sub-session's SSE stream read to the end (S, CL15), through the one session-stream
 /// reader (F18 step 1c).</summary>
 internal static class SubSessionStream
 {

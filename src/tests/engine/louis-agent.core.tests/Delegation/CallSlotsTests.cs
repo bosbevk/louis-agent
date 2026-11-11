@@ -15,8 +15,11 @@ public class CallSlotsTests
 
         using (UsageScope.Begin(session: "sess_parent", turn: 2))
         {
-            for (int i = 0; i < 3; i++) Assert.That(slots.Take(UsageScope.Current, out string? parent), Is.Null, $"call {i + 1}, parent {parent}");
-            Assert.That(slots.Take(UsageScope.Current, out string? tag), Does.Contain("already made 3 sub-session calls"));
+            for (int i = 0; i < 3; i++)
+                Assert.That(slots.Take(UsageScope.Current, out string? parent), Is.Null,
+                    $"call {i + 1}, parent {parent}");
+            Assert.That(slots.Take(UsageScope.Current, out string? tag),
+                Does.Contain("already asked other agents 3 times"));
             Assert.That(tag, Is.EqualTo("sess_parent#2"));
         }
 
@@ -30,7 +33,8 @@ public class CallSlotsTests
         var time = new FakeTimeProvider(DateTimeOffset.Parse("2026-10-13T10:00:00Z"));
         var slots = new CallSlots(maxPerTurn: 3, noTurnWindow: TimeSpan.FromMinutes(1), time);
 
-        for (int i = 0; i < 3; i++) Assert.That(slots.Take(null, out string? parent), Is.Null, $"call {i + 1}, parent {parent}");
+        for (int i = 0; i < 3; i++)
+            Assert.That(slots.Take(null, out string? parent), Is.Null, $"call {i + 1}, parent {parent}");
         Assert.That(slots.Take(null, out string? tag), Does.Contain("in the last minute"));
         Assert.That(tag, Is.Null, "no turn, no parent tag");
 

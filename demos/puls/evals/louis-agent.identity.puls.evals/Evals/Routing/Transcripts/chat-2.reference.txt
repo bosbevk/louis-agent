@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:49:57.926Z","mode":"delegated","repeat":1,"task":"chat-2","turn":1,"session":"sess_df6616744b2f4f3ebc7b90f5b6426521","text":"Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."}
 {"event":"sse","t":"2026-10-29T00:49:57.926Z","mode":"delegated","repeat":1,"task":"chat-2","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_df6616744b2f4f3ebc7b90f5b6426521","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:49:58.71Z","mode":"delegated","repeat":1,"task":"chat-2","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}

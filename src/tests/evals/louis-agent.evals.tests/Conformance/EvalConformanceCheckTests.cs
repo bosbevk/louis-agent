@@ -257,7 +257,9 @@ public class EvalConformanceCheckTests
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = scenarios;
         public IReadOnlyList<ICheck> Checks { get; } = graders;
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
+
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotImplementedException();
     }
 
     /// <summary>A grader whose verdict is the function's; a function that throws is a grader that throws.</summary>

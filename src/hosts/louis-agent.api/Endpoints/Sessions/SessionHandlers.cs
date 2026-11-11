@@ -4,7 +4,7 @@ using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
@@ -15,24 +15,24 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.SessionLlms;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using CreatedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.Api.Contracts.Sessions.SessionCreatedReply>,
+    LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.SessionStream.Wire.Replies.SessionCreatedReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using SessionAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using DeletedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionDeletedReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionDeletedReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using CancelledAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionCancelledReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionCancelledReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using TurnAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,
@@ -78,7 +78,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
                 new
                 {
                     Tag = invalid,
-                    Max = CreateSessionRequest.MaxTagLength
+                    Max = CreateSessionRequestReading.MaxTagLength
                 }));
         if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
             return Bad(MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone }));
@@ -196,15 +196,16 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
     /// <summary>
     /// What a visitor's session is allowed to be: the open identity the door admitted, the toolsets of its own packs
-    /// and nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they
-    /// are.
+    /// and, when it may ask other agents (F127.3.1), the <c>agents</c> toolset where this instance can reach them,
+    /// nothing more, tagged for the ledger; the place they shared stays, since it only tells the agent where they are.
     /// </summary>
     private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, string identity,
         AgentEngineFactory engines)
     {
-        var packs = engines.Catalog.Identity(identity)?.Packs ?? [];
-        var toolsets = engines.Catalog.Packs.Where(p => packs.Contains(p.Name, StringComparer.OrdinalIgnoreCase))
-            .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToList();
+        var who = engines.Catalog.Identity(identity);
+        List<string> toolsets = who is null ? [] : [.. engines.Catalog.ToolsetsOf(who)];
+        // Optional: an instance with no AGENT_PEERS leaves it out, and the visitor still gets the identity.
+        if (who is { Calls.Count: > 0 }) toolsets.Add(AgentSessions.AgentsToolset + ToolsetCatalog.OptionalMark);
         return new CreateSessionRequest(null, null, OpenDoorService, toolsets, Location: request?.Location,
             TimeZone: request?.TimeZone, Identity: identity);
     }
