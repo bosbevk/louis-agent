@@ -59,19 +59,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 
 ## Diagrams
 
-**Architecture:** two tools over one polite map client. It asks the map in code and hands the model a short table.
-
-```mermaid
-flowchart TD
-    pack["WhereToBuyPack: the where-to-buy toolset"] --> tools["WhereToBuyTools: FindBranches, FindShopsNear"]
-    tools --> finder["BranchFinder"]
-    finder --> names["ShopNames: PnP is Pick n Pay"]
-    finder --> distance["Distance"]
-    finder --> map["MapSearch: one request a second, an honest User-Agent"]
-    map --> nominatim["OpenStreetMap's Nominatim"]
-    map --> place["MapPlace and MapAddress: what the map answered"]
-    tools --> printer["BranchPrinter"]
-```
+![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
 
 **Flow:** finding a shop's branches near a town. The search starts with a small box and widens only when a box finds none, since the map answers at most 20 hits in no order.
 

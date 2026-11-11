@@ -1,0 +1,195 @@
+{
+  "kind": "flow",
+  "title": "Building blocks, level 2: the containers",
+  "caption": "Many hosts, one core: the hosts that load an agent read its identities and packs through the composition root (Plugins.FromEnvironment()), and everything ends in core. A dashed line means uses.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "dev",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Developer"
+      },
+      {
+        "id": "puser",
+        "icon": "users",
+        "tone": "blue",
+        "label": "Puls user"
+      },
+      {
+        "id": "cli",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "CLI\n[.NET console]"
+      },
+      {
+        "id": "acp",
+        "icon": "code",
+        "tone": "green",
+        "label": "ACP server\n[.NET console, one per Rider\nchat]"
+      },
+      {
+        "id": "web",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Web app / Puls app\n[Blazor WebAssembly]"
+      },
+      {
+        "id": "orch",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Orchestrator\n[.NET console, POC]"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "green",
+        "label": "HTTP API\n[ASP.NET Core, SSE]"
+      },
+      {
+        "id": "mcp",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "MCP server\n[.NET, stdio or HTTP]"
+      },
+      {
+        "id": "peer",
+        "icon": "server",
+        "tone": "green",
+        "label": "Specialist API\n[the HTTP API, as a peer]"
+      },
+      {
+        "id": "comp",
+        "icon": "code",
+        "tone": "teal",
+        "label": "Composition root\n[class library: IDENTITIES,\nPACKS]"
+      },
+      {
+        "id": "ident",
+        "icon": "user",
+        "tone": "teal",
+        "label": "Identities\n[puls: voice, modes, roles]"
+      },
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "teal",
+        "label": "Packs\n[shops: toolsets, guides,\nsettings]"
+      },
+      {
+        "id": "core",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "louis-agent.core\n[class library: the engine,\ntools, skills, providers]"
+      },
+      {
+        "id": "llm",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Model provider"
+      },
+      {
+        "id": "ws",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "Workspace"
+      },
+      {
+        "id": "ledger",
+        "icon": "database",
+        "tone": "amber",
+        "label": "logs/: run files, usage ledger"
+      }
+    ],
+    "edges": [
+      {
+        "from": "dev",
+        "to": "cli"
+      },
+      {
+        "from": "dev",
+        "to": "acp"
+      },
+      {
+        "from": "dev",
+        "to": "web"
+      },
+      {
+        "from": "puser",
+        "to": "web"
+      },
+      {
+        "from": "web",
+        "to": "api",
+        "word": "HTTP + SSE"
+      },
+      {
+        "from": "orch",
+        "to": "api",
+        "word": "fix sessions"
+      },
+      {
+        "from": "api",
+        "to": "peer",
+        "word": "sub-sessions"
+      },
+      {
+        "from": "cli",
+        "to": "comp"
+      },
+      {
+        "from": "acp",
+        "to": "comp"
+      },
+      {
+        "from": "api",
+        "to": "comp"
+      },
+      {
+        "from": "mcp",
+        "to": "comp"
+      },
+      {
+        "from": "comp",
+        "to": "ident"
+      },
+      {
+        "from": "comp",
+        "to": "pack"
+      },
+      {
+        "from": "ident",
+        "to": "core",
+        "style": "dashed"
+      },
+      {
+        "from": "pack",
+        "to": "core",
+        "style": "dashed"
+      },
+      {
+        "from": "orch",
+        "to": "core",
+        "style": "dashed"
+      },
+      {
+        "from": "peer",
+        "to": "core",
+        "style": "dashed"
+      },
+      {
+        "from": "core",
+        "to": "llm"
+      },
+      {
+        "from": "core",
+        "to": "ws"
+      },
+      {
+        "from": "core",
+        "to": "ledger"
+      }
+    ],
+    "direction": "down"
+  }
+}

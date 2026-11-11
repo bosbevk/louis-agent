@@ -50,19 +50,7 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 ## Diagrams
 
-**Architecture:** one class, and the rest is content. Puls holds no tools: what it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.
-
-```mermaid
-flowchart TD
-    plugins["Plugins, in louis-agent.host-packs"] -->|"IDENTITIES=puls"| identity["PulsIdentity"]
-    identity -->|"its prompts"| prompts["Prompts: voice, specialists, minions"]
-    identity -->|"the packs it names"| packs["where-to-buy, shop-prices, recipes, web, calculator"]
-    prompts --> catalog["AgentCatalog: checks them, then SkillFileSource reads them"]
-    packs --> catalog
-    catalog --> engine["AgentEngine, per session"]
-    evals["louis-agent.identity.puls.evals: its evals and PulsReaders"] -.-> runner["The eval runner only"]
-    judges["louis-agent.identity.puls.judges"] -.-> runner
-```
+![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 
 **Flow:** what a session is made of, and how a cooking question gets to the cook. A role that's off comes back to Puls as a tool error, which it has to report.
 

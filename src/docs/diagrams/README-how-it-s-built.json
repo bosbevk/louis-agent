@@ -1,0 +1,86 @@
+{
+  "kind": "flow",
+  "title": "Louis Agent: how a program, its hosts, identities and packs sit on the engine",
+  "caption": "Built in layers: a program names an identity and its packs, a host carries them, and the engine does the work. That is how it\u0027s built",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Your program\na few lines: names an identity\nand its packs, starts a host"
+      },
+      {
+        "id": "hosts",
+        "icon": "server",
+        "tone": "violet",
+        "label": "Hosts, as libraries\nRider (ACP) \u00B7 HTTP API \u00B7 CLI \u00B7\nMCP server"
+      },
+      {
+        "id": "ids",
+        "icon": "user",
+        "tone": "green",
+        "label": "Identities\nwho an agent is: puls, the\ncoding agent"
+      },
+      {
+        "id": "packs",
+        "icon": "box",
+        "tone": "green",
+        "label": "Packs\nwhat it can do: files, git,\ndotnet, shell, web, recipes, \u2026"
+      },
+      {
+        "id": "contracts",
+        "icon": "code",
+        "tone": "teal",
+        "label": "louis-agent.composition\nthe contracts an identity or a\npack needs"
+      },
+      {
+        "id": "core",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "louis-agent.core: the engine\ntool loop \u00B7 streaming \u00B7\nproviders \u00B7 usage ledger \u00B7\nguards"
+      },
+      {
+        "id": "llm",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Claude \u00B7 Ollama \u00B7\nOpenAI-compatible"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "hosts"
+      },
+      {
+        "from": "program",
+        "to": "ids"
+      },
+      {
+        "from": "program",
+        "to": "packs"
+      },
+      {
+        "from": "hosts",
+        "to": "core"
+      },
+      {
+        "from": "ids",
+        "to": "contracts"
+      },
+      {
+        "from": "packs",
+        "to": "contracts"
+      },
+      {
+        "from": "core",
+        "to": "contracts"
+      },
+      {
+        "from": "core",
+        "to": "llm"
+      }
+    ],
+    "direction": "down"
+  }
+}

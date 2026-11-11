@@ -10,42 +10,7 @@ see [AGENT_INTERACTION.md](architecture/06-runtime-view.md).
 
 ## The big picture
 
-```mermaid
-flowchart LR
-    subgraph clients["Clients"]
-        Browser["Web app<br/>(browser)"]
-        Rider["JetBrains Rider<br/>AI chat"]
-        Script["curl / your program"]
-        McpClient["MCP client<br/>(another agent, Claude Desktop)"]
-        Orch["Orchestrator agent<br/>(louis-agent.orchestrator)"]
-    end
-
-    subgraph hosts["louis-agent hosts"]
-        Api["louis-agent.api<br/>HTTP + SSE, serves the web app"]
-        Acp["louis-agent.acp<br/>JSON-RPC over stdio"]
-        Mcp["louis-agent.mcp<br/>MCP over stdio or HTTP"]
-        Cli["louis-agent.cli<br/>terminal"]
-    end
-
-    Engine["AgentEngine<br/>(louis-agent.core)<br/>tools + skills + tool loop"]
-    Model["Model<br/>(Claude / Ollama / OpenAI-compatible)"]
-    Repo[("Workspace<br/>git repository")]
-
-    Browser -- "REST + SSE" --> Api
-    Script -- "REST + SSE" --> Api
-    Orch -- "sessions + SSE<br/>(one session per fix);<br/>/v1/prices, /v1/rates" --> Api
-    Rider -- "ACP (stdio)" --> Acp
-    McpClient -- "tools/list, tools/call" --> Mcp
-    Api --> Engine
-    Acp --> Engine
-    Cli --> Engine
-    Mcp -- "tools only, no model" --> Engine
-    Engine -- "IChatClient" --> Model
-    Engine -- "tool calls" --> Repo
-    Api -- "/v1/workspace, /v1/git" --> Repo
-    Orch -. "verifies: git, replay, tests" .-> Repo
-    Api -- "AskAgent:<br/>sessions + SSE (F5, F127.3.1)" --> Peer["another agent's address<br/>(this API or a peer)"]
-```
+![How the agents talk: the clients, the hosts, the engine and the model](diagrams/AGENT_COMMUNICATION-the-big-picture.svg)
 
 Every host is a thin adapter around the same `AgentEngine`: it turns its protocol's input into a prompt and the
 engine's streamed output (thinking, text, tool calls, tool results) back into its protocol. The MCP server is the

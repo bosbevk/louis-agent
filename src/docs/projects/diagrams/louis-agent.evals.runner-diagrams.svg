@@ -243,11 +243,11 @@ svg {
   <rect class="swatch tone-green" x="104.8" y="618" width="12" height="12" rx="3" />
   <text class="legend" x="122.8" y="628.5" text-anchor="start">this project</text>
   <rect class="swatch tone-violet" x="231.2" y="618" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="628.5" text-anchor="start">the engine</text>
-  <rect class="swatch tone-teal" x="343.2" y="618" width="12" height="12" rx="3" />
-  <text class="legend" x="361.2" y="628.5" text-anchor="start">contracts and state</text>
-  <rect class="swatch tone-red" x="520" y="618" width="12" height="12" rx="3" />
-  <text class="legend" x="538" y="628.5" text-anchor="start">outside the process</text>
-  <rect class="swatch tone-amber" x="696.8" y="618" width="12" height="12" rx="3" />
-  <text class="legend" x="714.8" y="628.5" text-anchor="start">files and data</text>
+  <text class="legend" x="249.2" y="628.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="364.8" y="618" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="628.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-red" x="541.6" y="618" width="12" height="12" rx="3" />
+  <text class="legend" x="559.6" y="628.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="718.4" y="618" width="12" height="12" rx="3" />
+  <text class="legend" x="736.4" y="628.5" text-anchor="start">files and data</text>
 </svg>

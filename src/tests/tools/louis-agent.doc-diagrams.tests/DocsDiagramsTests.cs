@@ -24,17 +24,25 @@ public class DocsDiagramsTests
         Assert.That(stale.Select(Relative), Is.Empty, Fix);
     }
 
-    /// <summary>Every picture is shown by a doc in the folder that holds its <c>diagrams</c> folder.</summary>
+    /// <summary>
+    /// Every picture is shown by a doc: one beside its <c>diagrams</c> folder, or one elsewhere that links it by its
+    /// path, as the repo's README shows the framework's picture from <c>src/docs/diagrams</c> (CL60.2, so the top
+    /// level keeps only <c>src</c>, <c>demos</c> and <c>packs</c>).
+    /// </summary>
     [Test]
-    public void EveryPicture_IsShownByADocBesideIt()
+    public void EveryPicture_IsShownByADoc()
     {
-        var unshown = Diagrams().Select(json => Path.ChangeExtension(json, ".svg")).Where(svg =>
-        {
-            string folder = Path.GetDirectoryName(Path.GetDirectoryName(svg))!;
-            string link = $"{DiagramSync.Folder}/{Path.GetFileName(svg)}";
-            return !Directory.EnumerateFiles(folder, "*.md").Any(doc => Targets(File.ReadAllText(doc)).Contains(link));
-        });
+        var docs = DiagramSync.Roots(TestPaths.RepoRoot).Where(Directory.Exists)
+            .SelectMany(root => Directory.EnumerateFiles(root, "*.md", SearchOption.AllDirectories))
+            .Append(Path.Combine(TestPaths.RepoRoot, "README.md"));
+        // Each picture link, as the full path of the file it points at.
+        var shown = docs.SelectMany(doc => Targets(File.ReadAllText(doc))
+                .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
+                .Select(target => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(doc)!, target))))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+        var unshown = Diagrams().Select(json => Path.ChangeExtension(json, ".svg"))
+            .Where(svg => !shown.Contains(Path.GetFullPath(svg)));
         Assert.That(unshown.Select(Relative), Is.Empty, "a picture no doc shows");
     }
 

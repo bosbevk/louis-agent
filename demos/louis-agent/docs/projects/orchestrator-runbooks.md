@@ -55,18 +55,7 @@ without one goes straight to a human.
 
 For every new error, the orchestrator follows its workflow (`voice-orchestrator.md`):
 
-```mermaid
-flowchart TD
-    E["Error event<br/>method = refund, InvalidOperationException …"] --> R{"Runbook for<br/>this method?"}
-    R -->|no| H1["EscalateToHuman<br/>(service's owning team)"]
-    R -->|yes| C{"Classify with<br/>the runbook"}
-    C -->|listed under Expected| A["AcknowledgeError<br/>DECISION: ignored"]
-    C -->|Auto-fixable| F["CallLouisAgentFix<br/>with the runbook's expected behaviour"]
-    C -->|anything else, or in doubt| H2["EscalateToHuman<br/>(the runbook's team)<br/>DECISION: escalated"]
-    F --> V{"Commit verified,<br/>replay 200,<br/>tests pass?"}
-    V -->|yes| OK["DECISION: fixed<br/>(branch waits for a human to merge)"]
-    V -->|no| H2
-```
+![Runbooks: how the orchestrator uses one to decide](diagrams/orchestrator-runbooks-how-a-runbook-is-used.svg)
 
 Classification matches on the exception **type** and, where the runbook says so, the **message**. When in doubt, the
 orchestrator escalates — a wrongly escalated error costs a person a minute; a wrongly "fixed" one can cost much more.

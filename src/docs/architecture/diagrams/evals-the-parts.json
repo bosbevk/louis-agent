@@ -1,0 +1,220 @@
+{
+  "kind": "flow",
+  "title": "The evals: the portal, the API and the runner",
+  "caption": "Three processes: the portal shows, the API records, and the runner runs the evals as a child process.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Bench",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Evals page\nevals, runs, live run",
+        "group": "Portal"
+      },
+      {
+        "id": "Explorer",
+        "icon": "search",
+        "tone": "blue",
+        "label": "Run explorer\nconversations, turns, reviews",
+        "group": "Portal"
+      },
+      {
+        "id": "Admin",
+        "icon": "server",
+        "tone": "green",
+        "label": "Admin endpoints\n/v1/admin/evals/...",
+        "group": "API"
+      },
+      {
+        "id": "Proc",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "EvalProcess\nstarts the runner",
+        "group": "API"
+      },
+      {
+        "id": "Rec",
+        "icon": "file",
+        "tone": "green",
+        "label": "EvalRecorder\nRunRecording",
+        "group": "API"
+      },
+      {
+        "id": "Sessions",
+        "icon": "server",
+        "tone": "green",
+        "label": "Session endpoints\nPOST /v1/sessions",
+        "group": "API"
+      },
+      {
+        "id": "Replay",
+        "icon": "branch",
+        "tone": "green",
+        "label": "ReplayResolution",
+        "group": "API"
+      },
+      {
+        "id": "Cat",
+        "icon": "book",
+        "tone": "teal",
+        "label": "EvalCatalog\nEvalFolders, RunnerCatalogs",
+        "group": "Runner"
+      },
+      {
+        "id": "Harness",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "EvalRunner\n(louis-agent.evals)",
+        "group": "Runner"
+      },
+      {
+        "id": "Files",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "FileEval\neval folders copied beside it",
+        "group": "Runner"
+      },
+      {
+        "id": "Identity",
+        "icon": "users",
+        "tone": "green",
+        "label": "Puls identity\nEvals/Cook, Evals/Routing,\nEvals/Checks"
+      },
+      {
+        "id": "Agent",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The agent under test\n(engine, Puls identity, packs)"
+      },
+      {
+        "id": "Store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Mongo: runs, conversations,\nturns, requests, reviews,\ncalibrations, notes"
+      },
+      {
+        "id": "Ledger",
+        "icon": "file",
+        "tone": "amber",
+        "label": "Usage ledger\nusage-YYYY-MM.jsonl"
+      },
+      {
+        "id": "RStore",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "Replay store\nREPLAY_DIRECTORY"
+      },
+      {
+        "id": "Judge",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Judge model\n(EVAL_JUDGE_*)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Bench",
+        "to": "Admin",
+        "word": "start a run"
+      },
+      {
+        "from": "Admin",
+        "to": "Proc"
+      },
+      {
+        "from": "Proc",
+        "to": "Cat",
+        "word": "dotnet runner.dll run\npuls-cook"
+      },
+      {
+        "from": "Identity",
+        "to": "Files",
+        "word": "files and checks,\nthrough the composition",
+        "style": "dashed"
+      },
+      {
+        "from": "Cat",
+        "to": "Files"
+      },
+      {
+        "from": "Files",
+        "to": "Harness"
+      },
+      {
+        "from": "Harness",
+        "to": "Sessions",
+        "word": "HttpSessionClient"
+      },
+      {
+        "from": "Sessions",
+        "to": "Agent"
+      },
+      {
+        "from": "Sessions",
+        "to": "Replay"
+      },
+      {
+        "from": "Replay",
+        "to": "RStore"
+      },
+      {
+        "from": "Agent",
+        "to": "Ledger",
+        "word": "every model request"
+      },
+      {
+        "from": "Agent",
+        "to": "Harness",
+        "word": "stream (SSE)",
+        "style": "dashed"
+      },
+      {
+        "from": "Harness",
+        "to": "Judge",
+        "word": "model checks"
+      },
+      {
+        "from": "Harness",
+        "to": "Proc",
+        "word": "protocol v2 on stdout"
+      },
+      {
+        "from": "Proc",
+        "to": "Rec"
+      },
+      {
+        "from": "Rec",
+        "to": "Store"
+      },
+      {
+        "from": "Rec",
+        "to": "Ledger",
+        "word": "when the run ends"
+      },
+      {
+        "from": "Explorer",
+        "to": "Admin",
+        "word": "read"
+      },
+      {
+        "from": "Admin",
+        "to": "Store"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "Portal",
+        "label": "Portal (louis-agent.puls, Components/Admin)"
+      },
+      {
+        "id": "API",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "Runner",
+        "label": "louis-agent.evals.runner (child process)"
+      }
+    ]
+  }
+}

@@ -69,24 +69,7 @@ no endpoint, nothing listens and nothing is sent.
 - Levels are fixed as a file is touched, no sweep (the Boy Scout Rule, as [ADR 0057](0057-regex-is-the-last-option.md)
   does it).
 
-```mermaid
-flowchart LR
-  subgraph PC["Louis's PC"]
-    code["code-review stack<br/>api, acp-server, mcp-server, local-agent"]
-    puls["Puls stack<br/>puls, OTEL_SERVICE_NAME=puls"]
-    rider["Rider: cli, orchestrator, eval runner"]
-    dash["observability stack<br/>Aspire dashboard, UI 18888, OTLP 4317"]
-  end
-  subgraph Azure["Azure Container Apps"]
-    app["puls-app, OTEL_SERVICE_NAME=puls"]
-    agent["managed OpenTelemetry agent<br/>gRPC, the environment's"]
-    ai["Application Insights puls-insights<br/>logs and traces"]
-  end
-  code -- "logs: Serilog sink · traces: SDK" --> dash
-  puls -- "logs: Serilog sink · traces: SDK" --> dash
-  rider -- "localhost:4317" --> dash
-  app -- "endpoint injected" --> agent --> ai
-```
+![ADR 0064: where the telemetry goes, on the PC and in Azure](diagrams/0064-observability-through-opentelemetry-decision.svg)
 
 ## Consequences
 

@@ -165,7 +165,7 @@ svg {
   <rect class="swatch tone-green" x="104.8" y="550" width="12" height="12" rx="3" />
   <text class="legend" x="122.8" y="560.5" text-anchor="start">this project</text>
   <rect class="swatch tone-violet" x="231.2" y="550" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="560.5" text-anchor="start">the engine</text>
+  <text class="legend" x="249.2" y="560.5" text-anchor="start">the framework</text>
   <rect class="swatch tone-red" x="0" y="570" width="12" height="12" rx="3" />
   <text class="legend" x="18" y="580.5" text-anchor="start">outside the process</text>
 </svg>

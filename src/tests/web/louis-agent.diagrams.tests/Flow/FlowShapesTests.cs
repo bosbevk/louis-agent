@@ -318,12 +318,12 @@ public class FlowShapesTests
         var spec = new GraphSpec(
             [
                 new GraphNode("programs", "The programs"), new GraphNode("sites", "The sites"),
-                new GraphNode("packs", "packs/web"), new GraphNode("web", "louis-agent.web"),
+                new GraphNode("packs", "packs/web"), new GraphNode("shared", "louis-agent.web"),
                 new GraphNode("api", "louis-agent.api")
             ],
             [
                 new GraphEdge("programs", "sites"), new GraphEdge("programs", "api"), new GraphEdge("sites", "packs"),
-                new GraphEdge("sites", "web"), new GraphEdge("packs", "web"), new GraphEdge("web", "api")
+                new GraphEdge("sites", "shared"), new GraphEdge("packs", "shared"), new GraphEdge("shared", "api")
             ],
             FlowDirection.Down);
 

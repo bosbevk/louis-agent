@@ -1,0 +1,244 @@
+<svg viewBox="-24 -24 1707 1245" width="1707" height="1245" role="img" aria-label="The evals: one cook run, in memory" xmlns="http://www.w3.org/2000/svg">
+  <title>The evals: one cook run, in memory</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1707" height="1245" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1659" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">The evals:</tspan>
+    <tspan class="title-rest">one cook run, in memory</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-amber" d="M 903.6 68 L 903.6 128" marker-end="url(#arrow-amber)" />
+    <path class="edge tone-blue" d="M 903.6 196 L 903.6 211 Q 903.6 226 888.6 226 L 310.2 226 Q 295.2 226 295.2 241 L 295.2 256" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 903.6 196 L 903.6 256" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 903.6 196 L 903.6 211 Q 903.6 226 918.6 226 L 1497 226 Q 1512 226 1512 241 L 1512 256" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-teal" d="M 295.2 484 L 295.2 520 Q 295.2 544 319.2 544 L 587.4 544 Q 599.4 544 599.4 556 L 599.4 568" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-amber" d="M 903.6 484 L 903.6 496 Q 903.6 508 891.6 508 L 623.4 508 Q 599.4 508 599.4 532 L 599.4 568" marker-end="url(#arrow-amber)" />
+    <path class="edge tone-teal" d="M 599.4 652 L 599.4 718" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-green" d="M 1512 484 L 1512 505 Q 1512 526 1491 526 L 924.6 526 Q 903.6 526 903.6 547 L 903.6 568 L 903.6 652 L 903.6 718 L 903.6 786 L 903.6 846" marker-end="url(#arrow-green)" />
+    <path class="edge tone-teal" d="M 599.4 786 L 599.4 801 Q 599.4 816 614.4 816 L 888.6 816 Q 903.6 816 903.6 831 L 903.6 846" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 903.6 914 L 903.6 974" marker-end="url(#arrow-teal)" />
+    <rect class="box tone-amber" x="608.4" y="0" width="590.4" height="68" rx="10" />
+    <circle class="badge tone-amber" cx="636.4" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(628.4 26) scale(0.6667)">
+      <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+    </g>
+    <text class="label tone-amber" x="660.4" y="31" text-anchor="start">demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/eval.json</text>
+    <text class="label tone-amber" x="660.4" y="47" text-anchor="start">identity = puls</text>
+    <rect class="box tone-blue" x="756.6" y="128" width="294" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="784.6" cy="162" r="14" />
+    <g class="badge-icon" transform="translate(776.6 154) scale(0.6667)">
+      <path d="M7 12l5 5l10 -10" />
+      <path d="M2 12l5 5m5 -5l5 -5" />
+    </g>
+    <text class="label tone-blue" x="808.6" y="159" text-anchor="start">FileEval : IEval</text>
+    <text class="label tone-blue" x="808.6" y="175" text-anchor="start">Name = puls-cook, Version = 11</text>
+    <rect class="box tone-teal" x="152" y="256" width="286.4" height="228" rx="10" />
+    <circle class="badge tone-teal" cx="180" cy="370" r="14" />
+    <g class="badge-icon" transform="translate(172 362) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-teal" x="204" y="367" text-anchor="start">EvalMode puls-cook · EvalMode</text>
+    <text class="label tone-teal" x="204" y="383" text-anchor="start">puls-tools</text>
+    <rect class="box tone-amber" x="768" y="256" width="271.2" height="228" rx="10" />
+    <circle class="badge tone-amber" cx="796" cy="370" r="14" />
+    <g class="badge-icon" transform="translate(788 362) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-amber" x="820" y="359" text-anchor="start">Dataset puls-cook v7</text>
+    <text class="label tone-amber" x="820" y="375" text-anchor="start">dev and held-out scenarios,</text>
+    <text class="label tone-amber" x="820" y="391" text-anchor="start">labels</text>
+    <rect class="box tone-green" x="1365" y="256" width="294" height="228" rx="10" />
+    <circle class="badge tone-green" cx="1393" cy="370" r="14" />
+    <g class="badge-icon" transform="translate(1385 362) scale(0.6667)">
+      <path d="M7 12l5 5l10 -10" />
+      <path d="M2 12l5 5m5 -5l5 -5" />
+    </g>
+    <text class="label tone-green" x="1417" y="287" text-anchor="start">9 checks: cook-no-error</text>
+    <text class="label tone-green" x="1417" y="303" text-anchor="start">(no-error), routed-to,</text>
+    <text class="label tone-green" x="1417" y="319" text-anchor="start">within-budget (amount-under ·</text>
+    <text class="label tone-green" x="1417" y="335" text-anchor="start">rand-total), estimates-at-shop</text>
+    <text class="label tone-green" x="1417" y="351" text-anchor="start">(· rand-prices),</text>
+    <text class="label tone-green" x="1417" y="367" text-anchor="start">untooled-shops,</text>
+    <text class="label tone-green" x="1417" y="383" text-anchor="start">recipe-image (image-shown ·</text>
+    <text class="label tone-green" x="1417" y="399" text-anchor="start">recipe-photos),</text>
+    <text class="label tone-green" x="1417" y="415" text-anchor="start">serves-as-asked (number-named</text>
+    <text class="label tone-green" x="1417" y="431" text-anchor="start">· servings),</text>
+    <text class="label tone-green" x="1417" y="447" text-anchor="start">meal-for-people,</text>
+    <text class="label tone-green" x="1417" y="463" text-anchor="start">meal-for-people.human</text>
+    <rect class="box tone-teal" x="452.4" y="568" width="294" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="480.4" cy="610" r="14" />
+    <g class="badge-icon" transform="translate(472.4 602) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-teal" x="504.4" y="599" text-anchor="start">Trial</text>
+    <text class="label tone-teal" x="504.4" y="615" text-anchor="start">run 5d1fd231c9b1 · puls-cook ·</text>
+    <text class="label tone-teal" x="504.4" y="631" text-anchor="start">repeat 1 · cook-malmesbury</text>
+    <rect class="box tone-teal" x="463.8" y="718" width="271.2" height="68" rx="10" />
+    <circle class="badge tone-teal" cx="491.8" cy="752" r="14" />
+    <g class="badge-icon" transform="translate(483.8 744) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-teal" x="515.8" y="749" text-anchor="start">Transcript</text>
+    <text class="label tone-teal" x="515.8" y="765" text-anchor="start">TurnTranscript per question</text>
+    <rect class="box tone-teal" x="764.2" y="846" width="278.8" height="68" rx="10" />
+    <circle class="badge tone-teal" cx="792.2" cy="880" r="14" />
+    <g class="badge-icon" transform="translate(784.2 872) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-teal" x="816.2" y="877" text-anchor="start">Grade × 9</text>
+    <text class="label tone-teal" x="816.2" y="893" text-anchor="start">e.g. untooled-shops 1.0 pass</text>
+    <rect class="box tone-amber" x="760.4" y="974" width="286.4" height="68" rx="10" />
+    <circle class="badge tone-amber" cx="788.4" cy="1008" r="14" />
+    <g class="badge-icon" transform="translate(780.4 1000) scale(0.6667)">
+      <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+      <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+      <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+    </g>
+    <text class="label tone-amber" x="812.4" y="1005" text-anchor="start">ConversationEvent</text>
+    <text class="label tone-amber" x="812.4" y="1021" text-anchor="start">grades, TrialOutcome, Metrics</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="1124" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1134.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="1124" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="1134.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-teal" x="231.2" y="1124" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="1134.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-amber" x="408" y="1124" width="12" height="12" rx="3" />
+  <text class="legend" x="426" y="1134.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="1160" width="1659" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1170) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1182">
+    <tspan class="note-head">One run, in memory:</tspan>
+    <tspan class="note-rest">an eval's folder becomes trials, and each trial's checks grade it into events.</tspan>
+  </text>
+</svg>

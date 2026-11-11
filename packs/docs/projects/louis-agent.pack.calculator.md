@@ -37,14 +37,7 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
 
 ## Diagrams
 
-**Architecture:** one tool on .NET's own evaluator, with a check in front so only arithmetic reaches it.
-
-```mermaid
-flowchart LR
-    pack["CalculatorPack: the calculator toolset"] --> tools["CalculatorTools.Calculate"]
-    tools --> arithmetic["Arithmetic"]
-    arithmetic -->|"digits, a point, + - * / ( ) only"| table["DataTable.Compute"]
-```
+![The calculator pack: one tool over plain arithmetic](diagrams/louis-agent.pack.calculator-diagrams.svg)
 
 **Flow:** a call with two sums, one of them bad. A bad sum says why, and the others still answer.
 

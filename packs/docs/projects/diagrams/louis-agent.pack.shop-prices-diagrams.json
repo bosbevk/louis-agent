@@ -1,0 +1,136 @@
+{
+  "kind": "flow",
+  "title": "The shop-prices pack: its tools, the prices and the estimate",
+  "caption": "One tool over one price book: the shipped files fill it, or Mongo where it's set. The same tables go out as a feed, and new ones come in as an upload.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "blue",
+        "label": "ShopPricesPack: the\nshop-prices toolset, feed and\nupload"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "ShopPriceTools.EstimatePrices"
+      },
+      {
+        "id": "feed",
+        "icon": "file",
+        "tone": "green",
+        "label": "ShopPricesFeed: GET\n/v1/feeds/shop-prices"
+      },
+      {
+        "id": "upload",
+        "icon": "folder",
+        "tone": "green",
+        "label": "StatsSaImport: at\n/admin/imports"
+      },
+      {
+        "id": "cache",
+        "icon": "box",
+        "tone": "teal",
+        "label": "PriceBookCache: read at most\nonce an hour"
+      },
+      {
+        "id": "store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "MongoPriceStore, with\nSHOP_PRICES_MONGO_URL"
+      },
+      {
+        "id": "shipped",
+        "icon": "file",
+        "tone": "amber",
+        "label": "ShippedPrices: the embedded\ntables"
+      },
+      {
+        "id": "basket",
+        "icon": "box",
+        "tone": "teal",
+        "label": "BasketEstimate"
+      },
+      {
+        "id": "item",
+        "icon": "code",
+        "tone": "teal",
+        "label": "BasketItem: reads a line"
+      },
+      {
+        "id": "estimator",
+        "icon": "chart",
+        "tone": "green",
+        "label": "PriceEstimator"
+      },
+      {
+        "id": "book",
+        "icon": "book",
+        "tone": "teal",
+        "label": "PriceBook"
+      },
+      {
+        "id": "printer",
+        "icon": "file",
+        "tone": "green",
+        "label": "EstimatePrinter"
+      }
+    ],
+    "edges": [
+      {
+        "from": "pack",
+        "to": "tools"
+      },
+      {
+        "from": "pack",
+        "to": "feed"
+      },
+      {
+        "from": "pack",
+        "to": "upload"
+      },
+      {
+        "from": "tools",
+        "to": "cache"
+      },
+      {
+        "from": "feed",
+        "to": "cache"
+      },
+      {
+        "from": "cache",
+        "to": "store"
+      },
+      {
+        "from": "cache",
+        "to": "shipped"
+      },
+      {
+        "from": "upload",
+        "to": "store"
+      },
+      {
+        "from": "tools",
+        "to": "basket"
+      },
+      {
+        "from": "basket",
+        "to": "item"
+      },
+      {
+        "from": "basket",
+        "to": "estimator"
+      },
+      {
+        "from": "estimator",
+        "to": "book"
+      },
+      {
+        "from": "tools",
+        "to": "printer"
+      }
+    ],
+    "direction": "down"
+  }
+}

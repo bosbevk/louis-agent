@@ -1,0 +1,226 @@
+<svg viewBox="-24 -24 1266 675" width="1266" height="675" role="img" aria-label="ADR 0064: where the telemetry goes, on the PC and in Azure" xmlns="http://www.w3.org/2000/svg">
+  <title>ADR 0064: where the telemetry goes, on the PC and in Azure</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1266" height="675" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1218" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">ADR 0064:</tspan>
+    <tspan class="title-rest">where the telemetry goes, on the PC and in Azure</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <rect class="group" x="0" y="0" width="939.6" height="326" rx="12" />
+    <text class="group-label" x="12" y="18" text-anchor="start">Louis's PC</text>
+    <rect class="group" x="0" y="342" width="1218" height="130" rx="12" />
+    <text class="group-label" x="12" y="360" text-anchor="start">Azure Container Apps</text>
+    <path class="edge tone-green" d="M 306 76 L 608.2 76 Q 632.2 76 632.2 100 L 632.2 165.9 Q 632.2 178 644.3 178 L 656.4 178" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 306 178 L 656.4 178" marker-end="url(#arrow-green)" />
+    <path class="edge tone-blue" d="M 306 280 L 590.2 280 Q 614.2 280 614.2 256 L 614.2 199.1 Q 614.2 178 635.3 178 L 656.4 178" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-green" d="M 306 418 L 656.4 418" marker-end="url(#arrow-green)" />
+    <path class="edge tone-violet" d="M 927.6 418 L 988 418" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-green" x="353.1" y="54" width="232" height="18" rx="4" />
+    <text class="word tone-green" x="469.1" y="66" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
+    <rect class="word-chip tone-green" x="335.1" y="156" width="232" height="18" rx="4" />
+    <text class="word tone-green" x="451.1" y="168" text-anchor="middle">logs: Serilog sink · traces: SDK</text>
+    <rect class="word-chip tone-blue" x="407.1" y="258" width="106" height="18" rx="4" />
+    <text class="word tone-blue" x="460.1" y="270" text-anchor="middle">localhost:4317</text>
+    <rect class="word-chip tone-green" x="378.6" y="396" width="127" height="18" rx="4" />
+    <text class="word tone-green" x="442.1" y="408" text-anchor="middle">endpoint injected</text>
+    <rect class="box tone-green" x="12" y="34" width="294" height="84" rx="10" />
+    <circle class="badge tone-green" cx="40" cy="76" r="14" />
+    <g class="badge-icon" transform="translate(32 68) scale(0.6667)">
+      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M7 8l0 .01" />
+      <path d="M7 16l0 .01" />
+    </g>
+    <text class="label tone-green" x="64" y="65" text-anchor="start">code-review stack</text>
+    <text class="label tone-green" x="64" y="81" text-anchor="start">api, acp-server, mcp-server,</text>
+    <text class="label tone-green" x="64" y="97" text-anchor="start">local-agent</text>
+    <rect class="box tone-green" x="12" y="144" width="294" height="68" rx="10" />
+    <circle class="badge tone-green" cx="40" cy="178" r="14" />
+    <g class="badge-icon" transform="translate(32 170) scale(0.6667)">
+      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M7 8l0 .01" />
+      <path d="M7 16l0 .01" />
+    </g>
+    <text class="label tone-green" x="64" y="175" text-anchor="start">Puls stack</text>
+    <text class="label tone-green" x="64" y="191" text-anchor="start">puls, OTEL_SERVICE_NAME=puls</text>
+    <rect class="box tone-blue" x="12" y="246" width="294" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="40" cy="280" r="14" />
+    <g class="badge-icon" transform="translate(32 272) scale(0.6667)">
+      <path d="M7 8l-4 4l4 4" />
+      <path d="M17 8l4 4l-4 4" />
+      <path d="M14 4l-4 16" />
+    </g>
+    <text class="label tone-blue" x="64" y="277" text-anchor="start">Rider: cli, orchestrator, eval</text>
+    <text class="label tone-blue" x="64" y="293" text-anchor="start">runner</text>
+    <rect class="box tone-green" x="12" y="384" width="294" height="68" rx="10" />
+    <circle class="badge tone-green" cx="40" cy="418" r="14" />
+    <g class="badge-icon" transform="translate(32 410) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-green" x="64" y="415" text-anchor="start">puls-app,</text>
+    <text class="label tone-green" x="64" y="431" text-anchor="start">OTEL_SERVICE_NAME=puls</text>
+    <rect class="box tone-amber" x="656.4" y="136" width="271.2" height="84" rx="10" />
+    <circle class="badge tone-amber" cx="684.4" cy="178" r="14" />
+    <g class="badge-icon" transform="translate(676.4 170) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-amber" x="708.4" y="167" text-anchor="start">observability stack</text>
+    <text class="label tone-amber" x="708.4" y="183" text-anchor="start">Aspire dashboard, UI 18888,</text>
+    <text class="label tone-amber" x="708.4" y="199" text-anchor="start">OTLP 4317</text>
+    <rect class="box tone-violet" x="656.4" y="384" width="271.2" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="684.4" cy="418" r="14" />
+    <g class="badge-icon" transform="translate(676.4 410) scale(0.6667)">
+      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+    </g>
+    <text class="label tone-violet" x="708.4" y="415" text-anchor="start">managed OpenTelemetry agent</text>
+    <text class="label tone-violet" x="708.4" y="431" text-anchor="start">gRPC, the environment's</text>
+    <rect class="box tone-red" x="988" y="376" width="218" height="84" rx="10" />
+    <circle class="badge tone-red" cx="1016" cy="418" r="14" />
+    <g class="badge-icon" transform="translate(1008 410) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-red" x="1040" y="407" text-anchor="start">Application Insights</text>
+    <text class="label tone-red" x="1040" y="423" text-anchor="start">puls-insights</text>
+    <text class="label tone-red" x="1040" y="439" text-anchor="start">logs and traces</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="554" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="564.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="554" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="564.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="554" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="564.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-red" x="364.8" y="554" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="564.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="541.6" y="554" width="12" height="12" rx="3" />
+  <text class="legend" x="559.6" y="564.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="590" width="1218" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 600) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="612">
+    <tspan class="note-head">One pipe:</tspan>
+    <tspan class="note-rest">every process sends OTLP, to the Aspire dashboard on the PC and to Application Insights in Azure.</tspan>
+  </text>
+</svg>

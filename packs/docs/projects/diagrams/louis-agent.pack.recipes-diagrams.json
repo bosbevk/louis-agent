@@ -1,0 +1,150 @@
+{
+  "kind": "flow",
+  "title": "The recipes pack: its tools, its sources and the library",
+  "caption": "Two ways in, for the model and for a person: the model's tools search and read pages, every page goes through core's guarded browser, and what they read fills the library the admin screens look after.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "blue",
+        "label": "RecipesPack: the recipes\ntoolset, feed and screens"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "RecipeTools: FindRecipes,\nReadRecipe, ScaleRecipe"
+      },
+      {
+        "id": "screens",
+        "icon": "chart",
+        "tone": "green",
+        "label": "RecipesUsageScreen,\nRecipesScreen,\nExcludedPagesScreen"
+      },
+      {
+        "id": "feed",
+        "icon": "file",
+        "tone": "green",
+        "label": "RecipesFeed: the open feed"
+      },
+      {
+        "id": "scatter",
+        "icon": "search",
+        "tone": "green",
+        "label": "RecipeScatter: several sites\nat once"
+      },
+      {
+        "id": "source",
+        "icon": "code",
+        "tone": "teal",
+        "label": "IRecipeSource, from\nRecipeSourceFactory"
+      },
+      {
+        "id": "wordpress",
+        "icon": "world",
+        "tone": "red",
+        "label": "WordPressSearch"
+      },
+      {
+        "id": "web",
+        "icon": "search",
+        "tone": "red",
+        "label": "SiteWebSearch"
+      },
+      {
+        "id": "schema",
+        "icon": "file",
+        "tone": "teal",
+        "label": "SchemaOrgRecipe: the page\u0027s\nown data"
+      },
+      {
+        "id": "printer",
+        "icon": "file",
+        "tone": "green",
+        "label": "RecipePrinter"
+      },
+      {
+        "id": "browser",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "Core\u0027s guarded browser:\nrobots.txt, no-AI signals"
+      },
+      {
+        "id": "shelf",
+        "icon": "book",
+        "tone": "amber",
+        "label": "RecipeShelf"
+      },
+      {
+        "id": "store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "The library, in Mongo"
+      }
+    ],
+    "edges": [
+      {
+        "from": "pack",
+        "to": "tools"
+      },
+      {
+        "from": "pack",
+        "to": "screens"
+      },
+      {
+        "from": "pack",
+        "to": "feed"
+      },
+      {
+        "from": "tools",
+        "to": "scatter"
+      },
+      {
+        "from": "scatter",
+        "to": "source"
+      },
+      {
+        "from": "source",
+        "to": "wordpress"
+      },
+      {
+        "from": "source",
+        "to": "web"
+      },
+      {
+        "from": "tools",
+        "to": "schema"
+      },
+      {
+        "from": "tools",
+        "to": "printer"
+      },
+      {
+        "from": "wordpress",
+        "to": "browser"
+      },
+      {
+        "from": "schema",
+        "to": "browser"
+      },
+      {
+        "from": "tools",
+        "to": "shelf"
+      },
+      {
+        "from": "shelf",
+        "to": "store"
+      },
+      {
+        "from": "screens",
+        "to": "store"
+      },
+      {
+        "from": "feed",
+        "to": "store"
+      }
+    ],
+    "direction": "down"
+  }
+}

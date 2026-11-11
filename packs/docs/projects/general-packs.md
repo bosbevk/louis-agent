@@ -24,20 +24,7 @@ references no other pack.
 
 ## Diagrams
 
-**Architecture:** a pack is only its tools, and the engine stays in charge of what's dangerous. The web pack's calls go through the engine's guards, so a pack can't reach an internal address.
-
-```mermaid
-flowchart TD
-    program["A demo's catalogue: names its packs"] --> catalog["AgentCatalog"]
-    catalog --> general["These packs: ComesBeforeTheEngine"]
-    catalog --> engine["The engine's own tools"]
-    catalog --> product["A product's packs"]
-    general --> toolset["PackToolset: its name, guide, what it needs and its tools"]
-    toolset --> tools["Tool classes: files, git, dotnet, shell, web, paymo, devops"]
-    tools -->|"the web pack"| guards["The engine's browser, search and guards"]
-    tools -->|"files, git, dotnet, shell"| workspace[("The workspace root")]
-    tools -->|"paymo, devops"| outside["Their own services, with their own settings"]
-```
+![The general packs: from a catalogue to their tools and what they reach](diagrams/general-packs-diagrams.svg)
 
 **Flow:** a session that names a toolset, and a tool it calls. A toolset that lacks a setting is listed with what it lacks, and a session can't open with it.
 

@@ -38,22 +38,7 @@ as you go: every answer shows what it cost, specialists included.
 
 ## Diagrams
 
-**Architecture:** Puls is a small program on the framework's web. What's here is what makes it Puls: its words, its look, its landing page and which websites matter to it.
-
-```mermaid
-flowchart TD
-    api["louis-agent.puls-api: serves this app"] --> program["Program.cs"]
-    program -->|"PulsText.Afrikaans"| text["ChatText"]
-    program -->|"RecipeWebViews.AddTo"| views["PackViews"]
-    program -->|"AddLouisAgentEvals(PulsSites.Kinds)"| evals["louis-agent.web.evals, the studio's pages"]
-    program -->|"SiteFrames"| layout["AdminLayout"]
-    landing["LandingPage"] --> sections["Components/Landing, Components/Brand"]
-    chat["ChatPage"] -->|"its slots: logo, views, profile, water, EmptyChat"| shell["ChatShell (framework)"]
-    chat --> panels["ChatViews: Verken and Studio"]
-    layout -->|"its logo, LiveRunStrip, EvalLinks"| admin["AdminShell (framework)"]
-    shell --> server["The API, on the same origin"]
-    admin --> server
-```
+![The Puls app: its pages, the framework's shells and the API](diagrams/louis-agent.puls-diagrams.svg)
 
 **Flow:** someone asks Puls about cooking. The web app opens the session and draws what comes back, and the handing over happens on the server.
 

@@ -1,0 +1,88 @@
+{
+  "kind": "flow",
+  "title": "Host packs: the program's plugins, the identity and the packs, into the catalogue",
+  "caption": "It knows every identity and pack Puls can load: so core and the hosts don't have to. Only a host's own program calls it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "louis-agent.puls-api:\nProgram.cs"
+      },
+      {
+        "id": "plugins",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Plugins"
+      },
+      {
+        "id": "kinds",
+        "icon": "code",
+        "tone": "teal",
+        "label": "IdentityKind, PackKind"
+      },
+      {
+        "id": "identity",
+        "icon": "user",
+        "tone": "green",
+        "label": "PulsIdentity"
+      },
+      {
+        "id": "packs",
+        "icon": "box",
+        "tone": "green",
+        "label": "RecipesPack, WhereToBuyPack,\nShopPricesPack, CalculatorPack\nand the general packs"
+      },
+      {
+        "id": "catalog",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost: builds every engine\nfrom the catalogue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "plugins",
+        "word": "Plugins.FromEnvironment"
+      },
+      {
+        "from": "plugins",
+        "to": "kinds"
+      },
+      {
+        "from": "plugins",
+        "to": "identity"
+      },
+      {
+        "from": "plugins",
+        "to": "packs"
+      },
+      {
+        "from": "identity",
+        "to": "catalog"
+      },
+      {
+        "from": "packs",
+        "to": "catalog"
+      },
+      {
+        "from": "program",
+        "to": "host",
+        "word": "AgentHost.Build"
+      },
+      {
+        "from": "catalog",
+        "to": "host"
+      }
+    ],
+    "direction": "down"
+  }
+}

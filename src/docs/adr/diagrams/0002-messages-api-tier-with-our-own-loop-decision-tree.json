@@ -1,0 +1,91 @@
+{
+  "kind": "flow",
+  "title": "ADR 0002: which Claude tier to build on",
+  "caption": "Our tier: the Messages API, with our own loop behind\u0060IChatClient\u0060, so any provider fits.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "A",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Need to call Claude"
+      },
+      {
+        "id": "B",
+        "icon": "search",
+        "label": "Need to swap model providers\nAnthropic, Ollama, etc.?"
+      },
+      {
+        "id": "C",
+        "icon": "chip",
+        "tone": "green",
+        "label": "Messages API \u002B your own loop\n(this is louis-agent)"
+      },
+      {
+        "id": "D",
+        "icon": "search",
+        "label": "Want Anthropic to host\nthe tool-execution sandbox?"
+      },
+      {
+        "id": "E",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Managed Agents"
+      },
+      {
+        "id": "F",
+        "icon": "search",
+        "label": "Need Claude Code\u0027s built-in\nfile/bash/grep tools?"
+      },
+      {
+        "id": "G",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Claude Agent SDK"
+      },
+      {
+        "id": "H",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Tool Runner"
+      }
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "from": "B",
+        "to": "C",
+        "word": "Yes"
+      },
+      {
+        "from": "B",
+        "to": "D",
+        "word": "No, Claude-only is fine"
+      },
+      {
+        "from": "D",
+        "to": "E",
+        "word": "Yes"
+      },
+      {
+        "from": "D",
+        "to": "F",
+        "word": "No, I host it"
+      },
+      {
+        "from": "F",
+        "to": "G",
+        "word": "Yes"
+      },
+      {
+        "from": "F",
+        "to": "H",
+        "word": "No, just a loop over my\nown tools"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -17,20 +17,7 @@ admin, on this PC.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Page["Pages/ChatPage: a thin page, at / and /chat"] --> Shell["ChatShell (framework)"]
-    Admin["Layout/AdminLayout"] --> AdminShell["AdminShell (framework)"]
-    Screen["Screen page (framework)"] --> Views["PackViews"]
-    Views --> Files["FilesView (packs/web)"]
-    Views --> Git["GitChangesView, GitBranchesView (packs/web)"]
-    Files -->|Review or Ask: a draft| Handoff["ChatHandoff"]
-    Git -->|Review: a draft| Handoff
-    Handoff --> Page
-    Shell --> Api["AgentApi"]
-    Files --> Api
-    Git --> Api
-```
+![The code-review app: its pages, the framework's shells and the API](diagrams/louis-agent.code-review-how-it-works.svg)
 
 - **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs'
   screens, at the root and at `/chat`. A coding agent has no use for credits, a language menu, a place or projects, so

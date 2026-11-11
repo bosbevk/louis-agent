@@ -1,0 +1,107 @@
+{
+  "kind": "flow",
+  "title": "Runbooks: how the orchestrator uses one to decide",
+  "caption": "A runbook per method: without one, the error goes straight to the service's own team.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "E",
+        "icon": "message",
+        "tone": "blue",
+        "label": "Error event\nmethod = refund,\nInvalidOperationException \u2026"
+      },
+      {
+        "id": "R",
+        "icon": "search",
+        "label": "Runbook for\nthis method?"
+      },
+      {
+        "id": "H1",
+        "icon": "user",
+        "tone": "red",
+        "label": "EscalateToHuman\n(service\u0027s owning team)"
+      },
+      {
+        "id": "C",
+        "icon": "book",
+        "tone": "teal",
+        "label": "Classify with\nthe runbook"
+      },
+      {
+        "id": "A",
+        "icon": "checks",
+        "tone": "green",
+        "label": "AcknowledgeError\nDECISION: ignored"
+      },
+      {
+        "id": "F",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "CallLouisAgentFix\nwith the runbook\u0027s expected\nbehaviour"
+      },
+      {
+        "id": "H2",
+        "icon": "user",
+        "tone": "red",
+        "label": "EscalateToHuman\n(the runbook\u0027s team)\nDECISION: escalated"
+      },
+      {
+        "id": "V",
+        "icon": "search",
+        "label": "Commit verified,\nreplay 200,\ntests pass?"
+      },
+      {
+        "id": "OK",
+        "icon": "checks",
+        "tone": "green",
+        "label": "DECISION: fixed\n(branch waits for a human to\nmerge)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "E",
+        "to": "R"
+      },
+      {
+        "from": "R",
+        "to": "H1",
+        "word": "no"
+      },
+      {
+        "from": "R",
+        "to": "C",
+        "word": "yes"
+      },
+      {
+        "from": "C",
+        "to": "A",
+        "word": "listed under Expected"
+      },
+      {
+        "from": "C",
+        "to": "F",
+        "word": "Auto-fixable"
+      },
+      {
+        "from": "C",
+        "to": "H2",
+        "word": "anything else, or in\ndoubt"
+      },
+      {
+        "from": "F",
+        "to": "V"
+      },
+      {
+        "from": "V",
+        "to": "OK",
+        "word": "yes"
+      },
+      {
+        "from": "V",
+        "to": "H2",
+        "word": "no"
+      }
+    ],
+    "direction": "down"
+  }
+}

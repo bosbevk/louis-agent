@@ -25,18 +25,7 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 
 ## Diagrams
 
-**Architecture:** apart from the identity, because a judge is built on the harness and an identity must never reference it. Only the runner references this.
-
-```mermaid
-flowchart TD
-    catalogs["PulsCatalogs, in the runner's program"] --> list["PulsJudges.All"]
-    list --> check["MealForPeopleCheck"]
-    check --> inner["EvaluatorCheck, in the harness"]
-    check --> ask["CookAsk: the people and the town"]
-    check --> verdict["MealVerdict"]
-    check --> rubric[("meal-for-people.md, in the cook's eval folder")]
-    inner --> model["JudgeClients: a model"]
-```
+![Puls's judges: from the runner's catalogue to a model's verdict](diagrams/louis-agent.identity.puls.judges-diagrams.svg)
 
 **Flow:** judging one trial. It's shown and counted, but not required until its calibration passes.
 

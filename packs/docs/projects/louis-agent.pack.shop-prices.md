@@ -71,24 +71,7 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ## Diagrams
 
-**Architecture:** one tool over one price book, which the shipped files fill, or Mongo where it's set. The same tables go out as a feed, and new ones come in as an upload.
-
-```mermaid
-flowchart TD
-    pack["ShopPricesPack: the shop-prices toolset, feed and upload"] --> tools["ShopPriceTools.EstimatePrices"]
-    pack --> feed["ShopPricesFeed: GET /v1/feeds/shop-prices"]
-    pack --> upload["StatsSaImport: at /admin/imports"]
-    tools --> cache["PriceBookCache: read at most once an hour"]
-    feed --> cache
-    cache --> store["MongoPriceStore, with SHOP_PRICES_MONGO_URL"]
-    cache --> shipped["ShippedPrices: the embedded tables"]
-    upload --> store
-    tools --> basket["BasketEstimate"]
-    basket --> item["BasketItem: reads a line"]
-    basket --> estimator["PriceEstimator"]
-    estimator --> book["PriceBook"]
-    tools --> printer["EstimatePrinter"]
-```
+![The shop-prices pack: its tools, the prices and the estimate](diagrams/louis-agent.pack.shop-prices-diagrams.svg)
 
 **Flow:** pricing a shopping list. A line it can't match is `?`, never R0, and the agent copies the credit line under its list.
 

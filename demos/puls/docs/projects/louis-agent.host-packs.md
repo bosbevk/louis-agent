@@ -29,19 +29,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 
 ## Diagrams
 
-**Architecture:** the one project that knows every identity and pack Puls can load, so core and the hosts don't have to. A host's own program is the only thing that calls it.
-
-```mermaid
-flowchart TD
-    program["louis-agent.puls-api: Program.cs"] -->|"Plugins.FromEnvironment"| plugins["Plugins"]
-    plugins --> kinds["IdentityKind, PackKind"]
-    plugins --> identity["PulsIdentity"]
-    plugins --> packs["RecipesPack, WhereToBuyPack, ShopPricesPack, CalculatorPack and the general packs"]
-    identity --> catalog["AgentCatalog"]
-    packs --> catalog
-    program -->|"AgentHost.Build"| host["AgentHost: builds every engine from the catalogue"]
-    catalog --> host
-```
+![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 
 **Flow:** start-up. Which agent a host runs is a setting, not a build, and any mistake stops it before an engine exists.
 

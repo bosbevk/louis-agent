@@ -1,0 +1,143 @@
+{
+  "kind": "flow",
+  "title": "The orchestrator: the poll, its engine and tools, and what it writes down",
+  "caption": "A second agent on the same core: it talks to louis-agent the way anyone would, over HTTP.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs: the poll"
+      },
+      {
+        "id": "feed",
+        "icon": "file",
+        "tone": "green",
+        "label": "JsonLinesErrorFeed, the triage\npack\u0027s"
+      },
+      {
+        "id": "errors",
+        "icon": "file",
+        "tone": "amber",
+        "label": "logs/errors.jsonl,\nprocessed.txt"
+      },
+      {
+        "id": "skills",
+        "icon": "book",
+        "tone": "teal",
+        "label": "OrchestratorSkills: the\nrunbooks, as the system prompt"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine: its own model"
+      },
+      {
+        "id": "tools",
+        "icon": "box",
+        "tone": "green",
+        "label": "ServiceTools and FixChecks:\nthe only tools it has"
+      },
+      {
+        "id": "fix",
+        "icon": "settings",
+        "tone": "green",
+        "label": "FixConversation, FixPrompt"
+      },
+      {
+        "id": "client",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "LouisAgentClient"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api: louis-agent\nfixes it"
+      },
+      {
+        "id": "repository",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "ServiceRepository: the commit,\nthe replay, the tests"
+      },
+      {
+        "id": "comms",
+        "icon": "file",
+        "tone": "amber",
+        "label": "CommsLog: agent-comms.md"
+      },
+      {
+        "id": "state",
+        "icon": "database",
+        "tone": "amber",
+        "label": "StateFiles: fixes,\nescalations, acknowledged"
+      },
+      {
+        "id": "decision",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "Decision, DecisionRecord:\ndecisions.jsonl"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "feed"
+      },
+      {
+        "from": "feed",
+        "to": "errors"
+      },
+      {
+        "from": "program",
+        "to": "skills"
+      },
+      {
+        "from": "program",
+        "to": "engine"
+      },
+      {
+        "from": "skills",
+        "to": "engine"
+      },
+      {
+        "from": "engine",
+        "to": "tools"
+      },
+      {
+        "from": "tools",
+        "to": "fix"
+      },
+      {
+        "from": "fix",
+        "to": "client"
+      },
+      {
+        "from": "client",
+        "to": "api",
+        "word": "HTTP and SSE"
+      },
+      {
+        "from": "tools",
+        "to": "repository"
+      },
+      {
+        "from": "tools",
+        "to": "comms"
+      },
+      {
+        "from": "tools",
+        "to": "state"
+      },
+      {
+        "from": "program",
+        "to": "decision"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "kind": "flow",
+  "title": "Context and scope: louis-agent, its people and the systems around it",
+  "caption": "One system and its neighbours: people use it, and it calls the models, the web and the services it watches.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "dev",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Developer\n[person]"
+      },
+      {
+        "id": "puser",
+        "icon": "users",
+        "tone": "blue",
+        "label": "Puls user\n[person]"
+      },
+      {
+        "id": "rider",
+        "icon": "code",
+        "tone": "red",
+        "label": "JetBrains Rider\n[external system]"
+      },
+      {
+        "id": "mcpc",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "MCP client\n[external system]"
+      },
+      {
+        "id": "agent",
+        "icon": "chip",
+        "tone": "green",
+        "label": "louis-agent\ncoding agent and Puls",
+        "group": "sys"
+      },
+      {
+        "id": "orch",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Orchestrator\n(POC, same core)",
+        "group": "sys"
+      },
+      {
+        "id": "llm",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Model provider\nAnthropic \u00B7 Ollama \u00B7\nOpenAI-compatible\n[external system]"
+      },
+      {
+        "id": "repo",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "Repositories\nmounted workspace"
+      },
+      {
+        "id": "web",
+        "icon": "world",
+        "tone": "red",
+        "label": "Web\nsearch \u00B7 pages \u00B7 exchange\nrates\n[external system]"
+      },
+      {
+        "id": "biz",
+        "icon": "server",
+        "tone": "red",
+        "label": "Paymo \u00B7 Azure DevOps\n[external system]"
+      },
+      {
+        "id": "svc",
+        "icon": "server",
+        "tone": "red",
+        "label": "A watched service\n(a microservice)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "dev",
+        "to": "agent",
+        "word": "chat: web app, CLI"
+      },
+      {
+        "from": "dev",
+        "to": "rider",
+        "word": "chat"
+      },
+      {
+        "from": "rider",
+        "to": "agent",
+        "word": "ACP over stdio"
+      },
+      {
+        "from": "puser",
+        "to": "agent",
+        "word": "chat in the browser"
+      },
+      {
+        "from": "mcpc",
+        "to": "agent",
+        "word": "MCP: tools only"
+      },
+      {
+        "from": "orch",
+        "to": "agent",
+        "word": "HTTP \u002B SSE: fix requests"
+      },
+      {
+        "from": "orch",
+        "to": "svc",
+        "word": "error log, tests"
+      },
+      {
+        "from": "agent",
+        "to": "llm",
+        "word": "Messages API / chat API"
+      },
+      {
+        "from": "agent",
+        "to": "repo",
+        "word": "files, git, dotnet,\nscripts"
+      },
+      {
+        "from": "agent",
+        "to": "web",
+        "word": "HTTPS"
+      },
+      {
+        "from": "agent",
+        "to": "biz",
+        "word": "HTTPS, when keys are set"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "sys",
+        "label": "louis-agent [software system]"
+      }
+    ]
+  }
+}

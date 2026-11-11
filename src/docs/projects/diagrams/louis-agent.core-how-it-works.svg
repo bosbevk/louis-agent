@@ -237,9 +237,9 @@ svg {
   <rect class="swatch tone-green" x="0" y="956" width="12" height="12" rx="3" />
   <text class="legend" x="18" y="966.5" text-anchor="start">this project</text>
   <rect class="swatch tone-violet" x="126.4" y="956" width="12" height="12" rx="3" />
-  <text class="legend" x="144.4" y="966.5" text-anchor="start">the engine</text>
-  <rect class="swatch tone-teal" x="238.4" y="956" width="12" height="12" rx="3" />
-  <text class="legend" x="256.4" y="966.5" text-anchor="start">contracts and state</text>
-  <rect class="swatch tone-amber" x="415.2" y="956" width="12" height="12" rx="3" />
-  <text class="legend" x="433.2" y="966.5" text-anchor="start">files and data</text>
+  <text class="legend" x="144.4" y="966.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="260" y="956" width="12" height="12" rx="3" />
+  <text class="legend" x="278" y="966.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-amber" x="436.8" y="956" width="12" height="12" rx="3" />
+  <text class="legend" x="454.8" y="966.5" text-anchor="start">files and data</text>
 </svg>

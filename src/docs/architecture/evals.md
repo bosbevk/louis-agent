@@ -23,43 +23,7 @@ is the only thing they share.
 
 ## The parts
 
-```mermaid
-flowchart LR
-  subgraph Portal["Portal (louis-agent.puls, Components/Admin)"]
-    Bench["Evals page<br/>evals, runs, live run"]
-    Explorer["Run explorer<br/>conversations, turns, reviews"]
-  end
-  subgraph API["louis-agent.api"]
-    Admin["Admin endpoints<br/>/v1/admin/evals/..."]
-    Proc["EvalProcess<br/>starts the runner"]
-    Rec["EvalRecorder<br/>RunRecording"]
-    Sessions["Session endpoints<br/>POST /v1/sessions"]
-    Replay["ReplayResolution"]
-  end
-  subgraph Runner["louis-agent.evals.runner (child process)"]
-    Cat["EvalCatalog<br/>EvalFolders, RunnerCatalogs"]
-    Harness["EvalRunner<br/>(louis-agent.evals)"]
-    Files["FileEval<br/>eval folders copied beside it"]
-  end
-  Identity["Puls identity<br/>Evals/Cook, Evals/Routing, Evals/Checks"]
-  Agent["The agent under test<br/>(engine, Puls identity, packs)"]
-  Store[("Mongo: runs, conversations,<br/>turns, requests, reviews,<br/>calibrations, notes")]
-  Ledger[("Usage ledger<br/>usage-YYYY-MM.jsonl")]
-  RStore[("Replay store<br/>REPLAY_DIRECTORY")]
-  Judge["Judge model<br/>(EVAL_JUDGE_*)"]
-
-  Bench -->|"start a run"| Admin --> Proc -->|"dotnet runner.dll run puls-cook"| Cat
-  Identity -.->|"files and checks, through the composition"| Files
-  Cat --> Files --> Harness
-  Harness -->|"HttpSessionClient"| Sessions --> Agent
-  Sessions --> Replay --> RStore
-  Agent -->|"every model request"| Ledger
-  Agent -.->|"stream (SSE)"| Harness
-  Harness -->|"model checks"| Judge
-  Harness -->|"protocol v2 on stdout"| Proc --> Rec --> Store
-  Rec -->|"when the run ends"| Ledger
-  Explorer -->|"read"| Admin --> Store
-```
+![The evals: the portal, the API and the runner](diagrams/evals-the-parts.svg)
 
 | Part | Project | Its one job |
 |---|---|---|
@@ -207,28 +171,7 @@ turns, tokens, seconds, cost) are measured beside the grades and never decide a 
 
 ## One cook run, in memory
 
-```mermaid
-flowchart TB
-  set["demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/eval.json<br/>identity = puls"]
-  eval["FileEval : IEval<br/>Name = puls-cook, Version = 11"]
-  modes["EvalMode puls-cook · EvalMode puls-tools"]
-  data["Dataset puls-cook v7<br/>dev and held-out scenarios, labels"]
-  graders["9 checks: cook-no-error (no-error), routed-to,<br/>within-budget (amount-under · rand-total), estimates-at-shop (· rand-prices), untooled-shops,<br/>recipe-image (image-shown · recipe-photos), serves-as-asked (number-named · servings),<br/>meal-for-people, meal-for-people.human"]
-  trial["Trial<br/>run 5d1fd231c9b1 · puls-cook · repeat 1 · cook-malmesbury"]
-  transcript["Transcript<br/>TurnTranscript per question"]
-  grades["Grade × 9<br/>e.g. untooled-shops 1.0 pass"]
-  conv["ConversationEvent<br/>grades, TrialOutcome, Metrics"]
-  set --> eval
-  eval --> modes
-  eval --> data
-  eval --> graders
-  modes --> trial
-  data --> trial
-  trial --> transcript
-  graders --> grades
-  transcript --> grades
-  grades --> conv
-```
+![The evals: one cook run, in memory](diagrams/evals-one-cook-run-in-memory.svg)
 
 ## How a run talks
 

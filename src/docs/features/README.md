@@ -62,34 +62,7 @@ where its work went and stays as its design.
 | **M5 — Reporting** | Usage overview, reconciliation and speed | F11, F12, F14 | The Usage tab matches the ledger; the ledger is within 5% of the provider's report; Claude and llama3.1 speeds compared |
 | **Local — Local models** | A local model gets everything it is sent | F13 | No ledger record of a local turn has `input` above 2,048; "What branch am I on?" works on `llama3.1` |
 
-```mermaid
-flowchart LR
-    F1[F1 Usage ledger] --> F2[F2 Prices and cost]
-    F2 --> F15[F15 Model limits]
-    F15 --> F9
-    F15 --> F13
-    F1 --> F4[F4 Prompt caching]
-    F1 --> F5[F5 Toolset profiles]
-    F1 --> F8[F8 Reliability]
-    F1 --> F10[F10 Route settings]
-    F2 --> F3[F3 Show usage]
-    F2 --> F6[F6 Estimates]
-    F6 --> F7[F7 Budgets]
-    F4 --> F9[F9 Bounded history]
-    F3 --> F11[F11 Usage tab and reconciliation]
-    F6 --> F11
-    F7 --> F11
-    F1 --> F12[F12 Response speed]
-    F5 --> F13[F13 Local models]
-    F3 --> F14[F14 Display currency]
-    F1 --> F18[F18 Evals]
-    F18 --> F16[F16 Summariser]
-    F4 --> F16
-    F16 --> F9
-    F8 --> F17[F17 Orchestrator agent]
-    F10 --> F17
-    F18 --> F17
-```
+![Features: the milestones and what each one needs first](diagrams/README-milestones.svg)
 
 ## The benchmark
 

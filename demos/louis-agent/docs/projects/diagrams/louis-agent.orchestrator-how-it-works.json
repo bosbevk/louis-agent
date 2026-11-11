@@ -1,0 +1,99 @@
+{
+  "kind": "flow",
+  "title": "The orchestrator: one error, from the feed to a decision",
+  "caption": "Every error ends in one decision: ignored, escalated or fixed, written to decisions.jsonl.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Feed",
+        "icon": "file",
+        "tone": "amber",
+        "label": "JsonLinesErrorFeed (the triage\npack)\nnew events in\nlogs/errors.jsonl"
+      },
+      {
+        "id": "Triage",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine (its own model)\nsystem prompt = runbooks\ntools = ServiceTools and\nFixChecks"
+      },
+      {
+        "id": "Ack",
+        "icon": "checks",
+        "tone": "green",
+        "label": "AcknowledgeError"
+      },
+      {
+        "id": "Esc",
+        "icon": "user",
+        "tone": "red",
+        "label": "EscalateToHuman"
+      },
+      {
+        "id": "Fix",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "CallLouisAgentFix\n(main checked out \u2192 session on\nlouis-agent.api \u2192 FIX-RESULT)"
+      },
+      {
+        "id": "Verify",
+        "icon": "checks",
+        "tone": "green",
+        "label": "VerifyFixCommit \u00B7\nReplayRequest \u00B7\nRunServiceTests"
+      },
+      {
+        "id": "Decision",
+        "icon": "file",
+        "tone": "amber",
+        "label": "DECISION line \u2192\ndecisions.jsonl,\nCommsLog, processed.txt"
+      },
+      {
+        "id": "Main",
+        "icon": "branch",
+        "tone": "blue",
+        "label": "back to main for the next\nerror"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Feed",
+        "to": "Triage"
+      },
+      {
+        "from": "Triage",
+        "to": "Ack",
+        "word": "expected"
+      },
+      {
+        "from": "Triage",
+        "to": "Esc",
+        "word": "escalate"
+      },
+      {
+        "from": "Triage",
+        "to": "Fix",
+        "word": "auto-fixable"
+      },
+      {
+        "from": "Fix",
+        "to": "Verify"
+      },
+      {
+        "from": "Ack",
+        "to": "Decision"
+      },
+      {
+        "from": "Esc",
+        "to": "Decision"
+      },
+      {
+        "from": "Verify",
+        "to": "Decision"
+      },
+      {
+        "from": "Decision",
+        "to": "Main"
+      }
+    ],
+    "direction": "down"
+  }
+}

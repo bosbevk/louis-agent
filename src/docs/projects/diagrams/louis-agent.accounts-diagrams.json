@@ -1,6 +1,7 @@
 {
   "kind": "flow",
   "title": "Accounts: the browser's calls through Identity's routes and ours to the store",
+  "caption": "Multi-tenant by design: the tenant is resolved from the host, and every account lives within its CurrentTenant.",
   "flow": {
     "nodes": [
       {

@@ -1,0 +1,118 @@
+{
+  "kind": "flow",
+  "title": "The code-review app: its pages, the framework's shells and the API",
+  "caption": "One site on the framework's web: the chat and the admin are the framework's shells, and the packs' views fill their slots.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Pages/ChatPage: a thin page,\nat / and /chat"
+      },
+      {
+        "id": "Shell",
+        "icon": "message",
+        "tone": "violet",
+        "label": "ChatShell (framework)"
+      },
+      {
+        "id": "Admin",
+        "icon": "file",
+        "tone": "blue",
+        "label": "Layout/AdminLayout"
+      },
+      {
+        "id": "AdminShell",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AdminShell (framework)"
+      },
+      {
+        "id": "Screen",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "Screen page (framework)"
+      },
+      {
+        "id": "Views",
+        "icon": "box",
+        "tone": "green",
+        "label": "PackViews"
+      },
+      {
+        "id": "Files",
+        "icon": "folder",
+        "tone": "green",
+        "label": "FilesView (packs/web)"
+      },
+      {
+        "id": "Git",
+        "icon": "branch",
+        "tone": "green",
+        "label": "GitChangesView,\nGitBranchesView (packs/web)"
+      },
+      {
+        "id": "Handoff",
+        "icon": "message",
+        "tone": "green",
+        "label": "ChatHandoff"
+      },
+      {
+        "id": "Api",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "AgentApi"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Page",
+        "to": "Shell"
+      },
+      {
+        "from": "Admin",
+        "to": "AdminShell"
+      },
+      {
+        "from": "Screen",
+        "to": "Views"
+      },
+      {
+        "from": "Views",
+        "to": "Files"
+      },
+      {
+        "from": "Views",
+        "to": "Git"
+      },
+      {
+        "from": "Files",
+        "to": "Handoff",
+        "word": "Review or Ask: a draft"
+      },
+      {
+        "from": "Git",
+        "to": "Handoff",
+        "word": "Review: a draft"
+      },
+      {
+        "from": "Handoff",
+        "to": "Page"
+      },
+      {
+        "from": "Shell",
+        "to": "Api"
+      },
+      {
+        "from": "Files",
+        "to": "Api"
+      },
+      {
+        "from": "Git",
+        "to": "Api"
+      }
+    ],
+    "direction": "down"
+  }
+}

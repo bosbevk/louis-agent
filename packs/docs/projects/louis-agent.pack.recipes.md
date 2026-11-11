@@ -87,26 +87,7 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
 
 ## Diagrams
 
-**Architecture:** two ways in, for the model and for a person. The model's tools search and read pages, every page goes through core's guarded browser, and what they read fills the library the admin screens look after.
-
-```mermaid
-flowchart TD
-    pack["RecipesPack: the recipes toolset, feed and screens"] --> tools["RecipeTools: FindRecipes, ReadRecipe, ScaleRecipe"]
-    pack --> screens["RecipesUsageScreen, RecipesScreen, ExcludedPagesScreen"]
-    pack --> feed["RecipesFeed: the open feed"]
-    tools --> scatter["RecipeScatter: several sites at once"]
-    scatter --> source["IRecipeSource, from RecipeSourceFactory"]
-    source --> wordpress["WordPressSearch"]
-    source --> web["SiteWebSearch"]
-    tools --> schema["SchemaOrgRecipe: the page's own data"]
-    tools --> printer["RecipePrinter"]
-    wordpress --> browser["Core's guarded browser: robots.txt, no-AI signals"]
-    schema --> browser
-    tools --> shelf["RecipeShelf"]
-    shelf --> store[("The library, in Mongo")]
-    screens --> store
-    feed --> store
-```
+![The recipes pack: its tools, its sources and the library](diagrams/louis-agent.pack.recipes-diagrams.svg)
 
 **Flow:** the model searches, then reads one recipe. Data comes before text: a page with no recipe data comes back as its text, labelled as such.
 
