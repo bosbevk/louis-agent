@@ -61,5 +61,5 @@ public enum PulsCall
 /// </summary>
 public enum PulsIdentityName
 {
-    [WireName("puls")] Puls,
+    [WireName("puls")] Puls
 }

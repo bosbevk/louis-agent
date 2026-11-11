@@ -83,7 +83,7 @@ public class AgentSessionsTests
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
                 [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
-            },
+            }
         };
 
     /// <summary>

@@ -35,7 +35,7 @@ public class PulsSessionSnapshotTests
     private static readonly JsonSerializerOptions Json = new()
     {
         WriteIndented = true,
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     private string _skillsDir = null!;
@@ -69,7 +69,7 @@ public class PulsSessionSnapshotTests
             {
                 [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
             },
-            BrowserUrl = "http://browser.test:9222",
+            BrowserUrl = "http://browser.test:9222"
         };
         // Where to buy and shop prices are packs Puls names (F50.2); the catalogue is what IDENTITIES=puls builds.
         // The recipes pack is the other one Puls names, with every site on as the deployments have it
@@ -94,7 +94,7 @@ public class PulsSessionSnapshotTests
                 t.Description,
                 Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement
             }),
-        SystemPrompt = engine.SkillDocumentation,
+        SystemPrompt = engine.SkillDocumentation
     };
 
     /// <summary>
@@ -113,9 +113,8 @@ public class PulsSessionSnapshotTests
         var factory = Factory();
         var snapshot = new
         {
-            Chat = View(factory.GetOrCreate([CoreToolset.Agents.Wire(), TestToolset.Web.Wire()], "puls/voice-af",
-                RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate(CookToolsets(), PulsRole.Cook.Wire(), RoleLevel.Specialist)),
+            Chat = View(factory.GetOrCreate([CoreToolset.Agents.Wire(), TestToolset.Web.Wire()], "puls/voice-af")),
+            Cook = View(factory.GetOrCreate(CookToolsets(), PulsRole.Cook.Wire(), RoleLevel.Specialist))
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

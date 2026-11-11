@@ -1,7 +1,6 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
@@ -40,7 +39,7 @@ public class PulsIdentityTests
         Assert.That(puls.Prompts.GetFileInfo("specialists/puls-cook.md").Exists, Is.True, "a specialist");
         Assert.That(puls.Prompts.GetFileInfo("minions/puls-minion.md").Exists, Is.True, "a minion base (F30, kept)");
         // The catalogue refuses an identity whose pack isn't there; with the packs, all are in.
-        Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "packs named, none registered");
+        Assert.Throws<AgentCatalogException>(() => _ = new AgentCatalog([puls], []), "packs named, none registered");
         var catalog = new AgentCatalog([puls],
         [
             new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
