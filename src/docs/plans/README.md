@@ -60,7 +60,8 @@ built or comes next, and every plan as it was is at the tag
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
 - **Four diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32; the fourth 2026-10-18), in the *Design*: an
-  **interface design** (a mermaid `classDiagram` with the C# signatures beside it: the interfaces and records the
+  **interface design** (a flow picture of the types, a mermaid `classDiagram` only until CL60.4's class layout, with
+  the C# signatures beside it: the interfaces and records the
   change uses or adds, every implementation behind them, old and new, marked with the step that builds it, and who
   creates, reads and calls whom), an **architecture diagram** (a flow picture: the containers, hosts and services, and
   which step builds or changes each part) and a **communication diagram** (a mermaid `sequenceDiagram`: who calls

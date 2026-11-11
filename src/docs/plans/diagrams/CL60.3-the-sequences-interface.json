@@ -1,0 +1,40 @@
+{
+  "kind": "flow",
+  "title": "CL60.3 the sequences: the interface design",
+  "caption": "A step is one of four kinds: a block is a step that holds steps, so a loop inside an alt needs nothing new.",
+  "flow": {
+    "nodes": [
+      { "id": "import", "label": "MermaidSequenceReader (7)\nRead(block, title)", "icon": "terminal", "tone": "blue" },
+      { "id": "source", "label": "DiagramSource\n+Sequence (2)", "icon": "file", "tone": "teal" },
+      { "id": "spec", "label": "SequenceSpec (2)\nParticipants, Steps,\nNumbered", "icon": "book", "tone": "teal" },
+      { "id": "head", "label": "Participant (2)\nId, Label, Icon, Tone,\nActor", "icon": "user", "tone": "teal" },
+      { "id": "step", "label": "SequenceStep (2)\nabstract, read by its\n\"step\" field", "icon": "code", "tone": "teal" },
+      { "id": "message", "label": "MessageStep (2)\nFrom, To, Text", "icon": "message", "tone": "teal", "group": "kinds" },
+      { "id": "reply", "label": "ReplyStep (2)\nFrom, To, Text", "icon": "message", "tone": "teal", "group": "kinds" },
+      { "id": "note", "label": "NoteStep (4)\nOver, Text", "icon": "info", "tone": "teal", "group": "kinds" },
+      { "id": "block", "label": "BlockStep (5)\nBlock, Label, Steps,\nElse", "icon": "branch", "tone": "teal", "group": "kinds" },
+      { "id": "else", "label": "ElseCase (5)\nLabel, Steps", "icon": "branch", "tone": "teal" },
+      { "id": "renderer", "label": "SequenceRenderer (6)\nKind, Render(source)", "icon": "code", "tone": "violet" },
+      { "id": "layout", "label": "SequenceLayout (3)\nPlace(spec)", "icon": "chart", "tone": "violet" },
+      { "id": "placed", "label": "PlacedSequence (3)\nHeads, Rows, Blocks,\nWidth, Height", "icon": "chart", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "import", "to": "source", "word": "makes" },
+      { "from": "source", "to": "spec" },
+      { "from": "spec", "to": "head" },
+      { "from": "spec", "to": "step" },
+      { "from": "step", "to": "message", "style": "dashed" },
+      { "from": "step", "to": "reply", "style": "dashed" },
+      { "from": "step", "to": "note", "style": "dashed" },
+      { "from": "step", "to": "block", "style": "dashed" },
+      { "from": "block", "to": "else" },
+      { "from": "renderer", "to": "layout" },
+      { "from": "layout", "to": "spec", "word": "reads" },
+      { "from": "layout", "to": "placed", "word": "makes" }
+    ],
+    "groups": [
+      { "id": "kinds", "label": "its kinds (dashed: a kind of)" }
+    ],
+    "direction": "down"
+  }
+}
