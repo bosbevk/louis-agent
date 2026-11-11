@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Diagrams.Svg.Theme;
 
@@ -44,11 +45,28 @@ internal static class SvgStyle
           .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
           .code { fill: var(--text); font: 11px var(--mono); }
           .text { fill: var(--quiet); font: 11px var(--mono); }
+          .badge { fill: var(--quiet); }
+          .badge-icon {
+            fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+          }
+          {{ToneRules(theme)}}
           """);
 
-    /// <summary>One palette as the picture's colour variables.</summary>
+    /// <summary>One palette as the picture's colour variables, each tone's three among them.</summary>
     private static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --panel: {palette.Panel}; --line: {palette.Line}; --text: {palette.Text}; " +
         $"--bright: {palette.Bright}; --quiet: {palette.Quiet}; --chip: {palette.Chip}; " +
-        $"--accent: {palette.Accent}; --tint: {palette.Tint};";
+        $"--accent: {palette.Accent}; --tint: {palette.Tint};" + string.Concat(palette.Tones.Select(tone =>
+            $" --{tone.Key.Wire()}-fill: {tone.Value.Fill}; --{tone.Key.Wire()}-line: {tone.Value.Line};" +
+            $" --{tone.Key.Wire()}-ink: {tone.Value.Ink};"));
+
+    /// <summary>
+    /// What a tone changes, one set of rules per tone the light palette has: a box's tint and line, its badge, and
+    /// its label's ink.
+    /// </summary>
+    private static string ToneRules(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
+        .Select(tone => tone.Wire()).Select(name =>
+            $".box.tone-{name} {{ fill: var(--{name}-fill); stroke: var(--{name}-line); stroke-width: 1.5; }}\n" +
+            $".badge.tone-{name} {{ fill: var(--{name}-line); }}\n" +
+            $".label.tone-{name} {{ fill: var(--{name}-ink); }}"));
 }

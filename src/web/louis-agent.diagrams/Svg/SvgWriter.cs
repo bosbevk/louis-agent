@@ -38,6 +38,14 @@ internal sealed class SvgWriter
         return this;
     }
 
+    /// <summary>A circle round a point.</summary>
+    public SvgWriter Circle(double x, double y, double radius, string cls)
+    {
+        _shapes.Add(new XElement(Svg + "circle", new XAttribute("class", cls), new XAttribute("cx", N(x)),
+            new XAttribute("cy", N(y)), new XAttribute("r", N(radius))));
+        return this;
+    }
+
     /// <summary>
     /// A path, ending in the arrowhead when it is an arrow, and starting in one too when it points back as well.
     /// </summary>

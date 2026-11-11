@@ -1,7 +1,10 @@
+using LouisAgent.Choices;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Svg;
 
@@ -14,6 +17,9 @@ internal sealed class FlowRenderer : IDiagramRenderer
 {
     /// <summary>The room under the drawing a caption takes.</summary>
     private const double CaptionRoom = 34;
+
+    /// <summary>How big an icon is drawn inside its badge.</summary>
+    private const double BadgeIcon = 16;
 
     public DiagramKind Kind => DiagramKind.Flow;
 
@@ -36,21 +42,39 @@ internal sealed class FlowRenderer : IDiagramRenderer
                 writer.Text(edge.WordX, edge.WordY - 7 + FlowText.WordStep * at, lines[at], "word");
         }
 
-        foreach (var node in placed.Nodes)
-        {
-            double middle = node.X + node.W / 2;
-            writer.Box(node.X, node.Y, node.W, node.H, 10, "box");
-            var label = FlowText.LabelLines(node.Node);
-            for (int at = 0; at < label.Count; at++)
-                writer.Text(middle, node.Y + FlowText.LabelY(node) + FlowText.LabelStep * at, label[at], "label");
-            var lines = node.Node.Note is { } note ? GraphLayout.NoteLines(note) : [];
-            for (int at = 0; at < lines.Count; at++)
-                writer.Text(middle, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note");
-        }
+        foreach (var node in placed.Nodes) Draw(writer, node);
 
         if (source.Caption is not { } caption)
             return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height);
         writer.Text(0, placed.Height + CaptionRoom - 8, caption, "caption", "start");
         return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height + CaptionRoom);
+    }
+
+    /// <summary>
+    /// One box in its tone: with an icon, the icon in a round badge at its left and the words from the left after it
+    /// (Louis's pick, CL60.2); without one, the words centred, as the site's boxes are.
+    /// </summary>
+    private static void Draw(SvgWriter writer, PlacedNode node)
+    {
+        string tone = node.Node.Tone == DiagramTone.Plain ? "" : $" tone-{node.Node.Tone.Wire()}";
+        writer.Box(node.X, node.Y, node.W, node.H, 10, "box" + tone);
+
+        (double x, string anchor) = (node.X + node.W / 2, "middle");
+        if (node.Node.Icon is { } icon)
+        {
+            // The badge stands in the middle of the box's height; the icon in it is drawn a little smaller.
+            double centreX = node.X + FlowText.BadgeLeft + FlowText.BadgeSize / 2, centreY = node.Y + node.H / 2;
+            writer.Circle(centreX, centreY, FlowText.BadgeSize / 2, "badge" + tone)
+                .Icon(centreX - BadgeIcon / 2, centreY - BadgeIcon / 2, BadgeIcon, icon, "badge-icon");
+            (x, anchor) = (FlowText.LabelLeft(node), "start");
+        }
+
+        var label = FlowText.LabelLines(node.Node);
+        for (int at = 0; at < label.Count; at++)
+            writer.Text(x, node.Y + FlowText.LabelY(node) + FlowText.LabelStep * at, label[at], "label" + tone,
+                anchor);
+        var lines = node.Node.Note is { } note ? GraphLayout.NoteLines(note) : [];
+        for (int at = 0; at < lines.Count; at++)
+            writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note", anchor);
     }
 }

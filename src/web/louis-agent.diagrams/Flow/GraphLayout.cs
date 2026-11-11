@@ -163,9 +163,13 @@ public static class GraphLayout
         return node.Note is null ? label : label + NoteLine * NoteLines(node.Note).Count;
     }
 
-    /// <summary>A box's width: its label's longest line and the room beside it, at least the site's box.</summary>
+    /// <summary>
+    /// A box's width: its label's longest line and the room beside it, and its icon's badge when it has one, at
+    /// least the site's box.
+    /// </summary>
     private static double WidthOf(GraphNode node) =>
-        Math.Max(BoxWidth, FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad);
+        Math.Max(BoxWidth, FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad
+            + (node.Icon is null ? 0 : FlowText.IconRoom));
 
     /// <summary>
     /// The note as the lines the box shows (FX85, Louis: "need wrapping"), wrapped at <see cref="NoteWidth"/>
