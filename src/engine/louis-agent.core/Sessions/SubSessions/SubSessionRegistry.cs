@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Sessions.SubSessions;
 
 /// <summary>
 /// A chat's open sub-sessions, by handle (F26): the host (the API's session) owns one and makes it current for each
-/// turn, like <see cref="SessionAttachments"/>; <see cref="SpecialistTools.StartSubSession"/> then keeps a specialist
-/// open instead of deleting it, and <see cref="SpecialistTools.ContinueSubSession"/> finds it again. With none current
-/// (an MCP call, the CLI) nothing is kept.
+/// turn, like <see cref="SessionAttachments"/>; the delegation tools (<c>StartSubSession</c>, <c>AskAgent</c>) then
+/// keep a child open instead of deleting it, and find it again for a follow-up. With none current (an MCP call, the
+/// CLI) nothing is kept.
 /// </summary>
 /// <remarks>
 /// The limits are in code: at most <see cref="DefaultCap"/> open per chat (the oldest is closed when another opens),
@@ -38,11 +38,13 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
     {
         get
         {
-            lock (_lock) return _open.ToArray();
+            lock (_lock) return [.. _open];
         }
     }
 
-    /// <summary>Keeps <paramref name="entry"/> under the next handle, closing the oldest past the cap; returns the handle.</summary>
+    /// <summary>
+    /// Keeps <paramref name="entry"/> under the next handle, closing the oldest past the cap; returns the handle.
+    /// </summary>
     public async Task<string> AddAsync(OpenSubSession entry)
     {
         List<OpenSubSession> evicted = [];
@@ -95,7 +97,7 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
         OpenSubSession[] all;
         lock (_lock)
         {
-            all = _open.ToArray();
+            all = [.. _open];
             _open.Clear();
         }
 

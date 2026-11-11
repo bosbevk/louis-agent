@@ -132,8 +132,9 @@ public sealed class AskAgentTools(
             return null;
         }
 
-        if (!AgentCalls.Allows(asker, parsed, out refusal)) return null;
-        return AgentAddresses.Resolve(parsed, identities, out refusal);
+        return AgentCalls.Allows(asker, parsed, out refusal)
+            ? AgentAddresses.Resolve(parsed, identities, out refusal)
+            : null;
     }
 
     /// <summary>The identity the running turn speaks for, if this instance runs it.</summary>

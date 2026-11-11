@@ -156,5 +156,5 @@ public enum SubSessionToolMessage
     [Description(
         "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +
         "Wait for that answer, then send this again.")]
-    SubSessionBusy,
+    SubSessionBusy
 }
