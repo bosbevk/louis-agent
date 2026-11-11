@@ -136,13 +136,22 @@ public enum SubSessionToolMessage
     [Description("Error: this chat speaks for no agent, so it may ask none.")]
     AskerNone,
 
-    [Description("{Answer}\n\n[Answered by {Address}]")]
+    [Description("{Answer}\n\n[Answered by {Address}, did: {Did}]")]
     AgentAnswer,
 
     [Description(
-        "{Answer}\n\n[Answered by {Address}, in a new conversation: the earlier one had closed, so it remembers none " +
-        "of it]")]
+        "{Answer}\n\n[Answered by {Address}, did: {Did}. A new conversation: the earlier one had closed, so it " +
+        "remembers none of it]")]
     AgentAnswerAnew,
+
+    [Description("no tools")] AgentDidNothing,
+
+    [Description("{Tool} (failed)")] AgentDidFailed,
+
+    [Description("{Tool} ×{Count}")] AgentDidTimes,
+
+    [Description("{Tool} ×{Count} ({Failed} failed)")]
+    AgentDidTimesFailed,
 
     [Description(
         "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +

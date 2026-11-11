@@ -32,6 +32,27 @@ public class SubSessionRegistryTests
         Assert.That(closed, Is.Empty);
     }
 
+    /// <summary>
+    /// An entry still kept is swapped for its changed copy under the same handle; one no longer kept stays gone.
+    /// </summary>
+    [Test]
+    public async Task Update_SwapsAKeptEntry_AndLeavesAGoneOneGone()
+    {
+        var registry = new SubSessionRegistry();
+        string handle = await registry.AddAsync(Entry("sess_a", []));
+        var work = new AgentWork([new SubSessionEvent(null, "coder", "message_stop", "{}")]);
+
+        registry.Update(handle, open => open with { Work = work });
+        registry.Update("sub-9", open => open with { Work = work });
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(registry.Find(handle)!.Work, Is.SameAs(work));
+            Assert.That(registry.Find(handle)!.Handle, Is.EqualTo(handle));
+            Assert.That(registry.Open, Has.Count.EqualTo(1));
+        });
+    }
+
     [Test]
     public async Task PastTheCap_TheOldestIsClosed()
     {

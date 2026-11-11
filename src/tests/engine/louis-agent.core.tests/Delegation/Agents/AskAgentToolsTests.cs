@@ -59,7 +59,7 @@ public class AskAgentToolsTests
             Assert.That(opening.GetProperty("toolsets").ValueKind, Is.EqualTo(JsonValueKind.Null));
             Assert.That(opening.GetProperty("task").GetString(), Is.EqualTo("agent:testprod"));
             Assert.That(answer, Does.StartWith("Fixed the null check; 14/14 tests pass.")
-                .And.EndWith("[Answered by testprod]"));
+                .And.EndWith("[Answered by testprod, did: no tools]"));
         });
     }
 

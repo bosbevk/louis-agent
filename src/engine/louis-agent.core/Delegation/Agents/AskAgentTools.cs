@@ -142,13 +142,16 @@ public sealed class AskAgentTools(
             ? identities.FirstOrDefault(i => string.Equals(i.Name, who.Name, StringComparison.OrdinalIgnoreCase))
             : null;
 
-    /// <summary>The answer under the line that names who gave it; never what it used (FX27).</summary>
+    /// <summary>
+    /// The answer under the line that names who gave it and what this reply did; never what it used (FX27).
+    /// </summary>
     private static string Answer(SubSessionToolMessage footer, string address,
         SubSessionMessenger.SubSessionReply reply) =>
         MessageText.Format(footer, new
         {
             Answer = reply.Text,
-            Address = address
+            Address = address,
+            Did = DidLine.Of(new AgentWork(reply.Events).Calls())
         });
 
     /// <summary>One ask as it was checked: who answers, what is sent, and the turn it belongs to.</summary>

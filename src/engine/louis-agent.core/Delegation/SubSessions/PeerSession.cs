@@ -76,7 +76,8 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
                 {
                     Kind = kind.Kind,
                     Llm = kind.Llm,
-                    Address = kind.Address
+                    Address = kind.Address,
+                    Work = new AgentWork(reply.Events)
                 };
                 string handle = await registry.AddAsync(entry);
                 sessionId = null;
@@ -163,6 +164,8 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
 
             if (reply.Failure is not null) return reply.Failure;
             keep = true;
+            // What it did for this message joins what it did before, in the chat's own copy.
+            registry.Update(open.Handle, kept => kept with { Work = kept.Work.Then(reply.Events) });
             return kind.KeptAnswer(open, reply);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)

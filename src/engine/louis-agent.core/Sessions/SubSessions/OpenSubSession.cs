@@ -36,6 +36,9 @@ public sealed record OpenSubSession(
     /// <summary>The address an asked agent was opened for (F127.3.1); none for a specialist or a minion.</summary>
     public AgentAddress? Address { get; init; }
 
+    /// <summary>What it has done in this chat so far, every reply's events in order.</summary>
+    public AgentWork Work { get; init; } = AgentWork.None;
+
     /// <summary>What was kept: <see cref="SpecialistKind"/> or <see cref="MinionKind"/>.</summary>
     public string Kind { get; init; } = SpecialistKind;
 

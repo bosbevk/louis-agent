@@ -24,6 +24,9 @@ you get back its answer, never its tools or its conversation.
 - **Ask one thing at a time, in the words the person would use.** The agent answers people; ask it as one of them.
 - **Use its answer as its answer.** It speaks for itself: pass on what it said and say it was the agent who said it,
   don't change its facts or prices.
+- **The line under the answer says what it did.** `did: SendLead, ShowPlace` lists the tools it called for that
+  answer, `(failed)` after one that failed, `no tools` when it only answered. Say what the agent did from that line
+  alone, never from a guess: if it says `no tools`, nothing was sent or booked.
 - **At most three asks a turn.** If an answer doesn't settle it, tell the person what you learned rather than asking
   again and again.
 

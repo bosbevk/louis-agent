@@ -25,7 +25,11 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// <param name="RefusedStatus">
     /// The HTTP status when the peer refused the message (404: it no longer has the session).
     /// </param>
-    internal sealed record SubSessionReply(string Text, string? Failure, int? RefusedStatus = null);
+    internal sealed record SubSessionReply(string Text, string? Failure, int? RefusedStatus = null)
+    {
+        /// <summary>The events the child streamed for this message, in order, the asked-again one's included.</summary>
+        public IReadOnlyList<SubSessionEvent> Events { get; init; } = [];
+    }
 
     /// <summary>
     /// Sends the message and reads the answer. A child that used all its tool rounds can stop with no text (FX11), so
@@ -37,20 +41,26 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         string? toolUseId,
         UsageScope? scope, CancellationToken cancellationToken)
     {
-        var (text, failure, status) = await SendAsync(peer, sessionId, body, kind, toolUseId, scope, cancellationToken);
-        if (failure is not null) return new SubSessionReply("", failure, status);
-        if (!string.IsNullOrWhiteSpace(text)) return new SubSessionReply(text.Trim(), null);
+        // Both sends stream into one list, so the reply carries everything the child did for this message.
+        var streamed = new List<SubSessionEvent>();
+        var (text, failure, status) = await SendAsync(peer, sessionId, body, kind, toolUseId, scope, streamed,
+            cancellationToken);
+        if (failure is not null) return new SubSessionReply("", failure, status) { Events = streamed };
+        if (!string.IsNullOrWhiteSpace(text)) return new SubSessionReply(text.Trim(), null) { Events = streamed };
 
         // No answer: ask once more, in the same session, for the answer from what it found.
         var (again, againFailure, againStatus) = await SendAsync(peer, sessionId,
             new SendMessageRequest(MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer), null), kind,
             toolUseId,
-            scope, cancellationToken);
-        if (againFailure is not null) return new SubSessionReply("", againFailure, againStatus);
-        if (!string.IsNullOrWhiteSpace(again)) return new SubSessionReply(again.Trim(), null);
+            scope, streamed, cancellationToken);
+        if (againFailure is not null) return new SubSessionReply("", againFailure, againStatus) { Events = streamed };
+        if (!string.IsNullOrWhiteSpace(again)) return new SubSessionReply(again.Trim(), null) { Events = streamed };
 
         return new SubSessionReply("",
-            MessageText.Format(SubSessionToolMessage.SubSessionNoAnswer, new { Agent = kind.Label }));
+            MessageText.Format(SubSessionToolMessage.SubSessionNoAnswer, new { Agent = kind.Label }))
+        {
+            Events = streamed
+        };
     }
 
     /// <summary>
@@ -60,7 +70,7 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// </summary>
     private async Task<(string Text, string? Failure, int? RefusedStatus)> SendAsync(Uri peer, string sessionId,
         SendMessageRequest body, SubSessionKind kind, string? toolUseId, UsageScope? scope,
-        CancellationToken cancellationToken)
+        List<SubSessionEvent> streamed, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
         using var send = http.Request(HttpMethod.Post,
@@ -78,7 +88,12 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         // Each event goes to the host's feed as it arrives, so the chat shows the child's work live.
         var (text, usage, error) = await SubSessionStream.ReadAsync(
             await reply.Content.ReadAsStreamAsync(cancellationToken),
-            (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, kind.Label, type, data)),
+            (type, data) =>
+            {
+                var subSessionEvent = new SubSessionEvent(toolUseId, kind.Label, type, data);
+                streamed.Add(subSessionEvent);
+                SubSessionFeed.Report(subSessionEvent);
+            },
             cancellationToken);
         // A failed reply's usage was charged too (FX6); a reply with none (a timeout before any event) leaves no
         // record.

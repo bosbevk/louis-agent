@@ -36,7 +36,10 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
     /// <summary>The open sub-sessions, oldest first.</summary>
     public IReadOnlyList<OpenSubSession> Open
     {
-        get { lock (_lock) return _open.ToArray(); }
+        get
+        {
+            lock (_lock) return _open.ToArray();
+        }
     }
 
     /// <summary>Keeps <paramref name="entry"/> under the next handle, closing the oldest past the cap; returns the handle.</summary>
@@ -54,6 +57,7 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
                 _open.RemoveAt(0);
             }
         }
+
         foreach (var old in evicted) await old.Close();
         return handle;
     }
@@ -61,13 +65,28 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
     /// <summary>The open sub-session with this handle, or null.</summary>
     public OpenSubSession? Find(string handle)
     {
-        lock (_lock) return _open.FirstOrDefault(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+        lock (_lock)
+            return _open.FirstOrDefault(o =>
+                string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Swaps the entry with this handle for what <paramref name="change"/> makes of it, if it is still kept.
+    /// </summary>
+    public void Update(string handle, Func<OpenSubSession, OpenSubSession> change)
+    {
+        lock (_lock)
+        {
+            int at = _open.FindIndex(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (at >= 0) _open[at] = change(_open[at]);
+        }
     }
 
     /// <summary>Forgets a sub-session without closing it (the peer already dropped it).</summary>
     public bool Remove(string handle)
     {
-        lock (_lock) return _open.RemoveAll(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase)) > 0;
+        lock (_lock)
+            return _open.RemoveAll(o => string.Equals(o.Handle, handle.Trim(), StringComparison.OrdinalIgnoreCase)) > 0;
     }
 
     /// <summary>Closes every open sub-session on its peer and empties the registry: the chat is over.</summary>
@@ -79,6 +98,7 @@ public sealed class SubSessionRegistry(int cap = SubSessionRegistry.DefaultCap)
             all = _open.ToArray();
             _open.Clear();
         }
+
         foreach (var open in all) await open.Close();
     }
 

@@ -29,6 +29,22 @@ public class AskAgentFollowUpTests
     private const string Busy =
         """{"type":"error","error":{"type":"conflict_error","message":"Session sess_child is still answering."}}""";
 
+    /// <summary>A reply that books with SendLead, as the peer streams it.</summary>
+    private const string BookingStream = """
+                                         event: content_block_start
+                                         data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_a","name":"SendLead","input":{}}}
+
+                                         event: content_block_start
+                                         data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"toolu_a","content":"Sent.","is_error":false}}
+
+                                         event: content_block_delta
+                                         data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Booked for Friday."}}
+
+                                         event: message_stop
+                                         data: {"type":"message_stop"}
+
+                                         """;
+
     /// <summary>The tools on the stub peer.</summary>
     private static AskAgentTools Tools(StubHandler handler) =>
         new(Peers, Identities, "the-key", new HttpClient(handler));
@@ -86,7 +102,29 @@ public class AskAgentFollowUpTests
             Assert.That(followUp.RootElement.GetProperty("message").GetString(),
                 Is.EqualTo("Book the garden room for Friday."));
             Assert.That(chat.Open.Single().Address?.ToString(), Is.EqualTo("testprod"));
-            Assert.That(answers[1], Does.EndWith("[Answered by testprod]"));
+            Assert.That(answers[1], Does.EndWith("[Answered by testprod, did: no tools]"));
+        });
+    }
+
+    /// <summary>
+    /// Each answer says what that reply did, and the kept conversation holds every reply's events, in order.
+    /// </summary>
+    [Test]
+    public async Task ItsWork_IsKeptAcrossAFollowUp_AndEachAnswerSaysWhatItDid()
+    {
+        var handler = Peer(Replies(AnswerStream, BookingStream));
+        var chat = new SubSessionRegistry();
+
+        var answers = await AskInOneChat(Tools(handler), chat, ("testprod", "Is a dog allowed?"),
+            ("testprod", "Book the garden room for Friday."));
+
+        var work = chat.Open.Single().Work;
+        Assert.Multiple(() =>
+        {
+            Assert.That(answers[0], Does.EndWith("[Answered by testprod, did: no tools]"));
+            Assert.That(answers[1], Does.StartWith("Booked for Friday.").And.EndWith("did: SendLead]"));
+            Assert.That(work.Calls().Select(call => call.Name), Is.EqualTo(new[] { "SendLead" }));
+            Assert.That(work.Events.Count(e => e.Type == "message_stop"), Is.EqualTo(2), "both replies");
         });
     }
 
