@@ -20,46 +20,61 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   kind's own part. A misspelt field, an unknown kind, a missing title, or an arrow or a link to an id nothing has is
   refused with its reason (`Messages/DiagramMessage`, filled by `DiagramText`, the library's own small stand-in for
   core's `MessageText`).
-- **Flows** (`Flow/`): ADR 0103's row grid. `GraphLayout` puts each box in its column and row, `EdgeRouter` draws an
-  arrow as connectors at right angles, `FlowText` says where a box's label and note sit. The site's `GraphView`
-  animates the same placed graph.
+- **Flows** (`Flow/`): ADR 0103's row grid. `GraphLayout` puts each box in its column and row (`Ranks` gives a box
+  with no column one past the furthest box pointing at it), `Bands` stands each group's boxes in rows of their own
+  inside a labelled frame, and `Routing/EdgeRouter` draws an arrow as connectors at right angles: a long one through
+  a waypoint in each column it passes, a blocked one round a detour, with bends as soft as the caller asks (the site
+  8 px, the docs `SoftBend`). A chart that runs `down` is laid out turned and `Turn` turns every point back, so one
+  layout and one router serve both. `FlowText` says where a box's badge, label and note sit and where an arrow's word
+  chip stands. The site's `GraphView` animates the same placed graph.
+- **Tones** (`Tones/`): a box may carry an icon and a `DiagramTone`, so a colour means the same in every chart
+  (blue starts it, green this project, violet the framework, teal contracts and state, amber files and data, red
+  outside the process). Its arrows and their word chips take its tone.
 - **Cards** (`Cards/`): Louis's overview style. `CardLayout` lays rows of cards in one frame: a row's cards share its
   width and its tallest card's height, and a card's words wrap to fit. Every word is in the code font, so a line's
   width is its length times one number and the tests prove it fits. A card is `plain`, `highlight` (centred in the
   accent's tint) or `heading` (centred with no box), its `CardLook`. A link (`Cards/Links/`) runs from a card's
   bottom middle to the next row's top middle, at right angles, its arrowheads the way it says.
-- **Icons** (`Icons/`): 22 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
+- **Icons** (`Icons/`): 24 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
   them and a row in `THIRD-PARTY-NOTICES.md`.
 - **The SVG** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind (Strategy: `FlowRenderer`,
   `CardsRenderer`). `SvgWriter` builds the file with `XElement`, `\n` line endings and a `<title>`. `Svg/Theme/`
   holds the site's palette and its light twin as CSS variables in the picture's own style, the dark one under
-  `prefers-color-scheme: dark`.
+  `prefers-color-scheme: dark`, and each tone's fill, line and ink.
+- **The docs' frame** (`Svg/TitledFrame`, a Decorator): `DiagramRenderers.RenderTitled` draws the picture bare and
+  frames it with a navy title bar, a legend of the tones the chart uses, and a note bar from its caption. Only the
+  docs' tool asks for it, so a bare picture (the site, the chat's tool cards later) is unchanged.
 - **The docs' tool** (`src/tools/louis-agent.doc-diagrams`) finds every `diagrams/*.json` under `src/docs`,
-  `packs/docs` and each demo's `docs`, and writes the SVG beside it when what it draws changed. `--check` writes
-  nothing and fails naming a stale picture.
+  `packs/docs` and each demo's folder, and writes the framed SVG beside it when what it draws changed. `--check`
+  writes nothing and fails naming a stale picture. `import <doc>` (`Mermaid/`) reads a doc's Mermaid flowcharts once
+  into JSON and prints the link for each block, which is swapped by hand.
 
 ## Structure
 
 ```
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphSpec, GraphNode, GraphEdge, GraphLayout, EdgeRouter, FlowText; Placed/
+├── Flow/           # GraphLayout, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
+├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, FlowRenderer, CardsRenderer, SvgWriter; Theme/
+├── Svg/            # IDiagramRenderer, DiagramRenderers, FlowRenderer, CardsRenderer, SvgWriter, TitledFrame; Theme/
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
-src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Messages/DocDiagramsUserText
+src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import), Messages/
 ```
 
 ## Tests
 
 - `src/tests/web/louis-agent.diagrams.tests`: the layouts with numbers (no card overlaps another, every card inside
-  the frame, every line inside its card), the reader's refusals, a card's looks, every icon drawn, and the goldens
-  `Svg/flow.svg`, `Cards/cards.svg` and `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
-- `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, and `DocsDiagramsTests` on the
-  real docs: every picture is what its JSON draws, a doc beside it shows it, every picture a doc shows is there, and
-  every project doc shows its overview.
+  the frame, every line inside its card; a flow's ranks, a down chart's rows, every group's boxes inside its frame
+  and no other, a chip clear of its line), the tones and the frame, the reader's refusals, a card's looks, every
+  icon drawn, and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`, `Cards/cards.svg` and
+  `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
+- `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
+  Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,
+  every picture a doc shows is there, every project doc shows its overview, every flow keeps its words and lines
+  clear (`Clearance`), every `diagrams` folder is one the tool draws, and no doc holds a Mermaid flowchart.
 
 ## What the build decided (CL60.1, 2026-11-11, partly unattended)
 
@@ -77,10 +92,37 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Messa
   a second row for what else it holds, no caption); a doc's links read outside code, since a how-to shows them as
   examples there.
 
+## What the build decided (CL60.2, 2026-11-11 and 12, unattended)
+
+- **Claude's picks, each of three:** the 75 docs flowcharts converted by a one-time import, each JSON looked at and
+  the block swapped by hand (not every JSON by hand, nor a renderer that reads Mermaid); a chart that runs down laid
+  out turned and turned back (not a second layout); a subgraph a labelled frame with its boxes in a band of their own
+  (swimlanes); the import writes only JSON, never the doc.
+- **The layout grew by what the charts needed:** a long arrow through a waypoint per column (Sugiyama's dummy nodes),
+  straightened by Brandes and Köpf's alignment; several sources into several boxes on tracks of their own; a blocked
+  arrow round a detour; a back arrow from its source's bottom middle; a chart over 1,100 px turned the narrower way
+  on import; a down chart as wide as what it draws. `DocsDiagramsTests`' clearance check came from Louis's "you
+  must look at each one", and every picture was looked at.
+- **Louis's picks:** "Ours plus hand-tuning" (not MSAGL as a package, nor growing the layout until every chart
+  passes): what reads awkwardly is tuned in its JSON, a frame dropped, arrows merged, a word shortened; **the joined
+  look** from the renderer (not ChatGPT-style painted pictures, nor hand-written SVGs): a title bar, an icon badge
+  and a tone per box, arrows and word chips in their box's tone, soft bends, a note bar; "all of them must look like
+  accounts" (every chart toned, by one meaning per colour); a legend ("can we have a legend for the color"); a note
+  on **every** chart, its line moved out of the doc so nothing is said twice; the plans drawn in the full look too.
+- **Claude's picks on findings:** the frame a Decorator (`TitledFrame`), so the cards and the site stay bare; the
+  legend drawn from the tones' fixed meanings, not written in each JSON; violet's legend "the framework"; the
+  README's picture in `src/docs/diagrams/`, linked by its path; the tool scans each demo whole, so a deploy note's
+  pictures are drawn and checked too.
+
 ## Limits and plans
 
-- The docs' flows come in CL60.2, the sequences in CL60.3 and the class diagrams in CL60.4; until then those docs keep
-  Mermaid. CL60.4 adds the rule and a test that no doc holds Mermaid.
+- The sequences come in CL60.3 and the class diagrams in CL60.4; until then those docs keep Mermaid. CL60.4 adds the
+  rule and a test that no doc holds Mermaid at all.
+- **Two back arrows at one box cross.** When one leaves a box's bottom and another comes into its side, their loops
+  cross and a word lands on a line; the clearance test catches it. F106's plan keeps one loop whose word carries
+  both reasons, until a chart needs the router to nest them.
+- Three plan charts (F40's playground, F39's and F106.3's architecture) stay about 2,000 px wide, small in a doc's
+  column, since their frames say who owns what.
 - A word's width is reckoned from the code font; a reader whose screen falls back to another font may see a line run
   a little wider.
 - F137 takes the same idea to the site: its cards read from JSON.
@@ -90,6 +132,5 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Messa
 [Draw a diagram](../guides/draw-a-diagram.md) · [louis-agent.web](louis-agent.web.md) ·
 [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md) ·
 [CL60's plan](../plans/CL60-docs-diagrams-as-svg.md)
-
 ---
 [Docs index](../README.md) · Related: [Projects](README.md) · [Guides](../guides/README.md)

@@ -41,7 +41,7 @@ from its source, and when the last Mermaid block is gone a test keeps it gone.
 | Child | What | Done when |
 |---|---|---|
 | **CL60.1 The renderer and the overviews** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl601-2026-11-11-partly-unattended)) | The diagram sources as records, the SVG writer with the theme, the card layout and its icons, the flow layout reused, the tool that writes every SVG, the test that holds them; an overview picture at the top of every project doc | Every project doc opens with its overview SVG, light and dark; the test fails on any SVG that doesn't match its JSON |
-| **CL60.2 The flows** ([plan](CL60.2-the-flows.md)) | The 72 flowcharts redrawn as flow sources, the layout grown for what they need that the site's diagrams never did (a group around boxes, more than six columns, a note box) | No `flowchart` block left in the docs |
+| **CL60.2 The flows** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl602-2026-11-11-and-12-unattended)) | The 72 flowcharts redrawn as flow sources, the layout grown for what they need that the site's diagrams never did (a group around boxes, more than six columns, a note box) | No `flowchart` block left in the docs |
 | **CL60.3 The sequences** | A sequence layout (lifelines, messages, replies, a note, a loop or an alt box), and the 43 sequence diagrams redrawn | No `sequenceDiagram` block left |
 | **CL60.4 The classes, and the rule** | A class layout (a card per type, its members, the arrows that mean implements, holds and calls), the 11 class diagrams redrawn, the plans README's "as mermaid" rule rewritten, a test that no Mermaid block is left anywhere, an ADR | No Mermaid in the repo; the ADR records the rule |
 
@@ -58,6 +58,14 @@ the icons are Tabler Icons (MIT); an overview's cards are written by hand. See
 - **CL60.1 is done** (2026-11-11, unattended): its plan is deleted on its own branch, as a done plan is, its picks and
   findings folded into [louis-agent.diagrams](../projects/louis-agent.diagrams.md) and its row in the work log; the
   links above point there. Each child after it has its own plan and its own branch, from the one before.
+- **CL60.2 is done** (2026-11-12, unattended): all 75 flowcharts are pictures in Louis's joined look (a title bar,
+  tones and icons, a legend, a note on every chart), held by a test that no doc holds a Mermaid flowchart. It took
+  twelve steps, two over the guide's ten, since the look came mid-build. Its plan is deleted, its picks and findings
+  folded into [louis-agent.diagrams](../projects/louis-agent.diagrams.md) and its row in the work log. A finding:
+  the plans README asked for the architecture and object diagrams as Mermaid flowcharts, which the new test now
+  refuses. Of three (rewrite that part of the rule now; let plans keep Mermaid until CL60.4, against Louis's "plans
+  drawn the same way"; leave it, so the next plan fails), Claude's pick: **those two are flow pictures now**, and
+  CL60.4 still rewrites the rest.
 
 ---
-[Docs index](../README.md) · [Plans](README.md) · Next: [CL60.2](CL60.2-the-flows.md)
+[Docs index](../README.md) · [Plans](README.md) · Next: CL60.3, the sequences

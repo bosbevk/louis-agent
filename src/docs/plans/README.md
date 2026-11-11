@@ -32,7 +32,6 @@ built or comes next, and every plan as it was is at the tag
 | [F92-voice-input.md](F92-voice-input.md) | Draft: *F92 The agent listens to voice* | not yet | Written 2026-11-11 from Louis's "how do I get my agent to listen to voice?" and his pick B: speech-to-text behind the same seam as chat (`ISpeechToTextClient`), the text into the box to check, audio never kept, a speech row in the ledger, a word-error-rate eval; three open choices asked one at a time, where the words come from first |
 | [F134-the-showroom-looks-modern.md](F134-the-showroom-looks-modern.md) | *F134 The showroom looks modern* | 2026-11-11 | Louis's picks of 2026-11-11: look B, showcase with photos, and Tabler Icons (MIT); `DemoIcon` replaces the emoji `Sign`, one raised surface, a cover photo per business demo; three looks drawn in [F134-mockups/](F134-mockups/); five steps |
 | [CL60-docs-diagrams-as-svg.md](CL60-docs-diagrams-as-svg.md) | *CL60 The docs' diagrams as modern SVG, drawn by our own renderer* (a parent with four children) | 2026-11-11 | Louis's picks: no Mermaid, our own renderer, JSON beside each doc and its SVG beside it, light and dark in one file, plans drawn the same way; CL60.1 the renderer and the overviews, CL60.2 the flows, CL60.3 the sequences, CL60.4 the classes and the rule |
-| [CL60.2-the-flows.md](CL60.2-the-flows.md) | *CL60.2 The flows* (CL60's second child) | 2026-11-11 | Claude's picks while unattended (Q1 to Q4): a one-time import into flow JSON, a down direction by turning the layout, subgraphs as framed bands, the blocks swapped by hand; ten steps |
 | [F48-cook-and-teacher.md](../../../demos/puls/docs/plans/F48-cook-and-teacher.md) | TODO: *F48 Recipe maths and a teaching cook* (Puls, after F35's steps 1 to 4) | 2026-10-26 | Decisions settled, steps proposed: no Cooklang, our own C# ingredient-line reader, scaler and shopping list on F35's `Recipe`; a `WriteRecipe` tool prints the recipe and list; estimates from Stats SA's average prices plus our own rows (`null`, never 0); cues and whys in every answer; a pantry (global catalogue, stock per browser id, Mongo in the recipes pack). The four diagrams, the namespace map and folder trees are added when it is copied onto its branch |
 | [F28-team-talk.md](../../../demos/puls/docs/plans/F28-team-talk.md) | [F28 Team talk](../../../demos/puls/docs/features/F28-team-talk.md) | 2026-10-15 | The note in the tools' `message` (no tool change), five labelled lines in the task's language; `read_mood` per turn with a marker line, as the user's place travels (F22); the shared card as a thread; both checks score `briefed` |
 
@@ -59,13 +58,16 @@ built or comes next, and every plan as it was is at the tag
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
-- **Four diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32; the fourth 2026-10-18), in the *Design*, as mermaid: an
-  **interface design** (a `classDiagram` with the C# signatures beside it: the interfaces and records the change uses or
-  adds, every implementation behind them, old and new, marked with the step that builds it, and who creates, reads and
-  calls whom), an **architecture diagram** (a `flowchart`: the containers, hosts and services, and which step builds or
-  changes each part) and a **communication diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's
-  main case, with what each call carries), and an **object diagram** (a `flowchart` of the instances the main case
-  holds in memory, and which holds which). A plan approved without them gets them under *Approved during the build*.
+- **Four diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32; the fourth 2026-10-18), in the *Design*: an
+  **interface design** (a mermaid `classDiagram` with the C# signatures beside it: the interfaces and records the
+  change uses or adds, every implementation behind them, old and new, marked with the step that builds it, and who
+  creates, reads and calls whom), an **architecture diagram** (a flow picture: the containers, hosts and services, and
+  which step builds or changes each part) and a **communication diagram** (a mermaid `sequenceDiagram`: who calls
+  whom, in order, for the feature's main case, with what each call carries), and an **object diagram** (a flow picture
+  of the instances the main case holds in memory, and which holds which). A flow picture is a JSON in `diagrams/`
+  beside the plan, drawn by our tool ([Draw a diagram](../guides/draw-a-diagram.md)); no doc holds a Mermaid
+  `flowchart` (CL60.2), and the other two follow in CL60.3 and CL60.4. A plan approved without them gets them under
+  *Approved during the build*.
 - **Folder trees** (Louis, 2026-10-18), in the *Design*, whenever a plan adds or splits projects or folders: the tree
   today and the tree after (after each step when the steps move things).
 - **Reviewed as one page** (Louis, 2026-10-18): a plan is reviewed as one page with its diagrams drawn in place beside

@@ -32,11 +32,8 @@ public class DocsDiagramsTests
     [Test]
     public void EveryPicture_IsShownByADoc()
     {
-        var docs = DiagramSync.Roots(TestPaths.RepoRoot).Where(Directory.Exists)
-            .SelectMany(root => Directory.EnumerateFiles(root, "*.md", SearchOption.AllDirectories))
-            .Append(Path.Combine(TestPaths.RepoRoot, "README.md"));
         // Each picture link, as the full path of the file it points at.
-        var shown = docs.SelectMany(doc => Targets(File.ReadAllText(doc))
+        var shown = Docs().SelectMany(doc => Targets(File.ReadAllText(doc))
                 .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
                 .Select(target => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(doc)!, target))))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -92,6 +89,20 @@ public class DocsDiagramsTests
         Assert.That(faults, Is.Empty, string.Join('\n', faults));
     }
 
+    /// <summary>
+    /// No doc draws a flow in Mermaid any more (CL60.2): every flow is a JSON our renderer draws, so a new one goes
+    /// the same way instead of slipping back in as a block GitHub draws its own way.
+    /// </summary>
+    [Test]
+    public void NoDoc_HoldsAMermaidFlowchart()
+    {
+        var holding = Docs().Where(doc => MermaidStarts(File.ReadAllText(doc))
+            .Any(first => first.StartsWith("flowchart", StringComparison.Ordinal)
+                          || first.StartsWith("graph", StringComparison.Ordinal)));
+
+        Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid flowchart: import it as a picture");
+    }
+
     /// <summary>The docs have pictures at all, so the tests above can't pass by finding none.</summary>
     [Test]
     public void TheDocs_HavePictures() => Assert.That(Diagrams(), Is.Not.Empty);
@@ -112,6 +123,20 @@ public class DocsDiagramsTests
 
     /// <summary>Every diagram's JSON file in the docs.</summary>
     private static IReadOnlyList<string> Diagrams() => DiagramSync.Find(DiagramSync.Roots(TestPaths.RepoRoot));
+
+    /// <summary>Every doc the tool's roots hold, and the repo's README.</summary>
+    private static IEnumerable<string> Docs() => DiagramSync.Roots(TestPaths.RepoRoot).Where(Directory.Exists)
+        .SelectMany(root => Directory.EnumerateFiles(root, "*.md", SearchOption.AllDirectories))
+        .Append(Path.Combine(TestPaths.RepoRoot, "README.md"));
+
+    /// <summary>The first line of each Mermaid block in a doc, which names the kind of chart it draws.</summary>
+    private static IEnumerable<string> MermaidStarts(string doc)
+    {
+        string[] lines = doc.ReplaceLineEndings("\n").Split('\n');
+        for (int at = 0; at < lines.Length - 1; at++)
+            if (lines[at].Trim() == "```mermaid")
+                yield return lines[at + 1].Trim();
+    }
 
     /// <summary>
     /// The SVG pictures a doc shows: each markdown link's target, read between <c>](</c> and the <c>)</c> after it,

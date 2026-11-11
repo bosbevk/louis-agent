@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 92 | 84 |
 | Fixes (`FX`) | 122 | 6 |
-| Cleanups (`CL`) | 28 | 27 |
+| Cleanups (`CL`) | 29 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -364,10 +364,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (27 done)
+## Cleanups (29 done)
 
 | Id | When | What |
 |---|---|---|
+| CL60.2 | 2026-11-12 | The flows: the layout grown (columns from the arrows, labels over lines, a down direction, groups and dashed arrows, waypoints, tracks and detours), Louis's joined look (a title bar, an icon and a tone per box, arrows and word chips in their tone, a legend, a note on every chart), a one-time import, and all 75 Mermaid flowcharts in 58 docs swapped for pictures, each looked at; `DocsDiagramsTests` holds clear words and lines and no flowchart left |
 | CL60.1 | 2026-11-11 | The renderer and the overviews: `louis-agent.diagrams` (plain C#, the flow engine moved in, cards in Louis's style with a highlight and a heading look, 22 Tabler icons, one SVG with a light and a dark look), the `louis-agent.doc-diagrams` tool, `DocsDiagramsTests`, and an overview picture on all 42 project docs and two of Louis's figures |
 | CL58 | 2026-11-07 | A component's styles sit beside it (ADR 0094): `X.razor.scss` scoped and bundled by Blazor's CSS isolation for the accounts, the admin, the studio (64 files) and the chat (21); the globals a site's own pages draw or a theme overrides stay partials; accounts/, web/admin/ and their forwards gone; the snapshot helper and the stylesheet helper know the scope and the bundle |
 | CL31 | 2026-11-07 | The framework's scripts as ES modules beside their components, imported through JsModule (ADR 0093); chat.js and passkeys.js gone from every site's head; the download the framework owns |
