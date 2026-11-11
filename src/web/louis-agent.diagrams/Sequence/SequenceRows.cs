@@ -82,7 +82,7 @@ internal sealed class SequenceRows(
         }
 
         double x = left - SequenceText.Inset;
-        double width = cases.Select(@case => SequenceText.WordsWidth(@case.Lines) + SequenceText.TabPad)
+        double width = cases.Select(@case => SequenceText.ElseWidth(@case.Lines))
             .Append(SequenceText.TabWidth(block.Block, lines))
             .Append(right + SequenceText.Inset - x)
             .Max();

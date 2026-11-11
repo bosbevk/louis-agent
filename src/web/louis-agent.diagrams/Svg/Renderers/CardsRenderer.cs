@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Cards.Placed;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
 
-namespace LouisAgent.Diagrams.Svg;
+namespace LouisAgent.Diagrams.Svg.Renderers;
 
 /// <summary>
 /// Draws an overview in Louis's card style: one rounded frame, the links between the rows, and each card with its

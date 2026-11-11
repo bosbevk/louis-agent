@@ -92,7 +92,8 @@ public static class TitledFrame
     }
 
     /// <summary>
-    /// The legend's swatches, one for each tone a flow's boxes wear, in the tones' order, each with what it means
+    /// The legend's swatches, one for each tone a flow's boxes or a sequence's heads wear, in the tones' order, each
+    /// with what it means
     /// (Louis: "can we have a legend for the color"), placed left to right and onto a new row when the drawing's
     /// width is full; a chart without colours, and the cards, have none.
     /// </summary>
@@ -100,6 +101,7 @@ public static class TitledFrame
         double width)
     {
         var tones = (source.Flow?.Nodes ?? []).Select(node => node.Tone)
+            .Concat((source.Sequence?.Participants ?? []).Select(head => head.Tone))
             .Where(tone => tone != DiagramTone.Plain).Distinct().Order();
         var items = new List<(string, string, double, int)>();
         double x = 0;

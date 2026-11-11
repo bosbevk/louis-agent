@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec;
 
@@ -44,9 +45,13 @@ public static class SequenceText
     public static double HeadWidth(Participant participant, IReadOnlyList<string> lines)
     {
         double label = lines.Max(line => line.Length) * GraphLayout.LabelCharWidth + 2 * GraphLayout.LabelPad;
-        double icon = participant.Icon is null ? 0 : FlowText.IconRoom;
+        double icon = IconOf(participant) is null ? 0 : FlowText.IconRoom;
         return Math.Max(HeadMinWidth, label + icon);
     }
+
+    /// <summary>The icon a head wears: its own, or a person's for an actor that names none.</summary>
+    public static DiagramIcon? IconOf(Participant participant) =>
+        participant.Icon ?? (participant.Actor ? DiagramIcon.User : null);
 
     /// <summary>How tall a head is for its label's lines.</summary>
     public static double HeadHeight(IReadOnlyList<string> lines) =>
@@ -92,6 +97,12 @@ public static class SequenceText
     /// <summary>How wide a frame must be for its tab: the kind's chip and the label beside it.</summary>
     public static double TabWidth(BlockKind kind, IReadOnlyList<string> lines) =>
         KindWidth(kind) + WordsWidth(lines) + TabPad;
+
+    /// <summary>The word on an alt's divider, in a chip like a block's kind.</summary>
+    public const string ElseWord = "else";
+
+    /// <summary>How wide a frame must be for a divider: its chip and its case's label beside it.</summary>
+    public static double ElseWidth(IReadOnlyList<string> lines) => WordsWidth([ElseWord]) + WordsWidth(lines) + TabPad;
 
     /// <summary>The panel a note stands on, centred over the lifelines it names.</summary>
     public static (double X, double Y, double W, double H) NoteBox(PlacedRow row)

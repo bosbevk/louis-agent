@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Svg;
+namespace LouisAgent.Diagrams.Svg.Renderers;
 
 /// <summary>
 /// Draws a flow: the site's boxes and arrows, placed by <see cref="GraphLayout"/> by ADR 0103's rules, each box's
@@ -91,6 +91,9 @@ internal sealed class FlowRenderer : IDiagramRenderer
             writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note", anchor);
     }
 
-    /// <summary>The class a shape adds for its tone: none for plain, so a plain shape draws as it always did.</summary>
-    private static string Class(DiagramTone tone) => tone == DiagramTone.Plain ? "" : $" tone-{tone.Wire()}";
+    /// <summary>
+    /// The class a shape adds for its tone: none for plain, so a plain shape draws as it always did. The sequences
+    /// wear the same (CL60.3).
+    /// </summary>
+    internal static string Class(DiagramTone tone) => tone == DiagramTone.Plain ? "" : $" tone-{tone.Wire()}";
 }
