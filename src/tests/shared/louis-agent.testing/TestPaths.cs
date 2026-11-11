@@ -34,6 +34,18 @@ public static class TestPaths
                                                           || folder.EndsWith(".testing", StringComparison.Ordinal)
                                                           || folder.EndsWith(".standin", StringComparison.Ordinal));
 
+    /// <summary>
+    /// The demos, one folder each under <c>demos/</c> (or under <paramref name="folder"/>), in order of name. A folder
+    /// whose name starts with a dot is what a run leaves there for a moment (the starter's spawn test makes
+    /// <c>demos/.spawn-…</c>), never a demo, so a test counting demos at the same time doesn't count it (FX131).
+    /// </summary>
+    public static IReadOnlyList<string> Demos(string? folder = null) =>
+    [
+        .. Directory.EnumerateDirectories(folder ?? Path.Combine(RepoRoot, "demos"))
+            .Where(demo => !Path.GetFileName(demo).StartsWith('.'))
+            .Order(StringComparer.Ordinal)
+    ];
+
     /// <summary>A small skills file for a test that needs an engine with something loaded; no host reads it.</summary>
     public static string SampleSkills { get; } =
         Path.Combine(RepoRoot, "src/tests/shared/louis-agent.testing/Fixtures", "SampleSkills.md");

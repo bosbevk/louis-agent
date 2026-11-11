@@ -11,7 +11,7 @@ internal static class FrameworkWebSites
     /// </summary>
     public static IReadOnlyList<string> Folders() =>
     [
-        .. Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
+        .. TestPaths.Demos()
             .Select(demo => $"{demo}/web")
             .Append(Path.Combine(TestPaths.RepoRoot, "src", "site"))
             .Where(Directory.Exists)

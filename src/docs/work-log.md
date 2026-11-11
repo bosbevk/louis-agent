@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 92 | 81 |
-| Fixes (`FX`) | 121 | 6 |
+| Fixes (`FX`) | 122 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -234,10 +234,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (107 done)
+## Fixes (108 done)
 
 | Id | When | What |
 |---|---|---|
+| FX131 | 2026-11-11 | A test that lists the demos skips a dot-folder (`TestPaths.Demos`): the starter's spawn test leaves `demos/.spawn-…` while it runs, and the demos diagram test counted it in the full suite |
 | FX129 | 2026-11-11 | The cook's file names `web` among its toolsets, as its text said: Puls's old hand-over sent it, an `AskAgent` sends none (F127.3.1 step 11c-1) |
 | FX128 | 2026-11-10 | The landing's lead chat says who speaks (a Visitor tag in blue, a Louis tag in green), and a window's three dots wear a Mac window's red, amber and green |
 | FX127 | 2026-11-10 | `GetToday` names the part of the day, the guide greets by it, and a visitor never gets an ADR's number |

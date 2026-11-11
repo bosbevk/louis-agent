@@ -190,8 +190,7 @@ public class SolutionLayoutTests
 
         // The framework's ADRs, the packs' and each demo's: every docs/adr folder there is.
         var folders = new[] { "src/docs/adr", "packs/docs/adr" }
-            .Concat(Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
-                .Select(demo => Path.Combine(demo, "docs", "adr")))
+            .Concat(TestPaths.Demos().Select(demo => Path.Combine(demo, "docs", "adr")))
             .Select(folder => Path.Combine(TestPaths.RepoRoot, folder))
             .Where(Directory.Exists);
         // The solution writes an item as its path, twice, with backslashes on every platform.
