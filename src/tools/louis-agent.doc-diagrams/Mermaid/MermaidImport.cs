@@ -4,15 +4,24 @@ using LouisAgent.DocDiagrams.Mermaid.Readers;
 namespace LouisAgent.DocDiagrams.Mermaid;
 
 /// <summary>
-/// Finds a doc's Mermaid flowcharts and sequence diagrams, to read each once into a diagram beside it (CL60.2, CL60.3).
+/// Finds a doc's Mermaid flowcharts, sequence and class diagrams, to read each once into a diagram beside it (CL60.2
+/// to CL60.4).
 /// </summary>
 public static class MermaidImport
 {
     /// <summary>The first words of a Mermaid flowchart; a block that starts otherwise is another kind.</summary>
     private static readonly string[] Flowcharts = ["flowchart", "graph "];
 
-    /// <summary>The first word of a Mermaid sequence diagram.</summary>
-    private const string Sequence = "sequenceDiagram";
+    /// <summary>The first word of a Mermaid sequence diagram, and of a class diagram.</summary>
+    private const string Sequence = "sequenceDiagram", Classes = "classDiagram";
+
+    /// <summary>A block read by the reader for its kind, which its first word names.</summary>
+    private static DiagramSource Read(string body, string title)
+    {
+        if (body.StartsWith(Sequence, StringComparison.Ordinal)) return MermaidSequenceReader.Read(body, title);
+        if (body.StartsWith(Classes, StringComparison.Ordinal)) return MermaidClassReader.Read(body, title);
+        return MermaidFlowReader.Read(body, title);
+    }
 
     /// <summary>
     /// Writes each flowchart and sequence diagram in the doc as a JSON in the <c>diagrams</c> folder beside it, named
@@ -41,10 +50,7 @@ public static class MermaidImport
             string file = Unique($"{name}-{Slug(block.Heading)}".TrimEnd('-'), taken);
             string json = Path.Combine(folder, $"{file}.json");
             Directory.CreateDirectory(folder);
-            var source = block.Body.StartsWith(Sequence, StringComparison.Ordinal)
-                ? MermaidSequenceReader.Read(block.Body, title)
-                : MermaidFlowReader.Read(block.Body, title);
-            File.WriteAllText(json, DiagramWriter.Write(source));
+            File.WriteAllText(json, DiagramWriter.Write(Read(block.Body, title)));
             imported.Add(new MermaidImported(json, block, $"![{title}]({DiagramSync.Folder}/{file}.svg)"));
         }
 
@@ -82,7 +88,8 @@ public static class MermaidImport
             if (end < 0) break;
             string body = string.Join('\n', lines[(at + 1)..end]);
             string start = body.TrimStart();
-            if (line == "```mermaid" && (Flowcharts.Any(start.StartsWith) || start.StartsWith(Sequence)))
+            if (line == "```mermaid" &&
+                (Flowcharts.Any(start.StartsWith) || start.StartsWith(Sequence) || start.StartsWith(Classes)))
                 blocks.Add(new MermaidBlock(at + 1, end + 1, body.Trim(), heading));
             at = end;
         }
