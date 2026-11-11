@@ -17,6 +17,10 @@ you get back its answer, never its tools or its conversation.
 
 - **Write the message to stand on its own.** The agent sees only your message and the files you name, never this
   conversation: say who is asking, what they want, and anything they told you that it needs.
+- **Asking the same address again carries on.** In this chat the agent remembers what you asked it before, so a
+  follow-up ("book it for Friday then") needs only what is new. If the answer says it came from a new conversation,
+  the earlier one had closed and the agent remembers none of it: if the answer missed something for that, ask again
+  with everything it needs.
 - **Ask one thing at a time, in the words the person would use.** The agent answers people; ask it as one of them.
 - **Use its answer as its answer.** It speaks for itself: pass on what it said and say it was the agent who said it,
   don't change its facts or prices.
@@ -26,4 +30,5 @@ you get back its answer, never its tools or its conversation.
 ## When it goes wrong
 
 The answer starts with `Error:` when the address is wrong, the agent can't be reached, or it didn't answer in time.
-The error says what to do: use an address it lists, or tell the person the agent couldn't answer.
+The error says what to do: use an address it lists, or tell the person the agent couldn't answer. When it says the
+agent is still answering, it is busy with an earlier message: wait for that answer, then ask again.

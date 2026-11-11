@@ -15,7 +15,7 @@ using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Delegation;
+namespace LouisAgent.Core.Delegation.Agents;
 
 /// <summary>
 /// The <c>agents</c> toolset (F127.3.1): asks another agent by its address, an identity in its own voice
@@ -61,11 +61,14 @@ public sealed class AskAgentTools(
     [Description(
         "Asks another agent by its address and waits for its answer: an agent in its own voice (\"acme\") or one " +
         "of its roles (\"acme.cook\"), only one the agents guide lists. It sees your message and the files you " +
-        "name, never this conversation. At most 3 asks per turn, 5 minutes each.")]
+        "name, never this conversation; asked again in this chat, it carries on the conversation you have with it. " +
+        "At most 3 asks per turn, 5 minutes each.")]
     public async Task<string> AskAgent(
         [Description("Who answers: the agent's address, as the agents guide lists it.")]
         string address,
-        [Description("The question or task, self-contained: the agent sees nothing else of this conversation.")]
+        [Description(
+            "The question or task, self-contained: the agent sees none of this conversation, only what you asked " +
+            "it before.")]
         string message,
         [Description("Names of files the user attached in this conversation that the agent needs.")]
         string[]? attachments = null,
@@ -76,20 +79,40 @@ public sealed class AskAgentTools(
             return unknownAttachment;
         if (SpecialistTools.ResolvePeer(peers, null, out Uri peer, out string name) is { } noPeer) return noPeer;
 
-        UsageScope? scope = UsageScope.Current;
-        // The call that asked, so a host can show the agent's work under it.
-        string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
-        if (_slots.Take(scope, out string? parent) is { } limit) return limit;
+        var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
+            // The call that asked, so a host can show the agent's work under it.
+            FunctionInvokingChatClient.CurrentContext?.CallContent.CallId);
+        if (_slots.Take(ask.Scope, out string? parent) is { } limit) return limit;
+        if (SubSessionRegistry.Current is not { } kept || AgentLine.Pick(kept, agent.Address) is not { } open)
+            return await StartAsync(ask, peer, name, parent, SubSessionToolMessage.AgentAnswer, cancellationToken);
 
-        // One level down, as the identity in the role resolved: no toolsets sent, so a voice loads its own packs.
+        // Asked before in this chat: the message goes on that conversation, and one the peer dropped starts again.
+        return await _session.ContinueAsync(kept, open, ask.Message, KindOf(agent, SubSessionToolMessage.AgentAnswer),
+            ask.ToolUseId, ask.Scope, _timeout, cancellationToken,
+            () => StartAsync(ask, peer, name, parent, SubSessionToolMessage.AgentAnswerAnew, cancellationToken));
+    }
+
+    /// <summary>
+    /// Opens a new conversation with the agent, one level down, as the identity in the role resolved: no toolsets
+    /// sent, so a voice loads its own packs.
+    /// </summary>
+    private Task<string> StartAsync(Ask ask, Uri peer, string name, string? parent, SubSessionToolMessage footer,
+        CancellationToken cancellationToken)
+    {
+        string label = ask.Agent.Address.ToString();
+        var opening = new CreateSessionRequest($"agent:{label}", ask.Scope?.Tags.Run, ask.Scope?.Tags.Service,
+            Depth: 1, Parent: parent, Location: UserPlace.Current?.Location, TimeZone: UserPlace.Current?.TimeZone,
+            Role: ask.Agent.Role, Replay: SessionReplay.ForSubSession(), Identity: ask.Agent.Address.Identity);
+        return _session.OpenAsync(peer, name, opening, ask.Message, [], ask.Agent.Role, KindOf(ask.Agent, footer),
+            ask.ToolUseId, ask.Scope, _timeout, cancellationToken);
+    }
+
+    /// <summary>How the path names an asked agent and writes its answer, under the line given.</summary>
+    private static SubSessionKind KindOf(AddressedAgent agent, SubSessionToolMessage footer)
+    {
         string label = agent.Address.ToString();
-        var opening = new CreateSessionRequest($"agent:{label}", scope?.Tags.Run, scope?.Tags.Service, Depth: 1,
-            Parent: parent, Location: UserPlace.Current?.Location, TimeZone: UserPlace.Current?.TimeZone,
-            Role: agent.Role, Replay: SessionReplay.ForSubSession(), Identity: agent.Address.Identity);
-        var kind = new SubSessionKind(Kind, label, $"agent:{label}", (_, reply) => Answer(label, reply),
-            reply => Answer(label, reply), Address: agent.Address);
-        return await _session.OpenAsync(peer, name, opening, new SendMessageRequest(message, forwarded), [],
-            agent.Role, kind, toolUseId, scope, _timeout, cancellationToken);
+        return new SubSessionKind(Kind, label, $"agent:{label}", (_, reply) => Answer(footer, label, reply),
+            reply => Answer(footer, label, reply), Address: agent.Address);
     }
 
     /// <summary>The agent an address reaches for this asker, or the reason the model reads instead.</summary>
@@ -120,10 +143,14 @@ public sealed class AskAgentTools(
             : null;
 
     /// <summary>The answer under the line that names who gave it; never what it used (FX27).</summary>
-    private static string Answer(string address, SubSessionMessenger.SubSessionReply reply) =>
-        MessageText.Format(SubSessionToolMessage.AgentAnswer, new
+    private static string Answer(SubSessionToolMessage footer, string address,
+        SubSessionMessenger.SubSessionReply reply) =>
+        MessageText.Format(footer, new
         {
             Answer = reply.Text,
             Address = address
         });
+
+    /// <summary>One ask as it was checked: who answers, what is sent, and the turn it belongs to.</summary>
+    private sealed record Ask(AddressedAgent Agent, SendMessageRequest Message, UsageScope? Scope, string? ToolUseId);
 }

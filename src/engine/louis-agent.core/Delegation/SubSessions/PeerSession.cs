@@ -124,25 +124,28 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     }
 
     /// <summary>
-    /// Sends a follow-up to a kept child; one the peer no longer has is forgotten, one that fails is closed.
+    /// Sends a follow-up to a kept child. One that is still answering stays open and the model waits; one the peer no
+    /// longer has is forgotten and started again by <paramref name="startOver"/>, when given; one that fails is closed.
     /// </summary>
     public async Task<string> ContinueAsync(SubSessionRegistry registry, OpenSubSession open,
         SendMessageRequest messageBody,
         SubSessionKind kind,
-        string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken)
+        string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken,
+        Func<Task<string>>? startOver = null)
     {
         using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeoutSource.CancelAfter(timeout);
-        bool answered = false;
+        bool keep = false;
         try
         {
             var reply = await messenger.AnswerAsync(open.Peer, open.SessionId, messageBody, kind, toolUseId, scope,
                 timeoutSource.Token);
             if (reply.RefusedStatus == 404)
             {
-                // The peer dropped it (idle, or restarted): nothing to close, and the model starts over with the
-                // whole context.
+                // The peer dropped it (idle, or restarted): nothing to close. The caller starts a new one if it can,
+                // else the model starts over with the whole context.
                 registry.Remove(open.Handle);
+                if (startOver is not null) return await startOver();
                 return MessageText.Format(SubSessionToolMessage.SubSessionGone,
                     new
                     {
@@ -151,8 +154,15 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
                     });
             }
 
+            if (reply.RefusedStatus == 409)
+            {
+                // Still answering an earlier message: its turn is fine, so it stays open for the next try.
+                keep = true;
+                return MessageText.Format(SubSessionToolMessage.SubSessionBusy, new { Agent = kind.Label });
+            }
+
             if (reply.Failure is not null) return reply.Failure;
-            answered = true;
+            keep = true;
             return kind.KeptAnswer(open, reply);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -188,7 +198,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
             // A follow-up that failed or timed out leaves the peer's turn in an unknown state: closed (the delete
             // cancels it), so the next child starts clean. Removed first, so a 404 above (already removed) closes
             // nothing.
-            if (!answered && registry.Remove(open.Handle)) await open.Close();
+            if (!keep && registry.Remove(open.Handle)) await open.Close();
         }
     }
 

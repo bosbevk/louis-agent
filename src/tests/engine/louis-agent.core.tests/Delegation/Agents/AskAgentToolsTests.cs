@@ -1,7 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Sessions;
-using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;

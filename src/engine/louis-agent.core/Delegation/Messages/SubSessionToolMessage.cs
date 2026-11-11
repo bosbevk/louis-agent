@@ -138,4 +138,14 @@ public enum SubSessionToolMessage
 
     [Description("{Answer}\n\n[Answered by {Address}]")]
     AgentAnswer,
+
+    [Description(
+        "{Answer}\n\n[Answered by {Address}, in a new conversation: the earlier one had closed, so it remembers none " +
+        "of it]")]
+    AgentAnswerAnew,
+
+    [Description(
+        "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +
+        "Wait for that answer, then send this again.")]
+    SubSessionBusy,
 }
