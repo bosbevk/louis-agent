@@ -20,8 +20,6 @@
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.files\louis-agent.pack.files.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.git\louis-agent.pack.git.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.dotnet\louis-agent.pack.dotnet.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.devops\louis-agent.pack.devops.csproj" />
-    <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.paymo\louis-agent.pack.paymo.csproj" />
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.docs\louis-agent.pack.docs.csproj" />
     <!-- F112: the guide's way to mail Louis a lead. -->
     <ProjectReference Include="..\..\..\..\packs\tools\louis-agent.pack.leads\louis-agent.pack.leads.csproj" />

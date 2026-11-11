@@ -65,8 +65,6 @@ shown.
 | The world: a URL or website, current facts, news, documentation | `web` |
 | Running code or calculations (over the user's files: add `files`) | `python`, `powershell`, `bash` |
 | Building or testing .NET code | `dotnet` |
-| Time tracking (Paymo) | `paymo` |
-| Work items and sprints (Azure DevOps) | `devops` |
 | Making new skills or tools | `skills` |
 | Handing a task to a specialist agent | `specialists` |
 | Asking another agent you may call, by its address | `agents` |

@@ -11,7 +11,7 @@ hosts' launch profiles.
 
 | File | In git | Purpose |
 |---|---|---|
-| `.env` | ❌ git-ignored | Your non-secret settings: model, paths, DevOps project |
+| `.env` | ❌ git-ignored | Your non-secret settings: model, paths |
 | `.env.example` | ✅ tracked | Template for `.env`, with explanations |
 | `.env.secrets` | ❌ git-ignored | Your API keys and other secrets |
 | `.env.secrets.example` | ✅ tracked | Template listing every secret |

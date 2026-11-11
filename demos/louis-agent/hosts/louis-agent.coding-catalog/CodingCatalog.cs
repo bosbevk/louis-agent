@@ -8,13 +8,11 @@ using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Triage;
 using LouisAgent.Packs.Leads;
 using LouisAgent.Packs.Site;
-using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
 using LouisAgent.Packs.Files;
 using LouisAgent.Packs.Git;
 using LouisAgent.Packs.DotNet;
-using LouisAgent.Packs.Paymo;
 
 namespace LouisAgent.Coding;
 
@@ -29,16 +27,14 @@ public static class CodingCatalog
     public static IReadOnlyList<IAgentPack> Packs()
     {
         HostEnvironment.Load();
-        return Packs(PaymoOptions.FromEnvironment(), DevOpsOptions.FromEnvironment(), DocsOptions.FromEnvironment(),
-            TriageOptions.FromEnvironment(), LeadsOptions.FromEnvironment());
+        return Packs(DocsOptions.FromEnvironment(), TriageOptions.FromEnvironment(), LeadsOptions.FromEnvironment());
     }
 
     /// <summary>The same list with the settings given, so the golden files hold it without this PC's keys.</summary>
-    public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps, DocsOptions docs,
-        TriageOptions triage, LeadsOptions leads) =>
+    public static IReadOnlyList<IAgentPack> Packs(DocsOptions docs, TriageOptions triage, LeadsOptions leads) =>
     [
-        new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
-        new DevOpsPack(devOps), new DocsPack(docs), new TriagePack(triage), new LeadsPack(leads), new SitePack(),
+        new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new DocsPack(docs),
+        new TriagePack(triage), new LeadsPack(leads), new SitePack(),
     ];
 
     /// <summary>

@@ -77,7 +77,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken; the catalogue's convertibility test names the two as the known gap | Next |
+| FX83 | The paymo and devops packs' async tools take no CancellationToken; the coding agent no longer loads them, so no catalogue's check reaches them | Next |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
