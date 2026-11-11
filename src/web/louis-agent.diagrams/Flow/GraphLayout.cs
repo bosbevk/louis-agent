@@ -43,6 +43,19 @@ public static class GraphLayout
         var ranks = Ranks.Of(spec);
         spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
 
+        // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
+        return spec.Direction == FlowDirection.Down
+            ? Turn.Back(PlaceRight(spec, 0, turned: true))
+            : PlaceRight(spec, width, turned: false);
+    }
+
+    /// <summary>
+    /// The diagram laid out to the right across the given width; turned, every box's width and height swap places.
+    /// </summary>
+    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned)
+    {
+        Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, tall = turned ? WidthOf : HeightOf;
+
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the
         // height.
         var columns = Ordered(spec);
@@ -50,13 +63,13 @@ public static class GraphLayout
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
         var gaps = Gaps(spec, columns);
         // A column is as wide as its widest box: a label's longest line, never less than the site's box.
-        var widths = columns.Select(column => column.Max(WidthOf)).ToList();
+        var widths = columns.Select(column => column.Max(wide)).ToList();
         width = Math.Max(width, (int)Math.Ceiling(widths.Sum() + gaps.Sum()));
         var lefts = Lefts(gaps, widths, width);
         // Every box sits on one row grid, each row as tall as the tallest box, a shorter column centred on it (Louis:
         // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
         // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
-        double row = spec.Nodes.Count == 0 ? 0 : spec.Nodes.Max(HeightOf);
+        double row = spec.Nodes.Count == 0 ? 0 : spec.Nodes.Max(tall);
         double height = columns.Count == 0 ? 0 : columns.Max(column => ColumnHeight(column, row));
 
         var nodes = new List<PlacedNode>();
@@ -66,7 +79,7 @@ public static class GraphLayout
             double y = (height - ColumnHeight(columns[at], row)) / 2;
             foreach (var node in columns[at])
             {
-                double h = HeightOf(node);
+                double h = tall(node);
                 nodes.Add(new PlacedNode(node, x, y + (row - h) / 2, widths[at], h));
                 y += row + Gap;
             }
@@ -144,7 +157,7 @@ public static class GraphLayout
         return node.Note is null ? label : label + NoteLine * NoteLines(node.Note).Count;
     }
 
-    /// <summary>A box's width: its label's longest line and the room beside it, never less than the site's box.</summary>
+    /// <summary>A box's width: its label's longest line and the room beside it, at least the site's box.</summary>
     private static double WidthOf(GraphNode node) =>
         Math.Max(BoxWidth, FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad);
 

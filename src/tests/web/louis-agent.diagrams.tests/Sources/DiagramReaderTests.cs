@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Cards.Links;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 
@@ -83,6 +84,21 @@ public class DiagramReaderTests
             Assert.That(source.Cards.Rows[0].Cards[0], Is.EqualTo(new Card("engine", DiagramIcon.Chip, "Engine",
                 "louis-agent.core", "The runtime and the tool loop.")));
             Assert.That(source.Cards.Links.Select(link => link.Kind), Has.All.EqualTo(CardLinkKind.Both));
+        });
+    }
+
+    /// <summary>A flow runs right unless it says down, and a box needs no column.</summary>
+    [Test]
+    public void AFlow_ReadsItsDirection_AndNeedsNoColumn()
+    {
+        var source = DiagramReader.Read(Flow.Replace("\"flow\": {", "\"flow\": { \"direction\": \"down\",")
+            .Replace(", \"column\": 0", "").Replace(", \"column\": 1", ""));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(source.Flow!.Direction, Is.EqualTo(FlowDirection.Down));
+            Assert.That(source.Flow.Nodes.Select(node => node.Column), Has.All.Null);
+            Assert.That(DiagramReader.Read(Flow).Flow!.Direction, Is.EqualTo(FlowDirection.Right));
         });
     }
 
