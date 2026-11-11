@@ -32,15 +32,13 @@
         "id": "agent",
         "icon": "chip",
         "tone": "green",
-        "label": "louis-agent\ncoding agent and Puls",
-        "group": "sys"
+        "label": "louis-agent\ncoding agent and Puls"
       },
       {
         "id": "orch",
         "icon": "settings",
         "tone": "green",
-        "label": "Orchestrator\n(POC, same core)",
-        "group": "sys"
+        "label": "Orchestrator\n(POC, same core)"
       },
       {
         "id": "llm",
@@ -130,12 +128,6 @@
         "word": "HTTPS, when keys are set"
       }
     ],
-    "direction": "down",
-    "groups": [
-      {
-        "id": "sys",
-        "label": "louis-agent [software system]"
-      }
-    ]
+    "direction": "down"
   }
 }

@@ -1,14 +1,14 @@
 {
   "kind": "flow",
   "title": "The evals: one cook run, in memory",
-  "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events.",
+  "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events. The folder is demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its nine checks are cook-no-error, routed-to, within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, meal-for-people and meal-for-people.human.",
   "flow": {
     "nodes": [
       {
         "id": "set",
         "icon": "folder",
         "tone": "amber",
-        "label": "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/eval.json\nidentity = puls"
+        "label": "Evals/Cook/eval.json\nidentity = puls"
       },
       {
         "id": "eval",
@@ -20,7 +20,7 @@
         "id": "modes",
         "icon": "settings",
         "tone": "teal",
-        "label": "EvalMode puls-cook \u00B7 EvalMode\npuls-tools"
+        "label": "EvalMode puls-cook · EvalMode\npuls-tools"
       },
       {
         "id": "data",
@@ -32,13 +32,13 @@
         "id": "graders",
         "icon": "checks",
         "tone": "green",
-        "label": "9 checks: cook-no-error\n(no-error), routed-to,\nwithin-budget (amount-under \u00B7\nrand-total), estimates-at-shop\n(\u00B7 rand-prices),\nuntooled-shops,\nrecipe-image (image-shown \u00B7\nrecipe-photos),\nserves-as-asked (number-named\n\u00B7 servings),\nmeal-for-people,\nmeal-for-people.human"
+        "label": "9 checks, from cook-no-error\nto meal-for-people.human"
       },
       {
         "id": "trial",
         "icon": "message",
         "tone": "teal",
-        "label": "Trial\nrun 5d1fd231c9b1 \u00B7 puls-cook \u00B7\nrepeat 1 \u00B7 cook-malmesbury"
+        "label": "Trial\nrun 5d1fd231c9b1 · puls-cook ·\nrepeat 1 · cook-malmesbury"
       },
       {
         "id": "transcript",
@@ -50,7 +50,7 @@
         "id": "grades",
         "icon": "chart",
         "tone": "teal",
-        "label": "Grade \u00D7 9\ne.g. untooled-shops 1.0 pass"
+        "label": "Grade × 9\ne.g. untooled-shops 1.0 pass"
       },
       {
         "id": "conv",

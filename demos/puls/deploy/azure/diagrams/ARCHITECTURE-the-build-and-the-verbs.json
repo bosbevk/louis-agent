@@ -1,14 +1,14 @@
 {
   "kind": "flow",
   "title": "Puls in Azure: the build and the verbs",
-  "caption": "The template is the record: one deployment, puls-build, creates what is missing and updates what exists, and the verbs do what a template can't.",
+  "caption": "The template is the record: one deployment, puls-build, creates what is missing and updates what exists, and the verbs do what a template can't. They read its outputs back: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, codingAppIdentityId and vaultUri.",
   "flow": {
     "nodes": [
       {
         "id": "bicep",
         "icon": "file",
         "tone": "amber",
-        "label": "config/azure/main.bicep \u002B\nmain.bicepparam"
+        "label": "config/azure/main.bicep +\nmain.bicepparam"
       },
       {
         "id": "deployment",
@@ -20,21 +20,21 @@
         "id": "vm",
         "icon": "server",
         "tone": "green",
-        "label": "vm: the compose, SearXNG\u0027s\nsettings and the env files to\nthe VM through run-command",
+        "label": "vm: the compose, SearXNG's\nsettings and the env files to\nthe VM through run-command",
         "group": "verbs"
       },
       {
         "id": "workspace",
         "icon": "folder",
         "tone": "amber",
-        "label": "workspace: the price tables\ninto the app\u0027s share",
+        "label": "workspace: the price tables\ninto the app's share",
         "group": "verbs"
       },
       {
         "id": "secrets",
         "icon": "shield",
         "tone": "amber",
-        "label": "secrets: the values into the\nvault (the shared ones with\nPuls\u0027s config, an app\u0027s own\nwith its, suffixed)",
+        "label": "secrets: the values into the\nvault (the shared ones with\nPuls's config, an app's own\nwith its, suffixed)",
         "group": "verbs"
       },
       {
@@ -48,7 +48,7 @@
         "id": "update",
         "icon": "settings",
         "tone": "green",
-        "label": "update: the app\u0027s yaml (-App)\nfilled (tag, revision, the\nVM\u0027s IP, the environment, the\napp\u0027s identity, the vault\u0027s\nsecrets, the providers),\ncreate or update",
+        "label": "update: the app's yaml (-App)\nfilled (tag, revision, the\nVM's IP, the environment, the\napp's identity, the vault's\nsecrets, the providers),\ncreate or update",
         "group": "verbs"
       },
       {
@@ -67,11 +67,29 @@
       },
       {
         "from": "deployment",
-        "to": "vm",
-        "word": "outputs: vmPrivateIp,\nenvironmentId,\nenvironmentStaticIp,\nsqlServerFqdn,\nappIdentityId,\ncodingAppIdentityId,\nvaultUri"
+        "to": "vm"
+      },
+      {
+        "from": "deployment",
+        "to": "workspace"
+      },
+      {
+        "from": "deployment",
+        "to": "secrets"
+      },
+      {
+        "from": "deployment",
+        "to": "release"
+      },
+      {
+        "from": "deployment",
+        "to": "update"
+      },
+      {
+        "from": "deployment",
+        "to": "domain"
       }
     ],
-    "direction": "down",
     "groups": [
       {
         "id": "verbs",

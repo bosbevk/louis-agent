@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1725 905" width="1725" height="905" role="img" aria-label="Context and scope: louis-agent, its people and the systems around it" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1460 789" width="1460" height="789" role="img" aria-label="Context and scope: louis-agent, its people and the systems around it" xmlns="http://www.w3.org/2000/svg">
   <title>Context and scope: louis-agent, its people and the systems around it</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -103,8 +103,8 @@ svg {
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1725" height="905" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="1677" height="50" rx="10" />
+  <rect class="ground" x="-24" y="-24" width="1460" height="789" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1412" height="50" rx="10" />
   <g class="title-icon" transform="translate(16 14) scale(0.9167)">
     <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
     <path d="M4 12l8 4l8 -4" />
@@ -116,97 +116,95 @@ svg {
     <tspan class="title-rest">louis-agent, its people and the systems around it</tspan>
   </text>
   <g class="drawing" transform="translate(0 66)">
-    <rect class="group" x="1406" y="0" width="249.6" height="516" rx="12" />
-    <text class="group-label" x="1418" y="18" text-anchor="start">louis-agent [software system]</text>
-    <path class="edge tone-blue" d="M 414 102 L 414 194 Q 414 218 438 218 L 1509.8 218 Q 1530.8 218 1530.8 239 L 1530.8 260 L 1530.8 328 L 1530.8 436" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-blue" d="M 414 102 L 414 194 Q 414 218 390 218 L 161 218 Q 140 218 140 239 L 140 260" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-red" d="M 140 328 L 140 349 Q 140 370 161 370 L 1506.8 370 Q 1530.8 370 1530.8 394 L 1530.8 436" marker-end="url(#arrow-red)" />
-    <path class="edge tone-blue" d="M 688 102 L 688 176 Q 688 200 712 200 L 1506.8 200 Q 1530.8 200 1530.8 224 L 1530.8 260 L 1530.8 328 L 1530.8 436" marker-end="url(#arrow-blue)" />
-    <path class="edge tone-red" d="M 962 102 L 962 158 Q 962 182 986 182 L 1506.8 182 Q 1530.8 182 1530.8 206 L 1530.8 260 L 1530.8 328 L 1530.8 436" marker-end="url(#arrow-red)" />
-    <path class="edge tone-green" d="M 1530.8 102 L 1530.8 260 L 1530.8 328 L 1530.8 436" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1530.8 102 L 1530.8 140 Q 1530.8 164 1506.8 164 L 1260 164 Q 1236 164 1236 188 L 1236 260" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1530.8 504 L 1530.8 526 Q 1530.8 548 1508.8 548 L 301 548 Q 277 548 277 572 L 277 602" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1530.8 504 L 1530.8 526 Q 1530.8 548 1508.8 548 L 575 548 Q 551 548 551 572 L 551 602" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1530.8 504 L 1530.8 526 Q 1530.8 548 1508.8 548 L 849 548 Q 825 548 825 572 L 825 602" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1530.8 504 L 1530.8 526 Q 1530.8 548 1508.8 548 L 1123 548 Q 1099 548 1099 572 L 1099 602" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-blue" x="1536.8" y="222" width="134" height="18" rx="4" />
-    <text class="word tone-blue" x="1603.8" y="234" text-anchor="middle">chat: web app, CLI</text>
-    <rect class="word-chip tone-blue" x="146" y="222" width="36" height="18" rx="4" />
-    <text class="word tone-blue" x="164" y="234" text-anchor="middle">chat</text>
-    <rect class="word-chip tone-red" x="146" y="332" width="106" height="18" rx="4" />
-    <text class="word tone-red" x="199" y="344" text-anchor="middle">ACP over stdio</text>
-    <rect class="word-chip tone-blue" x="694" y="106" width="141" height="18" rx="4" />
-    <text class="word tone-blue" x="764.5" y="118" text-anchor="middle">chat in the browser</text>
-    <rect class="word-chip tone-red" x="968" y="106" width="113" height="18" rx="4" />
-    <text class="word tone-red" x="1024.5" y="118" text-anchor="middle">MCP: tools only</text>
-    <rect class="word-chip tone-green" x="1348.8" y="222" width="176" height="18" rx="4" />
-    <text class="word tone-green" x="1436.8" y="234" text-anchor="middle">HTTP + SSE: fix requests</text>
-    <rect class="word-chip tone-green" x="1110" y="222" width="120" height="18" rx="4" />
-    <text class="word tone-green" x="1170" y="234" text-anchor="middle">error log, tests</text>
-    <rect class="word-chip tone-green" x="283" y="552" width="169" height="18" rx="4" />
-    <text class="word tone-green" x="367.5" y="564" text-anchor="middle">Messages API / chat API</text>
-    <rect class="word-chip tone-green" x="557" y="552" width="141" height="30" rx="4" />
-    <text class="word tone-green" x="627.5" y="564" text-anchor="middle">files, git, dotnet,</text>
-    <text class="word tone-green" x="627.5" y="576" text-anchor="middle">scripts</text>
-    <rect class="word-chip tone-green" x="831" y="552" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="852.5" y="564" text-anchor="middle">HTTPS</text>
-    <rect class="word-chip tone-green" x="1105" y="552" width="176" height="18" rx="4" />
-    <text class="word tone-green" x="1193" y="564" text-anchor="middle">HTTPS, when keys are set</text>
-    <rect class="box tone-blue" x="329" y="34" width="170" height="68" rx="10" />
-    <circle class="badge tone-blue" cx="357" cy="68" r="14" />
-    <g class="badge-icon" transform="translate(349 60) scale(0.6667)">
+    <path class="edge tone-blue" d="M 402 68 L 402 140 Q 402 164 426 164 L 792 164 Q 813 164 813 185 L 813 206 L 813 274 L 813 340" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 402 68 L 402 140 Q 402 164 378 164 L 149 164 Q 128 164 128 185 L 128 206" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-red" d="M 128 274 L 128 295 Q 128 316 149 316 L 801 316 Q 813 316 813 328 L 813 340" marker-end="url(#arrow-red)" />
+    <path class="edge tone-blue" d="M 676 68 L 676 122 Q 676 146 700 146 L 789 146 Q 813 146 813 170 L 813 206 L 813 274 L 813 340" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-red" d="M 950 68 L 950 104 Q 950 128 926 128 L 837 128 Q 813 128 813 152 L 813 206 L 813 274 L 813 340" marker-end="url(#arrow-red)" />
+    <path class="edge tone-green" d="M 1224 68 L 1224 89 Q 1224 110 1203 110 L 837 110 Q 813 110 813 134 L 813 206 L 813 274 L 813 340" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1224 68 L 1224 206" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 813 408 L 813 420 Q 813 432 801 432 L 426 432 Q 402 432 402 456 L 402 486" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 813 408 L 813 420 Q 813 432 801 432 L 700 432 Q 676 432 676 456 L 676 486" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 813 408 L 813 420 Q 813 432 825 432 L 926 432 Q 950 432 950 456 L 950 486" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 813 408 L 813 420 Q 813 432 825 432 L 1200 432 Q 1224 432 1224 456 L 1224 486" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-blue" x="819" y="168" width="134" height="18" rx="4" />
+    <text class="word tone-blue" x="886" y="180" text-anchor="middle">chat: web app, CLI</text>
+    <rect class="word-chip tone-blue" x="134" y="168" width="36" height="18" rx="4" />
+    <text class="word tone-blue" x="152" y="180" text-anchor="middle">chat</text>
+    <rect class="word-chip tone-red" x="134" y="278" width="106" height="18" rx="4" />
+    <text class="word tone-red" x="187" y="290" text-anchor="middle">ACP over stdio</text>
+    <rect class="word-chip tone-blue" x="682" y="72" width="141" height="18" rx="4" />
+    <text class="word tone-blue" x="752.5" y="84" text-anchor="middle">chat in the browser</text>
+    <rect class="word-chip tone-red" x="956" y="72" width="113" height="18" rx="4" />
+    <text class="word tone-red" x="1012.5" y="84" text-anchor="middle">MCP: tools only</text>
+    <rect class="word-chip tone-green" x="631" y="168" width="176" height="18" rx="4" />
+    <text class="word tone-green" x="719" y="180" text-anchor="middle">HTTP + SSE: fix requests</text>
+    <rect class="word-chip tone-green" x="1230" y="168" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="1290" y="180" text-anchor="middle">error log, tests</text>
+    <rect class="word-chip tone-green" x="408" y="436" width="169" height="18" rx="4" />
+    <text class="word tone-green" x="492.5" y="448" text-anchor="middle">Messages API / chat API</text>
+    <rect class="word-chip tone-green" x="682" y="436" width="141" height="30" rx="4" />
+    <text class="word tone-green" x="752.5" y="448" text-anchor="middle">files, git, dotnet,</text>
+    <text class="word tone-green" x="752.5" y="460" text-anchor="middle">scripts</text>
+    <rect class="word-chip tone-green" x="956" y="436" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="977.5" y="448" text-anchor="middle">HTTPS</text>
+    <rect class="word-chip tone-green" x="1230" y="436" width="176" height="18" rx="4" />
+    <text class="word tone-green" x="1318" y="448" text-anchor="middle">HTTPS, when keys are set</text>
+    <rect class="box tone-blue" x="317" y="0" width="170" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="345" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(337 26) scale(0.6667)">
       <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
       <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
     </g>
-    <text class="label tone-blue" x="381" y="65" text-anchor="start">Developer</text>
-    <text class="label tone-blue" x="381" y="81" text-anchor="start">[person]</text>
-    <rect class="box tone-blue" x="603" y="34" width="170" height="68" rx="10" />
-    <circle class="badge tone-blue" cx="631" cy="68" r="14" />
-    <g class="badge-icon" transform="translate(623 60) scale(0.6667)">
+    <text class="label tone-blue" x="369" y="31" text-anchor="start">Developer</text>
+    <text class="label tone-blue" x="369" y="47" text-anchor="start">[person]</text>
+    <rect class="box tone-blue" x="591" y="0" width="170" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="619" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(611 26) scale(0.6667)">
       <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
       <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
     </g>
-    <text class="label tone-blue" x="655" y="65" text-anchor="start">Puls user</text>
-    <text class="label tone-blue" x="655" y="81" text-anchor="start">[person]</text>
-    <rect class="box tone-red" x="864.4" y="34" width="195.2" height="68" rx="10" />
-    <circle class="badge tone-red" cx="892.4" cy="68" r="14" />
-    <g class="badge-icon" transform="translate(884.4 60) scale(0.6667)">
+    <text class="label tone-blue" x="643" y="31" text-anchor="start">Puls user</text>
+    <text class="label tone-blue" x="643" y="47" text-anchor="start">[person]</text>
+    <rect class="box tone-red" x="852.4" y="0" width="195.2" height="68" rx="10" />
+    <circle class="badge tone-red" cx="880.4" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(872.4 26) scale(0.6667)">
       <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
     </g>
-    <text class="label tone-red" x="916.4" y="65" text-anchor="start">MCP client</text>
-    <text class="label tone-red" x="916.4" y="81" text-anchor="start">[external system]</text>
-    <rect class="box tone-green" x="1437" y="34" width="187.6" height="68" rx="10" />
-    <circle class="badge tone-green" cx="1465" cy="68" r="14" />
-    <g class="badge-icon" transform="translate(1457 60) scale(0.6667)">
+    <text class="label tone-red" x="904.4" y="31" text-anchor="start">MCP client</text>
+    <text class="label tone-red" x="904.4" y="47" text-anchor="start">[external system]</text>
+    <rect class="box tone-green" x="1130.2" y="0" width="187.6" height="68" rx="10" />
+    <circle class="badge tone-green" cx="1158.2" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(1150.2 26) scale(0.6667)">
       <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
       <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
     </g>
-    <text class="label tone-green" x="1489" y="65" text-anchor="start">Orchestrator</text>
-    <text class="label tone-green" x="1489" y="81" text-anchor="start">(POC, same core)</text>
-    <rect class="box tone-red" x="42.4" y="260" width="195.2" height="68" rx="10" />
-    <circle class="badge tone-red" cx="70.4" cy="294" r="14" />
-    <g class="badge-icon" transform="translate(62.4 286) scale(0.6667)">
+    <text class="label tone-green" x="1182.2" y="31" text-anchor="start">Orchestrator</text>
+    <text class="label tone-green" x="1182.2" y="47" text-anchor="start">(POC, same core)</text>
+    <rect class="box tone-red" x="30.4" y="206" width="195.2" height="68" rx="10" />
+    <circle class="badge tone-red" cx="58.4" cy="240" r="14" />
+    <g class="badge-icon" transform="translate(50.4 232) scale(0.6667)">
       <path d="M7 8l-4 4l4 4" />
       <path d="M17 8l4 4l-4 4" />
       <path d="M14 4l-4 16" />
     </g>
-    <text class="label tone-red" x="94.4" y="291" text-anchor="start">JetBrains Rider</text>
-    <text class="label tone-red" x="94.4" y="307" text-anchor="start">[external system]</text>
-    <rect class="box tone-red" x="1138.4" y="260" width="195.2" height="68" rx="10" />
-    <circle class="badge tone-red" cx="1166.4" cy="294" r="14" />
-    <g class="badge-icon" transform="translate(1158.4 286) scale(0.6667)">
+    <text class="label tone-red" x="82.4" y="237" text-anchor="start">JetBrains Rider</text>
+    <text class="label tone-red" x="82.4" y="253" text-anchor="start">[external system]</text>
+    <rect class="box tone-red" x="1126.4" y="206" width="195.2" height="68" rx="10" />
+    <circle class="badge tone-red" cx="1154.4" cy="240" r="14" />
+    <g class="badge-icon" transform="translate(1146.4 232) scale(0.6667)">
       <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
       <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
       <path d="M7 8l0 .01" />
       <path d="M7 16l0 .01" />
     </g>
-    <text class="label tone-red" x="1190.4" y="291" text-anchor="start">A watched service</text>
-    <text class="label tone-red" x="1190.4" y="307" text-anchor="start">(a microservice)</text>
-    <rect class="box tone-green" x="1418" y="436" width="225.6" height="68" rx="10" />
-    <circle class="badge tone-green" cx="1446" cy="470" r="14" />
-    <g class="badge-icon" transform="translate(1438 462) scale(0.6667)">
+    <text class="label tone-red" x="1178.4" y="237" text-anchor="start">A watched service</text>
+    <text class="label tone-red" x="1178.4" y="253" text-anchor="start">(a microservice)</text>
+    <rect class="box tone-green" x="700.2" y="340" width="225.6" height="68" rx="10" />
+    <circle class="badge tone-green" cx="728.2" cy="374" r="14" />
+    <g class="badge-icon" transform="translate(720.2 366) scale(0.6667)">
       <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
       <path d="M9 9h6v6h-6z" />
       <path d="M3 10h2" />
@@ -218,20 +216,20 @@ svg {
       <path d="M14 21v-2" />
       <path d="M10 21v-2" />
     </g>
-    <text class="label tone-green" x="1470" y="467" text-anchor="start">louis-agent</text>
-    <text class="label tone-green" x="1470" y="483" text-anchor="start">coding agent and Puls</text>
-    <rect class="box tone-red" x="168" y="602" width="218" height="100" rx="10" />
-    <circle class="badge tone-red" cx="196" cy="652" r="14" />
-    <g class="badge-icon" transform="translate(188 644) scale(0.6667)">
+    <text class="label tone-green" x="752.2" y="371" text-anchor="start">louis-agent</text>
+    <text class="label tone-green" x="752.2" y="387" text-anchor="start">coding agent and Puls</text>
+    <rect class="box tone-red" x="293" y="486" width="218" height="100" rx="10" />
+    <circle class="badge tone-red" cx="321" cy="536" r="14" />
+    <g class="badge-icon" transform="translate(313 528) scale(0.6667)">
       <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
     </g>
-    <text class="label tone-red" x="220" y="633" text-anchor="start">Model provider</text>
-    <text class="label tone-red" x="220" y="649" text-anchor="start">Anthropic · Ollama ·</text>
-    <text class="label tone-red" x="220" y="665" text-anchor="start">OpenAI-compatible</text>
-    <text class="label tone-red" x="220" y="681" text-anchor="start">[external system]</text>
-    <rect class="box tone-amber" x="453.4" y="602" width="195.2" height="100" rx="10" />
-    <circle class="badge tone-amber" cx="481.4" cy="652" r="14" />
-    <g class="badge-icon" transform="translate(473.4 644) scale(0.6667)">
+    <text class="label tone-red" x="345" y="517" text-anchor="start">Model provider</text>
+    <text class="label tone-red" x="345" y="533" text-anchor="start">Anthropic · Ollama ·</text>
+    <text class="label tone-red" x="345" y="549" text-anchor="start">OpenAI-compatible</text>
+    <text class="label tone-red" x="345" y="565" text-anchor="start">[external system]</text>
+    <rect class="box tone-amber" x="578.4" y="486" width="195.2" height="100" rx="10" />
+    <circle class="badge tone-amber" cx="606.4" cy="536" r="14" />
+    <g class="badge-icon" transform="translate(598.4 528) scale(0.6667)">
       <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
       <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
       <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -239,47 +237,47 @@ svg {
       <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
       <path d="M14 14l3 -3l3 3" />
     </g>
-    <text class="label tone-amber" x="505.4" y="649" text-anchor="start">Repositories</text>
-    <text class="label tone-amber" x="505.4" y="665" text-anchor="start">mounted workspace</text>
-    <rect class="box tone-red" x="697" y="602" width="256" height="100" rx="10" />
-    <circle class="badge tone-red" cx="725" cy="652" r="14" />
-    <g class="badge-icon" transform="translate(717 644) scale(0.6667)">
+    <text class="label tone-amber" x="630.4" y="533" text-anchor="start">Repositories</text>
+    <text class="label tone-amber" x="630.4" y="549" text-anchor="start">mounted workspace</text>
+    <rect class="box tone-red" x="822" y="486" width="256" height="100" rx="10" />
+    <circle class="badge tone-red" cx="850" cy="536" r="14" />
+    <g class="badge-icon" transform="translate(842 528) scale(0.6667)">
       <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
       <path d="M3.6 9h16.8" />
       <path d="M3.6 15h16.8" />
       <path d="M11.5 3a17 17 0 0 0 0 18" />
       <path d="M12.5 3a17 17 0 0 1 0 18" />
     </g>
-    <text class="label tone-red" x="749" y="633" text-anchor="start">Web</text>
-    <text class="label tone-red" x="749" y="649" text-anchor="start">search · pages · exchange</text>
-    <text class="label tone-red" x="749" y="665" text-anchor="start">rates</text>
-    <text class="label tone-red" x="749" y="681" text-anchor="start">[external system]</text>
-    <rect class="box tone-red" x="990" y="602" width="218" height="100" rx="10" />
-    <circle class="badge tone-red" cx="1018" cy="652" r="14" />
-    <g class="badge-icon" transform="translate(1010 644) scale(0.6667)">
+    <text class="label tone-red" x="874" y="517" text-anchor="start">Web</text>
+    <text class="label tone-red" x="874" y="533" text-anchor="start">search · pages · exchange</text>
+    <text class="label tone-red" x="874" y="549" text-anchor="start">rates</text>
+    <text class="label tone-red" x="874" y="565" text-anchor="start">[external system]</text>
+    <rect class="box tone-red" x="1115" y="486" width="218" height="100" rx="10" />
+    <circle class="badge tone-red" cx="1143" cy="536" r="14" />
+    <g class="badge-icon" transform="translate(1135 528) scale(0.6667)">
       <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
       <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
       <path d="M7 8l0 .01" />
       <path d="M7 16l0 .01" />
     </g>
-    <text class="label tone-red" x="1042" y="649" text-anchor="start">Paymo · Azure DevOps</text>
-    <text class="label tone-red" x="1042" y="665" text-anchor="start">[external system]</text>
+    <text class="label tone-red" x="1167" y="533" text-anchor="start">Paymo · Azure DevOps</text>
+    <text class="label tone-red" x="1167" y="549" text-anchor="start">[external system]</text>
   </g>
-  <rect class="swatch tone-blue" x="0" y="784" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="794.5" text-anchor="start">starts it</text>
-  <rect class="swatch tone-green" x="104.8" y="784" width="12" height="12" rx="3" />
-  <text class="legend" x="122.8" y="794.5" text-anchor="start">this project</text>
-  <rect class="swatch tone-red" x="231.2" y="784" width="12" height="12" rx="3" />
-  <text class="legend" x="249.2" y="794.5" text-anchor="start">outside the process</text>
-  <rect class="swatch tone-amber" x="408" y="784" width="12" height="12" rx="3" />
-  <text class="legend" x="426" y="794.5" text-anchor="start">files and data</text>
-  <rect class="notebar" x="0" y="820" width="1677" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 830) scale(0.6667)">
+  <rect class="swatch tone-blue" x="0" y="668" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="678.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="668" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="678.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-red" x="231.2" y="668" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="678.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="408" y="668" width="12" height="12" rx="3" />
+  <text class="legend" x="426" y="678.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="704" width="1412" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 714) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="842">
+  <text class="notes" x="38" y="726">
     <tspan class="note-head">One system and its neighbours:</tspan>
     <tspan class="note-rest">people use it, and it calls the models, the web and the services it watches.</tspan>
   </text>
