@@ -1,77 +1,75 @@
 {
   "kind": "flow",
   "title": "How the agents talk: the clients, the hosts, the engine and the model",
-  "caption": "One engine, many doors: each client reaches the same AgentEngine through the host that speaks its protocol.",
+  "caption": "One engine, many doors: each client reaches the same AgentEngine through the host that speaks its protocol. The orchestrator opens one session per fix and reads /v1/prices and /v1/rates, and AskAgent (F5, F127.3.1) reaches another agent the same way.",
   "flow": {
     "nodes": [
-      {
-        "id": "Browser",
-        "icon": "browser",
-        "tone": "blue",
-        "label": "Web app\n(browser)",
-        "group": "clients"
-      },
       {
         "id": "Rider",
         "icon": "code",
         "tone": "blue",
-        "label": "JetBrains Rider\nAI chat",
-        "group": "clients"
+        "label": "JetBrains Rider\nAI chat"
+      },
+      {
+        "id": "Browser",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Web app\n(browser)"
       },
       {
         "id": "Script",
         "icon": "terminal",
         "tone": "blue",
-        "label": "curl / your program",
-        "group": "clients"
-      },
-      {
-        "id": "McpClient",
-        "icon": "cloud",
-        "tone": "blue",
-        "label": "MCP client\n(another agent, Claude\nDesktop)",
-        "group": "clients"
+        "label": "curl / your program"
       },
       {
         "id": "Orch",
         "icon": "settings",
         "tone": "blue",
-        "label": "Orchestrator agent\n(louis-agent.orchestrator)",
-        "group": "clients"
+        "label": "Orchestrator agent\n(louis-agent.orchestrator)"
       },
       {
-        "id": "Api",
-        "icon": "server",
-        "tone": "green",
-        "label": "louis-agent.api\nHTTP \u002B SSE, serves the web app",
-        "group": "hosts"
+        "id": "McpClient",
+        "icon": "cloud",
+        "tone": "blue",
+        "label": "MCP client\n(another agent, Claude\nDesktop)"
       },
       {
         "id": "Acp",
         "icon": "code",
         "tone": "green",
-        "label": "louis-agent.acp\nJSON-RPC over stdio",
-        "group": "hosts"
+        "label": "louis-agent.acp\nJSON-RPC over stdio"
+      },
+      {
+        "id": "Api",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.api\nHTTP + SSE, serves the web app"
       },
       {
         "id": "Mcp",
         "icon": "cloud",
         "tone": "green",
-        "label": "louis-agent.mcp\nMCP over stdio or HTTP",
-        "group": "hosts"
+        "label": "louis-agent.mcp\nMCP over stdio or HTTP"
       },
       {
         "id": "Cli",
         "icon": "terminal",
         "tone": "green",
         "label": "louis-agent.cli\nterminal",
-        "group": "hosts"
+        "column": 1
       },
       {
         "id": "Engine",
         "icon": "chip",
         "tone": "violet",
-        "label": "AgentEngine\n(louis-agent.core)\ntools \u002B skills \u002B tool loop"
+        "label": "AgentEngine\n(louis-agent.core)\ntools + skills + tool loop"
+      },
+      {
+        "id": "Peer",
+        "icon": "server",
+        "tone": "red",
+        "label": "another agent's address\n(this API or a peer)"
       },
       {
         "id": "Model",
@@ -84,34 +82,28 @@
         "icon": "branch",
         "tone": "amber",
         "label": "Workspace\ngit repository"
-      },
-      {
-        "id": "Peer",
-        "icon": "server",
-        "tone": "red",
-        "label": "another agent\u0027s address\n(this API or a peer)"
       }
     ],
     "edges": [
       {
+        "from": "Rider",
+        "to": "Acp",
+        "word": "ACP (stdio)"
+      },
+      {
         "from": "Browser",
         "to": "Api",
-        "word": "REST \u002B SSE"
+        "word": "REST + SSE"
       },
       {
         "from": "Script",
         "to": "Api",
-        "word": "REST \u002B SSE"
+        "word": "REST + SSE"
       },
       {
         "from": "Orch",
         "to": "Api",
-        "word": "sessions \u002B SSE (one session per fix); /v1/prices, /v1/rates"
-      },
-      {
-        "from": "Rider",
-        "to": "Acp",
-        "word": "ACP (stdio)"
+        "word": "sessions + SSE"
       },
       {
         "from": "McpClient",
@@ -119,11 +111,11 @@
         "word": "tools/list, tools/call"
       },
       {
-        "from": "Api",
+        "from": "Acp",
         "to": "Engine"
       },
       {
-        "from": "Acp",
+        "from": "Api",
         "to": "Engine"
       },
       {
@@ -134,6 +126,11 @@
         "from": "Mcp",
         "to": "Engine",
         "word": "tools only, no model"
+      },
+      {
+        "from": "Api",
+        "to": "Peer",
+        "word": "AskAgent"
       },
       {
         "from": "Engine",
@@ -155,22 +152,8 @@
         "to": "Repo",
         "word": "verifies: git, replay, tests",
         "style": "dashed"
-      },
-      {
-        "from": "Api",
-        "to": "Peer",
-        "word": "AskAgent: sessions \u002B SSE (F5, F127.3.1)"
       }
     ],
-    "groups": [
-      {
-        "id": "clients",
-        "label": "Clients"
-      },
-      {
-        "id": "hosts",
-        "label": "louis-agent hosts"
-      }
-    ]
+    "direction": "down"
   }
 }
