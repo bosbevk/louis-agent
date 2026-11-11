@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Svg.Theme;
 
 namespace LouisAgent.Diagrams.Svg;
@@ -51,6 +52,19 @@ internal sealed class SvgWriter
     {
         _shapes.Add(new XElement(Svg + "text", new XAttribute("class", cls), new XAttribute("x", N(x)),
             new XAttribute("y", N(y)), new XAttribute("text-anchor", anchor), words));
+        return this;
+    }
+
+    /// <summary>
+    /// An icon, its top-left corner at a point, drawn at a size: its paths in Tabler's 24-unit box, moved and scaled
+    /// as one group, which the style strokes.
+    /// </summary>
+    public SvgWriter Icon(double x, double y, double size, DiagramIcon icon, string cls)
+    {
+        string scale = (size / 24).ToString("0.####", CultureInfo.InvariantCulture);
+        _shapes.Add(new XElement(Svg + "g", new XAttribute("class", cls),
+            new XAttribute("transform", $"translate({N(x)} {N(y)}) scale({scale})"),
+            IconPaths.Of(icon).Select(data => new XElement(Svg + "path", new XAttribute("d", data)))));
         return this;
     }
 

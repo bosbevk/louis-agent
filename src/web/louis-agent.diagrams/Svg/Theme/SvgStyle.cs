@@ -31,6 +31,7 @@ internal static class SvgStyle
           .caption {
             fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
           }
+          .icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
           """);
 
     /// <summary>One palette as the picture's colour variables.</summary>
