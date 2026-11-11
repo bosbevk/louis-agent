@@ -133,6 +133,18 @@ public class DocsDiagramsTests
         Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid flowchart: import it as a picture");
     }
 
+    /// <summary>
+    /// No doc draws a sequence in Mermaid any more (CL60.3): every sequence is a JSON our renderer draws.
+    /// </summary>
+    [Test]
+    public void NoDoc_HoldsAMermaidSequence()
+    {
+        var holding = Docs().Where(doc => MermaidStarts(File.ReadAllText(doc))
+            .Any(first => first.StartsWith("sequenceDiagram", StringComparison.Ordinal)));
+
+        Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid sequence: import it as a picture");
+    }
+
     /// <summary>The docs have pictures at all, so the tests above can't pass by finding none.</summary>
     [Test]
     public void TheDocs_HavePictures() => Assert.That(Diagrams(), Is.Not.Empty);
