@@ -89,7 +89,7 @@ known limitations below are facts about today, not tasks.
 | F89 | A Puls-owned set of a few hundred South African recipes | Puls, later | — |
 | F90 | WhatsApp as a host | Puls, later | — |
 | F91 | The eleven official languages, measured | Puls, later | — |
-| F92 | Voice | Puls, later | — |
+| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Puls, later | [draft](src/docs/plans/F92-voice-input.md) |
 | F93 | The `similar` check, when an eval asks for closeness of meaning | Later | — |
 | F45 | Knowledge and retrieval | Later | — |
 | F94 | Searching PDFs, investigate much later | Later | [spec](src/docs/specs/PDF_SEARCH.md) |
