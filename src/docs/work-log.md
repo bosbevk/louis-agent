@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 92 | 84 |
 | Fixes (`FX`) | 122 | 6 |
-| Cleanups (`CL`) | 30 | 27 |
+| Cleanups (`CL`) | 31 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -364,10 +364,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | FX2 | 2026-10-10 | The usage probe says which model to pull on an Ollama 404 |
 | FX1 | 2026-10-10 | Keep the tools on the request after the 10-round limit |
 
-## Cleanups (30 done)
+## Cleanups (31 done)
 
 | Id | When | What |
 |---|---|---|
+| CL60.4 | 2026-11-12 | The classes, and the rule: a `classes` kind in the diagrams library (types with members, their relations: inherits, implements, holds, uses, creates) drawn as a flow through an Adapter, a flow box's members under a divider, the import reading Mermaid class diagrams, and all 11 class diagrams swapped for pictures (F39's and F40's split in two); `NoDoc_HoldsMermaid` holds that no doc has Mermaid of any kind, ADR 0118 the rule, and the plans README asks for the four diagrams as pictures |
 | CL60.3 | 2026-11-12 | The sequences: a `sequence` kind in the diagrams library (participants with icons and tones, steps as a Composite of records: messages, replies, notes, loop, opt and alt with else, nested), its layout, its renderer in the flows' look, the import reading Mermaid sequences, and all 45 sequence diagrams in 44 docs swapped for pictures, each looked at; `DocsDiagramsTests` holds their words inside and no sequence left |
 | CL60.2 | 2026-11-12 | The flows: the layout grown (columns from the arrows, labels over lines, a down direction, groups and dashed arrows, waypoints, tracks and detours), Louis's joined look (a title bar, an icon and a tone per box, arrows and word chips in their tone, a legend, a note on every chart), a one-time import, and all 75 Mermaid flowcharts in 58 docs swapped for pictures, each looked at; `DocsDiagramsTests` holds clear words and lines and no flowchart left |
 | CL60.1 | 2026-11-11 | The renderer and the overviews: `louis-agent.diagrams` (plain C#, the flow engine moved in, cards in Louis's style with a highlight and a heading look, 22 Tabler icons, one SVG with a light and a dark look), the `louis-agent.doc-diagrams` tool, `DocsDiagramsTests`, and an overview picture on all 42 project docs and two of Louis's figures |

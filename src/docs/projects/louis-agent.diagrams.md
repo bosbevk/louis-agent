@@ -16,7 +16,7 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
 ## How it works
 
 - **A diagram is data** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource` through records: a kind
-  (`flow`, `cards` or `sequence`, parsed with `SettingChoice`), a title a screen reader is told, an optional caption, and the
+  (`flow`, `cards`, `sequence` or `classes`, parsed with `SettingChoice`), a title a screen reader is told, an optional caption, and the
   kind's own part. A misspelt field, an unknown kind, a missing title, or an arrow or a link to an id nothing has is
   refused with its reason (`Messages/DiagramMessage`, filled by `DiagramText`, the library's own small stand-in for
   core's `MessageText`).
@@ -26,7 +26,8 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   a waypoint in each column it passes, a blocked one round a detour, with bends as soft as the caller asks (the site
   8 px, the docs `SoftBend`). A chart that runs `down` is laid out turned and `Turn` turns every point back, so one
   layout and one router serve both. `FlowText` says where a box's badge, label and note sit and where an arrow's word
-  chip stands. The site's `GraphView` animates the same placed graph.
+  chip stands. A box may list members under a divider in the code font (a class's), as wide as its longest member,
+  which wraps at 60 characters. The site's `GraphView` animates the same placed graph.
 - **Tones** (`Tones/`): a box may carry an icon and a `DiagramTone`, so a colour means the same in every chart
   (blue starts it, green this project, violet the framework, teal contracts and state, amber files and data, red
   outside the process). Its arrows and their word chips take its tone.
@@ -35,6 +36,11 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   each lifeline as far from the others as the words between them need (a longest path over the lifelines), and
   `SequenceRows` walks the steps down the page, framing each block round what it holds, so a nested frame sits
   inside its parent. `SequenceText` holds the measures: words wrap at 40 characters, a head at 24.
+- **Classes** (`Classes/`): the interface design, its types (a name, a kind, members, an icon, a tone) and their
+  relations (`inherits`, `implements`, `holds`, `uses`, `creates`). `ClassFlow`, an Adapter, turns a class chart into
+  a flow: a type a box with its members, its tone from its kind when none is named (teal for an interface, a record
+  or an enum, green otherwise), a relation an arrow whose style and word say its kind; a word shared by several arrows
+  into or out of one type shows once. So the flows' layout, router, chips and clearance check all serve it.
 - **Cards** (`Cards/`): Louis's overview style. `CardLayout` lays rows of cards in one frame: a row's cards share its
   width and its tallest card's height, and a card's words wrap to fit. Every word is in the code font, so a line's
   width is its length times one number and the tests prove it fits. A card is `plain`, `highlight` (centred in the
@@ -43,7 +49,8 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
 - **Icons** (`Icons/`): 24 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
   them and a row in `THIRD-PARTY-NOTICES.md`.
 - **The SVG** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind (Strategy, `Svg/Renderers/`:
-  `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`). `SvgWriter` builds the file with `XElement`, `\n` line endings and a `<title>`. `Svg/Theme/`
+  `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`, and `ClassesRenderer`, which hands `ClassFlow`'s flow to the
+  flow renderer). `SvgWriter` builds the file with `XElement`, `\n` line endings and a `<title>`. `Svg/Theme/`
   holds the site's palette and its light twin as CSS variables in the picture's own style, the dark one under
   `prefers-color-scheme: dark`, and each tone's fill, line and ink.
 - **The docs' frame** (`Svg/TitledFrame`, a Decorator): `DiagramRenderers.RenderTitled` draws the picture bare and
@@ -52,8 +59,9 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
 - **The docs' tool** (`src/tools/louis-agent.doc-diagrams`) finds every `diagrams/*.json` under `src/docs`,
   `packs/docs` and each demo's folder, and writes the framed SVG beside it when what it draws changed. `--check`
   writes nothing and fails naming a stale picture. `import <doc>` (`Mermaid/`, its readers in `Mermaid/Readers/`)
-  reads a doc's Mermaid flowcharts and sequences once into JSON, never over a picture already there, and prints the
-  link for each block, which is swapped by hand.
+  reads a doc's Mermaid flowcharts, sequences and class diagrams once into JSON, never over a picture already there,
+  and prints the link for each block, which is swapped by hand. The docs hold no Mermaid now
+  ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)); the import stays for a doc someone brings in.
 
 ## Structure
 
@@ -63,6 +71,7 @@ src/web/louis-agent.diagrams/
 ├── Flow/           # GraphLayout, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
+├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
 ├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame; Renderers/, Theme/
@@ -76,14 +85,15 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 - `src/tests/web/louis-agent.diagrams.tests`: the layouts with numbers (no card overlaps another, every card inside
   the frame, every line inside its card; a flow's ranks, a down chart's rows, every group's boxes inside its frame
   and no other, a chip clear of its line; a sequence's heads apart, its words between their lifelines, its frames
-  round their steps and nested inside their parents), the tones and the frame, the reader's refusals, a card's looks,
-  every icon drawn, and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`, `Sequence/sequence.svg`,
-  `Cards/cards.svg` and `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
+  round their steps and nested inside their parents; a box's members and tones in `Flow/Boxes/`; a class chart's
+  boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
+  icon drawn, and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`, `Sequence/sequence.svg`,
+  `Classes/classes.svg`, `Cards/cards.svg` and `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,
-  every picture a doc shows is there, every project doc shows its overview, every flow keeps its words and lines
-  clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is one the tool
-  draws, and no doc holds a Mermaid flowchart or sequence.
+  every picture a doc shows is there, every project doc shows its overview, every flow and class chart keeps its
+  words and lines clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is
+  one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`).
 
 ## What the build decided (CL60.1, 2026-11-11, partly unattended)
 
@@ -136,10 +146,23 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 - **Louis's asks during it:** the plan's interface design drawn as a picture too; an interface diagram, then all four
   diagrams (architecture, flow, sequence, interface), on every project doc, which became CL60.5.
 
+## What the build decided (CL60.4, 2026-11-12, unattended)
+
+- **Claude's picks, each of three:** a class chart drawn as a flow through an Adapter (`ClassFlow`), so the router,
+  tones, chips and checks all apply (not a class layout of its own, nor the card layout); a type's members under a
+  divider in its box (not as its note, nor left out); a relation's kind shown by its arrow's style and a word (not
+  UML's triangles and diamonds); one test that no doc holds Mermaid and an ADR (0118) for the rule.
+- **Found while looking at each chart:** a type with no tone named takes its kind's (teal for contracts and state,
+  green otherwise); a long member wraps at 60 characters; a word shared by several arrows into or out of one type
+  shows once, since the fan-ins piled up identical chips; the evals' nine check classes are one type; F39's and F40's
+  charts are split in two, since whole they were tangles; Mermaid's `%%` comments, `;` and `$` marks the import kept
+  were cleaned by hand in the data.
+
 ## Limits and plans
 
-- The class diagrams come in CL60.4, with the rule and a test that no doc holds Mermaid at all; CL60.5 then gives
-  every project doc its four diagrams.
+- CL60.5 gives every project doc its four diagrams (architecture, flow, sequence, interface).
+- A class chart over about twenty types tangles its arrows, since the layout doesn't reduce crossings; such a chart is
+  split in two pictures. Three plan charts (F106.1, F92, F40's agent side) stay over 2,000 px wide.
 - Sequences with eight participants run about 2,000 px wide (the API's and core's turns, F39's fix, F40's run), since
   their names don't break; they read clearly, small in a doc's column.
 - **Two back arrows at one box cross.** When one leaves a box's bottom and another comes into its side, their loops
@@ -154,7 +177,8 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 ## Related docs
 
 [Draw a diagram](../guides/draw-a-diagram.md) · [louis-agent.web](louis-agent.web.md) ·
-[ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md) ·
+[ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) ·
+[ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md) ·
 [CL60's plan](../plans/CL60-docs-diagrams-as-svg.md)
 
 ---

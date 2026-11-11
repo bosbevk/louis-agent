@@ -2,7 +2,8 @@
 
 > **How-to.** Put a picture in a doc: write its JSON beside the doc, draw it with the tool, link it, and let the test
 > hold it. **Elsewhere:** how the drawing works in [louis-agent.diagrams](../projects/louis-agent.diagrams.md); why a
-> diagram is data in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md).
+> diagram is data in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) and
+> [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
 A picture in the docs is a JSON file in a `diagrams` folder beside the doc, and an SVG the tool draws from it. You
 write the JSON; the tool writes the SVG; the doc links the SVG. Never edit an SVG by hand: the test compares it with
@@ -113,6 +114,38 @@ Every file has a `kind`, a `title` (what a screen reader is told), an optional `
 - A message to oneself (the same `from` and `to`) turns back on its lifeline. `numbered` puts 1, 2, 3 on the arrows.
 - A participant takes an icon and a tone as a flow's box does; an `actor` with no icon wears a person's.
 
+**Classes**, the interface design: the types, their members, and how they relate. It is drawn as a flow, so a
+type is a box and a relation an arrow.
+
+```json
+{
+  "kind": "classes",
+  "title": "F92 voice: the interface design",
+  "caption": "Speech is a provider like a model: one interface per provider, and a factory that picks it.",
+  "classes": {
+    "types": [
+      { "id": "provider", "name": "ISpeechProvider", "kind": "interface, step 1",
+        "members": [ "SpeechProviderName Name", "ISpeechToTextClient Create(SpeechOptions options)" ] },
+      { "id": "whisper", "name": "WhisperSpeechProvider", "kind": "step 2" },
+      { "id": "factory", "name": "SpeechClientFactory", "kind": "step 1" }
+    ],
+    "relations": [
+      { "from": "whisper", "to": "provider", "kind": "implements" },
+      { "from": "factory", "to": "provider", "kind": "holds", "word": "one per provider" }
+    ]
+  }
+}
+```
+
+- A type's `kind` is the small line under its name: what it is and the step that builds it. Its `members` go under a
+  divider in the code font; a member over 60 characters wraps.
+- A type with no `tone` is `teal` when its kind says interface, record or enum, `green` otherwise; name another tone
+  for a type from elsewhere (`violet` for the framework's).
+- A relation's `kind` is `inherits` (solid, "is a"), `implements` (dashed), `holds` (solid), `uses` or `creates`
+  (dashed). A `word` replaces the arrow's own; when several arrows into one type, or out of one, share a word, it
+  shows once.
+- `direction` and `groups` work as a flow's. Over about twenty types the arrows tangle: split it in two pictures.
+
 A misspelt field, a link to an id no card has, or a missing title is refused, and the tool says which.
 
 ## Draw it
@@ -124,10 +157,10 @@ dotnet run --project src/tools/louis-agent.doc-diagrams
 It draws every `diagrams/*.json` under `src/docs`, `packs/docs` and each demo's folder, and writes only the SVGs that
 changed. `-- --check` writes nothing and fails naming a stale one.
 
-**A Mermaid flowchart or sequence someone brings in** is read once into JSON: `-- import <doc>` writes a JSON beside
-the doc for each one in it (never over a picture already there), draws it, and prints the lines it replaces and the
-link to put there. Swap the block by hand, then give the JSON its title, caption, icons and tones. No doc keeps a
-Mermaid flowchart or sequence.
+**A Mermaid flowchart, sequence or class diagram someone brings in** is read once into JSON: `-- import <doc>`
+writes a JSON beside the doc for each one in it (never over a picture already there), draws it, and prints the lines
+it replaces and the link to put there. Swap the block by hand, then give the JSON its title, caption, icons and tones.
+No doc keeps a Mermaid block ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)).
 
 ## Link it
 
@@ -148,7 +181,8 @@ dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 `DocsDiagramsTests` fails when a picture isn't what its JSON draws, when no doc shows it, when a doc shows a picture
 that isn't there, when a project doc lacks its overview, when a flow's word sits on a box or a line or a line crosses
 a box it doesn't join, when a sequence's words, notes or frames leave its drawing, when a `diagrams` folder sits
-where the tool never looks, or when a doc holds a Mermaid flowchart or sequence. Look at the SVG in Rider's markdown preview or a browser, in a light and a dark look, before you commit;
+where the tool never looks, or when a doc holds a Mermaid block. Look at the SVG in Rider's markdown preview or a
+browser, in a light and a dark look, before you commit;
 a chart wider than about 1,600 px reads small in a doc's column, so try it the other way round. Commit the JSON and
 the SVG together.
 
