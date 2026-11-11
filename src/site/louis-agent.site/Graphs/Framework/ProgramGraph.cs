@@ -15,13 +15,13 @@ public static class ProgramGraph
             new GraphNode("catalogue", "The catalogue", "your identities and packs", 1),
             new GraphNode("extras", "What else it gets", "the web, a tracer, the providers", 1),
             new GraphNode("host", "A host", "the CLI, Rider, the API or MCP", 2),
-            new GraphNode("engine", "The engine", "the loop, the guards, the ledger", 3),
+            new GraphNode("engine", "The engine", "the loop, the guards, the ledger", 3)
         ],
         [
             new GraphEdge("program", "catalogue", "names"),
             new GraphEdge("program", "extras", "hands"),
             new GraphEdge("catalogue", "host"),
             new GraphEdge("extras", "host"),
-            new GraphEdge("host", "engine", "runs"),
+            new GraphEdge("host", "engine", "runs")
         ]);
 }

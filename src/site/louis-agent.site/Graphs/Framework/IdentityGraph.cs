@@ -22,7 +22,7 @@ public static class IdentityGraph
             new GraphNode("packs", "The packs it names", "what its sessions may load", 1),
             new GraphNode("level0", "Level 0: the agent", "a session with no role", 2),
             new GraphNode("level1", "Level 1: a specialist", "a second session", 2),
-            new GraphNode("level2", "Level 2: a minion", "the cheap part, handed off", 2),
+            new GraphNode("level2", "Level 2: a minion", "the cheap part, handed off", 2)
         ],
         [
             new GraphEdge("identity", "principles"),
@@ -37,6 +37,6 @@ public static class IdentityGraph
             new GraphEdge("packs", "level0", "tools"),
             // A specialist may call another (Louis, FX85); the arrows back to the identity went again
             // ("take these out").
-            new GraphEdge("level1", "level1", "calls another"),
+            new GraphEdge("level1", "level1", "calls another")
         ]);
 }

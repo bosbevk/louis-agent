@@ -19,7 +19,9 @@ public static class GraphLayout
     private const double BoxWidth = 170;
     private const double BoxHeight = 52;
 
-    /// <summary>What a line of the note adds to a box; the note wraps at <see cref="NoteWidth"/> characters of the code font.</summary>
+    /// <summary>
+    /// What a line of the note adds to a box; the note wraps at <see cref="NoteWidth"/> characters of the code font.
+    /// </summary>
     private const double NoteLine = 12;
 
     /// <summary>How many characters of the 10px code font fit a line inside the box.</summary>
@@ -33,7 +35,8 @@ public static class GraphLayout
     /// <summary>Places a diagram across the given width.</summary>
     public static PlacedGraph Place(GraphSpec spec, int width = 880)
     {
-        // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the height.
+        // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the
+        // height.
         var columns = Ordered(spec);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
@@ -68,7 +71,9 @@ public static class GraphLayout
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight), nodes, edges);
     }
 
-    /// <summary>The columns, each box placed by the mean position of its neighbours: by its sources, then by its targets.</summary>
+    /// <summary>
+    /// The columns, each box placed by the mean position of its neighbours: by its sources, then by its targets.
+    /// </summary>
     private static List<List<GraphNode>> Ordered(GraphSpec spec)
     {
         var columns = spec.Nodes.GroupBy(node => node.Column).OrderBy(column => column.Key)
@@ -99,7 +104,8 @@ public static class GraphLayout
 
         var sorted = column.Select((node, index) => (node, key: Key(node, index))).OrderBy(pair => pair.key)
             .Select(pair => pair.node).ToList();
-        // The data's order stands unless the sort takes crossings away: a column already clear keeps the order it was given.
+        // The data's order stands unless the sort takes crossings away: a column already clear keeps the order it was
+        // given.
         return Crossings(sorted, beside, edges, mine, theirs) < Crossings(column, beside, edges, mine, theirs)
             ? sorted
             : column;
@@ -115,9 +121,9 @@ public static class GraphLayout
             .Select(edge => (From: here[mine(edge)], To: there[theirs(edge)])).ToList();
         int crossings = 0;
         for (int a = 0; a < arrows.Count; a++)
-            for (int b = a + 1; b < arrows.Count; b++)
-                if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0)
-                    crossings++;
+        for (int b = a + 1; b < arrows.Count; b++)
+            if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0)
+                crossings++;
         return crossings;
     }
 

@@ -50,7 +50,10 @@ public partial class GraphView
 
     private static string Translate(PlacedNode node) => $"translate({N(node.X)} {N(node.Y)})";
 
-    /// <summary>The label sits in the middle of a plain box; in a noted one it stands above the note's lines, which start under it.</summary>
+    /// <summary>
+    /// The label sits in the middle of a plain box; in a noted one it stands above the note's lines, which start under
+    /// it.
+    /// </summary>
     private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : 28;
 
     /// <summary>Where the note's first line sits, each line one step lower.</summary>
@@ -59,7 +62,9 @@ public partial class GraphView
     /// <summary>The column as a CSS variable, so the styles delay each column's motion a little more.</summary>
     private static string NodeStyle(PlacedNode node) => $"--col: {node.Node.Column}";
 
-    /// <summary>An arrow's length and the column it leaves from, for the stroke that draws it after its box rises.</summary>
+    /// <summary>
+    /// An arrow's length and the column it leaves from, for the stroke that draws it after its box rises.
+    /// </summary>
     private string EdgeStyle(PlacedEdge edge) =>
         $"--len: {N(edge.Length)}; --col: {Placed.Nodes.First(node => node.Node.Id == edge.Edge.From).Node.Column}";
 

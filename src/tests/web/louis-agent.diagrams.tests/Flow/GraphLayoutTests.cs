@@ -14,7 +14,7 @@ public class GraphLayoutTests
             new GraphNode("who", "An identity", "who the agent is", 0),
             new GraphNode("voice", "A voice", null, 1),
             new GraphNode("roles", "Roles", null, 1),
-            new GraphNode("packs", "The packs it names", null, 1),
+            new GraphNode("packs", "The packs it names", null, 1)
         ],
         [new GraphEdge("who", "voice"), new GraphEdge("who", "roles"), new GraphEdge("who", "packs", "names")]);
 
@@ -22,7 +22,7 @@ public class GraphLayoutTests
     [Test]
     public void TheColumns_SpanTheWidth()
     {
-        var placed = GraphLayout.Place(TwoColumns(), 880);
+        var placed = GraphLayout.Place(TwoColumns());
 
         var left = placed.Nodes.Single(node => node.Node.Id == "who");
         var right = placed.Nodes.Single(node => node.Node.Id == "voice");
@@ -35,8 +35,8 @@ public class GraphLayoutTests
     }
 
     /// <summary>
-    /// A column's boxes are stacked on the row grid with a gap, a plain box in the middle of its row (the noted box sets
-    /// the row), and the shorter column is centred on the taller one.
+    /// A column's boxes are stacked on the row grid with a gap, a plain box in the middle of its row (the noted box
+    /// sets the row), and the shorter column is centred on the taller one.
     /// </summary>
     [Test]
     public void AColumn_IsStackedAndCentred()
@@ -129,7 +129,7 @@ public class GraphLayoutTests
         var spec = new GraphSpec(
             [
                 new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 0), new GraphNode("c", "C", null, 0),
-                new GraphNode("top", "Top", null, 1), new GraphNode("bottom", "Bottom", null, 1),
+                new GraphNode("top", "Top", null, 1), new GraphNode("bottom", "Bottom", null, 1)
             ],
             [new GraphEdge("a", "top"), new GraphEdge("b", "bottom"), new GraphEdge("c", "top")]);
 
@@ -154,7 +154,7 @@ public class GraphLayoutTests
                 new GraphNode("cutoff", "Cut-off", null, 0), new GraphNode("tracing", "Tracing", null, 0),
                 new GraphNode("replay", "Replay", null, 0), new GraphNode("caching", "Caching", null, 0),
                 new GraphNode("tool", "Tool", null, 1), new GraphNode("ledger", "Ledger", null, 1),
-                new GraphNode("model", "Model", null, 1),
+                new GraphNode("model", "Model", null, 1)
             ],
             [new GraphEdge("loop", "tool"), new GraphEdge("usage", "ledger"), new GraphEdge("caching", "model")]);
 
@@ -201,7 +201,9 @@ public class GraphLayoutTests
         });
     }
 
-    /// <summary>An arrow from a box to itself loops out of its right side (a specialist may call another specialist).</summary>
+    /// <summary>
+    /// An arrow from a box to itself loops out of its right side (a specialist may call another specialist).
+    /// </summary>
     [Test]
     public void AnArrowToItself_LoopsOutOfTheRightSide()
     {
@@ -209,7 +211,7 @@ public class GraphLayoutTests
             [new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 1)],
             [new GraphEdge("a", "b"), new GraphEdge("b", "b", "calls another")]);
 
-        var placed = GraphLayout.Place(spec, 880);
+        var placed = GraphLayout.Place(spec);
 
         var b = placed.Nodes.Single(node => node.Node.Id == "b");
         var loop = placed.Edges.Single(edge => edge.Edge.From == "b" && edge.Edge.To == "b");
@@ -224,7 +226,10 @@ public class GraphLayoutTests
         });
     }
 
-    /// <summary>A word sits on a flat piece of its arrow, in the empty ground between the columns, never on a box or on the shared track.</summary>
+    /// <summary>
+    /// A word sits on a flat piece of its arrow, in the empty ground between the columns, never on a box or on the
+    /// shared track.
+    /// </summary>
     [Test]
     public void AWord_SitsBetweenTheColumns()
     {
@@ -252,7 +257,7 @@ public class GraphLayoutTests
             Enumerable.Range(0, 6).Select(column => new GraphNode($"n{column}", $"N{column}", null, column)).ToList(),
             []);
 
-        var placed = GraphLayout.Place(spec, 880);
+        var placed = GraphLayout.Place(spec);
 
         var boxes = placed.Nodes.OrderBy(node => node.X).ToList();
         Assert.Multiple(() =>
@@ -275,7 +280,7 @@ public class GraphLayoutTests
             Enumerable.Range(0, 4).Select(column => new GraphNode($"n{column}", $"N{column}", null, column)).ToList(),
             [new GraphEdge("n0", "n1", "starts"), new GraphEdge("n1", "n2", "a turn"), new GraphEdge("n2", "n3")]);
 
-        var placed = GraphLayout.Place(spec, 880);
+        var placed = GraphLayout.Place(spec);
 
         var word = placed.Edges.Single(edge => edge.Edge.Word == "a turn");
         var from = placed.Nodes.Single(node => node.Node.Id == "n1");
@@ -300,10 +305,10 @@ public class GraphLayoutTests
             [
                 new GraphEdge("n0", "n1", "opens"),
                 new GraphEdge("n1", "n2", "a message, the page"),
-                new GraphEdge("n2", "n3", "a turn"),
+                new GraphEdge("n2", "n3", "a turn")
             ]);
 
-        var placed = GraphLayout.Place(spec, 880);
+        var placed = GraphLayout.Place(spec);
 
         var boxes = placed.Nodes.OrderBy(node => node.X).ToList();
         double Gap(int left) => boxes[left + 1].X - (boxes[left].X + boxes[left].W);
@@ -316,7 +321,9 @@ public class GraphLayoutTests
         });
     }
 
-    /// <summary>Two words out of one box don't share a line: the second word moves to the piece by its own target.</summary>
+    /// <summary>
+    /// Two words out of one box don't share a line: the second word moves to the piece by its own target.
+    /// </summary>
     [Test]
     public void TwoWordsOutOfOneBox_Part()
     {
@@ -343,7 +350,7 @@ public class GraphLayoutTests
             [
                 new GraphNode("a", "A", null, 0), new GraphNode("b", "B", null, 0),
                 new GraphNode("c", "C", null, 1), new GraphNode("d", "D", "two lines of note here", 1),
-                new GraphNode("e", "E", null, 1),
+                new GraphNode("e", "E", null, 1)
             ],
             [new GraphEdge("a", "c"), new GraphEdge("b", "e")]);
 
@@ -402,7 +409,7 @@ public class GraphLayoutTests
     {
         var spec = new GraphSpec([new GraphNode("a", "A", null, 0)], []);
 
-        var placed = GraphLayout.Place(spec, 880);
+        var placed = GraphLayout.Place(spec);
 
         var box = placed.Nodes.Single();
         Assert.That(box.X + box.W / 2, Is.EqualTo(440));

@@ -7,9 +7,9 @@ namespace LouisAgent.Diagrams.Flow;
 /// Draws every arrow as a connector (FX85, Louis: "lines may not cross, have connectors on lines so they still bend
 /// but make direct lines"): straight pieces that turn at right angles, each bend rounded a little. Forward, an arrow
 /// leaves the box's right side, runs to the one track between the columns, up or down it and into the target's left
-/// side; every arrow between two columns bends there, so they join instead of crossing. Back, it leaves the right side low,
-/// drops to a lane under the drawing and climbs into the target's bottom. Inside a column, it drops straight from one
-/// box to the next. To its own box, it loops out of the right side.
+/// side; every arrow between two columns bends there, so they join instead of crossing. Back, it leaves the right side
+/// low, drops to a lane under the drawing and climbs into the target's bottom. Inside a column, it drops straight from
+/// one box to the next. To its own box, it loops out of the right side.
 /// </summary>
 /// <remarks>
 /// Orthogonal routing, the drawing style of circuit and org charts. Chosen over curves because curves between a tall
@@ -21,7 +21,9 @@ internal static class EdgeRouter
     /// <summary>The round at a bend, and the least a piece may be before a bend is drawn sharp.</summary>
     private const double Bend = 8;
 
-    /// <summary>How far under the drawing the first lane runs, and the step between two tracks, lanes or entries.</summary>
+    /// <summary>
+    /// How far under the drawing the first lane runs, and the step between two tracks, lanes or entries.
+    /// </summary>
     private const double BackLane = 30, Step = 18;
 
     /// <summary>How far out of a box's right side an arrow to itself reaches.</summary>
@@ -64,7 +66,9 @@ internal static class EdgeRouter
         forward.Where(edge => edge.Word is not null).GroupBy(edge => edge.From)
             .ToDictionary(group => group.Key, group => group.Count());
 
-    /// <summary>Routes the known arrows; the height and width grow for the lanes and loops that run outside the boxes.</summary>
+    /// <summary>
+    /// Routes the known arrows; the height and width grow for the lanes and loops that run outside the boxes.
+    /// </summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
         IReadOnlyList<GraphEdge> edges, IReadOnlyDictionary<string, PlacedNode> byId, double height, double width)
     {
@@ -166,7 +170,10 @@ internal static class EdgeRouter
         return Connector(edge, [(x, y1), (x, y2)], x + 8 + 4 * (edge.Word?.Length ?? 0), (y1 + y2) / 2 + 4);
     }
 
-    /// <summary>An arrow from a box to itself: out of its right side near the top, round and back in near the bottom, its word beside it.</summary>
+    /// <summary>
+    /// An arrow from a box to itself: out of its right side near the top, round and back in near the bottom, its word
+    /// beside it.
+    /// </summary>
     private static PlacedEdge SelfLoop(GraphEdge edge, PlacedNode box)
     {
         double x = box.X + box.W, y1 = box.Y + box.H * 0.3, y2 = box.Y + box.H * 0.7, reach = x + SelfReach;
@@ -176,7 +183,8 @@ internal static class EdgeRouter
 
     /// <summary>
     /// The path through the points, each bend rounded by a quarter-curve that starts and ends <see cref="Bend"/> from
-    /// the corner, or less when a piece is shorter; the length is the pieces' sum, close enough for the stroke that draws it.
+    /// the corner, or less when a piece is shorter; the length is the pieces' sum, close enough for the stroke that
+    /// draws it.
     /// </summary>
     private static PlacedEdge Connector(GraphEdge edge, (double X, double Y)[] points, double wordX, double wordY)
     {

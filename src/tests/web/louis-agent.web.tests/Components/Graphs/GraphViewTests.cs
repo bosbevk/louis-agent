@@ -15,7 +15,7 @@ public class GraphViewTests
             new GraphNode("who", "An identity", "who the agent is", 0),
             new GraphNode("voice", "A voice", null, 1),
             new GraphNode("roles", "Roles", null, 1),
-            new GraphNode("packs", "The packs it names", null, 1),
+            new GraphNode("packs", "The packs it names", null, 1)
         ],
         [new GraphEdge("who", "voice"), new GraphEdge("who", "roles"), new GraphEdge("who", "packs", "names")]);
 
@@ -23,7 +23,9 @@ public class GraphViewTests
         ctx.Render<GraphView>(parameters =>
             parameters.Add(view => view.Spec, Identity()).Add(view => view.Title, "An identity, as files"));
 
-    /// <summary>Every box is a group, every arrow a path, the one word on its arrow, the root ready to reveal.</summary>
+    /// <summary>
+    /// Every box is a group, every arrow a path, the one word on its arrow, the root ready to reveal.
+    /// </summary>
     [Test]
     public void TheDiagram_HasABoxAndAnArrowForEach()
     {

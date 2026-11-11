@@ -22,7 +22,7 @@ public static class TurnGraph
             new GraphNode("caching", "Prompt caching", null, 2),
             new GraphNode("model", "The model", "any provider, by configuration", 3),
             new GraphNode("tool", "A pack's tool", "typed arguments, data not a shell", 3),
-            new GraphNode("ledger", "The ledger", "one priced record per request", 3),
+            new GraphNode("ledger", "The ledger", "one priced record per request", 3)
         ],
         [
             new GraphEdge("program", "host", "starts"),
@@ -35,6 +35,6 @@ public static class TurnGraph
             new GraphEdge("replay", "caching"),
             new GraphEdge("caching", "model"),
             new GraphEdge("loop", "tool", "calls"),
-            new GraphEdge("usage", "ledger"),
+            new GraphEdge("usage", "ledger")
         ]);
 }
