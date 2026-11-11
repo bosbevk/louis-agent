@@ -1,11 +1,11 @@
 <svg viewBox="-24 -24 928 158" width="928" height="158" role="img" aria-label="One turn" xmlns="http://www.w3.org/2000/svg">
   <title>One turn</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1;
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; }
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
 }
 .ground { fill: var(--ground); }
 .box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
@@ -23,6 +23,7 @@
 .icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .frame { fill: none; stroke: var(--line); stroke-width: 1; }
 .card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
 .title { fill: var(--text); font: 600 13px var(--mono); }
 .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .code { fill: var(--text); font: 11px var(--mono); }

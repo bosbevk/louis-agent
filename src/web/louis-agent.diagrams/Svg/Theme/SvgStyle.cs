@@ -34,6 +34,7 @@ internal static class SvgStyle
           .icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
           .frame { fill: none; stroke: var(--line); stroke-width: 1; }
           .card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+          .highlight { fill: var(--tint); stroke: var(--accent); }
           .title { fill: var(--text); font: 600 13px var(--mono); }
           .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
           .code { fill: var(--text); font: 11px var(--mono); }
@@ -43,5 +44,6 @@ internal static class SvgStyle
     /// <summary>One palette as the picture's colour variables.</summary>
     private static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --panel: {palette.Panel}; --line: {palette.Line}; --text: {palette.Text}; " +
-        $"--bright: {palette.Bright}; --quiet: {palette.Quiet}; --chip: {palette.Chip};";
+        $"--bright: {palette.Bright}; --quiet: {palette.Quiet}; --chip: {palette.Chip}; " +
+        $"--accent: {palette.Accent}; --tint: {palette.Tint};";
 }

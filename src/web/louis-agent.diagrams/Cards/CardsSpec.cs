@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Cards.Links;
+
 namespace LouisAgent.Diagrams.Cards;
 
 /// <summary>

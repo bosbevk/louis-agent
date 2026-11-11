@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Diagrams.Cards;
+namespace LouisAgent.Diagrams.Cards.Links;
 
 /// <summary>
 /// Which way a link's arrow points: from the first card to the second, back, or both ways, as the arrows between

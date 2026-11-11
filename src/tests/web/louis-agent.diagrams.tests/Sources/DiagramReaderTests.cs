@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 
@@ -83,6 +84,18 @@ public class DiagramReaderTests
                 "louis-agent.core", "The runtime and the tool loop.")));
             Assert.That(source.Cards.Links.Select(link => link.Kind), Has.All.EqualTo(CardLinkKind.Both));
         });
+    }
+
+    /// <summary>A card is plain unless it names its look, and reads the look it names.</summary>
+    [Test]
+    public void ACard_ReadsItsLook_PlainWhenItNamesNone()
+    {
+        var source = DiagramReader.Read(Cards.Replace("\"title\": \"Engine\",",
+            "\"title\": \"Engine\", \"look\": \"highlight\","));
+
+        var cards = source.Cards!.Rows.SelectMany(row => row.Cards).ToList();
+        Assert.That(cards.Select(card => card.Look),
+            Is.EqualTo(new[] { CardLook.Highlight, CardLook.Plain, CardLook.Plain }));
     }
 
     /// <summary>A kind the renderer doesn't draw is refused, naming the kinds it does.</summary>

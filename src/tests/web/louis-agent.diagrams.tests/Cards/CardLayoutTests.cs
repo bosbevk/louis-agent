@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Cards.Placed;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;

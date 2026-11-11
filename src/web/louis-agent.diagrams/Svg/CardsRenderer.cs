@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Cards.Placed;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
@@ -35,30 +36,63 @@ internal sealed class CardsRenderer : IDiagramRenderer
     }
 
     /// <summary>
-    /// One card: its box, its icon at the top left, its title under the icon with its code chip beside it (or under
-    /// it, when the two don't fit one line), and its words under them, as the layout measured.
+    /// One card: its box, its icon on top, its title under the icon with its code chip beside it (or under it, when
+    /// the two don't fit one line), and its words under them, as the layout measured. A plain card starts them at
+    /// its left; a highlighted card and a heading centre them, the heading with no box.
     /// </summary>
+    /// <remarks>
+    /// The look is a type code kept as an enum (Fowler's refactoring catalogue), switched on here and nowhere else:
+    /// the looks differ only in where the words start and how the box is filled, too little to earn a class each.
+    /// </remarks>
     private static void Draw(SvgWriter writer, PlacedCard card)
     {
-        double left = card.X + CardLayout.CardPad;
-        double titleTop = card.Y + CardLayout.CardPad + CardLayout.IconSize + CardLayout.IconGap;
-        writer.Box(card.X, card.Y, card.W, card.H, 10, "card")
-            .Icon(left, card.Y + CardLayout.CardPad, CardLayout.IconSize, card.Card.Icon, "icon")
-            .Text(left, titleTop + 13, card.Card.Title, "title", "start");
+        var look = card.Card.Look;
+        bool centred = look != CardLook.Plain;
+        double left = card.X + CardLayout.CardPad, centre = card.X + card.W / 2;
+        if (look != CardLook.Heading)
+            writer.Box(card.X, card.Y, card.W, card.H, 10, look == CardLook.Highlight ? "card highlight" : "card");
 
+        double iconX = centred ? centre - CardLayout.IconSize / 2 : left;
+        writer.Icon(iconX, card.Y + CardLayout.CardPad, CardLayout.IconSize, card.Card.Icon, "icon");
+        double textTop = DrawTitle(writer, card, centred);
+
+        (double x, string anchor) = centred ? (centre, "middle") : (left, "start");
+        for (int at = 0; at < card.TextLines.Count; at++)
+            writer.Text(x, textTop + 11 + at * CardLayout.TextLine, card.TextLines[at], "text", anchor);
+    }
+
+    /// <summary>
+    /// A card's title and its code chip, from its left or centred on it, and where its words start under them.
+    /// </summary>
+    private static double DrawTitle(SvgWriter writer, PlacedCard card, bool centred)
+    {
+        double left = card.X + CardLayout.CardPad, centre = card.X + card.W / 2;
+        double titleTop = card.Y + CardLayout.CardPad + CardLayout.IconSize + CardLayout.IconGap;
         double textTop = titleTop + CardLayout.TitleLine + CardLayout.TextGap;
-        if (card.Card.Code is { } code)
+        double titleWidth = card.Card.Title.Length * CardLayout.TitleCharWidth;
+        if (card.Card.Code is not { } code)
         {
-            double chipX = card.ChipBelow
-                ? left
-                : left + card.Card.Title.Length * CardLayout.TitleCharWidth + CardLayout.ChipGap;
-            double chipY = card.ChipBelow ? titleTop + CardLayout.TitleLine + 2 : titleTop - 3;
-            writer.Box(chipX, chipY, CardLayout.ChipWidth(code), CardLayout.ChipHeight, 5, "chip")
-                .Text(chipX + CardLayout.ChipPad, chipY + 14, code, "code", "start");
-            if (card.ChipBelow) textTop += CardLayout.ChipHeight + 6;
+            // Centred on the card by the reader's own font, so a title whose font runs wide stays in the middle.
+            (double x, string anchor) = centred ? (centre, "middle") : (left, "start");
+            writer.Text(x, titleTop + 13, card.Card.Title, "title", anchor);
+            return textTop;
         }
 
-        for (int at = 0; at < card.TextLines.Count; at++)
-            writer.Text(left, textTop + 11 + at * CardLayout.TextLine, card.TextLines[at], "text", "start");
+        // A title and its chip beside it are one line, centred together; a chip under the title is centred alone.
+        double chipWidth = CardLayout.ChipWidth(code);
+        double line = card.ChipBelow ? titleWidth : titleWidth + CardLayout.ChipGap + chipWidth;
+        double start = centred ? centre - line / 2 : left;
+        writer.Text(start, titleTop + 13, card.Card.Title, "title", "start");
+
+        double chipX = (card.ChipBelow, centred) switch
+        {
+            (false, _) => start + titleWidth + CardLayout.ChipGap,
+            (true, true) => centre - chipWidth / 2,
+            (true, false) => left
+        };
+        double chipY = card.ChipBelow ? titleTop + CardLayout.TitleLine + 2 : titleTop - 3;
+        writer.Box(chipX, chipY, chipWidth, CardLayout.ChipHeight, 5, "chip")
+            .Text(chipX + CardLayout.ChipPad, chipY + 14, code, "code", "start");
+        return card.ChipBelow ? textTop + CardLayout.ChipHeight + 6 : textTop;
     }
 }
