@@ -1,5 +1,5 @@
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -60,10 +60,11 @@ public class PulsPromptsTests
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
             Is.EqualTo(new[]
             {
-                RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire()
+                PulsToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(),
+                PulsToolset.ShopPrices.Wire(), PulsToolset.Calculator.Wire()
             }),
-            "the cook declares recipes, where to buy, shop prices and the calculator in its header (ADR 0025)");
+            "the cook declares the web, recipes, where to buy, shop prices and the calculator in its header " +
+            "(ADR 0025)");
     }
 
     /// <summary>
@@ -110,7 +111,7 @@ public class PulsPromptsTests
         string puls = Read("agent/puls/voice.md");
 
         Assert.That(puls,
-            Does.Contain("`web`").And.Contain("`specialists`").And.Contain("`puls-cook`").And.Contain("`Wants`"));
+            Does.Contain("`web`").And.Contain("`agents`").And.Contain("`puls.cook`").And.Contain("`Wants`"));
         // Its routing table (the rows) names no coding toolset; the analyst's counting rule, moved here, may name
         // files and python.
         string rows = string.Join("\n", puls.Split('\n').Where(r => r.StartsWith('|')));
@@ -187,15 +188,36 @@ public class PulsPromptsTests
         Assert.That(text, Does.Contain("how the user sounds").And.Contain("keep your report's shape"));
     }
 
-    /// <summary>The routing teaches the model the word "role" for a sub-session, never the old "personality".</summary>
+    /// <summary>
+    /// The routing teaches the model to hand work on by address (F127.3.1), never by the old tools' toolsets and role.
+    /// </summary>
     [Test]
-    public void ThePromptsTeach_StartSubSessionsRole()
+    public void ThePromptsTeach_AskingBySpecialistsAddress()
     {
-        // CL14 step 2: the model's word is role, in the tool's schema and in the prompts that teach it.
         string router = Read("agent/puls/voice.md");
 
-        Assert.That(router, Does.Contain("StartSubSession(toolsets, message, role)").And.Not.Contain("personality"));
-        Assert.That(router, Does.Contain("Pass `role`").And.Contain("ROLES_ENABLED"));
+        Assert.That(router, Does.Contain("AskAgent(address, message)").And.Not.Contain("StartSubSession"));
+        Assert.That(router, Does.Contain("Pass its address").And.Contain("ROLES_ENABLED"));
+    }
+
+    /// <summary>
+    /// Puls may ask its five specialists by address, and has the cook's report shown whole, as ADR 0079 did for its
+    /// specialists (F127.3.1, Louis's pick A).
+    /// </summary>
+    [Test]
+    public void Puls_CallsItsFiveSpecialists_AndRelaysTheirAnswersWhole()
+    {
+        IAgentIdentity puls = new PulsIdentity();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(puls.Calls,
+                Is.EquivalentTo(
+                    new[] { PulsRole.Cook, PulsRole.Researcher, PulsRole.Analyst, PulsRole.Historian, PulsRole.Reader }
+                        .Select(role => role.Wire().Replace($"{puls.Name}-", $"{puls.Name}."))),
+                "each address reaches its specialist's file, specialists/puls-*.md");
+            Assert.That(puls.RelaysAnswersWhole, Is.True);
+        });
     }
 
     /// <summary>The cook answers for the user's own town and quotes no price as if it were checked.</summary>
@@ -204,7 +226,8 @@ public class PulsPromptsTests
     {
         string cook = Read("specialists/puls-cook.md");
 
-        Assert.That(cook, Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
+        Assert.That(cook,
+            Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
         Assert.That(cook, Does.Contain("Look the user's shop up in their town, once, with `FindBranches`"));
@@ -237,7 +260,7 @@ public class PulsPromptsTests
         // be firm.
         string router = Read("agent/puls/voice.md");
 
-        Assert.That(router, Does.Contain("ContinueSubSession"));
+        Assert.That(router, Does.Contain("`AskAgent` again with the same address"));
         Assert.That(router, Does.Contain("even when you could answer it yourself"));
     }
 
@@ -421,10 +444,11 @@ public class PulsPromptsTests
         Assert.That(PromptHeaders.Split("specialists/puls-cook.md", Raw("specialists/puls-cook.md")).Header!.Toolsets,
             Is.EqualTo(new[]
             {
-                RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire()
+                PulsToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(),
+                PulsToolset.ShopPrices.Wire(), PulsToolset.Calculator.Wire()
             }),
-            "its header names recipes, both packs and the calculator, and no shops");
+            "its header names the web (Puls no longer sends it, F127.3.1), recipes, both packs and the calculator, " +
+            "and no shops");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook, Does.Contain("No shop's prices are looked up: no shop has given us its prices."));
         Assert.That(cook, Does.Contain("Every price comes from `EstimatePrices`, Stats SA's average prices"));
@@ -510,8 +534,8 @@ public class PulsPromptsTests
             "the report goes straight to the user, so the one choosing doesn't retype it");
         Assert.That(Flat(voice), Does.Contain("in jou eie woorde"), "the line before the call, in Puls's words");
         Assert.That(router, Does.Not.Contain("My kok is terug"), "and none above a report it doesn't write");
-        Assert.That(router, Does.Contain("puls-cook). It stays open"),
-            "the footer example names its own cook, and no cost (FX27)");
+        Assert.That(router, Does.Contain("[Answered by puls.cook, did:"),
+            "the line's example names its own cook, and no cost (FX27)");
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
         Assert.That(voice, Does.Contain("nou-nou terug"), "what the hand-off says, in Puls's voice");
         Assert.That(router, Does.Contain("one line to the user first"));
@@ -528,10 +552,10 @@ public class PulsPromptsTests
         string[] rows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
         Assert.That(rows.Single(r => r.Contains("The world:")),
             Does.Contain("you, with `web`").And.Not.Contain(PulsRole.Researcher.Wire()));
-        Assert.That(rows.Where(r => r.Contains("`puls-")), Has.Exactly(3).Items.And.All.Contains("`puls-cook`"),
-            "the routing row and the two roles rows (cooking, shopping)");
-        Assert.That(rows.Single(r => r.Contains("`puls-cook`") && r.Contains("`web`") && r.Contains("Cooking")),
-            Is.Not.Null, "a meal goes to the cook with web");
+        Assert.That(rows.Where(r => r.Contains("`puls.")), Has.Exactly(3).Items.And.All.Contains("`puls.cook`"),
+            "the routing row and the two specialists' rows (cooking, shopping)");
+        Assert.That(rows.Single(r => r.Contains("`puls.cook`") && r.Contains("`agents`") && r.Contains("Cooking")),
+            Is.Not.Null, "a meal goes to the cook, asked by its address");
         Assert.That(router, Does.Contain("never hand anything else to a specialist"));
         Assert.That(router, Does.Contain("isn't available yet"), "what to say instead of delegating");
         Assert.That(router, Does.Contain("### Waiting for validation").And.Contain("ROLES_ENABLED"));

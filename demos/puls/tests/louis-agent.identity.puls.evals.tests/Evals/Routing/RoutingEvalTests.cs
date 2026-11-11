@@ -25,7 +25,8 @@ public class RoutingEvalTests
     private const string Source = "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing";
 
     /// <summary>The toolsets that hand a question on to another agent.</summary>
-    private static readonly string[] Delegating = [CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire()];
+    private static readonly string[] Delegating =
+        [CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire(), CoreToolset.Agents.Wire()];
 
     /// <summary>It is the identity's eval, under its dataset's name, at the version its trend carries.</summary>
     [Test]
@@ -46,7 +47,10 @@ public class RoutingEvalTests
     [Test]
     public async Task TheBaseline_IsEveryToolsetPulsHas_ButTheDelegatingOnes()
     {
-        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), $"{PackKind.DotNet.Wire()},{PackKind.Git.Wire()},{PackKind.Files.Wire()},{PackKind.Shell.Wire()}").Toolsets.Select(toolset => toolset.Name);
+        var puls = Plugins
+            .FromSettings(PulsIdentityName.Puls.Wire(),
+                $"{PackKind.DotNet.Wire()},{PackKind.Git.Wire()},{PackKind.Files.Wire()},{PackKind.Shell.Wire()}")
+            .Toolsets.Select(toolset => toolset.Name);
 
         var modes = await Load().ModesAsync(null!, CancellationToken.None);
 

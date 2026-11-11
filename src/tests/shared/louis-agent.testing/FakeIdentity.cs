@@ -13,7 +13,8 @@ public sealed class FakeIdentity(
     IReadOnlyDictionary<string, string>? prompts = null,
     string? voice = null,
     bool demonstration = false,
-    IReadOnlyList<string>? calls = null) : IAgentIdentity
+    IReadOnlyList<string>? calls = null,
+    bool relaysAnswersWhole = false) : IAgentIdentity
 {
     public string Name => name;
 
@@ -31,4 +32,9 @@ public sealed class FakeIdentity(
 
     /// <summary>The agents this test identity may ask (F127.3.1), none unless the test says.</summary>
     public IReadOnlyList<string> Calls => calls ?? [];
+
+    /// <summary>
+    /// Whether an agent this test identity asks has its answer shown whole (F127.3.1), off unless said.
+    /// </summary>
+    public bool RelaysAnswersWhole => relaysAnswersWhole;
 }

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Core.Delegation.Agents;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Delegation;
@@ -12,7 +13,14 @@ internal static class ShownReport
     /// <summary>Where the tool's footer starts, under the specialist's answer.</summary>
     private const string Footer = "\n\n[Sub-session ";
 
-    private static readonly string[] Tools = [nameof(SpecialistTools.StartSubSession), nameof(SpecialistTools.ContinueSubSession)];
+    /// <summary>Where the line under an asked agent's answer starts (F127.3.1).</summary>
+    private const string AnsweredBy = "\n\n[Answered by ";
+
+    private static readonly string[] Tools =
+    [
+        nameof(SpecialistTools.StartSubSession), nameof(SpecialistTools.ContinueSubSession),
+        nameof(AskAgentTools.AskAgent)
+    ];
 
     /// <summary>
     /// The report when the last thing in the turn is a specialist's answer, with the text set apart from what came
@@ -26,19 +34,23 @@ internal static class ShownReport
         if (results.Count == 0) return null;
 
         var names = contents.OfType<FunctionCallContent>().ToDictionary(call => call.CallId, call => call.Name);
-        if (!results.All(result => names.TryGetValue(result.CallId, out string? name) && Tools.Contains(name))) return null;
+        if (!results.All(result => names.TryGetValue(result.CallId, out string? name) && Tools.Contains(name)))
+            return null;
 
         return "\n\n" + string.Join("\n\n", results.Select(result => WithoutFooter(TextOf(result.Result))));
     }
 
     /// <summary>The text of a tool's result, however the tool loop holds it.</summary>
     private static string TextOf(object? result) =>
-        result is JsonElement { ValueKind: JsonValueKind.String } text ? text.GetString() ?? "" : result?.ToString() ?? "";
+        result is JsonElement { ValueKind: JsonValueKind.String } text
+            ? text.GetString() ?? ""
+            : result?.ToString() ?? "";
 
     /// <summary>The answer alone: the footer holds the handle, which is the model's.</summary>
     private static string WithoutFooter(string answer)
     {
-        int footer = answer.LastIndexOf(Footer, StringComparison.Ordinal);
+        int footer = Math.Max(answer.LastIndexOf(Footer, StringComparison.Ordinal),
+            answer.LastIndexOf(AnsweredBy, StringComparison.Ordinal));
         return footer < 0 ? answer : answer[..footer];
     }
 }

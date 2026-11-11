@@ -81,13 +81,13 @@ public sealed class AskAgentTools(
 
         var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.
-            FunctionInvokingChatClient.CurrentContext?.CallContent.CallId);
+            FunctionInvokingChatClient.CurrentContext?.CallContent.CallId, Asker()?.RelaysAnswersWhole == true);
         if (_slots.Take(ask.Scope, out string? parent) is { } limit) return limit;
         if (SubSessionRegistry.Current is not { } kept || AgentLine.Pick(kept, agent.Address) is not { } open)
             return await StartAsync(ask, peer, name, parent, SubSessionToolMessage.AgentAnswer, cancellationToken);
 
         // Asked before in this chat: the message goes on that conversation, and one the peer dropped starts again.
-        return await _session.ContinueAsync(kept, open, ask.Message, KindOf(agent, SubSessionToolMessage.AgentAnswer),
+        return await _session.ContinueAsync(kept, open, ask.Message, KindOf(ask, SubSessionToolMessage.AgentAnswer),
             ask.ToolUseId, ask.Scope, _timeout, cancellationToken,
             () => StartAsync(ask, peer, name, parent, SubSessionToolMessage.AgentAnswerAnew, cancellationToken));
     }
@@ -103,16 +103,29 @@ public sealed class AskAgentTools(
         var opening = new CreateSessionRequest($"agent:{label}", ask.Scope?.Tags.Run, ask.Scope?.Tags.Service,
             Depth: 1, Parent: parent, Location: UserPlace.Current?.Location, TimeZone: UserPlace.Current?.TimeZone,
             Role: ask.Agent.Role, Replay: SessionReplay.ForSubSession(), Identity: ask.Agent.Address.Identity);
-        return _session.OpenAsync(peer, name, opening, ask.Message, [], ask.Agent.Role, KindOf(ask.Agent, footer),
+        return _session.OpenAsync(peer, name, opening, ask.Message, [], ask.Agent.Role, KindOf(ask, footer),
             ask.ToolUseId, ask.Scope, _timeout, cancellationToken);
     }
 
     /// <summary>How the path names an asked agent and writes its answer, under the line given.</summary>
-    private static SubSessionKind KindOf(AddressedAgent agent, SubSessionToolMessage footer)
+    private static SubSessionKind KindOf(Ask ask, SubSessionToolMessage footer)
     {
-        string label = agent.Address.ToString();
-        return new SubSessionKind(Kind, label, $"agent:{label}", (_, reply) => Answer(footer, label, reply),
-            reply => Answer(footer, label, reply), Address: agent.Address);
+        string label = ask.Agent.Address.ToString();
+        return new SubSessionKind(Kind, label, $"agent:{label}", (_, reply) => Answered(ask, footer, label, reply),
+            reply => Answered(ask, footer, label, reply), Address: ask.Agent.Address);
+    }
+
+    /// <summary>
+    /// The answer, and for an asker that relays answers whole, the end of the turn, so its model isn't asked to write
+    /// the answer out again (ADR 0079). An empty answer stays with the model, which says what to do about it.
+    /// </summary>
+    private static string Answered(Ask ask, SubSessionToolMessage footer, string address,
+        SubSessionMessenger.SubSessionReply reply)
+    {
+        if (ask.Relays && !string.IsNullOrWhiteSpace(reply.Text) &&
+            FunctionInvokingChatClient.CurrentContext is { } call)
+            call.Terminate = true;
+        return Answer(footer, address, reply);
     }
 
     /// <summary>The agent an address reaches for this asker, or the reason the model reads instead.</summary>
@@ -155,6 +168,14 @@ public sealed class AskAgentTools(
             Did = DidLine.Of(new AgentWork(reply.Events).Calls())
         });
 
-    /// <summary>One ask as it was checked: who answers, what is sent, and the turn it belongs to.</summary>
-    private sealed record Ask(AddressedAgent Agent, SendMessageRequest Message, UsageScope? Scope, string? ToolUseId);
+    /// <summary>
+    /// One ask as it was checked: who answers, what is sent, the turn it belongs to, and whether the asker relays the
+    /// answer whole.
+    /// </summary>
+    private sealed record Ask(
+        AddressedAgent Agent,
+        SendMessageRequest Message,
+        UsageScope? Scope,
+        string? ToolUseId,
+        bool Relays);
 }

@@ -529,7 +529,8 @@ public class AgentSessionsTests
         // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
         // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
-        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        // The reader, which declares no toolsets of its own: the cook's header brings the web (F127.3.1).
+        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Reader.Wire());
         var withWeb = sessions.Create([TestToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
             role: PulsRole.Cook.Wire());
 

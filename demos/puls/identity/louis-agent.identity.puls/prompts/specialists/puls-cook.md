@@ -3,7 +3,7 @@ name: puls-cook
 description: Puls's local cook. Turns what should I cook into a meal the user can buy for and make today where they live, with the recipe and a shopping list.
 metadata:
   level: specialist
-  toolsets: recipes, where-to-buy, shop-prices, calculator
+  toolsets: web, recipes, where-to-buy, shop-prices, calculator
 ---
 # Puls specialist: Local cook
 

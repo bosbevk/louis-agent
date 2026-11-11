@@ -41,4 +41,11 @@ public interface IAgentIdentity
     /// <c>acme.cook</c> for one of its roles. None, unless it says so: an identity calls only whom it names.
     /// </summary>
     IReadOnlyList<string> Calls => [];
+
+    /// <summary>
+    /// Whether an asked agent's answer goes to the user as it is, ending the turn there (F127.3.1, from ADR 0079's
+    /// setting), so this agent's model never writes it out again. Off unless it says so: an agent that asks to then
+    /// speak for itself, as a guide does, keeps the last word.
+    /// </summary>
+    bool RelaysAnswersWhole => false;
 }

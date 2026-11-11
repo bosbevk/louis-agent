@@ -29,7 +29,8 @@ namespace LouisAgent.Identities.Puls.Tests;
 public class PulsSessionSnapshotTests
 {
     private static readonly string GoldenFile =
-        Path.Combine(TestPaths.RepoRoot, "demos/puls/tests/louis-agent.identity.puls.tests", "PulsSessionSnapshot.json");
+        Path.Combine(TestPaths.RepoRoot, "demos/puls/tests/louis-agent.identity.puls.tests",
+            "PulsSessionSnapshot.json");
 
     private static readonly JsonSerializerOptions Json = new()
     {
@@ -74,7 +75,8 @@ public class PulsSessionSnapshotTests
         // The recipes pack is the other one Puls names, with every site on as the deployments have it
         // (RECIPE_SOURCES=*), because the cook's header asks for its toolset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-        [new WebPack(),
+        [
+            new WebPack(),
             new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new CalculatorPack(),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" })
         ]);
@@ -96,14 +98,11 @@ public class PulsSessionSnapshotTests
     };
 
     /// <summary>
-    /// The toolsets the cook's session opens with, as Puls hands it the work: <c>web</c> from Puls, plus whatever the
-    /// cook's own header declares (ADR 0025), so a change to the header changes the golden and no list is typed here.
+    /// The toolsets the cook's session opens with when Puls asks it (F127.3.1): what the cook's own header declares
+    /// (ADR 0025), since an ask sends none, so a change to the header changes the golden and no list is typed here.
     /// </summary>
     private static IEnumerable<string> CookToolsets() =>
-        ToolsetCatalog.Normalise([
-            TestToolset.Web.Wire(), .. SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(),
-                RoleLevel.Specialist)
-        ]);
+        ToolsetCatalog.Normalise(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist));
 
     /// <summary>
     /// Both sessions as one JSON text, with this machine's temporary folder replaced so the file is the same
@@ -114,7 +113,7 @@ public class PulsSessionSnapshotTests
         var factory = Factory();
         var snapshot = new
         {
-            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), TestToolset.Web.Wire()], "puls/voice-af",
+            Chat = View(factory.GetOrCreate([CoreToolset.Agents.Wire(), TestToolset.Web.Wire()], "puls/voice-af",
                 RoleLevel.Agent)),
             Cook = View(factory.GetOrCreate(CookToolsets(), PulsRole.Cook.Wire(), RoleLevel.Specialist)),
         };
