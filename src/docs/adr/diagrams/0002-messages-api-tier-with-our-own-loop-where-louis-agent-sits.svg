@@ -183,9 +183,9 @@ svg {
   </g>
   <text class="notes" x="38" y="592">
     <tspan class="note-head">Our tier:</tspan>
-    <tspan class="note-rest">the engine runs its own loop behind`IChatClient`, so it never names</tspan>
+    <tspan class="note-rest">the engine runs its own loop behind IChatClient, so it never names a</tspan>
   </text>
   <text class="notes" x="38" y="609">
-    <tspan class="note-rest">a provider.</tspan>
+    <tspan class="note-rest">provider.</tspan>
   </text>
 </svg>

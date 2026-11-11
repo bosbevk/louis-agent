@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "title": "ADR 0002: where louis-agent sits",
-  "caption": "Our tier: the engine runs its own loop behind\u0060IChatClient\u0060, so it never names a provider.",
+  "caption": "Our tier: the engine runs its own loop behind IChatClient, so it never names a provider.",
   "flow": {
     "nodes": [
       {

@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "title": "ADR 0002: which Claude tier to build on",
-  "caption": "Our tier: the Messages API, with our own loop behind\u0060IChatClient\u0060, so any provider fits.",
+  "caption": "Our tier: the Messages API, with our own loop behind IChatClient, so any provider fits.",
   "flow": {
     "nodes": [
       {
@@ -19,7 +19,7 @@
         "id": "C",
         "icon": "chip",
         "tone": "green",
-        "label": "Messages API \u002B your own loop\n(this is louis-agent)"
+        "label": "Messages API + your own loop\n(this is louis-agent)"
       },
       {
         "id": "D",
@@ -35,7 +35,7 @@
       {
         "id": "F",
         "icon": "search",
-        "label": "Need Claude Code\u0027s built-in\nfile/bash/grep tools?"
+        "label": "Need Claude Code's built-in\nfile/bash/grep tools?"
       },
       {
         "id": "G",

@@ -1,7 +1,7 @@
 {
   "kind": "flow",
   "title": "Building blocks, level 3: the engine's parts",
-  "caption": "One concern a folder: hosting, the agent, the model, tools, skills, usage and guards are core\u0027s components",
+  "caption": "One concern a folder: hosting, the agent, the model, tools, skills, usage and guards are core's components, each depending only on the ones under it.",
   "flow": {
     "nodes": [
       {
@@ -38,7 +38,7 @@
         "id": "usage",
         "icon": "chart",
         "tone": "teal",
-        "label": "Usage \u00B7 Pricing\nledger, prices, rates"
+        "label": "Usage · Pricing\nledger, prices, rates"
       },
       {
         "id": "guard",
@@ -50,7 +50,7 @@
         "id": "base",
         "icon": "settings",
         "tone": "teal",
-        "label": "Config \u00B7 Messages \u00B7 Logging"
+        "label": "Config · Messages · Logging"
       }
     ],
     "edges": [

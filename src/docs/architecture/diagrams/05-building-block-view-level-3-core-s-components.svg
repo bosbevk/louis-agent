@@ -233,6 +233,6 @@ svg {
   </g>
   <text class="notes" x="38" y="768">
     <tspan class="note-head">One concern a folder:</tspan>
-    <tspan class="note-rest">hosting, the agent, the model, tools, skills, usage and guards are core's components</tspan>
+    <tspan class="note-rest">hosting, the agent, the model, tools, skills, usage and guards are core's components, each depending only on the ones under it.</tspan>
   </text>
 </svg>

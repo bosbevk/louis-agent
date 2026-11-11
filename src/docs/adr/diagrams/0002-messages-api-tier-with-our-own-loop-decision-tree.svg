@@ -210,7 +210,7 @@ svg {
   </g>
   <text class="notes" x="38" y="718">
     <tspan class="note-head">Our tier:</tspan>
-    <tspan class="note-rest">the Messages API, with our own loop behind`IChatClient`, so any</tspan>
+    <tspan class="note-rest">the Messages API, with our own loop behind IChatClient, so any</tspan>
   </text>
   <text class="notes" x="38" y="735">
     <tspan class="note-rest">provider fits.</tspan>
