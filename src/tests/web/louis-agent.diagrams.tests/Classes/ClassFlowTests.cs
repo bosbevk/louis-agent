@@ -105,6 +105,17 @@ public class ClassFlowTests
             Is.EqualTo(new[] { "implements", null, "reads" }));
     }
 
+    /// <summary>Arrows out of one type with the same word say it once too: a workflow holding five parts.</summary>
+    [Test]
+    public void ArrowsOutOfOneType_SayASharedWordOnce()
+    {
+        var spec = new ClassesSpec(
+            [new ClassType("w", "TriageWorkflow"), new ClassType("a", "A"), new ClassType("b", "B")],
+            [new ClassRelation("w", "a", RelationKind.Holds), new ClassRelation("w", "b", RelationKind.Holds)]);
+
+        Assert.That(ClassFlow.Of(spec).Edges.Select(edge => edge.Word), Is.EqualTo(new[] { "holds", null }));
+    }
+
     /// <summary>The drawing matches its golden file, looked at by eye when it was made.</summary>
     [Test]
     public void AClassChart_MatchesTheGoldenFile() =>

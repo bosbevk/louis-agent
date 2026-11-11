@@ -27,14 +27,20 @@ public static class ClassFlow
             spec.Groups);
 
     /// <summary>
-    /// The arrows, a word shared by several into the same type kept on the first only (CL60.4), so a fan of
-    /// implementers doesn't pile its chips up by the interface; the rest keep their style.
+    /// The arrows, a word shared by several into the same type, or out of it, kept on the first only (CL60.4), so a
+    /// fan of implementers or of held parts doesn't pile its chips up by the type; the rest keep their style.
     /// </summary>
     private static List<GraphEdge> Once(IEnumerable<GraphEdge> edges)
     {
-        var said = new HashSet<(string To, string Word)>();
-        return edges.Select(edge => edge.Word is { } word && !said.Add((edge.To, word)) ? edge with { Word = null } : edge)
-            .ToList();
+        var into = new HashSet<(string Type, string Word)>();
+        var outOf = new HashSet<(string Type, string Word)>();
+        return edges.Select(edge =>
+        {
+            if (edge.Word is not { } word) return edge;
+            // Both are noted, so the first arrow of each fan keeps its word whichever end it shares.
+            bool newInto = into.Add((edge.To, word)), newOutOf = outOf.Add((edge.From, word));
+            return newInto && newOutOf ? edge : edge with { Word = null };
+        }).ToList();
     }
 
     /// <summary>The words in a type's kind that make it a contract or state rather than a part that does the work.</summary>
