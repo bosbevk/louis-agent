@@ -7,7 +7,8 @@ namespace LouisAgent.Evals.Trials;
 
 /// <summary>
 /// The one reader of the engine's events for the general checks: whether a turn streamed an error, what it cost and
-/// in which currency, which role its first sub-session went to, which tools were called and what they gave back, and
+/// in which currency, which address it asked first and which it asked again, which tools were called and what they
+/// gave back, and
 /// the error's message.
 /// </summary>
 /// <remarks>
@@ -17,11 +18,8 @@ namespace LouisAgent.Evals.Trials;
 /// </remarks>
 public static class EngineEvents
 {
-    /// <summary>The engine's own tool that hands a question to a role (core's sub-sessions).</summary>
-    private const string StartSubSession = "StartSubSession";
-
-    /// <summary>The engine's own tool that goes back to a sub-session by its handle.</summary>
-    private const string ContinueSubSession = "ContinueSubSession";
+    /// <summary>The engine's own tool that asks another agent by its address (F127.3.1).</summary>
+    private const string AskAgent = "AskAgent";
 
     /// <summary>
     /// True when the turn streamed an error event: the agent's error. A specialist's error is not the turn's.
@@ -84,23 +82,21 @@ public static class EngineEvents
         ["input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"];
 
     /// <summary>
-    /// The role of the turn's first StartSubSession call that names a role, or null when the agent answered itself
-    /// or no such call names one.
+    /// The address of the turn's first ask (F127.3.1), or null when the agent answered itself or no ask names one.
     /// </summary>
-    public static string? RoutedRole(TurnTranscript turn)
-    {
-        foreach (var e in turn.Events)
-        {
-            if (e is not ContentBlockStarted || !Field(e.Data, "content_block", out var block)) continue;
-            if (TextOf(block, "type") == "tool_use" && TextOf(block, "name") == StartSubSession
-                                                    && Field(block, "input", out var input) &&
-                                                    TextOf(input, "role") is { } role &&
-                                                    !string.IsNullOrWhiteSpace(role))
-                return role;
-        }
+    public static string? RoutedAddress(TurnTranscript turn) =>
+        AddressesAsked(turn) is [var first, ..] ? first : null;
 
-        return null;
-    }
+    /// <summary>
+    /// The addresses the turn's own agent asked, in order, each once; a blank one is none, and a specialist's asks
+    /// are its own.
+    /// </summary>
+    private static IReadOnlyList<string> AddressesAsked(TurnTranscript turn) =>
+    [
+        .. ToolBlocks(turn.Events).Where(block => TextOf(block, "name") == AskAgent)
+            .Select(block => Field(block, "input", out var input) ? TextOf(input, "address") : null)
+            .Where(address => !string.IsNullOrWhiteSpace(address)).Select(address => address!.Trim()).Distinct()
+    ];
 
     /// <summary>The names of the tools the turn's agent called itself, in order.</summary>
     public static IReadOnlyList<string> ToolsCalled(TurnTranscript turn) => CalledIn(turn.Events);
@@ -152,13 +148,14 @@ public static class EngineEvents
     }
 
     /// <summary>
-    /// The handle of the sub-session the turn's agent went back to (its first ContinueSubSession call that names
-    /// one), or null when it went back to none.
+    /// The address the turn asked again (F127.3.1): its first ask to an address an earlier turn of the conversation
+    /// asked, or null when it asked none again.
     /// </summary>
-    public static string? ContinuedHandle(TurnTranscript turn) =>
-        ToolBlocks(turn.Events).Where(block => TextOf(block, "name") == ContinueSubSession)
-            .Select(block => Field(block, "input", out var input) ? TextOf(input, "handle") : null)
-            .FirstOrDefault(handle => !string.IsNullOrEmpty(handle));
+    public static string? AskedAgain(TurnTranscript turn, IReadOnlyList<TurnTranscript> earlier)
+    {
+        var before = earlier.SelectMany(AddressesAsked).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return AddressesAsked(turn).FirstOrDefault(before.Contains);
+    }
 
     /// <summary>
     /// The URLs the turn's tool calls were given, the agent's first and then its specialists', in order.

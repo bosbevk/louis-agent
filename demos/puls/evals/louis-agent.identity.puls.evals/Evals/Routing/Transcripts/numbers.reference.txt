@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:51:58.672Z","mode":"delegated","repeat":1,"task":"numbers","turn":1,"session":"sess_468b44127fe247f395f92cf36ac5cc2d","text":"Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?"}
 {"event":"sse","t":"2026-10-29T00:51:58.673Z","mode":"delegated","repeat":1,"task":"numbers","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_468b44127fe247f395f92cf36ac5cc2d","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:52:00.671Z","mode":"delegated","repeat":1,"task":"numbers","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

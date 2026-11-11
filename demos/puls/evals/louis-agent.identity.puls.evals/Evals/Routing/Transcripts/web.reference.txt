@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:52:28.766Z","mode":"delegated","repeat":1,"task":"web","turn":1,"session":"sess_bccd0d7edb6644378481f16c603939b1","text":"Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne."}
 {"event":"sse","t":"2026-10-29T00:52:28.767Z","mode":"delegated","repeat":1,"task":"web","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_bccd0d7edb6644378481f16c603939b1","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:52:31.367Z","mode":"delegated","repeat":1,"task":"web","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

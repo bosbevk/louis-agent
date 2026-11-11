@@ -10,4 +10,7 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Shared;
 public enum PulsEvalRole
 {
     [WireName("puls-cook")] Cook,
+
+    /// <summary>The cook's address, as Puls asks it and a turn's route reports it (F127.3.1).</summary>
+    [WireName("puls.cook")] CookAddress
 }

@@ -56,7 +56,7 @@ public class RoutingEvalTests
 
         Assert.That(modes.Select(mode => mode.Role).Distinct(), Is.EqualTo(new[] { "puls/voice-af" }));
         Assert.That(modes[0].Toolsets, Is.EquivalentTo(puls.Except(Delegating)));
-        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Specialists.Wire(), TestToolset.Web.Wire() }));
+        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Agents.Wire(), TestToolset.Web.Wire() }));
     }
 
     /// <summary>Its one check is the route, required, where only the specialists hand a question on.</summary>
@@ -88,7 +88,7 @@ public class RoutingEvalTests
         }
 
         Assert.That(scenarios.Where(scenario => RouteOf(scenario) is not null).Select(RouteOf).Distinct(),
-            Is.EqualTo(new[] { PulsRole.Cook.Wire() }));
+            Is.EqualTo(new[] { PulsCall.Cook.Wire() }));
         Assert.That(scenarios.Where(scenario => RouteOf(scenario) is not null).Select(scenario => scenario.Id),
             Has.All.StartWith(kinds.Single(kind => kind.Any(scenario => RouteOf(scenario) is not null)).Key));
     }

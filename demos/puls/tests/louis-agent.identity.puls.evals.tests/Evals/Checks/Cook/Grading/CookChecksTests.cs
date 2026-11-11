@@ -19,7 +19,7 @@ public class CookChecksTests
 {
     /// <summary>The cook's mode: Puls hands the meal to its cook.</summary>
     private static readonly EvalMode Cook = new(CookMode.Cook.Wire(), PulsEvalRole.Cook.Wire(),
-        [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
+        [PulsToolset.Agents.Wire(), PulsToolset.Web.Wire()]);
 
     /// <summary>The cook's no-error check, as its eval file builds it.</summary>
     private static readonly ICheck NoError = CookFile.Check("cook-no-error");
@@ -77,7 +77,7 @@ public class CookChecksTests
     [
         SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"puls-cook"}}}"""))
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":"puls.cook"}}}"""))
     ];
 
     /// <summary>A piece of the answer's text.</summary>

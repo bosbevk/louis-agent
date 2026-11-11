@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:51:47.568Z","mode":"delegated","repeat":1,"task":"git-2","turn":1,"session":"sess_8ea64884af1245ababfe06a0404a0770","text":"Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?"}
 {"event":"sse","t":"2026-10-29T00:51:47.568Z","mode":"delegated","repeat":1,"task":"git-2","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_8ea64884af1245ababfe06a0404a0770","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:51:50.43Z","mode":"delegated","repeat":1,"task":"git-2","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

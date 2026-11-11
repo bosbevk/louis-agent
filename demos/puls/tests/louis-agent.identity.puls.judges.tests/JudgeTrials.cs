@@ -17,7 +17,7 @@ internal static class JudgeTrials
 {
     /// <summary>The cook's mode: Puls hands a meal to its cook.</summary>
     public static readonly EvalMode CookEvalMode =
-        new(CookMode.Cook.Wire(), "puls/voice-af", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
+        new(CookMode.Cook.Wire(), "puls/voice-af", [PulsToolset.Agents.Wire(), PulsToolset.Web.Wire()]);
 
     /// <summary>A trial of a scenario with the given <c>expected</c> JSON and place.</summary>
     public static Trial Trial(EvalMode mode, string task, string expected, string? place,

@@ -217,7 +217,8 @@ public class EvalCatalogTests
             graders ?? [new FakeCheck(CheckKind.FixedRule, required: true)];
 
         /// <summary>Never asked: the catalogue doesn't record turns.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotImplementedException();
     }
 
     /// <summary>A grader of the kind given, which the catalogue only looks at and never asks to grade.</summary>

@@ -39,7 +39,7 @@ public class InfrastructureFailureTests
             "Malmesbury, Wes-Kaap, Suid-Afrika",
             Turn(1,
                 [
-                    Start(PulsEvalRole.Cook.Wire()),
+                    Start(PulsEvalRole.CookAddress.Wire()),
                     SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""),
                     Text(answer)
                 ],

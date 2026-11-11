@@ -26,7 +26,7 @@ public class PulsDatasetsTests
     internal static IReadOnlyList<ICheck> GradersOf(PulsEvalName dataset) => Evals[dataset].Checks;
 
     /// <summary>Each dataset loads strictly, under its name and at its version.</summary>
-    [TestCase(PulsEvalName.Cook, 7)]
+    [TestCase(PulsEvalName.Cook, 8)]
     public void EachDatasetLoadsStrictly(PulsEvalName name, int version)
     {
         var dataset = Load(name);
@@ -76,24 +76,24 @@ public class PulsDatasetsTests
         {
             ["control-web"] = """{"routes_to":null}""",
             [PulsCookScenarioIds.CookAf] = """
-                                           {"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp",
+                                           {"routes_to":"puls.cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp",
                                             "recipe_image":true}
                                            """,
             [PulsCookScenarioIds.CookEn] =
-                """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
+                """{"routes_to":"puls.cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
             ["cook-malmesbury"] = """
-                                  {"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp",
+                                  {"routes_to":"puls.cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp",
                                    "recipe_image":true}
                                   """,
             ["cook-no-branch"] = """
-                                 {"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch",
+                                 {"routes_to":"puls.cook","town":"Prince Albert","serves":2,"shop":"no-branch",
                                   "recipe_image":true}
                                  """,
             ["cook-recipe-only"] =
-                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
+                """{"routes_to":"puls.cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
             ["cook-asks-first"] = """{"routes_to":null}""",
             ["cook-shops"] =
-                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"pnp","recipe_image":true}""",
+                """{"routes_to":"puls.cook","town":"Stellenbosch","serves":4,"shop":"pnp","recipe_image":true}""",
         };
 
         var dev = Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.Dev);

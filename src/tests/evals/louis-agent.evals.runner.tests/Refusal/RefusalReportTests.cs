@@ -77,6 +77,7 @@ public class RefusalReportTests
         public IReadOnlyList<ICheck> Checks { get; } = [new NoErrorCheck()];
 
         /// <summary>Never asked: it never runs a turn.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotImplementedException();
     }
 }

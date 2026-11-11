@@ -131,7 +131,7 @@ public class EngineEventsTests
     [Test]
     public void ASpecialistsCallIsNotTheTurnsRoute()
     {
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall(SampleRole.Alpha)])), Is.Null);
+        Assert.That(EngineEvents.RoutedAddress(Turn(1, [SubCall(SampleRole.Alpha)])), Is.Null);
     }
 
     /// <summary>A content block with no name, or one that isn't an object, is no route.</summary>
@@ -144,8 +144,8 @@ public class EngineEventsTests
         var notAnObject = SessionEvent.From("content_block_start",
             Json("""{"type":"content_block_start","index":0,"content_block":"text"}"""));
 
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [odd])), Is.Null);
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [notAnObject])), Is.Null);
+        Assert.That(EngineEvents.RoutedAddress(Turn(1, [odd])), Is.Null);
+        Assert.That(EngineEvents.RoutedAddress(Turn(1, [notAnObject])), Is.Null);
     }
 
     /// <summary>An unpriced count that isn't a number leaves the cost unknown.</summary>
@@ -167,19 +167,19 @@ public class EngineEventsTests
         Assert.That(EngineEvents.ErrorMessageOf(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
-    /// <summary>A hand-over to a blank role is no route.</summary>
+    /// <summary>An ask to a blank address is no route.</summary>
     [Test]
-    public void ABlankRoleIsNoRoute()
+    public void ABlankAddressIsNoRoute()
     {
         var empty = SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}"""));
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":""}}}"""));
         var spaces = SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"   "}}}"""));
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":"   "}}}"""));
 
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [empty])), Is.Null);
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [spaces])), Is.Null);
+        Assert.That(EngineEvents.RoutedAddress(Turn(1, [empty])), Is.Null);
+        Assert.That(EngineEvents.RoutedAddress(Turn(1, [spaces])), Is.Null);
     }
 
     /// <summary>A turn has usage only when its stream reported some.</summary>
@@ -198,12 +198,36 @@ public class EngineEventsTests
         Assert.That(EngineEvents.CurrencyOf(Turn(1, [Usage("0.25")])), Is.Null);
     }
 
-    /// <summary>The route is the role of the turn's first hand-over, and none when the agent answered itself.</summary>
+    /// <summary>
+    /// The route is the address of the turn's first ask (F127.3.1, Louis's pick A), and none when the agent answered
+    /// itself.
+    /// </summary>
     [Test]
-    public void TheRoleIsTheFirstStartSubSessionsRole()
+    public void TheRouteIsTheFirstAsksAddress()
     {
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [Call(SampleRole.Alpha)])), Is.EqualTo(SampleRole.Alpha));
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [Text("Hallo")])), Is.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(EngineEvents.RoutedAddress(Turn(1, [Call("acme.cook"), Call("acme")])),
+                Is.EqualTo("acme.cook"));
+            Assert.That(EngineEvents.RoutedAddress(Turn(1, [Text("Hallo")])), Is.Null);
+        });
+    }
+
+    /// <summary>
+    /// A turn asks again when it asks an address an earlier turn of the conversation asked (F127.3.1, Louis's pick
+    /// A); a first ask, or one to another address, is no follow-up.
+    /// </summary>
+    [Test]
+    public void ATurnAsksAgain_WhenAnEarlierTurnAskedTheSameAddress()
+    {
+        var first = Turn(1, [Call("acme.cook")]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(EngineEvents.AskedAgain(Turn(2, [Call("acme.cook")]), [first]), Is.EqualTo("acme.cook"));
+            Assert.That(EngineEvents.AskedAgain(Turn(2, [Call("acme")]), [first]), Is.Null);
+            Assert.That(EngineEvents.AskedAgain(first, []), Is.Null);
+        });
     }
 
     /// <summary>An error's text is its message, else its JSON, else nothing.</summary>

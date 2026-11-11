@@ -35,7 +35,7 @@ trial's checks read the first-level turn's events and the specialist's, which Pu
 events. A minion's own events are one level deeper (the cook's stream carries them, and Puls's stream carries the
 cook's), and `tool-used`, `tool-not-used` and `tool-calls-under` unwrap one level only. So the cook's `StartMinion` call
 (with `FindRecipes` as its tool) and its `ReadRecipe` call are seen as specialist calls, and `routed-to` reads only
-Puls's own first `StartSubSession`; but the `FindRecipes` call the minion makes is not seen by `tool-used`, nor are its
+Puls's own first `AskAgent`; but the `FindRecipes` call the minion makes is not seen by `tool-used`, nor are its
 results or the sites it searched by the counts that read `ToolResultsOf` and `UrlsGiven`. **A check on the search
 names `StartMinion`, never `FindRecipes`:** a `tool-used` on `FindRecipes` would fail even when the search ran.
 The identity's own `TurnView` unwraps every level, so a check built on it would see the minion's calls. What the

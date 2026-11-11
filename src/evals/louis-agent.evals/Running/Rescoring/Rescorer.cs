@@ -125,7 +125,8 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades));
 
         // Measured again from the stored turns, the way the run measured them, so the metrics are the run's.
-        var facts = transcript.Turns.Select(turn => eval.TurnFactsOf(turn, mode)).ToList();
+        var facts = transcript.Turns
+            .Select((turn, index) => eval.TurnFactsOf(turn, mode, [.. transcript.Turns.Take(index)])).ToList();
         protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Role,
             ConversationMetrics.Of(facts, stored.Seconds), stored.Seconds, grades, outcome, stored.Errors);
     }

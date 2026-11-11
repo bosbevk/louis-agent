@@ -1,7 +1,7 @@
 namespace LouisAgent.Evals.Trials;
 
 /// <summary>
-/// What a turn's record in the protocol says about it: who answered, the sub-session it continued, the calls the
+/// What a turn's record in the protocol says about it: the address it asked, the one it asked again, the calls the
 /// mode's agent made (the protocol's <c>agent_calls</c>) and the specialists' calls, the hosts they read, and the
 /// error. The runner writes them.
 /// </summary>
@@ -18,12 +18,13 @@ public sealed record TurnFacts(
     string? Error)
 {
     /// <summary>
-    /// The facts the engine's events give: the role of its first hand-over, the sub-session it went back to, both
-    /// sides' calls, the hosts of the URLs its tools were given (in order, once each, without "www."), and its error.
+    /// The facts the engine's events give: the address of its first ask, the address it asked again (one the
+    /// conversation's <paramref name="earlier"/> turns asked), both sides' calls, the hosts of the URLs its tools were
+    /// given (in order, once each, without "www."), and its error.
     /// </summary>
-    public static TurnFacts Of(TurnTranscript turn) => new(
-        EngineEvents.RoutedRole(turn),
-        EngineEvents.ContinuedHandle(turn),
+    public static TurnFacts Of(TurnTranscript turn, IReadOnlyList<TurnTranscript> earlier) => new(
+        EngineEvents.RoutedAddress(turn),
+        EngineEvents.AskedAgain(turn, earlier),
         EngineEvents.ToolsCalled(turn).Count,
         EngineEvents.SpecialistToolsCalled(turn).Count,
         [.. EngineEvents.UrlsGiven(turn).Select(HostOf).Where(host => host.Length > 0).Distinct()],

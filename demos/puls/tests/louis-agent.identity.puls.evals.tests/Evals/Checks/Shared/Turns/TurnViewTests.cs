@@ -19,7 +19,7 @@ public class TurnViewTests
         {
             SessionEvent.From("content_block_start",
                 Json(
-                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"puls-cook"}}}""")),
+                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":"puls.cook"}}}""")),
             SessionEvent.From("content_block_start",
                 Json(
                     """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"t1","content":"Die resep."}}""")),
@@ -30,8 +30,8 @@ public class TurnViewTests
         var turn = TurnView.From(events);
 
         Assert.That(turn.Answer, Is.EqualTo("Hallo"));
-        Assert.That(turn.Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
-        Assert.That(turn.Calls.Single().Name, Is.EqualTo("StartSubSession"));
+        Assert.That(turn.Role, Is.EqualTo(PulsEvalRole.CookAddress.Wire()));
+        Assert.That(turn.Calls.Single().Name, Is.EqualTo("AskAgent"));
         Assert.That(turn.Results, Is.EqualTo(new[] { "Die resep." }));
     }
 
@@ -93,22 +93,21 @@ public class TurnViewTests
         Assert.That(TurnView.From(events).Error, Does.Contain("the connection dropped"));
     }
 
-    /// <summary>An empty role is no role, so the next sub-session's role is the turn's.</summary>
+    /// <summary>An empty address is no route, so the next ask's address is the turn's.</summary>
     [Test]
-    public void AnEmptyRole_IsNoRole_AndTheNextStartIsTheRole()
+    public void AnEmptyAddress_IsNoRoute_AndTheNextAskIsTheRoute()
     {
-        // The Python's `role or personality`, and `is None`: an empty role is no role.
         var events = new[]
         {
             SessionEvent.From("content_block_start",
                 Json(
-                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}""")),
+                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"AskAgent","input":{"address":""}}}""")),
             SessionEvent.From("content_block_start",
                 Json(
-                    """{"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"role":"puls-cook"}}}""")),
+                    """{"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t2","name":"AskAgent","input":{"address":"puls.cook"}}}"""))
         };
 
-        Assert.That(TurnView.From(events).Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
+        Assert.That(TurnView.From(events).Role, Is.EqualTo(PulsEvalRole.CookAddress.Wire()));
     }
 
     /// <summary>A JSON value from its text.</summary>

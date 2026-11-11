@@ -62,7 +62,7 @@ public class RecipesEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 10, 3)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 10, 4)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -74,7 +74,7 @@ public class RecipesEvalTests
         var modes = await Load().ModesAsync(null!, CancellationToken.None);
 
         Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))),
-            Is.EqualTo(new[] { (CookMode.Cook.Wire(), Role, "specialists,web") }));
+            Is.EqualTo(new[] { (CookMode.Cook.Wire(), Role, "agents,web") }));
     }
 
     /// <summary>
@@ -115,11 +115,11 @@ public class RecipesEvalTests
     {
         var check = Load().Checks.Single(c => c.Name == "tool-used");
         var read = Trial(CookEvalMode, "recipe-bobotie",
-            Turn(1, [Start(PulsRole.Cook.Wire()), SpecialistCall("ReadRecipe", "{}")]));
+            Turn(1, [Start(PulsCall.Cook.Wire()), SpecialistCall("ReadRecipe", "{}")]));
         var found = Trial(CookEvalMode, "recipe-bobotie",
             Turn(1,
             [
-                Start(PulsRole.Cook.Wire()), SpecialistCall("FindRecipes", "{}"), SpecialistCall("StartMinion", "{}")
+                Start(PulsCall.Cook.Wire()), SpecialistCall("FindRecipes", "{}"), SpecialistCall("StartMinion", "{}")
             ]));
 
         Assert.That((await check.GradeAsync(read, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
@@ -154,7 +154,7 @@ public class RecipesEvalTests
         {
             var keys = scenario.Expected.EnumerateObject().Select(p => p.Name);
             Assert.That(keys, Is.EquivalentTo(new[] { "routes_to", "serves", "recipe_image" }), scenario.Id);
-            Assert.That(scenario.Expected.GetProperty("routes_to").GetString(), Is.EqualTo(PulsRole.Cook.Wire()),
+            Assert.That(scenario.Expected.GetProperty("routes_to").GetString(), Is.EqualTo(PulsCall.Cook.Wire()),
                 scenario.Id);
             Assert.That(scenario.Expected.GetProperty("recipe_image").GetBoolean(), Is.True, scenario.Id);
         }
@@ -187,7 +187,8 @@ public class RecipesEvalTests
     public void EachQuestion_NamesItsPeople_OrNoNumberAtAll_AndAsksOnce()
     {
         var scenarios = Load().Scenarios;
-        var plain = scenarios.Where(s => s.Expected.GetProperty("serves").ToString() == "as the page makes it").ToList();
+        var plain = scenarios.Where(s => s.Expected.GetProperty("serves").ToString() == "as the page makes it")
+            .ToList();
 
         Assert.That(plain, Has.Count.EqualTo(5));
         foreach (var scenario in plain) Assert.That(Servings.Of(scenario.Input.Messages[0]), Is.Empty, scenario.Id);

@@ -122,6 +122,7 @@ public class ModelCheckInARunTests
         public IReadOnlyList<ICheck> Checks { get; } = [grader];
 
         /// <summary>No facts about a turn.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            new(null, null, 0, 0, [], null);
     }
 }

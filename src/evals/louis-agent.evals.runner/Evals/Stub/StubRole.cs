@@ -7,4 +7,7 @@ public enum StubRole
 {
     [WireName("stub/voice")] Voice,
     [WireName("stub-specialist")] Specialist,
+
+    /// <summary>The specialist's address, as an ask names it (F127.3.1).</summary>
+    [WireName("stub.specialist")] SpecialistAddress
 }

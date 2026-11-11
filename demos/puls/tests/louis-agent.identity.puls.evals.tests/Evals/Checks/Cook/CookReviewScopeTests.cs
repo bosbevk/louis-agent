@@ -19,7 +19,7 @@ public class CookReviewScopeTests
         CookFile.Eval.Checks.OfType<HumanReviewCheck>().Single().AppliesTo(
             new Trial("run_1",
                 new EvalMode(CookMode.Cook.Wire(), "puls/voice-af",
-                    [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), 1,
+                    [PulsToolset.Agents.Wire(), PulsToolset.Web.Wire()]), 1,
                 CookFile.Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
 
     /// <summary>The review applies where the judge has a meal to judge, and nowhere else.</summary>

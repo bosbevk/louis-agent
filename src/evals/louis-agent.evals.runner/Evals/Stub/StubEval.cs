@@ -36,7 +36,7 @@ public sealed class StubEval : IEval
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
             new EvalMode(StubMode.Direct.Wire(), Role, [StubToolset.Web.Wire()]),
-            new EvalMode(StubMode.Delegating.Wire(), Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Delegating.Wire(), Role, [StubToolset.Agents.Wire(), StubToolset.Web.Wire()]),
         ]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
@@ -53,13 +53,16 @@ public sealed class StubEval : IEval
     public IReadOnlyList<ICheck> Checks { get; } =
         [new NoErrorCheck(), new WithinTimeCheck(TimeSpan.FromMinutes(1))];
 
-    /// <summary>The canned facts the Python stub writes: the cook answers with one call and three specialist events, and a follow-up continues it.</summary>
-    public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode)
+    /// <summary>
+    /// The canned facts the Python stub writes: the cook is asked by its address and answers with one call and three
+    /// specialist events, and a follow-up asks it again.
+    /// </summary>
+    public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier)
     {
-        bool cook = mode.Toolsets.Contains(StubToolset.Specialists.Wire(), StringComparer.Ordinal);
+        bool cook = mode.Toolsets.Contains(StubToolset.Agents.Wire(), StringComparer.Ordinal);
         return new TurnFacts(
-            Role: cook ? StubRole.Specialist.Wire() : null,
-            Continued: cook && turn.Turn > 1 ? "sub-1" : null,
+            Role: cook ? StubRole.SpecialistAddress.Wire() : null,
+            Continued: cook && turn.Turn > 1 ? StubRole.SpecialistAddress.Wire() : null,
             AgentCalls: cook ? 1 : 0,
             SpecialistCalls: cook ? 3 : 0,
             Hosts: cook ? [CheckersHost] : [],
