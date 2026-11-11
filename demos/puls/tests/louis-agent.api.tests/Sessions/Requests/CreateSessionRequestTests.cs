@@ -1,5 +1,5 @@
-using LouisAgent.Testing;
 using LouisAgent.Api.Sessions.Requests;
+using LouisAgent.SessionStream.Wire.Requests;
 using System.Text.Json;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;

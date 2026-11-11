@@ -1,7 +1,5 @@
 using LouisAgent.Core.Web;
-using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Web.Search;
-using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Sessions.Replay;
@@ -14,9 +12,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Core.Tests.Delegation;
 
@@ -132,7 +128,8 @@ public class MinionToolsTests
         Assert.That(body.GetProperty("parent").GetString(), Is.EqualTo("sess_cook#2"),
             "the specialist's turn, so the ledger chains Puls → cook → minion");
         Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"minion:{Role}"));
-        Assert.That(body.TryGetProperty("toolsets", out _), Is.False, "the peer derives the toolset from the tool");
+        Assert.That(body.GetProperty("toolsets").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "the peer derives the toolset from the tool");
 
         Assert.That(answer,
             Does.StartWith("shop: Checkers").And
@@ -310,7 +307,6 @@ public class MinionToolsTests
     [Test]
     public async Task AMinion_IsStoppedAfterItsOwnTimeout_AndDeleted()
     {
-        var creates = new List<JsonDocument>();
         var deleted = false;
         var handler = new StubHandler(request =>
         {
@@ -321,10 +317,7 @@ public class MinionToolsTests
             }
 
             if (request.RequestUri!.AbsolutePath == "/v1/sessions")
-            {
-                creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
                 return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");
-            }
 
             Thread.Sleep(2000);
             return new HttpResponseMessage(HttpStatusCode.OK)
@@ -349,7 +342,6 @@ public class MinionToolsTests
     {
         // F30, the fourth hand check: a chat keeps three children, so kept minions evicted the cook's earlier ones and
         // its ContinueMinion calls failed. A minion answers once and closes (Louis: "do all three").
-        var creates = new List<JsonDocument>();
         int deletes = 0;
         var handler = new StubHandler(request =>
         {
@@ -360,10 +352,7 @@ public class MinionToolsTests
             }
 
             if (request.RequestUri!.AbsolutePath == "/v1/sessions")
-            {
-                creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
                 return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");
-            }
 
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -445,14 +434,14 @@ public class MinionToolsTests
     }
 
     /// <summary>A search provider that finds nothing, so the toolsets can be checked without one.</summary>
-    private sealed class NoSearch : LouisAgent.Composition.Web.Search.IWebSearchProvider
+    private sealed class NoSearch : IWebSearchProvider
     {
         /// <summary>It has no real name.</summary>
         public string Name => "none";
 
         /// <summary>Finds nothing.</summary>
-        public Task<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>> SearchAsync(
-            LouisAgent.Composition.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>>([]);
+        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 }

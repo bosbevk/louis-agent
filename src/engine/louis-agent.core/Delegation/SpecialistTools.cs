@@ -1,7 +1,6 @@
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -9,6 +8,7 @@ using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Delegation;
@@ -100,7 +100,8 @@ public sealed class SpecialistTools(
         string? llm = null,
         CancellationToken cancellationToken = default)
     {
-        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
+            return unknownAttachment;
         if (ResolvePeer(peers, agent, out Uri peer, out string name) is { } noPeer) return noPeer;
 
         UsageScope? scope = UsageScope.Current;
@@ -108,23 +109,15 @@ public sealed class SpecialistTools(
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         if (_slots.Take(scope, out string? parent) is { } limit) return limit;
 
-        var createBody = new
-        {
-            toolsets,
-            depth = 1,
-            task = $"sub-session:{name}",
-            run = scope?.Tags.Run,
-            service = scope?.Tags.Service,
-            parent,
-            role = string.IsNullOrWhiteSpace(role) ? null : role.Trim(),
-            llm = string.IsNullOrWhiteSpace(llm) ? null : llm.Trim(),
+        var createBody = new CreateSessionRequest($"sub-session:{name}", scope?.Tags.Run, scope?.Tags.Service,
+            [.. toolsets], Depth: 1, Parent: parent,
             // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
-            location = UserPlace.Current?.Location,
-            time_zone = UserPlace.Current?.TimeZone,
+            Location: UserPlace.Current?.Location, TimeZone: UserPlace.Current?.TimeZone,
+            Llm: string.IsNullOrWhiteSpace(llm) ? null : llm.Trim(),
+            Role: string.IsNullOrWhiteSpace(role) ? null : role.Trim(),
             // An eval's web input: the parent's own trial, so the specialist's pages are recorded and replayed with
             // its (F18 step 4a).
-            replay = SessionReplay.ForSubSession(),
-        };
+            Replay: SessionReplay.ForSubSession());
         // The footer names the specialist, never what it used: those numbers differ on a replay (FX27).
         var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", Kept, reply =>
         {
@@ -136,11 +129,7 @@ public sealed class SpecialistTools(
                 Toolsets = string.Join(", ", toolsets),
             });
         });
-        return await _session.OpenAsync(peer, name, createBody, new
-        {
-            message,
-            attachments = forwarded
-        }, toolsets,
+        return await _session.OpenAsync(peer, name, createBody, new SendMessageRequest(message, forwarded), toolsets,
             string.IsNullOrWhiteSpace(role) ? null : role.Trim(), kind, toolUseId, scope, _timeout, cancellationToken);
     }
 
@@ -171,18 +160,15 @@ public sealed class SpecialistTools(
                     Handle = handle.Trim(),
                     Open = OpenList(registry, Kind)
                 });
-        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
+            return unknownAttachment;
 
         UsageScope? scope = UsageScope.Current;
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         if (_slots.Take(scope, out _) is { } limit) return limit;
 
         var kind = new SubSessionKind(Kind, open.Agent, $"sub-session:{open.Agent}", Kept, _ => "");
-        return await _session.ContinueAsync(registry, open, new
-        {
-            message,
-            attachments = forwarded
-        }, kind, toolUseId,
+        return await _session.ContinueAsync(registry, open, new SendMessageRequest(message, forwarded), kind, toolUseId,
             scope, _timeout, cancellationToken);
     }
 

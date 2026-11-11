@@ -20,7 +20,7 @@ using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
-using Microsoft.Extensions.AI;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -332,7 +332,7 @@ public class AgentSessionsTests
     {
         // F18 step 4a: resolved once when the session opens (ReplayResolution), then kept for its turns.
         var replay =
-            new LouisAgent.Core.Sessions.Replay.SessionReplay(WebReplayMode.Record,
+            new SessionReplay(WebReplayMode.Record,
                 "run_1:cook:1/bobotie", false);
 
         Assert.That(Sessions().Create([TestToolset.Files.Wire()], replay: replay).Replay, Is.EqualTo(replay));

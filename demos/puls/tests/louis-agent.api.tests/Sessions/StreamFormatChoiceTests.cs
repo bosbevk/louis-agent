@@ -1,5 +1,6 @@
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
 

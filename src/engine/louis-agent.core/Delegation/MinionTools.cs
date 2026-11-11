@@ -2,7 +2,6 @@ using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -11,6 +10,7 @@ using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Delegation;
@@ -139,20 +139,11 @@ public sealed class MinionTools
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         if (TakeSlot(scope) is { } limit) return limit;
 
-        var createBody = new
-        {
-            depth = 2,
-            role,
-            tool,
-            task = $"minion:{role}",
-            run = scope?.Tags.Run,
-            service = scope?.Tags.Service,
-            parent = CallSlots.ParentTag(scope),
-            llm,
-            location = UserPlace.Current?.Location,
-            time_zone = UserPlace.Current?.TimeZone,
-            replay = SessionReplay.ForSubSession(),
-        };
+        // No toolsets: the API loads the one that builds the minion's tool.
+        var createBody = new CreateSessionRequest($"minion:{role}", scope?.Tags.Run, scope?.Tags.Service, Depth: 2,
+            Parent: CallSlots.ParentTag(scope), Location: UserPlace.Current?.Location,
+            TimeZone: UserPlace.Current?.TimeZone, Llm: llm, Tool: tool, Role: role,
+            Replay: SessionReplay.ForSubSession());
         string model = llm ?? InstanceLlm;
 
         // The footer names the minion, never what it used: those numbers differ on a replay (FX27).
@@ -168,7 +159,8 @@ public sealed class MinionTools
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its
         // specialists.
-        return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId,
+        return await _session.OpenAsync(peer, agent, createBody, new SendMessageRequest(task, null), [tool], role,
+            kind, toolUseId,
             scope, _timeout,
             cancellationToken, keep: false);
     }

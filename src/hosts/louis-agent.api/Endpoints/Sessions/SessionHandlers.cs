@@ -15,12 +15,12 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.SessionLlms;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using CreatedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.Api.Contracts.Sessions.SessionCreatedReply>,
@@ -78,7 +78,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
                 new
                 {
                     Tag = invalid,
-                    Max = CreateSessionRequest.MaxTagLength
+                    Max = CreateSessionRequestReading.MaxTagLength
                 }));
         if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
             return Bad(MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone }));

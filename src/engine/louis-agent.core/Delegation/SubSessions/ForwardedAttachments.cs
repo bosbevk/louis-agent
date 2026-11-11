@@ -1,7 +1,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Delegation.Messages;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Core.Delegation.SubSessions;
 
@@ -12,7 +12,7 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 internal static class ForwardedAttachments
 {
     /// <summary>The named files with their contents to send on, or the refusal when one isn't attached.</summary>
-    public static string? Take(string[]? attachments, out List<object> forwarded)
+    public static string? Take(string[]? attachments, out List<AttachmentRequest> forwarded)
     {
         var available = SessionAttachments.Current;
         forwarded = [];
@@ -24,11 +24,7 @@ internal static class ForwardedAttachments
                     Name = name,
                     Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
                 });
-            forwarded.Add(new
-            {
-                name = name.Trim(),
-                content
-            });
+            forwarded.Add(new AttachmentRequest(name.Trim(), content));
         }
 
         return null;

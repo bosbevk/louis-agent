@@ -2,9 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Sessions;
-using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 

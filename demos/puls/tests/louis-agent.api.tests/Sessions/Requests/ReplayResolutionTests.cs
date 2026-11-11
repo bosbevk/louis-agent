@@ -1,6 +1,6 @@
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Choices;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 
@@ -83,8 +83,7 @@ public class ReplayResolutionTests
     [Test]
     public void AnEmptyReplay_TakesTheDefault_OffGivesNone()
     {
-        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Off),
-            Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(replay: Eval)), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
     }
 
     [Test]
@@ -143,7 +142,7 @@ public class ReplayResolutionTests
         Assert.That(
             Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie")), WebReplayMode.Replay).Replay,
             Is.EqualTo(new SessionReplay(WebReplayMode.Replay, "run_0:puls-cook:1/bobotie", false)));
-        Assert.That(Resolve(Request(replay: new ReplayRequest(null, null)), WebReplayMode.Off).Replay, Is.Null);
+        Assert.That(Resolve(Request(replay: new ReplayRequest(null, null))).Replay, Is.Null);
     }
 
     // 4. model: true is for web replay only (F18 step 4e): the model's answers can only be replayed from a recording, with its web.

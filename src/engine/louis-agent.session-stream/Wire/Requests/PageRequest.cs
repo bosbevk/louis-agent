@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Sessions.Requests.Pages;
+namespace LouisAgent.SessionStream.Wire.Requests;
 
 /// <summary>
 /// The page the visitor is reading when they send a message (F115): its address, its title and its visible text, so
@@ -7,7 +7,7 @@ namespace LouisAgent.Api.Sessions.Requests.Pages;
 /// (FX106); a later one from the same page carries only those and the address. The page's links (FX120) come with
 /// its words, each as the address it opens and its text, in an area's shape.
 /// </summary>
-internal sealed record PageRequest(
+public sealed record PageRequest(
     string? Url,
     string? Title,
     string? Text,

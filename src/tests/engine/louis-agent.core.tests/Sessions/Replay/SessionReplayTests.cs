@@ -28,7 +28,8 @@ public class SessionReplayTests
         Assert.That(SessionReplay.ForSubSession(), Is.Null);
 
         using (SessionReplay.Use(new SessionReplay(WebReplayMode.Record, "run_1:a:1/bobotie", false)))
-            Assert.That(System.Text.Json.JsonSerializer.Serialize(SessionReplay.ForSubSession()),
+            Assert.That(System.Text.Json.JsonSerializer.Serialize(SessionReplay.ForSubSession(),
+                    System.Text.Json.JsonSerializerOptions.Web),
                 Is.EqualTo("""{"web":"record","of":"run_1:a:1/bobotie","model":false}"""));
     }
 

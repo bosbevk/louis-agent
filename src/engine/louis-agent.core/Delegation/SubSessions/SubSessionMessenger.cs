@@ -1,6 +1,6 @@
 using LouisAgent.Composition.Messages;
 using System.Diagnostics;
-using LouisAgent.Core.Messages;
+using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Usage.Records;
@@ -32,7 +32,8 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// it's asked once more in the same session, which keeps what it found and its cached prompt; a new child would
     /// start over.
     /// </summary>
-    public async Task<SubSessionReply> AnswerAsync(Uri peer, string sessionId, object body, SubSessionKind kind,
+    public async Task<SubSessionReply> AnswerAsync(Uri peer, string sessionId, SendMessageRequest body,
+        SubSessionKind kind,
         string? toolUseId,
         UsageScope? scope, CancellationToken cancellationToken)
     {
@@ -42,7 +43,8 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
 
         // No answer: ask once more, in the same session, for the answer from what it found.
         var (again, againFailure, againStatus) = await SendAsync(peer, sessionId,
-            new { message = MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer) }, kind, toolUseId,
+            new SendMessageRequest(MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer), null), kind,
+            toolUseId,
             scope, cancellationToken);
         if (againFailure is not null) return new SubSessionReply("", againFailure, againStatus);
         if (!string.IsNullOrWhiteSpace(again)) return new SubSessionReply(again.Trim(), null);
@@ -57,7 +59,8 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// turn and the ledger.
     /// </summary>
     private async Task<(string Text, string? Failure, int? RefusedStatus)> SendAsync(Uri peer, string sessionId,
-        object body, SubSessionKind kind, string? toolUseId, UsageScope? scope, CancellationToken cancellationToken)
+        SendMessageRequest body, SubSessionKind kind, string? toolUseId, UsageScope? scope,
+        CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
         using var send = http.Request(HttpMethod.Post,

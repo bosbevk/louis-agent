@@ -7,6 +7,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Api.Contracts.Sessions;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Usage;
@@ -20,8 +21,9 @@ namespace LouisAgent.Web.Api;
 /// </summary>
 /// <remarks>
 /// Gateway (Fowler, PoEAA): every call to the API goes through this one class, so the key, the error shape and the
-/// streaming switch are handled in one place. What it sends and reads is a named record: the bodies its own
-/// (<see cref="CreateSessionBody"/>, <see cref="MessageBody"/>), the replies the contract's (ADR 0045).
+/// streaming switch are handled in one place. What it sends and reads is a named record: the opening the session
+/// wire's (<see cref="CreateSessionRequest"/>), the message its own (<see cref="MessageBody"/>), the replies the
+/// contract's (ADR 0045).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed class AgentApi(HttpClient http, ChatSettings settings)
@@ -36,7 +38,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "v1/sessions")
         {
-            Content = JsonContent.Create(new CreateSessionBody(toolsets, role, location, timeZone, identity)),
+            Content = JsonContent.Create(new CreateSessionRequest(null, null, null, [.. toolsets], Location: location,
+                TimeZone: timeZone, Role: role, Identity: identity)),
         });
         var reply = await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase);
         return reply!.SessionId;
@@ -87,7 +90,10 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return await ReadAsync<T>(response, options);
     }
 
-    /// <summary>Sends a message, with the page the visitor is reading when there is one (F115), and hands back the answer's events as they arrive.</summary>
+    /// <summary>
+    /// Sends a message, with the page the visitor is reading when there is one (F115), and hands back the answer's
+    /// events as they arrive.
+    /// </summary>
     public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments, Page? page = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
