@@ -4,21 +4,16 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Streaming;
-using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Agent.EngineTools.Clock;
-using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -52,9 +47,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
     /// <paramref name="role"/> (null: the default voice). The session's level is its depth (CL8): its role comes
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
-    /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
+    /// can't delegate (F21). The one exception is an identity's voice asked at depth 1 (F127.3.1): it opens as a
+    /// voice, from <c>agent/</c>, with its own packs when none are sent. Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="SpecialistsToolset"/>, and
-    /// <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and <see cref="SessionLlmException"/> for an
+    /// <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and <see cref="Core.Hosting.SessionLlms.SessionLlmException"/> for an
     /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// A minion (depth <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent
     /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never
@@ -81,6 +77,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
                     MinionDepth,
                     Depth = depth
                 }));
+        // The prompt's level: the depth's, except an identity's voice asked by another agent, which stays a voice.
+        var level = LevelOf(role, depth);
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
         var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
             ?
@@ -88,10 +86,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
                 engines.Catalog.ToolsetOf(tool!)
                 ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))
             ]
-            : toolsets ?? DefaultToolsets);
+            : toolsets ?? Unchosen(who, level, depth));
         // A role's own toolsets (F33: the cook's `shops?`, from its header's metadata, CL27) come with it, beside what
         // its parent passed; then every name, optional or not, is held to the same rules.
-        names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, (RoleLevel)depth)));
+        names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
@@ -106,7 +104,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
         // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
         names = engines.Catalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
-        var engine = engines.GetOrCreate(names, role, (RoleLevel)depth, llm, tool);
+        var engine = engines.GetOrCreate(names, role, level, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);
 
@@ -115,6 +113,21 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         _sessions[session.Id] = session;
         return session;
     }
+
+    /// <summary>
+    /// The level a session's prompt is read at: its depth's, as before (CL8), except an identity's voice asked by
+    /// another agent (F127.3.1, Louis's pick 1 A), which opens one level down still as a voice, from <c>agent/</c>.
+    /// Depth keeps its own guards: it counts how deep the call is, the level says what kind of prompt it is.
+    /// </summary>
+    private static RoleLevel LevelOf(string? role, int depth) =>
+        depth == 1 && RoleCatalog.LevelOf(role) == RoleLevel.Agent ? RoleLevel.Agent : (RoleLevel)depth;
+
+    /// <summary>
+    /// The toolsets of a session nobody chose any for: an identity's voice asked by another agent gets its own
+    /// packs, as a visitor at the door does; every other session the instance's default.
+    /// </summary>
+    private IEnumerable<string> Unchosen(IAgentIdentity? who, RoleLevel level, int depth) =>
+        who is not null && level == RoleLevel.Agent && depth > 0 ? engines.Catalog.ToolsetsOf(who) : DefaultToolsets;
 
     /// <summary>Who a session in this identity runs as; none for a session of no identity.</summary>
     private static TurnIdentity? Who(IAgentIdentity? identity) =>

@@ -259,18 +259,19 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A role opens only at its own level: the cook as a specialist, Puls's voice at the top.
+    /// A role opens at its own level: the cook as a specialist, never at the top; Puls's voice at the top, and since
+    /// F127.3.1 also one level down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
     public void ARole_OpensOnlyAtItsOwnLevel()
     {
-        // CL8: a session's level is its depth; the cook is a specialist (level 1), Puls's voice is level 0's.
+        // CL8: a session's level is its depth, except a voice asked at depth 1 (F127.3.1, pick 1 A).
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
             sessions.Create([TestToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
-        Assert.Throws<RoleException>(() =>
-            sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af"));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af").Role,
+            Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create([TestToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
             Is.EqualTo(PulsRole.Cook.Wire()));

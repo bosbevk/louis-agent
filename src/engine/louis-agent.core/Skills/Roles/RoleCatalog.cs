@@ -69,6 +69,19 @@ public static partial class RoleCatalog
         .ToList();
 
     /// <summary>
+    /// The level whose folder holds a role by this name, or none (F127.3.1): a mode is the agent's, a role in
+    /// <c>specialists/</c> a specialist's, one in <c>minions/</c> a minion's. A name sits in one folder only.
+    /// </summary>
+    public static RoleLevel? LevelOf(string? role)
+    {
+        if (role is null) return null;
+        foreach (var level in Enum.GetValues<RoleLevel>())
+            if (Available(level).Contains(role))
+                return level;
+        return null;
+    }
+
+    /// <summary>
     /// A mode file's two parts: its voice (the first <c># </c> section) and its routing (from the second <c># </c>
     /// heading on, empty when there is none). A session below level 0 that names no role gets the default mode's voice
     /// only: its toolsets were chosen for it (F21).

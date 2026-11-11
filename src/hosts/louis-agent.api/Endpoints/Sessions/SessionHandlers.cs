@@ -202,9 +202,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
     private static CreateSessionRequest NarrowToTheOpenIdentity(CreateSessionRequest? request, string identity,
         AgentEngineFactory engines)
     {
-        var packs = engines.Catalog.Identity(identity)?.Packs ?? [];
-        var toolsets = engines.Catalog.Packs.Where(p => packs.Contains(p.Name, StringComparer.OrdinalIgnoreCase))
-            .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToList();
+        var who = engines.Catalog.Identity(identity);
+        List<string> toolsets = who is null ? [] : [.. engines.Catalog.ToolsetsOf(who)];
         return new CreateSessionRequest(null, null, OpenDoorService, toolsets, Location: request?.Location,
             TimeZone: request?.TimeZone, Identity: identity);
     }

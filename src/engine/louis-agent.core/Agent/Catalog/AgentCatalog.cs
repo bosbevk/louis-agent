@@ -6,7 +6,6 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
 using System.Reflection;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
@@ -111,6 +110,14 @@ public sealed class AgentCatalog
     /// <summary>The identity a session names (F109.3), case ignored; null when this instance runs no such one.</summary>
     public IAgentIdentity? Identity(string name) =>
         Identities.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// The toolsets of the packs an identity names, in the catalogue's order: what a session in its own voice loads
+    /// when nobody chose for it (a visitor at the door, F109.3; another agent asking it, F127.3.1).
+    /// </summary>
+    public IReadOnlyList<string> ToolsetsOf(IAgentIdentity identity) =>
+        Packs.Where(pack => identity.Packs.Contains(pack.Name, StringComparer.OrdinalIgnoreCase))
+            .SelectMany(pack => pack.Toolsets.Select(toolset => toolset.Name)).ToList();
 
     /// <summary>
     /// Who a session is from its role: the identity whose mode the role is (<c>{name}/{mode}</c>), else the first

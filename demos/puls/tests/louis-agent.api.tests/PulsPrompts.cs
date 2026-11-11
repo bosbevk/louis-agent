@@ -25,5 +25,6 @@ public class PulsPrompts
         new ShopPricesPack(new ShopPricesOptions()).Prompts,
         new RecipesPack(new RecipesOptions()).Prompts,
         new CalculatorPack().Prompts,
+        LouisAgent.Api.Tests.TestBusiness.Identity.Prompts,
     ]);
 }
