@@ -121,9 +121,9 @@ public static class GraphLayout
             .Select(edge => (From: here[mine(edge)], To: there[theirs(edge)])).ToList();
         int crossings = 0;
         for (int a = 0; a < arrows.Count; a++)
-        for (int b = a + 1; b < arrows.Count; b++)
-            if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0)
-                crossings++;
+            for (int b = a + 1; b < arrows.Count; b++)
+                if ((arrows[a].From - arrows[b].From) * (arrows[a].To - arrows[b].To) < 0)
+                    crossings++;
         return crossings;
     }
 
