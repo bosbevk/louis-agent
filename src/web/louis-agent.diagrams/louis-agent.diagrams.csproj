@@ -11,8 +11,14 @@
     <InternalsVisibleTo Include="louis-agent.diagrams.tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- A diagram's kind, a card's icon and a link's direction are enums read by their wire names (ADR 0024). -->
+    <ProjectReference Include="..\..\engine\louis-agent.choices\louis-agent.choices.csproj" />
+  </ItemGroup>
+
   <!-- CL60.1 (Louis's pick P1 A): the framework's diagrams as plain C#, with no Blazor and no ASP.NET, so the site's
        GraphView and the docs' tool draw with the same code (ADR 0092: what is reused together is one project). It
-       references no project and no package. -->
+       references only louis-agent.choices, which references nothing, and no package. -->
+
 
 </Project>
