@@ -77,6 +77,41 @@ public class FlowArrowsTests
         });
     }
 
+    /// <summary>
+    /// A chip keeps clear of the line it belongs to: above its flat piece when the chart runs right, under the track
+    /// it hangs from when the chart runs down (Louis's runner and usage-probe charts, CL60.2).
+    /// </summary>
+    [Test]
+    public void AChip_KeepsClearOfItsLine()
+    {
+        var right = GraphLayout.Place(new GraphSpec([new GraphNode("a", "A"), new GraphNode("b", "B")],
+            [new GraphEdge("a", "b", "--check")]), bend: GraphLayout.SoftBend).Edges.Single();
+        var down = GraphLayout.Place(new GraphSpec(
+            [
+                new GraphNode("program", "Program.cs"), new GraphNode("gaps", "CacheGaps"),
+                new GraphNode("env", "EnvFile")
+            ],
+            [new GraphEdge("program", "gaps", "--cache-gaps"), new GraphEdge("program", "env", "--host-culture")],
+            FlowDirection.Down), bend: GraphLayout.SoftBend).Edges;
+
+        var (_, top, _, height) = FlowText.WordBox(right);
+        Assert.Multiple(() =>
+        {
+            Assert.That(top + height, Is.LessThanOrEqualTo(Ys(right.Path).First() - 4), "above its line");
+            foreach (var edge in down)
+                Assert.That(FlowText.WordBox(edge).Y, Is.GreaterThanOrEqualTo(Track(edge.Path) + 4), "under its track");
+        });
+    }
+
+    /// <summary>Every y a path passes: the second number of each pair after its commands.</summary>
+    private static List<double> Ys(string path) => path.Split(' ')
+        .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+        .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 1).ToList();
+
+    /// <summary>The height a down arrow runs across at: the one y its path holds for a while.</summary>
+    private static double Track(string path) => Ys(path).GroupBy(y => y).Where(same => same.Count() > 1)
+        .Select(same => same.Key).Single();
+
     /// <summary>The flow drawn as the docs draw it.</summary>
     private static string Render() =>
         DiagramRenderers.Render(new DiagramSource(DiagramKind.Flow, "Calls", Flow: Calls()));

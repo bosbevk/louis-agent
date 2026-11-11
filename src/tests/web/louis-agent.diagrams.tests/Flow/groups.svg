@@ -73,8 +73,8 @@
   <path class="edge" d="M 408 60 L 468 60" marker-end="url(#arrow)" />
   <path class="edge" d="M 638 60 L 766 60" marker-end="url(#arrow)" />
   <path class="edge dashed" d="M 638 60 L 698 60 Q 722 60 722 84 L 722 144 Q 722 166 744 166 L 766 166" marker-end="url(#arrow)" />
-  <rect class="word-chip" x="655" y="41" width="50" height="18" rx="4" />
-  <text class="word" x="680" y="53" text-anchor="middle">writes</text>
+  <rect class="word-chip" x="655" y="38" width="50" height="18" rx="4" />
+  <text class="word" x="680" y="50" text-anchor="middle">writes</text>
   <rect class="box" x="0" y="34" width="170" height="52" rx="10" />
   <text class="label" x="85" y="65" text-anchor="middle">Developer</text>
   <rect class="box" x="238" y="34" width="170" height="52" rx="10" />

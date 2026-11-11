@@ -51,7 +51,8 @@ internal sealed class FlowRenderer : IDiagramRenderer
             writer.Box(x, y, w, h, 4, "word-chip" + tone);
             var lines = FlowText.WordLines(edge.Edge.Word!);
             for (int at = 0; at < lines.Count; at++)
-                writer.Text(edge.WordX, edge.WordY - 7 + FlowText.WordStep * at, lines[at], "word" + tone);
+                writer.Text(edge.WordX, edge.WordY - FlowText.WordRise + FlowText.WordStep * at, lines[at],
+                    "word" + tone);
         }
 
         foreach (var node in placed.Nodes) Draw(writer, node);

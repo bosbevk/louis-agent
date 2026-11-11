@@ -67,10 +67,10 @@
   <rect class="ground" x="-24" y="-24" width="928" height="158" rx="14" />
   <path class="edge" d="M 170 38 L 363 38" marker-end="url(#arrow)" />
   <path class="edge" d="M 533 38 L 710 38" marker-end="url(#arrow)" />
-  <rect class="word-chip" x="203.3" y="19" width="50" height="18" rx="4" />
-  <text class="word" x="228.3" y="31" text-anchor="middle">a turn</text>
-  <rect class="word-chip" x="565.3" y="19" width="36" height="18" rx="4" />
-  <text class="word" x="583.3" y="31" text-anchor="middle">asks</text>
+  <rect class="word-chip" x="203.3" y="16" width="50" height="18" rx="4" />
+  <text class="word" x="228.3" y="28" text-anchor="middle">a turn</text>
+  <rect class="word-chip" x="565.3" y="16" width="36" height="18" rx="4" />
+  <text class="word" x="583.3" y="28" text-anchor="middle">asks</text>
   <rect class="box" x="0" y="12" width="170" height="52" rx="10" />
   <text class="label" x="85" y="43" text-anchor="middle">A host</text>
   <rect class="box" x="363" y="0" width="170" height="76" rx="10" />

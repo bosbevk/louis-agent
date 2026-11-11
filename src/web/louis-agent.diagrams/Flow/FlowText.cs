@@ -23,9 +23,13 @@ public static class FlowText
 
     /// <summary>
     /// The chip a word stands in (CL60.2, Louis's pick "Both looks"): the room beside its lines, how far its top
-    /// stands above the word's point, and what it adds under the lines.
+    /// stands above the word's point, and what it adds under the lines; its bottom stands 4 pixels above the point,
+    /// so a chip over a line keeps clear of it.
     /// </summary>
-    public const double ChipPad = 4, ChipRise = 19, ChipExtra = 6;
+    public const double ChipPad = 4, ChipRise = 22, ChipExtra = 6;
+
+    /// <summary>How far above the word's point its first line's baseline stands, in the middle of its chip.</summary>
+    public const double WordRise = 10;
 
     /// <summary>A word's lines: a <c>\n</c> breaks it, as the import does for a chart that runs down.</summary>
     public static IReadOnlyList<string> WordLines(string word) => word.Split('\n');

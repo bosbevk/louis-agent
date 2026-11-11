@@ -68,14 +68,14 @@ internal static class EdgeRouter
     /// since once turned back it stands beside an upright line (CL60.2).
     /// </summary>
     private static double RoomOf(string word, bool turned) =>
-        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + FlowText.ChipExtra + 22 : 8 * word.Length + 16;
+        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + FlowText.ChipExtra + 24 : 8 * word.Length + 16;
 
     /// <summary>
     /// Where a word stands on its piece: in the middle, lying on it; laid out turned, at the top of its room, so its
-    /// chip starts just under the piece's start and stays clear of the bend.
+    /// chip starts a little under the piece's start, clear of the track it hangs from.
     /// </summary>
     private static double WordAlong(double start, double end, bool turned) =>
-        turned ? start + FlowText.ChipRise + 2 : (start + end) / 2;
+        turned ? start + FlowText.ChipRise + 4 : (start + end) / 2;
 
     /// <summary>
     /// How many arrows with a word leave each box; a box with two or more puts its words by their targets.
