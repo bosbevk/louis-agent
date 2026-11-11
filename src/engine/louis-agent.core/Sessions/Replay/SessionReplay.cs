@@ -52,8 +52,10 @@ public sealed record SessionReplay(WebReplayMode Web, string? Of, bool Model)
         return mode ?? WebReplayMode.Off;
     }
 
+    /// <summary>Puts the flow's earlier settings back when a <see cref="Use"/> ends.</summary>
     private sealed class Restore(SessionReplay? previous) : IDisposable
     {
+        /// <summary>The earlier settings are this flow's again.</summary>
         public void Dispose() => CurrentReplay.Value = previous;
     }
 }
