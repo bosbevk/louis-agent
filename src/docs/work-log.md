@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 92 | 81 |
+| Features (`F`) | 92 | 83 |
 | Fixes (`FX`) | 122 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (114 in the TODO)
+## Open (116 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -46,6 +46,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
+| F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
+| F134 | The showroom looks modern (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; his picks: look B, showcase with photos, and Tabler Icons): line icons instead of emoji, one raised surface, a rail with room, a photo on each business's cover, the index in a centred column under a photo hero; five steps | Next |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
@@ -88,7 +90,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F89 | A Puls-owned set of a few hundred South African recipes | Puls, later |
 | F90 | WhatsApp as a host | Puls, later |
 | F91 | The eleven official languages, measured | Puls, later |
-| F92 | Voice | Puls, later |
+| F92 | Voice: the person talks, our API turns it into text behind the chat's seam, the text lands in the box to check (Louis's pick B, 2026-11-11) | Puls, later |
 | F93 | The `similar` check, when an eval asks for closeness of meaning | Later |
 | F45 | Knowledge and retrieval | Later |
 | F94 | Searching PDFs, investigate much later | Later |
@@ -100,7 +102,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F96 | The browser's user agent names the user's town per visit | Later |
 | F97 | A tool added mid-chat, after FX4 | Later |
 | F38 | Tool search, when a measured need comes | Later |
-| F134 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
+| F136 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later |
 | F99 | An error tracker behind `IErrorFeed`, after F39 | Later |
 | F100 | A webhook trigger beside polling, after F39 | Later |
