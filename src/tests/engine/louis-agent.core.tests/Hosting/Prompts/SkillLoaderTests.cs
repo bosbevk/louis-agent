@@ -7,24 +7,30 @@ using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 
-// F5 step 4 (F5-S2): the system prompt has the guides of the session's toolsets and no others, so the model is never
-// told about tools it doesn't have, and the prompt shrinks with the toolset.
+/// <summary>
+/// The system prompt has the guides of the session's toolsets and no others, so the model is never told about tools it
+/// doesn't have, and the prompt shrinks with the toolset (F5 step 4, F5-S2).
+/// </summary>
 public class SkillLoaderTests
 {
+    /// <summary>Guides a files-and-git prompt must not carry.</summary>
     private static readonly string[] OtherGuides =
     [
         "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills"
     ];
 
+    /// <summary>The tests' own skills folder, with the test product's English voice as the default.</summary>
     private static AgentOptions Options() => new()
     {
         SkillsDirectory = TestPaths.Skills,
         DefaultVoice = "testprod/voice-en"
     };
 
+    /// <summary>The test catalogue's toolsets by these names.</summary>
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
         TestTools.Catalog.Toolsets.Where(t => names.Contains(t.Name)).ToList();
 
+    /// <summary>Files and git bring their guides, and no other toolset's.</summary>
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
@@ -36,10 +42,13 @@ public class SkillLoaderTests
             Assert.That(docs, Does.Not.Contain(guide), $"{guide} isn't in a files+git prompt");
     }
 
+    /// <summary>
+    /// The skills folder is the one set, else the nearest marked folder above: no built-in file is on disk any more,
+    /// so the folder the agent writes into is found by its README (CL8 step 4).
+    /// </summary>
     [Test]
     public void TheSkillsFolder_IsSkillsDirectory_ElseASkillsFolderAbove()
     {
-        // CL8 step 4: no built-in file is on disk any more, so the folder the agent writes into is found by its README.
         string demo = Directory.CreateTempSubdirectory("skills-root-").FullName;
         string marker = Path.GetFullPath(Path.Combine(demo, SkillFiles.MarkedFolderPath));
         string skills = Directory.CreateDirectory(Path.GetDirectoryName(marker)!).FullName;
@@ -72,6 +81,10 @@ public class SkillLoaderTests
         Assert.That(agents?.GuideFile, Is.EqualTo("toolsets/agents.md"));
     }
 
+    /// <summary>
+    /// Every agent, at every level, whatever its voice or role, gets the shared principles first, so no later file can
+    /// push them aside (CL9 step 2).
+    /// </summary>
     [TestCase(null, RoleLevel.Agent)]
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
     [TestCase("testprod-specialist", RoleLevel.Specialist)]
@@ -79,14 +92,13 @@ public class SkillLoaderTests
     [TestCase("testprod-minion-lookup", RoleLevel.Minion)] // F30: a minion always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
     {
-        // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
-        // later file can push them aside.
         string docs = SkillLoader.Load(Options(), [], role, level).Documentation;
 
         Assert.That(docs, Does.StartWith("# Principles"));
         Assert.That(docs, Does.Contain("An agent may never lie, cheat, steal or murder."));
     }
 
+    /// <summary>With no toolsets the voice and its router are still there, and no toolset's guide.</summary>
     [Test]
     public void TheRoleAndTheRouter_AreAlwaysThere()
     {
@@ -98,6 +110,7 @@ public class SkillLoaderTests
             Assert.That(docs, Does.Not.Contain(guide));
     }
 
+    /// <summary>With every toolset, each guide is in the prompt once.</summary>
     [Test]
     public void EveryToolset_GivesEachGuideExactlyOnce()
     {
@@ -108,11 +121,13 @@ public class SkillLoaderTests
                 Is.EqualTo(1), guide);
     }
 
+    /// <summary>
+    /// A function skill is a set of procedures run by ExecuteSkill: it belongs to the skills toolset, like a guide to
+    /// its tools, so a prompt without that toolset has no skill file (CL9: there's no setting to add one).
+    /// </summary>
     [Test]
     public void FunctionSkills_ComeWithTheSkillsToolset_AndNotWithout()
     {
-        // A function skill is a set of procedures run by ExecuteSkill: it belongs to the skills toolset, like a guide to its
-        // tools. Puls's chats load agents and web, so their prompt has no skill file (CL9: there's no setting to add one).
         string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
         try
         {
@@ -134,6 +149,7 @@ public class SkillLoaderTests
         }
     }
 
+    /// <summary>A session with fewer toolsets reads a shorter prompt.</summary>
     [Test]
     public void ThePromptShrinks_WithTheToolset()
     {

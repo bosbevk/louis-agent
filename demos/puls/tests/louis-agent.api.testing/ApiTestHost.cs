@@ -125,6 +125,10 @@ internal static class ApiTestHost
     /// <summary>An agent with no model, for a test about how the API starts up.</summary>
     public static AgentHostContext BareHost() => HostContext(RepoRoot, new NoModel());
 
+    /// <summary>
+    /// The agent the test API runs: Puls and any identity a test adds, on Puls's packs and any it adds, with this
+    /// workspace and model, and the peers a test names (none by default).
+    /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model,
         IReadOnlyList<IAgentPack>? morePacks = null, IReadOnlyList<IAgentIdentity>? moreIdentities = null,
         IReadOnlyDictionary<string, Uri>? agentPeers = null)

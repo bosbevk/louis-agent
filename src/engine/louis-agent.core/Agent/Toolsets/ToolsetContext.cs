@@ -45,7 +45,9 @@ public sealed record ToolsetContext(
     /// <inheritdoc/>
     public bool InATrial => SessionReplay.Current is { Web: not WebReplayMode.Off };
 
-    /// <summary>The guarded browser (F33), one per process so every engine shares it and its recordings; none without Chrome.</summary>
+    /// <summary>
+    /// The guarded browser (F33), one per process so every engine shares it and its recordings; none without Chrome.
+    /// </summary>
     public IWebBrowser? Browser => Web.Browser;
 
     /// <summary>

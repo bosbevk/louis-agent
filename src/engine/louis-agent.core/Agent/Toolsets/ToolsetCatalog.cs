@@ -61,8 +61,9 @@ public static class ToolsetCatalog
     // CL15: ToolNames, ToolNamesOf and ToolsetOf moved to AgentCatalog, so a pack's tools count too.
 
     /// <summary>
-    /// Whether an engine of <paramref name="resolved"/> runs a round's tool calls at once (F34): only when it has toolsets
-    /// and every one is <see cref="ToolsetDefinition.ParallelSafe"/>. No toolsets is the coding agent's default set, in order.
+    /// Whether an engine of <paramref name="resolved"/> runs a round's tool calls at once (F34): only when it has
+    /// toolsets and every one is <see cref="ToolsetDefinition.ParallelSafe"/>. No toolsets is the coding agent's
+    /// default set, in order.
     /// </summary>
     public static bool RunsInParallel(IReadOnlyCollection<ToolsetDefinition> resolved) =>
         resolved.Count > 0 && resolved.All(t => t.ParallelSafe);
@@ -70,21 +71,25 @@ public static class ToolsetCatalog
     /// <summary>Looks a core toolset up by name (case-insensitive); null when there is none.</summary>
     public static ToolsetDefinition? Find(string name) => Find(name, All);
 
+    /// <summary>The same, among these toolsets.</summary>
     private static ToolsetDefinition? Find(string name, IReadOnlyList<ToolsetDefinition> toolsets) =>
         toolsets.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The mark of an optional toolset (F33): <c>shops?</c> loads when this instance has it, else is skipped.</summary>
+    /// <summary>
+    /// The mark of an optional toolset (F33): <c>shops?</c> loads when this instance has it, else is skipped.
+    /// </summary>
     public const char OptionalMark = '?';
 
     /// <summary>A toolset's name without its optional mark.</summary>
     public static string NameOf(string name) => name.TrimEnd(OptionalMark);
 
+    /// <summary>Whether a name carries the optional mark.</summary>
     private static bool IsOptional(string name) => name.EndsWith(OptionalMark);
 
     /// <summary>
     /// Cleans a client's list: trims, lowercases, drops empty entries and duplicates, and sorts it, so the same set
-    /// always gives the same engine (the engine cache and the cached prefix both depend on that). An optional name keeps
-    /// its mark; named both ways, the required one wins.
+    /// always gives the same engine (the engine cache and the cached prefix both depend on that). An optional name
+    /// keeps its mark; named both ways, the required one wins.
     /// </summary>
     public static IReadOnlyList<string> Normalise(IEnumerable<string>? names)
     {
@@ -100,16 +105,18 @@ public static class ToolsetCatalog
     }
 
     /// <summary>
-    /// Resolves a client's request to core's definitions, in the order of <see cref="All"/>; a host with packs resolves
-    /// through its <see cref="AgentCatalog"/>. Throws
-    /// <see cref="ToolsetException"/> for an unknown name (listing the valid ones; an optional one too, so a typo is never
-    /// skipped in silence) or a required toolset whose settings are missing on this instance (listing them), before any
-    /// tool is built. An optional toolset (<c>shops?</c>) whose settings are missing is left out, and the log says why.
+    /// Resolves a client's request to core's definitions, in the order of <see cref="All"/>; a host with packs
+    /// resolves through its <see cref="AgentCatalog"/>. Throws <see cref="ToolsetException"/> for an unknown name
+    /// (listing the valid ones; an optional one too, so a typo is never skipped in silence) or a required toolset whose
+    /// settings are missing on this instance (listing them), before any tool is built. An optional toolset
+    /// (<c>shops?</c>) whose settings are missing is left out, and the log says why.
     /// </summary>
     public static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context) =>
         Resolve(names, context, All);
 
-    /// <summary>The same, over <paramref name="toolsets"/>: core's and a catalogue's packs', in that order (CL15).</summary>
+    /// <summary>
+    /// The same, over <paramref name="toolsets"/>: core's and a catalogue's packs', in that order (CL15).
+    /// </summary>
     internal static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context,
         IReadOnlyList<ToolsetDefinition> toolsets)
     {
@@ -166,10 +173,4 @@ public static class ToolsetCatalog
     public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
         resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal)
             .ToList();
-
-    private static string Root(ToolsetContext context) => Path.GetFullPath(context.Options.WorkspaceRoot);
-
-    private static IReadOnlyList<string> Missing(ToolsetContext context,
-        params (string Setting, string? Value)[] settings) =>
-        settings.Where(s => string.IsNullOrWhiteSpace(s.Value)).Select(s => s.Setting).ToList();
 }

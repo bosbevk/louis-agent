@@ -45,7 +45,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// </summary>
     public static readonly string SpecialistsToolset = CoreToolset.Specialists.Wire();
 
-    /// <summary>The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.</summary>
+    /// <summary>
+    /// The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.
+    /// </summary>
     public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
 
     /// <summary>

@@ -39,6 +39,8 @@ public sealed record OpenSubSession(
     /// <summary>What was kept: <see cref="SpecialistKind"/> or <see cref="MinionKind"/>.</summary>
     public string Kind { get; init; } = SpecialistKind;
 
-    /// <summary>A minion's model, as <c>MINION_LLMS</c> named it (F30); null for a specialist or the instance's own model.</summary>
+    /// <summary>
+    /// A minion's model, as <c>MINION_LLMS</c> named it (F30); null for a specialist or the instance's own model.
+    /// </summary>
     public string? Llm { get; init; }
 }

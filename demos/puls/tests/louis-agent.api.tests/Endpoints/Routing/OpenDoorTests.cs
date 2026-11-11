@@ -33,6 +33,7 @@ public class OpenDoorTests
     private static Microsoft.AspNetCore.Builder.WebApplication Host(OpenDoorOptions door) =>
         ApiTestHost.Build(Key, moreIdentities: [Guide, Shop], openDoor: door);
 
+    /// <summary>Asks the API to open a session with this body, with no key.</summary>
     private static async Task<HttpResponseMessage> OpenAsync(HttpClient client, object body) =>
         await client.PostAsJsonAsync("/v1/sessions", body);
 
