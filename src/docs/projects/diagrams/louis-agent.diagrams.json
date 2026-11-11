@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.diagrams at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "diagrams", "icon": "chart", "title": "Diagrams from data", "code": "louis-agent.diagrams",
+          "look": "highlight",
+          "text": "Every picture in the docs and every flow on the site, drawn from data by one renderer." }
+      ] },
+      { "cards": [
+        { "id": "sources", "icon": "file", "title": "A diagram is JSON",
+          "text": "Read through records. A typo, an unknown kind or a link to nothing is refused with its reason." },
+        { "id": "layouts", "icon": "branch", "title": "Two layouts",
+          "text": "Flows on a row grid, and cards in rows. Each proves every word fits." },
+        { "id": "svg", "icon": "browser", "title": "One SVG, two looks",
+          "text": "The site's palette and its light twin, nothing loaded from outside." }
+      ] },
+      { "cards": [
+        { "id": "icons", "icon": "box", "title": "The icons",
+          "text": "22 of Tabler's outline icons, copied in with their MIT licence." },
+        { "id": "tool", "icon": "terminal", "title": "The docs' tool",
+          "text": "louis-agent.doc-diagrams writes each JSON's SVG beside it. A test holds them." }
+      ] }
+    ],
+    "links": [
+      { "from": "diagrams", "to": "sources" },
+      { "from": "diagrams", "to": "layouts" },
+      { "from": "diagrams", "to": "svg" }
+    ]
+  }
+}

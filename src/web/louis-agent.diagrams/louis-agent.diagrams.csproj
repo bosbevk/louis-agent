@@ -20,5 +20,11 @@
        GraphView and the docs' tool draw with the same code (ADR 0092: what is reused together is one project). It
        references only louis-agent.choices, which references nothing, and no package. -->
 
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is built or
+         copied. -->
+    <None Include="..\..\docs\projects\louis-agent.diagrams.md" Link="docs\louis-agent.diagrams.md" />
+    <None Include="..\..\docs\guides\draw-a-diagram.md" Link="docs\draw-a-diagram.md" />
+  </ItemGroup>
 
 </Project>

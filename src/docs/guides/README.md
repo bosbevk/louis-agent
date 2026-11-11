@@ -10,6 +10,7 @@
 | Guide | Read it to… |
 |---|---|
 | [Build a pack](build-a-pack.md) | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests |
+| [Draw a diagram](draw-a-diagram.md) | Put a picture in a doc: its JSON beside the doc, the tool that draws the SVG, the link, the test that holds it |
 | [Spawn a site](spawn-a-site.md) | Make a new site with a chat and an admin from the starter, then make it yours |
 | [Get a site found](get-a-site-found.md) | Make a site show up in search: what the framework does, what a site adds, Search Console, the sitemap, links |
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it; the rules for modes, roles and minions |

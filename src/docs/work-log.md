@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 92 | 84 |
 | Fixes (`FX`) | 122 | 6 |
-| Cleanups (`CL`) | 27 | 27 |
+| Cleanups (`CL`) | 28 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -368,6 +368,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| CL60.1 | 2026-11-11 | The renderer and the overviews: `louis-agent.diagrams` (plain C#, the flow engine moved in, cards in Louis's style with a highlight and a heading look, 22 Tabler icons, one SVG with a light and a dark look), the `louis-agent.doc-diagrams` tool, `DocsDiagramsTests`, and an overview picture on all 42 project docs and two of Louis's figures |
 | CL58 | 2026-11-07 | A component's styles sit beside it (ADR 0094): `X.razor.scss` scoped and bundled by Blazor's CSS isolation for the accounts, the admin, the studio (64 files) and the chat (21); the globals a site's own pages draw or a theme overrides stay partials; accounts/, web/admin/ and their forwards gone; the snapshot helper and the stylesheet helper know the scope and the bundle |
 | CL31 | 2026-11-07 | The framework's scripts as ES modules beside their components, imported through JsModule (ADR 0093); chat.js and passkeys.js gone from every site's head; the download the framework owns |
 | CL57 | 2026-11-07 | What a project holds (ADR 0092): the API off core.web, the runners' programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals, the hosts lose -server, a starter API; CL51 with it |
