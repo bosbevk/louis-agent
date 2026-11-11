@@ -3,8 +3,8 @@ using System.ComponentModel;
 namespace LouisAgent.Core.Delegation.Messages;
 
 /// <summary>
-/// What the sub-session and minion tools tell the model: what went wrong and what to do instead, and the footer under a
-/// child's answer that says which child it was and how to reach it again.
+/// What the ask and minion tools tell the model: what went wrong and what to do instead, and the line under an asked
+/// agent's answer that says who gave it and what it did.
 /// </summary>
 /// <remarks>
 /// A footer names the child, never what it used: that goes to the ledger and the parent's turn. Numbers that change
@@ -24,25 +24,9 @@ public enum SubSessionToolMessage
     PeerNameNeeded,
 
     [Description(
-        "Error: this turn has already made {Max} sub-session calls (starts and continues), the most one turn may. " +
-        "Finish with what you have, or ask the user.")]
+        "Error: this turn has already asked other agents {Max} times, the most one turn may. Finish with what you " +
+        "have, or ask the user.")]
     SubSessionLimit,
-
-    [Description(
-        "Error: this session keeps no sub-session open (it isn't a chat). Start a new one with StartSubSession.")]
-    SubSessionNoneKept,
-
-    [Description(
-        "Error: no open sub-session '{Handle}'. Open: {Open}. Continue one of those, or start a new one with " +
-        "StartSubSession.")]
-    SubSessionUnknownHandle,
-
-    [Description("(none)")] SubSessionNoneOpen,
-
-    [Description(
-        "Error: sub-session {Handle} on {Agent} is no longer open on the peer (dropped as idle, or the peer " +
-        "restarted). Start a new one with StartSubSession, with the whole context the follow-up needs.")]
-    SubSessionGone,
 
     [Description(
         "Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a " +
@@ -63,15 +47,6 @@ public enum SubSessionToolMessage
         "task.")]
     SubSessionTimedOut,
 
-    [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets})]")]
-    SubSessionAnswer,
-
-    [Description(
-        "{Answer}\n\n[Sub-session {Handle} on {Agent} ({Toolsets}; {Role}). It stays open: a follow-up on this " +
-        "work goes to ContinueSubSession(\"{Handle}\", message), not to a new sub-session.]")]
-    SubSessionAnswerKept,
-
-    [Description("default role")] SubSessionDefaultRole,
 
     [Description(
         "Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists " +
@@ -113,4 +88,78 @@ public enum SubSessionToolMessage
         "Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). " +
         "Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done.")]
     SubSessionNoAnswer,
+
+    // An address (F127.3.1): who it reaches, or why it reaches no one.
+
+    [Description("Error: no agent here is called '{Identity}'. The agents here: {Identities}.")]
+    AddressUnknownIdentity,
+
+    [Description("Error: {Identity} has no voice of its own to answer in. Ask one of its roles: {Roles}.")]
+    AddressNoVoice,
+
+    [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
+    AddressUnknownRole,
+
+    [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
+    AddressNotCallable,
+
+    [Description(
+        "Error: '{Address}' is no agent's address. Write the agent's name, or its name and a role after a dot " +
+        "(acme.cook), in lowercase letters, digits and dashes.")]
+    AddressInvalid,
+
+    [Description("Error: this chat speaks for no agent, so it may ask none.")]
+    AskerNone,
+
+    [Description("{Answer}\n\n[Answered by {Address}, did: {Did}]")]
+    AgentAnswer,
+
+    [Description(
+        "{Answer}\n\n[Answered by {Address}, did: {Did}. A new conversation: the earlier one had closed, so it " +
+        "remembers none of it]")]
+    AgentAnswerAnew,
+
+    [Description("no tools")] AgentDidNothing,
+
+    [Description("{Tool} (failed)")] AgentDidFailed,
+
+    [Description("{Tool} ×{Count}")] AgentDidTimes,
+
+    [Description("{Tool} ×{Count} ({Failed} failed)")]
+    AgentDidTimesFailed,
+
+    [Description(
+        "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +
+        "Wait for that answer, then send this again.")]
+    SubSessionBusy,
+
+    [Description("--- Answer {Number} ---")]
+    AgentWorkBegan,
+
+    [Description("Said: {Text}")] AgentWorkSaid,
+
+    [Description("Called {Tool} with {Input}")]
+    AgentWorkCalled,
+
+    [Description("{Tool} returned: {Text}")]
+    AgentWorkReturned,
+
+    [Description("{Tool} failed: {Text}")] AgentWorkFailed,
+
+    [Description("[The earliest {Cut} characters are left out. What follows is the latest part.]")]
+    AgentWorkCut,
+
+    [Description("Error: no agent was asked in this chat, so there is no work to read.")]
+    AgentWorkNoneAsked,
+
+    [Description(
+        "Error: no agent was asked at '{Address}' in this chat, so it has no work to read. Asked: {Asked}.")]
+    AgentWorkNotAsked,
+
+    [Description("# Agents you may ask")] AgentsYouMayAskHeading,
+
+    [Description("These are the addresses you may pass to `AskAgent`. Any other is refused.")]
+    AgentsYouMayAskIntro,
+
+    [Description("- `{Address}`")] AgentYouMayAsk
 }

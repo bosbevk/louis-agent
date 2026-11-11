@@ -48,6 +48,12 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
 - Its knowledge is the `docs` toolset over `DOCS_ROOT` (the site's image carries the docs; the PC mounts the repo's),
   so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
   (B1).
+- It may ask the three showroom businesses (F127.3.1, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md)):
+  its `Calls` are `GuideCall`'s (`seemeeu-guesthouse`, `wheatfield-kitchen`, `koringland-attorneys`), the door gives
+  its session core's `agents` toolset for that, and its prompt lists them after the agents guide. It asks with
+  `AskAgent` on this same container (`AGENT_PEERS: self=http://localhost:8080`), passes the answer on as the
+  business's, says what the business did from the line under it, and reads its steps with `ReadAgentWork` when a
+  visitor asks. It keeps the last word: it doesn't relay answers whole (`RelaysAnswersWhole` stays off).
 
 ## Open on purpose
 

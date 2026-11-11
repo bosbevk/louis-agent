@@ -350,7 +350,7 @@ public class EvalRunnerRescoreTests
         public IReadOnlyList<ICheck> Checks { get; } = [new WantsText(graderVersion, wanted)];
 
         /// <summary>One call of the agent's and two of a specialist's, reading one site, on every turn.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
             new(null, null, 1, 2, ["example.org"], null);
     }
 }

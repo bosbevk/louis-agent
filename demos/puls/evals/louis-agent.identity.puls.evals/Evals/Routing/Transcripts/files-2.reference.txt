@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:51:34.278Z","mode":"delegated","repeat":1,"task":"files-2","turn":1,"session":"sess_57c43f0a5d5742a78fd56017d8e89bb6","text":"Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking."}
 {"event":"sse","t":"2026-10-29T00:51:34.278Z","mode":"delegated","repeat":1,"task":"files-2","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_57c43f0a5d5742a78fd56017d8e89bb6","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:51:39.524Z","mode":"delegated","repeat":1,"task":"files-2","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

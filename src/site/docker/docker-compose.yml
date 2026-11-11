@@ -33,6 +33,8 @@ services:
       # sign-in, this many times a day per address across them all.
       OPEN_IDENTITIES: louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys
       OPEN_SESSIONS_PER_DAY: "50"
+      # The guide asks a showroom business on this same container (F127.3.1, Louis's pick 2 A): itself, inside it.
+      AGENT_PEERS: self=http://localhost:8080
     # Localhost only: the review copy. AGENT_API_KEY in .env.secrets is required (FX18), or the host refuses to start.
     ports:
       - "127.0.0.1:${SITE_PORT:-5080}:8080"

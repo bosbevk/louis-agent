@@ -55,8 +55,6 @@ services:
       # PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset; set either way, the
       # old name reaches the container through env_file too, and it warns that it's to be renamed.
       ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe}}
-      # Puls shows a specialist's report as it is and ends its turn there, instead of retyping it at the output rate.
-      SHOW_SPECIALIST_REPORTS: ${SHOW_SPECIALIST_REPORTS-true}
       # The recipe library (ADR 0082): the cook reads it from this instance's own open feed. RECIPES_MONGO_URL, in
       # config/.env.secrets, is where it's kept; unset, nothing is kept. An eval's trial leaves it alone unless told.
       RECIPE_LIBRARY_URL: ${RECIPE_LIBRARY_URL-http://127.0.0.1:8080/}

@@ -281,6 +281,7 @@ public class CalibrationCommandsTests
             CancellationToken cancellationToken) => throw new NotSupportedException();
 
         /// <summary>Never called: the calibration commands read no turn's facts.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotSupportedException();
     }
 }

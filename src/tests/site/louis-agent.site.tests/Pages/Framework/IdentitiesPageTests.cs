@@ -18,7 +18,7 @@ public class IdentitiesPageTests
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<IdentitiesPage>();
-        var identities = Directory.GetDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
+        var identities = TestPaths.Demos()
             .Select(demo => Path.Combine(demo, "identity")).Where(Directory.Exists)
             .Append(Path.Combine(TestPaths.RepoRoot, "src", "site"))
             .SelectMany(folder => Directory.GetDirectories(folder, "louis-agent.identity.*"))

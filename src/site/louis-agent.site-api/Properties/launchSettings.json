@@ -16,7 +16,8 @@
         "LEADS_TO": "louismarais0@gmail.com",
         "LEADS_FROM": "guide@louis-agent.dev",
         "OPEN_IDENTITIES": "louis-agent-guide,seemeeu-guesthouse,wheatfield-kitchen,koringland-attorneys",
-        "OPEN_SESSIONS_PER_DAY": "50"
+        "OPEN_SESSIONS_PER_DAY": "50",
+        "AGENT_PEERS": "self=http://127.0.0.1:5083"
       }
     }
   }

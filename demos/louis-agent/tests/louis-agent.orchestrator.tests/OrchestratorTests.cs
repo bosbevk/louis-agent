@@ -2,6 +2,7 @@ using System.Diagnostics;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Orchestrator.Tools.Checks;
@@ -11,10 +12,16 @@ using LouisAgent.Testing;
 
 namespace LouisAgent.Orchestrator.Tests;
 
+/// <summary>
+/// The orchestrator's own parts over a folder of its own: its prompt and runbooks, the fix prompt it sends, its tools
+/// and where they log, and what stops a run.
+/// </summary>
 public class OrchestratorTests
 {
+    /// <summary>This test's folder, made fresh and removed after.</summary>
     private string _dir = null!;
 
+    /// <summary>A fresh folder for each test.</summary>
     [SetUp]
     public void SetUp()
     {
@@ -22,6 +29,7 @@ public class OrchestratorTests
         Directory.CreateDirectory(_dir);
     }
 
+    /// <summary>Removes the folder, git's read-only objects too.</summary>
     [TearDown]
     public void TearDown()
     {
@@ -31,14 +39,17 @@ public class OrchestratorTests
         Directory.Delete(_dir, recursive: true);
     }
 
+    /// <summary>One line of the service's error log: a missing discount code in a method.</summary>
     private static string Event(string id, string method = "order-total") =>
         $$"""{"id":"{{id}}","timestamp":"2026-10-06T10:00:00+00:00","service":"order-service","method":"{{method}}","arguments":"1003","exception_type":"System.Collections.Generic.KeyNotFoundException","message":"The given key 'SUMMER25' was not present","stack_trace":"   at OrderService.OrderApi.GetOrderTotal(Int32 id)"}""";
 
+    /// <summary>
+    /// The orchestrator's prompt is a mode in core (louis-agent/voice-orchestrator), read from the assembly; its own
+    /// Skills/ keeps only the per-service runbooks (CL9 step 7).
+    /// </summary>
     [Test]
     public void TheWorkflow_IsBuiltIn_OnlyTheRunbooksAreOnDisk()
     {
-        // CL9 step 7: the orchestrator's prompt is a mode in core (louis-agent/voice-orchestrator), read from the
-        // assembly; its own Skills/ keeps the per-service runbooks.
         string skills = Directory.CreateTempSubdirectory("orchestrator-skills-").FullName;
         try
         {
@@ -58,6 +69,9 @@ public class OrchestratorTests
         }
     }
 
+    /// <summary>
+    /// The prompt is the principles, the workflow, the service and one runbook per method, and the methods are listed.
+    /// </summary>
     [Test]
     public void Skills_LoadTheWorkflowServiceAndOneRunbookPerMethod()
     {
@@ -76,11 +90,16 @@ public class OrchestratorTests
         Assert.That(provider.Documentation, Does.Contain("## Method: refund").And.Contain("# Service: order-service"));
     }
 
+    /// <summary>A service with no runbooks stops start-up.</summary>
     [Test]
     public void Skills_ForAnUnknownService_Throw() =>
         Assert.Throws<InvalidOperationException>(() =>
             OrchestratorSkills.Load(Path.Combine(AppContext.BaseDirectory, "Skills"), "nope"));
 
+    /// <summary>
+    /// The fix prompt fences the error as data, not instructions, names the branch, carries the triage's diagnosis and
+    /// asks for the FIX-RESULT line.
+    /// </summary>
     [Test]
     public void FixPrompt_FencesTheEventAndNamesTheBranch()
     {
@@ -96,10 +115,12 @@ public class OrchestratorTests
         Assert.That(prompt, Does.Contain("FIX-RESULT:"));
     }
 
+    /// <summary>A replay may only call a method that has a runbook.</summary>
     [Test]
     public void ReplayRequest_RejectsMethodsWithoutARunbook() =>
         Assert.That(Checks().ReplayRequest("delete-everything", 1), Does.StartWith("Error: unknown method"));
 
+    /// <summary>A tool logs to stderr with the orchestrator's tag, and never writes to stdout.</summary>
     [Test]
     public void ATool_LogsToStderr_WithTheOrchestratorTag_NeverToStdout()
     {
@@ -126,6 +147,9 @@ public class OrchestratorTests
         Assert.That(output.ToString(), Is.Empty);
     }
 
+    /// <summary>
+    /// Escalating and acknowledging take only errors the feed has, and an escalation is written down.
+    /// </summary>
     [Test]
     public void EscalateAndAcknowledge_OnlyAcceptKnownEvents()
     {
@@ -138,11 +162,13 @@ public class OrchestratorTests
             Does.Contain("card ref missing"));
     }
 
+    /// <summary>
+    /// Only the user's stop ends the run (FX7): a model request that times out throws TaskCanceledException, an
+    /// OperationCanceledException, and must count as that error's failure, not end the run as Ctrl+C does.
+    /// </summary>
     [Test]
     public void Stopping_OnlyTheUsersStopEndsTheRun()
     {
-        // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must
-        // count as that error's failure, not end the run as Ctrl+C does.
         var timeout = new TaskCanceledException(
             "The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
             new TimeoutException());
@@ -157,6 +183,7 @@ public class OrchestratorTests
             "another error while stopping");
     }
 
+    /// <summary>A feed over an error log holding these lines, already read.</summary>
     private JsonLinesErrorFeed FeedWith(params string[] events)
     {
         string log = Path.Combine(_dir, "errors.jsonl");
@@ -166,6 +193,7 @@ public class OrchestratorTests
         return feed;
     }
 
+    /// <summary>The methods these tests' service has runbooks for.</summary>
     private static readonly HashSet<string> Methods = ["get-order", "order-total", "refund"];
 
     /// <summary>The orchestrator's settings over this test's folder.</summary>
@@ -176,8 +204,10 @@ public class OrchestratorTests
         SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
     };
 
+    /// <summary>The comms log in this test's folder.</summary>
     private CommsLog Comms() => new(Path.Combine(_dir, "state", "agent-comms.md"));
 
+    /// <summary>The orchestrator's tools over this feed, with a client pointed at nothing.</summary>
     private ServiceTools Tools(JsonLinesErrorFeed feed)
     {
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);

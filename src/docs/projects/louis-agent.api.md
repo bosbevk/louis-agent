@@ -70,7 +70,7 @@ flowchart LR
   from core's `AgentEngineFactory`, kept for the session's life; unknown or unavailable names, a `depth` other than 0
   or 1, or `specialists` at depth 1 are a `400`. `parent` tags a sub-session's usage records with the turn that opened it.
   `GET /v1/toolsets` lists names, descriptions and availability, never tool definitions. The code-review web app opens
-  chats with every available toolset; Puls opens them with `specialists` and `web` and hands cooking to its peer.
+  chats with every available toolset; Puls opens them with `agents` and `web` and asks its cook on its peer by address.
   Engines are shared by every session with the same toolsets, role and level, and the least recently used of
   16 is dropped (a session keeps its own).
 - **Roles** (F21, CL14): `POST /v1/sessions` takes `role`, a built-in one at the session's level (a mode such as
@@ -83,7 +83,7 @@ flowchart LR
   the session's first message (`ApiModelText.UserPlace`: `[The user is in {Location}; their time zone is {TimeZone}.]`),
   not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
   `Africa/Johannesburg`. Files attached to a message are
-  remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
+  remembered by name, so `AskAgent` can forward them to the agent it asks without the model copying them.
 - **Web input recorded and replayed** (F18 step 4a): `POST /v1/sessions` takes `replay` (`{ web, of, model }`) only on a session with
   a run tag, and **sending it, even an empty `{}`, is what marks a session as an eval**: a run tag alone marks nothing (the orchestrator
   sends one on every fix session), so with no `replay` the session is left alone whatever `WEB_REPLAY` says. `ReplayResolution` decides,
@@ -177,7 +177,7 @@ sequenceDiagram
 | `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
 | `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message, its attachments and the page the visitor is reading (F115, ADR 0104, one block cut at 6,000 characters), the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end |
-| `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; the request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `PageRequest`, `ReplayRequest`) and what `replay` resolves to (`ReplayResolution`, F18 step 4a) |
+| `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; how it reads the request bodies, which are shared records in `louis-agent.session-stream`'s `Wire/` since F127.3.1 (`CreateSessionRequestReading`: `CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `PageRequest`, `ReplayRequest`), and what `replay` resolves to (`ReplayResolution`, F18 step 4a) |
 | `Admin/AdminGate.cs`, `AdminAccess.cs` | The gate on `/v1/admin` (F27): the admin key, else the agent's, else closed; what it decided |
 | `Admin/AdminRows.cs` | The JSON rows the admin endpoints send (a run, a conversation, a turn, a request, a live run), with the standard records: the run's eval, version, commit and graders, a conversation's grades and outcome; null from before F18 step 2a (step 4.5b) |
 | `Endpoints/AdminEndpoints.cs` | The admin portal's API under `/v1/admin` (F27, F31), behind `AdminGate`: the checks and runs, a run started (503 without a store), its live events over SSE, its requests so far (`GET runs/{id}/requests`, FX34: the ledger's rows of a run the recorder keeps, each on its turn by the run's end's own join, so the live table prices a turn as it ends; 404 for a run not recorded here, 503 for a ledger read mid-write), a check's manual and trend, a stored run with its levels, a turn's events, a run deleted. Every eval route answers under `/v1/admin/evals/…`

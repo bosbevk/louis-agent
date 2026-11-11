@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-10-29T00:49:57.923Z","mode":"delegated","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-10-29T00:51:51.299Z","mode":"delegated","repeat":1,"task":"git","turn":1,"session":"sess_9f3149c7a9174b1584ed23952c6a0514","text":"Wat het die laaste drie commits in hierdie repository verander?"}
 {"event":"sse","t":"2026-10-29T00:51:51.3Z","mode":"delegated","repeat":1,"task":"git","turn":1,"type":"message_start","data":{"type":"message_start","message":{"session_id":"sess_9f3149c7a9174b1584ed23952c6a0514","role":"assistant","toolsets":["web","specialists"],"session_role":"puls/voice-af"}}}
 {"event":"sse","t":"2026-10-29T00:51:53.838Z","mode":"delegated","repeat":1,"task":"git","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}}

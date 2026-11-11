@@ -180,6 +180,29 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
+    /// Every ADR on disk is in the solution, so Rider shows each decision beside the docs it belongs to. The check
+    /// above only goes the other way, and 43 of them had gone missing without anyone noticing, Puls's whole folder
+    /// among them.
+    /// </summary>
+    [Test]
+    public void EveryAdr_IsASolutionItem()
+    {
+        string solution = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+
+        // The framework's ADRs, the packs' and each demo's: every docs/adr folder there is.
+        var folders = new[] { "src/docs/adr", "packs/docs/adr" }
+            .Concat(TestPaths.Demos().Select(demo => Path.Combine(demo, "docs", "adr")))
+            .Select(folder => Path.Combine(TestPaths.RepoRoot, folder))
+            .Where(Directory.Exists);
+        // The solution writes an item as its path, twice, with backslashes on every platform.
+        var missing = folders.SelectMany(folder => Directory.EnumerateFiles(folder, "*.md"))
+            .Select(file => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('/', '\\'))
+            .Where(item => !solution.Contains($"{item} = {item}", StringComparison.Ordinal));
+
+        Assert.That(missing, Is.Empty);
+    }
+
+    /// <summary>
     /// The folders at the top and the solution's groups at the top are the same list. Dot folders are not part of the
     /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move
     /// left.

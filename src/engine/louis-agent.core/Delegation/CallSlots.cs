@@ -1,17 +1,19 @@
-
 using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Usage.Records;
 
 namespace LouisAgent.Core.Delegation;
+
 /// <summary>
-/// The sub-session calls a turn may make (S, CL15, from SpecialistTools): at most <paramref name="maxPerTurn"/> per turn
-/// (starts and continues alike); outside a turn (an MCP call), the most <paramref name="noTurnWindow"/> may.
+/// The asks a turn may make (S, CL15): at most <paramref name="maxPerTurn"/> per turn, a first ask and a follow-up
+/// alike; outside a turn (an MCP call), the most <paramref name="noTurnWindow"/> may.
 /// </summary>
 internal sealed class CallSlots(int maxPerTurn, TimeSpan noTurnWindow, TimeProvider time)
 {
+    /// <summary>Outside a turn (an MCP call), how long the window is that a turn's limit applies to.</summary>
+    public static readonly TimeSpan NoTurnWindow = TimeSpan.FromMinutes(1);
+
     private readonly ConcurrentDictionary<string, int> _perTurn = new(StringComparer.Ordinal);
     private readonly Queue<DateTimeOffset> _noTurn = new();
 
@@ -26,11 +28,15 @@ internal sealed class CallSlots(int maxPerTurn, TimeSpan noTurnWindow, TimeProvi
         return null;
     }
 
-    /// <summary>This turn as a child's <c>parent</c> tag, <c>{session}#{turn}</c>; null outside a session's turn.</summary>
+    /// <summary>
+    /// This turn as a child's <c>parent</c> tag, <c>{session}#{turn}</c>; null outside a session's turn.
+    /// </summary>
     public static string? ParentTag(UsageScope? scope) =>
         scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
 
-    /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most maxPerTurn a window.</summary>
+    /// <summary>
+    /// Outside a turn there's nothing to count against, so a rolling window: at most maxPerTurn a window.
+    /// </summary>
     private bool TakeNoTurnSlot()
     {
         lock (_noTurn)

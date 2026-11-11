@@ -18,11 +18,11 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (115)
+## Open (117)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 the demo showroom is done (ADR 0115). F127.2 the demos as working websites, tried live, is done (ADR 0116). Next F127.3 one address for every agent call (`identity`, `identity.specialist`, own specialist, minion) and `AskAgent`, Puls's specialists moved onto it, the session wire as shared records; F127.4 the guide mentors a visitor on a live demo through the API; F127.5 the minions on the address (Louis, 2026-11-10; [plan page](https://claude.ai/artifact/TdTWru63EMWhCC7EiJjQk9)); each its own plan | Now | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 the demo showroom is done (ADR 0115). F127.2 the demos as working websites, tried live, is done (ADR 0116). Next F127.3 one address for every agent call and `AskAgent`, the guide asking the demo businesses first (Puls paused, 2026-11-11): F127.3.1 on this instance is done (2026-11-11, ADR 0117), then F127.4, then F127.3.2 an agent on another server; F127.4 the guide runs a live demo: at *What to watch* it offers it, talks to the business in the business's window while the visitor watches, a card shows the work, the visitor carries on in the same session and the guide coaches; F127.5 the minions on the address (Louis, 2026-11-10; [plan page](https://claude.ai/artifact/TdTWru63EMWhCC7EiJjQk9)); each its own plan | Now | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F125 | — |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 | — |
 | F106 | The framework's track, before the agents | Now | [draft](src/docs/plans/F106-framework-track.md) |
@@ -76,13 +76,13 @@ known limitations below are facts about today, not tasks.
 | F83 | The cook's unconfirmed prices | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md) |
 | F84 | A shorter cook report | Puls | — |
 | FX59 | binary attachments sent as files, not text | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md) |
-| FX129 | the cook's role text says it has `web`, but its header's toolsets don't list it, so a session in that role doesn't get it; one of the two is wrong (found 2026-11-10 while writing ADR 0117) | Puls | — |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md) |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes | — |
 | FX66 | Both Azure apps keep their data-protection keys (which sign the sign-in cookie) in the container, so every cold start after scaling to zero makes new keys and signs everyone out (the start-up log warns); the keys go to each app's share, one setting (found 2026-11-08, F109.2) | Now | — |
-| FX83 | The paymo and devops packs' async tools take no CancellationToken (20 tools), which ADR 0028's convertibility check now shows for every pack the coding catalogue loads (F106.3.2 step 6); until they do, the catalogue's test names the two as the known gap | Next | — |
+| FX83 | The paymo and devops packs' async tools take no CancellationToken (20 tools), which ADR 0028's convertibility check showed when the coding catalogue loaded them (F106.3.2 step 6); since 2026-11-11 the coding agent loads neither (Louis: "we do not use them"), so no catalogue's check reaches them: fix it, with a check of the packs' own, before anyone builds on them | Next | — |
 | F21 | Louis's corrections to the Afrikaans | Puls | [feature doc](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md) |
 | F28 | Team talk, the rest | Puls | [feature doc](demos/puls/docs/features/F28-team-talk.md) |
+| F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after (F127.3.1 moved it with no run, since Puls is paused), and its stored replays recorded again, since they name the old tools | Puls | [ADR 0117](src/docs/adr/0117-one-address-for-every-agent-call.md) |
 | F85 | A retailer's own prices, only with its permission or feed | Puls | — |
 | F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls | — |
 | F87 | The open feeds have no key and no limit | Puls | — |
@@ -103,6 +103,7 @@ known limitations below are facts about today, not tasks.
 | F96 | The browser's user agent names the user's town per visit | Later | — |
 | F97 | A tool added mid-chat, after FX4 | Later | — |
 | F38 | Tool search, when a measured need comes | Later | — |
+| F136 | How much of an asked agent's work the asker reads, as a framework choice (Louis, 2026-11-11, during F127.3.1: "AskAgentWithTools and AskAgentWithToolsAndThinking"; "we will not use it"): its tool calls, or those and its thinking as text, beside the answer; three options weighed then (one `ReadAgentWork` with a detail level, three tools, one `show` parameter); when a framework user needs it | Later | — |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later | — |
 | F99 | An error tracker behind `IErrorFeed`, after F39 | Later | — |
 | F100 | A webhook trigger beside polling, after F39 | Later | — |
@@ -137,6 +138,7 @@ known limitations below are facts about today, not tasks.
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
+| CL60 | Every doc with a flow diagram also gets an overview picture of its own project (Louis, 2026-11-11, of the engine, identities and packs figure: "all docs with flow diagrams should get one of these also not as is, but for the project"): the figure's card style, one SVG per project in light and dark; and every diagram becomes an SVG that looks good, made with something better than Mermaid ("it looks shit, our svg graphs must look cool"), one shared theme, a test that each SVG matches its source; the tool is the plan's first pick; its own plan | Cleanups | — |
 
 ## Known limitations
 

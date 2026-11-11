@@ -14,7 +14,7 @@ public enum PulsToolset
     Web,
     [WireName("where-to-buy")] WhereToBuy,
     [WireName("shop-prices")] ShopPrices,
-    Specialists,
+    Agents,
     Minions,
     Skills,
     Recipes,

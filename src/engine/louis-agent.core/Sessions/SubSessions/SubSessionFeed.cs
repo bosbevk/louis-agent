@@ -1,15 +1,18 @@
 namespace LouisAgent.Core.Sessions.SubSessions;
 
 /// <summary>
-/// Where a turn's sub-session events go while it runs: a host that shows them (the API's chat stream) observes the turn,
-/// and <see cref="SpecialistTools"/> reports every event it reads. Held in an <see cref="AsyncLocal{T}"/>, like the usage
-/// scope, so it flows into the tool call without being passed through the engine; nothing observes it by default.
+/// Where a turn's sub-session events go while it runs: a host that shows them (the API's chat stream) observes the
+/// turn, and the delegation tools report every event they read. Held in an <see cref="AsyncLocal{T}"/>, like the
+/// usage scope, so it flows into the tool call without being passed through the engine; nothing observes it by
+/// default.
 /// </summary>
 public static class SubSessionFeed
 {
     private static readonly AsyncLocal<Action<SubSessionEvent>?> CurrentObserver = new();
 
-    /// <summary>Sends this flow's sub-session events to <paramref name="observer"/> until the result is disposed.</summary>
+    /// <summary>
+    /// Sends this flow's sub-session events to <paramref name="observer"/> until the result is disposed.
+    /// </summary>
     public static IDisposable Observe(Action<SubSessionEvent> observer)
     {
         var previous = CurrentObserver.Value;
@@ -20,8 +23,14 @@ public static class SubSessionFeed
     /// <summary>Reports an event to the current observer, if any; a failing observer never breaks the tool.</summary>
     internal static void Report(SubSessionEvent subSessionEvent)
     {
-        try { CurrentObserver.Value?.Invoke(subSessionEvent); }
-        catch (Exception) { }
+        try
+        {
+            CurrentObserver.Value?.Invoke(subSessionEvent);
+        }
+        catch (Exception)
+        {
+            // What the host does with an event is its own: the child's answer still reaches the asker.
+        }
     }
 
     private sealed class Restore(Action<SubSessionEvent>? previous) : IDisposable

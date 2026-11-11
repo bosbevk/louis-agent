@@ -169,8 +169,10 @@ One line with the amount and the unit to buy, then the sums, then anything you a
   needs none leaves the key out.
 - **Prefix every role with the identity's name** (`acme-estimator`). The catalogue refuses a prompt path two
   identities or packs share, so a plain `specialists/estimator.md` would clash with the next identity's.
-- **The mode needs a way to hand work over:** the `specialists` toolset in its session, and `AGENT_PEERS` naming an
-  instance that has the role. Usually that is the instance itself, as Puls's compose does (`AGENT_PEERS: puls=http://puls:8080`).
+- **The mode needs a way to hand work over:** the `agents` toolset in its session, the role's address in the
+  identity's `Calls` (`acme.estimator`, [ADR 0117](../adr/0117-one-address-for-every-agent-call.md)), and
+  `AGENT_PEERS` naming an instance that has the role. Usually that is the instance itself, as Puls's compose does
+  (`AGENT_PEERS: puls=http://puls:8080`).
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
 `prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
@@ -267,8 +269,8 @@ Puls has in `demos/puls/web/louis-agent.puls`) is a separate project and optiona
 
 ## Modes, roles and minions: the rules
 
-A session names its role when it opens (`POST /v1/sessions` with `"role": "{name}"`; a sub-session through
-`StartSubSession(…, role)`), and keeps it, as it keeps its toolsets (F21). In the code a role is
+A session names its role when it opens (`POST /v1/sessions` with `"role": "{name}"`; a sub-session through the
+address `AskAgent` was given, `acme.estimator` for `acme-estimator`), and keeps it, as it keeps its toolsets (F21). In the code a role is
 `Skills/Roles/RoleCatalog` and its level `RoleLevel` (CL13); CL14 made "role" the public word. Without one a session
 gets the default mode, `louis-agent/voice`. Prompts are embedded and read only from the assembly, so a wording change
 is a rebuild of the images that use the identity.
@@ -279,8 +281,8 @@ is a rebuild of the images that use the identity.
    Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does
    ([ADR 0019](../adr/0019-modes-one-file-per-product.md)).
 2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
-   it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
-   which toolsets. A role that always needs a toolset declares it under `metadata` in the header every prompt opens
+   it. A parent asks it by its address (`AskAgent("acme.estimator", …)`), which the identity's `Calls` must list; the
+   agents guide (`toolsets/agents.md`) says how. A role that always needs a toolset declares it under `metadata` in the header every prompt opens
    with, which the loader strips before the model sees it (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md),
    CL27, [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)):
 

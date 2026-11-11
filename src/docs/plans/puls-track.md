@@ -195,7 +195,8 @@ takes in rand pricing and billing (`TODO.md:147`), and comes with Phase 9's acco
 closed in Phase 0 step 3.
 
 **11. F28 Team talk** (step 1 built: commit `89c46ba`, Puls briefs its specialist in a fixed note, mood included; the
-mood rule and the `[stemming: af]` marker in `louis-agent.core/Prompts/toolsets/specialists.md:57-70`). The mood read
+mood rule and the `[stemming: af]` marker in Puls's own routing, `prompts/agent/puls/voice.md`, since F127.3.1 deleted
+the specialists guide). The mood read
 is live with no off switch; question 4 was answered *switch* (2026-10-19): add it, off by default. The rest of its plan
 stays here (`docs/plans/F28-team-talk.md:57-59`): `read_mood` on the API and the chat's *Lees my stemming* toggle (off
 by default, with an instance setting), the delegation card as a thread and the Werk panel's chip, and the briefing and the mood graded by

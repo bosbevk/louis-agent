@@ -2,17 +2,10 @@ using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
-using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
@@ -53,10 +46,14 @@ internal sealed class AgentSession(
     /// <summary>The signed-in person who opened it (F61.2), or null for a session a key opened.</summary>
     public SessionOpener? Opener { get; } = opener;
 
-    /// <summary>The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).</summary>
+    /// <summary>
+    /// The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).
+    /// </summary>
     public StreamFormat StreamFormat { get; } = format;
 
-    /// <summary>The engine of this session's toolset profile, shared with every session that chose the same toolsets.</summary>
+    /// <summary>
+    /// The engine of this session's toolset profile, shared with every session that chose the same toolsets.
+    /// </summary>
     public AgentEngine Engine { get; } = engine;
 
     /// <summary>The toolsets the session loaded, normalised (sorted, lowercase).</summary>
@@ -71,7 +68,10 @@ internal sealed class AgentSession(
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
     public UserPlace? Place { get; } = place;
 
-    /// <summary>What the session does with the web (F18 step 4a), resolved when it opened; null for a live chat and for an eval that leaves the web live.</summary>
+    /// <summary>
+    /// What the session does with the web (F18 step 4a), resolved when it opened; null for a live chat and for an eval
+    /// that leaves the web live.
+    /// </summary>
     public SessionReplay? Replay { get; } = replay;
 
     /// <summary>The LLM profile the session runs on (F30), or null for the instance's own model.</summary>
@@ -80,17 +80,19 @@ internal sealed class AgentSession(
     /// <summary>A minion's one tool (F30, depth 2); null for every other session, which has toolsets.</summary>
     public string? Tool { get; } = tool;
 
-    /// <summary>The longest attachment kept, as in the prompt: one file can't fill a specialist's context.</summary>
+    /// <summary>The longest attachment kept, as in the prompt: one file can't fill an asked agent's context.</summary>
     public const int MaxAttachmentChars = 100_000;
 
     private readonly ConcurrentDictionary<string, string> _attachments = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>The files attached in this conversation, by name, for a specialist (F22, <see cref="Core.Tools.Agents.SessionAttachments"/>).</summary>
+    /// <summary>
+    /// The files attached in this conversation, by name, for an agent it asks (F22, <see cref="SessionAttachments"/>).
+    /// </summary>
     public IReadOnlyDictionary<string, string> Attachments => _attachments;
 
     /// <summary>
-    /// The specialists this chat keeps open for a follow-up (F26): current for each turn, so <c>StartSubSession</c> keeps
-    /// them and <c>ContinueSubSession</c> finds them; closed on the peer when the chat is removed or dropped as idle.
+    /// The agents this chat keeps open for a follow-up (F26): current for each turn, so <c>AskAgent</c> keeps them and
+    /// finds them again by address; closed on the peer when the chat is removed or dropped as idle.
     /// </summary>
     public SubSessionRegistry SubSessions { get; } = new();
 
@@ -103,7 +105,9 @@ internal sealed class AgentSession(
 
     public List<ChatMessage> History { get; } = engine.NewHistory();
 
-    /// <summary>What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.</summary>
+    /// <summary>
+    /// What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.
+    /// </summary>
     public UsageTags Tags { get; } = tags;
 
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
@@ -113,7 +117,10 @@ internal sealed class AgentSession(
     /// <summary>Messages started in this session; the current one's number is the usage ledger's turn.</summary>
     public int Turns { get; private set; }
 
-    /// <summary>The usage of the session's finished turns, for /usage and GET /v1/sessions/{id} (F3), in the display currency (F14).</summary>
+    /// <summary>
+    /// The usage of the session's finished turns, for /usage and GET /v1/sessions/{id} (F3), in the display currency
+    /// (F14).
+    /// </summary>
     public UsageSession Usage { get; } = new(engine.Display);
 
     /// <summary>Starts a turn unless one is already running; the turn stops if the client disconnects.</summary>

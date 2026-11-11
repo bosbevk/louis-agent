@@ -397,7 +397,7 @@ public class EvalRunnerTests
         public IReadOnlyList<ICheck> Checks { get; } = graders ?? [];
 
         /// <summary>The facts the test handed in, or none at all.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
             facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }
 }

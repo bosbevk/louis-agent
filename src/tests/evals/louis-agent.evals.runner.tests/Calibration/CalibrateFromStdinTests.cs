@@ -203,6 +203,7 @@ public class CalibrateFromStdinTests
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) => throw new NotSupportedException();
 
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotSupportedException();
     }
 }

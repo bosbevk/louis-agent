@@ -33,7 +33,7 @@ public sealed class StubSessionClient : ISessionClient
     {
         var (mode, repeat, task, turns) = _sessions[session];
         _sessions[session] = (mode, repeat, task, turns + 1);
-        bool cook = mode.Toolsets.Contains(StubToolset.Specialists.Wire(), StringComparer.Ordinal);
+        bool cook = mode.Toolsets.Contains(StubToolset.Agents.Wire(), StringComparer.Ordinal);
         foreach (var (type, data) in StubStream.Turn(task, turns + 1, cook))
         {
             cancellationToken.ThrowIfCancellationRequested();

@@ -35,7 +35,7 @@ public class RecipesLongEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 3, 3)));
+            Is.EqualTo(("puls-recipes-long", "puls-recipes-long", PulsIdentityName.Puls.Wire(), 3, 4)));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
 

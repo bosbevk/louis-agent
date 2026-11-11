@@ -111,7 +111,7 @@ is off, with a warning.
 - The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
   below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
 - Sessions are in memory, but the ledger is not: totals survive restarts.
-- **A sub-session's roll-up** (F5): when a turn delegates (`StartSubSession`), each reply of the specialist adds one row
+- **A sub-session's roll-up** (F5): when a turn asks another agent (`AskAgent`), each reply of that agent adds one row
   with `purpose: "sub_session"`, `round: 0`, `stop: "sub_session"`, `model: "sub-session:{peer}"`, the parent's host,
   session and turn, the child's four token counts and charged cost, and a `requests` field saying how many model
   requests it stands for (`requests` is written on these rows only). It is written to the parent's ledger *and* added

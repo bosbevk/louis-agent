@@ -59,7 +59,7 @@ public class PulsEstimatesPromptsTests
     public void TheRolesRows_EstimateTheCosts_AndNameTheBranch_ComparingNoShopsPrices()
     {
         string[] rows = Read("agent/puls/voice.md").Split('\n')
-            .Where(row => row.StartsWith("| `web`, for every") && row.Contains("`puls-cook`")).ToArray();
+            .Where(row => row.StartsWith("| Every") && row.Contains("`puls.cook`")).ToArray();
 
         Assert.That(rows, Has.Length.EqualTo(2), "cooking and shopping");
         Assert.That(rows, Is.All.Contain("estimates the costs and names the branch of the shop the user will buy at"));

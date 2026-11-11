@@ -1,4 +1,4 @@
-{"event":"mode","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":1}
+{"event":"mode","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"toolsets":["agents","web"],"role":"puls/voice-af","llm":null,"conversations":1}
 {"event":"question","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"task":"recipe-bobotie","turn":1,"session":"sess_recipes_bobotie","text":"Ek wil bobotie maak vir vier mense. Ek is in Stellenbosch en dit maak nie saak waar ek koop nie. Gee my die resep."}
 {"event":"sse","t":"2026-11-04T12:00:00Z","mode":"puls-cook","repeat":1,"task":"recipe-bobotie","turn":1,"type":"message_start","data":{"type":"message_start","message":{"id":"msg_recipes_bobotie"}}}
 {"event":"sse","t":"2026-11-04T12:00:05Z","mode":"puls-cook","repeat":1,"task":"recipe-bobotie","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}

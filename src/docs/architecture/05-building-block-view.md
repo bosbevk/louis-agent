@@ -89,11 +89,11 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
   that profile from `AgentEngineFactory`, fixed for the session's life; no list means `skills` only; an unknown or
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
   prefix. `GET /v1/toolsets` lists names, descriptions and availability (never tool definitions); `GET /v1/sessions/{id}`
-  returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
+  returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `agents`.
 - Two web apps share one API codebase and `louis-agent.web`: the code-review app (`louis-agent.code-review`, every
-  toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
-  hand cooking to the cook; served by Puls's program, `louis-agent.puls-api`).
-- **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as
+  toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `agents` and `web` and
+  ask `puls.cook` for cooking; served by Puls's program, `louis-agent.puls-api`).
+- **Live delegation:** while an `AskAgent` call runs, the asked agent's own events stream to the chat as
   `sub_session` events (`SubSessionFeed` → the API's turn stream), and the delegation card shows its thinking, tool
   calls, answer and cost as they happen; the model gets only the answer.
 - A message's answer streams as SSE shaped like Claude's: `message_start`, `content_block_start/delta/stop` for
@@ -220,12 +220,12 @@ and a name two toolsets or the engine share stops start-up), and resolves a sess
 builds one engine per profile, cached by its normalised toolset list, its role and its level (F21, CL8;
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
-toolset the instance can load; the API's sessions choose theirs. A sub-session (`SpecialistTools.StartSubSession`) runs
-on a peer with its own toolsets and its `role` (named by the parent; with none it gets the default mode's voice,
-CL10), at most 3 per turn and 5 minutes each, and only its answer and a usage
-line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
-rounds) is asked for once more in the same session (FX11). A sub-session gets no routing: its toolsets were chosen for it
-and it can't delegate.
+toolset the instance can load; the API's sessions choose theirs. A sub-session (`AskAgent`, F127.3.1) runs
+on a peer as the address the parent named: an identity in its own voice, or one of its roles, with the toolsets its own
+file declares; at most 3 per turn and 5 minutes each, and only its answer comes back, under a line that says who
+answered and which tools it called; its usage records carry the parent turn (`parent`). An empty answer (the asked
+agent used all its tool rounds) is asked for once more in the same session (FX11). A sub-session gets no routing: its
+toolsets come from its own file, and it can't ask further.
 
 ## Skills
 

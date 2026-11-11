@@ -132,8 +132,8 @@ Loaded, it writes about 55 tokens a second. A terminal opened before the install
 ### A local model for one session (F30)
 
 An instance can run on Claude and still give one session a local model. `LLM_SESSION_PROFILES` lists the profiles a
-session may name (`ollama-puls`, set in `config/.env` for Puls); a session opened with `"llm": "ollama-puls"` (a sub-session
-through `StartSubSession(…, llm)`) runs on it, every other on `LLM_PROFILE`'s, and `GET /v1/llm-profiles` lists them. The
+session may name (`ollama-puls`, set in `config/.env` for Puls); a session opened with `"llm": "ollama-puls"` (a minion
+through `StartMinion`, its model from `MINION_LLMS`) runs on it, every other on `LLM_PROFILE`'s, and `GET /v1/llm-profiles` lists them. The
 profile's file gives everything but the API keys, which come from `config/.env.secrets`; nothing else is taken from the
 instance's profile, so a local model never gets Claude's `LLM_THINKING`. A listed profile without its file stops
 start-up.

@@ -27,7 +27,8 @@ public class EvalConformanceTests
     private static IEnumerable<TestCaseData> EveryEval()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog,
+                RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
         var catalog = new EvalCatalog([.. files, new FakeEval()], new StubEval());
         foreach (var eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
@@ -79,7 +80,7 @@ public class EvalConformanceTests
             CancellationToken cancellationToken) =>
             ValueTask.FromResult<IReadOnlyList<EvalMode>>([
                 new EvalMode(StubMode.Delegating.Wire(), StubEval.Role,
-                    [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()])
+                    [StubToolset.Agents.Wire(), StubToolset.Web.Wire()])
             ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
@@ -91,6 +92,7 @@ public class EvalConformanceTests
         public IReadOnlyList<ICheck> Checks { get; } = [new NoErrorCheck()];
 
         /// <summary>Never asked: conformance records no turn facts.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            throw new NotImplementedException();
     }
 }

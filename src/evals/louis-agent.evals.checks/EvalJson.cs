@@ -18,16 +18,6 @@ public static class EvalJson
     };
 
     /// <summary>
-    /// The same, for what is sent to the API: a null property is left out, so the API's own default holds, and an
-    /// enum goes by its name in snake case (<c>record</c>), never by number.
-    /// </summary>
-    public static readonly JsonSerializerOptions SnakeCaseNoNulls = new(SnakeCase)
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) },
-    };
-
-    /// <summary>
     /// The same, strict, for reading what a person wrote: an unknown field, a missing required field or a null where
     /// none is allowed is refused, so a typo in a file can't quietly become a default. Its resolver is set, the one the
     /// serializer would pick anyway, so a settings record's JSON schema can be made from it before anything is read.

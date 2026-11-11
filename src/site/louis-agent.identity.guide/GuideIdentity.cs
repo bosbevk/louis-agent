@@ -27,6 +27,22 @@ public sealed class GuideIdentity : IAgentIdentity
 
     /// <inheritdoc/>
     public IReadOnlyList<string> Packs { get; } = Enum.GetValues<GuidePack>().Select(pack => pack.Wire()).ToList();
+
+    /// <summary>
+    /// The showroom's businesses, each in its own voice (F127.3.1), so the guide can show a visitor one.
+    /// </summary>
+    public IReadOnlyList<string> Calls { get; } = Enum.GetValues<GuideCall>().Select(call => call.Wire()).ToList();
+}
+
+/// <summary>
+/// The agents the guide may ask, by their addresses (ADR 0043: an identity keeps its own enum and never references
+/// another identity).
+/// </summary>
+public enum GuideCall
+{
+    [WireName("seemeeu-guesthouse")] SeemeeuGuesthouse,
+    [WireName("wheatfield-kitchen")] WheatfieldKitchen,
+    [WireName("koringland-attorneys")] KoringlandAttorneys,
 }
 
 /// <summary>This identity's name (ADR 0043).</summary>

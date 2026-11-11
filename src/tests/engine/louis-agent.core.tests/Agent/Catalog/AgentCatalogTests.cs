@@ -1,7 +1,6 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
-using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent;
@@ -9,7 +8,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Core.Tests.Agent.Catalog;
 
@@ -21,12 +19,13 @@ namespace LouisAgent.Core.Tests.Agent.Catalog;
 public class AgentCatalogTests
 {
     /// <summary>A toolset context from a real engine factory, for resolving toolsets.</summary>
-    private static ToolsetContext Context() => new AgentEngineFactory(new FakeChatClient(), new AgentOptions
-    {
-        WorkspaceRoot = TestPaths.RepoRoot,
-        SkillsDirectory = TestPaths.Skills,
-        RatesUrl = null,
-    }).Context;
+    private static ToolsetContext Context() => new AgentEngineFactory(new FakeChatClient(),
+        new AgentOptions
+        {
+            WorkspaceRoot = TestPaths.RepoRoot,
+            SkillsDirectory = TestPaths.Skills,
+            RatesUrl = null
+        }).Context;
 
     /// <summary>A catalogue of the identities and packs given, none if left out.</summary>
     private static AgentCatalog Catalog(IReadOnlyList<IAgentIdentity>? identities = null,
@@ -320,7 +319,7 @@ public class AgentCatalogTests
         Assert.That(core.Packs, Is.Empty);
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames,
-            Does.Contain("StartSubSession").And.Not.Contain("CreateTool"));
+            Does.Contain("AskAgent").And.Not.Contain("CreateTool"));
         Assert.That(core.Resolve([CoreToolset.Skills.Wire()], Context()).Select(t => t.Name),
             Is.EqualTo(new[] { CoreToolset.Skills.Wire() }));
     }
@@ -378,7 +377,9 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("testprod/nothing"));
     }
 
-    /// <summary>A session names an identity by its name, case ignored; one the catalogue lacks is nobody (F109.3).</summary>
+    /// <summary>
+    /// A session names an identity by its name, case ignored; one the catalogue lacks is nobody (F109.3).
+    /// </summary>
     [Test]
     public void AnIdentity_IsFoundByName_CaseIgnored()
     {
@@ -392,7 +393,9 @@ public class AgentCatalogTests
         });
     }
 
-    /// <summary>A role names the identity whose mode it is; with no role, the first identity is who a session is.</summary>
+    /// <summary>
+    /// A role names the identity whose mode it is; with no role, the first identity is who a session is.
+    /// </summary>
     [Test]
     public void TheIdentityOfARole_IsTheOneWhoseModeItIs_ElseTheFirst()
     {

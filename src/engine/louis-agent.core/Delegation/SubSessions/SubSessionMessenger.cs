@@ -1,6 +1,6 @@
 using LouisAgent.Composition.Messages;
 using System.Diagnostics;
-using LouisAgent.Core.Messages;
+using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Usage.Records;
@@ -12,7 +12,7 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 /// asked once more. What each reply used goes to the parent's turn and the ledger, never into the answer.
 /// </summary>
 /// <remarks>
-/// Extract Class (CL15): talking to a child is one job, so <c>SpecialistTools</c> and <c>MinionTools</c> share it
+/// Extract Class (CL15): talking to a child is one job, so <c>AskAgentTools</c> and <c>MinionTools</c> share it
 /// instead of each keeping a copy of the retry and the roll-up.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
@@ -25,30 +25,42 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// <param name="RefusedStatus">
     /// The HTTP status when the peer refused the message (404: it no longer has the session).
     /// </param>
-    internal sealed record SubSessionReply(string Text, string? Failure, int? RefusedStatus = null);
+    internal sealed record SubSessionReply(string Text, string? Failure, int? RefusedStatus = null)
+    {
+        /// <summary>The events the child streamed for this message, in order, the asked-again one's included.</summary>
+        public IReadOnlyList<SubSessionEvent> Events { get; init; } = [];
+    }
 
     /// <summary>
     /// Sends the message and reads the answer. A child that used all its tool rounds can stop with no text (FX11), so
     /// it's asked once more in the same session, which keeps what it found and its cached prompt; a new child would
     /// start over.
     /// </summary>
-    public async Task<SubSessionReply> AnswerAsync(Uri peer, string sessionId, object body, SubSessionKind kind,
+    public async Task<SubSessionReply> AnswerAsync(Uri peer, string sessionId, SendMessageRequest body,
+        SubSessionKind kind,
         string? toolUseId,
         UsageScope? scope, CancellationToken cancellationToken)
     {
-        var (text, failure, status) = await SendAsync(peer, sessionId, body, kind, toolUseId, scope, cancellationToken);
-        if (failure is not null) return new SubSessionReply("", failure, status);
-        if (!string.IsNullOrWhiteSpace(text)) return new SubSessionReply(text.Trim(), null);
+        // Both sends stream into one list, so the reply carries everything the child did for this message.
+        var streamed = new List<SubSessionEvent>();
+        var (text, failure, status) = await SendAsync(peer, sessionId, body, kind, toolUseId, scope, streamed,
+            cancellationToken);
+        if (failure is not null) return new SubSessionReply("", failure, status) { Events = streamed };
+        if (!string.IsNullOrWhiteSpace(text)) return new SubSessionReply(text.Trim(), null) { Events = streamed };
 
         // No answer: ask once more, in the same session, for the answer from what it found.
         var (again, againFailure, againStatus) = await SendAsync(peer, sessionId,
-            new { message = MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer) }, kind, toolUseId,
-            scope, cancellationToken);
-        if (againFailure is not null) return new SubSessionReply("", againFailure, againStatus);
-        if (!string.IsNullOrWhiteSpace(again)) return new SubSessionReply(again.Trim(), null);
+            new SendMessageRequest(MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer), null), kind,
+            toolUseId,
+            scope, streamed, cancellationToken);
+        if (againFailure is not null) return new SubSessionReply("", againFailure, againStatus) { Events = streamed };
+        if (!string.IsNullOrWhiteSpace(again)) return new SubSessionReply(again.Trim(), null) { Events = streamed };
 
         return new SubSessionReply("",
-            MessageText.Format(SubSessionToolMessage.SubSessionNoAnswer, new { Agent = kind.Label }));
+            MessageText.Format(SubSessionToolMessage.SubSessionNoAnswer, new { Agent = kind.Label }))
+        {
+            Events = streamed
+        };
     }
 
     /// <summary>
@@ -57,7 +69,8 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
     /// turn and the ledger.
     /// </summary>
     private async Task<(string Text, string? Failure, int? RefusedStatus)> SendAsync(Uri peer, string sessionId,
-        object body, SubSessionKind kind, string? toolUseId, UsageScope? scope, CancellationToken cancellationToken)
+        SendMessageRequest body, SubSessionKind kind, string? toolUseId, UsageScope? scope,
+        List<SubSessionEvent> streamed, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
         using var send = http.Request(HttpMethod.Post,
@@ -75,7 +88,12 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         // Each event goes to the host's feed as it arrives, so the chat shows the child's work live.
         var (text, usage, error) = await SubSessionStream.ReadAsync(
             await reply.Content.ReadAsStreamAsync(cancellationToken),
-            (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, kind.Label, type, data)),
+            (type, data) =>
+            {
+                var subSessionEvent = new SubSessionEvent(toolUseId, kind.Label, type, data);
+                streamed.Add(subSessionEvent);
+                SubSessionFeed.Report(subSessionEvent);
+            },
             cancellationToken);
         // A failed reply's usage was charged too (FX6); a reply with none (a timeout before any event) leaves no
         // record.

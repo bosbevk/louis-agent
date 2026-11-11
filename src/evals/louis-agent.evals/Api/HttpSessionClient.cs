@@ -1,7 +1,10 @@
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Replies;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Evals.Api;
 
@@ -65,11 +68,11 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     public async Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
     {
         using var response =
-            await http.PostAsJsonAsync("v1/sessions", Body(request), EvalJson.SnakeCaseNoNulls, cancellationToken);
+            await http.PostAsJsonAsync("v1/sessions", Body(request), JsonSerializerOptions.Web, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
         var opened =
-            await response.Content.ReadFromJsonAsync<SessionWire.Opened>(EvalJson.SnakeCase, cancellationToken);
+            await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase, cancellationToken);
         return opened!.SessionId;
     }
 
@@ -82,10 +85,8 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     {
         // Ask for the headers only, so the stream can be read while the answer is still being written.
         using var send =
-            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(session)}/messages")
-            {
-                Content = JsonContent.Create(new SessionWire.MessageBody(message), options: EvalJson.SnakeCaseNoNulls),
-            };
+            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(session)}/messages");
+        send.Content = JsonContent.Create(new SendMessageRequest(message, null));
         using var response = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
@@ -112,10 +113,11 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     }
 
     /// <summary>Turns the session we want into the body the API expects when a session opens.</summary>
-    private static SessionWire.OpenBody Body(SessionRequest request) =>
-        new(request.Mode.Toolsets, request.Mode.Role, request.TimeZone, request.Task, request.RunTag, request.Place,
-            request.Mode.Llm, request.Mode.Depth,
-            new SessionWire.ReplayBody(request.Replay.Web, request.Replay.Of, request.Replay.Model));
+    private static CreateSessionRequest Body(SessionRequest request) =>
+        new(request.Task, request.RunTag, null, [.. request.Mode.Toolsets], request.Mode.Depth,
+            Location: request.Place, TimeZone: request.TimeZone, Llm: request.Mode.Llm, Role: request.Mode.Role,
+            // A null web leaves it to the instance's WEB_REPLAY; the mark itself is always sent.
+            Replay: new ReplayRequest(request.Replay.Web?.Wire(), request.Replay.Of, request.Replay.Model));
 
     /// <summary>
     /// Lets a good answer through, and turns any other into an exception that says why the API said no.

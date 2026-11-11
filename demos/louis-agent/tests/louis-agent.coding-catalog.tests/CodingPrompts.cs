@@ -5,8 +5,6 @@ using LouisAgent.Identities.Guide;
 using LouisAgent.Identities.Triage;
 using LouisAgent.Packs.Docs;
 using LouisAgent.Packs.Leads;
-using LouisAgent.Packs.DevOps;
-using LouisAgent.Packs.Paymo;
 using LouisAgent.Packs.Triage;
 
 namespace LouisAgent.Coding.Tests;
@@ -18,8 +16,7 @@ public class CodingPrompts
     /// <summary>The demo's catalogue, with keys never used: nothing is called while building an engine.</summary>
     public static AgentCatalog Catalog { get; } = new(
         [new CodingIdentity(), new GuideIdentity(), new TriageIdentity()],
-        CodingCatalog.Packs(new PaymoOptions("snapshot"), new DevOpsOptions("snapshot", "org", "project"),
-            new DocsOptions { Root = "snapshot-docs" },
+        CodingCatalog.Packs(new DocsOptions { Root = "snapshot-docs" },
             // The departments file is read when the tools are built, so it is the demo's real one.
             new TriageOptions
             {

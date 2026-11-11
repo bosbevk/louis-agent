@@ -52,5 +52,6 @@ public sealed class SampleSubset(IEval eval, IReadOnlySet<string> samples) : IEv
         CancellationToken cancellationToken) => eval.ModesAsync(sessions, cancellationToken);
 
     /// <inheritdoc />
-    public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => eval.TurnFactsOf(turn, mode);
+    public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+        eval.TurnFactsOf(turn, mode, []);
 }

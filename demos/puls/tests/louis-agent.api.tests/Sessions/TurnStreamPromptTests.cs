@@ -1,6 +1,5 @@
 using LouisAgent.Api.Sessions;
-using LouisAgent.Api.Sessions.Requests;
-using LouisAgent.Api.Sessions.Requests.Pages;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -72,8 +71,11 @@ public class TurnStreamPromptTests
     {
         var request = new SendMessageRequest("show me the triage one", null,
             new PageRequest("/demos", "Demos", "Watch the agents at work.", [new PageAreaRequest("/demos", "Demos")],
-                Links: [new PageAreaRequest("/triage-demo", "Watch it"),
-                    new PageAreaRequest("/contact", "Ask for yours")]));
+                Links:
+                [
+                    new PageAreaRequest("/triage-demo", "Watch it"),
+                    new PageAreaRequest("/contact", "Ask for yours")
+                ]));
 
         string prompt = TurnStream.BuildPrompt(request);
 
@@ -148,6 +150,6 @@ public class TurnStreamPromptTests
     [Test]
     public void NoPage_LeavesThePromptAlone()
     {
-        Assert.That(TurnStream.BuildPrompt(new SendMessageRequest("hi", null, null)), Is.EqualTo("hi"));
+        Assert.That(TurnStream.BuildPrompt(new SendMessageRequest("hi", null)), Is.EqualTo("hi"));
     }
 }

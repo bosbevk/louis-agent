@@ -29,12 +29,25 @@ public sealed class TriageIdentity : IAgentIdentity
         EmbeddedPrompts.Of(typeof(TriageIdentity).Assembly);
 
     /// <inheritdoc/>
-    public IReadOnlyList<string> Packs { get; } =
-        Enum.GetValues<TriageIdentityPack>().Select(pack => pack.Wire()).ToList();
+    public IReadOnlyList<string> Packs { get; } = [.. Enum.GetValues<TriageIdentityPack>().Select(pack => pack.Wire())];
+
+    /// <summary>The manager's own three roles, which it asks by their addresses (F127.3.1).</summary>
+    public IReadOnlyList<string> Calls { get; } = [.. Enum.GetValues<TriageCall>().Select(call => call.Wire())];
+}
+
+/// <summary>
+/// The agents the manager may ask, by their addresses: its own roles, one each (ADR 0043: an identity keeps its own
+/// enum of the names it uses).
+/// </summary>
+public enum TriageCall
+{
+    [WireName("triage.sorter")] Sorter,
+    [WireName("triage.investigator")] Investigator,
+    [WireName("triage.reviewer")] Reviewer
 }
 
 /// <summary>This identity's name (ADR 0043).</summary>
 public enum TriageIdentityName
 {
-    [WireName("triage")] Triage,
+    [WireName("triage")] Triage
 }

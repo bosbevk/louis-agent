@@ -14,7 +14,7 @@ for the people, at a shop, in a budget) and stays as it is; this one asks only a
 
 ## The mode
 
-One mode, `puls-cook`: Puls as built (`puls/voice-af`, toolsets `specialists` and `web`), which hands the meal to its
+One mode, `puls-cook`: Puls as built (`puls/voice-af`, toolsets `agents` and `web`), which asks `puls.cook` for the meal: its
 cook. The cook's own tools are its role's (`recipes`, and `web`), as for the cook eval.
 
 ## The conversations

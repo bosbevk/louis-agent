@@ -1,8 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components;
 using LouisAgent.Web.Text;
-using LouisAgent.Testing;
-using LouisAgent.Web.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
@@ -16,7 +14,7 @@ public class DelegationCardTests
     /// <summary>The cook's call in the recorded turn, and what its card reads from it.</summary>
     private static (Block Block, Delegation Delegation) TheCooksCall(Turn turn)
     {
-        var block = turn.Blocks.Single(b => b.ToolName == "StartSubSession");
+        var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
         return (block, Delegation.From(block)!);
     }
 
@@ -25,15 +23,36 @@ public class DelegationCardTests
     public async Task TheCooksCard_Done_MatchesTheGoldenFile()
     {
         var (block, delegation) = TheCooksCall(await SessionStreamFixture.ReplayAsync());
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, delegation).Add(x => x.Block, block));
 
         Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("done"));
-        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole),
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookAddress),
             "the role, as the user thinks of it");
         Snapshots.Match("Components/DelegationCard.html", cut.Markup);
+    }
+
+    /// <summary>
+    /// The card for the recorded ask (F127.3.1): done, named for the business the guide asked, and pinned to a golden
+    /// file.
+    /// </summary>
+    [Test]
+    public async Task TheAskedBusinesssCard_Done_MatchesTheGoldenFile()
+    {
+        var turn = await SessionStreamFixture.ReplayAskAsync();
+        var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
+        await using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+
+        var cut = ctx.Render<DelegationCard>(p =>
+            p.Add(x => x.Delegation, Delegation.From(block)!).Add(x => x.Block, block));
+
+        Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("done"));
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo("seemeeu-guesthouse"),
+            "the address, as the guide asked it");
+        Snapshots.Match("Components/DelegationCard.ask.html", cut.Markup);
     }
 
     /// <summary>A running card is open and says it's working.</summary>
@@ -43,7 +62,7 @@ public class DelegationCardTests
         var (block, _) = TheCooksCall(await SessionStreamFixture.ReplayAsync());
         block.ToolResult = null;
         var delegation = Delegation.From(block)!;
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<DelegationCard>(p =>
@@ -59,14 +78,14 @@ public class DelegationCardTests
     [Test]
     public void AFollowUp_ShowsOnlyTheFollowUpChip_NotTheHandle()
     {
-        // A continue call, which carries the handle of the specialist it goes back to.
+        // A minion's continue call, which carries the handle of the minion it goes back to.
         var block = new Block
         {
             Kind = BlockKind.Tool,
             ToolUseId = "call_2",
-            ToolName = "ContinueSubSession",
-            ToolInput = """{"handle":"sub-1","message":"En die nagereg?"}""",
-            ToolResult = "Malva poeding.",
+            ToolName = Delegation.ContinueMinionToolName,
+            ToolInput = """{"handle":"sub-1","task":"En die nagereg?"}""",
+            ToolResult = "Malva poeding."
         };
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
@@ -85,12 +104,10 @@ public class DelegationCardTests
         {
             Kind = BlockKind.Tool,
             ToolUseId = "call_1",
-            ToolName = "StartSubSession",
-            ToolInput =
-                """{"agent":"puls","toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}""".Replace("<RoleAlpha>",
-                    SessionStreamFixture.CookRole),
+            ToolName = Delegation.AskToolName,
+            ToolInput = $$"""{"address":"{{SessionStreamFixture.CookAddress}}","message":"Kook"}""",
             ToolResult = "Error: no peer named puls",
-            ToolFailed = true,
+            ToolFailed = true
         };
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());

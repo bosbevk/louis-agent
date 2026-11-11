@@ -125,8 +125,8 @@ reopening it.
     for their own system, an API or an MCP server behind our tool (our tool, framing and guards stay); when their own
     tools are what the model should see, it is an orange MCP pack instead (Phase 8, ADR 0028).
   - **The simulation `demo-invoice-batch`:** ten made-up invoices whose right customer is known, some by name, some
-    only by VAT number, one with no customer; one conversation per invoice, in `demo/voice` with `specialists`, which
-    hands the invoice to the clerk on `demo-agent`; graded in code: matched right, the unmatched one said so, the VAT
+    only by VAT number, one with no customer; one conversation per invoice, in `demo/voice` with `agents`, which
+    asks the clerk on `demo-agent` by its address (`demo.invoice-clerk`, in the demo identity's `Calls`); graded in code: matched right, the unmatched one said so, the VAT
     number checked.
   - **Cost per invoice is a measure, not a grader.** Graders run in the runner during the run, before the API joins
     the run's ledger rows (ADR 0022), and Phase 3 takes cost from the ledger, never from the harness (ADR 0007). So the
@@ -255,7 +255,7 @@ flowchart TB
     api -->|"starts"| runner
     runner -->|"POST /sessions, protocol lines"| api
     runner --> sims
-    api -->|"StartSubSession"| dagent
+    api -->|"AskAgent"| dagent
     api --> pagent
     api --> store
     api --> ledger
@@ -379,9 +379,9 @@ sequenceDiagram
     A->>N: dotnet louis-agent.simulation.runner.dll simulate demo-invoice-batch --repeat 1
     N-->>A: @protocol version 1
     loop each of the ten invoices
-        N->>A: POST /sessions (role demo/voice, toolsets specialists, tag run:mode:repeat)
+        N->>A: POST /sessions (role demo/voice, toolsets agents, tag run:mode:repeat)
         N->>V: Match inv-07.pdf to a customer
-        V->>D: StartSubSession(demo-invoice-clerk, files and customers, brief: inv-07.pdf)
+        V->>D: AskAgent(demo.invoice-clerk, brief: inv-07.pdf, attachments)
         D->>D: ReadDocument(inv-07.pdf): its workspace holds the invoices only
         D->>C: FindCustomer(the VAT number on the invoice)
         C-->>D: one customer, framed as data
@@ -501,7 +501,7 @@ louis-agent/
 | 4 | **The area guide and `demo-area-guide`:** `specialists/demo-area-guide.md`, `AreaGuideSimulation` and its three graders, the town-to-municipality table, its cases (the three towns and Phase 0 step 4's 30 Malmesbury questions, without names or contact details) | the graders on recorded transcripts fail a wrong municipality, a fact with no source or no date, a fact whose source the trial never read, and a nearby place beyond the distance it states; `SimulationCatalog` lists `demo-area-guide`; then **one paid run, on Louis's go**, recording its pages, so later runs replay them | Grounding on location, one place many sources (7, 3) |
 | 5 | **The control room moves to `louis-agent.web`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
 | 6 | **Any simulation's grades in the room:** each grader's score per mode and the cost per conversation, so the demo's runs read as clearly as the cook's; the cook keeps its own measures | bUnit renders a recorded `demo-invoice-batch` run: a row per grader per mode, the cost per invoice, and an unknown cost shown as unknown | Graders, not only one check's measures, on the screen (12, 17) |
-| 7 | ***Try it*:** a chat in one of a simulation's modes, opened from the control room | bUnit with the API stubbed: the page lists the simulations' modes and opens a session whose `POST /sessions` carries the mode's role and toolsets (`demo/voice` with `specialists`) | The pitch and its numbers on one screen (17) |
+| 7 | ***Try it*:** a chat in one of a simulation's modes, opened from the control room | bUnit with the API stubbed: the page lists the simulations' modes and opens a session whose `POST /sessions` carries the mode's role and toolsets (`demo/voice` with `agents`) | The pitch and its numbers on one screen (17) |
 | 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), work log; **the learning write-up for skills 18, 7 and 12**, written by Louis himself without the code open: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has written it; if he can't explain a step, that step goes back | links checked | Writing it up (18, 7, 12) |
 
 #### Verification

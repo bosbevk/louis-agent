@@ -230,7 +230,8 @@ public class EvalRunnerPassRatesTests
         public IReadOnlyList<ICheck> Checks { get; } = [new AnswerCheck()];
 
         /// <summary>No facts about a turn.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode, IReadOnlyList<TurnTranscript> earlier) =>
+            new(null, null, 0, 0, [], null);
     }
 
     /// <summary>The capturing logger, as the runner's typed logger.</summary>

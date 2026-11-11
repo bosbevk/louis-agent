@@ -17,7 +17,7 @@ What changes from the feature doc: nothing; the doc was written with this plan.
 - **Reuse before building:** the note travels in the tools' existing `message` argument (no tool change, no engine
   change: the model writes a text block, then the call, F25's hand-off line showed it); the card is the shared
   `DelegationCard` and `Delegation` record (F5, F26), which already parse the call's input; the checks already
-  capture the `StartSubSession` call's arguments. Nothing third-party: the "mood" is a line of prompt, not a
+  capture the `AskAgent` call's arguments. Nothing third-party: the "mood" is a line of prompt, not a
   sentiment model. Considered and rejected: a `mood` argument on the tools (a tool change for a line of text, and the
   specialist would still need it in words); a sentiment classifier in the API (a second model call per turn for
   something the first already reads).
@@ -42,7 +42,7 @@ What changes from the feature doc: nothing; the doc was written with this plan.
   user typed, never the marker. Rejected: a session setting changed by a second endpoint (it would have to edit the
   system prompt or be re-sent anyway) and a user command (`/stemming af`: a hidden switch, and a command the model
   never sees).
-- **The checks:** `briefed` (the message of the first `StartSubSession` has at least `Wil hê`/`Wants` and
+- **The checks:** `briefed` (the message of the first `AskAgent` has at least `Wil hê`/`Wants` and
   `Klink`/`Sounds`), `mood` (the `Klink`/`Sounds` line's text), in both checks' scores and tables; the portal's
   tree shows the mood on the conversation.
 

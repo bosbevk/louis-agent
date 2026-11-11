@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Tools;
 using System.Text.Json.Serialization;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 
 namespace LouisAgent.Orchestrator.Tools.Records;
@@ -13,17 +14,22 @@ namespace LouisAgent.Orchestrator.Tools.Records;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record FixRecord(
-    [property: JsonPropertyName("error_id")] string ErrorId,
-    [property: JsonPropertyName("session_id")] string SessionId,
+    [property: JsonPropertyName("error_id")]
+    string ErrorId,
+    [property: JsonPropertyName("session_id")]
+    string SessionId,
     [property: JsonPropertyName("status")] string Status,
     [property: JsonPropertyName("commit")] string? Commit,
     [property: JsonPropertyName("branch")] string? Branch,
     [property: JsonPropertyName("tests")] string? Tests,
-    [property: JsonPropertyName("summary")] string? Summary,
+    [property: JsonPropertyName("summary")]
+    string? Summary,
     [property: JsonPropertyName("reason")] string? Reason,
-    [property: JsonPropertyName("tool_calls")] int ToolCalls,
+    [property: JsonPropertyName("tool_calls")]
+    int ToolCalls,
     [property: JsonPropertyName("usage")] UsageLine? Usage,
-    [property: JsonPropertyName("louis_agent_said")] string LouisAgentSaid)
+    [property: JsonPropertyName("louis_agent_said")]
+    string LouisAgentSaid)
 {
     /// <summary>How much of louis-agent's last reply the line keeps.</summary>
     private const int SaidChars = 1500;

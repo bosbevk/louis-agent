@@ -13,8 +13,8 @@ namespace LouisAgent.Evals.Grading.Common.Tools;
 /// Unknown.
 /// </summary>
 /// <remarks>
-/// A run fact over the calls <c>tool-used</c> reads. Every call counts, the engine's own StartSubSession and
-/// ContinueSubSession too (Louis's pick), so a delegating mode spends one call on each hand-over. Its
+/// A run fact over the calls <c>tool-used</c> reads. Every call counts, the engine's own AskAgent too (Louis's pick),
+/// so a delegating mode spends one call on each hand-over. Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>

@@ -10,7 +10,7 @@
       "name": "puls-cook",
       "role": "puls/voice-af",
       "toolsets": [
-        "specialists",
+        "agents",
         "web"
       ]
     }
@@ -24,7 +24,7 @@
       "parameters": {
         "expected_key": "routes_to",
         "delegating_toolsets": [
-          "specialists"
+          "agents"
         ]
       }
     },

@@ -8,8 +8,6 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
 
@@ -114,8 +112,8 @@ public class PluginsTests
     }
 
     /// <summary>
-    /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and the
-    /// toolsets the cook declares in its header resolve: the packs' to the packs, minions to core's.
+    /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and
+    /// the toolsets the cook declares in its header resolve: the packs' to the packs, minions to core's.
     /// </summary>
     [Test]
     public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()
@@ -134,13 +132,14 @@ public class PluginsTests
                     RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(), PackKind.Calculator.Wire()
                 }));
 
-            // The cook's header names its four toolsets; with the browser, as a Puls stack has it, the catalogue resolves
-            // them all. No minion model is needed: the cook uses no minion (ADR 0081).
+            // The cook's header names its five toolsets (web since F127.3.1: an ask sends none); with the browser, as a
+            // Puls stack has it, the catalogue resolves them all. No minion model is needed: the cook uses no minion
+            // (ADR 0081).
             var withBrowser = WithBrowser();
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
                 Is.EquivalentTo(new[]
                 {
-                    RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+                    PackKind.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
                     ShopPricesToolset.ShopPrices.Wire(), PackKind.Calculator.Wire()
                 }));
         }

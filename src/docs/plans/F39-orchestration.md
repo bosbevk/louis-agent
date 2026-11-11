@@ -2,6 +2,11 @@
 
 > **Plan draft, not yet approved.** Moved whole out of the old platform plan on 2026-11-07 (CL56), lines 2005 to 3006 of `platform.md` at the tag `pre-roadmap`; the body below is as it was. When the work starts, this is rewritten into the plan Louis approves (the development guide, rule 3) and its TODO row names it. The sub-feature split of 2026-10-28 is the TODO's rows.
 
+> **Rewritten onto `AskAgent`, 2026-11-11** (Louis's pick at the end of F127.3.1): every mention of the old
+> `StartSubSession`, `ContinueSubSession`, `SpecialistTools` and `specialists` toolset now names what holds it today
+> (`AskAgent`, `AskAgentTools`, `CallSlots`, `PeerSession`, `PeerHttp`, the `agents` toolset; ADR 0117), by member
+> rather than by line. The rest of the body is still as it was moved.
+
 > **Added 2026-11-07** (Louis: a workflow is "how one agent can delegate to another, make decisions on that";
 > "abandon the workflow identity idea"). F39 builds the framework's **fourth concept**, the workflow, as an engine
 > capability ([F106](F106-framework-track.md)): Part A stays (delegation, hand-off to a named peer, typed results checked
@@ -51,12 +56,12 @@ would have made a folder cycle.
 | | What it does | How it calls a child | How the answer comes back | Limits live in |
 |---|---|---|---|---|
 | **The POC host** `src/louis-agent.orchestrator` | Polls one service's `errors.jsonl` (`OrchestratorOptions.cs:18-19`), triages each error with runbooks, has louis-agent fix it, checks the fix itself | Its own `LouisAgentClient`: `POST /sessions`, reads the SSE stream, `DELETE`; up to 3 "continue" messages, sent by `ServiceTools` (`ServiceTools.cs:26,77-80`) | `FIX-RESULT:` and `DECISION:` text lines found by a regex (`LouisAgentClient.cs:213`, `Program.cs:192`) | `ServiceTools` (one fix per error, 3 follow-ups), a 30-minute `HttpClient` timeout (`Program.cs:30`) |
-| **Puls to specialists** (level 0 to 1) | Hands cooking to the cook on a peer | `SpecialistTools.StartSubSession` / `ContinueSubSession` (F5, F26) | Prose shaped by the role's prompt | `SpecialistTools` (3 a turn, 5 minutes, `SpecialistTools.cs:34,40`), `SubSessionRegistry` (3 kept, `SubSessionRegistry.cs:17`), the API host's `AgentSessions.Create` (`AgentSessions.cs:153-188`), six per-turn values the API sets (`src/louis-agent.api/Program.cs:287-292`) |
+| **Puls to specialists** (level 0 to 1) | Asks the cook on a peer by its address | `AskAgentTools.AskAgent("puls.cook", …)`, a follow-up the same address again (F5, F26, F127.3.1) | Prose shaped by the role's prompt, under a line built in code that says what it did | `AskAgentTools` (3 a turn, `MaxPerTurn`; 5 minutes, `PeerHttp.DefaultTimeout`), the asker's `Calls` (who may be asked), `SubSessionRegistry` (3 kept, `DefaultCap`), the API host's `AgentSessions.Create` (`AgentSessions.cs:153-188`), six per-turn values the API sets (`src/louis-agent.api/Program.cs:287-292`) |
 | **Specialist to minions** (level 1 to 2, F30) | Built, not in use yet (ADR 0021; `docs/features/F30-local-web-peer.md:3`). F30 stays (question 3: keep), and its minions are tested after this plan (*Later*) | `MinionTools`, the same child path as specialists at depth 2 | Prose | `MinionTools` (16 a turn, 2 minutes, `MinionTools.cs:31,34`), the API's `CheckMinion` (`AgentSessions.cs:196`) |
 
 All three run on `AgentEngine` and treat a child's answer as a claim. But the child call, the retry rule, the cost
 roll-up, the live feed, the result format and the limits each exist twice, and the limits sit in seven places
-(`SpecialistTools`, `MinionTools`, `SubSessionRegistry`, `AgentSessions`, `ToolCallGuards`, `ServiceTools` and the
+(`AskAgentTools`, `MinionTools`, `SubSessionRegistry`, `AgentSessions`, `ToolCallGuards`, `ServiceTools` and the
 POC's `HttpClient`), one of them in the API host and two in the POC's, so only the API can delegate fully.
 
 ##### What's wrong with it (found by reading the code; not run)
@@ -65,11 +70,11 @@ POC's `HttpClient`), one of them in the API host and two in the POC's, so only t
   is still written to `decisions.jsonl` and marked processed (`Program.cs:123-131`), so that error is never retried.
 - **"Fixed only after all three checks pass" is only in the prompt** (`voice-orchestrator.md:28-37`); no code holds it.
 - **Turn counters can hand a turn its slots again:** both clear every count once they hold 1,000 entries
-  (`SpecialistTools.cs:411`, `MinionTools.cs:139`), whatever turn is still running. The 16-minion cap
+  (`CallSlots.TakeTurnSlot` for `AskAgent`, `MinionTools.cs:139`), whatever turn is still running. The 16-minion cap
   also counts per engine, not per user turn (`MinionTools.cs:58,136-142`): a cook and a researcher under one Puls turn
   would get 16 each.
 - **Only the API delegates fully.** Outside it a delegation is one-shot: nothing is kept for a follow-up, and no
-  attachments, minions or place travel (`SpecialistTools.cs:179-189`; `SubSessionRegistry.cs:7`: "With none current
+  attachments, minions or place travel (`AskAgentTools` reads them from the turn; `SubSessionRegistry.cs:7`: "With none current
   (an MCP call, the CLI) nothing is kept"), because five of the six per-turn values are set by the API alone; every host
   opens the usage scope (CLI `ConsoleChat.cs:63,90`, ACP `AcpServer.cs:237`, the POC `Program.cs:99`).
 - **The POC's fix sessions open at depth 0 with no role and no parent tag** (its body carries task, run, service and
@@ -222,8 +227,8 @@ flowchart TB
 #### Interfaces
 
 ```csharp
-// louis-agent.core/Delegation (A2): the one way to call a child agent. A new concern folder, layer 2 in
-// ArchitectureTests, so SpecialistTools (Tools, layer 2) may call it; it uses Sessions, Usage, Config and Messages.
+// louis-agent.core/Delegation (A2): the one way to call a child agent, beside AskAgentTools and MinionTools, which
+// call it (Delegation is a concern folder since CL15); it uses Sessions, Usage, Config and Messages.
 public sealed record AgentPeer(string Name, Uri Uri);                 // new: AGENT_PEERS is name=url pairs today, held as
                                                                       // a dictionary (AgentOptions.cs:117-120)
 public interface IChildTransport
@@ -235,17 +240,17 @@ public interface IChildTransport
 // SessionEvent: the reader's (LouisAgent.SessionStream, Phase 3 step 1a)
 public sealed record ChildRequest(string Role, IReadOnlyList<string> Toolsets, int Depth, string Parent, string Label,
     string LedgerModel, IReadOnlyDictionary<string, string> Tags);    // Label and LedgerModel: what today's internal record
-                                                                      // SpecialistTools.ChildKind (:143) holds; that record goes
+                                                                      // SubSessionKind holds today; that record goes
 public sealed record ChildSession(string Peer, string SessionId);
 public sealed class HttpPeerTransport(HttpClient http, AgentPeer peer, string? key) : IChildTransport;
-    // moved out of SpecialistTools.cs (its HTTP code, :152-483). key: this peer's own (A2a), never this deployment's
+    // from today's PeerSession and PeerHttp (Delegation/SubSessions/). key: this peer's own (A2a), never this deployment's
     // AGENT_API_KEY sent both ways. F44 passes W3C traceparent here (Phase 9).
 public sealed class ChildAgentClient(IChildTransport transport)
 {
     // From A4 it reads TurnContext.Current: the limiter (A3), the usage scope, the feed, the place and the replay
-    // setting. In A2 and A3 it reads today's per-turn values, as SpecialistTools does now (UsageScope.Current,
-    // UserPlace.Current and SubSessionFeed, SpecialistTools.cs:80,91,355; SessionReplay.Current from Phase 3's step 4a),
-    // and in A2 the per-turn count stays SpecialistTools' own (TakeSlot, :289). Either way what the child gets comes
+    // setting. In A2 and A3 it reads today's per-turn values, as AskAgentTools does now (UsageScope.Current,
+    // UserPlace.Current, SessionAttachments.Current and SubSessionFeed; SessionReplay.Current), and in A2 the
+    // per-turn count stays AskAgentTools' own (CallSlots.Take). Either way what the child gets comes
     // from the turn, never from the model's arguments (F22).
     public Task<ChildHandle> OpenAsync(ChildRequest request, CancellationToken ct);                 // a slot from the limiter (A3)
     public Task<ChildReply<T>> AskAsync<T>(ChildHandle child, string brief, CancellationToken ct);  // follow-up rule applied
@@ -261,13 +266,13 @@ public enum ChildOutcome { Answered, AnsweredAfterFollowUp, OutOfRounds, TimedOu
 public sealed record DelegationPolicy(int MaxDepth, int CallsPerTurn, int KeptPerChat, TimeSpan ChildTimeout,
     int PromptBudgetTokens, decimal? MoneyPerTree, FollowUpRule FollowUp, int MinionsPerTree, TimeSpan MinionTimeout)
 {
-    // Today's numbers: depth 2 (AgentSessions.cs:124: a specialist at 1, a minion at 2), 3 a turn
-    // (SpecialistTools.cs:34), 3 kept (SubSessionRegistry.cs:17), 5 minutes (SpecialistTools.cs:40), 80,000 tokens
+    // Today's numbers: depth 2 (AgentSessions.cs:124: an asked agent at 1, a minion at 2), 3 a turn
+    // (AskAgentTools.MaxPerTurn), 3 kept (SubSessionRegistry.DefaultCap), 5 minutes (PeerHttp.DefaultTimeout), 80,000 tokens
     // (AgentOptions.cs:160), 16 minions a turn tree and 2 minutes each (MinionTools.cs:31,34); MoneyPerTree from F7's
     // budgets (Phase 5), null when none is set.
     public static DelegationPolicy FromOptions(AgentOptions options);
 }
-public enum FollowUpRule { AskOnce, ContinueUpTo3 }   // FX11's ask-once (SpecialistTools.cs:317); the POC's three "continue"s
+public enum FollowUpRule { AskOnce, ContinueUpTo3 }   // FX11's ask-once (SubSessionMessenger); the POC's three "continue"s
 public sealed class DelegationLimiter(DelegationPolicy policy) : IChildLimiter;   // one per turn tree, held by TurnContext;
                                                                                  // no count is cleared while its tree runs
 
@@ -418,7 +423,7 @@ classDiagram
     direction LR
     class AgentPeer { <<record, A2, new>> +Name +Uri }
     class IChildTransport { <<interface, A2>> +OpenAsync() +SendAsync() +CloseAsync() }
-    class HttpPeerTransport { <<moved from SpecialistTools, A2>> a key per peer }
+    class HttpPeerTransport { <<from PeerSession and PeerHttp, A2>> a key per peer }
     class FakeChildTransport { <<test, A2>> }
     class ChildAgentClient { <<A2>> +OpenAsync() +AskAsync~T~() +ContinueAsync~T~() +CloseAsync() }
     class SessionStreamReader { <<Phase 3>> typed events }
@@ -431,7 +436,7 @@ classDiagram
     class IResultCheck~T~ { <<interface, A5>> +CheckAsync() }
     class RouteClassifier { <<Agent, A6>> +ClassifyAsync~T~() }
     class IToolChoiceStrategy { <<interface, Llm, A6>> +Force() }
-    class SpecialistTools { <<changed, A2>> thin caller }
+    class AskAgentTools { <<changed, A2>> thin caller }
     class IAgentIdentity { <<interface, Phase 2>> }
     class IAgentPack { <<interface, Phase 2>> }
     class OpsIdentity { <<B1>> packs by name }
@@ -456,7 +461,7 @@ classDiagram
     TurnContext --> IChildLimiter
     IChildLimiter <|.. DelegationLimiter
     DelegationLimiter --> DelegationPolicy
-    SpecialistTools --> ChildAgentClient
+    AskAgentTools --> ChildAgentClient
     RouteClassifier --> IToolChoiceStrategy
     RouteClassifier ..> ResultToolset
     IAgentIdentity <|.. OpsIdentity
@@ -567,7 +572,7 @@ sequenceDiagram
     Note over W,F: Unknown, or Deferred over the F7 budget: recorded, never marked processed, read again next poll
 ```
 
-The same function in Puls: a Puls turn calls `StartSubSession`, which opens the cook through
+The same function in Puls: a Puls turn calls `AskAgent("puls.cook", …)`, which opens the cook through
 `ChildAgentClient.OpenAsync(role puls-cook)` on the same transport, limiter and roll-up, and the cook's prose report
 comes back whole (the cook reports to a person, so its role names no result toolset).
 
@@ -689,7 +694,7 @@ flowchart TB
 | `SessionStreamReader`, `SessionEvent` | `louis-agent.session-stream/` (at the root, beside `louis-agent.core/`) | `LouisAgent.SessionStream` | Phase 3, steps 1a-1d |
 | `AgentPeer` (new), `IChildTransport`, `ChildRequest`, `ChildSession`, `HttpPeerTransport`, `ChildAgentClient`, `ChildHandle`, `ChildReply<T>`, `ChildOutcome` | `louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` (new concern folder, layer 2 in `ArchitectureTests`, a row in `louis-agent.core/CLAUDE.md`'s folder table) | A2 |
 | `FakeChildTransport`, `ChildAgentClientTests`, `HttpPeerTransportTests` | `tests/louis-agent.core.tests/Delegation/` | `LouisAgent.Core.Tests.Delegation` | A2, A2a |
-| `SpecialistTools` (a thin caller; its internal `ChildKind` record goes) | `louis-agent.core/Tools/Agents/` | `LouisAgent.Core.Tools.Agents` (unchanged) | A2 |
+| `AskAgentTools` (a thin caller; `SubSessionKind` goes) | `louis-agent.core/Delegation/Agents/` | `LouisAgent.Core.Delegation.Agents` (unchanged) | A2 |
 | `AgentOptions` (a key per peer, the callers' list: setting names the plan file's) | `louis-agent.core/Config/` | `LouisAgent.Core.Config` (changed) | A2a |
 | The callers' check in `AgentSessions.Create`, a 403 text in `ApiUserText` | `src/louis-agent.api/` | `LouisAgent.Api` (changed) | A2a |
 | `DelegationPolicy`, `FollowUpRule`, `DelegationLimiter` | `louis-agent.core/Delegation/` | `LouisAgent.Core.Delegation` | A3 |
@@ -726,7 +731,7 @@ louis-agent.core/
 ├── Llm/                 LlmClientFactory, two strategies (IPromptCachingStrategy, IUsageMapper), AnthropicProvider/
 ├── Sessions/            OpenSubSession, SessionAttachments, SubSessionEvent, SubSessionFeed, SubSessionRegistry, UserPlace
 │                        (Phase 3's step 4a adds WebReplayMode and SessionReplay)
-└── Tools/Agents/        AgentTools, SpecialistTools (the child client inside), MinionTools (on the same child path)
+└── Delegation/          AgentTools, Agents/AskAgentTools, MinionTools (on the same child path), SubSessions/ (the child client)
 src/
 ├── louis-agent.api/     AgentSessions.cs (the depth and minion rules), Program.cs (6 per-turn values, :287-292)
 └── louis-agent.orchestrator/
@@ -749,7 +754,7 @@ louis-agent.core/
 ├── Llm/                 … + ISystemNoteStrategy (A4a), IToolChoiceStrategy (A6); AnthropicProvider/ and OllamaProvider/
 │                        hold their implementations
 ├── Sessions/            … + ChildKind, IChildLimiter (A3), TurnContext (A4)
-└── Tools/Agents/        SpecialistTools and MinionTools, now thin callers
+└── Delegation/Agents/   AskAgentTools, and Delegation/MinionTools, now thin callers
 src/louis-agent.api/     AgentSessions asks DelegationPolicy and checks the callers' list; Program.cs opens one
                          TurnContext instead of 6 values
 src/louis-agent.cli/, src/louis-agent.acp/   open a TurnContext with a registry per chat (A4)
@@ -786,18 +791,18 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
 
 - **A0. Docs.** The stale lines fixed: F26's `SubSessionRegistry` path (`docs/features/F26-specialist-follow-up.md:46`
   says `Tools/Agents/`; it is in `Sessions/`), F5's `agents` / `AgentPeerTools` names
-  (`docs/features/F05-toolset-profiles.md:76,96`; the toolset is `specialists`, `ToolsetCatalog.cs:99`, and the class
-  `SpecialistTools`) and the same old name in `AgentOptions.cs:118`'s comment, and F30's 6 against
+  (`docs/features/F05-toolset-profiles.md:76,96`; the toolset is `agents` again since F127.3.1, its tool `AskAgent`,
+  the class `AskAgentTools`), and F30's 6 against
   16 minions (`docs/plans/F30-local-web-peer.md:246` says 6, `:289` says 16). The TODO's F39 line checked against Phase
   0's (F17, the structured results and the orchestrator's end-to-end test are already there). ADR 0031 was written in
   Phase 0. Skills 10, 18.
-- **A1. One session-stream reader:** built in Phase 3, steps 1a-1d (`SpecialistTools` and `LouisAgentClient` already
+- **A1. One session-stream reader:** built in Phase 3, steps 1a-1d (`AskAgentTools` and `LouisAgentClient` already
   read through it), so nothing is left to do here; A2 builds on it.
-- **A2. `ChildAgentClient` behind `IChildTransport`.** `HttpPeerTransport` moves out of `SpecialistTools.cs`;
-  `AgentPeer` is new; today's internal `SpecialistTools.ChildKind` record goes, its `Label` and `LedgerModel` moving
-  into `ChildRequest`; `SpecialistTools` and `MinionTools` become thin callers; `Delegation/` gets its row in
-  `ArchitectureTests` (layer 2) and in `louis-agent.core/CLAUDE.md`. Test first: a `FakeChildTransport` scripts open, answer, an empty answer, a
-  404, a timeout and an error event. `SpecialistToolsTests` and `MinionToolsTests` stay green unchanged; the golden
+- **A2. `ChildAgentClient` behind `IChildTransport`.** `HttpPeerTransport` is made from today's `PeerSession` and
+  `PeerHttp`; `AgentPeer` is new; today's `SubSessionKind` record goes, its labels moving into `ChildRequest`;
+  `AskAgentTools` and `MinionTools` become thin callers (`Delegation/` already has its row in `ArchitectureTests` and
+  in `louis-agent.core/CLAUDE.md`). Test first: a `FakeChildTransport` scripts open, answer, an empty answer, a
+  404, a timeout and an error event. The `AskAgent` and `MinionTools` tests stay green unchanged; the golden
   files unchanged. Skill 10.
 - **A2a. Credentials per peer and a list of who may delegate.** Each peer gets its own key, sent only to it, never this
   deployment's own `AGENT_API_KEY` both ways; the receiving API keeps a list of which caller may open which roles at
@@ -809,9 +814,9 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   files unchanged. Skill 15.
 - **A3. `DelegationPolicy` and one `DelegationLimiter` per turn tree.** `IChildLimiter` and `ChildKind` live in
   `Sessions/`, the limiter in `Delegation/`, so `Sessions/` never uses `Delegation/` (a rule `ArchitectureTests` gains).
-  Test first, red today: a turn's count survives 1,000 other turns being counted (`SpecialistTools.cs:411` clears them);
+  Test first, red today: a turn's count survives 1,000 other turns being counted (`CallSlots.TakeTurnSlot` clears them);
   the per-turn cap, the time limit, the kept-children cap, the prompt budget and the depth rule (a child may not take
-  the `specialists` toolset, `AgentSessions.cs:170`) are read from one `DelegationPolicy`; a tree's children are refused
+  the `agents` toolset, `AgentSessions`) are read from one `DelegationPolicy`; a tree's children are refused
   once its F7 money budget is spent, read from the ledger records under the tree's parent tag (Phase 5). Minions count
   per turn tree too: two specialists on different engines under one Puls turn share 16 minions (red today: each engine
   counts its own, `MinionTools.cs:58,136-142`), and "a child never does more than its parent" is checked in one place

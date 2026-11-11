@@ -22,10 +22,10 @@ public class PulsRouteTests
 {
     /// <summary>Puls's settings for the entry: a minion runs one tool, so it is no role to route to.</summary>
     private static readonly string Settings =
-        $$"""{"expected_key": "routes_to", "delegating_toolsets": ["{{PulsToolset.Specialists.Wire()}}"]}""";
+        $$"""{"expected_key": "routes_to", "delegating_toolsets": ["{{PulsToolset.Agents.Wire()}}"]}""";
 
     /// <summary>A scenario that should reach the cook.</summary>
-    private const string CookRoute = """{"routes_to":"puls-cook"}""";
+    private const string CookRoute = """{"routes_to":"puls.cook"}""";
 
     /// <summary>A scenario Puls should answer itself.</summary>
     private const string SelfRoute = """{"routes_to":null}""";
@@ -52,7 +52,8 @@ public class PulsRouteTests
     [Test]
     public async Task AMealGoesToTheCook_InAModeThatCanHandItOn() =>
         Assert.That(
-            (await Grade(CookEvalMode, CookRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome,
+            (await Grade(CookEvalMode, CookRoute, Turn(1, [Start(PulsEvalRole.CookAddress.Wire()), Text("Resep.")])))
+            .Outcome,
             Is.EqualTo(GradeOutcome.Pass));
 
     /// <summary>What decides is the mode's toolsets, not its name.</summary>
@@ -60,8 +61,8 @@ public class PulsRouteTests
     public async Task AModeIsOnTheCookBecauseOfItsToolsets_NotItsName() =>
         Assert.That((await Grade(
             new EvalMode("puls-cook-sonnet", PulsEvalRole.Cook.Wire(),
-                [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
-            Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+                [PulsToolset.Agents.Wire(), PulsToolset.Web.Wire()]), CookRoute,
+            Turn(1, [Start(PulsEvalRole.CookAddress.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     /// <summary>Where the cook is on, Puls answering a meal itself is wrong.</summary>
     [Test]
@@ -98,10 +99,10 @@ public class PulsRouteTests
     [Test]
     public async Task AWebQuestionHandedToTheCookIsWrong()
     {
-        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire())]));
+        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Start(PulsEvalRole.CookAddress.Wire())]));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(grade.Reason, Does.Contain(PulsEvalRole.Cook.Wire()));
+        Assert.That(grade.Reason, Does.Contain(PulsEvalRole.CookAddress.Wire()));
     }
 
     /// <summary>A turn that errored is never right, and the reason says it failed.</summary>

@@ -153,6 +153,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{4993F08C-6B0
 	ProjectSection(SolutionItems) = preProject
 		demos\louis-agent\docs\adr\0012-one-orchestrator-per-microservice.md = demos\louis-agent\docs\adr\0012-one-orchestrator-per-microservice.md
 		demos\louis-agent\docs\adr\0066-the-site-is-static-razor.md = demos\louis-agent\docs\adr\0066-the-site-is-static-razor.md
+		demos\louis-agent\docs\adr\0077-films-on-github-are-rendered-webp.md = demos\louis-agent\docs\adr\0077-films-on-github-are-rendered-webp.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{77EF2112-329B-5606-8AAF-CED6069FF272}"
@@ -183,6 +184,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{24FCCBCD-5
 		demos\puls\docs\README.md = demos\puls\docs\README.md
 		demos\puls\docs\SETUP.md = demos\puls\docs\SETUP.md
 		demos\puls\docs\SITE_OWNERS.md = demos\puls\docs\SITE_OWNERS.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7C299506-9B8B-40A7-8AD3-B282C11A4B88}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\adr\0081-the-cook-searches-for-itself.md = demos\puls\docs\adr\0081-the-cook-searches-for-itself.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{BF0BB87E-459C-5406-868C-E885960DA333}"
@@ -223,6 +229,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{67D12025-5001-5F15-8E4B-ECFCA01E1D26}"
 	ProjectSection(SolutionItems) = preProject
 		packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md = packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md
+		packs\docs\adr\0078-a-recipe-search-asks-several-sites.md = packs\docs\adr\0078-a-recipe-search-asks-several-sites.md
+		packs\docs\adr\0082-the-recipe-library-is-an-open-feed.md = packs\docs\adr\0082-the-recipe-library-is-an-open-feed.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{5350B428-1572-5C72-8D7F-D5EF1438F8CC}"
@@ -314,6 +322,45 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0071-packs-take-data-uploads.md = src\docs\adr\0071-packs-take-data-uploads.md
 		src\docs\adr\0072-feeds-are-mcp-resources.md = src\docs\adr\0072-feeds-are-mcp-resources.md
 		src\docs\adr\0073-packs-reference-no-evals.md = src\docs\adr\0073-packs-reference-no-evals.md
+		src\docs\adr\0074-the-folders-say-what-ships.md = src\docs\adr\0074-the-folders-say-what-ships.md
+		src\docs\adr\0075-test-what-you-touch.md = src\docs\adr\0075-test-what-you-touch.md
+		src\docs\adr\0076-core-ships-no-agent.md = src\docs\adr\0076-core-ships-no-agent.md
+		src\docs\adr\0079-show-a-specialists-report.md = src\docs\adr\0079-show-a-specialists-report.md
+		src\docs\adr\0080-a-tool-when-it-improves-the-prompt.md = src\docs\adr\0080-a-tool-when-it-improves-the-prompt.md
+		src\docs\adr\0083-packs-keep-reports-behind-the-admin-key.md = src\docs\adr\0083-packs-keep-reports-behind-the-admin-key.md
+		src\docs\adr\0084-every-site-is-built-on-the-frameworks-web.md = src\docs\adr\0084-every-site-is-built-on-the-frameworks-web.md
+		src\docs\adr\0085-styles-are-written-in-sass.md = src\docs\adr\0085-styles-are-written-in-sass.md
+		src\docs\adr\0086-a-packs-screens-are-described.md = src\docs\adr\0086-a-packs-screens-are-described.md
+		src\docs\adr\0087-identity-is-the-identity-server.md = src\docs\adr\0087-identity-is-the-identity-server.md
+		src\docs\adr\0088-a-tenant-on-every-account.md = src\docs\adr\0088-a-tenant-on-every-account.md
+		src\docs\adr\0089-the-account-client-is-a-library-a-site-opts-into.md = src\docs\adr\0089-the-account-client-is-a-library-a-site-opts-into.md
+		src\docs\adr\0090-the-packs-are-one-area.md = src\docs\adr\0090-the-packs-are-one-area.md
+		src\docs\adr\0091-web-access-and-telemetry-are-libraries-on-core.md = src\docs\adr\0091-web-access-and-telemetry-are-libraries-on-core.md
+		src\docs\adr\0092-a-project-holds-what-is-reused-together.md = src\docs\adr\0092-a-project-holds-what-is-reused-together.md
+		src\docs\adr\0093-a-script-is-a-module-beside-its-component.md = src\docs\adr\0093-a-script-is-a-module-beside-its-component.md
+		src\docs\adr\0094-a-components-styles-sit-beside-it.md = src\docs\adr\0094-a-components-styles-sit-beside-it.md
+		src\docs\adr\0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md = src\docs\adr\0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md
+		src\docs\adr\0097-puls-deploys-from-github-without-a-password.md = src\docs\adr\0097-puls-deploys-from-github-without-a-password.md
+		src\docs\adr\0098-the-demos-app-runs-beside-puls-split-later.md = src\docs\adr\0098-the-demos-app-runs-beside-puls-split-later.md
+		src\docs\adr\0099-the-guide-answers-without-a-sign-in-within-a-cap.md = src\docs\adr\0099-the-guide-answers-without-a-sign-in-within-a-cap.md
+		src\docs\adr\0100-the-site-tells-the-whole-architecture.md = src\docs\adr\0100-the-site-tells-the-whole-architecture.md
+		src\docs\adr\0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md = src\docs\adr\0101-a-lead-is-a-tool-sent-once-on-the-visitors-yes.md
+		src\docs\adr\0102-third-party-marks-follow-their-owners-guidelines.md = src\docs\adr\0102-third-party-marks-follow-their-owners-guidelines.md
+		src\docs\adr\0103-a-diagram-is-data-on-a-row-grid.md = src\docs\adr\0103-a-diagram-is-data-on-a-row-grid.md
+		src\docs\adr\0104-a-message-may-carry-the-page.md = src\docs\adr\0104-a-message-may-carry-the-page.md
+		src\docs\adr\0105-the-guide-acts-on-the-page-through-a-tool-the-widget-hears.md = src\docs\adr\0105-the-guide-acts-on-the-page-through-a-tool-the-widget-hears.md
+		src\docs\adr\0106-the-landing-is-a-business-website-from-the-framework.md = src\docs\adr\0106-the-landing-is-a-business-website-from-the-framework.md
+		src\docs\adr\0107-every-section-has-an-address.md = src\docs\adr\0107-every-section-has-an-address.md
+		src\docs\adr\0108-the-public-watches-the-coding-agent-recorded.md = src\docs\adr\0108-the-public-watches-the-coding-agent-recorded.md
+		src\docs\adr\0109-a-page-is-served-as-html.md = src\docs\adr\0109-a-page-is-served-as-html.md
+		src\docs\adr\0110-a-page-says-what-it-is-in-one-head.md = src\docs\adr\0110-a-page-says-what-it-is-in-one-head.md
+		src\docs\adr\0111-the-frameworks-website-lives-in-src-site.md = src\docs\adr\0111-the-frameworks-website-lives-in-src-site.md
+		src\docs\adr\0112-the-site-sells-first.md = src\docs\adr\0112-the-site-sells-first.md
+		src\docs\adr\0113-the-guide-is-louis-and-says-it-is-the-ai.md = src\docs\adr\0113-the-guide-is-louis-and-says-it-is-the-ai.md
+		src\docs\adr\0114-an-identitys-skills-load-always-or-on-demand.md = src\docs\adr\0114-an-identitys-skills-load-always-or-on-demand.md
+		src\docs\adr\0115-a-sites-showroom-is-an-area-of-the-framework.md = src\docs\adr\0115-a-sites-showroom-is-an-area-of-the-framework.md
+		src\docs\adr\0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md = src\docs\adr\0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md
+		src\docs\adr\0117-one-address-for-every-agent-call.md = src\docs\adr\0117-one-address-for-every-agent-call.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
@@ -2516,6 +2563,7 @@ Global
 		{E284BDE8-0318-590D-8B82-47C355EC0D92} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
 		{D9D25646-A759-52BF-8F8E-D79A8FA366B8} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
 		{24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7C299506-9B8B-40A7-8AD3-B282C11A4B88} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
 		{BF0BB87E-459C-5406-868C-E885960DA333} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
 		{F3A57EA0-14CA-5147-A980-DCEBCF35FF37} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
 		{FAC76245-0EC6-5B8A-97AB-269AB866204F} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}

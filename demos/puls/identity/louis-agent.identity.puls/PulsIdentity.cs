@@ -32,6 +32,27 @@ public sealed class PulsIdentity : IAgentIdentity
         PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire(),
         PulsPack.Calculator.Wire()
     ];
+
+    /// <summary>
+    /// Its five specialists, by address (F127.3.1); which of them is on is still the instance's <c>ROLES_ENABLED</c>.
+    /// </summary>
+    public IReadOnlyList<string> Calls => [.. Enum.GetValues<PulsCall>().Select(call => call.Wire())];
+
+    /// <summary>
+    /// A specialist's report goes to the user as it is (ADR 0079), so Puls's model never writes the cook's recipe out
+    /// again.
+    /// </summary>
+    public bool RelaysAnswersWhole => true;
+}
+
+/// <summary>The specialists Puls may ask, by their addresses (ADR 0043: an identity keeps its own enum).</summary>
+public enum PulsCall
+{
+    [WireName("puls.cook")] Cook,
+    [WireName("puls.researcher")] Researcher,
+    [WireName("puls.analyst")] Analyst,
+    [WireName("puls.historian")] Historian,
+    [WireName("puls.reader")] Reader
 }
 
 /// <summary>
@@ -40,5 +61,5 @@ public sealed class PulsIdentity : IAgentIdentity
 /// </summary>
 public enum PulsIdentityName
 {
-    [WireName("puls")] Puls,
+    [WireName("puls")] Puls
 }

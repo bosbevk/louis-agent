@@ -46,8 +46,8 @@ specialist in the shape, so that a prompt change that loses it is seen.
   and picks out the mood), and the check (it scores the labels). The labels are in the task's language, Afrikaans or
   English, so the note reads as a message and not as a form: `**Vir:**`, `**Wil hê:**`, `**Klink:**`, `**Waar:**`,
   `**Reeds gesê:**` / `**For:**`, `**Wants:**`, `**Sounds:**`, `**Where:**`, `**Already said:**`.
-- **Nothing is simulated.** The note is the message Puls really sends (`StartSubSession`'s `message`, or
-  `ContinueSubSession`'s), and the reply is the specialist's real answer; the card renders what the stream already
+- **Nothing is simulated.** The note is the message Puls really sends (`AskAgent`'s `message`, the first
+  ask's or a follow-up's to the same address), and the reply is the specialist's real answer; the card renders what the stream already
   carries (F5's live view). A continue's note has the same shape, shorter: what the user now asks and how they sound.
 - **The switch is the user's, per turn.** The system prompt can't change mid-chat (FX4), so the chat sends
   `read_mood` with each message and the API puts a marker line before the text when it's off; the prompt's default

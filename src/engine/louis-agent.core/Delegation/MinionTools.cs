@@ -2,7 +2,7 @@ using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Messages;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -11,6 +11,7 @@ using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Delegation;
@@ -39,7 +40,7 @@ public sealed class MinionTools
     /// <summary>How long one minion may run: inside the specialist's five minutes.</summary>
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
-    /// <summary>A minion's kind on the registry (F26), beside <see cref="SpecialistTools.Kind"/>.</summary>
+    /// <summary>A minion's kind on the registry (F26), beside <see cref="AskAgentTools.Kind"/>.</summary>
     public const string Kind = OpenSubSession.MinionKind;
 
     /// <summary>
@@ -56,14 +57,14 @@ public sealed class MinionTools
     /// </summary>
     public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
     {
-        nameof(SpecialistTools.StartSubSession),
-        nameof(SpecialistTools.ContinueSubSession),
+        nameof(AskAgentTools.AskAgent),
+        nameof(AgentWorkTools.ReadAgentWork),
         nameof(StartMinion),
         "ExecuteSkill",
         "CreateSkillFile",
         "ReloadSkills",
         "CreateTool",
-        "ListAgentTools",
+        "ListAgentTools"
     };
 
     private readonly IReadOnlyDictionary<string, Uri> _peers;
@@ -133,26 +134,17 @@ public sealed class MinionTools
                     Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order())
                 });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
-        if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
+        if (PeerHttp.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
         UsageScope? scope = UsageScope.Current;
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         if (TakeSlot(scope) is { } limit) return limit;
 
-        var createBody = new
-        {
-            depth = 2,
-            role,
-            tool,
-            task = $"minion:{role}",
-            run = scope?.Tags.Run,
-            service = scope?.Tags.Service,
-            parent = CallSlots.ParentTag(scope),
-            llm,
-            location = UserPlace.Current?.Location,
-            time_zone = UserPlace.Current?.TimeZone,
-            replay = SessionReplay.ForSubSession(),
-        };
+        // No toolsets: the API loads the one that builds the minion's tool.
+        var createBody = new CreateSessionRequest($"minion:{role}", scope?.Tags.Run, scope?.Tags.Service, Depth: 2,
+            Parent: CallSlots.ParentTag(scope), Location: UserPlace.Current?.Location,
+            TimeZone: UserPlace.Current?.TimeZone, Llm: llm, Tool: tool, Role: role,
+            Replay: SessionReplay.ForSubSession());
         string model = llm ?? InstanceLlm;
 
         // The footer names the minion, never what it used: those numbers differ on a replay (FX27).
@@ -162,13 +154,14 @@ public sealed class MinionTools
                 Answer = reply.Text,
                 Role = role,
                 Tool = tool,
-                Llm = model,
+                Llm = model
             });
 
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its
         // specialists.
-        return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId,
+        return await _session.OpenAsync(peer, agent, createBody, new SendMessageRequest(task, null), [tool], role,
+            kind, toolUseId,
             scope, _timeout,
             cancellationToken, keep: false);
     }

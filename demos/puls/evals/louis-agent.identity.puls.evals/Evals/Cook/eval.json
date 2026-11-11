@@ -7,11 +7,11 @@
   "manual": "manual.md",
   "modes": [
     { "name": "puls-tools", "role": "puls/voice-af", "toolsets": ["web", "where-to-buy", "shop-prices"] },
-    { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
+    { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["agents", "web"] }
   ],
   "checks": [
     { "type": "no-error", "name": "cook-no-error" },
-    { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] } },
+    { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["agents"] } },
     { "type": "amount-under", "name": "within-budget", "parameters": { "key": "budget", "reader": "rand-total" } },
     { "type": "estimates-at-shop", "parameters": { "reader": "rand-prices" } },
     { "type": "untooled-shops" },

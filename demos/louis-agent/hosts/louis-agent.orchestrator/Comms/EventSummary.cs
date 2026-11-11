@@ -1,4 +1,5 @@
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Packs.Triage.Feed;
 
 namespace LouisAgent.Orchestrator.Comms;

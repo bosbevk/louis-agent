@@ -12,7 +12,7 @@
     "role": "puls/voice-en",
     "follow_ups": [],
     "expected": {
-      "routes_to": "puls-cook",
+      "routes_to": "puls.cook",
       "serves": 12,
       "recipe_image": true
     },

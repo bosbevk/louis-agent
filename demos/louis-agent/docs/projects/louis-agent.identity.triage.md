@@ -15,10 +15,12 @@ voice is the mode, the three are `specialists/triage-*.md`, and the packs are na
 ## How it works
 
 - `TriageIdentity`: the name `triage`, the voice `triage/voice` as the default, the packs `triage`, `files`, `git`
-  and `dotnet` by its own enum.
+  and `dotnet` by its own enum, and the addresses the manager may ask (`Calls`, from `TriageCall`: `triage.sorter`,
+  `triage.investigator`, `triage.reviewer`; F127.3.1, [ADR 0117](../../../../src/docs/adr/0117-one-address-for-every-agent-call.md)).
 - `prompts/agent/triage/voice.md`: the manager as the hub, how it decides (the runbooks come with the case as its
   brief; expected, a person, a fix or a hand-off; a report is a claim until the code checked it), how it ends
-  (`DecideCase`, `RaiseToPerson`), and its routing (`triage`, `specialists`).
+  (`DecideCase`, `RaiseToPerson`), and its routing (`triage`, `agents`: each role asked by its address with
+  `AskAgent`).
 - The roles, each ending with its typed tool: the **sorter** (`triage`) with `SortCase` and the department; the
   **investigator** (`triage`, `files`, `git`, `dotnet`, read-only by its prompt) with `ReportInvestigation`, where,
   the cause, whose area and how sure; the **reviewer** (`triage`, `files`, `git`) with `ReportReview`, happy or not

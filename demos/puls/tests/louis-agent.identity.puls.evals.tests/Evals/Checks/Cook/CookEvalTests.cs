@@ -39,7 +39,7 @@ public class CookEvalTests
             Is.EqualTo(new[]
             {
                 (CookMode.Tools.Wire(), Role, "web,where-to-buy,shop-prices"),
-                (CookMode.Cook.Wire(), Role, "specialists,web")
+                (CookMode.Cook.Wire(), Role, "agents,web")
             }));
     }
 
