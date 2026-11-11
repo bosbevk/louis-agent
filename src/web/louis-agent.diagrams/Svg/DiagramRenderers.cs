@@ -21,4 +21,11 @@ public static class DiagramRenderers
          ?? throw new NotSupportedException(
              DiagramText.Format(DiagramMessage.NoRenderer, new { Kind = source.Kind.Wire() })))
         .Render(source);
+
+    /// <summary>
+    /// The diagram as the docs show it: drawn without its caption, then framed with its title bar on top and the
+    /// caption as a note bar under it (<see cref="TitledFrame"/>).
+    /// </summary>
+    public static string RenderTitled(DiagramSource source) =>
+        TitledFrame.Around(Render(source with { Caption = null }), source);
 }

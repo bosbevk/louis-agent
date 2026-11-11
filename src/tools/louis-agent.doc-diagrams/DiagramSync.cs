@@ -29,12 +29,13 @@ public static class DiagramSync
     ];
 
     /// <summary>
-    /// Draws one diagram and writes its SVG when it differs from what is there, line endings aside, since a Windows
-    /// checkout keeps its own; a check run only says it's stale.
+    /// Draws one diagram in the docs' frame, its title bar and note bar (CL60.2), and writes its SVG when it differs
+    /// from what is there, line endings aside, since a Windows checkout keeps its own; a check run only says it's
+    /// stale.
     /// </summary>
     public static SyncOutcome Sync(string json, bool check)
     {
-        string drawn = DiagramRenderers.Render(DiagramReader.Read(File.ReadAllText(json)));
+        string drawn = DiagramRenderers.RenderTitled(DiagramReader.Read(File.ReadAllText(json)));
         string svg = Path.ChangeExtension(json, ".svg");
         bool same = File.Exists(svg) && File.ReadAllText(svg).ReplaceLineEndings("\n") == drawn;
         if (same) return SyncOutcome.Unchanged;

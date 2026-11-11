@@ -104,6 +104,35 @@ internal sealed class SvgWriter
                 new XAttribute("height", N(outerHeight)), new XAttribute("rx", "14")),
             _shapes);
 
+        return Serialize(root);
+    }
+
+    /// <summary>
+    /// Words at a point in spans of their own classes, as a title's bold head and its plain rest; the space between
+    /// two spans is the line break the writer puts between them, which a reader's screen shows as one space.
+    /// </summary>
+    public SvgWriter Spans(double x, double y, string cls, IEnumerable<(string Words, string Cls)> spans)
+    {
+        _shapes.Add(new XElement(Svg + "text", new XAttribute("class", cls), new XAttribute("x", N(x)),
+            new XAttribute("y", N(y)),
+            spans.Select(span => new XElement(Svg + "tspan", new XAttribute("class", span.Cls), span.Words))));
+        return this;
+    }
+
+    /// <summary>Shapes drawn elsewhere, moved together by a distance.</summary>
+    public SvgWriter Group(string cls, double dx, double dy, IEnumerable<XElement> shapes)
+    {
+        _shapes.Add(new XElement(Svg + "g", new XAttribute("class", cls),
+            new XAttribute("transform", $"translate({N(dx)} {N(dy)})"), shapes));
+        return this;
+    }
+
+    /// <summary>The shapes added so far, for a frame to put round another picture's.</summary>
+    public IReadOnlyList<XElement> Shapes => _shapes;
+
+    /// <summary>A picture's root as the file's text, the same bytes on every machine.</summary>
+    internal static string Serialize(XElement root)
+    {
         var settings = new XmlWriterSettings
         {
             OmitXmlDeclaration = true,
@@ -126,5 +155,5 @@ internal sealed class SvgWriter
             new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", "M 0 0 L 10 5 L 0 10 z")));
 
     /// <summary>A number as the file writes it: invariant, at most one decimal.</summary>
-    private static string N(double value) => value.ToString("0.#", CultureInfo.InvariantCulture);
+    internal static string N(double value) => value.ToString("0.#", CultureInfo.InvariantCulture);
 }

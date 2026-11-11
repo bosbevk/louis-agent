@@ -30,5 +30,7 @@ public enum DiagramIcon
     [WireName("mail")] Mail,
     [WireName("search")] Search,
     [WireName("book")] Book,
-    [WireName("terminal")] Terminal
+    [WireName("terminal")] Terminal,
+    [WireName("stack")] Stack,
+    [WireName("info")] Info
 }

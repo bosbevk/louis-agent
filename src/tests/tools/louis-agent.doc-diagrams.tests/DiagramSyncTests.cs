@@ -41,8 +41,8 @@ public class DiagramSyncTests
     [TearDown]
     public void TearDown() => Directory.Delete(_docs, recursive: true);
 
-    /// <summary>The SVG the renderer draws from the file.</summary>
-    private static string Drawn() => DiagramRenderers.Render(DiagramReader.Read(Flow));
+    /// <summary>The SVG the renderer draws from the file, in the docs' frame.</summary>
+    private static string Drawn() => DiagramRenderers.RenderTitled(DiagramReader.Read(Flow));
 
     /// <summary>Every diagram's file in a diagrams folder is found, and nothing else.</summary>
     [Test]

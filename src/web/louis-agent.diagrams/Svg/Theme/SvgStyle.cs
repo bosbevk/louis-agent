@@ -50,6 +50,43 @@ internal static class SvgStyle
           {{ToneRules(theme)}}
           """);
 
+    /// <summary>
+    /// The docs' frame's look (<see cref="TitledFrame"/>), added to a framed picture's style only, so a bare
+    /// picture's bytes stay as they were: a system sans font for the bar's and the note's words, the bar's navy and
+    /// its ink in both looks, and one rule per part.
+    /// </summary>
+    public static string Frame(SvgTheme theme) =>
+        $$"""
+
+          svg {
+            --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            {{Banner(theme.Light.Banner)}}
+          }
+          @media (prefers-color-scheme: dark) {
+            svg { {{Banner(theme.Dark.Banner)}} }
+          }
+          .titlebar { fill: var(--banner); }
+          .title-icon {
+            fill: none; stroke: var(--banner-ink); stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+          }
+          .title-rule { fill: var(--banner-line); }
+          .heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+          .title-head { font-weight: 700; }
+          .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+          .note-icon {
+            fill: none; stroke: var(--accent); stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+          }
+          .notes { fill: var(--quiet); font: 400 12px var(--sans); }
+          .note-head { fill: var(--text); font-weight: 700; }
+
+          """;
+
+    /// <summary>The title bar's colours as the picture's variables.</summary>
+    private static string Banner(SvgTone banner) =>
+        $"--banner: {banner.Fill}; --banner-line: {banner.Line}; --banner-ink: {banner.Ink};";
+
     /// <summary>One palette as the picture's colour variables, each tone's three among them.</summary>
     private static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --panel: {palette.Panel}; --line: {palette.Line}; --text: {palette.Text}; " +
