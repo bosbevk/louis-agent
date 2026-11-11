@@ -40,7 +40,7 @@ from its source, and when the last Mermaid block is gone a test keeps it gone.
 
 | Child | What | Done when |
 |---|---|---|
-| **CL60.1 The renderer and the overviews** ([plan](CL60.1-the-renderer-and-the-overviews.md)) | The diagram sources as records, the SVG writer with the theme, the card layout and its icons, the flow layout reused, the tool that writes every SVG, the test that holds them; an overview picture at the top of every project doc | Every project doc opens with its overview SVG, light and dark; the test fails on any SVG that doesn't match its JSON |
+| **CL60.1 The renderer and the overviews** (done; [what it decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl601-2026-11-11-partly-unattended)) | The diagram sources as records, the SVG writer with the theme, the card layout and its icons, the flow layout reused, the tool that writes every SVG, the test that holds them; an overview picture at the top of every project doc | Every project doc opens with its overview SVG, light and dark; the test fails on any SVG that doesn't match its JSON |
 | **CL60.2 The flows** | The 72 flowcharts redrawn as flow sources, the layout grown for what they need that the site's diagrams never did (a group around boxes, more than six columns, a note box) | No `flowchart` block left in the docs |
 | **CL60.3 The sequences** | A sequence layout (lifelines, messages, replies, a note, a loop or an alt box), and the 43 sequence diagrams redrawn | No `sequenceDiagram` block left |
 | **CL60.4 The classes, and the rule** | A class layout (a card per type, its members, the arrows that mean implements, holds and calls), the 11 class diagrams redrawn, the plans README's "as mermaid" rule rewritten, a test that no Mermaid block is left anywhere, an ADR | No Mermaid in the repo; the ADR records the rule |
@@ -51,11 +51,13 @@ Each child is about ten steps; CL60.2 and CL60.3 may split again if a group of d
 
 The drawing code is its own plain-C# library, `louis-agent.diagrams`; the palette is the site's own, light and dark;
 the icons are Tabler Icons (MIT); an overview's cards are written by hand. See
-[CL60.1's plan](CL60.1-the-renderer-and-the-overviews.md#louiss-picks-2026-11-11).
+[what CL60.1 decided](../projects/louis-agent.diagrams.md#what-the-build-decided-cl601-2026-11-11-partly-unattended).
 
 ## Approved during the build
 
-(None yet.)
+- **CL60.1 is done** (2026-11-11, unattended): its plan is deleted on its own branch, as a done plan is, its picks and
+  findings folded into [louis-agent.diagrams](../projects/louis-agent.diagrams.md) and its row in the work log; the
+  links above point there. Each child after it has its own plan and its own branch, from the one before.
 
 ---
-[Docs index](../README.md) · [Plans](README.md) · Next: [CL60.1](CL60.1-the-renderer-and-the-overviews.md)
+[Docs index](../README.md) · [Plans](README.md) · Next: CL60.2, the flows

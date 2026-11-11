@@ -66,7 +66,9 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Messa
 - **Louis's picks:** our own renderer, a JSON beside each doc, plans drawn with it too; P1 A a plain-C# library the
   web and the tool share (ADR 0092), P2 A the site's palette with its light twin mirrored (the site has no light
   theme), P3 A Tabler Icons copied in, P4 A each overview's cards written by hand from its doc; boxes in the site's
-  lighter tint `#1b1d21` and labels in the body text's grey ("a bit lighter gray").
+  lighter tint `#1b1d21` and labels in the body text's grey ("a bit lighter gray"); the library's texts through its
+  own `DiagramText`, so it leans on no part of the engine; three `resharper_indent_nested_*` keys in `.editorconfig`,
+  so Rider indents a nested loop as `dotnet format` does.
 - **Louis's figures:** the engine, identities and packs (ADR 0027's picture) and the layers with the core engine
   highlighted (the building-block view's), which brought the `highlight` and `heading` looks ("we should cater for
   this alternation"). The accent is the site's blue, `#7fa8e8`, and `#3b6fc4` on a light screen.
