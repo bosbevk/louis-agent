@@ -50,7 +50,10 @@ internal sealed record FixResult(
 /// </summary>
 internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
 {
-    /// <param name="tags">Task, run and service for louis-agent's usage ledger, so a fix's cost can be added to its run's.</param>
+    /// <summary>Opens a session for one fix and hands back its id.</summary>
+    /// <param name="tags">
+    /// Task, run and service for louis-agent's usage ledger, so a fix's cost can be added to its run's.
+    /// </param>
     /// <param name="cancellationToken">Stops waiting for the API.</param>
     /// <param name="toolsets">The session's toolsets (F5); null lets louis-agent choose its default.</param>
     public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default,
@@ -68,6 +71,10 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         return body.RootElement.GetProperty("session_id").GetString()!;
     }
 
+    /// <summary>
+    /// Sends the session a message and reads the whole answer; an API that says no comes back as the reply's error,
+    /// never an exception.
+    /// </summary>
     public async Task<AgentReply> SendAsync(string sessionId, string message, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
@@ -92,9 +99,11 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
             cancellationToken);
     }
 
+    /// <summary>Closes a fix's session; an API that can't be reached leaves it to time out on its own.</summary>
     public async Task DeleteSessionAsync(string sessionId)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, $"v1/sessions/{Uri.EscapeDataString(sessionId)}");
+        using var request =
+            new HttpRequestMessage(HttpMethod.Delete, $"v1/sessions/{Uri.EscapeDataString(sessionId)}");
         AddKey(request);
         try
         {
@@ -106,12 +115,15 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         }
     }
 
+    /// <summary>Signs the request with the API key, when there is one.</summary>
     private void AddKey(HttpRequestMessage request)
     {
         if (!string.IsNullOrWhiteSpace(apiKey)) request.Headers.Add("x-api-key", apiKey);
     }
 
-    /// <summary>Folds the event stream into a reply; <paramref name="onProgress"/> sees each tool call as it happens.</summary>
+    /// <summary>
+    /// Folds the event stream into a reply; <paramref name="onProgress"/> sees each tool call as it happens.
+    /// </summary>
     internal static async Task<AgentReply> ReadStreamAsync(Stream stream, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
@@ -221,15 +233,17 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         }
         catch (JsonException)
         {
-            // FX8: the model sometimes quotes inside a sentence without escaping ("Cher"), which isn't valid JSON. The fix
-            // still happened, so read the fields from the text rather than asking louis-agent to "continue" (and pay for it).
+            // FX8: the model sometimes quotes inside a sentence without escaping ("Cher"), which isn't valid JSON.
+            // The fix still happened, so read the fields from the text rather than asking louis-agent to "continue"
+            // (and pay for it).
             return ReadLoosely(json);
         }
     }
 
     /// <summary>
-    /// The fields of a FIX-RESULT line that isn't valid JSON: the short ones (status, commit, branch, tests) are quote-free
-    /// values; the free-text ones (summary, reason) run to the next field or the closing brace. Null without a status.
+    /// The fields of a FIX-RESULT line that isn't valid JSON: the short ones (status, commit, branch, tests) are
+    /// quote-free values; the free-text ones (summary, reason) run to the next field or the closing brace. Null without
+    /// a status.
     /// </summary>
     private static FixResult? ReadLoosely(string json)
     {
@@ -248,6 +262,10 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
             : null;
     }
 
+    /// <summary>
+    /// The line a fix ends with: matches <c>FIX-RESULT: {"status":"fixed"}</c> (backticks around the JSON too), not
+    /// <c>RESULT: {"status":"fixed"}</c>.
+    /// </summary>
     [GeneratedRegex(@"FIX-RESULT:\s*`?(\{.*\})`?\s*$", RegexOptions.Multiline)]
     private static partial Regex FixResultLine();
 }
