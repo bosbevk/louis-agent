@@ -1,10 +1,10 @@
-using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Api;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Evals.Tests.Api;
 
@@ -58,6 +58,41 @@ public class HttpSessionClientTests
     }
 
     /// <summary>
+    /// The opening is the session wire's shared record (F127.3.1 step 2): every field, as core and the browser send
+    /// it, the ones this eval leaves empty as null.
+    /// </summary>
+    [Test]
+    public async Task TheOpening_IsTheSharedRecord()
+    {
+        var (client, handler) = ClientOver(_ => Json("""{"session_id":"sess_1"}"""));
+
+        await client.OpenAsync(Request(), CancellationToken.None);
+
+        Assert.That(handler.Requests.Single().Body, Is.EqualTo(JsonSerializer.Serialize(
+            new CreateSessionRequest("cook-malmesbury", "run_7:puls-cook:2", null,
+                [SampleToolset.Gamma, SampleToolset.Alpha], Location: "Malmesbury, Wes-Kaap, Suid-Afrika",
+                TimeZone: "Africa/Johannesburg", Llm: Mode.Llm, Role: "puls/voice-af",
+                Replay: new ReplayRequest("record", null)), JsonSerializerOptions.Web)));
+    }
+
+    /// <summary>A question goes as the shared message record, with no attachments and no page.</summary>
+    [Test]
+    public async Task AQuestion_IsTheSharedMessageRecord()
+    {
+        var (client, handler) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("", Encoding.UTF8, "text/event-stream")
+        });
+
+        await foreach (var _ in client.SendAsync("sess_1", "Gee my 'n resep", CancellationToken.None))
+        {
+        }
+
+        Assert.That(handler.Requests.Single().Body, Is.EqualTo(JsonSerializer.Serialize(
+            new SendMessageRequest("Gee my 'n resep", null), JsonSerializerOptions.Web)));
+    }
+
+    /// <summary>
     /// The mode's depth goes with the session (F106.3.2 step 7): a role's eval opens its session at a specialist's
     /// level, and a voice's eval at 0.
     /// </summary>
@@ -71,23 +106,24 @@ public class HttpSessionClientTests
     }
 
     [Test]
-    public async Task ANullPlaceIsLeftOut_SoTheApisDefaultsHold()
+    public async Task ANullPlaceIsSentAsNull_SoTheApisDefaultsHold()
     {
         var body = await OpenBody(Request(place: null));
 
-        Assert.That(body.TryGetProperty("location", out _), Is.False);
+        Assert.That(body.GetProperty("location").ValueKind, Is.EqualTo(JsonValueKind.Null));
         Assert.That(body.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
     }
 
     [Test]
-    public async Task TheReplayIsAlwaysSent_WebIsItsLowerCaseName_AndLeftOutWhenNull()
+    public async Task TheReplayIsAlwaysSent_WebIsItsLowerCaseName_AndNullWhenNone()
     {
         var recording =
             (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Record, null)))).GetProperty("replay");
         var nothing = (await OpenBody(Request(replay: new WebReplayRequest(null, null)))).GetProperty("replay");
 
         Assert.That(recording.GetProperty("web").GetString(), Is.EqualTo("record"));
-        Assert.That(nothing.TryGetProperty("web", out _), Is.False, "the instance's WEB_REPLAY decides");
+        Assert.That(nothing.GetProperty("web").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "the instance's WEB_REPLAY decides");
         Assert.That(nothing.GetProperty("model").GetBoolean(), Is.False, "an eval session always sends the mark");
     }
 
@@ -102,7 +138,7 @@ public class HttpSessionClientTests
         var withModel = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Replay, trial, true))))
             .GetProperty("replay");
 
-        Assert.That(recording.TryGetProperty("of", out _), Is.False);
+        Assert.That(recording.GetProperty("of").ValueKind, Is.EqualTo(JsonValueKind.Null));
         Assert.That(replay.GetProperty("of").GetString(), Is.EqualTo(trial));
         Assert.That(replay.GetProperty("model").GetBoolean(), Is.False);
         Assert.That(withModel.GetProperty("model").GetBoolean(), Is.True);
@@ -124,7 +160,7 @@ public class HttpSessionClientTests
         await new HttpSessionClient(HttpSessionClient.CreateHttp(null, null, new StubHandler(Record))).ToolsetsAsync(
             CancellationToken.None);
 
-        Assert.That(seen, Is.EqualTo(new string?[] { "secret", null }));
+        Assert.That(seen, Is.EqualTo(new[] { "secret", null }));
     }
 
     [Test]
@@ -161,7 +197,9 @@ public class HttpSessionClientTests
             + "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hallo\"}}\n\n"
             + "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n";
         var (client, handler) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.OK)
-        { Content = new StringContent(stream, Encoding.UTF8, "text/event-stream") });
+        {
+            Content = new StringContent(stream, Encoding.UTF8, "text/event-stream")
+        });
 
         var events = new List<SessionEvent>();
         await foreach (var e in client.SendAsync("sess_1", "Gee my 'n resep", CancellationToken.None)) events.Add(e);
@@ -179,7 +217,7 @@ public class HttpSessionClientTests
         "Unknown role 'x'.")]
     [TestCase(HttpStatusCode.InternalServerError,
         """{"type":"error","error":{"type":"api_error","message":"The model is down."}}""", 500, "The model is down.")]
-    public void ANon2xxThrowsWithTheApisMessage(HttpStatusCode status, string body, int code, string message)
+    public void AnErrorStatusThrowsWithTheApisMessage(HttpStatusCode status, string body, int code, string message)
     {
         var (client, _) = ClientOver(_ => Json(body, status));
 
@@ -201,7 +239,9 @@ public class HttpSessionClientTests
     public void ABodyThatIsNotTheApisErrorShapeStillNamesTheStatus()
     {
         var (client, _) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.BadGateway)
-        { Content = new StringContent("<html>bad gateway</html>") });
+        {
+            Content = new StringContent("<html>bad gateway</html>")
+        });
 
         var error = Assert.ThrowsAsync<EvalApiException>(async () =>
             await client.ToolsetsAsync(CancellationToken.None));

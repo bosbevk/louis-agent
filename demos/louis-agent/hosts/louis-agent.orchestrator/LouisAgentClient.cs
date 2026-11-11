@@ -1,4 +1,3 @@
-using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
@@ -6,8 +5,8 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Messages;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Orchestrator.Messages;
 
 namespace LouisAgent.Orchestrator;
@@ -52,14 +51,16 @@ internal sealed record FixResult(
 internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
 {
     /// <param name="tags">Task, run and service for louis-agent's usage ledger, so a fix's cost can be added to its run's.</param>
+    /// <param name="cancellationToken">Stops waiting for the API.</param>
     /// <param name="toolsets">The session's toolsets (F5); null lets louis-agent choose its default.</param>
     public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default,
         IReadOnlyList<string>? toolsets = null)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "v1/sessions");
+        // Nothing to say sends no body, and the API opens its default session.
         if (tags is not null || toolsets is not null)
-            request.Content = JsonContent.Create(new
-            { task = tags?.Task, run = tags?.Run, service = tags?.Service, toolsets });
+            request.Content = JsonContent.Create(new CreateSessionRequest(tags?.Task, tags?.Run, tags?.Service,
+                toolsets is null ? null : [.. toolsets]));
         AddKey(request);
         using var response = await http.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -71,10 +72,8 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         CancellationToken cancellationToken = default)
     {
         using var request =
-            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages")
-            {
-                Content = JsonContent.Create(new { message }),
-            };
+            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages");
+        request.Content = JsonContent.Create(new SendMessageRequest(message, null));
         AddKey(request);
         using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!response.IsSuccessStatusCode)
@@ -82,7 +81,11 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
             string body = await response.Content.ReadAsStringAsync(cancellationToken);
             return new AgentReply("", [], null,
                 MessageText.Format(OrchestratorToolMessage.HttpFailed,
-                    new { Status = (int)response.StatusCode, Body = body }));
+                    new
+                    {
+                        Status = (int)response.StatusCode,
+                        Body = body
+                    }));
         }
 
         return await ReadStreamAsync(await response.Content.ReadAsStreamAsync(cancellationToken), onProgress,

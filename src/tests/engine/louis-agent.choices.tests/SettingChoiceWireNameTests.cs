@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using LouisAgent.Choices;
 
 namespace LouisAgent.Choices.Tests;
 
@@ -16,7 +15,10 @@ public class SettingChoiceWireNameTests
         Plain,
     }
 
-    /// <summary>The snake_case options the harness writes its enums with (EvalJson.SnakeCaseNoNulls): a two-word member without the attribute would be written `two_words` here, but `twowords` by SettingChoice, so such a member carries the attribute.</summary>
+    /// <summary>
+    /// An enum written by a snake_case JSON converter: a two-word member without the attribute would be written
+    /// `two_words` there, but `twowords` by SettingChoice, so such a member carries the attribute.
+    /// </summary>
     public enum Written
     {
         Plain,
@@ -83,7 +85,9 @@ public class SettingChoiceWireNameTests
     public void WhatSettingChoiceWrites_IsWhatTheJsonWriterWrites_ForEveryMember()
     {
         var options = new JsonSerializerOptions
-        { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
+        {
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) }
+        };
 
         foreach (var member in Enum.GetValues<Written>())
             Assert.That(SettingChoice.Wire(member),
