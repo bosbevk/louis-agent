@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.evals at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "evals", "icon": "checks", "title": "The eval harness", "code": "louis-agent.evals", "look": "highlight",
+          "text": "The one place that knows how an eval runs, so an eval set only says what it asks and how it grades." }
+      ] },
+      { "cards": [
+        { "id": "eval", "icon": "code", "title": "An eval is a class",
+          "text": "It names its modes, its dataset and its checks. A dataset is a folder of scenarios." },
+        { "id": "trials", "icon": "message", "title": "Trials",
+          "text": "One conversation per mode, repeat and scenario, kept as its transcript." },
+        { "id": "grading", "icon": "chart", "title": "Checks and metrics",
+          "text": "General checks and a model judge grade a trial. Metrics measure it." }
+      ] },
+      { "cards": [
+        { "id": "protocol", "icon": "file", "title": "One protocol",
+          "text": "Every event written once, as one JSON line, for the API and the studio to read." },
+        { "id": "judge", "icon": "users", "title": "The judge's calibration",
+          "text": "A label sheet people fill in, and how far the judge agrees with them." }
+      ] }
+    ],
+    "links": [
+      { "from": "evals", "to": "eval" },
+      { "from": "evals", "to": "trials" },
+      { "from": "evals", "to": "grading" }
+    ]
+  }
+}

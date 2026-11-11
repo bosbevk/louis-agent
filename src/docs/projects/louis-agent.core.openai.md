@@ -4,6 +4,8 @@
 > Microsoft.Extensions.AI.OpenAI (over the OpenAI SDK) · **Used by:** every program whose agent may talk to a server
 > that speaks OpenAI's chat API
 
+![The OpenAI-compatible provider, and its parts: your endpoint and the standard usage](diagrams/louis-agent.core.openai.svg)
+
 ## Purpose
 
 OpenAI-compatible servers on core (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the

@@ -4,6 +4,8 @@
 > app: a demo's program references the one it serves ·
 > **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
 
+![The agent over HTTP, and its parts: sessions, the routes, the site's pages, the workspace and the admin key](diagrams/louis-agent.api.svg)
+
 ## Purpose
 
 The agent over HTTP: sessions whose answers stream as Server-Sent Events shaped like Claude's, plus read-only workspace

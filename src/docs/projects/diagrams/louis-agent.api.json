@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.api at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "api", "icon": "server", "title": "The agent over HTTP", "code": "louis-agent.api",
+          "look": "highlight",
+          "text": "Sessions whose answers stream as server-sent events, and the web app it serves." }
+      ] },
+      { "cards": [
+        { "id": "sessions", "icon": "message", "title": "Sessions",
+          "text": "A whole task handed over, the turn streamed back in the shape of Claude's events." },
+        { "id": "routes", "icon": "branch", "title": "Routes under /v1",
+          "text": "Nouns for resources, the key on every route the code doesn't open, a table that pins them." },
+        { "id": "pages", "icon": "browser", "title": "The site's pages",
+          "text": "Each page served as HTML with its own title, for search engines and first paint." }
+      ] },
+      { "cards": [
+        { "id": "workspace", "icon": "folder", "title": "Workspace and git",
+          "text": "Read-only browsing of the workspace, and a git interface." },
+        { "id": "admin", "icon": "shield", "title": "The admin key",
+          "text": "Its own routes behind ADMIN_API_KEY: prompts, imports and the packs' screens." }
+      ] }
+    ],
+    "links": [
+      { "from": "api", "to": "sessions" },
+      { "from": "api", "to": "routes" },
+      { "from": "api", "to": "pages" }
+    ]
+  }
+}

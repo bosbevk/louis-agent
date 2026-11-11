@@ -1,0 +1,25 @@
+{
+  "kind": "cards",
+  "title": "The framework's tests at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "tests", "icon": "checks", "title": "The tests", "code": "src/tests", "look": "highlight",
+          "text": "Fast, offline checks of the behaviour that matters. No network, model or Docker." }
+      ] },
+      { "cards": [
+        { "id": "fake", "icon": "message", "title": "A fake model",
+          "text": "A scripted chat client plays the model, streaming included." },
+        { "id": "golden", "icon": "file", "title": "Golden files",
+          "text": "What the model reads, and what a page renders, pinned and reviewed as a diff." },
+        { "id": "integration", "icon": "terminal", "title": "Integration apart",
+          "text": "A test that starts a process or needs a tool lives in its own project." }
+      ] }
+    ],
+    "links": [
+      { "from": "tests", "to": "fake" },
+      { "from": "tests", "to": "golden" },
+      { "from": "tests", "to": "integration" }
+    ]
+  }
+}

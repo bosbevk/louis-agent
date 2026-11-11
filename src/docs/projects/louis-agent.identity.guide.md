@@ -11,6 +11,8 @@
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), and the coding agent's
 > catalogue beside the coding identity
 
+![The guide, and its three packs: the docs, the leads and the site](diagrams/louis-agent.identity.guide.svg)
+
 ## Purpose
 
 The framework's website has a chat in its lower-right corner (F109.3). Whoever answers there has to know the framework

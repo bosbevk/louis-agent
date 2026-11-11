@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.usage-probe at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "probe", "icon": "search", "title": "The usage probe", "code": "louis-agent.usage-probe",
+          "look": "highlight",
+          "text": "A developer's tool: what a provider reports as token usage, and what the ledger makes of it." }
+      ] },
+      { "cards": [
+        { "id": "raw", "icon": "cloud", "title": "The raw report",
+          "text": "The token counts the provider's adapter hands back, as they come." },
+        { "id": "line", "icon": "file", "title": "The ledger's line",
+          "text": "What the usage mapper would record from it." },
+        { "id": "ledger", "icon": "chart", "title": "A ledger priced",
+          "text": "With --ledger, no model call: a stored ledger priced and totalled." }
+      ] }
+    ],
+    "links": [
+      { "from": "probe", "to": "raw" },
+      { "from": "probe", "to": "line" },
+      { "from": "probe", "to": "ledger" }
+    ]
+  }
+}

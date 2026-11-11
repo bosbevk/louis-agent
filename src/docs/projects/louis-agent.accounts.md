@@ -4,6 +4,8 @@
 > sign in and what the browser app reads. **Elsewhere:** why in [ADR 0087](../adr/0087-identity-is-the-identity-server.md)
 > and [ADR 0088](../adr/0088-a-tenant-on-every-account.md); how to change the web in [Change the web](../guides/change-the-web.md).
 
+![Accounts, and their parts: ASP.NET Core Identity, our routes beside it, and the tenant](diagrams/louis-agent.accounts.svg)
+
 ## Purpose
 
 Puls's chat spends the API key, so a public site needs to know who is asking. `louis-agent.accounts` is the

@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "web", "icon": "browser", "title": "The framework's web", "code": "louis-agent.web",
+          "look": "highlight",
+          "text": "What every site shares. A site brings only its words, brand, colours and its own pages." }
+      ] },
+      { "cards": [
+        { "id": "chat", "icon": "message", "title": "The chat's frame",
+          "text": "The whole chat: its sidebar, messages, message box and search, a turn's life included." },
+        { "id": "admin", "icon": "settings", "title": "The admin's frame",
+          "text": "The sidebar, the phone's top bar and the content column, with a pack's screens in it." },
+        { "id": "site", "icon": "world", "title": "The site's parts",
+          "text": "The shell, the tiles, the diagrams and the showroom every site builds its pages on." }
+      ] },
+      { "cards": [
+        { "id": "look", "icon": "code", "title": "Styles and scripts",
+          "text": "A component's styles and its script module sit beside it." },
+        { "id": "seams", "icon": "box", "title": "Seams for the rest",
+          "text": "Accounts and the eval studio are libraries on this one a site opts into." }
+      ] }
+    ],
+    "links": [
+      { "from": "web", "to": "chat" },
+      { "from": "web", "to": "admin" },
+      { "from": "web", "to": "site" }
+    ]
+  }
+}

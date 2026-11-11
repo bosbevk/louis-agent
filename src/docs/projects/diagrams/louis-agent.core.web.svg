@@ -1,0 +1,87 @@
+<svg viewBox="-24 -24 928 518" width="928" height="518" role="img" aria-label="louis-agent.core.web at a glance" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.core.web at a glance</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="518" rx="14" />
+  <rect class="frame" x="0" y="0" width="880" height="470" rx="14" />
+  <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
+  <rect class="card highlight" x="20" y="20" width="840" height="106" rx="10" />
+  <g class="icon" transform="translate(430 36) scale(0.8333)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M3.6 9h16.8" />
+    <path d="M3.6 15h16.8" />
+    <path d="M11.5 3a17 17 0 0 0 0 18" />
+    <path d="M12.5 3a17 17 0 0 1 0 18" />
+  </g>
+  <text class="title" x="319" y="81" text-anchor="start">Web access</text>
+  <rect class="chip" x="411" y="65" width="150" height="20" rx="5" />
+  <text class="code" x="418" y="79" text-anchor="start">louis-agent.core.web</text>
+  <text class="text" x="440" y="105" text-anchor="middle">The web on core: what a host hands the engine when its agent may read pages.</text>
+  <rect class="card" x="20" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(36 182) scale(0.8333)">
+    <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+  </g>
+  <text class="title" x="36" y="227" text-anchor="start">One robots policy</text>
+  <text class="text" x="36" y="251" text-anchor="start">Every fetch and every visit obeys</text>
+  <text class="text" x="36" y="267" text-anchor="start">robots.txt and a page's no to AI.</text>
+  <rect class="card" x="305.3" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(321.3 182) scale(0.8333)">
+    <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+    <path d="M4 8h16" />
+    <path d="M8 4v4" />
+  </g>
+  <text class="title" x="321.3" y="227" text-anchor="start">The browser</text>
+  <text class="text" x="321.3" y="251" text-anchor="start">Headless Chrome under its own</text>
+  <text class="text" x="321.3" y="267" text-anchor="start">name, wrapped by the policy and</text>
+  <text class="text" x="321.3" y="283" text-anchor="start">the recorder.</text>
+  <rect class="card" x="590.7" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(606.7 182) scale(0.8333)">
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+  </g>
+  <text class="title" x="606.7" y="227" text-anchor="start">Search and rendering</text>
+  <text class="text" x="606.7" y="251" text-anchor="start">The search provider and page</text>
+  <text class="text" x="606.7" y="267" text-anchor="start">renderer the settings name, each</text>
+  <text class="text" x="606.7" y="283" text-anchor="start">one not set up without its keys.</text>
+  <rect class="card" x="20" y="344" width="840" height="106" rx="10" />
+  <g class="icon" transform="translate(36 360) scale(0.8333)">
+    <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+    <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+    <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+  </g>
+  <text class="title" x="36" y="405" text-anchor="start">The recorders</text>
+  <text class="text" x="36" y="429" text-anchor="start">What the web answered, written once and read back, so an eval's run costs nothing to repeat.</text>
+</svg>

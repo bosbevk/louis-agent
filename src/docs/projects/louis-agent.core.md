@@ -3,6 +3,8 @@
 > **Kind:** class library (`net10.0`) · **Path:** `src/engine/louis-agent.core/` · **References:** Microsoft.Extensions.AI,
 > Anthropic SDK, OpenAI and Ollama clients, dotenv.net, YamlDotNet (a prompt's header, CL27) · **Used by:** every host, the orchestrator, the tests
 
+![The engine, and its parts: the loop, the guards, usage, skills and prompts, providers and bootstrap](diagrams/louis-agent.core.svg)
+
 ## Purpose
 
 Everything that makes louis-agent an agent, independent of how you talk to it: the tools, the skills, the tool-call

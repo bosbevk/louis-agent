@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.evals.runner at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "runner", "icon": "terminal", "title": "The eval runner", "code": "louis-agent.evals.runner",
+          "look": "highlight",
+          "text": "The command that runs an eval. The API starts it and reads its stdout, never an eval project." }
+      ] },
+      { "cards": [
+        { "id": "catalogue", "icon": "folder", "title": "The catalogue",
+          "text": "Every eval a folder of files, found by its eval.json." },
+        { "id": "run", "icon": "checks", "title": "A run, or a re-score",
+          "text": "Runs the modes and repeats, or grades a stored run again for nothing." },
+        { "id": "judge", "icon": "users", "title": "The judge",
+          "text": "Writes the sheet a person labels, then checks the judge against it." }
+      ] }
+    ],
+    "links": [
+      { "from": "runner", "to": "catalogue" },
+      { "from": "runner", "to": "run" },
+      { "from": "runner", "to": "judge" }
+    ]
+  }
+}

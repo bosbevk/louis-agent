@@ -8,6 +8,8 @@ Since CL57 ([ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)) 
 framework's web, not a part of it: a site references it, calls `AddLouisAgentEvals()` and lists
 `EvalLibrary.Assembly` in its router through `FrameworkPages.With(...)`; a site that doesn't downloads none of it.
 
+![The eval studio's screens: evals and their runs, answers to grade, the studio and the prompts](diagrams/louis-agent.web.evals.svg)
+
 ## Purpose
 
 The screens someone building an agent works in: the evals and their runs, the answers waiting for a person's grade, the studio that

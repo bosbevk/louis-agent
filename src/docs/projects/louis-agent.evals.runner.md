@@ -7,6 +7,8 @@
 > louis-agent.pack.recipes.checks · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
 
+![The eval runner, and what it does: the catalogue, a run or a re-score, and the judge](diagrams/louis-agent.evals.runner.svg)
+
 ## Purpose
 
 The command that runs an eval: `dotnet louis-agent.evals.runner.dll run {eval}`. It lists the evals it knows, runs

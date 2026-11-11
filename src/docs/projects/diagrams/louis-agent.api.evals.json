@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.api.evals at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "evals", "icon": "checks", "title": "The eval studio", "code": "louis-agent.api.evals",
+          "look": "highlight",
+          "text": "The eval studio on the API, which a program opts into. One that doesn't ships none of it." }
+      ] },
+      { "cards": [
+        { "id": "runner", "icon": "terminal", "title": "The runner",
+          "text": "Starts a run as its own process and records what it ran with." },
+        { "id": "stores", "icon": "database", "title": "The stores",
+          "text": "Runs, grades, drafts and judge checks in MongoDB, none without its address." },
+        { "id": "routes", "icon": "shield", "title": "The admin routes",
+          "text": "Runs, reviews, notes, rescoring, drafts and trends, behind the admin key." }
+      ] }
+    ],
+    "links": [
+      { "from": "evals", "to": "runner" },
+      { "from": "evals", "to": "stores" },
+      { "from": "evals", "to": "routes" }
+    ]
+  }
+}

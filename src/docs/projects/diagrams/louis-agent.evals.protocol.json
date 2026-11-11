@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.evals.protocol at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "protocol", "icon": "file", "title": "The eval protocol", "code": "louis-agent.evals.protocol",
+          "look": "highlight",
+          "text": "The records the runner writes and the API reads: one set of types on both sides." }
+      ] },
+      { "cards": [
+        { "id": "lines", "icon": "terminal", "title": "One event per line",
+          "text": "JSON Lines on stdout, each event with its UTC time." },
+        { "id": "events", "icon": "message", "title": "The run and the talk",
+          "text": "The run's events, and the conversation's: questions, streamed turns, grades." },
+        { "id": "kinds", "icon": "settings", "title": "Choices are enums",
+          "text": "Records and enums only, no behaviour, so each side takes it alone." }
+      ] }
+    ],
+    "links": [
+      { "from": "protocol", "to": "lines" },
+      { "from": "protocol", "to": "events" },
+      { "from": "protocol", "to": "kinds" }
+    ]
+  }
+}

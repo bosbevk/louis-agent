@@ -1,0 +1,33 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "core", "icon": "chip", "title": "The engine", "code": "louis-agent.core", "look": "highlight",
+          "text": "Everything that makes an agent an agent, whichever host you talk to it through." }
+      ] },
+      { "cards": [
+        { "id": "loop", "icon": "message", "title": "The loop",
+          "text": "Sends the history and the tools to the model and runs its tool calls, up to ten rounds a message." },
+        { "id": "guards", "icon": "shield", "title": "Guards",
+          "text": "Oversized results summarised, cut-off calls never run, a failure sent back with its reason." },
+        { "id": "usage", "icon": "chart", "title": "Usage",
+          "text": "One ledger line per model request: its tokens, model and time, priced by a dated table." }
+      ] },
+      { "cards": [
+        { "id": "skills", "icon": "book", "title": "Skills and prompts",
+          "text": "Prompts embedded by level with the principles first, and the skills an agent writes." },
+        { "id": "providers", "icon": "cloud", "title": "Providers",
+          "text": "One chat client behind a seam. Each model's SDK comes as its own small library." },
+        { "id": "bootstrap", "icon": "settings", "title": "Bootstrap",
+          "text": "AgentHost reads the settings, loads the skills and the client, and builds the engine." }
+      ] }
+    ],
+    "links": [
+      { "from": "core", "to": "loop" },
+      { "from": "core", "to": "guards" },
+      { "from": "core", "to": "usage" }
+    ]
+  }
+}

@@ -3,6 +3,8 @@
 > **Kind:** library (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp/` · **References:**
 > louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
 
+![Rider's chat host, and its parts: the protocol, sessions and files, and Rider's own tools](diagrams/louis-agent.acp.svg)
+
 ## Purpose
 
 Puts louis-agent inside JetBrains Rider's AI chat, using the [Agent Client Protocol](https://agentclientprotocol.com):

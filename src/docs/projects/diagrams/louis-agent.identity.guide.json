@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.identity.guide at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "guide", "icon": "user", "title": "The guide", "code": "louis-agent.identity.guide",
+          "look": "highlight",
+          "text": "Who answers in the site's corner: Louis's AI, one voice on three packs, no files, git or shell." }
+      ] },
+      { "cards": [
+        { "id": "docs", "icon": "book", "title": "The docs pack",
+          "text": "What it answers from: the framework as its docs tell it." },
+        { "id": "leads", "icon": "mail", "title": "The leads pack",
+          "text": "One tool that mails Louis a lead, once the visitor has said yes." },
+        { "id": "site", "icon": "browser", "title": "The site pack",
+          "text": "One tool that takes the visitor to a page, or a place on it." }
+      ] }
+    ],
+    "links": [
+      { "from": "guide", "to": "docs" },
+      { "from": "guide", "to": "leads" },
+      { "from": "guide", "to": "site" }
+    ]
+  }
+}

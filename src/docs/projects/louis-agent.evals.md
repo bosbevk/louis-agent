@@ -4,6 +4,8 @@
 > louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner,
 > louis-agent.identity.puls.judges
 
+![The eval harness, and its parts: an eval as a class, trials, checks and metrics, the protocol and the judge's calibration](diagrams/louis-agent.evals.svg)
+
 ## Purpose
 
 The eval harness (F18): the one place that knows how an eval runs, so an eval set only says what it asks and how it
