@@ -71,6 +71,17 @@ public static class FlowText
     /// </summary>
     public const double MemberStep = 14, MemberTop = 8, MemberEnd = 10;
 
+    /// <summary>The characters a member's line holds before it goes on to the next (CL60.4).</summary>
+    public const int MemberWidth = 60;
+
+    /// <summary>
+    /// A box's members as the lines they take: one a member, or a long one over several, each after the first
+    /// indented so the reader sees it goes on.
+    /// </summary>
+    public static IReadOnlyList<string> MemberLines(GraphNode node) =>
+        (node.Members ?? []).SelectMany(member =>
+            TextWrap.Lines(member, MemberWidth).Select((line, at) => at == 0 ? line : "  " + line)).ToList();
+
     /// <summary>A label's lines: a <c>\n</c> breaks it, as a docs flowchart's <c>&lt;br/&gt;</c> did.</summary>
     public static IReadOnlyList<string> LabelLines(GraphNode node) => node.Label.Split('\n');
 

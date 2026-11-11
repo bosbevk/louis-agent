@@ -92,7 +92,8 @@ internal sealed class FlowRenderer : IDiagramRenderer
             writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note", anchor);
 
         // A class chart's members (CL60.4): a divider under the head, then each member from the left.
-        if (node.Node.Members is not { Count: > 0 } members) return;
+        if (node.Node.Members is not { Count: > 0 }) return;
+        var members = FlowText.MemberLines(node.Node);
         double divider = node.Y + FlowText.HeadHeight(node);
         string y = SvgWriter.N(divider);
         writer.Path($"M {SvgWriter.N(node.X)} {y} L {SvgWriter.N(node.X + node.W)} {y}", "frame", arrow: false);

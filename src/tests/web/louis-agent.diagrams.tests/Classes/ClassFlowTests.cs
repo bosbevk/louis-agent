@@ -66,6 +66,27 @@ public class ClassFlowTests
         }));
     }
 
+    /// <summary>
+    /// A type that names no tone takes its kind's: an interface, a record or an enum is a contract or state (teal),
+    /// anything else this project's own (green); a tone it names wins.
+    /// </summary>
+    [Test]
+    public void AType_WithNoTone_TakesItsKinds()
+    {
+        var spec = new ClassesSpec(
+            [
+                new ClassType("a", "IFeed", "interface"), new ClassType("b", "Grade", "record, step 1"),
+                new ClassType("c", "Runner", "core, step 2"), new ClassType("d", "Plain"),
+                new ClassType("e", "ICheck", "interface", Tone: DiagramTone.Violet)
+            ],
+            []);
+
+        Assert.That(ClassFlow.Of(spec).Nodes.Select(node => node.Tone), Is.EqualTo(new[]
+        {
+            DiagramTone.Teal, DiagramTone.Teal, DiagramTone.Green, DiagramTone.Green, DiagramTone.Violet
+        }));
+    }
+
     /// <summary>The drawing matches its golden file, looked at by eye when it was made.</summary>
     [Test]
     public void AClassChart_MatchesTheGoldenFile() =>

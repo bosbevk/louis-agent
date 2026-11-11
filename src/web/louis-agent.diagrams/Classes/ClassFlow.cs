@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Classes;
 
@@ -20,10 +21,25 @@ public static class ClassFlow
     /// <summary>The flow a class chart is drawn as.</summary>
     public static GraphSpec Of(ClassesSpec spec) =>
         new(spec.Types.Select(type => new GraphNode(type.Id, type.Name, type.Kind, Group: type.Group, Icon: type.Icon,
-                Tone: type.Tone, Members: type.Members)).ToList(),
+                Tone: ToneOf(type), Members: type.Members)).ToList(),
             spec.Relations.Select(Edge).ToList(),
             spec.Direction,
             spec.Groups);
+
+    /// <summary>The words in a type's kind that make it a contract or state rather than a part that does the work.</summary>
+    private static readonly string[] Contracts = ["interface", "record", "enum"];
+
+    /// <summary>
+    /// A type's tone: the one it names, or its kind's, so a chart reads in colour before anyone tones it: an interface,
+    /// a record or an enum is a contract or state (teal), anything else this project's own (green).
+    /// </summary>
+    private static DiagramTone ToneOf(ClassType type)
+    {
+        if (type.Tone != DiagramTone.Plain) return type.Tone;
+        bool contract = type.Kind is { } kind &&
+                        Contracts.Any(word => kind.Contains(word, StringComparison.OrdinalIgnoreCase));
+        return contract ? DiagramTone.Teal : DiagramTone.Green;
+    }
 
     /// <summary>
     /// A relation's arrow: dashed for a link in name (implements, uses, creates), solid for one in fact (a kind of,

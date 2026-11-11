@@ -164,8 +164,8 @@ public static class GraphLayout
 
     /// <summary>A box's height: its head, and under it its members, each a line (CL60.4).</summary>
     private static double HeightOf(GraphNode node) =>
-        HeadOf(node) + (node.Members is { Count: > 0 } members
-            ? FlowText.MemberTop + members.Count * FlowText.MemberStep + FlowText.MemberEnd
+        HeadOf(node) + (node.Members is { Count: > 0 }
+            ? FlowText.MemberTop + FlowText.MemberLines(node).Count * FlowText.MemberStep + FlowText.MemberEnd
             : 0);
 
     /// <summary>
@@ -185,7 +185,7 @@ public static class GraphLayout
     {
         double label = FlowText.LabelLines(node).Max(line => line.Length) * LabelCharWidth + 2 * LabelPad
                        + (node.Icon is null ? 0 : FlowText.IconRoom);
-        double members = (node.Members ?? []).Select(member => member.Length).DefaultIfEmpty(0).Max()
+        double members = FlowText.MemberLines(node).Select(line => line.Length).DefaultIfEmpty(0).Max()
                          * FlowText.WordChar + 2 * LabelPad;
         return Math.Max(BoxWidth, Math.Max(label, members));
     }

@@ -11,8 +11,12 @@ namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 /// </summary>
 public class FlowMembersTests
 {
-    /// <summary>A long member of a speech provider's interface.</summary>
-    private const string LongMember = "ISpeechToTextClient Create(SpeechOptions options, CancellationToken ct)";
+    /// <summary>A long member of a speech provider's interface, under the width a member breaks at.</summary>
+    private const string LongMember = "ISpeechToTextClient Create(SpeechOptions options)";
+
+    /// <summary>A member longer than a box's members break at.</summary>
+    private const string Signature =
+        "GetTextAsync(Stream audio, SpeechToTextOptions? options, CancellationToken ct) Task<SpeechToTextResponse>";
 
     /// <summary>A box with the given members, alone in its flow, placed.</summary>
     private static double[] Size(params string[] members)
@@ -26,6 +30,24 @@ public class FlowMembersTests
     [Test]
     public void ABoxWithMembers_IsWideEnoughForTheLongest() =>
         Assert.That(Size(LongMember)[0], Is.GreaterThanOrEqualTo(LongMember.Length * FlowText.WordChar));
+
+    /// <summary>
+    /// A member longer than the width members break at goes on over lines, each after the first indented, so a long
+    /// signature doesn't stretch its box across the picture.
+    /// </summary>
+    [Test]
+    public void ALongMember_BreaksOverIndentedLines()
+    {
+        var lines = FlowText.MemberLines(new GraphNode("c", "ISpeechToTextClient", Members: [Signature]));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(lines, Has.Count.GreaterThan(1));
+            Assert.That(lines.Max(line => line.Length), Is.LessThanOrEqualTo(FlowText.MemberWidth + 2));
+            Assert.That(lines.Skip(1), Has.All.StartsWith("  "));
+            Assert.That(string.Join(' ', lines.Select(line => line.Trim())), Is.EqualTo(Signature));
+        });
+    }
 
     /// <summary>Each member makes the box taller by the same step, and a box with none keeps its height.</summary>
     [Test]
