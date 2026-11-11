@@ -63,23 +63,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 
 ![The check contract: who lists checks, and how a check is built, reads and grades](diagrams/louis-agent.evals.checks-diagrams.svg)
 
-**Flow:** from a line in an eval's file to a grade. A setting the entry can't read is refused here, so a typo can't become a default.
-
-```mermaid
-sequenceDiagram
-    participant F as eval.json
-    participant C as CheckCatalog
-    participant T as The entry
-    participant K as The check
-    participant R as The trial
-    F->>C: Get("within-time")
-    C-->>F: the entry, or a refusal naming the known types
-    F->>T: its settings and a CheckContext
-    T->>T: reads the settings with EvalJson.Strict
-    T-->>K: builds it
-    R->>K: the trial's transcript
-    K-->>R: a Grade, through Verdict
-```
+![From a line to a grade: the catalogue finds the entry, the entry reads its settings strictly and builds the check, and the check grades the trial](diagrams/louis-agent.evals.checks-diagrams-2.svg)
 
 ## Structure
 

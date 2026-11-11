@@ -1,0 +1,177 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core: one turn",
+  "caption": "Once per tool round, ten at most: every request is measured, every tool call guarded, and the history added to only when the turn is done.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "blue",
+        "label": "A host"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "green",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "T",
+        "icon": "settings",
+        "tone": "green",
+        "label": "TurnRunner"
+      },
+      {
+        "id": "L",
+        "icon": "branch",
+        "tone": "teal",
+        "label": "FunctionInvokingChatClient"
+      },
+      {
+        "id": "U",
+        "icon": "chart",
+        "tone": "green",
+        "label": "UsageRecordingChatClient"
+      },
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "G",
+        "icon": "shield",
+        "tone": "green",
+        "label": "ToolCallGuards"
+      },
+      {
+        "id": "O",
+        "icon": "box",
+        "tone": "teal",
+        "label": "A tool"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "H",
+        "to": "E",
+        "text": "StreamPromptAsync(history, prompt)"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "T",
+        "text": "StreamAsync"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "L",
+        "text": "the messages and the tools"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "until the model answers without a tool call",
+        "steps": [
+          {
+            "step": "message",
+            "from": "L",
+            "to": "U",
+            "text": "one model request"
+          },
+          {
+            "step": "message",
+            "from": "U",
+            "to": "M",
+            "text": "the request"
+          },
+          {
+            "step": "reply",
+            "from": "M",
+            "to": "U",
+            "text": "updates: thinking, text, tool calls"
+          },
+          {
+            "step": "message",
+            "from": "U",
+            "to": "U",
+            "text": "one usage record, to JsonlUsageSink"
+          },
+          {
+            "step": "reply",
+            "from": "U",
+            "to": "L",
+            "text": "the updates"
+          },
+          {
+            "step": "reply",
+            "from": "L",
+            "to": "H",
+            "text": "each update, as it comes"
+          },
+          {
+            "step": "block",
+            "block": "opt",
+            "label": "the model asked for a tool",
+            "steps": [
+              {
+                "step": "message",
+                "from": "L",
+                "to": "G",
+                "text": "InvokeAsync(the call)"
+              },
+              {
+                "step": "block",
+                "block": "alt",
+                "label": "cut off, or refused",
+                "steps": [
+                  {
+                    "step": "reply",
+                    "from": "G",
+                    "to": "L",
+                    "text": "the reason, and the tool never runs"
+                  }
+                ],
+                "else": [
+                  {
+                    "label": "",
+                    "steps": [
+                      {
+                        "step": "message",
+                        "from": "G",
+                        "to": "O",
+                        "text": "run it, arguments as data"
+                      },
+                      {
+                        "step": "reply",
+                        "from": "O",
+                        "to": "G",
+                        "text": "the result"
+                      },
+                      {
+                        "step": "reply",
+                        "from": "G",
+                        "to": "L",
+                        "text": "the result, summarised if it\u0027s too long"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "T",
+        "text": "appends the finished turn to the history"
+      }
+    ]
+  }
+}

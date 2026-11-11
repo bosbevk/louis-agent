@@ -38,22 +38,7 @@ seam with its Null Object.
 
 ![Telemetry: the log sink and the tracer, out to the collector](diagrams/louis-agent.core.telemetry-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant P as Program
-    participant H as AgentHost
-    participant L as AgentLogging
-    participant T as OtlpTelemetry
-    participant C as the collector
-    P->>H: Build(catalog, HostServices(Telemetry: OtlpTelemetry.Instance))
-    H->>L: Configure(directory, content, telemetry.AddSinks)
-    L->>T: AddSinks(configuration)
-    T-->>L: the collector's sink, when an endpoint is named
-    H->>T: Start()
-    T->>T: LastChance.Install(this); the tracer on TurnSpans.Source
-    Note over H,C: a turn runs: TurnSpans.Start, the model's and tools' spans
-    T->>C: spans over OTLP; log lines through the sink
-```
+![Switching telemetry on: the host adds the collector's sink and starts the tracer, and a turn's spans go out over OTLP](diagrams/louis-agent.core.telemetry-diagrams-2.svg)
 
 ## Structure
 

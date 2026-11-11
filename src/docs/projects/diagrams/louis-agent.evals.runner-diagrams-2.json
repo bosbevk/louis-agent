@@ -1,0 +1,96 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.evals.runner: a run from the Evals page",
+  "caption": "A child process with its lines on stdout: a re-score is the same, but the API hands over the stored run on stdin and no model is asked.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "tone": "blue",
+        "label": "Builder",
+        "actor": true
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "R",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "The runner"
+      },
+      {
+        "id": "S",
+        "icon": "message",
+        "tone": "teal",
+        "label": "A session, on the API"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "asks for a run"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "R",
+        "text": "starts run {eval} --repeat N, as a child process"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "R",
+        "text": "CommandLine, then EvalCatalog finds the eval"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each conversation",
+        "steps": [
+          {
+            "step": "message",
+            "from": "R",
+            "to": "S",
+            "text": "opens a session and asks"
+          },
+          {
+            "step": "reply",
+            "from": "S",
+            "to": "R",
+            "text": "the answer\u0027s stream"
+          },
+          {
+            "step": "reply",
+            "from": "R",
+            "to": "A",
+            "text": "protocol lines, on stdout"
+          },
+          {
+            "step": "reply",
+            "from": "A",
+            "to": "B",
+            "text": "the live view"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "A",
+        "text": "SummaryEvent, and it exits"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "A",
+        "text": "the run is stored"
+      }
+    ]
+  }
+}

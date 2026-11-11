@@ -1,0 +1,85 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.evals.protocol: the order of a run's lines",
+  "caption": "One event a line, in order: a line that is no event reads as nothing and shows as a line for people.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "The runner"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "The API"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "ProtocolEvent, the first line"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each mode",
+        "steps": [
+          {
+            "step": "message",
+            "from": "R",
+            "to": "A",
+            "text": "ModeEvent"
+          },
+          {
+            "step": "block",
+            "block": "loop",
+            "label": "each conversation",
+            "steps": [
+              {
+                "step": "message",
+                "from": "R",
+                "to": "A",
+                "text": "QuestionEvent"
+              },
+              {
+                "step": "message",
+                "from": "R",
+                "to": "A",
+                "text": "SseEvent, for each piece of the stream"
+              },
+              {
+                "step": "message",
+                "from": "R",
+                "to": "A",
+                "text": "TurnEvent: its figures"
+              },
+              {
+                "step": "message",
+                "from": "R",
+                "to": "A",
+                "text": "ConversationEvent: its grades and metrics"
+              }
+            ]
+          },
+          {
+            "step": "message",
+            "from": "R",
+            "to": "A",
+            "text": "ModeDoneEvent"
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "SummaryEvent"
+      }
+    ]
+  }
+}

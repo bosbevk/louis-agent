@@ -120,36 +120,9 @@ cap the answer is a 429 ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign
 
 ## Diagrams
 
-**Flow:** opening a session and asking it something. The diagram under *How it works* shows the routes; this is the main one. A second message while a turn
-is running gets `409`, and a client that disconnects cancels the turn.
+The diagram under *How it works* shows the routes; this is the main one, opening a session and asking it something.
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant K as AgentKeyGate
-    participant H as SessionHandlers
-    participant S as AgentSessions
-    participant F as AgentEngineFactory
-    participant T as TurnStream
-    participant E as AgentEngine
-    participant W as ITurnStreamFormat
-    C->>K: POST /v1/sessions (toolsets, role, place)
-    K->>H: the key is right
-    H->>S: Create
-    S->>F: the engine for these toolsets, role and level
-    F-->>S: a shared engine, kept for the session's life
-    H-->>C: 201 and the session's id
-    C->>K: POST /v1/sessions/{id}/messages
-    K->>H: the key is right
-    H->>T: StreamTurnAsync
-    T->>E: StreamPromptAsync(history, prompt)
-    loop as the reply comes
-        E-->>T: an update
-        T->>W: shape it like Claude's events
-        W-->>C: a Server-Sent Event
-    end
-    T-->>C: the turn's usage, then the end of the message
-```
+![A session and a message to it: the key gate, the session with its shared engine, and the turn streamed back as Server-Sent Events](diagrams/louis-agent.api-diagrams.svg)
 
 ## Structure
 

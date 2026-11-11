@@ -12,23 +12,7 @@ Rider sends prompts (with attached files), and the server streams back thinking,
 
 ## How it works
 
-```mermaid
-sequenceDiagram
-    participant R as Rider
-    participant S as AcpServer
-    participant E as AgentEngine
-    R->>S: initialize
-    S-->>R: capabilities
-    R->>S: session/new (cwd)
-    S-->>R: sessionId
-    R->>S: session/prompt (text + resource / resource_link blocks)
-    S->>E: StreamPromptAsync(history, prompt)
-    loop as the reply streams
-        S-->>R: session/update: agent_thought_chunk · agent_message_chunk · tool_call · tool_call_update
-    end
-    S-->>R: prompt result (stopReason)
-    R->>S: session/cancel (optional)
-```
+![One prompt from Rider: the server starts a session, streams the engine's updates back, and ends with the prompt's result](diagrams/louis-agent.acp-how-it-works.svg)
 
 - **One line = one JSON-RPC message** on stdin/stdout. Requests run concurrently; `session/cancel` is handled
   immediately and cancels that session's turn.

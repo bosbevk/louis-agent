@@ -61,24 +61,7 @@ why its prompt is long.
 
 ![The usage probe: each command and the parts it uses](diagrams/louis-agent.usage-probe-diagrams.svg)
 
-**Flow:** the default job. Each request costs real money, and with Anthropic the pair runs again with a cache marker, to see a cache write and then a read.
-
-```mermaid
-sequenceDiagram
-    participant P as Program.cs
-    participant F as LlmClientFactory
-    participant C as The provider
-    participant M as IUsageMapper
-    P->>F: Create, CreateUsageMapper
-    F-->>P: the client and the mapper the agents use
-    loop each request: plain or cached, whole or streamed
-        P->>C: a one-word question, with a long system prompt
-        C-->>P: the answer and its usage
-        P->>P: prints what the adapter reported
-        P->>M: the usage
-        M-->>P: prints the ledger: line
-    end
-```
+![The default job: the probe asks the provider a one-word question each way and prints what the adapter and the ledger report](diagrams/louis-agent.usage-probe-diagrams-2.svg)
 
 ## Structure
 

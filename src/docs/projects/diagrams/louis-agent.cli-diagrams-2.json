@@ -1,0 +1,98 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.cli: one line typed",
+  "caption": "One line, two ways: a command is answered with no model, a message streams from the engine; a single prompt from a script goes straight to the engine and exits.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "Y",
+        "tone": "blue",
+        "label": "You",
+        "actor": true
+      },
+      {
+        "id": "C",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "ConsoleChat"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "Y",
+        "to": "C",
+        "text": "a line"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "E",
+        "text": "HandleUserCommand"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "it\u0027s a command: /tools, /approve, /reject, /usage",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "E",
+            "to": "C",
+            "text": "the answer, with no model involved"
+          },
+          {
+            "step": "reply",
+            "from": "C",
+            "to": "Y",
+            "text": "prints it"
+          }
+        ],
+        "else": [
+          {
+            "label": "it\u0027s a message",
+            "steps": [
+              {
+                "step": "message",
+                "from": "C",
+                "to": "E",
+                "text": "StreamPromptAsync(history, line)"
+              },
+              {
+                "step": "block",
+                "block": "loop",
+                "label": "as the reply comes",
+                "steps": [
+                  {
+                    "step": "reply",
+                    "from": "E",
+                    "to": "C",
+                    "text": "an update"
+                  },
+                  {
+                    "step": "reply",
+                    "from": "C",
+                    "to": "Y",
+                    "text": "thinking in grey, the text, a line per tool"
+                  }
+                ]
+              },
+              {
+                "step": "reply",
+                "from": "C",
+                "to": "Y",
+                "text": "the turn\u0027s usage, on stderr"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.web.evals: starting a run and watching it",
+  "caption": "The page streams the run: its turns show as they finish, and the finished run joins the list with its own page.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "tone": "blue",
+        "label": "Builder",
+        "actor": true
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Evals page"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentApi"
+      },
+      {
+        "id": "S",
+        "icon": "world",
+        "tone": "red",
+        "label": "louis-agent.api"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "P",
+        "text": "opens /admin, picks an eval, presses Run"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "starts the run"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "S",
+        "text": "POST /v1/admin/benchmarks/..."
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "P",
+        "text": "the run\u0027s events, as they come"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "B",
+        "text": "LiveRunPanel: its turns as they finish"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "P",
+        "text": "the run ended"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "reads the list again"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "B",
+        "text": "the run in the list, linked to /admin/runs/{run}"
+      }
+    ]
+  }
+}

@@ -38,14 +38,16 @@ internal sealed class SequenceRenderer : IDiagramRenderer
         var writer = new SvgWriter();
         var toneOf = source.Sequence!.Participants.ToDictionary(head => head.Id, head => head.Tone);
 
-        // The frames first, the outer under the inner, so every line and word stands over them.
-        foreach (var block in placed.Blocks.OrderBy(block => block.Depth)) Frame(writer, block);
+        // The frames' panels first, the outer under the inner, so every line and word stands over them.
+        var frames = placed.Blocks.OrderBy(block => block.Depth).ToList();
+        foreach (var block in frames) writer.Box(block.X, block.Y, block.W, block.H, 8, "group");
 
-        // The lifelines down from the heads, dashed, behind the arrows.
+        // The lifelines down from the heads, dashed, behind the arrows; then the frames' tabs and dividers over them.
         double top = placed.Heads.Max(head => head.Y + head.H);
         foreach (var head in placed.Heads)
             writer.Path($"M {N(head.Center)} {N(top)} L {N(head.Center)} {N(placed.Height)}", "edge dashed",
                 arrow: false);
+        foreach (var block in frames) Tabs(writer, block);
 
         foreach (var row in placed.Rows)
             if (row.Step is NoteStep) Note(writer, row);
@@ -75,8 +77,10 @@ internal sealed class SequenceRenderer : IDiagramRenderer
         string dashed = row.Step is ReplyStep ? " dashed" : "";
         writer.Path(path, "edge" + dashed + toned, arrow: true, tone: tone == DiagramTone.Plain ? null : tone.Wire());
 
-        // The words centred over the arrow, or for a turn to oneself, beside the turn.
+        // The words in a chip centred over the arrow, or for a turn to oneself, beside the turn: the chip's ground
+        // hides a lifeline the words cross.
         var box = SequenceText.WordBox(row);
+        if (row.Lines.Count > 0) writer.Box(box.X, box.Y, box.W, box.H, 4, "word-chip" + toned);
         (double x, string anchor) = row.Self ? (box.X + SequenceText.WordPad, "start") : ((from + row.ToX) / 2, "middle");
         for (int at = 0; at < row.Lines.Count; at++)
             writer.Text(x, row.Y + SequenceText.TextTop + Baseline + at * SequenceText.LineStep, row.Lines[at],
@@ -99,12 +103,11 @@ internal sealed class SequenceRenderer : IDiagramRenderer
     }
 
     /// <summary>
-    /// A block's frame: the panel round its rows, its kind in a chip at the top left with its label beside, and a
-    /// dashed divider with an else chip for each other case.
+    /// A block's frame over its panel: its kind in a chip at the top left with its label beside, and a dashed
+    /// divider with an else chip for each other case.
     /// </summary>
-    private static void Frame(SvgWriter writer, PlacedBlock block)
+    private static void Tabs(SvgWriter writer, PlacedBlock block)
     {
-        writer.Box(block.X, block.Y, block.W, block.H, 8, "group");
         Tab(writer, block.X, block.Y, block.Block.Block.Wire(), SequenceText.KindWidth(block.Block.Block),
             block.Lines);
         foreach (var @case in block.Cases)

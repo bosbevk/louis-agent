@@ -1,0 +1,97 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.web.accounts: the profile menu",
+  "caption": "A site without accounts shows the guest's menu: otherwise the menu asks /account/me and shows the person, or sign in and register.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "M",
+        "icon": "user",
+        "tone": "violet",
+        "label": "ProfileMenu (web)"
+      },
+      {
+        "id": "S",
+        "icon": "code",
+        "tone": "teal",
+        "label": "IAccountMenu"
+      },
+      {
+        "id": "St",
+        "icon": "users",
+        "tone": "green",
+        "label": "AccountState"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "green",
+        "label": "AccountApi"
+      },
+      {
+        "id": "API",
+        "icon": "world",
+        "tone": "red",
+        "label": "/account/me"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "M",
+        "to": "S",
+        "text": "LoadAsync()"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "NoAccounts",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "S",
+            "to": "M",
+            "text": "Enabled false: the guest\u0027s menu"
+          }
+        ],
+        "else": [
+          {
+            "label": "AccountMenu",
+            "steps": [
+              {
+                "step": "message",
+                "from": "S",
+                "to": "St",
+                "text": "LoadAsync()"
+              },
+              {
+                "step": "message",
+                "from": "St",
+                "to": "A",
+                "text": "MeAsync()"
+              },
+              {
+                "step": "message",
+                "from": "A",
+                "to": "API",
+                "text": "GET (cookie, X-Requested-With)"
+              },
+              {
+                "step": "reply",
+                "from": "API",
+                "to": "A",
+                "text": "200 AccountInfo, 401, or no accounts"
+              },
+              {
+                "step": "reply",
+                "from": "St",
+                "to": "M",
+                "text": "Changed: the person, or sign in and register"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

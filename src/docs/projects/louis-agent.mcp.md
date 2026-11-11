@@ -36,29 +36,9 @@ call at a time. (To have louis-agent do a whole task itself, use the API's sessi
 
 ## Diagrams
 
-**Flow:** the architecture is under *How it works*; this is a client using it. The client's own model decides each call, and the server runs no model.
+The architecture is under *How it works*; this is a client using it.
 
-```mermaid
-sequenceDiagram
-    participant C as MCP client
-    participant S as The SDK's server
-    participant Y as EngineToolSync
-    participant E as AgentEngine
-    participant F as FeedResources
-    Y->>E: at start-up: copies its tools, and listens for changes
-    C->>S: tools/list
-    S-->>C: the tools
-    C->>S: tools/call (a name and its arguments)
-    S->>E: runs the engine's tool
-    E-->>S: the result
-    S-->>C: the result
-    E-->>Y: ToolsChanged, as a tool was built or approved
-    Y->>S: the new list
-    S-->>C: notifications/tools/list_changed
-    C->>S: resources/read feed://{name}
-    S->>F: reads the feed
-    F-->>C: the feed, as JSON
-```
+![A client using the tools: it lists and calls the engine's tools through the SDK's server, hears when they change, and reads a feed](diagrams/louis-agent.mcp-diagrams.svg)
 
 ## Structure
 

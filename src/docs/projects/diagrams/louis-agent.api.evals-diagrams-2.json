@@ -1,0 +1,71 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.api.evals: starting a run",
+  "caption": "A run starts at once and streams: the API answers 202 with the run's id, and the page reads the runner's events as they come.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Browser (web.evals)"
+      },
+      {
+        "id": "G",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "AdminGroup gate (api)"
+      },
+      {
+        "id": "E",
+        "icon": "server",
+        "tone": "green",
+        "label": "EvalAdminEndpoints (api.evals)"
+      },
+      {
+        "id": "S",
+        "icon": "database",
+        "tone": "amber",
+        "label": "IEvalStore (Mongo)"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "G",
+        "text": "POST /admin/evals/{check}/runs (ADMIN_API_KEY)"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "E",
+        "text": "StartRun"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "S",
+        "text": "a run row, the recorder listening"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "B",
+        "text": "202, the run\u0027s id"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "E",
+        "text": "GET /admin/evals/runs/{id}/events"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "B",
+        "text": "the runner\u0027s events as they come"
+      }
+    ]
+  }
+}

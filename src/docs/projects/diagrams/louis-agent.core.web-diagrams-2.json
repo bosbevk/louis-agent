@@ -1,0 +1,83 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core.web: fetching a page",
+  "caption": "Every fetch asks first: robots.txt and the page's no-AI signals decide, and a refusal comes back with its reason.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "blue",
+        "label": "a pack\u0027s tool"
+      },
+      {
+        "id": "C",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ToolsetContext (core)"
+      },
+      {
+        "id": "W",
+        "icon": "world",
+        "tone": "green",
+        "label": "WebAccess"
+      },
+      {
+        "id": "R",
+        "icon": "shield",
+        "tone": "green",
+        "label": "RobotsPolicy"
+      },
+      {
+        "id": "F",
+        "icon": "browser",
+        "tone": "green",
+        "label": "PageFetcher"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "T",
+        "to": "C",
+        "text": "NewFetcher()"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "W",
+        "text": "NewFetcher()"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "T",
+        "text": "a PageFetcher under the policy and the store"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "F",
+        "text": "GetFollowingRedirectsAsync(url)"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "R",
+        "text": "may we read url?"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "F",
+        "text": "yes / no (robots.txt, the page\u0027s no-AI signals)"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "T",
+        "text": "the page, or the refusal\u0027s reason"
+      }
+    ]
+  }
+}

@@ -49,24 +49,7 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 
 ![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant M as ProfileMenu (web)
-    participant S as IAccountMenu
-    participant St as AccountState
-    participant A as AccountApi
-    participant API as /account/me
-    M->>S: LoadAsync()
-    alt NoAccounts
-        S-->>M: Enabled false: the guest's menu
-    else AccountMenu
-        S->>St: LoadAsync()
-        St->>A: MeAsync()
-        A->>API: GET (cookie, X-Requested-With)
-        API-->>A: 200 AccountInfo, 401, or no accounts
-        St-->>M: Changed: the person, or sign in and register
-    end
-```
+![The profile menu: with no accounts it shows the guest's menu, otherwise it asks /account/me and shows the person](diagrams/louis-agent.web.accounts-diagrams-2.svg)
 
 ## Structure
 

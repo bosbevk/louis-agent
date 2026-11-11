@@ -79,20 +79,7 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
 
 ![Accounts: the browser's calls through Identity's routes and ours to the store](diagrams/louis-agent.accounts-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant T as UseTenant
-    participant I as /account/register (Identity)
-    participant S as AccountUserStore
-    participant M as Mail seam
-    B->>T: POST /account/register (host mypuls.co.za)
-    T->>T: CurrentTenant = row for the host, else ACCOUNTS_TENANT
-    T->>I: the request
-    I->>S: FindByEmailAsync (within the tenant), CreateAsync (stamped with it)
-    I->>M: SendConfirmationLinkAsync
-    I-->>B: 200
-```
+![Registering: the host picks the tenant, then Identity's route finds and creates the person within it and sends the confirmation](diagrams/louis-agent.accounts-diagrams-2.svg)
 
 ## Structure
 

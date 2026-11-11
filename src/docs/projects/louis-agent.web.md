@@ -122,31 +122,7 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 
 ![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/louis-agent.web-diagrams.svg)
 
-**Flow:** sending a message. `ChatRunner` holds all of it, so no chat page has its own copy.
-
-```mermaid
-sequenceDiagram
-    actor U as Someone
-    participant S as ChatShell
-    participant R as ChatRunner
-    participant A as AgentApi
-    participant T as TurnStream
-    participant C as ChatStore
-    U->>S: types and sends
-    S->>R: the draft and its attachments
-    opt it's the chat's first message
-        R->>A: CreateSessionAsync (toolsets, role, place)
-    end
-    R->>A: StreamMessageAsync
-    loop each event from the API
-        A-->>R: a SessionEvent
-        R->>T: Apply(turn, event)
-        R-->>S: Changed, at most every 50 ms
-        S-->>U: the turn, redrawn
-    end
-    R->>C: SaveAsync
-    R-->>S: Changed, the last one always gets through
-```
+![Sending a message: ChatRunner opens the session the first time, applies each event to the turn, redraws the page and saves the chat](diagrams/louis-agent.web-diagrams-2.svg)
 
 ## Structure
 

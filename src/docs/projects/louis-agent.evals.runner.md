@@ -54,26 +54,7 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
-**Flow:** a run from the Evals page. A re-score is the same, but the API hands over the stored run on stdin and no model is asked.
-
-```mermaid
-sequenceDiagram
-    actor B as Builder
-    participant A as louis-agent.api
-    participant R as The runner
-    participant S as A session, on the API
-    B->>A: asks for a run
-    A->>R: starts run {eval} --repeat N, as a child process
-    R->>R: CommandLine, then EvalCatalog finds the eval
-    loop each conversation
-        R->>S: opens a session and asks
-        S-->>R: the answer's stream
-        R-->>A: protocol lines, on stdout
-        A-->>B: the live view
-    end
-    R-->>A: SummaryEvent, and it exits
-    A->>A: the run is stored
-```
+![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)
 
 ## Structure
 

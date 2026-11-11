@@ -73,33 +73,7 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 ![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 
-**Flow:** one run. A failed transport is tried once more, and an infrastructure failure is kept apart from a failing answer, so it never counts against the agent.
-
-```mermaid
-sequenceDiagram
-    participant R as EvalRunner
-    participant S as ISessionClient
-    participant C as The checks
-    participant W as ProtocolWriter
-    R->>W: ProtocolEvent: the eval, its graders, the dataset
-    loop each mode
-        R->>W: ModeEvent
-        loop each repeat and scenario
-            R->>S: opens a session for the mode
-            loop each question and follow-up
-                R->>W: QuestionEvent
-                R->>S: the question
-                S-->>R: the stream, into a Transcript
-                R->>W: SseEvent per piece, then TurnEvent
-            end
-            R->>C: the Trial
-            C-->>R: a Grade from each
-            R->>W: ConversationEvent: grades, outcome, metrics
-        end
-        R->>W: ModeDoneEvent: pass@k and pass^k
-    end
-    R->>W: SummaryEvent
-```
+![One run: for each mode, repeat and question the runner asks a session and writes the events, then grades each conversation and sums up](diagrams/louis-agent.evals-diagrams-2.svg)
 
 ## Design notes
 

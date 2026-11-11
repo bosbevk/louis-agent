@@ -15,25 +15,7 @@ A test that starts a real process, opens Mongo or needs the Puls stack is an int
 
 ![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 
-**Flow:** a golden file. It pins what a component draws or what the model reads, so a change has to be looked at before it's accepted.
-
-```mermaid
-sequenceDiagram
-    participant T as A test
-    participant S as Snapshots
-    participant G as The .html golden, beside the test
-    participant Y as You
-    T->>S: Match(file, what it rendered)
-    S->>S: normalises what isn't the component's doing
-    alt LOUIS_UPDATE_GOLDEN=1
-        S->>G: writes it
-        G-->>Y: read the diff, then commit it
-    else it's the same
-        S-->>T: passes
-    else it differs
-        S-->>T: fails, with what it rendered in the temp folder
-    end
-```
+![A golden file: the snapshot is written when you ask, and otherwise the test passes when it's the same and fails when it differs](diagrams/tests-diagrams-2.svg)
 
 ![The framework's tests: a fake model, golden files, and the integration tests apart](diagrams/tests.svg)
 

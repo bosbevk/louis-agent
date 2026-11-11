@@ -78,10 +78,14 @@
   </defs>
   <rect class="ground" x="-24" y="-24" width="866" height="556" rx="14" />
   <rect class="group" x="493.8" y="156" width="285" height="248" rx="8" />
+  <rect class="group" x="507.8" y="228" width="257" height="168" rx="8" />
+  <path class="edge dashed" d="M 60 52 L 60 508" />
+  <path class="edge dashed" d="M 317 52 L 317 508" />
+  <path class="edge dashed" d="M 521.8 52 L 521.8 508" />
+  <path class="edge dashed" d="M 750.8 52 L 750.8 508" />
   <rect class="word-chip" x="493.8" y="156" width="44" height="20" rx="6" />
   <text class="word" x="515.8" y="170" text-anchor="middle">loop</text>
   <text class="word" x="543.8" y="170" text-anchor="start">up to 10 tool rounds</text>
-  <rect class="group" x="507.8" y="228" width="257" height="168" rx="8" />
   <rect class="word-chip" x="507.8" y="228" width="37" height="20" rx="6" />
   <text class="word" x="526.3" y="242" text-anchor="middle">alt</text>
   <text class="word" x="550.8" y="242" text-anchor="start">a tool call</text>
@@ -89,33 +93,35 @@
   <rect class="word-chip" x="507.8" y="316" width="44" height="20" rx="6" />
   <text class="word" x="529.8" y="330" text-anchor="middle">else</text>
   <text class="word" x="557.8" y="330" text-anchor="start">the answer</text>
-  <path class="edge dashed" d="M 60 52 L 60 508" />
-  <path class="edge dashed" d="M 317 52 L 317 508" />
-  <path class="edge dashed" d="M 521.8 52 L 521.8 508" />
-  <path class="edge dashed" d="M 750.8 52 L 750.8 508" />
   <path class="edge tone-blue" d="M 60 102 L 315 102" marker-end="url(#arrow-blue)" />
+  <rect class="word-chip tone-blue" x="72" y="76" width="233" height="22" rx="4" />
   <text class="word tone-blue" x="188.5" y="90" text-anchor="middle">POST /v1/sessions/{id}/messages</text>
   <rect class="word-chip tone-blue" x="52" y="94" width="16" height="16" rx="8" />
   <text class="word tone-blue" x="60" y="105.5" text-anchor="middle">1</text>
   <path class="edge tone-green" d="M 317 144 L 519.8 144" marker-end="url(#arrow-green)" />
+  <rect class="word-chip tone-green" x="369.4" y="118" width="100" height="22" rx="4" />
   <text class="word tone-green" x="419.4" y="132" text-anchor="middle">RunTurnAsync</text>
   <rect class="word-chip tone-green" x="309" y="136" width="16" height="16" rx="8" />
   <text class="word tone-green" x="317" y="147.5" text-anchor="middle">2</text>
   <path class="edge tone-violet" d="M 521.8 216 L 748.8 216" marker-end="url(#arrow-violet)" />
+  <rect class="word-chip tone-violet" x="533.8" y="190" width="205" height="22" rx="4" />
   <text class="word tone-violet" x="636.3" y="204" text-anchor="middle">the request, with the tools</text>
   <rect class="word-chip tone-violet" x="513.8" y="208" width="16" height="16" rx="8" />
   <text class="word tone-violet" x="521.8" y="219.5" text-anchor="middle">3</text>
   <path class="edge tone-violet" d="M 521.8 288 L 549.8 288 L 549.8 304 L 523.8 304" marker-end="url(#arrow-violet)" />
+  <rect class="word-chip tone-violet" x="557.8" y="262" width="100" height="22" rx="4" />
   <text class="word tone-violet" x="565.8" y="276" text-anchor="start">run the tool</text>
   <rect class="word-chip tone-violet" x="513.8" y="280" width="16" height="16" rx="8" />
   <text class="word tone-violet" x="521.8" y="291.5" text-anchor="middle">4</text>
   <path class="edge dashed tone-red" d="M 750.8 376 L 523.8 376" marker-end="url(#arrow-red)" />
+  <rect class="word-chip tone-red" x="614.3" y="350" width="44" height="22" rx="4" />
   <text class="word tone-red" x="636.3" y="364" text-anchor="middle">text</text>
   <rect class="word-chip tone-red" x="742.8" y="368" width="16" height="16" rx="8" />
   <text class="word tone-red" x="750.8" y="379.5" text-anchor="middle">5</text>
   <rect class="word-chip" x="274.9" y="408" width="289" height="30" rx="6" />
   <text class="word" x="419.4" y="426" text-anchor="middle">every request is measured in the ledger</text>
   <path class="edge dashed tone-green" d="M 317 480 L 62 480" marker-end="url(#arrow-green)" />
+  <rect class="word-chip tone-green" x="86" y="454" width="205" height="22" rx="4" />
   <text class="word tone-green" x="188.5" y="468" text-anchor="middle">SSE: text, tool calls, cost</text>
   <rect class="word-chip tone-green" x="309" y="472" width="16" height="16" rx="8" />
   <text class="word tone-green" x="317" y="483.5" text-anchor="middle">6</text>

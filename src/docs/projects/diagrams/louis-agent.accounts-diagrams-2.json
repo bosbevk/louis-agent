@@ -1,0 +1,77 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.accounts: registering, within a tenant",
+  "caption": "One tenant per host: the host picks the tenant, and the store finds and creates the person within it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Browser"
+      },
+      {
+        "id": "T",
+        "icon": "shield",
+        "tone": "green",
+        "label": "UseTenant"
+      },
+      {
+        "id": "I",
+        "icon": "server",
+        "tone": "green",
+        "label": "/account/register (Identity)"
+      },
+      {
+        "id": "S",
+        "icon": "database",
+        "tone": "amber",
+        "label": "AccountUserStore"
+      },
+      {
+        "id": "M",
+        "icon": "mail",
+        "tone": "teal",
+        "label": "Mail seam"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "T",
+        "text": "POST /account/register (host mypuls.co.za)"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "T",
+        "text": "CurrentTenant = row for the host, else ACCOUNTS_TENANT"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "I",
+        "text": "the request"
+      },
+      {
+        "step": "message",
+        "from": "I",
+        "to": "S",
+        "text": "FindByEmailAsync (within the tenant), CreateAsync (stamped with it)"
+      },
+      {
+        "step": "message",
+        "from": "I",
+        "to": "M",
+        "text": "SendConfirmationLinkAsync"
+      },
+      {
+        "step": "reply",
+        "from": "I",
+        "to": "B",
+        "text": "200"
+      }
+    ]
+  }
+}

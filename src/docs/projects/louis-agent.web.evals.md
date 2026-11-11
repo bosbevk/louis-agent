@@ -38,21 +38,7 @@ Where the pieces sit, and what a site adds:
 
 What happens when someone starts a run and watches it:
 
-```mermaid
-sequenceDiagram
-    actor B as Builder
-    participant P as Evals page
-    participant A as AgentApi
-    participant S as louis-agent.api
-    B->>P: opens /admin, picks an eval, presses Run
-    P->>A: starts the run
-    A->>S: POST /v1/admin/benchmarks/...
-    S-->>P: the run's events, as they come
-    P-->>B: LiveRunPanel: its turns as they finish
-    S-->>P: the run ended
-    P->>A: reads the list again
-    P-->>B: the run in the list, linked to /admin/runs/{run}
-```
+![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
 
 ## How it works
 

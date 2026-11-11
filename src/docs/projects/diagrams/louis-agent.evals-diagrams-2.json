@@ -1,0 +1,128 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.evals: one run",
+  "caption": "Infrastructure is kept apart: a failed transport is tried once more, and an infrastructure failure never counts against the agent.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "EvalRunner"
+      },
+      {
+        "id": "S",
+        "icon": "server",
+        "tone": "teal",
+        "label": "ISessionClient"
+      },
+      {
+        "id": "C",
+        "icon": "checks",
+        "tone": "green",
+        "label": "The checks"
+      },
+      {
+        "id": "W",
+        "icon": "file",
+        "tone": "amber",
+        "label": "ProtocolWriter"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "W",
+        "text": "ProtocolEvent: the eval, its graders, the dataset"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each mode",
+        "steps": [
+          {
+            "step": "message",
+            "from": "R",
+            "to": "W",
+            "text": "ModeEvent"
+          },
+          {
+            "step": "block",
+            "block": "loop",
+            "label": "each repeat and scenario",
+            "steps": [
+              {
+                "step": "message",
+                "from": "R",
+                "to": "S",
+                "text": "opens a session for the mode"
+              },
+              {
+                "step": "block",
+                "block": "loop",
+                "label": "each question and follow-up",
+                "steps": [
+                  {
+                    "step": "message",
+                    "from": "R",
+                    "to": "W",
+                    "text": "QuestionEvent"
+                  },
+                  {
+                    "step": "message",
+                    "from": "R",
+                    "to": "S",
+                    "text": "the question"
+                  },
+                  {
+                    "step": "reply",
+                    "from": "S",
+                    "to": "R",
+                    "text": "the stream, into a Transcript"
+                  },
+                  {
+                    "step": "message",
+                    "from": "R",
+                    "to": "W",
+                    "text": "SseEvent per piece, then TurnEvent"
+                  }
+                ]
+              },
+              {
+                "step": "message",
+                "from": "R",
+                "to": "C",
+                "text": "the Trial"
+              },
+              {
+                "step": "reply",
+                "from": "C",
+                "to": "R",
+                "text": "a Grade from each"
+              },
+              {
+                "step": "message",
+                "from": "R",
+                "to": "W",
+                "text": "ConversationEvent: grades, outcome, metrics"
+              }
+            ]
+          },
+          {
+            "step": "message",
+            "from": "R",
+            "to": "W",
+            "text": "ModeDoneEvent: pass@k and pass^k"
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "W",
+        "text": "SummaryEvent"
+      }
+    ]
+  }
+}

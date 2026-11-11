@@ -1,0 +1,83 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.evals.checks: from a line to a grade",
+  "caption": "A setting the entry can't read is refused: so a typo in an eval's file never becomes a default.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "F",
+        "icon": "file",
+        "tone": "amber",
+        "label": "eval.json"
+      },
+      {
+        "id": "C",
+        "icon": "book",
+        "tone": "green",
+        "label": "CheckCatalog"
+      },
+      {
+        "id": "T",
+        "icon": "code",
+        "tone": "green",
+        "label": "The entry"
+      },
+      {
+        "id": "K",
+        "icon": "checks",
+        "tone": "green",
+        "label": "The check"
+      },
+      {
+        "id": "R",
+        "icon": "message",
+        "tone": "teal",
+        "label": "The trial"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "F",
+        "to": "C",
+        "text": "Get(\u0022within-time\u0022)"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "F",
+        "text": "the entry, or a refusal naming the known types"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "T",
+        "text": "its settings and a CheckContext"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "T",
+        "text": "reads the settings with EvalJson.Strict"
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "K",
+        "text": "builds it"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "K",
+        "text": "the trial\u0027s transcript"
+      },
+      {
+        "step": "reply",
+        "from": "K",
+        "to": "R",
+        "text": "a Grade, through Verdict"
+      }
+    ]
+  }
+}

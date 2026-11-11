@@ -36,19 +36,7 @@ studio's replies are built here (`Replies/`, the `Of` factories), its texts in `
 
 ![The eval studio on the API: what a program maps, and what the studio holds](diagrams/louis-agent.api.evals-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant B as Browser (web.evals)
-    participant G as AdminGroup gate (api)
-    participant E as EvalAdminEndpoints (api.evals)
-    participant S as IEvalStore (Mongo)
-    B->>G: POST /admin/evals/{check}/runs (ADMIN_API_KEY)
-    G->>E: StartRun
-    E->>S: a run row, the recorder listening
-    E-->>B: 202, the run's id
-    B->>E: GET /admin/evals/runs/{id}/events
-    E-->>B: the runner's events as they come
-```
+![Starting a run: the gate lets the browser in, the studio stores a run row and answers 202, and the page reads the runner's events](diagrams/louis-agent.api.evals-diagrams-2.svg)
 
 ## Structure
 

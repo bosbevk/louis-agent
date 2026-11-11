@@ -34,21 +34,7 @@ provider for its mapper and its markers; with no providers it says every name is
 
 ![Claude's provider: from a program through the client factory to the SDK and its parts](diagrams/louis-agent.core.anthropic-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant P as Program
-    participant H as AgentHost
-    participant F as LlmClientFactory
-    participant A as AnthropicProvider
-    P->>H: Build(catalog, HostServices(Providers: [AnthropicProvider.Instance]))
-    H->>F: services.ClientFactory()
-    H->>F: Create(llm)
-    F->>A: Create(llm)
-    A-->>F: the SDK's client, with the thinking budget where the model needs it
-    F->>A: CreatePromptCaching(llm)
-    A-->>F: the two markers, the prefix's lifetime from LLM_CACHE_TTL
-    F-->>H: PromptCachingChatClient over the client
-```
+![Making Claude's client: the factory asks the provider for the SDK's client, then wraps the cache markers round it](diagrams/louis-agent.core.anthropic-diagrams-2.svg)
 
 ## Structure
 

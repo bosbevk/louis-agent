@@ -71,6 +71,33 @@ public class SequenceRendererTests
         });
     }
 
+    /// <summary>
+    /// A message's words stand in a chip in its sender's tone, as a flow's arrow words do, so a lifeline it crosses
+    /// runs behind it rather than through the words.
+    /// </summary>
+    [Test]
+    public void AMessagesWords_StandInAChip()
+    {
+        // Unnumbered, so the only toned chips are the words'.
+        var chat = Chat();
+        string svg = DiagramRenderers.Render(chat with { Sequence = chat.Sequence! with { Numbered = false } });
+
+        Assert.That(svg, Does.Contain("class=\"word-chip tone-violet\""));
+    }
+
+    /// <summary>
+    /// A frame's panel lies under the lifelines, but its tab stands over them, so no lifeline runs through a block's
+    /// kind or label.
+    /// </summary>
+    [Test]
+    public void AFramesTab_StandsOverTheLifelines()
+    {
+        string svg = DiagramRenderers.Render(Chat());
+
+        Assert.That(svg.IndexOf(">loop<", StringComparison.Ordinal),
+            Is.GreaterThan(svg.IndexOf("class=\"edge dashed\"", StringComparison.Ordinal)));
+    }
+
     /// <summary>Framed for the docs, a sequence's legend names the tones its participants wear.</summary>
     [Test]
     public void TheDocsFrame_HasALegendOfTheParticipantsTones()

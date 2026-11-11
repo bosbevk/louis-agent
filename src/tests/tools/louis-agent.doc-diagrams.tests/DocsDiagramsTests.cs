@@ -1,4 +1,7 @@
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Sequence;
+using LouisAgent.Diagrams.Sequence.Placed;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.DocDiagrams.Tests;
@@ -87,6 +90,33 @@ public class DocsDiagramsTests
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.
         Assert.That(faults, Is.Empty, string.Join('\n', faults));
+    }
+
+    /// <summary>
+    /// In every sequence picture, no message's words, no note and no block's frame reaches past the drawing's edges
+    /// (CL60.3, Claude's pick Q4: the same guard the flows have).
+    /// </summary>
+    [Test]
+    public void EverySequence_KeepsItsWordsInsideTheDrawing()
+    {
+        var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
+            .Where(pair => pair.source.Sequence is not null)
+            .SelectMany(pair => Outside(SequenceLayout.Place(pair.source.Sequence!))
+                .Select(what => $"{Path.GetFileNameWithoutExtension(pair.json)}: {what} leaves the drawing"))
+            .ToList();
+
+        Assert.That(faults, Is.Empty, string.Join('\n', faults));
+    }
+
+    /// <summary>What in a laid-out sequence reaches left of its start or right of its width.</summary>
+    private static IEnumerable<string> Outside(PlacedSequence placed)
+    {
+        var boxes = placed.Rows
+            .Select(row => (What: row.Lines.FirstOrDefault() ?? "",
+                Box: row.Step is NoteStep ? SequenceText.NoteBox(row) : SequenceText.WordBox(row)))
+            .Concat(placed.Blocks.Select(block => (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
+        return boxes.Where(item => item.Box.Item1 < 0 || item.Box.Item1 + item.Box.Item3 > placed.Width + 0.001)
+            .Select(item => $"'{item.What}'");
     }
 
     /// <summary>

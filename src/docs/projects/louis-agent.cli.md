@@ -39,27 +39,7 @@ You: exit
 
 ![The terminal host: from your program through ConsoleChat to the engine and the output](diagrams/louis-agent.cli-diagrams.svg)
 
-**Flow:** one line typed in the interactive loop. A single prompt from a script goes straight to the engine and then exits.
-
-```mermaid
-sequenceDiagram
-    actor Y as You
-    participant C as ConsoleChat
-    participant E as AgentEngine
-    Y->>C: a line
-    C->>E: HandleUserCommand
-    alt it's a command: /tools, /approve, /reject, /usage
-        E-->>C: the answer, with no model involved
-        C-->>Y: prints it
-    else it's a message
-        C->>E: StreamPromptAsync(history, line)
-        loop as the reply comes
-            E-->>C: an update
-            C-->>Y: thinking in grey, the text, a line per tool
-        end
-        C-->>Y: the turn's usage, on stderr
-    end
-```
+![One line typed: a command is answered with no model, a message streams from the engine with its usage at the end](diagrams/louis-agent.cli-diagrams-2.svg)
 
 ## Structure
 

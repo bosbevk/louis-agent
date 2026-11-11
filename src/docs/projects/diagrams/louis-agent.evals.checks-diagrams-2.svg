@@ -1,0 +1,206 @@
+<svg viewBox="-24 -24 1233.2 615" width="1233.2" height="615" role="img" aria-label="louis-agent.evals.checks: from a line to a grade" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.evals.checks: from a line to a grade</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1233.2" height="615" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1185.2" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.evals.checks:</tspan>
+    <tspan class="title-rest">from a line to a grade</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed" d="M 67.2 52 L 67.2 412" />
+    <path class="edge dashed" d="M 387.2 52 L 387.2 412" />
+    <path class="edge dashed" d="M 573 52 L 573 412" />
+    <path class="edge dashed" d="M 910 52 L 910 412" />
+    <path class="edge dashed" d="M 1118 52 L 1118 412" />
+    <path class="edge tone-amber" d="M 67.2 102 L 385.2 102" marker-end="url(#arrow-amber)" />
+    <rect class="word-chip tone-amber" x="156.2" y="76" width="142" height="22" rx="4" />
+    <text class="word tone-amber" x="227.2" y="90" text-anchor="middle">Get("within-time")</text>
+    <path class="edge dashed tone-green" d="M 387.2 158 L 69.2 158" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="79.2" y="118" width="296" height="36" rx="4" />
+    <text class="word tone-green" x="227.2" y="132" text-anchor="middle">the entry, or a refusal naming the known</text>
+    <text class="word tone-green" x="227.2" y="146" text-anchor="middle">types</text>
+    <path class="edge tone-amber" d="M 67.2 200 L 571 200" marker-end="url(#arrow-amber)" />
+    <rect class="word-chip tone-amber" x="203.6" y="174" width="233" height="22" rx="4" />
+    <text class="word tone-amber" x="320.1" y="188" text-anchor="middle">its settings and a CheckContext</text>
+    <path class="edge tone-green" d="M 573 242 L 601 242 L 601 258 L 575 258" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="609" y="216" width="289" height="22" rx="4" />
+    <text class="word tone-green" x="617" y="230" text-anchor="start">reads the settings with EvalJson.Strict</text>
+    <path class="edge dashed tone-green" d="M 573 300 L 908 300" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="702" y="274" width="79" height="22" rx="4" />
+    <text class="word tone-green" x="741.5" y="288" text-anchor="middle">builds it</text>
+    <path class="edge tone-teal" d="M 1118 342 L 912 342" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="929" y="316" width="170" height="22" rx="4" />
+    <text class="word tone-teal" x="1014" y="330" text-anchor="middle">the trial's transcript</text>
+    <path class="edge dashed tone-green" d="M 910 384 L 1116 384" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="922" y="358" width="184" height="22" rx="4" />
+    <text class="word tone-green" x="1014" y="372" text-anchor="middle">a Grade, through Verdict</text>
+    <rect class="box tone-amber" x="0" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-amber" cx="28" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(20 18) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-amber" x="52" y="30" text-anchor="start">eval.json</text>
+    <rect class="box tone-green" x="308.6" y="0" width="157.2" height="52" rx="10" />
+    <circle class="badge tone-green" cx="336.6" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(328.6 18) scale(0.6667)">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </g>
+    <text class="label tone-green" x="360.6" y="30" text-anchor="start">CheckCatalog</text>
+    <rect class="box tone-green" x="505.8" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-green" cx="533.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(525.8 18) scale(0.6667)">
+      <path d="M7 8l-4 4l4 4" />
+      <path d="M17 8l4 4l-4 4" />
+      <path d="M14 4l-4 16" />
+    </g>
+    <text class="label tone-green" x="557.8" y="30" text-anchor="start">The entry</text>
+    <rect class="box tone-green" x="842.8" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-green" cx="870.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(862.8 18) scale(0.6667)">
+      <path d="M7 12l5 5l10 -10" />
+      <path d="M2 12l5 5m5 -5l5 -5" />
+    </g>
+    <text class="label tone-green" x="894.8" y="30" text-anchor="start">The check</text>
+    <rect class="box tone-teal" x="1050.8" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-teal" cx="1078.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1070.8 18) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-teal" x="1102.8" y="30" text-anchor="start">The trial</text>
+  </g>
+  <rect class="swatch tone-green" x="0" y="494" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="504.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-teal" x="126.4" y="494" width="12" height="12" rx="3" />
+  <text class="legend" x="144.4" y="504.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-amber" x="303.2" y="494" width="12" height="12" rx="3" />
+  <text class="legend" x="321.2" y="504.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="530" width="1185.2" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 540) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="552">
+    <tspan class="note-head">A setting the entry can't read is refused:</tspan>
+    <tspan class="note-rest">so a typo in an eval's file never becomes a default.</tspan>
+  </text>
+</svg>

@@ -42,21 +42,7 @@ What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `We
 
 ![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant T as a pack's tool
-    participant C as ToolsetContext (core)
-    participant W as WebAccess
-    participant R as RobotsPolicy
-    participant F as PageFetcher
-    T->>C: NewFetcher()
-    C->>W: NewFetcher()
-    W-->>T: a PageFetcher under the policy and the store
-    T->>F: GetFollowingRedirectsAsync(url)
-    F->>R: may we read url?
-    R-->>F: yes / no (robots.txt, the page's no-AI signals)
-    F-->>T: the page, or the refusal's reason
-```
+![Fetching a page: a pack's tool gets a fetcher through the seam, and the fetcher asks the robots policy before it reads](diagrams/louis-agent.core.web-diagrams-2.svg)
 
 ## Structure
 

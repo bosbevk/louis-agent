@@ -36,25 +36,7 @@ references only `louis-agent.choices`, so each side takes it without the others.
 
 ![The eval protocol: written as JSON lines, read by the API and the web](diagrams/louis-agent.evals.protocol-diagrams.svg)
 
-**Flow:** the order a run's lines come in. A line that's no event reads as nothing and shows as a line for people.
-
-```mermaid
-sequenceDiagram
-    participant R as The runner
-    participant A as The API
-    R->>A: ProtocolEvent, the first line
-    loop each mode
-        R->>A: ModeEvent
-        loop each conversation
-            R->>A: QuestionEvent
-            R->>A: SseEvent, for each piece of the stream
-            R->>A: TurnEvent: its figures
-            R->>A: ConversationEvent: its grades and metrics
-        end
-        R->>A: ModeDoneEvent
-    end
-    R->>A: SummaryEvent
-```
+![The order of a run's lines: the protocol event first, then each mode's conversations, and the summary last](diagrams/louis-agent.evals.protocol-diagrams-2.svg)
 
 ## Structure
 
