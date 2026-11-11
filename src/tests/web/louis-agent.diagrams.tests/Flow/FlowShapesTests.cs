@@ -110,6 +110,31 @@ public class FlowShapesTests
         Assert.That(at["b"].Y - (at["a"].Y + at["a"].H), Is.LessThan(word.Length * 8));
     }
 
+    /// <summary>
+    /// Down, an arrow with a long word still bends inside its gap, so no arrow leaves the drawing (the accounts chart
+    /// ran one up off its top).
+    /// </summary>
+    [Test]
+    public void ADownChart_KeepsEveryArrowInsideTheDrawing()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("browser", "Browser app"), new GraphNode("identity", "Identity's routes"),
+                new GraphNode("ours", "AccountHandlers")
+            ],
+            [
+                new GraphEdge("browser", "identity", "POST /account/login?useCookies=true"),
+                new GraphEdge("browser", "ours", "GET /account/me, PUT /profile, POST /logout, DELETE /account")
+            ],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        var numbers = placed.Edges.SelectMany(edge => edge.Path.Split(' '))
+            .Where(part => double.TryParse(part, out _)).Select(double.Parse);
+        Assert.That(numbers, Has.All.InRange(0d, Math.Max(placed.Width, placed.Height)));
+    }
+
     /// <summary>The SVG draws each of a label's lines as its own words, inside the box.</summary>
     [Test]
     public void EachLine_IsDrawnInsideTheBox()

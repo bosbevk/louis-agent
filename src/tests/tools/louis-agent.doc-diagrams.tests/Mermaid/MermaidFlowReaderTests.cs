@@ -39,6 +39,15 @@ public class MermaidFlowReaderTests
         });
     }
 
+    /// <summary>A long label line wraps at its words, so no box grows wider than a doc's column can hold.</summary>
+    [Test]
+    public void ALongLabel_Wraps()
+    {
+        var flow = Read("flowchart LR\n    a[\"Anthropic SDK: AnthropicClient.AsIChatClient over the settings' key\"]");
+
+        Assert.That(Label(flow, "a").Split('\n'), Has.All.Length.LessThanOrEqualTo(30).And.Length.GreaterThan(1));
+    }
+
     /// <summary>Left to right runs right; top down, either way it's written, runs down.</summary>
     [TestCase("flowchart LR", FlowDirection.Right)]
     [TestCase("flowchart TB", FlowDirection.Down)]
@@ -68,13 +77,22 @@ public class MermaidFlowReaderTests
             Is.EqualTo("fix sessions"));
 
     /// <summary>
-    /// A chart that runs right through more than five ranks is read as running down, so it fits a doc's column at
-    /// full size; a shorter one keeps its way.
+    /// A chart that runs right wider than a doc's column is read as running down, so it fits at full size; a
+    /// narrower one keeps its way.
     /// </summary>
     [TestCase("a --> b --> c --> d --> e --> f --> g", FlowDirection.Down)]
     [TestCase("a --> b --> c --> d --> e", FlowDirection.Right)]
     public void AWideRightChart_RunsDown(string chain, FlowDirection direction) =>
         Assert.That(Read($"flowchart LR\n    {chain}").Direction, Is.EqualTo(direction));
+
+    /// <summary>
+    /// A chart that runs down wider than a doc's column, one box over many side by side, runs right instead, where
+    /// they stack; a narrow one keeps its way.
+    /// </summary>
+    [TestCase("a --> b & c & d & e & f & g & h", FlowDirection.Right)]
+    [TestCase("a --> b & c", FlowDirection.Down)]
+    public void AWideDownChart_RunsRight(string chain, FlowDirection direction) =>
+        Assert.That(Read($"flowchart TD\n    {chain}").Direction, Is.EqualTo(direction));
 
     /// <summary>A chain is an arrow per link, and an ampersand an arrow from each.</summary>
     [Test]

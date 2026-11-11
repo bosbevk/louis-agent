@@ -133,6 +133,8 @@ internal static class EdgeRouter
         var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
             .ToList();
         var (source, target) = RoomsFor(gap, forward);
+        // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle.
+        if (x2 - x1 < source + target) return (x1 + x2) / 2;
         return x1 + source + (x2 - x1 - source - target) / 2;
     }
 

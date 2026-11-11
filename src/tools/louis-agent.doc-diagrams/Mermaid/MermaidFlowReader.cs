@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
@@ -56,17 +57,29 @@ public static class MermaidFlowReader
                                 select new GraphEdge(a.Id, b.Id, links[at].Word, links[at].Style));
         }
 
-        // A chart that runs right through more than five ranks is too wide for a doc's column; down, it fits at full
-        // size (CL60.2, Claude's pick while unattended).
+        // A chart wider than a doc's column would shrink its words to nothing; turned the other way it is often
+        // narrow enough, so the narrower way wins (CL60.2, Claude's pick while unattended).
         var flow = boxes.Flow(arrows, groups, direction);
-        bool wide = flow.Direction == FlowDirection.Right && flow.Nodes.Count > 0
-                                                          && Ranks.Of(flow).Values.Max() + 1 > MostRanksAcross;
+        int width = GraphLayout.Place(flow).Width;
+        if (width <= WidestAcross) return new DiagramSource(DiagramKind.Flow, title, Flow: flow);
+        var turned = flow with
+        {
+            Direction = flow.Direction == FlowDirection.Right ? FlowDirection.Down : FlowDirection.Right
+        };
         return new DiagramSource(DiagramKind.Flow, title,
-            Flow: wide ? flow with { Direction = FlowDirection.Down } : flow);
+            Flow: GraphLayout.Place(turned).Width < width ? turned : flow);
     }
 
-    /// <summary>The most ranks a chart that runs right may have and still fit a doc's column.</summary>
-    private const int MostRanksAcross = 5;
+    /// <summary>The widest a chart may be and still read in a doc's column, in the SVG's pixels.</summary>
+    private const int WidestAcross = 1100;
+
+    /// <summary>The most characters a label's line may hold, so a box stays narrow enough to stand beside others.
+    /// </summary>
+    private const int LabelWidth = 30;
+
+    /// <summary>A label with each of its lines wrapped at its words.</summary>
+    private static string Wrapped(string label) =>
+        string.Join('\n', label.Split('\n').SelectMany(line => TextWrap.Lines(line, LabelWidth)));
 
     /// <summary>A subgraph's header as its group: an id and a label, or words that are both.</summary>
     private static GraphGroup Header(string header)
@@ -109,7 +122,7 @@ public static class MermaidFlowReader
         {
             var groupIds = groups.Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
             var nodes = _order.Where(id => !groupIds.Contains(id))
-                .Select(id => new GraphNode(id, _labels[id] ?? id, Group: _groups[id])).ToList();
+                .Select(id => new GraphNode(id, Wrapped(_labels[id] ?? id), Group: _groups[id])).ToList();
             string? First(string group) => nodes.FirstOrDefault(node => node.Group == group)?.Id;
             string? Box(string id) => groupIds.Contains(id) ? First(id) : id;
 
