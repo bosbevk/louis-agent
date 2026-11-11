@@ -1,0 +1,42 @@
+<svg viewBox="-24 -24 928 158" width="928" height="158" role="img" aria-label="One turn" xmlns="http://www.w3.org/2000/svg">
+  <title>One turn</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="158" rx="14" />
+  <path class="edge" d="M 170 38 L 363 38" marker-end="url(#arrow)" />
+  <text class="word" x="228.3" y="31" text-anchor="middle">a turn</text>
+  <path class="edge" d="M 533 38 L 710 38" marker-end="url(#arrow)" />
+  <text class="word" x="583.3" y="31" text-anchor="middle">asks</text>
+  <rect class="box" x="0" y="12" width="170" height="52" rx="10" />
+  <text class="label" x="85" y="43" text-anchor="middle">A host</text>
+  <rect class="box" x="363" y="0" width="170" height="76" rx="10" />
+  <text class="label" x="448" y="28" text-anchor="middle">The engine</text>
+  <text class="note" x="448" y="44" text-anchor="middle">the loop, the guards, the</text>
+  <text class="note" x="448" y="56" text-anchor="middle">ledger</text>
+  <rect class="box" x="710" y="12" width="170" height="52" rx="10" />
+  <text class="label" x="795" y="43" text-anchor="middle">The model</text>
+  <text class="caption" x="0" y="102" text-anchor="start">From a host to the model</text>
+</svg>

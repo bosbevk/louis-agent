@@ -26,5 +26,8 @@ public enum DiagramMessage
     UnknownBox,
 
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
-    UnknownCard
+    UnknownCard,
+
+    [Description("There is no renderer for a {Kind} diagram yet.")]
+    NoRenderer
 }

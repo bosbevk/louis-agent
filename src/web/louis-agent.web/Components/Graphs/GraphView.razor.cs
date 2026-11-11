@@ -50,15 +50,6 @@ public partial class GraphView
 
     private static string Translate(PlacedNode node) => $"translate({N(node.X)} {N(node.Y)})";
 
-    /// <summary>
-    /// The label sits in the middle of a plain box; in a noted one it stands above the note's lines, which start under
-    /// it.
-    /// </summary>
-    private static double LabelY(PlacedNode node) => node.Node.Note is null ? node.H / 2 + 5 : 28;
-
-    /// <summary>Where the note's first line sits, each line one step lower.</summary>
-    private const double NoteTop = 44, NoteStep = 12;
-
     /// <summary>The column as a CSS variable, so the styles delay each column's motion a little more.</summary>
     private static string NodeStyle(PlacedNode node) => $"--col: {node.Node.Column}";
 
@@ -69,14 +60,16 @@ public partial class GraphView
         $"--len: {N(edge.Length)}; --col: {Placed.Nodes.First(node => node.Node.Id == edge.Edge.From).Node.Column}";
 
     /// <summary>The words on a box.</summary>
-    private static MarkupString Label(PlacedNode node) => Words("label", node.W / 2, LabelY(node), node.Node.Label);
+    private static MarkupString Label(PlacedNode node) =>
+        Words("label", node.W / 2, FlowText.LabelY(node), node.Node.Label);
 
     /// <summary>The line under a box's words, wrapped as the layout wraps it, one span a line.</summary>
     private static MarkupString Note(PlacedNode node, string note)
     {
         var lines = GraphLayout.NoteLines(note);
         var spans = string.Concat(lines.Select((line, at) =>
-            $"<tspan x=\"{N(node.W / 2)}\" y=\"{N(NoteTop + NoteStep * at)}\">{System.Net.WebUtility.HtmlEncode(line)}</tspan>"));
+            $"<tspan x=\"{N(node.W / 2)}\" y=\"{N(FlowText.NoteTop + FlowText.NoteStep * at)}\">" +
+            $"{System.Net.WebUtility.HtmlEncode(line)}</tspan>"));
         return new MarkupString($"<text class=\"note\" text-anchor=\"middle\">{spans}</text>");
     }
 
@@ -92,6 +85,7 @@ public partial class GraphView
     {
         string styled = style is null ? "" : $" style=\"{style}\"";
         return new MarkupString(
-            $"<text class=\"{cls}\" x=\"{N(x)}\" y=\"{N(y)}\" text-anchor=\"middle\"{styled}>{System.Net.WebUtility.HtmlEncode(words)}</text>");
+            $"<text class=\"{cls}\" x=\"{N(x)}\" y=\"{N(y)}\" text-anchor=\"middle\"{styled}>" +
+            $"{System.Net.WebUtility.HtmlEncode(words)}</text>");
     }
 }
