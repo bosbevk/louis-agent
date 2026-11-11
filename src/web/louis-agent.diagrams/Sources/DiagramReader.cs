@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
+using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sequence.Spec;
@@ -28,6 +29,7 @@ public static class DiagramReader
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
         if (source.Sequence is { } sequence) CheckSequence(sequence);
+        if (source.Classes is { } classes) CheckClasses(classes);
         return source;
     }
 
@@ -83,6 +85,7 @@ public static class DiagramReader
             DiagramKind.Flow => source.Flow is not null,
             DiagramKind.Cards => source.Cards is not null,
             DiagramKind.Sequence => source.Sequence is not null,
+            DiagramKind.Classes => source.Classes is not null,
             _ => false
         };
         if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
@@ -156,6 +159,21 @@ public static class DiagramReader
             {
                 stray.Id,
                 Step = stray.Step.ToString()
+            });
+    }
+
+    /// <summary>Every relation joins two types the class chart has.</summary>
+    private static void CheckClasses(ClassesSpec classes)
+    {
+        var ids = classes.Types.Select(type => type.Id).ToHashSet(StringComparer.Ordinal);
+        var stray = classes.Relations.FirstOrDefault(relation => !ids.Contains(relation.From) || !ids.Contains(relation.To));
+        if (stray is null) return;
+        throw Refused(DiagramMessage.UnknownType,
+            new
+            {
+                stray.From,
+                stray.To,
+                Id = ids.Contains(stray.From) ? stray.To : stray.From
             });
     }
 

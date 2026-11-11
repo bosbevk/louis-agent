@@ -11,5 +11,6 @@ public enum DiagramKind
 {
     [WireName("flow")] Flow,
     [WireName("cards")] Cards,
-    [WireName("sequence")] Sequence
+    [WireName("sequence")] Sequence,
+    [WireName("classes")] Classes
 }

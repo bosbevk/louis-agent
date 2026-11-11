@@ -43,6 +43,9 @@ public enum DiagramMessage
     [Description("A sequence needs at least one step: a message, a reply, a note or a block.")]
     NoSteps,
 
+    [Description("The relation from '{From}' to '{To}' names '{Id}', which no type in the diagram has.")]
+    UnknownType,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 
