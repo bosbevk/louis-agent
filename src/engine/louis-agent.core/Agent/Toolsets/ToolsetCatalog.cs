@@ -1,11 +1,9 @@
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Delegation;
 using LouisAgent.Core.Delegation.Agents;
@@ -34,12 +32,14 @@ public static class ToolsetCatalog
         new(CoreToolset.Minions.Wire(),
             "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
             GuideFile: SkillFiles.Guide(CoreToolset.Minions.Wire()),
-            MissingSettings: ctx => new[]
+            MissingSettings: ctx =>
+            [
+                .. new[]
                 {
                     ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null,
                     ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null
-                }
-                .OfType<string>().ToList(),
+                }.OfType<string>()
+            ],
             ToolTypes: [typeof(MinionTools)],
             CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
 
@@ -92,17 +92,20 @@ public static class ToolsetCatalog
     /// always gives the same engine (the engine cache and the cached prefix both depend on that). An optional name
     /// keeps its mark; named both ways, the required one wins.
     /// </summary>
-    public static IReadOnlyList<string> Normalise(IEnumerable<string>? names)
+    public static IReadOnlyList<string> Normalise(IEnumerable<string?>? names)
     {
+        // A request body can hold a null among the names ("toolsets": [null]): it reads as no name.
         var cleaned = (names ?? [])
             .Select(n => (n ?? string.Empty).Trim().ToLowerInvariant())
             .Where(n => NameOf(n).Length > 0)
             .ToList();
-        return cleaned
-            .GroupBy(NameOf, StringComparer.Ordinal)
-            .Select(g => g.Any(n => !IsOptional(n)) ? g.Key : g.Key + OptionalMark)
-            .Order(StringComparer.Ordinal)
-            .ToList();
+        return
+        [
+            .. cleaned
+                .GroupBy(NameOf, StringComparer.Ordinal)
+                .Select(g => g.Any(n => !IsOptional(n)) ? g.Key : g.Key + OptionalMark)
+                .Order(StringComparer.Ordinal)
+        ];
     }
 
     /// <summary>
@@ -165,13 +168,13 @@ public static class ToolsetCatalog
 
     /// <summary>The tool objects for resolved toolsets. Engine-provided toolsets contribute nothing here.</summary>
     public static IReadOnlyList<object> BuildTools(IEnumerable<ToolsetDefinition> resolved, ToolsetContext context) =>
-        resolved
+    [
+        .. resolved
             .Where(t => t.CreateTools is not null)
             .SelectMany(t => t.CreateTools!(context))
-            .ToList();
+    ];
 
     /// <summary>The guides the resolved toolsets need, in catalogue order.</summary>
     public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
-        resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal)
-            .ToList();
+        [.. resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal)];
 }

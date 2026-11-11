@@ -89,8 +89,11 @@ public class AskAgentToolsTests
 
         string answer = await AskAsGuide(Tools(handler), address);
 
-        Assert.That(handler.Requests, Is.Empty);
-        Assert.That(answer, Does.StartWith("Error").And.Contain(reason));
+        Assert.Multiple(() =>
+        {
+            Assert.That(handler.Requests, Is.Empty);
+            Assert.That(answer, Does.StartWith("Error").And.Contain(reason));
+        });
     }
 
     /// <summary>A chat that runs as no agent calls nobody.</summary>
