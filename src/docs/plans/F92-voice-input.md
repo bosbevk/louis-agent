@@ -69,7 +69,7 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 |---|---|---|---|
 | C1 | Where the words come from first | (a) Whisper in our own process (Whisper.net, MIT, whisper.cpp underneath): free, private, CPU and a model file in the image; (b) the OpenAI-shaped client we already reference, pointed at OpenAI's cloud: least code, paid per minute, audio leaves us; (c) Azure Speech: `af-ZA`/`zu-ZA` listed, 5 free hours a month, its own SDK and an adapter we write | **Picked (a)** (Louis, 2026-11-11: "whisper then"; free only, no account): free evals, audio never leaves our box, the seam lets (b) or (c) join in one step later |
 | C2 | What happens after the person stops talking | (a) the text goes in the box to check; (b) it is sent at once; (c) a setting per site | **Picked (c)** (Louis, 2026-11-11: "if it is small just add it and it is fun"); where the setting lives is C2b |
-| C2b | Where "check or send" is set (Louis's demos share one page) | (a) once per site in its config; (b) on each chat box, the component's parameter, so each demo picks; (c) per chat box with a site default | (b): a demo page holds several agents, and one parameter covers a one-chat site too |
+| C2b | Where "check or send" is set (Louis's demos share one page) | (a) once per site in its config; (b) on each chat box, the component's parameter, so each demo picks; (c) per chat box with a site default | **Picked (b)** (Louis, 2026-11-11): a demo page holds several agents, and one parameter covers a one-chat site too |
 | C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | (a), the widget picks it up when F131 builds its frame |
 
 ### Diagrams
