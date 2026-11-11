@@ -1,6 +1,9 @@
 # ADR 0079: An instance can show a specialist's report instead of retyping it
 
-> **Explanation.** Why Puls's model never writes out the cook's report, and why that's a setting rather than the rule.
+> **Explanation.** Why Puls's model never writes out the cook's report, and why that's a choice rather than the rule.
+
+**Status:** Accepted · amended by [ADR 0117](0117-one-address-for-every-agent-call.md) on 2026-11-11 (F127.3.1): the
+asking identity chooses it in code, no longer a setting
 
 ## Context
 
@@ -25,6 +28,11 @@ adds for the model. The setting is off by default. Puls's compose and its Azure 
 A failed or an empty answer still goes back to the model, which says what to do about it. A minion's answer is never
 shown, because it goes to the specialist that asked for it, not to the user.
 
+**Amended 2026-11-11 (ADR 0117, F127.3.1):** the switch is the asking identity's own `RelaysAnswersWhole`, no longer the
+instance's `SHOW_SPECIALIST_REPORTS`, so two identities on one instance can choose differently (Puls relays, the site's
+guide keeps the last word). The answer shown is an `AskAgent` answer, without the line under it that says what the
+agent did. The why above is unchanged.
+
 ## Consequences
 
 - An answer costs one request less, and the report reaches the user exactly as the specialist wrote it.
@@ -39,7 +47,8 @@ shown, because it goes to the specialist that asked for it, not to the user.
 
 - [ADR 0031: orchestration is an engine function](0031-orchestration-is-an-engine-function.md)
 - [ADR 0008: history is append-only](0008-history-is-append-only.md)
-- `src/engine/louis-agent.core/Delegation/ShownReport.cs`, `src/tests/engine/louis-agent.core.tests/Agent/Turns/ShowTheReportTests.cs`
+- `src/engine/louis-agent.core/Delegation/ShownReport.cs`, `src/tests/engine/louis-agent.core.tests/Agent/Turns/ShowTheAskedAnswerTests.cs`
+- [ADR 0117: one address for every agent call](0117-one-address-for-every-agent-call.md) (amends this one)
 
 ---
 [Docs index](../README.md) · Related: [ADR index](README.md)

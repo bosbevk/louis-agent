@@ -12,8 +12,8 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 91 | 80 |
-| Fixes (`FX`) | 120 | 7 |
+| Features (`F`) | 92 | 81 |
+| Fixes (`FX`) | 121 | 6 |
 | Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; next F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions | Now |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; F127.3.1 `AskAgent` on this instance done; next F127.4 the guide mentors, F127.3.2 another server, F127.5 the minions | Now |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
 | F106 | The framework's track, before the agents | Now |
@@ -73,13 +73,13 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F83 | The cook's unconfirmed prices | Puls |
 | F84 | A shorter cook report | Puls |
 | FX59 | binary attachments sent as files, not text | Puls |
-| FX129 | the cook's role text says it has `web`, but its header's toolsets don't list it | Puls |
 | FX60 | a continued specialist's ledger rows name the turn that continued it | Puls |
 | FX61 | A site whose host has no `ACCOUNTS_SQL_URL` still calls `/account/me` and `/account/providers`, gets `index.html` back and dies on the JSON (the starter's login and chat pages show Blazor's error bar); the client should take a host without accounts as "nobody signed in" (found in CL58) | Fixes |
 | FX66 | Both Azure apps keep their data-protection keys in the container, so every cold start signs everyone out; the keys go to each app's share | Now |
 | FX83 | The paymo and devops packs' async tools take no CancellationToken; the coding agent no longer loads them, so no catalogue's check reaches them | Next |
 | F21 | Louis's corrections to the Afrikaans | Puls |
 | F28 | Team talk, the rest | Puls |
+| F135 | Puls on `AskAgent`, measured when Puls resumes: the recipes eval before and after, and its replays recorded again (ADR 0117) | Puls |
 | F85 | A retailer's own prices, only with its permission or feed | Puls |
 | F86 | Our own Nominatim, or a paid geocoder, before Puls is public | Puls |
 | F87 | The open feeds have no key and no limit | Puls |
@@ -137,10 +137,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 | CL60 | Every doc with a flow diagram also gets an overview picture of its own project, in the card style of the engine, identities and packs figure: one SVG per project, light and dark; and every diagram an SVG made with something better than Mermaid, one theme; its own plan | Cleanups |
 
-## Features (90 done)
+## Features (91 done)
 
 | Id | When | What |
 |---|---|---|
+| F127.3.1 | 2026-11-11 | Ask an agent by its address on this instance (ADR 0117, amends 0079): the session wire as shared records in `louis-agent.session-stream`; `AgentAddress` (`acme`, `acme.cook`) resolved against the identities' files; an identity's `Calls` checked in code and listed in its prompt; a role's level from its file's folder, so a business asked at depth 1 answers in its own voice; `AskAgent` starts or carries on one conversation per address (a busy one says wait, a gone one starts over), its answer under a line built from its own tool calls, `ReadAgentWork` for its steps; the triage team and Puls ask by address, Puls relaying answers whole (`RelaysAnswersWhole`); `StartSubSession`, `ContinueSubSession`, the `specialists` toolset and `SHOW_SPECIALIST_REPORTS` deleted; two live guide runs, $0.0053 |
 | F127.2 | 2026-11-10 | The demos as working websites, tried live (ADR 0116): each business's mock website has three pages that register with it (`MockPage`, `MockPaths`), a menu a visitor clicks through, Wills and estates opened from its card, and a page change that loads like a browser; the agents' voices know their pages and the conversations were recorded again, each moving between pages and sections; Try it yourself swaps the recording for `MockLiveChat`, the business's agent live in the same corner, reading the mock's page, with a tap-to-ask hint, a Live tag, cues that wait and no usage line; `OPEN_IDENTITIES` opens the guide and the three businesses under one cap, the session narrowed to the identity admitted; a demonstration's lead marked `[demo]` by its identity (`IsDemonstration`, `TurnIdentity`); the three brands reworked (mockup 0) with self-hosted OFL faces, `MockHeader` and a label colour; minimise and maximise on both chats; the guide's demo help became F127.3 to F127.5 (ADR 0117) |
 | F127.1 | 2026-11-10 | The demo showroom: a site's demos in an area of the framework (ADR 0115), a rail of every demo grouped by what a visitor comes for, a stage per demo in its colour whose parts each have an address, `/demos` its start featuring the guesthouse; a business's agent plays on a mock of its own website (sample brand, three looks, real Pexels photos, a real menu), held to its agent's facts by a test, and shows the website with the guide's own `ShowPage` (the guide's spotlight on a section, a press on a card), told as the recording plays; cues a visitor clicks to play from a turn; notes of what a custom agent could add; the guesthouse in the doctor's place and leading; the coding agent and the triage team on the stage; a place's address loaded afresh draws in its page's layout (`PlaceLayout`) |
 | F129 | 2026-11-10 | An identity's skills, and `prompts/`: every `Prompts` folder is `prompts`, named once (`EmbeddedPrompts.Folder`); a skill beside its voice (`prompts/agent/{identity}/skills/`) says in its header whether it loads `always` (after the voice) or `on-demand` (listed, read with the engine's `ReadSkill`, a session's only when its identity has one); the guide keeps who Louis is, an always index of the pages, and reads the docs map and the page map on demand, its fixed prefix 14% smaller, measured live (ADR 0114) |
@@ -233,10 +234,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (106 done)
+## Fixes (107 done)
 
 | Id | When | What |
 |---|---|---|
+| FX129 | 2026-11-11 | The cook's file names `web` among its toolsets, as its text said: Puls's old hand-over sent it, an `AskAgent` sends none (F127.3.1 step 11c-1) |
 | FX128 | 2026-11-10 | The landing's lead chat says who speaks (a Visitor tag in blue, a Louis tag in green), and a window's three dots wear a Mac window's red, amber and green |
 | FX127 | 2026-11-10 | `GetToday` names the part of the day, the guide greets by it, and a visitor never gets an ADR's number |
 | FX126 | 2026-11-10 | A card a page break would cut in two starts on the next page of a paged section (a forced break the frame's script sets, as Chrome ignores `break-inside: avoid` there); one taller than a page still runs on |

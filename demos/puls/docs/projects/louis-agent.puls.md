@@ -7,9 +7,9 @@
 ## Purpose
 
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each
-task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `specialists` and `web`
-(F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to a specialist on its own instance (`AGENT_PEERS` names itself, CL19) with a role
-(F21) and only the toolsets the task needs; only a validated role is on (`ROLES_ENABLED`: the cook, F25). Pay
+task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `agents` and `web`
+(`AskedToolset`; `specialists` from F29 to F127.3.1), so Puls answers the web itself and asks a specialist on its own instance by its address (`puls.cook`; `AGENT_PEERS` names itself, CL19), whose role
+(F21) brings only the toolsets its task needs; only a validated role is on (`ROLES_ENABLED`: the cook, F25). Pay
 as you go: every answer shows what it cost, specialists included.
 
 ## How it works
@@ -65,10 +65,10 @@ sequenceDiagram
     participant C as A sub-session, as the cook
     U->>S: asks, in Afrikaans
     S->>P: OpenSessionAsync, on the first message
-    P->>A: CreateSessionAsync(specialists and web, voice-af, place)
+    P->>A: CreateSessionAsync(agents and web, voice-af, place)
     S->>A: StreamMessageAsync
     A->>V: the message
-    V->>C: StartSubSession(puls-cook)
+    V->>C: AskAgent("puls.cook")
     C-->>A: its work, as events
     A-->>S: a DelegationCard and the WorkPanel fill up
     C-->>V: the cook's answer
