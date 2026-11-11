@@ -4,9 +4,10 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Chats;
 
 /// <summary>
-/// A specialist or minion call as its card shows it: who it went to, its role, toolsets and task, and once it
-/// returned, the answer and what the footer says about the child (<c>[Sub-session sub-1 on helper (web; cook). It
-/// stays open: …]</c>, or <c>[Minion {role} on {llm} with {tool}]</c>). What the child cost isn't read here: the card
+/// A specialist, minion or asked agent's call as its card shows it: who it went to, its role, toolsets and task, and
+/// once it returned, the answer and what the footer says about the child (<c>[Sub-session sub-1 on helper (web;
+/// cook). It stays open: …]</c>, <c>[Minion {role} on {llm} with {tool}]</c>, or <c>[Answered by acme, did: …]</c>
+/// for an <c>AskAgent</c>). What the child cost isn't read here: the card
 /// takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text (FX27).
 /// </summary>
 /// <param name="Role">The specialist's role: from the call for a start, from the footer once it returned.</param>
@@ -40,15 +41,22 @@ public sealed partial record Delegation(
     public const string MinionToolName = "StartMinion";
     public const string ContinueMinionToolName = "ContinueMinion";
 
+    /// <summary>The tool that asks another agent by its address (F127.3.1).</summary>
+    public const string AskToolName = "AskAgent";
+
     /// <summary>Whether a tool call opens or continues a child: a specialist (F5, F26) or a minion (F30).</summary>
     public static bool IsDelegationTool(string? toolName) =>
-        toolName is ToolName or ContinueToolName or MinionToolName or ContinueMinionToolName;
+        toolName is ToolName or ContinueToolName or MinionToolName or ContinueMinionToolName or AskToolName;
+
+    /// <summary>Where the line under an asked agent's answer starts (core's AgentAnswer).</summary>
+    private const string AnsweredBy = "\n\n[Answered by ";
 
     /// <summary>The delegation in a block, or none when the block isn't a start or continue call.</summary>
     public static Delegation? From(Block block)
     {
         if (block.Kind != BlockKind.Tool || !IsDelegationTool(block.ToolName)) return null;
         if (block.ToolName is MinionToolName or ContinueMinionToolName) return FromMinion(block);
+        if (block.ToolName is AskToolName) return FromAsk(block);
         bool continued = block.ToolName == ContinueToolName;
 
         string agent = "", task = "";
@@ -139,6 +147,44 @@ public sealed partial record Delegation(
     }
 
     /// <summary>The text, trimmed, or none when it's empty.</summary>
+    /// <summary>
+    /// An ask (F127.3.1): the address and the message from the call; once it returned, the answer without the line
+    /// under it, and who that line says answered. What the child loaded comes from its own stream.
+    /// </summary>
+    private static Delegation FromAsk(Block block)
+    {
+        string address = "", task = "";
+        try
+        {
+            using var input = JsonDocument.Parse(block.ToolInput ?? "{}");
+            var root = input.RootElement;
+            if (root.TryGetProperty("address", out var a) && a.ValueKind == JsonValueKind.String)
+                address = a.GetString() ?? "";
+            if (root.TryGetProperty("message", out var m) && m.ValueKind == JsonValueKind.String)
+                task = m.GetString() ?? "";
+        }
+        catch (JsonException)
+        {
+            // Unreadable input: the card shows what it can.
+        }
+
+        string? answer = null, resultAgent = null;
+        bool failed = block.ToolResult?.StartsWith("Error:", StringComparison.Ordinal) == true;
+        int line = block.ToolResult?.LastIndexOf(AnsweredBy, StringComparison.Ordinal) ?? -1;
+        if (!failed && line >= 0)
+        {
+            answer = block.ToolResult![..line].TrimEnd();
+            // "seemeeu-guesthouse, did: SendLead]": the address is what comes before the comma.
+            string named = block.ToolResult[(line + AnsweredBy.Length)..];
+            resultAgent = Blank(named[..Math.Max(named.IndexOf(','), 0)]);
+        }
+
+        // No role: the address already says who it is (acme, acme.cook), where a voice's role is its mode's path.
+        IReadOnlyList<string> toolsets = block.SubTurn?.Toolsets ?? [];
+        return new Delegation(address, toolsets, task, answer ?? (failed ? block.ToolResult : null), failed,
+            resultAgent);
+    }
+
     private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     /// <summary>

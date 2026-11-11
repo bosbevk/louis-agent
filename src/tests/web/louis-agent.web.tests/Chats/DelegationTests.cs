@@ -166,6 +166,80 @@ public class DelegationTests
     }
 
     /// <summary>
+    /// An ask (F127.3.1) is a delegation too: while it runs, the card shows the address it went to and the message.
+    /// </summary>
+    [Test]
+    public void AnAsk_StillRunning_ReadsTheAddressAndTheMessage()
+    {
+        var delegation = Delegation.From(Call(Delegation.AskToolName,
+            """{"address":"seemeeu-guesthouse","message":"Is a dog allowed?"}"""));
+
+        Assert.That(delegation, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(Delegation.IsDelegationTool(Delegation.AskToolName), Is.True);
+            Assert.That(delegation!.Agent, Is.EqualTo("seemeeu-guesthouse"));
+            Assert.That(delegation.Task, Is.EqualTo("Is a dog allowed?"));
+            Assert.That((delegation.Answer, delegation.Failed), Is.EqualTo(((string?)null, false)));
+        });
+    }
+
+    /// <summary>
+    /// Once it returned, the answer is split from the line under it, which names who answered, whether the
+    /// conversation was new or not.
+    /// </summary>
+    [TestCase("[Answered by seemeeu-guesthouse, did: SendLead]")]
+    [TestCase("[Answered by seemeeu-guesthouse, did: no tools. A new conversation: the earlier one had closed, so " +
+              "it remembers none of it]")]
+    public void AnAsk_ThatReturned_ReadsTheAnswerAndWhoGaveIt(string line)
+    {
+        var delegation = Delegation.From(Call(Delegation.AskToolName,
+            """{"address":"seemeeu-guesthouse","message":"Book it."}""", $"Booked for Friday.\n\n{line}"))!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(delegation.Answer, Is.EqualTo("Booked for Friday."));
+            Assert.That(delegation.ResultAgent, Is.EqualTo("seemeeu-guesthouse"));
+            Assert.That(delegation.Failed, Is.False);
+        });
+    }
+
+    /// <summary>An ask that was refused shows the refusal as its answer, marked failed.</summary>
+    [Test]
+    public void ARefusedAsk_ShowsTheRefusal()
+    {
+        const string refusal = "Error: guide may not call acme. It may call: seemeeu-guesthouse.";
+
+        var delegation = Delegation.From(Call(Delegation.AskToolName,
+            """{"address":"acme","message":"Hi"}""", refusal))!;
+
+        Assert.That((delegation.Answer, delegation.Failed), Is.EqualTo((refusal, true)));
+    }
+
+    /// <summary>
+    /// The recorded guide turn asked Seemeeu: its card names the address and no role (a voice's role is its mode's
+    /// path), holds Seemeeu's own answer without the line under it, and what Seemeeu loaded, from its own stream.
+    /// </summary>
+    [Test]
+    public async Task TheRecordedAsk_ReadsSeemeeusAnswer()
+    {
+        var turn = await SessionStreamFixture.ReplayAskAsync();
+        var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
+
+        var delegation = Delegation.From(block)!;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((delegation.Agent, delegation.ResultAgent),
+                Is.EqualTo(("seemeeu-guesthouse", "seemeeu-guesthouse")));
+            Assert.That(delegation.Answer, Does.Contain("garden room").And.Not.Contain("[Answered by"));
+            Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "leads", "site" }), "Seemeeu's own packs");
+            Assert.That(delegation.Role, Is.Null);
+            Assert.That(delegation.Failed, Is.False);
+        });
+    }
+
+    /// <summary>
     /// The recorded Puls turn handed the meal to the cook: its card has the role, the toolsets and the answer, and what
     /// the cook cost comes from the cook's own events, not from the footer (FX27).
     /// </summary>

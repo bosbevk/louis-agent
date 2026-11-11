@@ -29,24 +29,44 @@ public static class SessionStreamFixture
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 
-    /// <summary>The stream's events, in order, as the API client hands them to the page.</summary>
-    public static async Task<List<SessionEvent>> EventsAsync()
+    /// <summary>
+    /// A second recording (F127.3.1, 2026-11-11): the site's guide asking Seemeeu, one of the showroom's businesses,
+    /// with <c>AskAgent</c> over the site's own address, Seemeeu's events relayed under the call.
+    /// </summary>
+    public static string AskStreamFile => Path.Combine(Folder, "ask-agent.sse");
+
+    /// <summary>What the visitor asked the guide in the second recording.</summary>
+    public const string AskQuestion =
+        "I want to stay at the Seemeeu guesthouse with my dog. Can you ask them whether dogs are allowed, and in " +
+        "which room?";
+
+    /// <summary>The Puls stream's events, in order, as the API client hands them to the page.</summary>
+    public static Task<List<SessionEvent>> EventsAsync() => EventsAsync(StreamFile);
+
+    /// <summary>
+    /// The Puls turn the stream folds into, with every thinking block's seconds fixed: the page measures them with the
+    /// clock, which a snapshot can't depend on.
+    /// </summary>
+    public static Task<Turn> ReplayAsync() => ReplayAsync(StreamFile, Question);
+
+    /// <summary>The guide's turn that asked Seemeeu, folded the same way.</summary>
+    public static Task<Turn> ReplayAskAsync() => ReplayAsync(AskStreamFile, AskQuestion);
+
+    /// <summary>A recording's events, in order.</summary>
+    private static async Task<List<SessionEvent>> EventsAsync(string file)
     {
         var events = new List<SessionEvent>();
-        await using var stream = File.OpenRead(StreamFile);
+        await using var stream = File.OpenRead(file);
         await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None))
             events.Add(streamEvent);
         return events;
     }
 
-    /// <summary>
-    /// The turn the stream folds into, with every thinking block's seconds fixed: the page measures them with the
-    /// clock, which a snapshot can't depend on.
-    /// </summary>
-    public static async Task<Turn> ReplayAsync()
+    /// <summary>A recording folded into the turn the page would show, its thinking seconds fixed.</summary>
+    private static async Task<Turn> ReplayAsync(string file, string question)
     {
-        var turn = new Turn { UserText = Question };
-        foreach (var streamEvent in await EventsAsync()) TurnStream.Apply(turn, streamEvent);
+        var turn = new Turn { UserText = question };
+        foreach (var streamEvent in await EventsAsync(file)) TurnStream.Apply(turn, streamEvent);
         FixThinking(turn);
         return turn;
     }

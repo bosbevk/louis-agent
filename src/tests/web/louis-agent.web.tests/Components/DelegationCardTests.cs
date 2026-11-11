@@ -36,6 +36,27 @@ public class DelegationCardTests
         Snapshots.Match("Components/DelegationCard.html", cut.Markup);
     }
 
+    /// <summary>
+    /// The card for the recorded ask (F127.3.1): done, named for the business the guide asked, and pinned to a golden
+    /// file.
+    /// </summary>
+    [Test]
+    public async Task TheAskedBusinesssCard_Done_MatchesTheGoldenFile()
+    {
+        var turn = await SessionStreamFixture.ReplayAskAsync();
+        var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+
+        var cut = ctx.Render<DelegationCard>(p =>
+            p.Add(x => x.Delegation, Delegation.From(block)!).Add(x => x.Block, block));
+
+        Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("done"));
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo("seemeeu-guesthouse"),
+            "the address, as the guide asked it");
+        Snapshots.Match("Components/DelegationCard.ask.html", cut.Markup);
+    }
+
     /// <summary>A running card is open and says it's working.</summary>
     [Test]
     public async Task ARunningCard_IsOpen_AndSaysItIsWorking()
