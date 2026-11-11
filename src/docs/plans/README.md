@@ -60,16 +60,15 @@ built or comes next, and every plan as it was is at the tag
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
 - **Four diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32; the fourth 2026-10-18), in the *Design*: an
-  **interface design** (a flow picture of the types, a mermaid `classDiagram` only until CL60.4's class layout, with
-  the C# signatures beside it: the interfaces and records the
-  change uses or adds, every implementation behind them, old and new, marked with the step that builds it, and who
-  creates, reads and calls whom), an **architecture diagram** (a flow picture: the containers, hosts and services, and
-  which step builds or changes each part) and a **communication diagram** (a mermaid `sequenceDiagram`: who calls
-  whom, in order, for the feature's main case, with what each call carries), and an **object diagram** (a flow picture
-  of the instances the main case holds in memory, and which holds which). A flow picture is a JSON in `diagrams/`
-  beside the plan, drawn by our tool ([Draw a diagram](../guides/draw-a-diagram.md)); no doc holds a Mermaid
-  `flowchart` (CL60.2), and the other two follow in CL60.3 and CL60.4. A plan approved without them gets them under
-  *Approved during the build*.
+  **interface design** (a `classes` picture of the types, with the C# signatures beside it: the interfaces and records
+  the change uses or adds, every implementation behind them, old and new, marked with the step that builds it, and
+  who creates, reads and calls whom), an **architecture diagram** (a `flow` picture: the containers, hosts and
+  services, and which step builds or changes each part) and a **communication diagram** (a `sequence` picture: who
+  calls whom, in order, for the feature's main case, with what each call carries), and an **object diagram** (a
+  `flow` picture of the instances the main case holds in memory, and which holds which). Each picture is a JSON in
+  `diagrams/` beside the plan, drawn by our tool ([Draw a diagram](../guides/draw-a-diagram.md)); no doc holds
+  Mermaid ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)). A picture too big to read is split in
+  two. A plan approved without them gets them under *Approved during the build*.
 - **Folder trees** (Louis, 2026-10-18), in the *Design*, whenever a plan adds or splits projects or folders: the tree
   today and the tree after (after each step when the steps move things).
 - **Reviewed as one page** (Louis, 2026-10-18): a plan is reviewed as one page with its diagrams drawn in place beside
