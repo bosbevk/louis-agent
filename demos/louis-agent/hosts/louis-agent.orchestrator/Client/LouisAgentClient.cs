@@ -6,43 +6,11 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Orchestrator.Messages;
 
-namespace LouisAgent.Orchestrator;
-
-/// <summary>One tool louis-agent called while answering: its input (JSON) and the result it got back.</summary>
-internal sealed class AgentToolCall(string id, string name, string input)
-{
-    public string Id { get; } = id;
-    public string Name { get; } = name;
-    public string Input { get; } = input;
-    public string? Result { get; set; }
-    public bool IsError { get; set; }
-}
-
-/// <summary>What louis-agent answered in one message: its text, the tools it called, and how the turn ended.</summary>
-/// <param name="Usage">
-/// What the message's model requests used and cost, from <c>message_delta.usage</c> (F3); null when louis-agent doesn't
-/// record usage or the turn ended in an error.
-/// </param>
-/// <param name="Currency">The cost's currency; null when nothing was priced.</param>
-internal sealed record AgentReply(
-    string Text,
-    IReadOnlyList<AgentToolCall> ToolCalls,
-    string? StopReason,
-    string? Error,
-    UsageTotal? Usage = null,
-    string? Currency = null);
-
-/// <summary>The machine-readable line louis-agent is asked to end a fix with.</summary>
-internal sealed record FixResult(
-    string Status,
-    string? Commit,
-    string? Branch,
-    string? Tests,
-    string? Summary,
-    string? Reason);
+namespace LouisAgent.Orchestrator.Client;
 
 /// <summary>
 /// Talks to louis-agent.api: one session per fix, messages streamed back as Claude-style Server-Sent Events.
@@ -67,8 +35,9 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         AddKey(request);
         using var response = await http.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
-        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
-        return body.RootElement.GetProperty("session_id").GetString()!;
+        var opened =
+            await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase, cancellationToken);
+        return opened!.SessionId;
     }
 
     /// <summary>

@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Testing;
 

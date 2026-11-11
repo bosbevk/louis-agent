@@ -4,7 +4,7 @@ using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
@@ -23,16 +23,16 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using CreatedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.Api.Contracts.Sessions.SessionCreatedReply>,
+    LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.SessionStream.Wire.Replies.SessionCreatedReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using SessionAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using DeletedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionDeletedReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionDeletedReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using CancelledAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
-    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Sessions.SessionCancelledReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionCancelledReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using TurnAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,

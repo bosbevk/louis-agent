@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 
 namespace LouisAgent.Orchestrator.Tests;
 
@@ -234,6 +235,8 @@ public class LouisAgentClientTests
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken) =>
             Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
-            { Content = new StringContent("no session sess_1") });
+            {
+                Content = new StringContent("no session sess_1")
+            });
     }
 }

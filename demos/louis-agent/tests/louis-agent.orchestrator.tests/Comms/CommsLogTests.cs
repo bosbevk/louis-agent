@@ -2,6 +2,7 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Packs.Triage.Feed;
 
@@ -48,7 +49,9 @@ public class CommsLogTests
         string path = Path.Combine(_dir, "comms.md");
         var comms = new CommsLog(path);
         var call = new AgentToolCall("t1", "CreateBranch", "{\"branchName\":\"fix/order-total-abc123\"}")
-        { Result = "Success | done" };
+        {
+            Result = "Success | done"
+        };
         var reply = new AgentReply(
             "Fixed.\nFIX-RESULT: {\"status\":\"fixed\",\"commit\":\"abc1234\",\"branch\":\"fix/order-total-abc123\",\"tests\":\"5/5 passed\"}",
             [call], "end_turn", null);

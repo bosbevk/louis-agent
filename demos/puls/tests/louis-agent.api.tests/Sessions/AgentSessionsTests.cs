@@ -5,7 +5,7 @@ using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Info;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;

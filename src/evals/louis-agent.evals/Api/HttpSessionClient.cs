@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.SessionStream;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Evals.Api;
@@ -71,7 +72,7 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
         await EnsureSuccessAsync(response, cancellationToken);
 
         var opened =
-            await response.Content.ReadFromJsonAsync<SessionWire.Opened>(EvalJson.SnakeCase, cancellationToken);
+            await response.Content.ReadFromJsonAsync<SessionCreatedReply>(SessionJson.SnakeCase, cancellationToken);
         return opened!.SessionId;
     }
 

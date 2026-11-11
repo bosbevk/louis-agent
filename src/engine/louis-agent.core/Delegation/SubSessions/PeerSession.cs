@@ -5,6 +5,7 @@ using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream.Wire.Requests;
 
 namespace LouisAgent.Core.Delegation.SubSessions;
@@ -53,19 +54,13 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
                         Status = (int)created.StatusCode,
                         Reason = PeerHttp.ErrorText(createdBody)
                     });
-            using var createdJson = JsonDocument.Parse(createdBody);
-            sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ??
-                        throw new JsonException("no session_id");
+            // The API's reply, read typed; a peer that answers anything else is the unreadable case below.
+            var opened = JsonSerializer.Deserialize<SessionCreatedReply>(createdBody, SessionJson.SnakeCase);
+            sessionId = opened?.SessionId is { Length: > 0 } id ? id : throw new JsonException("no session_id");
             // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
-            string? reported = createdJson.RootElement.TryGetProperty("role", out var p) &&
-                               p.ValueKind == JsonValueKind.String
-                ? p.GetString()
-                : role;
+            string? reported = opened.Role ?? role;
             // F34: the toolsets it loaded, as the peer reports them: a role may add its own to the ones sent.
-            IReadOnlyList<string> loaded = createdJson.RootElement.TryGetProperty("toolsets", out var t) &&
-                                           t.ValueKind == JsonValueKind.Array
-                                           && t.EnumerateArray().Select(x => x.GetString()).OfType<string>().ToList() is
-                                           { Count: > 0 } reportedToolsets
+            IReadOnlyList<string> loaded = opened.Toolsets is { Count: > 0 } reportedToolsets
                 ? reportedToolsets
                 : toolsets;
 

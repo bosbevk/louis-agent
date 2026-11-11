@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.SessionStream.Wire.Requests;

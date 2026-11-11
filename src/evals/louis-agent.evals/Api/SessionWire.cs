@@ -1,14 +1,12 @@
 namespace LouisAgent.Evals.Api;
 
 /// <summary>
-/// The replies the eval client reads from the API's session endpoints (F18 step 5.1), as records, read with
-/// <see cref="EvalJson.SnakeCase"/>. What it sends is the session wire's shared records since F127.3.1.
+/// The replies the eval client reads from the API beside the sessions (F18 step 5.1): the toolsets it knows and an
+/// error, as records, read with <see cref="EvalJson.SnakeCase"/>. A session's own requests and replies are the session
+/// wire's shared records since F127.3.1.
 /// </summary>
 internal static class SessionWire
 {
-    /// <summary>A session opened: its id.</summary>
-    internal sealed record Opened(string SessionId);
-
     /// <summary>The toolsets the API knows.</summary>
     internal sealed record ToolsetsReply(IReadOnlyList<ToolsetInfo> Toolsets);
 

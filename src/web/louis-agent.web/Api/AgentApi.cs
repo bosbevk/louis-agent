@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Info;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.SessionStream;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Web.Chats;

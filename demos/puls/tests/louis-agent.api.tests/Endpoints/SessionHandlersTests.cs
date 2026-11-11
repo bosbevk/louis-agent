@@ -1,5 +1,5 @@
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Endpoints.Sessions;
 using Microsoft.AspNetCore.Http.HttpResults;

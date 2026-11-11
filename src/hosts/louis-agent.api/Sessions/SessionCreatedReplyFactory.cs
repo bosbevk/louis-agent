@@ -1,4 +1,4 @@
-using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.SessionStream.Wire.Replies;
 
 namespace LouisAgent.Api.Sessions;
 

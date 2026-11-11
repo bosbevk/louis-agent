@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LouisAgent.Api.Contracts.Sessions;
+namespace LouisAgent.SessionStream.Wire.Replies;
 
 /// <summary>
 /// The one way the sessions API's own replies (a session opened, read, cancelled or deleted) are written and read:
@@ -8,7 +8,8 @@ namespace LouisAgent.Api.Contracts.Sessions;
 /// </summary>
 /// <remarks>
 /// One options object per wire (ADR 0041). The session replies have always been snake_case; naming the rule here keeps
-/// the records in plain C# names, and the JSON every client reads stays as it was, byte for byte.
+/// the records in plain C# names, and the JSON every client reads stays as it was, byte for byte. The requests go the
+/// other way with .NET's web defaults (<c>Wire/Requests/</c>).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class SessionJson

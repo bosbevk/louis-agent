@@ -6,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Orchestrator.Client;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Packs.Triage.Feed;
@@ -101,7 +102,8 @@ public class SessionTagsTests
             SkillsDirectory = Path.Combine(_dir, "Skills"),
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
-        return new ServiceTools(options, new JsonLinesErrorFeed(Path.Combine(_dir, "errors.jsonl"), options.StateDirectory),
+        return new ServiceTools(options,
+            new JsonLinesErrorFeed(Path.Combine(_dir, "errors.jsonl"), options.StateDirectory),
             client,
             new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")));
     }
@@ -118,7 +120,9 @@ public class SessionTagsTests
             Path = request.RequestUri!.AbsolutePath;
             Body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
             return new HttpResponseMessage(HttpStatusCode.Created)
-            { Content = new StringContent("""{"session_id":"sess_1"}""") };
+            {
+                Content = new StringContent("""{"session_id":"sess_1"}""")
+            };
         }
     }
 
