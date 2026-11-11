@@ -41,7 +41,7 @@ internal sealed class ClaudeStreamFormat(
     public static SseItem<string> Event(string type, object data) => new(JsonSerializer.Serialize(data, Json), type);
 
     /// <summary>
-    /// A sub-session's event (F5), nested: the <c>StartSubSession</c> call it belongs to, the peer, and the peer's own
+    /// A sub-session's event (F5), nested: the <c>AskAgent</c> call it belongs to, the peer, and the peer's own
     /// event (Claude's shape), so a client can fold it into that call the way it folds the turn's own events.
     /// </summary>
     public SseItem<string> SubSession(SubSessionEvent sub)

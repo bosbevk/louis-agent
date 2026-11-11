@@ -41,11 +41,6 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public static readonly string MinionsToolset = CoreToolset.Minions.Wire();
 
     /// <summary>
-    /// The toolset that opens sub-sessions (F5; named specialists in CL9); refused at <see cref="MaxDepth"/>.
-    /// </summary>
-    public static readonly string SpecialistsToolset = CoreToolset.Specialists.Wire();
-
-    /// <summary>
     /// The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.
     /// </summary>
     public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
@@ -64,7 +59,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// can't delegate (F21). The one exception is an identity's voice asked at depth 1 (F127.3.1): it opens as a
     /// voice, from <c>agent/</c>, with its own packs when none are sent. Throws <see cref="ToolsetException"/> for an
     /// unknown or unavailable toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for
-    /// <see cref="SpecialistsToolset"/>, and <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and
+    /// <see cref="AgentsToolset"/>, and <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and
     /// <see cref="Core.Hosting.SessionLlms.SessionLlmException"/> for an LLM profile this instance doesn't offer
     /// (<paramref name="llm"/>, F30; null: its own model), before anything is created. A minion (depth
     /// <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent session's
@@ -106,9 +101,6 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // its parent passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
-        if (depth > 0 && plain.Contains(SpecialistsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
-                new { Toolset = SpecialistsToolset }));
         if (depth > 0 && plain.Contains(AgentsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
                 new { Toolset = AgentsToolset }));

@@ -1,9 +1,9 @@
 {
-  "_about": "What both readers of the session stream must read from session-stream.sse (F31 step 7a): the Python harness (benchmarks/puls_check/stream.py) and the web app's TurnStream. Recorded 2026-10-17 from one real Puls turn (a meal question; Claude Haiku 5.5, 8 requests, $0.0175). A change to the stream re-records it and updates these.",
+  "_about": "What both readers of the session stream must read from session-stream.sse (F31 step 7a): the Python harness (benchmarks/puls_check/stream.py) and the web app's TurnStream. Recorded 2026-10-17 from one real Puls turn (a meal question; Claude Haiku 5.5, 8 requests, $0.0175). A change to the stream re-records it and updates these. 2026-11-11 (F127.3.1, Louis's pick A): the hand-over and its footer were rewritten onto AskAgent(\"puls.cook\") when StartSubSession went; nothing else changed.",
   "puls_tools": [
-    "StartSubSession"
+    "AskAgent"
   ],
-  "role": "puls-cook",
+  "role": "puls.cook",
   "specialist_tools": [
     "FetchUrl",
     "GetToday",

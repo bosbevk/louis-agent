@@ -86,11 +86,6 @@ internal static class FakePeer
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
         });
 
-    /// <summary>The specialist tools pointed at the stub peer, with the test's own timeout, clock and ledger.</summary>
-    public static SpecialistTools ToolsOn(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null,
-        IUsageSink? sink = null) =>
-        new(Peers, "the-key", new HttpClient(handler), timeout, time, sink);
-
     /// <summary>A reply that failed after some work: the API's error event carries what was charged (FX6).</summary>
     public const string FailedStream = """
                                        event: error

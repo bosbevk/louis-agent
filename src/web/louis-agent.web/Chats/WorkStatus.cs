@@ -6,20 +6,22 @@ namespace LouisAgent.Web.Chats;
 public static class WorkStatus
 {
     /// <summary>
-    /// A specialist still at work whose role has phases: <see cref="RolePhases.Building"/> once it has a tool's result
+    /// A child still at work whose role has phases: <see cref="RolePhases.Building"/> once it has a tool's result
     /// and is thinking or writing after it, else <see cref="RolePhases.Gathering"/> (starting, or searching again).
-    /// Anything else is <see cref="ChatText.Processing"/>.
+    /// Anything else is <see cref="ChatText.Processing"/>. The role is the one the child's own stream reports when it
+    /// starts (an ask names an address, not a role), else the call's own (a minion's).
     /// </summary>
     public static string Label(Turn turn, ChatText text)
     {
         if (turn.Blocks.LastOrDefault() is not { Kind: BlockKind.Tool, ToolResult: null } call
-            || Delegation.From(call) is not { Role: { } role }
+            || Delegation.From(call) is not { } delegation
+            || (call.SubTurn?.Role ?? delegation.Role) is not { } role
             || !text.RolePhases.TryGetValue(role, out var phases))
             return text.Processing;
 
         var work = call.SubTurn?.Blocks ?? [];
         bool building = work.LastOrDefault() is { Kind: BlockKind.Thinking or BlockKind.Text }
-            && work.Any(b => b is { Kind: BlockKind.Tool, ToolResult: not null });
+                        && work.Any(b => b is { Kind: BlockKind.Tool, ToolResult: not null });
         return building ? phases.Building : phases.Gathering;
     }
 }

@@ -36,7 +36,7 @@ public class AskedVoiceTests
             Assert.That((session.Depth, session.Role), Is.EqualTo((1, "acme/voice")));
             Assert.That(session.Toolsets, Is.EqualTo(new[] { CalculatorToolset.Calculator.Wire() }));
             Assert.That(session.Engine.SkillDocumentation, Does.Contain("# acme"), "its own voice");
-            Assert.That(session.Engine.Tools.Select(tool => tool.Name), Has.None.EqualTo("StartSubSession"));
+            Assert.That(session.Engine.Tools.Select(tool => tool.Name), Has.None.EqualTo("AskAgent"));
         });
     }
 

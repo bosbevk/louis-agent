@@ -13,8 +13,14 @@ namespace LouisAgent.Web.Testing;
 public static class SessionStreamFixture
 {
     /// <summary>
-    /// The role the recording's cook ran as (recorded data stays as recorded): the goldens and the tests that replay
-    /// the turn read it, so they name it here, once.
+    /// The address the recording's turn asked (F127.3.1, its hand-over rewritten onto AskAgent): the card names it,
+    /// so the goldens and the tests that replay the turn read it from here, once.
+    /// </summary>
+    public const string CookAddress = "puls.cook";
+
+    /// <summary>
+    /// The role the recording's cook ran as, which its own stream reports (recorded data stays as recorded): what the
+    /// work-status phrases are keyed by.
     /// </summary>
     public const string CookRole = "puls-cook";
 

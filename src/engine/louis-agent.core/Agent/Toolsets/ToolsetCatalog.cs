@@ -22,13 +22,6 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Specialists.Wire(),
-            "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
-            GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Wire()),
-            MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
-            ToolTypes: [typeof(SpecialistTools)],
-            CreateTools: ctx => [new SpecialistTools(ctx.Options, ctx.UsageSink)]),
-
         new(CoreToolset.Minions.Wire(),
             "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
             GuideFile: SkillFiles.Guide(CoreToolset.Minions.Wire()),

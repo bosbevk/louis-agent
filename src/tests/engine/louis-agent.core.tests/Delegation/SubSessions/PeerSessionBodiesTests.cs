@@ -1,5 +1,6 @@
 using System.Text.Json;
-using LouisAgent.Choices;
+using LouisAgent.Composition.Sessions;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.SessionStream.Wire.Requests;
 using static LouisAgent.Core.Tests.Delegation.FakePeer;
 
@@ -12,13 +13,24 @@ namespace LouisAgent.Core.Tests.Delegation.SubSessions;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public class PeerSessionBodiesTests
 {
+    /// <summary>An asker that may ask testprod.</summary>
+    private static readonly FakeIdentity Guide = new("guide", voice: "testprod/voice-en", calls: ["testprod"]);
+
+    /// <summary>Asks testprod as the guide on this peer, so the peer sees an opening and a message.</summary>
+    private static async Task AskAsync(StubHandler handler)
+    {
+        using var _ = TurnIdentity.Use(TurnIdentity.Of(Guide));
+        await new AskAgentTools(Peers, [Guide, new FakeIdentity("testprod", voice: "testprod/voice-en")], "the-key",
+            new HttpClient(handler)).AskAgent("testprod", "Find the price.");
+    }
+
     /// <summary>The opening it sends reads as a <see cref="CreateSessionRequest"/> and writes back the same.</summary>
     [Test]
     public async Task ASubSessionsOpening_IsTheSharedRecord()
     {
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Find the price.", agent: "coder");
+        await AskAsync(handler);
 
         Assert.That(handler.Requests[0].Body, Is.EqualTo(Rewritten<CreateSessionRequest>(handler.Requests[0].Body)));
     }
@@ -29,7 +41,7 @@ public class PeerSessionBodiesTests
     {
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Find the price.", agent: "coder");
+        await AskAsync(handler);
 
         Assert.That(handler.Requests[1].Body, Is.EqualTo(Rewritten<SendMessageRequest>(handler.Requests[1].Body)));
     }

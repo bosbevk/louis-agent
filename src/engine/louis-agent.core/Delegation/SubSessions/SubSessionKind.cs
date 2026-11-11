@@ -4,7 +4,7 @@ using LouisAgent.Core.Sessions.SubSessions;
 namespace LouisAgent.Core.Delegation.SubSessions;
 
 /// <summary>
-/// How a sub-session's answers are labelled and rolled up: a specialist (<c>SpecialistTools.Kind</c>) or a minion (F30,
+/// How a sub-session's answers are labelled and rolled up: an asked agent (<c>AskAgentTools.Kind</c>) or a minion (F30,
 /// <c>MinionTools.Kind</c>). The label names the child in errors and in the live events; the ledger model is the
 /// roll-up row's.
 /// </summary>

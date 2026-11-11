@@ -39,7 +39,7 @@ public class ToolsetCatalogTests
             "the cook");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!,
+                ToolsetCatalog.Find(CoreToolset.Agents.Wire())!,
                 TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
             ]), Is.False, "Puls");
         Assert.That(
@@ -99,17 +99,17 @@ public class ToolsetCatalogTests
 
     [Test]
     public void AnOptionalToolsetThisInstanceHas_Loads() =>
-        Assert.That(Resolved([TestToolset.Web.Wire(), "specialists?"], WithPeers),
-            Is.EqualTo(new[] { TestToolset.Web.Wire(), CoreToolset.Specialists.Wire() }));
+        Assert.That(Resolved([TestToolset.Web.Wire(), CoreToolset.Agents.Wire() + "?"], WithPeers),
+            Is.EquivalentTo(new[] { TestToolset.Web.Wire(), CoreToolset.Agents.Wire() }));
 
     [Test]
     public void AnOptionalToolsetThisInstanceLacks_IsSkipped() =>
-        Assert.That(Resolved([TestToolset.Web.Wire(), "specialists?"], WithoutPeers),
+        Assert.That(Resolved([TestToolset.Web.Wire(), CoreToolset.Agents.Wire() + "?"], WithoutPeers),
             Is.EqualTo(new[] { TestToolset.Web.Wire() }));
 
     [Test]
     public void ARequiredToolsetThisInstanceLacks_IsStillRefused() =>
-        Assert.That(() => Resolved([TestToolset.Web.Wire(), CoreToolset.Specialists.Wire()], WithoutPeers),
+        Assert.That(() => Resolved([TestToolset.Web.Wire(), CoreToolset.Agents.Wire()], WithoutPeers),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
 
     [Test]

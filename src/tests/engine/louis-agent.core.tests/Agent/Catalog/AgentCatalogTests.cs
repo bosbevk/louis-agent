@@ -320,7 +320,7 @@ public class AgentCatalogTests
         Assert.That(core.Packs, Is.Empty);
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames,
-            Does.Contain("StartSubSession").And.Not.Contain("CreateTool"));
+            Does.Contain("AskAgent").And.Not.Contain("CreateTool"));
         Assert.That(core.Resolve([CoreToolset.Skills.Wire()], Context()).Select(t => t.Name),
             Is.EqualTo(new[] { CoreToolset.Skills.Wire() }));
     }

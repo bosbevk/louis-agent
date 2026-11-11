@@ -49,7 +49,15 @@ public class ChatRunnerTests
     [Test]
     public async Task ThePage_TravelsWithTheNextMessage_Once()
     {
-        var h = new Harness { Runner = { Draft = SessionStreamFixture.Question, Page = new Page("/packs", "Packs", "A pack is tools and their guide.", [new PageArea("general", "General tools")]) } };
+        var h = new Harness
+        {
+            Runner =
+            {
+                Draft = SessionStreamFixture.Question,
+                Page = new Page("/packs", "Packs", "A pack is tools and their guide.",
+                    [new PageArea("general", "General tools")])
+            }
+        };
 
         await h.Runner.SendAsync();
         string first = h.Handler.Requests.Last().Body!;
@@ -59,7 +67,9 @@ public class ChatRunnerTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(first, Does.Contain("\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\",\"areas\":[{\"id\":\"general\",\"heading\":\"General tools\"}]}"));
+            Assert.That(first,
+                Does.Contain(
+                    "\"page\":{\"url\":\"/packs\",\"title\":\"Packs\",\"text\":\"A pack is tools and their guide.\",\"areas\":[{\"id\":\"general\",\"heading\":\"General tools\"}]}"));
             Assert.That(h.Runner.Page, Is.Null, "forgotten once sent");
             Assert.That(second, Does.Not.Contain("\"page\""), "the wire as it was without a page");
         });
@@ -78,7 +88,7 @@ public class ChatRunnerTests
 
         await h.Runner.SendAsync();
 
-        Assert.That(calls, Is.EqualTo(new[] { "StartSubSession" }));
+        Assert.That(calls, Is.EqualTo(new[] { "AskAgent" }));
     }
 
     /// <summary>A message opens a session, streams the turn and saves the chat.</summary>
@@ -100,7 +110,7 @@ public class ChatRunnerTests
         var turn = h.Runner.Chat.Turns.Single();
         Assert.That(turn.UserText, Is.EqualTo(SessionStreamFixture.Question), "trimmed");
         Assert.That(turn.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName),
-            Is.EqualTo(new[] { "StartSubSession" }));
+            Is.EqualTo(new[] { "AskAgent" }));
         Assert.That(turn.Usage, Is.Not.Null);
         Assert.That(turn.Error, Is.Null);
         Assert.That(h.Js.Calls, Does.Contain("localStorage.setItem"), "saved when the stream ended");

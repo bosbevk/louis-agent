@@ -64,10 +64,12 @@ public class TurnViewTests
         // Still running: no stop or usage yet, the cook's call has no result, and its own last step is a search.
         turn.StopReason = null;
         turn.Usage = null;
-        var call = turn.Blocks.Single(b => b.ToolName == "StartSubSession");
+        var call = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
         call.ToolResult = null;
         turn.Blocks.RemoveAll(b => b != call);
         call.SubTurn!.Blocks.RemoveAll(b => b.Kind != BlockKind.Tool);
+        // A live child names its role when its stream starts; this recording is older than that, so it's set here.
+        call.SubTurn.Role = SessionStreamFixture.CookRole;
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new ChatText

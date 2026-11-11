@@ -2,6 +2,7 @@ using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -39,7 +40,7 @@ public sealed class MinionTools
     /// <summary>How long one minion may run: inside the specialist's five minutes.</summary>
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
-    /// <summary>A minion's kind on the registry (F26), beside <see cref="SpecialistTools.Kind"/>.</summary>
+    /// <summary>A minion's kind on the registry (F26), beside <see cref="AskAgentTools.Kind"/>.</summary>
     public const string Kind = OpenSubSession.MinionKind;
 
     /// <summary>
@@ -56,8 +57,8 @@ public sealed class MinionTools
     /// </summary>
     public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
     {
-        nameof(SpecialistTools.StartSubSession),
-        nameof(SpecialistTools.ContinueSubSession),
+        nameof(AskAgentTools.AskAgent),
+        nameof(AgentWorkTools.ReadAgentWork),
         nameof(StartMinion),
         "ExecuteSkill",
         "CreateSkillFile",
@@ -133,7 +134,7 @@ public sealed class MinionTools
                     Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order())
                 });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
-        if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
+        if (PeerHttp.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
         UsageScope? scope = UsageScope.Current;
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;

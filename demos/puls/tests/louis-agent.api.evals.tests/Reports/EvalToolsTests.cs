@@ -67,7 +67,7 @@ public class EvalToolsTests
     {
         var tools = EvalTools.Of(
         [
-            Use("t1", "StartSubSession"),
+            Use("t1", "AskAgent"),
             Inner(Use("s1", "WebSearch")), Inner(Result("s1", true, Limit)),
             Inner(Use("s2", "WebSearch")), Inner(Result("s2", true, Limit)),
             Inner(Use("s3", "FetchUrl")), Inner(Result("s3", false, "URL: https://…")),

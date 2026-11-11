@@ -9,8 +9,9 @@ using LouisAgent.Web.Api;
 namespace LouisAgent.Api.Tests.Sessions;
 
 /// <summary>
-/// ContinueSubSession names the handle, not the role, so a follow-up's card had only the handle until the answer's
-/// footer came. Each session's message_start says its role (session_role: "role" is already Claude's speaker).
+/// An ask names an address, not a role or toolsets, so a follow-up's card and its work line learn them from the start
+/// of the child's own stream: each session's message_start says its role (session_role: "role" is already Claude's
+/// speaker) and what it loaded.
 /// </summary>
 public class ContinuedSpecialistRoleTests
 {
@@ -36,14 +37,16 @@ public class ContinuedSpecialistRoleTests
             [
                 new Block
                 {
-                    Kind = BlockKind.Tool, ToolName = Delegation.ContinueToolName, ToolUseId = "toolu_9",
-                    ToolInput = """{"handle":"sub-1","message":"**Wil hê:** vir ses mense"}""",
+                    Kind = BlockKind.Tool,
+                    ToolName = Delegation.AskToolName,
+                    ToolUseId = "toolu_9",
+                    ToolInput = """{"address":"acme.cook","message":"**Wil hê:** vir ses mense"}""",
                 },
             ],
         };
         var inner = JsonDocument
-            .Parse(SampleRole.Fill(
-                """{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"<RoleAlpha>"}}"""))
+            .Parse(SampleToolset.Fill(SampleRole.Fill(
+                """{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}""")))
             .RootElement;
         var outer = JsonSerializer.SerializeToElement(new
         {
@@ -57,10 +60,11 @@ public class ContinuedSpecialistRoleTests
         return turn;
     }
 
-    /// <summary>A follow-up's card names the role while it works.</summary>
+    /// <summary>A follow-up's card names what the child loaded while it works.</summary>
     [Test]
-    public void AFollowUpsCard_NamesTheRole_WhileItWorks() =>
-        Assert.That(Delegation.From(AFollowUpThatStarted().Blocks[0])!.Role, Is.EqualTo(SampleRole.Alpha));
+    public void AFollowUpsCard_NamesWhatItLoaded_WhileItWorks() =>
+        Assert.That(Delegation.From(AFollowUpThatStarted().Blocks[0])!.Toolsets,
+            Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
 
     /// <summary>A follow-up's line says what the cook is doing.</summary>
     [Test]
@@ -70,7 +74,9 @@ public class ContinuedSpecialistRoleTests
         {
             Processing = "BESIG",
             RolePhases = new Dictionary<string, RolePhases>
-            { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") }
+            {
+                [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep")
+            }
         };
 
         Assert.That(WorkStatus.Label(AFollowUpThatStarted(), text), Is.EqualTo("Soek bestanddele"));

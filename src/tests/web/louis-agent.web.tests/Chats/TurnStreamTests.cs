@@ -34,7 +34,7 @@ public class TurnStreamTests
 
         var tools = turn.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList();
         Assert.That(tools.Select(b => b.ToolName), Is.EqualTo(Strings(expected, "puls_tools")));
-        var delegation = tools.Single(b => b.ToolName == "StartSubSession");
+        var delegation = tools.Single(b => b.ToolName == Delegation.AskToolName);
         Assert.That(delegation.ToolInput, Does.Contain(expected.GetProperty("role").GetString()));
         var specialist = delegation.SubTurn!.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName);
         Assert.That(specialist, Is.EqualTo(Strings(expected, "specialist_tools")));
@@ -178,7 +178,7 @@ public class TurnStreamTests
         var turn = Apply(
             ("content_block_start",
                 SampleRole.Fill(
-                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}}}""")),
+                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"AskAgent","input":{"address":"<RoleAlpha>","message":"Kook"}}}""")),
             ("sub_session",
                 SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill(
                     """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}""")))),

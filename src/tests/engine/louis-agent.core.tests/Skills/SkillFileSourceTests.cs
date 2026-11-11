@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills;
 
@@ -35,7 +36,7 @@ public class SkillFileSourceTests
     {
         // CL15: the roles here are the tests' own (prompts/), registered as an identity's are; Puls's live in its
         // identity.
-        Assert.That(SkillFileSource.Files(CoreToolset.Specialists.Wire()),
+        Assert.That(SkillFileSource.Files(RoleCatalog.SpecialistsFolder),
             Is.EqualTo(new[] { "testprod-specialist.md" }));
         Assert.That(SkillFileSource.Files(CoreToolset.Minions.Wire()),
             Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
@@ -79,8 +80,8 @@ public class SkillFileSourceTests
     public void ARoleOnDisk_IsNotRead()
     {
         // Only the agent's own files come from disk: a role or a voice is built in, or it isn't one.
-        Directory.CreateDirectory(Path.Combine(_dir, CoreToolset.Specialists.Wire()));
-        File.WriteAllText(Path.Combine(_dir, CoreToolset.Specialists.Wire(), "puls-baker.md"), "# Baker");
+        Directory.CreateDirectory(Path.Combine(_dir, RoleCatalog.SpecialistsFolder));
+        File.WriteAllText(Path.Combine(_dir, RoleCatalog.SpecialistsFolder, "puls-baker.md"), "# Baker");
 
         Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"),
             Is.Null);

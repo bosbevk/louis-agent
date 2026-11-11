@@ -13,14 +13,14 @@ public class WorkStatusTests
         RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
     };
 
-    /// <summary>A delegation call still running, under this role.</summary>
+    /// <summary>An ask still running, its child's stream started under this role.</summary>
     private static Block RunningCall(string role = SampleRole.Alpha) => new()
     {
         Kind = BlockKind.Tool,
         ToolUseId = "call_1",
-        ToolName = Delegation.ToolName,
-        ToolInput = $$"""{"agent":"puls","toolsets":["web"],"message":"Kook","role":"{{role}}"}""",
-        SubTurn = new Turn(),
+        ToolName = Delegation.AskToolName,
+        ToolInput = """{"address":"acme.cook","message":"Kook"}""",
+        SubTurn = new Turn { Role = role }
     };
 
     /// <summary>Nothing yet is busy.</summary>
@@ -42,7 +42,11 @@ public class WorkStatusTests
     public void ASpecialistSearching_IsGathering()
     {
         var call = RunningCall();
-        call.SubTurn!.Blocks.Add(new Block { Kind = BlockKind.Tool, ToolName = "WebSearch" });
+        call.SubTurn!.Blocks.Add(new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "WebSearch"
+        });
         var turn = new Turn { Blocks = [call] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
@@ -54,8 +58,16 @@ public class WorkStatusTests
     {
         var call = RunningCall();
         call.SubTurn!.Blocks.Add(new Block
-        { Kind = BlockKind.Tool, ToolName = "FindProducts", ToolResult = "Products at Checkers…" });
-        call.SubTurn.Blocks.Add(new Block { Kind = BlockKind.Text, Text = "### Die gereg" });
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "FindProducts",
+            ToolResult = "Products at Checkers…"
+        });
+        call.SubTurn.Blocks.Add(new Block
+        {
+            Kind = BlockKind.Text,
+            Text = "### Die gereg"
+        });
         var turn = new Turn { Blocks = [call] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Bou resep"));
@@ -66,8 +78,17 @@ public class WorkStatusTests
     public void ASpecialistSearchingAgain_IsGatheringAgain()
     {
         var call = RunningCall();
-        call.SubTurn!.Blocks.Add(new Block { Kind = BlockKind.Tool, ToolName = "FindProducts", ToolResult = "…" });
-        call.SubTurn.Blocks.Add(new Block { Kind = BlockKind.Tool, ToolName = "SearchSpecials" });
+        call.SubTurn!.Blocks.Add(new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "FindProducts",
+            ToolResult = "…"
+        });
+        call.SubTurn.Blocks.Add(new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolName = "SearchSpecials"
+        });
         var turn = new Turn { Blocks = [call] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("Soek bestanddele"));
@@ -87,7 +108,7 @@ public class WorkStatusTests
     public void AFinishedCall_IsBusy_ThePageWritesItsOwnAnswerNow()
     {
         var call = RunningCall();
-        call.ToolResult = SampleRole.Fill("Bobotie.\n\n[Sub-session on puls (web; <RoleAlpha>): 3 requests, $0.01]");
+        call.ToolResult = "Bobotie.\n\n[Answered by acme.cook, did: no tools]";
         var turn = new Turn { Blocks = [call] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("BESIG"));

@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting.Prompts;
 
@@ -67,18 +68,17 @@ public class SkillLoaderTests
     }
 
     /// <summary>
-    /// The toolset that hands work on is called specialists (CL9 step 5; Louis: "this should say specialists since we
-    /// call them that now"), F30's minions get their own, and <c>agents</c>, its name before CL9, is since F127.3.1 the
-    /// toolset that asks another agent by its address, with a guide of its own.
+    /// Work is handed on by asking an agent by its address (F127.3.1): the <c>agents</c> toolset has its own guide,
+    /// and <c>specialists</c>, the toolset it replaced, is gone with its guide.
     /// </summary>
     [Test]
-    public void TheToolsetThatHandsWorkOn_IsCalledSpecialists()
+    public void TheToolsetThatHandsWorkOn_IsAgents()
     {
-        var specialists = ToolsetCatalog.Find(CoreToolset.Specialists.Wire());
-        var agents = ToolsetCatalog.Find(CoreToolset.Agents.Wire());
-
-        Assert.That(specialists?.GuideFile, Is.EqualTo("toolsets/specialists.md"));
-        Assert.That(agents?.GuideFile, Is.EqualTo("toolsets/agents.md"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ToolsetCatalog.Find(CoreToolset.Agents.Wire())?.GuideFile, Is.EqualTo("toolsets/agents.md"));
+            Assert.That(ToolsetCatalog.Find(RoleCatalog.SpecialistsFolder), Is.Null);
+        });
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ public class SkillLoaderTests
                 SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
                 Does.Contain("# Greeting Skills"));
             Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), TestToolset.Web.Wire()))
+                SkillLoader.Load(options, Toolsets(CoreToolset.Agents.Wire(), TestToolset.Web.Wire()))
                     .Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally

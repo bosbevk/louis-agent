@@ -45,8 +45,8 @@ public sealed class AskAgentTools(
     /// <summary>An asked agent's kind on the registry.</summary>
     public const string Kind = OpenSubSession.AgentKind;
 
-    private readonly TimeSpan _timeout = timeout ?? SpecialistTools.DefaultTimeout;
-    private readonly CallSlots _slots = new(MaxPerTurn, SpecialistTools.NoTurnWindow, time ?? TimeProvider.System);
+    private readonly TimeSpan _timeout = timeout ?? PeerHttp.DefaultTimeout;
+    private readonly CallSlots _slots = new(MaxPerTurn, CallSlots.NoTurnWindow, time ?? TimeProvider.System);
 
     private readonly PeerSession _session =
         PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
@@ -77,7 +77,7 @@ public sealed class AskAgentTools(
         if (Reach(address, out string? refusal) is not { } agent) return refusal!;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
             return unknownAttachment;
-        if (SpecialistTools.ResolvePeer(peers, null, out Uri peer, out string name) is { } noPeer) return noPeer;
+        if (PeerHttp.ResolvePeer(peers, null, out Uri peer, out string name) is { } noPeer) return noPeer;
 
         var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.

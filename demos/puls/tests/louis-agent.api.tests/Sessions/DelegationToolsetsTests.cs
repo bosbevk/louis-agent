@@ -8,9 +8,9 @@ using LouisAgent.Web.Api;
 namespace LouisAgent.Api.Tests.Sessions;
 
 /// <summary>
-/// A delegation card shows the toolsets the specialist actually loaded, not just the ones Puls sent (F34). From
-/// Louis's screenshot: the cook's chips said `web`, though its role also adds `shops` on the peer. Each session's
-/// message_start says what it loaded, and the card shows that.
+/// A delegation card shows the toolsets the asked agent actually loaded (F34). From Louis's screenshot: the cook's
+/// chips said `web`, though its role also adds `shops` on the peer. An ask names only an address (F127.3.1), so the
+/// card reads them from the child: each session's message_start says what it loaded.
 /// </summary>
 public class DelegationToolsetsTests
 {
@@ -27,22 +27,22 @@ public class DelegationToolsetsTests
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
-    /// <summary>The cook's call as a block, with its answer and footer once it returned.</summary>
-    private static Block Cook(string? footer = null) => new()
+    /// <summary>
+    /// The cook asked by its address: an ask names no toolsets, so the card learns them from the child.
+    /// </summary>
+    private static Block Cook() => new()
     {
         Kind = BlockKind.Tool,
-        ToolName = Delegation.ToolName,
+        ToolName = Delegation.AskToolName,
         ToolUseId = "toolu_1",
-        ToolInput = SampleToolset.Fill(
-            SampleRole.Fill("""{"toolsets":["<Alpha>"],"message":"**Vir:** kok","role":"<RoleAlpha>"}""")),
-        ToolResult = footer is null ? null : "Die resep.\n\n" + footer,
+        ToolInput = """{"address":"acme.cook","message":"**Vir:** kok"}""",
     };
 
     /// <summary>
-    /// While the specialist works, its own stream's start says what it loaded, and the card shows that.
+    /// While the asked agent works, its own stream's start says what it loaded, and the card shows that.
     /// </summary>
     [Test]
-    public void TheCard_ShowsWhatTheSpecialistLoaded_WhileItWorks()
+    public void TheCard_ShowsWhatTheAskedAgentLoaded_WhileItWorks()
     {
         var turn = new Turn { Blocks = [Cook()] };
         var inner = JsonDocument
@@ -64,17 +64,8 @@ public class DelegationToolsetsTests
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
-    /// <summary>Once it's done, the card takes the toolsets from the footer.</summary>
+    /// <summary>Before the child's stream has started, the card has no toolsets to show.</summary>
     [Test]
-    public void TheCard_ShowsTheFootersToolsets_OnceItsDone() =>
-        Assert.That(
-            Delegation.From(Cook(SampleToolset.Fill(SampleRole.Fill(
-                    "[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>). It stays open: …]"))))!
-                .Toolsets,
-            Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
-
-    /// <summary>A chat with neither a live stream nor a footer shows the toolsets that were sent.</summary>
-    [Test]
-    public void AnOlderChat_ShowsTheToolsetsSent() =>
-        Assert.That(Delegation.From(Cook())!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
+    public void BeforeTheChildStarts_TheCardShowsNoToolsets() =>
+        Assert.That(Delegation.From(Cook())!.Toolsets, Is.Empty);
 }

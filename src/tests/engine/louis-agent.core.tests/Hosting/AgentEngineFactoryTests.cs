@@ -347,7 +347,7 @@ public class AgentEngineFactoryTests
 
         Assert.That(() => factory.GetOrCreate([TestToolset.Files.Wire(), "nope"]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names"));
-        Assert.That(() => factory.GetOrCreate([CoreToolset.Specialists.Wire()]),
+        Assert.That(() => factory.GetOrCreate([CoreToolset.Agents.Wire()]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
         Assert.That(factory.Profiles, Is.Empty);
     }
@@ -377,9 +377,9 @@ public class AgentEngineFactoryTests
     public void Available_ListsOnlyToolsetsWhoseSettingsAreSet()
     {
         Assert.That(Factory().Available,
-            Does.Contain(TestToolset.Files.Wire()).And.Not.Contain(CoreToolset.Specialists.Wire()));
+            Does.Contain(TestToolset.Files.Wire()).And.Not.Contain(CoreToolset.Agents.Wire()));
         Assert.That(Factory(peer: new Uri("http://coder.test/")).Available,
-            Does.Contain(CoreToolset.Specialists.Wire()));
+            Does.Contain(CoreToolset.Agents.Wire()));
     }
 
     /// <summary>

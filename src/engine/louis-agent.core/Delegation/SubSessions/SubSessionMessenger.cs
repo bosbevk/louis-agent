@@ -12,7 +12,7 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 /// asked once more. What each reply used goes to the parent's turn and the ledger, never into the answer.
 /// </summary>
 /// <remarks>
-/// Extract Class (CL15): talking to a child is one job, so <c>SpecialistTools</c> and <c>MinionTools</c> share it
+/// Extract Class (CL15): talking to a child is one job, so <c>AskAgentTools</c> and <c>MinionTools</c> share it
 /// instead of each keeping a copy of the retry and the roll-up.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>

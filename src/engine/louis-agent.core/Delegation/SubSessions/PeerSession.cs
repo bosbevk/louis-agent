@@ -11,9 +11,9 @@ using LouisAgent.SessionStream.Wire.Requests;
 namespace LouisAgent.Core.Delegation.SubSessions;
 
 /// <summary>
-/// A sub-session's life on a peer (S, CL15, from SpecialistTools): opened with only the toolsets a task needs, sent the
-/// task, read to the end, kept for a follow-up (F26) or deleted. Every failure is an answer the model can act on, never
-/// a crash. Shared by the specialists (depth 1) and the minions (F30, depth 2).
+/// A sub-session's life on a peer (S, CL15): opened, sent the task, read to the end, kept for a follow-up (F26) or
+/// deleted. Every failure is an answer the model can act on, never a crash. Shared by the asked agents (depth 1) and
+/// the minions (F30, depth 2).
 /// </summary>
 internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
 {
@@ -126,13 +126,13 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
 
     /// <summary>
     /// Sends a follow-up to a kept child. One that is still answering stays open and the model waits; one the peer no
-    /// longer has is forgotten and started again by <paramref name="startOver"/>, when given; one that fails is closed.
+    /// longer has is forgotten and started again by <paramref name="startOver"/>; one that fails is closed.
     /// </summary>
     public async Task<string> ContinueAsync(SubSessionRegistry registry, OpenSubSession open,
         SendMessageRequest messageBody,
         SubSessionKind kind,
         string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken,
-        Func<Task<string>>? startOver = null)
+        Func<Task<string>> startOver)
     {
         using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeoutSource.CancelAfter(timeout);
@@ -143,16 +143,9 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
                 timeoutSource.Token);
             if (reply.RefusedStatus == 404)
             {
-                // The peer dropped it (idle, or restarted): nothing to close. The caller starts a new one if it can,
-                // else the model starts over with the whole context.
+                // The peer dropped it (idle, or restarted): nothing to close, and the caller starts a new one.
                 registry.Remove(open.Handle);
-                if (startOver is not null) return await startOver();
-                return MessageText.Format(SubSessionToolMessage.SubSessionGone,
-                    new
-                    {
-                        open.Handle,
-                        Agent = kind.Label
-                    });
+                return await startOver();
             }
 
             if (reply.RefusedStatus == 409)

@@ -24,26 +24,23 @@ public sealed record OpenSubSession(
     /// <summary>The chat's name for it (<c>sub-1</c>), given by the registry when it is added.</summary>
     public string Handle { get; init; } = "";
 
-    /// <summary>A specialist's kind (F26): what <c>StartSubSession</c> keeps.</summary>
-    public const string SpecialistKind = "sub-session";
-
     /// <summary>A minion's kind (F30): what <c>StartMinion</c> keeps; each tool continues only its own kind.</summary>
     public const string MinionKind = "minion";
 
     /// <summary>An asked agent's kind (F127.3.1): what <c>AskAgent</c> keeps, by its address.</summary>
     public const string AgentKind = "agent";
 
-    /// <summary>The address an asked agent was opened for (F127.3.1); none for a specialist or a minion.</summary>
+    /// <summary>The address an asked agent was opened for (F127.3.1); none for a minion.</summary>
     public AgentAddress? Address { get; init; }
 
     /// <summary>What it has done in this chat so far, every reply's events in order.</summary>
     public AgentWork Work { get; init; } = AgentWork.None;
 
-    /// <summary>What was kept: <see cref="SpecialistKind"/> or <see cref="MinionKind"/>.</summary>
-    public string Kind { get; init; } = SpecialistKind;
+    /// <summary>What was kept: <see cref="AgentKind"/> or <see cref="MinionKind"/>.</summary>
+    public string Kind { get; init; } = AgentKind;
 
     /// <summary>
-    /// A minion's model, as <c>MINION_LLMS</c> named it (F30); null for a specialist or the instance's own model.
+    /// A minion's model, as <c>MINION_LLMS</c> named it (F30); null for an asked agent or the instance's own model.
     /// </summary>
     public string? Llm { get; init; }
 }

@@ -26,7 +26,7 @@ public class RoutingEvalTests
 
     /// <summary>The toolsets that hand a question on to another agent.</summary>
     private static readonly string[] Delegating =
-        [CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire(), CoreToolset.Agents.Wire()];
+        [CoreToolset.Minions.Wire(), CoreToolset.Agents.Wire()];
 
     /// <summary>It is the identity's eval, under its dataset's name, at the version its trend carries.</summary>
     [Test]

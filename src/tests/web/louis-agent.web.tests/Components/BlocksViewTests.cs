@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Tests.Components;
 
 /// <summary>
-/// The blocks of an answer (thinking, text, tool calls, a delegation card for a StartSubSession call), rendered from
+/// The blocks of an answer (thinking, text, tool calls, a delegation card for an AskAgent call), rendered from
 /// the cook's own turn inside the recorded one, so every kind of block is in the golden.
 /// </summary>
 public class BlocksViewTests
@@ -16,7 +16,7 @@ public class BlocksViewTests
     public async Task TheCooksBlocks_MatchTheGoldenFile()
     {
         var turn = await SessionStreamFixture.ReplayAsync();
-        var cook = turn.Blocks.Single(b => b.ToolName == "StartSubSession").SubTurn!;
+        var cook = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName).SubTurn!;
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 

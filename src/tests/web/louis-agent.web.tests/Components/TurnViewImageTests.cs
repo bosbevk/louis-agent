@@ -24,15 +24,16 @@ public class TurnViewImageTests
         var turn = new Turn();
         foreach (var streamEvent in new[]
                  {
-                     ToolUse("d1", "StartSubSession",
-                         new { toolsets = new[] { SampleToolset.Alpha }, message = "Kook", role = SampleRole.Alpha }),
+                     ToolUse("d1", "AskAgent",
+                         new
+                         {
+                             toolsets = new[] { SampleToolset.Alpha },
+                             message = "Kook",
+                             role = SampleRole.Alpha
+                         }),
                      InSubSession("d1", ToolUse("c1", "FetchUrl", new { url = "https://example.co.za/bobotie" })),
-                     InSubSession("d1", ToolResult("c1", page)),
-                     InSubSession("d1", TextStart()),
-                     InSubSession("d1", TextDelta(Answer)),
-                     ToolResult("d1", Answer),
-                     TextStart(),
-                     TextDelta(Answer),
+                     InSubSession("d1", ToolResult("c1", page)), InSubSession("d1", TextStart()),
+                     InSubSession("d1", TextDelta(Answer)), ToolResult("d1", Answer), TextStart(), TextDelta(Answer),
                  })
             TurnStream.Apply(turn, streamEvent);
         return turn;

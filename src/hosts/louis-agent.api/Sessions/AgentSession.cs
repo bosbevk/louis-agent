@@ -89,8 +89,8 @@ internal sealed class AgentSession(
     public IReadOnlyDictionary<string, string> Attachments => _attachments;
 
     /// <summary>
-    /// The specialists this chat keeps open for a follow-up (F26): current for each turn, so <c>StartSubSession</c> keeps
-    /// them and <c>ContinueSubSession</c> finds them; closed on the peer when the chat is removed or dropped as idle.
+    /// The agents this chat keeps open for a follow-up (F26): current for each turn, so <c>AskAgent</c> keeps them and
+    /// finds them again by address; closed on the peer when the chat is removed or dropped as idle.
     /// </summary>
     public SubSessionRegistry SubSessions { get; } = new();
 

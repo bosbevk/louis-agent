@@ -14,7 +14,7 @@ public class DelegationCardTests
     /// <summary>The cook's call in the recorded turn, and what its card reads from it.</summary>
     private static (Block Block, Delegation Delegation) TheCooksCall(Turn turn)
     {
-        var block = turn.Blocks.Single(b => b.ToolName == "StartSubSession");
+        var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
         return (block, Delegation.From(block)!);
     }
 
@@ -29,7 +29,7 @@ public class DelegationCardTests
         var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, delegation).Add(x => x.Block, block));
 
         Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("done"));
-        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole),
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookAddress),
             "the role, as the user thinks of it");
         Snapshots.Match("Components/DelegationCard.html", cut.Markup);
     }
@@ -78,13 +78,13 @@ public class DelegationCardTests
     [Test]
     public void AFollowUp_ShowsOnlyTheFollowUpChip_NotTheHandle()
     {
-        // A continue call, which carries the handle of the specialist it goes back to.
+        // A minion's continue call, which carries the handle of the minion it goes back to.
         var block = new Block
         {
             Kind = BlockKind.Tool,
             ToolUseId = "call_2",
-            ToolName = "ContinueSubSession",
-            ToolInput = """{"handle":"sub-1","message":"En die nagereg?"}""",
+            ToolName = Delegation.ContinueMinionToolName,
+            ToolInput = """{"handle":"sub-1","task":"En die nagereg?"}""",
             ToolResult = "Malva poeding."
         };
         using var ctx = new BunitContext();
@@ -104,10 +104,8 @@ public class DelegationCardTests
         {
             Kind = BlockKind.Tool,
             ToolUseId = "call_1",
-            ToolName = "StartSubSession",
-            ToolInput =
-                """{"agent":"puls","toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}""".Replace("<RoleAlpha>",
-                    SessionStreamFixture.CookRole),
+            ToolName = Delegation.AskToolName,
+            ToolInput = $$"""{"address":"{{SessionStreamFixture.CookAddress}}","message":"Kook"}""",
             ToolResult = "Error: no peer named puls",
             ToolFailed = true
         };

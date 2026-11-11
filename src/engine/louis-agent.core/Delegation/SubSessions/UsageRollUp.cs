@@ -1,9 +1,9 @@
-
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 
 namespace LouisAgent.Core.Delegation.SubSessions;
-/// <summary>A sub-session's reported usage as one row of the parent's ledger and turn (F5; S, CL15, from SpecialistTools).</summary>
+
+/// <summary>A sub-session's reported usage as one row of the parent's ledger and turn (F5; S, CL15).</summary>
 internal sealed class UsageRollUp(IUsageSink? usageSink, TimeProvider time)
 {
     /// <summary>

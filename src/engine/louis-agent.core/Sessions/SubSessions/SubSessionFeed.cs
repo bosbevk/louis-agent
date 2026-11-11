@@ -2,7 +2,7 @@ namespace LouisAgent.Core.Sessions.SubSessions;
 
 /// <summary>
 /// Where a turn's sub-session events go while it runs: a host that shows them (the API's chat stream) observes the turn,
-/// and <see cref="SpecialistTools"/> reports every event it reads. Held in an <see cref="AsyncLocal{T}"/>, like the usage
+/// and the delegation tools report every event they read. Held in an <see cref="AsyncLocal{T}"/>, like the usage
 /// scope, so it flows into the tool call without being passed through the engine; nothing observes it by default.
 /// </summary>
 public static class SubSessionFeed
@@ -20,8 +20,13 @@ public static class SubSessionFeed
     /// <summary>Reports an event to the current observer, if any; a failing observer never breaks the tool.</summary>
     internal static void Report(SubSessionEvent subSessionEvent)
     {
-        try { CurrentObserver.Value?.Invoke(subSessionEvent); }
-        catch (Exception) { }
+        try
+        {
+            CurrentObserver.Value?.Invoke(subSessionEvent);
+        }
+        catch (Exception)
+        {
+        }
     }
 
     private sealed class Restore(Action<SubSessionEvent>? previous) : IDisposable

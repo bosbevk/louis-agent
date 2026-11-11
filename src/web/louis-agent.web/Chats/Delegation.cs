@@ -4,22 +4,17 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Chats;
 
 /// <summary>
-/// A specialist, minion or asked agent's call as its card shows it: who it went to, its role, toolsets and task, and
-/// once it returned, the answer and what the footer says about the child (<c>[Sub-session sub-1 on helper (web;
-/// cook). It stays open: …]</c>, <c>[Minion {role} on {llm} with {tool}]</c>, or <c>[Answered by acme, did: …]</c>
-/// for an <c>AskAgent</c>). What the child cost isn't read here: the card
-/// takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text (FX27).
+/// An asked agent's or a minion's call as its card shows it: who it went to, its toolsets and task, and once it
+/// returned, the answer and what the line under it says about the child (<c>[Answered by acme, did: …]</c> for an
+/// <c>AskAgent</c>, <c>[Minion {role} on {llm} with {tool}]</c> for a minion). What the child cost isn't read here:
+/// the card takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text
+/// (FX27).
 /// </summary>
-/// <param name="Role">The specialist's role: from the call for a start, from the footer once it returned.</param>
-/// <param name="Handle">
-/// The kept sub-session's handle (<c>sub-1</c>): from the call for a continue, from the footer for a start.
-/// </param>
-/// <param name="Continued">
-/// True for a <c>ContinueSubSession</c> call: a follow-up to a specialist that was already working.
-/// </param>
-/// <param name="ResultAgent">
-/// The peer named in the result's footer: the one actually used (the call may leave the name empty).
-/// </param>
+/// <param name="Role">A minion's role; none for an ask, whose address says who it is.</param>
+/// <param name="Handle">The kept minion's handle (<c>sub-1</c>), from a continue's call.</param>
+/// <param name="Continued">True for a <c>ContinueMinion</c> call: a follow-up to a minion that was already
+/// working.</param>
+/// <param name="ResultAgent">The address the line under an ask's answer names: who actually answered.</param>
 /// <param name="Minion">True for a <c>StartMinion</c> or <c>ContinueMinion</c> call (F30): a specialist handing one
 /// page and one of its tools to a minion. <paramref name="Toolsets"/> then holds that one tool,
 /// <paramref name="Role"/> the minion's role and <paramref name="Llm"/> the model it ran on.</param>
@@ -36,73 +31,27 @@ public sealed partial record Delegation(
     bool Minion = false,
     string? Llm = null)
 {
-    public const string ToolName = "StartSubSession";
-    public const string ContinueToolName = "ContinueSubSession";
+    /// <summary>The tool that hands one task and one tool to a minion (F30).</summary>
     public const string MinionToolName = "StartMinion";
+
+    /// <summary>The tool that goes back to a minion.</summary>
     public const string ContinueMinionToolName = "ContinueMinion";
 
     /// <summary>The tool that asks another agent by its address (F127.3.1).</summary>
     public const string AskToolName = "AskAgent";
 
-    /// <summary>Whether a tool call opens or continues a child: a specialist (F5, F26) or a minion (F30).</summary>
+    /// <summary>Whether a tool call opens or continues a child: an asked agent (F127.3.1) or a minion (F30).</summary>
     public static bool IsDelegationTool(string? toolName) =>
-        toolName is ToolName or ContinueToolName or MinionToolName or ContinueMinionToolName or AskToolName;
+        toolName is AskToolName or MinionToolName or ContinueMinionToolName;
 
     /// <summary>Where the line under an asked agent's answer starts (core's AgentAnswer).</summary>
     private const string AnsweredBy = "\n\n[Answered by ";
 
-    /// <summary>The delegation in a block, or none when the block isn't a start or continue call.</summary>
+    /// <summary>The delegation in a block, or none when the block isn't an ask or a minion's call.</summary>
     public static Delegation? From(Block block)
     {
         if (block.Kind != BlockKind.Tool || !IsDelegationTool(block.ToolName)) return null;
-        if (block.ToolName is MinionToolName or ContinueMinionToolName) return FromMinion(block);
-        if (block.ToolName is AskToolName) return FromAsk(block);
-        bool continued = block.ToolName == ContinueToolName;
-
-        string agent = "", task = "";
-        string? role = null, handle = null;
-        var toolsets = new List<string>();
-        try
-        {
-            using var input = JsonDocument.Parse(block.ToolInput ?? "{}");
-            var root = input.RootElement;
-            if (root.TryGetProperty("agent", out var a)) agent = a.GetString() ?? "";
-            if (root.TryGetProperty("message", out var m)) task = m.GetString() ?? "";
-            // CL14: the call's role; a chat recorded before CL14 said personality.
-            if ((root.TryGetProperty("role", out var p) || root.TryGetProperty("personality", out p)) &&
-                p.ValueKind == JsonValueKind.String)
-                role = Blank(p.GetString());
-            if (root.TryGetProperty("handle", out var h) && h.ValueKind == JsonValueKind.String)
-                handle = Blank(h.GetString());
-            if (root.TryGetProperty("toolsets", out var t) && t.ValueKind == JsonValueKind.Array)
-                toolsets.AddRange(t.EnumerateArray().Select(x => x.GetString() ?? "").Where(x => x.Length > 0));
-        }
-        catch (JsonException)
-        {
-            // Unreadable input: the card shows what it can.
-        }
-
-        string? answer = null, resultAgent = null;
-        bool failed = block.ToolResult?.StartsWith("Error:", StringComparison.Ordinal) == true;
-        if (block.ToolResult is { } result && !failed && Footer().Match(result) is { Success: true } match)
-        {
-            answer = result[..match.Index].TrimEnd();
-            resultAgent = match.Groups["agent"].Value;
-            handle ??= Blank(match.Groups["handle"].Value);
-            // The footer's "(web; cook)": the toolsets, then the role; a start that isn't kept has no role there.
-            string[] inside = match.Groups["inside"].Value.Split(';', 2, StringSplitOptions.TrimEntries);
-            if (inside.Length == 2) role ??= Blank(inside[1]);
-            // F34: the footer names what the specialist loaded (its role may add some), so it wins over what was sent.
-            var loaded = inside[0].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            if (loaded.Length > 0) toolsets = [.. loaded];
-        }
-
-        // While it works, its own stream's start says what it loaded (F34).
-        if (block.SubTurn?.Toolsets is { Count: > 0 } live) toolsets = [.. live];
-        // FX17: a follow-up's call names the handle, not the role; its stream's start names it.
-        role ??= Blank(block.SubTurn?.Role);
-        return new Delegation(agent, toolsets, task, answer ?? (failed ? block.ToolResult : null), failed, resultAgent,
-            role, handle, continued);
+        return block.ToolName is MinionToolName or ContinueMinionToolName ? FromMinion(block) : FromAsk(block);
     }
 
     /// <summary>
@@ -146,7 +95,6 @@ public sealed partial record Delegation(
             failed, null, role, handle, continued, Minion: true, Llm: llm);
     }
 
-    /// <summary>The text, trimmed, or none when it's empty.</summary>
     /// <summary>
     /// An ask (F127.3.1): the address and the message from the call; once it returned, the answer without the line
     /// under it, and who that line says answered. What the child loaded comes from its own stream.
@@ -185,16 +133,8 @@ public sealed partial record Delegation(
             resultAgent);
     }
 
+    /// <summary>The text, trimmed, or none when it's empty.</summary>
     private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-
-    /// <summary>
-    /// A specialist's footer at the end of its answer: <c>[Sub-session on coder (files)]</c>, or for a kept one
-    /// <c>[Sub-session sub-1 on helper (web; cook). It stays open: …]</c>.
-    /// </summary>
-    [GeneratedRegex(
-        @"\n\n\[Sub-session (?:(?<handle>\S+) )?on (?<agent>\S+) \((?<inside>[^)]*)\)" +
-        @"(?:\. It stays open:[^\]]*)?\]\s*$")]
-    private static partial Regex Footer();
 
     /// <summary>A minion's footer at the end of its answer: <c>[Minion {role} on {llm} with {tool}]</c>.</summary>
     [GeneratedRegex(@"\n\n\[Minion (?<role>\S+) on (?<llm>\S+) with (?<tool>\S+)\]\s*$")]

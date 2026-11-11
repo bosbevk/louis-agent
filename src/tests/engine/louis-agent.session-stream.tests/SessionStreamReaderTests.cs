@@ -40,17 +40,15 @@ public class SessionStreamReaderTests
             Is.EqualTo(Expected().GetProperty("specialist_tools").EnumerateArray().Select(n => n.GetString())));
     }
 
+    /// <summary>The route is the address the turn's ask named (F127.3.1).</summary>
     [Test]
-    public async Task TheRoleIsTheOneTheStartedSubSessionNamed()
+    public async Task TheRouteIsTheAddressTheAskNamed()
     {
         var events = await ReadRecordedTurnAsync();
 
-        var start = events.SelectMany(ToolUses).First(t => t.Name == "StartSubSession").Input;
-        var role = start.TryGetProperty("role", out var r)
-            ? r.GetString()
-            : start.GetProperty("personality").GetString();
+        var ask = events.SelectMany(ToolUses).First(t => t.Name == "AskAgent").Input;
 
-        Assert.That(role, Is.EqualTo(Expected().GetProperty("role").GetString()));
+        Assert.That(ask.GetProperty("address").GetString(), Is.EqualTo(Expected().GetProperty("role").GetString()));
     }
 
     [Test]

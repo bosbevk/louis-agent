@@ -1,9 +1,8 @@
 namespace LouisAgent.Core.Sessions;
 
-
 /// <summary>
 /// The files the user attached in this conversation, by name (F22): the host (the API's session) sets them for a turn,
-/// and <see cref="SpecialistTools.StartSubSession"/> forwards the ones the model names to the specialist. The model passes
+/// and <c>AskAgent</c> forwards the ones the model names to the agent it asks. The model passes
 /// names, not contents, so a large file isn't copied through the model's output. Held in an <see cref="AsyncLocal{T}"/>,
 /// like <see cref="SubSessionFeed"/>; empty by default.
 /// </summary>

@@ -191,24 +191,21 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// Marking specialists as optional doesn't sneak delegation into a sub-session.
+    /// Marking the agents toolset as optional doesn't sneak delegation into a sub-session.
     /// </summary>
     [Test]
     public void AnOptionalMark_DoesntGetPastTheDelegationRules() =>
-        Assert.That(() => Sessions().Create(["specialists?"], depth: 1),
+        Assert.That(() => Sessions().Create([CoreToolset.Agents.Wire() + "?"], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
 
     /// <summary>
-    /// A sub-session can't delegate further, by either toolset, and the tree stops at the minion. (CL9's old name
-    /// for the specialists, <c>agents</c>, is since F127.3.1 the toolset that asks another agent.)
+    /// A sub-session can't ask another agent (F127.3.1), and the tree stops at the minion.
     /// </summary>
     [Test]
-    public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
+    public void ASubSession_CantAskAnotherAgent_AndDepthStopsAtTheMinion()
     {
         var sessions = Sessions();
 
-        Assert.That(() => sessions.Create([CoreToolset.Specialists.Wire()], depth: 1),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
         Assert.That(() => sessions.Create([CoreToolset.Agents.Wire()], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
         Assert.That(() => sessions.Create([TestToolset.Files.Wire()], depth: 3),

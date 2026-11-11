@@ -44,7 +44,11 @@ public class ScriptToolTests
 
     private AgentEngine Engine(IChatClient? client = null)
     {
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
+        var options = new AgentOptions
+        {
+            WorkspaceRoot = _skillsDir,
+            SkillsDirectory = _skillsDir
+        };
         var engine = new AgentEngine(SkillLoader.Load(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,
@@ -127,7 +131,11 @@ public class ScriptToolTests
         Assert.That(wrongType, Does.Contain("must be a integer"));
 
         Assert.That(
-            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown),
+            tool.TryBuildInput(new Dictionary<string, object?>
+            {
+                ["a"] = 1,
+                ["c"] = 2
+            }, out _, out _, out var unknown),
             Is.False);
         Assert.That(unknown, Does.Contain("unknown parameter 'c'"));
     }
@@ -151,7 +159,7 @@ public class ScriptToolTests
         var engine = Engine();
 
         Assert.That(engine.CreateTool("# Tool: Nope"), Does.Contain("invalid tool definition"));
-        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "StartSubSession")), Does.Contain("built-in tool"));
+        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "AskAgent")), Does.Contain("built-in tool"));
     }
 
     [Test]

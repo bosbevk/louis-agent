@@ -32,11 +32,11 @@ public class SessionBodiesJsonTests
         var api = new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://api.test/") },
             new ChatSettings());
 
-        await api.CreateSessionAsync([AskedToolset.Specialists.Wire()], timeZone: "Africa/Johannesburg",
+        await api.CreateSessionAsync([AskedToolset.Agents.Wire()], timeZone: "Africa/Johannesburg",
             identity: "alpha-guide");
 
         Assert.That(handler.Requests.Single().Body, Is.EqualTo(JsonSerializer.Serialize(
-            new CreateSessionRequest(null, null, null, [AskedToolset.Specialists.Wire()],
+            new CreateSessionRequest(null, null, null, [AskedToolset.Agents.Wire()],
                 TimeZone: "Africa/Johannesburg", Identity: "alpha-guide"), JsonSerializerOptions.Web)));
     }
 

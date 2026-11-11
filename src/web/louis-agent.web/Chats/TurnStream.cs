@@ -5,6 +5,7 @@ using LouisAgent.Web.Usage;
 using LouisAgent.Web.Api;
 
 namespace LouisAgent.Web.Chats;
+
 /// <summary>Folds louis-agent.api's streamed events (Claude's shape, read by the session-stream reader) into a
 /// <see cref="Turn"/>, for every chat page.</summary>
 public static class TurnStream
@@ -94,8 +95,8 @@ public static class TurnStream
     }
 
     /// <summary>
-    /// An event of a sub-session a StartSubSession call opened, folded into that call's own turn the same way. A
-    /// minion's events arrive inside the specialist's as a nested sub_session, so this recurses a level.
+    /// An event of a sub-session an AskAgent call opened, folded into that call's own turn the same way. A minion's
+    /// events arrive inside the asked agent's as a nested sub_session, so this recurses a level.
     /// </summary>
     private static void ApplySubSession(Turn turn, SubSessionStreamed sub)
     {

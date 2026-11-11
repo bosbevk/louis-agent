@@ -53,16 +53,16 @@ public partial class ChatPage : IDisposable
     }
 
     /// <summary>
-    /// A new chat's session: Puls answers the web itself and hands cooking to the cook. An API without a peer offers no
-    /// specialists toolset; the chat then gets every toolset there is. The time zone always (GetToday in the user's own
+    /// A new chat's session: Puls answers the web itself and asks the cook about cooking. An API without a peer offers
+    /// no agents toolset; the chat then gets every toolset there is. The time zone always (GetToday in the user's own
     /// time; it names a region, not a place); the location only when set.
     /// </summary>
     private async Task<string> OpenSessionAsync(ChatOpening opening)
     {
         string[] available = await Api.AvailableToolsetsAsync();
-        string[] own = [AskedToolset.Specialists.Wire(), AskedToolset.Web.Wire()];
+        string[] own = [AskedToolset.Agents.Wire(), AskedToolset.Web.Wire()];
         return await Api.CreateSessionAsync(
-            available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available,
+            available.Contains(AskedToolset.Agents.Wire()) ? own.Where(available.Contains).ToArray() : available,
             opening.Role, opening.Location, opening.TimeZone);
     }
 

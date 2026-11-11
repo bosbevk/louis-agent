@@ -182,7 +182,7 @@ internal static class TurnStream
             string stopReason = "end_turn";
             string? error = null;
             var errorKind = StreamErrorKind.Api;
-            // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is
+            // F5: a sub-session's events (AskAgent) arrive while its tool call runs, so the next update is
             // awaited alongside them and they are sent as they come: the chat shows the specialist's work live. The
             // model still gets only the sub-session's answer.
             var subSessions = Channel.CreateUnbounded<SubSessionEvent>();
