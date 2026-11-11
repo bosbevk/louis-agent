@@ -32,9 +32,9 @@ public class ShowroomPagesTests
         Assert.That(demos,
             Is.EqualTo(new[]
             {
-                ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
+                ("/guesthouse-demo", DemoGroup.ForYourBusiness, TileAccent.Blue),
                 ("/restaurant-demo", DemoGroup.ForYourBusiness, TileAccent.Green),
-                ("/law-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Blue),
+                ("/law-practice-demo", DemoGroup.ForYourBusiness, TileAccent.Yellow),
                 ("/coding-agent", DemoGroup.AgentsAtWork, TileAccent.Red),
                 ("/triage-demo", DemoGroup.AgentsAtWork, TileAccent.Purple),
             }));
@@ -67,8 +67,8 @@ public class ShowroomPagesTests
     /// mark, and four cues of what to watch beside it, the first its agent showing its website.
     /// </summary>
     [TestCase(typeof(RestaurantDemoPage), "accent-green", "wheatfieldkitchen.example")]
-    [TestCase(typeof(LawPracticeDemoPage), "accent-blue", "koringland.example")]
-    [TestCase(typeof(GuesthouseDemoPage), "accent-yellow", "seemeeu.example")]
+    [TestCase(typeof(LawPracticeDemoPage), "accent-yellow", "koringland.example")]
+    [TestCase(typeof(GuesthouseDemoPage), "accent-blue", "seemeeu.example")]
     public void ABusinessDemo_PlaysOnItsOwnWebsite(Type page, string accent, string address)
     {
         using var ctx = new BunitContext();
