@@ -2,7 +2,7 @@
 
 > **Plan draft, not yet approved.** Written on 2026-11-11 from Louis's "Okay how do I get my agent to listen to
 > voice?" and his pick of three (B: our own speech-to-text behind a seam, not the browser's and not realtime voice).
-> The open choices below go to Louis one at a time, three options each (the development guide, rules 10 and 11); when
+> The open choices went to Louis one at a time and are all settled (C1, C2, C2b, C3), three options each (the development guide, rules 10 and 11); when
 > they are settled this is the plan he approves, and it is committed on `feature/F92-voice-input` before step 1.
 
 ## Context
@@ -70,7 +70,7 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 | C1 | Where the words come from first | (a) Whisper in our own process (Whisper.net, MIT, whisper.cpp underneath): free, private, CPU and a model file in the image; (b) the OpenAI-shaped client we already reference, pointed at OpenAI's cloud: least code, paid per minute, audio leaves us; (c) Azure Speech: `af-ZA`/`zu-ZA` listed, 5 free hours a month, its own SDK and an adapter we write | **Picked (a)** (Louis, 2026-11-11: "whisper then"; free only, no account): free evals, audio never leaves our box, the seam lets (b) or (c) join in one step later |
 | C2 | What happens after the person stops talking | (a) the text goes in the box to check; (b) it is sent at once; (c) a setting per site | **Picked (c)** (Louis, 2026-11-11: "if it is small just add it and it is fun"); where the setting lives is C2b |
 | C2b | Where "check or send" is set (Louis's demos share one page) | (a) once per site in its config; (b) on each chat box, the component's parameter, so each demo picks; (c) per chat box with a site default | **Picked (b)** (Louis, 2026-11-11): a demo page holds several agents, and one parameter covers a one-chat site too |
-| C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | (a), the widget picks it up when F131 builds its frame |
+| C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | **Picked (c)** (Louis, 2026-11-11: "it must be a built in feature in the framework"): in `louis-agent.web` for every site, off unless `SPEECH_PROVIDER` is set, and in F131's widget (step 7) |
 
 ### Diagrams
 
@@ -225,8 +225,12 @@ Each step is one commit with its test, written and seen failing first, and a sto
    landing in the box or sent by the setting, and a second chat's mic stopping the first.
 6. **The voice eval.** The `WordErrorRate` check in the catalogue (C# once), and the eval as files: Louis's clips with
    what was said, English and Afrikaans. Free with a local provider; a cloud provider's run waits for Louis's go.
-7. **Docs.** ADR 0118 (speech behind the same seam as chat; audio never kept), the core and web design docs, the
-   write-up `docs/learning/19-multimodal.md`, TODO, work-log, GOAL row 19.
+7. **The widget talks too.** F131.2's frame (`/embed/site`) draws the same chat box, so the mic is there already;
+   this step adds `allow="microphone"` to the frame `embed.js` makes (a browser refuses the mic inside a frame
+   without it) and a test that the frame carries it. If F131.2 isn't merged yet, this step waits for it, or its
+   plan takes this one line.
+8. **Docs.** ADR 0118 (speech behind the same seam as chat; audio never kept; one mic per page), the core and web
+   design docs, the write-up `docs/learning/19-multimodal.md`, TODO, work-log, GOAL row 19.
 
 ## Verification
 
