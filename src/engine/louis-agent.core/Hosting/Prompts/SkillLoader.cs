@@ -4,6 +4,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.EngineTools.Skills.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -44,8 +45,12 @@ public static class SkillLoader
     /// level 0 only its voice, since a sub-session's toolsets were chosen for it (F21). <see cref="RoleException"/>
     /// for a name that isn't valid or has no file there.</param>
     /// <param name="level">The session's level (CL8): where its role is.</param>
+    /// <param name="calls">
+    /// The addresses the session's identity may ask (F127.3.1), listed after the agents guide when it has that
+    /// toolset.
+    /// </param>
     public static ISkillProvider Load(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? role = null,
-        RoleLevel level = RoleLevel.Agent)
+        RoleLevel level = RoleLevel.Agent, IReadOnlyList<string>? calls = null)
     {
         var composite = new CompositeSkillProvider();
 
@@ -76,6 +81,15 @@ public static class SkillLoader
         var profile = toolsets.ToList();
         foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
             AddBuiltIn(agent, composite, fileName);
+        // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ
+        if (calls is { Count: > 0 } && profile.Any(t => t.Name == CoreToolset.Agents.Wire()))
+            composite.AddProvider(MarkdownSkillProvider.FromText(string.Join("\n",
+            [
+                MessageText.Format(SubSessionToolMessage.AgentsYouMayAskHeading), "",
+                MessageText.Format(SubSessionToolMessage.AgentsYouMayAskIntro), "",
+                .. calls.Select(call =>
+                    MessageText.Format(SubSessionToolMessage.AgentYouMayAsk, new { Address = call }))
+            ])));
 
         // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with
         // its tools. A profile without it (a product's chats with only their own toolsets) gets its mode and its

@@ -205,7 +205,9 @@ public sealed class AgentEngineFactory
         // ReadSkill comes only with an identity that has a skill to read on demand, and holds only its skills (F129).
         var tools = ToolsetCatalog.BuildTools(resolved, Context);
         var skills = new SkillReadTools(SkillLoader.SkillsOf(_agent, role, level));
-        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient,
+        // Whom a mode may ask (F127.3.1): its identity's Calls; below level 0 nobody, since agents is refused there.
+        var calls = level == RoleLevel.Agent ? Catalog.IdentityOf(role ?? DefaultVoice)?.Calls : null;
+        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level, calls), model?.Client ?? _chatClient,
             _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: skills.HasAny ? [.. tools, skills] : tools, _usageSink,
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
@@ -215,7 +217,7 @@ public sealed class AgentEngineFactory
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
             ReservedToolNames = Catalog.ToolNames,
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
-            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level),
+            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level, calls),
             Thinking = model is null ? _thinking : model.Thinking,
             Display = _display,
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.

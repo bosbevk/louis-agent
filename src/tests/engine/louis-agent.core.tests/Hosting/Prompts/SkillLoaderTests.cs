@@ -149,6 +149,30 @@ public class SkillLoaderTests
         }
     }
 
+    /// <summary>
+    /// The addresses an identity may ask (F127.3.1) come with the agents toolset, after its guide, so the model knows
+    /// whom it may ask; without the toolset, or with no addresses, nothing is listed.
+    /// </summary>
+    [Test]
+    public void TheAddressesItMayAsk_ComeWithTheAgentsToolset()
+    {
+        string[] calls = ["acme", "acme.cook"];
+
+        string asks = SkillLoader.Load(Options(), Toolsets(CoreToolset.Agents.Wire()), calls: calls).Documentation;
+        string none = SkillLoader.Load(Options(), Toolsets(TestToolset.Files.Wire()), calls: calls).Documentation;
+        string empty = SkillLoader.Load(Options(), Toolsets(CoreToolset.Agents.Wire()), calls: []).Documentation;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(asks,
+                Does.Contain("# Agents you may ask").And.Contain("- `acme`").And.Contain("- `acme.cook`"));
+            Assert.That(asks.IndexOf("# Agents you may ask", StringComparison.Ordinal),
+                Is.GreaterThan(asks.IndexOf("# Agents Skills", StringComparison.Ordinal)), "after the agents guide");
+            Assert.That(none, Does.Not.Contain("# Agents you may ask"));
+            Assert.That(empty, Does.Not.Contain("# Agents you may ask"));
+        });
+    }
+
     /// <summary>A session with fewer toolsets reads a shorter prompt.</summary>
     [Test]
     public void ThePromptShrinks_WithTheToolset()

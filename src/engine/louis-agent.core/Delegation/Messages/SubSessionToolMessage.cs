@@ -179,5 +179,12 @@ public enum SubSessionToolMessage
 
     [Description(
         "Error: no agent was asked at '{Address}' in this chat, so it has no work to read. Asked: {Asked}.")]
-    AgentWorkNotAsked
+    AgentWorkNotAsked,
+
+    [Description("# Agents you may ask")] AgentsYouMayAskHeading,
+
+    [Description("These are the addresses you may pass to `AskAgent`. Any other is refused.")]
+    AgentsYouMayAskIntro,
+
+    [Description("- `{Address}`")] AgentYouMayAsk
 }
