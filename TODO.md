@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (112)
+## Open (113)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -100,6 +100,7 @@ known limitations below are facts about today, not tasks.
 | F96 | The browser's user agent names the user's town per visit | Later | — |
 | F97 | A tool added mid-chat, after FX4 | Later | — |
 | F38 | Tool search, when a measured need comes | Later | — |
+| F134 | How much of an asked agent's work the asker reads, as a framework choice (Louis, 2026-11-11, during F127.3.1: "AskAgentWithTools and AskAgentWithToolsAndThinking"; "we will not use it"): its tool calls, or those and its thinking as text, beside the answer; three options weighed then (one `ReadAgentWork` with a detail level, three tools, one `show` parameter); when a framework user needs it | Later | — |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later | — |
 | F99 | An error tracker behind `IErrorFeed`, after F39 | Later | — |
 | F100 | A webhook trigger beside polling, after F39 | Later | — |

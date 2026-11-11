@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 91 | 79 |
+| Features (`F`) | 91 | 80 |
 | Fixes (`FX`) | 120 | 7 |
 | Cleanups (`CL`) | 27 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (112 in the TODO)
+## Open (113 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -100,6 +100,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F96 | The browser's user agent names the user's town per visit | Later |
 | F97 | A tool added mid-chat, after FX4 | Later |
 | F38 | Tool search, when a measured need comes | Later |
+| F134 | How much of an asked agent's work the asker reads, as a framework choice: its tool calls, or those and its thinking, beside the answer; when a framework user needs it | Later |
 | F98 | Planning and a self-check before answering, tried on a simulation first | Later |
 | F99 | An error tracker behind `IErrorFeed`, after F39 | Later |
 | F100 | A webhook trigger beside polling, after F39 | Later |
