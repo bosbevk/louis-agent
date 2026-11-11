@@ -1,9 +1,9 @@
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
-using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
+using LouisAgent.Diagrams.Sequence.Spec;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -26,6 +26,7 @@ public static class DiagramReader
         CheckPart(kind, source);
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
+        if (source.Sequence is { } sequence) CheckSequence(sequence);
         return source;
     }
 
@@ -66,6 +67,11 @@ public static class DiagramReader
         {
             throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
         }
+        // A sequence's step without its "step" field can't be told apart: System.Text.Json says so this way.
+        catch (NotSupportedException ex)
+        {
+            throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
+        }
     }
 
     /// <summary>A kind's own part must be there: a flow its boxes and arrows, cards their rows.</summary>
@@ -75,6 +81,7 @@ public static class DiagramReader
         {
             DiagramKind.Flow => source.Flow is not null,
             DiagramKind.Cards => source.Cards is not null,
+            DiagramKind.Sequence => source.Sequence is not null,
             _ => false
         };
         if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
@@ -120,6 +127,33 @@ public static class DiagramReader
                 Id = ids.Contains(stray.From) ? stray.To : stray.From
             });
     }
+
+    /// <summary>A sequence has a step at least, and every step names participants the chart has.</summary>
+    private static void CheckSequence(SequenceSpec sequence)
+    {
+        if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps, new { });
+
+        var ids = sequence.Participants.Select(head => head.Id).ToHashSet(StringComparer.Ordinal);
+        var stray = sequence.Steps.Select(Ends)
+            .FirstOrDefault(ends => !ids.Contains(ends.From) || !ids.Contains(ends.To));
+        if (stray == default) return;
+        throw Refused(DiagramMessage.UnknownParticipant,
+            new
+            {
+                stray.From,
+                stray.To,
+                Id = ids.Contains(stray.From) ? stray.To : stray.From
+            });
+    }
+
+    /// <summary>Who a step runs between.</summary>
+    private static (string From, string To) Ends(SequenceStep step) =>
+        step switch
+        {
+            MessageStep message => (message.From, message.To),
+            ReplyStep reply => (reply.From, reply.To),
+            _ => throw new NotSupportedException(step.GetType().Name)
+        };
 
     /// <summary>The refusal, its text from the message enum.</summary>
     private static InvalidDataException Refused(DiagramMessage message, object values) =>
