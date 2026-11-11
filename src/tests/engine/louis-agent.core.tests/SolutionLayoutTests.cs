@@ -55,8 +55,8 @@ public class SolutionLayoutTests
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]
-    [TestCase("src/tools", "louis-agent.usage-probe", "louis-agent.film-export")]
-    [TestCase("src/tests/tools", "louis-agent.film-export.tests")]
+    [TestCase("src/tools", "louis-agent.usage-probe", "louis-agent.film-export", "louis-agent.doc-diagrams")]
+    [TestCase("src/tests/tools", "louis-agent.film-export.tests", "louis-agent.doc-diagrams.tests")]
     [TestCase("demos/puls/tests", "louis-agent.api.tests", "louis-agent.api.integration-tests",
         "louis-agent.api.evals.tests",
         "louis-agent.api.testing",

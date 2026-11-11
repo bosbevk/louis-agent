@@ -166,7 +166,7 @@ packs/                   # What an agent can do, one area (CL32): tools/ (the pa
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/
 demos/louis-agent/       # Our own demo: identity/ (the coding agent, the triage team), web/ (code review: the coding agent's chat and admin), hosts/ (the orchestrator POC, and the programs that start the framework's hosts), config/, docker/, skills/, tests/, docs/, and git-ignored data/ and logs/
 demos/starter/           # The smallest site (web/), its API program (hosts/) and what `dotnet new louis-site` makes ([Spawn a site](guides/spawn-a-site.md))
-src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger. louis-agent.film-export: the site's films to WebP
+src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger. louis-agent.film-export: the site's films to WebP. louis-agent.doc-diagrams: the docs' diagrams from their JSON
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs/tests/ the packs'; the ones that leave their process are *.integration-tests
 src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
 .claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
