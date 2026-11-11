@@ -1,4 +1,3 @@
-using LouisAgent.Testing;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;

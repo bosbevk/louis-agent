@@ -1,8 +1,6 @@
 using LouisAgent.Composition.Logging;
-using LouisAgent.Core.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;

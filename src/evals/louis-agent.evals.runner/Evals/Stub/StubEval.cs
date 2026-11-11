@@ -1,13 +1,9 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
-using LouisAgent.Evals.Runner.Evals.Stub;
 using System.Text.Json;
-using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Trials;
@@ -36,7 +32,7 @@ public sealed class StubEval : IEval
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
             new EvalMode(StubMode.Direct.Wire(), Role, [StubToolset.Web.Wire()]),
-            new EvalMode(StubMode.Delegating.Wire(), Role, [StubToolset.Agents.Wire(), StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Delegating.Wire(), Role, [StubToolset.Agents.Wire(), StubToolset.Web.Wire()])
         ]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
@@ -46,7 +42,7 @@ public sealed class StubEval : IEval
             JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
         new EvalScenario("cottage-pie",
             new EvalInput(null, "Africa/Johannesburg", [MessageText.Format(StubMessage.CottagePie)]),
-            JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
+            JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev)
     ];
 
     /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
