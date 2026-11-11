@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "title": "CL60.4 the classes: the architecture",
+  "caption": "No new layout: a class chart is turned into a flow and drawn by the same layout, router, renderer and frame.",
+  "flow": {
+    "nodes": [
+      { "id": "doc", "label": "a doc's mermaid\nclassDiagram", "icon": "file", "tone": "amber" },
+      { "id": "import", "label": "doc-diagrams import\nMermaidClassReader (5)", "icon": "terminal", "tone": "blue", "group": "tool" },
+      { "id": "json", "label": "diagrams/*.json\nkind classes (2)", "icon": "file", "tone": "amber" },
+      { "id": "adapter", "label": "ClassFlow (4)\ntypes to boxes,\nrelations to arrows", "icon": "settings", "tone": "violet", "group": "lib" },
+      { "id": "layout", "label": "GraphLayout\nmembers in a box (3)", "icon": "chart", "tone": "violet", "group": "lib" },
+      { "id": "frame", "label": "FlowRenderer, TitledFrame\nunchanged but members", "icon": "stack", "tone": "violet", "group": "lib" },
+      { "id": "svg", "label": "the doc links the SVG\n(step 6)", "icon": "browser", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "doc", "to": "import", "word": "once" },
+      { "from": "import", "to": "json" },
+      { "from": "json", "to": "adapter" },
+      { "from": "adapter", "to": "layout" },
+      { "from": "layout", "to": "frame" },
+      { "from": "frame", "to": "svg" }
+    ],
+    "direction": "down",
+    "groups": [
+      { "id": "tool", "label": "src/tools/louis-agent.doc-diagrams" },
+      { "id": "lib", "label": "louis-agent.diagrams" }
+    ]
+  }
+}
