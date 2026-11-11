@@ -1,0 +1,97 @@
+<svg viewBox="-24 -24 928 678" width="928" height="678" role="img" aria-label="The architecture in layers" xmlns="http://www.w3.org/2000/svg">
+  <title>The architecture in layers</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="678" rx="14" />
+  <rect class="frame" x="0" y="0" width="880" height="630" rx="14" />
+  <path class="edge" d="M 440 126 L 440 146 L 226 146 L 226 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 146 L 654 146 L 654 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 226 272 L 226 292 L 440 292 L 440 312" marker-end="url(#arrow)" />
+  <path class="edge" d="M 654 272 L 654 292 L 440 292 L 440 312" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 418 L 440 438 L 226 438 L 226 458" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 418 L 440 438 L 654 438 L 654 458" marker-end="url(#arrow)" />
+  <g class="icon" transform="translate(430 36) scale(0.8333)">
+    <path d="M7 8l-4 4l4 4" />
+    <path d="M17 8l4 4l-4 4" />
+    <path d="M14 4l-4 16" />
+  </g>
+  <text class="title" x="440" y="81" text-anchor="middle">Your application</text>
+  <text class="text" x="440" y="105" text-anchor="middle">The business problem and application-specific configuration</text>
+  <rect class="card" x="20" y="166" width="412" height="106" rx="10" />
+  <g class="icon" transform="translate(36 182) scale(0.8333)">
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+  </g>
+  <text class="title" x="36" y="227" text-anchor="start">Identity</text>
+  <text class="text" x="36" y="251" text-anchor="start">Who the agent is, its roles, voice and rules.</text>
+  <rect class="card" x="448" y="166" width="412" height="106" rx="10" />
+  <g class="icon" transform="translate(464 182) scale(0.8333)">
+    <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+    <path d="M12 12l8 -4.5" />
+    <path d="M12 12l0 9" />
+    <path d="M12 12l-8 -4.5" />
+  </g>
+  <text class="title" x="464" y="227" text-anchor="start">Packs</text>
+  <text class="text" x="464" y="251" text-anchor="start">What the agent can do through tools and integrations.</text>
+  <rect class="card highlight" x="20" y="312" width="840" height="106" rx="10" />
+  <g class="icon" transform="translate(430 328) scale(0.8333)">
+    <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+    <path d="M9 9h6v6h-6z" />
+    <path d="M3 10h2" />
+    <path d="M3 14h2" />
+    <path d="M10 3v2" />
+    <path d="M14 3v2" />
+    <path d="M21 10h-2" />
+    <path d="M21 14h-2" />
+    <path d="M14 21v-2" />
+    <path d="M10 21v-2" />
+  </g>
+  <text class="title" x="440" y="373" text-anchor="middle">Core engine</text>
+  <text class="text" x="440" y="397" text-anchor="middle">Tool loop · streaming · guards · provider integration · delegation · usage accounting</text>
+  <rect class="card" x="20" y="458" width="412" height="122" rx="10" />
+  <g class="icon" transform="translate(36 474) scale(0.8333)">
+    <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+  </g>
+  <text class="title" x="36" y="519" text-anchor="start">Model providers</text>
+  <text class="text" x="36" y="543" text-anchor="start">Claude, Ollama and OpenAI-compatible endpoints.</text>
+  <rect class="card" x="448" y="458" width="412" height="122" rx="10" />
+  <g class="icon" transform="translate(464 474) scale(0.8333)">
+    <path d="M7 12l5 5l10 -10" />
+    <path d="M2 12l5 5m5 -5l5 -5" />
+  </g>
+  <text class="title" x="464" y="519" text-anchor="start">Evaluation and measurement</text>
+  <text class="text" x="464" y="543" text-anchor="start">Tests, recorded runs, request traces and cost</text>
+  <text class="text" x="464" y="559" text-anchor="start">accounting.</text>
+  <text class="caption" x="20" y="618" text-anchor="start">Conceptual summary of the published architecture, not a complete dependency diagram.</text>
+</svg>

@@ -15,6 +15,8 @@ Considered: a copy of the engine per product (two engines drift apart); packs lo
 
 ## Decision
 
+![The engine on top, the identities and the packs under it, each joined to the engine both ways](diagrams/0027-engine-identities-and-packs.svg)
+
 - **Core is the engine:** the loop, sessions, usage and prices, guards, the contracts, and the tools every identity
   needs. It names no product and no country.
 - **An identity** (`IAgentIdentity`) is who an agent is: its voice, modes and roles, and the packs it uses, named by

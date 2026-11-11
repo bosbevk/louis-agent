@@ -12,6 +12,13 @@ public static class DiagramSync
     /// <summary>The name of the folder a doc's diagrams sit in.</summary>
     public const string Folder = "diagrams";
 
+    /// <summary>Where the docs are: the framework's, the packs' and each demo's.</summary>
+    public static IReadOnlyList<string> Roots(string repoRoot) =>
+    [
+        Path.Combine(repoRoot, "src", "docs"), Path.Combine(repoRoot, "packs", "docs"),
+        .. Directory.EnumerateDirectories(Path.Combine(repoRoot, "demos")).Select(demo => Path.Combine(demo, "docs"))
+    ];
+
     /// <summary>Every diagram's JSON file in a <c>diagrams</c> folder under the roots, in order of path.</summary>
     public static IReadOnlyList<string> Find(IEnumerable<string> roots) =>
     [

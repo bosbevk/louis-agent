@@ -13,15 +13,10 @@ const string checkOption = "--check";
 CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 bool check = args.Contains(checkOption);
 string repoRoot = FindRepoRoot();
-string[] roots =
-[
-    Path.Combine(repoRoot, "src", "docs"), Path.Combine(repoRoot, "packs", "docs"),
-    .. Directory.EnumerateDirectories(Path.Combine(repoRoot, "demos")).Select(demo => Path.Combine(demo, "docs"))
-];
 
 var counts = Enum.GetValues<SyncOutcome>().ToDictionary(outcome => outcome, _ => 0);
 int failed = 0;
-foreach (string json in DiagramSync.Find(roots))
+foreach (string json in DiagramSync.Find(DiagramSync.Roots(repoRoot)))
 {
     string relative = Path.GetRelativePath(repoRoot, json).Replace('\\', '/');
     try
@@ -29,7 +24,8 @@ foreach (string json in DiagramSync.Find(roots))
         var outcome = DiagramSync.Sync(json, check);
         counts[outcome]++;
         if (outcome == SyncOutcome.Written)
-            Console.WriteLine(MessageText.Format(DocDiagramsUserText.Written, new { Path = relative }));
+            Console.WriteLine(MessageText.Format(DocDiagramsUserText.Written,
+                new { Path = Path.ChangeExtension(relative, ".svg") }));
         if (outcome == SyncOutcome.Stale)
             Console.Error.WriteLine(MessageText.Format(DocDiagramsUserText.Stale, new { Path = relative }));
     }

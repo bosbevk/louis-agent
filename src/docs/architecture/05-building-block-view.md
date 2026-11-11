@@ -4,6 +4,13 @@
 > **Elsewhere:** each project's files, types and settings in [projects/](../projects/README.md); how the parts work
 > together on a message in [runtime view](06-runtime-view.md).
 
+## The layers at a glance
+
+Your application on top, the identity and the packs it picks under it, the core engine between them and the models,
+and the evaluation that measures it all.
+
+![Your application, then its identity and packs, then the core engine, then the model providers and the evaluation](diagrams/building-blocks.svg)
+
 ## Level 2: containers
 
 ```mermaid

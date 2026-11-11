@@ -1,0 +1,37 @@
+{
+  "kind": "cards",
+  "title": "The architecture in layers",
+  "caption": "Conceptual summary of the published architecture, not a complete dependency diagram.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "app", "icon": "code", "title": "Your application", "look": "heading",
+          "text": "The business problem and application-specific configuration" }
+      ] },
+      { "cards": [
+        { "id": "identity", "icon": "user", "title": "Identity",
+          "text": "Who the agent is, its roles, voice and rules." },
+        { "id": "packs", "icon": "box", "title": "Packs",
+          "text": "What the agent can do through tools and integrations." }
+      ] },
+      { "cards": [
+        { "id": "engine", "icon": "chip", "title": "Core engine", "look": "highlight",
+          "text": "Tool loop · streaming · guards · provider integration · delegation · usage accounting" }
+      ] },
+      { "cards": [
+        { "id": "providers", "icon": "cloud", "title": "Model providers",
+          "text": "Claude, Ollama and OpenAI-compatible endpoints." },
+        { "id": "evaluation", "icon": "checks", "title": "Evaluation and measurement",
+          "text": "Tests, recorded runs, request traces and cost accounting." }
+      ] }
+    ],
+    "links": [
+      { "from": "app", "to": "identity" },
+      { "from": "app", "to": "packs" },
+      { "from": "identity", "to": "engine" },
+      { "from": "packs", "to": "engine" },
+      { "from": "engine", "to": "providers" },
+      { "from": "engine", "to": "evaluation" }
+    ]
+  }
+}
