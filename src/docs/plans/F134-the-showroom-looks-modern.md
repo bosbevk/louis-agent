@@ -89,11 +89,7 @@ classDiagram
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    site["louis-agent.site<br/>SiteDemos: icons (1), covers (4)"] --> web["louis-agent.web Showroom<br/>DemoIcon + DemoIconView (1)<br/>surface mixin (2), rail (3), start (4)"]
-    web --> browser["the visitor's browser<br/>inline SVG, no icon font"]
-```
+![The site names each demo's icon and cover, the framework's showroom draws them, and the browser gets inline SVG](diagrams/F134-the-showroom-looks-modern-architecture.svg)
 
 ### Communication (a visitor opens /demos)
 
@@ -114,14 +110,7 @@ sequenceDiagram
 
 ### Objects (the index in memory)
 
-```mermaid
-flowchart TB
-    demos["ShowroomDemos (5)"] --> g1["ShowroomDemo /guesthouse-demo<br/>Icon Bed, Cover seemeeu-sea-view.webp"]
-    demos --> g2["ShowroomDemo /restaurant-demo<br/>Icon Dining, Cover wheatfield-room.webp"]
-    demos --> g3["ShowroomDemo /law-practice-demo<br/>Icon Scales, Cover koringland-study.webp"]
-    demos --> g4["ShowroomDemo /coding-agent<br/>Icon Code, Cover null"]
-    demos --> g5["ShowroomDemo /triage-demo<br/>Icon Exchange, Cover null"]
-```
+![The showroom's index: five demos, each with its icon and a cover where it has one](diagrams/F134-the-showroom-looks-modern-objects-the-index-in-memory.svg)
 
 ### Folder tree (after step 1)
 

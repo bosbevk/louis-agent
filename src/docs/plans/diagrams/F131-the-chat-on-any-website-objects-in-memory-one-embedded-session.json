@@ -1,0 +1,74 @@
+{
+  "kind": "flow",
+  "title": "F131 the chat on any website: one embedded session, in memory",
+  "caption": "Nothing lost: the site's door limits each address, and the running turn is buffered so a reload picks it up.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Door",
+        "icon": "shield",
+        "tone": "green",
+        "label": "SiteDoor"
+      },
+      {
+        "id": "Store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ISiteStore"
+      },
+      {
+        "id": "Limiter",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "Token bucket per site and\naddress"
+      },
+      {
+        "id": "Sessions",
+        "icon": "users",
+        "tone": "violet",
+        "label": "AgentSessions"
+      },
+      {
+        "id": "Session",
+        "icon": "message",
+        "tone": "violet",
+        "label": "AgentSession\nsite, identity, toolsets"
+      },
+      {
+        "id": "Buffer",
+        "icon": "file",
+        "tone": "teal",
+        "label": "TurnBuffer of the running turn"
+      },
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine of the business\nidentity"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Door",
+        "to": "Store"
+      },
+      {
+        "from": "Door",
+        "to": "Limiter"
+      },
+      {
+        "from": "Sessions",
+        "to": "Session"
+      },
+      {
+        "from": "Session",
+        "to": "Buffer"
+      },
+      {
+        "from": "Session",
+        "to": "Engine"
+      }
+    ],
+    "direction": "down"
+  }
+}

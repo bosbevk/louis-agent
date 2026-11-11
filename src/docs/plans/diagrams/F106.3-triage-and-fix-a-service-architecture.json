@@ -1,0 +1,169 @@
+{
+  "kind": "flow",
+  "title": "F106.3 triage and fix a service: the architecture",
+  "caption": "A visitor watches a real run: the triage workflow's steps stream to the page, and the guide in the corner can read the run.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "visitor",
+        "icon": "user",
+        "tone": "blue",
+        "label": "A visitor on louis-agent.dev"
+      },
+      {
+        "id": "try",
+        "icon": "browser",
+        "tone": "green",
+        "label": "/try: TryPage, TriageStage,\nStepPopup (F106.3.4)",
+        "group": "app"
+      },
+      {
+        "id": "guide",
+        "icon": "message",
+        "tone": "green",
+        "label": "ExpertChat in the corner,\nOpening = run id (F106.3.4)",
+        "group": "app"
+      },
+      {
+        "id": "door",
+        "icon": "shield",
+        "tone": "green",
+        "label": "OpenDoor: a second open\nidentity, the triage demo,\ncapped (F106.3.4)",
+        "group": "app"
+      },
+      {
+        "id": "route",
+        "icon": "server",
+        "tone": "green",
+        "label": "POST /v1/demos/triage, GET\n/v1/demos/triage/{id}/events\n(F106.3.4)",
+        "group": "app"
+      },
+      {
+        "id": "wf",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "TriageWorkflow (F106.3.3)",
+        "group": "app"
+      },
+      {
+        "id": "ids",
+        "icon": "users",
+        "tone": "teal",
+        "label": "louis-agent.identity.triage:\nmanager voice; sorter,\ninvestigator, reviewer roles\n(F106.3.2)",
+        "group": "app"
+      },
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "teal",
+        "label": "louis-agent.pack.triage: feed,\nrecorder, decision tools,\nRaiseToPerson, ReadTriageRun\n(F106.3.1)",
+        "group": "app"
+      },
+      {
+        "id": "coder",
+        "icon": "code",
+        "tone": "green",
+        "label": "the coding identity, as a\npeer, PACKS=fixing",
+        "group": "app"
+      },
+      {
+        "id": "core",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "louis-agent.core: Delegation\n(F39 A), checkpoints (F43)",
+        "group": "app"
+      },
+      {
+        "id": "svc",
+        "icon": "server",
+        "tone": "red",
+        "label": "samples/order-service: ten\nbugs, errors.jsonl (F106.3.1)"
+      },
+      {
+        "id": "ops",
+        "icon": "settings",
+        "tone": "red",
+        "label": "samples/ops-config: the second\ndepartment\u0027s repository\n(F106.3.5)"
+      },
+      {
+        "id": "mongo",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Mongo: runs and steps (F43)"
+      },
+      {
+        "id": "model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "the model"
+      }
+    ],
+    "edges": [
+      {
+        "from": "visitor",
+        "to": "try"
+      },
+      {
+        "from": "try",
+        "to": "route"
+      },
+      {
+        "from": "route",
+        "to": "door"
+      },
+      {
+        "from": "door",
+        "to": "wf"
+      },
+      {
+        "from": "wf",
+        "to": "ids"
+      },
+      {
+        "from": "wf",
+        "to": "pack"
+      },
+      {
+        "from": "wf",
+        "to": "coder"
+      },
+      {
+        "from": "wf",
+        "to": "core"
+      },
+      {
+        "from": "pack",
+        "to": "svc"
+      },
+      {
+        "from": "pack",
+        "to": "mongo"
+      },
+      {
+        "from": "ids",
+        "to": "core"
+      },
+      {
+        "from": "core",
+        "to": "model"
+      },
+      {
+        "from": "guide",
+        "to": "pack"
+      },
+      {
+        "from": "wf",
+        "to": "ops",
+        "word": "hand-off with history",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "app",
+        "label": "louis-agent-app (the coding API serving the site)"
+      }
+    ]
+  }
+}

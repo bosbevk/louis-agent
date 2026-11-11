@@ -1,0 +1,115 @@
+{
+  "kind": "flow",
+  "title": "F40 the sales playground: in memory with two identities",
+  "caption": "One shops pack, shared: with IDENTITIES=demo,puls both identities name it, and the customers are data inside the pack's assembly, never a file on a workspace.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "cat",
+        "icon": "book",
+        "tone": "violet",
+        "label": "catalog : AgentCatalog\nIdentities = [demo, puls]\nPacks = [shops, customers]\nToolsets = core's + shops +\ncustomers"
+      },
+      {
+        "id": "demo",
+        "icon": "user",
+        "tone": "teal",
+        "label": "demo : DemoIdentity\nPacks = [shops, customers]\nPrompts = agent/demo/,\nspecialists/demo-*"
+      },
+      {
+        "id": "puls",
+        "icon": "user",
+        "tone": "teal",
+        "label": "puls : PulsIdentity\nPacks = [shops]\nPrompts = agent/puls/,\nspecialists/puls-*,\nminions/puls-*"
+      },
+      {
+        "id": "shops",
+        "icon": "box",
+        "tone": "teal",
+        "label": "shops : ShopsPack\none object, named by both"
+      },
+      {
+        "id": "cust",
+        "icon": "box",
+        "tone": "teal",
+        "label": "customers : CustomersPack\nToolsets = [customers]\nPrompts =\ntoolsets/customers.md"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "tools : CustomerTools\nbuilt per engine"
+      },
+      {
+        "id": "dir",
+        "icon": "file",
+        "tone": "amber",
+        "label": "directory :\nSampleCustomerDirectory\nthe embedded, made-up\ncustomers.json"
+      },
+      {
+        "id": "src",
+        "icon": "book",
+        "tone": "amber",
+        "label": "SkillFileSource\ncore's + puls's + demo's +\nshops' + customers' prompts"
+      },
+      {
+        "id": "roles",
+        "icon": "users",
+        "tone": "teal",
+        "label": "RoleCatalog\npuls/voice-af, puls/voice-en,\npuls-cook,\ndemo/voice,\ndemo-invoice-clerk,\ndemo-area-guide"
+      }
+    ],
+    "edges": [
+      {
+        "from": "cat",
+        "to": "demo"
+      },
+      {
+        "from": "cat",
+        "to": "puls"
+      },
+      {
+        "from": "cat",
+        "to": "shops"
+      },
+      {
+        "from": "cat",
+        "to": "cust"
+      },
+      {
+        "from": "demo",
+        "to": "shops",
+        "word": "names"
+      },
+      {
+        "from": "puls",
+        "to": "shops",
+        "word": "names"
+      },
+      {
+        "from": "demo",
+        "to": "cust",
+        "word": "names"
+      },
+      {
+        "from": "cust",
+        "to": "tools"
+      },
+      {
+        "from": "tools",
+        "to": "dir"
+      },
+      {
+        "from": "cat",
+        "to": "src",
+        "style": "dashed"
+      },
+      {
+        "from": "src",
+        "to": "roles",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

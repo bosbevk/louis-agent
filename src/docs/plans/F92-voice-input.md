@@ -119,27 +119,7 @@ classDiagram
 
 **Architecture**
 
-```mermaid
-flowchart LR
-    subgraph Browser
-        Mic["Mic button + recorder.js (step 5)"]
-        Box["Message box"]
-    end
-    subgraph API["louis-agent.api"]
-        T["POST /v1/sessions/{id}/transcriptions (step 3)"]
-        S["POST /v1/sessions/{id}/messages (today)"]
-        L["Usage ledger: speech row (step 4)"]
-    end
-    subgraph Core["louis-agent.core"]
-        F["SpeechClientFactory (step 1)"]
-    end
-    W["louis-agent.core.whisper (step 2)"]
-    E["Voice eval + WER check (step 6)"]
-    Mic -- "audio clip" --> T --> F --> W
-    T -- "text" --> Box -- "send" --> S
-    T --> L
-    E --> F
-```
+![The mic sends a clip to the API, a factory picks the speech provider, the text comes back to the message box, and the ledger counts it](diagrams/F92-voice-input-diagrams.svg)
 
 **Communication**
 
@@ -167,16 +147,7 @@ sequenceDiagram
 
 **Objects (one transcription)**
 
-```mermaid
-flowchart TB
-    Host["AgentHostContext"] --> Factory["SpeechClientFactory"]
-    Factory --> Registry["[WhisperSpeechProvider]"]
-    Request["the request"] --> Stream["audio Stream (in memory, dropped after)"]
-    Request --> Client["ISpeechToTextClient (logging + telemetry wrapped)"]
-    Client --> Model["Whisper model (loaded once per process)"]
-    Request --> Result["TranscriptionResult"]
-    Request --> Row["SpeechUsage row"]
-```
+![One transcription in memory: the request holds the audio stream, the speech client, the result and the usage row](diagrams/F92-voice-input-diagrams-2.svg)
 
 ### Namespace map
 

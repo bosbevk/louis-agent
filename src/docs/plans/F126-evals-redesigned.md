@@ -150,21 +150,7 @@ classDiagram
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    file[".eval.json in a demo"] --> host
-    subgraph host["Eval host (F126.2, src/hosts)"]
-      run[EvalRun] --> facts[Facts]
-      run --> judge[Judge]
-      run --> store[RunStore]
-      pages["Six screens (louis-agent.web.evals)"] --> store
-    end
-    run -- "HTTP, live or replay" --> api["Agent API (no eval code)"]
-    run -- "a guide page, live only (F126.2)" --> site["The site"]
-    judge --> model["Judge model (IChatClient)"]
-    store --> mongo[(MongoDB: one document per run)]
-    api --> ledger[(Usage ledger: cost)]
-```
+![An eval file goes into the eval host, a run talks to the agent API or the site, a judge grades it, and the run store keeps it](diagrams/F126-evals-redesigned-architecture.svg)
 
 ### Communication: one live run of one conversation with a follow-up
 
@@ -191,16 +177,7 @@ sequenceDiagram
 
 ### Objects in memory: one run
 
-```mermaid
-flowchart TB
-    r[RunResult] --> c1["ConversationResult cook-follow-up"]
-    c1 --> t1["TurnResult 1: transcript, facts, marks"]
-    c1 --> t2["TurnResult 2: transcript, facts, marks"]
-    t1 --> m1["Mark: Feeds four people, met, reason"]
-    t2 --> f2["FactResult: continued puls-cook, met"]
-    r --> cost["Cost and seconds (from the ledger)"]
-    r --> flips["Flips: mark id, your answer"]
-```
+![One run in memory: conversations hold turns, turns hold their facts and marks, and the flips sit beside them](diagrams/F126-evals-redesigned-objects-in-memory-one-run.svg)
 
 ### Folder trees
 

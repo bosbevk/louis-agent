@@ -1,0 +1,89 @@
+{
+  "kind": "flow",
+  "title": "F125 an agentic site: the architecture",
+  "caption": "Tools go over MCP: the guide's tools run in the MCP server, agents elsewhere find us through the registry, and the admin page sees the gaps.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "V",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Visitor\u0027s browser\nwidget: ShowPage, Offer,\nShowCard"
+      },
+      {
+        "id": "API",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.api\nthe guide, rate limit F125.5"
+      },
+      {
+        "id": "MCP",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "louis-agent.mcp\ndocs, site, leads, gaps"
+      },
+      {
+        "id": "Packs",
+        "icon": "box",
+        "tone": "teal",
+        "label": "Packs as DLLs"
+      },
+      {
+        "id": "Ext",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Claude, ChatGPT, Cursor"
+      },
+      {
+        "id": "Reg",
+        "icon": "world",
+        "tone": "red",
+        "label": "Official MCP Registry\n\u002B /.well-known/ai-catalog.json\nF125.2"
+      },
+      {
+        "id": "Admin",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Admin page\ngaps F125.6, approvals F125.8"
+      }
+    ],
+    "edges": [
+      {
+        "from": "V",
+        "to": "API",
+        "word": "SSE"
+      },
+      {
+        "from": "API",
+        "to": "MCP",
+        "word": "TOOL_TRANSPORT=mcp\nF125.8"
+      },
+      {
+        "from": "API",
+        "to": "Packs",
+        "word": "in-process, tests",
+        "style": "dashed"
+      },
+      {
+        "from": "Ext",
+        "to": "MCP",
+        "word": "search \u002B fetch, doc://"
+      },
+      {
+        "from": "Ext",
+        "to": "Reg",
+        "word": "finds it"
+      },
+      {
+        "from": "API",
+        "to": "Reg",
+        "word": "FindMcpServers F125.8"
+      },
+      {
+        "from": "Admin",
+        "to": "API"
+      }
+    ],
+    "direction": "down"
+  }
+}

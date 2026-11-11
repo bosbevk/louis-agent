@@ -1,0 +1,225 @@
+{
+  "kind": "flow",
+  "title": "F39 orchestration: the architecture",
+  "caption": "Orchestration is an engine function: delegation, the turn and the loop live in core, and the voorman is an identity on it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.api\nPuls, the demo, the coding\nagent",
+        "group": "hosts"
+      },
+      {
+        "id": "orch",
+        "icon": "settings",
+        "tone": "green",
+        "label": "louis-agent.orchestrator\nthin: polls the error feed\n(B1-B4)",
+        "group": "hosts"
+      },
+      {
+        "id": "cli",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "CLI and Rider\nkeep a child, pass a place\n(A4)",
+        "group": "hosts"
+      },
+      {
+        "id": "comp",
+        "icon": "code",
+        "tone": "teal",
+        "label": "louis-agent.composition\nIdentityKind.Voorman,\nPackKind.Triage,\nPackKind.Fixing (B1)"
+      },
+      {
+        "id": "puls",
+        "icon": "user",
+        "tone": "teal",
+        "label": "Puls",
+        "group": "identities"
+      },
+      {
+        "id": "voorman",
+        "icon": "users",
+        "tone": "teal",
+        "label": "voorman (B1)\nvoice \u002B\nWorkflows/TriageWorkflow (B4)",
+        "group": "identities"
+      },
+      {
+        "id": "coding",
+        "icon": "user",
+        "tone": "teal",
+        "label": "coding agent\nlouis-agent/voice",
+        "group": "identities"
+      },
+      {
+        "id": "cooking",
+        "icon": "user",
+        "tone": "teal",
+        "label": "cooking\nthe cook role (CL16)",
+        "group": "packs"
+      },
+      {
+        "id": "triage",
+        "icon": "box",
+        "tone": "teal",
+        "label": "triage (B1)\nIErrorFeed, ITriageRecorder,\nAcknowledge, Escalate,\nRecordDecision (B5)",
+        "group": "packs"
+      },
+      {
+        "id": "fixing",
+        "icon": "box",
+        "tone": "teal",
+        "label": "fixing (B1-B3)\nvoorman-fixer role,\nReportFixResult,\nConfirmFix, IReplay",
+        "group": "packs"
+      },
+      {
+        "id": "deleg",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "Delegation/ (A2, A3, A5)\nChildAgentClient,\nIChildTransport,\nDelegationPolicy,\nDelegationLimiter,\nIResultCheck",
+        "group": "core"
+      },
+      {
+        "id": "turn",
+        "icon": "message",
+        "tone": "violet",
+        "label": "Sessions/TurnContext (A4)\nusage, tools, attachments,\nplace,\nkept children, feed, replay,\nlimiter",
+        "group": "core"
+      },
+      {
+        "id": "agent",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "Agent/\nthe loop, the guards,\nResultToolset (A5),\nRouteClassifier (A6)",
+        "group": "core"
+      },
+      {
+        "id": "llm",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "Llm/ provider strategies\ntool choice (A6), a note\nmid-chat (A4a)",
+        "group": "core"
+      },
+      {
+        "id": "reader",
+        "icon": "file",
+        "tone": "violet",
+        "label": "louis-agent.session-stream\nthe one reader (Phase 3)"
+      },
+      {
+        "id": "peer",
+        "icon": "server",
+        "tone": "red",
+        "label": "a peer louis-agent.api\nruns the child: the cook, or\nthe fixer with PACKS=fixing"
+      },
+      {
+        "id": "svc",
+        "icon": "server",
+        "tone": "red",
+        "label": "the seeded service (B6a)\nwrites logs/errors.jsonl"
+      },
+      {
+        "id": "model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "the model, through IChatClient"
+      }
+    ],
+    "edges": [
+      {
+        "from": "api",
+        "to": "comp"
+      },
+      {
+        "from": "orch",
+        "to": "comp"
+      },
+      {
+        "from": "comp",
+        "to": "puls"
+      },
+      {
+        "from": "comp",
+        "to": "voorman"
+      },
+      {
+        "from": "api",
+        "to": "coding"
+      },
+      {
+        "from": "cli",
+        "to": "coding"
+      },
+      {
+        "from": "puls",
+        "to": "cooking"
+      },
+      {
+        "from": "voorman",
+        "to": "triage"
+      },
+      {
+        "from": "voorman",
+        "to": "fixing"
+      },
+      {
+        "from": "puls",
+        "to": "deleg"
+      },
+      {
+        "from": "voorman",
+        "to": "deleg"
+      },
+      {
+        "from": "coding",
+        "to": "deleg"
+      },
+      {
+        "from": "deleg",
+        "to": "turn"
+      },
+      {
+        "from": "deleg",
+        "to": "reader"
+      },
+      {
+        "from": "deleg",
+        "to": "peer",
+        "word": "HttpPeerTransport: POST\n/sessions, SSE, a key\nper peer (A2a)"
+      },
+      {
+        "from": "triage",
+        "to": "svc",
+        "word": "JsonLinesErrorFeed reads"
+      },
+      {
+        "from": "agent",
+        "to": "llm"
+      },
+      {
+        "from": "llm",
+        "to": "model"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "hosts",
+        "label": "Hosts: they only trigger the work"
+      },
+      {
+        "id": "identities",
+        "label": "Identities: who"
+      },
+      {
+        "id": "packs",
+        "label": "Packs: what they can do"
+      },
+      {
+        "id": "core",
+        "label": "louis-agent.core: the engine"
+      }
+    ]
+  }
+}

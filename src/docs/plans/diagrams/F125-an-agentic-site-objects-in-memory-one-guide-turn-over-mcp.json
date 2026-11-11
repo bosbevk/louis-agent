@@ -1,0 +1,62 @@
+{
+  "kind": "flow",
+  "title": "F125 an agentic site: one guide turn over MCP, in memory",
+  "caption": "Remote and local tools side by side: the MCP tools come through proxies, and the tools that show a page stay in the process.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "Proxy1",
+        "icon": "search",
+        "tone": "green",
+        "label": "McpToolProxy docs_search"
+      },
+      {
+        "id": "Proxy2",
+        "icon": "file",
+        "tone": "green",
+        "label": "McpToolProxy docs_fetch"
+      },
+      {
+        "id": "Local",
+        "icon": "box",
+        "tone": "green",
+        "label": "ShowPage, Offer, ShowCard\nin-process by override"
+      },
+      {
+        "id": "Client",
+        "icon": "cloud",
+        "tone": "teal",
+        "label": "McpClient, one per server"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Engine",
+        "to": "Proxy1"
+      },
+      {
+        "from": "Engine",
+        "to": "Proxy2"
+      },
+      {
+        "from": "Engine",
+        "to": "Local"
+      },
+      {
+        "from": "Proxy1",
+        "to": "Client"
+      },
+      {
+        "from": "Proxy2",
+        "to": "Client"
+      }
+    ],
+    "direction": "down"
+  }
+}

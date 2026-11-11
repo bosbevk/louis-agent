@@ -88,15 +88,7 @@ classDiagram
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    Page[Customer page, any domain\nembed.js F131.2\nor the WordPress plugin F131.6] -->|postMessage, exact origins| Frame[Our frame /embed/site F131.2\nChatWidget, frame-ancestors]
-    Frame -->|fetch + SSE, same origin\nGET .../stream to resume F131.3| API[louis-agent.api\na door per site F131.1\nrate limits F131.1, budget F131.5]
-    API --> Store[(Sites in MongoDB\nper tenant F131.4)]
-    API --> Ledger[(Usage ledger\nsite:name tag)]
-    Admin[Sites screen F131.4] --> API
-    API -->|daily| Sitemap[The site's sitemap]
-```
+![A customer's page loads our widget in a frame, the frame talks to the API through a door per site, and the API keeps the sites and the usage](diagrams/F131-the-chat-on-any-website-architecture.svg)
 
 ### Communication: a visitor asks, the guide moves them, the answer carries on
 
@@ -121,14 +113,7 @@ sequenceDiagram
 
 ### Objects in memory: one embedded session
 
-```mermaid
-flowchart TB
-    Door[SiteDoor] --> Store[ISiteStore]
-    Door --> Limiter[Token bucket per site and address]
-    Sessions[AgentSessions] --> Session[AgentSession\nsite, identity, toolsets]
-    Session --> Buffer[TurnBuffer of the running turn]
-    Session --> Engine[AgentEngine of the business identity]
-```
+![One embedded session: the site's door with its store and limiter, and the session with its turn buffer and engine](diagrams/F131-the-chat-on-any-website-objects-in-memory-one-embedded-session.svg)
 
 ### Folder trees (proposed; each child's plan settles them)
 

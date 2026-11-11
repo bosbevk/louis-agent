@@ -1,0 +1,76 @@
+{
+  "kind": "flow",
+  "title": "F127.3 one address: the shape, in plain words",
+  "caption": "One address for every agent call: AskAgent starts or adds to a session on the API, here or on another server.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "guide",
+        "icon": "message",
+        "tone": "blue",
+        "label": "The guide\u0027s turn, depth 0:\nAskAgent(\"seemeeu-guesthouse\", …)",
+        "group": "app"
+      },
+      {
+        "id": "ask",
+        "icon": "settings",
+        "tone": "green",
+        "label": "AskAgentTools: parse, resolve,\ncheck Calls, start or add,\nkeep the work",
+        "group": "app"
+      },
+      {
+        "id": "peer",
+        "icon": "code",
+        "tone": "teal",
+        "label": "PeerSession on the Wire\nrecords",
+        "group": "app"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "green",
+        "label": "The API: Seemeeu at depth 1,\nits voice from agent/, its\npacks",
+        "group": "app"
+      },
+      {
+        "id": "other",
+        "icon": "server",
+        "tone": "red",
+        "label": "Another server\u0027s catalogue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "guide",
+        "to": "ask"
+      },
+      {
+        "from": "ask",
+        "to": "peer"
+      },
+      {
+        "from": "peer",
+        "to": "api",
+        "word": "localhost:8080\n(F127.3.1)"
+      },
+      {
+        "from": "api",
+        "to": "guide",
+        "word": "live events, the\ndelegation card",
+        "style": "dashed"
+      },
+      {
+        "from": "peer",
+        "to": "other",
+        "word": "peer:identity, its own\nkey (F127.3.2)"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "app",
+        "label": "louis-agent-app, one container"
+      }
+    ]
+  }
+}

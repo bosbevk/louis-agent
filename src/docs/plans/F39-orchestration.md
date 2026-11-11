@@ -175,54 +175,7 @@ role, a simulation's session a mode and a run tag).
 
 #### Architecture
 
-```mermaid
-flowchart TB
-    subgraph hosts["Hosts: they only trigger the work"]
-        api["louis-agent.api<br/>Puls, the demo, the coding agent"]
-        orch["louis-agent.orchestrator<br/>thin: polls the error feed (B1-B4)"]
-        cli["CLI and Rider<br/>keep a child, pass a place (A4)"]
-    end
-    comp["louis-agent.composition<br/>IdentityKind.Voorman, PackKind.Triage, PackKind.Fixing (B1)"]
-    subgraph identities["Identities: who"]
-        puls["Puls"]
-        voorman["voorman (B1)<br/>voice + Workflows/TriageWorkflow (B4)"]
-        coding["coding agent<br/>louis-agent/voice"]
-    end
-    subgraph packs["Packs: what they can do"]
-        cooking["cooking<br/>the cook role (CL16)"]
-        triage["triage (B1)<br/>IErrorFeed, ITriageRecorder,<br/>Acknowledge, Escalate, RecordDecision (B5)"]
-        fixing["fixing (B1-B3)<br/>voorman-fixer role, ReportFixResult,<br/>ConfirmFix, IReplay"]
-    end
-    subgraph core["louis-agent.core: the engine"]
-        deleg["Delegation/ (A2, A3, A5)<br/>ChildAgentClient, IChildTransport,<br/>DelegationPolicy, DelegationLimiter, IResultCheck"]
-        turn["Sessions/TurnContext (A4)<br/>usage, tools, attachments, place,<br/>kept children, feed, replay, limiter"]
-        agent["Agent/<br/>the loop, the guards, ResultToolset (A5),<br/>RouteClassifier (A6)"]
-        llm["Llm/ provider strategies<br/>tool choice (A6), a note mid-chat (A4a)"]
-    end
-    reader["louis-agent.session-stream<br/>the one reader (Phase 3)"]
-    peer["a peer louis-agent.api<br/>runs the child: the cook, or the fixer with PACKS=fixing"]
-    svc["the seeded service (B6a)<br/>writes logs/errors.jsonl"]
-    model["the model, through IChatClient"]
-
-    api --> comp
-    orch --> comp
-    comp --> puls
-    comp --> voorman
-    api --> coding
-    cli --> coding
-    puls --> cooking
-    voorman --> triage
-    voorman --> fixing
-    puls --> deleg
-    voorman --> deleg
-    coding --> deleg
-    deleg --> turn
-    deleg --> reader
-    deleg -->|"HttpPeerTransport: POST /sessions, SSE, a key per peer (A2a)"| peer
-    triage -->|"JsonLinesErrorFeed reads"| svc
-    agent --> llm
-    llm --> model
-```
+![Hosts only trigger the work, identities and packs hang off the composition, and delegation, the turn and the loop live in core](diagrams/F39-orchestration-architecture.svg)
 
 #### Interfaces
 
@@ -493,41 +446,7 @@ classDiagram
 One error, `e42`, in run `run-20261020-0900`, from the seeded service (B6a), where the classifier says *fixable* and
 the fix is confirmed. The rule and branch names are made up.
 
-```mermaid
-flowchart LR
-    host["host loop<br/>: Program (louis-agent.orchestrator)"]
-    cat["catalogue<br/>: AgentCatalog<br/>IDENTITIES=voorman"]
-    feed["feed<br/>: JsonLinesErrorFeed<br/>the seeded service's logs/errors.jsonl"]
-    rec["recorder<br/>: JsonLinesTriageRecorder<br/>decisions.jsonl"]
-    wf["workflow<br/>: TriageWorkflow"]
-    turn["turn<br/>: TurnContext<br/>session triage_e42, run tag"]
-    lim["limiter<br/>: DelegationLimiter<br/>1 of 3 calls used"]
-    cls["classifier<br/>: RouteClassifier<br/>profile haiku-low, the tool forced"]
-    dec["decision<br/>: Decision<br/>Fixable, rule order-total"]
-    kids["children<br/>: ChildAgentClient"]
-    tr["transport<br/>: HttpPeerTransport<br/>the coding peer, its own key"]
-    child["child<br/>: ChildHandle<br/>role voorman-fixer, depth 1,<br/>parent triage_e42#1"]
-    res["result<br/>: FixResult<br/>Fixed, commit, branch fix/order-total-e42"]
-    conf["confirm<br/>: ConfirmFix<br/>CliReplay + DotNetTestRunner"]
-    out["outcome<br/>: TriageOutcome.Fixed"]
-
-    host --> cat
-    cat --> feed
-    cat --> rec
-    host --> wf
-    wf --> turn
-    turn --> lim
-    wf --> cls
-    cls --> dec
-    wf --> kids
-    kids --> tr
-    kids --> child
-    child --> res
-    wf --> conf
-    conf --> res
-    wf --> out
-    out --> rec
-```
+![One error triaged in memory: the host loop holds the catalogue and the workflow, and the workflow holds the turn, the classifier, the children, the check and the outcome](diagrams/F39-orchestration-objects-what-exists-in-memory-while-one-error-is-triaged.svg)
 
 #### Communication: one error is fixed and confirmed
 
@@ -656,36 +575,7 @@ follow-up), `MaxAge` the time since the service's last build, the precedence rep
 the classifier, and `AfterSideEffect` allowing only a reconcile followed by `ConfirmFix` on what is found: a fixer that
 timed out after its commit gets its commit checked, never a second fixer on a second branch.
 
-```mermaid
-flowchart TB
-    exec["Execute a step"]
-    val{"Validate: schema, freshness (as_of), provenance, consistency, business rules"}
-    ok["Resume the workflow"]
-    cls["Classify: one DataFailure"]
-    side{"Did a side effect happen?"}
-    rec["Reconcile: read the real external state"]
-    pol{"RecoveryPolicy.Allows(failure, action, attempt)?"}
-    act["Recover within bounds: refetch, alternative source, quarantine, compensate"]
-    verify{"Verify before resuming"}
-    esc["Escalate or stop: keep the evidence, ask a person"]
-    log[("RecoveryRecord: kind, records, source and version, action, attempt, result, approval")]
-
-    exec --> val
-    val -->|"valid"| ok
-    val -->|"invalid"| cls
-    cls --> side
-    side -->|"yes"| rec
-    side -->|"no"| pol
-    rec -->|"done or not done"| pol
-    rec -->|"unknown"| esc
-    pol -->|"allowed"| act
-    pol -->|"refused, or past MaxAttempts"| esc
-    act --> verify
-    verify -->|"passes"| ok
-    verify -->|"fails"| cls
-    act --> log
-    esc --> log
-```
+![The recovery contract: a bad result is classified, reconciled after a side effect, recovered only within its policy, and verified before the workflow resumes](diagrams/F39-orchestration-the-recovery-contract-what-a-workflow-does-when-data-goes-bad-mid-run.svg)
 
 #### Namespaces (new, moved, changed)
 

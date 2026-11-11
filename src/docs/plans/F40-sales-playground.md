@@ -227,48 +227,7 @@ public sealed class AreaGuideSimulation : ISimulation { public string Name => "d
 
 #### Architecture: the playground, by step
 
-```mermaid
-flowchart TB
-    subgraph screen["The screen we sell from, in either web app"]
-        room["Control room (steps 5-6)<br/>louis-agent.web: runs live, grades, cost"]
-        tryit["Try it (step 7)<br/>a chat in a simulation's mode"]
-    end
-    subgraph stack["The playground: Puls's compose plus docker-compose.demo.yml (step 1)"]
-        api["puls: louis-agent.api<br/>IDENTITIES=demo,puls; the portal's endpoints"]
-        runner["simulation runner, its own process (Phase 3)<br/>demo-invoice-batch (3), demo-get-paid (3b), demo-area-guide (4)"]
-        pagent["puls-agent<br/>Puls's specialists"]
-        dagent["demo-agent (step 1)<br/>IDENTITIES=demo: the clerk (3), the debtors clerk (3b), the area guide (4)<br/>workspace: the made-up invoices and the age analysis, read-only"]
-        store["puls-mongo<br/>the run store (F31)"]
-        ledger["usage ledger<br/>one folder for the three agents"]
-        web["puls-searxng, puls-browser<br/>search and pages"]
-    end
-    subgraph code["What the agents load"]
-        comp["louis-agent.composition<br/>IdentityKind.Demo (1), PackKind.Customers (2)"]
-        demo["identity.demo (step 1)<br/>demo/voice and its three roles"]
-        cust["customers pack (step 2)<br/>FindCustomer; made-up customers embedded"]
-        shops["shops pack (Phase 2)<br/>one instance for the demo and Puls"]
-        puls["identity.puls (Phase 2)"]
-    end
-    sims["simulations.demo (steps 3-4)<br/>graders and answer keys, loaded by the runner only"]
-    room --> api
-    tryit --> api
-    api -->|"starts"| runner
-    runner -->|"POST /sessions, protocol lines"| api
-    runner --> sims
-    api -->|"AskAgent"| dagent
-    api --> pagent
-    api --> store
-    api --> ledger
-    dagent --> ledger
-    dagent --> web
-    api --> comp
-    dagent --> comp
-    comp --> demo
-    comp --> puls
-    demo --> cust
-    demo --> shops
-    puls --> shops
-```
+![The playground by step: the screens call the API, the API runs the two agents and the simulation runner, and they share the shops pack, the run store and the ledger](diagrams/F40-sales-playground-architecture-the-playground-by-step.svg)
 
 #### Interfaces
 
@@ -336,32 +295,9 @@ classDiagram
 
 #### Objects: what exists in memory with `IDENTITIES=demo,puls`
 
-On `puls`, after step 4. Both identities name `shops`: one `ShopsPack` object, shared. The customers are data inside the
-pack's assembly, never a file on a workspace.
+On `puls`, after step 4:
 
-```mermaid
-flowchart LR
-    cat["catalog : AgentCatalog<br/>Identities = [demo, puls]<br/>Packs = [shops, customers]<br/>Toolsets = core's + shops + customers"]
-    demo["demo : DemoIdentity<br/>Packs = [shops, customers]<br/>Prompts = agent/demo/, specialists/demo-*"]
-    puls["puls : PulsIdentity<br/>Packs = [shops]<br/>Prompts = agent/puls/, specialists/puls-*, minions/puls-*"]
-    shops["shops : ShopsPack<br/>one object, named by both"]
-    cust["customers : CustomersPack<br/>Toolsets = [customers]<br/>Prompts = toolsets/customers.md"]
-    tools["tools : CustomerTools<br/>built per engine"]
-    dir["directory : SampleCustomerDirectory<br/>the embedded, made-up customers.json"]
-    src["SkillFileSource<br/>core's + puls's + demo's + shops' + customers' prompts"]
-    roles["RoleCatalog<br/>puls/voice-af, puls/voice-en, puls-cook,<br/>demo/voice, demo-invoice-clerk, demo-area-guide"]
-    cat --> demo
-    cat --> puls
-    cat --> shops
-    cat --> cust
-    demo -- names --> shops
-    puls -- names --> shops
-    demo -- names --> cust
-    cust --> tools
-    tools --> dir
-    cat -.-> src
-    src -.-> roles
-```
+![Both identities name one shared shops pack, and the customers pack holds its made-up customers as data](diagrams/F40-sales-playground-objects-what-exists-in-memory-with-identities-demo-puls.svg)
 
 #### Communication: one `demo-invoice-batch` run, one invoice shown
 

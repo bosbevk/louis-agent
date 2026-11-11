@@ -1,0 +1,130 @@
+{
+  "kind": "flow",
+  "title": "F126 evals, redesigned: the architecture",
+  "caption": "One file of conversations: a run reads it, a judge you correct grades it, and the run is one document with its own page.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "file",
+        "icon": "file",
+        "tone": "amber",
+        "label": ".eval.json in a demo"
+      },
+      {
+        "id": "run",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "EvalRun",
+        "group": "host"
+      },
+      {
+        "id": "facts",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "Facts",
+        "group": "host"
+      },
+      {
+        "id": "judge",
+        "icon": "user",
+        "tone": "green",
+        "label": "Judge",
+        "group": "host"
+      },
+      {
+        "id": "store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "RunStore",
+        "group": "host"
+      },
+      {
+        "id": "pages",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Six screens\n(louis-agent.web.evals)",
+        "group": "host"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "red",
+        "label": "Agent API (no eval code)"
+      },
+      {
+        "id": "site",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "The site"
+      },
+      {
+        "id": "model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Judge model (IChatClient)"
+      },
+      {
+        "id": "mongo",
+        "icon": "database",
+        "tone": "amber",
+        "label": "MongoDB: one document per run"
+      },
+      {
+        "id": "ledger",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Usage ledger: cost"
+      }
+    ],
+    "edges": [
+      {
+        "from": "file",
+        "to": "run"
+      },
+      {
+        "from": "run",
+        "to": "facts"
+      },
+      {
+        "from": "run",
+        "to": "judge"
+      },
+      {
+        "from": "run",
+        "to": "store"
+      },
+      {
+        "from": "pages",
+        "to": "store"
+      },
+      {
+        "from": "run",
+        "to": "api",
+        "word": "HTTP, live or replay"
+      },
+      {
+        "from": "run",
+        "to": "site",
+        "word": "a guide page, live only (F126.2)"
+      },
+      {
+        "from": "judge",
+        "to": "model"
+      },
+      {
+        "from": "store",
+        "to": "mongo"
+      },
+      {
+        "from": "api",
+        "to": "ledger"
+      }
+    ],
+    "groups": [
+      {
+        "id": "host",
+        "label": "Eval host (F126.2, src/hosts)"
+      }
+    ]
+  }
+}

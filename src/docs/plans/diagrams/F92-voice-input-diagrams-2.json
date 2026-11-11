@@ -1,0 +1,93 @@
+{
+  "kind": "flow",
+  "title": "F92 voice: one transcription, in memory",
+  "caption": "Nothing kept: the audio stays in memory and is dropped after, and only a usage row is written.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHostContext"
+      },
+      {
+        "id": "Factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "SpeechClientFactory"
+      },
+      {
+        "id": "Registry",
+        "icon": "book",
+        "tone": "teal",
+        "label": "[WhisperSpeechProvider]"
+      },
+      {
+        "id": "Request",
+        "icon": "message",
+        "tone": "blue",
+        "label": "the request"
+      },
+      {
+        "id": "Stream",
+        "icon": "file",
+        "tone": "amber",
+        "label": "audio Stream (in memory,\ndropped after)"
+      },
+      {
+        "id": "Client",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "ISpeechToTextClient (logging \u002B\ntelemetry wrapped)"
+      },
+      {
+        "id": "Model",
+        "icon": "chip",
+        "tone": "red",
+        "label": "Whisper model (loaded once per\nprocess)"
+      },
+      {
+        "id": "Result",
+        "icon": "file",
+        "tone": "teal",
+        "label": "TranscriptionResult"
+      },
+      {
+        "id": "Row",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "SpeechUsage row"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Host",
+        "to": "Factory"
+      },
+      {
+        "from": "Factory",
+        "to": "Registry"
+      },
+      {
+        "from": "Request",
+        "to": "Stream"
+      },
+      {
+        "from": "Request",
+        "to": "Client"
+      },
+      {
+        "from": "Client",
+        "to": "Model"
+      },
+      {
+        "from": "Request",
+        "to": "Result"
+      },
+      {
+        "from": "Request",
+        "to": "Row"
+      }
+    ]
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "kind": "flow",
+  "title": "Phase 10: the engine as a developer package",
+  "caption": "After every engine feature (Louis, 2026-10-20): the engine and its general packs move to their own repo as packages, and the products build on them, never the other way.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "core",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "LouisAgent.Core\nloop, guards, ledger,\ncontracts\nno tools, no facts",
+        "group": "eng"
+      },
+      {
+        "id": "gp",
+        "icon": "box",
+        "tone": "violet",
+        "label": "LouisAgent.Packs.Files / Web /\nShell / Git / DotNet /\nDelegation / Skills /\nEngineGuide",
+        "group": "eng"
+      },
+      {
+        "id": "shared",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "LouisAgent.Packs.Shared.Browser",
+        "group": "eng"
+      },
+      {
+        "id": "coding",
+        "icon": "user",
+        "tone": "violet",
+        "label": "LouisAgent.Identities.Coding +\nLouisAgent.Hosts.Acp (Rider)",
+        "group": "eng"
+      },
+      {
+        "id": "simt",
+        "icon": "checks",
+        "tone": "violet",
+        "label": "LouisAgent.Simulation,\nLouisAgent.Testing, providers",
+        "group": "eng"
+      },
+      {
+        "id": "ids",
+        "icon": "users",
+        "tone": "green",
+        "label": "identities: puls, demo,\nvoorman",
+        "group": "app"
+      },
+      {
+        "id": "pp",
+        "icon": "box",
+        "tone": "green",
+        "label": "product packs: shops, recipes,\nplaces, customers, triage,\nfixing, paymo, devops",
+        "group": "app"
+      },
+      {
+        "id": "hosts",
+        "icon": "server",
+        "tone": "blue",
+        "label": "hosts: api, puls, web, cli,\nmcp-server, orchestrator",
+        "group": "app"
+      },
+      {
+        "id": "data",
+        "icon": "file",
+        "tone": "amber",
+        "label": "prices.json / models.json\nfile or URL, our JSON layout"
+      }
+    ],
+    "edges": [
+      {
+        "from": "gp",
+        "to": "core"
+      },
+      {
+        "from": "shared",
+        "to": "core"
+      },
+      {
+        "from": "gp",
+        "to": "shared"
+      },
+      {
+        "from": "coding",
+        "to": "gp"
+      },
+      {
+        "from": "pp",
+        "to": "core"
+      },
+      {
+        "from": "pp",
+        "to": "shared"
+      },
+      {
+        "from": "ids",
+        "to": "pp"
+      },
+      {
+        "from": "ids",
+        "to": "gp"
+      },
+      {
+        "from": "hosts",
+        "to": "ids"
+      },
+      {
+        "from": "data",
+        "to": "core",
+        "word": "the host names the\nsource",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "eng",
+        "label": "louis-agent-engine repo (after Stage B)"
+      },
+      {
+        "id": "app",
+        "label": "louis-agent repo"
+      }
+    ]
+  }
+}

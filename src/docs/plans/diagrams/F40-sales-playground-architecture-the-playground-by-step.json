@@ -1,0 +1,204 @@
+{
+  "kind": "flow",
+  "title": "F40 the sales playground: by step",
+  "caption": "Two agents, one stack: the demo's clerk and Puls share the shops pack, the run store and the ledger, and the control room shows the runs live.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "room",
+        "icon": "chart",
+        "tone": "green",
+        "label": "Control room (steps 5-6)\nlouis-agent.web: runs live,\ngrades, cost",
+        "group": "screen"
+      },
+      {
+        "id": "tryit",
+        "icon": "message",
+        "tone": "green",
+        "label": "Try it (step 7)\na chat in a simulation\u0027s mode",
+        "group": "screen"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "green",
+        "label": "puls: louis-agent.api\nIDENTITIES=demo,puls; the\nportal\u0027s endpoints",
+        "group": "stack"
+      },
+      {
+        "id": "runner",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "simulation runner, its own\nprocess (Phase 3)\ndemo-invoice-batch (3),\ndemo-get-paid (3b),\ndemo-area-guide (4)",
+        "group": "stack"
+      },
+      {
+        "id": "pagent",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "puls-agent\nPuls\u0027s specialists",
+        "group": "stack"
+      },
+      {
+        "id": "dagent",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "demo-agent (step 1)\nIDENTITIES=demo: the clerk\n(3), the debtors clerk (3b),\nthe area guide (4)\nworkspace: the made-up\ninvoices and the age analysis,\nread-only",
+        "group": "stack"
+      },
+      {
+        "id": "store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "puls-mongo\nthe run store (F31)",
+        "group": "stack"
+      },
+      {
+        "id": "ledger",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "usage ledger\none folder for the three\nagents",
+        "group": "stack"
+      },
+      {
+        "id": "web",
+        "icon": "world",
+        "tone": "red",
+        "label": "puls-searxng, puls-browser\nsearch and pages",
+        "group": "stack"
+      },
+      {
+        "id": "comp",
+        "icon": "code",
+        "tone": "teal",
+        "label": "louis-agent.composition\nIdentityKind.Demo (1),\nPackKind.Customers (2)",
+        "group": "code"
+      },
+      {
+        "id": "demo",
+        "icon": "user",
+        "tone": "teal",
+        "label": "identity.demo (step 1)\ndemo/voice and its three roles",
+        "group": "code"
+      },
+      {
+        "id": "cust",
+        "icon": "box",
+        "tone": "teal",
+        "label": "customers pack (step 2)\nFindCustomer; made-up\ncustomers embedded",
+        "group": "code"
+      },
+      {
+        "id": "shops",
+        "icon": "box",
+        "tone": "teal",
+        "label": "shops pack (Phase 2)\none instance for the demo and\nPuls",
+        "group": "code"
+      },
+      {
+        "id": "puls",
+        "icon": "user",
+        "tone": "teal",
+        "label": "identity.puls (Phase 2)",
+        "group": "code"
+      },
+      {
+        "id": "sims",
+        "icon": "checks",
+        "tone": "green",
+        "label": "simulations.demo (steps 3-4)\ngraders and answer keys,\nloaded by the runner only"
+      }
+    ],
+    "edges": [
+      {
+        "from": "room",
+        "to": "api"
+      },
+      {
+        "from": "tryit",
+        "to": "api"
+      },
+      {
+        "from": "api",
+        "to": "runner",
+        "word": "starts"
+      },
+      {
+        "from": "runner",
+        "to": "api",
+        "word": "POST /sessions, protocol lines"
+      },
+      {
+        "from": "runner",
+        "to": "sims"
+      },
+      {
+        "from": "api",
+        "to": "dagent",
+        "word": "AskAgent"
+      },
+      {
+        "from": "api",
+        "to": "pagent"
+      },
+      {
+        "from": "api",
+        "to": "store"
+      },
+      {
+        "from": "api",
+        "to": "ledger"
+      },
+      {
+        "from": "dagent",
+        "to": "ledger"
+      },
+      {
+        "from": "dagent",
+        "to": "web"
+      },
+      {
+        "from": "api",
+        "to": "comp"
+      },
+      {
+        "from": "dagent",
+        "to": "comp"
+      },
+      {
+        "from": "comp",
+        "to": "demo"
+      },
+      {
+        "from": "comp",
+        "to": "puls"
+      },
+      {
+        "from": "demo",
+        "to": "cust"
+      },
+      {
+        "from": "demo",
+        "to": "shops"
+      },
+      {
+        "from": "puls",
+        "to": "shops"
+      }
+    ],
+    "groups": [
+      {
+        "id": "screen",
+        "label": "The screen we sell from, in either web app"
+      },
+      {
+        "id": "stack",
+        "label": "The playground: Puls\u0027s compose plus docker-compose.demo.yml (step 1)"
+      },
+      {
+        "id": "code",
+        "label": "What the agents load"
+      }
+    ]
+  }
+}

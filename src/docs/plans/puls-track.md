@@ -15,23 +15,10 @@ rule 3). On 2026-10-28 F35 and the specialists became phases of their own (3c an
 track keeps its turns between the phases. GOAL skills: 3, 4, 7, 8, 13, 19. Paid runs: per feature (CL16's cook run, F35's recipe simulation, and each
 later simulation), each on Louis's go. Selling: listings and credits are sold only with Phase 9's accounts.
 
-```mermaid
-flowchart LR
-    spec["Puls local spec"] --> f35["F35 Recipe sources"]
-    p3["Phase 3: record and replay"] --> f35
-    f35 --> cl16["CL16 Reusable roles"]
-    f35 --> sources["Sources as data, ADR 0032"]
-    f35 --> vision["Vision, question 15"]
-    sources --> places["Places"]
-    p4["Phase 4: the area-guide simulation proves it"] --> places
-    places --> business["Local businesses"]
-    p9["Phase 9: accounts"] --> business
-    p9 --> f23["F23 Credits"]
-    places -.-> lookups["Local lookups, each a pack when a simulation shows demand"]
-```
+![Puls's track: each item waits for what it needs, and a local lookup becomes a pack only when a simulation shows demand](diagrams/puls-track-puls-s-track-between-the-phases.svg)
 
-An arrow means "before"; a dashed arrow means "comes when measured". Puls's open items, F28 and more shops have no
-prerequisite beyond what they name.
+A dashed arrow means "comes when measured". Puls's open items, F28 and more shops have no prerequisite beyond what
+they name.
 
 **1. Puls local spec** (`docs/specs/puls-local.md`, new; `docs/specs/` holds four specs today, checked): the place
 registry, the business registry with its two tiers, the municipality theme, and POPIA for location. Docs only, and
@@ -150,14 +137,7 @@ instance Malmesbury is swartland municipality give it that municipality colours"
 
 The picture Louis confirmed ("this is correct"):
 
-```mermaid
-flowchart LR
-    town["Your town: Malmesbury, from the place you shared"] --> pack["places pack"]
-    sources["OpenStreetMap's Nominatim, Wikipedia nearby in English and Afrikaans, the municipality's site"] -.-> pack
-    pack --> answer["Puls answers: Swartland municipality, what's near and how far, each with its source"]
-    pack --> theme["Swartland's colours: the Puls web app's theme"]
-    puls["Puls, the same identity in every town"] --> answer
-```
+![The places pack reads the town's own sources, and Puls's answer and the web app's colours follow the town](diagrams/puls-track-puls-s-track-between-the-phases-2.svg)
 
 **6. Local businesses.** Louis: "A shop can then [advertise] or become a provider like Shops/hairdressers". Two tiers in
 the business registry. **Listed:** name, category (shop, hairdresser and so on), municipality, hours and a link, shown

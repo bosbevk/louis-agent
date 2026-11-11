@@ -82,16 +82,7 @@ classDiagram
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    V[Visitor's browser\nwidget: ShowPage, Offer, ShowCard] -->|SSE| API[louis-agent.api\nthe guide, rate limit F125.5]
-    API -->|TOOL_TRANSPORT=mcp F125.8| MCP[louis-agent.mcp\ndocs, site, leads, gaps]
-    API -.->|in-process, tests| Packs[Packs as DLLs]
-    Ext[Claude, ChatGPT, Cursor] -->|search + fetch, doc://| MCP
-    Ext -->|finds it| Reg[Official MCP Registry\n+ /.well-known/ai-catalog.json F125.2]
-    API -->|FindMcpServers F125.8| Reg
-    Admin[Admin page\ngaps F125.6, approvals F125.8] --> API
-```
+![The guide's tools run in the MCP server, outside agents find us through the registry, and the admin page sees the gaps](diagrams/F125-an-agentic-site-architecture.svg)
 
 ### Communication: a visitor asks, the guide searches over MCP
 
@@ -111,14 +102,7 @@ sequenceDiagram
 
 ### Objects in memory: one guide turn over MCP
 
-```mermaid
-flowchart TB
-    Engine[AgentEngine] --> Proxy1[McpToolProxy docs_search]
-    Engine --> Proxy2[McpToolProxy docs_fetch]
-    Engine --> Local[ShowPage, Offer, ShowCard\nin-process by override]
-    Proxy1 --> Client[McpClient, one per server]
-    Proxy2 --> Client
-```
+![The engine holds two MCP tool proxies on one client, and the tools that show a page stay in the process](diagrams/F125-an-agentic-site-objects-in-memory-one-guide-turn-over-mcp.svg)
 
 ### Namespace map (proposed; each child's plan settles it)
 
