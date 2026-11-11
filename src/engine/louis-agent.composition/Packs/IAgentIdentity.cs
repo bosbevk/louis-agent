@@ -3,13 +3,17 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Composition.Packs;
 
 /// <summary>
-/// Who an agent is (CL15, ADR 0027): its name, its modes, its own roles, and the packs it uses, by name. It has no tools
-/// of its own: everything it can do comes from packs. It may hold workflow code that uses its own packs' public types
-/// (the voorman identity's triage workflow, Phase 6); a pack never references another pack or an identity.
+/// Who an agent is (CL15, ADR 0027): its name, its modes, its own roles, the packs it uses and the agents it may ask,
+/// by name. It has no tools of its own: everything it can do comes from packs. It may hold workflow code that uses its
+/// own packs' public types (the voorman identity's triage workflow, Phase 6); a pack never references another pack or
+/// an identity.
 /// </summary>
 public interface IAgentIdentity
 {
-    /// <summary>The name <c>IDENTITIES</c> loads it by ("acme"); its modes are <c>agent/{name}/…</c>. Lowercase letters, digits and dashes.</summary>
+    /// <summary>
+    /// The name <c>IDENTITIES</c> loads it by ("acme"); its modes are <c>agent/{name}/…</c>. Lowercase letters, digits
+    /// and dashes.
+    /// </summary>
     string Name { get; }
 
     /// <summary>Its modes, its own specialists and its own minion roles: content, never converted to MCP.</summary>
@@ -21,7 +25,9 @@ public interface IAgentIdentity
     /// </summary>
     IReadOnlyList<string> Packs { get; }
 
-    /// <summary>The mode a session that names none runs, as <c>{name}/{mode}</c>. None: a session names its own.</summary>
+    /// <summary>
+    /// The mode a session that names none runs, as <c>{name}/{mode}</c>. None: a session names its own.
+    /// </summary>
     string? DefaultVoice => null;
 
     /// <summary>
@@ -29,4 +35,10 @@ public interface IAgentIdentity
     /// booking or a lead, is marked a demo. No, unless it says so.
     /// </summary>
     bool IsDemonstration => false;
+
+    /// <summary>
+    /// The agents it may ask (F127.3.1), by their addresses: <c>acme</c> for an identity in its own voice,
+    /// <c>acme.cook</c> for one of its roles. None, unless it says so: an identity calls only whom it names.
+    /// </summary>
+    IReadOnlyList<string> Calls => [];
 }

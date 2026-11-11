@@ -124,4 +124,7 @@ public enum SubSessionToolMessage
 
     [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
     AddressUnknownRole,
+
+    [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
+    AddressNotCallable,
 }

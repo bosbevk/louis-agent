@@ -1,5 +1,4 @@
 using LouisAgent.Composition.Packs;
-using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Testing;
@@ -13,7 +12,8 @@ public sealed class FakeIdentity(
     IReadOnlyList<string>? packs = null,
     IReadOnlyDictionary<string, string>? prompts = null,
     string? voice = null,
-    bool demonstration = false) : IAgentIdentity
+    bool demonstration = false,
+    IReadOnlyList<string>? calls = null) : IAgentIdentity
 {
     public string Name => name;
 
@@ -28,4 +28,7 @@ public sealed class FakeIdentity(
 
     /// <summary>Whether this test identity plays a demonstration (F127.2).</summary>
     public bool IsDemonstration => demonstration;
+
+    /// <summary>The agents this test identity may ask (F127.3.1), none unless the test says.</summary>
+    public IReadOnlyList<string> Calls => calls ?? [];
 }
