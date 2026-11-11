@@ -70,6 +70,26 @@ public class SequenceLayoutTests
         });
     }
 
+    /// <summary>
+    /// A written break starts a new line in a message and a head's name, as it does in a flow's label; a message with
+    /// no words still takes its row.
+    /// </summary>
+    [Test]
+    public void AWrittenBreak_StartsANewLine_AndNoWordsStillPlace()
+    {
+        var spec = new SequenceSpec([new Participant("P", "Program.cs\n(the host)"), new Participant("S", "S")],
+            [new MessageStep("P", "S", "Build()\nchecked"), new ReplyStep("S", "P", "")]);
+
+        var placed = SequenceLayout.Place(spec);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.Heads[0].Lines, Is.EqualTo(new[] { "Program.cs", "(the host)" }));
+            Assert.That(placed.Rows[0].Lines, Is.EqualTo(new[] { "Build()", "checked" }));
+            Assert.That(placed.Rows[1].Lines, Is.Empty);
+        });
+    }
+
     /// <summary>The steps run down in order under the heads, each row below the one before.</summary>
     [Test]
     public void TheRows_RunDownInOrder()

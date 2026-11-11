@@ -2,7 +2,7 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.DocDiagrams.Messages;
 
-namespace LouisAgent.DocDiagrams.Mermaid;
+namespace LouisAgent.DocDiagrams.Mermaid.Readers;
 
 /// <summary>
 /// Reads one Mermaid statement, a chain of boxes and arrows (<c>a["A"] --&gt;|calls| b &amp; c -.-&gt; d</c>), into

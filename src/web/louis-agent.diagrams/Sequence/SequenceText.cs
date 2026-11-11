@@ -34,12 +34,16 @@ public static class SequenceText
     /// <summary>A head's width at the least, so a short name still reads as a box.</summary>
     public const double HeadMinWidth = 120;
 
-    /// <summary>A message's words, broken into lines.</summary>
-    public static IReadOnlyList<string> Lines(string text) => TextWrap.Lines(text, MessageWidth);
+    /// <summary>A message's words, broken into lines: at each written break, then where a line grows too long.</summary>
+    public static IReadOnlyList<string> Lines(string text) => Broken(text, MessageWidth);
 
-    /// <summary>A head's label, broken into lines.</summary>
+    /// <summary>A head's label, broken into lines the same way.</summary>
     public static IReadOnlyList<string> HeadLines(Participant participant) =>
-        TextWrap.Lines(participant.Label, HeadLabelWidth);
+        Broken(participant.Label, HeadLabelWidth);
+
+    /// <summary>Words broken at each written <c>\n</c>, as a flow's label is, then each part wrapped at a width.</summary>
+    private static IReadOnlyList<string> Broken(string text, int width) =>
+        text.Split('\n').SelectMany(part => TextWrap.Lines(part, width)).ToList();
 
     /// <summary>How wide a head is for its label and its icon.</summary>
     public static double HeadWidth(Participant participant, IReadOnlyList<string> lines)
@@ -59,7 +63,7 @@ public static class SequenceText
 
     /// <summary>How wide a message's words are, their room included.</summary>
     public static double WordsWidth(IReadOnlyList<string> lines) =>
-        lines.Max(line => line.Length) * FlowText.WordChar + 2 * WordPad;
+        lines.Select(line => line.Length).DefaultIfEmpty(0).Max() * FlowText.WordChar + 2 * WordPad;
 
     /// <summary>
     /// The ground a message's words take: centred between its lifelines, or for a message to oneself, just right of

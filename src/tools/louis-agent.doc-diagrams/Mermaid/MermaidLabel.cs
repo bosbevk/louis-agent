@@ -28,6 +28,42 @@ internal static class MermaidLabel
     }
 
     /// <summary>The text with every tag (<c>&lt;b&gt;</c>, <c>&lt;/i&gt;</c>) taken out and its words kept.</summary>
+    /// <summary>
+    /// A sequence's words as they read (CL60.3): a break as a new line and an entity or a <c>#59;</c> code as its
+    /// character, but every <c>&lt;</c> kept, since Mermaid reads no tags in a message and a generic is code.
+    /// </summary>
+    public static string Text(string raw)
+    {
+        string text = raw.Replace("<br/>", "\n", StringComparison.OrdinalIgnoreCase)
+            .Replace("<br />", "\n", StringComparison.OrdinalIgnoreCase)
+            .Replace("<br>", "\n", StringComparison.OrdinalIgnoreCase)
+            .Replace("\\n", "\n", StringComparison.Ordinal);
+        foreach (var (entity, character) in Entities) text = text.Replace(entity, character, StringComparison.Ordinal);
+        text = Codes(text);
+        return string.Join('\n', text.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0));
+    }
+
+    /// <summary>Each <c>#59;</c>-style code, a character's number, as the character Mermaid shows for it.</summary>
+    private static string Codes(string text)
+    {
+        var kept = new StringBuilder(text.Length);
+        for (int at = 0; at < text.Length; at++)
+        {
+            int end = text[at] == '#' ? text.IndexOf(';', at) : -1;
+            bool code = end > at + 1 && text[(at + 1)..end].All(char.IsAsciiDigit);
+            if (!code)
+            {
+                kept.Append(text[at]);
+                continue;
+            }
+
+            kept.Append((char)int.Parse(text[(at + 1)..end], System.Globalization.CultureInfo.InvariantCulture));
+            at = end;
+        }
+
+        return kept.ToString();
+    }
+
     private static string WithoutTags(string text)
     {
         var kept = new StringBuilder(text.Length);

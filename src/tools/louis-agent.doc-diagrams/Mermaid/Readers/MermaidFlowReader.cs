@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 
-namespace LouisAgent.DocDiagrams.Mermaid;
+namespace LouisAgent.DocDiagrams.Mermaid.Readers;
 
 /// <summary>
 /// Reads a Mermaid flowchart into a flow diagram, once, so the docs keep no Mermaid (CL60.2): its direction, its boxes

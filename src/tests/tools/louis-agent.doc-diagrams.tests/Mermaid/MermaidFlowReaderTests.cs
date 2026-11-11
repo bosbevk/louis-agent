@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.DocDiagrams.Mermaid;
+using LouisAgent.DocDiagrams.Mermaid.Readers;
 
 namespace LouisAgent.DocDiagrams.Tests.Mermaid;
 
@@ -178,9 +179,11 @@ public class MermaidFlowReaderTests
         });
     }
 
-    /// <summary>A doc's flowcharts are found with their lines and the heading above; other kinds are left.</summary>
+    /// <summary>
+    /// A doc's flowcharts and sequences are found with their lines and the heading above (sequences since CL60.3).
+    /// </summary>
     [Test]
-    public void ADocsFlowcharts_AreFound_WithTheirHeading()
+    public void ADocsFlowchartsAndSequences_AreFound_WithTheirHeading()
     {
         const string doc = """
                            # louis-agent.core — design
@@ -200,9 +203,10 @@ public class MermaidFlowReaderTests
                            ```
                            """;
 
-        var block = MermaidImport.Blocks(doc).Single();
+        var blocks = MermaidImport.Blocks(doc);
 
-        Assert.That((block.Start, block.End, block.Heading), Is.EqualTo((5, 8, "How it works")));
-        Assert.That(block.Body, Does.StartWith("flowchart LR"));
+        Assert.That(blocks.Select(block => (block.Start, block.End, block.Heading)),
+            Is.EqualTo(new[] { (5, 8, "How it works"), (12, 15, "Talking") }));
+        Assert.That(blocks[1].Body, Does.StartWith("sequenceDiagram"));
     }
 }
