@@ -64,7 +64,7 @@ public sealed class MinionTools
         "CreateSkillFile",
         "ReloadSkills",
         "CreateTool",
-        "ListAgentTools",
+        "ListAgentTools"
     };
 
     private readonly IReadOnlyDictionary<string, Uri> _peers;
@@ -154,7 +154,7 @@ public sealed class MinionTools
                 Answer = reply.Text,
                 Role = role,
                 Tool = tool,
-                Llm = model,
+                Llm = model
             });
 
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);

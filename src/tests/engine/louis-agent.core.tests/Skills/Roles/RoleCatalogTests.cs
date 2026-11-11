@@ -1,7 +1,5 @@
-using LouisAgent.Testing;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
@@ -161,8 +159,7 @@ public class RoleCatalogTests
     {
         // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
         var ex = Assert.Throws<RoleException>(() =>
-            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist",
-                RoleLevel.Agent));
+            SkillLoader.Load(new AgentOptions { DefaultVoice = "testprod/voice-en" }, [], "testprod-specialist"));
 
         Assert.That(ex!.Message,
             Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));

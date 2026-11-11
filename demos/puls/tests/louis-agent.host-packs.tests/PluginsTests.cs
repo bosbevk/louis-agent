@@ -8,8 +8,6 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
 
@@ -114,8 +112,8 @@ public class PluginsTests
     }
 
     /// <summary>
-    /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and the
-    /// toolsets the cook declares in its header resolve: the packs' to the packs, minions to core's.
+    /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and
+    /// the toolsets the cook declares in its header resolve: the packs' to the packs, minions to core's.
     /// </summary>
     [Test]
     public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()

@@ -1,31 +1,32 @@
 using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
-using LouisAgent.Testing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
 
 // F33 step 4 (Louis: optional toolsets): Puls hands the cook `web` and `shops?`. A name ending in `?` loads when this
 // instance has the toolset and is skipped when it doesn't, so cooking worked on a deployment without the shops
-// pack's settings (F33; the pack is gone since F50.2, the rule stays). An unknown name stays an error, `?` or not: a typo
-// is never skipped in silence.
+// pack's settings (F33; the pack is gone since F50.2, the rule stays). An unknown name stays an error, `?` or not: a
+// typo is never skipped in silence.
 public class ToolsetCatalogTests
 {
     [Test]
     public void CoresCatalogue_IsExactlyTheCoreToolsetEnum_TheShopsAreAPack()
     {
-        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) became a pack; F50.2: packs/tools/louis-agent.pack.where-to-buy and shop-prices; core names no shop. The enum is core's whole list (ADR 0043).
+        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) became a pack; F50.2:
+        // packs/tools/louis-agent.pack.where-to-buy and shop-prices; core names no shop. The enum is core's whole list
+        // (ADR 0043).
         Assert.That(ToolsetCatalog.All.Select(t => t.Name),
             Is.EquivalentTo(Enum.GetValues<CoreToolset>().Select(t => t.Wire())));
         Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));
     }
 
     // F34: only toolsets whose calls don't depend on each other's order run in parallel: reading the web and the shops
-    // (a pack since CL15, so a parallel-safe definition stands in for it here). Files, shells, git and the specialists keep their order.
+    // (a pack since CL15, so a parallel-safe definition stands in for it here). Files, shells, git and asking agents
+    // keep their order.
     [Test]
     public void OnlyTheWebAndTheShops_RunInParallel()
     {
@@ -51,11 +52,13 @@ public class ToolsetCatalogTests
     }
 
     // S (CL15): a toolset's ToolTypes is how its tool names are known without building it, so the objects CreateTools
-    // builds must be exactly those classes, or the catalogue advertises tools the engine never registers (or the reverse).
+    // builds must be exactly those classes, or the catalogue advertises tools the engine never registers (or the
+    // reverse).
     [Test]
     public void EveryToolset_BuildsExactlyTheClassesItAdvertises()
     {
-        // The options every toolset needs to build (as the model-request golden builds them): keys, peers, minion models, a browser.
+        // The options every toolset needs to build (as the model-request golden builds them): keys, peers, minion
+        // models, a browser.
         var options = new AgentOptions
         {
             WorkspaceRoot = Path.GetTempPath(),
@@ -63,7 +66,7 @@ public class ToolsetCatalogTests
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
-            BrowserUrl = "http://browser.test:9222",
+            BrowserUrl = "http://browser.test:9222"
         };
         var context = new ToolsetContext(options, new WebParts(new NoSearch()));
 

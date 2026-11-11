@@ -7,12 +7,12 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 internal sealed class UsageRollUp(IUsageSink? usageSink, TimeProvider time)
 {
     /// <summary>
-    /// One record standing for the child's requests on this reply, written to the ledger and added to the parent turn's
-    /// scope, in that order, as <c>UsageRecordingChatClient.Store</c> does for a model request. Every view totals the
-    /// scope, so the usage line, the chat total, <c>/usage</c> and the API's usage include it with no change of their
-    /// own; the ledger's row keeps the child's cost attributable to this session later (its own rows are in the ledger it
-    /// ran on, linked by <c>parent</c>). A minion's roll-up (F30) lands in the specialist's turn the same way, so the
-    /// specialist's reported usage carries it up to the chat's roll-up: two levels, one rule.
+    /// One record standing for the child's requests on this reply, written to the ledger and added to the parent
+    /// turn's scope, in that order, as <c>UsageRecordingChatClient.Store</c> does for a model request. Every view
+    /// totals the scope, so the usage line, the chat total, <c>/usage</c> and the API's usage include it with no change
+    /// of their own; the ledger's row keeps the child's cost attributable to this session later (its own rows are in
+    /// the ledger it ran on, linked by <c>parent</c>). A minion's roll-up (F30) lands in the asked agent's turn the
+    /// same way, so the asked agent's reported usage carries it up to the chat's roll-up: two levels, one rule.
     /// </summary>
     public void Record(UsageScope? scope, string model, SubSessionUsage usage, TimeSpan duration)
     {

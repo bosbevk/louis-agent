@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Usage.Records;
 
@@ -29,11 +28,15 @@ internal sealed class CallSlots(int maxPerTurn, TimeSpan noTurnWindow, TimeProvi
         return null;
     }
 
-    /// <summary>This turn as a child's <c>parent</c> tag, <c>{session}#{turn}</c>; null outside a session's turn.</summary>
+    /// <summary>
+    /// This turn as a child's <c>parent</c> tag, <c>{session}#{turn}</c>; null outside a session's turn.
+    /// </summary>
     public static string? ParentTag(UsageScope? scope) =>
         scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
 
-    /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most maxPerTurn a window.</summary>
+    /// <summary>
+    /// Outside a turn there's nothing to count against, so a rolling window: at most maxPerTurn a window.
+    /// </summary>
     private bool TakeNoTurnSlot()
     {
         lock (_noTurn)

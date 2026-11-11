@@ -1,9 +1,7 @@
-using LouisAgent.Testing;
 using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Chats;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -35,7 +33,7 @@ public class DelegationToolsetsTests
         Kind = BlockKind.Tool,
         ToolName = Delegation.AskToolName,
         ToolUseId = "toolu_1",
-        ToolInput = """{"address":"acme.cook","message":"**Vir:** kok"}""",
+        ToolInput = """{"address":"acme.cook","message":"**Vir:** kok"}"""
     };
 
     /// <summary>

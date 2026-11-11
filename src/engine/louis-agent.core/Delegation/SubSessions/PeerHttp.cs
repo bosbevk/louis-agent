@@ -10,7 +10,10 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 /// </summary>
 internal sealed class PeerHttp(HttpClient http, string? apiKey)
 {
-    /// <summary>One client for every engine: sub-session answers can take minutes, so the timeout is the tools', not HttpClient's.</summary>
+    /// <summary>
+    /// One client for every engine: sub-session answers can take minutes, so the timeout is the tools', not
+    /// HttpClient's.
+    /// </summary>
     public static readonly HttpClient Shared = new() { Timeout = Timeout.InfiniteTimeSpan };
 
     /// <summary>How long an asked agent may take to answer, unless a host says otherwise.</summary>

@@ -1,19 +1,17 @@
-using LouisAgent.Web.Testing;
-using LouisAgent.Testing;
 using LouisAgent.Puls.Pages;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Usage;
 using Microsoft.Extensions.DependencyInjection;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Puls.Tests.Pages;
 
 /// <summary>
-/// Puls's chat page rendered end to end against the stub API: the API client is the real one, over a stub that answers
-/// the model, roles and toolsets with fixed JSON, opens one session, and streams the recorded turn for its message. The
-/// empty page and the page with the turn are pinned to golden files. The page's JS runs through bUnit's loose interop,
-/// which answers every call with nothing; the test lists the calls it made, so a new one is a review point.
+/// Puls's chat page rendered end to end against the stub API: the API client is the real one, over a stub that
+/// answers the model, roles and toolsets with fixed JSON, opens one session, and streams the recorded turn for its
+/// message. The empty page and the page with the turn are pinned to golden files. The page's JS runs through bUnit's
+/// loose interop, which answers every call with nothing; the test lists the calls it made, so a new one is a review
+/// point.
 /// </summary>
 public class ChatPageTests
 {
@@ -23,13 +21,13 @@ public class ChatPageTests
         "Blazor._internal.InputFile.init",
         // The framework's preferences module (CL31) is imported, and what the browser remembers is read from it.
         "localStorage.getItem", "import", "loadLocation", "motion", "loadLanguage", "reducedMotion",
-        "attach", "countCosts",
+        "attach", "countCosts"
     ];
 
     private static readonly string[] TurnCalls =
     [
         // The list's and the turn's own modules (CL31) are imported, and their calls go to the modules.
-        "timeZone", "scrollToBottom", "highlightBlocks", "localStorage.setItem",
+        "timeZone", "scrollToBottom", "highlightBlocks", "localStorage.setItem"
     ];
 
     /// <summary>A bUnit context with everything the page asks for, over the stub API.</summary>
@@ -75,8 +73,9 @@ public class ChatPageTests
 
         cut.Find("#composer-input").Input(SessionStreamFixture.Question);
         cut.Find("#send-button").Click();
-        // The turn is over when the Stop button has given way to Send again and the chat was saved to localStorage: the
-        // page redraws before the save finishes (a git refresh lands first in the code-review app), so both are awaited.
+        // The turn is over when the Stop button has given way to Send again and the chat was saved to localStorage:
+        // the page redraws before the save finishes (a git refresh lands first in the code-review app), so both are
+        // awaited.
         cut.WaitForState(() => cut.FindAll(".turn").Count > 0 && cut.FindAll("button.stop").Count == 0
                                                               && ctx.JSInterop.Invocations.Any(i =>
                                                                   i.Identifier == "localStorage.setItem"),

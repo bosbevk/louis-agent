@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace LouisAgent.Puls.Pages;
 
-/// <summary>What only Puls knows about its chat page: Verken and Studio, the old address, and which toolsets it asks
-/// for. The frame is the framework's.</summary>
-public partial class ChatPage : IDisposable
+/// <summary>
+/// What only Puls knows about its chat page: Verken and Studio, the old address, and which toolsets it asks for. The
+/// frame is the framework's.
+/// </summary>
+public partial class ChatPage
 {
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private ChatStore Store { get; set; } = default!;
@@ -27,7 +29,7 @@ public partial class ChatPage : IDisposable
     {
         "verken" => "Verken",
         "studio" => "Studio",
-        _ => null,
+        _ => null
     };
 
     /// <summary>Which view the page shows: the chat, Verken or Studio, from the address.</summary>
@@ -35,13 +37,14 @@ public partial class ChatPage : IDisposable
     {
         "verken" => "verken",
         "studio" => "studio",
-        _ => "chat",
+        _ => "chat"
     };
 
     /// <summary>Listens for the address.</summary>
     protected override void OnInitialized()
     {
-        // /gesels, /verken and /studio are this page with the same (empty) parameters, so Blazor wouldn't redraw on its own.
+        // /gesels, /verken and /studio are this page with the same (empty) parameters, so Blazor wouldn't redraw on its
+        // own.
         Nav.LocationChanged += OnLocationChanged;
     }
 

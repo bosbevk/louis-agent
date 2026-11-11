@@ -4,7 +4,6 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using ChatModel = LouisAgent.Web.Chats.Chat;
-using LouisAgent.Testing;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Time.Testing;
 
@@ -119,7 +118,7 @@ public class ChatRunnerTests
             Is.EqualTo(new[]
             {
                 "POST http://localhost/v1/sessions",
-                $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages",
+                $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages"
             }));
     }
 
@@ -283,9 +282,7 @@ public class ChatRunnerTests
         var h = new Harness { Runner = { Draft = "Hallo" } };
         var failing = new ChatRunner(FixtureApi.Client(h.Settings), h.Store, new ChatText(),
             () => throw new HttpRequestException("down"), h.Clock)
-        {
-            Draft = "Hallo",
-        };
+        { Draft = "Hallo" };
         failing.Attachments.Add(new Attachment("a.txt", "x"));
 
         await failing.SendAsync();
@@ -308,7 +305,7 @@ public class ChatRunnerTests
         var refused = new ChatRunner(FixtureApi.Client(h.Settings), h.Store, new ChatText(),
             () => throw new AgentApiException(HttpStatusCode.Unauthorized, "Missing or invalid API key"), h.Clock)
         {
-            Draft = "toets",
+            Draft = "toets"
         };
         int changed = 0;
         refused.Changed += () => changed++;

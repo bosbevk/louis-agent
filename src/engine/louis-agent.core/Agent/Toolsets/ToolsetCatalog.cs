@@ -50,7 +50,7 @@ public static class ToolsetCatalog
         new(CoreToolset.Skills.Wire(), "Create and reload skills, and build and list agent-built tools",
             GuideFile: SkillFiles.Guide("self-extension"),
             MissingSettings: _ => [],
-            CreateTools: null),
+            CreateTools: null)
     ];
 
     // CL15: ToolNames, ToolNamesOf and ToolsetOf moved to AgentCatalog, so a pack's tools count too.

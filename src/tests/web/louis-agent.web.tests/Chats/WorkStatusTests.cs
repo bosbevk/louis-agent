@@ -1,16 +1,15 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Text;
-using LouisAgent.Testing;
 
 namespace LouisAgent.Web.Tests.Chats;
 
-/// <summary>The line under a running turn: a role's phases while its specialist works, else a plain "busy".</summary>
+/// <summary>The line under a running turn: a role's phases while an asked agent works, else a plain "busy".</summary>
 public class WorkStatusTests
 {
     private static readonly ChatText Text = new()
     {
         Processing = "BESIG",
-        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
+        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") }
     };
 
     /// <summary>An ask still running, its child's stream started under this role.</summary>

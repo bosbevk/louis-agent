@@ -1,5 +1,4 @@
 using LouisAgent.Web.Chats;
-using LouisAgent.Choices;
 
 namespace LouisAgent.Web.Tests.Chats;
 

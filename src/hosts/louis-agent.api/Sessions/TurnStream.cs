@@ -45,11 +45,12 @@ internal static class TurnStream
             }) +
                       (content.Length <= maxAttachmentChars
                           ? ""
-                          : MessageText.Format(ApiModelText.AttachmentTruncated, new
-                          {
-                              Shown = maxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
-                              Length = content.Length.ToString("N0", CultureInfo.InvariantCulture),
-                          })));
+                          : MessageText.Format(ApiModelText.AttachmentTruncated,
+                              new
+                              {
+                                  Shown = maxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
+                                  Length = content.Length.ToString("N0", CultureInfo.InvariantCulture)
+                              })));
         }
 
         if (request.Page is { } page && PageBlock(page) is { Length: > 0 } block) parts.Add(block);
@@ -126,8 +127,7 @@ internal static class TurnStream
     /// <summary>
     /// The page as one block: where the visitor is, what the page says, cut with a note when it is long, its areas,
     /// its links and the section on their screen. A page without words is a later message from the same page (F118):
-    /// only the
-    /// section on their screen, or nothing.
+    /// only the section on their screen, or nothing.
     /// </summary>
     private static string PageBlock(PageRequest page)
     {
@@ -145,11 +145,12 @@ internal static class TurnStream
                 InView = InViewOf(page)
             });
         if (text.Length <= MaxPageChars) return block;
-        return block + MessageText.Format(ApiModelText.PageTruncated, new
-        {
-            Shown = MaxPageChars.ToString("N0", CultureInfo.InvariantCulture),
-            Length = text.Length.ToString("N0", CultureInfo.InvariantCulture),
-        });
+        return block + MessageText.Format(ApiModelText.PageTruncated,
+            new
+            {
+                Shown = MaxPageChars.ToString("N0", CultureInfo.InvariantCulture),
+                Length = text.Length.ToString("N0", CultureInfo.InvariantCulture)
+            });
     }
 
     /// <summary>

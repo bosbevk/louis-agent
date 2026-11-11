@@ -2,12 +2,13 @@ using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Web.Chats;
 
-/// <summary>Folds louis-agent.api's streamed events (Claude's shape, read by the session-stream reader) into a
-/// <see cref="Turn"/>, for every chat page.</summary>
+/// <summary>
+/// Folds louis-agent.api's streamed events (Claude's shape, read by the session-stream reader) into a
+/// <see cref="Turn"/>, for every chat page.
+/// </summary>
 public static class TurnStream
 {
     /// <summary>Folds one event of the stream into the turn.</summary>
@@ -16,9 +17,9 @@ public static class TurnStream
         switch (streamEvent)
         {
             case MessageStarted started:
-                // F34: what the session loaded; a specialist's role may add toolsets to the ones its parent sent.
+                // F34: what the session loaded, which an ask never names: the asked agent's own file decides it.
                 if (started.Toolsets.Count > 0) turn.Toolsets = [.. started.Toolsets];
-                // FX17: its role, so a follow-up's card (whose call names only the handle) knows who it went to.
+                // FX17: its role, which an ask never names either, so the work line knows what the child is doing.
                 if (started.Role is not null) turn.Role = started.Role;
                 break;
 
@@ -75,7 +76,7 @@ public static class TurnStream
                     Kind = BlockKind.Tool,
                     ToolUseId = block.GetProperty("id").GetString(),
                     ToolName = block.GetProperty("name").GetString(),
-                    ToolInput = FormatInput(block.GetProperty("input")),
+                    ToolInput = FormatInput(block.GetProperty("input"))
                 });
                 break;
             case "tool_result":
@@ -84,8 +85,8 @@ public static class TurnStream
                 {
                     tool.ToolResult = block.GetProperty("content").GetString() ?? "";
                     tool.ToolFailed = block.GetProperty("is_error").GetBoolean();
-                    // FX22: the images a tool read, taken now, before the saved chat cuts the text. A delegation call's result is the
-                    // specialist's own answer, written by a model, so it proves nothing.
+                    // FX22: the images a tool read, taken now, before the saved chat cuts the text. A delegation call's
+                    // result is the asked agent's own answer, written by a model, so it proves nothing.
                     if (!tool.ToolFailed && !Delegation.IsDelegationTool(tool.ToolName))
                         tool.Images = [.. ImageLinks.Of(tool.ToolResult)];
                 }

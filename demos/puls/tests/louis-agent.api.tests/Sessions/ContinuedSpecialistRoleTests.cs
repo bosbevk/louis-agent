@@ -1,10 +1,8 @@
-using LouisAgent.Testing;
 using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Text;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -40,9 +38,9 @@ public class ContinuedSpecialistRoleTests
                     Kind = BlockKind.Tool,
                     ToolName = Delegation.AskToolName,
                     ToolUseId = "toolu_9",
-                    ToolInput = """{"address":"acme.cook","message":"**Wil hê:** vir ses mense"}""",
-                },
-            ],
+                    ToolInput = """{"address":"acme.cook","message":"**Wil hê:** vir ses mense"}"""
+                }
+            ]
         };
         var inner = JsonDocument
             .Parse(SampleToolset.Fill(SampleRole.Fill(

@@ -2,8 +2,6 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components;
 using LouisAgent.Web.Text;
 using static LouisAgent.Web.Tests.StreamEvents;
-using LouisAgent.SessionStream;
-using LouisAgent.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
@@ -33,7 +31,7 @@ public class TurnViewImageTests
                          }),
                      InSubSession("d1", ToolUse("c1", "FetchUrl", new { url = "https://example.co.za/bobotie" })),
                      InSubSession("d1", ToolResult("c1", page)), InSubSession("d1", TextStart()),
-                     InSubSession("d1", TextDelta(Answer)), ToolResult("d1", Answer), TextStart(), TextDelta(Answer),
+                     InSubSession("d1", TextDelta(Answer)), ToolResult("d1", Answer), TextStart(), TextDelta(Answer)
                  })
             TurnStream.Apply(turn, streamEvent);
         return turn;

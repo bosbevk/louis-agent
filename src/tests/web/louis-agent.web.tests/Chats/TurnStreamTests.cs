@@ -2,8 +2,6 @@ using System.Text.Json;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Usage;
 using LouisAgent.SessionStream;
-using LouisAgent.Testing;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Web.Tests.Chats;
 

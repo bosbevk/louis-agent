@@ -1,4 +1,3 @@
-using LouisAgent.Composition.Tools;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Api.Contracts;
@@ -31,7 +30,7 @@ internal sealed class ClaudeStreamFormat(
     private static readonly JsonSerializerOptions Json = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     private int _index = -1;
@@ -52,8 +51,8 @@ internal sealed class ClaudeStreamFormat(
     }
 
     /// <summary>
-    /// The turn's start, with the toolsets the session loaded (F34: a specialist's card shows what it has) and its role
-    /// (FX17: a follow-up's card names the specialist while it works); <c>session_role</c>, since <c>role</c> is
+    /// The turn's start, with the toolsets the session loaded (F34: an asked agent's card shows what it has) and its
+    /// role (FX17: a follow-up's work line knows the role while it works); <c>session_role</c>, since <c>role</c> is
     /// Claude's speaker.
     /// </summary>
     public SseItem<string> Start() =>
@@ -71,7 +70,7 @@ internal sealed class ClaudeStreamFormat(
         FunctionCallContent call => Block(new ToolUseBlock(call.CallId, call.Name,
             call.Arguments ?? new Dictionary<string, object?>())),
         FunctionResultContent result => Block(ToolResult(result)),
-        _ => [],
+        _ => []
     };
 
     /// <summary>Some of the answer's text, added to the text block that's open.</summary>

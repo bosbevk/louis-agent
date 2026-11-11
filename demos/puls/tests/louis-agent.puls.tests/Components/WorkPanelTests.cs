@@ -1,5 +1,3 @@
-using LouisAgent.Web.Testing;
-using LouisAgent.Testing;
 using LouisAgent.Web.Components.Chat.Panels;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Chats;
@@ -25,7 +23,7 @@ public class WorkPanelTests
             Title = "Ete vir vier",
             Turns = [turn]
         };
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(PulsText.Afrikaans);
 
         var cut = ctx.Render<WorkPanel>(p => p

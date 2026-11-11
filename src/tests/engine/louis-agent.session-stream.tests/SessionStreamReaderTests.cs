@@ -1,11 +1,12 @@
 using LouisAgent.Testing;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.SessionStream;
 
 namespace LouisAgent.SessionStream.Tests;
 
-/// <summary>The reader against the recorded Puls turn (its expected counts sit beside it), and against small streams.</summary>
+/// <summary>
+/// The reader against the recorded Puls turn (its expected counts sit beside it), and against small streams.
+/// </summary>
 [TestFixture]
 public class SessionStreamReaderTests
 {
@@ -270,7 +271,7 @@ public class SessionStreamReaderTests
                 s.Data.GetProperty("content_block").TryGetProperty("input", out var input) ? input : default)
         ],
         SubSessionStreamed s => ToolUses(s.Inner),
-        _ => [],
+        _ => []
     };
 
     private static IEnumerable<string> ToolUseNames(SessionEvent e) => ToolUses(e).Select(t => t.Name);

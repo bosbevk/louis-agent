@@ -17,7 +17,7 @@ public class BlocksViewTests
     {
         var turn = await SessionStreamFixture.ReplayAsync();
         var cook = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName).SubTurn!;
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, cook.Blocks));
@@ -35,7 +35,7 @@ public class BlocksViewTests
     public async Task WithItsWorkHidden_AnAnswerIsItsWordsAndAThinkingLabel()
     {
         var turn = await SessionStreamFixture.ReplayAsync();
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, turn.Blocks).Add(x => x.ShowWork, false));

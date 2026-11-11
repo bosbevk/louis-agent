@@ -8,5 +8,5 @@ namespace LouisAgent.Web.Api;
 public enum AskedToolset
 {
     Agents,
-    Web,
+    Web
 }

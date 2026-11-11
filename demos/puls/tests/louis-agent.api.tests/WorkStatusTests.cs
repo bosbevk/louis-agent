@@ -1,19 +1,18 @@
-using LouisAgent.Testing;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Text;
 
 namespace LouisAgent.Api.Tests;
 
 /// <summary>
-/// The line under a running turn says what the specialist is doing: its role's phases (an app's own words), searching
-/// until it has results and is writing, then building.
+/// The line under a running turn says what the asked agent is doing: its role's phases (an app's own words),
+/// searching until it has results and is writing, then building.
 /// </summary>
 public class WorkStatusTests
 {
     private static readonly ChatText Text = new()
     {
         Processing = "BESIG",
-        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
+        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") }
     };
 
     /// <summary>
@@ -37,9 +36,9 @@ public class WorkStatusTests
                 {
                     Role = role,
                     Blocks = [.. specialist]
-                },
-            },
-        ],
+                }
+            }
+        ]
     };
 
     /// <summary>A tool call with this result; none means it's still running.</summary>

@@ -1,24 +1,11 @@
-using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Usage.Records;
-using LouisAgent.Core.Usage.Sinks;
-using LouisAgent.Core.Usage.Reports;
 using System.Net;
 using System.Text;
-using System.Text.Json;
-using LouisAgent.Core.Agent;
-using LouisAgent.Core.Sessions;
-using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Delegation;
-using LouisAgent.Core.Agent.EngineTools.Clock;
-using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Delegation;
 
 /// <summary>
-/// A pretend peer for the specialist tests, so nothing goes over the network: the streams it answers with, the
-/// handlers that play it, and the tools pointed at it.
+/// A pretend peer for the delegation tests, so nothing goes over the network: the streams it answers with and the
+/// handlers that play it.
 /// </summary>
 internal static class FakePeer
 {
@@ -83,7 +70,7 @@ internal static class FakePeer
                 Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream")
             },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
-            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound)
         });
 
     /// <summary>A reply that failed after some work: the API's error event carries what was charged (FX6).</summary>
@@ -108,7 +95,7 @@ internal static class FakePeer
                 Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream")
             },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
-            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound)
         });
     }
 
@@ -117,7 +104,7 @@ internal static class FakePeer
         handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}");
 
     /// <summary>
-    /// A reply with usage and no text: what the delegation check's specialist sent after its tenth tool round.
+    /// A reply with usage and no text: what the delegation check's asked agent sent after its tenth tool round.
     /// </summary>
     public const string EmptyStream = """
                                       event: message_delta

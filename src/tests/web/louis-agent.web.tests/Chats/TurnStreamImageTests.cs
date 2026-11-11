@@ -1,7 +1,6 @@
 using LouisAgent.Web.Chats;
 using static LouisAgent.Web.Tests.StreamEvents;
 using LouisAgent.SessionStream;
-using LouisAgent.Web.Api;
 
 namespace LouisAgent.Web.Tests.Chats;
 

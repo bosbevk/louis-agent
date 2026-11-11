@@ -47,7 +47,7 @@ public class RepeatedNameTests
         "demos/puls/identity/louis-agent.identity.puls/PulsPack.cs",
         "demos/puls/hosts/louis-agent.host-packs/PackKind.cs",
         "src/hosts/louis-agent.api/Endpoints/ApiErrorKind.cs",
-        "src/engine/louis-agent.session-stream/StreamErrorKind.cs",
+        "src/engine/louis-agent.session-stream/StreamErrorKind.cs"
     ];
 
     /// <summary>
@@ -59,7 +59,7 @@ public class RepeatedNameTests
     private static readonly (string File, string Class)[] IdsFiles =
     [
         ("demos/puls/tests/louis-agent.identity.puls.evals.tests/Evals/Checks/PulsCookScenarioIds.cs",
-            "PulsCookScenarioIds"),
+            "PulsCookScenarioIds")
     ];
 
     /// <summary>
@@ -81,7 +81,7 @@ public class RepeatedNameTests
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: "
             + "recorded data stays as recorded"),
         ("src/site/louis-agent.site/Pages/HowItWorksPage.razor", "",
-            "the web band's id is that place's address on the page (/framework/how-it-works/web), not the toolset"),
+            "the web band's id is that place's address on the page (/framework/how-it-works/web), not the toolset")
     ];
 
     /// <summary>Every source file the scan looks at.</summary>

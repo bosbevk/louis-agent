@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// Where the user is (F22): the place they set (a town, as they wrote it or as the browser found it) and their time
-/// zone. The host sets it for a turn; <see cref="ClockTools.GetToday"/> tells the time in that zone, and
-/// <c>AskAgent</c> passes it on to the agent it asks. Held in an <see cref="AsyncLocal{T}"/>; none by
-/// default, and a host only sets it when the user chose to share it.
+/// zone. The host sets it for a turn; <c>GetToday</c> tells the time in that zone, and <c>AskAgent</c> passes it on
+/// to the agent it asks. Held in an <see cref="AsyncLocal{T}"/>; none by default, and a host only sets it when the
+/// user chose to share it.
 /// </summary>
 /// <param name="Location">The user's place, e.g. "Pretoria, Gauteng, Suid-Afrika"; null when not shared.</param>
 /// <param name="TimeZone">An IANA time zone (Europe/London); null for the host's own (HOST_TIME_ZONE, CL15).</param>

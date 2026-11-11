@@ -1,15 +1,9 @@
-using LouisAgent.Testing;
-using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
-using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Agent.EngineTools.Scripts;
-using LouisAgent.Composition.Tools.Scripts;
-using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools.Scripts;
 
@@ -52,7 +46,7 @@ public class ScriptToolTests
         var engine = new AgentEngine(SkillLoader.Load(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,
-            SkillReloader = () => SkillLoader.Load(options),
+            SkillReloader = () => SkillLoader.Load(options)
         };
         engine.LoadApprovedTools();
         return engine;
