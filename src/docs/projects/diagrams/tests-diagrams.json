@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Where the tests live, and what they share: a test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.",
   "title": "The tests: what CI runs, and the two testing libraries they share",
   "flow": {
     "nodes": [

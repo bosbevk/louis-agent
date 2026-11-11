@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "The studio's pages are opt-in: a site adds them to its admin frame, and they talk to the API's eval routes.",
   "title": "The eval studio's pages: from a site's program through the admin frame to the API",
   "flow": {
     "nodes": [

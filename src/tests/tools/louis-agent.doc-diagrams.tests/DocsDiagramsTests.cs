@@ -96,6 +96,20 @@ public class DocsDiagramsTests
     [Test]
     public void TheDocs_HavePictures() => Assert.That(Diagrams(), Is.Not.Empty);
 
+    /// <summary>
+    /// Every picture's JSON in the repo is one the tool draws and these tests check, wherever its doc sits: a
+    /// demo's deploy notes keep their pictures beside them (CL60.2, the Azure architecture's two).
+    /// </summary>
+    [Test]
+    public void EveryDiagramsFolder_IsOneTheToolDraws()
+    {
+        var everywhere = new[] { "src", "demos", "packs" }.Select(top => Path.Combine(TestPaths.RepoRoot, top))
+            .SelectMany(top => Directory.EnumerateDirectories(top, DiagramSync.Folder, SearchOption.AllDirectories))
+            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.json"));
+
+        Assert.That(everywhere.Except(Diagrams()).Select(Relative), Is.Empty, "a picture the tool never draws");
+    }
+
     /// <summary>Every diagram's JSON file in the docs.</summary>
     private static IReadOnlyList<string> Diagrams() => DiagramSync.Find(DiagramSync.Roots(TestPaths.RepoRoot));
 

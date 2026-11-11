@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Opt-in, through a seam: the framework's web names no account library, and a site that adds this one fills the menu it leaves open.",
   "title": "louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web",
   "flow": {
     "nodes": [

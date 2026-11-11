@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Opt-in: a host that names WebAccess gets the guarded browser, search and renderer, and one that doesn't gets a part that says it isn't set up.",
   "title": "Web access: from a host's program to IWebAccess and the parts behind it",
   "flow": {
     "nodes": [

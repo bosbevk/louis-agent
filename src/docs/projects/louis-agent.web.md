@@ -118,8 +118,7 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 
 ## Diagrams
 
-**Architecture:** a site is a small program on top of this library. It says who it is and what it uses, and the framework does the rest. The [eval pages](louis-agent.web.evals.md) have
-diagrams of their own.
+The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 
 ![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/louis-agent.web-diagrams.svg)
 

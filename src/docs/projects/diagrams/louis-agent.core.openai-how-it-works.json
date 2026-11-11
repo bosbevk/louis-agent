@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Behind the seam: core asks for a client by the provider's name, and only this library knows OpenAI's SDK.",
   "title": "louis-agent.core.openai: How it works",
   "flow": {
     "nodes": [

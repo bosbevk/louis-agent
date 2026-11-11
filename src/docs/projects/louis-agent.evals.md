@@ -71,8 +71,6 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 ## Diagrams
 
-**Architecture:** an eval only says what it asks and how it grades, and the harness does the rest. The API on the far side is an ordinary client's view of the agent, so an eval proves what a user would get.
-
 ![The eval harness: what the runner uses, and where a run's events go](diagrams/louis-agent.evals-diagrams.svg)
 
 **Flow:** one run. A failed transport is tried once more, and an infrastructure failure is kept apart from a failing answer, so it never counts against the agent.

@@ -58,7 +58,7 @@ sequenceDiagram
 
 ## Diagrams
 
-**Architecture:** the flow is under *How it works*; these are the pieces. Rider starts one container per chat, and everything goes over its stdin and stdout.
+The flow is under *How it works*; these are the pieces.
 
 ![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
 

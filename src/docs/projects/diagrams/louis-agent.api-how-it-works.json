@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "One process, two jobs: the API runs sessions and streams their turns back, and serves the web app beside them.",
   "title": "louis-agent.api: How it works",
   "flow": {
     "nodes": [

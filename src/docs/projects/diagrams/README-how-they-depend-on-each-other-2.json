@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "The web: a site is a small program on the framework's web, and it reaches the engine only over HTTP.",
   "title": "How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API",
   "flow": {
     "nodes": [

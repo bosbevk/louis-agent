@@ -59,8 +59,6 @@ why its prompt is long.
 
 ## Diagrams
 
-**Architecture:** one program with four jobs, picked by its arguments. Only the default job calls a model, and the others read a file or this PC.
-
 ![The usage probe: each command and the parts it uses](diagrams/louis-agent.usage-probe-diagrams.svg)
 
 **Flow:** the default job. Each request costs real money, and with Anthropic the pair runs again with a cache marker, to see a cache write and then a read.

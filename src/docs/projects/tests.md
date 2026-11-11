@@ -13,8 +13,6 @@ A test that starts a real process, opens Mongo or needs the Puls stack is an int
 
 ## Diagrams
 
-**Architecture:** where the tests live, and what they share. A test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.
-
 ![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 
 **Flow:** a golden file. It pins what a component draws or what the model reads, so a change has to be looked at before it's accepted.

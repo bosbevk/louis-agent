@@ -1,14 +1,21 @@
 {
   "kind": "flow",
   "title": "Puls in Azure: what runs where",
-  "caption": "Nothing outside reaches the services: the VM has no public address, and every secret is in the vault.",
+  "caption": "Nothing outside reaches the services: everything here sits in rg-puls-za, the VM has no public address (both apps reach it at 10.0.2.4 and send their telemetry through the OpenTelemetry agent), SQL takes TLS only, and every secret is in the vault.",
   "flow": {
     "nodes": [
       {
         "id": "person",
         "icon": "user",
         "tone": "blue",
-        "label": "A person\u0027s browser"
+        "label": "A person's browser"
+      },
+      {
+        "id": "env",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "puls-env (Consumption profile,\nstatic IP 4.253.73.61)",
+        "group": "apps"
       },
       {
         "id": "app",
@@ -25,86 +32,71 @@
         "group": "apps"
       },
       {
-        "id": "env",
-        "icon": "cloud",
-        "tone": "violet",
-        "label": "puls-env (Consumption profile,\nstatic IP 4.253.73.61)",
-        "group": "apps"
-      },
-      {
         "id": "vm",
         "icon": "server",
         "tone": "green",
-        "label": "VM puls-services (Ubuntu\n24.04, Standard_B2s, no public\nIP)\\nDocker: mongo:9 :27017,\nheadless-shell :9222, searxng\n:8080\\ndata disk, XFS at /data",
+        "label": "VM puls-services (Ubuntu\n24.04, Standard_B2s, no public\nIP)\nDocker: mongo:9 :27017,\nheadless-shell :9222, searxng\n:8080\ndata disk, XFS at /data",
         "group": "services"
       },
       {
         "id": "sql",
         "icon": "database",
         "tone": "amber",
-        "label": "Azure SQL puls-sql-za:\npuls_accounts, tenants puls\nand louis-agent (free offer,\npauses when idle)",
-        "group": "rg"
-      },
-      {
-        "id": "vault",
-        "icon": "shield",
-        "tone": "amber",
-        "label": "Key Vault puls-keys: every\nsecret value",
-        "group": "rg"
+        "label": "Azure SQL puls-sql-za:\npuls_accounts, tenants puls\nand louis-agent (free offer,\npauses when idle)"
       },
       {
         "id": "identity",
         "icon": "user",
         "tone": "teal",
-        "label": "puls-app-identity: Key Vault\nSecrets User",
-        "group": "rg"
+        "label": "puls-app-identity: Key Vault\nSecrets User"
       },
       {
         "id": "identity2",
         "icon": "user",
         "tone": "teal",
-        "label": "louis-agent-app-identity: Key\nVault Secrets User",
-        "group": "rg"
+        "label": "louis-agent-app-identity: Key\nVault Secrets User"
+      },
+      {
+        "id": "vault",
+        "icon": "shield",
+        "tone": "amber",
+        "label": "Key Vault puls-keys: every\nsecret value"
       },
       {
         "id": "insights",
         "icon": "chart",
         "tone": "violet",
-        "label": "Application Insights\npuls-insights, on puls-logs",
-        "group": "rg"
+        "label": "Application Insights\npuls-insights, on puls-logs"
       },
       {
         "id": "registry",
         "icon": "box",
         "tone": "amber",
-        "label": "Registry acrpulsza:\nlouis-agent-puls and\nlouis-agent-coding images",
-        "group": "rg"
+        "label": "Registry acrpulsza:\nlouis-agent-puls and\nlouis-agent-coding images"
       },
       {
         "id": "share",
         "icon": "folder",
         "tone": "amber",
-        "label": "pulsstorage: the share\npuls-app-workspace (config/,\nlogs/, data/)",
-        "group": "rg"
+        "label": "pulsstorage: the share\npuls-app-workspace (config/,\nlogs/, data/)"
       },
       {
         "id": "share2",
         "icon": "folder",
         "tone": "amber",
-        "label": "pulsstorage: the share\nlouis-agent-workspace\n(config/, skills/, logs/,\ndata/)",
-        "group": "rg"
+        "label": "pulsstorage: the share\nlouis-agent-workspace\n(config/, skills/, logs/,\ndata/)"
       }
     ],
     "edges": [
       {
         "from": "person",
         "to": "app",
-        "word": "HTTPS mypuls.co.za, www (managed certificates)"
+        "word": "HTTPS mypuls.co.za"
       },
       {
         "from": "person",
         "to": "app2",
-        "word": "HTTPS louis-agent.dev, www"
+        "word": "HTTPS louis-agent.dev"
       },
       {
         "from": "env",
@@ -115,18 +107,36 @@
         "to": "app2"
       },
       {
-        "from": "app",
-        "to": "vm",
-        "word": "private IP 10.0.2.4"
+        "from": "env",
+        "to": "registry",
+        "word": "AcrPull"
       },
       {
         "from": "app",
+        "to": "vm"
+      },
+      {
+        "from": "app2",
+        "to": "vm"
+      },
+      {
+        "from": "app",
+        "to": "sql"
+      },
+      {
+        "from": "app2",
         "to": "sql",
-        "word": "TLS, Allow Azure services"
+        "word": "tenant louis-agent"
       },
       {
         "from": "app",
         "to": "identity",
+        "word": "reads with",
+        "style": "dashed"
+      },
+      {
+        "from": "app2",
+        "to": "identity2",
         "word": "reads with",
         "style": "dashed"
       },
@@ -136,14 +146,17 @@
         "style": "dashed"
       },
       {
-        "from": "app",
-        "to": "insights",
-        "word": "OpenTelemetry agent"
+        "from": "identity2",
+        "to": "vault",
+        "style": "dashed"
       },
       {
-        "from": "env",
-        "to": "registry",
-        "word": "AcrPull"
+        "from": "app",
+        "to": "insights"
+      },
+      {
+        "from": "app2",
+        "to": "insights"
       },
       {
         "from": "app",
@@ -152,41 +165,11 @@
       },
       {
         "from": "app2",
-        "to": "vm",
-        "word": "private IP 10.0.2.4"
-      },
-      {
-        "from": "app2",
-        "to": "sql",
-        "word": "TLS, tenant louis-agent"
-      },
-      {
-        "from": "app2",
-        "to": "identity2",
-        "word": "reads with",
-        "style": "dashed"
-      },
-      {
-        "from": "identity2",
-        "to": "vault",
-        "style": "dashed"
-      },
-      {
-        "from": "app2",
-        "to": "insights",
-        "word": "OpenTelemetry agent"
-      },
-      {
-        "from": "app2",
         "to": "share2",
         "word": "mounted at /workspace"
       }
     ],
     "groups": [
-      {
-        "id": "rg",
-        "label": "rg-puls-za"
-      },
       {
         "id": "apps",
         "label": "apps subnet 10.0.0.0/23, delegated to Container Apps"

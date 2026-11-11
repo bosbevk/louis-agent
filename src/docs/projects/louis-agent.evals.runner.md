@@ -52,8 +52,6 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 ## Diagrams
 
-**Architecture:** the API never references an eval. It starts this program and reads what it writes, so a new eval is a folder of files.
-
 ![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
 **Flow:** a run from the Evals page. A re-score is the same, but the API hands over the stored run on stdin and no model is asked.

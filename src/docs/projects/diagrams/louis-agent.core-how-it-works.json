@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "One engine for every host: settings and skills go in, a model and guarded tools come out, and every request to the model is measured.",
   "title": "louis-agent.core: How it works",
   "flow": {
     "nodes": [

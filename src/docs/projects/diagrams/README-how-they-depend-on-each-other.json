@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "The engine: core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.",
   "title": "How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts",
   "flow": {
     "nodes": [

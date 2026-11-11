@@ -61,8 +61,6 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 
 ## Diagrams
 
-**Architecture:** the contract sits apart, so a pack can ship a check without referencing the harness (*Separated Interface*).
-
 ![The check contract: who lists checks, and how a check is built, reads and grades](diagrams/louis-agent.evals.checks-diagrams.svg)
 
 **Flow:** from a line in an eval's file to a grade. A setting the entry can't read is refused here, so a typo can't become a default.

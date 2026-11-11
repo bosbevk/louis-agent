@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "One set of records, used by both sides: a field one side renames doesn't compile on the other.",
   "title": "The eval protocol: written as JSON lines, read by the API and the web",
   "flow": {
     "nodes": [

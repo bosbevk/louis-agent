@@ -57,14 +57,12 @@ when you're about to change a particular project. Each project's `.csproj` links
 
 ## How they depend on each other
 
-An arrow means "references". **The engine:** core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.
+An arrow means "references".
 
 ![How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts](diagrams/README-how-they-depend-on-each-other.svg)
 
 A pack or an identity references only the contracts, and core references no pack, identity or host, so only what picks the packs knows them all. Behaviour lives in core, and every host is a thin
 adapter between its protocol and `AgentEngine`.
-
-**The web:** a site is a small program on the framework's web, and it reaches the engine only over HTTP.
 
 ![How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API](diagrams/README-how-they-depend-on-each-other-2.svg)
 

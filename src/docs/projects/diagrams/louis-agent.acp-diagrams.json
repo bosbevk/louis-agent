@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "One container per chat: Rider starts it, and everything goes over its stdin and stdout.",
   "title": "Rider's chat: from AcpHost through the prompt handler to Rider, and back",
   "flow": {
     "nodes": [

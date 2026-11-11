@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "The API never references an eval: it starts this program and reads what it writes, so a new eval is a folder of files.",
   "title": "The eval runner: its host, its commands, and the API that starts it",
   "flow": {
     "nodes": [

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "A few lines: the site's host is the guide alone, on the three packs it names, and it serves each page as HTML first.",
   "title": "louis-agent.site: How it runs",
   "flow": {
     "nodes": [

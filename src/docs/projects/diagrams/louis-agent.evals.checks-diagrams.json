@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "The contract sits apart: a pack can ship a check without referencing the harness (Separated Interface).",
   "title": "The check contract: who lists checks, and how a check is built, reads and grades",
   "flow": {
     "nodes": [

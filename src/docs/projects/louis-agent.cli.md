@@ -37,8 +37,6 @@ You: exit
 
 ## Diagrams
 
-**Architecture:** the host is one small call on top of core. All the agent's work is in the engine, and `ConsoleChat` only draws it.
-
 ![The terminal host: from your program through ConsoleChat to the engine and the output](diagrams/louis-agent.cli-diagrams.svg)
 
 **Flow:** one line typed in the interactive loop. A single prompt from a script goes straight to the engine and then exits.

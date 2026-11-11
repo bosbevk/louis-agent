@@ -34,8 +34,6 @@ references only `louis-agent.choices`, so each side takes it without the others.
 
 ## Diagrams
 
-**Architecture:** one set of records, used by both sides, so a field one side renames doesn't compile on the other.
-
 ![The eval protocol: written as JSON lines, read by the API and the web](diagrams/louis-agent.evals.protocol-diagrams.svg)
 
 **Flow:** the order a run's lines come in. A line that's no event reads as nothing and shows as a line for people.

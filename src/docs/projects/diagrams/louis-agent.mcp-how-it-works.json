@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Tools, not a model: an MCP client calls the engine's tools, and hears when they change.",
   "title": "The MCP server: from a client's call to the engine's tools, and the notice back when they change",
   "flow": {
     "nodes": [

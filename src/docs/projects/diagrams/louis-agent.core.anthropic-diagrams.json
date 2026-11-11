@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Behind the seam: core asks for a client by the provider's name, and only this library knows Anthropic's SDK.",
   "title": "Claude's provider: from a program through the client factory to the SDK and its parts",
   "flow": {
     "nodes": [

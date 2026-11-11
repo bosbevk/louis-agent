@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "caption": "Opt-in: a host that names OtlpTelemetry sends its logs and traces to the collector, and one that doesn't sends nothing.",
   "title": "Telemetry: the log sink and the tracer, out to the collector",
   "flow": {
     "nodes": [
