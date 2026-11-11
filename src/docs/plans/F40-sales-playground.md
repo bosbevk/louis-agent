@@ -231,67 +231,9 @@ public sealed class AreaGuideSimulation : ISimulation { public string Name => "d
 
 #### Interfaces
 
-```mermaid
-classDiagram
-    direction LR
-    class IAgentIdentity { <<interface, Phase 2>> +Name +Prompts +Packs }
-    class IAgentPack { <<interface, Phase 2>> +Name +Toolsets +Prompts +Requires }
-    class DemoIdentity { <<identity, step 1>> Packs: shops, customers }
-    class PulsIdentity { <<identity, Phase 2>> Packs: shops }
-    class ShopsPack { <<pack, Phase 2>> one instance for both }
-    class CustomersPack { <<pack, step 2>> in the demo project }
-    class CustomerTools { <<step 2>> +FindCustomer(query, maxResults) }
-    class ICustomerDirectory { <<interface, step 2>> +FindAsync(query, maxResults) }
-    class SampleCustomerDirectory { <<provider, step 2>> embedded customers.json }
-    class ClientDirectory { <<a client system, its own feature>> their API or MCP server }
-    class Customer { <<record, step 2>> Id Name VatNumber Email Address }
-    class CustomerToolMessage { <<enum, step 2>> }
-    class ISimulation { <<interface, Phase 3>> +Name +Identity +Version +Proves +ModesAsync(sessions) +Scenarios +Graders +ScoresOf(trial, grades) }
-    class IGrader { <<interface, Phase 3>> +GradeAsync(trial) }
-    class InvoiceBatchSimulation { <<step 3>> demo-invoice-batch }
-    class AreaGuideSimulation { <<step 4>> demo-area-guide }
-    class MatchedRight { <<code grader, step 3>> }
-    class NoCustomerSaid { <<code grader, step 3>> }
-    class VatChecked { <<code grader, step 3>> }
-    class MunicipalityRight { <<code grader, step 4>> }
-    class EveryFactSourced { <<code grader, step 4>> }
-    class NearbyWithinDistance { <<code grader, step 4>> }
-    class SimulationCatalog { <<Phase 3, a line in step 3>> }
-    class Plugins { <<composition>> IdentityKind Demo, PackKind Customers }
-    IAgentIdentity <|.. DemoIdentity
-    IAgentIdentity <|.. PulsIdentity
-    IAgentPack <|.. ShopsPack
-    IAgentPack <|.. CustomersPack
-    DemoIdentity ..> ShopsPack : names shops
-    PulsIdentity ..> ShopsPack : names shops
-    DemoIdentity ..> CustomersPack : names customers
-    CustomersPack ..> CustomerTools : customers toolset
-    CustomerTools --> ICustomerDirectory
-    CustomerTools ..> CustomerToolMessage
-    ICustomerDirectory <|.. SampleCustomerDirectory
-    ICustomerDirectory <|.. ClientDirectory
-    ICustomerDirectory ..> Customer
-    ISimulation <|.. InvoiceBatchSimulation
-    ISimulation <|.. AreaGuideSimulation
-    IGrader <|.. MatchedRight
-    IGrader <|.. NoCustomerSaid
-    IGrader <|.. VatChecked
-    IGrader <|.. MunicipalityRight
-    IGrader <|.. EveryFactSourced
-    IGrader <|.. NearbyWithinDistance
-    InvoiceBatchSimulation --> MatchedRight
-    InvoiceBatchSimulation --> NoCustomerSaid
-    InvoiceBatchSimulation --> VatChecked
-    AreaGuideSimulation --> MunicipalityRight
-    AreaGuideSimulation --> EveryFactSourced
-    AreaGuideSimulation --> NearbyWithinDistance
-    InvoiceBatchSimulation ..> DemoIdentity : proves
-    AreaGuideSimulation ..> DemoIdentity : proves
-    SimulationCatalog --> InvoiceBatchSimulation
-    SimulationCatalog --> AreaGuideSimulation
-    Plugins ..> DemoIdentity : creates
-    Plugins ..> CustomersPack : creates
-```
+![The agent's side: identities and packs plug in by interface, the demo is one more identity and its customers one more pack](diagrams/F40-sales-playground-interfaces-the-agent.svg)
+
+![The evals' side: each demo eval is one more simulation with its own code graders, and both prove the demo identity](diagrams/F40-sales-playground-interfaces-the-evals.svg)
 
 #### Objects: what exists in memory with `IDENTITIES=demo,puls`
 

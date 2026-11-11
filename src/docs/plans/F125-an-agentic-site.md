@@ -59,26 +59,7 @@ draws tool calls as components.
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class DocsTools {
-        +docs_search(query, maxResults) string  %% F125.1
-        +docs_fetch(id) string  %% F125.1
-    }
-    class SectionIndex {
-        +Search(query, max) IReadOnlyList~SectionHit~  %% F125.1, BM25
-    }
-    class SectionHit { <<record>> Id Title Heading Snippet Url Score }
-    class DocResources { +From(root) IEnumerable~McpServerResource~  %% F125.1, doc://path }
-    class SiteTools { +ShowPage(path) +Offer(choices) +ShowCard(kind, fields)  %% F125.3, F125.4 }
-    class GapTools { +ReportGap(question) string  %% F125.6 }
-    class ToolTransport { <<enum>> InProcess Mcp  %% F125.8 }
-    class McpToolProxy { <<AITool>> +InvokeAsync(args)  %% F125.8, Remote Proxy }
-    class McpDiscovery { +FindMcpServers(need) string  %% F125.8 }
-    DocsTools --> SectionIndex
-    SectionIndex --> SectionHit
-    McpToolProxy ..> ToolTransport : picked by
-```
+![A tool is a tool wherever it runs: an MCP tool is wrapped as one the engine knows, and the transport picks where it runs](diagrams/F125-an-agentic-site-interface-design.svg)
 
 ### Architecture
 

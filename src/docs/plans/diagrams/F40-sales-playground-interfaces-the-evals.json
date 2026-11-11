@@ -1,0 +1,182 @@
+{
+  "kind": "classes",
+  "title": "F40 the sales playground: the evals' interfaces",
+  "caption": "Each demo eval is one more simulation with its own code graders, and both prove the demo identity.",
+  "classes": {
+    "types": [
+      {
+        "id": "ISimulation",
+        "name": "ISimulation",
+        "kind": "interface, Phase 3",
+        "members": [
+          "+Name",
+          "+Identity",
+          "+Version",
+          "+Proves",
+          "+ModesAsync(sessions)",
+          "+Scenarios",
+          "+Graders",
+          "+ScoresOf(trial, grades)"
+        ]
+      },
+      {
+        "id": "IGrader",
+        "name": "IGrader",
+        "kind": "interface, Phase 3",
+        "members": [
+          "+GradeAsync(trial)"
+        ]
+      },
+      {
+        "id": "InvoiceBatchSimulation",
+        "name": "InvoiceBatchSimulation",
+        "kind": "step 3",
+        "members": [
+          "demo-invoice-batch"
+        ]
+      },
+      {
+        "id": "AreaGuideSimulation",
+        "name": "AreaGuideSimulation",
+        "kind": "step 4",
+        "members": [
+          "demo-area-guide"
+        ]
+      },
+      {
+        "id": "MatchedRight",
+        "name": "MatchedRight",
+        "kind": "code grader, step 3"
+      },
+      {
+        "id": "NoCustomerSaid",
+        "name": "NoCustomerSaid",
+        "kind": "code grader, step 3"
+      },
+      {
+        "id": "VatChecked",
+        "name": "VatChecked",
+        "kind": "code grader, step 3"
+      },
+      {
+        "id": "MunicipalityRight",
+        "name": "MunicipalityRight",
+        "kind": "code grader, step 4"
+      },
+      {
+        "id": "EveryFactSourced",
+        "name": "EveryFactSourced",
+        "kind": "code grader, step 4"
+      },
+      {
+        "id": "NearbyWithinDistance",
+        "name": "NearbyWithinDistance",
+        "kind": "code grader, step 4"
+      },
+      {
+        "id": "SimulationCatalog",
+        "name": "SimulationCatalog",
+        "kind": "Phase 3, a line in step 3"
+      },
+      {
+        "id": "DemoIdentity",
+        "name": "DemoIdentity",
+        "kind": "identity, the agent's picture"
+      }
+    ],
+    "relations": [
+      {
+        "from": "InvoiceBatchSimulation",
+        "to": "ISimulation",
+        "kind": "implements"
+      },
+      {
+        "from": "AreaGuideSimulation",
+        "to": "ISimulation",
+        "kind": "implements"
+      },
+      {
+        "from": "MatchedRight",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "NoCustomerSaid",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "VatChecked",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "MunicipalityRight",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "EveryFactSourced",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "NearbyWithinDistance",
+        "to": "IGrader",
+        "kind": "implements"
+      },
+      {
+        "from": "InvoiceBatchSimulation",
+        "to": "MatchedRight",
+        "kind": "holds"
+      },
+      {
+        "from": "InvoiceBatchSimulation",
+        "to": "NoCustomerSaid",
+        "kind": "holds"
+      },
+      {
+        "from": "InvoiceBatchSimulation",
+        "to": "VatChecked",
+        "kind": "holds"
+      },
+      {
+        "from": "AreaGuideSimulation",
+        "to": "MunicipalityRight",
+        "kind": "holds"
+      },
+      {
+        "from": "AreaGuideSimulation",
+        "to": "EveryFactSourced",
+        "kind": "holds"
+      },
+      {
+        "from": "AreaGuideSimulation",
+        "to": "NearbyWithinDistance",
+        "kind": "holds"
+      },
+      {
+        "from": "InvoiceBatchSimulation",
+        "to": "DemoIdentity",
+        "kind": "uses",
+        "word": "proves"
+      },
+      {
+        "from": "AreaGuideSimulation",
+        "to": "DemoIdentity",
+        "kind": "uses",
+        "word": "proves"
+      },
+      {
+        "from": "SimulationCatalog",
+        "to": "InvoiceBatchSimulation",
+        "kind": "holds"
+      },
+      {
+        "from": "SimulationCatalog",
+        "to": "AreaGuideSimulation",
+        "kind": "holds"
+      }
+    ]
+  }
+}

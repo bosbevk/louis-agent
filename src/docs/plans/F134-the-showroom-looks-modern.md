@@ -56,36 +56,7 @@ Each class that carries one names it in its `<remarks>` (ADR 0050).
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class ShowroomDemo {
-        <<record>>
-        +string Address
-        +string Name
-        +string Line
-        +DemoGroup Group
-        +TileAccent Accent
-        +DemoIcon Icon  %% step 1, was string Sign
-        +string? Cover  %% step 4
-    }
-    class DemoIcon {
-        <<enum>>
-        Bed
-        Dining
-        Scales
-        Code
-        Exchange
-    }
-    class DemoIconView {
-        +DemoIcon Icon
-        +int Size
-    }
-    ShowroomDemo --> DemoIcon
-    DemoRail ..> DemoIconView : draws (step 1)
-    ShowroomStart ..> DemoIconView : draws (step 1)
-    DemoChips ..> ShowroomDemo
-    SiteDemos ..> ShowroomDemo : the site's five (steps 1 and 4)
-```
+![One icon type for every demo: the site names each demo's icon and cover, and one view draws them](diagrams/F134-the-showroom-looks-modern-interface-design.svg)
 
 ### Architecture
 

@@ -371,75 +371,9 @@ var fixing = catalog.Packs.OfType<FixingPack>().Single();
 var workflow = new TriageWorkflow(classifier, children, fixing.Confirm, triage.Feed, triage.Recorder);
 ```
 
-```mermaid
-classDiagram
-    direction LR
-    class AgentPeer { <<record, A2, new>> +Name +Uri }
-    class IChildTransport { <<interface, A2>> +OpenAsync() +SendAsync() +CloseAsync() }
-    class HttpPeerTransport { <<from PeerSession and PeerHttp, A2>> a key per peer }
-    class FakeChildTransport { <<test, A2>> }
-    class ChildAgentClient { <<A2>> +OpenAsync() +AskAsync~T~() +ContinueAsync~T~() +CloseAsync() }
-    class SessionStreamReader { <<Phase 3>> typed events }
-    class DelegationPolicy { <<record, A3>> }
-    class IChildLimiter { <<interface, Sessions, A3>> +TryTake() }
-    class DelegationLimiter { <<A3>> one per turn tree }
-    class TurnContext { <<Sessions, A4>> +Current }
-    class ISystemNoteStrategy { <<interface, Llm, A4a>> +Note() }
-    class ResultToolset { <<Agent, A5>> +Of~T~() }
-    class IResultCheck~T~ { <<interface, A5>> +CheckAsync() }
-    class RouteClassifier { <<Agent, A6>> +ClassifyAsync~T~() }
-    class IToolChoiceStrategy { <<interface, Llm, A6>> +Force() }
-    class AskAgentTools { <<changed, A2>> thin caller }
-    class IAgentIdentity { <<interface, Phase 2>> }
-    class IAgentPack { <<interface, Phase 2>> }
-    class OpsIdentity { <<B1>> packs by name }
-    class TriageWorkflow { <<B4>> +HandleAsync() }
-    class TriagePack { <<B1>> +Feed +Recorder }
-    class TriageTools { <<B1, B5>> Acknowledge, Escalate, RecordDecision }
-    class IErrorFeed { <<interface, B1>> +ReadNewAsync() +MarkProcessedAsync() }
-    class JsonLinesErrorFeed { <<moved from ErrorFeed, B1>> }
-    class ITriageRecorder { <<interface, B1>> +RecordAsync() }
-    class JsonLinesTriageRecorder { <<moved from Program, B1>> decisions.jsonl }
-    class FixingPack { <<B1>> voorman-fixer role, fix-result }
-    class FixResult { <<record, B1>> }
-    class ConfirmFix { <<B3>> }
-    class IReplay { <<interface, B3>> }
-    class CliReplay { <<moved from ReplayRequest, B3>> }
-    IChildTransport <|.. HttpPeerTransport
-    IChildTransport <|.. FakeChildTransport
-    HttpPeerTransport --> AgentPeer
-    ChildAgentClient --> IChildTransport
-    ChildAgentClient --> SessionStreamReader
-    ChildAgentClient --> TurnContext
-    TurnContext --> IChildLimiter
-    IChildLimiter <|.. DelegationLimiter
-    DelegationLimiter --> DelegationPolicy
-    AskAgentTools --> ChildAgentClient
-    RouteClassifier --> IToolChoiceStrategy
-    RouteClassifier ..> ResultToolset
-    IAgentIdentity <|.. OpsIdentity
-    IAgentPack <|.. TriagePack
-    IAgentPack <|.. FixingPack
-    OpsIdentity ..> TriagePack : names triage
-    OpsIdentity ..> FixingPack : names fixing
-    OpsIdentity ..> TriageWorkflow
-    TriageWorkflow --> RouteClassifier
-    TriageWorkflow --> ChildAgentClient
-    TriageWorkflow --> IResultCheck~T~
-    TriageWorkflow --> IErrorFeed
-    TriageWorkflow --> ITriageRecorder
-    IResultCheck~T~ <|.. ConfirmFix
-    ConfirmFix --> IReplay
-    ConfirmFix ..> FixResult
-    IReplay <|.. CliReplay
-    IErrorFeed <|.. JsonLinesErrorFeed
-    ITriageRecorder <|.. JsonLinesTriageRecorder
-    TriagePack ..> TriageTools : triage toolset
-    TriageTools --> IErrorFeed
-    TriageTools --> ITriageRecorder
-    FixingPack ..> ConfirmFix
-    FixingPack ..> ResultToolset : fix-result toolset
-```
+![Part A, the engine: the child's transport and the limiter sit behind interfaces with fakes, and one client is the only way to call a child](diagrams/F39-orchestration-interfaces-the-engine.svg)
+
+![Part B, the triage service: the feed, the recorder and the replay sit behind interfaces, on top of part A's pieces](diagrams/F39-orchestration-interfaces-the-triage-service.svg)
 
 #### Objects: what exists in memory while one error is triaged
 

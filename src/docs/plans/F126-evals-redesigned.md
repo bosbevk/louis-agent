@@ -127,26 +127,7 @@ Old runs are deleted, not moved (ADR 0049).
 
 ### Interface design (proposed; F126.1 and F126.2 settle the signatures)
 
-```mermaid
-classDiagram
-    class EvalFile { <<record>> +Agent Agent; +IReadOnlyList~Conversation~ Conversations; +JudgeMode Judge; +Read(path)$ EvalFile }
-    class Conversation { <<record>> +string Id; +string? Place; +string? Page; +IReadOnlyList~Turn~ Turns }
-    class Turn { <<record>> +string Ask; +IReadOnlyList~Fact~ Facts; +IReadOnlyList~string~ Criteria }
-    class Fact { <<record>> +FactKind Kind; +string? Argument }
-    class IJudge { <<interface>> +MarkAsync(Transcript, Turn) IReadOnlyList~Mark~ }
-    class PerCriterionJudge
-    class PerConversationJudge
-    class EvalRun { +RunAsync(EvalFile, RunMode) RunResult }
-    class RunStore { +SaveAsync(RunResult); +FlipAsync(runId, mark); +ListAsync(eval) }
-    EvalFile --> Conversation
-    Conversation --> Turn
-    Turn --> Fact
-    IJudge <|.. PerCriterionJudge : F126.1
-    IJudge <|.. PerConversationJudge : F126.1
-    EvalRun --> ISessionClient : kept
-    EvalRun --> IJudge
-    EvalRun --> RunStore : F126.2
-```
+![A run reads its file, asks, gets facts for free and a judge's marks, and is kept](diagrams/F126-evals-redesigned-interface-design-proposed-f126-1-and-f126-2-settle-the-signatures.svg)
 
 ### Architecture
 

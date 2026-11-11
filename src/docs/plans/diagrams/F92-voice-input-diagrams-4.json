@@ -1,0 +1,98 @@
+{
+  "kind": "classes",
+  "title": "F92 voice: the interface design",
+  "caption": "Speech is a provider like a model: one interface per provider, a factory that picks it, and Microsoft's speech client underneath.",
+  "classes": {
+    "types": [
+      {
+        "id": "ISpeechToTextClient",
+        "name": "ISpeechToTextClient",
+        "kind": "Microsoft.Extensions.AI, reused",
+        "members": [
+          "GetTextAsync(Stream audio, SpeechToTextOptions? options, CancellationToken ct) Task\u003CSpeechToTextResponse\u003E"
+        ]
+      },
+      {
+        "id": "ISpeechProvider",
+        "name": "ISpeechProvider",
+        "kind": "core, step 1",
+        "members": [
+          "SpeechProviderName Name",
+          "ISpeechToTextClient Create(SpeechOptions options)"
+        ]
+      },
+      {
+        "id": "SpeechClientFactory",
+        "name": "SpeechClientFactory",
+        "kind": "core, step 1",
+        "members": [
+          "ISpeechToTextClient? Create(SpeechOptions options)"
+        ]
+      },
+      {
+        "id": "SpeechOptions",
+        "name": "SpeechOptions",
+        "kind": "record, step 1",
+        "members": [
+          "SpeechProviderName? Provider",
+          "string? Model",
+          "string? Language"
+        ]
+      },
+      {
+        "id": "WhisperSpeechProvider",
+        "name": "WhisperSpeechProvider",
+        "kind": "core.whisper, step 2, if C1 = a"
+      },
+      {
+        "id": "TranscriptionEndpoints",
+        "name": "TranscriptionEndpoints",
+        "kind": "api, step 3",
+        "members": [
+          "Transcribe(id, IFormFile audio) Results\u003COk\u003CTranscriptionResult\u003E, BadRequest, NotFound\u003E"
+        ]
+      },
+      {
+        "id": "TranscriptionResult",
+        "name": "TranscriptionResult",
+        "kind": "api.contracts record, step 3",
+        "members": [
+          "string Text",
+          "string? Language",
+          "double Seconds"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "WhisperSpeechProvider",
+        "to": "ISpeechProvider",
+        "kind": "implements"
+      },
+      {
+        "from": "SpeechClientFactory",
+        "to": "ISpeechProvider",
+        "kind": "holds",
+        "word": "registry from HostServices"
+      },
+      {
+        "from": "ISpeechProvider",
+        "to": "ISpeechToTextClient",
+        "kind": "uses",
+        "word": "creates"
+      },
+      {
+        "from": "TranscriptionEndpoints",
+        "to": "SpeechClientFactory",
+        "kind": "uses",
+        "word": "asks"
+      },
+      {
+        "from": "TranscriptionEndpoints",
+        "to": "TranscriptionResult",
+        "kind": "uses",
+        "word": "returns"
+      }
+    ]
+  }
+}

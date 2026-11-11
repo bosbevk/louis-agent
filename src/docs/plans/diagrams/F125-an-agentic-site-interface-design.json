@@ -1,0 +1,96 @@
+{
+  "kind": "classes",
+  "title": "F125 an agentic site: the interface design",
+  "caption": "A tool is a tool wherever it runs: an MCP tool is wrapped as one the engine knows, and the transport picks where it runs.",
+  "classes": {
+    "types": [
+      {
+        "id": "DocsTools",
+        "name": "DocsTools",
+        "members": [
+          "+docs_search(query, maxResults) string (F125.1)",
+          "+docs_fetch(id) string (F125.1)"
+        ]
+      },
+      {
+        "id": "SectionIndex",
+        "name": "SectionIndex",
+        "members": [
+          "+Search(query, max) IReadOnlyList<SectionHit> (F125.1, BM25)"
+        ]
+      },
+      {
+        "id": "SectionHit",
+        "name": "SectionHit",
+        "kind": "record",
+        "members": [
+          "Id Title Heading Snippet Url Score"
+        ]
+      },
+      {
+        "id": "DocResources",
+        "name": "DocResources",
+        "members": [
+          "+From(root) IEnumerable<McpServerResource> (F125.1, doc://path)"
+        ]
+      },
+      {
+        "id": "SiteTools",
+        "name": "SiteTools",
+        "members": [
+          "+ShowPage(path)",
+          "+Offer(choices)",
+          "+ShowCard(kind, fields) (F125.3, F125.4)"
+        ]
+      },
+      {
+        "id": "GapTools",
+        "name": "GapTools",
+        "members": [
+          "+ReportGap(question) string (F125.6)"
+        ]
+      },
+      {
+        "id": "ToolTransport",
+        "name": "ToolTransport",
+        "kind": "enum",
+        "members": [
+          "InProcess Mcp (F125.8)"
+        ]
+      },
+      {
+        "id": "McpToolProxy",
+        "name": "McpToolProxy",
+        "kind": "AITool",
+        "members": [
+          "+InvokeAsync(args) (F125.8, Remote Proxy)"
+        ]
+      },
+      {
+        "id": "McpDiscovery",
+        "name": "McpDiscovery",
+        "members": [
+          "+FindMcpServers(need) string (F125.8)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "DocsTools",
+        "to": "SectionIndex",
+        "kind": "holds"
+      },
+      {
+        "from": "SectionIndex",
+        "to": "SectionHit",
+        "kind": "holds"
+      },
+      {
+        "from": "McpToolProxy",
+        "to": "ToolTransport",
+        "kind": "uses",
+        "word": "picked by"
+      }
+    ]
+  }
+}

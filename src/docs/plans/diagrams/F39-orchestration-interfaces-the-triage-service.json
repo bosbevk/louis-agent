@@ -1,0 +1,250 @@
+{
+  "kind": "classes",
+  "title": "F39 orchestration: the triage service's interfaces, part B",
+  "caption": "The feed, the recorder and the replay each sit behind an interface with a fake for tests; the violet boxes are part A's engine pieces.",
+  "classes": {
+    "types": [
+      {
+        "id": "IAgentIdentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, Phase 2"
+      },
+      {
+        "id": "IAgentPack",
+        "name": "IAgentPack",
+        "kind": "interface, Phase 2"
+      },
+      {
+        "id": "OpsIdentity",
+        "name": "OpsIdentity",
+        "kind": "B1",
+        "members": [
+          "packs by name"
+        ]
+      },
+      {
+        "id": "TriageWorkflow",
+        "name": "TriageWorkflow",
+        "kind": "B4",
+        "members": [
+          "+HandleAsync()"
+        ]
+      },
+      {
+        "id": "TriagePack",
+        "name": "TriagePack",
+        "kind": "B1",
+        "members": [
+          "+Feed",
+          "+Recorder"
+        ]
+      },
+      {
+        "id": "TriageTools",
+        "name": "TriageTools",
+        "kind": "B1, B5",
+        "members": [
+          "Acknowledge, Escalate, RecordDecision"
+        ]
+      },
+      {
+        "id": "IErrorFeed",
+        "name": "IErrorFeed",
+        "kind": "interface, B1",
+        "members": [
+          "+ReadNewAsync()",
+          "+MarkProcessedAsync()"
+        ]
+      },
+      {
+        "id": "JsonLinesErrorFeed",
+        "name": "JsonLinesErrorFeed",
+        "kind": "moved from ErrorFeed, B1"
+      },
+      {
+        "id": "ITriageRecorder",
+        "name": "ITriageRecorder",
+        "kind": "interface, B1",
+        "members": [
+          "+RecordAsync()"
+        ]
+      },
+      {
+        "id": "JsonLinesTriageRecorder",
+        "name": "JsonLinesTriageRecorder",
+        "kind": "moved from Program, B1",
+        "members": [
+          "decisions.jsonl"
+        ]
+      },
+      {
+        "id": "FixingPack",
+        "name": "FixingPack",
+        "kind": "B1",
+        "members": [
+          "voorman-fixer role, fix-result"
+        ]
+      },
+      {
+        "id": "FixResult",
+        "name": "FixResult",
+        "kind": "record, B1"
+      },
+      {
+        "id": "ConfirmFix",
+        "name": "ConfirmFix",
+        "kind": "B3"
+      },
+      {
+        "id": "IReplay",
+        "name": "IReplay",
+        "kind": "interface, B3"
+      },
+      {
+        "id": "CliReplay",
+        "name": "CliReplay",
+        "kind": "moved from ReplayRequest, B3"
+      },
+      {
+        "id": "RouteClassifier",
+        "name": "RouteClassifier",
+        "kind": "part A",
+        "tone": "violet"
+      },
+      {
+        "id": "ChildAgentClient",
+        "name": "ChildAgentClient",
+        "kind": "part A",
+        "tone": "violet"
+      },
+      {
+        "id": "IResultCheck",
+        "name": "IResultCheck<T>",
+        "kind": "part A",
+        "tone": "violet"
+      },
+      {
+        "id": "ResultToolset",
+        "name": "ResultToolset",
+        "kind": "part A",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      {
+        "from": "OpsIdentity",
+        "to": "IAgentIdentity",
+        "kind": "implements"
+      },
+      {
+        "from": "TriagePack",
+        "to": "IAgentPack",
+        "kind": "implements"
+      },
+      {
+        "from": "FixingPack",
+        "to": "IAgentPack",
+        "kind": "implements"
+      },
+      {
+        "from": "OpsIdentity",
+        "to": "TriagePack",
+        "kind": "uses",
+        "word": "names triage"
+      },
+      {
+        "from": "OpsIdentity",
+        "to": "FixingPack",
+        "kind": "uses",
+        "word": "names fixing"
+      },
+      {
+        "from": "OpsIdentity",
+        "to": "TriageWorkflow",
+        "kind": "uses"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "RouteClassifier",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "ChildAgentClient",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "IResultCheck",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "IErrorFeed",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "ITriageRecorder",
+        "kind": "holds"
+      },
+      {
+        "from": "ConfirmFix",
+        "to": "IResultCheck",
+        "kind": "implements"
+      },
+      {
+        "from": "ConfirmFix",
+        "to": "IReplay",
+        "kind": "holds"
+      },
+      {
+        "from": "ConfirmFix",
+        "to": "FixResult",
+        "kind": "uses"
+      },
+      {
+        "from": "CliReplay",
+        "to": "IReplay",
+        "kind": "implements"
+      },
+      {
+        "from": "JsonLinesErrorFeed",
+        "to": "IErrorFeed",
+        "kind": "implements"
+      },
+      {
+        "from": "JsonLinesTriageRecorder",
+        "to": "ITriageRecorder",
+        "kind": "implements"
+      },
+      {
+        "from": "TriagePack",
+        "to": "TriageTools",
+        "kind": "uses",
+        "word": "triage toolset"
+      },
+      {
+        "from": "TriageTools",
+        "to": "IErrorFeed",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageTools",
+        "to": "ITriageRecorder",
+        "kind": "holds"
+      },
+      {
+        "from": "FixingPack",
+        "to": "ConfirmFix",
+        "kind": "uses"
+      },
+      {
+        "from": "FixingPack",
+        "to": "ResultToolset",
+        "kind": "uses",
+        "word": "fix-result toolset"
+      }
+    ]
+  }
+}

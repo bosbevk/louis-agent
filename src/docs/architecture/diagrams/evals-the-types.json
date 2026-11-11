@@ -1,0 +1,229 @@
+{
+  "kind": "classes",
+  "title": "The evals: the types",
+  "caption": "One contract per job: an eval is an IEval, each check an ICheck built from its type, and every event a record the writer puts on a line.",
+  "classes": {
+    "types": [
+      {
+        "id": "FileEval",
+        "name": "FileEval",
+        "members": [
+          "Load(folder, catalog, source) FileEval",
+          "string Transcripts"
+        ]
+      },
+      {
+        "id": "IEval",
+        "name": "IEval",
+        "kind": "interface",
+        "members": [
+          "string Name",
+          "string Identity",
+          "int Version",
+          "string Proves",
+          "ModesAsync(sessions) EvalMode list",
+          "IReadOnlyList\u003CEvalScenario\u003E Scenarios",
+          "DatasetManifest Dataset",
+          "IReadOnlyList\u003CICheck\u003E Checks",
+          "IReadOnlyList\u003CLabeledAnswer\u003E Labels",
+          "TurnFactsOf(turn, mode) TurnFacts"
+        ]
+      },
+      {
+        "id": "ICheck",
+        "name": "ICheck",
+        "kind": "interface",
+        "members": [
+          "string Name",
+          "int Version",
+          "CheckKind Kind",
+          "IReadOnlySet\u003Cstring\u003E ExpectedKeys",
+          "bool Required",
+          "GradeAsync(Trial) Grade"
+        ]
+      },
+      {
+        "id": "ICheckType",
+        "name": "ICheckType",
+        "kind": "interface",
+        "members": [
+          "string Type",
+          "CheckKind Kind",
+          "Type Parameters",
+          "Create(JsonElement) ICheck"
+        ]
+      },
+      {
+        "id": "CheckCatalog",
+        "name": "CheckCatalog",
+        "members": [
+          "Find(type) ICheckType",
+          "Get(type) ICheckType",
+          "Listing() ListedCheck list"
+        ]
+      },
+      {
+        "id": "Grade",
+        "name": "Grade",
+        "kind": "record",
+        "members": [
+          "string Check",
+          "int Version",
+          "double Score",
+          "GradeOutcome Outcome",
+          "string Reason",
+          "GradeJudge Judge"
+        ]
+      },
+      {
+        "id": "Trial",
+        "name": "Trial",
+        "kind": "record",
+        "members": [
+          "string RunId",
+          "EvalMode Mode",
+          "int Repeat",
+          "EvalScenario Scenario",
+          "Transcript Transcript"
+        ]
+      },
+      {
+        "id": "ISessionClient",
+        "name": "ISessionClient",
+        "kind": "interface"
+      },
+      {
+        "id": "EvalRunner",
+        "name": "EvalRunner",
+        "members": [
+          "RunAsync(eval, run)",
+          "RescoreAsync(eval, runId, rescoreOf, lines)"
+        ]
+      },
+      {
+        "id": "EvalEvent",
+        "name": "EvalEvent",
+        "kind": "record",
+        "members": [
+          "DateTimeOffset T"
+        ]
+      },
+      {
+        "id": "checks",
+        "name": "The checks",
+        "kind": "nine, each its own class",
+        "members": [
+          "NoErrorCheck, RoutedToCheck, CostUnderCheck",
+          "WithinTimeCheck, ContainsCheck, ToolUsedCheck",
+          "EvaluatorCheck, HumanReviewCheck, PricedAtRetailer"
+        ]
+      },
+      {
+        "id": "HttpSessionClient",
+        "name": "HttpSessionClient"
+      },
+      {
+        "id": "CannedSessionClient",
+        "name": "CannedSessionClient"
+      },
+      {
+        "id": "ProtocolWriter",
+        "name": "ProtocolWriter"
+      },
+      {
+        "id": "ProtocolEvent",
+        "name": "ProtocolEvent"
+      },
+      {
+        "id": "ConversationEvent",
+        "name": "ConversationEvent"
+      }
+    ],
+    "relations": [
+      {
+        "from": "FileEval",
+        "to": "IEval",
+        "kind": "implements"
+      },
+      {
+        "from": "IEval",
+        "to": "ICheck",
+        "kind": "holds"
+      },
+      {
+        "from": "FileEval",
+        "to": "CheckCatalog",
+        "kind": "uses",
+        "word": "builds its checks from"
+      },
+      {
+        "from": "ICheck",
+        "to": "Trial",
+        "kind": "uses",
+        "word": "grades"
+      },
+      {
+        "from": "ICheck",
+        "to": "Grade",
+        "kind": "uses",
+        "word": "returns"
+      },
+      {
+        "from": "checks",
+        "to": "ICheck",
+        "kind": "implements"
+      },
+      {
+        "from": "ICheckType",
+        "to": "ICheck",
+        "kind": "uses",
+        "word": "builds"
+      },
+      {
+        "from": "CheckCatalog",
+        "to": "ICheckType",
+        "kind": "holds"
+      },
+      {
+        "from": "HttpSessionClient",
+        "to": "ISessionClient",
+        "kind": "implements"
+      },
+      {
+        "from": "CannedSessionClient",
+        "to": "ISessionClient",
+        "kind": "implements"
+      },
+      {
+        "from": "EvalRunner",
+        "to": "IEval",
+        "kind": "uses"
+      },
+      {
+        "from": "EvalRunner",
+        "to": "ISessionClient",
+        "kind": "uses"
+      },
+      {
+        "from": "EvalRunner",
+        "to": "ProtocolWriter",
+        "kind": "uses"
+      },
+      {
+        "from": "ProtocolWriter",
+        "to": "EvalEvent",
+        "kind": "uses"
+      },
+      {
+        "from": "ProtocolEvent",
+        "to": "EvalEvent",
+        "kind": "inherits"
+      },
+      {
+        "from": "ConversationEvent",
+        "to": "EvalEvent",
+        "kind": "inherits"
+      }
+    ]
+  }
+}

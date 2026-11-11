@@ -1,0 +1,240 @@
+<svg viewBox="-24 -24 1174 1414" width="1174" height="1414" role="img" aria-label="F39 orchestration: the engine's interfaces, part A" xmlns="http://www.w3.org/2000/svg">
+  <title>F39 orchestration: the engine's interfaces, part A</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1174" height="1414" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1126" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F39 orchestration:</tspan>
+    <tspan class="title-rest">the engine's interfaces, part A</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 172.4 147 L 276.5 147 Q 300.5 147 300.5 171 L 300.5 357 Q 300.5 381 324.5 381 L 396.7 381 L 569.1 381 L 703.3 381" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 172.4 303 L 258.5 303 Q 282.5 303 282.5 327 L 282.5 357 Q 282.5 381 306.5 381 L 396.7 381 L 569.1 381 L 703.3 381" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 172.4 147 L 276.5 147 Q 300.5 147 300.5 123 L 300.5 93 Q 300.5 69 324.5 69 L 396.7 69" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 569.1 1161 L 601.2 1161 Q 625.2 1161 625.2 1137 L 625.2 405 Q 625.2 381 649.2 381 L 703.3 381" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 569.1 1161 L 601.2 1161 Q 625.2 1161 625.2 1137 L 625.2 717 Q 625.2 693 649.2 693 L 703.3 693" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 569.1 1161 L 601.2 1161 Q 625.2 1161 625.2 1137 L 625.2 873 Q 625.2 849 649.2 849 L 703.3 849" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 875.7 849 L 907.9 849 Q 931.9 849 931.9 825 L 931.9 627.1 Q 931.9 615 943.9 615 L 956 615" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 172.4 459 L 240.5 459 Q 264.5 459 264.5 483 L 264.5 591 Q 264.5 615 288.5 615 L 396.7 615 L 569.1 615 L 703.3 615 L 875.7 615 L 956 615" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 172.4 459 L 240.5 459 Q 264.5 459 264.5 483 L 264.5 513 Q 264.5 537 288.5 537 L 396.7 537" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 172.4 1083 L 204.5 1083 Q 228.5 1083 228.5 1107 L 228.5 1137 Q 228.5 1161 252.5 1161 L 396.7 1161" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 172.4 927 L 222.5 927 Q 246.5 927 246.5 951 L 246.5 981 Q 246.5 1005 270.5 1005 L 396.7 1005" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 172.4 927 L 222.5 927 Q 246.5 927 246.5 903 L 246.5 873 Q 246.5 849 270.5 849 L 396.7 849" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="309.6" y="359" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="371" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="327.1" y="47" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="59" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="575.6" y="1139" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="597.1" y="1151" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="882.3" y="827" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="903.8" y="839" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="309.6" y="593" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="605" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="327.1" y="515" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="527" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="179" y="1061" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="200.5" y="1073" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="327.1" y="983" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="995" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="330.6" y="827" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="348.6" y="839" text-anchor="middle">uses</text>
+    <rect class="box tone-green" x="0" y="93" width="172.4" height="108" rx="10" />
+    <text class="label tone-green" x="86.2" y="121" text-anchor="middle">HttpPeerTransport</text>
+    <text class="note" x="86.2" y="137" text-anchor="middle">from PeerSession and</text>
+    <text class="note" x="86.2" y="149" text-anchor="middle">PeerHttp, A2</text>
+    <path class="frame" d="M 0 169 L 172.4 169" />
+    <text class="word tone-green" x="14" y="187" text-anchor="start">a key per peer</text>
+    <rect class="box tone-green" x="0" y="271" width="172.4" height="64" rx="10" />
+    <text class="label tone-green" x="86.2" y="299" text-anchor="middle">FakeChildTransport</text>
+    <text class="note" x="86.2" y="315" text-anchor="middle">test, A2</text>
+    <rect class="box tone-green" x="0" y="411" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="86.2" y="439" text-anchor="middle">DelegationLimiter</text>
+    <text class="note" x="86.2" y="455" text-anchor="middle">A3</text>
+    <path class="frame" d="M 0 475 L 172.4 475" />
+    <text class="word tone-green" x="14" y="493" text-anchor="start">one per turn tree</text>
+    <rect class="box tone-teal" x="0" y="567" width="172.4" height="96" rx="10" />
+    <text class="label tone-teal" x="86.2" y="595" text-anchor="middle">ISystemNoteStrategy</text>
+    <text class="note" x="86.2" y="611" text-anchor="middle">interface, Llm, A4a</text>
+    <path class="frame" d="M 0 631 L 172.4 631" />
+    <text class="word tone-teal" x="14" y="649" text-anchor="start">+Note()</text>
+    <rect class="box tone-teal" x="0" y="723" width="172.4" height="96" rx="10" />
+    <text class="label tone-teal" x="86.2" y="751" text-anchor="middle">IResultCheck&lt;T&gt;</text>
+    <text class="note" x="86.2" y="767" text-anchor="middle">interface, A5</text>
+    <path class="frame" d="M 0 787 L 172.4 787" />
+    <text class="word tone-teal" x="14" y="805" text-anchor="start">+CheckAsync()</text>
+    <rect class="box tone-green" x="0" y="879" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="86.2" y="907" text-anchor="middle">RouteClassifier</text>
+    <text class="note" x="86.2" y="923" text-anchor="middle">Agent, A6</text>
+    <path class="frame" d="M 0 943 L 172.4 943" />
+    <text class="word tone-green" x="14" y="961" text-anchor="start">+ClassifyAsync&lt;T&gt;()</text>
+    <rect class="box tone-green" x="0" y="1035" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="86.2" y="1063" text-anchor="middle">AskAgentTools</text>
+    <text class="note" x="86.2" y="1079" text-anchor="middle">changed, A2</text>
+    <path class="frame" d="M 0 1099 L 172.4 1099" />
+    <text class="word tone-green" x="14" y="1117" text-anchor="start">thin caller</text>
+    <rect class="box tone-teal" x="396.7" y="14" width="172.4" height="110" rx="10" />
+    <text class="label tone-teal" x="482.9" y="42" text-anchor="middle">AgentPeer</text>
+    <text class="note" x="482.9" y="58" text-anchor="middle">record, A2, new</text>
+    <path class="frame" d="M 396.7 78 L 569.1 78" />
+    <text class="word tone-teal" x="410.7" y="96" text-anchor="start">+Name</text>
+    <text class="word tone-teal" x="410.7" y="110" text-anchor="start">+Uri</text>
+    <rect class="box tone-teal" x="396.7" y="505" width="172.4" height="64" rx="10" />
+    <text class="label tone-teal" x="482.9" y="533" text-anchor="middle">DelegationPolicy</text>
+    <text class="note" x="482.9" y="549" text-anchor="middle">record, A3</text>
+    <rect class="box tone-green" x="396.7" y="801" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="482.9" y="829" text-anchor="middle">ResultToolset</text>
+    <text class="note" x="482.9" y="845" text-anchor="middle">Agent, A5</text>
+    <path class="frame" d="M 396.7 865 L 569.1 865" />
+    <text class="word tone-green" x="410.7" y="883" text-anchor="start">+Of&lt;T&gt;()</text>
+    <rect class="box tone-teal" x="396.7" y="957" width="172.4" height="96" rx="10" />
+    <text class="label tone-teal" x="482.9" y="985" text-anchor="middle">IToolChoiceStrategy</text>
+    <text class="note" x="482.9" y="1001" text-anchor="middle">interface, Llm, A6</text>
+    <path class="frame" d="M 396.7 1021 L 569.1 1021" />
+    <text class="word tone-teal" x="410.7" y="1039" text-anchor="start">+Force()</text>
+    <rect class="box tone-green" x="396.7" y="1092" width="172.4" height="138" rx="10" />
+    <text class="label tone-green" x="482.9" y="1120" text-anchor="middle">ChildAgentClient</text>
+    <text class="note" x="482.9" y="1136" text-anchor="middle">A2</text>
+    <path class="frame" d="M 396.7 1156 L 569.1 1156" />
+    <text class="word tone-green" x="410.7" y="1174" text-anchor="start">+OpenAsync()</text>
+    <text class="word tone-green" x="410.7" y="1188" text-anchor="start">+AskAsync&lt;T&gt;()</text>
+    <text class="word tone-green" x="410.7" y="1202" text-anchor="start">+ContinueAsync&lt;T&gt;()</text>
+    <text class="word tone-green" x="410.7" y="1216" text-anchor="start">+CloseAsync()</text>
+    <rect class="box tone-teal" x="703.3" y="319" width="172.4" height="124" rx="10" />
+    <text class="label tone-teal" x="789.5" y="347" text-anchor="middle">IChildTransport</text>
+    <text class="note" x="789.5" y="363" text-anchor="middle">interface, A2</text>
+    <path class="frame" d="M 703.3 383 L 875.7 383" />
+    <text class="word tone-teal" x="717.3" y="401" text-anchor="start">+OpenAsync()</text>
+    <text class="word tone-teal" x="717.3" y="415" text-anchor="start">+SendAsync()</text>
+    <text class="word tone-teal" x="717.3" y="429" text-anchor="start">+CloseAsync()</text>
+    <rect class="box tone-green" x="703.3" y="645" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="789.5" y="673" text-anchor="middle">SessionStreamReader</text>
+    <text class="note" x="789.5" y="689" text-anchor="middle">Phase 3</text>
+    <path class="frame" d="M 703.3 709 L 875.7 709" />
+    <text class="word tone-green" x="717.3" y="727" text-anchor="start">typed events</text>
+    <rect class="box tone-green" x="703.3" y="801" width="172.4" height="96" rx="10" />
+    <text class="label tone-green" x="789.5" y="829" text-anchor="middle">TurnContext</text>
+    <text class="note" x="789.5" y="845" text-anchor="middle">Sessions, A4</text>
+    <path class="frame" d="M 703.3 865 L 875.7 865" />
+    <text class="word tone-green" x="717.3" y="883" text-anchor="start">+Current</text>
+    <rect class="box tone-teal" x="956" y="567" width="170" height="96" rx="10" />
+    <text class="label tone-teal" x="1041" y="595" text-anchor="middle">IChildLimiter</text>
+    <text class="note" x="1041" y="611" text-anchor="middle">interface, Sessions, A3</text>
+    <path class="frame" d="M 956 631 L 1126 631" />
+    <text class="word tone-teal" x="970" y="649" text-anchor="start">+TryTake()</text>
+  </g>
+  <rect class="notebar" x="0" y="1312" width="1126" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 1322) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1334">
+    <tspan class="note-head">Every outside part behind an interface:</tspan>
+    <tspan class="note-rest">the child's transport and the limiter each have a fake for tests, and one client is the only way to call a</tspan>
+  </text>
+  <text class="notes" x="38" y="1351">
+    <tspan class="note-rest">child.</tspan>
+  </text>
+</svg>

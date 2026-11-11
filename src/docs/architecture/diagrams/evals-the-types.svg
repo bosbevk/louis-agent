@@ -1,0 +1,259 @@
+<svg viewBox="-24 -24 2107 1829" width="2107" height="1829" role="img" aria-label="The evals: the types" xmlns="http://www.w3.org/2000/svg">
+  <title>The evals: the types</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2107" height="1829" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2059" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">The evals:</tspan>
+    <tspan class="title-rest">the types</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 378 111 L 558 111 Q 582 111 582 135 L 582 327 Q 582 351 606 351 L 774 351" marker-end="url(#arrow-green)" />
+    <path class="edge tone-teal" d="M 1061 351 L 1165 351 Q 1189 351 1189 375 L 1189 810 Q 1189 831 1210 831 L 1231 831 L 1441 831 L 1529 831" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 378 111 L 774 111" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 1788 831 L 1800 831 Q 1812 831 1812 843 L 1812 927 Q 1812 951 1836 951 L 1884 951" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-teal" d="M 1788 831 L 1800 831 Q 1812 831 1812 819 L 1812 735 Q 1812 711 1836 711 L 1884 711" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 378 351 L 540 351 Q 564 351 564 375 L 564 567 Q 564 591 588 591 L 774 591 L 1061 591 L 1147 591 Q 1171 591 1171 615 L 1171 927 Q 1171 951 1195 951 L 1231 951 L 1441 951 L 1481 951 Q 1505 951 1505 927 L 1505 843 Q 1505 831 1517 831 L 1529 831" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 1441 471 L 1481 471 Q 1505 471 1505 495 L 1505 819 Q 1505 831 1517 831 L 1529 831" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-green" d="M 1061 111 L 1183 111 Q 1207 111 1207 135 L 1207 459 Q 1207 471 1219 471 L 1231 471" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 378 1311 L 468 1311 Q 492 1311 492 1335 L 492 1527 Q 492 1551 516 1551 L 774 1551" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 378 1551 L 774 1551" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 378 591 L 522 591 Q 546 591 546 567 L 546 375 Q 546 351 570 351 L 774 351" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 378 591 L 522 591 Q 546 591 546 615 L 546 1527 Q 546 1551 570 1551 L 774 1551" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 378 591 L 522 591 Q 546 591 546 615 L 546 807 Q 546 831 570 831 L 774 831" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1061 831 L 1129 831 Q 1153 831 1153 855 L 1153 1167 Q 1153 1191 1177 1191 L 1231 1191" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 378 831 L 504 831 Q 528 831 528 855 L 528 1167 Q 528 1191 552 1191 L 774 1191 L 1061 1191 L 1231 1191" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 378 1071 L 486 1071 Q 510 1071 510 1095 L 510 1167 Q 510 1191 534 1191 L 774 1191 L 1061 1191 L 1231 1191" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="639" y="329" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="678" y="341" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-teal" x="1103.5" y="329" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1125" y="341" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="597" y="89" width="162" height="18" rx="4" />
+    <text class="word tone-green" x="678" y="101" text-anchor="middle">builds its checks from</text>
+    <rect class="word-chip tone-teal" x="1823" y="929" width="50" height="18" rx="4" />
+    <text class="word tone-teal" x="1848" y="941" text-anchor="middle">grades</text>
+    <rect class="word-chip tone-teal" x="1819.5" y="689" width="57" height="18" rx="4" />
+    <text class="word tone-teal" x="1848" y="701" text-anchor="middle">returns</text>
+    <rect class="word-chip tone-green" x="432" y="329" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="471" y="341" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-teal" x="1448" y="449" width="50" height="18" rx="4" />
+    <text class="word tone-teal" x="1473" y="461" text-anchor="middle">builds</text>
+    <rect class="word-chip tone-green" x="1112.5" y="89" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1134" y="101" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="396" y="1289" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="435" y="1301" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="444" y="569" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="462" y="581" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="1089" y="809" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="1107" y="821" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="435" y="809" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="453" y="821" text-anchor="middle">is a</text>
+    <rect class="box tone-green" x="0" y="62" width="378" height="98" rx="10" />
+    <text class="label tone-green" x="189" y="93" text-anchor="middle">FileEval</text>
+    <path class="frame" d="M 0 114 L 378 114" />
+    <text class="word tone-green" x="14" y="132" text-anchor="start">Load(folder, catalog, source) FileEval</text>
+    <text class="word tone-green" x="14" y="146" text-anchor="start">string Transcripts</text>
+    <rect class="box tone-green" x="0" y="289" width="378" height="124" rx="10" />
+    <text class="label tone-green" x="189" y="317" text-anchor="middle">The checks</text>
+    <text class="note" x="189" y="333" text-anchor="middle">nine, each its own class</text>
+    <path class="frame" d="M 0 353 L 378 353" />
+    <text class="word tone-green" x="14" y="371" text-anchor="start">NoErrorCheck, RoutedToCheck, CostUnderCheck</text>
+    <text class="word tone-green" x="14" y="385" text-anchor="start">WithinTimeCheck, ContainsCheck, ToolUsedCheck</text>
+    <text class="word tone-green" x="14" y="399" text-anchor="start">EvaluatorCheck, HumanReviewCheck, PricedAtRetailer</text>
+    <rect class="box tone-green" x="0" y="542" width="378" height="98" rx="10" />
+    <text class="label tone-green" x="189" y="573" text-anchor="middle">EvalRunner</text>
+    <path class="frame" d="M 0 594 L 378 594" />
+    <text class="word tone-green" x="14" y="612" text-anchor="start">RunAsync(eval, run)</text>
+    <text class="word tone-green" x="14" y="626" text-anchor="start">RescoreAsync(eval, runId, rescoreOf, lines)</text>
+    <rect class="box tone-green" x="0" y="805" width="378" height="52" rx="10" />
+    <text class="label tone-green" x="189" y="836" text-anchor="middle">ProtocolEvent</text>
+    <rect class="box tone-green" x="0" y="1045" width="378" height="52" rx="10" />
+    <text class="label tone-green" x="189" y="1076" text-anchor="middle">ConversationEvent</text>
+    <rect class="box tone-green" x="0" y="1285" width="378" height="52" rx="10" />
+    <text class="label tone-green" x="189" y="1316" text-anchor="middle">HttpSessionClient</text>
+    <rect class="box tone-green" x="0" y="1525" width="378" height="52" rx="10" />
+    <text class="label tone-green" x="189" y="1556" text-anchor="middle">CannedSessionClient</text>
+    <rect class="box tone-green" x="774" y="55" width="287" height="112" rx="10" />
+    <text class="label tone-green" x="917.5" y="86" text-anchor="middle">CheckCatalog</text>
+    <path class="frame" d="M 774 107 L 1061 107" />
+    <text class="word tone-green" x="788" y="125" text-anchor="start">Find(type) ICheckType</text>
+    <text class="word tone-green" x="788" y="139" text-anchor="start">Get(type) ICheckType</text>
+    <text class="word tone-green" x="788" y="153" text-anchor="start">Listing() ListedCheck list</text>
+    <rect class="box tone-teal" x="774" y="240" width="287" height="222" rx="10" />
+    <text class="label tone-teal" x="917.5" y="268" text-anchor="middle">IEval</text>
+    <text class="note" x="917.5" y="284" text-anchor="middle">interface</text>
+    <path class="frame" d="M 774 304 L 1061 304" />
+    <text class="word tone-teal" x="788" y="322" text-anchor="start">string Name</text>
+    <text class="word tone-teal" x="788" y="336" text-anchor="start">string Identity</text>
+    <text class="word tone-teal" x="788" y="350" text-anchor="start">int Version</text>
+    <text class="word tone-teal" x="788" y="364" text-anchor="start">string Proves</text>
+    <text class="word tone-teal" x="788" y="378" text-anchor="start">ModesAsync(sessions) EvalMode list</text>
+    <text class="word tone-teal" x="788" y="392" text-anchor="start">IReadOnlyList&lt;EvalScenario&gt; Scenarios</text>
+    <text class="word tone-teal" x="788" y="406" text-anchor="start">DatasetManifest Dataset</text>
+    <text class="word tone-teal" x="788" y="420" text-anchor="start">IReadOnlyList&lt;ICheck&gt; Checks</text>
+    <text class="word tone-teal" x="788" y="434" text-anchor="start">IReadOnlyList&lt;LabeledAnswer&gt; Labels</text>
+    <text class="word tone-teal" x="788" y="448" text-anchor="start">TurnFactsOf(turn, mode) TurnFacts</text>
+    <rect class="box tone-green" x="774" y="805" width="287" height="52" rx="10" />
+    <text class="label tone-green" x="917.5" y="836" text-anchor="middle">ProtocolWriter</text>
+    <rect class="box tone-teal" x="774" y="1519" width="287" height="64" rx="10" />
+    <text class="label tone-teal" x="917.5" y="1547" text-anchor="middle">ISessionClient</text>
+    <text class="note" x="917.5" y="1563" text-anchor="middle">interface</text>
+    <rect class="box tone-teal" x="1231" y="402" width="210" height="138" rx="10" />
+    <text class="label tone-teal" x="1336" y="430" text-anchor="middle">ICheckType</text>
+    <text class="note" x="1336" y="446" text-anchor="middle">interface</text>
+    <path class="frame" d="M 1231 466 L 1441 466" />
+    <text class="word tone-teal" x="1245" y="484" text-anchor="start">string Type</text>
+    <text class="word tone-teal" x="1245" y="498" text-anchor="start">CheckKind Kind</text>
+    <text class="word tone-teal" x="1245" y="512" text-anchor="start">Type Parameters</text>
+    <text class="word tone-teal" x="1245" y="526" text-anchor="start">Create(JsonElement) ICheck</text>
+    <rect class="box tone-teal" x="1231" y="1143" width="210" height="96" rx="10" />
+    <text class="label tone-teal" x="1336" y="1171" text-anchor="middle">EvalEvent</text>
+    <text class="note" x="1336" y="1187" text-anchor="middle">record</text>
+    <path class="frame" d="M 1231 1207 L 1441 1207" />
+    <text class="word tone-teal" x="1245" y="1225" text-anchor="start">DateTimeOffset T</text>
+    <rect class="box tone-teal" x="1529" y="748" width="259" height="166" rx="10" />
+    <text class="label tone-teal" x="1658.5" y="776" text-anchor="middle">ICheck</text>
+    <text class="note" x="1658.5" y="792" text-anchor="middle">interface</text>
+    <path class="frame" d="M 1529 812 L 1788 812" />
+    <text class="word tone-teal" x="1543" y="830" text-anchor="start">string Name</text>
+    <text class="word tone-teal" x="1543" y="844" text-anchor="start">int Version</text>
+    <text class="word tone-teal" x="1543" y="858" text-anchor="start">CheckKind Kind</text>
+    <text class="word tone-teal" x="1543" y="872" text-anchor="start">IReadOnlySet&lt;string&gt; ExpectedKeys</text>
+    <text class="word tone-teal" x="1543" y="886" text-anchor="start">bool Required</text>
+    <text class="word tone-teal" x="1543" y="900" text-anchor="start">GradeAsync(Trial) Grade</text>
+    <rect class="box tone-teal" x="1884" y="628" width="175" height="166" rx="10" />
+    <text class="label tone-teal" x="1971.5" y="656" text-anchor="middle">Grade</text>
+    <text class="note" x="1971.5" y="672" text-anchor="middle">record</text>
+    <path class="frame" d="M 1884 692 L 2059 692" />
+    <text class="word tone-teal" x="1898" y="710" text-anchor="start">string Check</text>
+    <text class="word tone-teal" x="1898" y="724" text-anchor="start">int Version</text>
+    <text class="word tone-teal" x="1898" y="738" text-anchor="start">double Score</text>
+    <text class="word tone-teal" x="1898" y="752" text-anchor="start">GradeOutcome Outcome</text>
+    <text class="word tone-teal" x="1898" y="766" text-anchor="start">string Reason</text>
+    <text class="word tone-teal" x="1898" y="780" text-anchor="start">GradeJudge Judge</text>
+    <rect class="box tone-teal" x="1884" y="875" width="175" height="152" rx="10" />
+    <text class="label tone-teal" x="1971.5" y="903" text-anchor="middle">Trial</text>
+    <text class="note" x="1971.5" y="919" text-anchor="middle">record</text>
+    <path class="frame" d="M 1884 939 L 2059 939" />
+    <text class="word tone-teal" x="1898" y="957" text-anchor="start">string RunId</text>
+    <text class="word tone-teal" x="1898" y="971" text-anchor="start">EvalMode Mode</text>
+    <text class="word tone-teal" x="1898" y="985" text-anchor="start">int Repeat</text>
+    <text class="word tone-teal" x="1898" y="999" text-anchor="start">EvalScenario Scenario</text>
+    <text class="word tone-teal" x="1898" y="1013" text-anchor="start">Transcript Transcript</text>
+  </g>
+  <rect class="notebar" x="0" y="1744" width="2059" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1754) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1766">
+    <tspan class="note-head">One contract per job:</tspan>
+    <tspan class="note-rest">an eval is an IEval, each check an ICheck built from its type, and every event a record the writer puts on a line.</tspan>
+  </text>
+</svg>

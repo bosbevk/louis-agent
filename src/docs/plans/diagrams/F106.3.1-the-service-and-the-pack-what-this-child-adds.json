@@ -1,0 +1,148 @@
+{
+  "kind": "classes",
+  "title": "F106.3.1 the service and the triage pack: what this child adds",
+  "caption": "A feed in, a recorder out: the pack reads the service's errors and keeps each decision, both behind an interface.",
+  "classes": {
+    "types": [
+      {
+        "id": "IErrorFeed",
+        "name": "IErrorFeed",
+        "kind": "interface",
+        "members": [
+          "\u002BReadNew()",
+          "\u002BMarkHandled(id)"
+        ]
+      },
+      {
+        "id": "JsonLinesErrorFeed",
+        "name": "JsonLinesErrorFeed",
+        "members": [
+          "the log\u0027s path, the handled ids file"
+        ]
+      },
+      {
+        "id": "ServiceError",
+        "name": "ServiceError",
+        "members": [
+          "\u002BId",
+          "\u002BAt",
+          "\u002BService",
+          "\u002BMethod",
+          "\u002BArguments",
+          "\u002BExceptionType",
+          "\u002BMessage",
+          "\u002BStackTrace"
+        ]
+      },
+      {
+        "id": "ITriageRecorder",
+        "name": "ITriageRecorder",
+        "kind": "interface",
+        "members": [
+          "\u002BSave(step)",
+          "\u002BRead(runId)"
+        ]
+      },
+      {
+        "id": "FileTriageRecorder",
+        "name": "FileTriageRecorder",
+        "members": [
+          "one JSON-lines file per run"
+        ]
+      },
+      {
+        "id": "TriageRun",
+        "name": "TriageRun",
+        "members": [
+          "\u002BId",
+          "\u002BSteps",
+          "\u002BOutcome"
+        ]
+      },
+      {
+        "id": "TriageStep",
+        "name": "TriageStep",
+        "members": [
+          "\u002BRunId",
+          "\u002BNumber",
+          "\u002BAgent",
+          "\u002BKind",
+          "\u002BSummary",
+          "\u002BWhy",
+          "\u002BAt"
+        ]
+      },
+      {
+        "id": "TriageTools",
+        "name": "TriageTools",
+        "members": [
+          "\u002BReportInvestigation(runId, where, cause, area, confidence)",
+          "\u002BReportReview(runId, happy, reasons)",
+          "\u002BDecideCase(runId, kind, reason)",
+          "\u002BRaiseToPerson(runId, summary, why)",
+          "\u002BReadTriageRun(runId)"
+        ]
+      },
+      {
+        "id": "Department",
+        "name": "Department",
+        "members": [
+          "\u002BName",
+          "\u002BRepository",
+          "\u002BErrorLog",
+          "\u002BPeople"
+        ]
+      },
+      {
+        "id": "Departments",
+        "name": "Departments",
+        "members": [
+          "\u002BRead(yamlPath)"
+        ]
+      },
+      {
+        "id": "TriagePack",
+        "name": "TriagePack",
+        "members": [
+          "\u002BToolsets"
+        ]
+      },
+      {
+        "id": "TriageOptions",
+        "name": "TriageOptions"
+      }
+    ],
+    "relations": [
+      {
+        "from": "JsonLinesErrorFeed",
+        "to": "IErrorFeed",
+        "kind": "implements"
+      },
+      {
+        "from": "FileTriageRecorder",
+        "to": "ITriageRecorder",
+        "kind": "implements"
+      },
+      {
+        "from": "TriageTools",
+        "to": "ITriageRecorder",
+        "kind": "holds"
+      },
+      {
+        "from": "Departments",
+        "to": "Department",
+        "kind": "holds"
+      },
+      {
+        "from": "TriagePack",
+        "to": "TriageTools",
+        "kind": "holds"
+      },
+      {
+        "from": "TriagePack",
+        "to": "TriageOptions",
+        "kind": "holds"
+      }
+    ]
+  }
+}

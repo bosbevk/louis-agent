@@ -76,46 +76,7 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 
 **Interface design**
 
-```mermaid
-classDiagram
-    class ISpeechToTextClient {
-        <<Microsoft.Extensions.AI, reused>>
-        GetTextAsync(Stream audio, SpeechToTextOptions? options, CancellationToken ct) Task~SpeechToTextResponse~
-    }
-    class ISpeechProvider {
-        <<core, step 1>>
-        SpeechProviderName Name
-        ISpeechToTextClient Create(SpeechOptions options)
-    }
-    class SpeechClientFactory {
-        <<core, step 1>>
-        ISpeechToTextClient? Create(SpeechOptions options)
-    }
-    class SpeechOptions {
-        <<record, step 1>>
-        SpeechProviderName? Provider
-        string? Model
-        string? Language
-    }
-    class WhisperSpeechProvider {
-        <<core.whisper, step 2, if C1 = a>>
-    }
-    class TranscriptionEndpoints {
-        <<api, step 3>>
-        Transcribe(id, IFormFile audio) Results~Ok~TranscriptionResult~, BadRequest, NotFound~
-    }
-    class TranscriptionResult {
-        <<api.contracts record, step 3>>
-        string Text
-        string? Language
-        double Seconds
-    }
-    ISpeechProvider <|.. WhisperSpeechProvider
-    SpeechClientFactory o-- ISpeechProvider : registry from HostServices
-    ISpeechProvider ..> ISpeechToTextClient : creates
-    TranscriptionEndpoints ..> SpeechClientFactory : asks
-    TranscriptionEndpoints ..> TranscriptionResult : returns
-```
+![Speech is a provider like a model: one interface per provider, a factory that picks it, and Microsoft's speech client underneath](diagrams/F92-voice-input-diagrams-4.svg)
 
 **Architecture**
 

@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Placed;
@@ -78,14 +79,17 @@ public class DocsDiagramsTests
     }
 
     /// <summary>
-    /// In every flow picture, no word leaves the drawing or sits on a box, and no line crosses a box it doesn't join.
+    /// In every flow picture, a class chart's too (CL60.4, drawn as a flow), no word leaves the drawing or sits on a
+    /// box, and no line crosses a box it doesn't join.
     /// </summary>
     [Test]
     public void EveryFlow_KeepsItsWordsAndLinesClear()
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
-            .Where(pair => pair.source.Flow is not null)
-            .SelectMany(pair => Clearance.Faults(GraphLayout.Place(pair.source.Flow!, bend: GraphLayout.SoftBend))
+            .Select(pair => (pair.json,
+                flow: pair.source.Flow ?? (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null)))
+            .Where(pair => pair.flow is not null)
+            .SelectMany(pair => Clearance.Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend))
                 .Select(fault => $"{Path.GetFileNameWithoutExtension(pair.json)}: {fault}")).ToList();
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.
@@ -114,35 +118,22 @@ public class DocsDiagramsTests
         var boxes = placed.Rows
             .Select(row => (What: row.Lines.FirstOrDefault() ?? "",
                 Box: row.Step is NoteStep ? SequenceText.NoteBox(row) : SequenceText.WordBox(row)))
-            .Concat(placed.Blocks.Select(block => (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
+            .Concat(placed.Blocks.Select(block =>
+                (What: block.Block.Label, Box: (block.X, block.Y, block.W, block.H))));
         return boxes.Where(item => item.Box.Item1 < 0 || item.Box.Item1 + item.Box.Item3 > placed.Width + 0.001)
             .Select(item => $"'{item.What}'");
     }
 
     /// <summary>
-    /// No doc draws a flow in Mermaid any more (CL60.2): every flow is a JSON our renderer draws, so a new one goes
-    /// the same way instead of slipping back in as a block GitHub draws its own way.
+    /// No doc holds Mermaid of any kind (CL60.4, the rule, Claude's pick Q4): every diagram is a JSON our renderer
+    /// draws, so a new one goes the same way instead of slipping back in as a block GitHub draws its own way.
     /// </summary>
     [Test]
-    public void NoDoc_HoldsAMermaidFlowchart()
+    public void NoDoc_HoldsMermaid()
     {
-        var holding = Docs().Where(doc => MermaidStarts(File.ReadAllText(doc))
-            .Any(first => first.StartsWith("flowchart", StringComparison.Ordinal)
-                          || first.StartsWith("graph", StringComparison.Ordinal)));
+        var holding = Docs().Where(doc => MermaidStarts(File.ReadAllText(doc)).Any());
 
-        Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid flowchart: import it as a picture");
-    }
-
-    /// <summary>
-    /// No doc draws a sequence in Mermaid any more (CL60.3): every sequence is a JSON our renderer draws.
-    /// </summary>
-    [Test]
-    public void NoDoc_HoldsAMermaidSequence()
-    {
-        var holding = Docs().Where(doc => MermaidStarts(File.ReadAllText(doc))
-            .Any(first => first.StartsWith("sequenceDiagram", StringComparison.Ordinal)));
-
-        Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid sequence: import it as a picture");
+        Assert.That(holding.Select(Relative), Is.Empty, "a doc with a Mermaid block: import it as a picture");
     }
 
     /// <summary>The docs have pictures at all, so the tests above can't pass by finding none.</summary>

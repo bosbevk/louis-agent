@@ -65,26 +65,7 @@ directory's SVN; `wp-env` runs WordPress in Docker for tests.
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class SiteRecord { <<record>> Id Tenant Name Key Domains Caps Budget LeadTo Packs Voice Facts PrivatePages ReadsPages  %% F131.1, Mongo in F131.4 }
-    class ISiteStore { <<interface>> +FindByKeyAsync(key) SiteRecord? +ListAsync(tenant) +SaveAsync(site)  %% F131.1 }
-    class InMemorySiteStore { +from the host's settings  %% F131.1 }
-    class MongoSiteStore { +IMongoCollection~SiteRecord~  %% F131.4 }
-    class SiteDoor { +Admit(request, key, address) DoorAnswer  %% F131.1, grows OpenDoor }
-    class SiteRateLimits { +AddSiteRateLimits(services)  %% F131.1, PartitionedRateLimiter }
-    class BusinessIdentity { <<IAgentIdentity>> voice and facts from SiteRecord  %% F131.1 }
-    class EmbedPage { <<razor page>> /embed/site, frame-ancestors  %% F131.2 }
-    class EmbedScript { <<embed.js>> button, frame, page reader, ShowPage, open state  %% F131.2 }
-    class TurnBuffer { +Append(event) +ReplayFrom(index)  %% F131.3 }
-    class SiteBudget { +SpentThisMonth(site) +IsClosed(site)  %% F131.5, on F7 }
-    ISiteStore <|.. InMemorySiteStore
-    ISiteStore <|.. MongoSiteStore
-    SiteDoor --> ISiteStore
-    BusinessIdentity --> SiteRecord
-    EmbedPage --> ISiteStore
-    SiteDoor --> SiteBudget
-```
+![A door per site: it reads the site from its store, counts each address, and keeps the budget](diagrams/F131-the-chat-on-any-website-interface-design.svg)
 
 ### Architecture
 
