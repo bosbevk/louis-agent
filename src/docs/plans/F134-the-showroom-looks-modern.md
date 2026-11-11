@@ -1,7 +1,10 @@
 # F134: The showroom looks modern
 
-**Status:** for Louis's approval (drafted 2026-11-11). **Branch:** `feature/F134-the-showroom-looks-modern`.
-**Mockups:** [the canvas](https://claude.ai/artifact/J81SiyeQ6jFZGhS7Vyyty1), board *B · Showcase with photos*.
+**Status:** approved 2026-11-11 (Louis: "merge the plan with designs into todo"). **Branch:** `feature/F134-the-showroom-looks-modern`.
+**Mockups:** [F134-mockups/](F134-mockups/), plain HTML: [b-showcase-with-photos.html](F134-mockups/b-showcase-with-photos.html)
+is the look Louis picked; [a-tidy-and-lift.html](F134-mockups/a-tidy-and-lift.html) and
+[c-bento-grid.html](F134-mockups/c-bento-grid.html) are the two he didn't, kept for the record. Open one in a browser
+from the repo so its photos load.
 
 ## Context
 
