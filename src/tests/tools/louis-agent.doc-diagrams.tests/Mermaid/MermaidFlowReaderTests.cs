@@ -48,6 +48,18 @@ public class MermaidFlowReaderTests
         Assert.That(Label(flow, "a").Split('\n'), Has.All.Length.LessThanOrEqualTo(30).And.Length.GreaterThan(1));
     }
 
+    /// <summary>
+    /// A written <c>\n</c> in a label is a line break, as Mermaid draws it, never the two characters (CL60.2, the
+    /// Azure VM's label and the plans' charts).
+    /// </summary>
+    [Test]
+    public void AWrittenNewLine_BreaksTheLabel()
+    {
+        var flow = Read("flowchart LR\n    a[\"louis-agent.api\\nthe guide\"]");
+
+        Assert.That(Label(flow, "a"), Is.EqualTo("louis-agent.api\nthe guide"));
+    }
+
     /// <summary>Left to right runs right; top down, either way it's written, runs down.</summary>
     [TestCase("flowchart LR", FlowDirection.Right)]
     [TestCase("flowchart TB", FlowDirection.Down)]

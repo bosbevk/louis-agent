@@ -3,8 +3,8 @@ using System.Text;
 namespace LouisAgent.DocDiagrams.Mermaid;
 
 /// <summary>
-/// A Mermaid label as plain words: a <c>&lt;br/&gt;</c> a new line, any other tag left out, an entity its character,
-/// each line trimmed.
+/// A Mermaid label as plain words: a <c>&lt;br/&gt;</c> or a written <c>\n</c> a new line, any other tag left out, an
+/// entity its character, each line trimmed.
 /// </summary>
 internal static class MermaidLabel
 {
@@ -20,7 +20,8 @@ internal static class MermaidLabel
     {
         string text = raw.Replace("<br/>", "\n", StringComparison.OrdinalIgnoreCase)
             .Replace("<br />", "\n", StringComparison.OrdinalIgnoreCase)
-            .Replace("<br>", "\n", StringComparison.OrdinalIgnoreCase);
+            .Replace("<br>", "\n", StringComparison.OrdinalIgnoreCase)
+            .Replace("\\n", "\n", StringComparison.Ordinal);
         text = WithoutTags(text);
         foreach (var (entity, character) in Entities) text = text.Replace(entity, character, StringComparison.Ordinal);
         return string.Join('\n', text.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0));
