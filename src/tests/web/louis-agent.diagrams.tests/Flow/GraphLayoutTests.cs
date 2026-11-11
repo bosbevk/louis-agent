@@ -168,8 +168,9 @@ public class GraphLayoutTests
 
     /// <summary>
     /// An arrow back to an earlier column runs under the drawing (FX85, Louis: "shouldn't here be a line back, a
-    /// specialist is an agent session", and his sketch): out of the box's right side, down to a lane below the lowest
-    /// box, along it and up into the target's bottom; the drawing grows to hold the lane.
+    /// specialist is an agent session"): straight down out of the box's bottom middle (CL60.2, Louis's marks on the
+    /// runner and MCP charts, in place of FX85's out of the right side), along a lane below the lowest box and up
+    /// into the target's bottom; the drawing grows to hold the lane.
     /// </summary>
     [Test]
     public void AnArrowBack_LoopsUnderTheDrawing()
@@ -191,8 +192,10 @@ public class GraphLayoutTests
         var back = placed.Edges.Single(edge => edge.Edge.To == "who");
         Assert.Multiple(() =>
         {
-            Assert.That(back.Path, Does.StartWith($"M {session.X + session.W:0.#} {session.Y + session.H * 0.8:0.#} L"),
-                "out of the right side, low");
+            Assert.That(back.Path,
+                Does.StartWith(
+                    $"M {session.X + session.W / 2:0.#} {session.Y + session.H:0.#} L {session.X + session.W / 2:0.#}"),
+                "straight down out of the bottom middle");
             Assert.That(back.Path, Does.EndWith($"L {who.X + who.W / 2:0.#} {who.Y + who.H:0.#}"),
                 "up into the bottom middle");
             Assert.That(placed.Height, Is.GreaterThan(placed.Nodes.Max(node => node.Y + node.H) + 20),

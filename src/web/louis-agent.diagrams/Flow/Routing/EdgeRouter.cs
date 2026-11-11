@@ -2,7 +2,7 @@ using System.Globalization;
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
 
-namespace LouisAgent.Diagrams.Flow;
+namespace LouisAgent.Diagrams.Flow.Routing;
 
 /// <summary>
 /// Draws every arrow as a connector (FX85, Louis: "lines may not cross, have connectors on lines so they still bend
@@ -22,10 +22,11 @@ internal static class EdgeRouter
     /// <summary>The round at a bend, and the least a piece may be before a bend is drawn sharp.</summary>
     private const double Bend = 8;
 
-    /// <summary>
-    /// How far under the drawing the first lane runs, and the step between two tracks, lanes or entries.
-    /// </summary>
-    private const double BackLane = 30, Step = 18;
+    /// <summary>How far under the drawing the first lane runs.</summary>
+    private const double BackLane = 30;
+
+    /// <summary>The step between two tracks, lanes or entries.</summary>
+    internal const double Step = 18;
 
     /// <summary>How far out of a box's right side an arrow to itself reaches.</summary>
     private const double SelfReach = 40;
@@ -40,8 +41,8 @@ internal static class EdgeRouter
     /// space either side (Louis: "never overlap"): the longer of an arrow's two flat pieces is at least half the
     /// gap, so the gap is twice the word and its margins.
     /// </summary>
-    public static double GapFor(IReadOnlyList<GraphEdge> edges) =>
-        edges.Count == 0 ? 0 : 2 * (8 * edges.Max(edge => edge.Word?.Length ?? 0) + 16);
+    public static double GapFor(IReadOnlyList<GraphEdge> edges, bool turned = false) =>
+        edges.Count == 0 ? 0 : 2 * edges.Max(edge => edge.Word is { } word ? RoomOf(word, turned) : 0);
 
     /// <summary>
     /// The room either side of the bend for the arrows between two neighbouring columns (Louis: "this one can still
@@ -49,16 +50,31 @@ internal static class EdgeRouter
     /// as the widest word by its target, and a side with no word only a stub for the bend and the arrowhead.
     /// </summary>
     public static (double Source, double Target) RoomsFor(
-        IReadOnlyList<GraphEdge> between, IReadOnlyList<GraphEdge> forward)
+        IReadOnlyList<GraphEdge> between,
+        IReadOnlyList<GraphEdge> forward,
+        bool turned = false)
     {
         var wordsOut = WordsOut(forward);
 
         double Room(bool bySource) => between
             .Where(edge => edge.Word is not null && wordsOut.GetValueOrDefault(edge.From) <= 1 == bySource)
-            .Select(edge => 8 * edge.Word!.Length + 16.0).DefaultIfEmpty(Stub).Max();
+            .Select(edge => RoomOf(edge.Word!, turned)).DefaultIfEmpty(Stub).Max();
 
         return (Room(true), Room(false));
     }
+
+    /// <summary>
+    /// The room a word takes along its arrow: its length, lying on a flat piece; laid out turned, its lines' height,
+    /// since once turned back it stands beside an upright line (CL60.2).
+    /// </summary>
+    private static double RoomOf(string word, bool turned) =>
+        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + 22 : 8 * word.Length + 16;
+
+    /// <summary>
+    /// Where a word stands on its piece: in the middle, lying on it; laid out turned, at the top of its room, so its
+    /// lines stand under the piece's start and clear of the bend.
+    /// </summary>
+    private static double WordAlong(double start, double end, bool turned) => turned ? start + 18 : (start + end) / 2;
 
     /// <summary>
     /// How many arrows with a word leave each box; a box with two or more puts its words by their targets.
@@ -71,7 +87,11 @@ internal static class EdgeRouter
     /// Routes the known arrows; the height and width grow for the lanes and loops that run outside the boxes.
     /// </summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
-        IReadOnlyList<GraphEdge> edges, IReadOnlyDictionary<string, PlacedNode> byId, double height, double width)
+        IReadOnlyList<GraphEdge> edges,
+        IReadOnlyDictionary<string, PlacedNode> byId,
+        double height,
+        double width,
+        bool turned = false)
     {
         var self = edges.Where(edge => edge.From == edge.To).ToList();
         var back = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column < byId[edge.From].Node.Column)
@@ -81,26 +101,32 @@ internal static class EdgeRouter
         var forward = edges.Except(self).Except(back).Except(down).ToList();
 
         var plans = new List<Plan>();
-        plans.AddRange(Forward(forward, byId));
+        plans.AddRange(Forward(forward, byId, turned));
         plans.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
-        if (back.Count > 0) plans.AddRange(Back(back, byId, height, self));
+        if (back.Count > 0) plans.AddRange(Back(back, byId, height));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();
 
         // An arrow whose way would cross a box it doesn't join, as a docs chart's arrow past a rank can (CL60.2),
         // takes a detour: down its gap, along a lane of its own under the drawing, and up the gap by its target.
         double firstFree = height + BackLane + Step * backLanes;
         int detours = 0;
-        var placed = plans.Select(plan => Connector(Crosses(plan, byId)
-            ? Detour(plan, byId[plan.Edge.From], byId[plan.Edge.To], firstFree + Step * detours++)
+        var placed = plans.Select(plan => Connector(Detours.Crosses(plan, byId)
+            ? Detours.Detour(plan, byId, firstFree + Step * detours++)
             : plan)).ToList();
         placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From]))));
 
         // Room for the lanes under the drawing, and for a track or a loop past the last column.
         if (back.Count > 0) height += BackLane + Step * (backLanes - 1) + 8;
         if (detours > 0) height = firstFree + Step * (detours - 1) + 8;
-        double reach = placed.Count == 0
+
+        // A word reaches along its piece half its length, or laid out turned its lines' height.
+        double Reach(PlacedEdge edge) => edge.Edge.Word is not { } word
             ? 0
-            : placed.Max(edge => Math.Max(edge.WordX + 4 * (edge.Edge.Word?.Length ?? 0), edge.Right));
+            : turned
+                ? FlowText.WordStep * FlowText.WordLines(word).Count
+                : 4 * word.Length;
+
+        double reach = placed.Count == 0 ? 0 : placed.Max(edge => Math.Max(edge.WordX + Reach(edge), edge.Right));
         return (placed, height, Math.Max(width, reach + 4));
     }
 
@@ -113,7 +139,7 @@ internal static class EdgeRouter
     /// an arrow that skips a column bends in the middle.
     /// </summary>
     private static IEnumerable<Plan> Forward(List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned)
     {
         var wordsOut = WordsOut(forward);
         foreach (var edge in forward)
@@ -122,10 +148,11 @@ internal static class EdgeRouter
             var to = byId[edge.To];
             double x1 = from.X + from.W, y1 = from.Y + from.H / 2;
             double x2 = to.X, y2 = to.Y + to.H / 2;
-            double track = Track(x1, x2, forward, byId);
+            var (track, last) = Track(edge, x1, x2, forward, byId, turned);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
+            // A word by its target stands past the gap's last track, clear of the other sources' lines.
             yield return new Plan(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)],
-                bySource ? (x1 + track) / 2 : (track + x2) / 2, bySource ? y1 : y2);
+                bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned), bySource ? y1 : y2);
         }
     }
 
@@ -133,20 +160,55 @@ internal static class EdgeRouter
     /// Where an arrow bends: between neighbouring columns, after the source's room plus half what the gap has to spare,
     /// the same for every arrow of that gap; across a column between, in the middle.
     /// </summary>
-    private static double Track(
-        double x1, double x2, List<GraphEdge> forward, IReadOnlyDictionary<string, PlacedNode> byId)
+    private static (double Track, double Last) Track(GraphEdge edge, double x1, double x2, List<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned)
     {
         bool Between(PlacedNode node) => node.X >= x1 && node.X < x2;
-        if (byId.Values.Any(Between)) return (x1 + x2) / 2;
+        if (byId.Values.Any(Between)) return ((x1 + x2) / 2, (x1 + x2) / 2);
 
         // Every arrow from the same column's right edge to the same column's left edge shares this gap.
         var gap = forward.Where(other => byId[other.From].X + byId[other.From].W == x1 && byId[other.To].X == x2)
             .ToList();
-        var (source, target) = RoomsFor(gap, forward);
+        var (source, target) = RoomsFor(gap, forward, turned);
+        // Several sources feeding several boxes each bend on a track of their own, top to bottom (CL60.2), so a
+        // reader can follow who feeds whom; the room for those tracks comes off the gap first.
+        var sources = TrackOrder(gap, byId);
+        double tracks = TracksRoom(gap), room = x2 - x1 - tracks;
+        double offset = tracks == 0 ? 0 : Step * sources.IndexOf(edge.From);
         // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle; half
         // a pixel's slack, since a gap sized to its rooms exactly can come out a hair short in floating point.
-        if (x2 - x1 + 0.5 < source + target) return (x1 + x2) / 2;
-        return x1 + source + (x2 - x1 - source - target) / 2;
+        double first = room + 0.5 < source + target ? x1 + room / 2 : x1 + source + (room - source - target) / 2;
+        return (first + offset, first + tracks);
+    }
+
+    /// <summary>
+    /// The order of a gap's tracks, nearest the sources first: the bottom source first, and a source level with
+    /// another's target always before that other, so its line out ends before the other's line in starts and the two
+    /// never lie on one another (Louis, of the evals chart).
+    /// </summary>
+    private static List<string> TrackOrder(List<GraphEdge> gap, IReadOnlyDictionary<string, PlacedNode> byId)
+    {
+        double Middle(string id) => byId[id].Y + byId[id].H / 2;
+        var order = gap.Select(edge => edge.From).Distinct().OrderByDescending(Middle).ToList();
+
+        bool Before(string a, string b) => gap.Any(edge => edge.From == b && Math.Abs(Middle(edge.To) - Middle(a)) < 1);
+        // A few passes move each source ahead of any it must come before; a cycle of such rules keeps its order.
+        for (int pass = 0; pass < order.Count; pass++)
+            for (int at = 1; at < order.Count; at++)
+                if (Before(order[at], order[at - 1]) && !Before(order[at - 1], order[at]))
+                    (order[at - 1], order[at]) = (order[at], order[at - 1]);
+        return order;
+    }
+
+    /// <summary>
+    /// The room a gap's arrows need for tracks of their own: none when one box feeds the rest or all feed one box,
+    /// where they join on one track (Louis: "conformity"); otherwise a step for each source after the first.
+    /// </summary>
+    public static double TracksRoom(IReadOnlyList<GraphEdge> between)
+    {
+        int sources = between.Select(edge => edge.From).Distinct().Count();
+        bool joined = sources <= 1 || between.Select(edge => edge.To).Distinct().Count() == 1;
+        return joined ? 0 : Step * (sources - 1);
     }
 
     /// <summary>
@@ -155,21 +217,20 @@ internal static class EdgeRouter
     /// so two sets never cross, and the tracks all start past any loop to itself and its word.
     /// </summary>
     private static IEnumerable<Plan> Back(List<GraphEdge> back, IReadOnlyDictionary<string, PlacedNode> byId,
-        double height, List<GraphEdge> self)
+        double height)
     {
         var targets = back.Select(edge => edge.To).Distinct().ToList();
-        double pastLoops = self.Count == 0 ? 0 : SelfReach + Step + 8 * self.Max(loop => loop.Word?.Length ?? 0);
-        double rightEdge = back.Max(edge => byId[edge.From].X + byId[edge.From].W);
         foreach (var edge in back)
         {
             var from = byId[edge.From];
             var to = byId[edge.To];
             int at = targets.IndexOf(edge.To);
-            double x1 = from.X + from.W, y1 = from.Y + from.H * 0.8;
-            double track = rightEdge + pastLoops + Step + Step * at, lane = height + BackLane + Step * at;
+            // Straight out of the source's bottom middle to the lane, in a chart that runs down its right side
+            // (Louis, of the runner and MCP charts); a box in the way sends it on a detour instead.
+            double x1 = from.X + from.W / 2, y1 = from.Y + from.H, lane = height + BackLane + Step * at;
             double entry = to.X + to.W / 2, y2 = to.Y + to.H;
-            yield return new Plan(edge, [(x1, y1), (track, y1), (track, lane), (entry, lane), (entry, y2)],
-                (track + entry) / 2, lane + 4);
+            yield return new Plan(edge, [(x1, y1), (x1, lane), (entry, lane), (entry, y2)], (x1 + entry) / 2,
+                lane + 4);
         }
     }
 
@@ -193,44 +254,6 @@ internal static class EdgeRouter
         double x = box.X + box.W, y1 = box.Y + box.H * 0.3, y2 = box.Y + box.H * 0.7, reach = x + SelfReach;
         return new Plan(edge, [(x, y1), (reach, y1), (reach, y2), (x, y2)], reach + 8 + 4 * (edge.Word?.Length ?? 0),
             box.Y + box.H / 2 + 4);
-    }
-
-    /// <summary>An arrow's way before it is drawn: its corners, and where its word sits.</summary>
-    private sealed record Plan(GraphEdge Edge, (double X, double Y)[] Points, double WordX, double WordY);
-
-    /// <summary>Whether a straight piece of the way passes through a box the arrow doesn't join, a pixel in.</summary>
-    private static bool Crosses(Plan plan, IReadOnlyDictionary<string, PlacedNode> byId) =>
-        byId.Values.Where(box => box.Node.Id != plan.Edge.From && box.Node.Id != plan.Edge.To).Any(box =>
-            plan.Points.Zip(plan.Points.Skip(1)).Any(piece =>
-                Math.Min(piece.First.X, piece.Second.X) < box.X + box.W - 1
-                && Math.Max(piece.First.X, piece.Second.X) > box.X + 1
-                && Math.Min(piece.First.Y, piece.Second.Y) < box.Y + box.H - 1
-                && Math.Max(piece.First.Y, piece.Second.Y) > box.Y + 1));
-
-    /// <summary>
-    /// The way round: out of the source's right side into the gap beside it, down to a lane under the drawing, along
-    /// it to the gap by the target, and up into the target's near side; inside one column, down the gap beside it.
-    /// Every piece runs in a gap or under the boxes, so it crosses none. Its word sits on the lane.
-    /// </summary>
-    private static Plan Detour(Plan plan, PlacedNode from, PlacedNode to, double lane)
-    {
-        double x1 = from.X + from.W, y1 = from.Y + from.H / 2, y2 = to.Y + to.H / 2, out1 = x1 + Step;
-        if (to.X == from.X)
-            return plan with
-            {
-                Points = [(x1, y1), (out1, y1), (out1, y2), (to.X + to.W, y2)],
-                WordX = out1 + 8 + 4 * (plan.Edge.Word?.Length ?? 0),
-                WordY = (y1 + y2) / 2 + 4
-            };
-
-        bool ahead = to.X > from.X;
-        double x2 = ahead ? to.X : to.X + to.W, in2 = ahead ? x2 - Step : x2 + Step;
-        return plan with
-        {
-            Points = [(x1, y1), (out1, y1), (out1, lane), (in2, lane), (in2, y2), (x2, y2)],
-            WordX = (out1 + in2) / 2,
-            WordY = lane + 4
-        };
     }
 
     /// <summary>

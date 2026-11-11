@@ -14,27 +14,91 @@ namespace LouisAgent.Diagrams.Flow;
 /// </remarks>
 internal static class Turn
 {
-    /// <summary>How far right of its line a turned arrow's word starts.</summary>
-    private const double Beside = 6;
+    /// <summary>How far from its line a turned arrow's word starts.</summary>
+    private const double BesideGap = 6;
 
     /// <summary>
-    /// The drawing turned over its diagonal. An arrow's word, which stood on its flat piece, now starts just right of
-    /// its upright line, in the gap between two rows where no box stands, and the drawing grows to hold every word.
+    /// The drawing turned over its diagonal. An arrow's word, which stood on its flat piece, now stands beside its
+    /// upright line, in the gap between two rows where no box stands, and the drawing grows to hold every word.
     /// </summary>
     public static PlacedGraph Back(PlacedGraph placed)
     {
         var turned = Turned(placed);
-        var edges = turned.Edges.Select(edge => edge with { WordX = edge.WordX + Beside + Half(edge) }).ToList();
+        var edges = turned.Edges.Select(edge => edge with { WordX = Beside(edge, turned.Edges) }).ToList();
+        double left = edges.Count == 0 ? 0 : Math.Min(0, edges.Min(edge => edge.WordX - Half(edge)) - BesideGap);
         double right = edges.Count == 0 ? 0 : edges.Max(edge => edge.WordX + Half(edge));
+        // A word left of a line by the drawing's edge moves everything right a little to stay inside.
+        if (left < 0) return Shifted(turned with { Edges = edges }, -left, right);
         return turned with
         {
-            Width = Math.Max(turned.Width, (int)Math.Ceiling(right + Beside)),
+            Width = Math.Max(turned.Width, (int)Math.Ceiling(right + BesideGap)),
             Edges = edges
         };
     }
 
+    /// <summary>
+    /// Where a word stands beside its upright line: on its right, unless another line runs through it there and the
+    /// left is clear (Louis: no word under a line).
+    /// </summary>
+    private static double Beside(PlacedEdge edge, IReadOnlyList<PlacedEdge> all)
+    {
+        double rightX = edge.WordX + BesideGap + Half(edge), leftX = edge.WordX - BesideGap - Half(edge);
+        if (edge.Edge.Word is not { } word) return rightX;
+        double top = edge.WordY - 16, bottom = top + FlowText.WordStep * FlowText.WordLines(word).Count;
+
+        bool Clear(double middle) => !all.Where(other => other != edge).SelectMany(other => Pieces(other.Path))
+            .Any(piece => Math.Min(piece.A.X, piece.B.X) < middle + Half(edge)
+                          && Math.Max(piece.A.X, piece.B.X) > middle - Half(edge)
+                          && Math.Min(piece.A.Y, piece.B.Y) < bottom && Math.Max(piece.A.Y, piece.B.Y) > top);
+
+        return Clear(rightX) || !Clear(leftX) ? rightX : leftX;
+    }
+
+    /// <summary>A path's straight pieces, a curve's corner counted as the point it turns at.</summary>
+    private static IEnumerable<((double X, double Y) A, (double X, double Y) B)> Pieces(string path)
+    {
+        var numbers = path.Split(' ')
+            .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+            .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).ToList();
+        var points = Enumerable.Range(0, numbers.Count / 2).Select(at => (numbers[2 * at], numbers[2 * at + 1]))
+            .ToList();
+        return points.Zip(points.Skip(1));
+    }
+
+    /// <summary>The drawing moved right, so a word left of a line by its edge stays inside it.</summary>
+    private static PlacedGraph Shifted(PlacedGraph placed, double dx, double right) => placed with
+    {
+        Width = (int)Math.Ceiling(Math.Max(placed.Width, right + BesideGap) + dx),
+        Nodes = [.. placed.Nodes.Select(node => node with { X = node.X + dx })],
+        Edges =
+        [
+            .. placed.Edges.Select(edge => edge with
+            {
+                Path = Moved(edge.Path, dx),
+                WordX = edge.WordX + dx
+            })
+        ],
+        Groups = [.. placed.Groups.Select(group => group with { X = group.X + dx })]
+    };
+
+    /// <summary>A path moved right: the first number of each pair after a command, its x, grows.</summary>
+    private static string Moved(string path, double dx)
+    {
+        var parts = path.Split(' ');
+        bool x = true;
+        for (int at = 0; at < parts.Length; at++)
+        {
+            if (!double.TryParse(parts[at], NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+                continue;
+            if (x) parts[at] = (value + dx).ToString("0.#", CultureInfo.InvariantCulture);
+            x = !x;
+        }
+
+        return string.Join(' ', parts);
+    }
+
     /// <summary>Half a word's width, in the code font an arrow's word is drawn in.</summary>
-    private static double Half(PlacedEdge edge) => (edge.Edge.Word?.Length ?? 0) * FlowText.WordChar / 2;
+    private static double Half(PlacedEdge edge) => edge.Edge.Word is { } word ? FlowText.WordWidth(word) / 2 : 0;
 
     /// <summary>Every point of the drawing swapped over its diagonal.</summary>
     private static PlacedGraph Turned(PlacedGraph placed) => new(placed.Height, placed.Width,

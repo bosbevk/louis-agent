@@ -136,29 +136,163 @@ public class FlowShapesTests
     }
 
     /// <summary>
-    /// An arrow past a rank whose box stands in its way goes round, along a lane under the drawing, and crosses no
-    /// box; an arrow with a clear way keeps it.
+    /// An arrow past a rank runs through that rank beside its boxes, as layered drawing's waypoints have it: no box
+    /// in its way, no lane round the drawing, the waypoint drawn as nothing, and still one arrow with its word.
     /// </summary>
     [Test]
-    public void AnArrowWithABoxInItsWay_GoesRound()
+    public void AnArrowPastARank_RunsBesideItsBoxes()
     {
         var spec = new GraphSpec(
-            [new GraphNode("a", "A"), new GraphNode("b", "B"), new GraphNode("c", "C")],
-            [new GraphEdge("a", "b"), new GraphEdge("b", "c"), new GraphEdge("a", "c", "past b")]);
+            [
+                new GraphNode("host", "CliHost"), new GraphNode("chat", "ConsoleChat"),
+                new GraphNode("engine", "Engine"),
+                new GraphNode("out", "stdout")
+            ],
+            [
+                new GraphEdge("host", "chat"), new GraphEdge("chat", "engine"), new GraphEdge("chat", "out"),
+                new GraphEdge("host", "engine", "AgentHost.Build")
+            ],
+            FlowDirection.Down);
 
         var placed = GraphLayout.Place(spec);
 
-        var b = placed.Nodes.Single(node => node.Node.Id == "b");
-        var past = placed.Edges.Single(edge => edge.Edge.Word == "past b");
-        var ys = past.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
-            .Where((_, at) => at % 2 == 1).ToList();
+        var past = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build");
+        var numbers = past.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        var chat = placed.Nodes.Single(node => node.Node.Id == "chat");
         Assert.Multiple(() =>
         {
-            Assert.That(ys.Max(), Is.GreaterThan(b.Y + b.H), "the lane runs under the box in its way");
-            Assert.That(past.WordY, Is.GreaterThan(b.Y + b.H), "its word sits on the lane");
-            Assert.That(placed.Edges.Single(edge => edge.Edge.To == "b").Path, Does.Not.Contain("Q"),
-                "a clear arrow runs straight");
+            Assert.That(placed.Nodes.Select(node => node.Node.Id),
+                Is.EquivalentTo(new[] { "host", "chat", "engine", "out" }));
+            Assert.That(placed.Edges.Count(edge => edge.Edge is { From: "host", To: "engine" }), Is.EqualTo(1));
+            Assert.That(numbers.Where((_, at) => at % 2 == 1).Max(), Is.LessThan(placed.Height), "no lane under it");
+            Assert.That(numbers.Where((_, at) => at % 2 == 0)
+                .All(x => x < chat.X || x > chat.X + chat.W), Is.True, "it passes beside the box, not through it");
         });
+    }
+
+    /// <summary>
+    /// Where several boxes feed several others across one gap, each source bends on a track of its own, so a reader
+    /// can follow who feeds whom; where they all feed one box, they join on one track as before.
+    /// </summary>
+    [Test]
+    public void SeveralSourcesToSeveralTargets_BendOnTracksOfTheirOwn()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("eval", "IEval"), new GraphNode("session", "ISessionClient"),
+                new GraphNode("datasets", "Datasets"), new GraphNode("mode", "EvalMode"),
+                new GraphNode("http", "HttpSessionClient"), new GraphNode("canned", "CannedSessionClient")
+            ],
+            [
+                new GraphEdge("eval", "datasets"), new GraphEdge("eval", "mode"),
+                new GraphEdge("session", "http"), new GraphEdge("session", "canned")
+            ]);
+
+        var placed = GraphLayout.Place(spec);
+
+        // A bent connector's track is its first rounded corner: the point after its first Q.
+        double Track(string from) => placed.Edges.Where(edge => edge.Edge.From == from && edge.Path.Contains('Q'))
+            .Select(edge => edge.Path.Split(' '))
+            .Select(parts => double.Parse(parts[Array.IndexOf(parts, "Q") + 1],
+                System.Globalization.CultureInfo.InvariantCulture))
+            .Distinct().Single();
+
+        Assert.That(Track("eval"), Is.Not.EqualTo(Track("session")));
+    }
+
+    /// <summary>
+    /// A long arrow drops straight into its target, its waypoints in line with it where no box is in the way (Louis,
+    /// of the CLI chart: along, then straight down); and a target right under its source gets one straight line.
+    /// </summary>
+    [Test]
+    public void ALongArrow_DropsStraightIntoItsTarget()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("host", "CliHost"), new GraphNode("chat", "ConsoleChat"), new GraphNode("out", "stdout"),
+                new GraphNode("err", "stderr"), new GraphNode("engine", "AgentEngine (core)")
+            ],
+            [
+                new GraphEdge("host", "chat"), new GraphEdge("chat", "out"), new GraphEdge("chat", "err"),
+                new GraphEdge("chat", "engine"), new GraphEdge("host", "engine", "AgentHost.Build")
+            ],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        var engine = placed.Nodes.Single(node => node.Node.Id == "engine");
+        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "AgentHost.Build").Path.Split(' ')
+            .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        // Out of its source, along, and straight down into the target: its upright pieces stand at two places only,
+        // the source's middle and the target's, with no jog through a slot between (a curve's corners left out).
+        var host = placed.Nodes.Single(node => node.Node.Id == "host");
+        var xs = numbers.Where((_, at) => at % 2 == 0).Select(x => Math.Round(x)).ToList();
+        Assert.That(
+            xs.Where(x => Math.Abs(x - (host.X + host.W / 2)) > 10 && Math.Abs(x - (engine.X + engine.W / 2)) > 10),
+            Is.Empty);
+    }
+
+    /// <summary>
+    /// A long arrow whose target's line is blocked drops straight from its source instead, and turns at the end
+    /// (Louis, of the telemetry chart).
+    /// </summary>
+    [Test]
+    public void ALongArrowBlockedAtItsTarget_DropsStraightFromItsSource()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("build", "AgentHost.Build"), new GraphNode("logging", "AgentLogging"),
+                new GraphNode("otlp", "OtlpTelemetry"), new GraphNode("chance", "LastChance, told what to flush"),
+                new GraphNode("filter", "OwnTrafficFilter"), new GraphNode("collector", "the collector")
+            ],
+            [
+                new GraphEdge("build", "logging"), new GraphEdge("build", "otlp"), new GraphEdge("otlp", "chance"),
+                new GraphEdge("otlp", "filter"), new GraphEdge("chance", "collector"),
+                new GraphEdge("filter", "collector"), new GraphEdge("logging", "collector", "the sink")
+            ],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        var logging = placed.Nodes.Single(node => node.Node.Id == "logging");
+        var collector = placed.Nodes.Single(node => node.Node.Id == "collector");
+        var numbers = placed.Edges.Single(edge => edge.Edge.Word == "the sink").Path.Split(' ')
+            .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
+        var xs = numbers.Where((_, at) => at % 2 == 0).ToList();
+        Assert.That(xs.Where(x => Math.Abs(x - (logging.X + logging.W / 2)) > 10
+                                  && Math.Abs(x - (collector.X + collector.W / 2)) > 10), Is.Empty);
+    }
+
+    /// <summary>
+    /// Down, a word whose right side another line runs through stands left of its own line instead (the accounts
+    /// chart: the tenant's line through the GET and PUT word).
+    /// </summary>
+    [Test]
+    public void AWordWithALineOnItsRight_StandsOnItsLeft()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("browser", "Browser app"), new GraphNode("tenant", "UseTenant"),
+                new GraphNode("identity", "Identity's routes"), new GraphNode("handlers", "AccountHandlers"),
+                new GraphNode("managers", "UserManager"), new GraphNode("store", "AccountUserStore")
+            ],
+            [
+                new GraphEdge("browser", "identity", "POST /account/login"),
+                new GraphEdge("browser", "handlers", "GET /account/me, PUT\n/profile, POST /logout,\nDELETE /account"),
+                new GraphEdge("identity", "managers"), new GraphEdge("handlers", "managers"),
+                new GraphEdge("managers", "store"), new GraphEdge("tenant", "store")
+            ],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        var word = placed.Edges.Single(edge => edge.Edge.Word?.StartsWith("GET") == true);
+        var tenant = placed.Edges.Single(edge => edge.Edge.From == "tenant");
+        double width = FlowText.WordWidth(word.Edge.Word!);
+        var xs = tenant.Path.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
+            .Where((_, at) => at % 2 == 0).ToList();
+        Assert.That(xs.Where(x => x > word.WordX - width / 2 && x < word.WordX + width / 2), Is.Empty,
+            "the tenant's line passes clear of the word");
     }
 
     /// <summary>Down, an arrow's word starts just right of its line, and the drawing holds it.</summary>

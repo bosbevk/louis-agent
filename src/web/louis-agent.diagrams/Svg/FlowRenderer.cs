@@ -31,7 +31,9 @@ internal sealed class FlowRenderer : IDiagramRenderer
         foreach (var edge in placed.Edges)
         {
             writer.Path(edge.Path, edge.Edge.Style == EdgeStyle.Dashed ? "edge dashed" : "edge", arrow: true);
-            if (edge.Edge.Word is { } word) writer.Text(edge.WordX, edge.WordY - 7, word, "word");
+            var lines = edge.Edge.Word is { } word ? FlowText.WordLines(word) : [];
+            for (int at = 0; at < lines.Count; at++)
+                writer.Text(edge.WordX, edge.WordY - 7 + FlowText.WordStep * at, lines[at], "word");
         }
 
         foreach (var node in placed.Nodes)

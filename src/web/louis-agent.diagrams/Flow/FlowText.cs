@@ -17,6 +17,15 @@ public static class FlowText
     /// </summary>
     public const double WordChar = 7;
 
+    /// <summary>How far a word's next line stands under the one before.</summary>
+    public const double WordStep = 12;
+
+    /// <summary>A word's lines: a <c>\n</c> breaks it, as the import does for a chart that runs down.</summary>
+    public static IReadOnlyList<string> WordLines(string word) => word.Split('\n');
+
+    /// <summary>How wide a word is: its longest line.</summary>
+    public static double WordWidth(string word) => WordLines(word).Max(line => line.Length) * WordChar;
+
     /// <summary>How far a label's next line stands under the one before (CL60.2).</summary>
     public const double LabelStep = 16;
 

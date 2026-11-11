@@ -10,9 +10,6 @@ namespace LouisAgent.DocDiagrams.Tests;
 /// </summary>
 internal static class Clearance
 {
-    /// <summary>How wide a character of an arrow's word is, as the drawing reckons it.</summary>
-    private const double WordChar = FlowText.WordChar;
-
     /// <summary>Every fault in the drawing, said in words.</summary>
     public static IEnumerable<string> Faults(PlacedGraph placed)
     {
@@ -29,14 +26,18 @@ internal static class Clearance
             foreach (var box in placed.Nodes.Where(box => x < box.X + box.W && box.X < x + w && y < box.Y + box.H
                                                           && box.Y < y + h))
                 yield return $"the word '{word}' sits on {box.Node.Id}";
+            foreach (var other in placed.Edges.Where(other => other != edge
+                                                              && Segments(other.Path).Any(piece =>
+                                                                  Covers(piece, x, y, w, h))))
+                yield return $"the word '{word}' lies on the line {other.Edge.From}>{other.Edge.To}";
         }
     }
 
     /// <summary>The ground a word covers, drawn centred on its point and just above it.</summary>
     private static (double X, double Y, double W, double H) WordBox(PlacedEdge edge, string word)
     {
-        double width = word.Length * WordChar;
-        return (edge.WordX - width / 2, edge.WordY - 16, width, 12);
+        double width = FlowText.WordWidth(word);
+        return (edge.WordX - width / 2, edge.WordY - 16, width, FlowText.WordStep * FlowText.WordLines(word).Count);
     }
 
     /// <summary>The straight pieces of a path: a curve's corner counts as the point it turns at.</summary>
@@ -49,6 +50,13 @@ internal static class Clearance
             .ToList();
         return points.Zip(points.Skip(1));
     }
+
+    /// <summary>Whether a straight piece passes through the ground a word covers.</summary>
+    private static bool Covers(((double X, double Y) A, (double X, double Y) B) piece, double x, double y, double w,
+        double h) =>
+        Math.Min(piece.A.X, piece.B.X) < x + w && Math.Max(piece.A.X, piece.B.X) > x
+                                               && Math.Min(piece.A.Y, piece.B.Y) < y + h &&
+                                               Math.Max(piece.A.Y, piece.B.Y) > y;
 
     /// <summary>Whether a straight piece passes through a box's inside, its edges a pixel in.</summary>
     private static bool Crosses(((double X, double Y) A, (double X, double Y) B) segment, PlacedNode box)

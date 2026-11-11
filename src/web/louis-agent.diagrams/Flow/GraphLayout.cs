@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Routing;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
@@ -36,8 +37,8 @@ public static class GraphLayout
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
     private const double MinColumnGap = 60;
 
-    /// <summary>The room a word across an arrow takes between two rows of a chart that runs down.</summary>
-    private const double WordLine = 30;
+    /// <summary>How many rounds of sweeps, left to right and back, order the columns.</summary>
+    private const int Sweeps = 4;
 
     /// <summary>Places a diagram across the given width.</summary>
     public static PlacedGraph Place(GraphSpec spec, int width = 880)
@@ -45,6 +46,8 @@ public static class GraphLayout
         // A box with no column takes the one its arrows give it, so everything below sees a column on every box.
         var ranks = Ranks.Of(spec);
         spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
+        // An arrow past a column runs through a waypoint in it, laid out like a box and drawn as nothing.
+        spec = Ranks.Through(spec);
 
         // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
         return spec.Direction == FlowDirection.Down
@@ -72,7 +75,9 @@ public static class GraphLayout
         // Every box sits on one row grid, each row as tall as the tallest box of its band, a shorter column centred on
         // it (Louis: "alignment is key", "this must not happen"): two middles then differ by half a row at least, never
         // by a few pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
-        var (placed, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, tall), turned);
+        var (banded, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, tall), turned);
+        // A long arrow's waypoints stand in line with its target, so it drops straight in.
+        var placed = Ranks.Straightened(banded, spec.Edges);
         // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
         var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, Bands.Frames(spec, placed, turned), width, height);
 
@@ -80,9 +85,11 @@ public static class GraphLayout
         // the boxes, for a lane under the drawing or a loop past the last column.
         var byId = nodes.ToDictionary(node => node.Node.Id);
         var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
-        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth);
+        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, turned);
 
-        return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight), nodes, edges, groups);
+        // The waypoints go, and each chain through them is one arrow again.
+        return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),
+            [.. nodes.Where(node => !Ranks.IsWaypoint(node.Node.Id))], Ranks.Joined(edges), groups);
     }
 
     /// <summary>
@@ -92,10 +99,18 @@ public static class GraphLayout
     {
         var columns = spec.Nodes.GroupBy(node => node.Column).OrderBy(column => column.Key)
             .Select(column => column.ToList()).ToList();
-        for (int at = 1; at < columns.Count; at++)
-            columns[at] = ByNeighbours(columns[at], columns[at - 1], spec.Edges, edge => edge.To, edge => edge.From);
-        for (int at = columns.Count - 2; at >= 0; at--)
-            columns[at] = ByNeighbours(columns[at], columns[at + 1], spec.Edges, edge => edge.From, edge => edge.To);
+        // A few rounds, as layered drawing sweeps: with waypoints in the columns (CL60.2) one round seldom settles a
+        // docs chart, and a round that takes no crossing away changes nothing.
+        for (int round = 0; round < Sweeps; round++)
+        {
+            for (int at = 1; at < columns.Count; at++)
+                columns[at] = ByNeighbours(columns[at], columns[at - 1], spec.Edges, edge => edge.To,
+                    edge => edge.From);
+            for (int at = columns.Count - 2; at >= 0; at--)
+                columns[at] = ByNeighbours(columns[at], columns[at + 1], spec.Edges, edge => edge.From,
+                    edge => edge.To);
+        }
+
         return columns;
     }
 
@@ -162,7 +177,7 @@ public static class GraphLayout
     /// The room between each pair of neighbouring columns: the rooms either side of the bend for its own arrows'
     /// words (<see cref="EdgeRouter.RoomsFor"/>), never less than <see cref="MinColumnGap"/>. An arrow that skips a
     /// column bends in the middle, so it needs twice its word in every gap it crosses. Laid out turned, a word stands
-    /// across its arrow once the drawing is turned back, so a gap with words needs only a line more (CL60.2).
+    /// beside its arrow once the drawing is turned back, so its room is its lines' height, not its length (CL60.2).
     /// </summary>
     private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned)
     {
@@ -175,12 +190,11 @@ public static class GraphLayout
         double Gap(int gap)
         {
             var neighbours = forward.Where(edge => columnOf[edge.From] == gap && columnOf[edge.To] == gap + 1).ToList();
-            var (source, target) = EdgeRouter.RoomsFor(neighbours, forward);
+            var (source, target) = EdgeRouter.RoomsFor(neighbours, forward, turned);
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
                                                  || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
-            if (turned)
-                return MinColumnGap + (neighbours.Concat(skipping).Any(edge => edge.Word is not null) ? WordLine : 0);
-            return Math.Max(MinColumnGap, Math.Max(source + target, EdgeRouter.GapFor(skipping)));
+            return Math.Max(MinColumnGap,
+                Math.Max(source + target + EdgeRouter.TracksRoom(neighbours), EdgeRouter.GapFor(skipping, turned)));
         }
 
         return Enumerable.Range(0, Math.Max(0, columns.Count - 1)).Select(Gap).ToList();

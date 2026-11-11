@@ -32,20 +32,29 @@ internal static class Bands
         var row = keys.Select(key => spec.Nodes.Where(node => Key(node) == key).Max(grid.Tall)).ToList();
         double Tall(int band, int boxes) => boxes * row[band] + grid.Gap * (boxes - 1);
 
-        // Each band as tall as its fullest column, the bands one under another with room for their frames.
+        // Each band as tall as its fullest column. A band stands under the earlier bands it shares a column with, with
+        // room for their frames; one that shares none starts at the top beside them (Louis, of the checks chart: no
+        // empty corner beside a group).
         var rows = keys.Select(key => columns.Max(column => column.Count(node => Key(node) == key))).ToList();
-        var tops = new List<double>();
-        double y = (grouped, turned) switch
+        var spans = keys.Select(key => Enumerable.Range(0, columns.Count)
+            .Where(at => columns[at].Any(node => Key(node) == key)).ToHashSet()).ToList();
+        double start = (grouped, turned) switch
         {
             (false, _) => 0,
             (true, false) => Pad + LabelRoom,
             (true, true) => Pad
         };
+        var tops = new List<double>();
+        var bottoms = new List<double>();
         for (int band = 0; band < keys.Count; band++)
         {
-            tops.Add(y);
-            y += Tall(band, rows[band]) + (band < keys.Count - 1 ? Between : 0);
+            double top = Enumerable.Range(0, band).Where(earlier => spans[earlier].Overlaps(spans[band]))
+                .Select(earlier => bottoms[earlier] + Between).DefaultIfEmpty(start).Max();
+            tops.Add(top);
+            bottoms.Add(top + Tall(band, rows[band]));
         }
+
+        double y = bottoms.DefaultIfEmpty(0).Max();
 
         // In each column a band's boxes stand centred in their band, a box in the middle of its row.
         var nodes = new List<PlacedNode>();

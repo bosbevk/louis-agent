@@ -59,19 +59,43 @@ public static class MermaidFlowReader
 
         // A chart wider than a doc's column would shrink its words to nothing; turned the other way it is often
         // narrow enough, so the narrower way wins (CL60.2, Claude's pick while unattended).
-        var flow = boxes.Flow(arrows, groups, direction);
+        var flow = Worded(boxes.Flow(arrows, groups, direction));
         int width = GraphLayout.Place(flow).Width;
         if (width <= WidestAcross) return new DiagramSource(DiagramKind.Flow, title, Flow: flow);
-        var turned = flow with
+        var turned = Worded(flow with
         {
             Direction = flow.Direction == FlowDirection.Right ? FlowDirection.Down : FlowDirection.Right
-        };
+        });
         return new DiagramSource(DiagramKind.Flow, title,
             Flow: GraphLayout.Place(turned).Width < width ? turned : flow);
     }
 
     /// <summary>The widest a chart may be and still read in a doc's column, in the SVG's pixels.</summary>
     private const int WidestAcross = 1100;
+
+    /// <summary>The most characters a line of a down chart's arrow word may hold, to stand beside it.</summary>
+    private const int WordWidth = 24;
+
+    /// <summary>
+    /// The flow with its arrows' words as a down chart draws them, wrapped into short lines that stand beside the
+    /// arrow; a chart that runs right keeps them on one line, lying along it.
+    /// </summary>
+    private static GraphSpec Worded(GraphSpec flow) => flow with
+    {
+        Edges =
+        [
+            .. flow.Edges.Select(edge => edge with
+            {
+                Word = (edge.Word, flow.Direction) switch
+                {
+                    (null, _) => null,
+                    ({ } word, FlowDirection.Down) => string.Join('\n',
+                        TextWrap.Lines(word.Replace('\n', ' '), WordWidth)),
+                    ({ } word, _) => word.Replace('\n', ' ')
+                }
+            })
+        ]
+    };
 
     /// <summary>The most characters a label's line may hold, so a box stays narrow enough to stand beside others.
     /// </summary>
