@@ -102,6 +102,26 @@ public class FlowGroupsTests
         });
     }
 
+    /// <summary>
+    /// Down, a band's boxes stand as far apart as its own widest box needs, not the widest box of the whole chart.
+    /// </summary>
+    [Test]
+    public void ABandsRows_FitItsOwnBoxes()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("a", "A"), new GraphNode("b", "B"),
+                new GraphNode("wide", "a label long enough to make its box far wider than the others", Group: "g")
+            ],
+            [new GraphEdge("a", "wide"), new GraphEdge("b", "wide")],
+            FlowDirection.Down,
+            [new GraphGroup("g", "A group")]);
+
+        var at = GraphLayout.Place(spec).Nodes.ToDictionary(node => node.Node.Id);
+
+        Assert.That(Math.Abs(at["b"].X - at["a"].X), Is.LessThan(at["wide"].W));
+    }
+
     /// <summary>A diagram without groups has no frame, so the site's diagrams draw as before.</summary>
     [Test]
     public void NoGroups_NoFrames() =>

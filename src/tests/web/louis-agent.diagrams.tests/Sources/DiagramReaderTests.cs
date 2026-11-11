@@ -102,6 +102,26 @@ public class DiagramReaderTests
         });
     }
 
+    /// <summary>
+    /// A diagram written as JSON reads back the same, its choices by their wire names and nothing left at its
+    /// default written.
+    /// </summary>
+    [Test]
+    public void AWrittenDiagram_ReadsBackTheSame()
+    {
+        var flow = new GraphSpec(
+            [new GraphNode("a", "A\nfirst", Group: "g"), new GraphNode("b", "B")],
+            [new GraphEdge("a", "b", "calls", EdgeStyle.Dashed)], FlowDirection.Down, [new GraphGroup("g", "A group")]);
+        string json = DiagramWriter.Write(new DiagramSource(DiagramKind.Flow, "Written", Flow: flow));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(DiagramWriter.Write(DiagramReader.Read(json)), Is.EqualTo(json));
+            Assert.That(json, Does.Contain("\"direction\": \"down\"").And.Contain("\"style\": \"dashed\""));
+            Assert.That(json, Does.Not.Contain("null").And.Not.Contain("\"column\""));
+        });
+    }
+
     /// <summary>A box in a group the diagram doesn't declare is refused, naming the box and the group.</summary>
     [Test]
     public void ABoxInAnUndeclaredGroup_IsRefused() =>

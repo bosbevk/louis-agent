@@ -36,6 +36,9 @@ public static class GraphLayout
     /// <summary>The least room between two columns; fewer and the drawing widens instead (FX85).</summary>
     private const double MinColumnGap = 60;
 
+    /// <summary>The room a word across an arrow takes between two rows of a chart that runs down.</summary>
+    private const double WordLine = 30;
+
     /// <summary>Places a diagram across the given width.</summary>
     public static PlacedGraph Place(GraphSpec spec, int width = 880)
     {
@@ -61,16 +64,15 @@ public static class GraphLayout
         var columns = Ordered(spec);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
-        var gaps = Gaps(spec, columns);
+        var gaps = Gaps(spec, columns, turned);
         // A column is as wide as its widest box: a label's longest line, never less than the site's box.
         var widths = columns.Select(column => column.Max(wide)).ToList();
         width = Math.Max(width, (int)Math.Ceiling(widths.Sum() + gaps.Sum()));
         var lefts = Lefts(gaps, widths, width);
-        // Every box sits on one row grid, each row as tall as the tallest box, a shorter column centred on it (Louis:
-        // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
-        // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
-        double row = spec.Nodes.Count == 0 ? 0 : spec.Nodes.Max(tall);
-        var (placed, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, row, Gap, tall), turned);
+        // Every box sits on one row grid, each row as tall as the tallest box of its band, a shorter column centred on
+        // it (Louis: "alignment is key", "this must not happen"): two middles then differ by half a row at least, never
+        // by a few pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
+        var (placed, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, Gap, tall), turned);
         // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
         var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, Bands.Frames(spec, placed, turned), width, height);
 
@@ -159,9 +161,10 @@ public static class GraphLayout
     /// <summary>
     /// The room between each pair of neighbouring columns: the rooms either side of the bend for its own arrows'
     /// words (<see cref="EdgeRouter.RoomsFor"/>), never less than <see cref="MinColumnGap"/>. An arrow that skips a
-    /// column bends in the middle, so it needs twice its word in every gap it crosses.
+    /// column bends in the middle, so it needs twice its word in every gap it crosses. Laid out turned, a word stands
+    /// across its arrow once the drawing is turned back, so a gap with words needs only a line more (CL60.2).
     /// </summary>
-    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns)
+    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned)
     {
         var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
             .ToDictionary(pair => pair.Id, pair => pair.at);
@@ -175,6 +178,8 @@ public static class GraphLayout
             var (source, target) = EdgeRouter.RoomsFor(neighbours, forward);
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
                                                  || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
+            if (turned)
+                return MinColumnGap + (neighbours.Concat(skipping).Any(edge => edge.Word is not null) ? WordLine : 0);
             return Math.Max(MinColumnGap, Math.Max(source + target, EdgeRouter.GapFor(skipping)));
         }
 

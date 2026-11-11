@@ -26,10 +26,13 @@ internal static class Bands
     {
         bool grouped = spec.Groups is { Count: > 0 };
         string? Key(GraphNode node) => grouped ? node.Group : null;
-        double Tall(int boxes) => boxes * grid.Row + grid.Gap * (boxes - 1);
+
+        // A band's row is as tall as its own tallest box, so a wide box in one group doesn't spread every other.
+        var keys = spec.Nodes.Select(Key).Distinct().ToList();
+        var row = keys.Select(key => spec.Nodes.Where(node => Key(node) == key).Max(grid.Tall)).ToList();
+        double Tall(int band, int boxes) => boxes * row[band] + grid.Gap * (boxes - 1);
 
         // Each band as tall as its fullest column, the bands one under another with room for their frames.
-        var keys = spec.Nodes.Select(Key).Distinct().ToList();
         var rows = keys.Select(key => columns.Max(column => column.Count(node => Key(node) == key))).ToList();
         var tops = new List<double>();
         double y = (grouped, turned) switch
@@ -41,7 +44,7 @@ internal static class Bands
         for (int band = 0; band < keys.Count; band++)
         {
             tops.Add(y);
-            y += Tall(rows[band]) + (band < keys.Count - 1 ? Between : 0);
+            y += Tall(band, rows[band]) + (band < keys.Count - 1 ? Between : 0);
         }
 
         // In each column a band's boxes stand centred in their band, a box in the middle of its row.
@@ -50,12 +53,12 @@ internal static class Bands
             for (int band = 0; band < keys.Count; band++)
             {
                 var members = columns[at].Where(node => Key(node) == keys[band]).ToList();
-                double top = tops[band] + (Tall(rows[band]) - Tall(members.Count)) / 2;
+                double top = tops[band] + (Tall(band, rows[band]) - Tall(band, members.Count)) / 2;
                 foreach (var node in members)
                 {
                     double h = grid.Tall(node);
-                    nodes.Add(new PlacedNode(node, grid.Lefts[at], top + (grid.Row - h) / 2, grid.Widths[at], h));
-                    top += grid.Row + grid.Gap;
+                    nodes.Add(new PlacedNode(node, grid.Lefts[at], top + (row[band] - h) / 2, grid.Widths[at], h));
+                    top += row[band] + grid.Gap;
                 }
             }
 
@@ -112,13 +115,11 @@ internal static class Bands
     }
 
     /// <summary>
-    /// Where the layout's columns stand: each one's left and width, a row's height, the gap between two rows, and how
-    /// tall a box is.
+    /// Where the layout's columns stand: each one's left and width, the gap between two rows, and how tall a box is.
     /// </summary>
     public sealed record Grid(
         IReadOnlyList<double> Lefts,
         IReadOnlyList<double> Widths,
-        double Row,
         double Gap,
         Func<GraphNode, double> Tall);
 }

@@ -95,6 +95,21 @@ public class FlowShapesTests
         });
     }
 
+    /// <summary>
+    /// Down, a word stands across its arrow, so a long word takes a line's height between two rows, not its length.
+    /// </summary>
+    [Test]
+    public void ADownChart_KeepsItsRowsClose_ThoughAWordIsLong()
+    {
+        const string word = "Plugins.FromEnvironment() and a good deal more";
+        var spec = new GraphSpec([new GraphNode("a", "A"), new GraphNode("b", "B")], [new GraphEdge("a", "b", word)],
+            FlowDirection.Down);
+
+        var at = GraphLayout.Place(spec).Nodes.ToDictionary(node => node.Node.Id);
+
+        Assert.That(at["b"].Y - (at["a"].Y + at["a"].H), Is.LessThan(word.Length * 8));
+    }
+
     /// <summary>The SVG draws each of a label's lines as its own words, inside the box.</summary>
     [Test]
     public void EachLine_IsDrawnInsideTheBox()
