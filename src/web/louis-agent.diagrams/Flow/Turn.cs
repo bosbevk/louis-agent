@@ -36,15 +36,23 @@ internal static class Turn
         }
 
         double left = edges.Count == 0 ? 0 : Math.Min(0, edges.Min(edge => edge.WordX - Half(edge)) - BesideGap);
-        double right = edges.Count == 0 ? 0 : edges.Max(edge => edge.WordX + Half(edge));
+        double right = edges.Count == 0 ? 0 : edges.Max(edge => edge.WordX + Half(edge)) + BesideGap;
+        // The drawing is as wide as what it draws: a waypoint's slot, which draws nothing, leaves no room behind.
+        double width = Math.Max(Drawn(turned), right);
         // A word left of a line by the drawing's edge moves everything right a little to stay inside.
-        if (left < 0) return Shifted(turned with { Edges = edges }, -left, right);
+        if (left < 0) return Shifted(turned with { Edges = edges }, -left, width);
         return turned with
         {
-            Width = Math.Max(turned.Width, (int)Math.Ceiling(right + BesideGap)),
+            Width = (int)Math.Ceiling(width),
             Edges = edges
         };
     }
+
+    /// <summary>How far right the drawing's boxes, frames and lines reach.</summary>
+    private static double Drawn(PlacedGraph placed) => placed.Nodes.Select(node => node.X + node.W)
+        .Concat(placed.Groups.Select(group => group.X + group.W))
+        .Concat(placed.Edges.SelectMany(edge => Pieces(edge.Path)).Select(piece => Math.Max(piece.A.X, piece.B.X)))
+        .DefaultIfEmpty(0).Max();
 
     /// <summary>
     /// Where a word stands beside its upright line: on its right, unless another line or word is there and the left
@@ -86,9 +94,9 @@ internal static class Turn
     }
 
     /// <summary>The drawing moved right, so a word left of a line by its edge stays inside it.</summary>
-    private static PlacedGraph Shifted(PlacedGraph placed, double dx, double right) => placed with
+    private static PlacedGraph Shifted(PlacedGraph placed, double dx, double width) => placed with
     {
-        Width = (int)Math.Ceiling(Math.Max(placed.Width, right + BesideGap) + dx),
+        Width = (int)Math.Ceiling(width + dx),
         Nodes = [.. placed.Nodes.Select(node => node with { X = node.X + dx })],
         Edges =
         [

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
@@ -306,6 +307,37 @@ public class FlowShapesTests
             Assert.That(edge.WordX + word.Length * FlowText.WordChar / 2, Is.LessThanOrEqualTo(placed.Width));
         });
     }
+
+    /// <summary>
+    /// Down, the drawing ends where its boxes and lines end: a long arrow's waypoints take a slot in each row they
+    /// pass, but draw nothing, so their slot leaves no empty room on the right (Louis's README chart, CL60.2).
+    /// </summary>
+    [Test]
+    public void ADownChart_EndsWhereWhatItDrawsEnds()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("programs", "The programs"), new GraphNode("sites", "The sites"),
+                new GraphNode("packs", "packs/web"), new GraphNode("web", "louis-agent.web"),
+                new GraphNode("api", "louis-agent.api")
+            ],
+            [
+                new GraphEdge("programs", "sites"), new GraphEdge("programs", "api"), new GraphEdge("sites", "packs"),
+                new GraphEdge("sites", "web"), new GraphEdge("packs", "web"), new GraphEdge("web", "api")
+            ],
+            FlowDirection.Down);
+
+        var placed = GraphLayout.Place(spec);
+
+        double drawn = Math.Max(placed.Nodes.Max(node => node.X + node.W),
+            placed.Edges.Max(edge => Xs(edge.Path).Max()));
+        Assert.That(placed.Width, Is.LessThanOrEqualTo(Math.Ceiling(drawn)));
+    }
+
+    /// <summary>Every x a path passes: the first number of each pair after its commands.</summary>
+    private static IEnumerable<double> Xs(string path) => path.Split(' ')
+        .Where(part => double.TryParse(part, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+        .Select(part => double.Parse(part, CultureInfo.InvariantCulture)).Where((_, at) => at % 2 == 0);
 
     /// <summary>The SVG draws each of a label's lines as its own words, inside the box.</summary>
     [Test]
