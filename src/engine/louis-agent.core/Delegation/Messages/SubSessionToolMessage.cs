@@ -156,5 +156,28 @@ public enum SubSessionToolMessage
     [Description(
         "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +
         "Wait for that answer, then send this again.")]
-    SubSessionBusy
+    SubSessionBusy,
+
+    [Description("--- Answer {Number} ---")]
+    AgentWorkBegan,
+
+    [Description("Said: {Text}")] AgentWorkSaid,
+
+    [Description("Called {Tool} with {Input}")]
+    AgentWorkCalled,
+
+    [Description("{Tool} returned: {Text}")]
+    AgentWorkReturned,
+
+    [Description("{Tool} failed: {Text}")] AgentWorkFailed,
+
+    [Description("[The earliest {Cut} characters are left out. What follows is the latest part.]")]
+    AgentWorkCut,
+
+    [Description("Error: no agent was asked in this chat, so there is no work to read.")]
+    AgentWorkNoneAsked,
+
+    [Description(
+        "Error: no agent was asked at '{Address}' in this chat, so it has no work to read. Asked: {Asked}.")]
+    AgentWorkNotAsked
 }

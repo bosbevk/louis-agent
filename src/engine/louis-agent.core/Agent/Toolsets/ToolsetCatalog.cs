@@ -43,13 +43,14 @@ public static class ToolsetCatalog
             ToolTypes: [typeof(MinionTools)],
             CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
 
-        // F127.3.1: ask another agent by its address; the asker's Calls and the identities this instance runs decide.
+        // F127.3.1: ask another agent by its address, and read back what it did; the asker's Calls and the identities
+        // this instance runs decide who may be asked.
         new(CoreToolset.Agents.Wire(),
             "Ask another agent by its address: an identity in its own voice, or one of its roles",
             GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
-            ToolTypes: [typeof(AskAgentTools)],
-            CreateTools: ctx => [new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink)]),
+            ToolTypes: [typeof(AskAgentTools), typeof(AgentWorkTools)],
+            CreateTools: ctx => [new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink), new AgentWorkTools()]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.

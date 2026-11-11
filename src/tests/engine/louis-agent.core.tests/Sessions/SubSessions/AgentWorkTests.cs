@@ -60,6 +60,48 @@ public class AgentWorkTests
         Assert.That(new AgentWork([relayed]).Calls(), Is.Empty);
     }
 
+    /// <summary>
+    /// The steps retell the work: an answer begun, what it said joined from its pieces, a call with what it sent, and
+    /// its result marked when it failed; the thinking is not there.
+    /// </summary>
+    [Test]
+    public void TheSteps_RetellTheWork_WithoutTheThinking()
+    {
+        var work = new AgentWork(
+        [
+            Event("message_start", """{"type":"message_start","message":{"session_id":"sess_1"}}"""),
+            .. ThinkingAndText,
+            Event("content_block_delta",
+                """{"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Let me book."}}"""),
+            Block("""{"type":"tool_use","id":"toolu_a","name":"SendLead","input":{"room":"garden"}}"""),
+            Block("""{"type":"tool_result","tool_use_id":"toolu_a","content":"No email set.","is_error":true}""")
+        ]);
+
+        Assert.That(work.Steps(),
+            Is.EqualTo(new[]
+            {
+                new AgentWork.Step(AgentWork.StepKind.Began, ""),
+                new AgentWork.Step(AgentWork.StepKind.Said, "Garden room. Let me book."),
+                new AgentWork.Step(AgentWork.StepKind.Called, """{"room":"garden"}""", "SendLead"),
+                new AgentWork.Step(AgentWork.StepKind.Returned, "No email set.", "SendLead", Failed: true)
+            }));
+    }
+
+    /// <summary>Each reply begins its own answer, so a follow-up's steps stand apart from the first's.</summary>
+    [Test]
+    public void EachReply_BeginsItsOwnAnswer()
+    {
+        var reply = Event("message_start", """{"type":"message_start","message":{"session_id":"sess_1"}}""");
+
+        var work = new AgentWork([reply, .. ThinkingAndText]).Then([reply, .. ThinkingAndText]);
+
+        Assert.That(work.Steps().Select(step => step.Kind),
+            Is.EqualTo(new[]
+            {
+                AgentWork.StepKind.Began, AgentWork.StepKind.Said, AgentWork.StepKind.Began, AgentWork.StepKind.Said
+            }));
+    }
+
     /// <summary>A follow-up's events come after the earlier ones, and the earlier work is left as it was.</summary>
     [Test]
     public void Then_PutsTheLaterEventsAfter()

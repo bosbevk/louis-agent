@@ -12,6 +12,9 @@ you get back its answer, never its tools or its conversation.
 - **`AskAgent(address, message)`**: asks the agent at the address and waits for its answer. An address is an agent's
   name (`acme`), or its name and one of its roles after a dot (`acme.cook`). You may ask only the agents you are
   told you may call; any other address is refused with the ones you may.
+- **`ReadAgentWork(address)`**: reads what an agent you asked in this chat did, step by step: what it said, each
+  tool it called with what it sent, and what came back, without its thinking. Use it when someone asks what the
+  agent did or why, or when the line under its answer isn't enough. When the work is long you get its latest part.
 
 ## How to ask
 

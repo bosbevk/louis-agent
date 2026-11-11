@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 
@@ -29,15 +30,15 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
         var failed = new HashSet<string>(StringComparer.Ordinal);
         foreach (var block in Blocks())
         {
-            switch (Text(block, "type"))
+            switch (Field(block, "type"))
             {
                 case "tool_use":
-                    calls.Add((Text(block, "id"), Text(block, "name")));
+                    calls.Add((Field(block, "id"), Field(block, "name")));
                     break;
                 // A result marks its own call by id, whenever it arrives.
                 case "tool_result" when block.TryGetProperty("is_error", out var error) &&
                                         error.ValueKind == JsonValueKind.True:
-                    failed.Add(Text(block, "tool_use_id"));
+                    failed.Add(Field(block, "tool_use_id"));
                     break;
             }
         }
@@ -45,28 +46,118 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
         return [.. calls.Select(call => new ToolCall(call.Name, failed.Contains(call.Id)))];
     }
 
+    /// <summary>The blocks the agent itself started.</summary>
+    private IEnumerable<JsonElement> Blocks() =>
+        Typed().OfType<ContentBlockStarted>()
+            .Where(started => started.Data.TryGetProperty("content_block", out _))
+            .Select(started => started.Data.GetProperty("content_block"));
+
     /// <summary>
-    /// The blocks the agent itself started. A deeper child's arrive wrapped as its own kind of event, so they are left
-    /// out.
+    /// The work step by step, as a person would retell it: each answer it began, what it said, each tool it called with
+    /// what it sent, and what came back. Its thinking is left out.
     /// </summary>
-    private IEnumerable<JsonElement> Blocks()
+    public IReadOnlyList<Step> Steps()
+    {
+        var steps = new List<Step>();
+        var names = new Dictionary<string, string>(StringComparer.Ordinal);
+        var said = new StringBuilder();
+        foreach (var typed in Typed())
+        {
+            switch (typed)
+            {
+                // What it says streams in pieces; they are one step until something else starts.
+                case ContentBlockDelta delta when SaidPiece(delta.Data) is { } piece:
+                    said.Append(piece);
+                    break;
+                case MessageStarted:
+                    Flush(steps, said);
+                    steps.Add(new Step(StepKind.Began, ""));
+                    break;
+                case ContentBlockStarted started when started.Data.TryGetProperty("content_block", out var block):
+                    Flush(steps, said);
+                    if (Retold(block, names) is { } step) steps.Add(step);
+                    break;
+            }
+        }
+
+        Flush(steps, said);
+        return steps;
+    }
+
+    /// <summary>A call or a result as a step, the result named by its call; any other block is no step.</summary>
+    private static Step? Retold(JsonElement block, Dictionary<string, string> names)
+    {
+        switch (Field(block, "type"))
+        {
+            case "tool_use":
+                names[Field(block, "id")] = Field(block, "name");
+                return new Step(StepKind.Called, block.TryGetProperty("input", out var input) ? input.GetRawText() : "",
+                    Field(block, "name"));
+            case "tool_result":
+                return new Step(StepKind.Returned, Field(block, "content"),
+                    names.GetValueOrDefault(Field(block, "tool_use_id")),
+                    block.TryGetProperty("is_error", out var error) && error.ValueKind == JsonValueKind.True);
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>Ends what it was saying as one step, if it said anything.</summary>
+    private static void Flush(List<Step> steps, StringBuilder said)
+    {
+        if (said.Length == 0) return;
+        steps.Add(new Step(StepKind.Said, said.ToString()));
+        said.Clear();
+    }
+
+    /// <summary>A piece of what it said, or null for a piece of its thinking or of a tool's input.</summary>
+    private static string? SaidPiece(JsonElement data) =>
+        data.TryGetProperty("delta", out var delta) && Field(delta, "type") == "text_delta"
+            ? Field(delta, "text")
+            : null;
+
+    /// <summary>
+    /// Every event read into its type. A deeper child's arrive wrapped as its own kind, so none of its blocks look like
+    /// the agent's own.
+    /// </summary>
+    private IEnumerable<SessionEvent> Typed()
     {
         foreach (var streamed in Events)
         {
             using var document = JsonDocument.Parse(streamed.Data);
-            if (SessionEvent.From(streamed.Type, document.RootElement) is not ContentBlockStarted started) continue;
-            if (!started.Data.TryGetProperty("content_block", out var block)) continue;
             // A copy, since the document goes when the loop moves on.
-            yield return block.Clone();
+            yield return SessionEvent.From(streamed.Type, document.RootElement.Clone());
         }
     }
 
     /// <summary>A text field of a block, or nothing.</summary>
-    private static string Text(JsonElement block, string name) =>
+    private static string Field(JsonElement block, string name) =>
         block.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
             ? value.GetString() ?? ""
             : "";
 
     /// <summary>One tool the agent called, and whether it failed.</summary>
     public sealed record ToolCall(string Name, bool Failed);
+
+    /// <summary>
+    /// One step of the work: what kind, its text (what it said, what it sent a tool, what came back), the tool's name
+    /// for a call or a result, and whether a result was an error.
+    /// </summary>
+    public sealed record Step(StepKind Kind, string Text, string? Tool = null, bool Failed = false);
+
+    /// <summary>What a step is.</summary>
+    public enum StepKind
+    {
+        /// <summary>It began another answer: the first, or a follow-up's.</summary>
+        Began,
+
+        /// <summary>It said something to the asker.</summary>
+        Said,
+
+        /// <summary>It called a tool.</summary>
+        Called,
+
+        /// <summary>A tool gave back its result.</summary>
+        Returned
+    }
 }
