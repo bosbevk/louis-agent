@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F134 mockup: option C: bento grid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#e6e8eb;text-decoration:none}a:hover{color:#ffffff}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:20px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#1c1e22,#131417);border:1px solid rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 24px 48px -24px rgba(0,0,0,.9)}
+.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,12,14,.95) 0%,rgba(11,12,14,.35) 55%,rgba(11,12,14,0) 100%)}
+.words{position:relative;display:flex;flex-direction:column;gap:4px}
+.ico{position:absolute;top:18px;left:18px;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(22,24,27,.75);backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.eyebrow{font:500 11px/1 'Geist Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#7c828a}
+</style>
+<div style="width:1280px;height:900px;box-sizing:border-box;background:radial-gradient(900px 420px at 50% -10%,rgba(255,255,255,.06),transparent 60%),#0b0c0e;color:#e6e8eb;font-family:'Geist',system-ui,sans-serif;display:flex;flex-direction:column">
+  <header style="display:flex;align-items:center;gap:14px;padding:14px 28px;border-bottom:1px solid #1f2226">
+    <span style="font-weight:700;color:#fff">louis-agent</span>
+    <span style="font:600 10.5px/1 'Geist Mono',monospace;letter-spacing:.12em;padding:5px 9px;border-radius:999px;border:1px solid #3a3e45;color:#c9ccd1">DEMOS</span>
+    <span style="flex-grow:1"></span>
+    <a href="#" style="font-size:13px;color:#9aa0a8">Back to the site</a>
+    <a href="#" style="font-size:13.5px;font-weight:600;color:#070708;padding:9px 16px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#b9bec6)">Ask for yours</a>
+  </header>
+  <main style="flex-grow:1;padding:36px 48px;box-sizing:border-box">
+    <div style="max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;align-items:flex-end;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:10px;flex-grow:1">
+          <span class="eyebrow">Demos</span>
+          <h1 style="margin:0;font-size:40px;line-height:1.05;letter-spacing:-.02em;color:#fff">Watch the agents at work.</h1>
+        </div>
+        <p style="margin:0;max-width:380px;font-size:14px;line-height:1.55;color:#9aa0a8">Real runs, recorded once and played back. Made-up businesses, real agents.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:200px 200px 170px;gap:16px">
+        <a href="#" class="tile" style="grid-column:span 2;grid-row:span 2;border-color:rgba(232,193,90,.3)">
+          <img class="photo" src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-sea-view.webp" alt="">
+          <span class="shade"></span>
+          <span class="ico" style="border:1px solid rgba(232,193,90,.45)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8c15a" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2h-8v6"></path><circle cx="7" cy="10" r="1"></circle></svg></span>
+          <span class="words"><span class="eyebrow" style="color:#e8c15a">Start here</span><b style="font-size:24px;color:#fff;letter-spacing:-.01em">A guesthouse</b><span style="font-size:14px;color:#c9ccd1">A weekend by the beach, with the dog</span>
+          <span style="margin-top:10px;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:11px;font-weight:600;font-size:13.5px;color:#070708;background:linear-gradient(180deg,#f3d27a,#d9ab3c)"><svg width="13" height="13" viewBox="0 0 24 24" fill="#070708" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg>Watch it</span></span>
+        </a>
+        <a href="#" class="tile" style="grid-column:span 2">
+          <img class="photo" src="../../../site/louis-agent.site/wwwroot/images/showroom/wheatfield-room.webp" alt="">
+          <span class="shade"></span>
+          <span class="ico" style="border:1px solid rgba(108,191,148,.45)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6cbf94" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 3v12h-5c-.02-3.68.18-7.41 5-12zm0 12v6h-1v-3M8 4v17M5 4v3a3 3 0 1 0 6 0V4"></path></svg></span>
+          <span class="words"><b style="font-size:17px;color:#fff">A restaurant</b><span style="font-size:13px;color:#c9ccd1">Sunday lunch at ten at night</span></span>
+        </a>
+        <a href="#" class="tile" style="grid-column:span 2">
+          <img class="photo" src="../../../site/louis-agent.site/wwwroot/images/showroom/koringland-study.webp" alt="">
+          <span class="shade"></span>
+          <span class="ico" style="border:1px solid rgba(127,168,232,.45)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7fa8e8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10M6 6l6-1 6 1M12 3v17M9 12l-3-6-3 6a3 3 0 0 0 6 0M21 12l-3-6-3 6a3 3 0 0 0 6 0"></path></svg></span>
+          <span class="words"><b style="font-size:17px;color:#fff">A law practice</b><span style="font-size:13px;color:#c9ccd1">No advice, a consultation</span></span>
+        </a>
+        <a href="#" class="tile" style="grid-column:span 2;background:radial-gradient(300px 160px at 100% 0%,rgba(217,103,95,.14),transparent 70%),linear-gradient(180deg,#1c1e22,#131417)">
+          <span class="ico" style="border:1px solid rgba(217,103,95,.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a39c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M14 4l-4 16"></path></svg></span>
+          <span class="words"><span class="eyebrow">Agents at work</span><b style="font-size:17px;color:#fff">The coding agent</b><span style="font-size:13px;color:#9aa0a8">Fixes a real bug</span></span>
+        </a>
+        <a href="#" class="tile" style="grid-column:span 2;background:radial-gradient(300px 160px at 100% 0%,rgba(169,139,224,.14),transparent 70%),linear-gradient(180deg,#1c1e22,#131417)">
+          <span class="ico" style="border:1px solid rgba(169,139,224,.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a98be0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4-4M17 14H3l4 4"></path></svg></span>
+          <span class="words"><span class="eyebrow">Agents at work</span><b style="font-size:17px;color:#fff">The triage team</b><span style="font-size:13px;color:#9aa0a8">Sorts and fixes an error</span></span>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

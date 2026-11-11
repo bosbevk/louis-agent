@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F134 mockup: option A: tidy and lift</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#e6e8eb;text-decoration:none}a:hover{color:#ffffff}
+.chip{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#24272c,#16181b);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 16px -8px rgba(0,0,0,.9)}
+.card{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1c1e22,#131417);border:1px solid rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 24px 48px -24px rgba(0,0,0,.9)}
+.eyebrow{font:500 11px/1 'Geist Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#7c828a}
+</style>
+<div style="width:1280px;height:900px;box-sizing:border-box;background:radial-gradient(900px 420px at 70% -10%,rgba(232,193,90,.10),transparent 60%),#0b0c0e;color:#e6e8eb;font-family:'Geist',system-ui,sans-serif;display:flex;flex-direction:column">
+  <header style="display:flex;align-items:center;gap:14px;padding:14px 28px;border-bottom:1px solid #1f2226;background:rgba(11,12,14,.8)">
+    <span style="font-weight:700;color:#fff">louis-agent</span>
+    <span style="font:600 10.5px/1 'Geist Mono',monospace;letter-spacing:.12em;padding:5px 9px;border-radius:999px;border:1px solid #3a3e45;color:#c9ccd1">DEMOS</span>
+    <span style="flex-grow:1"></span>
+    <a href="#" style="font-size:13px;color:#9aa0a8">Back to the site</a>
+    <a href="#" style="font-size:13.5px;font-weight:600;color:#070708;padding:9px 16px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#b9bec6)">Ask for yours</a>
+  </header>
+  <div style="display:flex;flex-grow:1;min-height:0">
+    <nav aria-label="All demos" style="width:264px;flex:none;box-sizing:border-box;padding:20px 14px;border-right:1px solid #1f2226;display:flex;flex-direction:column;gap:4px">
+      <span class="eyebrow" style="padding:6px 10px 10px">For your business</span>
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:12px;background:linear-gradient(90deg,rgba(232,193,90,.12),transparent);border:1px solid rgba(232,193,90,.28)">
+        <span class="chip" style="border:1px solid rgba(232,193,90,.45)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8c15a" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2h-8v6"></path><circle cx="7" cy="10" r="1"></circle></svg></span>
+        <span style="display:flex;flex-direction:column;gap:3px;line-height:1.25"><b style="font-size:14px;font-weight:600;color:#fff">A guesthouse</b><span style="font-size:12.5px;color:#9aa0a8">A weekend by the beach</span></span>
+      </a>
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:12px;border:1px solid transparent">
+        <span class="chip" style="border:1px solid rgba(108,191,148,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6cbf94" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 3v12h-5c-.02-3.68.18-7.41 5-12zm0 12v6h-1v-3M8 4v17M5 4v3a3 3 0 1 0 6 0V4"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:3px;line-height:1.25"><b style="font-size:14px;font-weight:600;color:#e6e8eb">A restaurant</b><span style="font-size:12.5px;color:#9aa0a8">Sunday lunch at ten at night</span></span>
+      </a>
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:12px;border:1px solid transparent">
+        <span class="chip" style="border:1px solid rgba(127,168,232,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7fa8e8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10M6 6l6-1 6 1M12 3v17M9 12l-3-6-3 6a3 3 0 0 0 6 0M21 12l-3-6-3 6a3 3 0 0 0 6 0"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:3px;line-height:1.25"><b style="font-size:14px;font-weight:600;color:#e6e8eb">A law practice</b><span style="font-size:12.5px;color:#9aa0a8">No advice, a consultation</span></span>
+      </a>
+      <span class="eyebrow" style="padding:18px 10px 10px">Agents at work</span>
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:12px;border:1px solid transparent">
+        <span class="chip" style="border:1px solid rgba(217,103,95,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a39c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M14 4l-4 16"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:3px;line-height:1.25"><b style="font-size:14px;font-weight:600;color:#e6e8eb">The coding agent</b><span style="font-size:12.5px;color:#9aa0a8">Fixes a real bug</span></span>
+      </a>
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:12px;border:1px solid transparent">
+        <span class="chip" style="border:1px solid rgba(169,139,224,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a98be0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4-4M17 14H3l4 4"></path></svg></span>
+        <span style="display:flex;flex-direction:column;gap:3px;line-height:1.25"><b style="font-size:14px;font-weight:600;color:#e6e8eb">The triage team</b><span style="font-size:12.5px;color:#9aa0a8">Sorts and fixes an error</span></span>
+      </a>
+    </nav>
+    <main style="flex-grow:1;min-width:0;padding:32px 40px;box-sizing:border-box">
+      <div style="max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+        <section class="card" style="flex-direction:row;align-items:stretch;border-color:rgba(232,193,90,.22)">
+          <div style="flex:1 1 0;padding:32px;display:flex;flex-direction:column;gap:12px;justify-content:center">
+            <span class="eyebrow" style="color:#e8c15a">Start here</span>
+            <h1 style="margin:0;font-size:36px;line-height:1.08;letter-spacing:-.02em;color:#fff">Watch the agents at work.</h1>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:#c9ccd1">Each demo is a real run, recorded once and played back. Made-up businesses, real agents.</p>
+            <a href="#" style="align-self:flex-start;margin-top:6px;display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:11px;font-weight:600;font-size:14px;color:#070708;background:linear-gradient(180deg,#f3d27a,#d9ab3c);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 24px -10px rgba(232,193,90,.7)"><svg width="14" height="14" viewBox="0 0 24 24" fill="#070708" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg>Start with the guesthouse</a>
+          </div>
+          <img src="../../../site/louis-agent.site/wwwroot/images/showroom/seemeeu-banner.webp" alt="Waves on the rocks at the beach" style="width:400px;height:280px;object-fit:cover;display:block">
+        </section>
+        <section style="display:flex;flex-direction:column;gap:14px">
+          <h2 class="eyebrow" style="margin:0">For your business</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+            <a href="#" class="card">
+              <span style="height:120px;display:flex;align-items:center;justify-content:center;background:radial-gradient(160px 90px at 50% 100%,rgba(232,193,90,.22),transparent 70%),linear-gradient(180deg,#202328,#16181b)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e8c15a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2h-8v6"></path><circle cx="7" cy="10" r="1"></circle></svg></span>
+              <span style="padding:16px 18px;display:flex;flex-direction:column;gap:4px"><b style="font-size:15px;color:#fff">A guesthouse</b><span style="font-size:13px;color:#9aa0a8">A weekend by the beach, with the dog</span><span style="margin-top:8px;font-size:13px;color:#e8c15a">Watch →</span></span>
+            </a>
+            <a href="#" class="card">
+              <span style="height:120px;display:flex;align-items:center;justify-content:center;background:radial-gradient(160px 90px at 50% 100%,rgba(108,191,148,.22),transparent 70%),linear-gradient(180deg,#202328,#16181b)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6cbf94" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 3v12h-5c-.02-3.68.18-7.41 5-12zm0 12v6h-1v-3M8 4v17M5 4v3a3 3 0 1 0 6 0V4"></path></svg></span>
+              <span style="padding:16px 18px;display:flex;flex-direction:column;gap:4px"><b style="font-size:15px;color:#fff">A restaurant</b><span style="font-size:13px;color:#9aa0a8">Sunday lunch at ten at night</span><span style="margin-top:8px;font-size:13px;color:#6cbf94">Watch →</span></span>
+            </a>
+            <a href="#" class="card">
+              <span style="height:120px;display:flex;align-items:center;justify-content:center;background:radial-gradient(160px 90px at 50% 100%,rgba(127,168,232,.22),transparent 70%),linear-gradient(180deg,#202328,#16181b)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7fa8e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10M6 6l6-1 6 1M12 3v17M9 12l-3-6-3 6a3 3 0 0 0 6 0M21 12l-3-6-3 6a3 3 0 0 0 6 0"></path></svg></span>
+              <span style="padding:16px 18px;display:flex;flex-direction:column;gap:4px"><b style="font-size:15px;color:#fff">A law practice</b><span style="font-size:13px;color:#9aa0a8">No advice, a consultation</span><span style="margin-top:8px;font-size:13px;color:#7fa8e8">Watch →</span></span>
+            </a>
+          </div>
+          <h2 class="eyebrow" style="margin:10px 0 0">Agents at work</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+            <a href="#" class="card" style="flex-direction:row;align-items:center;gap:14px;padding:16px">
+              <span class="chip" style="width:44px;height:44px;border:1px solid rgba(217,103,95,.35)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a39c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M14 4l-4 16"></path></svg></span>
+              <span style="display:flex;flex-direction:column;gap:3px"><b style="font-size:15px;color:#fff">The coding agent</b><span style="font-size:13px;color:#9aa0a8">Fixes a real bug</span></span>
+            </a>
+            <a href="#" class="card" style="flex-direction:row;align-items:center;gap:14px;padding:16px">
+              <span class="chip" style="width:44px;height:44px;border:1px solid rgba(169,139,224,.35)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a98be0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10h14l-4-4M17 14H3l4 4"></path></svg></span>
+              <span style="display:flex;flex-direction:column;gap:3px"><b style="font-size:15px;color:#fff">The triage team</b><span style="font-size:13px;color:#9aa0a8">Sorts and fixes an error</span></span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
