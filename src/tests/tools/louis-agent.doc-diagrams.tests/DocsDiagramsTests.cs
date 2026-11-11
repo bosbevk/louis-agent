@@ -49,6 +49,23 @@ public class DocsDiagramsTests
         Assert.That(missing, Is.Empty);
     }
 
+    /// <summary>
+    /// Every project doc, the framework's, the packs' and each demo's, shows its overview, named for the doc.
+    /// </summary>
+    [Test]
+    public void EveryProjectDoc_ShowsItsOverview()
+    {
+        var bare = DiagramSync.Roots(TestPaths.RepoRoot)
+            .Select(root => Path.Combine(root, "projects"))
+            .Where(Directory.Exists)
+            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.md"))
+            .Where(doc => Path.GetFileName(doc) != "README.md")
+            .Where(doc => !Targets(File.ReadAllText(doc))
+                .Contains($"{DiagramSync.Folder}/{Path.GetFileNameWithoutExtension(doc)}.svg"));
+
+        Assert.That(bare.Select(Relative), Is.Empty, "a project doc without its overview");
+    }
+
     /// <summary>The docs have pictures at all, so the tests above can't pass by finding none.</summary>
     [Test]
     public void TheDocs_HavePictures() => Assert.That(Diagrams(), Is.Not.Empty);

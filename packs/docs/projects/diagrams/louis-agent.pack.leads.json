@@ -1,0 +1,25 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.leads at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "leads", "icon": "mail", "title": "Leads", "code": "louis-agent.pack.leads", "look": "highlight",
+          "text": "When a visitor is interested, the agent sends the owner the lead itself, once, after their yes." }
+      ] },
+      { "cards": [
+        { "id": "tool", "icon": "message", "title": "SendLead",
+          "text": "Name, a way to reach them and what they want. A lead with a part missing says which." },
+        { "id": "sender", "icon": "server", "title": "A sender behind a seam",
+          "text": "Resend's API sends the mail. On a PC and in the tests the lead only goes to the log." },
+        { "id": "failure", "icon": "shield", "title": "Failures as text",
+          "text": "A sender's failure comes back with its reason, never a throw into the loop." }
+      ] }
+    ],
+    "links": [
+      { "from": "leads", "to": "tool" },
+      { "from": "leads", "to": "sender" },
+      { "from": "leads", "to": "failure" }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.calculator at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "calculator", "icon": "settings", "title": "The calculator", "code": "louis-agent.pack.calculator",
+          "look": "highlight",
+          "text": "A model's mental arithmetic slips, so it hands the sum to code. No setting, no network." }
+      ] },
+      { "cards": [
+        { "id": "many", "icon": "code", "title": "Many sums, one call",
+          "text": "Every call is another request to the model, so all the sums go at once, up to 60." },
+        { "id": "bad", "icon": "shield", "title": "A bad sum alone",
+          "text": "It says why it can't be worked out, and the rest still answer." },
+        { "id": "decimals", "icon": "chart", "title": "Four decimals",
+          "text": "Finer than anyone cooks or shops by, in plain digits with a point." }
+      ] }
+    ],
+    "links": [
+      { "from": "calculator", "to": "many" },
+      { "from": "calculator", "to": "bad" },
+      { "from": "calculator", "to": "decimals" }
+    ]
+  }
+}

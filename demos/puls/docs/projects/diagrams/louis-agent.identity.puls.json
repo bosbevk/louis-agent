@@ -1,0 +1,25 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.identity.puls at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "puls", "icon": "user", "title": "Puls", "code": "louis-agent.identity.puls", "look": "highlight",
+          "text": "Who Puls is: a South African general assistant. No tools and no settings of its own." }
+      ] },
+      { "cards": [
+        { "id": "voice", "icon": "message", "title": "Its voice",
+          "text": "Everyday Afrikaans and English, and how it routes a task." },
+        { "id": "specialists", "icon": "users", "title": "Its specialists",
+          "text": "The roles it hands a task to, the cook among them." },
+        { "id": "packs", "icon": "box", "title": "The packs it names",
+          "text": "Where to buy, shop prices, recipes, the web and the calculator." }
+      ] }
+    ],
+    "links": [
+      { "from": "puls", "to": "voice" },
+      { "from": "puls", "to": "specialists" },
+      { "from": "puls", "to": "packs" }
+    ]
+  }
+}

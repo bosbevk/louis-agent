@@ -4,6 +4,8 @@
 > [ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md); building a pack in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
+![The calculator: many sums in one call, a bad sum alone, four decimals](diagrams/louis-agent.pack.calculator.svg)
+
 A model's mental arithmetic slips. Puls's cook wrote 1 teaspoon × ⅔ as 2⅔ teaspoons, and no prompt rule could promise that
 wouldn't happen again. This pack gives a model one tool, so it hands the sum to code. It needs no setting and no network,
 so it loads wherever it's named.

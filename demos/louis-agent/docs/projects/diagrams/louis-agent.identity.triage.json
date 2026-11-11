@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.identity.triage at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "manager", "icon": "users", "title": "The manager", "code": "louis-agent.identity.triage",
+          "look": "highlight",
+          "text": "The triage team's hub: decides what each case gets and checks everyone's work." }
+      ] },
+      { "cards": [
+        { "id": "sorter", "icon": "folder", "title": "The sorter",
+          "text": "Sorts a case and names its department." },
+        { "id": "investigator", "icon": "search", "title": "The investigator",
+          "text": "Finds where it broke and why, and how sure it is." },
+        { "id": "reviewer", "icon": "checks", "title": "The reviewer",
+          "text": "Reads the fix and says whether it holds." },
+        { "id": "coder", "icon": "code", "title": "The coder",
+          "text": "The coding identity, on a peer." }
+      ] }
+    ],
+    "links": [
+      { "from": "manager", "to": "sorter", "kind": "both" },
+      { "from": "manager", "to": "investigator", "kind": "both" },
+      { "from": "manager", "to": "reviewer", "kind": "both" },
+      { "from": "manager", "to": "coder", "kind": "both" }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.orchestrator at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "orchestrator", "icon": "settings", "title": "The orchestrator", "code": "louis-agent.orchestrator",
+          "look": "highlight",
+          "text": "A second agent on the same core, a proof of concept. It never edits code." }
+      ] },
+      { "cards": [
+        { "id": "watch", "icon": "file", "title": "Watches a log",
+          "text": "One microservice's error log, an exception at a time." },
+        { "id": "runbook", "icon": "book", "title": "Reads its runbook",
+          "text": "One per API method: nothing, a fix, or a hand-off to people." },
+        { "id": "fix", "icon": "server", "title": "Has louis-agent fix it",
+          "text": "Over the API's sessions, then checks the work itself." }
+      ] }
+    ],
+    "links": [
+      { "from": "orchestrator", "to": "watch" },
+      { "from": "orchestrator", "to": "runbook" },
+      { "from": "orchestrator", "to": "fix" }
+    ]
+  }
+}

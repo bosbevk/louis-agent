@@ -4,6 +4,8 @@
 > louis-agent.composition, MongoDB.Driver, ExcelDataReader, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
 > an identity that names it (Puls) · **Uses:** MongoDB when `SHOP_PRICES_MONGO_URL` is set
 
+![The shop prices pack: EstimatePrices, the price tables, and the store and the upload](diagrams/louis-agent.pack.shop-prices.svg)
+
 ## Purpose
 
 What an agent can do to say roughly what something costs: estimate a shopping list from Stats SA's average prices,

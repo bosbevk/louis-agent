@@ -9,6 +9,8 @@
 > **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.site/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.coding-catalog`, for the guide
 
+![The site pack: ShowPage, and the widget that acts on it](diagrams/louis-agent.pack.site.svg)
+
 ## Purpose
 
 The guide in a site's corner could point at a page ("the Identities page shows the levels") but not take anyone there.

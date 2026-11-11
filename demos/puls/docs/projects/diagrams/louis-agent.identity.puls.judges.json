@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.identity.puls.judges at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "judges", "icon": "checks", "title": "Puls's judge", "code": "louis-agent.identity.puls.judges",
+          "look": "highlight",
+          "text": "A model asked whether an answer is a meal for the people asked for." }
+      ] },
+      { "cards": [
+        { "id": "rubric", "icon": "file", "title": "Its rubric",
+          "text": "Read from the cook's eval folder, with the people and the town." },
+        { "id": "harness", "icon": "settings", "title": "On the harness's judge",
+          "text": "In its own project, so the identity never references the harness." },
+        { "id": "runner", "icon": "terminal", "title": "Only the runner",
+          "text": "No host carries the harness. Only the eval runner references it." }
+      ] }
+    ],
+    "links": [
+      { "from": "judges", "to": "rubric" },
+      { "from": "judges", "to": "harness" },
+      { "from": "judges", "to": "runner" }
+    ]
+  }
+}

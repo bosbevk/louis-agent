@@ -4,6 +4,8 @@
 > `louis-agent.puls-api` (`demos/puls/docker/images/Dockerfile.puls`, `demos/puls/docker/docker-compose.puls.yml`, port 5070) · **References:**
 > louis-agent.web, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
 
+![Puls's web app: the landing page, the chat, and pay as you go](diagrams/louis-agent.puls.svg)
+
 ## Purpose
 
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each

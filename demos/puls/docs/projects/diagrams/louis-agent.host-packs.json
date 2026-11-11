@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.host-packs at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "hostpacks", "icon": "box", "title": "Puls's composition", "code": "louis-agent.host-packs",
+          "look": "highlight",
+          "text": "The one project that knows every identity and pack Puls's programs can load." }
+      ] },
+      { "cards": [
+        { "id": "call", "icon": "settings", "title": "One call at start-up",
+          "text": "Reads IDENTITIES and PACKS once the settings have loaded." },
+        { "id": "enums", "icon": "code", "title": "Names become enums",
+          "text": "Each name parsed once, case ignored, each name once." },
+        { "id": "setting", "icon": "server", "title": "A setting, not a build",
+          "text": "Which agent a host runs is configured. The host stays thin." }
+      ] }
+    ],
+    "links": [
+      { "from": "hostpacks", "to": "call" },
+      { "from": "hostpacks", "to": "enums" },
+      { "from": "hostpacks", "to": "setting" }
+    ]
+  }
+}

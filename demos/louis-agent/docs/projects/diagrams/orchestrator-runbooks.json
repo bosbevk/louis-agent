@@ -1,0 +1,25 @@
+{
+  "kind": "cards",
+  "title": "The orchestrator's runbooks at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "runbook", "icon": "book", "title": "A runbook", "code": "skills", "look": "highlight",
+          "text": "The instruction sheet for one API method. People set the policy, the agents carry it out." }
+      ] },
+      { "cards": [
+        { "id": "nothing", "icon": "checks", "title": "Nothing",
+          "text": "An error the runbook lists as expected is acknowledged and ignored." },
+        { "id": "fix", "icon": "code", "title": "A fix",
+          "text": "louis-agent fixes it, and the orchestrator checks the work." },
+        { "id": "handoff", "icon": "users", "title": "A hand-off",
+          "text": "A person's team gets the case." }
+      ] }
+    ],
+    "links": [
+      { "from": "runbook", "to": "nothing" },
+      { "from": "runbook", "to": "fix" },
+      { "from": "runbook", "to": "handoff" }
+    ]
+  }
+}

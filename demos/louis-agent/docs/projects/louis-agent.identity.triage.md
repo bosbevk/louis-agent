@@ -5,6 +5,8 @@
 > [louis-agent.pack.triage](../../../packs/docs/projects/louis-agent.pack.triage.md); building an identity in
 > [Build an identity](../../../src/docs/guides/build-an-identity.md).
 
+![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/louis-agent.identity.triage.svg)
+
 A team that triages a service's errors: the **manager** decides what each case gets and checks everyone's work; the
 **sorter**, the **investigator** and the **reviewer** work for it; the **coder** is the coding identity on a peer.
 One identity with roles (F106.3.2, Louis's pick), because the three only ever work for the manager: the manager's

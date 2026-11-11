@@ -4,6 +4,8 @@
 > **Elsewhere:** why they aren't in core in [ADR 0076](../../../src/docs/adr/0076-core-ships-no-agent.md), how to write one in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
 
+![The general packs: files, git, .NET, shell, web, Paymo and Azure DevOps](diagrams/general-packs.svg)
+
 | Pack | Toolsets | Holds | Needs from the engine |
 |---|---|---|---|
 | `louis-agent.pack.files` | `files` | Read, write, search, copy, rename and delete in the workspace; PDF, Word and Excel as text | The workspace root |

@@ -4,6 +4,8 @@
 > Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
 
+![The recipes pack: FindRecipes, ReadRecipe and the library](diagrams/louis-agent.pack.recipes.svg)
+
 ## Purpose
 
 What an agent can do with recipes: search a South African recipe site, and read a recipe page into numbered

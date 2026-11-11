@@ -4,6 +4,8 @@
 > `louis-agent.coding-api` (same origin), on 127.0.0.1:5082 · **References:** louis-agent.web (with Markdig),
 > highlight.js (from a CDN)
 
+![The code review app: chat, the workspace and branches](diagrams/louis-agent.code-review.svg)
+
 ## Purpose
 
 The browser front end for the coding agent: chat with it, browse the workspace, review and commit changes, and review
