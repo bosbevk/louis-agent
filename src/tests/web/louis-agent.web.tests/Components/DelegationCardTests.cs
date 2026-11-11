@@ -1,8 +1,6 @@
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components;
 using LouisAgent.Web.Text;
-using LouisAgent.Testing;
-using LouisAgent.Web.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components;
@@ -25,7 +23,7 @@ public class DelegationCardTests
     public async Task TheCooksCard_Done_MatchesTheGoldenFile()
     {
         var (block, delegation) = TheCooksCall(await SessionStreamFixture.ReplayAsync());
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, delegation).Add(x => x.Block, block));
@@ -45,7 +43,7 @@ public class DelegationCardTests
     {
         var turn = await SessionStreamFixture.ReplayAskAsync();
         var block = turn.Blocks.Single(b => b.ToolName == Delegation.AskToolName);
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<DelegationCard>(p =>
@@ -64,7 +62,7 @@ public class DelegationCardTests
         var (block, _) = TheCooksCall(await SessionStreamFixture.ReplayAsync());
         block.ToolResult = null;
         var delegation = Delegation.From(block)!;
-        using var ctx = new BunitContext();
+        await using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
 
         var cut = ctx.Render<DelegationCard>(p =>
@@ -87,7 +85,7 @@ public class DelegationCardTests
             ToolUseId = "call_2",
             ToolName = "ContinueSubSession",
             ToolInput = """{"handle":"sub-1","message":"En die nagereg?"}""",
-            ToolResult = "Malva poeding.",
+            ToolResult = "Malva poeding."
         };
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());
@@ -111,7 +109,7 @@ public class DelegationCardTests
                 """{"agent":"puls","toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}""".Replace("<RoleAlpha>",
                     SessionStreamFixture.CookRole),
             ToolResult = "Error: no peer named puls",
-            ToolFailed = true,
+            ToolFailed = true
         };
         using var ctx = new BunitContext();
         ctx.Services.AddSingleton(new ChatText());

@@ -7,7 +7,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Headers.Identities;
@@ -40,6 +39,8 @@ public static class SkillLoader
     /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
     /// wrote (its function files) comes from the skills folder (<see cref="SkillFolder"/>).
     /// </summary>
+    /// <param name="agent">The instance's settings: where its skills are, and its default mode.</param>
+    /// <param name="toolsets">The session's toolsets: their guides, and no other, go in the prompt.</param>
     /// <param name="role">The session's role (F21): at level 0 a mode, one file of voice and routing (CL9:
     /// <c>acme/voice-en</c>); below it a role. Null: the default mode (the identity's), and below
     /// level 0 only its voice, since a sub-session's toolsets were chosen for it (F21). <see cref="RoleException"/>
