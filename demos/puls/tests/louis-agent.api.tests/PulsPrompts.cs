@@ -8,8 +8,8 @@ using LouisAgent.Packs.WhereToBuy;
 
 /// <summary>
 /// The API's tests open Puls's sessions (puls-cook, puls/voice-af), so they register Puls's prompts as the Puls stack
-/// does with IDENTITIES=puls, with the packs Puls names (where to buy, shop prices and recipes), before the first prompt
-/// is read.
+/// does with IDENTITIES=puls, with the packs Puls names (where to buy, shop prices and recipes), before the first
+/// prompt is read; and the test business another agent asks in its voice (<c>TestBusiness</c>, F127.3.1).
 /// </summary>
 [SetUpFixture]
 public class PulsPrompts

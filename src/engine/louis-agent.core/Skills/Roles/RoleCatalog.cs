@@ -105,6 +105,10 @@ public static partial class RoleCatalog
     /// </summary>
     public static string SharedOf(string mode) => mode[..mode.IndexOf('/')] + "/voice";
 
+    /// <summary>
+    /// The modes in <c>agent/</c>, one per <c>{product}/{mode}.md</c>: not the function skills, not a product's shared
+    /// <c>voice.md</c> when it has language modes.
+    /// </summary>
     private static IEnumerable<string> Modes()
     {
         var files = SkillFileSource.EmbeddedFiles
@@ -119,19 +123,26 @@ public static partial class RoleCatalog
         return files.Where(f => !shared.Contains(f));
     }
 
+    /// <summary>A language mode: matches <c>acme/voice-af</c> (code <c>af</c>), not <c>acme/voice</c>.</summary>
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]
     private static partial Regex LanguageMode();
 
+    /// <summary>A minion role on its base: matches <c>acme-minion-web-lookup</c>, not <c>acme-minion</c>.</summary>
     [GeneratedRegex("^(?<base>[a-z0-9]+-minion)-[a-z0-9]+(-[a-z0-9]+)*$")]
     private static partial Regex MinionRole();
 
+    /// <summary>A minions' base: matches <c>acme-minion</c>, not <c>acme-minion-web-lookup</c>.</summary>
     [GeneratedRegex("^[a-z0-9]+-minion$")]
     private static partial Regex MinionBase();
 
-    // Not the first line: a mode file starts with its voice's heading.
+    /// <summary>
+    /// A heading after the first line, since a mode file starts with its voice's: matches the <c># </c> of
+    /// <c>"# Voice\n# Routing"</c> at its second line, not at its first.
+    /// </summary>
     [GeneratedRegex(@"(?<=\n)# ", RegexOptions.None)]
     private static partial Regex SecondHeading();
 
+    /// <summary>A role's name: matches <c>acme-cook</c> and <c>acme/voice-en</c>, not <c>../acme</c>.</summary>
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*(/[a-z0-9]+(-[a-z0-9]+)*)?$")]
     private static partial Regex NamePattern();
 }

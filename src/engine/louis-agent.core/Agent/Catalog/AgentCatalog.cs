@@ -14,18 +14,18 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Core.Agent.Catalog;
 
 /// <summary>
-/// The one catalogue of what this instance can load (CL15, ADR 0027): core's own toolsets (<see cref="ToolsetCatalog"/>)
-/// and the packs', with the identities that name them. Built once by the host from the identities and packs it was
-/// given, checked as it is built (a name or prompt path in two places, a pack nobody registered, a <c>Requires</c>
-/// cycle, a tool name in two toolsets or taking the engine's own), and passed down to the engine factory and the
-/// sessions; no global state, so tests build one with a fake pack. <see cref="CoreOnly"/> is the catalogue of a host
-/// given nothing: everything as before the cut.
+/// The one catalogue of what this instance can load (CL15, ADR 0027): core's own toolsets
+/// (<see cref="ToolsetCatalog"/>) and the packs', with the identities that name them. Built once by the host from the
+/// identities and packs it was given, checked as it is built (a name or prompt path in two places, a pack nobody
+/// registered, a <c>Requires</c> cycle, a tool name in two toolsets or taking the engine's own), and passed down to
+/// the engine factory and the sessions; no global state, so tests build one with a fake pack. <see cref="CoreOnly"/>
+/// is the catalogue of a host given nothing: everything as before the cut.
 /// </summary>
 public sealed class AgentCatalog
 {
     /// <summary>
-    /// The tools the engine registers itself, whatever the toolsets (<c>AgentEngine</c>): <c>ExecuteSkill</c>, the clock,
-    /// and the self-extension tools. A pack's tool may not take one of their names.
+    /// The tools the engine registers itself, whatever the toolsets (<c>AgentEngine</c>): <c>ExecuteSkill</c>, the
+    /// clock, and the self-extension tools. A pack's tool may not take one of their names.
     /// </summary>
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
         new[]
@@ -107,7 +107,9 @@ public sealed class AgentCatalog
 
     public IReadOnlyList<IAgentPack> Packs { get; }
 
-    /// <summary>The identity a session names (F109.3), case ignored; null when this instance runs no such one.</summary>
+    /// <summary>
+    /// The identity a session names (F109.3), case ignored; null when this instance runs no such one.
+    /// </summary>
     public IAgentIdentity? Identity(string name) =>
         Identities.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
 
@@ -151,16 +153,22 @@ public sealed class AgentCatalog
     public IDataScreen? Screen(string name) =>
         Screens.FirstOrDefault(screen => string.Equals(screen.Spec.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).</summary>
+    /// <summary>
+    /// The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).
+    /// </summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }
 
     /// <summary>
-    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored as agent-built
-    /// tools are named: an agent-built tool may not take one, or it would collide when a session loads that toolset.
+    /// Every tool name a toolset of this catalogue can register, loaded in an engine or not, case ignored as
+    /// agent-built tools are named: an agent-built tool may not take one, or it would collide when a session loads
+    /// that toolset.
     /// </summary>
     public IReadOnlySet<string> ToolNames { get; }
 
-    /// <summary>Resolves a client's list over this catalogue's toolsets; what <see cref="ToolsetCatalog.Resolve"/> does for core's.</summary>
+    /// <summary>
+    /// Resolves a client's list over this catalogue's toolsets; what <see cref="ToolsetCatalog.Resolve"/> does for
+    /// core's.
+    /// </summary>
     public IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context) =>
         ToolsetCatalog.Resolve(names, context, Toolsets);
 
@@ -172,7 +180,8 @@ public sealed class AgentCatalog
         resolved.SelectMany(NamesOf).ToHashSet(StringComparer.Ordinal);
 
     /// <summary>
-    /// The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.
+    /// The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for
+    /// none.
     /// </summary>
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
 
@@ -188,8 +197,8 @@ public sealed class AgentCatalog
         toolset.ToolTypes is null ? [] : toolset.ToolTypes.SelectMany(ToolMethodsOfType);
 
     /// <summary>
-    /// How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever the
-    /// checkout.
+    /// How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever
+    /// the checkout.
     /// </summary>
     public static AIFunction FunctionOf(MethodInfo method, Func<AIFunctionArguments, object> createInstance) =>
         AIFunctionFactory.Create(method, createInstance, new AIFunctionFactoryOptions
@@ -199,12 +208,14 @@ public sealed class AgentCatalog
                 : null,
         });
 
+    /// <summary>A tool class's own public methods: each one is a tool.</summary>
     internal static IEnumerable<MethodInfo> ToolMethodsOfType(Type type) =>
         type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
     /// <summary>The one place tool names come from: the tool methods' names today; F36 adds a server's names.</summary>
     private static IEnumerable<string> NamesOf(ToolsetDefinition toolset) => ToolMethodsOf(toolset).Select(m => m.Name);
 
+    /// <summary>Stops start-up when two things of one kind share a name, case ignored.</summary>
     private static void CheckUnique(IEnumerable<string> names, string kind)
     {
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -218,6 +229,7 @@ public sealed class AgentCatalog
                     }));
     }
 
+    /// <summary>Stops start-up when an identity or a pack names a pack the catalogue doesn't hold.</summary>
     private static void CheckNamed(string owner, IEnumerable<string> named, IReadOnlySet<string> registered)
     {
         foreach (string name in named)
@@ -233,6 +245,7 @@ public sealed class AgentCatalog
                     }));
     }
 
+    /// <summary>Stops start-up when packs require each other in a ring, naming the ring.</summary>
     private static void CheckNoCycle(IReadOnlyList<IAgentPack> packs)
     {
         var byName = packs.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
