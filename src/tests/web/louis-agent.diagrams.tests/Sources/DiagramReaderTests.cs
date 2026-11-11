@@ -102,6 +102,14 @@ public class DiagramReaderTests
         });
     }
 
+    /// <summary>A box in a group the diagram doesn't declare is refused, naming the box and the group.</summary>
+    [Test]
+    public void ABoxInAnUndeclaredGroup_IsRefused() =>
+        Assert.That(
+            () => DiagramReader.Read(Flow.Replace("\"label\": \"A host\",",
+                "\"label\": \"A host\", \"group\": \"sys\",")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'host'").And.Message.Contain("'sys'"));
+
     /// <summary>A card is plain unless it names its look, and reads the look it names.</summary>
     [Test]
     public void ACard_ReadsItsLook_PlainWhenItNamesNone()

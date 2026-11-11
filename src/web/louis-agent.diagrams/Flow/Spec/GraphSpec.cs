@@ -9,4 +9,5 @@ namespace LouisAgent.Diagrams.Flow.Spec;
 public sealed record GraphSpec(
     IReadOnlyList<GraphNode> Nodes,
     IReadOnlyList<GraphEdge> Edges,
-    FlowDirection Direction = FlowDirection.Right);
+    FlowDirection Direction = FlowDirection.Right,
+    IReadOnlyList<GraphGroup>? Groups = null);

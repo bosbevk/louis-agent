@@ -70,28 +70,17 @@ public static class GraphLayout
         // "alignment is key", "this must not happen"): two middles then differ by half a row at least, never by a few
         // pixels, so no connector ever jogs. A shorter box stands in the middle of its row.
         double row = spec.Nodes.Count == 0 ? 0 : spec.Nodes.Max(tall);
-        double height = columns.Count == 0 ? 0 : columns.Max(column => ColumnHeight(column, row));
-
-        var nodes = new List<PlacedNode>();
-        for (int at = 0; at < columns.Count; at++)
-        {
-            double x = lefts[at];
-            double y = (height - ColumnHeight(columns[at], row)) / 2;
-            foreach (var node in columns[at])
-            {
-                double h = tall(node);
-                nodes.Add(new PlacedNode(node, x, y + (row - h) / 2, widths[at], h));
-                y += row + Gap;
-            }
-        }
+        var (placed, height) = Bands.Place(spec, columns, new Bands.Grid(lefts, widths, row, Gap, tall), turned);
+        // A group's frame goes round its boxes; the drawing moves and grows so every frame is inside it.
+        var (nodes, groups, fitWidth, fitHeight) = Bands.Fit(placed, Bands.Frames(spec, placed, turned), width, height);
 
         // An arrow only between two boxes that exist; the router draws each as a connector and may need room outside
         // the boxes, for a lane under the drawing or a loop past the last column.
-        var byId = nodes.ToDictionary(placed => placed.Node.Id);
+        var byId = nodes.ToDictionary(node => node.Node.Id);
         var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
-        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, height, width);
+        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth);
 
-        return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight), nodes, edges);
+        return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight), nodes, edges, groups);
     }
 
     /// <summary>
@@ -166,13 +155,6 @@ public static class GraphLayout
     /// characters as every diagram's words are (<see cref="TextWrap"/>).
     /// </summary>
     public static IReadOnlyList<string> NoteLines(string note) => TextWrap.Lines(note, NoteWidth);
-
-    /// <summary>A column's height on the grid: a row per box, a gap between rows.</summary>
-    private static double ColumnHeight(IEnumerable<GraphNode> column, double row)
-    {
-        int boxes = column.Count();
-        return boxes * row + Gap * (boxes - 1);
-    }
 
     /// <summary>
     /// The room between each pair of neighbouring columns: the rooms either side of the bend for its own arrows'

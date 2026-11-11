@@ -25,6 +25,9 @@ public enum DiagramMessage
     [Description("The arrow from '{From}' to '{To}' names '{Id}', which no box in the diagram has.")]
     UnknownBox,
 
+    [Description("The box '{Id}' stands in the group '{Group}', which the diagram doesn't declare in its \"groups\".")]
+    UnknownGroup,
+
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
 

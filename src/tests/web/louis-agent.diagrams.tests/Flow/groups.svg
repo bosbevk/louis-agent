@@ -1,0 +1,61 @@
+<svg viewBox="-24 -24 948 358" width="948" height="358" role="img" aria-label="A system in groups" xmlns="http://www.w3.org/2000/svg">
+  <title>A system in groups</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="948" height="358" rx="14" />
+  <rect class="group" x="218" y="106" width="682" height="98" rx="12" />
+  <text class="group-label" x="230" y="124" text-anchor="start">louis-agent</text>
+  <rect class="group" x="706" y="212" width="194" height="98" rx="12" />
+  <text class="group-label" x="718" y="230" text-anchor="start">logs/</text>
+  <path class="edge" d="M 170 60 L 192 60 Q 200 60 200 68 L 200 158 Q 200 166 208 166 L 230 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 400 166 L 460 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 630 166 L 718 166" marker-end="url(#arrow)" />
+  <path class="edge dashed" d="M 630 166 L 686 166 Q 694 166 694 174 L 694 264 Q 694 272 702 272 L 718 272" marker-end="url(#arrow)" />
+  <text class="word" x="662" y="159" text-anchor="middle">writes</text>
+  <rect class="box" x="0" y="34" width="170" height="52" rx="10" />
+  <text class="label" x="85" y="65" text-anchor="middle">Developer</text>
+  <rect class="box" x="230" y="140" width="170" height="52" rx="10" />
+  <text class="label" x="315" y="171" text-anchor="middle">A host</text>
+  <rect class="box" x="460" y="140" width="170" height="52" rx="10" />
+  <text class="label" x="545" y="171" text-anchor="middle">The engine</text>
+  <rect class="box" x="718" y="140" width="170" height="52" rx="10" />
+  <text class="label" x="803" y="171" text-anchor="middle">The tools</text>
+  <rect class="box" x="718" y="246" width="170" height="52" rx="10" />
+  <text class="label" x="803" y="277" text-anchor="middle">The ledger</text>
+</svg>

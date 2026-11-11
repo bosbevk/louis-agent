@@ -13,6 +13,11 @@
 .note { fill: var(--quiet); font: 10px var(--mono); }
 .edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
 .word {
   fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
   paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;

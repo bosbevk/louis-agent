@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg.Theme;
 
@@ -21,10 +22,15 @@ internal sealed class FlowRenderer : IDiagramRenderer
         var placed = GraphLayout.Place(source.Flow!);
         var writer = new SvgWriter();
 
-        // The arrows first, so the boxes stand over their ends; a word sits just above its arrow's flat piece.
+        // The groups' frames first, behind everything, each labelled at its top left.
+        foreach (var group in placed.Groups)
+            writer.Box(group.X, group.Y, group.W, group.H, 12, "group")
+                .Text(group.X + 12, group.Y + 18, group.Group.Label, "group-label", "start");
+
+        // The arrows next, so the boxes stand over their ends; a word sits just above its arrow's flat piece.
         foreach (var edge in placed.Edges)
         {
-            writer.Path(edge.Path, "edge", arrow: true);
+            writer.Path(edge.Path, edge.Edge.Style == EdgeStyle.Dashed ? "edge dashed" : "edge", arrow: true);
             if (edge.Edge.Word is { } word) writer.Text(edge.WordX, edge.WordY - 7, word, "word");
         }
 

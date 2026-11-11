@@ -80,9 +80,20 @@ public static class DiagramReader
         if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
     }
 
-    /// <summary>Every arrow joins two boxes the flow has.</summary>
+    /// <summary>Every box's group is one the flow declares, and every arrow joins two boxes the flow has.</summary>
     private static void CheckFlow(GraphSpec flow)
     {
+        // A box's group must be one the diagram declares, so its frame has its label.
+        var groups = (flow.Groups ?? []).Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
+        var astray = flow.Nodes.FirstOrDefault(node => node.Group is { } group && !groups.Contains(group));
+        if (astray is not null)
+            throw Refused(DiagramMessage.UnknownGroup,
+                new
+                {
+                    astray.Id,
+                    astray.Group
+                });
+
         var ids = flow.Nodes.Select(node => node.Id).ToHashSet(StringComparer.Ordinal);
         var stray = flow.Edges.FirstOrDefault(edge => !ids.Contains(edge.From) || !ids.Contains(edge.To));
         if (stray is null) return;

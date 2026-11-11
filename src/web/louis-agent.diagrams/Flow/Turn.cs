@@ -16,7 +16,15 @@ internal static class Turn
 {
     /// <summary>The drawing turned over its diagonal.</summary>
     public static PlacedGraph Back(PlacedGraph placed) => new(placed.Height, placed.Width,
-        [.. placed.Nodes.Select(node => node with { X = node.Y, Y = node.X, W = node.H, H = node.W })],
+        [
+            .. placed.Nodes.Select(node => node with
+            {
+                X = node.Y,
+                Y = node.X,
+                W = node.H,
+                H = node.W
+            })
+        ],
         [
             .. placed.Edges.Select(edge => edge with
             {
@@ -24,6 +32,15 @@ internal static class Turn
                 WordX = edge.WordY,
                 WordY = edge.WordX,
                 Right = placed.Height
+            })
+        ],
+        [
+            .. placed.Groups.Select(group => group with
+            {
+                X = group.Y,
+                Y = group.X,
+                W = group.H,
+                H = group.W
             })
         ]);
 
