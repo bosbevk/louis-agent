@@ -102,6 +102,7 @@ public static class TitledFrame
     {
         var tones = (source.Flow?.Nodes ?? []).Select(node => node.Tone)
             .Concat((source.Sequence?.Participants ?? []).Select(head => head.Tone))
+            .Concat((source.Classes?.Types ?? []).Select(type => type.Tone))
             .Where(tone => tone != DiagramTone.Plain).Distinct().Order();
         var items = new List<(string, string, double, int)>();
         double x = 0;

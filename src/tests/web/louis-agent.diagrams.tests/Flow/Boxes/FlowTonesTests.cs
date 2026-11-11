@@ -8,7 +8,7 @@ using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
-namespace LouisAgent.Diagrams.Tests.Flow;
+namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 
 /// <summary>
 /// A box's icon and tone (CL60.2, Louis's pick "Both looks"): the icon white in a round badge of the box's tone, the

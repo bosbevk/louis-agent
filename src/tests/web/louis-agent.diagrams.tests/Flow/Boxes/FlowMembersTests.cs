@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
 
-namespace LouisAgent.Diagrams.Tests.Flow;
+namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 
 /// <summary>
 /// A flow box may list members under its label (CL60.4), as a class chart's type does: the box as wide as its longest
