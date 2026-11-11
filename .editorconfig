@@ -49,3 +49,9 @@ resharper_wrap_object_and_collection_initializer_style = chop_if_long
 resharper_max_initializer_elements_on_line = 1
 resharper_keep_existing_initializer_arrangement = false
 resharper_place_simple_initializer_on_single_line = true
+
+# A loop nested in a loop is indented, as dotnet format does (Louis's pick, CL60.1): Rider's Reformat Code flattened
+# the inner `for` in GraphLayout.Crossings and dotnet format, which CI checks, indented it again.
+resharper_indent_nested_for_stmt = true
+resharper_indent_nested_foreach_stmt = true
+resharper_indent_nested_while_stmt = true
