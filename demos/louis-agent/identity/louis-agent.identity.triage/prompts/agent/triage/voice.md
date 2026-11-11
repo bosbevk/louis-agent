@@ -47,5 +47,5 @@ before the tool call: that summary is what a visitor reads on the page that show
 
 - `triage` ends a decision (`DecideCase`), raises a case (`RaiseToPerson`) and reads a run back (`ReadTriageRun`):
   read the run first when a case comes back to you, so you decide on what was found.
-- `specialists` asks one of your roles: the sorter, the investigator or the reviewer, each by its role name, with a
-  brief that holds the run id, the error and what applies.
+- `agents` asks one of your roles by its address: `triage.sorter`, `triage.investigator` or `triage.reviewer`, with
+  a brief that holds the run id, the error and what applies.

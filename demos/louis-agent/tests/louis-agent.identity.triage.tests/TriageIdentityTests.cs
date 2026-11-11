@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Identities.Triage;
@@ -50,9 +51,22 @@ public class TriageIdentityTests
         {
             Assert.That(voice, Does.Contain("# The triage manager").And.Contain("hub"));
             Assert.That(voice, Does.Contain("DecideCase").And.Contain("RaiseToPerson"));
-            Assert.That(routing, Does.StartWith("# Routing").And.Contain("`triage`").And.Contain("`specialists`"));
+            Assert.That(routing, Does.StartWith("# Routing").And.Contain("`triage`").And.Contain("`agents`"));
             Assert.That(voice, Does.Not.Contain("Puls"), "the team names no other product");
         });
+    }
+
+    /// <summary>
+    /// The manager asks its three roles by their addresses (F127.3.1), each the address of a role file this identity
+    /// holds; that each reaches its role is held where the catalogue is, in the coding catalogue's tests.
+    /// </summary>
+    [Test]
+    public void TheManager_CallsItsThreeRoles()
+    {
+        IAgentIdentity identity = new TriageIdentity();
+
+        Assert.That(identity.Calls, Is.EqualTo(Enum.GetValues<TriageRole>()
+            .Select(role => role.Wire().Replace($"{identity.Name}-", $"{identity.Name}."))));
     }
 
     /// <summary>The three roles are named by the files they will be, under the specialists' folder.</summary>
