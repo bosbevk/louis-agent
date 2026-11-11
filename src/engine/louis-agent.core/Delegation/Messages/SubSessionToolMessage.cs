@@ -113,4 +113,15 @@ public enum SubSessionToolMessage
         "Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). " +
         "Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done.")]
     SubSessionNoAnswer,
+
+    // An address (F127.3.1): who it reaches, or why it reaches no one.
+
+    [Description("Error: no agent here is called '{Identity}'. The agents here: {Identities}.")]
+    AddressUnknownIdentity,
+
+    [Description("Error: {Identity} has no voice of its own to answer in. Ask one of its roles: {Roles}.")]
+    AddressNoVoice,
+
+    [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
+    AddressUnknownRole,
 }
