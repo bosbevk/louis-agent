@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 91 | 80 |
 | Fixes (`FX`) | 120 | 7 |
-| Cleanups (`CL`) | 27 | 26 |
+| Cleanups (`CL`) | 27 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (113 in the TODO)
+## Open (114 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -135,6 +135,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
+| CL60 | Every doc with a flow diagram also gets an overview picture of its own project, in the card style of the engine, identities and packs figure: one SVG per project, light and dark; and every diagram an SVG made with something better than Mermaid, one theme; its own plan | Cleanups |
 
 ## Features (90 done)
 

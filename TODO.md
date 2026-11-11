@@ -18,7 +18,7 @@ first step ([src/docs/CLAUDE.md](src/docs/CLAUDE.md), rule 3), never here; the n
 tag `pre-work-log` (2026-11-07). When an item is finished its row moves to the [work log](src/docs/work-log.md). The
 known limitations below are facts about today, not tasks.
 
-## Open (113)
+## Open (114)
 
 | Id | What | Phase | Detail |
 |---|---|---|---|
@@ -135,6 +135,7 @@ known limitations below are facts about today, not tasks.
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
+| CL60 | Every doc with a flow diagram also gets an overview picture of its own project (Louis, 2026-11-11, of the engine, identities and packs figure: "all docs with flow diagrams should get one of these also not as is, but for the project"): the figure's card style, one SVG per project in light and dark; and every diagram becomes an SVG that looks good, made with something better than Mermaid ("it looks shit, our svg graphs must look cool"), one shared theme, a test that each SVG matches its source; the tool is the plan's first pick; its own plan | Cleanups | — |
 
 ## Known limitations
 
