@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Svg;
 
@@ -109,6 +110,39 @@ public class TitledFrameTests
             foreach (var line in lines)
                 Assert.That(Number(line, "x") + line.Value.Length * TitledFrame.TitleChar,
                     Is.LessThanOrEqualTo(Number(bar, "x") + Number(bar, "width")));
+        });
+    }
+
+    /// <summary>
+    /// A chart in colours gets a legend under its drawing (Louis: "can we have a legend for the color"): one swatch
+    /// for each tone it uses, in the tones' order, each with what the tone means; a chart without colours has none.
+    /// </summary>
+    [Test]
+    public void AToneChart_HasALegend_OfItsTones()
+    {
+        var toned = Accounts() with
+        {
+            Flow = new GraphSpec(
+                [
+                    new GraphNode("store", "AccountUserStore", Tone: DiagramTone.Teal),
+                    new GraphNode("browser", "Browser app", Tone: DiagramTone.Blue),
+                    new GraphNode("mail", "IEmailSender", Tone: DiagramTone.Red),
+                    new GraphNode("tenant", "UseTenant", Tone: DiagramTone.Blue)
+                ],
+                [new GraphEdge("browser", "store")], FlowDirection.Down)
+        };
+
+        var svg = XDocument.Parse(DiagramRenderers.RenderTitled(toned));
+        var plain = XDocument.Parse(DiagramRenderers.RenderTitled(Accounts()));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(svg.Descendants(Svg + "rect").Select(Class).Where(cls => cls!.StartsWith("swatch")),
+                Is.EqualTo(new[] { "swatch tone-blue", "swatch tone-teal", "swatch tone-red" }));
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "legend").Select(text => text.Value),
+                Is.EqualTo(new[] { "starts it", "contracts and state", "outside the process" }));
+            Assert.That(plain.Descendants(Svg + "rect").Select(Class).Where(cls => cls!.StartsWith("swatch")),
+                Is.Empty);
         });
     }
 

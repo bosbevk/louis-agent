@@ -53,7 +53,7 @@ internal static class SvgStyle
     /// <summary>
     /// The docs' frame's look (<see cref="TitledFrame"/>), added to a framed picture's style only, so a bare
     /// picture's bytes stay as they were: a system sans font for the bar's and the note's words, the bar's navy and
-    /// its ink in both looks, and one rule per part.
+    /// its ink in both looks, and one rule per part, the legend's swatches one per tone.
     /// </summary>
     public static string Frame(SvgTheme theme) =>
         $$"""
@@ -80,8 +80,15 @@ internal static class SvgStyle
           }
           .notes { fill: var(--quiet); font: 400 12px var(--sans); }
           .note-head { fill: var(--text); font-weight: 700; }
+          .legend { fill: var(--quiet); font: 400 12px var(--sans); }
+          {{Swatches(theme)}}
 
           """;
+
+    /// <summary>Each tone's legend swatch: its box's tint and line, small.</summary>
+    private static string Swatches(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
+        .Select(tone => tone.Wire()).Select(name =>
+            $".swatch.tone-{name} {{ fill: var(--{name}-fill); stroke: var(--{name}-line); stroke-width: 1.5; }}"));
 
     /// <summary>The title bar's colours as the picture's variables.</summary>
     private static string Banner(SvgTone banner) =>

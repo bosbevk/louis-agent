@@ -32,5 +32,13 @@ public enum DiagramMessage
     UnknownCard,
 
     [Description("There is no renderer for a {Kind} diagram yet.")]
-    NoRenderer
+    NoRenderer,
+
+    // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
+    [Description("starts it")] LegendBlue,
+    [Description("this project")] LegendGreen,
+    [Description("the engine")] LegendViolet,
+    [Description("contracts and state")] LegendTeal,
+    [Description("outside the process")] LegendRed,
+    [Description("files and data")] LegendAmber
 }
