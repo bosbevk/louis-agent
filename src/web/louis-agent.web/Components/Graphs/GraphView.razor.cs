@@ -1,6 +1,7 @@
 using System.Globalization;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Spec;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Graphs;

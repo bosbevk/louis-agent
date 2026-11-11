@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Sources;
 

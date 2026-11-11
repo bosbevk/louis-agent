@@ -1,4 +1,4 @@
-namespace LouisAgent.Diagrams.Flow;
+namespace LouisAgent.Diagrams.Flow.Spec;
 
 /// <summary>
 /// A diagram as data (F111): the boxes and the arrows between them. A page declares one of these and the view draws

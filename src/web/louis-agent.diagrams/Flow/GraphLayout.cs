@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
 
@@ -35,6 +36,10 @@ public static class GraphLayout
     /// <summary>Places a diagram across the given width.</summary>
     public static PlacedGraph Place(GraphSpec spec, int width = 880)
     {
+        // A box with no column takes the one its arrows give it, so everything below sees a column on every box.
+        var ranks = Ranks.Of(spec);
+        spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
+
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the
         // height.
         var columns = Ordered(spec);

@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 
 namespace LouisAgent.Diagrams.Sources;

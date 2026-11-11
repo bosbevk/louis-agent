@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
 
