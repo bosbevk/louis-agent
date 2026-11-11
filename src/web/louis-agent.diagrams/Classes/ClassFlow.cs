@@ -22,9 +22,20 @@ public static class ClassFlow
     public static GraphSpec Of(ClassesSpec spec) =>
         new(spec.Types.Select(type => new GraphNode(type.Id, type.Name, type.Kind, Group: type.Group, Icon: type.Icon,
                 Tone: ToneOf(type), Members: type.Members)).ToList(),
-            spec.Relations.Select(Edge).ToList(),
+            Once(spec.Relations.Select(Edge)),
             spec.Direction,
             spec.Groups);
+
+    /// <summary>
+    /// The arrows, a word shared by several into the same type kept on the first only (CL60.4), so a fan of
+    /// implementers doesn't pile its chips up by the interface; the rest keep their style.
+    /// </summary>
+    private static List<GraphEdge> Once(IEnumerable<GraphEdge> edges)
+    {
+        var said = new HashSet<(string To, string Word)>();
+        return edges.Select(edge => edge.Word is { } word && !said.Add((edge.To, word)) ? edge with { Word = null } : edge)
+            .ToList();
+    }
 
     /// <summary>The words in a type's kind that make it a contract or state rather than a part that does the work.</summary>
     private static readonly string[] Contracts = ["interface", "record", "enum"];

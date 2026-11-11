@@ -87,6 +87,24 @@ public class ClassFlowTests
         }));
     }
 
+    /// <summary>
+    /// Arrows into one type with the same word say it once: the first keeps it, the rest go without, their style still
+    /// saying what they are, so a fan of chips doesn't pile up by the type.
+    /// </summary>
+    [Test]
+    public void ArrowsIntoOneType_SayASharedWordOnce()
+    {
+        var spec = new ClassesSpec(
+            [new ClassType("i", "ICheck", "interface"), new ClassType("a", "A"), new ClassType("b", "B"), new ClassType("c", "C")],
+            [
+                new ClassRelation("a", "i", RelationKind.Implements), new ClassRelation("b", "i", RelationKind.Implements),
+                new ClassRelation("c", "i", RelationKind.Uses, "reads")
+            ]);
+
+        Assert.That(ClassFlow.Of(spec).Edges.Select(edge => edge.Word),
+            Is.EqualTo(new[] { "implements", null, "reads" }));
+    }
+
     /// <summary>The drawing matches its golden file, looked at by eye when it was made.</summary>
     [Test]
     public void AClassChart_MatchesTheGoldenFile() =>
