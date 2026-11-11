@@ -27,7 +27,11 @@ public static class MermaidImport
         string docTitle = doc.ReplaceLineEndings("\n").Split('\n').FirstOrDefault(line => line.StartsWith("# "))?[2..]
             .Split(" — ")[0].Trim() ?? name;
 
-        var taken = new HashSet<string>(StringComparer.Ordinal);
+        // A picture already beside the doc (a flow imported before) is taken, so nothing is written over it.
+        var taken = Directory.Exists(folder)
+            ? Directory.EnumerateFiles(folder, "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>()
+                .ToHashSet(StringComparer.Ordinal)
+            : new HashSet<string>(StringComparer.Ordinal);
         var imported = new List<MermaidImported>();
         foreach (var block in Blocks(doc))
         {
@@ -52,7 +56,7 @@ public static class MermaidImport
         new string([.. words.Select(c => char.IsLetterOrDigit(c) ? char.ToLowerInvariant(c) : ' ')])
             .Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-    /// <summary>The name, or with -2, -3 after it when the doc already used it.</summary>
+    /// <summary>The name, or with -2, -3 after it when the doc or a picture beside it already has it.</summary>
     private static string Unique(string name, HashSet<string> taken)
     {
         string unique = name;

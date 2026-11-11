@@ -137,4 +137,27 @@ public class MermaidSequenceReaderTests
 
         Assert.That(kinds, Is.EqualTo(new[] { DiagramKind.Flow, DiagramKind.Sequence }));
     }
+
+    /// <summary>
+    /// A doc whose flowchart was imported before keeps that picture: a sequence under the same heading takes the next
+    /// free name rather than writing over it.
+    /// </summary>
+    [Test]
+    public void Importing_NeverWritesOverAPictureAlreadyThere()
+    {
+        string folder = Directory.CreateTempSubdirectory("louis-agent-import-").FullName;
+        string doc = Path.Combine(folder, "louis-agent.cli.md");
+        string flow = Path.Combine(folder, "diagrams", "louis-agent.cli-diagrams.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(flow)!);
+        File.WriteAllText(flow, "the flow drawn before");
+        File.WriteAllText(doc, "# louis-agent.cli\n\n## Diagrams\n\n```mermaid\nsequenceDiagram\n    a->>b: hi\n```\n");
+
+        var imported = MermaidImport.Write(doc).Single();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(File.ReadAllText(flow), Is.EqualTo("the flow drawn before"));
+            Assert.That(Path.GetFileName(imported.Json), Is.EqualTo("louis-agent.cli-diagrams-2.json"));
+        });
+    }
 }
