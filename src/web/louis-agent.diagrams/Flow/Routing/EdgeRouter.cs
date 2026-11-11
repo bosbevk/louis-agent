@@ -19,8 +19,8 @@ namespace LouisAgent.Diagrams.Flow.Routing;
 /// </remarks>
 internal static class EdgeRouter
 {
-    /// <summary>The round at a bend, and the least a piece may be before a bend is drawn sharp.</summary>
-    private const double Bend = 8;
+    /// <summary>The round at a bend on the site, where no other is asked for.</summary>
+    internal const double Bend = 8;
 
     /// <summary>How far under the drawing the first lane runs.</summary>
     private const double BackLane = 30;
@@ -68,13 +68,14 @@ internal static class EdgeRouter
     /// since once turned back it stands beside an upright line (CL60.2).
     /// </summary>
     private static double RoomOf(string word, bool turned) =>
-        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + 22 : 8 * word.Length + 16;
+        turned ? FlowText.WordStep * FlowText.WordLines(word).Count + FlowText.ChipExtra + 22 : 8 * word.Length + 16;
 
     /// <summary>
     /// Where a word stands on its piece: in the middle, lying on it; laid out turned, at the top of its room, so its
-    /// lines stand under the piece's start and clear of the bend.
+    /// chip starts just under the piece's start and stays clear of the bend.
     /// </summary>
-    private static double WordAlong(double start, double end, bool turned) => turned ? start + 18 : (start + end) / 2;
+    private static double WordAlong(double start, double end, bool turned) =>
+        turned ? start + FlowText.ChipRise + 2 : (start + end) / 2;
 
     /// <summary>
     /// How many arrows with a word leave each box; a box with two or more puts its words by their targets.
@@ -84,14 +85,16 @@ internal static class EdgeRouter
             .ToDictionary(group => group.Key, group => group.Count());
 
     /// <summary>
-    /// Routes the known arrows; the height and width grow for the lanes and loops that run outside the boxes.
+    /// Routes the known arrows, their corners rounded by <paramref name="bend"/>; the height and width grow for the
+    /// lanes and loops that run outside the boxes.
     /// </summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
         IReadOnlyList<GraphEdge> edges,
         IReadOnlyDictionary<string, PlacedNode> byId,
         double height,
         double width,
-        bool turned = false)
+        bool turned = false,
+        double bend = Bend)
     {
         var self = edges.Where(edge => edge.From == edge.To).ToList();
         var back = edges.Where(edge => edge.From != edge.To && byId[edge.To].Node.Column < byId[edge.From].Node.Column)
@@ -112,8 +115,8 @@ internal static class EdgeRouter
         int detours = 0;
         var placed = plans.Select(plan => Connector(Detours.Crosses(plan, byId)
             ? Detours.Detour(plan, byId, firstFree + Step * detours++)
-            : plan)).ToList();
-        placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From]))));
+            : plan, bend)).ToList();
+        placed.AddRange(self.Select(edge => Connector(SelfLoop(edge, byId[edge.From]), bend)));
 
         // Room for the lanes under the drawing, and for a track or a loop past the last column.
         if (back.Count > 0) height += BackLane + Step * (backLanes - 1) + 8;
@@ -277,11 +280,11 @@ internal static class EdgeRouter
     }
 
     /// <summary>
-    /// The path through the points, each bend rounded by a quarter-curve that starts and ends <see cref="Bend"/> from
-    /// the corner, or less when a piece is shorter; the length is the pieces' sum, close enough for the stroke that
-    /// draws it.
+    /// The path through the points, each bend rounded by a quarter-curve that starts and ends <paramref name="bend"/>
+    /// from the corner, or less when a piece is shorter, so a short jog between two wide corners reads as a soft S;
+    /// the length is the pieces' sum, close enough for the stroke that draws it.
     /// </summary>
-    private static PlacedEdge Connector(Plan plan)
+    private static PlacedEdge Connector(Plan plan, double bend)
     {
         var (edge, points, wordX, wordY) = plan;
         var path = new System.Text.StringBuilder($"M {N(points[0].X)} {N(points[0].Y)}");
@@ -299,7 +302,7 @@ internal static class EdgeRouter
 
             // Stop short of the corner, then curve through it towards the next point.
             var (nextX, nextY) = points[at + 1];
-            double round = Math.Min(Bend,
+            double round = Math.Min(bend,
                 Math.Min(Math.Abs(toX - fromX) + Math.Abs(toY - fromY), Math.Abs(nextX - toX) + Math.Abs(nextY - toY)) /
                 2);
             if (round < 1) continue;

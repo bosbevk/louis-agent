@@ -20,7 +20,7 @@ internal static class Clearance
                     yield return $"the line {edge.Edge.From}>{edge.Edge.To} crosses {box.Node.Id}";
 
             if (edge.Edge.Word is not { } word) continue;
-            var (x, y, w, h) = WordBox(edge, word);
+            var (x, y, w, h) = FlowText.WordBox(edge);
             if (x < 0 || y < 0 || x + w > placed.Width || y + h > placed.Height)
                 yield return $"the word '{word}' leaves the drawing";
             foreach (var box in placed.Nodes.Where(box => x < box.X + box.W && box.X < x + w && y < box.Y + box.H
@@ -32,17 +32,10 @@ internal static class Clearance
                 yield return $"the word '{word}' lies on the line {other.Edge.From}>{other.Edge.To}";
             // Each pair of words once: this word against the words of the arrows after it.
             foreach (var other in placed.Edges.SkipWhile(other => other != edge).Skip(1)
-                         .Where(other => other.Edge.Word is { } otherWord
-                                         && Overlap((x, y, w, h), WordBox(other, otherWord))))
+                         .Where(other => other.Edge.Word is not null
+                                         && Overlap((x, y, w, h), FlowText.WordBox(other))))
                 yield return $"the word '{word}' overlaps the word '{other.Edge.Word}'";
         }
-    }
-
-    /// <summary>The ground a word covers, drawn centred on its point and just above it.</summary>
-    private static (double X, double Y, double W, double H) WordBox(PlacedEdge edge, string word)
-    {
-        double width = FlowText.WordWidth(word);
-        return (edge.WordX - width / 2, edge.WordY - 16, width, FlowText.WordStep * FlowText.WordLines(word).Count);
     }
 
     /// <summary>The straight pieces of a path: a curve's corner counts as the point it turns at.</summary>

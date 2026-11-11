@@ -77,7 +77,7 @@ public class DocsDiagramsTests
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Where(pair => pair.source.Flow is not null)
-            .SelectMany(pair => Clearance.Faults(GraphLayout.Place(pair.source.Flow!))
+            .SelectMany(pair => Clearance.Faults(GraphLayout.Place(pair.source.Flow!, bend: GraphLayout.SoftBend))
                 .Select(fault => $"{Path.GetFileNameWithoutExtension(pair.json)}: {fault}")).ToList();
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.

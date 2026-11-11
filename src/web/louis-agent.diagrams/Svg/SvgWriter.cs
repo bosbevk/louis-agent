@@ -29,6 +29,9 @@ internal sealed class SvgWriter
 
     private readonly List<XElement> _shapes = [];
 
+    /// <summary>The tones whose arrowheads the drawing uses, each written once, in the order first used.</summary>
+    private readonly List<string> _tones = [];
+
     /// <summary>A rounded box.</summary>
     public SvgWriter Box(double x, double y, double width, double height, double radius, string cls)
     {
@@ -47,13 +50,16 @@ internal sealed class SvgWriter
     }
 
     /// <summary>
-    /// A path, ending in the arrowhead when it is an arrow, and starting in one too when it points back as well.
+    /// A path, ending in the arrowhead when it is an arrow, and starting in one too when it points back as well; a
+    /// toned arrow's head wears its tone (CL60.2).
     /// </summary>
-    public SvgWriter Path(string data, string cls, bool arrow, bool arrowAtStart = false)
+    public SvgWriter Path(string data, string cls, bool arrow, bool arrowAtStart = false, string? tone = null)
     {
+        string head = tone is null ? ArrowId : $"{ArrowId}-{tone}";
+        if (tone is not null && (arrow || arrowAtStart)) _tones.Add(tone);
         var path = new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", data));
-        if (arrowAtStart) path.Add(new XAttribute("marker-start", $"url(#{ArrowId})"));
-        if (arrow) path.Add(new XAttribute("marker-end", $"url(#{ArrowId})"));
+        if (arrowAtStart) path.Add(new XAttribute("marker-start", $"url(#{head})"));
+        if (arrow) path.Add(new XAttribute("marker-end", $"url(#{head})"));
         _shapes.Add(path);
         return this;
     }
@@ -91,7 +97,8 @@ internal sealed class SvgWriter
             new XAttribute("role", "img"), new XAttribute("aria-label", title),
             new XElement(Svg + "title", title),
             new XElement(Svg + "style", SvgStyle.Of(theme)),
-            new XElement(Svg + "defs", Arrowhead()),
+            new XElement(Svg + "defs", Arrowhead(ArrowId, "arrow"),
+                _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}"))),
             new XElement(Svg + "rect", new XAttribute("class", "ground"), new XAttribute("x", N(-Pad)),
                 new XAttribute("y", N(-Pad)), new XAttribute("width", N(outerWidth)),
                 new XAttribute("height", N(outerHeight)), new XAttribute("rx", "14")),
@@ -110,13 +117,13 @@ internal sealed class SvgWriter
         return text.Append('\n').ToString();
     }
 
-    /// <summary>The arrowhead every arrow ends in.</summary>
-    private static XElement Arrowhead() =>
-        new(Svg + "marker", new XAttribute("id", ArrowId), new XAttribute("viewBox", "0 0 10 10"),
+    /// <summary>An arrowhead an arrow ends in, plain or in a tone.</summary>
+    private static XElement Arrowhead(string id, string cls) =>
+        new(Svg + "marker", new XAttribute("id", id), new XAttribute("viewBox", "0 0 10 10"),
             new XAttribute("refX", "10"), new XAttribute("refY", "5"), new XAttribute("markerWidth", "8"),
             new XAttribute("markerHeight", "8"), new XAttribute("markerUnits", "userSpaceOnUse"),
             new XAttribute("orient", "auto-start-reverse"),
-            new XElement(Svg + "path", new XAttribute("class", "arrow"), new XAttribute("d", "M 0 0 L 10 5 L 0 10 z")));
+            new XElement(Svg + "path", new XAttribute("class", cls), new XAttribute("d", "M 0 0 L 10 5 L 0 10 z")));
 
     /// <summary>A number as the file writes it: invariant, at most one decimal.</summary>
     private static string N(double value) => value.ToString("0.#", CultureInfo.InvariantCulture);

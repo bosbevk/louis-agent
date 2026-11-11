@@ -18,10 +18,8 @@
 .group-label {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
 }
-.word {
-  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
-}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
@@ -38,23 +36,29 @@
   fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
-.badge.tone-blue { fill: var(--blue-line); }
-.label.tone-blue { fill: var(--blue-ink); }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
 .box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
-.badge.tone-green { fill: var(--green-line); }
-.label.tone-green { fill: var(--green-ink); }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
 .box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
-.badge.tone-violet { fill: var(--violet-line); }
-.label.tone-violet { fill: var(--violet-ink); }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
 .box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
-.badge.tone-teal { fill: var(--teal-line); }
-.label.tone-teal { fill: var(--teal-ink); }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
 .box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
-.badge.tone-red { fill: var(--red-line); }
-.label.tone-red { fill: var(--red-ink); }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
 .box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
-.badge.tone-amber { fill: var(--amber-line); }
-.label.tone-amber { fill: var(--amber-ink); }</style>
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -68,7 +72,8 @@
   <path class="edge" d="M 170 60 L 238 60" marker-end="url(#arrow)" />
   <path class="edge" d="M 408 60 L 468 60" marker-end="url(#arrow)" />
   <path class="edge" d="M 638 60 L 766 60" marker-end="url(#arrow)" />
-  <path class="edge dashed" d="M 638 60 L 714 60 Q 722 60 722 68 L 722 158 Q 722 166 730 166 L 766 166" marker-end="url(#arrow)" />
+  <path class="edge dashed" d="M 638 60 L 698 60 Q 722 60 722 84 L 722 144 Q 722 166 744 166 L 766 166" marker-end="url(#arrow)" />
+  <rect class="word-chip" x="655" y="41" width="50" height="18" rx="4" />
   <text class="word" x="680" y="53" text-anchor="middle">writes</text>
   <rect class="box" x="0" y="34" width="170" height="52" rx="10" />
   <text class="label" x="85" y="65" text-anchor="middle">Developer</text>

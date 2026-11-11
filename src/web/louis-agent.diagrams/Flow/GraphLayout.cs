@@ -40,8 +40,14 @@ public static class GraphLayout
     /// <summary>How many rounds of sweeps, left to right and back, order the columns.</summary>
     private const int Sweeps = 4;
 
-    /// <summary>Places a diagram across the given width.</summary>
-    public static PlacedGraph Place(GraphSpec spec, int width = 880)
+    /// <summary>
+    /// How far from its turn an arrow's corner starts in the docs' pictures (CL60.2, Louis's pick "Both looks"): wide
+    /// enough that a jog reads as a soft S. The site keeps <see cref="EdgeRouter.Bend"/>.
+    /// </summary>
+    public const double SoftBend = 24;
+
+    /// <summary>Places a diagram across the given width, each arrow's corners rounded by the bend asked for.</summary>
+    public static PlacedGraph Place(GraphSpec spec, int width = 880, double bend = EdgeRouter.Bend)
     {
         // A box with no column takes the one its arrows give it, so everything below sees a column on every box.
         var ranks = Ranks.Of(spec);
@@ -51,14 +57,14 @@ public static class GraphLayout
 
         // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
         return spec.Direction == FlowDirection.Down
-            ? Turn.Back(PlaceRight(spec, 0, turned: true))
-            : PlaceRight(spec, width, turned: false);
+            ? Turn.Back(PlaceRight(spec, 0, turned: true, bend))
+            : PlaceRight(spec, width, turned: false, bend);
     }
 
     /// <summary>
     /// The diagram laid out to the right across the given width; turned, every box's width and height swap places.
     /// </summary>
-    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned)
+    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend)
     {
         Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, tall = turned ? WidthOf : HeightOf;
 
@@ -85,7 +91,7 @@ public static class GraphLayout
         // the boxes, for a lane under the drawing or a loop past the last column.
         var byId = nodes.ToDictionary(node => node.Node.Id);
         var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
-        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, turned);
+        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, turned, bend);
 
         // The waypoints go, and each chain through them is one arrow again.
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),

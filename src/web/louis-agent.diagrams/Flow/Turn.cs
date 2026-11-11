@@ -31,9 +31,8 @@ internal static class Turn
         {
             var beside = edge with { WordX = Beside(edge, turned.Edges, words) };
             edges.Add(beside);
-            if (beside.Edge.Word is { } word)
-                words.Add((beside.WordX - Half(beside), beside.WordX + Half(beside), beside.WordY - 16,
-                    beside.WordY - 16 + FlowText.WordStep * FlowText.WordLines(word).Count));
+            var (x, y, w, h) = FlowText.WordBox(beside);
+            if (beside.Edge.Word is not null) words.Add((x, x + w, y, y + h));
         }
 
         double left = edges.Count == 0 ? 0 : Math.Min(0, edges.Min(edge => edge.WordX - Half(edge)) - BesideGap);
@@ -56,8 +55,9 @@ internal static class Turn
         IReadOnlyList<(double Left, double Right, double Top, double Bottom)> words)
     {
         double rightX = edge.WordX + BesideGap + Half(edge), leftX = edge.WordX - BesideGap - Half(edge);
-        if (edge.Edge.Word is not { } word) return rightX;
-        double top = edge.WordY - 16, bottom = top + FlowText.WordStep * FlowText.WordLines(word).Count;
+        if (edge.Edge.Word is null) return rightX;
+        var (_, top, _, height) = FlowText.WordBox(edge);
+        double bottom = top + height;
 
         bool ClearOfLines(double middle) => !all.Where(other => other != edge)
             .SelectMany(other => Pieces(other.Path))

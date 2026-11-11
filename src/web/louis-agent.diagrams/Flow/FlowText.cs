@@ -13,18 +13,38 @@ public static class FlowText
     public const double NoteTop = 44, NoteStep = 12;
 
     /// <summary>
-    /// How wide a character of an arrow's word is: the 600 10px code font, a pixel apart, in capitals (CL60.2).
+    /// How wide a character of an arrow's word is: the 10px code font with a little to spare, so a font that runs
+    /// wide still fits its chip (CL60.2).
     /// </summary>
     public const double WordChar = 7;
 
     /// <summary>How far a word's next line stands under the one before.</summary>
     public const double WordStep = 12;
 
+    /// <summary>
+    /// The chip a word stands in (CL60.2, Louis's pick "Both looks"): the room beside its lines, how far its top
+    /// stands above the word's point, and what it adds under the lines.
+    /// </summary>
+    public const double ChipPad = 4, ChipRise = 19, ChipExtra = 6;
+
     /// <summary>A word's lines: a <c>\n</c> breaks it, as the import does for a chart that runs down.</summary>
     public static IReadOnlyList<string> WordLines(string word) => word.Split('\n');
 
-    /// <summary>How wide a word is: its longest line.</summary>
-    public static double WordWidth(string word) => WordLines(word).Max(line => line.Length) * WordChar;
+    /// <summary>How wide a word's chip is: its longest line and the room either side.</summary>
+    public static double WordWidth(string word) =>
+        WordLines(word).Max(line => line.Length) * WordChar + 2 * ChipPad;
+
+    /// <summary>
+    /// The ground a word covers, its chip, centred on the word's point and just above it: the layout keeps it clear
+    /// of lines and other words, and the renderer draws the chip there.
+    /// </summary>
+    public static (double X, double Y, double W, double H) WordBox(PlacedEdge edge)
+    {
+        if (edge.Edge.Word is not { } word) return (edge.WordX, edge.WordY, 0, 0);
+        double width = WordWidth(word);
+        return (edge.WordX - width / 2, edge.WordY - ChipRise, width,
+            WordStep * WordLines(word).Count + ChipExtra);
+    }
 
     /// <summary>
     /// The round badge a box's icon sits in (CL60.2): its size, how far it stands from the box's left, and the room

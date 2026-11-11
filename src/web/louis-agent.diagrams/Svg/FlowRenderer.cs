@@ -25,7 +25,7 @@ internal sealed class FlowRenderer : IDiagramRenderer
 
     public string Render(DiagramSource source)
     {
-        var placed = GraphLayout.Place(source.Flow!);
+        var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend);
         var writer = new SvgWriter();
 
         // The groups' frames first, behind everything, each labelled at its top left.
@@ -33,13 +33,25 @@ internal sealed class FlowRenderer : IDiagramRenderer
             writer.Box(group.X, group.Y, group.W, group.H, 12, "group")
                 .Text(group.X + 12, group.Y + 18, group.Group.Label, "group-label", "start");
 
-        // The arrows next, so the boxes stand over their ends; a word sits just above its arrow's flat piece.
+        // The arrows next, each in the tone of the box it leaves, so the boxes stand over their ends.
+        var toneOf = placed.Nodes.ToDictionary(node => node.Node.Id, node => node.Node.Tone);
         foreach (var edge in placed.Edges)
         {
-            writer.Path(edge.Path, edge.Edge.Style == EdgeStyle.Dashed ? "edge dashed" : "edge", arrow: true);
-            var lines = edge.Edge.Word is { } word ? FlowText.WordLines(word) : [];
+            var tone = toneOf.GetValueOrDefault(edge.Edge.From);
+            string dashed = edge.Edge.Style == EdgeStyle.Dashed ? " dashed" : "";
+            writer.Path(edge.Path, "edge" + dashed + Class(tone), arrow: true,
+                tone: tone == DiagramTone.Plain ? null : tone.Wire());
+        }
+
+        // Every word after every arrow, so no line runs over a chip; each chip where the layout kept it clear.
+        foreach (var edge in placed.Edges.Where(edge => edge.Edge.Word is not null))
+        {
+            string tone = Class(toneOf.GetValueOrDefault(edge.Edge.From));
+            var (x, y, w, h) = FlowText.WordBox(edge);
+            writer.Box(x, y, w, h, 4, "word-chip" + tone);
+            var lines = FlowText.WordLines(edge.Edge.Word!);
             for (int at = 0; at < lines.Count; at++)
-                writer.Text(edge.WordX, edge.WordY - 7 + FlowText.WordStep * at, lines[at], "word");
+                writer.Text(edge.WordX, edge.WordY - 7 + FlowText.WordStep * at, lines[at], "word" + tone);
         }
 
         foreach (var node in placed.Nodes) Draw(writer, node);
@@ -56,7 +68,7 @@ internal sealed class FlowRenderer : IDiagramRenderer
     /// </summary>
     private static void Draw(SvgWriter writer, PlacedNode node)
     {
-        string tone = node.Node.Tone == DiagramTone.Plain ? "" : $" tone-{node.Node.Tone.Wire()}";
+        string tone = Class(node.Node.Tone);
         writer.Box(node.X, node.Y, node.W, node.H, 10, "box" + tone);
 
         (double x, string anchor) = (node.X + node.W / 2, "middle");
@@ -77,4 +89,7 @@ internal sealed class FlowRenderer : IDiagramRenderer
         for (int at = 0; at < lines.Count; at++)
             writer.Text(x, node.Y + FlowText.NoteY(node) + FlowText.NoteStep * at, lines[at], "note", anchor);
     }
+
+    /// <summary>The class a shape adds for its tone: none for plain, so a plain shape draws as it always did.</summary>
+    private static string Class(DiagramTone tone) => tone == DiagramTone.Plain ? "" : $" tone-{tone.Wire()}";
 }

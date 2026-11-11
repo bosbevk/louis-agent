@@ -30,10 +30,8 @@ internal static class SvgStyle
           .group-label {
             fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
           }
-          .word {
-            fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-            paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
-          }
+          .word { fill: var(--text); font: 500 10px var(--mono); }
+          .word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
           .caption {
             fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
           }
@@ -61,12 +59,13 @@ internal static class SvgStyle
             $" --{tone.Key.Wire()}-ink: {tone.Value.Ink};"));
 
     /// <summary>
-    /// What a tone changes, one set of rules per tone the light palette has: a box's tint and line, its badge, and
-    /// its label's ink.
+    /// What a tone changes, one set of rules per tone the light palette has: a box's tint and line, its badge, its
+    /// label's ink, and the arrows that leave it, their heads, chips and words.
     /// </summary>
     private static string ToneRules(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
         .Select(tone => tone.Wire()).Select(name =>
             $".box.tone-{name} {{ fill: var(--{name}-fill); stroke: var(--{name}-line); stroke-width: 1.5; }}\n" +
-            $".badge.tone-{name} {{ fill: var(--{name}-line); }}\n" +
-            $".label.tone-{name} {{ fill: var(--{name}-ink); }}"));
+            $".badge.tone-{name}, .arrow.tone-{name} {{ fill: var(--{name}-line); }}\n" +
+            $".label.tone-{name}, .word.tone-{name} {{ fill: var(--{name}-ink); }}\n" +
+            $".edge.tone-{name}, .word-chip.tone-{name} {{ stroke: var(--{name}-line); }}"));
 }
