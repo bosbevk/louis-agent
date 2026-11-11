@@ -50,6 +50,12 @@ transcribe models). A cloud provider's price goes in the dated price table from 
   picks one; unset means voice is off and the mic button is not drawn.
 - **Hold to talk, check, then send.** The browser records a clip with `MediaRecorder`, the API turns it into text,
   and the text lands **in the box**, not sent: the person reads it, fixes a wrong word, and presses send (choice C2).
+- **One mic at a time on a page.** louis-agent.dev shows several demos on one page, each with its own chat, and a
+  browser has one microphone. The recorder is one module the whole page shares (ADR 0093 imports it once): starting a
+  recording in one chat stops any other first, and the words go back only to the chat that started it.
+- **Many people at once on the server.** Each request gets its own Whisper processor over one model loaded once per
+  process; a cap on transcriptions running together (a semaphore) keeps the CPU for chat, and a request over the cap
+  waits a moment, then is refused with its reason (429).
 - **Audio is never kept.** It lives in memory for the one request and is dropped; only the text and the seconds are
   recorded. A clip is capped (60 seconds, 5 MB) and refused with its reason past that (ADR 0005).
 - **Counted like every request.** A speech row in the ledger: seconds of audio, the provider, the price from the dated
@@ -62,7 +68,8 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 | # | Choice | Options | Recommended |
 |---|---|---|---|
 | C1 | Where the words come from first | (a) Whisper in our own process (Whisper.net, MIT, whisper.cpp underneath): free, private, CPU and a model file in the image; (b) the OpenAI-shaped client we already reference, pointed at OpenAI's cloud: least code, paid per minute, audio leaves us; (c) Azure Speech: `af-ZA`/`zu-ZA` listed, 5 free hours a month, its own SDK and an adapter we write | **Picked (a)** (Louis, 2026-11-11: "whisper then"; free only, no account): free evals, audio never leaves our box, the seam lets (b) or (c) join in one step later |
-| C2 | What happens after the person stops talking | (a) the text goes in the box to check; (b) it is sent at once; (c) a setting per site | (a) |
+| C2 | What happens after the person stops talking | (a) the text goes in the box to check; (b) it is sent at once; (c) a setting per site | **Picked (c)** (Louis, 2026-11-11: "if it is small just add it and it is fun"); where the setting lives is C2b |
+| C2b | Where "check or send" is set (Louis's demos share one page) | (a) once per site in its config; (b) on each chat box, the component's parameter, so each demo picks; (c) per chat box with a site default | (b): a demo page holds several agents, and one parameter covers a one-chat site too |
 | C3 | Where the mic shows | (a) every site on the framework's web, off unless `SPEECH_PROVIDER` is set; (b) Puls only; (c) (a) plus F131's widget now | (a), the widget picks it up when F131 builds its frame |
 
 ### Diagrams
@@ -209,13 +216,13 @@ Each step is one commit with its test, written and seen failing first, and a sto
 2. **The first provider** (C1). Test: the provider is picked by name; an integration test turns a two-second fixture
    clip into its words (`*.integration-tests`, the model fetched once and cached).
 3. **The endpoint.** `POST /v1/sessions/{id}/transcriptions`, a named method returning `TypedResults` (ADR 0045, 0051);
-   refuses over 60 s or 5 MB, an unknown session, or voice off, each with its message enum (ADR 0009). Test with a
+   refuses over 60 s or 5 MB, an unknown session, voice off, or too many at once (429), each with its message enum (ADR 0009). Test with a
    fake client, including that nothing is written to disk.
 4. **The ledger.** A speech row: seconds, provider, price from the dated table or `null`; every host's totals include
    it. Test: a local clip records 0 with its reason, an unpriced provider `null`.
 5. **The mic.** `MicButton` beside the send button, its recorder as a module beside it (ADR 0093), the text into the
-   box (C2), not drawn when voice is off, a one-line privacy note on first use. Test: bUnit for drawn/not drawn and the
-   text landing in the box.
+   box or sent, by the chat box's setting (C2, C2b), one recording on the page at a time, not drawn when voice is off, a one-line privacy note on first use. Test: bUnit for drawn/not drawn, the text
+   landing in the box or sent by the setting, and a second chat's mic stopping the first.
 6. **The voice eval.** The `WordErrorRate` check in the catalogue (C# once), and the eval as files: Louis's clips with
    what was said, English and Afrikaans. Free with a local provider; a cloud provider's run waits for Louis's go.
 7. **Docs.** ADR 0118 (speech behind the same seam as chat; audio never kept), the core and web design docs, the
