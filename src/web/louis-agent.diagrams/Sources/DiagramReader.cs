@@ -4,6 +4,7 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -134,8 +135,16 @@ public static class DiagramReader
     private static void CheckSequence(SequenceSpec sequence)
     {
         if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps, new { });
-        if (sequence.Steps.OfType<NoteStep>().FirstOrDefault(note => note.Over.Count == 0) is { } bare)
+        var all = sequence.Steps.SelectMany(step => step.All()).ToList();
+        if (all.OfType<NoteStep>().FirstOrDefault(note => note.Over.Count == 0) is { } bare)
             throw Refused(DiagramMessage.NoteOverNoOne, new { bare.Text });
+        if (all.OfType<BlockStep>().FirstOrDefault(Empty) is { } empty)
+            throw Refused(DiagramMessage.EmptyBlock,
+                new
+                {
+                    Kind = empty.Block.Wire(),
+                    empty.Label
+                });
 
         var ids = sequence.Participants.Select(head => head.Id).ToHashSet(StringComparer.Ordinal);
         var stray = sequence.Steps
@@ -149,6 +158,10 @@ public static class DiagramReader
                 Step = stray.Step.ToString()
             });
     }
+
+    /// <summary>A block, or one of its cases, with nothing in it: a frame round nothing.</summary>
+    private static bool Empty(BlockStep block) =>
+        block.Steps.Count == 0 || (block.Else ?? []).Any(@case => @case.Steps.Count == 0);
 
     /// <summary>The refusal, its text from the message enum.</summary>
     private static InvalidDataException Refused(DiagramMessage message, object values) =>

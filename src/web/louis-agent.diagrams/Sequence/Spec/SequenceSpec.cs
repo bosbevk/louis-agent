@@ -1,3 +1,5 @@
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
+
 namespace LouisAgent.Diagrams.Sequence.Spec;
 
 /// <summary>

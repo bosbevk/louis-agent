@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Tests.Sequence;
 

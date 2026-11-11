@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec;
@@ -75,6 +76,22 @@ public static class SequenceText
 
     /// <summary>How tall a note's panel is for its lines.</summary>
     public static double NoteHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * WordPad;
+
+    /// <summary>
+    /// A block's frame: how far it reaches past what it holds (so a nested one sits inside), the room round its tab's
+    /// words, and the room under its last row.
+    /// </summary>
+    public const double Inset = 14, TabPad = 6, BlockEnd = 8;
+
+    /// <summary>How tall a block's tab is, or an else's divider with its label, for the label's lines.</summary>
+    public static double TabHeight(IReadOnlyList<string> lines) => lines.Count * LineStep + 2 * TabPad + 4;
+
+    /// <summary>How wide the chip naming a block's kind is.</summary>
+    public static double KindWidth(BlockKind kind) => kind.Wire().Length * FlowText.WordChar + 2 * WordPad;
+
+    /// <summary>How wide a frame must be for its tab: the kind's chip and the label beside it.</summary>
+    public static double TabWidth(BlockKind kind, IReadOnlyList<string> lines) =>
+        KindWidth(kind) + WordsWidth(lines) + TabPad;
 
     /// <summary>The panel a note stands on, centred over the lifelines it names.</summary>
     public static (double X, double Y, double W, double H) NoteBox(PlacedRow row)

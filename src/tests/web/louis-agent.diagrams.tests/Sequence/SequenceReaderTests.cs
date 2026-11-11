@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 

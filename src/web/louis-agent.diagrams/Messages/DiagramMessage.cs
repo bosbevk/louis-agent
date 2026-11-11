@@ -37,6 +37,9 @@ public enum DiagramMessage
     [Description("A note stands over the lifelines it names, so it names one at least: \"{Text}\".")]
     NoteOverNoOne,
 
+    [Description("The {Kind} \"{Label}\" holds no steps, in it or in one of its cases.")]
+    EmptyBlock,
+
     [Description("A sequence needs at least one step: a message, a reply, a note or a block.")]
     NoSteps,
 

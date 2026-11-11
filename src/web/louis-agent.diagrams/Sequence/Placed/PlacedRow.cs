@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Sequence.Placed;
 
