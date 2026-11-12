@@ -134,6 +134,8 @@ public enum SubSessionToolMessage
     [Description("--- Answer {Number} ---")]
     AgentWorkBegan,
 
+    [Description("Asked: {Text}")] AgentWorkAsked,
+
     [Description("Said: {Text}")] AgentWorkSaid,
 
     [Description("Called {Tool} with {Input}")]

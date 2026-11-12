@@ -157,6 +157,11 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
         /// <summary>It began another answer: the first, or a follow-up's.</summary>
         Began,
 
+        /// <summary>
+        /// It was asked something, as its server tells it (F127.4.2): by the asker, or by a visitor carrying on.
+        /// </summary>
+        Asked,
+
         /// <summary>It said something to the asker.</summary>
         Said,
 

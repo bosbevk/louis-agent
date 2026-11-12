@@ -43,7 +43,11 @@ public static class ToolsetCatalog
             GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(AskAgentTools), typeof(AgentWorkTools)],
-            CreateTools: ctx => [new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink), new AgentWorkTools()]),
+            CreateTools: ctx =>
+            [
+                new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink),
+                new AgentWorkTools(ctx.Options.AgentApiKey)
+            ]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
