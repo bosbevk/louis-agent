@@ -60,4 +60,28 @@ public enum SiteToolMessage
 
     [Description("Two choices say the same, '{Label}': each needs its own words.")]
     OfferSameLabel,
+
+    [Description(
+        "Asked: the visitor sees the form under your words, {Count} to fill in; what they send comes back as their " +
+        "next message, each field by its label. The form ends this answer: write nothing more, and wait for it.")]
+    Asked,
+
+    [Description("Error: not asked. {Reason} Fix the form and call AskFor again.")]
+    AskRefused,
+
+    [Description("The form needs its question: what it asks for.")]
+    AskWithoutQuestion,
+
+    [Description("A form asks one to four fields; this has {Count}.")]
+    AskFieldCount,
+
+    [Description(
+        "Field {Number} needs a label of 1 to {Most} characters, the words over its box; '{Label}' has {Length}.")]
+    AskBadLabel,
+
+    [Description("Field {Number}'s kind isn't one the form draws; use one of {Kinds}.")]
+    AskUnknownKind,
+
+    [Description("Two fields say the same, '{Label}': each needs its own label.")]
+    AskSameLabel,
 }

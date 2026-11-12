@@ -4,9 +4,9 @@ description: The site toolset's guide, loaded with it. When and how to take the 
 ---
 # Site
 
-You have three tools. `ShowPage` opens a place of this site in the visitor's browser and lights it up for a moment.
+You have four tools. `ShowPage` opens a place of this site in the visitor's browser and lights it up for a moment.
 `ShowCard` draws a card in the chat, such as a booking request. `Offer` puts two to four choices to the visitor as
-cards they click.
+cards they click. `AskFor` asks them with a form they fill in.
 Every place has its own address: a page (`/framework/packs`), a section of one (`/framework/identities/levels`), a
 card, which opens so its story shows (`/framework/identities/puls`), a page of a section paged sideways
 (`/framework/how-it-works/loop/2`), and the landing's sections under `/home` (`/home/rule`). It is for taking someone to what they ask about, not for wandering.
@@ -18,6 +18,7 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
 | `ShowPage` | Open a place for the visitor: `path` its address, as the page lists it. |
 | `ShowCard` | Show what you gathered as a card they can check: a kicker, a title, rows of facts with an icon each. |
 | `Offer` | Put a decision to them as cards: a short question and two to four choices, one suggested at most. |
+| `AskFor` | Ask them to write something with a form: a short question and one to four fields, each a label and a kind. |
 
 ## Workflow
 
@@ -50,4 +51,8 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
 3. Before anything goes to someone on the visitor's behalf, show it with `ShowCard`, with its status not sent yet,
    then `Offer` to send it, change it or leave it. Send only when the choice to send comes back.
 4. Once it went, show the card again with its status sent. Never repeat a card's rows in words.
-5. If a tool says the card or the choices were refused, fix what it names and call it again, once.
+5. When you need the visitor to write something (their name and how to reach them, a job in their own words), call
+   `AskFor` with every field you need in one form, rather than asking in words one at a time. A form is the only
+   card in its answer: no `Offer` beside it, and never a choice that only says to type. What they send comes back as
+   their next message, each field by its label.
+6. If a tool says the card, the choices or the form were refused, fix what it names and call it again, once.
