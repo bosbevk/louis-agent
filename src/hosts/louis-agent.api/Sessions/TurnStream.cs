@@ -5,6 +5,7 @@ using System.Net.ServerSentEvents;
 using System.Threading.Channels;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Messages.Holes.Turns;
+using LouisAgent.Api.Sessions.Log;
 using LouisAgent.Api.Sessions.Prompts;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Core.Agent;
@@ -13,6 +14,7 @@ using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;
+using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -22,7 +24,9 @@ namespace LouisAgent.Api.Sessions;
 /// </summary>
 internal static class TurnStream
 {
-    /// <summary>The prompt for a message: <see cref="TurnPrompt"/>'s, its words, its attachments and its page.</summary>
+    /// <summary>
+    /// The prompt for a message: <see cref="TurnPrompt"/>'s, its words, its attachments and its page.
+    /// </summary>
     public static string BuildPrompt(SendMessageRequest request) => TurnPrompt.Of(request);
 
     /// <summary>
@@ -30,10 +34,11 @@ internal static class TurnStream
     /// format writes them, a sub-session's events among them, and the turn's end or its failure with its kind.
     /// </summary>
     public static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
-        AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
+        AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn, TurnLog? log = null)
     {
         var stream = StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role);
         UsageScope? usage = null;
+        var tools = new List<string>();
         try
         {
             yield return stream.Start();
@@ -94,8 +99,11 @@ internal static class TurnStream
                 }
 
                 foreach (var content in updates.Current.Contents)
-                    foreach (var item in stream.Content(content))
-                        yield return item;
+                {
+                    // The turn log keeps each tool the turn called, by name, once (F127.8).
+                    if (content is FunctionCallContent call && !tools.Contains(call.Name)) tools.Add(call.Name);
+                    foreach (var item in stream.Content(content)) yield return item;
+                }
             }
 
             // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the
@@ -121,6 +129,10 @@ internal static class TurnStream
             {
                 session.Usage.EndTurn(usage.Records);
                 usage.Dispose();
+                // A line for the admin's overview: where the turn came from and what it did, none of what was said.
+                var finished = new TurnLogRecord(DateTimeOffset.UtcNow, session.Id, session.Turns, session.Identity,
+                    session.Page?.Url, session.Page?.Focus, tools);
+                log?.Write(finished);
             }
 
             session.EndTurn(turn);

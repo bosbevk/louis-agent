@@ -11,6 +11,7 @@ using LouisAgent.Api.Messages;
 using LouisAgent.Api.Messages.Holes.Places;
 using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Log;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Api.Sessions.Work;
@@ -64,6 +65,9 @@ internal sealed class SessionHandlers(AgentHostContext host)
 {
     private readonly WebReplayMode _defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
     private readonly ReplayStore? _recordings = ReplayStore.From(host.Agent);
+
+    // A line per turn beside the ledger, for the admin's overview (F127.8); none when the ledger is off.
+    private readonly TurnLog _turns = new(host.Agent.UsageLedger ? host.Agent.LogDirectory : null);
 
     /// <summary>The API's log, for who opened which session.</summary>
     private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Sessions");
@@ -176,6 +180,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
         // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
         session.Windows = request.Windows ?? [];
+        // The page it came from, for the turn's line in the log; a message that sends none keeps the last one's.
+        session.Page = request.Page ?? session.Page;
         // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
         foreach (var attachment in request.Attachments ?? [])
             session.Remember(attachment.Name, attachment.Content);
@@ -188,7 +194,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
             prompt = MessageText.Format(ApiModelText.UserPlace, where) + "\n\n" + prompt;
         }
 
-        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn));
+        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns));
     }
 
     /// <summary>
