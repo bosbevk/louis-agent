@@ -6,10 +6,9 @@ using LouisAgent.Composition.Sessions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
-using LouisAgent.Core.Llm;
+using LouisAgent.Core.Agent.Messages.Holes;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
@@ -135,15 +134,16 @@ internal sealed class TurnRunner(
                 if (owedAsked || OwedTool(updates, chatOptions) is not { } owed) yield break;
                 owedAsked = true;
                 // A request must end with the user's message (no prefill), so a notice asks for it, as after a cut-off.
-                history.Add(new ChatMessage(ChatRole.User,
-                    MessageText.Format(AgentToolMessage.EndWithTool, new { Tool = owed })));
+                var owedTool = new EndWithToolHoles(owed);
+                history.Add(new ChatMessage(ChatRole.User, MessageText.Format(AgentToolMessage.EndWithTool, owedTool)));
                 chatOptions = Requiring(chatOptions, owed);
                 continue;
             }
 
             if (continuation >= MaxCutOffContinuations) yield break;
 
-            Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, new { MaxOutputTokens });
+            var outputLimit = new ReplyCutOffHoles(MaxOutputTokens);
+            Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, outputLimit);
             ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
@@ -158,8 +158,11 @@ internal sealed class TurnRunner(
     private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options)
     {
         if (TurnIdentity.Current?.EndsEachAnswerWith is not { } tool) return null;
-        var calls = updates.SelectMany(u => u.Contents).OfType<FunctionCallContent>().ToList();
+        var answer = updates.SelectMany(u => u.Contents).ToList();
+        var calls = answer.OfType<FunctionCallContent>().ToList();
         if (calls.Any(call => call.Name == tool)) return null;
+        // An answer that ended the turn with another tool, such as a form, is closed: nothing beside it (F127.4.3).
+        if (TurnEnding.Ended(answer, options.Tools)) return null;
         // An answer that asked another agent owes nothing: that agent may be waiting for the person (FX141).
         if (calls.Any(call => call.Name == nameof(AskAgentTools.AskAgent))) return null;
         return options.Tools?.Any(t => t.Name == tool) == true ? tool : null;

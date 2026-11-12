@@ -1,5 +1,5 @@
-
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Agent.Messages.Holes;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Agent.Messages;
@@ -20,6 +20,7 @@ public enum AgentToolMessage
 
     [Description(
         "[automatic notice] End your answer by calling {Tool} with the person's next choices, another page among them when this one is done. Write no more words.")]
+    [Holes(typeof(EndWithToolHoles))]
     EndWithTool,
 
     [Description(
@@ -29,8 +30,7 @@ public enum AgentToolMessage
     [Description("Error: {Tool} was NOT run: it needs every argument below. Call it again with them:\n{Missing}")]
     ArgumentsMissing,
 
-    [Description("- {Name}: {Meaning}")]
-    ArgumentMissing,
+    [Description("- {Name}: {Meaning}")] ArgumentMissing,
 
     [Description(
         "[{Tool} returned {Chars} chars, too large to include verbatim. If exact content is needed, call it again with narrower arguments (e.g. a specific file path).]")]

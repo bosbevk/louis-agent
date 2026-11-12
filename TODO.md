@@ -138,6 +138,7 @@ known limitations below are facts about today, not tasks.
 | CL53 | A price format per country | Cleanups | — |
 | CL54 | A pack can't add itself to a router | Cleanups | — |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups | — |
+| CL61 | `ToolCallGuards` is over 200 lines once Rider lays out its message holes, and `Agent/Turns` holds six files: split it by responsibility (the oversized-result summary its own class, the folder into subfolders), its holes into records (ADR 0119), and have it end the turn through `TurnEnding.Ends` as `TurnRunner` does (found in F127.4.3 step 3) | Cleanups | — |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups | — |
 
 ## Known limitations

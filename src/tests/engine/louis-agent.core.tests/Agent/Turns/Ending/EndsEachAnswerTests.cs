@@ -23,6 +23,19 @@ public class EndsEachAnswerTests
 
         /// <summary>Asks another agent, by the engine's own tool's name.</summary>
         public string AskAgent() => "Booked? What name should I put it under?";
+
+        /// <summary>Asks the person with a form, which also ends the turn; a refused form ends nothing.</summary>
+        [EndsTurn]
+        public string Form(bool good) =>
+            good ? "Asked: 2 to fill in." : "Error: not asked. The form needs its question.";
+    }
+
+    /// <summary>A model reply that asks with a form, a good one or a refused one.</summary>
+    private static ChatResponse CallsForm(bool good)
+    {
+        var formArguments = new Dictionary<string, object?> { ["good"] = good };
+        return new ChatResponse(new ChatMessage(ChatRole.Assistant,
+            [new FunctionCallContent("call_f", nameof(AskingTools.Form), formArguments)]));
     }
 
     /// <summary>A model reply that only talks.</summary>
@@ -86,6 +99,31 @@ public class EndsEachAnswerTests
         await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         Assert.That(client.Requests, Has.Count.EqualTo(2), "no third request for choices");
+    }
+
+    /// <summary>
+    /// F127.4.3, Louis: "and then only that card". An answer that ended with another tool that ends the turn (a form)
+    /// is closed: it owes no choices beside it.
+    /// </summary>
+    [Test]
+    public async Task AnAnswerThatEndedWithAForm_OwesNoChoices()
+    {
+        var client = new FakeChatClient(_ => CallsForm(good: true), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+
+        Assert.That(client.Requests, Has.Count.EqualTo(1), "no second request for choices");
+    }
+
+    /// <summary>A refused form ended nothing: when the answer then stops in words, it still owes its choices.</summary>
+    [Test]
+    public async Task AnAnswerWhoseFormWasRefused_StillOwesChoices()
+    {
+        var client = new FakeChatClient(_ => CallsForm(good: false), _ => Says("Tell me your name."), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+
+        Assert.That(client.Requests, Has.Count.EqualTo(3));
     }
 
     /// <summary>An answer that ends with its tool, or an identity that asks for none, costs no extra request.</summary>
