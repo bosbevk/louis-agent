@@ -1,0 +1,57 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.site: the interface design",
+  "caption": "One tool that moves nothing: it checks the path and says it is shown, and the widget that hears the call does the moving.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "SitePack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Toolsets: site, always on"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "SiteTools",
+        "kind": "the tool the model calls",
+        "members": [
+          "+ShowPage(path) string"
+        ]
+      },
+      {
+        "id": "messages",
+        "name": "SiteToolMessage",
+        "kind": "enum, shown or refused with the reason"
+      },
+      {
+        "id": "toolset",
+        "name": "SiteToolset",
+        "kind": "enum",
+        "members": [
+          "Site"
+        ]
+      },
+      {
+        "id": "guide",
+        "name": "prompts/toolsets/site.md",
+        "kind": "when to call it, once, and what to say",
+        "tone": "amber"
+      },
+      {
+        "id": "runner",
+        "name": "ChatRunner.ToolCalled",
+        "kind": "louis-agent.web, the widget acts",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "pack", "to": "toolset", "kind": "uses" },
+      { "from": "pack", "to": "guide", "kind": "holds" },
+      { "from": "tools", "to": "messages", "kind": "uses" },
+      { "from": "runner", "to": "tools", "kind": "uses", "word": "hears each call" }
+    ]
+  }
+}

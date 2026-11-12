@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.pack.leads: how it works",
+  "caption": "A lead is sent once, on the visitor's yes: the key picks the sender, and a demonstration's lead says so in its subject.",
+  "flow": {
+    "nodes": [
+      { "id": "agent", "label": "An agent\nthe guide or a showroom business", "icon": "chip", "tone": "violet" },
+      { "id": "tool", "label": "LeadTools.SendLead\nname, contact, wants", "icon": "mail", "tone": "green" },
+      { "id": "seam", "label": "ILeadSender\npicked by RESEND_API_KEY", "icon": "search", "tone": "teal" },
+      { "id": "resend", "label": "ResendLeadSender", "icon": "mail", "tone": "green" },
+      { "id": "log", "label": "LogLeadSender\nthe PC and the tests", "icon": "file", "tone": "green" },
+      { "id": "api", "label": "Resend\nto LEADS_TO", "icon": "cloud", "tone": "red" },
+      { "id": "logs", "label": "The log", "icon": "file", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "agent", "to": "tool", "word": "on the yes" },
+      { "from": "tool", "to": "seam" },
+      { "from": "seam", "to": "resend", "word": "a key" },
+      { "from": "seam", "to": "log", "word": "no key" },
+      { "from": "resend", "to": "api" },
+      { "from": "log", "to": "logs" }
+    ]
+  }
+}

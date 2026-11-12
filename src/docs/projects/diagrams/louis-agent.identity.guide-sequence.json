@@ -11,9 +11,9 @@
     ],
     "steps": [
       { "step": "message", "from": "visitor", "to": "guide", "text": "how much is a website with an agent?" },
-      { "step": "message", "from": "guide", "to": "docs", "text": "docs_search(\"pricing\")" },
+      { "step": "message", "from": "guide", "to": "docs", "text": "SearchDocs(\"pricing\")" },
       { "step": "reply", "from": "docs", "to": "guide", "text": "the sections that match" },
-      { "step": "message", "from": "guide", "to": "docs", "text": "docs_fetch(the best one)" },
+      { "step": "message", "from": "guide", "to": "docs", "text": "ReadDoc(the best one)" },
       { "step": "reply", "from": "docs", "to": "guide", "text": "its text" },
       { "step": "message", "from": "guide", "to": "site", "text": "ShowPage(\"/pricing\")" },
       { "step": "reply", "from": "site", "to": "visitor", "text": "the browser opens the pricing" },

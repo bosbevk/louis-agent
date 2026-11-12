@@ -1,0 +1,90 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.leads: the interface design",
+  "caption": "One tool and a seam: SendLead checks the three parts, and the sender is Resend with a key or the log without one.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "LeadsPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+LeadsPack(LeadsOptions, loggers?, http?)",
+          "+Toolsets: leads, off without LEADS_TO"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "LeadsOptions",
+        "members": [
+          "+To?, From, ApiKey?",
+          "+FromEnvironment() (static)"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "LeadTools",
+        "kind": "the tool the model calls",
+        "members": [
+          "+SendLead(name, contact, wants) string"
+        ]
+      },
+      {
+        "id": "lead",
+        "name": "Lead",
+        "kind": "record",
+        "members": [
+          "+Name, Contact, Wants, At",
+          "+Identity?, Demonstration"
+        ]
+      },
+      {
+        "id": "isender",
+        "name": "ILeadSender",
+        "kind": "interface",
+        "members": [
+          "+SendAsync(Lead)",
+          "+Mails"
+        ]
+      },
+      {
+        "id": "resend",
+        "name": "ResendLeadSender",
+        "kind": "posts to Resend's API",
+        "members": [
+          "+SendAsync(Lead)"
+        ]
+      },
+      {
+        "id": "log",
+        "name": "LogLeadSender",
+        "kind": "writes the lead to the log"
+      },
+      {
+        "id": "message",
+        "name": "ResendMessage",
+        "kind": "record",
+        "members": [
+          "+From, To, Subject, Text",
+          "+Of(lead, options) (static)"
+        ]
+      },
+      {
+        "id": "api",
+        "name": "Resend",
+        "kind": "outside the process",
+        "tone": "red"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "options", "kind": "holds" },
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "isender", "kind": "holds" },
+      { "from": "tools", "to": "lead", "kind": "creates" },
+      { "from": "resend", "to": "isender", "kind": "implements" },
+      { "from": "log", "to": "isender", "kind": "implements" },
+      { "from": "resend", "to": "message", "kind": "creates" },
+      { "from": "resend", "to": "api", "kind": "uses", "word": "posts" }
+    ]
+  }
+}

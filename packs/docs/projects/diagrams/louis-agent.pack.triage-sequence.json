@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.triage: an investigation reported",
+  "caption": "A typed ending, never prose read by a pattern: a bad value comes back with its choices, and a good one is a step on the run.",
+  "sequence": {
+    "participants": [
+      { "id": "role", "label": "The investigator", "icon": "chip", "tone": "violet" },
+      { "id": "tools", "label": "TriageTools", "icon": "checks", "tone": "green" },
+      { "id": "recorder", "label": "FileTriageRecorder", "icon": "folder", "tone": "amber" },
+      { "id": "runtools", "label": "RunTools", "icon": "book", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "role", "to": "tools", "text": "ReportInvestigation(runId, where, cause, area, confidence)" },
+      { "step": "block", "block": "alt", "label": "a value not in its enum",
+        "steps": [ { "step": "reply", "from": "tools", "to": "role", "text": "refused, the choices named" } ],
+        "else": [ { "label": "every value good",
+          "steps": [
+            { "step": "message", "from": "tools", "to": "recorder", "text": "SaveAsync(step)" },
+            { "step": "reply", "from": "tools", "to": "role", "text": "recorded" }
+          ] } ] },
+      { "step": "message", "from": "runtools", "to": "recorder", "text": "ReadAsync(runId), for ReadTriageRun" },
+      { "step": "reply", "from": "recorder", "to": "runtools", "text": "the run, one line a step, how it ended" }
+    ]
+  }
+}

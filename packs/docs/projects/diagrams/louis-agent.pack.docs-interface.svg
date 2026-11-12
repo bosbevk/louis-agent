@@ -1,0 +1,177 @@
+<svg viewBox="-24 -24 959 628" width="959" height="628" role="img" aria-label="louis-agent.pack.docs: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.pack.docs: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="959" height="628" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="911" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.pack.docs:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-green" d="M 182 204 L 194 204 Q 206 204 206 192 L 206 157 Q 206 133 230 133 L 278 133" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 182 204 L 194 204 Q 206 204 206 216 L 206 251 Q 206 275 230 275 L 278 275" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 572 275 L 584 275 Q 596 275 596 263 L 596 86 Q 596 62 620 62 L 708 62" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 572 275 L 584 275 Q 596 275 596 263 L 596 228 Q 596 204 620 204 L 708 204" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 572 275 L 584 275 Q 596 275 596 287 L 596 322 Q 596 346 620 346 L 708 346" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="220.5" y="111" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="242" y="123" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="213.5" y="253" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="242" y="265" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="630.5" y="40" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="652" y="52" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="606" y="182" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="652" y="194" text-anchor="middle">refuses with</text>
+    <rect class="word-chip tone-green" x="630.5" y="324" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="652" y="336" text-anchor="middle">reads</text>
+    <rect class="box tone-green" x="0" y="149" width="182" height="110" rx="10" />
+    <text class="label tone-green" x="91" y="177" text-anchor="middle">DocsPack</text>
+    <text class="note" x="91" y="193" text-anchor="middle">implements IAgentPack</text>
+    <path class="frame" d="M 0 213 L 182 213" />
+    <text class="word tone-green" x="14" y="231" text-anchor="start">+DocsPack(DocsOptions)</text>
+    <text class="word tone-green" x="14" y="245" text-anchor="start">+Toolsets: docs</text>
+    <rect class="box tone-green" x="278" y="84" width="294" height="98" rx="10" />
+    <text class="label tone-green" x="425" y="115" text-anchor="middle">DocsOptions</text>
+    <path class="frame" d="M 278 136 L 572 136" />
+    <text class="word tone-green" x="292" y="154" text-anchor="start">+Root string?</text>
+    <text class="word tone-green" x="292" y="168" text-anchor="start">+FromEnvironment() (static): DOCS_ROOT</text>
+    <rect class="box tone-green" x="278" y="213" width="294" height="124" rx="10" />
+    <text class="label tone-green" x="425" y="241" text-anchor="middle">DocsTools</text>
+    <text class="note" x="425" y="257" text-anchor="middle">the tools the model calls</text>
+    <path class="frame" d="M 278 277 L 572 277" />
+    <text class="word tone-green" x="292" y="295" text-anchor="start">+ListDocs(folder) string</text>
+    <text class="word tone-green" x="292" y="309" text-anchor="start">+ReadDoc(path) string</text>
+    <text class="word tone-green" x="292" y="323" text-anchor="start">+SearchDocs(query, maxResults) string</text>
+    <rect class="box tone-violet" x="708" y="14" width="203" height="96" rx="10" />
+    <text class="label tone-violet" x="809.5" y="42" text-anchor="middle">WorkspaceBoundary</text>
+    <text class="note" x="809.5" y="58" text-anchor="middle">louis-agent.composition</text>
+    <path class="frame" d="M 708 78 L 911 78" />
+    <text class="word tone-violet" x="722" y="96" text-anchor="start">every path under the root</text>
+    <rect class="box tone-teal" x="708" y="166" width="203" height="76" rx="10" />
+    <text class="label tone-teal" x="809.5" y="194" text-anchor="middle">DocsToolMessage</text>
+    <text class="note" x="809.5" y="210" text-anchor="middle">enum, each refusal's</text>
+    <text class="note" x="809.5" y="222" text-anchor="middle">reason</text>
+    <rect class="box tone-amber" x="708" y="308" width="203" height="76" rx="10" />
+    <text class="label tone-amber" x="809.5" y="336" text-anchor="middle">The docs folder</text>
+    <text class="note" x="809.5" y="352" text-anchor="middle">the repo's, or the</text>
+    <text class="note" x="809.5" y="364" text-anchor="middle">image's /app/docs</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="490" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="500.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-amber" x="133.6" y="490" width="12" height="12" rx="3" />
+  <text class="legend" x="151.6" y="500.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="526" width="911" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 536) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="548">
+    <tspan class="note-head">Three tools over one folder:</tspan>
+    <tspan class="note-rest">off until DOCS_ROOT is set, and every path kept under it by the same boundary the files</tspan>
+  </text>
+  <text class="notes" x="38" y="565">
+    <tspan class="note-rest">pack uses.</tspan>
+  </text>
+</svg>

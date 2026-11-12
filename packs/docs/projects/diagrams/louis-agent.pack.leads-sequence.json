@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.leads: one lead sent",
+  "caption": "Never a throw into the loop: a missing part is asked for, a sender's failure comes back as text, and the model hears whether a mail really went.",
+  "sequence": {
+    "participants": [
+      { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "tool", "label": "LeadTools", "icon": "mail", "tone": "green" },
+      { "id": "sender", "label": "ResendLeadSender", "icon": "mail", "tone": "green" },
+      { "id": "resend", "label": "Resend", "icon": "cloud", "tone": "red" }
+    ],
+    "steps": [
+      { "step": "message", "from": "model", "to": "tool", "text": "SendLead(name, contact, wants)" },
+      { "step": "block", "block": "alt", "label": "a part is missing",
+        "steps": [ { "step": "reply", "from": "tool", "to": "model", "text": "which part, so it asks" } ],
+        "else": [ { "label": "all three",
+          "steps": [
+            { "step": "message", "from": "tool", "to": "sender", "text": "SendAsync(lead), the time in UTC" },
+            { "step": "message", "from": "sender", "to": "resend", "text": "POST /emails, [demo] in a demonstration's subject" },
+            { "step": "reply", "from": "resend", "to": "sender", "text": "sent" },
+            { "step": "reply", "from": "tool", "to": "model", "text": "sent, or the failure as text" }
+          ] } ] }
+    ]
+  }
+}

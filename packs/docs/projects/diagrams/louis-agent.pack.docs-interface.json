@@ -1,0 +1,63 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.docs: the interface design",
+  "caption": "Three tools over one folder: off until DOCS_ROOT is set, and every path kept under it by the same boundary the files pack uses.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "DocsPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+DocsPack(DocsOptions)",
+          "+Toolsets: docs"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "DocsOptions",
+        "members": [
+          "+Root string?",
+          "+FromEnvironment() (static): DOCS_ROOT"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "DocsTools",
+        "kind": "the tools the model calls",
+        "members": [
+          "+ListDocs(folder) string",
+          "+ReadDoc(path) string",
+          "+SearchDocs(query, maxResults) string"
+        ]
+      },
+      {
+        "id": "boundary",
+        "name": "WorkspaceBoundary",
+        "kind": "louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "every path under the root"
+        ]
+      },
+      {
+        "id": "messages",
+        "name": "DocsToolMessage",
+        "kind": "enum, each refusal's reason"
+      },
+      {
+        "id": "root",
+        "name": "The docs folder",
+        "kind": "the repo's, or the image's /app/docs",
+        "tone": "amber"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "options", "kind": "holds" },
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "boundary", "kind": "holds" },
+      { "from": "tools", "to": "messages", "kind": "uses", "word": "refuses with" },
+      { "from": "tools", "to": "root", "kind": "uses", "word": "reads" }
+    ]
+  }
+}

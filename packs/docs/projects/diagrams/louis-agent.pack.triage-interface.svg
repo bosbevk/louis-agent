@@ -1,0 +1,210 @@
+<svg viewBox="-24 -24 1884 773" width="1884" height="773" role="img" aria-label="louis-agent.pack.triage: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.pack.triage: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1884" height="773" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1836" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.pack.triage:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-green" d="M 329 69 L 539 69" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 329 69 L 443 69 Q 467 69 467 93 L 467 201 Q 467 225 491 225 L 539 225" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 329 69 L 443 69 Q 467 69 467 93 L 467 357 Q 467 381 491 381 L 539 381" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 980 225 L 1030 225 Q 1054 225 1054 249 L 1054 357 Q 1054 381 1078 381 L 1166 381" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 980 381 L 1166 381" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 1460 381 L 1508 381 Q 1532 381 1532 357 L 1532 315 Q 1532 303 1544 303 L 1556 303" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 980 225 L 1166 225" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 329 537 L 539 537" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="481.5" y="47" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="503" y="59" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="474.5" y="203" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="503" y="215" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1064" y="359" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="1110" y="371" text-anchor="middle">one recorder</text>
+    <rect class="word-chip tone-green" x="986.5" y="359" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1008" y="371" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="1467.5" y="359" width="57" height="18" rx="4" />
+    <text class="word tone-teal" x="1496" y="371" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1081.5" y="203" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1110" y="215" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="339.5" y="515" width="99" height="18" rx="4" />
+    <text class="word tone-green" x="389" y="527" text-anchor="middle">its error log</text>
+    <rect class="box tone-green" x="0" y="14" width="329" height="110" rx="10" />
+    <text class="label tone-green" x="164.5" y="42" text-anchor="middle">TriagePack</text>
+    <text class="note" x="164.5" y="58" text-anchor="middle">implements IAgentPack</text>
+    <path class="frame" d="M 0 78 L 329 78" />
+    <text class="word tone-green" x="14" y="96" text-anchor="start">+TriagePack(TriageOptions)</text>
+    <text class="word tone-green" x="14" y="110" text-anchor="start">+Toolsets: triage, off without its settings</text>
+    <rect class="box tone-teal" x="0" y="181" width="329" height="88" rx="10" />
+    <text class="label tone-teal" x="164.5" y="209" text-anchor="middle">FileTriageRecorder</text>
+    <text class="note" x="164.5" y="225" text-anchor="middle">one JSON-lines file per</text>
+    <text class="note" x="164.5" y="237" text-anchor="middle">run, implements</text>
+    <text class="note" x="164.5" y="249" text-anchor="middle">ITriageRecorder</text>
+    <rect class="box tone-teal" x="0" y="319" width="329" height="124" rx="10" />
+    <text class="label tone-teal" x="164.5" y="347" text-anchor="middle">IErrorFeed</text>
+    <text class="note" x="164.5" y="363" text-anchor="middle">interface</text>
+    <path class="frame" d="M 0 383 L 329 383" />
+    <text class="word tone-teal" x="14" y="401" text-anchor="start">+ReadNew() IReadOnlyList&lt;ServiceError&gt;</text>
+    <text class="word tone-teal" x="14" y="415" text-anchor="start">+Find(id) ServiceError?</text>
+    <text class="word tone-teal" x="14" y="429" text-anchor="start">+MarkHandled(id)</text>
+    <rect class="box tone-green" x="0" y="493" width="329" height="88" rx="10" />
+    <text class="label tone-green" x="164.5" y="521" text-anchor="middle">JsonLinesErrorFeed</text>
+    <text class="note" x="164.5" y="537" text-anchor="middle">the log and the handled</text>
+    <text class="note" x="164.5" y="549" text-anchor="middle">ids, for the workflow,</text>
+    <text class="note" x="164.5" y="561" text-anchor="middle">implements IErrorFeed</text>
+    <rect class="box tone-green" x="539" y="27" width="441" height="84" rx="10" />
+    <text class="label tone-green" x="759.5" y="58" text-anchor="middle">TriageOptions</text>
+    <path class="frame" d="M 539 79 L 980 79" />
+    <text class="word tone-green" x="553" y="97" text-anchor="start">+Runs?, People?, Departments?</text>
+    <rect class="box tone-green" x="539" y="156" width="441" height="138" rx="10" />
+    <text class="label tone-green" x="759.5" y="184" text-anchor="middle">TriageTools</text>
+    <text class="note" x="759.5" y="200" text-anchor="middle">the roles' typed endings</text>
+    <path class="frame" d="M 539 220 L 980 220" />
+    <text class="word tone-green" x="553" y="238" text-anchor="start">+SortCase(runId, department, why)</text>
+    <text class="word tone-green" x="553" y="252" text-anchor="start">+ReportInvestigation(runId, where, cause, area, confidence)</text>
+    <text class="word tone-green" x="553" y="266" text-anchor="start">+ReportReview(runId, happy, reasons)</text>
+    <text class="word tone-green" x="553" y="280" text-anchor="start">+DecideCase(runId, kind, reason)</text>
+    <rect class="box tone-green" x="539" y="332" width="441" height="98" rx="10" />
+    <text class="label tone-green" x="759.5" y="363" text-anchor="middle">RunTools</text>
+    <path class="frame" d="M 539 384 L 980 384" />
+    <text class="word tone-green" x="553" y="402" text-anchor="start">+ReadTriageRun(runId)</text>
+    <text class="word tone-green" x="553" y="416" text-anchor="start">+RaiseToPerson(runId, summary, why)</text>
+    <rect class="box tone-teal" x="539" y="483" width="441" height="108" rx="10" />
+    <text class="label tone-teal" x="759.5" y="511" text-anchor="middle">Department</text>
+    <text class="note" x="759.5" y="527" text-anchor="middle">record, from</text>
+    <text class="note" x="759.5" y="539" text-anchor="middle">departments.yaml</text>
+    <path class="frame" d="M 539 559 L 980 559" />
+    <text class="word tone-teal" x="553" y="577" text-anchor="start">+Name, Repository, ErrorLog, People</text>
+    <rect class="box tone-teal" x="1166" y="193" width="294" height="64" rx="10" />
+    <text class="label tone-teal" x="1313" y="221" text-anchor="middle">Investigation, Review, CaseDecision</text>
+    <text class="note" x="1313" y="237" text-anchor="middle">records, behind each step</text>
+    <rect class="box tone-teal" x="1166" y="326" width="294" height="110" rx="10" />
+    <text class="label tone-teal" x="1313" y="354" text-anchor="middle">ITriageRecorder</text>
+    <text class="note" x="1313" y="370" text-anchor="middle">interface</text>
+    <path class="frame" d="M 1166 390 L 1460 390" />
+    <text class="word tone-teal" x="1180" y="408" text-anchor="start">+SaveAsync(TriageStep)</text>
+    <text class="word tone-teal" x="1180" y="422" text-anchor="start">+ReadAsync(runId) TriageRun?</text>
+    <rect class="box tone-teal" x="1556" y="248" width="280" height="110" rx="10" />
+    <text class="label tone-teal" x="1696" y="276" text-anchor="middle">TriageRun</text>
+    <text class="note" x="1696" y="292" text-anchor="middle">record</text>
+    <path class="frame" d="M 1556 312 L 1836 312" />
+    <text class="word tone-teal" x="1570" y="330" text-anchor="start">+Id, Steps TriageStep list, Outcome?</text>
+    <text class="word tone-teal" x="1570" y="344" text-anchor="start">+Of(id, steps) (static)</text>
+  </g>
+  <rect class="notebar" x="0" y="688" width="1836" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 698) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="710">
+    <tspan class="note-head">A feed in, a recorder out:</tspan>
+    <tspan class="note-rest">the roles end with typed tool calls, every step is written to the run, and a run can be read back or raised to a person.</tspan>
+  </text>
+</svg>
