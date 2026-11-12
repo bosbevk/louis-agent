@@ -71,6 +71,31 @@ public class GuideSkillsTests
         });
     }
 
+    /// <summary>
+    /// FX133, from Louis's look at the live site: walking a demo page, *What to watch* ended with the walkthrough's
+    /// three choices and never offered the live demo. The walkthrough now names that stop's own choices, and after the
+    /// business answers he coaches: what it just did and why (Louis's pick, "run it live and coach").
+    /// </summary>
+    [Test]
+    public void AtWhatToWatch_TheWalkthroughOffersTheDemoLive_AndHeCoachesAfterTheAnswer()
+    {
+        string voice = Flat(Read("voice.md").Body);
+        string skill = Flat(Read("skills/live-demo.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("On a demo page, the *What to watch* stop ends with `Offer`: Ask it live"));
+            Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
+            Assert.That(skill, Does.Contain("what it just did and why"));
+            Assert.That(skill, Does.Contain("End with `Offer`: two or three questions they could ask it next"),
+                "Louis: \"when he is the teacher he must give me offers of what I could ask\"");
+        });
+    }
+
+    /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
+    private static string Flat(string text) =>
+        string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));
+
     /// <summary>The voice keeps who he is and how he answers, and no longer carries either map.</summary>
     [Test]
     public void TheVoice_KeepsWhoHeIs_WithoutTheMaps() =>
