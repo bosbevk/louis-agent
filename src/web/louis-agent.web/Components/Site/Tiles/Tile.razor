@@ -1,6 +1,6 @@
 @* One tile in a row (F118): a panel with a number and its note, or a title and a few words, rising as it enters. The
    panel's look (.panel, .chrome) is the site's own, as a band's kicker is; the number's layout sits beside this. *@
-<article class="@Classes" data-delay="@DelayValue">
+<article class="@Classes" data-delay="@DelayValue" id="@PieceAddress" data-piece="@IsPiece">
     @if (Title is not null)
     {
         <h3>@Title</h3>

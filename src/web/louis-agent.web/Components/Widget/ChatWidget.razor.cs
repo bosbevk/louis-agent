@@ -1,6 +1,7 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Areas.Focuses;
+using LouisAgent.Web.Components.Widget.Pieces;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
@@ -228,6 +229,37 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
     private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
 
+    /// <summary>The watch for a piece the visitor selects (F127.7).</summary>
+    private PieceWatch? _watch;
+
+    /// <summary>The piece the visitor selected, which every message carries until the chip is closed.</summary>
+    private PageArea? _piece;
+
+    /// <summary>The chip's words: what the guide is being asked about.</summary>
+    private string PieceLabel => string.Format(Text.AboutPiece, _piece?.Heading);
+
+    /// <summary>
+    /// A piece picked on the page (F127.7, Louis's pick: the guide explains it at once): the panel opens and the guide is
+    /// asked about it, as the door asks.
+    /// </summary>
+    private async Task PickPieceAsync(PageArea piece)
+    {
+        _piece = piece;
+        if (Runner.Streaming) return;
+        Open = true;
+        if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
+        Runner.Draft = string.Format(Text.ExplainPiece, piece.Heading);
+        StateHasChanged();
+        await SendAsync();
+    }
+
+    /// <summary>The chip closed: the piece is let go, its ring taken off the page.</summary>
+    private async Task ClearPieceAsync()
+    {
+        _piece = null;
+        if (_watch is not null) await _watch.ClearAsync();
+    }
+
     /// <summary>The site's parts' focuses (F127.7), if it names any.</summary>
     private SiteFocuses? Focuses => Services.GetService<SiteFocuses>();
 
@@ -273,13 +305,14 @@ public partial class ChatWidget : IAsyncDisposable
                 };
             _kept.PageSentFor = here;
         }
-        else if (inView is not null || open is not null)
+        else if (inView is not null || open is not null || _piece is not null)
         {
             page = new Page(here, "", "", [], inView, open);
         }
 
-        // The part of the site the page is in (F127.7), so the guide reads that part's rules.
+        // The part of the site the page is in, and the piece the visitor selected on it (F127.7).
         if (page is not null && Focuses is { } focuses) page = page with { Focus = focuses.Of(here) };
+        if (page is not null && _piece is not null) page = page with { Selected = _piece };
         // Every place by its own address (ADR 0107), so the guide names what it sends the visitor to as it reads it.
         Runner.Page = page is not null && Addresses is { } addresses
             ? GuidePlaces.Addressed(page, addresses, here)

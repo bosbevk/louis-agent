@@ -171,6 +171,22 @@ public class TurnStreamPromptTests
         });
     }
 
+    /// <summary>
+    /// F127.7, Louis: "each part on the page becomes a piece the agent can elaborate on, and focus on. like select it".
+    /// The piece the visitor selected is said after the page, so the guide explains it and stays on it.
+    /// </summary>
+    [Test]
+    public void ASelectedPiece_IsSaid()
+    {
+        var request = new SendMessageRequest("Tell me about \"It answers while you sleep\".", null,
+            new PageRequest("/", null, null, null, new PageAreaRequest("/home/does", "What it does"),
+                Focus: "selling", Selected: new PageAreaRequest("piece-it-answers", "It answers while you sleep")));
+
+        Assert.That(TurnStream.BuildPrompt(request),
+            Does.EndWith("[The part of the site: selling.]\n[The visitor selected the piece piece-it-answers, " +
+                         "\"It answers while you sleep\", on the page.]"));
+    }
+
     /// <summary>A page without a focus says none, as before.</summary>
     [Test]
     public void APageWithoutAFocus_SaysNone() =>

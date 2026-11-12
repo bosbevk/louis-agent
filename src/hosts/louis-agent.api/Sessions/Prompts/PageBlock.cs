@@ -20,13 +20,22 @@ internal static class PageBlock
     internal const int MaxPageChars = 6_000;
 
     /// <summary>
-    /// The page as one block, then the part of the site it is in (F127.7); a page without words is a later message's,
-    /// only the section in view.
+    /// The page as one block, then the part of the site it is in and the piece the visitor selected (F127.7); a page
+    /// without words is a later message's, only the section in view, and the two lines stand alone when there is none.
     /// </summary>
     public static string Of(PageRequest page)
     {
         string block = (page.Text ?? "").Length == 0 ? InViewOnly(page) : Whole(page);
-        return block.Length == 0 ? block : block + FocusOf(page);
+        string after = FocusOf(page) + SelectedOf(page);
+        return block.Length == 0 ? after.TrimStart('\n') : block + after;
+    }
+
+    /// <summary>The piece the visitor selected, as a line (F127.7); nothing when none is.</summary>
+    private static string SelectedOf(PageRequest page)
+    {
+        if (page.Selected is not { Id: { Length: > 0 } id } piece) return "";
+        var selected = new PageSelectedHoles(id, piece.Heading ?? "");
+        return MessageText.Format(ApiModelText.PageSelected, selected);
     }
 
     /// <summary>The whole page: where the visitor is, what it says, cut with a note when long, its places.</summary>

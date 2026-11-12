@@ -10,7 +10,7 @@
                 <span class="widget-title">@Title</span>
                 @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
                 <span class="widget-head-tools">
-                    <WindowButtons @bind-Size="Size" />
+                    <WindowButtons @bind-Size="Size"/>
                     <button class="icon widget-close" type="button" @onclick="Toggle"
                             aria-label="@CloseLabel">×</button>
                 </span>
@@ -20,12 +20,20 @@
                          ShowCardAnswers="Settings.ShowCardAnswers">
                 <Empty><p class="widget-greeting">@Greeting</p></Empty>
             </MessageList>
-            <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
+            <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null"/>
             <div class="widget-composer">
-                <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
+                @if (_piece is not null)
+                {
+                    <div class="piece-chip">
+                        <span>@PieceLabel</span>
+                        <button type="button" aria-label="@Text.ClosePiece" @onclick="ClearPieceAsync">×</button>
+                    </div>
+                }
+                <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft"
+                          Attachments="Runner.Attachments"
                           Streaming="Runner.Streaming" CanSend="Runner.CanSend" Placeholder="@Placeholder"
                           OnSend="SendAsync" OnStop="Runner.StopAsync" SendLabel="↑" StopLabel="■"
-                          SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
+                          SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle"/>
             </div>
         </section>
     }
@@ -51,10 +59,13 @@
             else
             {
                 <span class="widget-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
+                    <svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 5h16v11H9l-5 4z" fill="none"
+                                                                          stroke="currentColor" stroke-width="2"
+                                                                          stroke-linejoin="round"/></svg>
                 </span>
                 <span aria-hidden="true">@ButtonText</span>
             }
         </button>
     }
+    <PieceWatch @ref="_watch" Picked="PickPieceAsync"/>
 </div>

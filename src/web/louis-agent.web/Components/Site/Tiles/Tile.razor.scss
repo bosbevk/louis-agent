@@ -11,6 +11,12 @@
 [class*="accent-"] { border-top: 2px solid var(--accent); }
 [class*="accent-"] h3 { color: var(--accent); }
 
+/* A tile of words is a piece the visitor can select for the guide (F127.7): a pointer and a soft ring on hover, a clear
+   one once selected, in the tile's own colour where it has one. */
+[data-piece] { cursor: pointer; transition: box-shadow .15s; }
+[data-piece]:hover { box-shadow: 0 0 0 1px rgba(var(--bs-primary-rgb), .25); }
+[data-piece][data-selected] { box-shadow: 0 0 0 2px var(--accent, var(--bs-primary)), 0 10px 30px -18px var(--accent, var(--bs-primary)); }
+
 @media (max-width: 600px) {
     .stat-value { font-size: 34px; }
 }

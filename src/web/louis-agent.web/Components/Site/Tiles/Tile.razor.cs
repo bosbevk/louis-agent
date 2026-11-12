@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Choices;
+using LouisAgent.Web.Components.Site.Pieces;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Site.Tiles;
@@ -40,6 +41,15 @@ public partial class Tile
     /// its colour's class.
     /// </summary>
     private string Classes => (Value is null ? "panel reveal" : "panel reveal stat") + AccentClass;
+
+    /// <summary>
+    /// A tile of words is a piece a visitor can select for the guide (F127.7); a tile of a number isn't. Razor leaves
+    /// the attribute out when this is false, and out the id with it.
+    /// </summary>
+    private bool IsPiece => Title is not null && Value is null;
+
+    /// <summary>The piece's id from its title, or none for a tile that isn't one.</summary>
+    private string? PieceAddress => IsPiece ? PieceId.Of(Title!) : null;
 
     /// <summary>The class an accent's colour hangs on, named for the colour; none for a plain tile.</summary>
     private string AccentClass => Accent == TileAccent.None ? "" : $" accent-{Accent.Wire()}";

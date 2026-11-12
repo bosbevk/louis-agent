@@ -6,7 +6,8 @@ namespace LouisAgent.SessionStream.Wire.Requests;
 /// page. Every message carries the section on the visitor's screen (F118) and the card open there, if one is
 /// (FX106); a later one from the same page carries only those and the address. The page's links (FX120) come with
 /// its words, each as the address it opens and its text, in an area's shape. Every message carries the page's focus
-/// (F127.7), the part of the site it is in as the site names it, so the agent reads that part's rules.
+/// (F127.7), the part of the site it is in as the site names it, so the agent reads that part's rules, and the piece
+/// the visitor selected on it, while one is.
 /// </summary>
 public sealed record PageRequest(
     string? Url,
@@ -16,4 +17,5 @@ public sealed record PageRequest(
     PageAreaRequest? InView = null,
     PageAreaRequest? Open = null,
     List<PageAreaRequest>? Links = null,
-    string? Focus = null);
+    string? Focus = null,
+    PageAreaRequest? Selected = null);

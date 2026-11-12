@@ -112,4 +112,24 @@ public class TilesTests
             Assert.That(accented.Find("article").ClassList, Does.Contain(kind));
         });
     }
+
+    /// <summary>
+    /// F127.7, Louis: "each part on the page becomes a piece the agent can elaborate on, and focus on. like select
+    /// it". A tile of words is a piece a visitor can select, by an id from its title; a tile of a number isn't.
+    /// </summary>
+    [Test]
+    public void ATileOfWords_IsAPiece_ANumberIsNot()
+    {
+        using var ctx = new BunitContext();
+
+        var words = ctx.Render<Tile>(p => p.Add(t => t.Title, "It answers while you sleep"));
+        var number = ctx.Render<Tile>(p => p.Add(t => t.Value, "R0.04").Add(t => t.Note, "a turn"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(words.Find("article").HasAttribute("data-piece"), Is.True);
+            Assert.That(words.Find("article").Id, Is.EqualTo("piece-it-answers-while-you-sleep"));
+            Assert.That(number.Find("article").HasAttribute("data-piece"), Is.False);
+        });
+    }
 }

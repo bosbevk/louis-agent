@@ -52,4 +52,8 @@ public enum ApiModelText
     [Description("\n[The part of the site: {Focus}.]")]
     [Holes(typeof(PageFocusHoles))]
     PageFocus,
+
+    [Description("\n[The visitor selected the piece {Id}, \"{Heading}\", on the page.]")]
+    [Holes(typeof(PageSelectedHoles))]
+    PageSelected,
 }
