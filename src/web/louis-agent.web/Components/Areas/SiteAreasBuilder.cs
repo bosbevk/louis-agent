@@ -1,3 +1,4 @@
+using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
@@ -56,6 +57,18 @@ public sealed class SiteAreasBuilder
             services.TryAddSingleton<AgentWindows>();
             services.TryAddSingleton<GuideKeeper>();
         }, []));
+
+    /// <summary>
+    /// Each part's focus (F127.7): the focus a page takes from its address, which the guide's widget sends with the
+    /// page, so the site's agent reads that part's rules.
+    /// </summary>
+    public SiteAreasBuilder Focuses(Action<SiteFocusesBuilder> focuses)
+    {
+        var parts = new SiteFocusesBuilder();
+        focuses(parts);
+        var named = parts.Build();
+        return Add(new SiteArea("focuses", services => services.TryAddSingleton(named), []));
+    }
 
     /// <summary>A library's area, by its name; one named before stays.</summary>
     public SiteAreasBuilder Add(SiteArea area)

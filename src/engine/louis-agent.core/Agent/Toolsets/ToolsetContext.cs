@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Pricing;
+using LouisAgent.Composition.Sites;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Web.Rendering;
@@ -55,4 +56,12 @@ public sealed record ToolsetContext(
     /// given no identity.
     /// </summary>
     public IReadOnlyList<IAgentIdentity> Identities { get; init; } = [];
+
+    /// <summary>
+    /// The places of the site this host serves (F127.7), filled when it maps its site; empty for a host with none.
+    /// </summary>
+    public SitePlacesSlot Places { get; } = new();
+
+    /// <inheritdoc/>
+    ISitePlaces IPackContext.Places => Places;
 }

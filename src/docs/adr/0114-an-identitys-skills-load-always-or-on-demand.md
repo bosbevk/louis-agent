@@ -1,6 +1,7 @@
 # ADR 0114: An identity's skills load always or on demand
 
-**Status:** Accepted (2026-11-10, F129)
+**Status:** Accepted (2026-11-10, F129) · Amended by [0121](0121-every-part-of-the-web-is-ready-for-an-agent.md)
+(2026-11-12, F127.7: a focus skill per part of a site)
 
 ## Context
 
@@ -32,6 +33,10 @@ split it (all always, all on demand, or both), **both**, with the skills beside 
   act on a thing (a page to open), a short index of those things loads always and only the detail is on demand.
 - **The description says when to read it.** It is the only part the model sees until it asks, so a vague one means the
   skill is never read.
+- **A focus skill per part of a site** (amended 2026-11-12, F127.7, ADR 0121): where an identity leads differently by
+  the part of the site the visitor is on, each part's rules are an on-demand skill, `focus-{part}`, and the voice says
+  to read it when the page block names that part, the first time and whenever it changes. The part comes from the site
+  (`Focuses(…)` on its areas), so the agent never guesses it, and only the part in use costs tokens.
 
 ## Consequences
 

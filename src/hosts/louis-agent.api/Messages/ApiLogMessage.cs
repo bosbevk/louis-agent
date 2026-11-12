@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using LouisAgent.Api.Messages.Holes.Turns;
+using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Api.Messages;
 
@@ -20,6 +22,7 @@ public enum ApiLogMessage
     KeyCheckMissing,
 
     [Description("Turn failed in {Session}")]
+    [Holes(typeof(TurnFailedHoles))]
     TurnFailed,
 
     [Description("Session {Session} opened by user {User} in tenant {Tenant}")]

@@ -1,0 +1,8 @@
+/* A piece pressed (F127.7, Louis: "the coloured cards get a pressed state"): the piece the visitor or the guide
+   selected sits a little lower and smaller, its edge in its own colour and a soft shade inside, as a key held down.
+   Written where it's included: a tool writes no CSS of its own. */
+@mixin look {
+    transform: translateY(1px) scale(.985);
+    border-color: var(--accent, var(--bs-primary));
+    box-shadow: inset 0 0 0 1px var(--accent, var(--bs-primary)), inset 0 3px 14px -6px rgba(var(--web-shadow-rgb), .45);
+}

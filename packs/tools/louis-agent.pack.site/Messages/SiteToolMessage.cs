@@ -2,6 +2,7 @@ using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Site.Messages.Holes.Cards;
 using LouisAgent.Packs.Site.Messages.Holes.Forms;
+using LouisAgent.Packs.Site.Messages.Holes.Pages;
 
 namespace LouisAgent.Packs.Site.Messages;
 
@@ -10,8 +11,10 @@ namespace LouisAgent.Packs.Site.Messages;
 public enum SiteToolMessage
 {
     [Description("Shown: the visitor's browser is now on {Path}. Say in one line what to look at there.")]
+    [Holes(typeof(PlaceHoles))]
     Shown,
 
+    [Holes(typeof(PlaceHoles))]
     [Description(
         "Not shown: '{Path}' isn't a page of this site. Give an address from the page's list: a page such as " +
         "/framework/packs, or a place on one such as /framework/identities/levels.")]
@@ -110,4 +113,20 @@ public enum SiteToolMessage
     [Description("The receipt's {Part} runs {Most} characters at most; it has {Length}.")]
     [Holes(typeof(ReceiptTooLongHoles))]
     ReceiptTooLong,
+
+    [Description(
+        "Places on the site for \"{Words}\", the best first. Show one with ShowPage by its address.\n{Places}")]
+    [Holes(typeof(PlacesFoundHoles))]
+    PlacesFound,
+
+    [Description("- {Address}  {Heading} ({Kind})")]
+    [Holes(typeof(PlaceLineHoles))]
+    PlaceLine,
+
+    [Description("Nothing on the site matches \"{Words}\". Try other words, or open a page from the site's pages.")]
+    [Holes(typeof(NoPlaceFoundHoles))]
+    NoPlaceFound,
+
+    [Description("This host serves no site to search. Open a page from the site's pages instead.")]
+    NoSiteToSearch,
 }

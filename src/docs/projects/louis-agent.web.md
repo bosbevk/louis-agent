@@ -24,7 +24,15 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   (`GuideDoor`), the demos' windows (`AgentWindows`) and the kept guide (`GuideKeeper`); and a library's own area
   through `Add`, as the eval studio's `Evals()` and the accounts' `Accounts(layout)` do. An area named twice counts
   once. `SiteAreas`, registered once, gives the router its page assemblies and `AdminShell` each area's admin links.
-  A site never builds or registers any of these itself; `SitesNameTheirAreasTests` holds it.
+  A site never builds or registers any of these itself; `SitesNameTheirAreasTests` holds it. `Focuses(f => …)`
+  (F127.7, `Components/Areas/Focuses/`) names the part of the site each page is (`SiteFocuses.Of(path)`: the longest
+  matching address by whole segments, else the default), which the guide's widget sends with every message.
+- **Every part is ready for an agent** (F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)).
+  A tile with a title or a number and a deck's card are **pieces** (`data-piece`, an id from `Site/Pieces/PieceId`,
+  so `/home/100-adrs` opens it). `Widget/Pieces/PieceWatch` and its module hear a click on a piece (it asks the guide
+  about it), a card the visitor opens and a piece the guide shows (both selected with nothing sent): the piece is drawn
+  pressed (`web/tools/pressed`), a chip in the guide's box names it, and every message carries it
+  (`Page.Selected`) until the chip is closed. The page block lists the pieces as `(piece, selects)`.
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.

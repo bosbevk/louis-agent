@@ -263,5 +263,37 @@ that retrieves, ranks and budgets (F9).
 - What progressive disclosure is, why an on-demand skill needs a description that says when, and why the model must
   still see an index of what exists to think of reading it.
 
+## One guide, the right rules for where you are (F127.7)
+
+**What it means.** louis-agent.dev has one guide in its corner on every page. On the landing it should sell, in the
+showroom it should guide through the demos, and on the framework's pages it should talk like a developer. Before
+F127.7 one long voice held all three, so it sold on a framework page and went deep into code on a selling page.
+
+**What changed.**
+- The site names the part each page is, and every message says it in one line: *[The part of the site: framework.]*
+  The guide reads that part's skill the first time it sees it and whenever it changes. Only the part in use costs
+  tokens, and the history stays append-only: nothing is swapped out of the prompt, a skill is read into the chat.
+- The page tells the guide where the visitor is looking. A tile or a card is a **piece** with its own address. A
+  click on one asks the guide about it, and a card opened or a piece the guide shows is selected quietly. A chip
+  names it, and every message carries it until the chip is closed.
+- To find something on another page, the guide calls `FindPlace`. The host builds the index from its own rendered
+  pages, so nobody keeps a list of tiles in the prompt.
+
+**Why this way.** The first try was a hand-written list of every tile's address in the site map. Louis asked whether
+there was a better way, and the research said yes. Site assistants (Algolia's DocSearch, Mintlify, Kapa) search an
+index built from the real pages, and copilots (CopilotKit) have the page say what it shows. That is retrieval (skill
+8) instead of stuffing the prompt (skill 7). The rule of thumb: what changes with the page or the site comes from the
+page or a tool, and the prompt keeps only what holds everywhere.
+
+**What to look at.**
+- The page block in the API's `Sessions/Prompts/PageBlock`.
+- The three `focus-*.md` skills beside the guide's voice.
+- `SitePlaces` in the API's `Site/Places/`.
+- The site pack's `FindPlace`.
+
+**Concepts.**
+- Context engineering (skill 7): rules split by where the person is, loaded on change.
+- Retrieval (skill 8): an index from the source, searched by a tool, instead of a list in the prompt.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

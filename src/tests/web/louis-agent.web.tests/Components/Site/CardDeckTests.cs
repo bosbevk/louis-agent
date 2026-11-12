@@ -17,11 +17,13 @@ public class CardDeckTests
         builder.OpenComponent<Card>(0);
         builder.AddComponentParameter(1, nameof(Card.Title), "Puls");
         builder.AddComponentParameter(2, nameof(Card.Summary), "A South African assistant.");
-        builder.AddComponentParameter(3, nameof(Card.ChildContent), (RenderFragment)(b => b.AddMarkupContent(0, "<p>Puls hands each task to a specialist.</p>")));
+        builder.AddComponentParameter(3, nameof(Card.ChildContent),
+            (RenderFragment)(b => b.AddMarkupContent(0, "<p>Puls hands each task to a specialist.</p>")));
         builder.CloseComponent();
         builder.OpenComponent<Card>(4);
         builder.AddComponentParameter(5, nameof(Card.Title), "The guide");
-        builder.AddComponentParameter(6, nameof(Card.ChildContent), (RenderFragment)(b => b.AddMarkupContent(0, "<p>The one in the corner.</p>")));
+        builder.AddComponentParameter(6, nameof(Card.ChildContent),
+            (RenderFragment)(b => b.AddMarkupContent(0, "<p>The one in the corner.</p>")));
         builder.CloseComponent();
     };
 
@@ -39,7 +41,8 @@ public class CardDeckTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.FindAll("button.card-summary"), Has.Count.EqualTo(2));
-            Assert.That(cut.FindAll(".card-title").Select(t => t.TextContent), Is.EqualTo(new[] { "Puls", "The guide" }));
+            Assert.That(cut.FindAll(".card-title").Select(t => t.TextContent),
+                Is.EqualTo(new[] { "Puls", "The guide" }));
             Assert.That(cut.FindAll(".card-summary-text"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".card-detail"), Is.Empty);
             Assert.That(cut.Find(".card-deck-row").GetAttribute("style"), Is.EqualTo("--cols: 2"));
@@ -96,6 +99,8 @@ public class CardDeckTests
         {
             Assert.That(buttons.Select(b => b.Id), Is.EqualTo(new[] { "the-coding-agent", "puls-the-assistant" }));
             Assert.That(buttons.All(b => b.HasAttribute("data-card")), Is.True);
+            Assert.That(buttons.All(b => b.HasAttribute("data-piece")), Is.True,
+                "a piece the guide can select (F127.7, Louis: \"the agent must be able to select each one\")");
         });
     }
 

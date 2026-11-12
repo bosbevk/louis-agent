@@ -29,6 +29,29 @@ public class SitePackTests
         });
     }
 
+    /// <summary>
+    /// F127.7, Louis: "each part on the page becomes a piece the agent can elaborate on, and focus on. like select
+    /// it". The guide knows a piece by its marks, answers about the one the visitor selected, and shows a piece to
+    /// select it for them.
+    /// </summary>
+    [Test]
+    public void TheGuide_KnowsAPieceAndTheSelectedOne()
+    {
+        var pack = new SitePack();
+        using var reader = new StreamReader(pack.Prompts.GetFileInfo(pack.Toolsets[0].GuideFile!).CreateReadStream());
+        string guide = string.Join(' ', reader.ReadToEnd().Split((char[])[' ', '\r', '\n'],
+            StringSplitOptions.RemoveEmptyEntries));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(guide, Does.Contain("`(piece, selects)`"));
+            Assert.That(guide, Does.Contain("[The visitor selected the piece"));
+            Assert.That(guide, Does.Contain("is pressed for them"));
+            Assert.That(guide, Does.Contain("not on the page they are on, call `FindPlace` first, then `ShowPage`"),
+                "Louis: \"from anywhre that matter\"; the site's own pages are the index, not a map in the prompt");
+        });
+    }
+
     /// <summary>Each message's holes record matches its template (ADR 0119).</summary>
     [Test]
     public void EveryHolesRecord_MatchesItsTemplate() =>
@@ -42,9 +65,9 @@ public class SitePackTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(toolset.MissingSettings(null!), Is.Empty);
+            Assert.That(toolset.MissingSettings(new NoPackContext()), Is.Empty);
             Assert.That(toolset.ToolTypes, Is.EqualTo(new[] { typeof(SiteTools), typeof(CardTools) }));
-            Assert.That(toolset.CreateTools(null!).Select(tools => tools.GetType()),
+            Assert.That(toolset.CreateTools(new NoPackContext()).Select(tools => tools.GetType()),
                 Is.EqualTo(new[] { typeof(SiteTools), typeof(CardTools) }));
         });
     }

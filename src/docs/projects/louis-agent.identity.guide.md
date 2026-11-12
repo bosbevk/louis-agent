@@ -45,6 +45,16 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   question needs them: `docs-map.md`, where things are in the docs root, so a search goes to the right folder, and
   `site-map.md` (since F109.4), what each page says and the docs it was written from, so a question about a page's
   claim goes to its source. Splitting them off made its fixed prefix about 14% smaller, measured live.
+- **One guide, a focus per part of the site** (F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)):
+  louis-agent.dev names each page's part (`LouisAgentDevAreas`: selling by default, demos for `/demos` and every demo,
+  framework under `/framework` and for `/csharp-ai-agent-framework`), each message's page block says it, and the voice
+  reads that part's on-demand skill (`focus-selling`, `focus-demos`, `focus-framework`) the first time a part shows
+  and whenever it changes. The parts are `GuideFocus`. Selling sells honestly by showing (gives first, small yeses, the
+  visitor's own business in the live demo, never a false hurry) and guides to the demos; the demos part guides through
+  the showroom; the framework part answers technically, names its docs and says a chat-drawn diagram is planned.
+- **A selected piece** (F127.7): when a message says the visitor selected a piece (a tile or a card they clicked, or
+  one the guide showed), "this" is that piece, and the site toolset's guide has it explain the piece and offer what
+  goes deeper. For anything on another page it calls `FindPlace` first, then `ShowPage` the address it gave.
 - Its knowledge is the `docs` toolset over `DOCS_ROOT` (the site's image carries the docs; the PC mounts the repo's),
   so an answer can name the doc it read. Louis's picks: an identity, not a role (A2); a tool, not an index or a digest
   (B1).

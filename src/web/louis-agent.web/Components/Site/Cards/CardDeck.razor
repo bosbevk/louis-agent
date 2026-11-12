@@ -7,7 +7,7 @@
     <div class="card-deck-row" style="--cols: @Columns">
         @foreach (var card in Cards)
         {
-            <button type="button" id="@card.AreaId" data-card class="card-summary @(IsOpen(card) ? "open" : "")" aria-expanded="@(IsOpen(card) ? "true" : "false")" @onclick="() => Toggle(card)">
+            <button type="button" id="@card.AreaId" data-card data-piece class="card-summary @(IsOpen(card) ? "open" : "")" aria-expanded="@(IsOpen(card) ? "true" : "false")" @onclick="() => Toggle(card)">
                 <span class="card-title">@card.Title</span>
                 @if (card.Summary is not null)
                 {

@@ -47,7 +47,8 @@ public class SessionRequestJsonTests
         """
         {
           "url": "/home", "title": "Home", "text": "Words", "areas": [{ "id": "rule", "heading": "The rule" }],
-          "inView": { "id": "rule", "heading": "The rule" }, "open": null, "links": null
+          "inView": { "id": "rule", "heading": "The rule" }, "open": null, "links": null, "focus": null,
+          "selected": null
         }
         """);
 

@@ -1,5 +1,7 @@
 using System.Reflection;
+using LouisAgent.Api.Site.Places;
 using LouisAgent.Api.Site.Rendering;
+using LouisAgent.Core.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,8 +24,11 @@ public static class SitePages
     public static WebApplication MapLouisAgentSite(this WebApplication app, Assembly site,
         Action<IServiceCollection> services, Uri? publicUrl = null, string? home = null)
     {
-        var handler = new SitePageHandler(SiteRoutes.Of(site, home), new PagePrerenderer(services), publicUrl,
-            app.Environment);
+        var routes = SiteRoutes.Of(site, home);
+        var prerenderer = new PagePrerenderer(services);
+        var handler = new SitePageHandler(routes, prerenderer, publicUrl, app.Environment);
+        // The site's places, for the agent's tools to find (F127.7), when this host runs agents.
+        app.Services.GetService<AgentEngineFactory>()?.Context.Places.Serve(new SitePlaces(routes, prerenderer));
         app.MapFallback(handler.HandleAsync);
         return app;
     }

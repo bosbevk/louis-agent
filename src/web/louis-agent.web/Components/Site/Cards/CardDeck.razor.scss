@@ -1,3 +1,5 @@
+@use "web/tools/pressed";
+
 /* CardDeck's own styles (F113): the summaries as a row of card-shaped buttons that lift under the pointer, the open
    one marked on its edge, and the story under the row sliding in once. Colours read the framework's names. */
 .card-deck { display: flex; flex-direction: column; gap: 16px; }
@@ -20,6 +22,8 @@
 }
 .card-summary:hover, .card-summary:focus-visible { transform: translateY(-3px); border-color: rgba(var(--bs-primary-rgb), .45); box-shadow: 0 24px 50px -24px rgba(var(--bs-primary-rgb), .45); }
 .card-summary.open { border-color: rgba(var(--bs-primary-rgb), .7); }
+/* A card is a piece too (F127.7): the one the visitor opened or the guide showed is pressed. */
+.card-summary[data-selected] { @include pressed.look; }
 .card-title { font: 600 18px/1.2 var(--bs-font-sans-serif); letter-spacing: -.02em; color: var(--bs-emphasis-color); }
 .card-summary-text { font-size: 14px; line-height: 1.5; color: var(--bs-secondary-color); }
 .card-tag { font: 500 12px/1 var(--bs-font-monospace); color: var(--bs-tertiary-color); }

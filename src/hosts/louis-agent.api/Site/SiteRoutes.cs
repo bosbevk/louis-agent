@@ -26,6 +26,12 @@ public sealed class SiteRoutes
             .ToDictionary(group => group.Key, group => group.First().type, StringComparer.OrdinalIgnoreCase),
         home);
 
+    /// <summary>Every page of the site by its route, in the order the site declares them.</summary>
+    public IEnumerable<(string Route, Type Page)> Pages => _pages.Select(page => (page.Key, page.Value));
+
+    /// <summary>The address a place on this page sits under: the landing's under the home word (ADR 0107).</summary>
+    public string PlacesUnder(string route) => route == "/" ? "/" + (_home ?? "") : route;
+
     /// <summary>The page an address names and its route, or null when it names none.</summary>
     /// <remarks>
     /// Guard clauses, one case each (ADR 0051): the page itself, a page above it, the landing's home word.
@@ -43,7 +49,7 @@ public sealed class SiteRoutes
         }
 
         bool underHome = _home is not null && segments.Length > 0
-                         && string.Equals(segments[0], _home, StringComparison.OrdinalIgnoreCase);
+                                           && string.Equals(segments[0], _home, StringComparison.OrdinalIgnoreCase);
         return underHome && _pages.TryGetValue("/", out var landing) ? ("/", landing) : null;
     }
 

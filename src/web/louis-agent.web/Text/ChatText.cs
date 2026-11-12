@@ -28,6 +28,15 @@ public sealed record ChatText
     /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
     public string Suggested { get; init; } = "Suggested";
 
+    /// <summary>The chip over the guide's box while a piece of the page is selected (F127.7); {0} its heading.</summary>
+    public string AboutPiece { get; init; } = "About: {0}";
+
+    /// <summary>What a picked piece asks the guide (F127.7); {0} its heading.</summary>
+    public string ExplainPiece { get; init; } = "Tell me about \"{0}\".";
+
+    /// <summary>The chip's close button, read aloud: the piece is let go.</summary>
+    public string ClosePiece { get; init; } = "Stop asking about this";
+
     /// <summary>The button under a form the agent asks with (F127.4.3).</summary>
     public string Send { get; init; } = "Send";
 
