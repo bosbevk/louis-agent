@@ -56,6 +56,8 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 ![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)
 
+![The types: a program names its checks and readers, the host reads one command, finds the eval and runs it](diagrams/louis-agent.evals.runner-interface.svg)
+
 ## Structure
 
 | Folder | What's in it |

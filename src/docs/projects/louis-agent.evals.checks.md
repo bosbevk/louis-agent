@@ -65,6 +65,8 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 
 ![From a line to a grade: the catalogue finds the entry, the entry reads its settings strictly and builds the check, and the check grades the trial](diagrams/louis-agent.evals.checks-diagrams-2.svg)
 
+![The types: a check type builds a check, a check grades a trial into a grade, and readers find money, numbers, links and images](diagrams/louis-agent.evals.checks-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

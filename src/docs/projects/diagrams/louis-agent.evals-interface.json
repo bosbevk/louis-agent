@@ -1,0 +1,99 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.evals: the interface design",
+  "caption": "One harness: an eval is an IEval, most read from a folder, the runner asks the agent through a session client and writes every event on a line.",
+  "classes": {
+    "types": [
+      {
+        "id": "ieval",
+        "name": "IEval",
+        "kind": "interface",
+        "members": [
+          "+Name, Version, Proves, Identity?",
+          "+ModesAsync(sessions) IReadOnlyList<EvalMode>",
+          "+Scenarios, Checks, Dataset?",
+          "+TurnFactsOf(turn, mode, earlier) TurnFacts"
+        ]
+      },
+      {
+        "id": "fileeval",
+        "name": "FileEval",
+        "kind": "an eval folder, implements IEval",
+        "members": [
+          "+Load(folder, checks, readers, source) FileEval (static)"
+        ]
+      },
+      {
+        "id": "evalfile",
+        "name": "EvalFile",
+        "kind": "record, eval.json",
+        "members": [
+          "+Modes EvalModeFile list",
+          "+Checks CheckEntryFile list"
+        ]
+      },
+      {
+        "id": "runner",
+        "name": "EvalRunner",
+        "members": [
+          "+RunAsync(eval, run)",
+          "+RescoreAsync(eval, runId, rescoreOf, storedLines)"
+        ]
+      },
+      {
+        "id": "isession",
+        "name": "ISessionClient",
+        "kind": "interface",
+        "members": [
+          "+ToolsetsAsync()",
+          "+OpenAsync(SessionRequest) string",
+          "+SendAsync(session, message) IAsyncEnumerable<SessionEvent>",
+          "+CloseAsync(session)"
+        ]
+      },
+      {
+        "id": "clients",
+        "name": "HttpSessionClient, CannedSessionClient, NoSessionClient",
+        "kind": "the API, a script, none"
+      },
+      {
+        "id": "writer",
+        "name": "ProtocolWriter",
+        "kind": "JSON lines on stdout",
+        "members": [
+          "+Begin, Mode, Question, Sse, Turn, Conversation"
+        ]
+      },
+      {
+        "id": "general",
+        "name": "GeneralChecks",
+        "kind": "static, the checks any eval may use",
+        "members": [
+          "Contains, NoError, CostUnder, WithinTime, LinksToHost..."
+        ]
+      },
+      {
+        "id": "icheck",
+        "name": "ICheck",
+        "kind": "interface, louis-agent.evals.checks",
+        "tone": "violet"
+      },
+      {
+        "id": "event",
+        "name": "EvalEvent",
+        "kind": "record, louis-agent.evals.protocol",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "fileeval", "to": "evalfile", "kind": "uses", "word": "reads" },
+      { "from": "ieval", "to": "icheck", "kind": "holds" },
+      { "from": "runner", "to": "ieval", "kind": "uses", "word": "runs" },
+      { "from": "runner", "to": "isession", "kind": "uses", "word": "asks the agent" },
+      { "from": "runner", "to": "writer", "kind": "holds" },
+      { "from": "clients", "to": "isession", "kind": "implements" },
+      { "from": "writer", "to": "event", "kind": "creates" },
+      { "from": "general", "to": "icheck", "kind": "creates" }
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.web.evals: the interface design",
+  "caption": "The studio's pages on the framework's admin frame: a site adds them in one call, a run's events build its live view, and its stored lines its tree.",
+  "classes": {
+    "types": [
+      {
+        "id": "services",
+        "name": "EvalServices",
+        "kind": "static, what a site calls",
+        "members": [
+          "+AddLouisAgentEvals(services, SiteKinds?)"
+        ]
+      },
+      {
+        "id": "pages",
+        "name": "EvalPages",
+        "kind": "static",
+        "members": [
+          "+AddTo(services, kinds?)"
+        ]
+      },
+      {
+        "id": "razor",
+        "name": "Evals, BenchmarkRun, Review, EvalStudio, Prompts",
+        "kind": "the pages, markup with code-behind",
+        "members": [
+          "a list, a run, a review, the studio, the prompts"
+        ]
+      },
+      {
+        "id": "live",
+        "name": "LiveTurns",
+        "kind": "a run as it happens",
+        "members": [
+          "+Start()",
+          "+Apply(EvalEvent)",
+          "+FromStore(StoredRunReply)",
+          "+Choose(TurnKey) LiveTurn?"
+        ]
+      },
+      {
+        "id": "tree",
+        "name": "RunTree",
+        "kind": "a stored run's turns",
+        "members": [
+          "+Of(StoredRunReply, repeat) (static)",
+          "+Question(task) string?"
+        ]
+      },
+      {
+        "id": "readers",
+        "name": "SummaryReader, TrendMeasures, RunEstimate",
+        "kind": "static, plain logic with its own tests"
+      },
+      {
+        "id": "event",
+        "name": "EvalEvent",
+        "kind": "record, louis-agent.evals.protocol",
+        "tone": "violet"
+      },
+      {
+        "id": "replies",
+        "name": "StoredRunReply",
+        "kind": "record, louis-agent.api.contracts",
+        "tone": "violet"
+      },
+      {
+        "id": "admin",
+        "name": "The admin frame",
+        "kind": "louis-agent.web",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "services", "to": "pages", "kind": "uses", "word": "adds" },
+      { "from": "pages", "to": "razor", "kind": "holds" },
+      { "from": "razor", "to": "admin", "kind": "uses", "word": "sits in" },
+      { "from": "razor", "to": "live", "kind": "holds" },
+      { "from": "razor", "to": "tree", "kind": "uses" },
+      { "from": "razor", "to": "readers", "kind": "uses" },
+      { "from": "live", "to": "event", "kind": "uses", "word": "applies each" },
+      { "from": "tree", "to": "replies", "kind": "uses", "word": "reads" }
+    ]
+  }
+}

@@ -38,6 +38,8 @@ references only `louis-agent.choices`, so each side takes it without the others.
 
 ![The order of a run's lines: the protocol event first, then each mode's conversations, and the summary last](diagrams/louis-agent.evals.protocol-diagrams-2.svg)
 
+![The types: every line is one EvalEvent record, written and read through one options object](diagrams/louis-agent.evals.protocol-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

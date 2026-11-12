@@ -1,0 +1,97 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.evals.runner: the interface design",
+  "caption": "A program names its checks and readers, the host reads one command, finds the eval in the catalogue and hands it to the harness's runner.",
+  "classes": {
+    "types": [
+      {
+        "id": "host",
+        "name": "EvalRunnerHost",
+        "kind": "static, what a program calls",
+        "members": [
+          "+RunAsync(args, RunnerCatalogs, HostServices?) int"
+        ]
+      },
+      {
+        "id": "catalogs",
+        "name": "RunnerCatalogs",
+        "kind": "record, the program's own",
+        "members": [
+          "+Checks ICheckType list",
+          "+Readers IReader list",
+          "+GeneralOnly (static)"
+        ]
+      },
+      {
+        "id": "commandline",
+        "name": "CommandLine",
+        "kind": "static",
+        "members": [
+          "+Parse(args) CommandLineRequest"
+        ]
+      },
+      {
+        "id": "request",
+        "name": "CommandLineRequest",
+        "kind": "abstract record",
+        "members": [
+          "Run, List, Checks, Check, Calibrate, LabelSheet",
+          "ImportPromptfoo, ExportPromptfoo"
+        ]
+      },
+      {
+        "id": "run",
+        "name": "RunRequest",
+        "kind": "record",
+        "members": [
+          "+Name, Repeat, Web?, Of?, Model, Split"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "EvalCatalog",
+        "members": [
+          "+Find(name) IEval?",
+          "+Get(name) IEval",
+          "+Listing() IReadOnlyList<ListedEval>"
+        ]
+      },
+      {
+        "id": "folders",
+        "name": "EvalFolders",
+        "kind": "static, every eval folder found"
+      },
+      {
+        "id": "stub",
+        "name": "StubEval, StubSessionClient",
+        "kind": "the runner's own check, no model"
+      },
+      {
+        "id": "runner",
+        "name": "EvalRunner",
+        "kind": "louis-agent.evals",
+        "tone": "violet",
+        "members": [
+          "+RunAsync(eval, run)"
+        ]
+      },
+      {
+        "id": "ieval",
+        "name": "IEval",
+        "kind": "interface, louis-agent.evals",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "host", "to": "catalogs", "kind": "uses", "word": "takes" },
+      { "from": "host", "to": "commandline", "kind": "uses", "word": "reads the command" },
+      { "from": "commandline", "to": "request", "kind": "creates" },
+      { "from": "run", "to": "request", "kind": "inherits" },
+      { "from": "host", "to": "catalog", "kind": "creates" },
+      { "from": "catalog", "to": "folders", "kind": "uses", "word": "loads from" },
+      { "from": "catalog", "to": "ieval", "kind": "holds" },
+      { "from": "stub", "to": "ieval", "kind": "implements" },
+      { "from": "host", "to": "runner", "kind": "uses", "word": "runs the eval" }
+    ]
+  }
+}

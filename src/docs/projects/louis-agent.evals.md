@@ -75,6 +75,8 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 ![One run: for each mode, repeat and question the runner asks a session and writes the events, then grades each conversation and sums up](diagrams/louis-agent.evals-diagrams-2.svg)
 
+![The types: an eval is an IEval, most read from a folder, and the runner asks the agent through a session client and writes each event on a line](diagrams/louis-agent.evals-interface.svg)
+
 ## Design notes
 
 What F18 settled while building the harness, and why (the plan, the feature doc with every step's notes and the

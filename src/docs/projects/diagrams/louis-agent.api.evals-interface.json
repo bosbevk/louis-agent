@@ -1,0 +1,116 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.api.evals: the interface design",
+  "caption": "The eval studio on the API: one call maps its routes, the runner runs as its own process, and every run, draft, review and calibration is kept behind a store.",
+  "classes": {
+    "types": [
+      {
+        "id": "startup",
+        "name": "EvalsStartup",
+        "kind": "static, what a program calls",
+        "members": [
+          "+MapLouisAgentEvals(app, AgentHostContext)"
+        ]
+      },
+      {
+        "id": "list",
+        "name": "EvalList",
+        "kind": "the evals the runner lists",
+        "members": [
+          "EvalEntry: Id, Title, ManualPath?, Eval?"
+        ]
+      },
+      {
+        "id": "process",
+        "name": "EvalProcess",
+        "kind": "the runner as a child process",
+        "members": [
+          "+Start(checkId, repeat, options?) RunningEval?",
+          "+StartTry, StartRescore, StartCalibration"
+        ]
+      },
+      {
+        "id": "recorder",
+        "name": "EvalRecorder",
+        "kind": "a run into the store, its cost from the ledger",
+        "members": [
+          "+Attach(RunningEval run)",
+          "+RecordingOf(id) Task<Result>?"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "IEvalStore",
+        "kind": "interface",
+        "members": [
+          "IRunStore, IConversationStore",
+          "ITurnStore, IRequestStore"
+        ]
+      },
+      {
+        "id": "stores",
+        "name": "MongoEvalStore, InMemoryEvalStore"
+      },
+      {
+        "id": "drafts",
+        "name": "IEvalDraftStore",
+        "kind": "interface",
+        "members": [
+          "a draft eval kept until published"
+        ]
+      },
+      {
+        "id": "reviews",
+        "name": "IHumanReviewStore",
+        "kind": "interface",
+        "members": [
+          "a person's grade of a conversation"
+        ]
+      },
+      {
+        "id": "calibrations",
+        "name": "ICalibrationStore",
+        "kind": "interface",
+        "members": [
+          "a judge against a person's labels"
+        ]
+      },
+      {
+        "id": "studio",
+        "name": "StudioRunner",
+        "kind": "record",
+        "members": [
+          "+Checks, Checker, Promptfoo"
+        ]
+      },
+      {
+        "id": "publisher",
+        "name": "EvalPublisher",
+        "kind": "a commit on its own branch",
+        "members": [
+          "+PublishAsync(folder, PublishTarget, message) Published(Branch, Commit)"
+        ]
+      },
+      {
+        "id": "runnerexe",
+        "name": "louis-agent.evals.runner",
+        "kind": "its own process, JSON lines back",
+        "tone": "red"
+      }
+    ],
+    "relations": [
+      { "from": "startup", "to": "list", "kind": "creates" },
+      { "from": "startup", "to": "process", "kind": "creates" },
+      { "from": "startup", "to": "studio", "kind": "creates" },
+      { "from": "process", "to": "runnerexe", "kind": "uses", "word": "starts" },
+      { "from": "startup", "to": "recorder", "kind": "creates" },
+      { "from": "recorder", "to": "process", "kind": "uses", "word": "attaches to a run" },
+      { "from": "recorder", "to": "store", "kind": "holds" },
+      { "from": "stores", "to": "store", "kind": "implements" },
+      { "from": "studio", "to": "drafts", "kind": "uses" },
+      { "from": "studio", "to": "publisher", "kind": "uses", "word": "publishes" },
+      { "from": "startup", "to": "reviews", "kind": "uses", "word": "maps" },
+      { "from": "startup", "to": "calibrations", "kind": "uses", "word": "maps" }
+    ]
+  }
+}

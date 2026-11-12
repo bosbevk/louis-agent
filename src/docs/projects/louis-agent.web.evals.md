@@ -40,6 +40,8 @@ What happens when someone starts a run and watches it:
 
 ![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
 
+![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
+
 ## How it works
 
 **Organised by job** (F53), in English, as they're the builders' screens. `/admin` is the Evals page (F18, CL26, F53.2), in list/details shape:

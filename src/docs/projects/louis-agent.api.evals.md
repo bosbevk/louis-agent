@@ -38,6 +38,8 @@ studio's replies are built here (`Replies/`, the `Of` factories), its texts in `
 
 ![Starting a run: the gate lets the browser in, the studio stores a run row and answers 202, and the page reads the runner's events](diagrams/louis-agent.api.evals-diagrams-2.svg)
 
+![The types: one call maps the studio, the runner runs as its own process, and runs, drafts, reviews and calibrations each sit behind a store](diagrams/louis-agent.api.evals-interface.svg)
+
 ## Structure
 
 ```

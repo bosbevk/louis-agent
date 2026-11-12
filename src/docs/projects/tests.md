@@ -17,6 +17,8 @@ A test that starts a real process, opens Mongo or needs the Puls stack is an int
 
 ![A golden file: the snapshot is written when you ask, and otherwise the test passes when it's the same and fails when it differs](diagrams/tests-diagrams-2.svg)
 
+![The types: two shared libraries every test project uses, fakes for the model, HTTP, the composition and the web, and fixtures for the web's snapshots](diagrams/tests-interface.svg)
+
 ![The framework's tests: a fake model, golden files, and the integration tests apart](diagrams/tests.svg)
 
 ## Purpose
