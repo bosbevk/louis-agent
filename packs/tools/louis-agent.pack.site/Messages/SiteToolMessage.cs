@@ -14,7 +14,7 @@ public enum SiteToolMessage
         "/framework/packs, or a place on one such as /framework/identities/levels.")]
     NotASitePage,
 
-    [Description("Shown: the visitor sees the card. Say one line about it; don't repeat its rows in words.")]
+    [Description("Shown: the visitor sees the card under your words. Don't repeat its rows in words.")]
     CardShown,
 
     [Description("Error: not shown. {Reason} Fix the card and call ShowCard again.")]
@@ -37,7 +37,7 @@ public enum SiteToolMessage
 
     [Description(
         "Offered: the visitor sees {Count} choices as cards under your words; their click comes back as their next " +
-        "message. Don't list the choices again, and wait for it.")]
+        "message. The cards end this answer: write nothing more, and wait for it.")]
     Offered,
 
     [Description("Error: not offered. {Reason} Fix the choices and call Offer again.")]

@@ -20,7 +20,7 @@ internal static class PageSvg
     public static string Of(string svg)
     {
         var root = XElement.Parse(svg);
-        foreach (var style in root.Elements(Svg + "style")) style.Value = $"@scope {{\n{style.Value}\n}}";
+        foreach (var style in root.Elements(Svg + "style")) style.Value = $"@scope {{\n{Rooted(style.Value)}\n}}";
 
         // An arrowhead is only kept when something points with it.
         bool arrows = root.Descendants().Any(shape =>
@@ -29,4 +29,14 @@ internal static class PageSvg
 
         return SvgWriter.Serialize(root);
     }
+
+    /// <summary>
+    /// The style with its root named <c>:scope</c>: inside <c>@scope</c> a bare <c>svg</c> means an svg inside the
+    /// drawing, which would leave the drawing's own colours unset. Only a rule whose selector is <c>svg</c> alone changes.
+    /// </summary>
+    private static string Rooted(string style) =>
+        string.Join('\n', style.Split('\n').Select(line =>
+            line.TrimStart().StartsWith("svg {", StringComparison.Ordinal)
+                ? line[..^line.TrimStart().Length] + ":scope" + line.TrimStart()["svg".Length..]
+                : line));
 }

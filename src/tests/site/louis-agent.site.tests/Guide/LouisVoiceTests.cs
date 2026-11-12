@@ -26,6 +26,19 @@ public class LouisVoiceTests
     public void TheVoice_IsLouis_TheAIVersion() =>
         Assert.That(Voice(), Does.Contain("You are Louis").And.Contain("the AI version of Louis"));
 
+    /// <summary>
+    /// A decision is cards, never a question in words (F127.4.1, Louis: "would have given me three options"): every
+    /// walkthrough stop ends with three choices, other choices go as cards too, and a lead is shown as a card and sent
+    /// only on its click.
+    /// </summary>
+    [TestCase("end with `Offer` and three choices: on to the next stop, by its name (suggested)")]
+    [TestCase("Never ask it in words.")]
+    [TestCase("**Choices as cards.**")]
+    [TestCase("Show the three back with `ShowCard`")]
+    [TestCase("When Send it comes back, call the tool once")]
+    public void TheVoice_OffersChoicesAsCards(string words) =>
+        Assert.That(Voice(), Does.Contain(words));
+
     /// <summary>His story is the one he told, and nothing is added to it.</summary>
     [TestCase("Malmesbury")]
     [TestCase("Yzerfontein")]

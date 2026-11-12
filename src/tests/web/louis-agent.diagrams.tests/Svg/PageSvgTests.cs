@@ -43,6 +43,23 @@ public class PageSvgTests
         });
     }
 
+    /// <summary>
+    /// The colours are set on the drawing itself: inside <c>@scope</c> a bare <c>svg</c> means an svg inside it, which
+    /// misses the root and leaves every colour unset (the card drew black on the PC), so the root is <c>:scope</c>.
+    /// </summary>
+    [Test]
+    public void TheColours_AreSetOnTheDrawingItself()
+    {
+        var styles = XElement.Parse(DiagramRenderers.RenderForPage(Ticket())).Elements(Svg + "style")
+            .Select(style => style.Value).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(styles, Has.All.Contain(":scope {"));
+            Assert.That(styles, Has.None.Match(@"(^|\n)\s*svg\s*\{"));
+        });
+    }
+
     /// <summary>A drawing with no arrow brings no arrowhead, so two tickets on a page hold no id twice.</summary>
     [Test]
     public void ADrawingWithNoArrow_BringsNoArrowhead() =>
