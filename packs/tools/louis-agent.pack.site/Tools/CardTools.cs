@@ -79,6 +79,26 @@ public sealed class CardTools
     }
 
     /// <summary>
+    /// Shows the visitor a receipt once something went on their behalf: what happened, and what comes next. Each site
+    /// draws it in its own look.
+    /// </summary>
+    [Description(
+        "Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed on: a " +
+        "short title saying what happened and one line on what comes next. Call it only after it really went; the " +
+        "card the visitor filled in already shows the details, so never repeat them here.")]
+    public string ShowReceipt(
+        [Description("What happened, up to 40 characters, such as Sent to the owner.")]
+        string title,
+        [Description("What comes next, one line of up to 120 characters, such as when and how they hear back.")]
+        string line)
+    {
+        if (ReceiptCheck.Problem(title, line) is not { } problem)
+            return MessageText.Format(SiteToolMessage.ReceiptShown);
+        var refused = new ReceiptRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.ReceiptRefused, refused);
+    }
+
+    /// <summary>
     /// Asks the visitor for what the agent needs with a form of one to four fields; what they fill in comes back as
     /// their message. Asking ends the turn, as offering does, so the agent waits for the answer.
     /// </summary>

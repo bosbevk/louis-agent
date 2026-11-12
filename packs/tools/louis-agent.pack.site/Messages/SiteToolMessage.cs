@@ -96,4 +96,18 @@ public enum SiteToolMessage
     [Description("Two fields say the same, '{Label}': each needs its own label.")]
     [Holes(typeof(AskSameLabelHoles))]
     AskSameLabel,
+
+    [Description("Shown: the visitor sees the receipt under your words. Don't say it again in words.")]
+    ReceiptShown,
+
+    [Description("Error: not shown. {Reason} Fix the receipt and call ShowReceipt again.")]
+    [Holes(typeof(ReceiptRefusedHoles))]
+    ReceiptRefused,
+
+    [Description("A receipt needs its title: what happened, such as Sent to the owner.")]
+    ReceiptWithoutTitle,
+
+    [Description("The receipt's {Part} runs {Most} characters at most; it has {Length}.")]
+    [Holes(typeof(ReceiptTooLongHoles))]
+    ReceiptTooLong,
 }

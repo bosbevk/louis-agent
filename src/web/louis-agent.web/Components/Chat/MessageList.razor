@@ -18,7 +18,8 @@
         {
             <TurnView Turn="turn" Streaming="@(Streaming && turn == Chat.Turns[^1])" Currency="Currency"
                       UserActions="UserActions" AnswerActions="AnswerActions" ShowWork="ShowWork"
-                      ShowUsage="ShowUsage" Answer="@AnswerTo(turn)" Chosen="Chosen" />
+                      ShowUsage="ShowUsage" Answer="@AnswerTo(turn)" Chosen="Chosen"
+                      ShowUserText="@BubbleFor(turn)" />
         }
     }
 </div>

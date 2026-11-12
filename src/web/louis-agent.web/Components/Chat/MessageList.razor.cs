@@ -1,4 +1,5 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Chats.Calls.Answers;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
@@ -85,6 +86,24 @@ public partial class MessageList : IAsyncDisposable
     {
         int at = Chat!.Turns.IndexOf(turn);
         return at + 1 < Chat.Turns.Count ? Chat.Turns[at + 1].UserText : null;
+    }
+
+    /// <summary>
+    /// Whether a message that answers a card or form the turn before drew is a bubble too: the chat's
+    /// <see cref="LouisAgent.Web.Storage.ChatSettings.ShowCardAnswers"/>, passed down by a chat that draws cards (FX142).
+    /// </summary>
+    [Parameter]
+    public bool ShowCardAnswers { get; set; }
+
+    /// <summary>
+    /// Whether a turn's message is a bubble: always, unless the chat leaves out an answer the card or form before it
+    /// already shows (FX142).
+    /// </summary>
+    private bool BubbleFor(Turn turn)
+    {
+        if (ShowCardAnswers) return true;
+        int at = Chat!.Turns.IndexOf(turn);
+        return at == 0 || !CardAnswer.Answers(Chat.Turns[at - 1], turn.UserText);
     }
 
     /// <summary>Lets the module go, if it was ever loaded.</summary>

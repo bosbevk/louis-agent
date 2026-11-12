@@ -1,7 +1,7 @@
 using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Packs.Site.Tools.Cards;
 
-namespace LouisAgent.Packs.Site.Tests;
+namespace LouisAgent.Packs.Site.Tests.Tools;
 
 /// <summary>
 /// <c>ShowCard</c> (F127.4.1): the agent draws a read-only card, a ticket, from its parts; the tool checks it and

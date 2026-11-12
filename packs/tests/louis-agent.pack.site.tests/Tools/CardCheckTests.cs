@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Tickets.Inputs;
 using LouisAgent.Diagrams.Tones;
 using LouisAgent.Packs.Site.Tools.Cards;
 
-namespace LouisAgent.Packs.Site.Tests;
+namespace LouisAgent.Packs.Site.Tests.Tools;
 
 /// <summary>
 /// The pack's card rules are a tested duplicate of the diagrams library's (F127.4.1): a pack references no web (ADR

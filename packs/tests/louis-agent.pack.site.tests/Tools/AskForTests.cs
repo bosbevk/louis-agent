@@ -5,7 +5,7 @@ using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Packs.Site.Tools.Forms;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Packs.Site.Tests;
+namespace LouisAgent.Packs.Site.Tests.Tools;
 
 /// <summary>
 /// <c>AskFor</c> (F127.4.3, Louis: "can the agent offer a card where I can put my name in?"): the agent asks for what
