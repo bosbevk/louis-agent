@@ -583,3 +583,29 @@ last step grew into three features of its own.
 Concept: *20 Extensibility* in the [goal](../GOAL.md): parts that register with their whole, one player for the
 recorded and the live, and a brand as data the framework serves. It also touches *4 Tool design* (a tool the browser
 carries out, and one that marks its result) and *15 Safety* (an allow-list of identities under one cap).
+
+## F127.6: a site names its areas (2026-11-12)
+
+Every site's `Program.cs` built the framework's parts itself, near line for line the same: frames, pack views, a chat
+handoff, the eval studio, the accounts, the chat's five services, and a router listing the libraries' pages. A new site
+copied the list. Two sites registered the eval pages and never linked them, and only Puls drew their links, by hand.
+
+- **A builder, open from outside.** `AddSiteAreas(areas => areas.Chat().Admin(layout, views).Evals())`: the
+  framework's web names the areas it owns, and a library above it adds its own through an extension (`Evals()` lives in
+  the eval studio's library, which the web can't reference). A new part is a new area, added once, and every site that
+  names it gets it. The admin's sidebar now draws each area's links, so the eval links reached every admin.
+- **Plumbing isn't an area.** The guide in louis-agent.dev's corner needs the chat's services with no chat portal, so
+  those come with every site; the chat area adds only what the portal needs. Finding that out was why the plan was
+  rewritten after its first step.
+- **One Composition Root a test can share.** Each site keeps one `Name` method that its program and its tests both
+  hand the builder. The tests used to copy the program's list, so they could pass on a setup the site didn't use.
+- **A rule, and its limit.** ADR 0120, at Louis's word: nothing is wired by hand from the framework into an
+  implementation, louis-agent.dev included, though it lives in `src/`. His question, "is it a good idea though?", found
+  its two limits: a site's own services stay its own, and "register your words before the builder" is still wiring by
+  order (CL62).
+- **What I'd do differently.** The Puls layout tests timed out after the switch: the evals area registered its own
+  review queue over the test's. Registering the areas first, then the test's own pieces, fixed it, and that order is
+  the same lesson as CL62.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a Builder a library extends without the framework knowing it,
+and a Composition Root per implementation.

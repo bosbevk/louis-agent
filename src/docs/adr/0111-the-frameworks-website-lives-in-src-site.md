@@ -1,6 +1,7 @@
 # ADR 0111: The framework's website lives in src/site, built on the framework like any site
 
-**Status:** Accepted (2026-11-09, F124) · **Amends:** [ADR 0074](0074-the-folders-say-what-ships.md)
+**Status:** Accepted (2026-11-09, F124), amended by [0120](0120-nothing-is-hand-wired-from-the-framework.md) (the
+site names its areas, its showroom among them) · **Amends:** [ADR 0074](0074-the-folders-say-what-ships.md)
 
 ## Context
 

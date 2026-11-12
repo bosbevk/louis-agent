@@ -37,12 +37,15 @@ and packs, and reference your site from it.
 | Your own landing page | Replace `Pages/LandingPage.razor` |
 | A part of the chat turned on or off | Change `Features` in `Pages/ChatPage.razor.cs`. Language needs your identity's voices, and credits and the place need a site that uses them |
 | Your own links, settings or empty chat | Fill the slots on `ChatShell` in `Pages/ChatPage.razor`, as the code-review app does with its theme picker |
-| The words in your language | Register your own `ChatText` in `Program.cs`, and your own `AccountText` before `AddLouisAgentAccounts()` |
-| No accounts | Drop the `louis-agent.web.accounts` reference, `AddLouisAgentAccounts()`, `AccountLibrary.Assembly` from the router, `AccountLayout`, the `accounts/shell` line; the chat's menu draws the guest's ([Change the web](change-the-web.md#change-the-account-pages)) |
-| No eval studio | Drop the `louis-agent.web.evals` reference, `AddLouisAgentEvals()`, `EvalLibrary.Assembly` from the router, the `evals/pages` line and the `@using LouisAgent.Web.Evals`; and `MapLouisAgentEvals` from your API program |
-| A pack's screens | Nothing, for a described screen: the sidebar lists it. For a pack's own view, reference its project under `packs/web/`, add `XWebViews.AddTo(views)` in `Program.cs`, and list its Sass |
+| The words in your language | Register your own `ChatText`, and your own `AccountText`, in `Program.cs` before `AddSiteAreas` (the builder only adds its English where nothing is set) |
+| No accounts | Drop `.Accounts(…)` from your `StarterAreas.Name`, the `louis-agent.web.accounts` reference, `AccountLayout` and the `accounts/shell` line; the chat's menu draws the guest's ([Change the web](change-the-web.md#change-the-account-pages)) |
+| No eval studio | Drop `.Evals()` from your `StarterAreas.Name`, the `louis-agent.web.evals` reference, the `evals/pages` line and the `@using LouisAgent.Web.Evals`; and `MapLouisAgentEvals` from your API program |
+| A pack's screens | Nothing, for a described screen: the sidebar lists it. For a pack's own view, reference its project under `packs/web/`, add `XWebViews.AddTo(views)` in the admin's lambda, `.Admin(typeof(AdminLayout), views => XWebViews.AddTo(views))`, and list its Sass |
 
-Keep what would be the same on every site out of your site, and put it in the framework instead. `FrameworkNamesNoSiteTests` and `SiteLayoutsStaySmallTests` hold that.
+Your site names its areas in one place, `StarterAreas.Name`, which `Program.cs` hands to `AddSiteAreas` and your tests
+hand it too; never build or register a framework part yourself ([ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
+Keep what would be the same on every site out of your site, and put it in the framework instead.
+`FrameworkNamesNoSiteTests`, `SiteLayoutsStaySmallTests` and `SitesNameTheirAreasTests` hold that.
 
 ## Check it
 

@@ -1,6 +1,7 @@
 # 0084. Every site is built on the framework's web
 
-**Status:** Accepted · **Date:** 2026-11-06 (Louis, on where a pack's screens live: "move the puls layout to shared and do the
+**Status:** Accepted, amended by [0120](0120-nothing-is-hand-wired-from-the-framework.md) (a site names its areas;
+nothing is wired by hand) · **Date:** 2026-11-06 (Louis, on where a pack's screens live: "move the puls layout to shared and do the
 same as with admin, then we can spawn new sites, make a rule", "the shared library becomes a framework web", "pulse and code
 review must use the same framework", "code review must adapt to puls") · **Recorded:** 2026-11-06
 

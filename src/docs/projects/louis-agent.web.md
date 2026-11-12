@@ -16,6 +16,15 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 
 ## How it works
 
+- **A site names its areas** (F127.6, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
+  `AddSiteAreas(areas => …)` (`Components/Areas/`) registers the chat's plumbing for every site (`ChatSettings`,
+  `ChatStore`, `AgentApi`, `CurrencyState`, an English `ChatText`, each only where the site set none), then each area
+  the site names: `Chat()` the chat portal's handoff (`ChatHandoff`); `Admin(layout, views)` the admin's frame
+  (`SiteFrames`), its pack views (`PackViews`) and its pages; `Showroom(demos)` the demos, the guide's way in
+  (`GuideDoor`), the demos' windows (`AgentWindows`) and the kept guide (`GuideKeeper`); and a library's own area
+  through `Add`, as the eval studio's `Evals()` and the accounts' `Accounts(layout)` do. An area named twice counts
+  once. `SiteAreas`, registered once, gives the router its page assemblies and `AdminShell` each area's admin links.
+  A site never builds or registers any of these itself; `SitesNameTheirAreasTests` holds it.
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
@@ -151,6 +160,7 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
 | `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1); `WatchedAsk`, an ask shown in its agent's window (F127.4.2) |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
+| `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
