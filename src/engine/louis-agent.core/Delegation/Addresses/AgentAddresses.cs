@@ -52,6 +52,15 @@ public static class AgentAddresses
     }
 
     /// <summary>Which level holds a role file by this name, if any; a minions' base is no role.</summary>
+    /// <summary>
+    /// An address on another server (F127.3.2): the server says whether it has the identity (its identities are read
+    /// before a session is opened there), so here it is only named: its voice that server's to pick, a role by the file
+    /// name the convention gives it.
+    /// </summary>
+    public static AddressedAgent OnAnotherServer(AgentAddress address) => address.Role is null
+        ? new AddressedAgent(address, AddressKind.Identity, null)
+        : new AddressedAgent(address, AddressKind.Specialist, $"{address.Identity}-{address.Role}");
+
     private static AddressKind? KindOf(string file) => file switch
     {
         _ when RoleCatalog.Available(RoleLevel.Specialist).Contains(file) => AddressKind.Specialist,
