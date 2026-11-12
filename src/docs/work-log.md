@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 101 | 88 |
-| Fixes (`FX`) | 132 | 6 |
+| Fixes (`FX`) | 133 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -255,6 +255,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX144 | 2026-11-12 | The guide reads the business's work whenever the visitor comes back after a live ask: after a booking in the guesthouse's window (its card said Sent) it told the visitor to carry on and book, answering from its last view (Louis: "it should have known"; his pick, a rule to read the work); the live-demo skill now calls `ReadAgentWork` first, every time, and never asks for what is already done |
 | FX142 | 2026-11-12 | A card's or form's answer draws no bubble: the folded card already shows it, so a chat leaves the visitor's matching message out, a `ChatSettings.ShowCardAnswers` a site may turn on (Louis: "should not have done the bottom part there", "by default it would be off") |
 | FX141 | 2026-11-12 | No choices while a business waits for the visitor: an answer that asked another agent owes no closing tool, and the guide says to answer in the business's window (Louis: "it is waiting for my name, so now no card should display") |
 | FX140 | 2026-11-12 | On Ask it live the guide offers two or three questions to ask the business as cards, each sent as it is, and never a card that only says to type (Louis: "it should have given me a prompt for seemeeu") |

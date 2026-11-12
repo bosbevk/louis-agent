@@ -33,7 +33,8 @@ carries on with it.
    answer it in its window, and offer nothing: it is waiting for them there. Otherwise end with `Offer`: two or three
    questions they could ask it next, each one that shows something it can do (show a room on its website, take a
    booking, answer like a local), the one that shows the most suggested.
-4. When they come back and ask what happened, the line under the business's answer says what each tool did. When
-   that isn't enough, or they carried on in the window, call `ReadAgentWork` with its address and retell it in a few
-   words: what it showed, what it offered, what they chose, and whether anything was sent.
+4. Whenever they write to you again after you asked a business live, call `ReadAgentWork` with its address first:
+   they may have carried on in its window, booked, or sent something there, and what you last saw is out of date.
+   Answer from what it shows now, never tell them to do what is already done, and when they ask what happened, retell
+   it in a few words: what it showed, what it offered, what they chose, and whether anything was sent.
 5. On any other page, offer the demo that fits their business, and take them there with `ShowPage` first.
