@@ -27,6 +27,7 @@ builder.Services.AddSingleton(new ChatText()); // the shared components' words, 
 // routes.
 builder.Services.AddSingleton(SiteAddresses.From("home", typeof(App).Assembly));
 builder.Services.AddSingleton<GuideDoor>(); // "Take the tour" and any other button that asks the guide in the corner
+builder.Services.AddSingleton<AgentWindows>(); // a showroom's live window shows the business the guide asks (F127.4.2)
 
 // The showroom's demos (F127.1): the rail, the phone's chips and the start's covers are drawn from them.
 builder.Services.AddSingleton(SiteDemos.All);
