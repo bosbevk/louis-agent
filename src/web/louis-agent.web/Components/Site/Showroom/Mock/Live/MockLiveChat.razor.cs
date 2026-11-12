@@ -1,5 +1,7 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Chats.Calls;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -64,6 +66,53 @@ public partial class MockLiveChat : IDisposable
     [Parameter]
     public EventCallback<Block> ToolCalled { get; set; }
 
+    /// <summary>
+    /// The guide's ask to this business, when the guide asked it for the visitor (F127.4.2): the window shows that talk
+    /// and takes its session.
+    /// </summary>
+    [Parameter]
+    public Block? Asked { get; set; }
+
+    /// <summary>The guide's ask the window shows, followed as the guide's stream moves on.</summary>
+    private WatchedAsk? _watched;
+
+    /// <summary>
+    /// The page's windows, whose news of the guide's stream the window follows, if the site has them.
+    /// </summary>
+    private AgentWindows? Windows => Services.GetService<AgentWindows>();
+
+    /// <summary>Whether the guide's ask is still being answered: the visitor waits for it to end.</summary>
+    private bool Watching => _watched is { Done: false };
+
+    /// <summary>Whether an answer is coming in, the window's own or the guide's ask's.</summary>
+    private bool Busy => Runner.Streaming || Watching;
+
+    /// <summary>A new ask from the guide is watched from the start.</summary>
+    protected override void OnParametersSet()
+    {
+        if (Asked is null || ReferenceEquals(_watched?.Call, Asked)) return;
+        _watched = new WatchedAsk(Asked);
+        Follow();
+    }
+
+    /// <summary>
+    /// Takes the ask's chat once it has begun, so the window's runner carries on in that session, and hands the
+    /// business's new tool calls to the demo, as the window's own are.
+    /// </summary>
+    private void Follow()
+    {
+        if (_watched is null) return;
+        foreach (var call in _watched.Look()) _ = ToolCalled.InvokeAsync(call);
+        if (_watched.Chat is { } chat && !ReferenceEquals(Runner.Chat, chat)) Runner.Chat = chat;
+    }
+
+    /// <summary>The guide's stream moved on: the window follows the ask and draws again.</summary>
+    private void OnMoved() => InvokeAsync(() =>
+    {
+        Follow();
+        StateHasChanged();
+    });
+
     private ChatRunner Runner { get; set; } = null!;
 
     /// <summary>The showroom's words, the site's own when it has them.</summary>
@@ -75,6 +124,7 @@ public partial class MockLiveChat : IDisposable
         Runner = new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
         Runner.Changed += Redraw;
         Runner.ToolCalled += OnToolCalled;
+        if (Windows is { } windows) windows.Moved += OnMoved;
     }
 
     /// <summary>
@@ -84,7 +134,7 @@ public partial class MockLiveChat : IDisposable
     /// </summary>
     private async Task SendAsync()
     {
-        if (!Runner.CanSend) return;
+        if (!Runner.CanSend || Watching) return;
 
         var page = await Mock.ReadPageAsync();
         // On the same page the runner keeps what it holds: nothing, or the page a failed first send gave back.
@@ -103,7 +153,7 @@ public partial class MockLiveChat : IDisposable
     /// <summary>A card the business's agent offered was clicked (F127.4.1): its label goes as if typed.</summary>
     private Task ChooseAsync(string label)
     {
-        if (Runner.Streaming) return Task.CompletedTask;
+        if (Busy) return Task.CompletedTask;
         Runner.Draft = label;
         return SendAsync();
     }
@@ -120,6 +170,7 @@ public partial class MockLiveChat : IDisposable
     {
         Runner.Changed -= Redraw;
         Runner.ToolCalled -= OnToolCalled;
+        if (Windows is { } windows) windows.Moved -= OnMoved;
         GC.SuppressFinalize(this);
     }
 }

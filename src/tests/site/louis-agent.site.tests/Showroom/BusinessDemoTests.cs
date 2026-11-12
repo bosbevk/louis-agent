@@ -2,6 +2,8 @@ using System.Net;
 using System.Text;
 using LouisAgent.Site.Components.Showroom;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Components.Recorded;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
@@ -116,6 +118,39 @@ public class BusinessDemoTests
             if (cut.FindAll(".demo-try") is [var button, ..]) button.Click();
             Assert.That(cut.FindAll(".live-chat"), Is.Not.Empty);
         }, TimeSpan.FromSeconds(5));
+
+    /// <summary>The guide's ask to a business, as the guide's widget hands it on.</summary>
+    private static Block GuidesAsk(string address) => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = Delegation.AskToolName,
+        ToolInput = $$"""{"address":"{{address}}","message":"A room for Friday, with our dog?"}"""
+    };
+
+    /// <summary>
+    /// The guide runs the demo live (F127.4.2): when it asks this business, even while the recording plays, the live
+    /// chat takes the recording's place and shows that talk; an ask to another business leaves the demo as it is.
+    /// </summary>
+    [Test]
+    public void TheGuideAskingThisBusiness_GoesLive_WithThatTalk()
+    {
+        using var ctx = Context();
+        var windows = new AgentWindows();
+        ctx.Services.AddSingleton(windows);
+        var cut = Demo(ctx);
+
+        cut.InvokeAsync(() => windows.Take(GuidesAsk("koringland-attorneys")));
+        bool otherWentLive = cut.FindAll(".live-chat").Count > 0;
+        cut.InvokeAsync(() => windows.Take(GuidesAsk("seemeeu-guesthouse")));
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".live-chat"), Is.Not.Empty), TimeSpan.FromSeconds(5));
+        Assert.Multiple(() =>
+        {
+            Assert.That(otherWentLive, Is.False);
+            Assert.That(windows.Shows("seemeeu-guesthouse"), Is.True);
+            Assert.That(cut.FindAll(".recorded-chat"), Is.Empty);
+        });
+    }
 
     /// <summary>Try it yourself waits for the play to end, then sits beside Play it again.</summary>
     [Test]

@@ -4,7 +4,9 @@ using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Stage;
 using LouisAgent.Web.Components.Site.Tiles;
+using LouisAgent.Web.Components.Widget.Door;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Site.Components.Showroom;
 
@@ -18,7 +20,7 @@ namespace LouisAgent.Site.Components.Showroom;
 /// chat says each turn as it starts and each tool call as it plays, the cues light up to the one and the website goes
 /// to the other, so none of the three knows the others (Mediator).
 /// </remarks>
-public partial class BusinessDemo
+public partial class BusinessDemo : IDisposable
 {
     /// <summary>The demo's colour, the one it wears in the showroom's rail.</summary>
     [Parameter, EditorRequired]
@@ -188,5 +190,49 @@ public partial class BusinessDemo
     }
 
     /// <summary>Back to the recording, which plays again from its start.</summary>
-    private void Watch() => _trying = false;
+    private void Watch()
+    {
+        _trying = false;
+        _asked = null;
+    }
+
+    /// <summary>
+    /// The guide's ask to this business, which the live window shows (F127.4.2); none until the guide asks.
+    /// </summary>
+    private Block? _asked;
+
+    /// <summary>This demo's hold on its business in the page's windows, let go with the demo.</summary>
+    private IDisposable? _window;
+
+    /// <summary>The page's windows, if the site has them.</summary>
+    private AgentWindows? Windows => Services.GetService<AgentWindows>();
+
+    /// <summary>The demo shows its business, so an ask the guide makes to it comes here.</summary>
+    protected override void OnInitialized()
+    {
+        if (Windows is not { } windows) return;
+        _window = windows.Show(Identity);
+        windows.Asked += OnAsked;
+    }
+
+    /// <summary>
+    /// The guide asked this business for the visitor (F127.4.2): the live chat takes the recording's place and shows
+    /// that talk, from the website's home.
+    /// </summary>
+    private void OnAsked(Block call) => InvokeAsync(() =>
+    {
+        if (Delegation.From(call)?.Agent is not { } agent ||
+            !string.Equals(agent, Identity, StringComparison.OrdinalIgnoreCase)) return;
+        if (!_trying) Try();
+        _asked = call;
+        StateHasChanged();
+    });
+
+    /// <summary>Lets go of the business and the windows' news with the demo.</summary>
+    public void Dispose()
+    {
+        if (Windows is { } windows) windows.Asked -= OnAsked;
+        _window?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }
