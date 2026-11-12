@@ -81,10 +81,17 @@ public class DocsDiagramsTests
     [Test]
     public void EveryProjectDoc_ShowsItsFourDiagrams()
     {
-        var lacking = ProjectDocs().Where(doc => !Enum.GetValues<DiagramKind>().All(KindsShown(doc).Contains));
+        var lacking = ProjectDocs().Where(doc => !ProjectDocKinds.All(KindsShown(doc).Contains));
 
         Assert.That(lacking.Select(Relative), Is.Empty, "a project doc without all four kinds of picture");
     }
+
+    /// <summary>
+    /// The four a project doc shows, named rather than every kind there is: a ticket (F127.4.1) is a card an agent
+    /// shows in a chat, not a picture of a project.
+    /// </summary>
+    private static readonly DiagramKind[] ProjectDocKinds =
+        [DiagramKind.Cards, DiagramKind.Flow, DiagramKind.Sequence, DiagramKind.Classes];
 
     /// <summary>The kinds of picture a doc shows, read from each picture's JSON.</summary>
     private static IReadOnlySet<DiagramKind> KindsShown(string doc) => Targets(File.ReadAllText(doc))

@@ -46,6 +46,15 @@ public enum DiagramMessage
     [Description("The relation from '{From}' to '{To}' names '{Id}', which no type in the diagram has.")]
     UnknownType,
 
+    [Description("A ticket needs its \"title\": the headline on its band.")]
+    TicketWithoutTitle,
+
+    [Description("A ticket shows one to six rows; this one has {Count}.")]
+    TicketRowCount,
+
+    [Description("Row {Number} of the ticket needs both its \"label\" and its \"value\".")]
+    TicketHalfRow,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 
