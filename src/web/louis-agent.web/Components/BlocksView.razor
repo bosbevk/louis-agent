@@ -1,11 +1,11 @@
 @* The blocks of an answer: thinking, text and tool calls, in order. An AskAgent call is drawn as a delegation card,
    with the asked agent's own blocks inside it (F5). Used by TurnView and, nested, by DelegationCard. With its work
    hidden (F128.1), thinking is its label alone and no tool call is drawn. The cards the agent drew, the choices it
-   offered (F127.4.1) and the form it asked with (F127.4.3) sit under its words. *@
+   offered (F127.4.1) and the form it asked with (F127.4.3) sit under its words, and a form is the only choice drawn. *@
 
 @inject ChatText Text
 
-@foreach (var block in CardsLast.Of(Blocks))
+@foreach (var block in CardsLast.Of(FormAlone.Of(Blocks)))
 {
     switch (block.Kind)
     {

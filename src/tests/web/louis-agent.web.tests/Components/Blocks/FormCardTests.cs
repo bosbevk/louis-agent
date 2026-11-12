@@ -171,6 +171,37 @@ public class FormCardTests
         });
     }
 
+    /// <summary>Choices the same answer offered, which a form never wants beside it.</summary>
+    private static Block Offer() => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = "Offer",
+        ToolInput = """{ "question": "Next?", "choices": [ { "label": "Book it" }, { "label": "Not now" } ] }""",
+        ToolResult = "Offered: the visitor sees 2 choices."
+    };
+
+    /// <summary>
+    /// Louis: "and then only that card". An answer that asks with a form draws no choices beside it, whichever came
+    /// first; a refused form asks nothing, so the choices stay.
+    /// </summary>
+    [Test]
+    public void AForm_IsTheOnlyChoiceDrawn()
+    {
+        using var ctx = Context();
+        List<Block> asked = [Offer(), Call(Contact)];
+        List<Block> refused = [Call(Contact, failed: true), Offer()];
+
+        var withForm = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, asked).Add(x => x.ShowWork, false));
+        var withRefusedForm = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, refused).Add(x => x.ShowWork, false));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(withForm.FindAll(".form-card"), Has.Count.EqualTo(1));
+            Assert.That(withForm.FindAll(".offer"), Is.Empty);
+            Assert.That(withRefusedForm.FindAll(".offer"), Has.Count.EqualTo(1));
+        });
+    }
+
     /// <summary>The form matches its golden file.</summary>
     [Test]
     public void TheForm_MatchesTheGoldenFile()
