@@ -13,20 +13,33 @@ public partial class DelegationCard
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
     /// <summary>The images a tool gave in this turn: all an answer may show, besides a shop's own photos.</summary>
-    [Parameter] public IReadOnlySet<string>? Shown { get; set; }
+    [Parameter]
+    public IReadOnlySet<string>? Shown { get; set; }
 
+    /// <summary>It's still working while the turn streams and its call has no result yet.</summary>
     private bool Running => Streaming && Block.ToolResult is null;
 
-    private string Status => Running ? "running" : Block.ToolFailed || Delegation.Failed ? "failed" : "done";
+    /// <summary>The card's state, for its class: still working, failed, or done.</summary>
+    /// <remarks>A switch on the shape (ADR 0051), one arm per state, the first that holds winning.</remarks>
+    private string Status => (Running, Failed: Block.ToolFailed || Delegation.Failed) switch
+    {
+        { Running: true } => "running",
+        { Failed: true } => "failed",
+        _ => "done"
+    };
 
+    /// <summary>The state in words, on the card's badge.</summary>
     private string StatusText => Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done };
 
     /// <summary>The peer actually used: named in the call, else reported by its stream or its result.</summary>
-    private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
+    private string Agent => Delegation.Agent is { Length: > 0 } named
+        ? named
+        : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
 
-    /// <summary>Who the work went to, as the user sees it: the role, else a continued handle, else the peer.</summary>
-    private string Who => Delegation.Role ?? Delegation.Handle ?? Agent;
+    /// <summary>Who the work went to, as the user sees it: a minion's address, else the agent.</summary>
+    private string Who => Delegation.Role ?? Agent;
 
+    /// <summary>The letter in the card's avatar: "m" for a minion, else who it went to.</summary>
     private string Initial => Delegation.Minion ? "m" : Who[..1].ToUpperInvariant();
 
     /// <summary>The cost shown on the rolled-up line.</summary>
@@ -34,5 +47,6 @@ public partial class DelegationCard
 
     /// <summary>How many steps the sub-turn has taken, for the card's header.</summary>
     private string Steps(Turn sub) =>
-        Text.Steps(sub.Blocks.Count(b => b.Kind == BlockKind.Tool), sub.Blocks.Count(b => b.Kind == BlockKind.Thinking));
+        Text.Steps(sub.Blocks.Count(b => b.Kind == BlockKind.Tool),
+            sub.Blocks.Count(b => b.Kind == BlockKind.Thinking));
 }

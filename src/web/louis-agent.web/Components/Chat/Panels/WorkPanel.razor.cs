@@ -40,30 +40,32 @@ public partial class WorkPanel : IAsyncDisposable
         get
         {
             if (Chat is null) return [];
-            // A continue names only its handle until its footer arrives; the role is the one the start with that handle had.
-            var roles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var items = new List<Item>();
             foreach (var (turn, live) in Chat.Turns.Select((turn, t) => (turn, Streaming && t == Chat.Turns.Count - 1)))
                 foreach (var block in turn.Blocks)
                 {
                     if (Delegation.From(block) is not { } delegation) continue;
-                    if (delegation is { Handle: { } h, Role: { } r }) roles[h] = r;
                     string agent = delegation.Agent is { Length: > 0 } named
                         ? named
                         : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
-                    string who = delegation.Role ??
-                                 (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known)
-                                     ? known
-                                     : null) ?? delegation.Handle ?? agent;
-                    string status = live && block.ToolResult is null ? "running" :
-                        block.ToolFailed || delegation.Failed ? "failed" : "done";
-                    items.Add(new Item(delegation, block, who, status));
+                    string who = delegation.Role ?? agent;
+                    items.Add(new Item(delegation, block, who, StatusOf(live, block, delegation)));
                 }
 
             items.Reverse();
             return items;
         }
     }
+
+    /// <summary>A piece of work's state: still working in the live turn, failed, or done.</summary>
+    /// <remarks>A switch on the shape (ADR 0051), one arm per state, the first that holds winning.</remarks>
+    private static string StatusOf(bool live, Block block, Delegation delegation) =>
+        (Working: live && block.ToolResult is null, Failed: block.ToolFailed || delegation.Failed) switch
+        {
+            { Working: true } => "running",
+            { Failed: true } => "failed",
+            _ => "done"
+        };
 
     /// <summary>A page's address as people read it: no scheme, no www.</summary>
     private static string Address(string url) =>

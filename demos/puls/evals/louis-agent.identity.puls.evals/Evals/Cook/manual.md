@@ -33,11 +33,12 @@ of its header). The cook searches with `FindRecipes` and reads the hit with `Rea
 **What the checks see of a minion** (read in `EngineEvents` and the checks, 2026-11-04, not run on a recording). A
 trial's checks read the first-level turn's events and the specialist's, which Puls's stream carries as `sub_session`
 events. A minion's own events are one level deeper (the cook's stream carries them, and Puls's stream carries the
-cook's), and `tool-used`, `tool-not-used` and `tool-calls-under` unwrap one level only. So the cook's `StartMinion` call
-(with `FindRecipes` as its tool) and its `ReadRecipe` call are seen as specialist calls, and `routed-to` reads only
-Puls's own first `AskAgent`; but the `FindRecipes` call the minion makes is not seen by `tool-used`, nor are its
-results or the sites it searched by the counts that read `ToolResultsOf` and `UrlsGiven`. **A check on the search
-names `StartMinion`, never `FindRecipes`:** a `tool-used` on `FindRecipes` would fail even when the search ran.
+cook's), and `tool-used`, `tool-not-used` and `tool-calls-under` unwrap one level only. So the cook's `AskAgent` call to
+its minion (`puls.find-recipe`, with `FindRecipes` as its tool, F127.5) and its `ReadRecipe` call are seen as specialist
+calls, and `routed-to` reads only Puls's own first `AskAgent`; but the `FindRecipes` call the minion makes is not seen
+by `tool-used`, nor are its results or the sites it searched by the counts that read `ToolResultsOf` and `UrlsGiven`.
+**A check on the search names the cook's `AskAgent`, never `FindRecipes`:** a `tool-used` on `FindRecipes` would fail
+even when the search ran.
 The identity's own `TurnView` unwraps every level, so a check built on it would see the minion's calls. What the
 minion cost is on the run's ledger as a `sub_session` request under the cook's turn.
 

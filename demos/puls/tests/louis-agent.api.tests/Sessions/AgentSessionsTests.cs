@@ -193,7 +193,7 @@ public class AgentSessionsTests
             }));
         Assert.That(Names(cook),
             Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
-                .Contain("WebSearch").And.Contain("Calculate").And.Not.Contain("StartMinion"));
+                .Contain("WebSearch").And.Contain("Calculate"));
     }
 
     /// <summary>

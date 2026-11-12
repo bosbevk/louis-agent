@@ -36,9 +36,6 @@ public sealed record ChatText
     /// <summary>Between a minion's role and its model: "web-price-lookup on ollama".</summary>
     public string OnModel { get; init; } = "on";
 
-    /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist already working.</summary>
-    public string FollowUp { get; init; } = "follow-up";
-
     public string Specialist { get; init; } = "specialist";
     public string Task { get; init; } = "Task";
     public string Working { get; init; } = "Working";
@@ -133,7 +130,8 @@ public sealed record ChatText
     public string ChatMany { get; init; } = "chats";
 
     public string CreditsNote { get; init; } =
-        "No subscription: you pay only for the questions you ask, specialists included. From the chats in this browser.";
+        "No subscription: you pay only for the questions you ask, specialists included. From the chats in this " +
+        "browser.";
 
     public string BuyCredits { get; init; } = "Buy credits";
 
@@ -217,7 +215,9 @@ public sealed record ChatText
     public string SessionGone { get; init; } =
         "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
 
-    /// <summary>A refused turn (F61.2): on a site with accounts a person signs in; anywhere, a key in the sidebar works.</summary>
+    /// <summary>
+    /// A refused turn (F61.2): on a site with accounts a person signs in; anywhere, a key in the sidebar works.
+    /// </summary>
     public string NeedsKey { get; init; } =
         "The API said no: sign in, or enter AGENT_API_KEY under API key in the sidebar.";
 

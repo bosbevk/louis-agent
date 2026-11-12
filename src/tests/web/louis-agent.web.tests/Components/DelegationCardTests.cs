@@ -74,28 +74,6 @@ public class DelegationCardTests
         Assert.That(cut.FindAll(".delegation-cost"), Is.Empty, "the cost comes with the rolled-up line");
     }
 
-    /// <summary>A follow-up's chip just says it's a follow-up; the handle used inside stays out of sight.</summary>
-    [Test]
-    public void AFollowUp_ShowsOnlyTheFollowUpChip_NotTheHandle()
-    {
-        // A minion's continue call, which carries the handle of the minion it goes back to.
-        var block = new Block
-        {
-            Kind = BlockKind.Tool,
-            ToolUseId = "call_2",
-            ToolName = Delegation.ContinueMinionToolName,
-            ToolInput = """{"handle":"sub-1","task":"En die nagereg?"}""",
-            ToolResult = "Malva poeding."
-        };
-        using var ctx = new BunitContext();
-        ctx.Services.AddSingleton(new ChatText());
-
-        var cut = ctx.Render<DelegationCard>(p =>
-            p.Add(x => x.Delegation, Delegation.From(block)!).Add(x => x.Block, block));
-
-        Assert.That(cut.Find(".toolset-chip.follow-up").TextContent, Is.EqualTo("follow-up"));
-    }
-
     /// <summary>A failed call is marked failed, with the error.</summary>
     [Test]
     public void AFailedCall_IsMarkedFailed_WithTheError()

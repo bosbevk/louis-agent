@@ -119,7 +119,8 @@ public class RecipesEvalTests
         var found = Trial(CookEvalMode, "recipe-bobotie",
             Turn(1,
             [
-                Start(PulsCall.Cook.Wire()), SpecialistCall("FindRecipes", "{}"), SpecialistCall("StartMinion", "{}")
+                Start(PulsCall.Cook.Wire()), SpecialistCall("FindRecipes", "{}"),
+                SpecialistCall("AskAgent", """{"address":"puls.find-recipe","tool":"FindRecipes"}""")
             ]));
 
         Assert.That((await check.GradeAsync(read, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
@@ -198,7 +199,9 @@ public class RecipesEvalTests
         foreach (var scenario in scenarios) Assert.That(scenario.Input.Messages, Has.Count.EqualTo(1), scenario.Id);
     }
 
-    /// <summary>A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.</summary>
+    /// <summary>
+    /// A question opens in its language's voice, as a chat in that language does; Afrikaans is the mode's.
+    /// </summary>
     [Test]
     public void EachQuestion_OpensInItsOwnLanguage()
     {

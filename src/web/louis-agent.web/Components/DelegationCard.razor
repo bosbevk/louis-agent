@@ -15,10 +15,6 @@
                 {
                     <span class="toolset-chip model">@Text.OnModel @llm</span>
                 }
-                @if (Delegation.Continued)
-                {
-                    <span class="toolset-chip follow-up">@Text.FollowUp</span>
-                }
                 @foreach (string toolset in Delegation.Toolsets)
                 {
                     <span class="toolset-chip">@toolset</span>

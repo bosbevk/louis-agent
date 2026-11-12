@@ -32,23 +32,39 @@ public class DelegationTests
     }
 
     /// <summary>
-    /// A minion's card reads its role and tool from the call, and the model it ran on from the footer.
+    /// An ask that hands a tool is a minion's (F127.5: AskAgent asks minions too): its card reads the address, the
+    /// tool and the task from the call, and the model it ran on from the footer.
     /// </summary>
     [Test]
-    public void AMinion_ReadsItsRoleToolAndModel()
+    public void AnAskWithATool_IsAMinion_ReadingItsAddressToolAndModel()
     {
-        // F127.5: a minion is started by its address; the footer still names its role's file.
-        var block = Call("StartMinion",
-            """{"address":"sample.lookup","tool":"WebSearch","task":"Prys van rys"}""",
+        var block = Call(Delegation.AskToolName,
+            """{"address":"sample.lookup","message":"Prys van rys","tool":"WebSearch"}""",
             SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch]"));
 
         var delegation = Delegation.From(block)!;
 
-        Assert.That(delegation.Minion, Is.True);
-        Assert.That(delegation.Role, Is.EqualTo("sample.lookup"));
-        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "WebSearch" }));
-        Assert.That(delegation.Llm, Is.EqualTo("ollama-puls"));
-        Assert.That(delegation.Answer, Is.EqualTo("R24,99"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(delegation.Minion, Is.True);
+            Assert.That(delegation.Role, Is.EqualTo("sample.lookup"));
+            Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "WebSearch" }));
+            Assert.That(delegation.Task, Is.EqualTo("Prys van rys"));
+            Assert.That(delegation.Llm, Is.EqualTo("ollama-puls"));
+            Assert.That(delegation.Answer, Is.EqualTo("R24,99"));
+        });
+    }
+
+    /// <summary>A minion's ask that was refused shows the refusal, marked failed.</summary>
+    [Test]
+    public void ARefusedMinion_ShowsTheRefusal()
+    {
+        const string refusal = "Error: you don't hold a 'WebSearch' tool, so you can't hand it to a minion.";
+
+        var delegation = Delegation.From(Call(Delegation.AskToolName,
+            """{"address":"sample.lookup","message":"Prys","tool":"WebSearch"}""", refusal))!;
+
+        Assert.That((delegation.Minion, delegation.Answer, delegation.Failed), Is.EqualTo((true, refusal, true)));
     }
 
     /// <summary>Input that isn't JSON still gives a card, with what can be shown.</summary>
@@ -72,7 +88,8 @@ public class DelegationTests
             Kind = BlockKind.Text,
             Text = "AskAgent"
         }), Is.Null);
-        Assert.That(Delegation.IsDelegationTool("ContinueMinion"), Is.True);
+        Assert.That(Delegation.IsDelegationTool("StartMinion"), Is.False, "F127.5: AskAgent alone");
+        Assert.That(Delegation.IsDelegationTool("ContinueMinion"), Is.False);
         Assert.That(Delegation.IsDelegationTool("FetchUrl"), Is.False);
     }
 
