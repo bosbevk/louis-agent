@@ -37,14 +37,15 @@ public class DelegationTests
     [Test]
     public void AMinion_ReadsItsRoleToolAndModel()
     {
+        // F127.5: a minion is started by its address; the footer still names its role's file.
         var block = Call("StartMinion",
-            SampleRole.Fill("""{"role":"<RoleZeta>","tool":"WebSearch","task":"Prys van rys"}"""),
+            """{"address":"sample.lookup","tool":"WebSearch","task":"Prys van rys"}""",
             SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch]"));
 
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Minion, Is.True);
-        Assert.That(delegation.Role, Is.EqualTo(SampleRole.Zeta));
+        Assert.That(delegation.Role, Is.EqualTo("sample.lookup"));
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "WebSearch" }));
         Assert.That(delegation.Llm, Is.EqualTo("ollama-puls"));
         Assert.That(delegation.Answer, Is.EqualTo("R24,99"));

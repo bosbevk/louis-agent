@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Composition.Sessions;
 
 namespace LouisAgent.Core.Tests.Delegation;
 
@@ -22,8 +23,14 @@ namespace LouisAgent.Core.Tests.Delegation;
 /// </summary>
 public class MinionToolsTests
 {
-    /// <summary>The minion role every test hands work to.</summary>
-    private const string Role = SampleRole.Zeta;
+    /// <summary>The minion every test hands work to, by its address (F127.5).</summary>
+    private const string Address = "testprod.lookup";
+
+    /// <summary>That minion's role file, which the session opens with.</summary>
+    private const string Role = "testprod-minion-lookup";
+
+    /// <summary>The identity the cook's turn runs as, which may start that minion and nothing else.</summary>
+    private static readonly FakeIdentity Testprod = new("testprod", voice: "testprod/voice-en", calls: [Address]);
 
     /// <summary>This instance as its own peer, where a minion's session opens.</summary>
     private static readonly Dictionary<string, Uri> Self = new()
@@ -62,7 +69,7 @@ public class MinionToolsTests
             {
                 creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
                 return Json(HttpStatusCode.Created,
-                    SampleRole.Fill("""{"session_id":"sess_minion","role":"<RoleZeta>"}"""));
+                    $$"""{"session_id":"sess_minion","role":"{{Role}}"}""");
             }
 
             return request.Method.Method switch
@@ -80,9 +87,12 @@ public class MinionToolsTests
     private static MinionTools Tools(StubHandler handler,
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
-        new(Self, llms ?? Cascade, "the-key", new HttpClient(handler), timeout, usageSink: sink);
+        new(Self, llms ?? Cascade, "the-key", new HttpClient(handler), timeout, usageSink: sink,
+            identities: [Testprod]);
 
-    /// <summary>The cook's turn: its tools as the host sets them, under Puls's turn as the parent.</summary>
+    /// <summary>
+    /// The cook's turn: its tools as the host sets them, run as its identity, under Puls's turn as the parent.
+    /// </summary>
     private static IDisposable CooksTurn(string session = "sess_cook", int turn = 2, string parent = "sess_puls#1",
         params string[] tools)
     {
@@ -91,17 +101,16 @@ public class MinionToolsTests
         var mine = AgentTools.Use(tools.Length == 0
             ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ExecuteSkill"]
             : tools);
-        return new Both(scope, mine);
+        return new All([scope, mine, TurnIdentity.Use(TurnIdentity.Of(Testprod))]);
     }
 
-    /// <summary>Two scopes that end together, the second one first.</summary>
-    private sealed class Both(IDisposable first, IDisposable second) : IDisposable
+    /// <summary>Scopes that end together, the last begun first.</summary>
+    private sealed class All(IReadOnlyList<IDisposable> scopes) : IDisposable
     {
-        /// <summary>Ends both scopes, in the reverse of the order they began.</summary>
+        /// <summary>Ends every scope, in the reverse of the order they began.</summary>
         public void Dispose()
         {
-            second.Dispose();
-            first.Dispose();
+            foreach (var scope in scopes.Reverse()) scope.Dispose();
         }
     }
 
@@ -116,7 +125,7 @@ public class MinionToolsTests
         var sink = new ListUsageSink();
         string answer;
         using (CooksTurn())
-            answer = await Tools(Peer(creates), sink: sink).StartMinion(Role, "FetchUrl",
+            answer = await Tools(Peer(creates), sink: sink).StartMinion(Address, "FetchUrl",
                 "https://shop.test/mince; beef mince 500 g; Stellenbosch");
 
         var body = creates.Single().RootElement;
@@ -133,7 +142,7 @@ public class MinionToolsTests
 
         Assert.That(answer,
             Does.StartWith("shop: Checkers").And
-                .Contain(SampleRole.Fill("[Minion <RoleZeta> on ollama-puls with FetchUrl")));
+                .Contain($"[Minion {Role} on ollama-puls with FetchUrl"));
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent),
             Is.EqualTo(("sub_session", $"minion:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
@@ -165,7 +174,7 @@ public class MinionToolsTests
             Content = new StringContent(stream, Encoding.UTF8, "text/event-stream")
         };
         using (CooksTurn())
-            return await Tools(Peer([], answer)).StartMinion(Role, "FetchUrl", "https://shop.test/mince");
+            return await Tools(Peer([], answer)).StartMinion(Address, "FetchUrl", "https://shop.test/mince");
     }
 
     /// <summary>A minion records into, or replays from, its chat's own trial; with no trial it gets none.</summary>
@@ -178,11 +187,11 @@ public class MinionToolsTests
                    SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
         using (CooksTurn())
             await Tools(Peer(withReplay))
-                .StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+                .StartMinion(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
         var without = new List<JsonDocument>();
         using (CooksTurn())
             await Tools(Peer(without))
-                .StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+                .StartMinion(Address, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
 
         var replay = withReplay.Single().RootElement.GetProperty("replay");
         Assert.That(
@@ -207,15 +216,37 @@ public class MinionToolsTests
 
         using (CooksTurn(tools: ["FetchUrl"]))
         {
-            Assert.That(await tools.StartMinion(Role, "ReadRenderedPage", "a page"),
+            Assert.That(await tools.StartMinion(Address, "ReadRenderedPage", "a page"),
                 Does.StartWith("Error:").And.Contain("ReadRenderedPage").And.Contain("FetchUrl"),
                 "only one of its own: the parent's toolbox is the ceiling");
-            Assert.That(await tools.StartMinion(Role, "ExecuteSkill", "a page"),
+            Assert.That(await tools.StartMinion(Address, "ExecuteSkill", "a page"),
                 Does.StartWith("Error:").And.Contain("never"));
-            Assert.That(await tools.StartMinion(SampleRole.Alpha, "FetchUrl", "a page"),
-                Does.StartWith("Error:").And.Contain(SampleRole.Alpha), "a specialist's role is no minion's");
-            Assert.That(await tools.StartMinion("puls-minion", "FetchUrl", "a page"), Does.StartWith("Error:"),
-                "the base is no role");
+            Assert.That(await tools.StartMinion("testprod.specialist", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("testprod.specialist"), "a specialist is no minion");
+            Assert.That(await tools.StartMinion("testprod", "FetchUrl", "a page"), Does.StartWith("Error:"),
+                "an identity alone is no minion");
+            Assert.That(await tools.StartMinion("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
+        }
+
+        Assert.That(creates, Is.Empty);
+    }
+
+    /// <summary>
+    /// A minion the identity's <c>Calls</c> don't list is refused naming the ones they do, and a minion on another
+    /// server is refused: a minion runs here, on a local model (F127.5, ADR 0081).
+    /// </summary>
+    [Test]
+    public async Task AMinionNotListed_OrOnAnotherServer_IsRefused_WithoutANetworkCall()
+    {
+        var creates = new List<JsonDocument>();
+        var tools = Tools(Peer(creates));
+
+        using (CooksTurn())
+        {
+            Assert.That(await tools.StartMinion("testprod.summary", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("testprod.summary").And.Contain(Address));
+            Assert.That(await tools.StartMinion("partner:testprod.lookup", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("this instance"));
         }
 
         Assert.That(creates, Is.Empty);
@@ -233,7 +264,7 @@ public class MinionToolsTests
 
         using (CooksTurn())
         {
-            await tools.StartMinion(Role, "FetchUrl", "a page", stronger: true);
+            await tools.StartMinion(Address, "FetchUrl", "a page", stronger: true);
             Assert.That(
                 creates.Single().RootElement.TryGetProperty("llm", out var llm) &&
                 llm.ValueKind == JsonValueKind.String, Is.False,
@@ -241,7 +272,7 @@ public class MinionToolsTests
 
             var oneModel = Tools(Peer(creates),
                 new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls"] });
-            string refused = await oneModel.StartMinion(Role, "FetchUrl", "a page", stronger: true);
+            string refused = await oneModel.StartMinion(Address, "FetchUrl", "a page", stronger: true);
             Assert.That(refused, Does.StartWith("Error:").And.Contain("ollama-puls"),
                 "no stronger model left: the refusal says which list ended");
             Assert.That(creates, Has.Count.EqualTo(1));
@@ -257,13 +288,13 @@ public class MinionToolsTests
 
         using (CooksTurn())
         {
-            await Tools(Peer(creates), llms).StartMinion(Role, "FetchUrl", "a page");
+            await Tools(Peer(creates), llms).StartMinion(Address, "FetchUrl", "a page");
             Assert.That(
                 creates.Single().RootElement.TryGetProperty("llm", out var llm) &&
                 llm.ValueKind == JsonValueKind.String, Is.False);
 
-            string refused = await Tools(Peer(creates), llms)
-                .StartMinion("puls-minion-web-summary", "FetchUrl", "a page");
+            var noListForIt = new Dictionary<string, IReadOnlyList<string>> { ["another-minion"] = ["instance"] };
+            string refused = await Tools(Peer(creates), noListForIt).StartMinion(Address, "FetchUrl", "a page");
             Assert.That(refused, Does.StartWith("Error:").And.Contain("MINION_LLMS"),
                 "no list for the role and no default");
             Assert.That(creates, Has.Count.EqualTo(1));
@@ -287,17 +318,17 @@ public class MinionToolsTests
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#4"))
             for (int i = 0; i < first; i++)
-                Assert.That(await tools.StartMinion(Role, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
+                Assert.That(await tools.StartMinion(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
         using (CooksTurn(session: "sess_researcher", turn: 1, parent: "sess_puls#4"))
         {
             for (int i = 0; i < 2; i++)
-                Assert.That(await tools.StartMinion(Role, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
-            Assert.That(await tools.StartMinion(Role, "FetchUrl", "one more"),
+                Assert.That(await tools.StartMinion(Address, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
+            Assert.That(await tools.StartMinion(Address, "FetchUrl", "one more"),
                 Does.StartWith("Error:").And.Contain("16"));
         }
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#5"))
-            Assert.That(await tools.StartMinion(Role, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
+            Assert.That(await tools.StartMinion(Address, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
                 "another user turn starts fresh");
 
         Assert.That(creates, Has.Count.EqualTo(MinionTools.MaxPerTurn + 1));
@@ -329,7 +360,7 @@ public class MinionToolsTests
         string answer;
         using (CooksTurn())
             answer = await Tools(handler, timeout: TimeSpan.FromMilliseconds(200))
-                .StartMinion(Role, "FetchUrl", "a slow page");
+                .StartMinion(Address, "FetchUrl", "a slow page");
 
         Assert.That(answer, Does.StartWith("Error:").And.Contain("didn't finish"));
         Assert.That(deleted, Is.True);
@@ -364,7 +395,7 @@ public class MinionToolsTests
         string answer;
         using (CooksTurn())
         using (SubSessionRegistry.Use(registry))
-            answer = await Tools(handler).StartMinion(Role, "FetchUrl", "a page");
+            answer = await Tools(handler).StartMinion(Address, "FetchUrl", "a page");
 
         Assert.That(answer, Does.StartWith("shop: Checkers").And.Not.Contain("handle"));
         Assert.That(registry.Open, Is.Empty, "the chat's three places stay for its specialists");

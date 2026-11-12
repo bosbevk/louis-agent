@@ -34,7 +34,7 @@ public static class ToolsetCatalog
                 }.OfType<string>()
             ],
             ToolTypes: [typeof(MinionTools)],
-            CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
+            CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink, ctx.Identities)]),
 
         // F127.3.1: ask another agent by its address, and read back what it did; the asker's Calls and the identities
         // this instance runs decide who may be asked.

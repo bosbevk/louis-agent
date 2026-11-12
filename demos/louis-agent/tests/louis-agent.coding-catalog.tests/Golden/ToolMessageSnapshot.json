@@ -120,6 +120,7 @@
   "MinionLimit": "Error: this user turn has already used <Max> minions, the most one turn may across every specialist. Finish with what you have.",
   "MinionNoLlm": "Error: no model is configured for the '<Role>' minion (MINION_LLMS names neither it nor *). Do the task yourself.",
   "MinionNoStronger": "Error: no stronger model is left for the '<Role>' minion (its list: <Models>). Treat the answer as unconfirmed, or do the task yourself.",
+  "MinionOnAnotherServer": "Error: '<Address>' names another server, and a minion runs on this instance only. Give its address without the server.",
   "MinionRoleInvalid": "Error: '<Role>' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists them).",
   "MinionToolNeverHandedDown": "Error: '<Tool>' is never handed to a minion: a minion gets one of your working tools, not delegation or skills.",
   "MinionToolNotMine": "Error: you don't hold a '<Tool>' tool, so you can't hand it to a minion. Your tools: <Tools>.",

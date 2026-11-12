@@ -12,7 +12,7 @@ it reads never enters your context: you get its lines back.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartMinion(role, tool, task, stronger)` | Open a minion with `role`, hand it one of your tools (`tool`) and the `task`; wait for its answer. It answers once and closes. `stronger: true` runs the same task on the next, stronger model in the role's list, once, only when the instance lists one. |
+| `StartMinion(address, tool, task, stronger)` | Open the minion at `address`, hand it one of your tools (`tool`) and the `task`; wait for its answer. It answers once and closes. `stronger: true` runs the same task on the next, stronger model in the role's list, once, only when the instance lists one. |
 
 ## When a minion is worth it
 
@@ -24,9 +24,9 @@ it reads never enters your context: you get its lines back.
 
 ## The roles
 
-Your own role file lists the minion roles you may hand work to, what to hand each (the tool and the task's shape) and
-what its answer looks like; the minion roles come with your identity, named `<product>-minion-<function>`.
-`StartMinion` refuses a name that isn't one.
+Your own role file lists the minions you may hand work to, by their addresses (your identity and the minion's
+function, `acme.lookup`), what to hand each (the tool and the task's shape) and what its answer looks like.
+`StartMinion` refuses an address your identity doesn't list, and one on another server: a minion runs here.
 
 ## Writing the task
 

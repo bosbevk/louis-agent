@@ -116,6 +116,11 @@ public enum SubSessionToolMessage
     [Description("Error: {Identity} has no minion '{Role}'. Its minions: {Minions}.")]
     AddressUnknownMinion,
 
+    [Description(
+        "Error: '{Address}' names another server, and a minion runs on this instance only. Give its address " +
+        "without the server.")]
+    MinionOnAnotherServer,
+
     [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
     AddressNotCallable,
 

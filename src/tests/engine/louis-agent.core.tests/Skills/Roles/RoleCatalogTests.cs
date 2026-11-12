@@ -216,7 +216,7 @@ public class RoleCatalogTests
     {
         string guide = SkillFileSource.ReadEmbedded("toolsets/minions.md")!;
 
-        Assert.That(guide, Does.Contain("`StartMinion(role, tool, task, stronger)`"));
+        Assert.That(guide, Does.Contain("`StartMinion(address, tool, task, stronger)`"));
         Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Malmesbury"));
     }
 

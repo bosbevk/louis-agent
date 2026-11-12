@@ -1,4 +1,8 @@
+using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Sessions;
+using LouisAgent.Core.Delegation.Addresses;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
@@ -68,6 +72,12 @@ public sealed class MinionTools
     };
 
     private readonly IReadOnlyDictionary<string, Uri> _peers;
+
+    /// <summary>
+    /// The identities this instance runs: whose <c>Calls</c> say which minions each may start (F127.5).
+    /// </summary>
+    private readonly IReadOnlyList<IAgentIdentity> _identities;
+
     private readonly PeerSession _session;
     private readonly IReadOnlyDictionary<string, IReadOnlyList<string>> _llms;
     private readonly TimeSpan _timeout;
@@ -78,16 +88,20 @@ public sealed class MinionTools
     /// <param name="usageSink">
     /// The engine's ledger, for the roll-up of each minion's usage (F5); null writes none.
     /// </param>
-    public MinionTools(AgentOptions options, IUsageSink? usageSink = null)
-        : this(options.AgentPeers, options.MinionLlms, options.AgentApiKey, usageSink: usageSink)
+    public MinionTools(AgentOptions options, IUsageSink? usageSink = null,
+        IReadOnlyList<IAgentIdentity>? identities = null)
+        : this(options.AgentPeers, options.MinionLlms, options.AgentApiKey, usageSink: usageSink,
+            identities: identities)
     {
     }
 
     /// <summary>The toolset with everything handed in, so a test can give it a stub peer and a short timeout.</summary>
     public MinionTools(IReadOnlyDictionary<string, Uri> peers, IReadOnlyDictionary<string, IReadOnlyList<string>> llms,
         string? apiKey,
-        HttpClient? http = null, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? usageSink = null)
+        HttpClient? http = null, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? usageSink = null,
+        IReadOnlyList<IAgentIdentity>? identities = null)
     {
+        _identities = identities ?? [];
         _llms = llms;
         _timeout = timeout ?? DefaultTimeout;
         _peers = peers;
@@ -104,8 +118,9 @@ public sealed class MinionTools
         "answers once and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the " +
         "minions guide.")]
     public async Task<string> StartMinion(
-        [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")]
-        string role,
+        [Description(
+            "The minion's address, its identity and its function (acme.lookup), as your role file lists them.")]
+        string address,
         [Description(
             "The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")]
         string tool,
@@ -119,8 +134,8 @@ public sealed class MinionTools
         bool stronger = false,
         CancellationToken cancellationToken = default)
     {
-        role = role.Trim();
         tool = tool.Trim();
+        if (Reach(address, out string? refusal) is not { Role: { } role }) return refusal!;
         if (RoleCatalog.MinionBaseOf(role) is null)
             return MessageText.Format(SubSessionToolMessage.MinionRoleInvalid, new { Role = role });
         if (NeverHandedDown.Contains(tool))
@@ -165,6 +180,43 @@ public sealed class MinionTools
             scope, _timeout,
             cancellationToken, keep: false);
     }
+
+    /// <summary>
+    /// The minion an address reaches for the identity whose turn this is (F127.5): read once, on this instance (a
+    /// minion runs on a local model here, ADR 0081), listed in the identity's <c>Calls</c>, and one of its minions.
+    /// </summary>
+    /// <remarks>Guard clauses (Fowler), one per way it can fail, then the minion's file.</remarks>
+    private AddressedAgent? Reach(string address, out string? refusal)
+    {
+        refusal = null;
+        if (!AgentAddress.TryParse(address, out var parsed))
+        {
+            refusal = MessageText.Format(SubSessionToolMessage.AddressInvalid, new { Address = address });
+            return null;
+        }
+
+        if (parsed.Peer is not null)
+        {
+            refusal = MessageText.Format(SubSessionToolMessage.MinionOnAnotherServer, new { Address = address });
+            return null;
+        }
+
+        if (Asker() is not { } asker)
+        {
+            refusal = MessageText.Format(SubSessionToolMessage.AskerNone);
+            return null;
+        }
+
+        return AgentCalls.Allows(asker, parsed, out refusal)
+            ? AgentAddresses.ResolveMinion(parsed, _identities, out refusal)
+            : null;
+    }
+
+    /// <summary>The identity the running turn speaks for, if this instance runs it.</summary>
+    private IAgentIdentity? Asker() =>
+        TurnIdentity.Current is { } who
+            ? _identities.FirstOrDefault(i => string.Equals(i.Name, who.Name, StringComparison.OrdinalIgnoreCase))
+            : null;
 
     /// <summary>
     /// Picks the minion's model from <c>MINION_LLMS</c>: the role's own list, else the default one, cheapest first, and

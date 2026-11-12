@@ -67,7 +67,8 @@ public sealed partial record Delegation(
         {
             using var input = JsonDocument.Parse(block.ToolInput ?? "{}");
             var root = input.RootElement;
-            if (root.TryGetProperty("role", out var r) && r.ValueKind == JsonValueKind.String)
+            // A minion is started by its address (F127.5); the footer's role file is the fallback.
+            if (root.TryGetProperty("address", out var r) && r.ValueKind == JsonValueKind.String)
                 role = Blank(r.GetString());
             if (root.TryGetProperty("tool", out var t) && t.ValueKind == JsonValueKind.String)
                 tool = Blank(t.GetString());
