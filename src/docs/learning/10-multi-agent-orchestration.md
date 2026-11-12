@@ -167,6 +167,19 @@ parties talk to one agent, and both can see the whole of it.
 and another agent; observability (17), the work of one agent readable by another; safety (15), the cap follows the
 person; human in the loop (16), the visitor takes the wheel. Live checks for the day cost $0.0284.
 
+## Minions on the address (F127.5, 2026-11-12)
+
+The last call off the address: a specialist starting its identity's minion. `StartMinion(puls.find-recipe, …)` reads
+the same address as `AskAgent`, checks it against the same `Calls`, and only then finds the minion's file.
+
+- **One list, two tools.** An identity's `Calls` hold its agents and its minions; the tool that is called says which
+  kind is meant, so `puls.find-recipe` never opens a specialist and `AskAgent` never opens a minion.
+- **What the model reads stays what it may do.** A mode's prompt lists the agents it may ask; the minions it never
+  starts aren't in that list, so it can't be tempted to `AskAgent` one.
+- **Some limits follow the kind.** An address on another server is fine for an agent (F127.3.2) and refused for a
+  minion: a minion is a local model on this instance (ADR 0081), and its cost must stay ours.
+- **No live run.** Puls, the only identity with minions, is paused, and no voice starts one today; the tests carry it.
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and

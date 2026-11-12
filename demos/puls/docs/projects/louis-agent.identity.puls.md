@@ -27,7 +27,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   `agents` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
   shared routing (`voice.md`). Puls answers the world itself with `web`, and asks the cook every cooking question
   with `AskAgent("puls.cook", …)`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`). The addresses it may
-  ask are its `Calls` (`PulsCall`: the cook, the researcher, the analyst, the historian and the reader), and it sets
+  ask are its `Calls` (`PulsCall`: the cook, the researcher, the analyst, the historian and the reader, and the two
+  minions its specialists may start by address, `puls.find-recipe` and `puls.web-price-lookup`, F127.5), and it sets
   `RelaysAnswersWhole`, so the cook's answer is shown as it is and Puls's turn ends there
   ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)).
 - **The cook.** `specialists/puls-cook.md` opens with the header every prompt has

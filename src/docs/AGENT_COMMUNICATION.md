@@ -382,6 +382,11 @@ thinking), from its server's `GET /v1/sessions/{id}/work`, the latest 12,000 cha
 chat's session deletes its kept agents on the peer when it is deleted or dropped as idle; `GET /v1/sessions/{id}`
 lists them. Outside a chat (an MCP call) the session is deleted at once.
 
+A minion is named by an address too (F127.5): a specialist calls `StartMinion(address, tool, task)` with its
+identity's minion, `puls.find-recipe` for the file `minions/puls-minion-find-recipe.md`. The address must be in the
+identity's `Calls` and name no server, since a minion runs on this instance on a local model (ADR 0081). `AskAgent`
+never opens a minion, and a mode's prompt lists only the agents among its `Calls`.
+
 An asked agent can't ask further (`agents` at depth 1 is a `400`); a turn may make at most 3 asks (first asks and
 follow-ups alike), each stops after 5 minutes, and an asked agent's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`,
 FX14). Its usage records carry `parent`, so a ledger can total a chat with the agents it asked. An asker that relays

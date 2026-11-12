@@ -86,6 +86,15 @@ the same day:
 - **The person is told first:** the agents guide has the model say, before it asks, that the question goes to
   another company's server. The privacy terms gain their line when a site's agent first asks another server.
 
+## What F127.5 settled (2026-11-12, unattended)
+
+The minions on the address, each a rule now, each Claude's pick of three:
+
+- **A minion's address is its identity and its function** (`puls.find-recipe`); `StartMinion` says it is a minion,
+  so the address finds `minions/puls-minion-find-recipe.md` and never a specialist, and `AskAgent` never a minion.
+- **An identity's `Calls` list its minions** beside its agents; a mode's prompt names only the agents among them.
+- **A minion runs on this instance:** an address with a server is refused (ADR 0081, a local model).
+
 ## What F127.4.2 settled (2026-11-12)
 
 The guided live demo (F127.3 picks 7 and 8, F127.4 picks 1, 6 to 8), each a rule now:
