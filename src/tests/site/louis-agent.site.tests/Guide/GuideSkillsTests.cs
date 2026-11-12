@@ -84,11 +84,39 @@ public class GuideSkillsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(voice, Does.Contain("On a demo page, the *What to watch* stop ends with `Offer`: Ask it live"));
+            Assert.That(voice, Does.Contain(
+                    "On a demo page, every stop's choices include a fourth, Ask it live, until they have asked live"),
+                "Louis: drop the card drawn in code, rework the prompt");
             Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
-            Assert.That(skill, Does.Contain("End with `Offer`: two or three questions they could ask it next"),
+            Assert.That(skill, Does.Contain("end with `Offer`: two or three questions they could ask it next"),
                 "Louis: \"when he is the teacher he must give me offers of what I could ask\"");
+        });
+    }
+
+    /// <summary>
+    /// FX139, Louis: "the guide should always display options, even to go to another page after it was done". The
+    /// guide ends each answer with Offer, the tool the web draws as cards, so the engine asks for it when it's missing.
+    /// </summary>
+    [Test]
+    public void TheGuide_EndsEachAnswerWithChoices() =>
+        Assert.That(new GuideIdentity().EndsEachAnswerWith, Is.EqualTo(LouisAgent.Web.Chats.Calls.OfferCall.Tool));
+
+    /// <summary>
+    /// FX140, Louis on Ask it live: "it should have given me a prompt for seemeeu". The guide answered with cards that
+    /// only said "type my question"; it now offers questions to ask the business, each sent as it is when clicked.
+    /// </summary>
+    [Test]
+    public void OnAskItLive_TheGuideOffersQuestionsForTheBusiness()
+    {
+        string skill = Flat(Read("skills/live-demo.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill, Does.Contain("offer two or three questions to ask the business"));
+            Assert.That(skill, Does.Contain("never a card that only says to type"));
+            Assert.That(skill, Does.Contain("answer it in its window, and offer nothing"),
+                "FX141, Louis: \"it is waiting for my name, so now no card should display\"");
         });
     }
 

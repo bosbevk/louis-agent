@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Messages;
 using LouisAgent.Packs.Site.Tools.Cards;
 
@@ -46,7 +47,11 @@ public sealed class CardTools
         return MessageText.Format(SiteToolMessage.CardShown, new { });
     }
 
-    /// <summary>Offers the visitor two to four choices as cards; their click comes back as their message.</summary>
+    /// <summary>
+    /// Offers the visitor two to four choices as cards; their click comes back as their message. Offering ends the
+    /// turn, so the agent waits for the pick instead of running on (FX138).
+    /// </summary>
+    [EndsTurn]
     [Description(
         "Offers the visitor two to four choices as cards under your words, when they must decide something: try " +
         "a demo, book or not, which plan. Their click comes back as their next message, in the label's words, and " +

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Packs.Site.Tools.Cards;
 
@@ -32,6 +33,15 @@ public class OfferTests
             Assert.That(answer, Does.Contain("3 choices").And.Contain("next message"));
         });
     }
+
+    /// <summary>
+    /// FX138: offering ends the turn, so the agent waits for the visitor's pick instead of running on to the next
+    /// stop.
+    /// </summary>
+    [Test]
+    public void Offering_EndsTheTurn() =>
+        Assert.That(typeof(CardTools).GetMethod(nameof(CardTools.Offer))!.IsDefined(typeof(EndsTurnAttribute), false),
+            Is.True);
 
     /// <summary>One choice is no choice, and five crowd the chat: both are refused, saying how many may be.</summary>
     [TestCase(1)]

@@ -34,9 +34,6 @@ public sealed class AgentWindows
         return new Shown(() => _shown.Remove(identity));
     }
 
-    /// <summary>Whether a window on the page shows any agent.</summary>
-    public bool Any => _shown.Count > 0;
-
     /// <summary>Whether a window shows this agent.</summary>
     public bool Shows(string identity) => _shown.ContainsKey(identity);
 

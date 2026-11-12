@@ -1,6 +1,8 @@
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Sessions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
@@ -98,6 +100,7 @@ internal sealed class TurnRunner(
     {
         using var span = TurnSpans.Start(agentName());
         ChatOptions chatOptions = Begin(history, userInput);
+        bool owedAsked = false;
         for (int continuation = 0; ; continuation++)
         {
             var updates = new List<ChatResponseUpdate>();
@@ -126,7 +129,19 @@ internal sealed class TurnRunner(
             // When streaming, a tool call cut off by the output limit is dropped entirely, so the turn would just stop.
             bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason ==
                           ChatFinishReason.Length;
-            if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
+            if (!cutOff)
+            {
+                // An identity whose answers end with a tool (the guide's choices, FX139) gets it once, if missing.
+                if (owedAsked || OwedTool(updates, chatOptions) is not { } owed) yield break;
+                owedAsked = true;
+                // A request must end with the user's message (no prefill), so a notice asks for it, as after a cut-off.
+                history.Add(new ChatMessage(ChatRole.User,
+                    MessageText.Format(AgentToolMessage.EndWithTool, new { Tool = owed })));
+                chatOptions = Requiring(chatOptions, owed);
+                continue;
+            }
+
+            if (continuation >= MaxCutOffContinuations) yield break;
 
             Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, new { MaxOutputTokens });
             ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
@@ -134,6 +149,32 @@ internal sealed class TurnRunner(
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
             if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;
         }
+    }
+
+    /// <summary>
+    /// The tool the running identity ends each answer with, when this answer didn't call it and the turn has it
+    /// (FX139); none otherwise.
+    /// </summary>
+    private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options)
+    {
+        if (TurnIdentity.Current?.EndsEachAnswerWith is not { } tool) return null;
+        var calls = updates.SelectMany(u => u.Contents).OfType<FunctionCallContent>().ToList();
+        if (calls.Any(call => call.Name == tool)) return null;
+        // An answer that asked another agent owes nothing: that agent may be waiting for the person (FX141).
+        if (calls.Any(call => call.Name == nameof(AskAgentTools.AskAgent))) return null;
+        return options.Tools?.Any(t => t.Name == tool) == true ? tool : null;
+    }
+
+    /// <summary>
+    /// The turn's options with the owed tool required and thinking off, since a model can't think and be made to call
+    /// one tool in the same request; the tool ends the turn (FX138).
+    /// </summary>
+    private static ChatOptions Requiring(ChatOptions options, string tool)
+    {
+        var required = options.Clone();
+        required.ToolMode = ChatToolMode.RequireSpecific(tool);
+        required.Reasoning = null;
+        return required;
     }
 
     /// <summary>
