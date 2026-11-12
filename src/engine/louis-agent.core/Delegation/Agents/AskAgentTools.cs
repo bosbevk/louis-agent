@@ -75,7 +75,8 @@ public sealed class AskAgentTools(
     /// <summary>Asks the agent at an address and gives back its answer.</summary>
     [Description(
         "Asks another agent by its address and waits for its answer: an agent in its own voice (\"acme\") or one " +
-        "of its roles (\"acme.cook\"), only one the agents guide lists. It sees your message and the files you " +
+        "of its roles (\"acme.cook\"), on another server after its name (\"partner:acme\"), only one the agents " +
+        "guide lists. It sees your message and the files you " +
         "name, never this conversation; asked again in this chat, it carries on the conversation you have with it. " +
         "At most 3 asks per turn, 5 minutes each.")]
     public async Task<string> AskAgent(
