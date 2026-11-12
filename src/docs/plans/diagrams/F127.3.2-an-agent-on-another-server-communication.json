@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "F127.3.2 an agent on another server: an ask to another server",
+  "caption": "The agent says the question leaves this hosting, the peer's identities are read with its key unless kept, then the session opens there; an unknown peer, a refused key or a server that is down comes back as a reason.",
+  "sequence": {
+    "participants": [
+      { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "tools", "label": "AskAgentTools", "icon": "shield", "tone": "green" },
+      { "id": "peer", "label": "partner's API", "icon": "cloud", "tone": "red" }
+    ],
+    "steps": [
+      { "step": "message", "from": "model", "to": "tools", "text": "AskAgent(partner:shop, message)" },
+      { "step": "block", "block": "opt", "label": "its identities not kept",
+        "steps": [
+          { "step": "message", "from": "tools", "to": "peer", "text": "GET /v1/identities, partner's key" },
+          { "step": "reply", "from": "peer", "to": "tools", "text": "shop, cafe" }
+        ] },
+      { "step": "block", "block": "alt", "label": "shop is listed",
+        "steps": [
+          { "step": "message", "from": "tools", "to": "peer", "text": "POST /v1/sessions, then the message" },
+          { "step": "reply", "from": "tools", "to": "model", "text": "the answer, and what it did" }
+        ],
+        "else": [ { "label": "unknown peer, refused key, down, not listed",
+          "steps": [ { "step": "reply", "from": "tools", "to": "model", "text": "the reason, to pass on" } ] } ] }
+    ]
+  }
+}

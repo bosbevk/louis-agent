@@ -1,0 +1,18 @@
+{
+  "kind": "flow",
+  "title": "F127.3.2 an agent on another server: one ask in memory",
+  "caption": "The address names the peer; the peer's URL and key come from the settings, and its kept identities say the shop is there.",
+  "flow": {
+    "nodes": [
+      { "id": "address", "label": "AgentAddress\nPeer: partner, Identity: shop", "icon": "tag", "tone": "teal" },
+      { "id": "url", "label": "AgentPeers[partner]\nhttps://partner.example", "icon": "world", "tone": "teal" },
+      { "id": "key", "label": "AgentPeerKeys[partner]\na secret", "icon": "shield", "tone": "teal" },
+      { "id": "kept", "label": "PeerIdentities\npartner: shop, cafe, until 10:12", "icon": "book", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "address", "to": "url" },
+      { "from": "address", "to": "key" },
+      { "from": "url", "to": "kept" }
+    ]
+  }
+}
