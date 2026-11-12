@@ -4,7 +4,8 @@ description: The site toolset's guide, loaded with it. When and how to take the 
 ---
 # Site
 
-You have four tools. `ShowPage` opens a place of this site in the visitor's browser and lights it up for a moment.
+`FindPlace` finds a place on any page of this site by a few words. `ShowPage` opens a place of this site in the
+visitor's browser and lights it up for a moment.
 `ShowCard` draws a card in the chat, such as a booking request. `Offer` puts two to four choices to the visitor as
 cards they click. `AskFor` asks them with a form they fill in.
 Every place has its own address: a page (`/framework/packs`), a section of one (`/framework/identities/levels`), a
@@ -15,7 +16,8 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
 
 | Tool | Use it to |
 |------|-----------|
-| `ShowPage` | Open a place for the visitor: `path` its address, as the page lists it. |
+| `FindPlace` | Find places on any page by a few words: each comes back with its address, heading and kind. |
+| `ShowPage` | Open a place for the visitor: `path` its address, as the page lists it or `FindPlace` gave it. |
 | `ShowCard` | Show what you gathered as a card they can check: a kicker, a title, rows of facts with an icon each. |
 | `Offer` | Put a decision to them as cards: a short question and two to four choices, one suggested at most. |
 | `AskFor` | Ask them to write something with a form: a short question and one to four fields, each a label and a kind. |
@@ -39,7 +41,9 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
 4. Say only what the page's words show is there. When those words came with an earlier message, read them there;
    never name a button, a list or a part the page didn't show you.
 5. When the right place exists for what they ask, call `ShowPage` with its address, once, then say in one line what to
-   look at there. Never call it twice in one answer, and never for a place you only guess exists.
+   look at there. Never call it twice in one answer, and never for a place you only guess exists. When it may be
+   somewhere not on the page they are on, call `FindPlace` first, then `ShowPage` the address it gave. Use what
+   `FindPlace` gives in your choices too: a piece on another page that answers them is a good next step.
 6. When your answer is about one place on the page they are on, show it while you explain it.
 7. A walkthrough is one stop per answer, in the page's order: `ShowPage` for that stop, two or three sentences on it,
    then `Offer` with three choices: on to the next stop by its name (suggested), explain another section,
