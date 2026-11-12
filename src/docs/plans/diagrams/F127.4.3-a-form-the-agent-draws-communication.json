@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "F127.4.3 a form the agent draws: the main case",
+  "caption": "Seemeeu needs a name: it asks with a form, the turn ends, the visitor fills it in and sends, and the filled form comes back as their message.",
+  "sequence": {
+    "participants": [
+      { "id": "V", "label": "Visitor", "actor": true, "tone": "blue" },
+      { "id": "W", "icon": "message", "tone": "blue", "label": "Seemeeu's window" },
+      { "id": "E", "icon": "chip", "tone": "violet", "label": "Seemeeu's engine" },
+      { "id": "T", "icon": "box", "tone": "green", "label": "AskFor" }
+    ],
+    "steps": [
+      { "step": "message", "from": "V", "to": "W", "text": "Book the garden room for Friday" },
+      { "step": "message", "from": "W", "to": "E", "text": "the message, with its page" },
+      { "step": "message", "from": "E", "to": "T", "text": "AskFor(question, Name · Phone or email)" },
+      { "step": "reply", "from": "T", "to": "E", "text": "Asked: 2 fields; the turn ends (EndsTurn)" },
+      { "step": "reply", "from": "E", "to": "W", "text": "the stream: words, then the AskFor call" },
+      { "step": "note", "over": ["W"], "text": "FormCard: two inputs and Send, the only card" },
+      { "step": "message", "from": "V", "to": "W", "text": "fills in John, 066 391 2470, Send" },
+      { "step": "message", "from": "W", "to": "E", "text": "\"Name: John · Phone or email: 066 391 2470\"" },
+      { "step": "note", "over": ["W"], "text": "the card folds to what was sent" }
+    ],
+    "numbered": true
+  }
+}

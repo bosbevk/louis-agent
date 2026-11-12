@@ -1,0 +1,209 @@
+<svg viewBox="-24 -24 1765 1025" width="1765" height="1025" role="img" aria-label="F127.4.3 a form the agent draws: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F127.4.3 a form the agent draws: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1765" height="1025" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1717" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F127.4.3 a form the agent draws:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 441 243 L 765 243 Q 789 243 789 219 L 789 99 Q 789 75 813 75 L 917 75" marker-end="url(#arrow-green)" />
+    <path class="edge tone-teal" d="M 1351 75 L 1417 75 Q 1441 75 1441 99 L 1441 315 Q 1441 327 1453 327 L 1465 327" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 441 243 L 917 243" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 441 243 L 765 243 Q 789 243 789 267 L 789 387 Q 789 411 813 411 L 917 411" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-violet" d="M 441 411 L 917 411" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-green" d="M 1351 579 L 1399 579 Q 1423 579 1423 555 L 1423 516 Q 1423 495 1444 495 L 1465 495" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-violet" d="M 441 579 L 917 579" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-violet" d="M 441 579 L 729 579 Q 753 579 753 603 L 753 723 Q 753 747 777 747 L 917 747" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-green" x="835" y="53" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="853" y="65" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-teal" x="1374.5" y="53" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1396" y="65" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="828" y="389" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="853" y="401" text-anchor="middle">marked</text>
+    <rect class="word-chip tone-violet" x="472.5" y="389" width="267" height="18" rx="4" />
+    <text class="word tone-violet" x="606" y="401" text-anchor="middle">any turn-ending tool closes an answer</text>
+    <rect class="word-chip tone-green" x="1358.5" y="557" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1387" y="569" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-violet" x="835" y="557" width="36" height="18" rx="4" />
+    <text class="word tone-violet" x="853" y="569" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-violet" x="800" y="725" width="106" height="18" rx="4" />
+    <text class="word tone-violet" x="853" y="737" text-anchor="middle">only that card</text>
+    <rect class="box tone-green" x="0" y="168" width="441" height="150" rx="10" />
+    <text class="label tone-green" x="220.5" y="196" text-anchor="middle">CardTools</text>
+    <text class="note" x="220.5" y="212" text-anchor="middle">site pack, changed, step</text>
+    <text class="note" x="220.5" y="224" text-anchor="middle">2</text>
+    <path class="frame" d="M 0 244 L 441 244" />
+    <text class="word tone-green" x="14" y="262" text-anchor="start">+Offer(string question, IReadOnlyList&lt;OfferChoice&gt; choices)</text>
+    <text class="word tone-green" x="14" y="276" text-anchor="start">  string</text>
+    <text class="word tone-green" x="14" y="290" text-anchor="start">+AskFor(string question, IReadOnlyList&lt;FormField&gt; fields)</text>
+    <text class="word tone-green" x="14" y="304" text-anchor="start">  string</text>
+    <rect class="box tone-violet" x="0" y="379" width="441" height="64" rx="10" />
+    <text class="label tone-violet" x="220.5" y="407" text-anchor="middle">TurnRunner</text>
+    <text class="note" x="220.5" y="423" text-anchor="middle">core, changed, step 3</text>
+    <rect class="box tone-violet" x="0" y="547" width="441" height="64" rx="10" />
+    <text class="label tone-violet" x="220.5" y="575" text-anchor="middle">BlocksView</text>
+    <text class="note" x="220.5" y="591" text-anchor="middle">web, changed, step 5</text>
+    <rect class="box tone-teal" x="917" y="20" width="434" height="110" rx="10" />
+    <text class="label tone-teal" x="1134" y="48" text-anchor="middle">FormField</text>
+    <text class="note" x="1134" y="64" text-anchor="middle">record, step 2</text>
+    <path class="frame" d="M 917 84 L 1351 84" />
+    <text class="word tone-teal" x="931" y="102" text-anchor="start">string Label</text>
+    <text class="word tone-teal" x="931" y="116" text-anchor="start">FieldKind Kind</text>
+    <rect class="box tone-green" x="917" y="188" width="434" height="110" rx="10" />
+    <text class="label tone-green" x="1134" y="216" text-anchor="middle">FormCheck</text>
+    <text class="note" x="1134" y="232" text-anchor="middle">step 2</text>
+    <path class="frame" d="M 917 252 L 1351 252" />
+    <text class="word tone-green" x="931" y="270" text-anchor="start">+Problem(string question, IReadOnlyList&lt;FormField&gt; fields)</text>
+    <text class="word tone-green" x="931" y="284" text-anchor="start">  string?</text>
+    <rect class="box tone-violet" x="917" y="379" width="434" height="64" rx="10" />
+    <text class="label tone-violet" x="1134" y="407" text-anchor="middle">EndsTurnAttribute</text>
+    <text class="note" x="1134" y="423" text-anchor="middle">composition, FX138</text>
+    <rect class="box tone-green" x="917" y="531" width="434" height="96" rx="10" />
+    <text class="label tone-green" x="1134" y="559" text-anchor="middle">AskForCall</text>
+    <text class="note" x="1134" y="575" text-anchor="middle">web, step 4</text>
+    <path class="frame" d="M 917 595 L 1351 595" />
+    <text class="word tone-green" x="931" y="613" text-anchor="start">+Of(Block call) Asked?</text>
+    <rect class="box tone-green" x="917" y="685" width="434" height="124" rx="10" />
+    <text class="label tone-green" x="1134" y="713" text-anchor="middle">FormCard</text>
+    <text class="note" x="1134" y="729" text-anchor="middle">web component, step 4</text>
+    <path class="frame" d="M 917 749 L 1351 749" />
+    <text class="word tone-green" x="931" y="767" text-anchor="start">Asked Form</text>
+    <text class="word tone-green" x="931" y="781" text-anchor="start">string? Answer</text>
+    <text class="word tone-green" x="931" y="795" text-anchor="start">EventCallback&lt;string&gt; Sent</text>
+    <rect class="box tone-teal" x="1465" y="258" width="252" height="138" rx="10" />
+    <text class="label tone-teal" x="1591" y="286" text-anchor="middle">FieldKind</text>
+    <text class="note" x="1591" y="302" text-anchor="middle">enum, step 2</text>
+    <path class="frame" d="M 1465 322 L 1717 322" />
+    <text class="word tone-teal" x="1479" y="340" text-anchor="start">Name</text>
+    <text class="word tone-teal" x="1479" y="354" text-anchor="start">Phone</text>
+    <text class="word tone-teal" x="1479" y="368" text-anchor="start">Email</text>
+    <text class="word tone-teal" x="1479" y="382" text-anchor="start">Text</text>
+    <rect class="box tone-teal" x="1465" y="440" width="252" height="110" rx="10" />
+    <text class="label tone-teal" x="1591" y="468" text-anchor="middle">Asked</text>
+    <text class="note" x="1591" y="484" text-anchor="middle">record, step 4</text>
+    <path class="frame" d="M 1465 504 L 1717 504" />
+    <text class="word tone-teal" x="1479" y="522" text-anchor="start">string Question</text>
+    <text class="word tone-teal" x="1479" y="536" text-anchor="start">IReadOnlyList&lt;AskedField&gt; Fields</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="904" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="914.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="940" width="1717" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 950) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="962">
+    <tspan class="note-rest">AskFor beside Offer in the site pack, ending the turn; the web reads the call and draws a form whose Send answers as the visitor.</tspan>
+  </text>
+</svg>
