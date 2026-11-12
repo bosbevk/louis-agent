@@ -208,6 +208,18 @@ public sealed class AgentOptions
     public int SubSessionPromptBudget { get; set; } = DefaultSubSessionPromptBudget;
 
     /// <summary>
+    /// The default of <see cref="AgentMaxDepth"/>: room for a voice, three agents asked below it, and a minion under
+    /// the last.
+    /// </summary>
+    public const int DefaultAgentMaxDepth = 4;
+
+    /// <summary>
+    /// AGENT_MAX_DEPTH (F127.5): the deepest an agent may be asked, 0 being the agent a person talks to. Any agent may
+    /// ask the ones its identity's Calls allow; this stops a chain of asks going on and on.
+    /// </summary>
+    public int AgentMaxDepth { get; set; } = DefaultAgentMaxDepth;
+
+    /// <summary>
     /// AGENT_API_KEY: this deployment's API key, sent to peers as x-api-key (never taken from the model's arguments).
     /// </summary>
     public string? AgentApiKey { get; set; }
@@ -317,7 +329,11 @@ public sealed class AgentOptions
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None,
                 CultureInfo.InvariantCulture, out int budget)
                 ? budget
-                : DefaultSubSessionPromptBudget
+                : DefaultSubSessionPromptBudget,
+            AgentMaxDepth = int.TryParse(Get("AGENT_MAX_DEPTH"), NumberStyles.None, CultureInfo.InvariantCulture,
+                out int depth)
+                ? depth
+                : DefaultAgentMaxDepth
         };
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
         else if (FindRepositoryRoot(Environment.CurrentDirectory) is { } repoRoot)

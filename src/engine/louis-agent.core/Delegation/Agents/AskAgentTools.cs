@@ -42,7 +42,8 @@ public sealed class AskAgentTools(
     IUsageSink? usageSink = null,
     IReadOnlyDictionary<string, string>? peerKeys = null,
     IReadOnlyDictionary<string, IReadOnlyList<string>>? minionLlms = null,
-    TimeSpan? minionTimeout = null)
+    TimeSpan? minionTimeout = null,
+    int maxDepth = AgentOptions.DefaultAgentMaxDepth)
 {
     /// <summary>Asks one turn may make; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -73,7 +74,7 @@ public sealed class AskAgentTools(
     /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
         : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
-            peerKeys: options.AgentPeerKeys, minionLlms: options.MinionLlms)
+            peerKeys: options.AgentPeerKeys, minionLlms: options.MinionLlms, maxDepth: options.AgentMaxDepth)
     {
     }
 
@@ -111,6 +112,7 @@ public sealed class AskAgentTools(
         CancellationToken cancellationToken = default)
     {
         if (Reach(address, tool, out string? refusal) is not { } agent) return refusal!;
+        if (OutOfBounds(agent) is { } bound) return bound;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
             return unknownAttachment;
         // The server the address names, else this instance: "self" when the host names more than one server.
@@ -202,6 +204,29 @@ public sealed class AskAgentTools(
         if (AgentAddresses.IsMinion(parsed)) return AgentAddresses.ResolveMinion(parsed, identities, out refusal);
         if (withTool) return Refuse(SubSessionToolMessage.ToolOnlyForMinion, address, out refusal);
         return AgentAddresses.Resolve(parsed, identities, out refusal);
+    }
+
+    /// <summary>
+    /// Why an ask would go too far (F127.5, Louis's two picks): past the deepest level this instance allows, or to an
+    /// agent already in the chain above, which would go round in a loop. Another server keeps its own chain.
+    /// </summary>
+    /// <remarks>Guard clauses (Fowler), the depth first: it holds for every ask.</remarks>
+    private string? OutOfBounds(AddressedAgent agent)
+    {
+        string address = agent.Address.ToString();
+        if (TurnDepth.Current + 1 > maxDepth)
+            return MessageText.Format(SubSessionToolMessage.AskTooDeep, new
+            {
+                Address = address,
+                Max = maxDepth
+            });
+        var chain = TurnChain.Current;
+        if (agent.Address.Peer is not null || !chain.Contains(AgentAddresses.ChainKeyOf(agent))) return null;
+        return MessageText.Format(SubSessionToolMessage.AskInChain, new
+        {
+            Address = address,
+            Chain = string.Join(" > ", chain)
+        });
     }
 
     /// <summary>No agent, with the reason naming the address as the model wrote it.</summary>

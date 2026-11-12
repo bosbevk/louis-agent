@@ -29,6 +29,8 @@
   "ApprovedToolExists": "Error: an approved tool named '<Name>' already exists; choose another name.",
   "ArgumentMissing": "- <Name>: <Meaning>",
   "ArgumentsMissing": "Error: <Tool> was NOT run: it needs every argument below. Call it again with them:\n<Missing>",
+  "AskInChain": "Error: <Address> is already working on this, higher up the chain of asks (<Chain>), so asking it would go round in a loop. Answer with what you have, or ask another agent.",
+  "AskTooDeep": "Error: asking <Address> would open an agent deeper than this instance allows (<Max> levels, AGENT_MAX_DEPTH). Answer with what you have.",
   "AskerNone": "Error: this chat speaks for no agent, so it may ask none.",
   "AttachmentUnknown": "No attachment named '<Name>' in this conversation. Attached: <Attached>.",
   "BadDepartment": "'<Name>' in <File> is not a department name, or repeats one: letters, digits, dashes and underscores, each once.",

@@ -91,6 +91,17 @@ public static class AgentAddresses
         }, out why);
     }
 
+    /// <summary>
+    /// How a chain of asks names an agent (F127.5): a voice by its identity's name, since an identity asked in any of
+    /// its languages is the same agent; any other role by its file.
+    /// </summary>
+    public static string? ChainKeyOf(string? role, string? identity) =>
+        role is null || RoleCatalog.LevelOf(role) == RoleLevel.Agent ? identity ?? role : role;
+
+    /// <summary>The same, for the agent an address reaches here.</summary>
+    public static string ChainKeyOf(AddressedAgent agent) =>
+        agent.Kind == AddressKind.Identity ? agent.Address.Identity : agent.Role ?? agent.Address.Identity;
+
     /// <summary>Whether the address names one of this instance's minions.</summary>
     public static bool IsMinion(AgentAddress address) =>
         address is { Role: not null, Peer: null } &&

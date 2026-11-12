@@ -59,8 +59,14 @@ internal sealed class AgentSession(
     /// <summary>The toolsets the session loaded, normalised (sorted, lowercase).</summary>
     public IReadOnlyList<string> Toolsets { get; } = toolsets;
 
-    /// <summary>0 for a session a client opened; 1 for a sub-session another agent opened (F5-S5).</summary>
+    /// <summary>0 for a session a client opened; one more for each agent asked below it (F5-S5, F127.5).</summary>
     public int Depth { get; } = depth;
+
+    /// <summary>
+    /// The agents this session was asked through, the first one first, and its own last (F127.5): an ask from it is
+    /// refused for an agent already here.
+    /// </summary>
+    public IReadOnlyList<string> Chain { get; init; } = [];
 
     /// <summary>The role the session chose (F21), or null for the default voice (CL9).</summary>
     public string? Role { get; } = role;

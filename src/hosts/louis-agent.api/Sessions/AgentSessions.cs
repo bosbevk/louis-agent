@@ -14,6 +14,7 @@ using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Delegation.Addresses;
 
 namespace LouisAgent.Api.Sessions;
 
@@ -27,16 +28,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public static readonly IReadOnlyList<string> DefaultToolsets = [CoreToolset.Skills.Wire()];
 
     /// <summary>
-    /// The deepest session: a specialist (1) a level-0 session delegates to, a minion (2) a specialist hands one task
-    /// to (F30).
-    /// </summary>
-    public const int MaxDepth = 2;
-
-    /// <summary>A minion's depth (F30): one role on the minion base, one tool, never delegates.</summary>
-    public const int MinionDepth = 2;
-
-    /// <summary>
-    /// The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.
+    /// The toolset that asks another agent (F127.3.1); every session may load it but a minion's, which asks no one
+    /// (F127.5).
     /// </summary>
     public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
 
@@ -49,18 +42,17 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
-    /// <paramref name="role"/> (null: the default voice). The session's level is its depth (CL8): its role comes
-    /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
-    /// can't delegate (F21). The one exception is an identity's voice asked at depth 1 (F127.3.1): it opens as a
-    /// voice, from <c>agent/</c>, with its own packs when none are sent. Throws <see cref="ToolsetException"/> for an
-    /// unknown or unavailable toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for
-    /// <see cref="AgentsToolset"/>, and <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and
-    /// <see cref="Core.Hosting.SessionLlms.SessionLlmException"/> for an LLM profile this instance doesn't offer
-    /// (<paramref name="llm"/>, F30; null: its own model), before anything is created. A minion (depth
-    /// <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent session's
-    /// (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never one of
+    /// <paramref name="role"/> (null: the default voice). At the top a session is a voice; below it, its level is the
+    /// folder its role is in (F127.5): an identity's voice asked by another agent opens as a voice, with its own packs
+    /// when none are sent, a specialist as a specialist, a minion as a minion. Throws <see cref="ToolsetException"/>
+    /// for an unknown or unavailable toolset, a depth past AGENT_MAX_DEPTH, or a minion asking for
+    /// <see cref="AgentsToolset"/>; <see cref="Core.Skills.Roles.RoleException"/> for an unknown role or an agent
+    /// already in its chain of asks; and <see cref="Core.Hosting.SessionLlms.SessionLlmException"/> for an LLM
+    /// profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), all before anything is
+    /// created. A minion names its one <paramref name="tool"/>, which must be its parent session's
+    /// (<paramref name="tags"/>' parent, found here: minions run on their asker's own instance) and never one of
     /// <see cref="MinionAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
-    /// Every other depth refuses a tool.
+    /// Every other role refuses a tool.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
         string? role = null,
@@ -71,21 +63,18 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // own; an identity this instance doesn't run is refused by name, with the ones it does.
         var who = FindIdentity(identity);
         if (who is not null && string.IsNullOrWhiteSpace(role)) role = who.DefaultVoice;
-        if (depth is < 0 or > MaxDepth)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
+        int maxDepth = engines.Context.Options.AgentMaxDepth;
+        if (depth < 0 || depth > maxDepth)
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = maxDepth }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (depth == MinionDepth) CheckMinion(tags, tool);
+        // The prompt's level: a voice at the top, below it the role's own folder.
+        var level = LevelOf(role, depth, tool);
+        if (level == RoleLevel.Minion) CheckMinion(tags, tool, role);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
-                new
-                {
-                    MinionDepth,
-                    Depth = depth
-                }));
-        // The prompt's level: the depth's, except an identity's voice asked by another agent, which stays a voice.
-        var level = LevelOf(role, depth);
+                new { Role = role ?? "the default voice" }));
         // A minion names its tool; the toolset that builds it is implied (AskAgent sends none for a minion).
-        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
+        var names = ToolsetCatalog.Normalise(level == RoleLevel.Minion && toolsets is null
             ?
             [
                 engines.Catalog.ToolsetOf(tool!)
@@ -96,12 +85,15 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // its parent passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, level)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
-        if (depth > 0 && plain.Contains(AgentsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+        if (level == RoleLevel.Minion && plain.Contains(AgentsToolset))
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionCannotAsk,
                 new { Toolset = AgentsToolset }));
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
+        // Who it runs as, and the chain of asks it opens in: an agent already in it is refused (F127.5).
+        var runsAs = Who(who ?? engines.Catalog.IdentityOf(role));
+        var chain = ChainOf(tags, AgentAddresses.ChainKeyOf(role, runsAs?.Name));
         // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
         names = engines.Catalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
         var engine = engines.GetOrCreate(names, role, level, llm, tool);
@@ -109,18 +101,44 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         DropIdle(DateTimeOffset.UtcNow);
 
         var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
-            place, llm, tool, format, replay, opener, Who(who ?? engines.Catalog.IdentityOf(role)));
+            place, llm, tool, format, replay, opener, runsAs)
+        { Chain = chain };
         _sessions[session.Id] = session;
         return session;
     }
 
     /// <summary>
-    /// The level a session's prompt is read at: its depth's, as before (CL8), except an identity's voice asked by
-    /// another agent (F127.3.1, Louis's pick 1 A), which opens one level down still as a voice, from <c>agent/</c>.
-    /// Depth keeps its own guards: it counts how deep the call is, the level says what kind of prompt it is.
+    /// The level a session's prompt is read at (F127.5, Louis: "depth decides" only how deep): a voice at the top;
+    /// below it the folder its role is in, and a session that names a tool but no role we know is taken for a minion,
+    /// so the minion's checks and the factory refuse it. Depth keeps its own guard.
     /// </summary>
-    private static RoleLevel LevelOf(string? role, int depth) =>
-        depth == 1 && RoleCatalog.LevelOf(role) == RoleLevel.Agent ? RoleLevel.Agent : (RoleLevel)depth;
+    /// <remarks>Guard clauses (Fowler): the top, a role we know, then what the tool says.</remarks>
+    private static RoleLevel LevelOf(string? role, int depth, string? tool)
+    {
+        if (depth == 0) return RoleLevel.Agent;
+        if (RoleCatalog.LevelOf(role) is { } level) return level;
+        return tool is null ? RoleLevel.Specialist : RoleLevel.Minion;
+    }
+
+    /// <summary>
+    /// The chain of asks a session opens in (F127.5): its parent's, when this instance has the parent, then its own
+    /// agent. An agent already in it is refused, so the asks can't go round in a loop.
+    /// </summary>
+    /// <remarks>Guard clauses (Fowler): no agent to add, one already there, then the chain one longer.</remarks>
+    private IReadOnlyList<string> ChainOf(UsageTags? tags, string? agent)
+    {
+        string? parentId = tags?.Parent?.Split('#')[0];
+        IReadOnlyList<string> above = parentId is null ? [] : Get(parentId)?.Chain ?? [];
+        if (agent is null) return above;
+        if (above.Contains(agent))
+            throw new RoleException(MessageText.Format(ApiErrorMessage.AgentAlreadyInChain,
+                new
+                {
+                    Agent = agent,
+                    Chain = string.Join(" > ", above)
+                }));
+        return [.. above, agent];
+    }
 
     /// <summary>
     /// The toolsets of a session nobody chose any for: an identity's voice asked by another agent gets its own
@@ -155,11 +173,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// specialist's toolbox is the only one). The role itself (a minion role, not a specialist's or the base) is the
     /// factory's check, as for every role.
     /// </summary>
-    private void CheckMinion(UsageTags? tags, string? tool)
+    private void CheckMinion(UsageTags? tags, string? tool, string? role)
     {
         if (tool is null)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool,
-                new { Depth = MinionDepth }));
+                new { Role = role ?? "(none)" }));
         if (string.IsNullOrWhiteSpace(tags?.Parent))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent,
                 new { Example = "sess_…#3" }));

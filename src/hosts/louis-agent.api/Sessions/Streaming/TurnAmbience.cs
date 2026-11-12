@@ -9,12 +9,12 @@ namespace LouisAgent.Api.Sessions.Streaming;
 
 /// <summary>
 /// The ambient values one step of a session's turn runs inside: its usage scope, its attachments, its tools, the
-/// visitor's place, who it runs as (F127.2) and how deep (F127.5), its replay, its sub-sessions and the observer of
-/// their events. Entered
-/// around each step of the engine's stream, where the model requests and the tools run.
+/// visitor's place, who it runs as (F127.2), how deep and through which agents it was asked (F127.5), its replay, its
+/// sub-sessions and the observer of their events. Entered around each step of the engine's stream, where the model
+/// requests and the tools run.
 /// </summary>
 /// <remarks>
-/// One scope for nine, so the turn stream reads as the turn and not as its plumbing: each value is an
+/// One scope for ten, so the turn stream reads as the turn and not as its plumbing: each value is an
 /// <see cref="AsyncLocal{T}"/> set when entered and put back when left, in reverse, as nested <c>using</c>s did.
 /// Entered synchronously, since an async method would put its <see cref="AsyncLocal{T}"/> values back on return.
 /// </remarks>
@@ -33,6 +33,7 @@ internal sealed class TurnAmbience : IDisposable
             UserPlace.Use(session.Place),
             TurnIdentity.Use(session.Who),
             TurnDepth.Use(session.Depth),
+            TurnChain.Use(session.Chain),
             SessionReplay.Use(session.Replay),
             SubSessionRegistry.Use(session.SubSessions),
             SubSessionFeed.Observe(observer)

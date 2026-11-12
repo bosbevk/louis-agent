@@ -9,18 +9,23 @@ namespace LouisAgent.Api.Messages;
 /// <summary>Exception texts for the API area: what is wrong and how to fix it.</summary>
 public enum ApiErrorMessage
 {
-    [Description("depth must be between 0 and {Max}: a specialist is one level down, a minion two.")]
+    [Description(
+        "depth must be between 0 and {Max} (AGENT_MAX_DEPTH): each agent asked is one level below the one that asked.")]
     SessionDepthInvalid,
 
-    [Description(
-        "A sub-session can't load the '{Toolset}' toolset: only the agent the user talks to delegates to specialists.")]
-    SubSessionCannotDelegate,
+    [Description("A minion can't load the '{Toolset}' toolset: a minion asks no one, it does its one task.")]
+    MinionCannotAsk,
 
-    [Description("A minion (depth {Depth}) names the one tool it gets: 'tool' is required.")]
+    [Description("A minion ('{Role}') names the one tool it gets: 'tool' is required.")]
     MinionNeedsTool,
 
-    [Description("'tool' is for a minion (depth {MinionDepth}): a session at depth {Depth} loads toolsets.")]
+    [Description("'tool' is for a minion's role: '{Role}' loads toolsets.")]
     ToolOnlyForMinions,
+
+    [Description(
+        "'{Agent}' is already in this chain of asks ({Chain}): an agent is never asked twice in one chain, so the " +
+        "asks can't go round in a loop.")]
+    AgentAlreadyInChain,
 
     [Description("A minion needs its parent: 'parent' names the specialist's session and turn ({Example}).")]
     MinionNeedsParent,

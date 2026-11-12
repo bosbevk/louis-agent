@@ -126,6 +126,16 @@ public enum SubSessionToolMessage
         "Give a minion's address without the server, or ask the agent there without a tool.")]
     MinionOnAnotherServer,
 
+    [Description(
+        "Error: {Address} is already working on this, higher up the chain of asks ({Chain}), so asking it would go " +
+        "round in a loop. Answer with what you have, or ask another agent.")]
+    AskInChain,
+
+    [Description(
+        "Error: asking {Address} would open an agent deeper than this instance allows ({Max} levels, " +
+        "AGENT_MAX_DEPTH). Answer with what you have.")]
+    AskTooDeep,
+
     [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
     AddressNotCallable,
 
