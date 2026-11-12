@@ -172,6 +172,11 @@ In the doc, as a markdown image with alt text that says what the picture shows:
 
 A project doc's overview goes just above its *Purpose*, or after its opening quote when it has none.
 
+**Every project doc shows four pictures** (CL60.5): its overview (cards, the project and its parts), a flow of how it
+works, a sequence of its main case, and its interface design (classes: the types someone using or extending it
+meets, about twelve at most). The last three go in its `## Diagrams` section, named `{project}-flow`,
+`{project}-sequence` and `{project}-interface` when new.
+
 ## Check it
 
 ```bash
@@ -179,7 +184,7 @@ dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 ```
 
 `DocsDiagramsTests` fails when a picture isn't what its JSON draws, when no doc shows it, when a doc shows a picture
-that isn't there, when a project doc lacks its overview, when a flow's word sits on a box or a line or a line crosses
+that isn't there, when a project doc lacks its overview or one of its four kinds of picture, when a flow's word sits on a box or a line or a line crosses
 a box it doesn't join, when a sequence's words, notes or frames leave its drawing, when a `diagrams` folder sits
 where the tool never looks, or when a doc holds a Mermaid block. Look at the SVG in Rider's markdown preview or a
 browser, in a light and a dark look, before you commit;

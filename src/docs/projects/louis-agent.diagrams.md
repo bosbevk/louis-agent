@@ -99,7 +99,8 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   `Classes/classes.svg`, `Cards/cards.svg` and `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,
-  every picture a doc shows is there, every project doc shows its overview, every flow and class chart keeps its
+  every picture a doc shows is there, every project doc shows its overview and all four kinds of picture
+  (`EveryProjectDoc_ShowsItsFourDiagrams`), every flow and class chart keeps its
   words and lines clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is
   one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`).
 
@@ -166,11 +167,24 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   charts are split in two, since whole they were tangles; Mermaid's `%%` comments, `;` and `$` marks the import kept
   were cleaned by hand in the data.
 
+## What the build decided (CL60.5, 2026-11-12, unattended)
+
+- **Claude's picks, each of three:** the overview counts as a project's architecture, beside a flow, a sequence and a
+  classes picture (not a fifth picture repeating it); the test reads each picture's kind (not a role field, nor fixed
+  headings); a pending list that only shrank, step by step, deleted at the end; an interface of the types a user or
+  extender meets, about twelve at most (not every public type, nor interfaces only).
+- **Found while drawing them:** the overview test had never seen the demos' project docs, since a demo's root is the
+  whole demo; both tests now find any `projects` folder. Two arrows into one interface from the same column stack
+  their word chips; the clearance test catches it and the chart is tuned (the implementer names the interface in its
+  kind line). Each interface was written from the code and checked against it, which caught a picture naming the
+  docs pack's tools by an old plan's names.
+- **What it added:** 42 interface pictures, 8 flows and 13 sequences, all looked at.
+
 ## Limits and plans
 
-- CL60.5 gives every project doc its four diagrams (architecture, flow, sequence, interface).
 - A class chart over about twenty types tangles its arrows, since the layout doesn't reduce crossings; such a chart is
-  split in two pictures. Three plan charts (F106.1, F92, F40's agent side) stay over 2,000 px wide.
+  split in two pictures. Wide charts stay: F106.1, F92 and F40's agent side among the plans, core's and the recipes
+  pack's interfaces (about 2,600 px) among the projects.
 - Sequences with eight participants run about 2,000 px wide (the API's and core's turns, F39's fix, F40's run), since
   their names don't break; they read clearly, small in a doc's column.
 - **Two back arrows at one box cross.** When one leaves a box's bottom and another comes into its side, their loops
@@ -187,7 +201,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 [Draw a diagram](../guides/draw-a-diagram.md) · [louis-agent.web](louis-agent.web.md) ·
 [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) ·
 [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md) ·
-[CL60's plan](../plans/CL60-docs-diagrams-as-svg.md)
+CL60 in the [work log](../work-log.md)
 
 ---
 [Docs index](../README.md) · Related: [Projects](README.md) · [Guides](../guides/README.md)

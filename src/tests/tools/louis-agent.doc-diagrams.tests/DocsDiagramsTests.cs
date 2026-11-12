@@ -75,32 +75,16 @@ public class DocsDiagramsTests
 
     /// <summary>
     /// Every project doc shows all four kinds of picture (CL60.5, Louis: "so each project has a
-    /// architecture/flow/seq/interface diagrams"): its overview, a flow, a sequence and its types. A doc still to draw
-    /// is pending, and a pending doc that has all four fails too.
+    /// architecture/flow/seq/interface diagrams"): its overview, a flow, a sequence and its types, so a new project's
+    /// doc can't go without one.
     /// </summary>
-    /// <remarks>
-    /// A ratchet, as <c>RazorHasNoCodeTests</c> holds its pending code (CL60.5, Claude's pick Q3): the rule lands a
-    /// few docs a step, each step taking its docs off the list, and a doc that's done can't slip back.
-    /// </remarks>
     [Test]
     public void EveryProjectDoc_ShowsItsFourDiagrams()
     {
-        var lacking = ProjectDocs().Where(doc => !Enum.GetValues<DiagramKind>().All(KindsShown(doc).Contains))
-            .Select(Relative).ToHashSet();
+        var lacking = ProjectDocs().Where(doc => !Enum.GetValues<DiagramKind>().All(KindsShown(doc).Contains));
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(lacking.Except(PendingFour).Order(), Is.Empty,
-                "a project doc without all four kinds of picture");
-            Assert.That(PendingFour.Except(lacking).Order(), Is.Empty,
-                "a pending doc has all four: take it off the list");
-        });
+        Assert.That(lacking.Select(Relative), Is.Empty, "a project doc without all four kinds of picture");
     }
-
-    /// <summary>The project docs still to get their four pictures; a step removes the ones it draws.</summary>
-    private static readonly HashSet<string> PendingFour =
-    [
-    ];
 
     /// <summary>The kinds of picture a doc shows, read from each picture's JSON.</summary>
     private static IReadOnlySet<DiagramKind> KindsShown(string doc) => Targets(File.ReadAllText(doc))
