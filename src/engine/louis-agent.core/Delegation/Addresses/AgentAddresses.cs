@@ -8,8 +8,9 @@ using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Delegation.Addresses;
 
 /// <summary>
-/// Finds who an address reaches on this instance: the identity's voice, or a role file named for it
-/// (<c>specialists/{identity}-{role}.md</c>, <c>minions/{identity}-{role}.md</c>), or says why it reaches no one.
+/// Finds who an address reaches on this instance: the identity's voice, or a specialist's file named for it
+/// (<c>specialists/{identity}-{role}.md</c>), or for the minion tool a minion's
+/// (<c>minions/{identity}-minion-{role}.md</c>, F127.5), or says why it reaches no one.
 /// </summary>
 /// <remarks>
 /// It takes the identities this instance runs, not the catalogue: delegation sits below the agent in core's layers
@@ -61,20 +62,61 @@ public static class AgentAddresses
         ? new AddressedAgent(address, AddressKind.Identity, null)
         : new AddressedAgent(address, AddressKind.Specialist, $"{address.Identity}-{address.Role}");
 
-    private static AddressKind? KindOf(string file) => file switch
+    /// <summary>
+    /// The minion an address reaches (F127.5): <c>acme.lookup</c> is the file <c>minions/acme-minion-lookup.md</c>, its
+    /// function after the identity's name; or the reason, naming the identity's minions by their addresses.
+    /// </summary>
+    /// <remarks>
+    /// The minion tool says the address is a minion's, so the same words never reach a specialist and a minion both
+    /// (Claude's pick Q1, of three: the file's name as the role, which leaks its prefix; a grammar of its own).
+    /// </remarks>
+    public static AddressedAgent? ResolveMinion(AgentAddress address, IReadOnlyList<IAgentIdentity> identities,
+        out string? why)
     {
-        _ when RoleCatalog.Available(RoleLevel.Specialist).Contains(file) => AddressKind.Specialist,
-        _ when RoleCatalog.Available(RoleLevel.Minion).Contains(file) => AddressKind.Minion,
-        _ => null,
-    };
+        var identity = identities.FirstOrDefault(i =>
+            string.Equals(i.Name, address.Identity, StringComparison.OrdinalIgnoreCase));
+        if (identity is null)
+            return Refuse(SubSessionToolMessage.AddressUnknownIdentity, new
+            {
+                address.Identity,
+                Identities = string.Join(", ", identities.Select(i => i.Name).Order(StringComparer.Ordinal))
+            }, out why);
+        if (IsMinion(address))
+            return Found(new AddressedAgent(address, AddressKind.Minion, MinionFile(address)), out why);
+        return Refuse(SubSessionToolMessage.AddressUnknownMinion, new
+        {
+            address.Identity,
+            Role = address.Role ?? "",
+            Minions = MinionsOf(identity)
+        }, out why);
+    }
 
-    /// <summary>The identity's roles as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
-    private static string RolesOf(IAgentIdentity identity)
+    /// <summary>Whether the address names one of this instance's minions.</summary>
+    public static bool IsMinion(AgentAddress address) =>
+        address is { Role: not null, Peer: null } &&
+        RoleCatalog.Available(RoleLevel.Minion).Contains(MinionFile(address));
+
+    /// <summary>A minion's file: its identity, <c>minion</c>, and its function.</summary>
+    private static string MinionFile(AgentAddress address) => $"{address.Identity}-minion-{address.Role}";
+
+    /// <summary>A specialist's file named for the identity; a minion's is no role to ask (F127.5).</summary>
+    private static AddressKind? KindOf(string file) =>
+        RoleCatalog.Available(RoleLevel.Specialist).Contains(file) ? AddressKind.Specialist : null;
+
+    /// <summary>The identity's specialists as the model writes them, <c>acme.cook</c>, or "(none)".</summary>
+    private static string RolesOf(IAgentIdentity identity) =>
+        Addresses(RoleLevel.Specialist, $"{identity.Name}-", identity.Name);
+
+    /// <summary>The identity's minions as the model writes them, <c>acme.lookup</c>, or "(none)".</summary>
+    private static string MinionsOf(IAgentIdentity identity) =>
+        Addresses(RoleLevel.Minion, $"{identity.Name}-minion-", identity.Name);
+
+    /// <summary>The files of a level that start with a prefix, as addresses on the identity, or "(none)".</summary>
+    private static string Addresses(RoleLevel level, string prefix, string identity)
     {
-        string prefix = $"{identity.Name}-";
-        var roles = RoleCatalog.Available(RoleLevel.Specialist).Concat(RoleCatalog.Available(RoleLevel.Minion))
+        var roles = RoleCatalog.Available(level)
             .Where(file => file.StartsWith(prefix, StringComparison.Ordinal))
-            .Select(file => $"{identity.Name}.{file[prefix.Length..]}")
+            .Select(file => $"{identity}.{file[prefix.Length..]}")
             .Order(StringComparer.Ordinal)
             .ToList();
         return roles.Count == 0 ? "(none)" : string.Join(", ", roles);

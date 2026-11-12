@@ -113,6 +113,9 @@ public enum SubSessionToolMessage
     [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
     AddressUnknownRole,
 
+    [Description("Error: {Identity} has no minion '{Role}'. Its minions: {Minions}.")]
+    AddressUnknownMinion,
+
     [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]
     AddressNotCallable,
 
