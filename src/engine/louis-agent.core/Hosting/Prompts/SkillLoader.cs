@@ -1,9 +1,11 @@
+using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.EngineTools.Skills.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
@@ -82,7 +84,11 @@ public static class SkillLoader
         var profile = toolsets.ToList();
         foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
             AddBuiltIn(agent, composite, fileName);
-        // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ
+        // Whom it may ask (F127.3.1): the identity's Calls, the same list AskAgent checks, so the two never differ;
+        // its minions are no agents to ask, and the roles that hand them work name them (F127.5).
+        calls = calls
+            ?.Where(call => !(AgentAddress.TryParse(call, out var address) && AgentAddresses.IsMinion(address)))
+            .ToList();
         if (calls is { Count: > 0 } && profile.Any(t => t.Name == CoreToolset.Agents.Wire()))
             composite.AddProvider(MarkdownSkillProvider.FromText(string.Join("\n",
             [

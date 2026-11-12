@@ -1,6 +1,8 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
+using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
@@ -17,6 +19,29 @@ namespace LouisAgent.Identities.Puls.Tests;
 /// </summary>
 public class PulsIdentityTests
 {
+    /// <summary>
+    /// Puls lists each of its minions by its address (F127.5), so its specialists may start them, and each address
+    /// reaches that minion's file.
+    /// </summary>
+    [Test]
+    public void EveryMinion_IsListedByItsAddress_AndReachesItsFile()
+    {
+        var puls = new PulsIdentity();
+        var minions = RoleCatalog.Available(RoleLevel.Minion).Where(file => file.StartsWith("puls-minion-")).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(minions, Is.Not.Empty);
+            foreach (string file in minions)
+            {
+                string address = $"puls.{file["puls-minion-".Length..]}";
+                Assert.That(puls.Calls, Does.Contain(address), file);
+                Assert.That(AgentAddress.TryParse(address, out var parsed) &&
+                            AgentAddresses.ResolveMinion(parsed, [puls], out _)?.Role == file, Is.True, address);
+            }
+        });
+    }
+
     /// <summary>
     /// Puls is named Puls, names the shops and recipes packs, and fits the catalogue once both are there.
     /// </summary>

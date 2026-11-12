@@ -1,5 +1,7 @@
 using LouisAgent.Choices;
+using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Packs;
+using LouisAgent.Core.Delegation.Addresses;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -202,7 +204,7 @@ public class PulsPromptsTests
 
     /// <summary>
     /// Puls may ask its five specialists by address, and has the cook's report shown whole, as ADR 0079 did for its
-    /// specialists (F127.3.1, Louis's pick A).
+    /// specialists (F127.3.1, Louis's pick A); its minions are listed beside them (F127.5).
     /// </summary>
     [Test]
     public void Puls_CallsItsFiveSpecialists_AndRelaysTheirAnswersWhole()
@@ -211,7 +213,8 @@ public class PulsPromptsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(puls.Calls,
+            Assert.That(puls.Calls.Where(call => !AgentAddress.TryParse(call, out var address) ||
+                                                 !AgentAddresses.IsMinion(address)),
                 Is.EquivalentTo(
                     new[] { PulsRole.Cook, PulsRole.Researcher, PulsRole.Analyst, PulsRole.Historian, PulsRole.Reader }
                         .Select(role => role.Wire().Replace($"{puls.Name}-", $"{puls.Name}."))),
