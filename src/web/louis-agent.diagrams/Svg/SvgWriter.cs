@@ -86,9 +86,10 @@ internal sealed class SvgWriter
     }
 
     /// <summary>
-    /// The file: the drawing's box plus its padding, titled for a screen reader, the shapes on the ground.
+    /// The file: the drawing's box plus its padding, titled for a screen reader, the shapes on the ground; a kind with
+    /// a look of its own (a ticket) adds its rules after the theme's.
     /// </summary>
-    public string Write(SvgTheme theme, string title, double width, double height)
+    public string Write(SvgTheme theme, string title, double width, double height, string? style = null)
     {
         double outerWidth = width + 2 * Pad, outerHeight = height + 2 * Pad;
         var root = new XElement(Svg + "svg",
@@ -97,6 +98,7 @@ internal sealed class SvgWriter
             new XAttribute("role", "img"), new XAttribute("aria-label", title),
             new XElement(Svg + "title", title),
             new XElement(Svg + "style", SvgStyle.Of(theme)),
+            style is null ? null : new XElement(Svg + "style", style),
             new XElement(Svg + "defs", Arrowhead(ArrowId, "arrow"),
                 _tones.Distinct().Select(tone => Arrowhead($"{ArrowId}-{tone}", $"arrow tone-{tone}"))),
             new XElement(Svg + "rect", new XAttribute("class", "ground"), new XAttribute("x", N(-Pad)),

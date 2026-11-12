@@ -14,7 +14,8 @@ namespace LouisAgent.Diagrams.Svg;
 public static class DiagramRenderers
 {
     /// <summary>Every kind's renderer.</summary>
-    private static readonly IReadOnlyList<IDiagramRenderer> All = [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer()];
+    private static readonly IReadOnlyList<IDiagramRenderer> All =
+        [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer()];
 
     /// <summary>The diagram as one SVG file's text.</summary>
     public static string Render(DiagramSource source) =>
