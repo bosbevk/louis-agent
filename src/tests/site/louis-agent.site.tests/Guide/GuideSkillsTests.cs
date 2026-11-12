@@ -50,6 +50,27 @@ public class GuideSkillsTests
         Assert.That(addresses.Where(address => !index.Body.Contains(address)), Is.Empty);
     }
 
+    /// <summary>
+    /// Running a demo live is a skill he always has (F127.4.2): it names every business he may ask with its demo's
+    /// page, and how it goes: offered as cards, asked in the visitor's own words, answered in the business's window,
+    /// and retold from its work.
+    /// </summary>
+    [Test]
+    public void TheLiveDemo_IsASkillHeAlwaysHas_ForEveryBusinessHeMayAsk()
+    {
+        var skill = Read("skills/live-demo.md");
+        string body = string.Join(' ', skill.Body.Split((char[])[' ', '\r', '\n'],
+            StringSplitOptions.RemoveEmptyEntries));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill.Header?.Load, Is.EqualTo(SkillLoad.Always));
+            Assert.That(new GuideIdentity().Calls.Where(address => !body.Contains($"`{address}`")), Is.Empty);
+            Assert.That(body, Does.Contain("`Offer`").And.Contain("their own words").And.Contain("`AskAgent`")
+                .And.Contain("its own window").And.Contain("`ReadAgentWork`"));
+        });
+    }
+
     /// <summary>The voice keeps who he is and how he answers, and no longer carries either map.</summary>
     [Test]
     public void TheVoice_KeepsWhoHeIs_WithoutTheMaps() =>

@@ -20,6 +20,11 @@ public sealed record ChatText
 
     public string Stopped { get; init; } = "Stopped";
 
+    /// <summary>
+    /// The line in the guide's chat while the business it asked answers in its own window (F127.4.2).
+    /// </summary>
+    public string AnswersInItsWindow { get; init; } = "The answer is in the business's window.";
+
     /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
     public string Suggested { get; init; } = "Suggested";
 

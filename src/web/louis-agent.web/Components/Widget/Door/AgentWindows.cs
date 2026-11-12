@@ -40,6 +40,8 @@ public sealed class AgentWindows
     {
         if (call.ToolName != Delegation.AskToolName || Delegation.From(call) is not { } ask) return false;
         if (!Shows(ask.Agent)) return false;
+        // The asker's chat says where the answer is, instead of drawing the talk twice.
+        call.InWindow = true;
         Asked?.Invoke(call);
         return true;
     }

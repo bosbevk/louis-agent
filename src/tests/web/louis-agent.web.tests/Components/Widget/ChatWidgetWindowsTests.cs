@@ -71,6 +71,9 @@ public class ChatWidgetWindowsTests
         Assert.Multiple(() =>
         {
             Assert.That(heard!.SubSessionId, Is.EqualTo("sess_shop"));
+            Assert.That(heard.InWindow, Is.True);
+            Assert.That(cut.Find(".in-window").TextContent, Is.EqualTo(new ChatText().AnswersInItsWindow),
+                "the guide's chat says where the answer is");
             Assert.That(heard.SubTurn!.Blocks.Single().Text, Is.EqualTo("The garden room is free."));
             Assert.That(moved, Is.GreaterThan(0));
         });

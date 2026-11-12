@@ -18,6 +18,11 @@ public sealed class Block
     /// </summary>
     public string? SubSessionId { get; set; }
 
+    /// <summary>
+    /// Whether a page's window shows this ask's talk (F127.4.2), so the asker's chat says so in one line instead.
+    /// </summary>
+    public bool InWindow { get; set; }
+
     public string? ToolInput { get; init; }
     public string? ToolResult { get; set; }
     public bool ToolFailed { get; set; }
