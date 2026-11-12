@@ -169,16 +169,24 @@ person; human in the loop (16), the visitor takes the wheel. Live checks for the
 
 ## Minions on the address (F127.5, 2026-11-12)
 
-The last call off the address: a specialist starting its identity's minion. `StartMinion(puls.find-recipe, …)` reads
-the same address as `AskAgent`, checks it against the same `Calls`, and only then finds the minion's file.
+The last call off the address: an agent asking its identity's minion. It was first built as its own tool,
+`StartMinion(address, …)`, and Louis corrected it: "it should not startminion it should use askagent also". So one tool
+asks everything: `AskAgent("puls.find-recipe", task, tool: "FindRecipes")`.
 
-- **One list, two tools.** An identity's `Calls` hold its agents and its minions; the tool that is called says which
-  kind is meant, so `puls.find-recipe` never opens a specialist and `AskAgent` never opens a minion.
-- **What the model reads stays what it may do.** A mode's prompt lists the agents it may ask; the minions it never
-  starts aren't in that list, so it can't be tempted to `AskAgent` one.
-- **Some limits follow the kind.** An address on another server is fine for an agent (F127.3.2) and refused for a
-  minion: a minion is a local model on this instance (ADR 0081), and its cost must stay ours.
-- **No live run.** Puls, the only identity with minions, is paused, and no voice starts one today; the tests carry it.
+- **One list, one tool.** An identity's `Calls` hold its agents and its minions. The address says who; handing a tool
+  says it's a minion, since only a minion takes one. A tool sent to anyone else is refused, and so is a minion
+  without one.
+- **Each kind keeps its own limits.** A minion still runs a local model on this instance (ADR 0081): its model comes
+  from `MINION_LLMS`, at most 16 a user turn, never kept, never one of the turn's three asks. An address on another
+  server is fine for an agent (F127.3.2) and refused for a minion.
+- **Who may ask whom is a rule, not a depth.** Louis: "everyone should be able to call everyone, if it is setup that
+  way only minions can't". So depth no longer decides the kind of agent: a session's level is the folder its role
+  is in, and depth only counts how far down it is.
+- **Loops are stopped two ways.** A chain of asks never holds the same agent twice ("a cook can't call a cook. but it
+  could call a recipe specialist"): each session remembers the chain it was asked through, and `AskAgent` refuses an
+  agent already in it before anything is sent. And `AGENT_MAX_DEPTH` (default 4) caps how deep any chain can go, as
+  a setting. The first rule catches the loop you can name; the cap catches the long chain you didn't foresee.
+- **No live run.** Puls, the only identity with minions, is paused, and no voice asks one today; the tests carry it.
 
 ## Next
 

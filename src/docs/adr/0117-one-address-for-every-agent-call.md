@@ -2,7 +2,7 @@
 
 **Status:** Accepted (2026-11-10, Louis's picks during F127.2); `AskAgent` on one instance built in F127.3.1
 (2026-11-11); an agent on another server (F127.3.2), the guide mentoring (F127.4) and the minions (F127.5) to come.
-Amends [ADR 0079](0079-show-a-specialists-report.md).
+Amends [ADR 0079](0079-show-a-specialists-report.md) and [ADR 0021](0021-minions-one-task-one-tool.md) (F127.5).
 
 ## Context
 
@@ -37,8 +37,9 @@ toolsets of its own: the role brings them.
   session" rule). The model names the address and the message, nothing else: no peer, toolsets, role or model to pick.
   `StartSubSession`, `ContinueSubSession` and the `specialists` toolset go (ADR 0049: nothing is kept for backward
   compatibility).
-- **A minion keeps its own tool on the same address,** `StartMinion(address, …)`, since a minion is a different thing
-  to start: a local model, one task, one tool (ADR 0021, ADR 0081).
+- **A minion is on the same address and the same tool** (F127.5, below): `AskAgent` with one of the asker's tools,
+  since a minion runs a local model on one task with one tool (ADR 0021, ADR 0081). The plan first kept
+  `StartMinion` for it; Louis's correction put it on `AskAgent`.
 - **The plumbing stays Puls's:** `PeerSession` opens, asks, keeps and deletes; the limits per turn, the timeout, the
   depth, the usage rolled up to the asker's turn, kept sessions, and the `sub_session` events that carry the callee's
   every event, live, to the browser.
@@ -70,7 +71,7 @@ Louis's picks during the build, each a rule now:
   Puls's `StartSubSession` used to send.
 - **Puls is paused** (2026-11-11), so its 109 recorded eval transcripts were rewritten onto `AskAgent` by one checked
   script instead of being recorded again, and the recipes eval before and after waits for Puls's return (F135).
-- **`StartMinion` stays as it is** until F127.5 puts the minions on the address.
+- **`StartMinion` stayed as it was** until F127.5 put the minions on the address and on `AskAgent`.
 
 ## What F127.3.2 settled (2026-11-12, unattended)
 
@@ -86,14 +87,30 @@ the same day:
 - **The person is told first:** the agents guide has the model say, before it asks, that the question goes to
   another company's server. The privacy terms gain their line when a site's agent first asks another server.
 
-## What F127.5 settled (2026-11-12, unattended)
+## What F127.5 settled (2026-11-12)
 
-The minions on the address, each a rule now, each Claude's pick of three:
+The minions on the address, and who may ask whom. Built unattended first with `StartMinion(address, …)`, then
+corrected by Louis: "it should not startminion it should use askagent also". Each a rule now:
 
-- **A minion's address is its identity and its function** (`puls.find-recipe`); `StartMinion` says it is a minion,
-  so the address finds `minions/puls-minion-find-recipe.md` and never a specialist, and `AskAgent` never a minion.
+- **One tool for every call:** `AskAgent(address, message, attachments, tool?, stronger?)`. A minion's address is its
+  identity and its function (`puls.find-recipe`, the file `minions/puls-minion-find-recipe.md`); `tool` (one of the
+  asker's own, never a delegation or skills tool) and `stronger` count only for it, and a tool sent anywhere else is
+  refused (Louis's pick, of three: not a tool named in the minion's role file, nor a list of tools there).
+  `StartMinion` and the `minions` toolset are gone; the agents guide says how to ask a minion.
+- **A minion keeps its own limits:** its model from `MINION_LLMS`, at most 16 a user turn, 2 minutes, never kept,
+  and it never takes one of the turn's three asks. It runs on this instance: an address with a server and a tool is
+  refused (ADR 0081, a local model).
 - **An identity's `Calls` list its minions** beside its agents; a mode's prompt names only the agents among them.
-- **A minion runs on this instance:** an address with a server is refused (ADR 0081, a local model).
+- **Everyone may call everyone their `Calls` allow; only a minion can't** (Louis: "eceryone should be able to call
+  everyone, if it is setup that way only minions can't", and his pick "any address, depth decides"). Every session
+  may load the `agents` toolset but a minion's. At the top a session is a voice; below it, its level is the folder
+  its role is in, at any depth, so a voice may hand a minion one of its tools and a specialist may ask another.
+- **No agent twice in a chain of asks** (Louis: "a cook can't call a cook. but it could call a recipe specialist").
+  Each session keeps the chain it was asked through (a voice named by its identity, any other role by its file); an
+  ask to an agent already in it, the asker included, is refused by `AskAgent` before anything is sent, and by the
+  API. Another server keeps its own chain.
+- **A depth cap, a setting:** `AGENT_MAX_DEPTH` (default 4), checked by `AskAgent` and the API (Louis, on loops: "1
+  and 2 but make 2 a setting").
 
 ## What F127.4.2 settled (2026-11-12)
 
