@@ -114,5 +114,32 @@ month corrected. Louis: "I need to upload it via admin", and "we need to pick up
 - **Left out:** the files travel twice (preview, then save), fine at a few megabytes; an upload isn't served over MCP,
   since it is a portal job.
 
+## F127.4.1: the visitor's click is the yes (2026-11-12)
+
+The demo businesses passed a booking on after the visitor typed "yes". A typed yes is easy to give to the wrong
+question, and a booking read back as one long sentence is easy to miss a wrong date in. Louis: "when the guide must
+give options to the user, like you do for me", and the booking summary "the agents must draw this themselves with
+our diagram tool".
+
+- **Show it, then ask with cards.** The agent draws what it gathered as a ticket (`ShowCard`), every fact on its own
+  row, marked *Not sent yet*, then offers *Book it*, *Change something* and *Not now* (`Offer`). The click comes back
+  as the visitor's own message, and the lead goes only then. After it went, the ticket shows again as *Sent*. The
+  person checks a picture, not a paragraph, and their yes is one button with one meaning.
+- **A tool, not a rule** (#4, ADR 0080). "Ask before you send" was a prompt rule the model could skip. Now a decision
+  is a tool call the page draws, checked in code (two to four choices, one suggested) and refused with the reason when
+  it is wrong, so the model fixes it (#5, structured outputs).
+- **The prompt asks; the page makes it true.** The prompt said "words first, then the card". A small model put the
+  card first anyway, so the widget draws an answer's cards under its words, whatever the order. Where the order
+  matters to a person, the code holds it, and the prompt only explains it.
+- **A refusal is an error.** The tools' refusals start with "Error", so the stream marks the call failed and the
+  widget draws nothing. Otherwise the visitor would see the cards the model was told never showed, and then its
+  second try as well.
+- **Look at it where it is used.** The tests passed with the ticket drawn black: inside `@scope` a bare `svg` rule
+  misses the drawing's own root. Only the live check showed it. The 390 px check showed the words at 8 px, and
+  Louis's look at a walkthrough showed a stop asking in words where three cards belonged. Three findings that no
+  test of ours could see, each now held by one.
+- **Left out:** the guided live demo, where the guide runs a business's demo and the visitor carries on in its window,
+  is F127.4.2; letting the guide draw any docs diagram is F138.
+
 ---
 [Write-ups](README.md) · [Goal](../GOAL.md) · [12 · Evaluation](12-evaluation.md)

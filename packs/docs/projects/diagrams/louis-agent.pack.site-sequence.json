@@ -1,24 +1,23 @@
 {
   "kind": "sequence",
-  "title": "louis-agent.pack.site: one place shown",
-  "caption": "A path of this site or nothing: the tool refuses a scheme, a host or a climb out, and the browser only ever gets a path of its own site.",
+  "title": "louis-agent.pack.site: a booking",
+  "caption": "Only the visitor's click books: the agent shows the request as a card and offers the choices, and nothing is sent until the choice comes back.",
   "sequence": {
     "participants": [
       { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
-      { "id": "tool", "label": "SiteTools", "icon": "shield", "tone": "green" },
+      { "id": "tool", "label": "CardTools", "icon": "shield", "tone": "green" },
       { "id": "widget", "label": "The widget", "icon": "browser", "tone": "violet" },
-      { "id": "browser", "label": "The visitor's browser", "icon": "browser", "tone": "blue" }
+      { "id": "visitor", "label": "The visitor", "icon": "user", "tone": "blue" }
     ],
     "steps": [
-      { "step": "message", "from": "model", "to": "tool", "text": "ShowPage(\"/pricing#plans\")" },
-      { "step": "block", "block": "alt", "label": "a path of this site",
-        "steps": [
-          { "step": "reply", "from": "tool", "to": "model", "text": "shown: say one line about it" },
-          { "step": "note", "over": ["widget"], "text": "hears the call in the stream" },
-          { "step": "message", "from": "widget", "to": "browser", "text": "go to /pricing, then the plans area" }
-        ],
-        "else": [ { "label": "anything else",
-          "steps": [ { "step": "reply", "from": "tool", "to": "model", "text": "refused, with the reason" } ] } ] }
+      { "step": "message", "from": "model", "to": "tool", "text": "ShowCard(BOOKING REQUEST, rows, Not sent yet)" },
+      { "step": "reply", "from": "tool", "to": "model", "text": "shown" },
+      { "step": "message", "from": "model", "to": "tool", "text": "Offer(Book it, Change something, Not now)" },
+      { "step": "reply", "from": "tool", "to": "model", "text": "offered: the cards end this answer" },
+      { "step": "note", "over": ["widget"], "text": "draws the ticket and the cards under the words" },
+      { "step": "message", "from": "visitor", "to": "widget", "text": "clicks Book it" },
+      { "step": "message", "from": "widget", "to": "model", "text": "Book it, as the visitor's message" },
+      { "step": "note", "over": ["model"], "text": "SendLead, then the card again: Sent" }
     ]
   }
 }

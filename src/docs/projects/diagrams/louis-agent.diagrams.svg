@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 928 600" width="928" height="600" role="img" aria-label="louis-agent.diagrams at a glance" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 928 616" width="928" height="616" role="img" aria-label="louis-agent.diagrams at a glance" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.diagrams at a glance</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -94,7 +94,7 @@ svg {
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="928" height="600" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="928" height="616" rx="14" />
   <rect class="titlebar" x="0" y="0" width="880" height="50" rx="10" />
   <g class="title-icon" transform="translate(16 14) scale(0.9167)">
     <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
@@ -106,7 +106,7 @@ svg {
     <tspan class="title-head">louis-agent.diagrams at a glance</tspan>
   </text>
   <g class="drawing" transform="translate(0 66)">
-    <rect class="frame" x="0" y="0" width="880" height="486" rx="14" />
+    <rect class="frame" x="0" y="0" width="880" height="502" rx="14" />
     <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
     <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
     <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
@@ -120,7 +120,7 @@ svg {
     <text class="title" x="286.2" y="81" text-anchor="start">Diagrams from data</text>
     <rect class="chip" x="443.8" y="65" width="150" height="20" rx="5" />
     <text class="code" x="450.8" y="79" text-anchor="start">louis-agent.diagrams</text>
-    <text class="text" x="440" y="105" text-anchor="middle">Every picture in the docs and every flow on the site, drawn from data by one renderer.</text>
+    <text class="text" x="440" y="105" text-anchor="middle">Every picture in the docs, every flow on the site and every card an agent draws, from data by one renderer.</text>
     <rect class="card" x="20" y="166" width="269.3" height="138" rx="10" />
     <g class="icon" transform="translate(36 182) scale(0.8333)">
       <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -142,9 +142,10 @@ svg {
       <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
       <path d="M14 14l3 -3l3 3" />
     </g>
-    <text class="title" x="321.3" y="227" text-anchor="start">Two layouts</text>
-    <text class="text" x="321.3" y="251" text-anchor="start">Flows on a row grid, and cards in</text>
-    <text class="text" x="321.3" y="267" text-anchor="start">rows. Each proves every word fits.</text>
+    <text class="title" x="321.3" y="227" text-anchor="start">A layout per kind</text>
+    <text class="text" x="321.3" y="251" text-anchor="start">Flows, cards, sequences, classes</text>
+    <text class="text" x="321.3" y="267" text-anchor="start">and tickets. Each proves every</text>
+    <text class="text" x="321.3" y="283" text-anchor="start">word fits.</text>
     <rect class="card" x="590.7" y="166" width="269.3" height="138" rx="10" />
     <g class="icon" transform="translate(606.7 182) scale(0.8333)">
       <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
@@ -154,7 +155,7 @@ svg {
     <text class="title" x="606.7" y="227" text-anchor="start">One SVG, two looks</text>
     <text class="text" x="606.7" y="251" text-anchor="start">The site's palette and its light</text>
     <text class="text" x="606.7" y="267" text-anchor="start">twin, nothing loaded from outside.</text>
-    <rect class="card" x="20" y="344" width="412" height="122" rx="10" />
+    <rect class="card" x="20" y="344" width="269.3" height="138" rx="10" />
     <g class="icon" transform="translate(36 360) scale(0.8333)">
       <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
       <path d="M12 12l8 -4.5" />
@@ -162,15 +163,26 @@ svg {
       <path d="M12 12l-8 -4.5" />
     </g>
     <text class="title" x="36" y="405" text-anchor="start">The icons</text>
-    <text class="text" x="36" y="429" text-anchor="start">22 of Tabler's outline icons, copied in with their MIT</text>
-    <text class="text" x="36" y="445" text-anchor="start">licence.</text>
-    <rect class="card" x="448" y="344" width="412" height="122" rx="10" />
-    <g class="icon" transform="translate(464 360) scale(0.8333)">
+    <text class="text" x="36" y="429" text-anchor="start">30 of Tabler's outline icons,</text>
+    <text class="text" x="36" y="445" text-anchor="start">copied in with their MIT licence.</text>
+    <rect class="card" x="305.3" y="344" width="269.3" height="138" rx="10" />
+    <g class="icon" transform="translate(321.3 360) scale(0.8333)">
       <path d="M5 7l5 5l-5 5" />
       <path d="M12 19l7 0" />
     </g>
-    <text class="title" x="464" y="405" text-anchor="start">The docs' tool</text>
-    <text class="text" x="464" y="429" text-anchor="start">louis-agent.doc-diagrams writes each JSON's SVG beside</text>
-    <text class="text" x="464" y="445" text-anchor="start">it. A test holds them.</text>
+    <text class="title" x="321.3" y="405" text-anchor="start">The docs' tool</text>
+    <text class="text" x="321.3" y="429" text-anchor="start">louis-agent.doc-diagrams writes</text>
+    <text class="text" x="321.3" y="445" text-anchor="start">each JSON's SVG beside it. A test</text>
+    <text class="text" x="321.3" y="461" text-anchor="start">holds them.</text>
+    <rect class="card" x="590.7" y="344" width="269.3" height="138" rx="10" />
+    <g class="icon" transform="translate(606.7 360) scale(0.8333)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="title" x="606.7" y="405" text-anchor="start">The chat's cards</text>
+    <text class="text" x="606.7" y="429" text-anchor="start">An agent's ShowCard call read into</text>
+    <text class="text" x="606.7" y="445" text-anchor="start">a ticket and drawn inline, its</text>
+    <text class="text" x="606.7" y="461" text-anchor="start">styles kept to itself.</text>
   </g>
 </svg>

@@ -79,8 +79,17 @@
         ]
       },
       {
+        "id": "calls",
+        "name": "CardCall, OfferCall, CardsLast",
+        "kind": "the calls the chat draws",
+        "members": [
+          "+SourceOf(Block) DiagramSource?",
+          "+Of(Block) Offered?"
+        ]
+      },
+      {
         "id": "layout",
-        "name": "GraphLayout",
+        "name": "GraphLayout, TicketCard",
         "kind": "louis-agent.diagrams",
         "tone": "violet"
       },
@@ -98,7 +107,8 @@
       { "from": "runner", "to": "store", "kind": "holds" },
       { "from": "api", "to": "contracts", "kind": "uses", "word": "reads and sends" },
       { "from": "section", "to": "addresses", "kind": "uses" },
-      { "from": "graph", "to": "layout", "kind": "uses", "word": "places" }
+      { "from": "graph", "to": "layout", "kind": "uses", "word": "places" },
+      { "from": "calls", "to": "layout", "kind": "uses", "word": "reads a ticket" }
     ]
   }
 }

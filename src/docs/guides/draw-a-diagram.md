@@ -146,6 +146,35 @@ type is a box and a relation an arrow.
   shows once.
 - `direction` and `groups` work as a flow's. Over about twenty types the arrows tangle: split it in two pictures.
 
+**Ticket**, a read-only card such as a booking request (F127.4.1). An agent draws one in the chat with the site pack's
+`ShowCard`, which fills these same parts, and a doc may show one too:
+
+```json
+{
+  "kind": "ticket",
+  "title": "BOOKING REQUEST: The garden room",
+  "ticket": {
+    "kicker": "BOOKING REQUEST",
+    "title": "The garden room",
+    "subtitle": "Seemeeu Guesthouse · Yzerfontein",
+    "status": { "label": "Not sent yet", "tone": "amber" },
+    "rows": [
+      { "icon": "calendar", "label": "Dates", "value": "Fri 14 to Sun 16 Nov" },
+      { "icon": "users", "label": "Guests", "value": "2 adults" }
+    ],
+    "note": "The guesthouse confirms by email. Nothing is paid here."
+  }
+}
+```
+
+- One to six rows, each with its icon, label and value; a long value wraps and the card grows. The `kicker` wraps
+  beside the status pill, and the `title` takes the band's full width.
+- The status's `tone` is one of the tones (`plain` when left out). The ticket is 320 wide, so a phone's chat shrinks
+  it little; its colours are `--ticket-*` CSS variables with the site's as fallbacks, which a business's window sets
+  for its brand (`--ticket-band`, `--ticket-band-ink`, `--ticket-paper`, `--ticket-ink`, `--ticket-accent`).
+- A page holds a ticket inline through `DiagramRenderers.RenderForPage`, its styles kept to the drawing; the docs'
+  tool draws it like any other picture.
+
 A misspelt field, a link to an id no card has, or a missing title is refused, and the tool says which.
 
 ## Draw it

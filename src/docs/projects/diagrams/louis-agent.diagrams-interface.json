@@ -19,7 +19,7 @@
         "kind": "record",
         "members": [
           "+DiagramKind Kind, Title, Caption?",
-          "+Flow, Cards, Sequence, Classes (one set)"
+          "+Flow, Cards, Sequence, Classes, Ticket (one set)"
         ]
       },
       {
@@ -28,7 +28,25 @@
         "kind": "static",
         "members": [
           "+Render(source) string",
-          "+RenderTitled(source) string"
+          "+RenderTitled(source) string",
+          "+RenderForPage(source) string"
+        ]
+      },
+      {
+        "id": "ticketcard",
+        "name": "TicketCard",
+        "kind": "static, from a call to a ticket",
+        "members": [
+          "+Of(kicker, title, rows, subtitle?, status?, note?) DiagramSource",
+          "+FromCall(input) DiagramSource?"
+        ]
+      },
+      {
+        "id": "ticket",
+        "name": "TicketLayout",
+        "kind": "static",
+        "members": [
+          "+Place(TicketSpec, width = 320) PlacedTicket"
         ]
       },
       {
@@ -42,7 +60,7 @@
       },
       {
         "id": "kinds",
-        "name": "FlowRenderer, CardsRenderer, SequenceRenderer, ClassesRenderer",
+        "name": "FlowRenderer, CardsRenderer, SequenceRenderer, ClassesRenderer, TicketRenderer",
         "kind": "one per kind, each an IDiagramRenderer"
       },
       {
@@ -96,6 +114,8 @@
     ],
     "relations": [
       { "from": "reader", "to": "source", "kind": "creates" },
+      { "from": "ticketcard", "to": "reader", "kind": "uses", "word": "checks with" },
+      { "from": "kinds", "to": "ticket", "kind": "uses" },
       { "from": "renderers", "to": "irenderer", "kind": "uses", "word": "picks by kind" },
       { "from": "renderers", "to": "frame", "kind": "uses", "word": "titled" },
       { "from": "kinds", "to": "graph", "kind": "uses", "word": "lays out" },
