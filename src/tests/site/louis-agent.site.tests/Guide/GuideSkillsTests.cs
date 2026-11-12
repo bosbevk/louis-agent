@@ -141,6 +141,17 @@ public class GuideSkillsTests
         });
     }
 
+    /// <summary>
+    /// FX144, Louis, of the guide telling him to carry on and book after the booking card in the window said Sent: "it
+    /// should have known"; his pick, a rule to read the work. Whenever the visitor writes to him after a live ask, he
+    /// reads the business's work first, so he never answers from what he last saw.
+    /// </summary>
+    [Test]
+    public void AfterALiveAsk_HeReadsTheWorkBeforeAnswering() =>
+        Assert.That(Flat(Read("skills/live-demo.md").Body), Does.Contain(
+            "Whenever they write to you again after you asked a business live, call `ReadAgentWork` with its address " +
+            "first"));
+
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));
