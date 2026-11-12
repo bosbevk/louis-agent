@@ -100,6 +100,22 @@ public class GuideSkillsTests
     public void TheGuide_EndsEachAnswerWithChoices() =>
         Assert.That(new GuideIdentity().EndsEachAnswerWith, Is.EqualTo(LouisAgent.Web.Chats.Calls.OfferCall.Tool));
 
+    /// <summary>
+    /// FX140, Louis on Ask it live: "it should have given me a prompt for seemeeu". The guide answered with cards that
+    /// only said "type my question"; it now offers questions to ask the business, each sent as it is when clicked.
+    /// </summary>
+    [Test]
+    public void OnAskItLive_TheGuideOffersQuestionsForTheBusiness()
+    {
+        string skill = Flat(Read("skills/live-demo.md").Body);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(skill, Does.Contain("offer two or three questions to ask the business"));
+            Assert.That(skill, Does.Contain("never a card that only says to type"));
+        });
+    }
+
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));
