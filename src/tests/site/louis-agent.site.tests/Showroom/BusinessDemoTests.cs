@@ -79,7 +79,7 @@ public class BusinessDemoTests
     /// <summary>The guesthouse's demo, its conversation one turn long.</summary>
     private static IRenderedComponent<BusinessDemo> Demo(BunitContext ctx) =>
         ctx.Render<BusinessDemo>(parameters => parameters
-            .Add(demo => demo.Accent, TileAccent.Yellow)
+            .Add(demo => demo.Accent, TileAccent.Blue)
             .Add(demo => demo.Kicker, "A guesthouse")
             .Add(demo => demo.Business, "Seemeeu Guesthouse")
             .Add(demo => demo.Heading, "A weekend by the beach, with the dog.")

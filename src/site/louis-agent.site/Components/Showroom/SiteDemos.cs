@@ -13,11 +13,11 @@ public static class SiteDemos
     /// <summary>The five, registered once in <c>Program.cs</c> for the showroom to draw.</summary>
     public static ShowroomDemos All { get; } = new([
         new ShowroomDemo("/guesthouse-demo", "A guesthouse", "A weekend by the beach, with the dog",
-            DemoGroup.ForYourBusiness, TileAccent.Yellow, "🛏"),
+            DemoGroup.ForYourBusiness, TileAccent.Blue, "🛏"),
         new ShowroomDemo("/restaurant-demo", "A restaurant", "Sunday lunch at ten at night", DemoGroup.ForYourBusiness,
             TileAccent.Green, "🍽"),
         new ShowroomDemo("/law-practice-demo", "A law practice", "No advice, a consultation", DemoGroup.ForYourBusiness,
-            TileAccent.Blue, "⚖"),
+            TileAccent.Yellow, "⚖"),
         new ShowroomDemo("/coding-agent", "The coding agent", "Fixes a real bug", DemoGroup.AgentsAtWork,
             TileAccent.Red, "{ }"),
         new ShowroomDemo("/triage-demo", "The triage team", "Sorts and fixes an error", DemoGroup.AgentsAtWork,
