@@ -1,0 +1,20 @@
+{
+  "kind": "flow",
+  "title": "F127.8 the site's admin: one evening's objects",
+  "caption": "Three talks in the turn log, their cost in the ledger, and the overview they make.",
+  "flow": {
+    "nodes": [
+      { "id": "t1", "icon": "file", "tone": "teal", "label": "TurnLogRecord\ns1 · /pricing · selling\nTools: Offer, SendLead" },
+      { "id": "t2", "icon": "file", "tone": "teal", "label": "TurnLogRecord\ns2 · /demos · demos\nIdentity: seemeeu-guesthouse" },
+      { "id": "t3", "icon": "file", "tone": "teal", "label": "TurnLogRecord\ns3 · /framework/packs\nframework" },
+      { "id": "ledger", "icon": "database", "tone": "violet", "label": "UsageRecord × 9\ns1 $0.007 · s2 $0.004\ns3 $0.005" },
+      { "id": "reply", "icon": "chart", "tone": "blue", "label": "OverviewReply\nToday: 3 talks · R0.28\nSendLead: 1 talk" }
+    ],
+    "edges": [
+      { "from": "t1", "to": "reply" },
+      { "from": "t2", "to": "reply" },
+      { "from": "t3", "to": "reply" },
+      { "from": "ledger", "to": "reply", "style": "dashed", "word": "by session" }
+    ]
+  }
+}

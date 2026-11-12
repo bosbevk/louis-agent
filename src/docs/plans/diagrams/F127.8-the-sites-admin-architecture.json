@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "title": "F127.8 the site's admin: the architecture",
+  "caption": "The API writes a line per turn beside the ledger and answers the overview from both; the framework's web draws it in the admin; louis-agent.dev names its admin and what it counts.",
+  "flow": {
+    "nodes": [
+      { "id": "turn", "icon": "message", "tone": "violet", "label": "TurnStream:\na line per turn (2)", "group": "api" },
+      { "id": "log", "icon": "file", "tone": "violet", "label": "turns-yyyy-MM.jsonl\nbeside the ledger (2)", "group": "api" },
+      { "id": "ledger", "icon": "database", "tone": "violet", "label": "usage-yyyy-MM.jsonl\nthe ledger", "group": "api" },
+      { "id": "endpoint", "icon": "server", "tone": "violet", "label": "GET /admin/overview\nbehind the key (3)", "group": "api" },
+      { "id": "page", "icon": "chart", "tone": "violet", "label": "Overview page,\nthe counts a site names\n(4, 5)", "group": "web" },
+      { "id": "site", "icon": "browser", "tone": "blue", "label": "louis-agent.dev:\nits admin, SendLead\nas leads (6)", "group": "site" }
+    ],
+    "edges": [
+      { "from": "turn", "to": "log" },
+      { "from": "log", "to": "endpoint" },
+      { "from": "ledger", "to": "endpoint" },
+      { "from": "endpoint", "to": "page", "word": "OverviewReply" },
+      { "from": "site", "to": "page", "style": "dashed", "word": "names" }
+    ],
+    "groups": [
+      { "id": "api", "label": "louis-agent.api (the framework)" },
+      { "id": "web", "label": "louis-agent.web (the framework)" },
+      { "id": "site", "label": "louis-agent.dev (an implementation)" }
+    ]
+  }
+}

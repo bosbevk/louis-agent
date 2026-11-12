@@ -1,0 +1,85 @@
+{
+  "kind": "classes",
+  "title": "F127.8 the site's admin: the interface design",
+  "caption": "The API logs each turn and joins the log with the ledger into the overview's reply; a site names which tools it counts; the framework's page draws the reply.",
+  "classes": {
+    "types": [
+      {
+        "id": "record",
+        "name": "TurnLogRecord",
+        "kind": "louis-agent.api, record",
+        "members": [
+          "+At DateTimeOffset",
+          "+Session string",
+          "+Turn int",
+          "+Identity string?",
+          "+Page string?",
+          "+Focus string?",
+          "+Tools IReadOnlyList<string>"
+        ]
+      },
+      {
+        "id": "log",
+        "name": "TurnLog",
+        "kind": "louis-agent.api, one file a month",
+        "members": [
+          "+Write(TurnLogRecord)",
+          "+Read(DateOnly month) IEnumerable<TurnLogRecord>"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "OverviewReader",
+        "kind": "louis-agent.api, the join",
+        "members": [
+          "+Of(day, turns, ledger, display) OverviewReply"
+        ]
+      },
+      {
+        "id": "reply",
+        "name": "OverviewReply",
+        "kind": "api.contracts, record",
+        "members": [
+          "+Currency string",
+          "+Today OverviewPeriod",
+          "+Month OverviewPeriod",
+          "+ByPart IReadOnlyList<OverviewBar>",
+          "+ByIdentity IReadOnlyList<OverviewBar>",
+          "+Latest IReadOnlyList<OverviewTalk>"
+        ]
+      },
+      {
+        "id": "period",
+        "name": "OverviewPeriod",
+        "kind": "api.contracts, record",
+        "members": [
+          "+Talks int",
+          "+Cost decimal?",
+          "+Tools IReadOnlyList<OverviewBar>"
+        ]
+      },
+      {
+        "id": "counts",
+        "name": "OverviewCounts",
+        "kind": "louis-agent.web, named by the site",
+        "members": [
+          "+Tools IReadOnlyList<CountedTool>"
+        ]
+      },
+      {
+        "id": "page",
+        "name": "Overview",
+        "kind": "louis-agent.web, /admin/overview",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "log", "to": "record", "kind": "holds" },
+      { "from": "reader", "to": "log", "kind": "uses" },
+      { "from": "reader", "to": "reply", "kind": "creates" },
+      { "from": "reply", "to": "period", "kind": "holds" },
+      { "from": "page", "to": "reply", "kind": "uses" },
+      { "from": "page", "to": "counts", "kind": "uses" }
+    ]
+  }
+}
