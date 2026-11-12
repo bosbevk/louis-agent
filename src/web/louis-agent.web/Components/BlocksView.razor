@@ -23,6 +23,10 @@
             <div class="markdown">@Markdown.ToHtml(block.Text, Shown)</div>
             break;
 
+        case BlockKind.Tool when CardCall.SourceOf(block) is { } card:
+            <DrawnCard Source="card" />
+            break;
+
         case BlockKind.Tool when !ShowWork:
             break;
 
