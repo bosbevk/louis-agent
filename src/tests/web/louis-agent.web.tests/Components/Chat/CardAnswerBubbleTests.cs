@@ -84,6 +84,24 @@ public class CardAnswerBubbleTests
         Assert.That(Bubbles(cardsShowIt), Is.EqualTo(new[] { "A room for Friday", "Can I bring two dogs?" }));
     }
 
+    /// <summary>
+    /// Louis, on an empty grey bubble left where the answer was: "this should also be hidden?". A card's answer leaves
+    /// no message frame at all, not an empty one.
+    /// </summary>
+    [Test]
+    public void ACardsAnswer_LeavesNoEmptyFrame()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ChatText());
+        var chat = Answered();
+
+        var cut = ctx.Render<MessageList>(parameters => parameters.Add(list => list.Chat, chat));
+
+        Assert.That(cut.FindAll(".user-message"), Has.Count.EqualTo(2),
+            "the first message and the visitor's own words");
+    }
+
     /// <summary>Turned on, every message is a bubble, a card's answer too.</summary>
     [Test]
     public void On_EveryMessageIsABubble()

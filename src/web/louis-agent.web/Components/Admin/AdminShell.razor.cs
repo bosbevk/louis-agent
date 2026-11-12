@@ -1,4 +1,6 @@
+using LouisAgent.Web.Components.Areas;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Admin;
 
@@ -13,23 +15,38 @@ namespace LouisAgent.Web.Components.Admin;
 public partial class AdminShell
 {
     /// <summary>The site's logo, in the top bar and the sidebar.</summary>
-    [Parameter] public RenderFragment? Brand { get; set; }
+    [Parameter]
+    public RenderFragment? Brand { get; set; }
 
     /// <summary>What the logo says when you hover over it.</summary>
-    [Parameter] public string? BrandTitle { get; set; }
+    [Parameter]
+    public string? BrandTitle { get; set; }
 
     /// <summary>The sidebar's links.</summary>
-    [Parameter] public RenderFragment? Links { get; set; }
+    [Parameter]
+    public RenderFragment? Links { get; set; }
 
     /// <summary>What sits above every page, such as a site's live status.</summary>
-    [Parameter] public RenderFragment? Top { get; set; }
+    [Parameter]
+    public RenderFragment? Top { get; set; }
 
     /// <summary>Where the way back out of the admin goes; with none, there's no way back shown.</summary>
-    [Parameter] public string? BackHref { get; set; }
+    [Parameter]
+    public string? BackHref { get; set; }
 
     /// <summary>What the way back says.</summary>
-    [Parameter] public string? BackLabel { get; set; }
+    [Parameter]
+    public string? BackLabel { get; set; }
 
     /// <summary>The page.</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>
+    /// The links each area the site named adds to the sidebar (F127.6), the eval studio's among them; none on a site
+    /// that names its areas by hand.
+    /// </summary>
+    private IReadOnlyList<Type> AreaLinks => Services.GetService<SiteAreas>()?.AdminLinks ?? [];
 }

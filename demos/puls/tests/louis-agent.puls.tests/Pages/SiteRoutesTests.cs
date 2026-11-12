@@ -5,14 +5,8 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Evals.Admin.Reviews.Queue;
-using LouisAgent.Puls.Layout;
-using LouisAgent.Web.Api;
-using LouisAgent.Web.Components.Admin;
-using LouisAgent.Web.Components.Frames;
-using LouisAgent.Web.Components.Packs;
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Pages.Admin;
-using LouisAgent.Web.Storage;
-using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,42 +34,48 @@ public class SiteRoutesTests
         Assert.That(claimedTwice, Is.Empty);
     }
 
-    /// <summary>Opening a screen's address draws the framework's page, in the site's admin frame.</summary>
+    /// <summary>
+    /// Opening a screen's address draws the framework's page in the site's admin frame: the areas the program names
+    /// (F127.6), the eval studio's links in the admin's sidebar once, drawn by the framework.
+    /// </summary>
     [Test]
     public void AScreensAddress_OpensTheFrameworksPage_InTheAdminFrame()
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var settings = new ChatSettings();
-        ctx.Services.AddSingleton(settings);
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new AgentApi(
-            new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ReviewQueueState());
-        ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
+        ctx.Services.AddSiteAreas(PulsAreas.Name);
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
 
-        app.WaitForAssertion(() => Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage")),
-            TimeSpan.FromSeconds(10));
+        app.WaitForAssertion(() =>
+        {
+            Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage"));
+            Assert.That(app.FindAll(".sidebar a.side-link").Count(link => link.TextContent.StartsWith("Evals")),
+                Is.EqualTo(1));
+        }, TimeSpan.FromSeconds(10));
     }
 
-    /// <summary>The program sets the same frame the test above draws in.</summary>
+    /// <summary>
+    /// The program names its areas through the same method the tests use, its own words registered first so they
+    /// stay (F61.2: the account pages, in Puls's words).
+    /// </summary>
     [Test]
-    public void TheProgram_SetsItsAdminFrame_AndItsViews()
+    public void TheProgram_NamesItsAreas_InItsOwnWords()
     {
         var program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/web/louis-agent.puls/Program.cs"));
 
-        Assert.That(program,
-            Does.Contain("new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout))"));
-        // F61.2: the account pages, in Puls's words.
-        Assert.That(program,
-            Does.Contain("AddSingleton(PulsAccountText.Afrikaans)").And.Contain("AddLouisAgentAccounts()"));
-        Assert.That(program, Does.Contain("RecipeWebViews.AddTo(views)"));
-        Assert.That(program, Does.Contain("AddSingleton(views)"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(program, Does.Contain("AddSiteAreas(PulsAreas.Name)"));
+            Assert.That(program, Does.Not.Contain("new SiteFrames(").And.Not.Contain("new PackViews("));
+            Assert.That(program.IndexOf("AddSingleton(PulsAccountText.Afrikaans)", StringComparison.Ordinal),
+                Is.InRange(0, program.IndexOf("AddSiteAreas(", StringComparison.Ordinal)));
+        });
     }
 
     /// <summary>The API's answers: one screen, no rows, and nothing running or to review.</summary>
@@ -91,7 +91,7 @@ public class SiteRoutesTests
 
         return path.EndsWith("/rows")
             ? Json(new ScreenPageReply([], 0, 50))
-            : new HttpResponseMessage(HttpStatusCode.NotFound) { Content = JsonContent.Create(new { }) };
+            : new HttpResponseMessage(HttpStatusCode.NotFound);
     }
 
     /// <summary>A reply as the admin routes write it.</summary>

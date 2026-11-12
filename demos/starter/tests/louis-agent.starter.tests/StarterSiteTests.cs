@@ -5,12 +5,8 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Starter.Layout;
 using LouisAgent.Starter.Pages;
-using LouisAgent.Web.Api;
-using LouisAgent.Web.Components.Admin;
-using LouisAgent.Web.Components.Frames;
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Chat.Header;
-using LouisAgent.Web.Components.Chat.Shell;
-using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Pages.Admin;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -37,10 +33,7 @@ public class StarterSiteTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
-        ctx.Services.AddSingleton(new ChatText());
-        ctx.Services.AddSingleton(new ChatHandoff("chat"));
-        ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
+        ctx.Services.AddSiteAreas(StarterAreas.Name);
         return ctx;
     }
 
@@ -62,25 +55,46 @@ public class StarterSiteTests
         Assert.That(cut.FindComponents<CreditsMenu>(), Is.Empty);
     }
 
-    /// <summary>A screen's address opens the framework's page, in this site's admin frame, through its router.</summary>
+    /// <summary>
+    /// A screen's address opens the framework's page, in this site's admin frame, through its router: the areas the
+    /// program names (F127.6), with the eval studio's links in the admin's sidebar.
+    /// </summary>
     [Test]
     public void AScreensAddress_OpensInTheAdminFrame()
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var settings = new ChatSettings();
-        ctx.Services.AddSingleton(settings);
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new AgentApi(
-            new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
-        ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSiteAreas(StarterAreas.Name);
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
 
-        app.WaitForAssertion(() => Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage")),
-            TimeSpan.FromSeconds(10));
+        app.WaitForAssertion(() =>
+        {
+            Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage"));
+            Assert.That(app.FindAll(".sidebar a.side-link").Select(link => link.TextContent),
+                Has.Some.EqualTo("Evals"));
+        }, TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
+    /// The program names its areas through the same method the tests use, so a new site made from it starts with the
+    /// builder and no part wired by hand.
+    /// </summary>
+    [Test]
+    public void TheProgram_NamesItsAreas()
+    {
+        var program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "demos/starter/web/louis-agent.starter/Program.cs"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(program, Does.Contain("AddSiteAreas(StarterAreas.Name)"));
+            Assert.That(program, Does.Not.Contain("new SiteFrames(").And.Not.Contain("new PackViews(")
+                .And.Not.Contain("new ChatHandoff("));
+        });
     }
 
     /// <summary>No address is claimed twice, by the site and the framework together.</summary>
@@ -131,7 +145,7 @@ public class StarterSiteTests
 
         return path.EndsWith("/rows")
             ? Json(new ScreenPageReply([], 0, 50))
-            : new HttpResponseMessage(HttpStatusCode.NotFound) { Content = JsonContent.Create(new { }) };
+            : new HttpResponseMessage(HttpStatusCode.NotFound);
     }
 
     /// <summary>A reply as the admin routes write it.</summary>

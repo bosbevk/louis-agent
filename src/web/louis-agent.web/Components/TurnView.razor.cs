@@ -54,6 +54,15 @@ public partial class TurnView : IAsyncDisposable
     [Parameter]
     public bool ShowUserText { get; set; } = true;
 
+    /// <summary>Whether the visitor's words are drawn as a bubble.</summary>
+    private bool ShowsUserText => ShowUserText && Turn.UserText.Length > 0;
+
+    /// <summary>
+    /// Whether the visitor's side of the turn has anything to draw: their words or an attachment. A card's answer
+    /// that draws no bubble leaves no empty frame either.
+    /// </summary>
+    private bool HasUserMessage => ShowsUserText || Turn.AttachmentNames.Count > 0;
+
     private Turn? _renderedTurn;
     private string? _renderedAnswer;
     private bool _wasStreaming;

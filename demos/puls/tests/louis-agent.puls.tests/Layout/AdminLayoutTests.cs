@@ -5,6 +5,7 @@ using LouisAgent.Web.Evals.Admin.Reviews.Queue;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
@@ -37,10 +38,8 @@ public class AdminLayoutTests
 
         var cut = Render(ctx);
 
-        Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")), Is.EqualTo(new[]
-        {
-            "admin", "admin/review", "admin/studio", "admin/prompts", "gesels"
-        }));
+        Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")),
+            Is.EqualTo(new[] { "admin", "admin/review", "admin/studio", "admin/prompts", "gesels" }));
     }
 
     /// <summary>The way back goes to the chat, and the page shows in the content column.</summary>
@@ -69,8 +68,12 @@ public class AdminLayoutTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new StubHandler(request => new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new StringContent(AnswerTo(request.RequestUri!.AbsolutePath), Encoding.UTF8, "application/json")
+            Content = new StringContent(AnswerTo(request.RequestUri!.AbsolutePath), Encoding.UTF8,
+                "application/json")
         });
+        // Puls's areas, as its program names them, the eval studio's links from its area (F127.6); the test's own
+        // pieces after, so they are the ones the layout gets.
+        ctx.Services.AddSiteAreas(PulsAreas.Name);
         var settings = new ChatSettings();
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new PackViews());
@@ -80,7 +83,8 @@ public class AdminLayoutTests
         var state = new ReviewQueueState();
         ctx.Services.AddSingleton(state);
 
-        var cut = ctx.Render<AdminLayout>(parameters => parameters.Add(layout => layout.Body, "<div class=\"page\"></div>"));
+        var cut = ctx.Render<AdminLayout>(parameters =>
+            parameters.Add(layout => layout.Body, "<div class=\"page\"></div>"));
         cut.WaitForState(() => state.Count == 0, TimeSpan.FromSeconds(10));
         return cut;
     }

@@ -3,11 +3,8 @@ using System.Net.Http.Json;
 using System.Reflection;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
-using LouisAgent.Web.Api;
-using LouisAgent.Web.Components.Frames;
-using LouisAgent.Web.Components.Packs;
+using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Pages.Admin;
-using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using LouisAgent.CodeReview.Layout;
 using LouisAgent.CodeReview.Pages;
@@ -58,39 +55,44 @@ public class SiteRoutesTests
         });
     }
 
-    /// <summary>Opening a screen's address draws the framework's page, in this site's admin frame.</summary>
+    /// <summary>
+    /// F127.6: the app names its areas through the builder, the areas the program names too. Opening a screen's
+    /// address draws the framework's page in this site's admin frame, and the eval studio, named as an area, puts
+    /// its links in the admin's sidebar.
+    /// </summary>
     [Test]
     public void AScreensAddress_OpensTheFrameworksPage_InTheAdminFrame()
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var settings = new ChatSettings();
-        ctx.Services.AddSingleton(settings);
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new AgentApi(
-            new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
-        ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout)));
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSiteAreas(CodeReviewAreas.Name);
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
 
-        app.WaitForAssertion(() => Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage")),
-            TimeSpan.FromSeconds(10));
+        app.WaitForAssertion(() =>
+        {
+            Assert.That(app.Find(".admin-main h1").TextContent, Is.EqualTo("Usage"));
+            Assert.That(app.FindAll(".sidebar a.side-link").Select(link => link.TextContent),
+                Has.Some.EqualTo("Evals"));
+        }, TimeSpan.FromSeconds(10));
     }
 
-    /// <summary>The program sets the same frame the test above draws in.</summary>
+    /// <summary>The program names the areas the test above draws, through the same method.</summary>
     [Test]
-    public void TheProgram_SetsItsAdminFrame_AndItsViews()
+    public void TheProgram_NamesItsAreas()
     {
         var program = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
             "demos/louis-agent/web/louis-agent.code-review/Program.cs"));
 
-        Assert.That(program,
-            Does.Contain("new SiteFrames(Admin: typeof(AdminLayout), Account: typeof(AccountLayout))"));
-        Assert.That(program, Does.Contain("GitWebViews.AddTo(views)"));
-        Assert.That(program, Does.Contain("FilesWebViews.AddTo(views)"));
-        Assert.That(program, Does.Contain("AddSingleton(views)"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(program, Does.Contain("AddSiteAreas(CodeReviewAreas.Name)"));
+            Assert.That(program, Does.Not.Contain("new SiteFrames(").And.Not.Contain("new PackViews(")
+                .And.Not.Contain("new ChatHandoff("));
+        });
     }
 
     /// <summary>The API's answers: one screen, and no rows.</summary>
@@ -106,7 +108,7 @@ public class SiteRoutesTests
 
         return path.EndsWith("/rows")
             ? Json(new ScreenPageReply([], 0, 50))
-            : new HttpResponseMessage(HttpStatusCode.NotFound) { Content = JsonContent.Create(new { }) };
+            : new HttpResponseMessage(HttpStatusCode.NotFound);
     }
 
     /// <summary>A reply as the admin routes write it.</summary>

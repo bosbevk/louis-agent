@@ -4,6 +4,9 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Areas;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +27,8 @@ public class AdminShellTests
         var settings = new ChatSettings();
         var screens = new ScreensReply(
         [
-            new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+            new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")],
+                Searchable: false)
         ]);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new PackViews());
@@ -33,10 +37,42 @@ public class AdminShellTests
             {
                 Content = JsonContent.Create(screens, options: AdminJson.SnakeCase)
             }))
-        {
-            BaseAddress = new Uri("http://localhost/")
-        }, settings));
+        { BaseAddress = new Uri("http://localhost/") }, settings));
         return ctx;
+    }
+
+    /// <summary>An area's links, as the eval studio gives, drawn as a component the test can find.</summary>
+    private sealed class AreaLinks : ComponentBase
+    {
+        /// <summary>One link, marked.</summary>
+        protected override void BuildRenderTree(RenderTreeBuilder builder) =>
+            builder.AddMarkupContent(0, "<a class=\"side-link area-link\" href=\"evals\">Evals</a>");
+    }
+
+    /// <summary>
+    /// F127.6: each named area's links show in the sidebar after the site's own, so every site that runs the evals
+    /// links them; a site that names no such area has none.
+    /// </summary>
+    [Test]
+    public void AnAreasLinks_ShowAfterTheSitesOwn_AndNoneWithoutTheArea()
+    {
+        using var ctx = NewContext();
+        ctx.Services.AddSingleton(new SiteAreas([
+            new SiteArea("evals", _ => { }, [], AdminLinks: typeof(AreaLinks))
+        ]));
+        using var without = NewContext();
+
+        var cut = ctx.Render<AdminShell>(parameters => parameters
+            .Add(shell => shell.Links, "<a class=\"side-link my-link\" href=\"x\">X</a>"));
+        var bare = without.Render<AdminShell>();
+
+        var links = cut.FindAll(".sidebar a.side-link").Select(link => link.ClassName ?? "").ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(links.FindIndex(c => c.Contains("area-link")),
+                Is.GreaterThan(links.FindIndex(c => c.Contains("my-link"))));
+            Assert.That(bare.FindAll(".area-link"), Is.Empty);
+        });
     }
 
     /// <summary>A pack's screens get their links in the sidebar, after the site's own.</summary>
@@ -48,8 +84,9 @@ public class AdminShellTests
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.Links, "<a class=\"side-link my-link\" href=\"x\">X</a>"));
 
-        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
+                Is.EqualTo(new[] { "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>
