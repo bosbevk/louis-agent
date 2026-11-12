@@ -36,7 +36,11 @@ public sealed record TurnIdentity(
 
     /// <summary>Who a session in this identity runs as.</summary>
     public static TurnIdentity Of(IAgentIdentity identity) =>
-        new(identity.Name, identity.IsDemonstration, identity.EndsEachAnswerWith, identity.StopsOn);
+        new(identity.Name, identity.IsDemonstration, identity.EndsEachAnswerWith, StopsOf(identity));
+
+    /// <summary>An identity's stops; none stays none, so two turns of an identity without stops stay equal.</summary>
+    private static IReadOnlyList<string>? StopsOf(IAgentIdentity identity) =>
+        identity.StopsOn.Count == 0 ? null : identity.StopsOn;
 
     /// <summary>Runs what follows as this identity, until the scope ends and the one before comes back.</summary>
     public static IDisposable Use(TurnIdentity? identity)
