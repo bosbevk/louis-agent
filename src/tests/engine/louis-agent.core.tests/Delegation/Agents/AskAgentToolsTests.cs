@@ -7,6 +7,7 @@ using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.SessionStream.Wire.Requests;
+using LouisAgent.SessionStream.Wire.Requests.Windows;
 using static LouisAgent.Core.Tests.Delegation.FakePeer;
 
 namespace LouisAgent.Core.Tests.Delegation.Agents;

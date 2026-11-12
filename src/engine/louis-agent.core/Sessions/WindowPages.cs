@@ -1,4 +1,5 @@
 using LouisAgent.SessionStream.Wire.Requests;
+using LouisAgent.SessionStream.Wire.Requests.Windows;
 
 namespace LouisAgent.Core.Sessions;
 
