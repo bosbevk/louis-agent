@@ -14,7 +14,8 @@ namespace LouisAgent.Diagrams.Svg;
 public static class DiagramRenderers
 {
     /// <summary>Every kind's renderer.</summary>
-    private static readonly IReadOnlyList<IDiagramRenderer> All = [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer()];
+    private static readonly IReadOnlyList<IDiagramRenderer> All =
+        [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer()];
 
     /// <summary>The diagram as one SVG file's text.</summary>
     public static string Render(DiagramSource source) =>
@@ -22,6 +23,12 @@ public static class DiagramRenderers
          ?? throw new NotSupportedException(
              DiagramText.Format(DiagramMessage.NoRenderer, new { Kind = source.Kind.Wire() })))
         .Render(source);
+
+    /// <summary>
+    /// The diagram as a page holds it inline (F127.4.1): the same drawing, its styles kept to itself
+    /// (<see cref="PageSvg"/>), so the page's colour variables reach it and its rules reach nothing else.
+    /// </summary>
+    public static string RenderForPage(DiagramSource source) => PageSvg.Of(Render(source));
 
     /// <summary>
     /// The diagram as the docs show it: drawn without its caption, then framed with its title bar on top and the

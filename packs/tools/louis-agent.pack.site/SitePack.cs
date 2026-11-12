@@ -25,11 +25,11 @@ public sealed class SitePack : IAgentPack
     public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new(SiteToolset.Site.Wire(),
-            "Take the visitor to a page of this site, or to an area of it",
+            "Take the visitor to a page of this site, or to an area of it; show a card, and offer choices",
             GuideFile: PackToolset.Guide(SiteToolset.Site.Wire()),
             MissingSettings: _ => [],
-            ToolTypes: [typeof(SiteTools)],
-            CreateTools: _ => [new SiteTools()]),
+            ToolTypes: [typeof(SiteTools), typeof(CardTools)],
+            CreateTools: _ => [new SiteTools(), new CardTools()]),
     ];
 
     /// <inheritdoc />

@@ -6,6 +6,7 @@ using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
+using LouisAgent.Diagrams.Tickets.Spec;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -30,6 +31,7 @@ public static class DiagramReader
         if (source.Cards is { } cards) CheckCards(cards);
         if (source.Sequence is { } sequence) CheckSequence(sequence);
         if (source.Classes is { } classes) CheckClasses(classes);
+        if (source.Ticket is { } ticket) CheckTicket(ticket);
         return source;
     }
 
@@ -86,6 +88,7 @@ public static class DiagramReader
             DiagramKind.Cards => source.Cards is not null,
             DiagramKind.Sequence => source.Sequence is not null,
             DiagramKind.Classes => source.Classes is not null,
+            DiagramKind.Ticket => source.Ticket is not null,
             _ => false
         };
         if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
@@ -166,7 +169,8 @@ public static class DiagramReader
     private static void CheckClasses(ClassesSpec classes)
     {
         var ids = classes.Types.Select(type => type.Id).ToHashSet(StringComparer.Ordinal);
-        var stray = classes.Relations.FirstOrDefault(relation => !ids.Contains(relation.From) || !ids.Contains(relation.To));
+        var stray = classes.Relations.FirstOrDefault(relation =>
+            !ids.Contains(relation.From) || !ids.Contains(relation.To));
         if (stray is null) return;
         throw Refused(DiagramMessage.UnknownType,
             new
@@ -175,6 +179,20 @@ public static class DiagramReader
                 stray.To,
                 Id = ids.Contains(stray.From) ? stray.To : stray.From
             });
+    }
+
+    /// <summary>
+    /// A ticket has its headline, one to six rows (more don't fit a chat's card), and each row both its label and its
+    /// value, so an agent that wrote a half-empty card hears which part to fix.
+    /// </summary>
+    private static void CheckTicket(TicketSpec ticket)
+    {
+        if (string.IsNullOrWhiteSpace(ticket.Title)) throw Refused(DiagramMessage.TicketWithoutTitle, new { });
+        if (ticket.Rows.Count is < 1 or > 6) throw Refused(DiagramMessage.TicketRowCount, new { ticket.Rows.Count });
+
+        int half = ticket.Rows.ToList()
+            .FindIndex(row => string.IsNullOrWhiteSpace(row.Label) || string.IsNullOrWhiteSpace(row.Value));
+        if (half >= 0) throw Refused(DiagramMessage.TicketHalfRow, new { Number = half + 1 });
     }
 
     /// <summary>A block, or one of its cases, with nothing in it: a frame round nothing.</summary>

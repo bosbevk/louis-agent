@@ -4,7 +4,8 @@ namespace LouisAgent.Diagrams.Icons;
 
 /// <summary>
 /// The icons a card may wear, by the names a diagram's file uses: a set of Tabler Icons (MIT) for what a project's
-/// parts usually are, each named for what it shows. <see cref="IconPaths"/> draws them.
+/// parts usually are, and since F127.4.1 the facts a ticket shows (a date, a time, a phone, a place, a price, a pet),
+/// each named for what it shows. <see cref="IconPaths"/> draws them.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum DiagramIcon
@@ -32,5 +33,11 @@ public enum DiagramIcon
     [WireName("book")] Book,
     [WireName("terminal")] Terminal,
     [WireName("stack")] Stack,
-    [WireName("info")] Info
+    [WireName("info")] Info,
+    [WireName("calendar")] Calendar,
+    [WireName("clock")] Clock,
+    [WireName("phone")] Phone,
+    [WireName("home")] Home,
+    [WireName("tag")] Tag,
+    [WireName("paw")] Paw
 }

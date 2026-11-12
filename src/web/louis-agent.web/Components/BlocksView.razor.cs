@@ -23,6 +23,16 @@ public partial class BlocksView
     public bool ShowWork { get; set; } = true;
 
     /// <summary>What a thinking block says on its label: thinking now, or how long it thought.</summary>
+    /// <summary>
+    /// The visitor's message after this answer, once there is one, so choices offered in it fold to the one chosen.
+    /// </summary>
+    [Parameter]
+    public string? Answer { get; set; }
+
+    /// <summary>What a click on an offered card does with its label: the chat sends it as the visitor's message.</summary>
+    [Parameter]
+    public EventCallback<string> Chosen { get; set; }
+
     private string ThinkingLabel(Block block) => block.ThinkingSeconds is { } seconds
         ? string.Format(Text.ThoughtFor, Math.Max(1, Math.Round(seconds)))
         : Text.Thinking;

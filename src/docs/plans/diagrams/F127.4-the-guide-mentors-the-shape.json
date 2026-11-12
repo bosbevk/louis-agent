@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "title": "F127.4 the guide mentors: the shape",
+  "caption": "Two children: first the cards an agent draws itself, then the live demo the guide runs with them, in the business's own window.",
+  "flow": {
+    "nodes": [
+      { "id": "visitor", "label": "A visitor\nin the guide's corner", "icon": "user", "tone": "blue" },
+      { "id": "guide", "label": "The guide\nOffer: try it live?", "icon": "chip", "tone": "green", "group": "one" },
+      { "id": "cards", "label": "Option cards and a ticket\ndrawn by louis-agent.diagrams", "icon": "stack", "tone": "violet", "group": "one" },
+      { "id": "ask", "label": "AskAgent\nin the visitor's words", "icon": "message", "tone": "green", "group": "two" },
+      { "id": "window", "label": "The business's window\nthe talk, the visitor carries on", "icon": "browser", "tone": "green", "group": "two" },
+      { "id": "card", "label": "The guide's card\nthe work, each tool's result", "icon": "checks", "tone": "teal", "group": "two" },
+      { "id": "door", "label": "The open door\none of the visitor's sessions", "icon": "shield", "tone": "violet", "group": "two" }
+    ],
+    "edges": [
+      { "from": "visitor", "to": "guide" },
+      { "from": "guide", "to": "cards", "word": "Offer, ShowCard" },
+      { "from": "guide", "to": "ask", "word": "on the visitor's pick" },
+      { "from": "ask", "to": "window", "word": "the child's events" },
+      { "from": "ask", "to": "card" },
+      { "from": "ask", "to": "door", "word": "counted", "style": "dashed" }
+    ],
+    "groups": [
+      { "id": "one", "label": "F127.4.1 cards the agent draws" },
+      { "id": "two", "label": "F127.4.2 the guided live demo" }
+    ]
+  }
+}

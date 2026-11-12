@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "louis-agent.pack.site: the interface design",
-  "caption": "One tool that moves nothing: it checks the path and says it is shown, and the widget that hears the call does the moving.",
+  "caption": "Tools that move and draw nothing: they check what the agent wrote and say it is shown, and the widget that reads the call does the moving and the drawing.",
   "classes": {
     "types": [
       {
@@ -15,43 +15,54 @@
       {
         "id": "tools",
         "name": "SiteTools",
-        "kind": "the tool the model calls",
+        "kind": "the tool that moves the page",
         "members": [
           "+ShowPage(path) string"
         ]
       },
       {
-        "id": "messages",
-        "name": "SiteToolMessage",
-        "kind": "enum, shown or refused with the reason"
+        "id": "cards",
+        "name": "CardTools",
+        "kind": "the tools that draw",
+        "members": [
+          "+ShowCard(kicker, title, rows, subtitle?, status?, note?) string",
+          "+Offer(question, choices) string"
+        ]
       },
       {
-        "id": "toolset",
-        "name": "SiteToolset",
-        "kind": "enum",
+        "id": "checks",
+        "name": "CardCheck, OfferCheck",
+        "kind": "the library's rules, a tested duplicate",
         "members": [
-          "Site"
+          "+Problem(...) string?"
         ]
+      },
+      {
+        "id": "messages",
+        "name": "SiteToolMessage",
+        "kind": "enum, shown, or Error with the reason"
       },
       {
         "id": "guide",
         "name": "prompts/toolsets/site.md",
-        "kind": "when to call it, once, and what to say",
+        "kind": "when to move, show a card or offer",
         "tone": "amber"
       },
       {
-        "id": "runner",
-        "name": "ChatRunner.ToolCalled",
-        "kind": "louis-agent.web, the widget acts",
+        "id": "web",
+        "name": "CardCall, OfferCall",
+        "kind": "louis-agent.web, the widget draws",
         "tone": "violet"
       }
     ],
     "relations": [
       { "from": "pack", "to": "tools", "kind": "creates" },
-      { "from": "pack", "to": "toolset", "kind": "uses" },
+      { "from": "pack", "to": "cards", "kind": "creates" },
       { "from": "pack", "to": "guide", "kind": "holds" },
+      { "from": "cards", "to": "checks", "kind": "uses" },
       { "from": "tools", "to": "messages", "kind": "uses" },
-      { "from": "runner", "to": "tools", "kind": "uses", "word": "hears each call" }
+      { "from": "cards", "to": "messages", "kind": "uses" },
+      { "from": "web", "to": "cards", "kind": "uses", "word": "reads each call" }
     ]
   }
 }

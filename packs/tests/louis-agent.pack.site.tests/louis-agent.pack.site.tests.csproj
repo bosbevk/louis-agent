@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\tools\louis-agent.pack.site\louis-agent.pack.site.csproj" />
+    <!-- The diagrams library, only so the tests hold the pack's card rules equal to its own (F127.4.1). -->
+    <ProjectReference Include="..\..\..\src\web\louis-agent.diagrams\louis-agent.diagrams.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>

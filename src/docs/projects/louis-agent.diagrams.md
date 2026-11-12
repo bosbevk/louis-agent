@@ -1,8 +1,9 @@
 # louis-agent.diagrams — design
 
 > **Kind:** Class library (`net10.0`), plain C# · **Path:** `src/web/louis-agent.diagrams/` · **References:**
-> louis-agent.choices · **Used by:** louis-agent.web (the site's `GraphView`), and `src/tools/louis-agent.doc-diagrams`,
-> the tool that draws the docs' pictures · **How-to:** [Draw a diagram](../guides/draw-a-diagram.md)
+> louis-agent.choices · **Used by:** louis-agent.web (the site's `GraphView`, and the chat's `DrawnCard`), and
+> `src/tools/louis-agent.doc-diagrams`, the tool that draws the docs' pictures · **How-to:**
+> [Draw a diagram](../guides/draw-a-diagram.md)
 
 ![Diagrams from data, and their parts: a diagram as JSON, two layouts, one SVG with two looks, the icons and the docs' tool](diagrams/louis-agent.diagrams.svg)
 
@@ -16,7 +17,7 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
 ## How it works
 
 - **A diagram is data** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource` through records: a kind
-  (`flow`, `cards`, `sequence` or `classes`, parsed with `SettingChoice`), a title a screen reader is told, an optional caption, and the
+  (`flow`, `cards`, `sequence`, `classes` or `ticket`, parsed with `SettingChoice`), a title a screen reader is told, an optional caption, and the
   kind's own part. A misspelt field, an unknown kind, a missing title, or an arrow or a link to an id nothing has is
   refused with its reason (`Messages/DiagramMessage`, filled by `DiagramText`, the library's own small stand-in for
   core's `MessageText`).
@@ -46,13 +47,24 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   width is its length times one number and the tests prove it fits. A card is `plain`, `highlight` (centred in the
   accent's tint) or `heading` (centred with no box), its `CardLook`. A link (`Cards/Links/`) runs from a card's
   bottom middle to the next row's top middle, at right angles, its arrowheads the way it says.
-- **Icons** (`Icons/`): 24 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
+- **Tickets** (`Tickets/`, F127.4.1): a read-only card an agent draws in the chat, such as a booking request: a
+  kicker and a title on a band, an optional subtitle and a status pill in a tone, a torn edge, one to six rows of an
+  icon, a label and a value, and a note at the foot. `TicketLayout` places every word (the kicker wraps beside the
+  pill, a long value wraps and the card grows), 320 wide so a phone's chat shrinks it little. `TicketCard` is the one
+  translation from a tool call to a ticket: `Of` builds it from its parts (icons and tones by name, refused with the
+  names there are) and `FromCall` reads a `ShowCard` call's input, so the pack and the page read a call one way.
+- **Icons** (`Icons/`): 30 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
   them and a row in `THIRD-PARTY-NOTICES.md`.
 - **The SVG** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind (Strategy, `Svg/Renderers/`:
-  `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`, and `ClassesRenderer`, which hands `ClassFlow`'s flow to the
-  flow renderer). `SvgWriter` builds the file with `XElement`, `\n` line endings and a `<title>`. `Svg/Theme/`
-  holds the site's palette and its light twin as CSS variables in the picture's own style, the dark one under
-  `prefers-color-scheme: dark`, and each tone's fill, line and ink.
+  `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`, `ClassesRenderer`, which hands `ClassFlow`'s flow to the
+  flow renderer, and `TicketRenderer`). `SvgWriter` builds the file with `XElement`, `\n` line endings and a
+  `<title>`. `Svg/Theme/` holds the site's palette and its light twin as CSS variables in the picture's own style,
+  the dark one under `prefers-color-scheme: dark`, and each tone's fill, line and ink; `TicketStyle` adds a ticket's
+  rules, every colour a `--ticket-*` variable with the site's as its fallback, so a business's window sets its brand.
+- **A drawing for a page** (`Svg/PageSvg`, `DiagramRenderers.RenderForPage`): a page holds the SVG inline, so its
+  colour variables reach it, but a style inside an inline SVG is the whole page's. The page's copy wraps each style in
+  `@scope` with the root named `:scope` (a bare `svg` inside a scope means an svg inside it), drops an arrowhead
+  nothing uses, so two cards hold no id twice, and trims the empty ground round the drawing.
 - **The docs' frame** (`Svg/TitledFrame`, a Decorator): `DiagramRenderers.RenderTitled` draws the picture bare and
   frames it with a navy title bar, a legend of the tones the chart uses, and a note bar from its caption. Only the
   docs' tool asks for it, so a bare picture (the site, the chat's tool cards later) is unchanged.
@@ -80,9 +92,10 @@ src/web/louis-agent.diagrams/
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
+├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame; Renderers/, Theme/
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/, Theme/
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
@@ -95,8 +108,10 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   and no other, a chip clear of its line; a sequence's heads apart, its words between their lifelines, its frames
   round their steps and nested inside their parents; a box's members and tones in `Flow/Boxes/`; a class chart's
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
-  icon drawn, and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`, `Sequence/sequence.svg`,
-  `Classes/classes.svg`, `Cards/cards.svg` and `Cards/looks.svg` (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
+  icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
+  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
+  `Sequence/sequence.svg`, `Classes/classes.svg`, `Cards/cards.svg`, `Cards/looks.svg` and `Tickets/ticket.svg`
+  (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,
   every picture a doc shows is there, every project doc shows its overview and all four kinds of picture
@@ -179,6 +194,18 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   kind line). Each interface was written from the code and checked against it, which caught a picture naming the
   docs pack's tools by an old plan's names.
 - **What it added:** 42 interface pictures, 8 flows and 13 sequences, all looked at.
+
+## What the build decided (F127.4.1, 2026-11-12, partly unattended)
+
+- **Louis's picks:** the first design's option cards, and the booking summary a read-only ticket "the agents must
+  draw themselves with our diagram tool": a `ticket` kind here, filled through `ShowCard`'s typed parameters (Q1); its
+  colours CSS variables with the site's as fallbacks (Q3); on the 390 px check, the page's copy trimmed and the ticket
+  laid out 320 wide (not a measured width, nor bigger fonts on phones).
+- **Claude's picks, each of three:** one translation from a call to a ticket (`TicketCard`) in the library the pack's
+  tests and the web both use; the page holds the SVG inline with its styles in `@scope` (not an `img`, which keeps the
+  brand's colours out, nor a shadow root, which needs a script per card).
+- **Found on the live check:** inside `@scope` a bare `svg` rule misses the root, so the first card drew black; the
+  page's copy names it `:scope`, and a test holds it.
 
 ## Limits and plans
 

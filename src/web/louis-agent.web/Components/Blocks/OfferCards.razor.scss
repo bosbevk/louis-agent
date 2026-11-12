@@ -1,0 +1,19 @@
+/* Choices the agent offered (F127.4.1): a card per choice under the answer, the suggested one in the accent. */
+.offer { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-width: 420px; animation: rise .35s var(--web-ease) both; }
+.offer-question { font-size: 13px; color: var(--bs-secondary-color); }
+.offer-card {
+    position: relative; display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 10px 14px;
+    border: 1px solid var(--bs-border-color); border-radius: 12px; background: var(--bs-body-bg); color: var(--bs-body-color);
+    font: inherit; transition: border-color .15s, transform .15s;
+}
+button.offer-card { cursor: pointer; }
+button.offer-card:hover:not([disabled]) { border-color: var(--bs-primary); transform: translateY(-1px); }
+button.offer-card[disabled] { cursor: default; opacity: .6; }
+.offer-card.is-suggested { border-color: var(--bs-primary); box-shadow: 0 0 0 1px var(--bs-primary); }
+.offer-card.is-chosen { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .08); }
+.offer-label { font-weight: 600; font-size: 14px; }
+.offer-why { font-size: 12.5px; color: var(--bs-secondary-color); }
+.offer-tag {
+    position: absolute; top: 10px; right: 12px; font-size: 10.5px; font-weight: 600; letter-spacing: .6px;
+    text-transform: uppercase; color: var(--bs-primary);
+}

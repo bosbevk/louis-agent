@@ -60,6 +60,14 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **The views.** `TurnView` and `BlocksView` show one turn (the message, collapsible thinking, text, tool cards);
   `DelegationCard` a specialist's work, live, with its cost; `MessageList`, `Composer`, `ComposerButtons`,
   `ChatUsageBar` and `Notice` are the chat pieces both apps lay out, with slots for an app's own parts.
+- **Cards an agent draws** (F127.4.1). The site pack's `ShowCard` and `Offer` draw nothing themselves: the chat reads
+  each call (`Chats/Calls/`: `CardCall` through the diagrams library's `TicketCard`, `OfferCall` into `Offered`) and
+  draws it with the work hidden too: `DrawnCard` holds the library's SVG inline (`RenderForPage`, its styles kept to
+  itself) and `OfferCards` the choices as buttons. `CardsLast` puts an answer's cards under its words, whatever order
+  they were called in. A click goes up as `Chosen` (`BlocksView`, `TurnView`, `MessageList`) to the chat that owns a
+  runner, which sends the label as the visitor's message; `MessageList` hands each turn the next one's words as its
+  `Answer`, and a finished turn draws again when it gets one, so its cards fold to the one chosen. A failed call (the
+  pack's refusals start with "Error") draws nothing.
 - **Safe markdown.** `Markdown` is the one Markdig pipeline: raw HTML is shown as text, links only `http(s)` and
   `mailto`, images only from the shops' own image hosts, so a model-written image can't send the chat's data elsewhere.
 - **Usage and currency.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event;
@@ -133,7 +141,8 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 | `Api/` | `AgentApi`, `AgentApiException` (an error with its status). The events are the session-stream reader's `SessionEvent`s (`louis-agent.session-stream`) |
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
-| `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
+| `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1) |
+| `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
 | `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
@@ -217,7 +226,7 @@ default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain c
 
 `src/tests/web/louis-agent.web.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
 `TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
-`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the studio's in `louis-agent.web.evals.tests` (CL57); `Pages/Admin/`;
+`DelegationCardTests`, `CurrencySwitcherTests`; `DrawnCardTests` and `OfferCardsTests` in `Components/Blocks/`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame; the studio's in `louis-agent.web.evals.tests` (CL57); `Pages/Admin/`;
 `MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
 `RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
 web test projects share.

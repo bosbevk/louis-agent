@@ -80,7 +80,8 @@ public class ShowroomIdentitiesTests
             .And.Contain("another page"));
 
     /// <summary>
-    /// Every voice says it is an AI, is made up, and passes a booking on only after the customer's yes.
+    /// Every voice says it is an AI, is made up, and passes a booking on only after the customer's yes: since
+    /// F127.4.1 a click, the request shown as a card and offered to send, change or leave.
     /// </summary>
     [TestCase(0)]
     [TestCase(1)]
@@ -93,7 +94,9 @@ public class ShowroomIdentitiesTests
         {
             Assert.That(voice, Does.Contain("You are an AI"));
             Assert.That(voice, Does.Contain("made-up business"));
-            Assert.That(voice, Does.Contain("only after they say yes"));
+            Assert.That(voice, Does.Contain("`ShowCard`").And.Contain("Not sent yet").And.Contain("`Offer`"));
+            Assert.That(voice, Does.Contain("Call `SendLead` only when").And.Contain("it comes back, once"));
+            Assert.That(voice, Does.Contain("Sent in green"));
             Assert.That(voice, Does.Contain("Three short sentences at most"));
         });
     }
