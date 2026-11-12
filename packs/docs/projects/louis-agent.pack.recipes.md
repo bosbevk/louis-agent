@@ -91,6 +91,8 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
 
 ![Searching, then reading a recipe: the search asks several sites at once, and a read takes the library's copy or the page's own recipe data first](diagrams/louis-agent.pack.recipes-diagrams-2.svg)
 
+![The types: three tools, a search scattered over the sites, a page read as data first, and our own library on a shelf](diagrams/louis-agent.pack.recipes-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

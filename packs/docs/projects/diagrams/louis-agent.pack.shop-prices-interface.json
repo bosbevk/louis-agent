@@ -1,0 +1,96 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.shop-prices: the interface design",
+  "caption": "One tool over a price book: Stats SA's monthly prices are imported into a store, read once into a cached book, and a basket is estimated from it.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "ShopPricesPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Toolsets: shop-prices",
+          "+Feeds, Imports"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "ShopPriceTools",
+        "kind": "the tool the model calls",
+        "members": [
+          "+EstimatePrices(items, province?, serves?)"
+        ]
+      },
+      {
+        "id": "cache",
+        "name": "PriceBookCache",
+        "members": [
+          "+GetAsync() PriceBook",
+          "+Forget()"
+        ]
+      },
+      {
+        "id": "book",
+        "name": "PriceBook",
+        "kind": "every product's latest price by region"
+      },
+      {
+        "id": "estimator",
+        "name": "PriceEstimator",
+        "kind": "static",
+        "members": [
+          "a basket's lines matched to products"
+        ]
+      },
+      {
+        "id": "estimate",
+        "name": "BasketEstimate",
+        "kind": "record",
+        "members": [
+          "+Region, Lines PriceEstimate list, Serves?",
+          "+Of(lines, book, region, serves) (static)"
+        ]
+      },
+      {
+        "id": "istore",
+        "name": "IPriceStore",
+        "kind": "interface",
+        "members": [
+          "+LatestAsync() IReadOnlyList<PriceFile>",
+          "+MonthsAsync(source)",
+          "+SaveAsync(PriceFile)"
+        ]
+      },
+      {
+        "id": "stores",
+        "name": "MongoPriceStore, ShippedPrices",
+        "kind": "implements IPriceStore"
+      },
+      {
+        "id": "import",
+        "name": "StatsSaImport",
+        "kind": "an IDataImport: a month's sheet",
+        "members": [
+          "reads, corrects and saves a PriceFile"
+        ]
+      },
+      {
+        "id": "feed",
+        "name": "ShopPricesFeed",
+        "kind": "an IDataFeed: the book as data"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "cache", "kind": "holds" },
+      { "from": "tools", "to": "estimate", "kind": "creates", "word": "a basket" },
+      { "from": "estimate", "to": "estimator", "kind": "uses", "word": "each line" },
+      { "from": "cache", "to": "book", "kind": "creates" },
+      { "from": "cache", "to": "istore", "kind": "holds" },
+      { "from": "stores", "to": "istore", "kind": "implements" },
+      { "from": "pack", "to": "import", "kind": "creates" },
+      { "from": "import", "to": "istore", "kind": "uses", "word": "saves" },
+      { "from": "pack", "to": "feed", "kind": "creates" }
+    ]
+  }
+}

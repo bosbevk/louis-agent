@@ -1,0 +1,118 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.recipes: the interface design",
+  "caption": "Three tools over many sources: a search scatters over the recipe sites, a page is read as data first, and what is read is kept in our own library.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "RecipesPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Toolsets: recipes",
+          "+Feeds, Screens"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "RecipeTools",
+        "kind": "the tools the model calls",
+        "members": [
+          "+FindRecipes(query, maxResults)",
+          "+ReadRecipe(url)",
+          "+ScaleRecipe(url, people)"
+        ]
+      },
+      {
+        "id": "scatter",
+        "name": "RecipeScatter",
+        "kind": "every site at once, mixed",
+        "members": [
+          "+FindAsync(query, maxResults) RecipeGather"
+        ]
+      },
+      {
+        "id": "isource",
+        "name": "IRecipeSource",
+        "kind": "interface",
+        "members": [
+          "+FindAsync(query, maxResults) IReadOnlyList<RecipeHit>"
+        ]
+      },
+      {
+        "id": "sources",
+        "name": "SiteWebSearch, WordPressSearch, SourceWithoutExcludedPages",
+        "kind": "a site's own search, or the web's"
+      },
+      {
+        "id": "readers",
+        "name": "SchemaOrgRecipe, PageTextRecipe, PlainRunRecipe",
+        "kind": "static, the page's JSON-LD first, then its text"
+      },
+      {
+        "id": "recipe",
+        "name": "Recipe",
+        "kind": "record",
+        "members": [
+          "+Name, Yield?, PrepTime?, CookTime?",
+          "+Ingredients, Steps, Image?"
+        ]
+      },
+      {
+        "id": "shelf",
+        "name": "RecipeShelf",
+        "kind": "our library, searched first and filled as people read",
+        "members": [
+          "+SearchAsync(query, most)",
+          "+ReadAsync(address), KeepAsync(recipe)",
+          "+ExcludeAsync(page)"
+        ]
+      },
+      {
+        "id": "istore",
+        "name": "IRecipeStore",
+        "kind": "interface, our library",
+        "members": [
+          "+FindAsync(id), KeepAsync(recipe)",
+          "+ReplaceAsync, RemoveAsync, AllAsync"
+        ]
+      },
+      {
+        "id": "stores",
+        "name": "MongoRecipeStore, NoRecipeStore",
+        "kind": "implements IRecipeStore"
+      },
+      {
+        "id": "ilibrary",
+        "name": "IRecipeLibrary",
+        "kind": "interface, the library over HTTP",
+        "members": [
+          "+SearchAsync(query, most)",
+          "+ReadAsync(id)"
+        ]
+      },
+      {
+        "id": "scaler",
+        "name": "RecipeScaler",
+        "kind": "static",
+        "members": [
+          "a recipe for another number of people"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "scatter", "kind": "uses", "word": "finds" },
+      { "from": "scatter", "to": "isource", "kind": "holds", "word": "one per site" },
+      { "from": "sources", "to": "isource", "kind": "implements" },
+      { "from": "tools", "to": "readers", "kind": "uses", "word": "reads a page" },
+      { "from": "readers", "to": "recipe", "kind": "creates" },
+      { "from": "tools", "to": "shelf", "kind": "holds" },
+      { "from": "scatter", "to": "shelf", "kind": "holds", "word": "skips what's excluded" },
+      { "from": "shelf", "to": "istore", "kind": "holds", "word": "keeps" },
+      { "from": "stores", "to": "istore", "kind": "implements" },
+      { "from": "shelf", "to": "ilibrary", "kind": "holds", "word": "searches" },
+      { "from": "tools", "to": "scaler", "kind": "uses", "word": "scales" }
+    ]
+  }
+}

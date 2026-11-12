@@ -101,15 +101,10 @@ public class DocsDiagramsTests
     private static readonly HashSet<string> PendingFour =
     [
         // The packs.
-        "packs/docs/projects/general-packs.md",
-        "packs/docs/projects/louis-agent.pack.calculator.md",
         "packs/docs/projects/louis-agent.pack.docs.md",
         "packs/docs/projects/louis-agent.pack.leads.md",
-        "packs/docs/projects/louis-agent.pack.recipes.md",
-        "packs/docs/projects/louis-agent.pack.shop-prices.md",
         "packs/docs/projects/louis-agent.pack.site.md",
         "packs/docs/projects/louis-agent.pack.triage.md",
-        "packs/docs/projects/louis-agent.pack.where-to-buy.md",
 
         // The demos.
         "demos/louis-agent/docs/projects/louis-agent.code-review.md",

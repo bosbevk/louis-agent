@@ -41,6 +41,8 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
 
 ![Two sums, one bad: the good one is worked out, the bad one is refused with its reason, and both come back on their own lines](diagrams/louis-agent.pack.calculator-diagrams-2.svg)
 
+![The types: one toolset, one tool, and the sums worked out in plain C#](diagrams/louis-agent.pack.calculator-interface.svg)
+
 ## Who uses it
 
 Puls's cook, for scaling a recipe's amounts: its role file asks for the `calculator` toolset, and Puls names the pack. The

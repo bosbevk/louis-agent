@@ -1,0 +1,80 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.where-to-buy: the interface design",
+  "caption": "Two tools over a map: the town is found first, then the shop's branches around it, ever wider until some are near.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "WhereToBuyPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Toolsets: where-to-buy"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "WhereToBuyTools",
+        "kind": "the tools the model calls",
+        "members": [
+          "+FindBranches(shop, town)",
+          "+FindShopsNear(town)"
+        ]
+      },
+      {
+        "id": "finder",
+        "name": "BranchFinder",
+        "members": [
+          "+FindAsync(shop, town) BranchSearch?",
+          "+FindShopsAsync(town) BranchSearch?"
+        ]
+      },
+      {
+        "id": "map",
+        "name": "MapSearch",
+        "kind": "OpenStreetMap's search, paced",
+        "members": [
+          "+TownAsync(town) MapPlace?",
+          "+NearAsync(name, town, degrees) IReadOnlyList<MapPlace>"
+        ]
+      },
+      {
+        "id": "search",
+        "name": "BranchSearch",
+        "kind": "record",
+        "members": [
+          "+Town MapPlace, Shop, SearchedKm",
+          "+Branches Branch list"
+        ]
+      },
+      {
+        "id": "branch",
+        "name": "Branch",
+        "kind": "record",
+        "members": [
+          "+Name, Street?, Place?, Km, InTownsArea"
+        ]
+      },
+      {
+        "id": "printer",
+        "name": "BranchPrinter",
+        "kind": "static, the tool's answer"
+      },
+      {
+        "id": "osm",
+        "name": "OpenStreetMap's Nominatim",
+        "kind": "outside the process",
+        "tone": "red"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "finder", "kind": "holds" },
+      { "from": "tools", "to": "printer", "kind": "uses", "word": "prints" },
+      { "from": "finder", "to": "map", "kind": "holds" },
+      { "from": "finder", "to": "search", "kind": "creates" },
+      { "from": "search", "to": "branch", "kind": "holds" },
+      { "from": "map", "to": "osm", "kind": "uses", "word": "asks" }
+    ]
+  }
+}

@@ -75,6 +75,8 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ![Pricing a shopping list: each line is matched to a product in the price book and priced for the province, then printed with the total and the credit](diagrams/louis-agent.pack.shop-prices-diagrams-2.svg)
 
+![The types: Stats SA's prices imported into a store, read into a cached book, and a basket estimated from it](diagrams/louis-agent.pack.shop-prices-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

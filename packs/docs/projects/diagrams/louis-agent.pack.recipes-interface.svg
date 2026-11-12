@@ -1,0 +1,228 @@
+<svg viewBox="-24 -24 2611 1145" width="2611" height="1145" role="img" aria-label="louis-agent.pack.recipes: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.pack.recipes: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2611" height="1145" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2563" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.pack.recipes:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 468.8 323 L 624.8 323" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 869.8 323 L 905.8 323 Q 929.8 323 929.8 347 L 929.8 382 Q 929.8 406 953.8 406 L 1041.8 406" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1427 406 L 1511 406 Q 1535 406 1535 430 L 1535 548 Q 1535 572 1559 572 L 1755 572" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 489 L 624.8 489 L 869.8 489 L 1041.8 489 L 1427 489 L 1493 489 Q 1517 489 1517 513 L 1517 548 Q 1517 572 1541 572 L 1755 572" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 869.8 323 L 905.8 323 Q 929.8 323 929.8 299 L 929.8 98 Q 929.8 74 953.8 74 L 1041.8 74" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1427 74 L 1547 74 Q 1571 74 1571 98 L 1571 216 Q 1571 240 1595 240 L 1755 240" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 869.8 323 L 1041.8 323 L 1427 323 L 1529 323 Q 1553 323 1553 347 L 1553 382 Q 1553 406 1577 406 L 1755 406" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1427 406 L 1755 406" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 2161 406 L 2182 406 Q 2203 406 2203 427 L 2203 548 Q 2203 572 2227 572 L 2283 572" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 655 L 624.8 655 L 869.8 655 L 1041.8 655 L 1427 655 L 1755 655 L 2161 655 L 2173 655 Q 2185 655 2185 643 L 2185 596 Q 2185 572 2209 572 L 2283 572" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 2161 406 L 2283 406" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 869.8 323 L 905.8 323 Q 929.8 323 929.8 347 L 929.8 548 Q 929.8 572 953.8 572 L 1041.8 572" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="506.3" y="301" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="534.8" y="313" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="964.3" y="384" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="985.8" y="396" text-anchor="middle">finds</text>
+    <rect class="word-chip tone-green" x="1617" y="550" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="1663" y="562" text-anchor="middle">one per site</text>
+    <rect class="word-chip tone-green" x="486.8" y="467" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="525.8" y="479" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="939.8" y="52" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="985.8" y="64" text-anchor="middle">reads a page</text>
+    <rect class="word-chip tone-green" x="1470.5" y="52" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1499" y="64" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="964.3" y="301" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="985.8" y="313" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="1585.5" y="384" width="155" height="18" rx="4" />
+    <text class="word tone-green" x="1663" y="396" text-anchor="middle">skips what's excluded</text>
+    <rect class="word-chip tone-green" x="2221.5" y="550" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="2243" y="562" text-anchor="middle">keeps</text>
+    <rect class="word-chip tone-green" x="477.8" y="633" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="516.8" y="645" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="2211" y="384" width="64" height="18" rx="4" />
+    <text class="word tone-green" x="2243" y="396" text-anchor="middle">searches</text>
+    <rect class="word-chip tone-green" x="960.8" y="550" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="985.8" y="562" text-anchor="middle">scales</text>
+    <rect class="box tone-green" x="0" y="268" width="468.8" height="110" rx="10" />
+    <text class="label tone-green" x="234.4" y="296" text-anchor="middle">RecipesPack</text>
+    <text class="note" x="234.4" y="312" text-anchor="middle">implements IAgentPack</text>
+    <path class="frame" d="M 0 332 L 468.8 332" />
+    <text class="word tone-green" x="14" y="350" text-anchor="start">+Toolsets: recipes</text>
+    <text class="word tone-green" x="14" y="364" text-anchor="start">+Feeds, Screens</text>
+    <rect class="box tone-green" x="0" y="451" width="468.8" height="76" rx="10" />
+    <text class="label tone-green" x="234.4" y="479" text-anchor="middle">SiteWebSearch, WordPressSearch, SourceWithoutExcludedPages</text>
+    <text class="note" x="234.4" y="495" text-anchor="middle">a site's own search, or</text>
+    <text class="note" x="234.4" y="507" text-anchor="middle">the web's</text>
+    <rect class="box tone-green" x="0" y="623" width="468.8" height="64" rx="10" />
+    <text class="label tone-green" x="234.4" y="651" text-anchor="middle">MongoRecipeStore, NoRecipeStore</text>
+    <text class="note" x="234.4" y="667" text-anchor="middle">implements IRecipeStore</text>
+    <rect class="box tone-green" x="624.8" y="261" width="245" height="124" rx="10" />
+    <text class="label tone-green" x="747.3" y="289" text-anchor="middle">RecipeTools</text>
+    <text class="note" x="747.3" y="305" text-anchor="middle">the tools the model calls</text>
+    <path class="frame" d="M 624.8 325 L 869.8 325" />
+    <text class="word tone-green" x="638.8" y="343" text-anchor="start">+FindRecipes(query, maxResults)</text>
+    <text class="word tone-green" x="638.8" y="357" text-anchor="start">+ReadRecipe(url)</text>
+    <text class="word tone-green" x="638.8" y="371" text-anchor="start">+ScaleRecipe(url, people)</text>
+    <rect class="box tone-green" x="1041.8" y="30" width="385.2" height="88" rx="10" />
+    <text class="label tone-green" x="1234.4" y="58" text-anchor="middle">SchemaOrgRecipe, PageTextRecipe, PlainRunRecipe</text>
+    <text class="note" x="1234.4" y="74" text-anchor="middle">static, the page's</text>
+    <text class="note" x="1234.4" y="86" text-anchor="middle">JSON-LD first, then its</text>
+    <text class="note" x="1234.4" y="98" text-anchor="middle">text</text>
+    <rect class="box tone-green" x="1041.8" y="358" width="385.2" height="96" rx="10" />
+    <text class="label tone-green" x="1234.4" y="386" text-anchor="middle">RecipeScatter</text>
+    <text class="note" x="1234.4" y="402" text-anchor="middle">every site at once, mixed</text>
+    <path class="frame" d="M 1041.8 422 L 1427 422" />
+    <text class="word tone-green" x="1055.8" y="440" text-anchor="start">+FindAsync(query, maxResults) RecipeGather</text>
+    <rect class="box tone-green" x="1041.8" y="524" width="385.2" height="96" rx="10" />
+    <text class="label tone-green" x="1234.4" y="552" text-anchor="middle">RecipeScaler</text>
+    <text class="note" x="1234.4" y="568" text-anchor="middle">static</text>
+    <path class="frame" d="M 1041.8 588 L 1427 588" />
+    <text class="word tone-green" x="1055.8" y="606" text-anchor="start">a recipe for another number of people</text>
+    <rect class="box tone-teal" x="1755" y="185" width="406" height="110" rx="10" />
+    <text class="label tone-teal" x="1958" y="213" text-anchor="middle">Recipe</text>
+    <text class="note" x="1958" y="229" text-anchor="middle">record</text>
+    <path class="frame" d="M 1755 249 L 2161 249" />
+    <text class="word tone-teal" x="1769" y="267" text-anchor="start">+Name, Yield?, PrepTime?, CookTime?</text>
+    <text class="word tone-teal" x="1769" y="281" text-anchor="start">+Ingredients, Steps, Image?</text>
+    <rect class="box tone-green" x="1755" y="332" width="406" height="148" rx="10" />
+    <text class="label tone-green" x="1958" y="360" text-anchor="middle">RecipeShelf</text>
+    <text class="note" x="1958" y="376" text-anchor="middle">our library, searched</text>
+    <text class="note" x="1958" y="388" text-anchor="middle">first and filled as</text>
+    <text class="note" x="1958" y="400" text-anchor="middle">people read</text>
+    <path class="frame" d="M 1755 420 L 2161 420" />
+    <text class="word tone-green" x="1769" y="438" text-anchor="start">+SearchAsync(query, most)</text>
+    <text class="word tone-green" x="1769" y="452" text-anchor="start">+ReadAsync(address), KeepAsync(recipe)</text>
+    <text class="word tone-green" x="1769" y="466" text-anchor="start">+ExcludeAsync(page)</text>
+    <rect class="box tone-teal" x="1755" y="524" width="406" height="96" rx="10" />
+    <text class="label tone-teal" x="1958" y="552" text-anchor="middle">IRecipeSource</text>
+    <text class="note" x="1958" y="568" text-anchor="middle">interface</text>
+    <path class="frame" d="M 1755 588 L 2161 588" />
+    <text class="word tone-teal" x="1769" y="606" text-anchor="start">+FindAsync(query, maxResults) IReadOnlyList&lt;RecipeHit&gt;</text>
+    <rect class="box tone-teal" x="2283" y="345" width="280" height="122" rx="10" />
+    <text class="label tone-teal" x="2423" y="373" text-anchor="middle">IRecipeLibrary</text>
+    <text class="note" x="2423" y="389" text-anchor="middle">interface, the library</text>
+    <text class="note" x="2423" y="401" text-anchor="middle">over HTTP</text>
+    <path class="frame" d="M 2283 421 L 2563 421" />
+    <text class="word tone-teal" x="2297" y="439" text-anchor="start">+SearchAsync(query, most)</text>
+    <text class="word tone-teal" x="2297" y="453" text-anchor="start">+ReadAsync(id)</text>
+    <rect class="box tone-teal" x="2283" y="517" width="280" height="110" rx="10" />
+    <text class="label tone-teal" x="2423" y="545" text-anchor="middle">IRecipeStore</text>
+    <text class="note" x="2423" y="561" text-anchor="middle">interface, our library</text>
+    <path class="frame" d="M 2283 581 L 2563 581" />
+    <text class="word tone-teal" x="2297" y="599" text-anchor="start">+FindAsync(id), KeepAsync(recipe)</text>
+    <text class="word tone-teal" x="2297" y="613" text-anchor="start">+ReplaceAsync, RemoveAsync, AllAsync</text>
+  </g>
+  <rect class="notebar" x="0" y="1060" width="2563" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1070) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1082">
+    <tspan class="note-head">Three tools over many sources:</tspan>
+    <tspan class="note-rest">a search scatters over the recipe sites, a page is read as data first, and what is read is kept in our own library.</tspan>
+  </text>
+</svg>

@@ -63,6 +63,8 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 
 ![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
 
+![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

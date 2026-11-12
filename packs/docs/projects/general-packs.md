@@ -28,6 +28,8 @@ references no other pack.
 
 ![A session and a tool call: the factory finds each toolset and builds its tools, and the guards run a call the model makes](diagrams/general-packs-diagrams-2.svg)
 
+![The types: every pack the same shape, its toolsets building their tool classes from what the engine hands them](diagrams/general-packs-interface.svg)
+
 **Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.
 
