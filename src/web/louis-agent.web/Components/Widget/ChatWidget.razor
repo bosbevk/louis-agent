@@ -15,10 +15,13 @@
                             aria-label="@CloseLabel">×</button>
                 </span>
             </header>
-            <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="widget-list"
-                         ShowWork="ShowWork" Chosen="ChooseAsync">
-                <Empty><p class="widget-greeting">@Greeting</p></Empty>
-            </MessageList>
+            @* The guide's cards may offer a business live where its window shows on the page (FX133). *@
+            <CascadingValue Name="@OfferCards.OffersLiveName" Value="true" IsFixed="true">
+                <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current"
+                             Class="widget-list" ShowWork="ShowWork" Chosen="ChooseAsync">
+                    <Empty><p class="widget-greeting">@Greeting</p></Empty>
+                </MessageList>
+            </CascadingValue>
             <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
             <div class="widget-composer">
                 <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
