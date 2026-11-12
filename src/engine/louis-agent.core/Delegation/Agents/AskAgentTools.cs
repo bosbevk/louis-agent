@@ -122,7 +122,8 @@ public sealed class AskAgentTools(
     {
         string label = ask.Agent.Address.ToString();
         var opening = new CreateSessionRequest($"agent:{label}", ask.Scope?.Tags.Run, ask.Scope?.Tags.Service,
-            Depth: 1, Parent: parent, Location: UserPlace.Current?.Location, TimeZone: UserPlace.Current?.TimeZone,
+            Depth: TurnDepth.Current + 1, Parent: parent, Location: UserPlace.Current?.Location,
+            TimeZone: UserPlace.Current?.TimeZone,
             Role: ask.Agent.Role, Replay: SessionReplay.ForSubSession(), Identity: ask.Agent.Address.Identity);
         return _session.OpenAsync(peer, name, opening, ask.Message, [], ask.Agent.Role, KindOf(ask, footer),
             ask.ToolUseId, ask.Scope, _timeout, cancellationToken);
