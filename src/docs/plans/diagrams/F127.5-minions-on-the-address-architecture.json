@@ -1,0 +1,18 @@
+{
+  "kind": "flow",
+  "title": "F127.5 minions on the address: the architecture",
+  "caption": "Nothing new runs: StartMinion reads an address, checks it against the identity's Calls, finds the minion's file, and opens it on this instance as before.",
+  "flow": {
+    "nodes": [
+      { "id": "specialist", "label": "A specialist\nStartMinion(puls.find-recipe)", "icon": "chip", "tone": "violet" },
+      { "id": "check", "label": "The address\nCalls, no server", "icon": "shield", "tone": "green" },
+      { "id": "file", "label": "The minion's file\npuls-minion-find-recipe", "icon": "file", "tone": "amber" },
+      { "id": "minion", "label": "The minion\nthis instance, a local model", "icon": "server", "tone": "violet" }
+    ],
+    "edges": [
+      { "from": "specialist", "to": "check" },
+      { "from": "check", "to": "file", "word": "listed" },
+      { "from": "file", "to": "minion", "word": "opens at depth 2" }
+    ]
+  }
+}
