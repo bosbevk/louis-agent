@@ -34,4 +34,30 @@ public enum SiteToolMessage
 
     [Description("The status's tone '{Tone}' isn't one there is; use one of {Tones}.")]
     CardUnknownTone,
+
+    [Description(
+        "Offered: the visitor sees {Count} choices as cards under your words; their click comes back as their next " +
+        "message. Don't list the choices again, and wait for it.")]
+    Offered,
+
+    [Description("Not offered: {Reason} Fix the choices and call Offer again.")]
+    OfferRefused,
+
+    [Description("The cards need their question: what the choices answer.")]
+    OfferWithoutQuestion,
+
+    [Description("Offer two to four choices; this has {Count}.")]
+    OfferCount,
+
+    [Description("Choice {Number} needs a label of 1 to {Most} characters, a button's words; '{Label}' has {Length}.")]
+    OfferBadLabel,
+
+    [Description("Choice {Number}'s why runs one line, {Most} characters at most; it has {Length}.")]
+    OfferLongWhy,
+
+    [Description("Mark one suggested choice at most; {Count} are.")]
+    OfferSuggestedTwice,
+
+    [Description("Two choices say the same, '{Label}': each needs its own words.")]
+    OfferSameLabel,
 }

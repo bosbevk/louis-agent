@@ -45,4 +45,22 @@ public sealed class CardTools
             return MessageText.Format(SiteToolMessage.CardRefused, new { Reason = problem });
         return MessageText.Format(SiteToolMessage.CardShown, new { });
     }
+
+    /// <summary>Offers the visitor two to four choices as cards; their click comes back as their message.</summary>
+    [Description(
+        "Offers the visitor two to four choices as cards under your words, when they must decide something: try " +
+        "a demo, book or not, which plan. Their click comes back as their next message, in the label's words, and " +
+        "they may type their own answer instead. Never act on a choice before it comes back.")]
+    public string Offer(
+        [Description("What the choices answer, as a short question, such as Shall I send it to the guesthouse?")]
+        string question,
+        [Description(
+            "Two to four choices: a label of up to 40 characters, a button's words such as Book it; an optional " +
+            "why of one line under it; and suggested true on the one you recommend, at most one.")]
+        IReadOnlyList<OfferChoice> choices)
+    {
+        if (OfferCheck.Problem(question, choices) is { } problem)
+            return MessageText.Format(SiteToolMessage.OfferRefused, new { Reason = problem });
+        return MessageText.Format(SiteToolMessage.Offered, new { choices.Count });
+    }
 }
