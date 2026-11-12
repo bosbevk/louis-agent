@@ -1,0 +1,232 @@
+<svg viewBox="-24 -24 1160 593" width="1160" height="593" role="img" aria-label="F127.6 a site names its areas: the objects" xmlns="http://www.w3.org/2000/svg">
+  <title>F127.6 a site names its areas: the objects</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1160" height="593" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1112" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F127.6 a site names its areas:</tspan>
+    <tspan class="title-rest">the objects</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-violet" d="M 488.7 195 L 503.7 195 Q 518.8 195 518.8 179.9 L 518.8 57.1 Q 518.8 42 533.9 42 L 548.9 42" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 488.7 195 L 503.7 195 Q 518.8 195 518.8 179.9 L 518.8 159.1 Q 518.8 144 533.9 144 L 548.9 144" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 488.7 195 L 503.7 195 Q 518.8 195 518.8 210.1 L 518.8 230.9 Q 518.8 246 533.9 246 L 548.9 246" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 488.7 195 L 503.7 195 Q 518.8 195 518.8 210.1 L 518.8 332.9 Q 518.8 348 533.9 348 L 548.9 348" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-violet" d="M 782.1 144 L 803.2 144 Q 824.3 144 824.3 165.1 L 824.3 233.9 Q 824.3 246 836.3 246 L 848.4 246" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-green" d="M 782.1 246 L 848.4 246" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-violet" d="M 782.1 144 L 848.4 144" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-blue" d="M 218 144 L 233.1 144 Q 248.1 144 248.1 159.1 L 248.1 179.9 Q 248.1 195 263.2 195 L 278.3 195" marker-end="url(#arrow-blue)" />
+    <path class="edge dashed tone-violet" d="M 218 246 L 233.1 246 Q 248.1 246 248.1 230.9 L 248.1 210.1 Q 248.1 195 263.2 195 L 278.3 195" marker-end="url(#arrow-violet)" />
+    <rect class="box tone-blue" x="0" y="110" width="218" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="28" cy="144" r="14" />
+    <g class="badge-icon" transform="translate(20 136) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-blue" x="52" y="141" text-anchor="start">Router</text>
+    <text class="label tone-blue" x="52" y="157" text-anchor="start">AdditionalAssemblies</text>
+    <rect class="box tone-violet" x="0" y="212" width="218" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="28" cy="246" r="14" />
+    <g class="badge-icon" transform="translate(20 238) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-violet" x="52" y="243" text-anchor="start">AdminShell</text>
+    <text class="label tone-violet" x="52" y="259" text-anchor="start">the evals link</text>
+    <rect class="box tone-violet" x="278.3" y="153" width="210.4" height="84" rx="10" />
+    <circle class="badge tone-violet" cx="306.3" cy="195" r="14" />
+    <g class="badge-icon" transform="translate(298.3 187) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-violet" x="330.3" y="184" text-anchor="start">SiteAreas</text>
+    <text class="label tone-violet" x="330.3" y="200" text-anchor="start">Names: chat, admin,</text>
+    <text class="label tone-violet" x="330.3" y="216" text-anchor="start">accounts, evals</text>
+    <rect class="box tone-violet" x="548.9" y="8" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="576.9" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(568.9 34) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-violet" x="600.9" y="39" text-anchor="start">SiteArea chat</text>
+    <text class="label tone-violet" x="600.9" y="55" text-anchor="start">handoff: chat</text>
+    <rect class="box tone-violet" x="548.9" y="110" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="576.9" cy="144" r="14" />
+    <g class="badge-icon" transform="translate(568.9 136) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-violet" x="600.9" y="141" text-anchor="start">SiteArea admin</text>
+    <text class="label tone-violet" x="600.9" y="157" text-anchor="start">Pages: louis-agent.web</text>
+    <rect class="box tone-green" x="548.9" y="212" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-green" cx="576.9" cy="246" r="14" />
+    <g class="badge-icon" transform="translate(568.9 238) scale(0.6667)">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+    </g>
+    <text class="label tone-green" x="600.9" y="243" text-anchor="start">SiteArea accounts</text>
+    <text class="label tone-green" x="600.9" y="259" text-anchor="start">AccountLayout</text>
+    <rect class="box tone-green" x="548.9" y="314" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-green" cx="576.9" cy="348" r="14" />
+    <g class="badge-icon" transform="translate(568.9 340) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-green" x="600.9" y="345" text-anchor="start">SiteArea evals</text>
+    <text class="label tone-green" x="600.9" y="361" text-anchor="start">AdminLinks: EvalLinks</text>
+    <rect class="box tone-teal" x="848.4" y="102" width="263.6" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="876.4" cy="144" r="14" />
+    <g class="badge-icon" transform="translate(868.4 136) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-teal" x="900.4" y="133" text-anchor="start">PackViews</text>
+    <text class="label tone-teal" x="900.4" y="149" text-anchor="start">git-changes, git-branches,</text>
+    <text class="label tone-teal" x="900.4" y="165" text-anchor="start">workspace-files</text>
+    <rect class="box tone-teal" x="848.4" y="204" width="263.6" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="876.4" cy="246" r="14" />
+    <g class="badge-icon" transform="translate(868.4 238) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-teal" x="900.4" y="235" text-anchor="start">SiteFrames</text>
+    <text class="label tone-teal" x="900.4" y="251" text-anchor="start">Admin: AdminLayout</text>
+    <text class="label tone-teal" x="900.4" y="267" text-anchor="start">Account: AccountLayout</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="472" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="482.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="472" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="482.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="472" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="482.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="364.8" y="472" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="482.5" text-anchor="start">contracts and state</text>
+  <rect class="notebar" x="0" y="508" width="1112" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 518) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="530">
+    <tspan class="note-head">code-review once started:</tspan>
+    <tspan class="note-rest">one SiteAreas holds its four areas, and the router and the admin frame read the same one.</tspan>
+  </text>
+</svg>

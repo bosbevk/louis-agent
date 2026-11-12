@@ -1,0 +1,29 @@
+{
+  "kind": "sequence",
+  "title": "F127.6 a site names its areas: the main case",
+  "caption": "A site starts: it names its areas, the builder registers each one's services and the areas once, and the router and the admin frame read them.",
+  "sequence": {
+    "participants": [
+      { "id": "P", "icon": "terminal", "tone": "blue", "label": "Program.cs" },
+      { "id": "S", "icon": "box", "tone": "teal", "label": "IServiceCollection" },
+      { "id": "B", "icon": "settings", "tone": "violet", "label": "SiteAreasBuilder" },
+      { "id": "E", "icon": "chart", "tone": "green", "label": "web.evals" },
+      { "id": "R", "icon": "browser", "tone": "blue", "label": "App.razor's Router" },
+      { "id": "A", "icon": "browser", "tone": "violet", "label": "AdminShell" }
+    ],
+    "steps": [
+      { "step": "message", "from": "P", "to": "S", "text": "AddSiteAreas(areas => …)" },
+      { "step": "message", "from": "S", "to": "B", "text": "a new builder, the site's lambda run on it" },
+      { "step": "message", "from": "P", "to": "B", "text": ".Chat() .Admin(layout, views)" },
+      { "step": "message", "from": "P", "to": "E", "text": ".Evals()" },
+      { "step": "message", "from": "E", "to": "B", "text": "Add(SiteArea: services, pages, EvalLinks)" },
+      { "step": "message", "from": "B", "to": "S", "text": "each area's services, SiteFrames, PackViews, SiteAreas once" },
+      { "step": "note", "over": ["B"], "text": "an area named twice is refused" },
+      { "step": "message", "from": "R", "to": "S", "text": "SiteAreas" },
+      { "step": "reply", "from": "S", "to": "R", "text": "PageAssemblies: Pages/Admin, the evals' and accounts' pages" },
+      { "step": "message", "from": "A", "to": "S", "text": "SiteAreas" },
+      { "step": "reply", "from": "S", "to": "A", "text": "AdminLinks: EvalLinks under the pack menu" }
+    ],
+    "numbered": true
+  }
+}

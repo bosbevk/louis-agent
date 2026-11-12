@@ -1,0 +1,38 @@
+{
+  "kind": "flow",
+  "title": "F127.6 a site names its areas: the architecture",
+  "caption": "Each site names its areas in one call; the framework's web wires each area's services, frame and pages, and the libraries above it add their own.",
+  "flow": {
+    "nodes": [
+      { "id": "cr", "icon": "terminal", "tone": "blue", "label": "code-review Program.cs\n.Chat .Admin .Accounts .Evals (5)", "group": "sites" },
+      { "id": "st", "icon": "terminal", "tone": "blue", "label": "starter Program.cs\nand its template (6)", "group": "sites" },
+      { "id": "pu", "icon": "terminal", "tone": "blue", "label": "Puls Program.cs (7)", "group": "sites" },
+      { "id": "si", "icon": "terminal", "tone": "blue", "label": "louis-agent.dev Program.cs\n.Showroom (8)", "group": "sites" },
+      { "id": "b", "icon": "settings", "tone": "violet", "label": "Components/Areas/\nSiteAreasBuilder · SiteAreas (2)", "group": "web" },
+      { "id": "chat", "icon": "message", "tone": "violet", "label": "the chat area:\nChatShell's services", "group": "web" },
+      { "id": "admin", "icon": "browser", "tone": "violet", "label": "the admin area:\nAdminFrame, PackViews,\nPages/Admin; AdminShell\ndraws the links (4)", "group": "web" },
+      { "id": "show", "icon": "box", "tone": "violet", "label": "the showroom area:\ndemos, the guide's door,\nwindows and keeper", "group": "web" },
+      { "id": "ev", "icon": "chart", "tone": "green", "label": "web.evals: .Evals() (3)", "group": "libs" },
+      { "id": "ac", "icon": "user", "tone": "green", "label": "web.accounts: .Accounts() (3)", "group": "libs" },
+      { "id": "rt", "icon": "checks", "tone": "teal", "label": "a test: every site\nnames its areas (9)", "group": "tests" }
+    ],
+    "edges": [
+      { "from": "cr", "to": "b" },
+      { "from": "st", "to": "b" },
+      { "from": "pu", "to": "b" },
+      { "from": "si", "to": "b" },
+      { "from": "b", "to": "chat" },
+      { "from": "b", "to": "admin" },
+      { "from": "b", "to": "show" },
+      { "from": "ev", "to": "b", "style": "dashed" },
+      { "from": "ac", "to": "b", "style": "dashed" },
+      { "from": "rt", "to": "cr", "style": "dashed" }
+    ],
+    "groups": [
+      { "id": "sites", "label": "each site's Program.cs and App.razor" },
+      { "id": "web", "label": "louis-agent.web" },
+      { "id": "libs", "label": "the libraries above it: an area each" },
+      { "id": "tests", "label": "the rules" }
+    ]
+  }
+}

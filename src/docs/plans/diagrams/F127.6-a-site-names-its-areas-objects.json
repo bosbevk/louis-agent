@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "title": "F127.6 a site names its areas: the objects",
+  "caption": "code-review once started: one SiteAreas holds its four areas, and the router and the admin frame read the same one.",
+  "flow": {
+    "nodes": [
+      { "id": "areas", "icon": "settings", "tone": "violet", "label": "SiteAreas\nNames: chat, admin,\naccounts, evals" },
+      { "id": "chat", "icon": "message", "tone": "violet", "label": "SiteArea chat\nhandoff: chat" },
+      { "id": "admin", "icon": "browser", "tone": "violet", "label": "SiteArea admin\nPages: louis-agent.web" },
+      { "id": "acc", "icon": "user", "tone": "green", "label": "SiteArea accounts\nAccountLayout" },
+      { "id": "ev", "icon": "chart", "tone": "green", "label": "SiteArea evals\nAdminLinks: EvalLinks" },
+      { "id": "frames", "icon": "box", "tone": "teal", "label": "SiteFrames\nAdmin: AdminLayout\nAccount: AccountLayout" },
+      { "id": "views", "icon": "box", "tone": "teal", "label": "PackViews\ngit-changes, git-branches,\nworkspace-files" },
+      { "id": "router", "icon": "browser", "tone": "blue", "label": "Router\nAdditionalAssemblies" },
+      { "id": "shell", "icon": "browser", "tone": "violet", "label": "AdminShell\nthe evals link" }
+    ],
+    "edges": [
+      { "from": "areas", "to": "chat" },
+      { "from": "areas", "to": "admin" },
+      { "from": "areas", "to": "acc" },
+      { "from": "areas", "to": "ev" },
+      { "from": "admin", "to": "frames", "style": "dashed" },
+      { "from": "acc", "to": "frames", "style": "dashed" },
+      { "from": "admin", "to": "views", "style": "dashed" },
+      { "from": "router", "to": "areas", "style": "dashed" },
+      { "from": "shell", "to": "areas", "style": "dashed" }
+    ]
+  }
+}

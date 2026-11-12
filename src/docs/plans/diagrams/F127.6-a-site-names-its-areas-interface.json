@@ -1,0 +1,101 @@
+{
+  "kind": "classes",
+  "title": "F127.6 a site names its areas: the interface design",
+  "caption": "One builder, open from outside: louis-agent.web names the chat, admin and showroom areas, and the evals and accounts libraries add their own.",
+  "classes": {
+    "types": [
+      {
+        "id": "ext",
+        "name": "SiteAreasServices",
+        "kind": "static, step 2",
+        "members": [
+          "+AddSiteAreas(IServiceCollection, Action<SiteAreasBuilder>) IServiceCollection"
+        ]
+      },
+      {
+        "id": "builder",
+        "name": "SiteAreasBuilder",
+        "kind": "step 2",
+        "members": [
+          "+Chat(string? handoff) SiteAreasBuilder",
+          "+Admin(Type layout, Action<PackViews>? views) SiteAreasBuilder",
+          "+Showroom(ShowroomDemos demos) SiteAreasBuilder",
+          "+Add(SiteArea area) SiteAreasBuilder"
+        ]
+      },
+      {
+        "id": "area",
+        "name": "SiteArea",
+        "kind": "record, step 2",
+        "members": [
+          "string Name",
+          "Action<IServiceCollection> Services",
+          "IReadOnlyList<Assembly> Pages",
+          "Type? AdminLinks",
+          "Type? AccountLayout"
+        ]
+      },
+      {
+        "id": "areas",
+        "name": "SiteAreas",
+        "kind": "step 2",
+        "members": [
+          "IReadOnlyList<string> Names",
+          "Assembly[] PageAssemblies",
+          "IReadOnlyList<Type> AdminLinks"
+        ]
+      },
+      {
+        "id": "evals",
+        "name": "EvalArea",
+        "kind": "web.evals, step 3",
+        "members": [
+          "+Evals(SiteAreasBuilder, SiteKinds?) SiteAreasBuilder"
+        ]
+      },
+      {
+        "id": "accounts",
+        "name": "AccountArea",
+        "kind": "web.accounts, step 3",
+        "members": [
+          "+Accounts(SiteAreasBuilder, Type layout) SiteAreasBuilder"
+        ]
+      },
+      {
+        "id": "frames",
+        "name": "SiteFrames",
+        "kind": "record, unchanged",
+        "tone": "violet"
+      },
+      {
+        "id": "views",
+        "name": "PackViews",
+        "kind": "unchanged",
+        "tone": "violet"
+      },
+      {
+        "id": "shell",
+        "name": "AdminShell",
+        "kind": "changed, step 4",
+        "tone": "violet"
+      },
+      {
+        "id": "router",
+        "name": "App.razor's Router",
+        "kind": "each site, steps 5 to 8",
+        "tone": "blue"
+      }
+    ],
+    "relations": [
+      { "from": "ext", "to": "builder", "kind": "creates", "word": "runs the site's lambda" },
+      { "from": "builder", "to": "area", "kind": "holds", "word": "one per area" },
+      { "from": "builder", "to": "areas", "kind": "creates", "word": "registers once" },
+      { "from": "builder", "to": "frames", "kind": "creates", "word": "from admin and accounts" },
+      { "from": "builder", "to": "views", "kind": "creates" },
+      { "from": "evals", "to": "builder", "kind": "uses", "word": "Add(SiteArea)" },
+      { "from": "accounts", "to": "builder", "kind": "uses", "word": "Add(SiteArea)" },
+      { "from": "shell", "to": "areas", "kind": "uses", "word": "draws AdminLinks" },
+      { "from": "router", "to": "areas", "kind": "uses", "word": "PageAssemblies" }
+    ]
+  }
+}
