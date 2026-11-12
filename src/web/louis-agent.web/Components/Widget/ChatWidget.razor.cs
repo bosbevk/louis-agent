@@ -278,6 +278,8 @@ public partial class ChatWidget : IAsyncDisposable
         Runner.Page = page is not null && Addresses is { } addresses
             ? GuidePlaces.Addressed(page, addresses, here)
             : page;
+        // The pages of the agents' windows on screen, so an ask to one of them sends it its page (FX134).
+        if (Windows is { } windows) Runner.Windows = await windows.PagesAsync();
         await Runner.SendAsync();
     }
 

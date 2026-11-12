@@ -6,6 +6,7 @@ using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.SessionStream.Wire.Requests;
 using static LouisAgent.Core.Tests.Delegation.FakePeer;
 
 namespace LouisAgent.Core.Tests.Delegation.Agents;
@@ -77,6 +78,34 @@ public class AskAgentToolsTests
             await AskAsGuide(Tools(handler), "testprod.specialist");
 
         Assert.That(Opening(handler).GetProperty("depth").GetInt32(), Is.EqualTo(2));
+    }
+
+    /// <summary>
+    /// FX134, from Louis on louis-agent.dev: the guide asked the guesthouse "can he show me" and it answered that it
+    /// had no page to point to, though its own window, tried by hand, could. The page of the business's window on the
+    /// visitor's screen goes with the ask, so it knows its website from its first answer; another agent gets none.
+    /// </summary>
+    [Test]
+    public async Task AnAgentWhoseWindowIsOnScreen_IsSentItsPage_WithTheAsk()
+    {
+        var handler = Peer();
+        var page = new PageRequest("https://testprod.example/", "Testprod", "Four rooms, five minutes from the beach.");
+
+        using (WindowPages.Use([new WindowPageRequest("testprod", page)]))
+        {
+            await AskAsGuide(Tools(handler), "testprod");
+            await AskAsGuide(Tools(handler), "testprod.specialist");
+        }
+
+        var messages = handler.Requests.Where(r => r.Url.EndsWith("/messages", StringComparison.Ordinal))
+            .Select(r => JsonDocument.Parse(r.Body!).RootElement).ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(messages[0].GetProperty("page").GetProperty("url").GetString(),
+                Is.EqualTo("https://testprod.example/"));
+            Assert.That(messages[1].TryGetProperty("page", out var none) && none.ValueKind != JsonValueKind.Null,
+                Is.False, "its specialist has no window here");
+        });
     }
 
     /// <summary>A role is opened as the role file named for its identity.</summary>

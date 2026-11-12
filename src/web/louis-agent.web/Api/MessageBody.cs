@@ -16,4 +16,6 @@ public sealed record MessageBody(
     string Message,
     IEnumerable<Attachment> Attachments,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    Page? Page = null);
+    Page? Page = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    IReadOnlyList<WindowPage>? Windows = null);

@@ -126,7 +126,9 @@ public sealed class AskAgentTools(
             return await _minions.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
                 name, cancellationToken);
 
-        var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
+        // A voice whose window is on the visitor's screen gets the page it sits in, as its window would send (FX134).
+        var page = agent.Kind == AddressKind.Identity ? WindowPages.For(agent.Address.Identity) : null;
+        var ask = new Ask(agent, new SendMessageRequest(message, forwarded, page), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.
             FunctionInvokingChatClient.CurrentContext?.CallContent.CallId, Asker()?.RelaysAnswersWhole == true);
         if (_slots.Take(ask.Scope, out string? parent) is { } limit) return limit;

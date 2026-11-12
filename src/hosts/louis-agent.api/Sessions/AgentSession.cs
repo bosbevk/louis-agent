@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.SessionStream.Wire.Requests;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;
@@ -67,6 +68,12 @@ internal sealed class AgentSession(
     /// refused for an agent already here.
     /// </summary>
     public IReadOnlyList<string> Chain { get; init; } = [];
+
+    /// <summary>
+    /// The pages of the agents' windows on the visitor's screen, from their last message (FX134): an ask to one of
+    /// those agents sends it its page.
+    /// </summary>
+    public IReadOnlyList<WindowPageRequest> Windows { get; set; } = [];
 
     /// <summary>The role the session chose (F21), or null for the default voice (CL9).</summary>
     public string? Role { get; } = role;

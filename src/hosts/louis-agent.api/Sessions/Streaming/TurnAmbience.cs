@@ -33,6 +33,7 @@ internal sealed class TurnAmbience : IDisposable
             UserPlace.Use(session.Place),
             TurnIdentity.Use(session.Who),
             TurnDepth.Use(session.Depth),
+            WindowPages.Use(session.Windows),
             TurnChain.Use(session.Chain),
             SessionReplay.Use(session.Replay),
             SubSessionRegistry.Use(session.SubSessions),

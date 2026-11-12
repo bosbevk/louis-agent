@@ -172,6 +172,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (!session.TryStartTurn(http.RequestAborted, out var turn))
             return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" }));
 
+        // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
+        session.Windows = request.Windows ?? [];
         // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
         foreach (var attachment in request.Attachments ?? [])
             session.Remember(attachment.Name, attachment.Content);
