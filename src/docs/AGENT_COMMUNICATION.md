@@ -382,8 +382,17 @@ thinking), from its server's `GET /v1/sessions/{id}/work`, the latest 12,000 cha
 chat's session deletes its kept agents on the peer when it is deleted or dropped as idle; `GET /v1/sessions/{id}`
 lists them. Outside a chat (an MCP call) the session is deleted at once.
 
-An asked agent can't ask further (`agents` at depth 1 is a `400`); a turn may make at most 3 asks (first asks and
-follow-ups alike), each stops after 5 minutes, and an asked agent's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`,
+A minion is asked the same way (F127.5): `AskAgent(address, message, tool: "FetchUrl")` with its identity's
+minion, `puls.find-recipe` for the file `minions/puls-minion-find-recipe.md`, and one of the asker's own tools. The
+address must be in the identity's `Calls` and name no server, since a minion runs on this instance on a local model
+(ADR 0081); its model is `MINION_LLMS`'s, at most 16 a user turn, never kept. A mode's prompt lists only the agents
+among its `Calls`.
+
+Any agent but a minion may ask further, the ones its `Calls` allow (Louis: "only minions can't"): a minion loading
+`agents` is a `400`. Below the top a session's level is its role's folder, at any depth. An ask to an agent already in
+its chain of asks is refused, so the cook can't ask the cook nor the voice that asked it; and no session opens deeper
+than `AGENT_MAX_DEPTH` (default 4). A turn may make at most 3 asks (first asks and follow-ups alike, minions apart),
+each stops after 5 minutes, and an asked agent's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`,
 FX14). Its usage records carry `parent`, so a ledger can total a chat with the agents it asked. An asker that relays
 answers whole (`IAgentIdentity.RelaysAnswersWhole`, Puls) shows the answer as it is and ends its turn there
 ([ADR 0079](adr/0079-show-a-specialists-report.md)). Measured against one agent answering everything:

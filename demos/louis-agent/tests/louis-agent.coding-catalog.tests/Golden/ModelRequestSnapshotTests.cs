@@ -49,10 +49,10 @@ public class ModelRequestSnapshotTests
             DefaultVoice = CodingPrompts.Catalog.DefaultVoice,
             SkillsDirectory = _skillsDir,
             RatesUrl = null,
+            // The agents toolset needs a peer; AskAgent asks minions too (F127.5), so no model map is needed for it.
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
-            // F30: the minions toolset needs a model map too; the snapshot then holds StartMinion and ContinueMinion.
-            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
-            // F33: a browser for the web toolset's renderer; building the engine connects to nothing. (The shops are a pack, CL15.)
+            // F33: a browser for the web toolset's renderer; building the engine connects to nothing. (The shops are
+            // a pack, CL15.)
             BrowserUrl = "http://browser.test:9222",
         };
         // Every toolset (F5: an engine has only what it's given), in the catalogue's order, which is the file's.
@@ -65,7 +65,9 @@ public class ModelRequestSnapshotTests
         };
     }
 
-    /// <summary>What the model sees, with this machine's temporary folder replaced so the file is the same everywhere.</summary>
+    /// <summary>
+    /// What the model sees, with this machine's temporary folder replaced so the file is the same everywhere.
+    /// </summary>
     private string Snapshot()
     {
         AgentEngine engine = Engine();
@@ -106,7 +108,8 @@ public class ModelRequestSnapshotTests
         Assert.That(File.Exists(GoldenFile), $"No golden file; run with LOUIS_UPDATE_GOLDEN=1 to write {GoldenFile}.");
         string expected = File.ReadAllText(GoldenFile).ReplaceLineEndings("\n");
         Assert.That(actual, Is.EqualTo(expected),
-            "What the model is sent changed. If that is intended, rerun with LOUIS_UPDATE_GOLDEN=1 and review the diff.");
+            "What the model is sent changed. If that is intended, rerun with LOUIS_UPDATE_GOLDEN=1 and review the " +
+            "diff.");
     }
 
     [Test]

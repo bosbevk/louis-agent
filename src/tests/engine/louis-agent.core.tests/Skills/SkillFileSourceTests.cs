@@ -1,4 +1,3 @@
-using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -37,7 +36,7 @@ public class SkillFileSourceTests
         // identity.
         Assert.That(SkillFileSource.Files(RoleCatalog.SpecialistsFolder),
             Is.EqualTo(new[] { "testprod-specialist.md" }));
-        Assert.That(SkillFileSource.Files(CoreToolset.Minions.Wire()),
+        Assert.That(SkillFileSource.Files(RoleCatalog.MinionsFolder),
             Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 

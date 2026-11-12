@@ -39,8 +39,6 @@
 .delegation-agent strong { color: var(--bs-emphasis-color); font-weight: 700; }
 .delegation-toolsets { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
 .toolset-chip { font-size: 11px; font-weight: 600; letter-spacing: .3px; background: var(--bs-success-bg-subtle); color: var(--bs-link-color); border-radius: 999px; padding: 2px 9px; }
-/* F26: a continued sub-session's chip ("vervolg · sub-1"), told apart from the toolsets. */
-.toolset-chip.follow-up { background: var(--bs-success-bg-subtle, var(--bs-success-bg-subtle)); color: var(--bs-success, var(--bs-link-color)); }
 .delegation-status { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 11px; background: var(--bs-success-bg-subtle); color: var(--bs-success-text-emphasis); display: inline-flex; align-items: center; gap: 6px; }
 .delegation-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .delegation.running .delegation-status { background: var(--bs-primary-bg-subtle); color: var(--web-primary-deep); }

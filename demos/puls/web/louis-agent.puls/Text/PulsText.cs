@@ -21,7 +21,6 @@ public static class PulsText
         DelegatedTo = "Oorgedra aan",
         MinionLabel = "Minion",
         OnModel = "op",
-        FollowUp = "vervolg",
         Specialist = "spesialis",
         Task = "Taak",
         Working = "Besig",
@@ -91,7 +90,8 @@ public static class PulsText
         ChatOne = "gesprek",
         ChatMany = "gesprekke",
         CreditsNote =
-            "Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.",
+            "Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke " +
+            "in hierdie blaaier.",
         BuyCredits = "Koop krediete",
         Language = "Taal",
         Profile = "Profiel",
@@ -142,7 +142,8 @@ public static class PulsText
         CloseWork = "Maak die werkpaneel toe",
         NoWorkYet = "Nog geen werk nie",
         WorkEmpty =
-            "Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.",
+            "Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit " +
+            "gebeur.",
         StepsLabel = "Stappe",
         Requests = "versoeke",
         Cost = "Koste",
@@ -150,7 +151,8 @@ public static class PulsText
         OwnCost = "Puls",
         Specialists = "Spesialiste",
         SessionGone =
-            "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
+            "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe " +
+            "gesprek om voort te gaan.",
         NeedsKey = "Die API het nee gesê: teken in, of maak Instellings oop en vul AGENT_API_KEY in.",
         StillAnswering = "Hierdie gesprek antwoord nog; wag daarvoor of druk Stop.",
         ApiUnreachable = "Kan nie Puls se API bereik nie. Loop die puls-houer?",

@@ -12,13 +12,9 @@
         <span class="work-status">@(Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done })</span>
     </div>
 
-    @if (Delegation.Toolsets.Count > 0 || Delegation.Continued)
+    @if (Delegation.Toolsets.Count > 0)
     {
         <div class="work-chips">
-            @if (Delegation.Continued)
-            {
-                <span class="toolset-chip follow-up">@Text.FollowUp</span>
-            }
             @foreach (string toolset in Delegation.Toolsets)
             {
                 <span class="toolset-chip">@toolset</span>

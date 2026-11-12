@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -61,6 +62,21 @@ public class AskAgentToolsTests
             Assert.That(answer, Does.StartWith("Fixed the null check; 14/14 tests pass.")
                 .And.EndWith("[Answered by testprod, did: no tools]"));
         });
+    }
+
+    /// <summary>
+    /// Each ask opens one level down from the turn that asks (F127.5, Louis's pick: "any address, depth decides"): a
+    /// specialist's ask, at depth 1, opens at depth 2.
+    /// </summary>
+    [Test]
+    public async Task AnAsk_OpensOneLevelDownFromTheAsker()
+    {
+        var handler = Peer();
+
+        using (TurnDepth.Use(1))
+            await AskAsGuide(Tools(handler), "testprod.specialist");
+
+        Assert.That(Opening(handler).GetProperty("depth").GetInt32(), Is.EqualTo(2));
     }
 
     /// <summary>A role is opened as the role file named for its identity.</summary>

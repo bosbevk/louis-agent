@@ -5,7 +5,6 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Delegation;
 using LouisAgent.Core.Delegation.Agents;
 using Microsoft.Extensions.Logging;
 
@@ -22,24 +21,10 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Minions.Wire(),
-            "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
-            GuideFile: SkillFiles.Guide(CoreToolset.Minions.Wire()),
-            MissingSettings: ctx =>
-            [
-                .. new[]
-                {
-                    ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null,
-                    ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null
-                }.OfType<string>()
-            ],
-            ToolTypes: [typeof(MinionTools)],
-            CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
-
         // F127.3.1: ask another agent by its address, and read back what it did; the asker's Calls and the identities
-        // this instance runs decide who may be asked.
+        // this instance runs decide who may be asked. F127.5: a minion too, with one of the asker's tools.
         new(CoreToolset.Agents.Wire(),
-            "Ask another agent by its address: an identity in its own voice, or one of its roles",
+            "Ask another agent by its address: an identity in its own voice, one of its roles, or one of its minions",
             GuideFile: SkillFiles.Guide(CoreToolset.Agents.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(AskAgentTools), typeof(AgentWorkTools)],

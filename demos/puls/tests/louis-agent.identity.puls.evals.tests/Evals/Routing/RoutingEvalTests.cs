@@ -25,8 +25,7 @@ public class RoutingEvalTests
     private const string Source = "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing";
 
     /// <summary>The toolsets that hand a question on to another agent.</summary>
-    private static readonly string[] Delegating =
-        [CoreToolset.Minions.Wire(), CoreToolset.Agents.Wire()];
+    private static readonly string[] Delegating = [CoreToolset.Agents.Wire()];
 
     /// <summary>It is the identity's eval, under its dataset's name, at the version its trend carries.</summary>
     [Test]

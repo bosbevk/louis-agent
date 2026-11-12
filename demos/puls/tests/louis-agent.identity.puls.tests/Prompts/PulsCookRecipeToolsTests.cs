@@ -30,7 +30,7 @@ public class PulsCookRecipeToolsTests
         string cook = Cook();
 
         Assert.That(cook, Does.Contain("`FindRecipes(query)`"));
-        Assert.That(cook, Does.Not.Contain("StartMinion").And.Not.Contain("minion").IgnoreCase);
+        Assert.That(cook, Does.Not.Contain("minion").IgnoreCase);
         Assert.That(cook, Does.Contain("`ReadRecipe` the hit whose title is the dish"));
         Assert.That(cook, Does.Contain("*publishes no recipe data*"), "a text print is read as the page's text, once");
         Assert.That(cook.IndexOf("`FindRecipes(query)`", StringComparison.Ordinal),
@@ -68,7 +68,9 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("A budget per person is a sum for `Calculate`"));
     }
 
-    /// <summary>The sum for 8 from 6 gave 2⅔ eggs: correct, and no use to anyone. What can't split is whole.</summary>
+    /// <summary>
+    /// The sum for 8 from 6 gave 2⅔ eggs: correct, and no use to anyone. What can't split is whole.
+    /// </summary>
     [Test]
     public void WhatCantBeSplit_IsRoundedToAWholeOne()
     {

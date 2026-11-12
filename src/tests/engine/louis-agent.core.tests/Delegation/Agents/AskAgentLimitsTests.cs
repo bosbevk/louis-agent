@@ -1,7 +1,9 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Agents;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -25,10 +27,10 @@ public class AskAgentLimitsTests
     private static readonly IReadOnlyList<IAgentIdentity> Identities =
         [Guide, new FakeIdentity("testprod", voice: "testprod/voice-en")];
 
-    /// <summary>The tools on this peer, with the test's timeout, clock and ledger.</summary>
+    /// <summary>The tools on this peer, with the test's timeout, clock, ledger and deepest level.</summary>
     private static AskAgentTools Tools(HttpMessageHandler handler, TimeSpan? timeout = null,
-        TimeProvider? time = null, IUsageSink? sink = null) =>
-        new(Peers, Identities, "the-key", new HttpClient(handler), timeout, time, sink);
+        TimeProvider? time = null, IUsageSink? sink = null, int maxDepth = AgentOptions.DefaultAgentMaxDepth) =>
+        new(Peers, Identities, "the-key", new HttpClient(handler), timeout, time, sink, maxDepth: maxDepth);
 
     /// <summary>Asks an address as the guide.</summary>
     private static async Task<string> AskAsync(AskAgentTools tools, string address = "testprod")
@@ -55,6 +57,61 @@ public class AskAgentLimitsTests
             Assert.That(answer, Does.Contain("didn't finish within"));
             Assert.That(handler.Deleted, Is.True);
             Assert.That(sink.Records, Is.Empty, "no usage arrived, so no zero record");
+        });
+    }
+
+    /// <summary>
+    /// No agent twice in a chain of asks (F127.5, Louis: "a cook can't call a cook. but it could call a recipe
+    /// specialist"): an agent already above the asker, or the asker itself, is refused before anything is sent; one
+    /// that isn't is asked.
+    /// </summary>
+    [Test]
+    public async Task AnAgentAlreadyInTheChain_IsRefused_AnotherIsAsked()
+    {
+        var handler = Peer();
+
+        string again, back, other;
+        using (TurnChain.Use(["guide", "testprod-specialist"]))
+        {
+            again = await AskAsync(Tools(handler), "testprod.specialist");
+            other = await AskAsync(Tools(handler));
+        }
+
+        using (TurnChain.Use(["testprod", "guide"]))
+            back = await AskAsync(Tools(handler));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(again, Does.StartWith("Error:").And.Contain("testprod.specialist").And.Contain("loop"));
+            Assert.That(back, Does.StartWith("Error:").And.Contain("testprod"), "the voice it was asked by");
+            Assert.That(other, Does.Not.StartWith("Error:"));
+            Assert.That(Calls(handler).Count(call => call == "POST /v1/sessions"), Is.EqualTo(1));
+        });
+    }
+
+    /// <summary>
+    /// An ask that would open an agent past the deepest level this instance allows (AGENT_MAX_DEPTH, default 4) is
+    /// refused; one level above it is asked.
+    /// </summary>
+    [Test]
+    public async Task PastTheDeepestLevel_AnAskIsRefused()
+    {
+        var handler = Peer();
+
+        string tooDeep, deepest;
+        using (TurnDepth.Use(2))
+            tooDeep = await AskAsync(Tools(handler, maxDepth: 2));
+        using (TurnDepth.Use(1))
+            deepest = await AskAsync(Tools(handler, maxDepth: 2));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tooDeep, Does.StartWith("Error:").And.Contain("AGENT_MAX_DEPTH").And.Contain("2"));
+            Assert.That(deepest, Does.Not.StartWith("Error:"));
+            Assert.That(AgentOptions.DefaultAgentMaxDepth, Is.EqualTo(4));
+            Assert.That(AgentOptions.FromEnvironment(name => name == "AGENT_MAX_DEPTH" ? "3" : null).AgentMaxDepth,
+                Is.EqualTo(3));
+            Assert.That(AgentOptions.FromEnvironment(_ => null).AgentMaxDepth, Is.EqualTo(4));
         });
     }
 

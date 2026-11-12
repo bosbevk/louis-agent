@@ -29,12 +29,52 @@ public class AgentAddressesTests
             Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", null), AddressKind.Identity,
                 "testprod/voice-en")));
 
-    /// <summary>A role reaches the specialist or the minion role whose file is named for the identity.</summary>
-    [TestCase("specialist", AddressKind.Specialist, "testprod-specialist")]
-    [TestCase("minion-lookup", AddressKind.Minion, "testprod-minion-lookup")]
-    public void ARole_ReachesItsFile(string role, AddressKind kind, string file) =>
-        Assert.That(Resolve("testprod", role).Agent,
-            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", role), kind, file)));
+    /// <summary>A role reaches the specialist whose file is named for the identity.</summary>
+    [Test]
+    public void ARole_ReachesItsFile() =>
+        Assert.That(Resolve("testprod", "specialist").Agent,
+            Is.EqualTo(new AddressedAgent(new AgentAddress("testprod", "specialist"), AddressKind.Specialist,
+                "testprod-specialist")));
+
+    /// <summary>
+    /// A minion is no agent to ask (F127.5): its file's name written as a role reaches no one here, whatever it names.
+    /// </summary>
+    [Test]
+    public void AMinionsFile_IsNoRoleToAsk() =>
+        Assert.That(Resolve("testprod", "minion-lookup").Agent, Is.Null);
+
+    /// <summary>
+    /// A minion's address (F127.5) is its identity and its function, <c>testprod.lookup</c>, which the minion tool
+    /// resolves to the file <c>testprod-minion-lookup</c>.
+    /// </summary>
+    [Test]
+    public void AMinionsAddress_ReachesItsFile()
+    {
+        var address = new AgentAddress("testprod", "lookup");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(AgentAddresses.ResolveMinion(address, Identities, out _),
+                Is.EqualTo(new AddressedAgent(address, AddressKind.Minion, "testprod-minion-lookup")));
+            Assert.That(AgentAddresses.IsMinion(address), Is.True);
+            Assert.That(AgentAddresses.IsMinion(new AgentAddress("testprod", "specialist")), Is.False);
+        });
+    }
+
+    /// <summary>
+    /// A minion address with no such minion is refused, naming the identity's minions by their addresses.
+    /// </summary>
+    [Test]
+    public void AnUnknownMinion_IsRefused_NamingTheIdentitysMinions()
+    {
+        var agent = AgentAddresses.ResolveMinion(new AgentAddress("testprod", "cook"), Identities, out string? why);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(agent, Is.Null);
+            Assert.That(why, Does.Contain("'cook'").And.Contain("testprod.lookup"));
+        });
+    }
 
     /// <summary>An identity this instance doesn't run reaches no one, and the reason names the ones it does.</summary>
     [Test]
@@ -57,7 +97,7 @@ public class AgentAddressesTests
         var (agent, why) = Resolve("testprod", role);
 
         Assert.That(agent, Is.Null);
-        Assert.That(why, Does.Contain($"'{role}'").And.Contain("testprod.minion-lookup, testprod.specialist"));
+        Assert.That(why, Does.Contain($"'{role}'").And.Contain("testprod.specialist").And.Not.Contain("minion-lookup"));
     }
 
     /// <summary>A role file belongs to the identity it is named for: another identity can't reach it.</summary>

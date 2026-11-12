@@ -10,14 +10,11 @@ namespace LouisAgent.Web.Chats;
 /// the card takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text
 /// (FX27).
 /// </summary>
-/// <param name="Role">A minion's role; none for an ask, whose address says who it is.</param>
-/// <param name="Handle">The kept minion's handle (<c>sub-1</c>), from a continue's call.</param>
-/// <param name="Continued">True for a <c>ContinueMinion</c> call: a follow-up to a minion that was already
-/// working.</param>
+/// <param name="Role">A minion's address; none for an ask, whose address says who it is.</param>
 /// <param name="ResultAgent">The address the line under an ask's answer names: who actually answered.</param>
-/// <param name="Minion">True for a <c>StartMinion</c> or <c>ContinueMinion</c> call (F30): a specialist handing one
-/// page and one of its tools to a minion. <paramref name="Toolsets"/> then holds that one tool,
-/// <paramref name="Role"/> the minion's role and <paramref name="Llm"/> the model it ran on.</param>
+/// <param name="Minion">True for an ask that hands a tool (F30, F127.5): an agent handing one page and one of its
+/// tools to a minion. <paramref name="Toolsets"/> then holds that one tool, <paramref name="Role"/> the minion's
+/// address and <paramref name="Llm"/> the model it ran on.</param>
 public sealed partial record Delegation(
     string Agent,
     IReadOnlyList<string> Toolsets,
@@ -26,59 +23,62 @@ public sealed partial record Delegation(
     bool Failed,
     string? ResultAgent = null,
     string? Role = null,
-    string? Handle = null,
-    bool Continued = false,
     bool Minion = false,
     string? Llm = null)
 {
-    /// <summary>The tool that hands one task and one tool to a minion (F30).</summary>
-    public const string MinionToolName = "StartMinion";
-
-    /// <summary>The tool that goes back to a minion.</summary>
-    public const string ContinueMinionToolName = "ContinueMinion";
-
-    /// <summary>The tool that asks another agent by its address (F127.3.1).</summary>
+    /// <summary>The tool that asks another agent, or a minion, by its address (F127.3.1, F127.5).</summary>
     public const string AskToolName = "AskAgent";
 
-    /// <summary>Whether a tool call opens or continues a child: an asked agent (F127.3.1) or a minion (F30).</summary>
-    public static bool IsDelegationTool(string? toolName) =>
-        toolName is AskToolName or MinionToolName or ContinueMinionToolName;
+    /// <summary>Whether a tool call opens or continues a child: an asked agent or a minion, both by AskAgent.</summary>
+    public static bool IsDelegationTool(string? toolName) => toolName is AskToolName;
 
     /// <summary>Where the line under an asked agent's answer starts (core's AgentAnswer).</summary>
     private const string AnsweredBy = "\n\n[Answered by ";
 
-    /// <summary>The delegation in a block, or none when the block isn't an ask or a minion's call.</summary>
+    /// <summary>
+    /// The delegation in a block, or none when the block isn't an ask: a minion's card when the ask hands a tool,
+    /// since only a minion takes one.
+    /// </summary>
     public static Delegation? From(Block block)
     {
         if (block.Kind != BlockKind.Tool || !IsDelegationTool(block.ToolName)) return null;
-        return block.ToolName is MinionToolName or ContinueMinionToolName ? FromMinion(block) : FromAsk(block);
+        return HandsATool(block) ? FromMinion(block) : FromAsk(block);
     }
 
-    /// <summary>
-    /// A minion call (F30): its role, the one tool and the task, and once it returned, its answer and the model the
-    /// footer names.
-    /// </summary>
-    private static Delegation FromMinion(Block block)
+    /// <summary>Whether the ask's input names a tool, which makes it a minion's.</summary>
+    private static bool HandsATool(Block block)
     {
-        bool continued = block.ToolName == ContinueMinionToolName;
-        string task = "";
-        string? role = null, tool = null, handle = null;
         try
         {
             using var input = JsonDocument.Parse(block.ToolInput ?? "{}");
-            var root = input.RootElement;
-            if (root.TryGetProperty("role", out var r) && r.ValueKind == JsonValueKind.String)
-                role = Blank(r.GetString());
-            if (root.TryGetProperty("tool", out var t) && t.ValueKind == JsonValueKind.String)
-                tool = Blank(t.GetString());
-            if (root.TryGetProperty("task", out var k)) task = k.GetString() ?? "";
-            else if (root.TryGetProperty("message", out var m)) task = m.GetString() ?? "";
-            if (root.TryGetProperty("handle", out var h) && h.ValueKind == JsonValueKind.String)
-                handle = Blank(h.GetString());
+            return input.RootElement.TryGetProperty("tool", out var tool) && tool.ValueKind == JsonValueKind.String &&
+                   Blank(tool.GetString()) is not null;
         }
         catch (JsonException)
         {
-            // Unreadable input: the card shows what it can.
+            // Unreadable input: an ordinary ask's card shows what it can.
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// A minion's ask (F30, F127.5): its address, the one tool and the task, and once it returned, its answer and
+    /// the model the footer names.
+    /// </summary>
+    private static Delegation FromMinion(Block block)
+    {
+        string task = "";
+        string? role = null, tool = null;
+        using (var input = JsonDocument.Parse(block.ToolInput ?? "{}"))
+        {
+            var root = input.RootElement;
+            // A minion is asked by its address; the footer's role file is the fallback.
+            if (root.TryGetProperty("address", out var r) && r.ValueKind == JsonValueKind.String)
+                role = Blank(r.GetString());
+            if (root.TryGetProperty("tool", out var t) && t.ValueKind == JsonValueKind.String)
+                tool = Blank(t.GetString());
+            if (root.TryGetProperty("message", out var m) && m.ValueKind == JsonValueKind.String)
+                task = m.GetString() ?? "";
         }
 
         string? answer = null, llm = null;
@@ -92,7 +92,7 @@ public sealed partial record Delegation(
         }
 
         return new Delegation("", tool is null ? [] : [tool], task, answer ?? (failed ? block.ToolResult : null),
-            failed, null, role, handle, continued, Minion: true, Llm: llm);
+            failed, null, role, Minion: true, Llm: llm);
     }
 
     /// <summary>

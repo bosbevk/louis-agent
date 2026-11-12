@@ -173,6 +173,19 @@ public class SkillLoaderTests
         });
     }
 
+    /// <summary>
+    /// A minion among the addresses (F127.5, Claude's pick Q3) is no agent to ask: the list for <c>AskAgent</c> leaves
+    /// it out, and the roles that hand work to minions name them.
+    /// </summary>
+    [Test]
+    public void AMinionAmongTheAddresses_IsNotListedToAsk()
+    {
+        string asks = SkillLoader.Load(Options(), Toolsets(CoreToolset.Agents.Wire()),
+            calls: ["testprod", "testprod.lookup"]).Documentation;
+
+        Assert.That(asks, Does.Contain("- `testprod`").And.Not.Contain("testprod.lookup"));
+    }
+
     /// <summary>A session with fewer toolsets reads a shorter prompt.</summary>
     [Test]
     public void ThePromptShrinks_WithTheToolset()

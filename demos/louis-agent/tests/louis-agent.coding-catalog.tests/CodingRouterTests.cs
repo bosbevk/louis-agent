@@ -1,5 +1,3 @@
-using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Identities.Coding;
@@ -19,7 +17,8 @@ public class CodingRouterTests
     }
 
     /// <summary>
-    /// The router names every toolset and describes no tools, so the prompt never shows a session tools it doesn't load.
+    /// The router names every toolset and describes no tools, so the prompt never shows a session tools it doesn't
+    /// load.
     /// </summary>
     [Test]
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
@@ -27,13 +26,13 @@ public class CodingRouterTests
         string doc = Routing();
         var catalog = CodingPrompts.Catalog;
 
-        // Every toolset but minions (a specialist's toolset, never a chat's; this product has no minion role) and the
-        // ones of packs another identity names (F109.3: the expert's docs are not the coding agent's to route).
+        // Every toolset but the ones of packs another identity names (F109.3: the expert's docs are not the coding
+        // agent's to route); there is no minions toolset (F127.5: AskAgent asks minions too).
         var coding = catalog.Identities[0];
         var othersToolsets = catalog.Packs.Where(p => !coding.Packs.Contains(p.Name))
             .SelectMany(p => p.Toolsets.Select(t => t.Name)).ToHashSet(StringComparer.Ordinal);
         foreach (string toolset in catalog.Toolsets.Select(t => t.Name)
-                     .Where(name => name != CoreToolset.Minions.Wire() && !othersToolsets.Contains(name)))
+                     .Where(name => !othersToolsets.Contains(name)))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
         Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
 

@@ -61,11 +61,17 @@ public class AgentSessionsTests
     private const string OffPack = "offpack";
 
     /// <summary>
-    /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
+    /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called; a test of the
+    /// depth setting gives its own deepest level.
     /// </summary>
-    private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) =>
-        new(new AgentEngineFactory(new NoModel(), PulsOptions(), services: new HostServices(WebAccess.Create),
-            sessionLlms: llms, catalog: PulsCatalog()));
+    internal static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null,
+        int maxDepth = AgentOptions.DefaultAgentMaxDepth)
+    {
+        var options = PulsOptions();
+        options.AgentMaxDepth = maxDepth;
+        return new AgentSessions(new AgentEngineFactory(new NoModel(), options,
+            services: new HostServices(WebAccess.Create), sessionLlms: llms, catalog: PulsCatalog()));
+    }
 
     /// <summary>
     /// The settings a Puls stack gives the cook: the browser the recipes toolset reads through, a peer for its minions
@@ -82,7 +88,7 @@ public class AgentSessionsTests
             AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionAsk.InstanceLlm]
             }
         };
 
@@ -187,30 +193,7 @@ public class AgentSessionsTests
             }));
         Assert.That(Names(cook),
             Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
-                .Contain("WebSearch").And.Contain("Calculate").And.Not.Contain("StartMinion"));
-    }
-
-    /// <summary>
-    /// Marking the agents toolset as optional doesn't sneak delegation into a sub-session.
-    /// </summary>
-    [Test]
-    public void AnOptionalMark_DoesntGetPastTheDelegationRules() =>
-        Assert.That(() => Sessions().Create([CoreToolset.Agents.Wire() + "?"], depth: 1),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
-
-    /// <summary>
-    /// A sub-session can't ask another agent (F127.3.1), and the tree stops at the minion.
-    /// </summary>
-    [Test]
-    public void ASubSession_CantAskAnotherAgent_AndDepthStopsAtTheMinion()
-    {
-        var sessions = Sessions();
-
-        Assert.That(() => sessions.Create([CoreToolset.Agents.Wire()], depth: 1),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
-        Assert.That(() => sessions.Create([TestToolset.Files.Wire()], depth: 3),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
-        Assert.That(sessions.Create([TestToolset.Files.Wire()], depth: 1).Depth, Is.EqualTo(1));
+                .Contain("WebSearch").And.Contain("Calculate"));
     }
 
     /// <summary>
@@ -256,13 +239,13 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A role opens at its own level: the cook as a specialist, never at the top; Puls's voice at the top, and since
-    /// F127.3.1 also one level down, still as a voice, when another agent asks it.
+    /// A role opens at its own level: the cook as a specialist, never at the top; Puls's voice at the top, and also
+    /// lower down, still as a voice, when another agent asks it.
     /// </summary>
     [Test]
     public void ARole_OpensOnlyAtItsOwnLevel()
     {
-        // CL8: a session's level is its depth, except a voice asked at depth 1 (F127.3.1, pick 1 A).
+        // At the top only a voice; below it, the role's own folder (F127.5, Louis: "depth decides" only how deep).
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
@@ -492,7 +475,7 @@ public class AgentSessionsTests
     /// <summary>
     /// The usage tags a sub-session carries to say which session sent it.
     /// </summary>
-    private static UsageTags ParentOf(AgentSession parent) => new(null, null, null, $"{parent.Id}#1");
+    internal static UsageTags ParentOf(AgentSession parent) => new(null, null, null, $"{parent.Id}#1");
 
     /// <summary>
     /// A minion opens under its specialist with just one of that specialist's tools and its own guide.
@@ -546,10 +529,11 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A minion needs a parent we can find, a minion's role and its one tool, and it can't go any deeper.
+    /// A minion needs a parent we can find, a minion's role and its one tool (that it asks no one is
+    /// <c>AskDepthTests</c>').
     /// </summary>
     [Test]
-    public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool_AndNothingDeeper()
+    public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool()
     {
         var sessions = Sessions();
         var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
@@ -566,7 +550,8 @@ public class AgentSessionsTests
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: PulsRole.Cook.Wire(),
                 tool: "FetchUrl"),
-            Throws.TypeOf<RoleException>(), "a specialist's role is no minion role");
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
+            "a specialist's role is no minion role, at any depth");
         Assert.That(
             () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: "puls-minion", tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "the base is no role");
@@ -580,20 +565,16 @@ public class AgentSessionsTests
             () => sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a specialist loads toolsets, not a tool");
-        Assert.That(
-            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 3,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"), "a minion never delegates");
     }
 
     /// <summary>
-    /// A minion works out its toolset from the tool it's handed, and only a specialist can send minions.
+    /// A minion works out its toolset from the tool it's handed.
     /// </summary>
     [Test]
-    public void AMinionSession_DerivesItsToolsetFromItsTool_AndMinionsAreForSpecialistsOnly()
+    public void AMinionSession_DerivesItsToolsetFromItsTool()
     {
-        // F30 step 5: StartMinion sends no toolsets, only the tool; the peer finds the toolset that builds it. The
-        // minions toolset is a specialist's: never the chat's (level 0), never a minion's (the end of the tree).
+        // F30 step 5: AskAgent sends a minion no toolsets, only the tool; the peer finds the toolset that builds it.
+        // F127.5: the minions toolset is gone, since AskAgent asks minions too.
         var sessions = Sessions();
         var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
@@ -601,12 +582,5 @@ public class AgentSessionsTests
             tool: "FetchUrl");
         Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
-
-        Assert.That(() => sessions.Create([CoreToolset.Minions.Wire()]),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("specialist"));
-        Assert.That(
-            () => sessions.Create([CoreToolset.Minions.Wire()], ParentOf(cook), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
     }
 }

@@ -45,14 +45,19 @@ public sealed class PulsIdentity : IAgentIdentity
     public bool RelaysAnswersWhole => true;
 }
 
-/// <summary>The specialists Puls may ask, by their addresses (ADR 0043: an identity keeps its own enum).</summary>
+/// <summary>
+/// The specialists Puls may ask, and the minions its specialists may start (F127.5), by their addresses (ADR 0043: an
+/// identity keeps its own enum).
+/// </summary>
 public enum PulsCall
 {
     [WireName("puls.cook")] Cook,
     [WireName("puls.researcher")] Researcher,
     [WireName("puls.analyst")] Analyst,
     [WireName("puls.historian")] Historian,
-    [WireName("puls.reader")] Reader
+    [WireName("puls.reader")] Reader,
+    [WireName("puls.find-recipe")] FindRecipe,
+    [WireName("puls.web-price-lookup")] WebPriceLookup
 }
 
 /// <summary>

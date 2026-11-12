@@ -12,7 +12,7 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 97 | 85 |
+| Features (`F`) | 98 | 85 |
 | Fixes (`FX`) | 122 | 6 |
 | Cleanups (`CL`) | 32 | 26 |
 
@@ -22,7 +22,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | What | Phase |
 |---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; F127.3.1 `AskAgent` on this instance done; F127.4 the guide mentors done (F127.4.1 cards, F127.4.2 the guided live demo); F127.3.2 another server done; next F127.5 the minions | Now |
+| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; F127.3.1 `AskAgent` on this instance done; F127.4 the guide mentors done (F127.4.1 cards, F127.4.2 the guided live demo); F127.3.2 another server done; F127.5 the minions on the address done; next the chat portal and the admin portal, each its own plan | Now |
 | F138 | The guide explains with drawings: a tool gives the model a docs diagram's JSON and the widget draws it in the chat with `louis-agent.diagrams`; its own plan, after F127.4 | Now, after F127.4 |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
 | F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
@@ -140,10 +140,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (96 done)
+## Features (97 done)
 
 | Id | When | What |
 |---|---|---|
+| F127.5 | 2026-11-12 | Minions on the address, on `AskAgent` (ADR 0117, Louis's correction): `AskAgent(address, message, tool, stronger)` asks a minion (`puls.find-recipe`, listed in the identity's `Calls`, refused with a server, its model from `MINION_LLMS`, 16 a turn, never kept); `StartMinion` and the `minions` toolset deleted, its guide folded into the agents guide; everyone may ask whom their `Calls` allow but a minion, a session's level its role's folder below the top; no agent twice in a chain of asks (`TurnChain`, the API too); `AGENT_MAX_DEPTH` (default 4); the web's card reads a minion's ask, the dead follow-up chip deleted; a mode's prompt lists only the agents among its `Calls`; Puls lists its two minions; no live run (a local model, Puls paused) |
 | F127.3 | 2026-11-12 | One address for every agent call, the parent: F127.3.1 (this instance) and F127.3.2 (another server), both below (ADR 0117) |
 | F127.3.2 | 2026-11-12 | Ask an agent on another server (ADR 0117): an address may name its server (`partner:shop.cook`), `self` this instance among several; `AGENT_PEER_KEYS` a key per server on every request to it; a server's `GET /v1/identities` read with its key and kept ten minutes before an address on it is trusted; an unknown server, a refused key, a server that doesn't answer and an identity it doesn't list each a reason; the agents guide says to tell the person first; two API hosts in one test prove it, no model cost; the privacy line waits for a site agent that asks another server |
 | F127.4 | 2026-11-12 | The guide mentors, the parent: F127.4.1 (cards the agent draws) and F127.4.2 (the guided live demo), both below |

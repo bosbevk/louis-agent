@@ -211,13 +211,18 @@ public class RoleCatalogTests
         });
     }
 
+    /// <summary>
+    /// A minion is asked through the agents guide's <c>AskAgent</c>, with its tool (F127.5), and the guide names no
+    /// product's role; the minions guide it folded into is gone.
+    /// </summary>
     [Test]
-    public void TheMinionsGuide_NamesNoProductsRole()
+    public void TheAgentsGuide_SaysHowToAskAMinion_AndNamesNoProductsRole()
     {
-        string guide = SkillFileSource.ReadEmbedded("toolsets/minions.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
 
-        Assert.That(guide, Does.Contain("`StartMinion(role, tool, task, stronger)`"));
+        Assert.That(guide, Does.Contain("`AskAgent(address, message, tool, stronger)`"));
         Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Malmesbury"));
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/minions.md"), Is.Null);
     }
 
     public void AVoicesHeading_SaysVoice(string file, string heading) =>

@@ -1,7 +1,10 @@
 # 0021. Minions: a specialist hands one task and one of its own tools down, two levels deep and no further
 
 **Status:** Accepted (built, not in use: no session is given `minions` until F31 measures it) · **Date:** 2026-10-16
-(decided, F30 step 3) · **Recorded:** 2026-10-17
+(decided, F30 step 3) · **Recorded:** 2026-10-17 · **Amended by** [ADR 0117](0117-one-address-for-every-agent-call.md)
+(F127.5, 2026-11-12): a minion is asked by its address with `AskAgent` and one of the asker's tools, not
+`StartMinion`; any agent may ask one, at any depth below the top, up to `AGENT_MAX_DEPTH`; the `minions` toolset is
+gone. The rest (one task, one tool, the parent's toolbox the ceiling, `MINION_LLMS`, 16 a turn, never kept) stands.
 
 ## Context
 

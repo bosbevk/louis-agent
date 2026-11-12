@@ -24,6 +24,6 @@
 | **Session** | One conversation with its own history, toolsets and role, fixed when it opens |
 | **Skill** | A markdown file of guidance, or a named procedure in one (`## Skill:`) that `ExecuteSkill` runs |
 | **Specialist** | A sub-session with a role (the cook; others off until they pass a check) that does one task and reports back; asked by its address, `{identity}.{role}` (`puls.cook`) |
-| **Sub-session** | A session opened by another agent on a peer, one level deep (`AskAgent`, or `StartMinion` for a minion) |
+| **Sub-session** | A session opened by another agent on a peer, one level below its asker (`AskAgent`, a minion with one of the asker's tools), at most `AGENT_MAX_DEPTH` deep |
 | **Toolset** | A named group of tools with its guide (`files`, `git`, `web`, …), listed in the catalogue |
 | **Turn** | One user message and everything the agent does to answer it, across its tool rounds |
