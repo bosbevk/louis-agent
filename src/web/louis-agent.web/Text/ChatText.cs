@@ -28,15 +28,6 @@ public sealed record ChatText
     /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
     public string Suggested { get; init; } = "Suggested";
 
-    /// <summary>
-    /// The card a guide's choices gain where a business's window shows on the page (FX133): its label goes to the
-    /// guide, which asks the visitor what to ask the business.
-    /// </summary>
-    public string AskItLive { get; init; } = "Ask it live";
-
-    /// <summary>What that card says under its label.</summary>
-    public string AskItLiveWhy { get; init; } = "Your question, answered by the business in its window.";
-
     public string DelegatedTo { get; init; } = "Delegated to";
 
     /// <summary>A minion's card and Werk line (F30): the specialist handed one page to a minion.</summary>

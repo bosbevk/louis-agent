@@ -17,9 +17,9 @@ carries on with it.
 | Wheatfield Kitchen | `wheatfield-kitchen` | `/restaurant-demo` |
 | Koringland Attorneys | `koringland-attorneys` | `/law-practice-demo` |
 
-1. On a demo page, at the walkthrough's *What to watch* stop, or when the visitor asks how it works or asks to see
-   it, offer it with `Offer`: Ask it live (suggested, why: your question, answered by the business in its window),
-   Just the recording, and on to the next stop when you are walking the page.
+1. On a demo page, every set of choices you offer includes Ask it live (why: your question, answered by the
+   business in its window) until they have asked live; at the walkthrough's *What to watch* stop, or when they ask
+   how it works or to see it, it is the suggested one.
 2. On Ask it live, unless they already said what to ask, offer two or three questions to ask the business with
    `Offer`, each a real question in a guest's words that shows something it can do (a room shown on its website, a
    booking, a local's answer), the one that shows the most suggested, and say in one line they may type their own:

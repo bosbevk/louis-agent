@@ -1,8 +1,5 @@
 using LouisAgent.Web.Chats.Calls;
-using LouisAgent.Web.Components.Widget.Door;
-using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Components.Blocks;
 
@@ -35,32 +32,9 @@ public partial class OfferCards
     /// <summary>The cards can't be clicked while the answer streams, or where nothing would send the label.</summary>
     private bool Waiting => Streaming || !Chosen.HasDelegate;
 
-    /// <summary>
-    /// Whether these cards are a guide's, which may offer a business live (FX133): the guide's widget says so; a
-    /// business's own window, whose cards book and send, never does.
-    /// </summary>
-    [CascadingParameter(Name = OffersLiveName)]
-    public bool OffersLive { get; set; }
-
-    /// <summary>The name the guide's widget cascades <see cref="OffersLive"/> under.</summary>
-    public const string OffersLiveName = "OffersLive";
-
-    [Inject] private ChatText Words { get; set; } = default!;
-    [Inject] private IServiceProvider Services { get; set; } = default!;
-
     /// <summary>Every choice until the visitor answers; then the one they chose, if they chose one.</summary>
     private IEnumerable<OfferChoice> Shown => Answer is null
-        ? Choices
-        : Choices.Where(choice => string.Equals(choice.Label.Trim(), Answer.Trim(),
+        ? Offer.Choices
+        : Offer.Choices.Where(choice => string.Equals(choice.Label.Trim(), Answer.Trim(),
             StringComparison.OrdinalIgnoreCase));
-
-    /// <summary>
-    /// The agent's choices, and Ask it live where a business's window shows on the page and it isn't offered yet
-    /// (FX133): told in the prompt, the guide kept offering only the walkthrough's three, so the card is drawn in code.
-    /// </summary>
-    private IReadOnlyList<OfferChoice> Choices =>
-        OffersLive && Services.GetService<AgentWindows>() is { Any: true } &&
-        !Offer.Choices.Any(choice => string.Equals(choice.Label, Words.AskItLive, StringComparison.OrdinalIgnoreCase))
-            ? [.. Offer.Choices, new OfferChoice(Words.AskItLive, Words.AskItLiveWhy)]
-            : Offer.Choices;
 }
