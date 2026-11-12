@@ -34,6 +34,20 @@ public class AgentCallsTests
         Assert.That(why, Does.Contain(new AgentAddress(identity, role).ToString()).And.Contain("alpha, beta.cook"));
     }
 
+    /// <summary>
+    /// A server is part of the address (F127.3.2): <c>partner:shop</c> in the list allows that shop on that server, not
+    /// a shop of the same name here or on another server.
+    /// </summary>
+    [TestCase("partner", true)]
+    [TestCase(null, false)]
+    [TestCase("other", false)]
+    public void AServerIsPartOfTheAddress(string? peer, bool allowed)
+    {
+        var asker = new FakeIdentity("asker", calls: ["partner:shop"]);
+
+        Assert.That(AgentCalls.Allows(asker, new AgentAddress("shop", null, peer), out _), Is.EqualTo(allowed));
+    }
+
     /// <summary>An identity that names no one calls nobody.</summary>
     [Test]
     public void AnIdentityWithNoCalls_CallsNobody()
