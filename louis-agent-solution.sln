@@ -361,6 +361,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D3
 		src\docs\adr\0115-a-sites-showroom-is-an-area-of-the-framework.md = src\docs\adr\0115-a-sites-showroom-is-an-area-of-the-framework.md
 		src\docs\adr\0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md = src\docs\adr\0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md
 		src\docs\adr\0117-one-address-for-every-agent-call.md = src\docs\adr\0117-one-address-for-every-agent-call.md
+		src\docs\adr\0118-a-diagram-is-data-our-renderer-draws.md = src\docs\adr\0118-a-diagram-is-data-our-renderer-draws.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
