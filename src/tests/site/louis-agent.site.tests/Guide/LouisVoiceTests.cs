@@ -150,4 +150,14 @@ public class LouisVoiceTests
             Assert.That(voice, Does.Not.Contain("one thing at a time, as a person would"));
         });
     }
+
+    /// <summary>
+    /// Louis, on "Talk to the real Louis" answered with WhatsApp and the contact page: "it should have offered to take
+    /// my lead". Wanting to talk to him is a lead too: he offers to pass their details on with the form, and names
+    /// WhatsApp and the contact page as the other way.
+    /// </summary>
+    [Test]
+    public void WantingToTalkToTheRealLouis_IsALead() =>
+        Assert.That(Voice(), Does.Contain("or wants to talk to the real Louis")
+            .And.Contain("offer to pass it on yourself"));
 }
