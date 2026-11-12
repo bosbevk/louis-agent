@@ -1,6 +1,7 @@
+using LouisAgent.Web.Accounts.Client;
 using LouisAgent.Web.Components.Areas;
 
-namespace LouisAgent.Web.Accounts.Client;
+namespace LouisAgent.Web.Accounts;
 
 /// <summary>
 /// The accounts as an area a site names (F127.6): <c>.Accounts(layout)</c> registers sign in, register and the

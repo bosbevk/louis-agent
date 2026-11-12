@@ -4,7 +4,7 @@ using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Frames;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Web.Accounts.Tests.Client;
+namespace LouisAgent.Web.Accounts.Tests;
 
 /// <summary>
 /// F127.6: the accounts are an area a site names with <c>.Accounts(layout)</c>: their services, their pages for the
