@@ -90,6 +90,33 @@ public class DrawnCardTests
         });
     }
 
+    /// <summary>
+    /// The cards show under the words (Louis's pick on the phone check): the model called the card first, then wrote,
+    /// then offered, and the chat still reads words, card, choices, so "the card below" is always true.
+    /// </summary>
+    [Test]
+    public void TheCards_ShowUnderTheWords()
+    {
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+        Block[] blocks =
+        [
+            Call(Booking),
+            new()
+            {
+                Kind = BlockKind.Text,
+                Text = "Here is your request."
+            },
+            Call("""{ "question": "Send it?", "choices": [ { "label": "Book it" }, { "label": "Not now" } ] }""",
+                tool: OfferCall.Tool)
+        ];
+
+        var cut = ctx.Render<BlocksView>(p => p.Add(x => x.Blocks, [.. blocks]).Add(x => x.ShowWork, false));
+
+        Assert.That(cut.FindAll(".markdown, .drawn-card, .offer").Select(element => element.ClassList[0]),
+            Is.EqualTo(new[] { "markdown", "drawn-card", "offer" }));
+    }
+
     /// <summary>The drawn card matches its golden file.</summary>
     [Test]
     public void TheDrawnCard_MatchesTheGoldenFile()

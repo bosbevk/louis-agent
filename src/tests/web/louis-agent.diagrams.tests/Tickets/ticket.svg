@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 408 400" width="408" height="400" role="img" aria-label="Booking request" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 368 400" width="368" height="400" role="img" aria-label="Booking request" xmlns="http://www.w3.org/2000/svg">
   <title>Booking request</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -102,13 +102,13 @@
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="408" height="400" rx="14" />
-  <path class="ticket" d="M14 0 H346 A14 14 0 0 1 360 14 V82 A8 8 0 0 0 360 98 V338 A14 14 0 0 1 346 352 H14 A14 14 0 0 1 0 338 V98 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
-  <path class="ticket-band" d="M14 0 H346 A14 14 0 0 1 360 14 V82 A8 8 0 0 0 352 90 H8 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
-  <rect class="ticket-pill tone-amber" x="232.8" y="14" width="111.2" height="22" rx="11" />
-  <circle class="ticket-pill-text" cx="244.8" cy="25" r="3" />
-  <text class="ticket-pill-text" x="252.8" y="29" text-anchor="start">Not sent yet</text>
-  <path class="ticket-tear" d="M12 90 H348" />
+  <rect class="ground" x="-24" y="-24" width="368" height="400" rx="14" />
+  <path class="ticket" d="M14 0 H306 A14 14 0 0 1 320 14 V82 A8 8 0 0 0 320 98 V338 A14 14 0 0 1 306 352 H14 A14 14 0 0 1 0 338 V98 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
+  <path class="ticket-band" d="M14 0 H306 A14 14 0 0 1 320 14 V82 A8 8 0 0 0 312 90 H8 A8 8 0 0 0 0 82 V14 A14 14 0 0 1 14 0 Z" />
+  <rect class="ticket-pill tone-amber" x="192.8" y="14" width="111.2" height="22" rx="11" />
+  <circle class="ticket-pill-text" cx="204.8" cy="25" r="3" />
+  <text class="ticket-pill-text" x="212.8" y="29" text-anchor="start">Not sent yet</text>
+  <path class="ticket-tear" d="M12 90 H308" />
   <rect class="ticket-icon-box" x="16" y="106" width="32" height="32" rx="10" />
   <g class="ticket-icon" transform="translate(24 114) scale(0.6667)">
     <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
@@ -138,7 +138,7 @@
     <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
     <path d="M3 7l9 6l9 -6" />
   </g>
-  <path class="ticket-foot" d="M0 302 H360 V338 A14 14 0 0 1 346 352 H14 A14 14 0 0 1 0 338 Z" />
+  <path class="ticket-foot" d="M0 302 H320 V338 A14 14 0 0 1 306 352 H14 A14 14 0 0 1 0 338 Z" />
   <text class="ticket-kicker" x="16" y="24" text-anchor="start">BOOKING REQUEST</text>
   <text class="ticket-title" x="16" y="54" text-anchor="start">The garden room</text>
   <text class="ticket-subtitle" x="16" y="74" text-anchor="start">Seemeeu Guesthouse · Yzerfontein</text>
@@ -150,6 +150,6 @@
   <text class="ticket-value" x="60" y="233" text-anchor="start">Welcome in this room</text>
   <text class="ticket-label" x="60" y="263" text-anchor="start">Contact</text>
   <text class="ticket-value" x="60" y="281" text-anchor="start">Anna · anna@example.com</text>
-  <text class="ticket-note" x="16" y="322" text-anchor="start">The guesthouse confirms by email. Nothing is paid</text>
-  <text class="ticket-note" x="16" y="338" text-anchor="start">here.</text>
+  <text class="ticket-note" x="16" y="322" text-anchor="start">The guesthouse confirms by email. Nothing</text>
+  <text class="ticket-note" x="16" y="338" text-anchor="start">is paid here.</text>
 </svg>

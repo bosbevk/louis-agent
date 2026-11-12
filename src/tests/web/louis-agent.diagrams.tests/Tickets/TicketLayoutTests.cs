@@ -24,6 +24,14 @@ public class TicketLayoutTests
         ], "Seemeeu Guesthouse · Yzerfontein", new TicketStatus("Not sent yet", DiagramTone.Amber),
         "The guesthouse confirms by email. Nothing is paid here.");
 
+    /// <summary>
+    /// A ticket is laid out 320 wide (Louis's pick on the phone check): a phone's chat gives it about 275, so it
+    /// shrinks to no less than about 85% and its words stay readable.
+    /// </summary>
+    [Test]
+    public void ATicket_IsLaidOutForAPhonesChat() =>
+        Assert.That(TicketLayout.Place(Booking).Width, Is.EqualTo(320));
+
     /// <summary>Every line of words stands inside the card, its padding kept on both sides.</summary>
     [Test]
     public void EveryWord_StaysInsideTheCard()

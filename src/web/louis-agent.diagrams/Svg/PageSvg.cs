@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml.Linq;
 
 namespace LouisAgent.Diagrams.Svg;
@@ -27,8 +28,31 @@ internal static class PageSvg
             shape.Attribute("marker-end") is not null || shape.Attribute("marker-start") is not null);
         if (!arrows) root.Elements(Svg + "defs").Remove();
 
+        Trim(root);
         return SvgWriter.Serialize(root);
     }
+
+    /// <summary>Room for the drawing's outline, the only margin the page's copy keeps.</summary>
+    private const double Edge = 2;
+
+    /// <summary>
+    /// Cuts the empty ground from round the drawing: the chat around it is the ground, and on a phone every pixel
+    /// of the width goes to the words.
+    /// </summary>
+    private static void Trim(XElement root)
+    {
+        double cut = SvgWriter.Pad - Edge;
+        double width = Number(root, "width") - 2 * cut, height = Number(root, "height") - 2 * cut;
+        root.Elements(Svg + "rect").Where(rect => (string?)rect.Attribute("class") == "ground").Remove();
+        root.SetAttributeValue("viewBox",
+            $"{SvgWriter.N(-Edge)} {SvgWriter.N(-Edge)} {SvgWriter.N(width)} {SvgWriter.N(height)}");
+        root.SetAttributeValue("width", SvgWriter.N(width));
+        root.SetAttributeValue("height", SvgWriter.N(height));
+    }
+
+    /// <summary>A number the writer wrote on the root.</summary>
+    private static double Number(XElement root, string name) =>
+        double.Parse((string)root.Attribute(name)!, CultureInfo.InvariantCulture);
 
     /// <summary>
     /// The style with its root named <c>:scope</c>: inside <c>@scope</c> a bare <c>svg</c> means an svg inside the

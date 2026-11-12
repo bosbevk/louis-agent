@@ -32,8 +32,10 @@ public static class TicketLayout
         _ => 7.8
     };
 
-    /// <summary>The ticket laid out.</summary>
-    public static PlacedTicket Place(TicketSpec spec, double width = 360)
+    /// <summary>
+    /// The ticket laid out, 320 wide unless told otherwise: a phone's chat gives it about 275, so it shrinks little.
+    /// </summary>
+    public static PlacedTicket Place(TicketSpec spec, double width = 320)
     {
         var words = new List<PlacedWords>();
 

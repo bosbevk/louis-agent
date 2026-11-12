@@ -22,7 +22,7 @@ internal sealed class SvgWriter
     private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
 
     /// <summary>Room around the drawing, inside the ground, so nothing touches its edge.</summary>
-    private const double Pad = 24;
+    internal const double Pad = 24;
 
     /// <summary>The arrowhead's id, one per file.</summary>
     private const string ArrowId = "arrow";

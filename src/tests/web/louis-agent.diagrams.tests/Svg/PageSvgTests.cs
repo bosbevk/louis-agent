@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
@@ -57,6 +58,27 @@ public class PageSvgTests
         {
             Assert.That(styles, Has.All.Contain(":scope {"));
             Assert.That(styles, Has.None.Match(@"(^|\n)\s*svg\s*\{"));
+        });
+    }
+
+    /// <summary>
+    /// The page's copy is trimmed to the drawing (F127.4.1, Louis's pick on the phone check): no empty ground around
+    /// it, only room for its outline, so a phone's narrow chat shrinks the words less.
+    /// </summary>
+    [Test]
+    public void ThePagesCopy_IsTrimmedToTheDrawing()
+    {
+        var file = XElement.Parse(DiagramRenderers.Render(Ticket()));
+        var page = XElement.Parse(DiagramRenderers.RenderForPage(Ticket()));
+        double fileWidth = double.Parse((string)file.Attribute("width")!, CultureInfo.InvariantCulture);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That((string?)page.Attribute("viewBox"), Does.StartWith("-2 -2 "));
+            Assert.That(double.Parse((string)page.Attribute("width")!, CultureInfo.InvariantCulture),
+                Is.EqualTo(fileWidth - 44));
+            Assert.That(page.Elements(Svg + "rect").Where(rect => (string?)rect.Attribute("class") == "ground"),
+                Is.Empty);
         });
     }
 
