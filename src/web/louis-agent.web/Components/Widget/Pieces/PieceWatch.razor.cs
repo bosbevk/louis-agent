@@ -43,6 +43,18 @@ public partial class PieceWatch : IAsyncDisposable
         return Picked.InvokeAsync(piece);
     }
 
+    /// <summary>What a piece the guide showed, or a card opened, does: the widget marks it selected, nothing sent.</summary>
+    [Parameter]
+    public EventCallback<PageArea> Shown { get; set; }
+
+    /// <summary>The module's call: the guide showed this piece, or the visitor opened this card, so it is selected.</summary>
+    [JSInvokable("Shown")]
+    public Task ShownAsync(string id, string heading)
+    {
+        var piece = new PageArea(id, heading);
+        return Shown.InvokeAsync(piece);
+    }
+
     /// <summary>Takes the ring off the piece, when the chip is closed.</summary>
     public async Task ClearAsync()
     {

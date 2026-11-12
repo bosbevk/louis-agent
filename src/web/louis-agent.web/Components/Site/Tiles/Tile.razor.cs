@@ -43,13 +43,13 @@ public partial class Tile
     private string Classes => (Value is null ? "panel reveal" : "panel reveal stat") + AccentClass;
 
     /// <summary>
-    /// A tile of words is a piece a visitor can select for the guide (F127.7); a tile of a number isn't. Razor leaves
-    /// the attribute out when this is false, and out the id with it.
+    /// Every tile is a piece a visitor or the guide can select (F127.7), a tile of words by its title and one of a
+    /// number by its number. Razor leaves the attribute out when this is false, and out the id with it.
     /// </summary>
-    private bool IsPiece => Title is not null && Value is null;
+    private bool IsPiece => (Title ?? Value) is not null;
 
-    /// <summary>The piece's id from its title, or none for a tile that isn't one.</summary>
-    private string? PieceAddress => IsPiece ? PieceId.Of(Title!) : null;
+    /// <summary>The piece's id from its title or its number, or none for a tile with neither.</summary>
+    private string? PieceAddress => (Title ?? Value) is { } name ? PieceId.Of(name) : null;
 
     /// <summary>The class an accent's colour hangs on, named for the colour; none for a plain tile.</summary>
     private string AccentClass => Accent == TileAccent.None ? "" : $" accent-{Accent.Wire()}";

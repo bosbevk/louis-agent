@@ -239,8 +239,8 @@ public partial class ChatWidget : IAsyncDisposable
     private string PieceLabel => string.Format(Text.AboutPiece, _piece?.Heading);
 
     /// <summary>
-    /// A piece picked on the page (F127.7, Louis's pick: the guide explains it at once): the panel opens and the guide is
-    /// asked about it, as the door asks.
+    /// A piece picked on the page (F127.7, Louis's pick: the guide explains it at once): the panel opens and the guide
+    /// is asked about it, as the door asks.
     /// </summary>
     private async Task PickPieceAsync(PageArea piece)
     {
@@ -252,6 +252,12 @@ public partial class ChatWidget : IAsyncDisposable
         StateHasChanged();
         await SendAsync();
     }
+
+    /// <summary>
+    /// Where the visitor is looking (F127.7): a piece the guide showed, or a card the visitor opened, is selected with
+    /// nothing sent, and the visitor's next message carries it.
+    /// </summary>
+    private void MarkPiece(PageArea piece) => _piece = piece;
 
     /// <summary>The chip closed: the piece is let go, its ring taken off the page.</summary>
     private async Task ClearPieceAsync()

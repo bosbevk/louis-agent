@@ -91,4 +91,30 @@ public class PickedPieceTests
             Assert.That(Sent(handler)[1], Does.Not.Contain("\"selected\""));
         });
     }
+
+    /// <summary>
+    /// Louis: "the agent must be able to select each one going through the tour", "from anywhre that matter". A piece
+    /// the guide showed is selected without a word sent, since the guide chose it: the chip shows it, and the visitor's
+    /// next message carries it.
+    /// </summary>
+    [Test]
+    public void APieceTheGuideShowed_IsSelected_WithNothingSent()
+    {
+        var (ctx, cut, handler) = Widget();
+        using var _ = ctx;
+        cut.Find("button.widget-button").Click();
+
+        cut.InvokeAsync(() => cut.FindComponent<PieceWatch>().Instance.ShownAsync("100-adrs", "100+ ADRs"));
+        bool quiet = Sent(handler).Count == 0;
+        cut.Find("#composer-input").Input("what are those?");
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => Sent(handler).Count == 1, TimeSpan.FromSeconds(10));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(quiet, Is.True, "nothing sent when the guide selects");
+            Assert.That(cut.Find(".piece-chip").TextContent, Does.Contain("100+ ADRs"));
+            Assert.That(Sent(handler)[0], Does.Contain("\"selected\":{\"id\":\"100-adrs\""));
+        });
+    }
 }

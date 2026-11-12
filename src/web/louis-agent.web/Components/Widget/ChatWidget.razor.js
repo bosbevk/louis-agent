@@ -9,15 +9,25 @@ export function pageText() {
     // A paged section's first page is the section itself, so its heading carries "page 1 of 2: ..." and only the pages
     // after it are places of their own; listed apart, a walkthrough stopped twice on the same screen (F118).
     const fold = (s) => (s ?? "").replace(/\s+/g, " ").trim();
-    const areas = [...document.querySelectorAll("section[id], [data-card][id]")].flatMap((area) => {
-        const heading = area.matches("[data-card]")
-            ? `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`
-            : fold(area.querySelector(".kicker, h1, h2, h3")?.textContent);
+    // Every piece the guide can select (F127.7) is listed too, in the page's order, by its title or its number.
+    const places = "section[id], [data-card][id], [data-piece][id]";
+    const areas = [...document.querySelectorAll(places)].flatMap((area) => {
+        const heading = headingOf(area, fold);
         const [first, ...later] = pagesOf(area, fold);
         return [{ id: area.id, heading: first ? `${heading} (${first.heading})` : heading }, ...later];
     });
     return { url: location.pathname, title: document.title, text, areas, links: linksOf(main, fold) };
 }
+
+// A place's heading as the guide reads it: a card by its title, marked as one that opens; a piece by its title or its
+// number, marked as one the guide selects; a section by its kicker, else its heading.
+const headingOf = (area, fold) => {
+    if (area.matches("[data-card]")) return `${fold(area.querySelector(".card-title")?.textContent)} (card, opens)`;
+    if (area.matches("[data-piece]")) {
+        return `${fold(area.querySelector("h3, h4, .stat-value")?.textContent) || area.id} (piece, selects)`;
+    }
+    return fold(area.querySelector(".kicker, h1, h2, h3")?.textContent);
+};
 
 // The page's links within the site (FX120), each once, by the address it opens and its words, so the guide can take
 // the visitor where a link on their screen leads; a link with no words names its address.
@@ -124,6 +134,11 @@ export function showArea(name, pageAddress, address) {
             }
             const card = area.matches("[data-card]");
             if (card && area.getAttribute("aria-expanded") !== "true") area.click();
+            // A piece the guide shows is pressed for the visitor (F127.7): the piece watch marks it and tells the
+            // widget, so the chip shows it. A card opened by the click above is marked by that click.
+            if (!card && area.matches("[data-piece]")) {
+                document.dispatchEvent(new CustomEvent("piece-shown", { detail: area.id }));
+            }
             const target = card ? area.closest(".card-deck") ?? area : area;
             if (page) turnToPage(area, Number(page));
             else turnTo(target);
