@@ -87,6 +87,8 @@ public class GuideSkillsTests
             Assert.That(voice, Does.Contain("On a demo page, the *What to watch* stop ends with `Offer`: Ask it live"));
             Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
+            Assert.That(skill, Does.Contain("End with `Offer`: two or three questions they could ask it next"),
+                "Louis: \"when he is the teacher he must give me offers of what I could ask\"");
         });
     }
 
