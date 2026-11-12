@@ -26,12 +26,13 @@
         "kind": "the tools that draw",
         "members": [
           "+ShowCard(kicker, title, rows, subtitle?, status?, note?) string",
-          "+Offer(question, choices) string"
+          "+Offer(question, choices) string, ends the turn",
+          "+AskFor(question, fields) string, ends the turn"
         ]
       },
       {
         "id": "checks",
-        "name": "CardCheck, OfferCheck",
+        "name": "CardCheck, OfferCheck, FormCheck",
         "kind": "the library's rules, a tested duplicate",
         "members": [
           "+Problem(...) string?"
@@ -50,7 +51,7 @@
       },
       {
         "id": "web",
-        "name": "CardCall, OfferCall",
+        "name": "CardCall, OfferCall, AskForCall",
         "kind": "louis-agent.web, the widget draws",
         "tone": "violet"
       }
