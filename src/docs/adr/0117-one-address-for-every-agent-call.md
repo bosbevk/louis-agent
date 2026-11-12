@@ -72,6 +72,21 @@ Louis's picks during the build, each a rule now:
   script instead of being recorded again, and the recipes eval before and after waits for Puls's return (F135).
 - **`StartMinion` stays as it is** until F127.5 puts the minions on the address.
 
+## What F127.4.2 settled (2026-11-12)
+
+The guided live demo (F127.3 picks 7 and 8, F127.4 picks 1, 6 to 8), each a rule now:
+
+- **The line under an answer tells each call's result**, its first line cut at 80 characters
+  (`[Answered by acme, did: ShowPage: Shown: /rooms/garden; SendLead: Sent]`), not only the tools' names.
+- **A session's work is served** (`GET /v1/sessions/{id}/work`): what it was asked, said, called and got back, never
+  its thinking. `ReadAgentWork` reads the whole session from its server, so turns someone else had with it count;
+  what streamed through the asker is the fallback.
+- **An asked session belongs to the visitor whose session asked:** the open door counts it in that visitor's day and
+  admits it for them, never against the server's own address.
+- **A page may hand the talk to the asked agent's own window** (`AgentWindows` in the web): the window shows the ask
+  in the visitor's words and the answer as it streams, then carries on in the same session; the asker's chat says
+  so in one line.
+
 ## Consequences
 
 - A new agent-to-agent call is a line in an identity's `Calls`, not a new tool. Any identity can ask another

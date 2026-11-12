@@ -54,6 +54,11 @@ one voice, three packs. Since F124 it is the framework's own, beside its site in
   `AskAgent` on this same container (`AGENT_PEERS: self=http://localhost:8080`), passes the answer on as the
   business's, says what the business did from the line under it, and reads its steps with `ReadAgentWork` when a
   visitor asks. It keeps the last word: it doesn't relay answers whole (`RelaysAnswersWhole` stays off).
+- It runs a demo live (F127.4.2, its skill `live-demo`, always loaded): on a demo page it offers *Ask it live* with
+  `Offer`, asks the business in the visitor's own words, and the page shows that talk in the business's own window,
+  where the visitor carries on in the same session; its own chat says so in one line, and on a phone it folds so the
+  window shows. Asked what happened, it retells it from the line under the answer or from `ReadAgentWork`, which reads
+  the business's whole session, the window's turns included.
 
 ## Open on purpose
 
