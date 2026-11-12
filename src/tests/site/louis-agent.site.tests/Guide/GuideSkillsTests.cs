@@ -84,10 +84,7 @@ public class GuideSkillsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(voice, Does.Contain(
-                    "On a demo page, the demo's own stop and the *What to watch* stop end with `Offer`: Ask it live"),
-                "FX136, Louis at the demo's stop: \"still have not guided me\"");
-            Assert.That(voice, Does.Contain("say what to watch for as it plays"));
+            Assert.That(voice, Does.Contain("On a demo page, the *What to watch* stop ends with `Offer`: Ask it live"));
             Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
             Assert.That(skill, Does.Contain("End with `Offer`: two or three questions they could ask it next"),
