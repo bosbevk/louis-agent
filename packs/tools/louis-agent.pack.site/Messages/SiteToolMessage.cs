@@ -113,4 +113,20 @@ public enum SiteToolMessage
     [Description("The receipt's {Part} runs {Most} characters at most; it has {Length}.")]
     [Holes(typeof(ReceiptTooLongHoles))]
     ReceiptTooLong,
+
+    [Description(
+        "Places on the site for \"{Words}\", the best first. Show one with ShowPage by its address.\n{Places}")]
+    [Holes(typeof(PlacesFoundHoles))]
+    PlacesFound,
+
+    [Description("- {Address}  {Heading} ({Kind})")]
+    [Holes(typeof(PlaceLineHoles))]
+    PlaceLine,
+
+    [Description("Nothing on the site matches \"{Words}\". Try other words, or open a page from the site's pages.")]
+    [Holes(typeof(NoPlaceFoundHoles))]
+    NoPlaceFound,
+
+    [Description("This host serves no site to search. Open a page from the site's pages instead.")]
+    NoSiteToSearch,
 }

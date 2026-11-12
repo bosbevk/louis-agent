@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Sites;
 using LouisAgent.Packs.Site.Messages;
 using LouisAgent.Packs.Site.Messages.Holes.Pages;
 
@@ -17,8 +18,40 @@ namespace LouisAgent.Packs.Site.Tools;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
-public sealed class SiteTools
+public sealed class SiteTools(ISitePlaces? places = null)
 {
+    private readonly ISitePlaces _places = places ?? NoSitePlaces.Instance;
+
+    private const int MostPlaces = 5;
+
+    /// <summary>
+    /// Finds places on any page of the site by the visitor's words (F127.7), so the guide can show one next: the
+    /// site's own pages are the index, never a list in the prompt.
+    /// </summary>
+    [Description(
+        "Finds places on any page of this site by a few words: its sections, cards and pieces, each with its own " +
+        "address, the best first. Use it when what they ask about may be on another page, then show the right one " +
+        "with ShowPage.")]
+    public async Task<string> FindPlace(
+        [Description("A few words for what they ask about, such as prompt caching or the guesthouse.")]
+        string words,
+        CancellationToken cancellationToken = default)
+    {
+        if (!_places.HasSite) return MessageText.Format(SiteToolMessage.NoSiteToSearch);
+
+        var found = await _places.FindAsync(words, MostPlaces, cancellationToken);
+        if (found.Count == 0)
+        {
+            var asked = new NoPlaceFoundHoles(words);
+            return MessageText.Format(SiteToolMessage.NoPlaceFound, asked);
+        }
+
+        // One line a place, then the list under the words searched for.
+        var lines = found.Select(place => MessageText.Format(SiteToolMessage.PlaceLine, PlaceLineHoles.Of(place)));
+        var list = new PlacesFoundHoles(words, string.Join('\n', lines));
+        return MessageText.Format(SiteToolMessage.PlacesFound, list);
+    }
+
     /// <summary>Takes the visitor to a page of this site, or to an area of it.</summary>
     [Description(
         "Opens a place of this site in the visitor's browser by its own address, and lights it up: a page, a section " +

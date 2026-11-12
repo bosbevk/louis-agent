@@ -63,9 +63,9 @@ public class SitePackTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(toolset.MissingSettings(null!), Is.Empty);
+            Assert.That(toolset.MissingSettings(new NoPackContext()), Is.Empty);
             Assert.That(toolset.ToolTypes, Is.EqualTo(new[] { typeof(SiteTools), typeof(CardTools) }));
-            Assert.That(toolset.CreateTools(null!).Select(tools => tools.GetType()),
+            Assert.That(toolset.CreateTools(new NoPackContext()).Select(tools => tools.GetType()),
                 Is.EqualTo(new[] { typeof(SiteTools), typeof(CardTools) }));
         });
     }

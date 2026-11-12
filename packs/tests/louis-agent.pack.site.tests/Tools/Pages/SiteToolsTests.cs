@@ -1,6 +1,6 @@
 using LouisAgent.Packs.Site.Tools;
 
-namespace LouisAgent.Packs.Site.Tests.Tools;
+namespace LouisAgent.Packs.Site.Tests.Tools.Pages;
 
 /// <summary>
 /// The one tool of the site toolset (F117): it takes a page of this site, with an area after the hash when there is

@@ -2,7 +2,13 @@ using LouisAgent.Api.Site;
 using LouisAgent.Api.Site.Places;
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Composition.Sites;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace LouisAgent.Api.Tests.Site.Places;
@@ -49,6 +55,31 @@ public class SitePlacesTests
                     "$0.66 → $0.13 a benchmark run before and after prompt caching"),
                 new SitePlace("/places/the-guide", "The guide", SitePlaceKind.Card, "The guide Louis in the corner"),
             }));
+    }
+
+    /// <summary>
+    /// Mapping a site hands its places to the agent's tools, with no line in the site's program (ADR 0120): the
+    /// engines' context finds them.
+    /// </summary>
+    [Test]
+    public async Task MappingASite_GivesTheAgentItsPlaces()
+    {
+        var engines = new AgentEngineFactory(new FakeChatClient(),
+            new AgentOptions { WorkspaceRoot = Path.GetTempPath() });
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Services.AddSingleton(engines);
+        await using var app = builder.Build();
+        bool before = engines.Context.Places.HasSite;
+
+        app.MapLouisAgentSite(typeof(SitePlacesTests).Assembly, _ => { }, home: "home");
+        var found = await ((ISitePlaces)engines.Context.Places).FindAsync("caching", 1);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(before, Is.False);
+            Assert.That(found.Select(place => place.Address), Is.EqualTo(new[] { "/places/0-66-0-13" }));
+        });
     }
 
     /// <summary>A search finds the place whose words hold the visitor's, its heading first.</summary>

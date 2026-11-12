@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Pricing;
+using LouisAgent.Composition.Sites;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Web.Rendering;
@@ -39,4 +40,10 @@ public interface IPackContext
     /// would change the next. Read it on each call, because the same tools serve trials and real chats.
     /// </summary>
     bool InATrial => false;
+
+    /// <summary>
+    /// The places of the website this host serves (F127.7), each section, card and piece at its own address; one that
+    /// has no site when the host serves none.
+    /// </summary>
+    ISitePlaces Places => NoSitePlaces.Instance;
 }
