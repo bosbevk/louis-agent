@@ -97,6 +97,19 @@ public enum SubSessionToolMessage
     [Description("Error: {Identity} has no voice of its own to answer in. Ask one of its roles: {Roles}.")]
     AddressNoVoice,
 
+    [Description(
+        "Error: {Peer} has no agent named {Identity}, so nothing was asked. It has: {Identities}.")]
+    PeerUnknownIdentity,
+
+    [Description(
+        "Error: {Peer} refused this server's key, so nothing was asked. Tell the person their question couldn't " +
+        "reach {Peer} now.")]
+    PeerKeyRefused,
+
+    [Description(
+        "Error: {Peer} didn't answer ({Reason}), so nothing was asked. Tell the person it couldn't be reached now.")]
+    PeerUnreachable,
+
     [Description("Error: {Identity} has no role '{Role}'. Its roles: {Roles}.")]
     AddressUnknownRole,
 
