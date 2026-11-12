@@ -15,7 +15,7 @@ namespace LouisAgent.Starter;
 /// <c>AddSiteAreas</c>, and the site's tests hand it the same, so they draw what the site draws.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
-public static class StarterAreas
+public static class WebsiteAreas
 {
     /// <summary>Names the site's areas: a pack's view goes in the admin's, as <c>Admin(layout, views => …)</c>.</summary>
     public static void Name(SiteAreasBuilder areas) =>

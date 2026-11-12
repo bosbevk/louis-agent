@@ -23,7 +23,7 @@ until each was edited.
   words and addresses. It never names a framework part (`SiteFrames`, `PackViews`, `ChatHandoff`, a library's
   `AddLouisAgent…`) and never lists the framework's page assemblies: its router reads `SiteAreas.PageAssemblies`.
 - **One Composition Root per implementation** (Seemann): a static `Name` method (`CodeReviewAreas`, `PulsAreas`,
-  `StarterAreas`, `LouisAgentDevAreas`) that its program and its tests both hand the builder, so the tests draw what
+  `WebsiteAreas` in the starter, so a spawned site carries no "Starter", `LouisAgentDevAreas`) that its program and its tests both hand the builder, so the tests draw what
   the program draws.
 - **A new part is a new area or a new builder method**, added to the framework once, and every site that names the area
   gets it.
