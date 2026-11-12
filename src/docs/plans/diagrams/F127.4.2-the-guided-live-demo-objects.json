@@ -1,0 +1,20 @@
+{
+  "kind": "flow",
+  "title": "F127.4.2 the guided live demo: one page in memory",
+  "caption": "The guide's turn keeps its ask; the ask names the business's session, which the window's runner now holds as its own.",
+  "flow": {
+    "nodes": [
+      { "id": "guideturn", "label": "Turn\nthe guide's answer", "icon": "message", "tone": "violet" },
+      { "id": "ask", "label": "Block: AskAgent\nSubSessionId: sess_b", "icon": "file", "tone": "teal" },
+      { "id": "subturn", "label": "SubTurn\nthe business's answer", "icon": "message", "tone": "teal" },
+      { "id": "windows", "label": "AgentWindows\nshows: seemeeu-guesthouse", "icon": "browser", "tone": "green" },
+      { "id": "runner", "label": "The window's ChatRunner\nChat sess_b", "icon": "stack", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "guideturn", "to": "ask" },
+      { "from": "ask", "to": "subturn" },
+      { "from": "ask", "to": "windows", "word": "Asked" },
+      { "from": "windows", "to": "runner", "word": "Adopt" }
+    ]
+  }
+}

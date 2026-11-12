@@ -1,0 +1,61 @@
+{
+  "kind": "classes",
+  "title": "F127.4.2 the guided live demo: the interface design",
+  "caption": "The did line and a session's work make what a business did readable; the door counts its session as the visitor's; the page's windows take the talk over.",
+  "classes": {
+    "types": [
+      {
+        "id": "did",
+        "name": "DidLine",
+        "kind": "static, step 2",
+        "members": [ "+Of(calls) string: Tool: result, each" ]
+      },
+      {
+        "id": "work",
+        "name": "AgentWorkTools",
+        "kind": "changed, step 4",
+        "members": [ "+ReadAgentWork(address) string: the whole session" ]
+      },
+      {
+        "id": "reply",
+        "name": "SessionWorkReply, WorkStep",
+        "kind": "records, step 3",
+        "members": [ "+SessionId, Steps", "+Kind, Text, Tool?, Failed" ]
+      },
+      {
+        "id": "endpoint",
+        "name": "GET /v1/sessions/{id}/work",
+        "kind": "SessionHandlers, step 3"
+      },
+      {
+        "id": "door",
+        "name": "OpenDoor",
+        "kind": "changed, step 5",
+        "members": [ "+AdmitChild(parentId, childId)" ]
+      },
+      {
+        "id": "windows",
+        "name": "AgentWindows",
+        "kind": "an Observer, step 6",
+        "members": [ "+Show(identity), Shows(identity)", "+event Asked(Block)" ]
+      },
+      {
+        "id": "live",
+        "name": "MockLiveChat",
+        "kind": "changed, step 7",
+        "members": [ "+takes the asked session: ChatRunner.Adopt" ]
+      },
+      {
+        "id": "widget",
+        "name": "ChatWidget",
+        "kind": "changed, steps 6 and 8"
+      }
+    ],
+    "relations": [
+      { "from": "work", "to": "endpoint", "kind": "uses", "word": "reads" },
+      { "from": "endpoint", "to": "reply", "kind": "creates" },
+      { "from": "widget", "to": "windows", "kind": "uses", "word": "hands the ask to" },
+      { "from": "live", "to": "windows", "kind": "uses", "word": "listens" }
+    ]
+  }
+}
