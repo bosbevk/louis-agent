@@ -1818,6 +1818,27 @@
       }
     },
     {
+      "Name": "ShowReceipt",
+      "Description": "Shows the visitor a receipt in the chat once something went on their behalf, such as a request passed on: a short title saying what happened and one line on what comes next. Call it only after it really went; the card the visitor filled in already shows the details, so never repeat them here.",
+      "Schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "description": "What happened, up to 40 characters, such as Sent to the owner.",
+            "type": "string"
+          },
+          "line": {
+            "description": "What comes next, one line of up to 120 characters, such as when and how they hear back.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "line"
+        ]
+      }
+    },
+    {
       "Name": "SortCase",
       "Description": "Ends the sorting of an error with the department it belongs to. Call it once, as the last thing you do: the department's name, one of those you were given, and why, in a sentence.",
       "Schema": {

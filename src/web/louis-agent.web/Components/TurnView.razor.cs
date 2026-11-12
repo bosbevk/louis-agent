@@ -50,6 +50,10 @@ public partial class TurnView : IAsyncDisposable
     [Parameter]
     public EventCallback<string> Chosen { get; set; }
 
+    /// <summary>Whether the visitor's message is a bubble; not when a card before it already shows it (FX142).</summary>
+    [Parameter]
+    public bool ShowUserText { get; set; } = true;
+
     private Turn? _renderedTurn;
     private string? _renderedAnswer;
     private bool _wasStreaming;

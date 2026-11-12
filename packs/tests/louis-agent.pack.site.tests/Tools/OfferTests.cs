@@ -2,7 +2,7 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Packs.Site.Tools.Cards;
 
-namespace LouisAgent.Packs.Site.Tests;
+namespace LouisAgent.Packs.Site.Tests.Tools;
 
 /// <summary>
 /// <c>Offer</c> (F127.4.1, Louis: "when the guide must give options to the user, like you do for me"): the agent
