@@ -16,6 +16,7 @@ internal static class SessionEndpoints
 
         routes.MapPost("/sessions", handlers.CreateSession);
         routes.MapGet("/sessions/{id}", handlers.GetSession);
+        routes.MapGet("/sessions/{id}/work", handlers.GetSessionWork);
         routes.MapDelete("/sessions/{id}", handlers.DeleteSession);
         routes.MapPost("/sessions/{id}/cancel", handlers.CancelSession);
         routes.MapPost("/sessions/{id}/messages", handlers.SendMessage);

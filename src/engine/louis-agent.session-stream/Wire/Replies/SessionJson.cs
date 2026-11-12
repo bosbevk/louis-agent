@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LouisAgent.SessionStream.Wire.Replies;
 
@@ -15,8 +16,14 @@ namespace LouisAgent.SessionStream.Wire.Replies;
 public static class SessionJson
 {
     /// <summary>Pass this to <c>TypedResults.Json</c> for a session reply, and to a client reading one.</summary>
+    /// <remarks>
+    /// An enum is written by name in snake case (F127.4.2: a work step's kind), which is its <c>[WireName]</c>, a test
+    /// holds; .NET's own converter, of three (a kind as a plain string loses the enum; a converter of our own reading
+    /// <c>[WireName]</c> is code to keep for one enum).
+    /// </remarks>
     public static readonly JsonSerializerOptions SnakeCase = new(JsonSerializerDefaults.Web)
     {
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, allowIntegerValues: false) }
     };
 }

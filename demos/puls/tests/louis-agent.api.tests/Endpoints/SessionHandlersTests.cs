@@ -1,5 +1,6 @@
 using LouisAgent.Api.Contracts;
 using LouisAgent.SessionStream.Wire.Replies;
+using LouisAgent.SessionStream.Wire.Replies.Work;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Endpoints.Sessions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -16,6 +17,8 @@ public class SessionHandlersTests
             typeof(Task<Results<CreatedJson<SessionCreatedReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("GetSession",
             typeof(Results<JsonHttpResult<SessionReply>, JsonHttpResult<ApiError>>));
+        yield return new TestCaseData("GetSessionWork",
+            typeof(Results<JsonHttpResult<SessionWorkReply>, JsonHttpResult<ApiError>>));
         yield return new TestCaseData("DeleteSession",
             typeof(Results<JsonHttpResult<SessionDeletedReply>, JsonHttpResult<ApiError>>));
         yield return new TestCaseData("CancelSession",
