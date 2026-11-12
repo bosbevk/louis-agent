@@ -67,16 +67,111 @@ public class DocsDiagramsTests
     [Test]
     public void EveryProjectDoc_ShowsItsOverview()
     {
-        var bare = DiagramSync.Roots(TestPaths.RepoRoot)
-            .Select(root => Path.Combine(root, "projects"))
-            .Where(Directory.Exists)
-            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.md"))
-            .Where(doc => Path.GetFileName(doc) != "README.md")
-            .Where(doc => !Targets(File.ReadAllText(doc))
-                .Contains($"{DiagramSync.Folder}/{Path.GetFileNameWithoutExtension(doc)}.svg"));
+        var bare = ProjectDocs().Where(doc => !Targets(File.ReadAllText(doc))
+            .Contains($"{DiagramSync.Folder}/{Path.GetFileNameWithoutExtension(doc)}.svg"));
 
         Assert.That(bare.Select(Relative), Is.Empty, "a project doc without its overview");
     }
+
+    /// <summary>
+    /// Every project doc shows all four kinds of picture (CL60.5, Louis: "so each project has a
+    /// architecture/flow/seq/interface diagrams"): its overview, a flow, a sequence and its types. A doc still to draw
+    /// is pending, and a pending doc that has all four fails too.
+    /// </summary>
+    /// <remarks>
+    /// A ratchet, as <c>RazorHasNoCodeTests</c> holds its pending code (CL60.5, Claude's pick Q3): the rule lands a
+    /// few docs a step, each step taking its docs off the list, and a doc that's done can't slip back.
+    /// </remarks>
+    [Test]
+    public void EveryProjectDoc_ShowsItsFourDiagrams()
+    {
+        var lacking = ProjectDocs().Where(doc => !Enum.GetValues<DiagramKind>().All(KindsShown(doc).Contains))
+            .Select(Relative).ToHashSet();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(lacking.Except(PendingFour).Order(), Is.Empty,
+                "a project doc without all four kinds of picture");
+            Assert.That(PendingFour.Except(lacking).Order(), Is.Empty,
+                "a pending doc has all four: take it off the list");
+        });
+    }
+
+    /// <summary>The project docs still to get their four pictures; a step removes the ones it draws.</summary>
+    private static readonly HashSet<string> PendingFour =
+    [
+        // The engine.
+        "src/docs/projects/louis-agent.core.md",
+        "src/docs/projects/louis-agent.core.anthropic.md",
+        "src/docs/projects/louis-agent.core.ollama.md",
+        "src/docs/projects/louis-agent.core.openai.md",
+        "src/docs/projects/louis-agent.core.telemetry.md",
+        "src/docs/projects/louis-agent.core.web.md",
+
+        // The hosts.
+        "src/docs/projects/louis-agent.accounts.md",
+        "src/docs/projects/louis-agent.acp.md",
+        "src/docs/projects/louis-agent.api.md",
+        "src/docs/projects/louis-agent.cli.md",
+        "src/docs/projects/louis-agent.mcp.md",
+        "src/docs/projects/louis-agent.usage-probe.md",
+
+        // The evals.
+        "src/docs/projects/louis-agent.api.evals.md",
+        "src/docs/projects/louis-agent.evals.md",
+        "src/docs/projects/louis-agent.evals.checks.md",
+        "src/docs/projects/louis-agent.evals.protocol.md",
+        "src/docs/projects/louis-agent.evals.runner.md",
+        "src/docs/projects/louis-agent.web.evals.md",
+        "src/docs/projects/tests.md",
+
+        // The web.
+        "src/docs/projects/louis-agent.diagrams.md",
+        "src/docs/projects/louis-agent.identity.guide.md",
+        "src/docs/projects/louis-agent.identity.showroom.md",
+        "src/docs/projects/louis-agent.site.md",
+        "src/docs/projects/louis-agent.web.md",
+        "src/docs/projects/louis-agent.web.accounts.md",
+
+        // The packs.
+        "packs/docs/projects/general-packs.md",
+        "packs/docs/projects/louis-agent.pack.calculator.md",
+        "packs/docs/projects/louis-agent.pack.docs.md",
+        "packs/docs/projects/louis-agent.pack.leads.md",
+        "packs/docs/projects/louis-agent.pack.recipes.md",
+        "packs/docs/projects/louis-agent.pack.shop-prices.md",
+        "packs/docs/projects/louis-agent.pack.site.md",
+        "packs/docs/projects/louis-agent.pack.triage.md",
+        "packs/docs/projects/louis-agent.pack.where-to-buy.md",
+
+        // The demos.
+        "demos/louis-agent/docs/projects/louis-agent.code-review.md",
+        "demos/louis-agent/docs/projects/louis-agent.identity.triage.md",
+        "demos/louis-agent/docs/projects/louis-agent.orchestrator.md",
+        "demos/louis-agent/docs/projects/orchestrator-runbooks.md",
+        "demos/puls/docs/projects/louis-agent.host-packs.md",
+        "demos/puls/docs/projects/louis-agent.identity.puls.judges.md",
+        "demos/puls/docs/projects/louis-agent.identity.puls.md",
+        "demos/puls/docs/projects/louis-agent.puls.md",
+    ];
+
+    /// <summary>The kinds of picture a doc shows, read from each picture's JSON.</summary>
+    private static IReadOnlySet<DiagramKind> KindsShown(string doc) => Targets(File.ReadAllText(doc))
+        .Where(target => target.Contains($"{DiagramSync.Folder}/", StringComparison.Ordinal))
+        .Select(target => Path.ChangeExtension(Path.Combine(Path.GetDirectoryName(doc)!, target), ".json"))
+        .Where(File.Exists)
+        .Select(json => DiagramReader.Read(File.ReadAllText(json)).Kind)
+        .ToHashSet();
+
+    /// <summary>
+    /// Every project doc, the framework's, the packs' and each demo's: a demo's root is the whole demo, so its
+    /// <c>projects</c> folder sits deeper, in its <c>docs</c>.
+    /// </summary>
+    private static IEnumerable<string> ProjectDocs() => DiagramSync.Roots(TestPaths.RepoRoot)
+        .Where(Directory.Exists)
+        .SelectMany(root => Directory.EnumerateDirectories(root, "projects", SearchOption.AllDirectories))
+        .SelectMany(folder => Directory.EnumerateFiles(folder, "*.md"))
+        .Where(doc => Path.GetFileName(doc) != "README.md");
 
     /// <summary>
     /// In every flow picture, a class chart's too (CL60.4, drawn as a flow), no word leaves the drawing or sits on a
