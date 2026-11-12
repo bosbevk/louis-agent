@@ -47,6 +47,8 @@ public class SitePackTests
             Assert.That(guide, Does.Contain("`(piece, selects)`"));
             Assert.That(guide, Does.Contain("[The visitor selected the piece"));
             Assert.That(guide, Does.Contain("is pressed for them"));
+            Assert.That(guide, Does.Contain("a stop on a piece shows that piece by its own address, never the section"),
+                "FX146: a walk over the tiles moves the selection with it");
             Assert.That(guide, Does.Contain("not on the page they are on, call `FindPlace` first, then `ShowPage`"),
                 "Louis: \"from anywhre that matter\"; the site's own pages are the index, not a map in the prompt");
         });

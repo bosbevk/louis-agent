@@ -5,6 +5,7 @@ using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Components.Widget.Door;
+using LouisAgent.Web.Components.Widget.Pieces;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -105,6 +106,35 @@ public class ChatWidgetTests
             Assert.That(shown.Select(call => call.Arguments[0]), Is.EqualTo(new[] { "levels" }));
             Assert.That(shown.Select(call => call.Arguments[2]), Is.EqualTo(new[] { "/identities/levels" }),
                 "the bar shows the place's own address (ADR 0107)");
+        });
+    }
+
+    /// <summary>
+    /// FX146, Louis's walk over the landing's tiles: the guide moved on to the next place, but the first tile stayed
+    /// selected and its chip went with every message after. Showing another place lets the selection go: the chip
+    /// closes and the page's mark comes off (a piece the guide shows is selected again by the page's own event).
+    /// </summary>
+    [Test]
+    public void ShowingAnotherPlace_LetsTheSelectedPieceGo()
+    {
+        using var ctx = ContextStreaming(ShowPageStream);
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
+        module.Setup<Page>("pageText").SetResult(new Page("/", "louis-agent", "An AI agent framework.", []));
+        module.SetupVoid("showArea", _ => true);
+        var pieces = ctx.JSInterop.SetupModule(FrameworkScripts.PieceWatch);
+        pieces.SetupVoid("clear", _ => true);
+        var cut = Render(ctx);
+        cut.Find("button.widget-button").Click();
+        cut.InvokeAsync(() => cut.FindComponent<PieceWatch>().Instance.ShownAsync("0-66-0-13", "$0.66 → $0.13"));
+        bool chipBefore = cut.FindAll(".piece-chip").Count == 1;
+
+        Send(cut, "and the levels?");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(chipBefore, Is.True);
+            Assert.That(cut.FindAll(".piece-chip"), Is.Empty, "the chip goes with the selection");
+            Assert.That(pieces.Invocations.Select(call => call.Identifier), Does.Contain("clear"));
         });
     }
 

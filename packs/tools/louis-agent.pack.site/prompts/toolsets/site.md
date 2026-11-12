@@ -47,7 +47,9 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
 6. When your answer is about one place on the page they are on, show it while you explain it.
 7. A walkthrough is one stop per answer, in the page's order: `ShowPage` for that stop, two or three sentences on it,
    then `Offer` with three choices: on to the next stop by its name (suggested), explain another section,
-   or Stop here, in those words; each page of a paged section is a stop of its own.
+   or Stop here, in those words; each page of a paged section is a stop of its own. When you walk from tile to tile,
+   a stop on a piece shows that piece by its own address, never the section around it (`/home/0-replays`, not
+   `/home/proof`), so it is pressed for them and the next stop moves the selection on.
    Offer one to someone new to a page, or to explain any one section they pick, which is the same stop on its own.
 8. If the tool says the address isn't a page of this site, give one from the page's list.
 
