@@ -31,7 +31,9 @@ public sealed record SiteFocuses(string? Default, IReadOnlyList<FocusPart> Parts
     /// <summary>The page's path alone: no host, no query, no place in it, one leading slash.</summary>
     private static string PathOf(string address)
     {
-        string path = Uri.TryCreate(address, UriKind.Absolute, out var whole) ? whole.AbsolutePath : address;
+        // Only a web address gives its path: on Linux "/demos?x=1" reads as a file address, its query escaped into it.
+        bool web = Uri.TryCreate(address, UriKind.Absolute, out var whole) && whole.Scheme is "http" or "https";
+        string path = web ? whole!.AbsolutePath : address;
         int cut = path.IndexOfAny(['?', '#']);
         return "/" + (cut < 0 ? path : path[..cut]).Trim('/');
     }
