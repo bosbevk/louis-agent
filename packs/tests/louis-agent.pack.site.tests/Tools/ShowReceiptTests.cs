@@ -1,6 +1,6 @@
 using LouisAgent.Packs.Site.Tools;
 
-namespace LouisAgent.Packs.Site.Tests;
+namespace LouisAgent.Packs.Site.Tests.Tools;
 
 /// <summary>
 /// FX143, Louis on a sent lead shown again as a full ticket: "we should redesign that receipt", "show me 3 options",
