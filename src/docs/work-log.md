@@ -12,9 +12,9 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 98 | 85 |
+| Features (`F`) | 99 | 85 |
 | Fixes (`FX`) | 131 | 6 |
-| Cleanups (`CL`) | 32 | 26 |
+| Cleanups (`CL`) | 32 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -138,9 +138,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL53 | A price format per country | Cleanups |
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
+| CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (98 done)
+## Features (99 done)
 
 | Id | When | What |
 |---|---|---|
