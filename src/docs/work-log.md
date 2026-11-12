@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 98 | 85 |
-| Fixes (`FX`) | 127 | 6 |
+| Fixes (`FX`) | 128 | 6 |
 | Cleanups (`CL`) | 32 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -247,6 +247,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX138 | 2026-11-12 | Offering choices ends the guide's turn: a tool marked `[EndsTurn]` (the site pack's `Offer`) ends it once it succeeds, so the guide waits for the visitor's pick instead of running on to the next stop (Louis: "why would it do this?"; his pick of three: an attribute core honours) |
 | FX137 | 2026-11-12 | The page's tour asks the guide to start from its top ("Walk me through this page from its top, one section at a time."), so it no longer skips the heading for the section on screen (Louis: "it also skipped the top part") |
 | FX135 | 2026-11-12 | One guide for the whole site: the widget's runner, chat, session, open panel and size are kept per identity (`KeptGuide`, `GuideKeeper`), so a move between the showroom's layout and the site's carries the talk on, even mid-answer (Louis: "the agentsession must be for the whole site", "except the demos"); the guide above both frames comes after |
 | FX134 | 2026-11-12 | The business the guide asks knows the page it sits in: each window's page goes with the guide's message and `AskAgent` sends it to that business's voice, so it shows a room on its first answer (Louis: "the demo agent should know on which page he is on") |

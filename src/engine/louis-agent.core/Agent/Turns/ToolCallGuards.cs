@@ -22,8 +22,12 @@ namespace LouisAgent.Core.Agent.Turns;
 /// client pipeline. The pure safety checks (paths, secret files, SSRF) are in <c>Guardrails/</c>.
 /// </summary>
 /// <param name="registry">The engine's tools, kept on the loop's final request.</param>
-/// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record and its own trace span.</param>
-/// <param name="subSessionPromptBudget">The most tokens a sub-session's prompt should reach (FX14); 0: no limit.</param>
+/// <param name="summaryClient">
+/// The client for summaries: the provider's, outside the tool loop, with its own usage record and its own trace span.
+/// </param>
+/// <param name="subSessionPromptBudget">
+/// The most tokens a sub-session's prompt should reach (FX14); 0: no limit.
+/// </param>
 internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryClient, int subSessionPromptBudget = 0)
 {
     private static readonly ILogger Log = AgentLogging.For<ToolCallGuards>();
@@ -80,6 +84,10 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         string text = result?.ToString() ?? string.Empty;
         Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult,
             new { Tool = context.Function.Name, Result = LogContent.Of(text, cut: 300) }, tag: Tag);
+        // A tool that asks the person ends the turn once it succeeds, so the model waits for the answer (FX138).
+        if (context.Function.UnderlyingMethod?.IsDefined(typeof(EndsTurnAttribute), inherit: true) == true &&
+            !text.StartsWith("Error:", StringComparison.Ordinal))
+            context.Terminate = true;
         if (text.Length <= MaxToolResultChars) return result;
 
         // An oversized result (e.g. a huge diff) would blow the model's context window on the next request.
@@ -88,11 +96,12 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     }
 
     /// <summary>
-    /// Sits inside the tool-call loop. After <c>MaximumIterationsPerRequest</c> rounds, <see cref="FunctionInvokingChatClient"/>
-    /// sends one last request with no tools, so the model has to answer in text. Models that bind their thinking blocks to
-    /// the tool list (Claude Haiku 5.5 and later) reject that request with a 400, which loses the whole turn. This puts the
-    /// tools back unchanged with <see cref="ChatToolMode.None"/> (Anthropic: <c>tool_choice: none</c>): the tool list
-    /// matches every earlier request, and the model still can't call a tool.
+    /// Sits inside the tool-call loop. After <c>MaximumIterationsPerRequest</c> rounds,
+    /// <see cref="FunctionInvokingChatClient"/> sends one last request with no tools, so the model has to answer in
+    /// text. Models that bind their thinking blocks to the tool list (Claude Haiku 5.5 and later) reject that request
+    /// with a 400, which loses the whole turn. This puts the tools back unchanged with <see cref="ChatToolMode.None"/>
+    /// (Anthropic: <c>tool_choice: none</c>): the tool list matches every earlier request, and the model still can't
+    /// call a tool.
     /// </summary>
     internal ChatOptions? KeepToolsOnFinalRequest(ChatOptions? options)
     {
@@ -107,20 +116,22 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
 
     /// <summary>
     /// A sub-session's prompt budget (FX14). Every tool result stays in the prompt, and every later request pays for it
-    /// again; past Haiku 5.5's long-prompt threshold every request costs five times as much. When the next request of a
-    /// sub-session's turn is expected to pass the budget (the last prompt plus its last growth), it keeps its tools with
-    /// <see cref="ChatToolMode.None"/>, as the loop's final request does: the specialist answers from what it has.
+    /// again; past Haiku 5.5's long-prompt threshold every request costs five times as much. When the next request of
+    /// a sub-session's turn is expected to pass the budget (the last prompt plus its last growth), it keeps its tools
+    /// with <see cref="ChatToolMode.None"/>, as the loop's final request does: the specialist answers from what it has.
     /// </summary>
     /// <remarks>
-    /// Only a sub-session's turns (their usage tags name a parent turn): the user's own sessions may need a big context,
-    /// and nothing above a sub-session would notice the cost. Summary requests run outside the loop and aren't counted.
+    /// Only a sub-session's turns (their usage tags name a parent turn): the user's own sessions may need a big
+    /// context, and nothing above a sub-session would notice the cost. Summary requests run outside the loop and
+    /// aren't counted.
     /// </remarks>
     internal ChatOptions? KeepWithinPromptBudget(ChatOptions? options, UsageScope? scope)
     {
         if (subSessionPromptBudget <= 0 || scope?.Tags.Parent is null) return options;
         if (options?.Tools is not { Count: > 0 } || options.ToolMode == ChatToolMode.None) return options;
 
-        // Summaries run outside the loop; a sub-session's roll-up carries the specialist's tokens, not this prompt's size.
+        // Summaries run outside the loop; a sub-session's roll-up carries the specialist's tokens, not this prompt's
+        // size.
         var prompts = scope.Records
             .Where(r => r.Purpose is not (UsagePurpose.Summary or UsagePurpose.SubSession))
             .Select(r => Prompt(r.Tokens)).ToList();
@@ -171,7 +182,9 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         return response;
     }
 
-    /// <summary>Streaming form of <see cref="MarkTruncatedToolCallsAsync"/>; the tool loop only runs calls once the stream ends.</summary>
+    /// <summary>
+    /// Streaming form of <see cref="MarkTruncatedToolCallsAsync"/>; the tool loop only runs calls once the stream ends.
+    /// </summary>
     public static async IAsyncEnumerable<ChatResponseUpdate> MarkTruncatedToolCallsStreamingAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next,
         [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -188,7 +201,8 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     }
 
     /// <summary>
-    /// Condenses an oversized tool result with a separate, tool-less model call; falls back to truncation if that fails.
+    /// Condenses an oversized tool result with a separate, tool-less model call; falls back to truncation if that
+    /// fails.
     /// </summary>
     internal async Task<string> SummariseToolResultAsync(
         string toolName, string arguments, string output, string? userRequest,
