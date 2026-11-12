@@ -21,9 +21,10 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     /// The whole path, built once per tool class: the peer's API, the messenger and the roll-up into
     /// <paramref name="usageSink"/>.
     /// </summary>
-    public static PeerSession For(HttpClient http, string? apiKey, IUsageSink? usageSink, TimeProvider time)
+    public static PeerSession For(HttpClient http, string? apiKey, IUsageSink? usageSink, TimeProvider time,
+        IReadOnlyDictionary<Uri, string>? keys = null)
     {
-        var peer = new PeerHttp(http, apiKey);
+        var peer = new PeerHttp(http, apiKey, keys);
         return new PeerSession(peer, new SubSessionMessenger(peer, new UsageRollUp(usageSink, time)));
     }
 

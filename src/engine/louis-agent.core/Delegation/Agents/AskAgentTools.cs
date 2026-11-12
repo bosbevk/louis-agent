@@ -37,7 +37,8 @@ public sealed class AskAgentTools(
     HttpClient? http = null,
     TimeSpan? timeout = null,
     TimeProvider? time = null,
-    IUsageSink? usageSink = null)
+    IUsageSink? usageSink = null,
+    IReadOnlyDictionary<string, string>? peerKeys = null)
 {
     /// <summary>Asks one turn may make; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -49,11 +50,15 @@ public sealed class AskAgentTools(
     private readonly CallSlots _slots = new(MaxPerTurn, CallSlots.NoTurnWindow, time ?? TimeProvider.System);
 
     private readonly PeerSession _session =
-        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
+        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System,
+            PeerHttp.KeysByPeer(peers, peerKeys ?? new Dictionary<string, string>()));
 
-    /// <summary>The toolset as the engine builds it, from the instance's peers, key and identities.</summary>
+    /// <summary>
+    /// The toolset as the engine builds it, from the instance's peers, their keys and its identities.
+    /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
-        : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink)
+        : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
+            peerKeys: options.AgentPeerKeys)
     {
     }
 

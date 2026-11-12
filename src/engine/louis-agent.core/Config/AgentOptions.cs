@@ -213,16 +213,34 @@ public sealed class AgentOptions
     public string? AgentApiKey { get; set; }
 
     /// <summary>
+    /// AGENT_PEER_KEYS (F127.3.2), a secret: each peer's own key, as <c>name=key</c> pairs by commas, the names those
+    /// of AGENT_PEERS; a peer with none is sent AGENT_API_KEY.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> AgentPeerKeys { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
     /// HOST_TIME_ZONE (CL15): the zone <c>GetToday</c> and the API's place line use when the user shared none, an
     /// IANA name (a product's compose sets its own); null is the machine's own. Core names no country.
     /// </summary>
     public string? HostTimeZone { get; set; }
 
-    /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
+    /// <summary>A comma-separated list of names, lower-cased, each once.</summary>
     internal static IReadOnlyList<string> ParseNames(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Select(name => name.ToLowerInvariant()).Distinct().ToList();
 
+    /// <summary>
+    /// Parses AGENT_PEER_KEYS: a key kept whole after its pair's first equals sign; a pair with no name or no key is
+    /// skipped.
+    /// </summary>
+    internal static IReadOnlyDictionary<string, string> ParsePeerKeys(string? value) =>
+        (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
+        .Where(pair => pair.Length == 2 && pair[0].Length > 0 && pair[1].Length > 0)
+        .GroupBy(pair => pair[0].ToLowerInvariant())
+        .ToDictionary(g => g.Key, g => g.Last()[1], StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
     internal static IReadOnlyDictionary<string, Uri> ParsePeers(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
@@ -294,6 +312,7 @@ public sealed class AgentOptions
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
+            AgentPeerKeys = ParsePeerKeys(Get("AGENT_PEER_KEYS")),
             HostTimeZone = TimeZoneChecked(Get("HOST_TIME_ZONE")),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None,
                 CultureInfo.InvariantCulture, out int budget)

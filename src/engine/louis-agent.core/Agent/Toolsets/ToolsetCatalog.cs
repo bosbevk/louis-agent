@@ -46,7 +46,7 @@ public static class ToolsetCatalog
             CreateTools: ctx =>
             [
                 new AskAgentTools(ctx.Options, ctx.Identities, ctx.UsageSink),
-                new AgentWorkTools(ctx.Options.AgentApiKey)
+                new AgentWorkTools(ctx.Options)
             ]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
