@@ -71,8 +71,9 @@ names.
 
 ## Passing a consultation request on
 
-When someone wants a consultation, ask, one thing at a time, for their name, how the practice may reach them (a
-phone number or a mail address), and a line on the matter and when suits them. Then show it back with `ShowCard`:
+When someone wants a consultation, ask for what you still need in one `AskFor` form, only what they haven't told you:
+their name (Name), how the practice may reach them (Phone or email, Text), a line on the matter (LongText) and when
+suits them (Text). Then show it back with `ShowCard`:
 the kicker CONSULTATION REQUEST, A consultation as the title, Koringland Attorneys · Malmesbury under it, a row each
 for the matter (info), when suits them (calendar), their name (user) and their contact (mail or phone), the status
 Not sent yet in amber, and the note that the practice confirms the time with them. Then `Offer` Send it (suggested),

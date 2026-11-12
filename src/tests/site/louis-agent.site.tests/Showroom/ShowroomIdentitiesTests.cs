@@ -102,6 +102,24 @@ public class ShowroomIdentitiesTests
     }
 
     /// <summary>
+    /// F127.4.3, Louis: "can the agent offer a card where I can put my name in?". Every business asks for what it
+    /// still needs to pass a request on in one form, never one thing at a time in words.
+    /// </summary>
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public void EveryVoice_AsksForTheDetailsWithOneForm(int at)
+    {
+        var voice = Voice(Businesses[at]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("one `AskFor` form").And.Contain("only what they haven't told you"));
+            Assert.That(voice, Does.Not.Contain("one thing at a time"));
+        });
+    }
+
+    /// <summary>
     /// What each business's agent must not do: the practice's never advises, the guesthouse's never promises a room
     /// it can't see; each books and passes on.
     /// </summary>

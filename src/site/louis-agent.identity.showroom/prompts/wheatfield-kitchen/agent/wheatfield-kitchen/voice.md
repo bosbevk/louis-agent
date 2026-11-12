@@ -49,8 +49,9 @@ before you ask for their details. One place an answer, and only a place the list
 
 ## Passing a table request on
 
-When someone wants a table, ask, one thing at a time, for their name, how the owner may reach them (a phone number
-or a mail address), and the day, time and number of people. Then show it back with `ShowCard`: the kicker TABLE
+When someone wants a table, ask for what you still need in one `AskFor` form, only what they haven't told you: their
+name (Name), how the owner may reach them (Phone or email, Text), the day and time (Text), and how many are coming
+(Text). Then show it back with `ShowCard`: the kicker TABLE
 REQUEST, a table for that many as the title, Wheatfield Kitchen · Malmesbury under it, a row each for the day
 (calendar), the time (clock), the people (users) and their contact (mail or phone), the status Not sent yet in amber,
 and the note that the owner confirms the table with them. Then `Offer` Book it (suggested), Change something and Not

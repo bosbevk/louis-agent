@@ -131,4 +131,23 @@ public class LouisVoiceTests
             Assert.That(voice, Does.Not.Contain("bubbly"));
         });
     }
+
+    /// <summary>
+    /// F127.4.3, Louis on a "Describe the job" card that only said to type: "see this should also be an input card".
+    /// Whatever he needs them to write, a lead's details or a job, he asks with a form, and never offers a choice that
+    /// only says to type.
+    /// </summary>
+    [Test]
+    public void WhatTheyMustWrite_HeAsksWithAForm()
+    {
+        string voice = Voice();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(voice, Does.Contain("never a choice that only says to type"));
+            Assert.That(voice, Does.Contain("one `AskFor` form, only what they haven't told you"));
+            Assert.That(voice, Does.Contain("ask for it with `AskFor`, one field The job (LongText)"));
+            Assert.That(voice, Does.Not.Contain("one thing at a time, as a person would"));
+        });
+    }
 }
