@@ -38,6 +38,12 @@ public sealed class GuideIdentity : IAgentIdentity
     /// Offer, which the engine asks for when an answer ends without it.
     /// </summary>
     public string? EndsEachAnswerWith => "Offer";
+
+    /// <summary>
+    /// Except after "Stop here", the walkthrough's last choice (Louis: "stop should end"): then he says goodbye and
+    /// offers nothing.
+    /// </summary>
+    public IReadOnlyList<string> StopsOn { get; } = ["Stop here"];
 }
 
 /// <summary>

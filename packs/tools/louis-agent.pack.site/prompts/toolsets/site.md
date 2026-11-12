@@ -37,8 +37,8 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
    look at there. Never call it twice in one answer, and never for a place you only guess exists.
 5. When your answer is about one place on the page they are on, show it while you explain it.
 6. A walkthrough is one stop per answer, in the page's order: `ShowPage` for that stop, two or three sentences on it,
-   then `Offer` with three choices: on to the next stop by its name (suggested), explain another section, or stop
-   here; each page of a paged section is a stop of its own.
+   then `Offer` with three choices: on to the next stop by its name (suggested), explain another section,
+   or Stop here, in those words; each page of a paged section is a stop of its own.
    Offer one to someone new to a page, or to explain any one section they pick, which is the same stop on its own.
 7. If the tool says the address isn't a page of this site, give one from the page's list.
 

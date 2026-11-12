@@ -27,6 +27,19 @@ public static class TurnEnding
         return answer.OfType<FunctionCallContent>().Any(call => EndedBy(call, functions, results));
     }
 
+    /// <summary>
+    /// Whether the person's message is one of the identity's stops, alone or with the page's context after a blank
+    /// line, as the hosts send it: a stop owes no closing tool.
+    /// </summary>
+    public static bool Stopped(string message, IReadOnlyList<string>? stops)
+    {
+        if (stops is not { Count: > 0 }) return false;
+        // The person's own words come first; a host adds the page's context after a blank line.
+        int context = message.IndexOf("\n\n", StringComparison.Ordinal);
+        string words = (context < 0 ? message : message[..context]).Trim();
+        return stops.Any(stop => string.Equals(stop.Trim(), words, StringComparison.OrdinalIgnoreCase));
+    }
+
     /// <summary>Whether this one call ended the turn: its tool is one that ends, and its result says it worked.</summary>
     private static bool EndedBy(FunctionCallContent call, List<AIFunction> functions,
         List<FunctionResultContent> results)

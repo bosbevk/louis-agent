@@ -131,7 +131,7 @@ internal sealed class TurnRunner(
             if (!cutOff)
             {
                 // An identity whose answers end with a tool (the guide's choices, FX139) gets it once, if missing.
-                if (owedAsked || OwedTool(updates, chatOptions) is not { } owed) yield break;
+                if (owedAsked || OwedTool(updates, chatOptions, userInput) is not { } owed) yield break;
                 owedAsked = true;
                 // A request must end with the user's message (no prefill), so a notice asks for it, as after a cut-off.
                 var owedTool = new EndWithToolHoles(owed);
@@ -155,9 +155,11 @@ internal sealed class TurnRunner(
     /// The tool the running identity ends each answer with, when this answer didn't call it and the turn has it
     /// (FX139); none otherwise.
     /// </summary>
-    private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options)
+    private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options, string userInput)
     {
         if (TurnIdentity.Current?.EndsEachAnswerWith is not { } tool) return null;
+        // The person said stop: the answer says goodbye and owes nothing.
+        if (TurnEnding.Stopped(userInput, TurnIdentity.Current.StopsOn)) return null;
         var answer = updates.SelectMany(u => u.Contents).ToList();
         var calls = answer.OfType<FunctionCallContent>().ToList();
         if (calls.Any(call => call.Name == tool)) return null;

@@ -45,16 +45,39 @@ public class EndsEachAnswerTests
     private static ChatResponse CallsAsk() => new(new ChatMessage(ChatRole.Assistant,
         [new FunctionCallContent("call_1", nameof(AskingTools.Ask), new Dictionary<string, object?>())]));
 
-    /// <summary>A turn as an identity that ends each answer with <paramref name="endsWith"/>.</summary>
-    private static async Task TurnAsync(IChatClient client, string? endsWith)
+    /// <summary>The guide's stop, as its identity names it.</summary>
+    private static readonly string[] Stops = ["Stop here"];
+
+    /// <summary>
+    /// A turn as an identity that ends each answer with <paramref name="endsWith"/> and stops on
+    /// <see cref="Stops"/>, the visitor saying <paramref name="message"/>.
+    /// </summary>
+    private static async Task TurnAsync(IChatClient client, string? endsWith, string message = "Walk me through")
     {
         var engine = new AgentEngine(new CompositeSkillProvider(), client, TestPaths.Agent(),
             toolsets: [new AskingTools()])
         { Thinking = ReasoningEffort.Low };
-        using var _ = TurnIdentity.Use(new TurnIdentity("guide", false, endsWith));
-        await foreach (var __ in engine.StreamPromptAsync(engine.NewHistory(), "Walk me through"))
+        var guide = new TurnIdentity("guide", false, endsWith, Stops);
+        using var _ = TurnIdentity.Use(guide);
+        await foreach (var __ in engine.StreamPromptAsync(engine.NewHistory(), message))
         {
         }
+    }
+
+    /// <summary>
+    /// Louis, on "Stop here" answered with choices again: "stop should end". After a message that is one of the
+    /// identity's stops, alone or with the page's context after it, the answer owes no choices; any other still does.
+    /// </summary>
+    [TestCase("Stop here", 1)]
+    [TestCase("stop here\n\n[page] /pricing", 1)]
+    [TestCase("Stop here and tell me the pricing", 2)]
+    public async Task AfterAStop_NoChoicesAreOwed(string message, int requests)
+    {
+        var client = new FakeChatClient(_ => Says("Alright, we'll stop here."), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask), message);
+
+        Assert.That(client.Requests, Has.Count.EqualTo(requests));
     }
 
     /// <summary>

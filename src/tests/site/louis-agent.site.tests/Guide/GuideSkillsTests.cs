@@ -1,6 +1,7 @@
 using System.Reflection;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Identities.Guide;
+using LouisAgent.Packs.Site;
 using LouisAgent.Site.Pages;
 using Microsoft.AspNetCore.Components;
 
@@ -101,6 +102,26 @@ public class GuideSkillsTests
     [Test]
     public void TheGuide_EndsEachAnswerWithChoices() =>
         Assert.That(new GuideIdentity().EndsEachAnswerWith, Is.EqualTo(LouisAgent.Web.Chats.Calls.OfferCall.Tool));
+
+    /// <summary>
+    /// Louis, on "Stop here" answered with choices again: "stop should end"; his pick, the engine knows a stop. The
+    /// guide stops on the card's words, the walkthrough's choice says exactly those, and after it the guide says
+    /// goodbye and offers nothing.
+    /// </summary>
+    [Test]
+    public void StopHere_Ends()
+    {
+        using var reader = new StreamReader(new SitePack().Prompts.GetFileInfo("toolsets/site.md").CreateReadStream());
+        string siteGuide = reader.ReadToEnd();
+        string voice = Read("voice.md").Body;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(new GuideIdentity().StopsOn, Is.EqualTo(new[] { "Stop here" }));
+            Assert.That(siteGuide, Does.Contain("or Stop here, in those words"));
+            Assert.That(voice, Does.Contain("When they say Stop here, say goodbye in a line and offer nothing"));
+        });
+    }
 
     /// <summary>
     /// FX140, Louis on Ask it live: "it should have given me a prompt for seemeeu". The guide answered with cards that
