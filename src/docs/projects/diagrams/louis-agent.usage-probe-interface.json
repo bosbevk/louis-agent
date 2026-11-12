@@ -1,0 +1,81 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.usage-probe: the interface design",
+  "caption": "No types of its own: one program over core's model factory, its usage mapper and the ledger's reports, so it measures exactly what the agents use.",
+  "classes": {
+    "types": [
+      {
+        "id": "program",
+        "name": "Program",
+        "kind": "top-level statements",
+        "members": [
+          "(default) probe the provider",
+          "--think, --lines n",
+          "--ledger file, --cache-gaps file",
+          "--host-culture"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "LlmOptions",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+FromEnvironment() (static)"
+        ]
+      },
+      {
+        "id": "factory",
+        "name": "LlmClientFactory",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Create(options) IChatClient",
+          "+CreateUsageMapper(options) IUsageMapper"
+        ]
+      },
+      {
+        "id": "providers",
+        "name": "AnthropicProvider, OllamaProvider, OpenAiCompatibleProvider",
+        "kind": "the three providers",
+        "tone": "violet"
+      },
+      {
+        "id": "mapper",
+        "name": "IUsageMapper",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Map(usage, raw) UsageTokens"
+        ]
+      },
+      {
+        "id": "report",
+        "name": "UsageReport",
+        "kind": "static, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Read(path), Price(records, prices)",
+          "+Total(rows), Totals(records, by)"
+        ]
+      },
+      {
+        "id": "gaps",
+        "name": "CacheGaps",
+        "kind": "static, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Analyse(records, prices)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "program", "to": "options", "kind": "uses", "word": "reads config/.env" },
+      { "from": "program", "to": "factory", "kind": "creates", "word": "with the three providers" },
+      { "from": "factory", "to": "providers", "kind": "holds" },
+      { "from": "program", "to": "mapper", "kind": "uses", "word": "the ledger line" },
+      { "from": "program", "to": "report", "kind": "uses", "word": "--ledger" },
+      { "from": "program", "to": "gaps", "kind": "uses", "word": "--cache-gaps" }
+    ]
+  }
+}

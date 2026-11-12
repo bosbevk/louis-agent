@@ -56,72 +56,19 @@ Each class that carries one names it in its `<remarks>` (ADR 0050).
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class ShowroomDemo {
-        <<record>>
-        +string Address
-        +string Name
-        +string Line
-        +DemoGroup Group
-        +TileAccent Accent
-        +DemoIcon Icon  %% step 1, was string Sign
-        +string? Cover  %% step 4
-    }
-    class DemoIcon {
-        <<enum>>
-        Bed
-        Dining
-        Scales
-        Code
-        Exchange
-    }
-    class DemoIconView {
-        +DemoIcon Icon
-        +int Size
-    }
-    ShowroomDemo --> DemoIcon
-    DemoRail ..> DemoIconView : draws (step 1)
-    ShowroomStart ..> DemoIconView : draws (step 1)
-    DemoChips ..> ShowroomDemo
-    SiteDemos ..> ShowroomDemo : the site's five (steps 1 and 4)
-```
+![One icon type for every demo: the site names each demo's icon and cover, and one view draws them](diagrams/F134-the-showroom-looks-modern-interface-design.svg)
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    site["louis-agent.site<br/>SiteDemos: icons (1), covers (4)"] --> web["louis-agent.web Showroom<br/>DemoIcon + DemoIconView (1)<br/>surface mixin (2), rail (3), start (4)"]
-    web --> browser["the visitor's browser<br/>inline SVG, no icon font"]
-```
+![The site names each demo's icon and cover, the framework's showroom draws them, and the browser gets inline SVG](diagrams/F134-the-showroom-looks-modern-architecture.svg)
 
 ### Communication (a visitor opens /demos)
 
-```mermaid
-sequenceDiagram
-    participant V as Visitor
-    participant P as DemosPage
-    participant S as ShowroomStart
-    participant R as DemoRail
-    participant I as DemoIconView
-    V->>P: GET /demos
-    P->>S: Featured, words, Preview
-    S->>S: Demos.Groups
-    S->>I: Icon, Size (each cover's badge)
-    R->>I: Icon, Size (each rail item)
-    P-->>V: HTML with inline SVG
-```
+![A visitor opens /demos: the start and the rail ask the one icon view, and the page goes out as HTML with inline SVG](diagrams/F134-the-showroom-looks-modern-communication-a-visitor-opens-demos.svg)
 
 ### Objects (the index in memory)
 
-```mermaid
-flowchart TB
-    demos["ShowroomDemos (5)"] --> g1["ShowroomDemo /guesthouse-demo<br/>Icon Bed, Cover seemeeu-sea-view.webp"]
-    demos --> g2["ShowroomDemo /restaurant-demo<br/>Icon Dining, Cover wheatfield-room.webp"]
-    demos --> g3["ShowroomDemo /law-practice-demo<br/>Icon Scales, Cover koringland-study.webp"]
-    demos --> g4["ShowroomDemo /coding-agent<br/>Icon Code, Cover null"]
-    demos --> g5["ShowroomDemo /triage-demo<br/>Icon Exchange, Cover null"]
-```
+![The showroom's index: five demos, each with its icon and a cover where it has one](diagrams/F134-the-showroom-looks-modern-objects-the-index-in-memory.svg)
 
 ### Folder tree (after step 1)
 

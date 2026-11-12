@@ -1,0 +1,73 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.identity.puls.judges: the interface design",
+  "caption": "One model-graded check on the harness's contract: its entry builds it from a rubric, the judge reads the ask and answers in JSON.",
+  "classes": {
+    "types": [
+      {
+        "id": "judges",
+        "name": "PulsJudges",
+        "kind": "static, what the runner's program lists",
+        "members": [
+          "+All IReadOnlyList<ICheckType>"
+        ]
+      },
+      {
+        "id": "entry",
+        "name": "MealForPeopleCheck.Entry",
+        "kind": "a CheckType<Settings>, CheckKind.Model",
+        "members": [
+          "Settings(Rubric)"
+        ]
+      },
+      {
+        "id": "check",
+        "name": "MealForPeopleCheck",
+        "kind": "an IRubricCheck",
+        "members": [
+          "+Create(rubric, judge) (static)",
+          "+GradeAsync(Trial) Grade"
+        ]
+      },
+      {
+        "id": "evaluator",
+        "name": "MealForPeople",
+        "kind": "an IEvaluator, Microsoft.Extensions.AI.Evaluation",
+        "members": [
+          "+EvaluateAsync(messages, ...) EvaluationResult"
+        ]
+      },
+      {
+        "id": "ask",
+        "name": "CookAsk",
+        "kind": "an EvaluationContext",
+        "members": [
+          "+Of(Trial) (static): people?, town?"
+        ]
+      },
+      {
+        "id": "verdict",
+        "name": "MealVerdict",
+        "kind": "record, the judge's JSON",
+        "members": [
+          "+Meal?, ...",
+          "+Read(reply) (static)"
+        ]
+      },
+      {
+        "id": "contract",
+        "name": "ICheckType, IRubricCheck : ICheck",
+        "kind": "louis-agent.evals.checks and louis-agent.evals",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "judges", "to": "entry", "kind": "holds" },
+      { "from": "entry", "to": "contract", "kind": "implements" },
+      { "from": "entry", "to": "check", "kind": "creates" },
+      { "from": "check", "to": "evaluator", "kind": "uses", "word": "asks the judge" },
+      { "from": "evaluator", "to": "ask", "kind": "uses", "word": "the ask, from its context" },
+      { "from": "evaluator", "to": "verdict", "kind": "uses", "word": "reads" }
+    ]
+  }
+}

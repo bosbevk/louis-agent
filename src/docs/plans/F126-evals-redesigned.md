@@ -127,80 +127,19 @@ Old runs are deleted, not moved (ADR 0049).
 
 ### Interface design (proposed; F126.1 and F126.2 settle the signatures)
 
-```mermaid
-classDiagram
-    class EvalFile { <<record>> +Agent Agent; +IReadOnlyList~Conversation~ Conversations; +JudgeMode Judge; +Read(path)$ EvalFile }
-    class Conversation { <<record>> +string Id; +string? Place; +string? Page; +IReadOnlyList~Turn~ Turns }
-    class Turn { <<record>> +string Ask; +IReadOnlyList~Fact~ Facts; +IReadOnlyList~string~ Criteria }
-    class Fact { <<record>> +FactKind Kind; +string? Argument }
-    class IJudge { <<interface>> +MarkAsync(Transcript, Turn) IReadOnlyList~Mark~ }
-    class PerCriterionJudge
-    class PerConversationJudge
-    class EvalRun { +RunAsync(EvalFile, RunMode) RunResult }
-    class RunStore { +SaveAsync(RunResult); +FlipAsync(runId, mark); +ListAsync(eval) }
-    EvalFile --> Conversation
-    Conversation --> Turn
-    Turn --> Fact
-    IJudge <|.. PerCriterionJudge : F126.1
-    IJudge <|.. PerConversationJudge : F126.1
-    EvalRun --> ISessionClient : kept
-    EvalRun --> IJudge
-    EvalRun --> RunStore : F126.2
-```
+![A run reads its file, asks, gets facts for free and a judge's marks, and is kept](diagrams/F126-evals-redesigned-interface-design-proposed-f126-1-and-f126-2-settle-the-signatures.svg)
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    file[".eval.json in a demo"] --> host
-    subgraph host["Eval host (F126.2, src/hosts)"]
-      run[EvalRun] --> facts[Facts]
-      run --> judge[Judge]
-      run --> store[RunStore]
-      pages["Six screens (louis-agent.web.evals)"] --> store
-    end
-    run -- "HTTP, live or replay" --> api["Agent API (no eval code)"]
-    run -- "a guide page, live only (F126.2)" --> site["The site"]
-    judge --> model["Judge model (IChatClient)"]
-    store --> mongo[(MongoDB: one document per run)]
-    api --> ledger[(Usage ledger: cost)]
-```
+![An eval file goes into the eval host, a run talks to the agent API or the site, a judge grades it, and the run store keeps it](diagrams/F126-evals-redesigned-architecture.svg)
 
 ### Communication: one live run of one conversation with a follow-up
 
-```mermaid
-sequenceDiagram
-    participant P as Louis on the Evals page
-    participant H as Eval host
-    participant A as Agent API
-    participant J as Judge
-    participant S as RunStore
-    P->>H: Run live (after the ask: estimate, repeats)
-    H->>A: open a session (role, toolsets, place or page)
-    H->>A: turn 1 ask
-    A-->>H: answer, tool calls, cost
-    H->>A: turn 2 ask (same session)
-    A-->>H: answer, tool calls, cost
-    H->>H: Facts per turn (free)
-    H->>J: criteria with the transcript
-    J-->>H: {criterion, met, reason} each
-    H->>S: save the run
-    P->>H: flip a mark
-    H->>S: keep the flip with the run
-```
+![One live run with a follow-up: two turns in one session, facts checked in code, the judge grading the criteria, and the run and its flips stored](diagrams/F126-evals-redesigned-communication-one-live-run-of-one-conversation-with-a-follow-up.svg)
 
 ### Objects in memory: one run
 
-```mermaid
-flowchart TB
-    r[RunResult] --> c1["ConversationResult cook-follow-up"]
-    c1 --> t1["TurnResult 1: transcript, facts, marks"]
-    c1 --> t2["TurnResult 2: transcript, facts, marks"]
-    t1 --> m1["Mark: Feeds four people, met, reason"]
-    t2 --> f2["FactResult: continued puls-cook, met"]
-    r --> cost["Cost and seconds (from the ledger)"]
-    r --> flips["Flips: mark id, your answer"]
-```
+![One run in memory: conversations hold turns, turns hold their facts and marks, and the flips sit beside them](diagrams/F126-evals-redesigned-objects-in-memory-one-run.svg)
 
 ### Folder trees
 

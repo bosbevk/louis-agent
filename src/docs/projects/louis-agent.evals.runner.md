@@ -52,42 +52,11 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 ## Diagrams
 
-**Architecture:** the API never references an eval. It starts this program and reads what it writes, so a new eval is a folder of files.
+![The eval runner: its host, its commands, and the API that starts it](diagrams/louis-agent.evals.runner-diagrams.svg)
 
-```mermaid
-flowchart TD
-    api["louis-agent.api: EvalProcess, RunnerProcess"] -->|"starts it, reads stdout"| host["EvalRunnerHost"]
-    program["A demo's program: what it knows, in RunnerCatalogs"] --> host
-    host --> args["CommandLine"]
-    host --> catalog["EvalCatalog"]
-    catalog --> folders["EvalFolders: every eval.json under EvalFiles"]
-    host -->|"run"| runner["EvalRunner, in the harness"]
-    host -->|"--check"| check["CheckCommand"]
-    host -->|"--import-promptfoo, --export-promptfoo"| prompt["PromptfooImport, PromptfooExport"]
-    host -->|"--label-sheet, --calibrate"| judge["LabelSheetCommand, CalibrateCommand"]
-    runner -->|"protocol v2, on stdout"| api
-```
+![A run from the Evals page: the API starts the runner as a child process, reads its lines on stdout for the live view, and stores the run](diagrams/louis-agent.evals.runner-diagrams-2.svg)
 
-**Flow:** a run from the Evals page. A re-score is the same, but the API hands over the stored run on stdin and no model is asked.
-
-```mermaid
-sequenceDiagram
-    actor B as Builder
-    participant A as louis-agent.api
-    participant R as The runner
-    participant S as A session, on the API
-    B->>A: asks for a run
-    A->>R: starts run {eval} --repeat N, as a child process
-    R->>R: CommandLine, then EvalCatalog finds the eval
-    loop each conversation
-        R->>S: opens a session and asks
-        S-->>R: the answer's stream
-        R-->>A: protocol lines, on stdout
-        A-->>B: the live view
-    end
-    R-->>A: SummaryEvent, and it exits
-    A->>A: the run is stored
-```
+![The types: a program names its checks and readers, the host reads one command, finds the eval and runs it](diagrams/louis-agent.evals.runner-interface.svg)
 
 ## Structure
 

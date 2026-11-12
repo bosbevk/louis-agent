@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Cards.Links;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
 
@@ -85,6 +86,49 @@ public class DiagramReaderTests
             Assert.That(source.Cards.Links.Select(link => link.Kind), Has.All.EqualTo(CardLinkKind.Both));
         });
     }
+
+    /// <summary>A flow runs right unless it says down, and a box needs no column.</summary>
+    [Test]
+    public void AFlow_ReadsItsDirection_AndNeedsNoColumn()
+    {
+        var source = DiagramReader.Read(Flow.Replace("\"flow\": {", "\"flow\": { \"direction\": \"down\",")
+            .Replace(", \"column\": 0", "").Replace(", \"column\": 1", ""));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(source.Flow!.Direction, Is.EqualTo(FlowDirection.Down));
+            Assert.That(source.Flow.Nodes.Select(node => node.Column), Has.All.Null);
+            Assert.That(DiagramReader.Read(Flow).Flow!.Direction, Is.EqualTo(FlowDirection.Right));
+        });
+    }
+
+    /// <summary>
+    /// A diagram written as JSON reads back the same, its choices by their wire names and nothing left at its
+    /// default written.
+    /// </summary>
+    [Test]
+    public void AWrittenDiagram_ReadsBackTheSame()
+    {
+        var flow = new GraphSpec(
+            [new GraphNode("a", "A\nfirst", Group: "g"), new GraphNode("b", "B")],
+            [new GraphEdge("a", "b", "calls", EdgeStyle.Dashed)], FlowDirection.Down, [new GraphGroup("g", "A group")]);
+        string json = DiagramWriter.Write(new DiagramSource(DiagramKind.Flow, "Written", Flow: flow));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(DiagramWriter.Write(DiagramReader.Read(json)), Is.EqualTo(json));
+            Assert.That(json, Does.Contain("\"direction\": \"down\"").And.Contain("\"style\": \"dashed\""));
+            Assert.That(json, Does.Not.Contain("null").And.Not.Contain("\"column\""));
+        });
+    }
+
+    /// <summary>A box in a group the diagram doesn't declare is refused, naming the box and the group.</summary>
+    [Test]
+    public void ABoxInAnUndeclaredGroup_IsRefused() =>
+        Assert.That(
+            () => DiagramReader.Read(Flow.Replace("\"label\": \"A host\",",
+                "\"label\": \"A host\", \"group\": \"sys\",")),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contain("'host'").And.Message.Contain("'sys'"));
 
     /// <summary>A card is plain unless it names its look, and reads the look it names.</summary>
     [Test]

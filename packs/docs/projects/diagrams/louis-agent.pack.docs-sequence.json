@@ -1,0 +1,22 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.docs: a search, then a read",
+  "caption": "Find the line, then read the doc: a search gives paths and lines, a read gives the whole doc, and a path outside the root is refused with its reason.",
+  "sequence": {
+    "participants": [
+      { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "tools", "label": "DocsTools", "icon": "book", "tone": "green" },
+      { "id": "root", "label": "DOCS_ROOT", "icon": "folder", "tone": "amber" }
+    ],
+    "steps": [
+      { "step": "message", "from": "model", "to": "tools", "text": "SearchDocs(\"pricing\", 20)" },
+      { "step": "message", "from": "tools", "to": "root", "text": "every doc's lines" },
+      { "step": "reply", "from": "tools", "to": "model", "text": "path:line: text, up to 100" },
+      { "step": "message", "from": "model", "to": "tools", "text": "ReadDoc(\"src/docs/....md\")" },
+      { "step": "block", "block": "alt", "label": "the path is under the root, a doc, under 1 MB",
+        "steps": [ { "step": "reply", "from": "tools", "to": "model", "text": "the doc, whole" } ],
+        "else": [ { "label": "otherwise",
+          "steps": [ { "step": "reply", "from": "tools", "to": "model", "text": "refused, with its reason" } ] } ] }
+    ]
+  }
+}

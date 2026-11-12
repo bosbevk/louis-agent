@@ -1,0 +1,208 @@
+<svg viewBox="-24 -24 2128 575" width="2128" height="575" role="img" aria-label="louis-agent.evals.checks: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.evals.checks: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2128" height="575" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2080" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.evals.checks:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-teal" d="M 392 133 L 464 133 Q 488 133 488 157 L 488 192 Q 488 204 500 204 L 512 204" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-green" d="M 392 275 L 464 275 Q 488 275 488 251 L 488 216 Q 488 204 500 204 L 512 204" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 820 204 L 832 204 Q 844 204 844 216 L 844 251 Q 844 275 868 275 L 916 275" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-teal" d="M 820 204 L 832 204 Q 844 204 844 192 L 844 157 Q 844 133 868 133 L 916 133" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1210 133 L 1260 133 Q 1284 133 1284 109 L 1284 86 Q 1284 62 1308 62 L 1356 62" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-green" d="M 1587 62 L 1619 62 Q 1643 62 1643 86 L 1643 192 Q 1643 204 1655 204 L 1667 204" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-teal" d="M 1210 275 L 1242 275 Q 1266 275 1266 251 L 1266 228 Q 1266 204 1290 204 L 1356 204" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-teal" d="M 1210 275 L 1242 275 Q 1266 275 1266 299 L 1266 322 Q 1266 346 1290 346 L 1356 346" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="401" y="111" width="78" height="18" rx="4" />
+    <text class="word tone-teal" x="440" y="123" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="418.5" y="253" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="440" y="265" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="851.5" y="253" width="57" height="18" rx="4" />
+    <text class="word tone-teal" x="880" y="265" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-teal" x="858.5" y="111" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="880" y="123" text-anchor="middle">given</text>
+    <rect class="word-chip tone-teal" x="1225.5" y="111" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1247" y="123" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="1593.5" y="40" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1615" y="52" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="1295" y="182" width="50" height="18" rx="4" />
+    <text class="word tone-teal" x="1320" y="194" text-anchor="middle">grades</text>
+    <rect class="word-chip tone-teal" x="1291.5" y="324" width="57" height="18" rx="4" />
+    <text class="word tone-teal" x="1320" y="336" text-anchor="middle">creates</text>
+    <rect class="box tone-teal" x="0" y="79" width="392" height="108" rx="10" />
+    <text class="label tone-teal" x="196" y="107" text-anchor="middle">CheckType&lt;TParameters&gt;</text>
+    <text class="note" x="196" y="123" text-anchor="middle">abstract, its parameters</text>
+    <text class="note" x="196" y="135" text-anchor="middle">a record</text>
+    <path class="frame" d="M 0 155 L 392 155" />
+    <text class="word tone-teal" x="14" y="173" text-anchor="start">#Create(TParameters, CheckContext) ICheck (abstract)</text>
+    <rect class="box tone-green" x="0" y="219" width="392" height="112" rx="10" />
+    <text class="label tone-green" x="196" y="250" text-anchor="middle">CheckCatalog</text>
+    <path class="frame" d="M 0 271 L 392 271" />
+    <text class="word tone-green" x="14" y="289" text-anchor="start">+Find(type) ICheckType?</text>
+    <text class="word tone-green" x="14" y="303" text-anchor="start">+Get(type) ICheckType</text>
+    <text class="word tone-green" x="14" y="317" text-anchor="start">+Listing() IReadOnlyList&lt;ListedCheck&gt;</text>
+    <rect class="box tone-teal" x="512" y="149" width="308" height="110" rx="10" />
+    <text class="label tone-teal" x="666" y="177" text-anchor="middle">ICheckType</text>
+    <text class="note" x="666" y="193" text-anchor="middle">interface</text>
+    <path class="frame" d="M 512 213 L 820 213" />
+    <text class="word tone-teal" x="526" y="231" text-anchor="start">+Type, Kind, Parameters</text>
+    <text class="word tone-teal" x="526" y="245" text-anchor="start">+Create(parameters, CheckContext) ICheck</text>
+    <rect class="box tone-teal" x="916" y="78" width="294" height="110" rx="10" />
+    <text class="label tone-teal" x="1063" y="106" text-anchor="middle">CheckContext</text>
+    <text class="note" x="1063" y="122" text-anchor="middle">record</text>
+    <path class="frame" d="M 916 142 L 1210 142" />
+    <text class="word tone-teal" x="930" y="160" text-anchor="start">+Folder, Before, Readers</text>
+    <text class="word tone-teal" x="930" y="174" text-anchor="start">+ILlmClientFactory? Models (a judge's)</text>
+    <rect class="box tone-teal" x="916" y="213" width="294" height="124" rx="10" />
+    <text class="label tone-teal" x="1063" y="241" text-anchor="middle">ICheck</text>
+    <text class="note" x="1063" y="257" text-anchor="middle">interface</text>
+    <path class="frame" d="M 916 277 L 1210 277" />
+    <text class="word tone-teal" x="930" y="295" text-anchor="start">+Name, Version, Kind, Required</text>
+    <text class="word tone-teal" x="930" y="309" text-anchor="start">+ExpectedKeys</text>
+    <text class="word tone-teal" x="930" y="323" text-anchor="start">+GradeAsync(Trial) Grade</text>
+    <rect class="box tone-green" x="1356" y="13" width="231" height="98" rx="10" />
+    <text class="label tone-green" x="1471.5" y="44" text-anchor="middle">ReaderCatalog</text>
+    <path class="frame" d="M 1356 65 L 1587 65" />
+    <text class="word tone-green" x="1370" y="83" text-anchor="start">+Get&lt;TReader&gt;(name)</text>
+    <text class="word tone-green" x="1370" y="97" text-anchor="start">+Listing()</text>
+    <rect class="box tone-teal" x="1356" y="142" width="231" height="124" rx="10" />
+    <text class="label tone-teal" x="1471.5" y="170" text-anchor="middle">Trial</text>
+    <text class="note" x="1471.5" y="186" text-anchor="middle">record</text>
+    <path class="frame" d="M 1356 206 L 1587 206" />
+    <text class="word tone-teal" x="1370" y="224" text-anchor="start">+RunId, Mode, Repeat</text>
+    <text class="word tone-teal" x="1370" y="238" text-anchor="start">+EvalScenario Scenario</text>
+    <text class="word tone-teal" x="1370" y="252" text-anchor="start">+Transcript Transcript</text>
+    <rect class="box tone-teal" x="1356" y="284" width="231" height="124" rx="10" />
+    <text class="label tone-teal" x="1471.5" y="312" text-anchor="middle">Grade</text>
+    <text class="note" x="1471.5" y="328" text-anchor="middle">record</text>
+    <path class="frame" d="M 1356 348 L 1587 348" />
+    <text class="word tone-teal" x="1370" y="366" text-anchor="start">+Check, Version, Score</text>
+    <text class="word tone-teal" x="1370" y="380" text-anchor="start">+GradeOutcome Outcome, Reason</text>
+    <text class="word tone-teal" x="1370" y="394" text-anchor="start">+GradeJudge? Judge</text>
+    <rect class="box tone-teal" x="1667" y="142" width="413" height="124" rx="10" />
+    <text class="label tone-teal" x="1873.5" y="170" text-anchor="middle">IReader</text>
+    <text class="note" x="1873.5" y="186" text-anchor="middle">interface</text>
+    <path class="frame" d="M 1667 206 L 2080 206" />
+    <text class="word tone-teal" x="1681" y="224" text-anchor="start">+Name</text>
+    <text class="word tone-teal" x="1681" y="238" text-anchor="start">IMoneyReader, INumberReader, ILinkReader, IImageReader,</text>
+    <text class="word tone-teal" x="1681" y="252" text-anchor="start">  IPriceReader</text>
+  </g>
+  <rect class="notebar" x="0" y="490" width="2080" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 500) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="512">
+    <tspan class="note-head">The check contract:</tspan>
+    <tspan class="note-rest">a check type builds a check from its parameters, a check grades a trial, and readers find money, numbers, links and images in an answer.</tspan>
+  </text>
+</svg>

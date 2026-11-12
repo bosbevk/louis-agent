@@ -138,25 +138,7 @@ area guide once Phase 4's simulation shows where open data fails.
 
 What happens to one MCP pack when the host starts:
 
-```mermaid
-flowchart TD
-    named["Host starts, MCP_PACKS=pricerules"] --> settings["config/mcp/pricerules.json read: command or URL, allowlist, prefix, trusted, effects, pin"]
-    settings --> approved{"stdio: was this exact command approved?"}
-    approved -->|no| unavailable["pack unavailable, with its reason"]
-    approved -->|"yes, or an HTTP server through SsrfGuard and the egress proxy"| connect["CreateAsync, ListToolsAsync and the pin, under one start-up timeout"]
-    connect -->|"fails or times out"| dispose["client disposed, so a stdio child ends"]
-    dispose --> unavailable
-    connect --> drift{"every allowlisted tool listed?"}
-    drift -->|"no: drift"| dispose
-    drift -->|yes| names["prefix each name, check it against our name rule, refuse a clash"]
-    names --> pin{"pin matches: version when reported, hash always"}
-    pin -->|no| dispose
-    pin -->|yes| guard["each tool wrapped in McpToolGuard: frame, size, timeout per call; its effect from settings"]
-    guard --> catalogue["AgentCatalog built, the pack's listed tools among its names"]
-    catalogue --> sessions["sessions open with it; each chat keeps the list it opened with (FX4)"]
-    changed["tools/list_changed from the server"] -.->|"ignored"| catalogue
-    refresh["admin refresh (step 9a)"] -.->|"new generation, new chats only"| catalogue
-```
+![One MCP pack as the host starts: its settings, the approval, the connection, the tool list and the pin are checked before its tools join the catalogue](diagrams/F36-mcp-packs-phase-8-f36-their-systems-no-code-mcp-servers-as-packs.svg)
 
 **Its plan starts from these parts**, in order (the research's steps for rows 23 and 24, corrected by this plan's
 decisions; one commit each, test first, stop after each):

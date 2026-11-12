@@ -1,0 +1,140 @@
+{
+  "kind": "flow",
+  "title": "The Puls app: its pages, the framework's shells and the API",
+  "caption": "A small program on the framework's web: what's here is what makes it Puls, its words, its look, its landing page and which websites matter to it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "blue",
+        "label": "louis-agent.puls-api: serves\nthis app"
+      },
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs"
+      },
+      {
+        "id": "text",
+        "icon": "message",
+        "tone": "green",
+        "label": "ChatText"
+      },
+      {
+        "id": "views",
+        "icon": "box",
+        "tone": "green",
+        "label": "PackViews"
+      },
+      {
+        "id": "evals",
+        "icon": "checks",
+        "tone": "violet",
+        "label": "louis-agent.web.evals, the\nstudio\u0027s pages"
+      },
+      {
+        "id": "layout",
+        "icon": "file",
+        "tone": "green",
+        "label": "AdminLayout"
+      },
+      {
+        "id": "landing",
+        "icon": "browser",
+        "tone": "green",
+        "label": "LandingPage"
+      },
+      {
+        "id": "sections",
+        "icon": "box",
+        "tone": "green",
+        "label": "Components/Landing,\nComponents/Brand"
+      },
+      {
+        "id": "chat",
+        "icon": "message",
+        "tone": "green",
+        "label": "ChatPage"
+      },
+      {
+        "id": "shell",
+        "icon": "message",
+        "tone": "violet",
+        "label": "ChatShell (framework)"
+      },
+      {
+        "id": "panels",
+        "icon": "chart",
+        "tone": "green",
+        "label": "ChatViews: Verken and Studio"
+      },
+      {
+        "id": "admin",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AdminShell (framework)"
+      },
+      {
+        "id": "server",
+        "icon": "server",
+        "tone": "red",
+        "label": "The API, on the same origin"
+      }
+    ],
+    "edges": [
+      {
+        "from": "api",
+        "to": "program"
+      },
+      {
+        "from": "program",
+        "to": "text",
+        "word": "PulsText.Afrikaans"
+      },
+      {
+        "from": "program",
+        "to": "views",
+        "word": "RecipeWebViews.AddTo"
+      },
+      {
+        "from": "program",
+        "to": "evals",
+        "word": "AddLouisAgentEvals(\nPulsSites.Kinds)"
+      },
+      {
+        "from": "program",
+        "to": "layout",
+        "word": "SiteFrames"
+      },
+      {
+        "from": "landing",
+        "to": "sections"
+      },
+      {
+        "from": "chat",
+        "to": "shell",
+        "word": "its slots: logo, views,\nprofile, water,\nEmptyChat"
+      },
+      {
+        "from": "chat",
+        "to": "panels"
+      },
+      {
+        "from": "layout",
+        "to": "admin",
+        "word": "its logo, LiveRunStrip,\nEvalLinks"
+      },
+      {
+        "from": "shell",
+        "to": "server"
+      },
+      {
+        "from": "admin",
+        "to": "server"
+      }
+    ],
+    "direction": "down"
+  }
+}

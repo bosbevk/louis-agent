@@ -38,46 +38,11 @@ as you go: every answer shows what it cost, specialists included.
 
 ## Diagrams
 
-**Architecture:** Puls is a small program on the framework's web. What's here is what makes it Puls: its words, its look, its landing page and which websites matter to it.
+![The Puls app: its pages, the framework's shells and the API](diagrams/louis-agent.puls-diagrams.svg)
 
-```mermaid
-flowchart TD
-    api["louis-agent.puls-api: serves this app"] --> program["Program.cs"]
-    program -->|"PulsText.Afrikaans"| text["ChatText"]
-    program -->|"RecipeWebViews.AddTo"| views["PackViews"]
-    program -->|"AddLouisAgentEvals(PulsSites.Kinds)"| evals["louis-agent.web.evals, the studio's pages"]
-    program -->|"SiteFrames"| layout["AdminLayout"]
-    landing["LandingPage"] --> sections["Components/Landing, Components/Brand"]
-    chat["ChatPage"] -->|"its slots: logo, views, profile, water, EmptyChat"| shell["ChatShell (framework)"]
-    chat --> panels["ChatViews: Verken and Studio"]
-    layout -->|"its logo, LiveRunStrip, EvalLinks"| admin["AdminShell (framework)"]
-    shell --> server["The API, on the same origin"]
-    admin --> server
-```
+![Asking Puls about cooking: the web app opens the session, Puls asks the cook on the server, and the page draws the work and the answer](diagrams/louis-agent.puls-diagrams-2.svg)
 
-**Flow:** someone asks Puls about cooking. The web app opens the session and draws what comes back, and the handing over happens on the server.
-
-```mermaid
-sequenceDiagram
-    actor U as Someone
-    participant P as ChatPage
-    participant S as ChatShell
-    participant A as AgentApi
-    participant V as The session, as Puls
-    participant C as A sub-session, as the cook
-    U->>S: asks, in Afrikaans
-    S->>P: OpenSessionAsync, on the first message
-    P->>A: CreateSessionAsync(agents and web, voice-af, place)
-    S->>A: StreamMessageAsync
-    A->>V: the message
-    V->>C: AskAgent("puls.cook")
-    C-->>A: its work, as events
-    A-->>S: a DelegationCard and the WorkPanel fill up
-    C-->>V: the cook's answer
-    V-->>A: Puls's reply
-    A-->>S: the turn, then its cost
-    S-->>U: the answer in Afrikaans
-```
+![The types: Puls's words, brand and pages on the framework's web, its templates and its sites](diagrams/louis-agent.puls-interface.svg)
 
 ## Structure
 

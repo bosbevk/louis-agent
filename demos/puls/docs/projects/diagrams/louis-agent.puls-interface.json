@@ -1,0 +1,80 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.puls: the interface design",
+  "caption": "Puls's own words, brand and pages on the framework's web: its program says Afrikaans, opts into the evals and accounts, and adds the recipes' views.",
+  "classes": {
+    "types": [
+      {
+        "id": "program",
+        "name": "Program",
+        "kind": "top-level",
+        "members": [
+          "ChatStore, AgentApi, CurrencyState",
+          "PulsText.Afrikaans, PulsAccountText.Afrikaans",
+          "AddLouisAgentEvals(PulsSites.Kinds), AddLouisAgentAccounts()",
+          "PackViews with RecipeWebViews"
+        ]
+      },
+      {
+        "id": "landing",
+        "name": "LandingPage",
+        "kind": "Features, Numbers, Pricing, Faq, LandingDemo"
+      },
+      {
+        "id": "chat",
+        "name": "ChatPage",
+        "kind": "ChatViews: Explore, Studio, TemplateCard"
+      },
+      {
+        "id": "templates",
+        "name": "Templates",
+        "kind": "static",
+        "members": [
+          "+All Template list",
+          "+Categories, Sections"
+        ]
+      },
+      {
+        "id": "template",
+        "name": "Template",
+        "kind": "record",
+        "members": [
+          "+Icon, Title, Description, Section, Category, Starter"
+        ]
+      },
+      {
+        "id": "sites",
+        "name": "PulsSites",
+        "kind": "static",
+        "members": [
+          "+Kinds SiteKinds"
+        ]
+      },
+      {
+        "id": "brand",
+        "name": "PulsLogo, PulsMark, PulsTile, Water",
+        "kind": "the brand"
+      },
+      {
+        "id": "text",
+        "name": "PulsText, PulsAccountText",
+        "kind": "static, its words in Afrikaans"
+      },
+      {
+        "id": "web",
+        "name": "ChatShell, SiteShell, ChatRunner",
+        "kind": "louis-agent.web",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "program", "to": "text", "kind": "uses", "word": "registers" },
+      { "from": "program", "to": "sites", "kind": "uses" },
+      { "from": "landing", "to": "web", "kind": "uses", "word": "sit in" },
+      { "from": "chat", "to": "web", "kind": "uses", "word": "sit in" },
+      { "from": "chat", "to": "templates", "kind": "uses", "word": "offers" },
+      { "from": "templates", "to": "template", "kind": "holds" },
+      { "from": "landing", "to": "brand", "kind": "uses" }
+    ]
+  }
+}

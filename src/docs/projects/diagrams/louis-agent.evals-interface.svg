@@ -1,0 +1,208 @@
+<svg viewBox="-24 -24 1515 965" width="1515" height="965" role="img" aria-label="louis-agent.evals: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.evals: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1515" height="965" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1467" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.evals:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 446 147 L 572 147 Q 596 147 596 123 L 596 93 Q 596 69 620 69 L 724 69" marker-end="url(#arrow-green)" />
+    <path class="edge tone-teal" d="M 1165 381 L 1249 381 Q 1273 381 1273 357 L 1273 315 Q 1273 303 1285 303 L 1297 303" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 446 459 L 536 459 Q 560 459 560 435 L 560 405 Q 560 381 584 381 L 724 381" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 446 459 L 536 459 Q 560 459 560 483 L 560 669 Q 560 693 584 693 L 724 693" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 446 459 L 536 459 Q 560 459 560 483 L 560 513 Q 560 537 584 537 L 724 537" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 446 615 L 518 615 Q 542 615 542 639 L 542 669 Q 542 693 566 693 L 724 693" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1165 537 L 1213 537 Q 1237 537 1237 513 L 1237 483 Q 1237 459 1261 459 L 1297 459" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 446 303 L 724 303 L 1165 303 L 1297 303" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="499.5" y="125" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="521" y="137" text-anchor="middle">reads</text>
+    <rect class="word-chip tone-teal" x="1197.5" y="359" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1219" y="371" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="642" y="359" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="660" y="371" text-anchor="middle">runs</text>
+    <rect class="word-chip tone-green" x="607" y="671" width="106" height="18" rx="4" />
+    <text class="word tone-green" x="660" y="683" text-anchor="middle">asks the agent</text>
+    <rect class="word-chip tone-green" x="638.5" y="515" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="660" y="527" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="455" y="593" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="494" y="605" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="1172.5" y="515" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1201" y="527" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="483.5" y="281" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="512" y="293" text-anchor="middle">creates</text>
+    <rect class="box tone-green" x="0" y="93" width="446" height="108" rx="10" />
+    <text class="label tone-green" x="223" y="121" text-anchor="middle">FileEval</text>
+    <text class="note" x="223" y="137" text-anchor="middle">an eval folder,</text>
+    <text class="note" x="223" y="149" text-anchor="middle">implements IEval</text>
+    <path class="frame" d="M 0 169 L 446 169" />
+    <text class="word tone-green" x="14" y="187" text-anchor="start">+Load(folder, checks, readers, source) FileEval (static)</text>
+    <rect class="box tone-green" x="0" y="249" width="446" height="108" rx="10" />
+    <text class="label tone-green" x="223" y="277" text-anchor="middle">GeneralChecks</text>
+    <text class="note" x="223" y="293" text-anchor="middle">static, the checks any</text>
+    <text class="note" x="223" y="305" text-anchor="middle">eval may use</text>
+    <path class="frame" d="M 0 325 L 446 325" />
+    <text class="word tone-green" x="14" y="343" text-anchor="start">Contains, NoError, CostUnder, WithinTime, LinksToHost...</text>
+    <rect class="box tone-green" x="0" y="410" width="446" height="98" rx="10" />
+    <text class="label tone-green" x="223" y="441" text-anchor="middle">EvalRunner</text>
+    <path class="frame" d="M 0 462 L 446 462" />
+    <text class="word tone-green" x="14" y="480" text-anchor="start">+RunAsync(eval, run)</text>
+    <text class="word tone-green" x="14" y="494" text-anchor="start">+RescoreAsync(eval, runId, rescoreOf, storedLines)</text>
+    <rect class="box tone-green" x="0" y="583" width="446" height="64" rx="10" />
+    <text class="label tone-green" x="223" y="611" text-anchor="middle">HttpSessionClient, CannedSessionClient, NoSessionClient</text>
+    <text class="note" x="223" y="627" text-anchor="middle">the API, a script, none</text>
+    <rect class="box tone-teal" x="724" y="14" width="441" height="110" rx="10" />
+    <text class="label tone-teal" x="944.5" y="42" text-anchor="middle">EvalFile</text>
+    <text class="note" x="944.5" y="58" text-anchor="middle">record, eval.json</text>
+    <path class="frame" d="M 724 78 L 1165 78" />
+    <text class="word tone-teal" x="738" y="96" text-anchor="start">+Modes EvalModeFile list</text>
+    <text class="word tone-teal" x="738" y="110" text-anchor="start">+Checks CheckEntryFile list</text>
+    <rect class="box tone-teal" x="724" y="312" width="441" height="138" rx="10" />
+    <text class="label tone-teal" x="944.5" y="340" text-anchor="middle">IEval</text>
+    <text class="note" x="944.5" y="356" text-anchor="middle">interface</text>
+    <path class="frame" d="M 724 376 L 1165 376" />
+    <text class="word tone-teal" x="738" y="394" text-anchor="start">+Name, Version, Proves, Identity?</text>
+    <text class="word tone-teal" x="738" y="408" text-anchor="start">+ModesAsync(sessions) IReadOnlyList&lt;EvalMode&gt;</text>
+    <text class="word tone-teal" x="738" y="422" text-anchor="start">+Scenarios, Checks, Dataset?</text>
+    <text class="word tone-teal" x="738" y="436" text-anchor="start">+TurnFactsOf(turn, mode, earlier) TurnFacts</text>
+    <rect class="box tone-green" x="724" y="489" width="441" height="96" rx="10" />
+    <text class="label tone-green" x="944.5" y="517" text-anchor="middle">ProtocolWriter</text>
+    <text class="note" x="944.5" y="533" text-anchor="middle">JSON lines on stdout</text>
+    <path class="frame" d="M 724 553 L 1165 553" />
+    <text class="word tone-green" x="738" y="571" text-anchor="start">+Begin, Mode, Question, Sse, Turn, Conversation</text>
+    <rect class="box tone-teal" x="724" y="624" width="441" height="138" rx="10" />
+    <text class="label tone-teal" x="944.5" y="652" text-anchor="middle">ISessionClient</text>
+    <text class="note" x="944.5" y="668" text-anchor="middle">interface</text>
+    <path class="frame" d="M 724 688 L 1165 688" />
+    <text class="word tone-teal" x="738" y="706" text-anchor="start">+ToolsetsAsync()</text>
+    <text class="word tone-teal" x="738" y="720" text-anchor="start">+OpenAsync(SessionRequest) string</text>
+    <text class="word tone-teal" x="738" y="734" text-anchor="start">+SendAsync(session, message) IAsyncEnumerable&lt;SessionEvent&gt;</text>
+    <text class="word tone-teal" x="738" y="748" text-anchor="start">+CloseAsync(session)</text>
+    <rect class="box tone-violet" x="1297" y="265" width="170" height="76" rx="10" />
+    <text class="label tone-violet" x="1382" y="293" text-anchor="middle">ICheck</text>
+    <text class="note" x="1382" y="309" text-anchor="middle">interface,</text>
+    <text class="note" x="1382" y="321" text-anchor="middle">louis-agent.evals.checks</text>
+    <rect class="box tone-violet" x="1297" y="421" width="170" height="76" rx="10" />
+    <text class="label tone-violet" x="1382" y="449" text-anchor="middle">EvalEvent</text>
+    <text class="note" x="1382" y="465" text-anchor="middle">record,</text>
+    <text class="note" x="1382" y="477" text-anchor="middle">louis-agent.evals.protocol</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="844" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="854.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="880" width="1467" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 890) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="902">
+    <tspan class="note-head">One harness:</tspan>
+    <tspan class="note-rest">an eval is an IEval, most read from a folder, the runner asks the agent through a session client and writes every event on a line.</tspan>
+  </text>
+</svg>

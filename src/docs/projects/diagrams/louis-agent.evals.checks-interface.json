@@ -1,0 +1,101 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.evals.checks: the interface design",
+  "caption": "The check contract: a check type builds a check from its parameters, a check grades a trial, and readers find money, numbers, links and images in an answer.",
+  "classes": {
+    "types": [
+      {
+        "id": "itype",
+        "name": "ICheckType",
+        "kind": "interface",
+        "members": [
+          "+Type, Kind, Parameters",
+          "+Create(parameters, CheckContext) ICheck"
+        ]
+      },
+      {
+        "id": "checktype",
+        "name": "CheckType<TParameters>",
+        "kind": "abstract, its parameters a record",
+        "members": [
+          "#Create(TParameters, CheckContext) ICheck (abstract)"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "CheckCatalog",
+        "members": [
+          "+Find(type) ICheckType?",
+          "+Get(type) ICheckType",
+          "+Listing() IReadOnlyList<ListedCheck>"
+        ]
+      },
+      {
+        "id": "context",
+        "name": "CheckContext",
+        "kind": "record",
+        "members": [
+          "+Folder, Before, Readers",
+          "+ILlmClientFactory? Models (a judge's)"
+        ]
+      },
+      {
+        "id": "icheck",
+        "name": "ICheck",
+        "kind": "interface",
+        "members": [
+          "+Name, Version, Kind, Required",
+          "+ExpectedKeys",
+          "+GradeAsync(Trial) Grade"
+        ]
+      },
+      {
+        "id": "trial",
+        "name": "Trial",
+        "kind": "record",
+        "members": [
+          "+RunId, Mode, Repeat",
+          "+EvalScenario Scenario",
+          "+Transcript Transcript"
+        ]
+      },
+      {
+        "id": "grade",
+        "name": "Grade",
+        "kind": "record",
+        "members": [
+          "+Check, Version, Score",
+          "+GradeOutcome Outcome, Reason",
+          "+GradeJudge? Judge"
+        ]
+      },
+      {
+        "id": "ireader",
+        "name": "IReader",
+        "kind": "interface",
+        "members": [
+          "+Name",
+          "IMoneyReader, INumberReader, ILinkReader, IImageReader, IPriceReader"
+        ]
+      },
+      {
+        "id": "readers",
+        "name": "ReaderCatalog",
+        "members": [
+          "+Get<TReader>(name)",
+          "+Listing()"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "checktype", "to": "itype", "kind": "implements" },
+      { "from": "catalog", "to": "itype", "kind": "holds" },
+      { "from": "itype", "to": "icheck", "kind": "creates" },
+      { "from": "itype", "to": "context", "kind": "uses", "word": "given" },
+      { "from": "context", "to": "readers", "kind": "holds" },
+      { "from": "readers", "to": "ireader", "kind": "holds" },
+      { "from": "icheck", "to": "trial", "kind": "uses", "word": "grades" },
+      { "from": "icheck", "to": "grade", "kind": "creates" }
+    ]
+  }
+}

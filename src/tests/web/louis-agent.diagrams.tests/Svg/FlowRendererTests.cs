@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Svg.Theme;

@@ -1,0 +1,113 @@
+{
+  "kind": "flow",
+  "title": "F106.3 triage and fix a service: one run, in memory",
+  "caption": "Every step is saved as it lands: the run, its steps and its policy are records, so the page and the guide can read them back.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "run",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "TriageRun 7f3a {Department:\ncode, Error: #41, Outcome}"
+      },
+      {
+        "id": "steps",
+        "icon": "file",
+        "tone": "teal",
+        "label": "TriageStep 1..n, each saved as\nit lands"
+      },
+      {
+        "id": "policy",
+        "icon": "shield",
+        "tone": "teal",
+        "label": "TriagePolicy {rounds 2, 10\nmin, $0.50}"
+      },
+      {
+        "id": "wf",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "TriageWorkflow"
+      },
+      {
+        "id": "children",
+        "icon": "users",
+        "tone": "violet",
+        "label": "ChildAgentClient: the roles\u0027\nsessions, the coder\u0027s peer\nsession"
+      },
+      {
+        "id": "recorder",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ITriageRecorder: Mongo (F43)\nor a file"
+      },
+      {
+        "id": "page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "TryPage"
+      },
+      {
+        "id": "stream",
+        "icon": "message",
+        "tone": "teal",
+        "label": "the event stream of run 7f3a"
+      },
+      {
+        "id": "popup",
+        "icon": "box",
+        "tone": "green",
+        "label": "StepPopup: the current step"
+      },
+      {
+        "id": "guide",
+        "icon": "message",
+        "tone": "green",
+        "label": "ExpertChat session, opened\nwith the run id"
+      },
+      {
+        "id": "tool",
+        "icon": "search",
+        "tone": "green",
+        "label": "ReadTriageRun(7f3a) -\u003E the\nrecorder"
+      }
+    ],
+    "edges": [
+      {
+        "from": "run",
+        "to": "steps"
+      },
+      {
+        "from": "run",
+        "to": "policy"
+      },
+      {
+        "from": "wf",
+        "to": "run"
+      },
+      {
+        "from": "wf",
+        "to": "children"
+      },
+      {
+        "from": "wf",
+        "to": "recorder"
+      },
+      {
+        "from": "page",
+        "to": "stream"
+      },
+      {
+        "from": "page",
+        "to": "popup"
+      },
+      {
+        "from": "page",
+        "to": "guide"
+      },
+      {
+        "from": "guide",
+        "to": "tool"
+      }
+    ]
+  }
+}

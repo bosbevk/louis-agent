@@ -65,70 +65,19 @@ directory's SVN; `wp-env` runs WordPress in Docker for tests.
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class SiteRecord { <<record>> Id Tenant Name Key Domains Caps Budget LeadTo Packs Voice Facts PrivatePages ReadsPages  %% F131.1, Mongo in F131.4 }
-    class ISiteStore { <<interface>> +FindByKeyAsync(key) SiteRecord? +ListAsync(tenant) +SaveAsync(site)  %% F131.1 }
-    class InMemorySiteStore { +from the host's settings  %% F131.1 }
-    class MongoSiteStore { +IMongoCollection~SiteRecord~  %% F131.4 }
-    class SiteDoor { +Admit(request, key, address) DoorAnswer  %% F131.1, grows OpenDoor }
-    class SiteRateLimits { +AddSiteRateLimits(services)  %% F131.1, PartitionedRateLimiter }
-    class BusinessIdentity { <<IAgentIdentity>> voice and facts from SiteRecord  %% F131.1 }
-    class EmbedPage { <<razor page>> /embed/site, frame-ancestors  %% F131.2 }
-    class EmbedScript { <<embed.js>> button, frame, page reader, ShowPage, open state  %% F131.2 }
-    class TurnBuffer { +Append(event) +ReplayFrom(index)  %% F131.3 }
-    class SiteBudget { +SpentThisMonth(site) +IsClosed(site)  %% F131.5, on F7 }
-    ISiteStore <|.. InMemorySiteStore
-    ISiteStore <|.. MongoSiteStore
-    SiteDoor --> ISiteStore
-    BusinessIdentity --> SiteRecord
-    EmbedPage --> ISiteStore
-    SiteDoor --> SiteBudget
-```
+![A door per site: it reads the site from its store, counts each address, and keeps the budget](diagrams/F131-the-chat-on-any-website-interface-design.svg)
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    Page[Customer page, any domain\nembed.js F131.2\nor the WordPress plugin F131.6] -->|postMessage, exact origins| Frame[Our frame /embed/site F131.2\nChatWidget, frame-ancestors]
-    Frame -->|fetch + SSE, same origin\nGET .../stream to resume F131.3| API[louis-agent.api\na door per site F131.1\nrate limits F131.1, budget F131.5]
-    API --> Store[(Sites in MongoDB\nper tenant F131.4)]
-    API --> Ledger[(Usage ledger\nsite:name tag)]
-    Admin[Sites screen F131.4] --> API
-    API -->|daily| Sitemap[The site's sitemap]
-```
+![A customer's page loads our widget in a frame, the frame talks to the API through a door per site, and the API keeps the sites and the usage](diagrams/F131-the-chat-on-any-website-architecture.svg)
 
 ### Communication: a visitor asks, the guide moves them, the answer carries on
 
-```mermaid
-sequenceDiagram
-    participant P as embed.js (host page)
-    participant F as Frame (ChatWidget)
-    participant A as API (site door)
-    P->>F: open (first click)
-    F->>P: send: give me the page
-    P-->>F: page text and areas (private parts left out)
-    F->>A: POST /v1/sessions/{id}/messages + page, site key
-    A-->>F: SSE: text, ShowPage("/menu#specials")
-    F->>P: ShowPage input
-    P->>P: full page load of /menu (WordPress)
-    Note over A: the turn keeps running (F131.3)
-    P->>F: new frame on /menu, chat still open
-    F->>A: GET /v1/sessions/{id}/stream
-    A-->>F: missed events, then live to the end
-    P->>P: scroll to #specials and glow
-```
+![The guide moves a visitor: the frame asks with the page, the guide sends them to another page, and the new frame picks up the turn it missed](diagrams/F131-the-chat-on-any-website-communication-a-visitor-asks-the-guide-moves-them-the-answer-carries-on.svg)
 
 ### Objects in memory: one embedded session
 
-```mermaid
-flowchart TB
-    Door[SiteDoor] --> Store[ISiteStore]
-    Door --> Limiter[Token bucket per site and address]
-    Sessions[AgentSessions] --> Session[AgentSession\nsite, identity, toolsets]
-    Session --> Buffer[TurnBuffer of the running turn]
-    Session --> Engine[AgentEngine of the business identity]
-```
+![One embedded session: the site's door with its store and limiter, and the session with its turn buffer and engine](diagrams/F131-the-chat-on-any-website-objects-in-memory-one-embedded-session.svg)
 
 ### Folder trees (proposed; each child's plan settles them)
 

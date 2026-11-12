@@ -1,0 +1,101 @@
+{
+  "kind": "sequence",
+  "title": "The general packs: a session and a tool call",
+  "caption": "A toolset that lacks a setting can't open a session: it's listed with what it lacks.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "S",
+        "icon": "message",
+        "tone": "blue",
+        "label": "A session"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AgentEngineFactory"
+      },
+      {
+        "id": "C",
+        "icon": "book",
+        "tone": "violet",
+        "label": "ToolsetCatalog"
+      },
+      {
+        "id": "P",
+        "icon": "box",
+        "tone": "green",
+        "label": "The pack\u0027s toolset"
+      },
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "G",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "ToolCallGuards"
+      },
+      {
+        "id": "O",
+        "icon": "box",
+        "tone": "green",
+        "label": "The tool"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "S",
+        "to": "F",
+        "text": "an engine with these toolsets"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "C",
+        "text": "finds each by name"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "P",
+        "text": "MissingSettings, CreateTools"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "F",
+        "text": "the tools, and the guide for the prompt"
+      },
+      {
+        "step": "message",
+        "from": "M",
+        "to": "G",
+        "text": "calls a tool, arguments as data"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "O",
+        "text": "runs it"
+      },
+      {
+        "step": "reply",
+        "from": "O",
+        "to": "G",
+        "text": "the result"
+      },
+      {
+        "step": "reply",
+        "from": "G",
+        "to": "M",
+        "text": "the result, summarised if it\u0027s too long"
+      }
+    ]
+  }
+}

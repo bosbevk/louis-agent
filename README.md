@@ -43,24 +43,7 @@ The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's f
 
 ## How it's built
 
-```mermaid
-flowchart TB
-    program["Your program<br/>a few lines: names an identity and its packs, starts a host"]
-    hosts["Hosts, as libraries<br/>Rider (ACP) · HTTP API · CLI · MCP server"]
-    ids["Identities<br/>who an agent is: puls, the coding agent"]
-    packs["Packs<br/>what it can do: files, git, dotnet, shell, web, recipes, …"]
-    contracts["louis-agent.composition<br/>the contracts an identity or a pack needs"]
-    core["louis-agent.core: the engine<br/>tool loop · streaming · providers · usage ledger · guards"]
-    llm["Claude · Ollama · OpenAI-compatible"]
-    program --> hosts
-    program --> ids
-    program --> packs
-    hosts --> core
-    ids --> contracts
-    packs --> contracts
-    core --> contracts
-    core --> llm
-```
+![Louis Agent: how a program, its hosts, identities and packs sit on the engine](src/docs/diagrams/README-how-it-s-built.svg)
 
 The engine ships no agent and holds no tools, and it names no product and no country. A pack needs only the contracts,
 never the engine, and never knows about another pack or an identity. Only a demo's own program knows them all

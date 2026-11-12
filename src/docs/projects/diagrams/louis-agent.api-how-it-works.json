@@ -1,0 +1,100 @@
+{
+  "kind": "flow",
+  "caption": "One process, two jobs: the API runs sessions and streams their turns back, and serves the web app beside them.",
+  "title": "louis-agent.api: How it works",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Client",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Web app \u00B7 curl \u00B7 orchestrator"
+      },
+      {
+        "id": "Turn",
+        "icon": "message",
+        "tone": "green",
+        "label": "StreamTurnAsync"
+      },
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine.StreamPromptAsync"
+      },
+      {
+        "id": "SSE",
+        "icon": "cloud",
+        "tone": "teal",
+        "label": "ITurnStreamFormat\n(Streaming/Claude) \u2192 SSE\nevents"
+      },
+      {
+        "id": "WS",
+        "icon": "server",
+        "tone": "green",
+        "label": "WorkspaceEndpoints"
+      },
+      {
+        "id": "Files",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "Workspace"
+      },
+      {
+        "id": "Git",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "Endpoints/Git"
+      },
+      {
+        "id": "Static",
+        "icon": "world",
+        "tone": "green",
+        "label": "MapStaticAssets \u002B\nMapLouisAgentSite\n(each page as HTML)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Client",
+        "to": "Turn",
+        "word": "POST\n/v1/sessions/{id}/messages"
+      },
+      {
+        "from": "Turn",
+        "to": "Engine"
+      },
+      {
+        "from": "Engine",
+        "to": "SSE",
+        "word": "updates"
+      },
+      {
+        "from": "SSE",
+        "to": "Client"
+      },
+      {
+        "from": "Client",
+        "to": "WS",
+        "word": "/v1/workspace/*"
+      },
+      {
+        "from": "WS",
+        "to": "Files"
+      },
+      {
+        "from": "Client",
+        "to": "Git",
+        "word": "/v1/git/*"
+      },
+      {
+        "from": "Git",
+        "to": "Files"
+      },
+      {
+        "from": "Static",
+        "to": "Client"
+      }
+    ],
+    "direction": "down"
+  }
+}

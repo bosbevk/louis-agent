@@ -1,0 +1,206 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.recipes: searching, then reading a recipe",
+  "caption": "Data comes before text: a page with no recipe data comes back as its text, labelled as such.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "green",
+        "label": "RecipeTools"
+      },
+      {
+        "id": "S",
+        "icon": "search",
+        "tone": "green",
+        "label": "RecipeScatter"
+      },
+      {
+        "id": "B",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "The guarded browser"
+      },
+      {
+        "id": "P",
+        "icon": "file",
+        "tone": "green",
+        "label": "RecipePrinter"
+      },
+      {
+        "id": "L",
+        "icon": "database",
+        "tone": "amber",
+        "label": "The library"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "M",
+        "to": "T",
+        "text": "FindRecipes(query)"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "S",
+        "text": "asks several sites, some kept for pages outside the library"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "B",
+        "text": "each site\u0027s search"
+      },
+      {
+        "step": "reply",
+        "from": "B",
+        "to": "S",
+        "text": "the hits"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "T",
+        "text": "merged, in a random order"
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "M",
+        "text": "a numbered list, framed as untrusted"
+      },
+      {
+        "step": "message",
+        "from": "M",
+        "to": "T",
+        "text": "ReadRecipe(url)"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "it\u0027s our own link",
+        "steps": [
+          {
+            "step": "message",
+            "from": "T",
+            "to": "L",
+            "text": "reads the kept copy, and no browser opens"
+          },
+          {
+            "step": "reply",
+            "from": "L",
+            "to": "T",
+            "text": "the Recipe"
+          },
+          {
+            "step": "message",
+            "from": "T",
+            "to": "P",
+            "text": "the Recipe"
+          },
+          {
+            "step": "reply",
+            "from": "P",
+            "to": "M",
+            "text": "ingredients and numbered method lines"
+          }
+        ],
+        "else": [
+          {
+            "label": "it\u0027s a page out there",
+            "steps": [
+              {
+                "step": "message",
+                "from": "T",
+                "to": "L",
+                "text": "is it a page already found to have no recipe?"
+              },
+              {
+                "step": "message",
+                "from": "T",
+                "to": "B",
+                "text": "visits the page"
+              },
+              {
+                "step": "reply",
+                "from": "B",
+                "to": "T",
+                "text": "the page"
+              },
+              {
+                "step": "block",
+                "block": "alt",
+                "label": "it publishes a whole Recipe",
+                "steps": [
+                  {
+                    "step": "message",
+                    "from": "T",
+                    "to": "L",
+                    "text": "KeepAsync, if it\u0027s from a table site"
+                  },
+                  {
+                    "step": "message",
+                    "from": "T",
+                    "to": "P",
+                    "text": "the Recipe, from SchemaOrgRecipe"
+                  },
+                  {
+                    "step": "reply",
+                    "from": "P",
+                    "to": "M",
+                    "text": "ingredients and numbered method lines"
+                  }
+                ],
+                "else": [
+                  {
+                    "label": "it has words but no recipe",
+                    "steps": [
+                      {
+                        "step": "message",
+                        "from": "T",
+                        "to": "L",
+                        "text": "ExcludeAsync, so nobody opens it again"
+                      },
+                      {
+                        "step": "reply",
+                        "from": "T",
+                        "to": "M",
+                        "text": "says there\u0027s no recipe on the page"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "it has no data, but shows a recipe",
+                    "steps": [
+                      {
+                        "step": "message",
+                        "from": "T",
+                        "to": "L",
+                        "text": "KeepAsync, from its headings"
+                      },
+                      {
+                        "step": "reply",
+                        "from": "T",
+                        "to": "M",
+                        "text": "the page\u0027s text, cut and labelled"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

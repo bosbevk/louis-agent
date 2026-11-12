@@ -1,0 +1,165 @@
+{
+  "kind": "flow",
+  "title": "F39 orchestration: one error triaged, in memory",
+  "caption": "One error, one tree: the workflow decides, a child fixes it on the coding peer, and the fix is confirmed before the outcome is written.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "host",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "host loop\n: Program\n(louis-agent.orchestrator)"
+      },
+      {
+        "id": "cat",
+        "icon": "book",
+        "tone": "violet",
+        "label": "catalogue\n: AgentCatalog\nIDENTITIES=voorman"
+      },
+      {
+        "id": "feed",
+        "icon": "file",
+        "tone": "amber",
+        "label": "feed\n: JsonLinesErrorFeed\nthe seeded service\u0027s\nlogs/errors.jsonl"
+      },
+      {
+        "id": "rec",
+        "icon": "database",
+        "tone": "amber",
+        "label": "recorder\n: JsonLinesTriageRecorder\ndecisions.jsonl"
+      },
+      {
+        "id": "wf",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "workflow\n: TriageWorkflow"
+      },
+      {
+        "id": "turn",
+        "icon": "message",
+        "tone": "teal",
+        "label": "turn\n: TurnContext\nsession triage_e42, run tag"
+      },
+      {
+        "id": "lim",
+        "icon": "shield",
+        "tone": "teal",
+        "label": "limiter\n: DelegationLimiter\n1 of 3 calls used"
+      },
+      {
+        "id": "cls",
+        "icon": "search",
+        "tone": "teal",
+        "label": "classifier\n: RouteClassifier\nprofile haiku-low, the tool\nforced"
+      },
+      {
+        "id": "dec",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "decision\n: Decision\nFixable, rule order-total"
+      },
+      {
+        "id": "kids",
+        "icon": "users",
+        "tone": "violet",
+        "label": "children\n: ChildAgentClient"
+      },
+      {
+        "id": "tr",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "transport\n: HttpPeerTransport\nthe coding peer, its own key"
+      },
+      {
+        "id": "child",
+        "icon": "user",
+        "tone": "violet",
+        "label": "child\n: ChildHandle\nrole voorman-fixer, depth 1,\nparent triage_e42#1"
+      },
+      {
+        "id": "res",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "result\n: FixResult\nFixed, commit, branch\nfix/order-total-e42"
+      },
+      {
+        "id": "conf",
+        "icon": "checks",
+        "tone": "green",
+        "label": "confirm\n: ConfirmFix\nCliReplay \u002B DotNetTestRunner"
+      },
+      {
+        "id": "out",
+        "icon": "checks",
+        "tone": "teal",
+        "label": "outcome\n: TriageOutcome.Fixed"
+      }
+    ],
+    "edges": [
+      {
+        "from": "host",
+        "to": "cat"
+      },
+      {
+        "from": "cat",
+        "to": "feed"
+      },
+      {
+        "from": "cat",
+        "to": "rec"
+      },
+      {
+        "from": "host",
+        "to": "wf"
+      },
+      {
+        "from": "wf",
+        "to": "turn"
+      },
+      {
+        "from": "turn",
+        "to": "lim"
+      },
+      {
+        "from": "wf",
+        "to": "cls"
+      },
+      {
+        "from": "cls",
+        "to": "dec"
+      },
+      {
+        "from": "wf",
+        "to": "kids"
+      },
+      {
+        "from": "kids",
+        "to": "tr"
+      },
+      {
+        "from": "kids",
+        "to": "child"
+      },
+      {
+        "from": "child",
+        "to": "res"
+      },
+      {
+        "from": "wf",
+        "to": "conf"
+      },
+      {
+        "from": "conf",
+        "to": "res"
+      },
+      {
+        "from": "wf",
+        "to": "out"
+      },
+      {
+        "from": "out",
+        "to": "rec"
+      }
+    ]
+  }
+}

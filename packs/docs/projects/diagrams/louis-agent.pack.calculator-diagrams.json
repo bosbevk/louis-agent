@@ -1,0 +1,49 @@
+{
+  "kind": "flow",
+  "title": "The calculator pack: one tool over plain arithmetic",
+  "caption": "One tool on .NET's own evaluator: a check in front lets only arithmetic reach it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "blue",
+        "label": "CalculatorPack: the calculator\ntoolset"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "CalculatorTools.Calculate"
+      },
+      {
+        "id": "arithmetic",
+        "icon": "code",
+        "tone": "green",
+        "label": "Arithmetic"
+      },
+      {
+        "id": "table",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "DataTable.Compute"
+      }
+    ],
+    "edges": [
+      {
+        "from": "pack",
+        "to": "tools"
+      },
+      {
+        "from": "tools",
+        "to": "arithmetic"
+      },
+      {
+        "from": "arithmetic",
+        "to": "table",
+        "word": "digits, a point, \u002B - * /\n( ) only"
+      }
+    ],
+    "direction": "down"
+  }
+}

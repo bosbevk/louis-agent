@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.identity.triage: how it works",
+  "caption": "The manager is the hub: it asks each role by its address, every role ends with its typed tool, and the manager ends the case.",
+  "flow": {
+    "nodes": [
+      { "id": "case", "label": "A case\nan error and its runbooks", "icon": "file", "tone": "blue" },
+      { "id": "manager", "label": "The manager\ntriage/voice", "icon": "chip", "tone": "green" },
+      { "id": "sorter", "label": "triage.sorter\nSortCase", "icon": "search", "tone": "green" },
+      { "id": "investigator", "label": "triage.investigator\nReportInvestigation, read-only", "icon": "code", "tone": "green" },
+      { "id": "reviewer", "label": "triage.reviewer\nReportReview", "icon": "checks", "tone": "green" },
+      { "id": "pack", "label": "The triage pack\nthe run's steps", "icon": "box", "tone": "violet" },
+      { "id": "end", "label": "DecideCase\nor RaiseToPerson", "icon": "branch", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "case", "to": "manager" },
+      { "from": "manager", "to": "sorter", "word": "AskAgent" },
+      { "from": "manager", "to": "investigator" },
+      { "from": "manager", "to": "reviewer" },
+      { "from": "sorter", "to": "pack" },
+      { "from": "investigator", "to": "pack" },
+      { "from": "reviewer", "to": "pack" },
+      { "from": "manager", "to": "end", "word": "ends it", "style": "dashed" }
+    ]
+  }
+}

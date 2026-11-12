@@ -1,0 +1,163 @@
+{
+  "kind": "sequence",
+  "title": "Agent to agent: the orchestrator and louis-agent",
+  "caption": "The orchestrator decides, louis-agent fixes: every fix is checked in git and by a replay before it counts.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "Log",
+        "icon": "file",
+        "tone": "amber",
+        "label": "Service error log\n(logs/errors.jsonl)"
+      },
+      {
+        "id": "O",
+        "icon": "chip",
+        "tone": "blue",
+        "label": "Orchestrator\n(its own model \u002B runbooks)"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "L",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "louis-agent\n(AgentEngine \u002B coding tools)"
+      },
+      {
+        "id": "G",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "Service repository"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "O",
+        "to": "Log",
+        "text": "read new error events"
+      },
+      {
+        "step": "message",
+        "from": "O",
+        "to": "O",
+        "text": "triage with the method\u0027s runbook:\nexpected / auto-fixable / escalate"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "auto-fixable",
+        "steps": [
+          {
+            "step": "message",
+            "from": "O",
+            "to": "G",
+            "text": "check out main (stash any leftovers)"
+          },
+          {
+            "step": "message",
+            "from": "O",
+            "to": "A",
+            "text": "POST /v1/sessions { task: fix:\u003Cerror id\u003E, run, service }"
+          },
+          {
+            "step": "message",
+            "from": "O",
+            "to": "A",
+            "text": "POST /v1/sessions/{id}/messages (the fix request)"
+          },
+          {
+            "step": "message",
+            "from": "A",
+            "to": "L",
+            "text": "run the task"
+          },
+          {
+            "step": "message",
+            "from": "L",
+            "to": "G",
+            "text": "branch, edit, test, build, commit"
+          },
+          {
+            "step": "reply",
+            "from": "A",
+            "to": "O",
+            "text": "SSE: every tool call, then text ending in FIX-RESULT"
+          },
+          {
+            "step": "block",
+            "block": "opt",
+            "label": "no FIX-RESULT yet (tool rounds ran out)",
+            "steps": [
+              {
+                "step": "message",
+                "from": "O",
+                "to": "A",
+                "text": "\u0022Continue the fix \u2026 Finish with the FIX-RESULT line.\u0022"
+              },
+              {
+                "step": "reply",
+                "from": "A",
+                "to": "O",
+                "text": "SSE \u2026 FIX-RESULT"
+              }
+            ]
+          },
+          {
+            "step": "message",
+            "from": "O",
+            "to": "A",
+            "text": "DELETE /v1/sessions/{id}"
+          },
+          {
+            "step": "message",
+            "from": "O",
+            "to": "G",
+            "text": "VerifyFixCommit (git), ReplayRequest, RunServiceTests"
+          },
+          {
+            "step": "message",
+            "from": "O",
+            "to": "O",
+            "text": "DECISION: fixed, or escalate if any check fails"
+          }
+        ],
+        "else": [
+          {
+            "label": "expected",
+            "steps": [
+              {
+                "step": "message",
+                "from": "O",
+                "to": "O",
+                "text": "AcknowledgeError \u2192 DECISION: ignored"
+              }
+            ]
+          },
+          {
+            "label": "escalate",
+            "steps": [
+              {
+                "step": "message",
+                "from": "O",
+                "to": "O",
+                "text": "EscalateToHuman \u2192 DECISION: escalated"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "O",
+        "to": "G",
+        "text": "check out main again for the next error"
+      }
+    ]
+  }
+}

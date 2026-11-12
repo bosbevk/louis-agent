@@ -1,0 +1,234 @@
+<svg viewBox="-24 -24 772 934" width="772" height="934" role="img" aria-label="Accounts: the browser's calls through Identity's routes and ours to the store" xmlns="http://www.w3.org/2000/svg">
+  <title>Accounts: the browser's calls through Identity's routes and ours to the store</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="772" height="934" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="724" height="72" rx="10" />
+  <g class="title-icon" transform="translate(16 25) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="44" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">Accounts:</tspan>
+    <tspan class="title-rest">the browser's calls through Identity's routes and ours to the</tspan>
+  </text>
+  <text class="heading" x="64" y="52">
+    <tspan class="title-rest">store</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 88)">
+    <path class="edge tone-blue" d="M 295.4 84 L 295.4 105 Q 295.4 126 274.4 126 L 167.2 126 Q 143.2 126 143.2 150 L 143.2 204" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 295.4 84 L 295.4 105 Q 295.4 126 316.4 126 L 423.6 126 Q 447.6 126 447.6 150 L 447.6 204" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-blue" d="M 143.2 272 L 143.2 308 Q 143.2 332 167.2 332 L 283.4 332 Q 295.4 332 295.4 344 L 295.4 356" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-green" d="M 447.6 272 L 447.6 293 Q 447.6 314 426.6 314 L 316.4 314 Q 295.4 314 295.4 335 L 295.4 356" marker-end="url(#arrow-green)" />
+    <path class="edge tone-violet" d="M 295.4 408 L 295.4 444 Q 295.4 468 319.4 468 L 587.8 468 Q 599.8 468 599.8 480 L 599.8 492" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-blue" d="M 599.8 84 L 599.8 204 L 599.8 272 L 599.8 356 L 599.8 408 L 599.8 492" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-teal" d="M 599.8 560 L 599.8 575 Q 599.8 590 584.8 590 L 462.6 590 Q 447.6 590 447.6 605 L 447.6 620" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-violet" d="M 295.4 408 L 295.4 492" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-blue" x="149.2" y="130" width="141" height="18" rx="4" />
+    <text class="word tone-blue" x="219.7" y="142" text-anchor="middle">POST /account/login</text>
+    <rect class="word-chip tone-blue" x="453.6" y="130" width="113" height="54" rx="4" />
+    <text class="word tone-blue" x="510.1" y="142" text-anchor="middle">GET /account/me</text>
+    <text class="word tone-blue" x="510.1" y="154" text-anchor="middle">PUT /profile</text>
+    <text class="word tone-blue" x="510.1" y="166" text-anchor="middle">POST /logout</text>
+    <text class="word tone-blue" x="510.1" y="178" text-anchor="middle">DELETE /account</text>
+    <rect class="word-chip tone-violet" x="301.4" y="412" width="148" height="18" rx="4" />
+    <text class="word tone-violet" x="375.4" y="424" text-anchor="middle">confirm, reset links</text>
+    <rect class="box tone-blue" x="190.2" y="0" width="210.4" height="84" rx="10" />
+    <circle class="badge tone-blue" cx="218.2" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(210.2 34) scale(0.6667)">
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+      <path d="M4 8h16" />
+      <path d="M8 4v4" />
+    </g>
+    <text class="label tone-blue" x="242.2" y="47" text-anchor="start">Browser app (F61.2)</text>
+    <rect class="box tone-blue" x="487" y="0" width="225.6" height="84" rx="10" />
+    <circle class="badge tone-blue" cx="515" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(507 34) scale(0.6667)">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M3.6 9h16.8" />
+      <path d="M3.6 15h16.8" />
+      <path d="M11.5 3a17 17 0 0 0 0 18" />
+      <path d="M12.5 3a17 17 0 0 1 0 18" />
+    </g>
+    <text class="label tone-blue" x="539" y="31" text-anchor="start">UseTenant: host -&gt;</text>
+    <text class="label tone-blue" x="539" y="47" text-anchor="start">HostTenantResolver -&gt;</text>
+    <text class="label tone-blue" x="539" y="63" text-anchor="start">CurrentTenant</text>
+    <rect class="box tone-blue" x="45.6" y="204" width="195.2" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="73.6" cy="238" r="14" />
+    <g class="badge-icon" transform="translate(65.6 230) scale(0.6667)">
+      <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+    </g>
+    <text class="label tone-blue" x="97.6" y="235" text-anchor="start">Identity's routes</text>
+    <text class="label tone-blue" x="97.6" y="251" text-anchor="start">(MapIdentityApi)</text>
+    <rect class="box tone-green" x="357.6" y="204" width="180" height="68" rx="10" />
+    <circle class="badge tone-green" cx="385.6" cy="238" r="14" />
+    <g class="badge-icon" transform="translate(377.6 230) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-green" x="409.6" y="243" text-anchor="start">AccountHandlers</text>
+    <rect class="box tone-violet" x="159.8" y="356" width="271.2" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="187.8" cy="382" r="14" />
+    <g class="badge-icon" transform="translate(179.8 374) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-violet" x="211.8" y="387" text-anchor="start">UserManager / SignInManager</text>
+    <rect class="box tone-red" x="156" y="492" width="278.8" height="68" rx="10" />
+    <circle class="badge tone-red" cx="184" cy="526" r="14" />
+    <g class="badge-icon" transform="translate(176 518) scale(0.6667)">
+      <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+      <path d="M3 7l9 6l9 -6" />
+    </g>
+    <text class="label tone-red" x="208" y="531" text-anchor="start">IEmailSender: LogEmailSender</text>
+    <rect class="box tone-teal" x="475.6" y="492" width="248.4" height="68" rx="10" />
+    <circle class="badge tone-teal" cx="503.6" cy="526" r="14" />
+    <g class="badge-icon" transform="translate(495.6 518) scale(0.6667)">
+      <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+      <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+    </g>
+    <text class="label tone-teal" x="527.6" y="523" text-anchor="start">AccountUserStore: within</text>
+    <text class="label tone-teal" x="527.6" y="539" text-anchor="start">CurrentTenant</text>
+    <rect class="box tone-amber" x="304.4" y="620" width="286.4" height="52" rx="10" />
+    <circle class="badge tone-amber" cx="332.4" cy="646" r="14" />
+    <g class="badge-icon" transform="translate(324.4 638) scale(0.6667)">
+      <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+      <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+      <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+    </g>
+    <text class="label tone-amber" x="356.4" y="651" text-anchor="start">AccountsDbContext: SQL Server</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="776" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="786.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="776" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="786.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="776" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="786.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="364.8" y="776" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="786.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-red" x="541.6" y="776" width="12" height="12" rx="3" />
+  <text class="legend" x="559.6" y="786.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="0" y="796" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="806.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="832" width="724" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 842) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="854">
+    <tspan class="note-head">Multi-tenant by design:</tspan>
+    <tspan class="note-rest">the tenant is resolved from the host, and every account lives within</tspan>
+  </text>
+  <text class="notes" x="38" y="871">
+    <tspan class="note-rest">its CurrentTenant.</tspan>
+  </text>
+</svg>

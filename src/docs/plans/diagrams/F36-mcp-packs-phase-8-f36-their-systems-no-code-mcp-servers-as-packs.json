@@ -1,0 +1,168 @@
+{
+  "kind": "flow",
+  "title": "F36 MCP servers as packs: one pack, as the host starts",
+  "caption": "Their systems, no code: a server becomes a pack only when its command or address, its tools and its pin all check out, and every one of its tools runs inside a guard.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "named",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Host starts,\nMCP_PACKS=pricerules"
+      },
+      {
+        "id": "settings",
+        "icon": "file",
+        "tone": "amber",
+        "label": "config/mcp/pricerules.json\nread: command or URL,\nallowlist, prefix, trusted,\neffects, pin"
+      },
+      {
+        "id": "approved",
+        "icon": "search",
+        "label": "stdio: was this exact command\napproved?"
+      },
+      {
+        "id": "unavailable",
+        "icon": "shield",
+        "tone": "red",
+        "label": "pack unavailable, with its\nreason"
+      },
+      {
+        "id": "connect",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "CreateAsync, ListToolsAsync\nand the pin, under one\nstart-up timeout"
+      },
+      {
+        "id": "dispose",
+        "icon": "box",
+        "tone": "green",
+        "label": "client disposed, so a stdio\nchild ends"
+      },
+      {
+        "id": "drift",
+        "icon": "search",
+        "label": "every allowlisted tool listed?"
+      },
+      {
+        "id": "names",
+        "icon": "code",
+        "tone": "green",
+        "label": "prefix each name, check it\nagainst our name rule, refuse\na clash"
+      },
+      {
+        "id": "pin",
+        "icon": "search",
+        "label": "pin matches: version when\nreported, hash always"
+      },
+      {
+        "id": "guard",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "each tool wrapped in\nMcpToolGuard: frame, size,\ntimeout per call; its effect\nfrom settings"
+      },
+      {
+        "id": "catalogue",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog built, the pack's\nlisted tools among its names"
+      },
+      {
+        "id": "sessions",
+        "icon": "message",
+        "tone": "violet",
+        "label": "sessions open with it; each\nchat keeps the list it opened\nwith (FX4)"
+      },
+      {
+        "id": "changed",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "tools/list_changed from the\nserver"
+      },
+      {
+        "id": "refresh",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "admin refresh (step 9a)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "named",
+        "to": "settings"
+      },
+      {
+        "from": "settings",
+        "to": "approved"
+      },
+      {
+        "from": "approved",
+        "to": "unavailable",
+        "word": "no"
+      },
+      {
+        "from": "approved",
+        "to": "connect",
+        "word": "yes, or an HTTP server\nthrough SsrfGuard and\nthe egress proxy"
+      },
+      {
+        "from": "connect",
+        "to": "dispose",
+        "word": "fails or times out"
+      },
+      {
+        "from": "dispose",
+        "to": "unavailable"
+      },
+      {
+        "from": "connect",
+        "to": "drift"
+      },
+      {
+        "from": "drift",
+        "to": "dispose",
+        "word": "no: drift"
+      },
+      {
+        "from": "drift",
+        "to": "names",
+        "word": "yes"
+      },
+      {
+        "from": "names",
+        "to": "pin"
+      },
+      {
+        "from": "pin",
+        "to": "dispose",
+        "word": "no"
+      },
+      {
+        "from": "pin",
+        "to": "guard",
+        "word": "yes"
+      },
+      {
+        "from": "guard",
+        "to": "catalogue"
+      },
+      {
+        "from": "catalogue",
+        "to": "sessions"
+      },
+      {
+        "from": "changed",
+        "to": "catalogue",
+        "word": "ignored",
+        "style": "dashed"
+      },
+      {
+        "from": "refresh",
+        "to": "catalogue",
+        "word": "new generation, new\nchats only",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -118,54 +118,13 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 
 ## Diagrams
 
-**Architecture:** a site is a small program on top of this library. It says who it is and what it uses, and the framework does the rest. The [eval pages](louis-agent.web.evals.md) have
-diagrams of their own.
+The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 
-```mermaid
-flowchart TD
-    subgraph site["A site"]
-        program["Program.cs: its words, SiteFrames, PackViews"]
-        page["Its chat page, with what goes in the slots"]
-        layout["Its admin layout, with what goes in the slots"]
-    end
-    page --> shell["ChatShell"]
-    layout --> admin["AdminShell"]
-    shell --> runner["ChatRunner"]
-    shell --> views["TurnView, DelegationCard, WorkPanel"]
-    runner --> stream["TurnStream: events become a Turn"]
-    runner --> store["ChatStore: localStorage"]
-    runner --> api["AgentApi"]
-    admin --> menu["PackMenu"]
-    admin --> screen["Screen page and ScreenTable, or a pack's view from PackViews"]
-    screen --> api
-    api -->|"HTTP and SSE, on the same origin"| server["louis-agent.api"]
-```
+![The framework's web: a site's pages in the chat's and the admin's frames, and the API they call](diagrams/louis-agent.web-diagrams.svg)
 
-**Flow:** sending a message. `ChatRunner` holds all of it, so no chat page has its own copy.
+![Sending a message: ChatRunner opens the session the first time, applies each event to the turn, redraws the page and saves the chat](diagrams/louis-agent.web-diagrams-2.svg)
 
-```mermaid
-sequenceDiagram
-    actor U as Someone
-    participant S as ChatShell
-    participant R as ChatRunner
-    participant A as AgentApi
-    participant T as TurnStream
-    participant C as ChatStore
-    U->>S: types and sends
-    S->>R: the draft and its attachments
-    opt it's the chat's first message
-        R->>A: CreateSessionAsync (toolsets, role, place)
-    end
-    R->>A: StreamMessageAsync
-    loop each event from the API
-        A-->>R: a SessionEvent
-        R->>T: Apply(turn, event)
-        R-->>S: Changed, at most every 50 ms
-        S-->>U: the turn, redrawn
-    end
-    R->>C: SaveAsync
-    R-->>S: Changed, the last one always gets through
-```
+![The types: shells for a site's frames, one runner for a chat's turn over the agent API, the chats kept in the browser and an address for every place](diagrams/louis-agent.web-interface.svg)
 
 ## Structure
 

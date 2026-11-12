@@ -1,0 +1,84 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.mcp: the interface design",
+  "caption": "The engine's tools, no model: the host adds the tools, kept in step as they change, the feeds as resources and the skills as tools of their own.",
+  "classes": {
+    "types": [
+      {
+        "id": "host",
+        "name": "McpHost",
+        "kind": "static, what your program calls",
+        "members": [
+          "+RunAsync(args, AgentCatalog, HostServices?)"
+        ]
+      },
+      {
+        "id": "transport",
+        "name": "McpTransport",
+        "kind": "enum, MCP_TRANSPORT",
+        "members": [
+          "Stdio Http"
+        ]
+      },
+      {
+        "id": "primitives",
+        "name": "McpPrimitives",
+        "kind": "static",
+        "members": [
+          "+Add(McpServerOptions, engine, catalog)"
+        ]
+      },
+      {
+        "id": "sync",
+        "name": "EngineToolSync",
+        "kind": "static",
+        "members": [
+          "+Attach(engine, tools)"
+        ]
+      },
+      {
+        "id": "feeds",
+        "name": "FeedResources",
+        "kind": "static",
+        "members": [
+          "+From(feeds) IReadOnlyList<McpServerResource>"
+        ]
+      },
+      {
+        "id": "skills",
+        "name": "SkillsToolProvider",
+        "members": [
+          "+ListSkills()",
+          "+GetSkillInfo(name)",
+          "+GetSkillDocumentation()"
+        ]
+      },
+      {
+        "id": "engine",
+        "name": "AgentEngine",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Tools",
+          "+ToolsChanged"
+        ]
+      },
+      {
+        "id": "feed",
+        "name": "IDataFeed",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "host", "to": "transport", "kind": "uses", "word": "reads" },
+      { "from": "host", "to": "primitives", "kind": "uses", "word": "adds" },
+      { "from": "primitives", "to": "sync", "kind": "uses", "word": "the tools" },
+      { "from": "primitives", "to": "feeds", "kind": "uses", "word": "the feeds" },
+      { "from": "primitives", "to": "skills", "kind": "creates" },
+      { "from": "sync", "to": "engine", "kind": "uses", "word": "on ToolsChanged" },
+      { "from": "skills", "to": "engine", "kind": "holds" },
+      { "from": "feeds", "to": "feed", "kind": "uses", "word": "one resource each" }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.pack.docs: how it works",
+  "caption": "An agent that knows only the docs: the pack is on when its folder is set, and its three tools read nothing outside it.",
+  "flow": {
+    "nodes": [
+      { "id": "agent", "label": "An agent\nthe site's guide", "icon": "chip", "tone": "violet" },
+      { "id": "pack", "label": "DocsPack\nthe docs toolset", "icon": "box", "tone": "green" },
+      { "id": "tools", "label": "DocsTools\nListDocs, ReadDoc, SearchDocs", "icon": "book", "tone": "green" },
+      { "id": "boundary", "label": "WorkspaceBoundary\nnothing outside the root", "icon": "shield", "tone": "violet" },
+      { "id": "root", "label": "DOCS_ROOT\nmarkdown and text", "icon": "folder", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "agent", "to": "pack", "word": "names docs" },
+      { "from": "pack", "to": "tools", "word": "builds" },
+      { "from": "tools", "to": "boundary", "word": "every path through" },
+      { "from": "boundary", "to": "root" }
+    ]
+  }
+}

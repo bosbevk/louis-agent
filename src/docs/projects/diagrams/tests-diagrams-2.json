@@ -1,0 +1,90 @@
+{
+  "kind": "sequence",
+  "title": "Test projects: a golden file",
+  "caption": "A golden pins what a component draws or what the model reads: so a change has to be looked at before it's accepted.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "T",
+        "icon": "checks",
+        "tone": "green",
+        "label": "A test"
+      },
+      {
+        "id": "S",
+        "icon": "code",
+        "tone": "green",
+        "label": "Snapshots"
+      },
+      {
+        "id": "G",
+        "icon": "file",
+        "tone": "amber",
+        "label": "The .html golden, beside the test"
+      },
+      {
+        "id": "Y",
+        "icon": "user",
+        "tone": "blue",
+        "label": "You"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "T",
+        "to": "S",
+        "text": "Match(file, what it rendered)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "S",
+        "text": "normalises what isn\u0027t the component\u0027s doing"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "LOUIS_UPDATE_GOLDEN=1",
+        "steps": [
+          {
+            "step": "message",
+            "from": "S",
+            "to": "G",
+            "text": "writes it"
+          },
+          {
+            "step": "reply",
+            "from": "G",
+            "to": "Y",
+            "text": "read the diff, then commit it"
+          }
+        ],
+        "else": [
+          {
+            "label": "it\u0027s the same",
+            "steps": [
+              {
+                "step": "reply",
+                "from": "S",
+                "to": "T",
+                "text": "passes"
+              }
+            ]
+          },
+          {
+            "label": "it differs",
+            "steps": [
+              {
+                "step": "reply",
+                "from": "S",
+                "to": "T",
+                "text": "fails, with what it rendered in the temp folder"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

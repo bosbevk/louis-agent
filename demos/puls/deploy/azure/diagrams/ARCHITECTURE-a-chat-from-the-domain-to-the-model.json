@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "title": "Puls in Azure: a chat, from the domain to the model",
+  "caption": "One app in front: DNS points the domain at it, it signs the person in, and it reaches Mongo, Chrome and the model behind it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "B",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Browser"
+      },
+      {
+        "id": "CF",
+        "icon": "world",
+        "tone": "red",
+        "label": "Cloudflare DNS (DNS-only records)"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "green",
+        "label": "puls-app"
+      },
+      {
+        "id": "SQL",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Azure SQL"
+      },
+      {
+        "id": "VM",
+        "icon": "server",
+        "tone": "amber",
+        "label": "puls-services"
+      },
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Anthropic"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "B",
+        "to": "CF",
+        "text": "mypuls.co.za?"
+      },
+      {
+        "step": "reply",
+        "from": "CF",
+        "to": "B",
+        "text": "4.253.73.61 (A), www a CNAME to the app\u0027s own address"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "GET / over HTTPS"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "B",
+        "text": "the Puls web app"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "POST /account/login"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "SQL",
+        "text": "the user (the database resumes after a pause; EF retries)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "B",
+        "text": "Set-Cookie"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "POST /v1/sessions (cookie \u002B X-Requested-With)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "VM",
+        "text": "27017 Mongo (runs, prices, recipes), 9222 Chrome, 8080 SearXNG"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "M",
+        "text": "the model\u0027s answer"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "B",
+        "text": "streamed"
+      }
+    ]
+  }
+}

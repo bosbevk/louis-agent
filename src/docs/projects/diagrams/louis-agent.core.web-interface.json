@@ -1,0 +1,117 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core.web: the interface design",
+  "caption": "Core's web seam made real: one WebAccess holds a search, a renderer and a browser, each picked by a factory from the settings and each behind its own interface.",
+  "classes": {
+    "types": [
+      {
+        "id": "seam",
+        "name": "IWebAccess",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Search, Renderer, Browser?",
+          "+NewFetcher() IPageFetcher",
+          "+Setup"
+        ]
+      },
+      {
+        "id": "access",
+        "name": "WebAccess",
+        "members": [
+          "+Create(AgentOptions, ReplayStore?) IWebAccess (static)"
+        ]
+      },
+      {
+        "id": "isearch",
+        "name": "IWebSearchProvider",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name",
+          "+SearchAsync(query) IReadOnlyList<WebSearchResult>"
+        ]
+      },
+      {
+        "id": "search",
+        "name": "WebSearchProviderFactory",
+        "kind": "static",
+        "members": [
+          "+Create(options, http?) IWebSearchProvider",
+          "DuckDuckGo, Google, SearXNG, Tavily"
+        ]
+      },
+      {
+        "id": "irender",
+        "name": "IPageRenderer",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name",
+          "+RenderAsync(url) RenderedPage"
+        ]
+      },
+      {
+        "id": "render",
+        "name": "PageRendererFactory",
+        "kind": "static",
+        "members": [
+          "+Create(options, http?, browser?) IPageRenderer",
+          "Chrome, Tavily"
+        ]
+      },
+      {
+        "id": "ibrowser",
+        "name": "IWebBrowser",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+VisitAsync(url, capture?, session?, script?) BrowserVisit"
+        ]
+      },
+      {
+        "id": "browser",
+        "name": "WebBrowserFactory",
+        "kind": "static",
+        "members": [
+          "+Create(options, replay?, robots?) IWebBrowser?",
+          "Chrome, behind RobotsWebBrowser"
+        ]
+      },
+      {
+        "id": "ifetch",
+        "name": "IPageFetcher",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+EnsurePublicAsync(uri)",
+          "+GetFollowingRedirectsAsync(uri)"
+        ]
+      },
+      {
+        "id": "fetch",
+        "name": "PageFetcher"
+      },
+      {
+        "id": "robots",
+        "name": "RobotsPolicy",
+        "kind": "robots.txt and the page's no-AI signals",
+        "members": [
+          "+the verdict for a URL"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "access", "to": "seam", "kind": "implements" },
+      { "from": "access", "to": "search", "kind": "uses", "word": "picks the search" },
+      { "from": "access", "to": "render", "kind": "uses", "word": "picks the renderer" },
+      { "from": "access", "to": "browser", "kind": "uses", "word": "picks the browser" },
+      { "from": "access", "to": "fetch", "kind": "creates", "word": "one per fetch" },
+      { "from": "search", "to": "isearch", "kind": "creates" },
+      { "from": "render", "to": "irender", "kind": "creates" },
+      { "from": "browser", "to": "ibrowser", "kind": "creates" },
+      { "from": "browser", "to": "robots", "kind": "uses", "word": "obeys" },
+      { "from": "fetch", "to": "ifetch", "kind": "implements" }
+    ]
+  }
+}

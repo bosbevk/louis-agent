@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "title": "F126 evals, redesigned: one live run with a follow-up",
+  "caption": "Facts are free, the judge costs: each turn is checked in code first, then the judge grades the criteria, and your flips stay with the run.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Louis on the Evals page"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "green",
+        "label": "Eval host"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "Agent API"
+      },
+      {
+        "id": "J",
+        "icon": "checks",
+        "tone": "red",
+        "label": "Judge"
+      },
+      {
+        "id": "S",
+        "icon": "database",
+        "tone": "amber",
+        "label": "RunStore"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "Run live (after the ask: estimate, repeats)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "A",
+        "text": "open a session (role, toolsets, place or page)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "A",
+        "text": "turn 1 ask"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "H",
+        "text": "answer, tool calls, cost"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "A",
+        "text": "turn 2 ask (same session)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "H",
+        "text": "answer, tool calls, cost"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "H",
+        "text": "Facts per turn (free)"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "J",
+        "text": "criteria with the transcript"
+      },
+      {
+        "step": "reply",
+        "from": "J",
+        "to": "H",
+        "text": "{criterion, met, reason} each"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "S",
+        "text": "save the run"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "flip a mark"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "S",
+        "text": "keep the flip with the run"
+      }
+    ]
+  }
+}

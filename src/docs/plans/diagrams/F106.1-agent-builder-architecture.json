@@ -1,0 +1,181 @@
+{
+  "kind": "flow",
+  "title": "F106.1 a builder for the common path: the architecture",
+  "caption": "One call sets up the engine: a program adds louis-agent and names its providers and packs, and each host takes the rest from the services.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "prog",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "WebApplication.CreateBuilder(args)\nServices.AddLouisAgent(agent\n=\u003E \u2026)\nAddLouisAgentApi() \u00B7\nMapLouisAgentApi()",
+        "group": "host"
+      },
+      {
+        "id": "b",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "Hosting/Builder/LouisAgentBuilder\n(1, 2)\nAddLouisAgent (3)",
+        "group": "core"
+      },
+      {
+        "id": "ah",
+        "icon": "server",
+        "tone": "violet",
+        "label": "Hosting/AgentHost.Build\n(unchanged)",
+        "group": "core"
+      },
+      {
+        "id": "ctx",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentHostContext \u00B7 AgentEngine\n\u00B7 AgentEngineFactory \u00B7\nAgentCatalog\nas singletons in DI (3)",
+        "group": "core"
+      },
+      {
+        "id": "an",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "core.anthropic: AddAnthropic()",
+        "group": "dotted"
+      },
+      {
+        "id": "ol",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "core.ollama: AddOllama()",
+        "group": "dotted"
+      },
+      {
+        "id": "oa",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "core.openai:\nAddOpenAiCompatible()",
+        "group": "dotted"
+      },
+      {
+        "id": "web",
+        "icon": "world",
+        "tone": "green",
+        "label": "core.web: AddWeb()",
+        "group": "dotted"
+      },
+      {
+        "id": "tel",
+        "icon": "chart",
+        "tone": "green",
+        "label": "core.telemetry: AddTelemetry()",
+        "group": "dotted"
+      },
+      {
+        "id": "add",
+        "icon": "server",
+        "tone": "green",
+        "label": "AddLouisAgentApi(): resolves\nAgentHostContext from DI",
+        "group": "api"
+      },
+      {
+        "id": "pk",
+        "icon": "box",
+        "tone": "teal",
+        "label": "CalculatorPack, RecipesPack, \u2026",
+        "group": "packs"
+      },
+      {
+        "id": "id",
+        "icon": "user",
+        "tone": "teal",
+        "label": "PulsIdentity",
+        "group": "packs"
+      },
+      {
+        "id": "pl",
+        "icon": "settings",
+        "tone": "amber",
+        "label": "host-packs:\nPlugins.FromEnvironment() \u2192\nAddCatalog (6)",
+        "group": "packs"
+      }
+    ],
+    "edges": [
+      {
+        "from": "prog",
+        "to": "b"
+      },
+      {
+        "from": "an",
+        "to": "b",
+        "style": "dashed"
+      },
+      {
+        "from": "ol",
+        "to": "b",
+        "style": "dashed"
+      },
+      {
+        "from": "oa",
+        "to": "b",
+        "style": "dashed"
+      },
+      {
+        "from": "web",
+        "to": "b",
+        "style": "dashed"
+      },
+      {
+        "from": "tel",
+        "to": "b",
+        "style": "dashed"
+      },
+      {
+        "from": "pk",
+        "to": "b"
+      },
+      {
+        "from": "id",
+        "to": "b"
+      },
+      {
+        "from": "pl",
+        "to": "b"
+      },
+      {
+        "from": "b",
+        "to": "ah"
+      },
+      {
+        "from": "ah",
+        "to": "ctx"
+      },
+      {
+        "from": "prog",
+        "to": "add"
+      },
+      {
+        "from": "add",
+        "to": "ctx"
+      }
+    ],
+    "groups": [
+      {
+        "id": "host",
+        "label": "a host\u0027s Program.cs (steps 5, 6)"
+      },
+      {
+        "id": "core",
+        "label": "louis-agent.core"
+      },
+      {
+        "id": "dotted",
+        "label": "the dotted projects (4): extension methods on the builder"
+      },
+      {
+        "id": "api",
+        "label": "louis-agent.api (5)"
+      },
+      {
+        "id": "packs",
+        "label": "packs and identities (unchanged)"
+      }
+    ]
+  }
+}

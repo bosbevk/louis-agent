@@ -1,0 +1,59 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.host-packs: the interface design",
+  "caption": "The one place that knows every identity and pack: two settings name them, each name is an enum, and the catalogue is built from them.",
+  "classes": {
+    "types": [
+      {
+        "id": "plugins",
+        "name": "Plugins",
+        "kind": "static, the composition root",
+        "members": [
+          "+FromEnvironment() AgentCatalog",
+          "+FromSettings(identities, packs) AgentCatalog"
+        ]
+      },
+      {
+        "id": "identities",
+        "name": "IdentityKind",
+        "kind": "enum, IDENTITIES",
+        "members": [
+          "Puls"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "PackKind",
+        "kind": "enum, PACKS",
+        "members": [
+          "Recipes WhereToBuy ShopPrices Web Calculator",
+          "Shell Files Git DotNet..."
+        ]
+      },
+      {
+        "id": "errors",
+        "name": "HostPacksErrorMessage",
+        "kind": "enum, an unknown name"
+      },
+      {
+        "id": "catalog",
+        "name": "AgentCatalog",
+        "kind": "louis-agent.core",
+        "tone": "violet"
+      },
+      {
+        "id": "made",
+        "name": "PulsIdentity, RecipesPack, ShopPricesPack...",
+        "kind": "the identities and packs it creates",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "plugins", "to": "identities", "kind": "uses", "word": "parses" },
+      { "from": "plugins", "to": "packs", "kind": "uses", "word": "parses" },
+      { "from": "plugins", "to": "errors", "kind": "uses", "word": "refuses with" },
+      { "from": "plugins", "to": "made", "kind": "creates" },
+      { "from": "plugins", "to": "catalog", "kind": "creates" }
+    ]
+  }
+}

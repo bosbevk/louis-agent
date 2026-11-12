@@ -40,37 +40,11 @@ What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `We
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A host's program: HostServices(WebAccess.Create, …)"] --> host["AgentHost.Build (core)"]
-    host --> factory["AgentEngineFactory: services.WebOrNone(options, replay)"]
-    factory --> seam["IWebAccess (core)"]
-    seam --> wa["WebAccess (this library)"]
-    seam --> none["NoWebAccess (core): every part says it isn't set up"]
-    wa --> robots["RobotsPolicy"]
-    wa --> browser["RobotsWebBrowser → RecordedWebBrowser → ChromeWebBrowser"]
-    wa --> search["RecordedSearchProvider → the provider the settings name"]
-    wa --> renderer["PageRendererFactory → Chrome or Tavily"]
-    wa --> fetcher["PageFetcher per call"]
-    ctx["ToolsetContext / IPackContext"] --> seam
-    pack["a pack's tools"] --> ctx
-```
+![Web access: from a host's program to IWebAccess and the parts behind it](diagrams/louis-agent.core.web-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant T as a pack's tool
-    participant C as ToolsetContext (core)
-    participant W as WebAccess
-    participant R as RobotsPolicy
-    participant F as PageFetcher
-    T->>C: NewFetcher()
-    C->>W: NewFetcher()
-    W-->>T: a PageFetcher under the policy and the store
-    T->>F: GetFollowingRedirectsAsync(url)
-    F->>R: may we read url?
-    R-->>F: yes / no (robots.txt, the page's no-AI signals)
-    F-->>T: the page, or the refusal's reason
-```
+![Fetching a page: a pack's tool gets a fetcher through the seam, and the fetcher asks the robots policy before it reads](diagrams/louis-agent.core.web-diagrams-2.svg)
+
+![The types: WebAccess is core's web seam, holding a search, a renderer and a browser that factories pick, each behind its interface](diagrams/louis-agent.core.web-interface.svg)
 
 ## Structure
 

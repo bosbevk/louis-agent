@@ -1,0 +1,105 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.triage: the interface design",
+  "caption": "A feed in, a recorder out: the roles end with typed tool calls, every step is written to the run, and a run can be read back or raised to a person.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "TriagePack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+TriagePack(TriageOptions)",
+          "+Toolsets: triage, off without its settings"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "TriageOptions",
+        "members": [
+          "+Runs?, People?, Departments?"
+        ]
+      },
+      {
+        "id": "triagetools",
+        "name": "TriageTools",
+        "kind": "the roles' typed endings",
+        "members": [
+          "+SortCase(runId, department, why)",
+          "+ReportInvestigation(runId, where, cause, area, confidence)",
+          "+ReportReview(runId, happy, reasons)",
+          "+DecideCase(runId, kind, reason)"
+        ]
+      },
+      {
+        "id": "runtools",
+        "name": "RunTools",
+        "members": [
+          "+ReadTriageRun(runId)",
+          "+RaiseToPerson(runId, summary, why)"
+        ]
+      },
+      {
+        "id": "irecorder",
+        "name": "ITriageRecorder",
+        "kind": "interface",
+        "members": [
+          "+SaveAsync(TriageStep)",
+          "+ReadAsync(runId) TriageRun?"
+        ]
+      },
+      {
+        "id": "recorder",
+        "name": "FileTriageRecorder",
+        "kind": "one JSON-lines file per run, implements ITriageRecorder"
+      },
+      {
+        "id": "run",
+        "name": "TriageRun",
+        "kind": "record",
+        "members": [
+          "+Id, Steps TriageStep list, Outcome?",
+          "+Of(id, steps) (static)"
+        ]
+      },
+      {
+        "id": "results",
+        "name": "Investigation, Review, CaseDecision",
+        "kind": "records, behind each step"
+      },
+      {
+        "id": "ifeed",
+        "name": "IErrorFeed",
+        "kind": "interface",
+        "members": [
+          "+ReadNew() IReadOnlyList<ServiceError>",
+          "+Find(id) ServiceError?",
+          "+MarkHandled(id)"
+        ]
+      },
+      {
+        "id": "feed",
+        "name": "JsonLinesErrorFeed",
+        "kind": "the log and the handled ids, for the workflow, implements IErrorFeed"
+      },
+      {
+        "id": "department",
+        "name": "Department",
+        "kind": "record, from departments.yaml",
+        "members": [
+          "+Name, Repository, ErrorLog, People"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "options", "kind": "holds" },
+      { "from": "pack", "to": "triagetools", "kind": "creates" },
+      { "from": "pack", "to": "runtools", "kind": "creates" },
+      { "from": "triagetools", "to": "irecorder", "kind": "holds", "word": "one recorder" },
+      { "from": "runtools", "to": "irecorder", "kind": "holds" },
+      { "from": "irecorder", "to": "run", "kind": "creates" },
+      { "from": "triagetools", "to": "results", "kind": "creates" },
+      { "from": "feed", "to": "department", "kind": "uses", "word": "its error log" }
+    ]
+  }
+}

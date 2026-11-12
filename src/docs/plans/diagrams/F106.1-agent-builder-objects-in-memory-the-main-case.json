@@ -1,0 +1,122 @@
+{
+  "kind": "flow",
+  "title": "F106.1 a builder for the common path: objects in memory",
+  "caption": "One provider, one context: the service provider holds the host's context, its own engine and the factory that builds one engine per toolset list.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "sp",
+        "icon": "box",
+        "tone": "violet",
+        "label": "ServiceProvider"
+      },
+      {
+        "id": "ctx",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentHostContext"
+      },
+      {
+        "id": "eng",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine (the host\u0027s own:\nevery toolset)"
+      },
+      {
+        "id": "fac",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AgentEngineFactory (one engine\nper toolset list)"
+      },
+      {
+        "id": "cat",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog"
+      },
+      {
+        "id": "p1",
+        "icon": "box",
+        "tone": "teal",
+        "label": "CalculatorPack"
+      },
+      {
+        "id": "i1",
+        "icon": "user",
+        "tone": "teal",
+        "label": "PulsIdentity"
+      },
+      {
+        "id": "hs",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "HostServices"
+      },
+      {
+        "id": "prov",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "[AnthropicProvider.Instance]"
+      },
+      {
+        "id": "web",
+        "icon": "world",
+        "tone": "green",
+        "label": "WebAccess.Create (a Func)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "sp",
+        "to": "ctx"
+      },
+      {
+        "from": "sp",
+        "to": "eng"
+      },
+      {
+        "from": "sp",
+        "to": "fac"
+      },
+      {
+        "from": "sp",
+        "to": "cat"
+      },
+      {
+        "from": "ctx",
+        "to": "eng"
+      },
+      {
+        "from": "ctx",
+        "to": "fac"
+      },
+      {
+        "from": "cat",
+        "to": "p1"
+      },
+      {
+        "from": "cat",
+        "to": "i1"
+      },
+      {
+        "from": "fac",
+        "to": "cat"
+      },
+      {
+        "from": "hs",
+        "to": "prov"
+      },
+      {
+        "from": "hs",
+        "to": "web"
+      },
+      {
+        "from": "fac",
+        "to": "hs",
+        "word": "built with",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

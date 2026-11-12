@@ -47,50 +47,11 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    subgraph site["A site"]
-        program["Program.cs: AddLouisAgentAccounts()"]
-        layout["AccountLayout.razor"]
-        css["index.html: the site's styles bundle"]
-    end
-    subgraph wa["louis-agent.web.accounts"]
-        client["Client/: AccountApi, AccountState, AccountMenu"]
-        comps["Components/, Pages/, Layout/AccountFrame, Text/AccountText"]
-    end
-    subgraph web["louis-agent.web"]
-        seam["Components/Chat/Header/Menu/: IAccountMenu, NoAccounts"]
-        menu["ProfileMenu"]
-        frames["SiteFrames"]
-    end
-    contracts["louis-agent.accounts.contracts"]
-    site --> wa
-    site --> web
-    wa --> web
-    wa --> contracts
-    menu --> seam
-    client -. implements .-> seam
-    comps --> frames
-```
+![louis-agent.web.accounts: what a site uses, and what the library uses in the framework's web](diagrams/louis-agent.web.accounts-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant M as ProfileMenu (web)
-    participant S as IAccountMenu
-    participant St as AccountState
-    participant A as AccountApi
-    participant API as /account/me
-    M->>S: LoadAsync()
-    alt NoAccounts
-        S-->>M: Enabled false: the guest's menu
-    else AccountMenu
-        S->>St: LoadAsync()
-        St->>A: MeAsync()
-        A->>API: GET (cookie, X-Requested-With)
-        API-->>A: 200 AccountInfo, 401, or no accounts
-        St-->>M: Changed: the person, or sign in and register
-    end
-```
+![The profile menu: with no accounts it shows the guest's menu, otherwise it asks /account/me and shows the person](diagrams/louis-agent.web.accounts-diagrams-2.svg)
+
+![The types: one call adds the pages, a client for the accounts API, the state every page reads, and the framework's account corner filled in](diagrams/louis-agent.web.accounts-interface.svg)
 
 ## Structure
 

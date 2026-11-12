@@ -1,0 +1,111 @@
+{
+  "kind": "flow",
+  "title": "F92 voice: the parts, by step",
+  "caption": "Speech is a provider like a model: a factory picks it, the API takes the audio, and the ledger counts it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Mic",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Mic button \u002B recorder.js (step\n5)",
+        "group": "Browser"
+      },
+      {
+        "id": "Box",
+        "icon": "message",
+        "tone": "blue",
+        "label": "Message box",
+        "group": "Browser"
+      },
+      {
+        "id": "T",
+        "icon": "server",
+        "tone": "green",
+        "label": "POST\n/v1/sessions/{id}/transcriptions\n(step 3)",
+        "group": "API"
+      },
+      {
+        "id": "S",
+        "icon": "server",
+        "tone": "green",
+        "label": "POST\n/v1/sessions/{id}/messages\n(today)",
+        "group": "API"
+      },
+      {
+        "id": "L",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Usage ledger: speech row (step\n4)",
+        "group": "API"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "SpeechClientFactory (step 1)",
+        "group": "Core"
+      },
+      {
+        "id": "W",
+        "icon": "chip",
+        "tone": "green",
+        "label": "louis-agent.core.whisper (step\n2)"
+      },
+      {
+        "id": "E",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Voice eval \u002B WER check (step\n6)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Mic",
+        "to": "T",
+        "word": "audio clip"
+      },
+      {
+        "from": "T",
+        "to": "F"
+      },
+      {
+        "from": "F",
+        "to": "W"
+      },
+      {
+        "from": "T",
+        "to": "Box",
+        "word": "text"
+      },
+      {
+        "from": "Box",
+        "to": "S",
+        "word": "send"
+      },
+      {
+        "from": "T",
+        "to": "L"
+      },
+      {
+        "from": "E",
+        "to": "F"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "Browser",
+        "label": "Browser"
+      },
+      {
+        "id": "API",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "Core",
+        "label": "louis-agent.core"
+      }
+    ]
+  }
+}

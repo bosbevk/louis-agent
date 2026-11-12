@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.site: a visitor opens a page and asks",
+  "caption": "The page comes ready, the chat comes from the same host: the page is HTML before any script runs, and the guide's answer streams over the API behind its open door.",
+  "sequence": {
+    "participants": [
+      { "id": "visitor", "label": "A visitor", "actor": true, "tone": "blue" },
+      { "id": "host", "label": "louis-agent.site-api", "icon": "server", "tone": "violet" },
+      { "id": "page", "label": "The site's page", "icon": "browser", "tone": "green" },
+      { "id": "chat", "label": "ExpertChat", "icon": "message", "tone": "green" },
+      { "id": "guide", "label": "The guide", "icon": "chip", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "visitor", "to": "host", "text": "GET /pricing" },
+      { "step": "message", "from": "host", "to": "page", "text": "prerender it" },
+      { "step": "reply", "from": "page", "to": "host", "text": "the HTML, its head and its sections" },
+      { "step": "reply", "from": "host", "to": "visitor", "text": "the page, readable before the script" },
+      { "step": "message", "from": "visitor", "to": "chat", "text": "a question in the corner" },
+      { "step": "message", "from": "chat", "to": "host", "text": "open a session, then the message" },
+      { "step": "note", "over": ["host"], "text": "the open door: sessions a day" },
+      { "step": "message", "from": "host", "to": "guide", "text": "the turn, the page in view" },
+      { "step": "reply", "from": "guide", "to": "chat", "text": "the answer, streamed" },
+      { "step": "block", "block": "opt", "label": "it shows a place",
+        "steps": [ { "step": "reply", "from": "chat", "to": "visitor", "text": "ShowPage: the browser moves there" } ] }
+    ]
+  }
+}

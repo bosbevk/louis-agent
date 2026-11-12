@@ -1,0 +1,112 @@
+{
+  "kind": "flow",
+  "caption": "One engine for every host: settings and skills go in, a model and guarded tools come out, and every request to the model is measured.",
+  "title": "louis-agent.core: How it works",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Env",
+        "icon": "file",
+        "tone": "amber",
+        "label": "config/.env \u002B .env.secrets\n\u002B LLM profile\n.env.{LLM_PROFILE}\n(AgentHost.LoadEnvironment)"
+      },
+      {
+        "id": "Opts",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "LlmOptions \u002B AgentOptions"
+      },
+      {
+        "id": "Skills",
+        "icon": "book",
+        "tone": "teal",
+        "label": "SkillLoader.Load\n\u2192 CompositeSkillProvider\n(system prompt \u002B skills)"
+      },
+      {
+        "id": "Factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory\n\u2192 IChatClient"
+      },
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "Loop",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "FunctionInvokingChatClient\n(\u2264 10 tool rounds per message)"
+      },
+      {
+        "id": "Guards",
+        "icon": "shield",
+        "tone": "green",
+        "label": "ToolCallGuards.InvokeAsync\nlog \u00B7 run \u00B7 guard result"
+      },
+      {
+        "id": "Tools",
+        "icon": "box",
+        "tone": "green",
+        "label": "Tool classes\n(files, git, dotnet, scripts,\nweb, Paymo, DevOps, skills)"
+      },
+      {
+        "id": "Rec",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "UsageRecordingChatClient\none record per model request"
+      },
+      {
+        "id": "Ledger",
+        "icon": "database",
+        "tone": "amber",
+        "label": "JsonlUsageSink\n{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Env",
+        "to": "Opts"
+      },
+      {
+        "from": "Opts",
+        "to": "Skills"
+      },
+      {
+        "from": "Opts",
+        "to": "Factory"
+      },
+      {
+        "from": "Skills",
+        "to": "Engine"
+      },
+      {
+        "from": "Factory",
+        "to": "Engine"
+      },
+      {
+        "from": "Engine",
+        "to": "Loop"
+      },
+      {
+        "from": "Loop",
+        "to": "Guards"
+      },
+      {
+        "from": "Guards",
+        "to": "Tools"
+      },
+      {
+        "from": "Loop",
+        "to": "Rec"
+      },
+      {
+        "from": "Rec",
+        "to": "Ledger"
+      }
+    ],
+    "direction": "down"
+  }
+}

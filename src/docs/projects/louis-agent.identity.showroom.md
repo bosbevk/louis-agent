@@ -52,6 +52,14 @@ Nothing runs for a visitor who watches; since F127.2 a visitor can try each agen
   file's folder, not from who asks. The
   leads pack's texts name no owner, so the same tool that sends Louis a lead sends a practice its booking request.
 
+## Diagrams
+
+![How it works: recorded once and tried live after, each business on the leads and site packs](diagrams/louis-agent.identity.showroom-flow.svg)
+
+![A booking at the guesthouse: the agent shows the room, repeats the booking back, and sends it only after the yes](diagrams/louis-agent.identity.showroom-sequence.svg)
+
+![The types: one abstract base and three businesses, each saying only which it is](diagrams/louis-agent.identity.showroom-interface.svg)
+
 ## Tests
 
 `ShowroomIdentitiesTests` in `src/tests/site/louis-agent.site.tests/Showroom/` holds each business's name, voice

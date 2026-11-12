@@ -1,0 +1,48 @@
+{
+  "kind": "flow",
+  "caption": "Behind the seam: core asks for a client by the provider's name, and only this library knows OpenAI's SDK.",
+  "title": "louis-agent.core.openai: How it works",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A program: HostServices(\u2026,\nProviders:\n[OpenAiCompatibleProvider.Instance,\n\u2026])"
+      },
+      {
+        "id": "factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory (core)"
+      },
+      {
+        "id": "provider",
+        "icon": "chip",
+        "tone": "green",
+        "label": "OpenAiCompatibleProvider (this\nlibrary)"
+      },
+      {
+        "id": "sdk",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "OpenAI SDK:\nOpenAIClient.GetChatClient(model).AsIChatClient"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "factory"
+      },
+      {
+        "from": "factory",
+        "to": "provider"
+      },
+      {
+        "from": "provider",
+        "to": "sdk"
+      }
+    ],
+    "direction": "down"
+  }
+}

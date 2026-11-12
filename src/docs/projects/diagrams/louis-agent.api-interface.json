@@ -1,0 +1,113 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.api: the interface design",
+  "caption": "Sessions over HTTP: a program adds the API with the host's context, a session per conversation streams its turn in a format it picks, and the open door counts the public's.",
+  "classes": {
+    "types": [
+      {
+        "id": "startup",
+        "name": "ApiStartup",
+        "kind": "static, what a program calls",
+        "members": [
+          "+AddLouisAgentApi(builder, AgentHostContext)",
+          "+UseLouisAgentKey(app)"
+        ]
+      },
+      {
+        "id": "map",
+        "name": "ApiMap",
+        "kind": "static",
+        "members": [
+          "+AddApi(services, host, openDoor?)",
+          "every route, a named handler each"
+        ]
+      },
+      {
+        "id": "handlers",
+        "name": "SessionHandlers",
+        "members": [
+          "+CreateSession(request, sessions, ...) CreatedAnswer",
+          "+SendMessage, GetSession, CancelSession, DeleteSession"
+        ]
+      },
+      {
+        "id": "sessions",
+        "name": "AgentSessions",
+        "kind": "singleton",
+        "members": [
+          "+Create(toolsets?, tags?, depth, role?, ...) AgentSession"
+        ]
+      },
+      {
+        "id": "session",
+        "name": "AgentSession",
+        "kind": "one per conversation",
+        "members": [
+          "+TryStartTurn(aborted, out turn) bool",
+          "+EndTurn(turn)",
+          "+Remember(name, content)"
+        ]
+      },
+      {
+        "id": "stream",
+        "name": "TurnStream",
+        "kind": "static",
+        "members": [
+          "+BuildPrompt(SendMessageRequest) string",
+          "+StreamTurnAsync(...) IAsyncEnumerable<SseItem<string>>"
+        ]
+      },
+      {
+        "id": "iformat",
+        "name": "ITurnStreamFormat",
+        "kind": "interface",
+        "members": [
+          "+Start() SseItem",
+          "+Content(content), Text(text)",
+          "+Stop(reason, usage), Fail(kind, error, usage)"
+        ]
+      },
+      {
+        "id": "claude",
+        "name": "ClaudeStreamFormat",
+        "kind": "Claude's events: message_start, content_block_delta..."
+      },
+      {
+        "id": "door",
+        "name": "OpenDoor",
+        "kind": "the public's sessions a day",
+        "members": [
+          "+ConsiderAsync(context) OpenDoorAnswer",
+          "+Admit(sessionId)"
+        ]
+      },
+      {
+        "id": "factory",
+        "name": "AgentEngineFactory",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+GetOrCreate(toolsets, role?) AgentEngine"
+        ]
+      },
+      {
+        "id": "contracts",
+        "name": "louis-agent.api.contracts",
+        "kind": "the requests and replies, shared",
+        "tone": "teal"
+      }
+    ],
+    "relations": [
+      { "from": "startup", "to": "map", "kind": "uses", "word": "adds" },
+      { "from": "map", "to": "handlers", "kind": "uses", "word": "maps" },
+      { "from": "map", "to": "door", "kind": "creates" },
+      { "from": "handlers", "to": "sessions", "kind": "uses" },
+      { "from": "handlers", "to": "contracts", "kind": "uses", "word": "reads and answers" },
+      { "from": "sessions", "to": "factory", "kind": "holds" },
+      { "from": "sessions", "to": "session", "kind": "creates" },
+      { "from": "handlers", "to": "stream", "kind": "uses", "word": "streams the turn" },
+      { "from": "stream", "to": "iformat", "kind": "uses", "word": "writes in" },
+      { "from": "claude", "to": "iformat", "kind": "implements" }
+    ]
+  }
+}

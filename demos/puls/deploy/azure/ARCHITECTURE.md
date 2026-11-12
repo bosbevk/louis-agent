@@ -12,107 +12,22 @@ One resource group, `rg-puls-za` in South Africa North. The two apps are the onl
 the three services sit on a VM that nothing outside the network can reach; the accounts are on Azure SQL's free offer,
 one database, a tenant per app; every secret value is in the vault.
 
-```mermaid
-flowchart LR
-    person["A person's browser"] -->|"HTTPS mypuls.co.za, www (managed certificates)"| app
-    person -->|"HTTPS louis-agent.dev, www"| app2
-    subgraph rg["rg-puls-za"]
-        subgraph vnet["puls-vnet 10.0.0.0/16"]
-            subgraph apps["apps subnet 10.0.0.0/23, delegated to Container Apps"]
-                env["puls-env (Consumption profile, static IP 4.253.73.61)"]
-                app["puls-app: the Puls image, one container, revision vNNN"]
-                app2["louis-agent-app: the coding API serving the site and the chat, revision vNNN"]
-                env --- app
-                env --- app2
-            end
-            subgraph services["services subnet 10.0.2.0/24, NSG: 27017, 9222, 8080 from the apps subnet only"]
-                vm["VM puls-services (Ubuntu 24.04, Standard_B2s, no public IP)\nDocker: mongo:9 :27017, headless-shell :9222, searxng :8080\ndata disk, XFS at /data"]
-            end
-        end
-        sql["Azure SQL puls-sql-za: puls_accounts, tenants puls and louis-agent (free offer, pauses when idle)"]
-        vault["Key Vault puls-keys: every secret value"]
-        identity["puls-app-identity: Key Vault Secrets User"]
-        identity2["louis-agent-app-identity: Key Vault Secrets User"]
-        insights["Application Insights puls-insights, on puls-logs"]
-        registry["Registry acrpulsza: louis-agent-puls and louis-agent-coding images"]
-        share["pulsstorage: the share puls-app-workspace (config/, logs/, data/)"]
-        share2["pulsstorage: the share louis-agent-workspace (config/, skills/, logs/, data/)"]
-    end
-    app -->|"private IP 10.0.2.4"| vm
-    app -->|"TLS, Allow Azure services"| sql
-    app -.->|"reads with"| identity
-    identity -.-> vault
-    app -->|"OpenTelemetry agent"| insights
-    env -->|"AcrPull"| registry
-    app -->|"mounted at /workspace"| share
-    app2 -->|"private IP 10.0.2.4"| vm
-    app2 -->|"TLS, tenant louis-agent"| sql
-    app2 -.->|"reads with"| identity2
-    identity2 -.-> vault
-    app2 -->|"OpenTelemetry agent"| insights
-    app2 -->|"mounted at /workspace"| share2
-```
+![Puls in Azure: what runs where](diagrams/ARCHITECTURE-what-runs-where.svg)
 
 ## The build and the verbs
 
-The template is the record: one deployment, `puls-build`, creates what is missing and updates what exists; the
-verbs do what a template can't.
-
-```mermaid
-flowchart TB
-    bicep["config/azure/main.bicep + main.bicepparam"] -->|"deploy.ps1 infra (what-if first)"| deployment["deployment puls-build: the network, the VM, the environment, insights, SQL, the two identities, the second share"]
-    deployment -->|"outputs: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, codingAppIdentityId, vaultUri"| verbs
-    subgraph verbs["the verbs read the outputs back"]
-        vm["vm: the compose, SearXNG's settings and the env files to the VM through run-command"]
-        workspace["workspace: the price tables into the app's share"]
-        secrets["secrets: the values into the vault (the shared ones with Puls's config, an app's own with its, suffixed)"]
-        release["release: build the image in the registry, then update"]
-        update["update: the app's yaml (-App) filled (tag, revision, the VM's IP, the environment, the app's identity, the vault's secrets, the providers), create or update"]
-        domain["domain: the DNS records printed, the hostname added, the certificate asked for"]
-    end
-```
+![Puls in Azure: the build and the verbs](diagrams/ARCHITECTURE-the-build-and-the-verbs.svg)
 
 ## A secret's path
 
 No value is ever in a file under git or on the app: it goes from the git-ignored config files into the vault, and
 the app's secrets are references the identity resolves.
 
-```mermaid
-sequenceDiagram
-    participant L as Louis's PC (config/.env.secrets, .env.mongo, .env.sql)
-    participant S as deploy.ps1 secrets
-    participant V as Key Vault puls-keys
-    participant U as deploy.ps1 update
-    participant A as puls-app (identity puls-app-identity)
-    L->>S: the values, and the VM's IP and the SQL server from the outputs
-    S->>V: one secret per value (mongo-url and accounts-sql-url built here)
-    U->>V: which names exist?
-    U->>A: a secrets block of keyVaultUrl references, env lines only for secrets that exist
-    A->>V: read each reference with the identity (Key Vault Secrets User)
-```
+![A secret's path: from the git-ignored files through the deploy script into the vault, and back to the app by reference](diagrams/ARCHITECTURE-a-secret-s-path.svg)
 
 ## A chat, from the domain to the model
 
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant CF as Cloudflare DNS (DNS-only records)
-    participant A as puls-app
-    participant SQL as Azure SQL
-    participant VM as puls-services
-    participant M as Anthropic
-    B->>CF: mypuls.co.za?
-    CF-->>B: 4.253.73.61 (A), www a CNAME to the app's own address
-    B->>A: GET / over HTTPS
-    A-->>B: the Puls web app
-    B->>A: POST /account/login
-    A->>SQL: the user (the database resumes after a pause; EF retries)
-    A-->>B: Set-Cookie
-    B->>A: POST /v1/sessions (cookie + X-Requested-With)
-    A->>VM: 27017 Mongo (runs, prices, recipes), 9222 Chrome, 8080 SearXNG
-    A->>M: the model's answer
-    A-->>B: streamed
-```
+![A chat from the domain to the model: DNS points at the app, the app signs the person in, and it reaches the services and the model behind it](diagrams/ARCHITECTURE-a-chat-from-the-domain-to-the-model.svg)
 
 ## What the network lets through
 

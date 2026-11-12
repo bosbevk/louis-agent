@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Svg.Renderers;
 
 namespace LouisAgent.Diagrams.Svg;
 
@@ -13,7 +14,7 @@ namespace LouisAgent.Diagrams.Svg;
 public static class DiagramRenderers
 {
     /// <summary>Every kind's renderer.</summary>
-    private static readonly IReadOnlyList<IDiagramRenderer> All = [new FlowRenderer(), new CardsRenderer()];
+    private static readonly IReadOnlyList<IDiagramRenderer> All = [new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer()];
 
     /// <summary>The diagram as one SVG file's text.</summary>
     public static string Render(DiagramSource source) =>
@@ -21,4 +22,11 @@ public static class DiagramRenderers
          ?? throw new NotSupportedException(
              DiagramText.Format(DiagramMessage.NoRenderer, new { Kind = source.Kind.Wire() })))
         .Render(source);
+
+    /// <summary>
+    /// The diagram as the docs show it: drawn without its caption, then framed with its title bar on top and the
+    /// caption as a note bar under it (<see cref="TitledFrame"/>).
+    /// </summary>
+    public static string RenderTitled(DiagramSource source) =>
+        TitledFrame.Around(Render(source with { Caption = null }), source);
 }

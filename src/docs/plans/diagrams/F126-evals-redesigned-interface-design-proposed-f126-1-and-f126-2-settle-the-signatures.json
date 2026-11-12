@@ -1,0 +1,132 @@
+{
+  "kind": "classes",
+  "title": "F126 evals, redesigned: the interface design, proposed",
+  "caption": "Proposed: a run reads its file, asks, gets facts for free and a judge's marks, and is kept; F126.1 and F126.2 settle the signatures.",
+  "classes": {
+    "types": [
+      {
+        "id": "EvalFile",
+        "name": "EvalFile",
+        "kind": "record",
+        "members": [
+          "+Agent Agent",
+          "+IReadOnlyList<Conversation> Conversations",
+          "+JudgeMode Judge",
+          "+Read(path) EvalFile (static)"
+        ]
+      },
+      {
+        "id": "Conversation",
+        "name": "Conversation",
+        "kind": "record",
+        "members": [
+          "+string Id",
+          "+string? Place",
+          "+string? Page",
+          "+IReadOnlyList<Turn> Turns"
+        ]
+      },
+      {
+        "id": "Turn",
+        "name": "Turn",
+        "kind": "record",
+        "members": [
+          "+string Ask",
+          "+IReadOnlyList<Fact> Facts",
+          "+IReadOnlyList<string> Criteria"
+        ]
+      },
+      {
+        "id": "Fact",
+        "name": "Fact",
+        "kind": "record",
+        "members": [
+          "+FactKind Kind",
+          "+string? Argument"
+        ]
+      },
+      {
+        "id": "IJudge",
+        "name": "IJudge",
+        "kind": "interface",
+        "members": [
+          "+MarkAsync(Transcript, Turn) IReadOnlyList<Mark>"
+        ]
+      },
+      {
+        "id": "PerCriterionJudge",
+        "name": "PerCriterionJudge"
+      },
+      {
+        "id": "PerConversationJudge",
+        "name": "PerConversationJudge"
+      },
+      {
+        "id": "EvalRun",
+        "name": "EvalRun",
+        "members": [
+          "+RunAsync(EvalFile, RunMode) RunResult"
+        ]
+      },
+      {
+        "id": "RunStore",
+        "name": "RunStore",
+        "members": [
+          "+SaveAsync(RunResult)",
+          "+FlipAsync(runId, mark)",
+          "+ListAsync(eval)"
+        ]
+      },
+      {
+        "id": "ISessionClient",
+        "name": "ISessionClient"
+      }
+    ],
+    "relations": [
+      {
+        "from": "EvalFile",
+        "to": "Conversation",
+        "kind": "holds"
+      },
+      {
+        "from": "Conversation",
+        "to": "Turn",
+        "kind": "holds"
+      },
+      {
+        "from": "Turn",
+        "to": "Fact",
+        "kind": "holds"
+      },
+      {
+        "from": "PerCriterionJudge",
+        "to": "IJudge",
+        "kind": "implements",
+        "word": "F126.1"
+      },
+      {
+        "from": "PerConversationJudge",
+        "to": "IJudge",
+        "kind": "implements",
+        "word": "F126.1"
+      },
+      {
+        "from": "EvalRun",
+        "to": "ISessionClient",
+        "kind": "holds",
+        "word": "kept"
+      },
+      {
+        "from": "EvalRun",
+        "to": "IJudge",
+        "kind": "holds"
+      },
+      {
+        "from": "EvalRun",
+        "to": "RunStore",
+        "kind": "holds",
+        "word": "F126.2"
+      }
+    ]
+  }
+}

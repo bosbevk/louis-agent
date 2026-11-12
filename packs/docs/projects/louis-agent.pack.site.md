@@ -42,6 +42,14 @@ also", "can we also give it the capability to highlight areas on the page?"
   says what should be shown, the client decides whether it can.
 - Arguments as data (ADR 0004): the path is checked, never run; the browser only ever receives a path of its own site.
 
+## Diagrams
+
+![How it works: the tool says, the widget hears the call, and the visitor's own browser moves](diagrams/louis-agent.pack.site-flow.svg)
+
+![One place shown: a path of this site is shown, anything else refused with the reason](diagrams/louis-agent.pack.site-sequence.svg)
+
+![The types: one pack, one tool that moves nothing, and the web's runner that hears it](diagrams/louis-agent.pack.site-interface.svg)
+
 ## Tests
 
 `packs/tests/louis-agent.pack.site.tests`: the pack's shape and guide, a site path shown, a path with an area shown,

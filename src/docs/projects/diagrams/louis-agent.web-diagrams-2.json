@@ -1,0 +1,121 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.web: sending a message",
+  "caption": "ChatRunner holds all of it: no chat page has its own copy, and the page redraws at most every 50 ms.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "U",
+        "tone": "blue",
+        "label": "Someone",
+        "actor": true
+      },
+      {
+        "id": "S",
+        "icon": "browser",
+        "tone": "green",
+        "label": "ChatShell"
+      },
+      {
+        "id": "R",
+        "icon": "settings",
+        "tone": "green",
+        "label": "ChatRunner"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "green",
+        "label": "AgentApi"
+      },
+      {
+        "id": "T",
+        "icon": "message",
+        "tone": "green",
+        "label": "TurnStream"
+      },
+      {
+        "id": "C",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ChatStore"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "U",
+        "to": "S",
+        "text": "types and sends"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "R",
+        "text": "the draft and its attachments"
+      },
+      {
+        "step": "block",
+        "block": "opt",
+        "label": "it\u0027s the chat\u0027s first message",
+        "steps": [
+          {
+            "step": "message",
+            "from": "R",
+            "to": "A",
+            "text": "CreateSessionAsync (toolsets, role, place)"
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "A",
+        "text": "StreamMessageAsync"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each event from the API",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "A",
+            "to": "R",
+            "text": "a SessionEvent"
+          },
+          {
+            "step": "message",
+            "from": "R",
+            "to": "T",
+            "text": "Apply(turn, event)"
+          },
+          {
+            "step": "reply",
+            "from": "R",
+            "to": "S",
+            "text": "Changed, at most every 50 ms"
+          },
+          {
+            "step": "reply",
+            "from": "S",
+            "to": "U",
+            "text": "the turn, redrawn"
+          }
+        ]
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "C",
+        "text": "SaveAsync"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "S",
+        "text": "Changed, the last one always gets through"
+      }
+    ]
+  }
+}

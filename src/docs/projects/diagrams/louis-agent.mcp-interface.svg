@@ -1,0 +1,192 @@
+<svg viewBox="-24 -24 1602 575" width="1602" height="575" role="img" aria-label="louis-agent.mcp: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.mcp: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1602" height="575" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1554" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.mcp:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 336 186 L 348 186 Q 360 186 360 174 L 360 145 Q 360 121 384 121 L 416 121" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 336 186 L 348 186 Q 360 186 360 198 L 360 227 Q 360 251 384 251 L 416 251" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 717 251 L 729 251 Q 741 251 741 239 L 741 80 Q 741 56 765 56 L 829 56" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 717 251 L 729 251 Q 741 251 741 263 L 741 292 Q 741 316 765 316 L 829 316" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 717 251 L 729 251 Q 741 251 741 239 L 741 210 Q 741 186 765 186 L 829 186" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1172 56 L 1336 56 Q 1360 56 1360 80 L 1360 109 Q 1360 121 1372 121 L 1384 121" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1172 186 L 1318 186 Q 1342 186 1342 162 L 1342 142 Q 1342 121 1363 121 L 1384 121" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1172 316 L 1300 316 Q 1324 316 1324 292 L 1324 275 Q 1324 251 1348 251 L 1384 251" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="366.5" y="99" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="388" y="111" text-anchor="middle">reads</text>
+    <rect class="word-chip tone-green" x="370" y="229" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="388" y="241" text-anchor="middle">adds</text>
+    <rect class="word-chip tone-green" x="749.5" y="34" width="71" height="18" rx="4" />
+    <text class="word tone-green" x="785" y="46" text-anchor="middle">the tools</text>
+    <rect class="word-chip tone-green" x="749.5" y="294" width="71" height="18" rx="4" />
+    <text class="word tone-green" x="785" y="306" text-anchor="middle">the feeds</text>
+    <rect class="word-chip tone-green" x="756.5" y="164" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="785" y="176" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1209.5" y="34" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="1266" y="46" text-anchor="middle">on ToolsChanged</text>
+    <rect class="word-chip tone-green" x="1235.5" y="164" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1257" y="176" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="1184.5" y="294" width="127" height="18" rx="4" />
+    <text class="word tone-green" x="1248" y="306" text-anchor="middle">one resource each</text>
+    <rect class="box tone-green" x="0" y="132" width="336" height="108" rx="10" />
+    <text class="label tone-green" x="168" y="160" text-anchor="middle">McpHost</text>
+    <text class="note" x="168" y="176" text-anchor="middle">static, what your program</text>
+    <text class="note" x="168" y="188" text-anchor="middle">calls</text>
+    <path class="frame" d="M 0 208 L 336 208" />
+    <text class="word tone-green" x="14" y="226" text-anchor="start">+RunAsync(args, AgentCatalog, HostServices?)</text>
+    <rect class="box tone-teal" x="416" y="73" width="301" height="96" rx="10" />
+    <text class="label tone-teal" x="566.5" y="101" text-anchor="middle">McpTransport</text>
+    <text class="note" x="566.5" y="117" text-anchor="middle">enum, MCP_TRANSPORT</text>
+    <path class="frame" d="M 416 137 L 717 137" />
+    <text class="word tone-teal" x="430" y="155" text-anchor="start">Stdio Http</text>
+    <rect class="box tone-green" x="416" y="203" width="301" height="96" rx="10" />
+    <text class="label tone-green" x="566.5" y="231" text-anchor="middle">McpPrimitives</text>
+    <text class="note" x="566.5" y="247" text-anchor="middle">static</text>
+    <path class="frame" d="M 416 267 L 717 267" />
+    <text class="word tone-green" x="430" y="285" text-anchor="start">+Add(McpServerOptions, engine, catalog)</text>
+    <rect class="box tone-green" x="829" y="8" width="343" height="96" rx="10" />
+    <text class="label tone-green" x="1000.5" y="36" text-anchor="middle">EngineToolSync</text>
+    <text class="note" x="1000.5" y="52" text-anchor="middle">static</text>
+    <path class="frame" d="M 829 72 L 1172 72" />
+    <text class="word tone-green" x="843" y="90" text-anchor="start">+Attach(engine, tools)</text>
+    <rect class="box tone-green" x="829" y="130" width="343" height="112" rx="10" />
+    <text class="label tone-green" x="1000.5" y="161" text-anchor="middle">SkillsToolProvider</text>
+    <path class="frame" d="M 829 182 L 1172 182" />
+    <text class="word tone-green" x="843" y="200" text-anchor="start">+ListSkills()</text>
+    <text class="word tone-green" x="843" y="214" text-anchor="start">+GetSkillInfo(name)</text>
+    <text class="word tone-green" x="843" y="228" text-anchor="start">+GetSkillDocumentation()</text>
+    <rect class="box tone-green" x="829" y="268" width="343" height="96" rx="10" />
+    <text class="label tone-green" x="1000.5" y="296" text-anchor="middle">FeedResources</text>
+    <text class="note" x="1000.5" y="312" text-anchor="middle">static</text>
+    <path class="frame" d="M 829 332 L 1172 332" />
+    <text class="word tone-green" x="843" y="350" text-anchor="start">+From(feeds) IReadOnlyList&lt;McpServerResource&gt;</text>
+    <rect class="box tone-violet" x="1384" y="66" width="170" height="110" rx="10" />
+    <text class="label tone-violet" x="1469" y="94" text-anchor="middle">AgentEngine</text>
+    <text class="note" x="1469" y="110" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 1384 130 L 1554 130" />
+    <text class="word tone-violet" x="1398" y="148" text-anchor="start">+Tools</text>
+    <text class="word tone-violet" x="1398" y="162" text-anchor="start">+ToolsChanged</text>
+    <rect class="box tone-violet" x="1384" y="213" width="170" height="76" rx="10" />
+    <text class="label tone-violet" x="1469" y="241" text-anchor="middle">IDataFeed</text>
+    <text class="note" x="1469" y="257" text-anchor="middle">interface,</text>
+    <text class="note" x="1469" y="269" text-anchor="middle">louis-agent.composition</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="454" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="464.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="490" width="1554" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 500) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="512">
+    <tspan class="note-head">The engine's tools, no model:</tspan>
+    <tspan class="note-rest">the host adds the tools, kept in step as they change, the feeds as resources and the skills as tools of their own.</tspan>
+  </text>
+</svg>

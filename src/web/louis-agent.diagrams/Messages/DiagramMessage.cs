@@ -25,9 +25,35 @@ public enum DiagramMessage
     [Description("The arrow from '{From}' to '{To}' names '{Id}', which no box in the diagram has.")]
     UnknownBox,
 
+    [Description("The box '{Id}' stands in the group '{Group}', which the diagram doesn't declare in its \"groups\".")]
+    UnknownGroup,
+
     [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
     UnknownCard,
 
+    [Description("A step names '{Id}', which no participant in the diagram has: \"{Step}\".")]
+    UnknownParticipant,
+
+    [Description("A note stands over the lifelines it names, so it names one at least: \"{Text}\".")]
+    NoteOverNoOne,
+
+    [Description("The {Kind} \"{Label}\" holds no steps, in it or in one of its cases.")]
+    EmptyBlock,
+
+    [Description("A sequence needs at least one step: a message, a reply, a note or a block.")]
+    NoSteps,
+
+    [Description("The relation from '{From}' to '{To}' names '{Id}', which no type in the diagram has.")]
+    UnknownType,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
-    NoRenderer
+    NoRenderer,
+
+    // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
+    [Description("starts it")] LegendBlue,
+    [Description("this project")] LegendGreen,
+    [Description("the framework")] LegendViolet,
+    [Description("contracts and state")] LegendTeal,
+    [Description("outside the process")] LegendRed,
+    [Description("files and data")] LegendAmber
 }

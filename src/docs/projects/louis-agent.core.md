@@ -13,19 +13,7 @@ protocol to and from `AgentEngine`; behaviour changes belong here.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Env["config/.env + .env.secrets<br/>+ LLM profile .env.{LLM_PROFILE}<br/>(AgentHost.LoadEnvironment)"] --> Opts["LlmOptions + AgentOptions"]
-    Opts --> Skills["SkillLoader.Load<br/>→ CompositeSkillProvider<br/>(system prompt + skills)"]
-    Opts --> Factory["LlmClientFactory<br/>→ IChatClient"]
-    Skills --> Engine["AgentEngine"]
-    Factory --> Engine
-    Engine --> Loop["FunctionInvokingChatClient<br/>(≤ 10 tool rounds per message)"]
-    Loop --> Guards["ToolCallGuards.InvokeAsync<br/>log · run · guard result"]
-    Guards --> Tools["Tool classes<br/>(files, git, dotnet, scripts, web, Paymo, DevOps, skills)"]
-    Loop --> Rec["UsageRecordingChatClient<br/>one record per model request"]
-    Rec --> Ledger["JsonlUsageSink<br/>{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"]
-```
+![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)
 
 1. **Bootstrap** (`AgentHost.Build()`): load `config/.env.secrets` then `config/.env` (searching upward from the working
    directory; variables already set win), bind `LlmOptions` and `AgentOptions`, start file logging, load skills, create
@@ -104,42 +92,12 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 
 ## Diagrams
 
-**Flow:** one turn. The diagram under *How it works* shows how the engine is put together; this is what happens when a host hands it a message. The
-loop goes round once per tool round, at most ten times, and the history is only added to, once the turn is done.
+The diagram under *How it works* shows how the engine is put together; this is what happens when a host hands it a
+message.
 
-```mermaid
-sequenceDiagram
-    participant H as A host
-    participant E as AgentEngine
-    participant T as TurnRunner
-    participant L as FunctionInvokingChatClient
-    participant U as UsageRecordingChatClient
-    participant M as The model
-    participant G as ToolCallGuards
-    participant O as A tool
-    H->>E: StreamPromptAsync(history, prompt)
-    E->>T: StreamAsync
-    T->>L: the messages and the tools
-    loop until the model answers without a tool call
-        L->>U: one model request
-        U->>M: the request
-        M-->>U: updates: thinking, text, tool calls
-        U->>U: one usage record, to JsonlUsageSink
-        U-->>L: the updates
-        L-->>H: each update, as it comes
-        opt the model asked for a tool
-            L->>G: InvokeAsync(the call)
-            alt cut off, or refused
-                G-->>L: the reason, and the tool never runs
-            else
-                G->>O: run it, arguments as data
-                O-->>G: the result
-                G-->>L: the result, summarised if it's too long
-            end
-        end
-    end
-    T->>T: appends the finished turn to the history
-```
+![One turn: the engine runs the tool loop, each model request measured and each tool call guarded, and the turn joins the history at the end](diagrams/louis-agent.core-diagrams.svg)
+
+![The types a host meets: AgentHost builds the context from a catalogue of identities and packs, an engine per toolset list, and the model from a provider](diagrams/louis-agent.core-interface.svg)
 
 ## Structure
 

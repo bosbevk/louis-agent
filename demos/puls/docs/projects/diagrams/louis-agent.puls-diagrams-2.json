@@ -1,0 +1,119 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.puls: asking Puls about cooking",
+  "caption": "The handing over happens on the server: the web app opens the session and draws what comes back.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "U",
+        "tone": "blue",
+        "label": "Someone",
+        "actor": true
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "green",
+        "label": "ChatPage"
+      },
+      {
+        "id": "S",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "ChatShell"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentApi"
+      },
+      {
+        "id": "V",
+        "icon": "message",
+        "tone": "red",
+        "label": "The session, as Puls"
+      },
+      {
+        "id": "C",
+        "icon": "message",
+        "tone": "red",
+        "label": "A sub-session, as the cook"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "U",
+        "to": "S",
+        "text": "asks, in Afrikaans"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "P",
+        "text": "OpenSessionAsync, on the first message"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "CreateSessionAsync(agents and web, voice-af, place)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "A",
+        "text": "StreamMessageAsync"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "V",
+        "text": "the message"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "C",
+        "text": "AskAgent(\u0022puls.cook\u0022)"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "A",
+        "text": "its work, as events"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "S",
+        "text": "a DelegationCard and the WorkPanel fill up"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "V",
+        "text": "the cook\u0027s answer"
+      },
+      {
+        "step": "reply",
+        "from": "V",
+        "to": "A",
+        "text": "Puls\u0027s reply"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "S",
+        "text": "the turn, then its cost"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "U",
+        "text": "the answer in Afrikaans"
+      }
+    ]
+  }
+}

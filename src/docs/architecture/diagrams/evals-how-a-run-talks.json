@@ -1,0 +1,168 @@
+{
+  "kind": "sequence",
+  "title": "The evals: how a run talks",
+  "caption": "Every line goes to the store as it arrives: the cost comes from the ledger at the end, by the run's tag.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "Admin",
+        "tone": "blue",
+        "label": "Admin",
+        "actor": true
+      },
+      {
+        "id": "Portal",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Portal"
+      },
+      {
+        "id": "API",
+        "icon": "server",
+        "tone": "violet",
+        "label": "API"
+      },
+      {
+        "id": "Runner",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "Runner (child process)"
+      },
+      {
+        "id": "Agent",
+        "icon": "message",
+        "tone": "violet",
+        "label": "Agent sessions (same API)"
+      },
+      {
+        "id": "Judge",
+        "icon": "checks",
+        "tone": "red",
+        "label": "Judge"
+      },
+      {
+        "id": "Store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Mongo store"
+      },
+      {
+        "id": "Ledger",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Usage ledger"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "Admin",
+        "to": "Portal",
+        "text": "Run puls-cook, repeat 3"
+      },
+      {
+        "step": "message",
+        "from": "Portal",
+        "to": "API",
+        "text": "POST /v1/admin/evals/puls-cook/runs"
+      },
+      {
+        "step": "message",
+        "from": "API",
+        "to": "Runner",
+        "text": "start: run puls-cook --repeat 3 (BENCHMARK_RUN = run id)"
+      },
+      {
+        "step": "reply",
+        "from": "Runner",
+        "to": "API",
+        "text": "protocol line (eval, version, graders, dataset)"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each mode, repeat and scenario",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "Runner",
+            "to": "API",
+            "text": "mode, question"
+          },
+          {
+            "step": "message",
+            "from": "Runner",
+            "to": "Agent",
+            "text": "POST /v1/sessions (role, toolsets, replay), then the message"
+          },
+          {
+            "step": "message",
+            "from": "Agent",
+            "to": "Ledger",
+            "text": "one row per model request"
+          },
+          {
+            "step": "reply",
+            "from": "Agent",
+            "to": "Runner",
+            "text": "the turn\u0027s stream (SSE)"
+          },
+          {
+            "step": "reply",
+            "from": "Runner",
+            "to": "API",
+            "text": "sse lines, then turn"
+          },
+          {
+            "step": "message",
+            "from": "Runner",
+            "to": "Judge",
+            "text": "the answer and the rubric (model checks only)"
+          },
+          {
+            "step": "reply",
+            "from": "Judge",
+            "to": "Runner",
+            "text": "label and reason"
+          },
+          {
+            "step": "reply",
+            "from": "Runner",
+            "to": "API",
+            "text": "conversation (grades, outcome, metrics)"
+          },
+          {
+            "step": "message",
+            "from": "API",
+            "to": "Store",
+            "text": "run, conversation, turn as they arrive"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "Runner",
+        "to": "API",
+        "text": "mode-done (pass@k, pass^k), summary"
+      },
+      {
+        "step": "message",
+        "from": "API",
+        "to": "Ledger",
+        "text": "read this run\u0027s rows"
+      },
+      {
+        "step": "message",
+        "from": "API",
+        "to": "Store",
+        "text": "each conversation\u0027s tokens and cost, the run\u0027s end"
+      },
+      {
+        "step": "message",
+        "from": "Portal",
+        "to": "API",
+        "text": "GET /v1/admin/evals/runs/current/events (live) and the run\u0027s pages"
+      }
+    ]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.where-to-buy: finding a shop's branches",
+  "caption": "The search starts small and widens only when a box finds none: the map answers at most 20 hits, in no order.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "M",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The model"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "green",
+        "label": "WhereToBuyTools"
+      },
+      {
+        "id": "F",
+        "icon": "search",
+        "tone": "green",
+        "label": "BranchFinder"
+      },
+      {
+        "id": "S",
+        "icon": "world",
+        "tone": "green",
+        "label": "MapSearch"
+      },
+      {
+        "id": "N",
+        "icon": "world",
+        "tone": "red",
+        "label": "Nominatim"
+      },
+      {
+        "id": "P",
+        "icon": "file",
+        "tone": "green",
+        "label": "BranchPrinter"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "M",
+        "to": "T",
+        "text": "FindBranches(shop, town)"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "F",
+        "text": "the shop and the town"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "S",
+        "text": "TownAsync"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "N",
+        "text": "South Africa only, the first answer"
+      },
+      {
+        "step": "reply",
+        "from": "N",
+        "to": "F",
+        "text": "its centre, municipality and province"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "about 16 km, half a degree, a degree and a half, until a box has some",
+        "steps": [
+          {
+            "step": "message",
+            "from": "F",
+            "to": "S",
+            "text": "NearAsync: the shop\u0027s name in the box"
+          },
+          {
+            "step": "message",
+            "from": "S",
+            "to": "N",
+            "text": "one request a second"
+          },
+          {
+            "step": "reply",
+            "from": "N",
+            "to": "F",
+            "text": "hits"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "T",
+        "text": "the three nearest"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "P",
+        "text": "the town and its branches"
+      },
+      {
+        "step": "reply",
+        "from": "P",
+        "to": "M",
+        "text": "the province, then a table, framed as untrusted map data"
+      }
+    ]
+  }
+}

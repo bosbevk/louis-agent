@@ -1,11 +1,11 @@
-<svg viewBox="-24 -24 928 372" width="928" height="372" role="img" aria-label="louis-agent.pack.recipes at a glance" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 928 438" width="928" height="438" role="img" aria-label="louis-agent.pack.recipes at a glance" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.pack.recipes at a glance</title>
   <style>svg {
-  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
 }
 .ground { fill: var(--ground); }
 .box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
@@ -13,10 +13,13 @@
 .note { fill: var(--quiet); font: 10px var(--mono); }
 .edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
 .arrow { fill: var(--quiet); }
-.word {
-  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
 }
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
 .caption {
   fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
@@ -27,57 +30,127 @@
 .title { fill: var(--text); font: 600 13px var(--mono); }
 .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
 .code { fill: var(--text); font: 11px var(--mono); }
-.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="928" height="372" rx="14" />
-  <rect class="frame" x="0" y="0" width="880" height="324" rx="14" />
-  <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
-  <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
-  <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
-  <rect class="card highlight" x="20" y="20" width="840" height="106" rx="10" />
-  <g class="icon" transform="translate(430 36) scale(0.8333)">
-    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-    <path d="M3 6l0 13" />
-    <path d="M12 6l0 13" />
-    <path d="M21 6l0 13" />
+  <rect class="ground" x="-24" y="-24" width="928" height="438" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="880" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
   </g>
-  <text class="title" x="317.7" y="81" text-anchor="start">Recipes</text>
-  <rect class="chip" x="385.1" y="65" width="177.2" height="20" rx="5" />
-  <text class="code" x="392.1" y="79" text-anchor="start">louis-agent.pack.recipes</text>
-  <text class="text" x="440" y="105" text-anchor="middle">Search South African recipe sites and read a recipe into exact ingredients and method.</text>
-  <rect class="card" x="20" y="166" width="269.3" height="138" rx="10" />
-  <g class="icon" transform="translate(36 182) scale(0.8333)">
-    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-    <path d="M21 21l-6 -6" />
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.pack.recipes at a glance</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <rect class="frame" x="0" y="0" width="880" height="324" rx="14" />
+    <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
+    <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
+    <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
+    <rect class="card highlight" x="20" y="20" width="840" height="106" rx="10" />
+    <g class="icon" transform="translate(430 36) scale(0.8333)">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </g>
+    <text class="title" x="317.7" y="81" text-anchor="start">Recipes</text>
+    <rect class="chip" x="385.1" y="65" width="177.2" height="20" rx="5" />
+    <text class="code" x="392.1" y="79" text-anchor="start">louis-agent.pack.recipes</text>
+    <text class="text" x="440" y="105" text-anchor="middle">Search South African recipe sites and read a recipe into exact ingredients and method.</text>
+    <rect class="card" x="20" y="166" width="269.3" height="138" rx="10" />
+    <g class="icon" transform="translate(36 182) scale(0.8333)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="title" x="36" y="227" text-anchor="start">FindRecipes</text>
+    <text class="text" x="36" y="251" text-anchor="start">A search across the sites the</text>
+    <text class="text" x="36" y="267" text-anchor="start">settings name, or one of them.</text>
+    <rect class="card" x="305.3" y="166" width="269.3" height="138" rx="10" />
+    <g class="icon" transform="translate(321.3 182) scale(0.8333)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="title" x="321.3" y="227" text-anchor="start">ReadRecipe</text>
+    <text class="text" x="321.3" y="251" text-anchor="start">A page's own recipe data read in</text>
+    <text class="text" x="321.3" y="267" text-anchor="start">code, a short, exact print for the</text>
+    <text class="text" x="321.3" y="283" text-anchor="start">model.</text>
+    <rect class="card" x="590.7" y="166" width="269.3" height="138" rx="10" />
+    <g class="icon" transform="translate(606.7 182) scale(0.8333)">
+      <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+      <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+      <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+    </g>
+    <text class="title" x="606.7" y="227" text-anchor="start">The library</text>
+    <text class="text" x="606.7" y="251" text-anchor="start">Each new recipe from a site kept</text>
+    <text class="text" x="606.7" y="267" text-anchor="start">in MongoDB, field by field, for</text>
+    <text class="text" x="606.7" y="283" text-anchor="start">good.</text>
   </g>
-  <text class="title" x="36" y="227" text-anchor="start">FindRecipes</text>
-  <text class="text" x="36" y="251" text-anchor="start">A search across the sites the</text>
-  <text class="text" x="36" y="267" text-anchor="start">settings name, or one of them.</text>
-  <rect class="card" x="305.3" y="166" width="269.3" height="138" rx="10" />
-  <g class="icon" transform="translate(321.3 182) scale(0.8333)">
-    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-    <path d="M9 9l1 0" />
-    <path d="M9 13l6 0" />
-    <path d="M9 17l6 0" />
-  </g>
-  <text class="title" x="321.3" y="227" text-anchor="start">ReadRecipe</text>
-  <text class="text" x="321.3" y="251" text-anchor="start">A page's own recipe data read in</text>
-  <text class="text" x="321.3" y="267" text-anchor="start">code, a short, exact print for the</text>
-  <text class="text" x="321.3" y="283" text-anchor="start">model.</text>
-  <rect class="card" x="590.7" y="166" width="269.3" height="138" rx="10" />
-  <g class="icon" transform="translate(606.7 182) scale(0.8333)">
-    <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
-    <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
-    <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
-  </g>
-  <text class="title" x="606.7" y="227" text-anchor="start">The library</text>
-  <text class="text" x="606.7" y="251" text-anchor="start">Each new recipe from a site kept</text>
-  <text class="text" x="606.7" y="267" text-anchor="start">in MongoDB, field by field, for</text>
-  <text class="text" x="606.7" y="283" text-anchor="start">good.</text>
 </svg>

@@ -1,0 +1,199 @@
+{
+  "kind": "classes",
+  "title": "F39 orchestration: the engine's interfaces, part A",
+  "caption": "Every outside part behind an interface: the child's transport and the limiter each have a fake for tests, and one client is the only way to call a child.",
+  "classes": {
+    "types": [
+      {
+        "id": "AgentPeer",
+        "name": "AgentPeer",
+        "kind": "record, A2, new",
+        "members": [
+          "+Name",
+          "+Uri"
+        ]
+      },
+      {
+        "id": "IChildTransport",
+        "name": "IChildTransport",
+        "kind": "interface, A2",
+        "members": [
+          "+OpenAsync()",
+          "+SendAsync()",
+          "+CloseAsync()"
+        ]
+      },
+      {
+        "id": "HttpPeerTransport",
+        "name": "HttpPeerTransport",
+        "kind": "from PeerSession and PeerHttp, A2",
+        "members": [
+          "a key per peer"
+        ]
+      },
+      {
+        "id": "FakeChildTransport",
+        "name": "FakeChildTransport",
+        "kind": "test, A2"
+      },
+      {
+        "id": "ChildAgentClient",
+        "name": "ChildAgentClient",
+        "kind": "A2",
+        "members": [
+          "+OpenAsync()",
+          "+AskAsync<T>()",
+          "+ContinueAsync<T>()",
+          "+CloseAsync()"
+        ]
+      },
+      {
+        "id": "SessionStreamReader",
+        "name": "SessionStreamReader",
+        "kind": "Phase 3",
+        "members": [
+          "typed events"
+        ]
+      },
+      {
+        "id": "DelegationPolicy",
+        "name": "DelegationPolicy",
+        "kind": "record, A3"
+      },
+      {
+        "id": "IChildLimiter",
+        "name": "IChildLimiter",
+        "kind": "interface, Sessions, A3",
+        "members": [
+          "+TryTake()"
+        ]
+      },
+      {
+        "id": "DelegationLimiter",
+        "name": "DelegationLimiter",
+        "kind": "A3",
+        "members": [
+          "one per turn tree"
+        ]
+      },
+      {
+        "id": "TurnContext",
+        "name": "TurnContext",
+        "kind": "Sessions, A4",
+        "members": [
+          "+Current"
+        ]
+      },
+      {
+        "id": "ISystemNoteStrategy",
+        "name": "ISystemNoteStrategy",
+        "kind": "interface, Llm, A4a",
+        "members": [
+          "+Note()"
+        ]
+      },
+      {
+        "id": "ResultToolset",
+        "name": "ResultToolset",
+        "kind": "Agent, A5",
+        "members": [
+          "+Of<T>()"
+        ]
+      },
+      {
+        "id": "IResultCheck",
+        "name": "IResultCheck<T>",
+        "kind": "interface, A5",
+        "members": [
+          "+CheckAsync()"
+        ]
+      },
+      {
+        "id": "RouteClassifier",
+        "name": "RouteClassifier",
+        "kind": "Agent, A6",
+        "members": [
+          "+ClassifyAsync<T>()"
+        ]
+      },
+      {
+        "id": "IToolChoiceStrategy",
+        "name": "IToolChoiceStrategy",
+        "kind": "interface, Llm, A6",
+        "members": [
+          "+Force()"
+        ]
+      },
+      {
+        "id": "AskAgentTools",
+        "name": "AskAgentTools",
+        "kind": "changed, A2",
+        "members": [
+          "thin caller"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "HttpPeerTransport",
+        "to": "IChildTransport",
+        "kind": "implements"
+      },
+      {
+        "from": "FakeChildTransport",
+        "to": "IChildTransport",
+        "kind": "implements"
+      },
+      {
+        "from": "HttpPeerTransport",
+        "to": "AgentPeer",
+        "kind": "holds"
+      },
+      {
+        "from": "ChildAgentClient",
+        "to": "IChildTransport",
+        "kind": "holds"
+      },
+      {
+        "from": "ChildAgentClient",
+        "to": "SessionStreamReader",
+        "kind": "holds"
+      },
+      {
+        "from": "ChildAgentClient",
+        "to": "TurnContext",
+        "kind": "holds"
+      },
+      {
+        "from": "TurnContext",
+        "to": "IChildLimiter",
+        "kind": "holds"
+      },
+      {
+        "from": "DelegationLimiter",
+        "to": "IChildLimiter",
+        "kind": "implements"
+      },
+      {
+        "from": "DelegationLimiter",
+        "to": "DelegationPolicy",
+        "kind": "holds"
+      },
+      {
+        "from": "AskAgentTools",
+        "to": "ChildAgentClient",
+        "kind": "holds"
+      },
+      {
+        "from": "RouteClassifier",
+        "to": "IToolChoiceStrategy",
+        "kind": "holds"
+      },
+      {
+        "from": "RouteClassifier",
+        "to": "ResultToolset",
+        "kind": "uses"
+      }
+    ]
+  }
+}

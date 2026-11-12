@@ -59,66 +59,19 @@ draws tool calls as components.
 
 ### Interface design
 
-```mermaid
-classDiagram
-    class DocsTools {
-        +docs_search(query, maxResults) string  %% F125.1
-        +docs_fetch(id) string  %% F125.1
-    }
-    class SectionIndex {
-        +Search(query, max) IReadOnlyList~SectionHit~  %% F125.1, BM25
-    }
-    class SectionHit { <<record>> Id Title Heading Snippet Url Score }
-    class DocResources { +From(root) IEnumerable~McpServerResource~  %% F125.1, doc://path }
-    class SiteTools { +ShowPage(path) +Offer(choices) +ShowCard(kind, fields)  %% F125.3, F125.4 }
-    class GapTools { +ReportGap(question) string  %% F125.6 }
-    class ToolTransport { <<enum>> InProcess Mcp  %% F125.8 }
-    class McpToolProxy { <<AITool>> +InvokeAsync(args)  %% F125.8, Remote Proxy }
-    class McpDiscovery { +FindMcpServers(need) string  %% F125.8 }
-    DocsTools --> SectionIndex
-    SectionIndex --> SectionHit
-    McpToolProxy ..> ToolTransport : picked by
-```
+![A tool is a tool wherever it runs: an MCP tool is wrapped as one the engine knows, and the transport picks where it runs](diagrams/F125-an-agentic-site-interface-design.svg)
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    V[Visitor's browser\nwidget: ShowPage, Offer, ShowCard] -->|SSE| API[louis-agent.api\nthe guide, rate limit F125.5]
-    API -->|TOOL_TRANSPORT=mcp F125.8| MCP[louis-agent.mcp\ndocs, site, leads, gaps]
-    API -.->|in-process, tests| Packs[Packs as DLLs]
-    Ext[Claude, ChatGPT, Cursor] -->|search + fetch, doc://| MCP
-    Ext -->|finds it| Reg[Official MCP Registry\n+ /.well-known/ai-catalog.json F125.2]
-    API -->|FindMcpServers F125.8| Reg
-    Admin[Admin page\ngaps F125.6, approvals F125.8] --> API
-```
+![The guide's tools run in the MCP server, outside agents find us through the registry, and the admin page sees the gaps](diagrams/F125-an-agentic-site-architecture.svg)
 
 ### Communication: a visitor asks, the guide searches over MCP
 
-```mermaid
-sequenceDiagram
-    participant W as Widget
-    participant A as API (guide)
-    participant M as louis-agent.mcp
-    W->>A: "what does a turn cost?" + page block
-    A->>M: tools/call docs_search("turn cost")
-    M-->>A: hits: id, heading, snippet, url
-    A->>M: tools/call docs_fetch(id)
-    M-->>A: the doc
-    A-->>W: ShowCard(cost, ...) + answer + Offer(["Show me the proof page", "Talk to Louis"])
-    W->>W: draws the card and the buttons
-```
+![The guide searches over MCP: it searches and fetches the docs through the MCP server, and answers with a card and the next steps](diagrams/F125-an-agentic-site-communication-a-visitor-asks-the-guide-searches-over-mcp.svg)
 
 ### Objects in memory: one guide turn over MCP
 
-```mermaid
-flowchart TB
-    Engine[AgentEngine] --> Proxy1[McpToolProxy docs_search]
-    Engine --> Proxy2[McpToolProxy docs_fetch]
-    Engine --> Local[ShowPage, Offer, ShowCard\nin-process by override]
-    Proxy1 --> Client[McpClient, one per server]
-    Proxy2 --> Client
-```
+![The engine holds two MCP tool proxies on one client, and the tools that show a page stay in the process](diagrams/F125-an-agentic-site-objects-in-memory-one-guide-turn-over-mcp.svg)
 
 ### Namespace map (proposed; each child's plan settles it)
 

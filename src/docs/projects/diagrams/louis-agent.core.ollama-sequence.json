@@ -1,0 +1,24 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core.ollama: one reply from a local model",
+  "caption": "The provider only builds the client: after that the engine talks to Ollama through OllamaSharp, and the long timeout lets a slow GPU finish.",
+  "sequence": {
+    "participants": [
+      { "id": "host", "label": "A host's program", "icon": "terminal", "tone": "blue" },
+      { "id": "factory", "label": "LlmClientFactory", "icon": "chip", "tone": "violet" },
+      { "id": "provider", "label": "OllamaProvider", "icon": "box", "tone": "green" },
+      { "id": "engine", "label": "AgentEngine", "icon": "chip", "tone": "violet" },
+      { "id": "ollama", "label": "Ollama", "icon": "server", "tone": "red" }
+    ],
+    "steps": [
+      { "step": "message", "from": "host", "to": "factory", "text": "Create(options), LLM_PROVIDER=ollama" },
+      { "step": "message", "from": "factory", "to": "provider", "text": "Create(options)" },
+      { "step": "reply", "from": "provider", "to": "factory", "text": "an OllamaApiClient, ten-minute timeout" },
+      { "step": "reply", "from": "factory", "to": "host", "text": "the IChatClient" },
+      { "step": "message", "from": "host", "to": "engine", "text": "StreamPromptAsync(history, input)" },
+      { "step": "message", "from": "engine", "to": "ollama", "text": "POST /api/chat at LLM_ENDPOINT or localhost:11434" },
+      { "step": "reply", "from": "ollama", "to": "engine", "text": "the reply, a token at a time" },
+      { "step": "reply", "from": "engine", "to": "host", "text": "the updates, the usage in the standard fields" }
+    ]
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.host-packs: start-up",
+  "caption": "Which agent a host runs is a setting, not a build: any mistake stops it before an engine exists.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "H",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "The host\u0027s program"
+      },
+      {
+        "id": "P",
+        "icon": "box",
+        "tone": "green",
+        "label": "Plugins"
+      },
+      {
+        "id": "S",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "SettingChoice"
+      },
+      {
+        "id": "C",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "H",
+        "to": "P",
+        "text": "FromEnvironment"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "P",
+        "text": "loads config/.env, reads IDENTITIES and PACKS"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "S",
+        "text": "each name, once"
+      },
+      {
+        "step": "block",
+        "block": "alt",
+        "label": "a name nobody knows",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "S",
+            "to": "H",
+            "text": "stops, with HostPacksErrorMessage naming the supported ones"
+          }
+        ],
+        "else": [
+          {
+            "label": "",
+            "steps": [
+              {
+                "step": "message",
+                "from": "P",
+                "to": "P",
+                "text": "creates each identity, and each pack it or PACKS names, once"
+              },
+              {
+                "step": "message",
+                "from": "P",
+                "to": "C",
+                "text": "the identities and the packs"
+              },
+              {
+                "step": "message",
+                "from": "C",
+                "to": "C",
+                "text": "refuses a name twice, a missing pack, a cycle, a shared path or tool name"
+              },
+              {
+                "step": "reply",
+                "from": "C",
+                "to": "H",
+                "text": "the catalogue"
+              },
+              {
+                "step": "message",
+                "from": "H",
+                "to": "A",
+                "text": "Build(catalogue)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

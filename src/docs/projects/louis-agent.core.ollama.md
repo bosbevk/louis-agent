@@ -18,11 +18,13 @@ OllamaSharp's client over an `HttpClient` at `LLM_ENDPOINT`, or Ollama's own por
 timeout, since a small GPU writes about five tokens a second and HttpClient's default 100 seconds cancelled replies
 Ollama was still writing. It reports usage in the standard fields and marks no cache, so the seam's defaults hold.
 
-```mermaid
-flowchart LR
-    program["A program: HostServices(…, Providers: [OllamaProvider.Instance, …])"] --> factory["LlmClientFactory (core)"]
-    factory --> provider["OllamaProvider (this library)"] --> sdk["OllamaSharp: OllamaApiClient over the long-timeout HttpClient"]
-```
+![louis-agent.core.ollama: How it works](diagrams/louis-agent.core.ollama-how-it-works.svg)
+
+## Diagrams
+
+![One reply from a local model: the provider builds the client, then the engine talks to Ollama through OllamaSharp](diagrams/louis-agent.core.ollama-sequence.svg)
+
+![The types: OllamaProvider is core's provider seam over OllamaSharp's client](diagrams/louis-agent.core.ollama-interface.svg)
 
 ## Structure
 

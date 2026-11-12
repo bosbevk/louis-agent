@@ -1,0 +1,68 @@
+{
+  "kind": "flow",
+  "title": "Puls's track: one town's answer",
+  "caption": "The same identity in every town: the places pack reads the town's own sources, and the answer and the web app's colours follow the town.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "town",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Your town: Malmesbury, from\nthe place you shared"
+      },
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "green",
+        "label": "places pack"
+      },
+      {
+        "id": "sources",
+        "icon": "world",
+        "tone": "red",
+        "label": "OpenStreetMap's Nominatim,\nWikipedia nearby in English\nand Afrikaans, the\nmunicipality's site"
+      },
+      {
+        "id": "answer",
+        "icon": "message",
+        "tone": "green",
+        "label": "Puls answers: Swartland\nmunicipality, what's near and\nhow far, each with its source"
+      },
+      {
+        "id": "theme",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Swartland's colours: the Puls\nweb app's theme"
+      },
+      {
+        "id": "puls",
+        "icon": "user",
+        "tone": "teal",
+        "label": "Puls, the same identity in\nevery town"
+      }
+    ],
+    "edges": [
+      {
+        "from": "town",
+        "to": "pack"
+      },
+      {
+        "from": "sources",
+        "to": "pack",
+        "style": "dashed"
+      },
+      {
+        "from": "pack",
+        "to": "answer"
+      },
+      {
+        "from": "pack",
+        "to": "theme"
+      },
+      {
+        "from": "puls",
+        "to": "answer"
+      }
+    ]
+  }
+}

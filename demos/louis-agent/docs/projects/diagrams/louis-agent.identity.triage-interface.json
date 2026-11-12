@@ -1,0 +1,65 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.identity.triage: the interface design",
+  "caption": "One identity, a manager and three roles: its packs and the roles it may ask are enums, and each role is a prompt file ending with its typed tool.",
+  "classes": {
+    "types": [
+      {
+        "id": "identity",
+        "name": "TriageIdentity",
+        "kind": "implements IAgentIdentity",
+        "members": [
+          "+Name \"triage\"",
+          "+DefaultVoice \"triage/voice\"",
+          "+Packs, Calls"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "TriageIdentityPack",
+        "kind": "enum",
+        "members": [
+          "Triage Files Git DotNet"
+        ]
+      },
+      {
+        "id": "calls",
+        "name": "TriageCall",
+        "kind": "enum, ADR 0117",
+        "members": [
+          "triage.sorter, triage.investigator, triage.reviewer"
+        ]
+      },
+      {
+        "id": "voice",
+        "name": "prompts/agent/triage/voice.md",
+        "kind": "the manager, the hub",
+        "tone": "amber"
+      },
+      {
+        "id": "roles",
+        "name": "prompts/specialists/triage-*.md",
+        "kind": "the roles",
+        "tone": "amber",
+        "members": [
+          "sorter: SortCase",
+          "investigator: ReportInvestigation",
+          "reviewer: ReportReview"
+        ]
+      },
+      {
+        "id": "pack",
+        "name": "TriageTools, RunTools",
+        "kind": "louis-agent.pack.triage",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "identity", "to": "packs", "kind": "uses" },
+      { "from": "identity", "to": "calls", "kind": "uses" },
+      { "from": "identity", "to": "voice", "kind": "holds" },
+      { "from": "identity", "to": "roles", "kind": "holds" },
+      { "from": "roles", "to": "pack", "kind": "uses", "word": "end with" }
+    ]
+  }
+}

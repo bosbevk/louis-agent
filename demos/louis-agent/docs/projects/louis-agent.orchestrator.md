@@ -14,18 +14,7 @@ itself before calling anything fixed. It never edits code.
 
 ## How it works
 
-```mermaid
-flowchart TD
-    Feed["JsonLinesErrorFeed (the triage pack)<br/>new events in logs/errors.jsonl"] --> Triage["AgentEngine (its own model)<br/>system prompt = runbooks<br/>tools = ServiceTools and FixChecks"]
-    Triage -->|expected| Ack["AcknowledgeError"]
-    Triage -->|escalate| Esc["EscalateToHuman"]
-    Triage -->|auto-fixable| Fix["CallLouisAgentFix<br/>(main checked out → session on louis-agent.api → FIX-RESULT)"]
-    Fix --> Verify["VerifyFixCommit · ReplayRequest · RunServiceTests"]
-    Ack --> Decision["DECISION line → decisions.jsonl,<br/>CommsLog, processed.txt"]
-    Esc --> Decision
-    Verify --> Decision
-    Decision --> Main["back to main for the next error"]
-```
+![The orchestrator: one error, from the feed to a decision](diagrams/louis-agent.orchestrator-how-it-works.svg)
 
 1. **Poll** (`Program.cs`): read new events from the service's error log (the triage pack's `JsonLinesErrorFeed`,
    since F106.3.1, remembers handled ids in `processed.txt`, so each is triaged once; a failed triage stays unhandled
@@ -47,24 +36,13 @@ flowchart TD
 
 ## Diagrams
 
-**Architecture:** the flow is under *How it works*; these are the pieces. It's a second agent on the same core, and it talks to louis-agent the way anyone would, over HTTP.
+The flow is under *How it works*; these are the pieces.
 
-```mermaid
-flowchart TD
-    program["Program.cs: the poll"] --> feed["JsonLinesErrorFeed, the triage pack's"]
-    feed --> errors[("logs/errors.jsonl, processed.txt")]
-    program --> skills["OrchestratorSkills: the runbooks, as the system prompt"]
-    program --> engine["AgentEngine: its own model"]
-    skills --> engine
-    engine --> tools["ServiceTools and FixChecks: the only tools it has"]
-    tools --> fix["FixConversation, FixPrompt"]
-    fix --> client["LouisAgentClient"]
-    client -->|"HTTP and SSE"| api["louis-agent.api: louis-agent fixes it"]
-    tools --> repository["ServiceRepository: the commit, the replay, the tests"]
-    tools --> comms["CommsLog: agent-comms.md"]
-    tools --> state["StateFiles: fixes, escalations, acknowledged"]
-    program --> decision["Decision, DecisionRecord: decisions.jsonl"]
-```
+![The orchestrator: the poll, its engine and tools, and what it writes down](diagrams/louis-agent.orchestrator-diagrams.svg)
+
+![One error fixed: louis-agent claims the fix, and the orchestrator's own checks decide whether to trust it](diagrams/louis-agent.orchestrator-sequence.svg)
+
+![The types: three decisions for the model, a client for the API, code that checks the fix, and the logs it writes](diagrams/louis-agent.orchestrator-interface.svg)
 
 ## Structure
 

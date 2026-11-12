@@ -1,7 +1,8 @@
 # Project design docs
 
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
-how it's tested, and its limits. For the whole system at once, read [Architecture](../architecture/README.md) first; come here
+how it's tested, and its limits, with four pictures: its overview, a flow, a sequence of its main case and its
+interface design ([Draw a diagram](../guides/draw-a-diagram.md)). For the whole system at once, read [Architecture](../architecture/README.md) first; come here
 when you're about to change a particular project. Each project's `.csproj` links its design doc and its how-to from
 [Guides](../guides/README.md), so both show under `src/docs/` in the IDE's solution explorer.
 
@@ -57,54 +58,14 @@ when you're about to change a particular project. Each project's `.csproj` links
 
 ## How they depend on each other
 
-An arrow means "references". **The engine:** core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.
+An arrow means "references".
 
-```mermaid
-flowchart TD
-    Programs["<b>A demo's programs</b><br/>coding-api, coding-cli, coding-acp, coding-mcp<br/>puls-api, puls-eval-runner"]
-    Hosts["<b>What runs on core</b><br/>cli, acp-server, api, mcp-server, evals.runner<br/>orchestrator, usage-probe"]
-    Catalogs["<b>What picks the packs</b><br/>coding-catalog, host-packs"]
-    Core["<b>louis-agent.core</b><br/>the engine"]
-    OnCore["<b>On core</b><br/>core.web, core.telemetry, core.anthropic, core.ollama, core.openai"]
-    Ids["<b>Every identity</b><br/>who an agent is"]
-    Packs["<b>Every pack</b><br/>what an agent can do"]
-    Comp["<b>louis-agent.composition</b><br/>the contracts"]
-
-    Programs --> Hosts
-    Programs --> OnCore
-    OnCore --> Core
-    Programs --> Catalogs
-    Hosts --> Core
-    Catalogs --> Core
-    Core ~~~ Packs
-    Core ~~~ Ids
-    Catalogs --> Packs
-    Catalogs --> Ids
-    Core --> Comp
-    Packs --> Comp
-    Ids --> Comp
-```
+![How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts](diagrams/README-how-they-depend-on-each-other.svg)
 
 A pack or an identity references only the contracts, and core references no pack, identity or host, so only what picks the packs knows them all. Behaviour lives in core, and every host is a thin
 adapter between its protocol and `AgentEngine`.
 
-**The web:** a site is a small program on the framework's web, and it reaches the engine only over HTTP.
-
-```mermaid
-flowchart TD
-    ApiPrograms["<b>The programs that serve a site</b><br/>puls-api, coding-api"]
-    Sites["<b>The sites</b><br/>louis-agent.puls, louis-agent.code-review, louis-agent.starter"]
-    PacksWeb["<b>packs/web</b><br/>a pack's own views, for the sites that use them"]
-    Web["<b>louis-agent.web</b><br/>what every site shares"]
-    Api["<b>louis-agent.api</b>"]
-
-    ApiPrograms --> Sites
-    ApiPrograms --> Api
-    Sites --> PacksWeb
-    Sites --> Web
-    PacksWeb --> Web
-    Web -. "HTTP and SSE, at run time" .-> Api
-```
+![How the web projects depend on each other: the programs, the sites, packs/web, the framework's web and the API](diagrams/README-how-they-depend-on-each-other-2.svg)
 
 **What the diagrams leave out,** to stay readable:
 

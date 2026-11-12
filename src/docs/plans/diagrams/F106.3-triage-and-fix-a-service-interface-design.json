@@ -1,0 +1,247 @@
+{
+  "kind": "classes",
+  "title": "F106.3 triage and fix a service: the interface design",
+  "caption": "The workflow holds the run: its steps and policy are records, and the pack's tools feed it and record it.",
+  "classes": {
+    "types": [
+      {
+        "id": "IErrorFeed",
+        "name": "IErrorFeed",
+        "kind": "interface",
+        "members": [
+          "\u002BReadNewAsync()"
+        ]
+      },
+      {
+        "id": "JsonLinesErrorFeed",
+        "name": "JsonLinesErrorFeed"
+      },
+      {
+        "id": "ITriageRecorder",
+        "name": "ITriageRecorder",
+        "kind": "interface",
+        "members": [
+          "\u002BSaveAsync(step)",
+          "\u002BReadAsync(runId)"
+        ]
+      },
+      {
+        "id": "FileTriageRecorder",
+        "name": "FileTriageRecorder"
+      },
+      {
+        "id": "MongoTriageRecorder",
+        "name": "MongoTriageRecorder"
+      },
+      {
+        "id": "TriageStep",
+        "name": "TriageStep",
+        "members": [
+          "\u002BRunId",
+          "\u002BNumber",
+          "\u002BAgent",
+          "\u002BKind",
+          "\u002BSummary",
+          "\u002BWhy",
+          "\u002BAt",
+          "\u002BCost"
+        ]
+      },
+      {
+        "id": "TriageRun",
+        "name": "TriageRun",
+        "members": [
+          "\u002BId",
+          "\u002BDepartment",
+          "\u002BError",
+          "\u002BSteps",
+          "\u002BOutcome"
+        ]
+      },
+      {
+        "id": "Department",
+        "name": "Department",
+        "members": [
+          "\u002BName",
+          "\u002BRepository",
+          "\u002BFeed",
+          "\u002BPeople"
+        ]
+      },
+      {
+        "id": "Investigation",
+        "name": "Investigation",
+        "members": [
+          "\u002BWhere",
+          "\u002BCause",
+          "\u002BArea",
+          "\u002BConfidence"
+        ]
+      },
+      {
+        "id": "Review",
+        "name": "Review",
+        "members": [
+          "\u002BHappy",
+          "\u002BReasons"
+        ]
+      },
+      {
+        "id": "CaseDecision",
+        "name": "CaseDecision",
+        "members": [
+          "\u002BKind",
+          "\u002BReason"
+        ]
+      },
+      {
+        "id": "TriageTools",
+        "name": "TriageTools",
+        "members": [
+          "\u002BReportInvestigation(Investigation)",
+          "\u002BReportReview(Review)",
+          "\u002BDecideCase(CaseDecision)",
+          "\u002BRaiseToPerson()",
+          "\u002BReadTriageRun(runId)"
+        ]
+      },
+      {
+        "id": "TriageWorkflow",
+        "name": "TriageWorkflow",
+        "members": [
+          "\u002BRunOneAsync(department, error, events)"
+        ]
+      },
+      {
+        "id": "ChildAgentClient",
+        "name": "ChildAgentClient",
+        "members": [
+          "F39 A2: the one way to call a child"
+        ]
+      },
+      {
+        "id": "IResultCheck",
+        "name": "IResultCheck\u003CT\u003E",
+        "kind": "interface",
+        "members": [
+          "F39 A5"
+        ]
+      },
+      {
+        "id": "HandOff",
+        "name": "HandOff",
+        "members": [
+          "F39: Peer Role Summary Reason"
+        ]
+      },
+      {
+        "id": "TriageDemoHandlers",
+        "name": "TriageDemoHandlers",
+        "members": [
+          "\u002BStart(HttpContext)",
+          "\u002BEvents(runId)"
+        ]
+      },
+      {
+        "id": "TriageStage",
+        "name": "TriageStage",
+        "members": [
+          "Razor: the departments and agents, the light"
+        ]
+      },
+      {
+        "id": "StepPopup",
+        "name": "StepPopup",
+        "members": [
+          "Razor: one step\u0027s words"
+        ]
+      },
+      {
+        "id": "TryPage",
+        "name": "TryPage",
+        "members": [
+          "Razor: /try"
+        ]
+      },
+      {
+        "id": "ExpertChat",
+        "name": "ExpertChat",
+        "members": [
+          "the guide, Opening = the run id"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "JsonLinesErrorFeed",
+        "to": "IErrorFeed",
+        "kind": "implements"
+      },
+      {
+        "from": "FileTriageRecorder",
+        "to": "ITriageRecorder",
+        "kind": "implements"
+      },
+      {
+        "from": "MongoTriageRecorder",
+        "to": "ITriageRecorder",
+        "kind": "implements"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "IErrorFeed",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "ITriageRecorder",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "Department",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "TriageStep",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "ChildAgentClient",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "IResultCheck",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageWorkflow",
+        "to": "HandOff",
+        "kind": "holds"
+      },
+      {
+        "from": "TriageDemoHandlers",
+        "to": "TriageWorkflow",
+        "kind": "holds"
+      },
+      {
+        "from": "TryPage",
+        "to": "TriageStage",
+        "kind": "holds"
+      },
+      {
+        "from": "TryPage",
+        "to": "StepPopup",
+        "kind": "holds"
+      },
+      {
+        "from": "TryPage",
+        "to": "ExpertChat",
+        "kind": "holds"
+      }
+    ]
+  }
+}

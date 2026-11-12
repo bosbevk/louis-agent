@@ -34,35 +34,13 @@ Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-o
 
 Where the pieces sit, and what a site adds:
 
-```mermaid
-flowchart TD
-    site["A site's Program.cs and frame"] -->|"EvalPages.AddTo, SiteKinds"| states["Scoped states: reviewer, review queue, notes"]
-    site -->|"EvalLinks, LiveRunStrip"| frame["AdminShell, through AdminFrame"]
-    frame --> pages["Pages: Running, Reviewing, Building"]
-    pages --> parts["Components: the parts, markup only"]
-    parts --> logic["Admin/: plain classes, the sums and the words"]
-    parts --> states
-    pages --> api["AgentApi"]
-    api -->|"/v1/admin/..."| server["louis-agent.api"]
-```
+![The eval studio's pages: from a site's program through the admin frame to the API](diagrams/louis-agent.web.evals-diagrams.svg)
 
 What happens when someone starts a run and watches it:
 
-```mermaid
-sequenceDiagram
-    actor B as Builder
-    participant P as Evals page
-    participant A as AgentApi
-    participant S as louis-agent.api
-    B->>P: opens /admin, picks an eval, presses Run
-    P->>A: starts the run
-    A->>S: POST /v1/admin/benchmarks/...
-    S-->>P: the run's events, as they come
-    P-->>B: LiveRunPanel: its turns as they finish
-    S-->>P: the run ended
-    P->>A: reads the list again
-    P-->>B: the run in the list, linked to /admin/runs/{run}
-```
+![Starting a run and watching it: the page starts it through the API, shows its turns as they finish, and lists the run with a link](diagrams/louis-agent.web.evals-diagrams-2.svg)
+
+![The types: a site adds the pages in one call, a run's events build its live view and its stored lines its tree](diagrams/louis-agent.web.evals-interface.svg)
 
 ## How it works
 

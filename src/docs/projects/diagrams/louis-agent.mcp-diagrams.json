@@ -1,0 +1,119 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.mcp: a client using the tools",
+  "caption": "The client's model decides each call, and the server runs no model: the tools go out as they are, and a change to them is announced.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "C",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "MCP client"
+      },
+      {
+        "id": "S",
+        "icon": "server",
+        "tone": "teal",
+        "label": "The SDK\u0027s server"
+      },
+      {
+        "id": "Y",
+        "icon": "settings",
+        "tone": "green",
+        "label": "EngineToolSync"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "F",
+        "icon": "file",
+        "tone": "green",
+        "label": "FeedResources"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "Y",
+        "to": "E",
+        "text": "at start-up: copies its tools, and listens for changes"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "tools/list"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "the tools"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "tools/call (a name and its arguments)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "E",
+        "text": "runs the engine\u0027s tool"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "S",
+        "text": "the result"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "the result"
+      },
+      {
+        "step": "reply",
+        "from": "E",
+        "to": "Y",
+        "text": "ToolsChanged, as a tool was built or approved"
+      },
+      {
+        "step": "message",
+        "from": "Y",
+        "to": "S",
+        "text": "the new list"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "notifications/tools/list_changed"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "resources/read feed://{name}"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "F",
+        "text": "reads the feed"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "C",
+        "text": "the feed, as JSON"
+      }
+    ]
+  }
+}

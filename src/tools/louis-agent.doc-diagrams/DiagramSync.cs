@@ -12,11 +12,14 @@ public static class DiagramSync
     /// <summary>The name of the folder a doc's diagrams sit in.</summary>
     public const string Folder = "diagrams";
 
-    /// <summary>Where the docs are: the framework's, the packs' and each demo's.</summary>
+    /// <summary>
+    /// Where the docs are: the framework's, the packs' and each demo's, the demo whole, since its deploy notes keep
+    /// their pictures beside them (CL60.2).
+    /// </summary>
     public static IReadOnlyList<string> Roots(string repoRoot) =>
     [
         Path.Combine(repoRoot, "src", "docs"), Path.Combine(repoRoot, "packs", "docs"),
-        .. Directory.EnumerateDirectories(Path.Combine(repoRoot, "demos")).Select(demo => Path.Combine(demo, "docs"))
+        .. Directory.EnumerateDirectories(Path.Combine(repoRoot, "demos"))
     ];
 
     /// <summary>Every diagram's JSON file in a <c>diagrams</c> folder under the roots, in order of path.</summary>
@@ -29,12 +32,13 @@ public static class DiagramSync
     ];
 
     /// <summary>
-    /// Draws one diagram and writes its SVG when it differs from what is there, line endings aside, since a Windows
-    /// checkout keeps its own; a check run only says it's stale.
+    /// Draws one diagram in the docs' frame, its title bar and note bar (CL60.2), and writes its SVG when it differs
+    /// from what is there, line endings aside, since a Windows checkout keeps its own; a check run only says it's
+    /// stale.
     /// </summary>
     public static SyncOutcome Sync(string json, bool check)
     {
-        string drawn = DiagramRenderers.Render(DiagramReader.Read(File.ReadAllText(json)));
+        string drawn = DiagramRenderers.RenderTitled(DiagramReader.Read(File.ReadAllText(json)));
         string svg = Path.ChangeExtension(json, ".svg");
         bool same = File.Exists(svg) && File.ReadAllText(svg).ReplaceLineEndings("\n") == drawn;
         if (same) return SyncOutcome.Unchanged;

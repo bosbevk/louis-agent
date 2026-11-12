@@ -29,42 +29,11 @@ thin and never references an identity or a pack; and which agent a host runs is 
 
 ## Diagrams
 
-**Architecture:** the one project that knows every identity and pack Puls can load, so core and the hosts don't have to. A host's own program is the only thing that calls it.
+![Host packs: the program's plugins, the identity and the packs, into the catalogue](diagrams/louis-agent.host-packs-diagrams.svg)
 
-```mermaid
-flowchart TD
-    program["louis-agent.puls-api: Program.cs"] -->|"Plugins.FromEnvironment"| plugins["Plugins"]
-    plugins --> kinds["IdentityKind, PackKind"]
-    plugins --> identity["PulsIdentity"]
-    plugins --> packs["RecipesPack, WhereToBuyPack, ShopPricesPack, CalculatorPack and the general packs"]
-    identity --> catalog["AgentCatalog"]
-    packs --> catalog
-    program -->|"AgentHost.Build"| host["AgentHost: builds every engine from the catalogue"]
-    catalog --> host
-```
+![Start-up: the plugins read the names from the settings, build the identities and packs, and the catalogue checks them before the host builds](diagrams/louis-agent.host-packs-diagrams-2.svg)
 
-**Flow:** start-up. Which agent a host runs is a setting, not a build, and any mistake stops it before an engine exists.
-
-```mermaid
-sequenceDiagram
-    participant H as The host's program
-    participant P as Plugins
-    participant S as SettingChoice
-    participant C as AgentCatalog
-    participant A as AgentHost
-    H->>P: FromEnvironment
-    P->>P: loads config/.env, reads IDENTITIES and PACKS
-    P->>S: each name, once
-    alt a name nobody knows
-        S-->>H: stops, with HostPacksErrorMessage naming the supported ones
-    else
-        P->>P: creates each identity, and each pack it or PACKS names, once
-        P->>C: the identities and the packs
-        C->>C: refuses a name twice, a missing pack, a cycle, a shared path or tool name
-        C-->>H: the catalogue
-        H->>A: Build(catalogue)
-    end
-```
+![The types: the plugins parse two settings into enums and build the identities, the packs and the catalogue](diagrams/louis-agent.host-packs-interface.svg)
 
 ## Structure
 

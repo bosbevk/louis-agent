@@ -1,0 +1,111 @@
+{
+  "kind": "flow",
+  "title": "The general packs: from a catalogue to their tools and what they reach",
+  "caption": "A pack is only its tools: the engine stays in charge of what's dangerous. The web pack's calls go through the engine's guards, so a pack can't reach an internal address.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A demo\u0027s catalogue: names its\npacks"
+      },
+      {
+        "id": "catalog",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog"
+      },
+      {
+        "id": "general",
+        "icon": "box",
+        "tone": "green",
+        "label": "These packs:\nComesBeforeTheEngine"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The engine\u0027s own tools"
+      },
+      {
+        "id": "product",
+        "icon": "box",
+        "tone": "teal",
+        "label": "A product\u0027s packs"
+      },
+      {
+        "id": "toolset",
+        "icon": "code",
+        "tone": "teal",
+        "label": "PackToolset: its name, guide,\nwhat it needs and its tools"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Tool classes: files, git,\ndotnet, shell, web, paymo,\ndevops"
+      },
+      {
+        "id": "guards",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "The engine\u0027s browser, search\nand guards"
+      },
+      {
+        "id": "workspace",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "The workspace root"
+      },
+      {
+        "id": "outside",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Their own services, with their\nown settings"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "catalog"
+      },
+      {
+        "from": "catalog",
+        "to": "general"
+      },
+      {
+        "from": "catalog",
+        "to": "engine"
+      },
+      {
+        "from": "catalog",
+        "to": "product"
+      },
+      {
+        "from": "general",
+        "to": "toolset"
+      },
+      {
+        "from": "toolset",
+        "to": "tools"
+      },
+      {
+        "from": "tools",
+        "to": "guards",
+        "word": "the web pack"
+      },
+      {
+        "from": "tools",
+        "to": "workspace",
+        "word": "files, git, dotnet,\nshell"
+      },
+      {
+        "from": "tools",
+        "to": "outside",
+        "word": "paymo, devops"
+      }
+    ],
+    "direction": "down"
+  }
+}

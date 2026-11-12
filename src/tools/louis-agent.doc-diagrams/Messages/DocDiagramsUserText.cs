@@ -14,5 +14,11 @@ public enum DocDiagramsUserText
     Unreadable,
 
     [Description("{Written} written, {Unchanged} unchanged, {Stale} stale, {Failed} that can't be drawn.")]
-    Summary
+    Summary,
+
+    [Description("This Mermaid line can't be read: {Line}")]
+    UnreadMermaid,
+
+    [Description("{Path} written from lines {Start} to {End} of {Doc}. Put this in their place: {Link}")]
+    Imported
 }

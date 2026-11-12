@@ -1,0 +1,176 @@
+{
+  "kind": "flow",
+  "caption": "Code runs the fixed steps and saves after each: the manager decides and checks, the others work, and a branch is left, never a PR.",
+  "title": "F106: the framework\u0027s track: the triage workflow, drawn",
+  "flow": {
+    "nodes": [
+      {
+        "id": "poll",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "1 Poll the log",
+        "group": "code"
+      },
+      {
+        "id": "collect",
+        "icon": "file",
+        "tone": "amber",
+        "label": "2 Collect errors",
+        "group": "code"
+      },
+      {
+        "id": "save",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Saved after every step\nMongo, restart from here",
+        "group": "code"
+      },
+      {
+        "id": "branch",
+        "icon": "branch",
+        "tone": "green",
+        "label": "9 A branch, never a PR",
+        "group": "code"
+      },
+      {
+        "id": "sorter",
+        "icon": "search",
+        "tone": "teal",
+        "label": "2b Sorter\nwhich department?",
+        "group": "agents"
+      },
+      {
+        "id": "m1",
+        "icon": "user",
+        "tone": "violet",
+        "label": "3 Manager\nworth investigating?",
+        "group": "agents"
+      },
+      {
+        "id": "inv",
+        "icon": "search",
+        "tone": "green",
+        "label": "4 Investigator\ntyped result",
+        "group": "agents"
+      },
+      {
+        "id": "m2",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "5 Manager \u002B a rule in code\nhuman or auto?",
+        "group": "agents"
+      },
+      {
+        "id": "coder",
+        "icon": "code",
+        "tone": "green",
+        "label": "6 Coder\nfixes on a branch",
+        "group": "agents"
+      },
+      {
+        "id": "m3",
+        "icon": "checks",
+        "tone": "violet",
+        "label": "7 Manager validates\ntests, replay, git",
+        "group": "agents"
+      },
+      {
+        "id": "rev",
+        "icon": "checks",
+        "tone": "green",
+        "label": "8 Reviewer\nhappy?",
+        "group": "agents"
+      },
+      {
+        "id": "human",
+        "icon": "user",
+        "tone": "red",
+        "label": "Endpoint: needs a person"
+      },
+      {
+        "id": "ops",
+        "icon": "settings",
+        "tone": "red",
+        "label": "Another department\u0027s workflow\nits own manager and steps"
+      }
+    ],
+    "edges": [
+      {
+        "from": "poll",
+        "to": "collect"
+      },
+      {
+        "from": "collect",
+        "to": "sorter"
+      },
+      {
+        "from": "sorter",
+        "to": "m1",
+        "word": "this department"
+      },
+      {
+        "from": "sorter",
+        "to": "ops",
+        "word": "another department"
+      },
+      {
+        "from": "m1",
+        "to": "inv",
+        "word": "yes"
+      },
+      {
+        "from": "inv",
+        "to": "m2"
+      },
+      {
+        "from": "m1",
+        "to": "save",
+        "word": "no"
+      },
+      {
+        "from": "m2",
+        "to": "human",
+        "word": "human"
+      },
+      {
+        "from": "m2",
+        "to": "ops",
+        "word": "found to be theirs:\nhand-off, history\ntravels"
+      },
+      {
+        "from": "m2",
+        "to": "coder",
+        "word": "auto-fix"
+      },
+      {
+        "from": "coder",
+        "to": "m3"
+      },
+      {
+        "from": "m3",
+        "to": "rev"
+      },
+      {
+        "from": "rev",
+        "to": "branch",
+        "word": "happy"
+      },
+      {
+        "from": "m3",
+        "to": "coder",
+        "word": "not valid, or the\nreviewer not happy"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "code",
+        "label": "Code: fixed steps, a checkpoint after each"
+      },
+      {
+        "id": "agents",
+        "label": "Agents: the sorter dispatches, the manager decides, the others work"
+      }
+    ]
+  }
+}

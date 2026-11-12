@@ -1,0 +1,88 @@
+{
+  "kind": "flow",
+  "title": "F126 evals, redesigned: one run, in memory",
+  "caption": "One run, one tree: conversations hold turns, turns hold their facts and marks, and your flips sit beside them.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "r",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "RunResult"
+      },
+      {
+        "id": "c1",
+        "icon": "message",
+        "tone": "teal",
+        "label": "ConversationResult\ncook-follow-up"
+      },
+      {
+        "id": "t1",
+        "icon": "file",
+        "tone": "teal",
+        "label": "TurnResult 1: transcript,\nfacts, marks"
+      },
+      {
+        "id": "t2",
+        "icon": "file",
+        "tone": "teal",
+        "label": "TurnResult 2: transcript,\nfacts, marks"
+      },
+      {
+        "id": "m1",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Mark: Feeds four people, met,\nreason"
+      },
+      {
+        "id": "f2",
+        "icon": "checks",
+        "tone": "green",
+        "label": "FactResult: continued\npuls-cook, met"
+      },
+      {
+        "id": "cost",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Cost and seconds (from the\nledger)"
+      },
+      {
+        "id": "flips",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Flips: mark id, your answer"
+      }
+    ],
+    "edges": [
+      {
+        "from": "r",
+        "to": "c1"
+      },
+      {
+        "from": "c1",
+        "to": "t1"
+      },
+      {
+        "from": "c1",
+        "to": "t2"
+      },
+      {
+        "from": "t1",
+        "to": "m1"
+      },
+      {
+        "from": "t2",
+        "to": "f2"
+      },
+      {
+        "from": "r",
+        "to": "cost"
+      },
+      {
+        "from": "r",
+        "to": "flips"
+      }
+    ],
+    "direction": "down"
+  }
+}

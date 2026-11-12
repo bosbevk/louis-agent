@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Web.Components.Graphs;
 
 namespace LouisAgent.Web.Tests.Components.Graphs;

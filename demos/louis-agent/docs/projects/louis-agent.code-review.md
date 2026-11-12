@@ -17,20 +17,7 @@ admin, on this PC.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    Page["Pages/ChatPage: a thin page, at / and /chat"] --> Shell["ChatShell (framework)"]
-    Admin["Layout/AdminLayout"] --> AdminShell["AdminShell (framework)"]
-    Screen["Screen page (framework)"] --> Views["PackViews"]
-    Views --> Files["FilesView (packs/web)"]
-    Views --> Git["GitChangesView, GitBranchesView (packs/web)"]
-    Files -->|Review or Ask: a draft| Handoff["ChatHandoff"]
-    Git -->|Review: a draft| Handoff
-    Handoff --> Page
-    Shell --> Api["AgentApi"]
-    Files --> Api
-    Git --> Api
-```
+![The code-review app: its pages, the framework's shells and the API](diagrams/louis-agent.code-review-how-it-works.svg)
 
 - **The chat** is `ChatShell` with this site's name, its boot screen, its theme picker and links to the packs'
   screens, at the root and at `/chat`. A coding agent has no use for credits, a language menu, a place or projects, so
@@ -47,29 +34,11 @@ flowchart LR
 
 ## Diagrams
 
-**Flow:** the architecture is under *How it works*; this is reviewing a change, the job it's for. The button only fills
-the message box, and nothing goes to the model until the person sends it.
+The architecture is under *How it works*; this is reviewing a change, the job it's for.
 
-```mermaid
-sequenceDiagram
-    actor R as Reviewer
-    participant V as GitChangesView
-    participant A as ReviewActions
-    participant H as ChatHandoff
-    participant C as ChatPage and ChatShell
-    participant P as AgentApi
-    R->>V: opens /admin/screens/git-changes, presses Review
-    V->>A: Diff(path, staged, untracked)
-    A-->>V: the prompt and its title
-    V->>H: OpenChatWith(prompt)
-    H->>C: goes to the chat
-    C->>H: Take
-    H-->>C: the draft, once
-    C-->>R: the prompt in the message box
-    R->>C: reads it, changes it, sends it
-    C->>P: StreamMessageAsync
-    P-->>R: the review, as it comes
-```
+![Reviewing a change: the review button builds the prompt and hands it to the chat's message box, and the reviewer sends it](diagrams/louis-agent.code-review-diagrams.svg)
+
+![The types: the program names what the app uses from the framework's web, its own few components, and the packs' views](diagrams/louis-agent.code-review-interface.svg)
 
 ## Structure
 

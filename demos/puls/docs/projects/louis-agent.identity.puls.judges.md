@@ -25,34 +25,11 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 
 ## Diagrams
 
-**Architecture:** apart from the identity, because a judge is built on the harness and an identity must never reference it. Only the runner references this.
+![Puls's judges: from the runner's catalogue to a model's verdict](diagrams/louis-agent.identity.puls.judges-diagrams.svg)
 
-```mermaid
-flowchart TD
-    catalogs["PulsCatalogs, in the runner's program"] --> list["PulsJudges.All"]
-    list --> check["MealForPeopleCheck"]
-    check --> inner["EvaluatorCheck, in the harness"]
-    check --> ask["CookAsk: the people and the town"]
-    check --> verdict["MealVerdict"]
-    check --> rubric[("meal-for-people.md, in the cook's eval folder")]
-    inner --> model["JudgeClients: a model"]
-```
+![Judging one trial: the check asks the judge's model with the rubric and the answer, and turns its verdict into a grade](diagrams/louis-agent.identity.puls.judges-diagrams-2.svg)
 
-**Flow:** judging one trial. It's shown and counted, but not required until its calibration passes.
-
-```mermaid
-sequenceDiagram
-    participant R as The runner
-    participant C as MealForPeopleCheck
-    participant E as EvaluatorCheck
-    participant M as The judge's model
-    R->>C: the trial
-    C->>E: the last answer, and what the scenario expects
-    E->>M: the rubric, CookAsk's people and town, the answer
-    M-->>E: yes or no, with a reason
-    E-->>C: MealVerdict
-    C-->>R: a Grade, Unknown if there's no verdict
-```
+![The types: one model-graded check on the harness's contract, its entry, the evaluator and the judge's verdict](diagrams/louis-agent.identity.puls.judges-interface.svg)
 
 ## Extending it
 

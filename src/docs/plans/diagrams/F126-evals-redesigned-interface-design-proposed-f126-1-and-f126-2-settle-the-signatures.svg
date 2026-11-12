@@ -1,0 +1,199 @@
+<svg viewBox="-24 -24 1523 773" width="1523" height="773" role="img" aria-label="F126 evals, redesigned: the interface design, proposed" xmlns="http://www.w3.org/2000/svg">
+  <title>F126 evals, redesigned: the interface design, proposed</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1523" height="773" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1475" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F126 evals, redesigned:</tspan>
+    <tspan class="title-rest">the interface design, proposed</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-teal" d="M 322 69 L 536 69" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 900 69 L 932 69 Q 956 69 956 93 L 956 291 Q 956 303 968 303 L 980 303" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1225 303 L 1305 303" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 322 225 L 536 225" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 322 381 L 412 381 Q 436 381 436 357 L 436 249 Q 436 225 460 225 L 536 225" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 322 537 L 536 537" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 322 537 L 430 537 Q 454 537 454 513 L 454 249 Q 454 225 478 225 L 536 225" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 322 537 L 430 537 Q 454 537 454 513 L 454 405 Q 454 381 478 381 L 536 381" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-teal" x="375.5" y="47" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="397" y="59" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="906.5" y="47" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="928" y="59" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="1231.5" y="281" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1253" y="293" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="331" y="203" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="370" y="215" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="486" y="515" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="504" y="527" text-anchor="middle">kept</text>
+    <rect class="word-chip tone-green" x="482.5" y="203" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="504" y="215" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="479" y="359" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="504" y="371" text-anchor="middle">F126.2</text>
+    <rect class="box tone-teal" x="0" y="0" width="322" height="138" rx="10" />
+    <text class="label tone-teal" x="161" y="28" text-anchor="middle">EvalFile</text>
+    <text class="note" x="161" y="44" text-anchor="middle">record</text>
+    <path class="frame" d="M 0 64 L 322 64" />
+    <text class="word tone-teal" x="14" y="82" text-anchor="start">+Agent Agent</text>
+    <text class="word tone-teal" x="14" y="96" text-anchor="start">+IReadOnlyList&lt;Conversation&gt; Conversations</text>
+    <text class="word tone-teal" x="14" y="110" text-anchor="start">+JudgeMode Judge</text>
+    <text class="word tone-teal" x="14" y="124" text-anchor="start">+Read(path) EvalFile (static)</text>
+    <rect class="box tone-green" x="0" y="199" width="322" height="52" rx="10" />
+    <text class="label tone-green" x="161" y="230" text-anchor="middle">PerCriterionJudge</text>
+    <rect class="box tone-green" x="0" y="355" width="322" height="52" rx="10" />
+    <text class="label tone-green" x="161" y="386" text-anchor="middle">PerConversationJudge</text>
+    <rect class="box tone-green" x="0" y="495" width="322" height="84" rx="10" />
+    <text class="label tone-green" x="161" y="526" text-anchor="middle">EvalRun</text>
+    <path class="frame" d="M 0 547 L 322 547" />
+    <text class="word tone-green" x="14" y="565" text-anchor="start">+RunAsync(EvalFile, RunMode) RunResult</text>
+    <rect class="box tone-teal" x="536" y="0" width="364" height="138" rx="10" />
+    <text class="label tone-teal" x="718" y="28" text-anchor="middle">Conversation</text>
+    <text class="note" x="718" y="44" text-anchor="middle">record</text>
+    <path class="frame" d="M 536 64 L 900 64" />
+    <text class="word tone-teal" x="550" y="82" text-anchor="start">+string Id</text>
+    <text class="word tone-teal" x="550" y="96" text-anchor="start">+string? Place</text>
+    <text class="word tone-teal" x="550" y="110" text-anchor="start">+string? Page</text>
+    <text class="word tone-teal" x="550" y="124" text-anchor="start">+IReadOnlyList&lt;Turn&gt; Turns</text>
+    <rect class="box tone-teal" x="536" y="177" width="364" height="96" rx="10" />
+    <text class="label tone-teal" x="718" y="205" text-anchor="middle">IJudge</text>
+    <text class="note" x="718" y="221" text-anchor="middle">interface</text>
+    <path class="frame" d="M 536 241 L 900 241" />
+    <text class="word tone-teal" x="550" y="259" text-anchor="start">+MarkAsync(Transcript, Turn) IReadOnlyList&lt;Mark&gt;</text>
+    <rect class="box tone-green" x="536" y="325" width="364" height="112" rx="10" />
+    <text class="label tone-green" x="718" y="356" text-anchor="middle">RunStore</text>
+    <path class="frame" d="M 536 377 L 900 377" />
+    <text class="word tone-green" x="550" y="395" text-anchor="start">+SaveAsync(RunResult)</text>
+    <text class="word tone-green" x="550" y="409" text-anchor="start">+FlipAsync(runId, mark)</text>
+    <text class="word tone-green" x="550" y="423" text-anchor="start">+ListAsync(eval)</text>
+    <rect class="box tone-green" x="536" y="511" width="364" height="52" rx="10" />
+    <text class="label tone-green" x="718" y="542" text-anchor="middle">ISessionClient</text>
+    <rect class="box tone-teal" x="980" y="241" width="245" height="124" rx="10" />
+    <text class="label tone-teal" x="1102.5" y="269" text-anchor="middle">Turn</text>
+    <text class="note" x="1102.5" y="285" text-anchor="middle">record</text>
+    <path class="frame" d="M 980 305 L 1225 305" />
+    <text class="word tone-teal" x="994" y="323" text-anchor="start">+string Ask</text>
+    <text class="word tone-teal" x="994" y="337" text-anchor="start">+IReadOnlyList&lt;Fact&gt; Facts</text>
+    <text class="word tone-teal" x="994" y="351" text-anchor="start">+IReadOnlyList&lt;string&gt; Criteria</text>
+    <rect class="box tone-teal" x="1305" y="248" width="170" height="110" rx="10" />
+    <text class="label tone-teal" x="1390" y="276" text-anchor="middle">Fact</text>
+    <text class="note" x="1390" y="292" text-anchor="middle">record</text>
+    <path class="frame" d="M 1305 312 L 1475 312" />
+    <text class="word tone-teal" x="1319" y="330" text-anchor="start">+FactKind Kind</text>
+    <text class="word tone-teal" x="1319" y="344" text-anchor="start">+string? Argument</text>
+  </g>
+  <rect class="notebar" x="0" y="688" width="1475" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 698) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="710">
+    <tspan class="note-head">Proposed:</tspan>
+    <tspan class="note-rest">a run reads its file, asks, gets facts for free and a judge's marks, and is kept; F126.1 and F126.2 settle the signatures.</tspan>
+  </text>
+</svg>

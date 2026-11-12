@@ -1,0 +1,62 @@
+{
+  "kind": "flow",
+  "caption": "One set of records, used by both sides: a field one side renames doesn't compile on the other.",
+  "title": "The eval protocol: written as JSON lines, read by the API and the web",
+  "flow": {
+    "nodes": [
+      {
+        "id": "writer",
+        "icon": "file",
+        "tone": "green",
+        "label": "ProtocolWriter, in\nlouis-agent.evals"
+      },
+      {
+        "id": "out",
+        "icon": "terminal",
+        "tone": "amber",
+        "label": "stdout: JSON Lines"
+      },
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api: the store and\nthe export"
+      },
+      {
+        "id": "web",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "louis-agent.web: the live view"
+      },
+      {
+        "id": "contract",
+        "icon": "code",
+        "tone": "teal",
+        "label": "This project: EvalEvent, its\nparts and kinds, used by the\nwriter, the API and the web"
+      }
+    ],
+    "edges": [
+      {
+        "from": "writer",
+        "to": "out",
+        "word": "EvalProtocolJson.Line"
+      },
+      {
+        "from": "out",
+        "to": "api",
+        "word": "EvalProtocolJson.Read"
+      },
+      {
+        "from": "out",
+        "to": "web",
+        "word": "EvalProtocolJson.Read"
+      },
+      {
+        "from": "contract",
+        "to": "writer",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

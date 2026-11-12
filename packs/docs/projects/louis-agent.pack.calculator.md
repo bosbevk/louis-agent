@@ -37,29 +37,11 @@ own ([ADR 0030](../../../src/docs/adr/0030-build-or-adopt.md)). Two things keep 
 
 ## Diagrams
 
-**Architecture:** one tool on .NET's own evaluator, with a check in front so only arithmetic reaches it.
+![The calculator pack: one tool over plain arithmetic](diagrams/louis-agent.pack.calculator-diagrams.svg)
 
-```mermaid
-flowchart LR
-    pack["CalculatorPack: the calculator toolset"] --> tools["CalculatorTools.Calculate"]
-    tools --> arithmetic["Arithmetic"]
-    arithmetic -->|"digits, a point, + - * / ( ) only"| table["DataTable.Compute"]
-```
+![Two sums, one bad: the good one is worked out, the bad one is refused with its reason, and both come back on their own lines](diagrams/louis-agent.pack.calculator-diagrams-2.svg)
 
-**Flow:** a call with two sums, one of them bad. A bad sum says why, and the others still answer.
-
-```mermaid
-sequenceDiagram
-    participant M as The model
-    participant T as CalculatorTools
-    participant A as Arithmetic
-    M->>T: Calculate(["500*3/2", "2+x"])
-    T->>A: 500*3/2
-    A-->>T: 750
-    T->>A: 2+x
-    A-->>T: refused before the evaluator sees it
-    T-->>M: one line per sum, each result beside its sum
-```
+![The types: one toolset, one tool, and the sums worked out in plain C#](diagrams/louis-agent.pack.calculator-interface.svg)
 
 ## Who uses it
 

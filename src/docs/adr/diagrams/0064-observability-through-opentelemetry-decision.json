@@ -1,0 +1,94 @@
+{
+  "kind": "flow",
+  "title": "ADR 0064: where the telemetry goes, on the PC and in Azure",
+  "caption": "One pipe: every process sends OTLP, to the Aspire dashboard on the PC and to Application Insights in Azure.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "code",
+        "icon": "server",
+        "tone": "green",
+        "label": "code-review stack\napi, acp-server, mcp-server,\nlocal-agent",
+        "group": "PC"
+      },
+      {
+        "id": "puls",
+        "icon": "server",
+        "tone": "green",
+        "label": "Puls stack\npuls, OTEL_SERVICE_NAME=puls",
+        "group": "PC"
+      },
+      {
+        "id": "rider",
+        "icon": "code",
+        "tone": "blue",
+        "label": "Rider: cli, orchestrator, eval\nrunner",
+        "group": "PC"
+      },
+      {
+        "id": "dash",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "observability stack\nAspire dashboard, UI 18888,\nOTLP 4317",
+        "group": "PC"
+      },
+      {
+        "id": "app",
+        "icon": "box",
+        "tone": "green",
+        "label": "puls-app,\nOTEL_SERVICE_NAME=puls",
+        "group": "Azure"
+      },
+      {
+        "id": "agent",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "managed OpenTelemetry agent\ngRPC, the environment\u0027s",
+        "group": "Azure"
+      },
+      {
+        "id": "ai",
+        "icon": "chart",
+        "tone": "red",
+        "label": "Application Insights\npuls-insights\nlogs and traces",
+        "group": "Azure"
+      }
+    ],
+    "edges": [
+      {
+        "from": "code",
+        "to": "dash",
+        "word": "logs: Serilog sink \u00B7 traces: SDK"
+      },
+      {
+        "from": "puls",
+        "to": "dash",
+        "word": "logs: Serilog sink \u00B7 traces: SDK"
+      },
+      {
+        "from": "rider",
+        "to": "dash",
+        "word": "localhost:4317"
+      },
+      {
+        "from": "app",
+        "to": "agent",
+        "word": "endpoint injected"
+      },
+      {
+        "from": "agent",
+        "to": "ai"
+      }
+    ],
+    "groups": [
+      {
+        "id": "PC",
+        "label": "Louis\u0027s PC"
+      },
+      {
+        "id": "Azure",
+        "label": "Azure Container Apps"
+      }
+    ]
+  }
+}

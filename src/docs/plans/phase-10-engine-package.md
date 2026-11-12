@@ -63,29 +63,4 @@ can use, not business." The details, diagrams and ADR 0035/0036 drafts are in `p
   contracts in core (`IBudgetPolicy`, `IRequestEstimator`, `IBudgetApproval`, `ITenantContext`,
   `IComplianceRecorder`), so decide before F7's plan.
 
-```mermaid
-flowchart LR
-    subgraph eng["louis-agent-engine repo (after Stage B)"]
-        core["LouisAgent.Core<br/>loop, guards, ledger, contracts<br/>no tools, no facts"]
-        gp["LouisAgent.Packs.Files / Web / Shell / Git / DotNet / Delegation / Skills / EngineGuide"]
-        shared["LouisAgent.Packs.Shared.Browser"]
-        coding["LouisAgent.Identities.Coding + LouisAgent.Hosts.Acp (Rider)"]
-        simt["LouisAgent.Simulation, LouisAgent.Testing, providers"]
-    end
-    subgraph app["louis-agent repo"]
-        ids["identities: puls, demo, voorman"]
-        pp["product packs: shops, recipes, places, customers, triage, fixing, paymo, devops"]
-        hosts["hosts: api, puls, web, cli, mcp-server, orchestrator"]
-    end
-    data[("prices.json / models.json<br/>file or URL, our JSON layout")]
-    gp --> core
-    shared --> core
-    gp --> shared
-    coding --> gp
-    pp --> core
-    pp --> shared
-    ids --> pp
-    ids --> gp
-    hosts --> ids
-    data -. the host names the source .-> core
-```
+![The engine and its general packs in their own repo as packages, and the products in this one building on them](diagrams/phase-10-engine-package-phase-10-the-engine-as-a-developer-package-after-every-engine-feature-louis-2026-10-20.svg)

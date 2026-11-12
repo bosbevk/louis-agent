@@ -1,0 +1,198 @@
+{
+  "kind": "classes",
+  "title": "F40 the sales playground: the agent's interfaces",
+  "caption": "Identities and packs plug in by interface: the demo is one more identity, and its customers one more pack.",
+  "classes": {
+    "types": [
+      {
+        "id": "IAgentIdentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, Phase 2",
+        "members": [
+          "+Name",
+          "+Prompts",
+          "+Packs"
+        ]
+      },
+      {
+        "id": "IAgentPack",
+        "name": "IAgentPack",
+        "kind": "interface, Phase 2",
+        "members": [
+          "+Name",
+          "+Toolsets",
+          "+Prompts",
+          "+Requires"
+        ]
+      },
+      {
+        "id": "DemoIdentity",
+        "name": "DemoIdentity",
+        "kind": "identity, step 1",
+        "members": [
+          "Packs: shops, customers"
+        ]
+      },
+      {
+        "id": "PulsIdentity",
+        "name": "PulsIdentity",
+        "kind": "identity, Phase 2",
+        "members": [
+          "Packs: shops"
+        ]
+      },
+      {
+        "id": "ShopsPack",
+        "name": "ShopsPack",
+        "kind": "pack, Phase 2",
+        "members": [
+          "one instance for both"
+        ]
+      },
+      {
+        "id": "CustomersPack",
+        "name": "CustomersPack",
+        "kind": "pack, step 2",
+        "members": [
+          "in the demo project"
+        ]
+      },
+      {
+        "id": "CustomerTools",
+        "name": "CustomerTools",
+        "kind": "step 2",
+        "members": [
+          "+FindCustomer(query, maxResults)"
+        ]
+      },
+      {
+        "id": "ICustomerDirectory",
+        "name": "ICustomerDirectory",
+        "kind": "interface, step 2",
+        "members": [
+          "+FindAsync(query, maxResults)"
+        ]
+      },
+      {
+        "id": "SampleCustomerDirectory",
+        "name": "SampleCustomerDirectory",
+        "kind": "provider, step 2",
+        "members": [
+          "embedded customers.json"
+        ]
+      },
+      {
+        "id": "ClientDirectory",
+        "name": "ClientDirectory",
+        "kind": "a client system, its own feature",
+        "members": [
+          "their API or MCP server"
+        ]
+      },
+      {
+        "id": "Customer",
+        "name": "Customer",
+        "kind": "record, step 2",
+        "members": [
+          "Id Name VatNumber Email Address"
+        ]
+      },
+      {
+        "id": "CustomerToolMessage",
+        "name": "CustomerToolMessage",
+        "kind": "enum, step 2"
+      },
+      {
+        "id": "Plugins",
+        "name": "Plugins",
+        "kind": "composition",
+        "members": [
+          "IdentityKind Demo, PackKind Customers"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "DemoIdentity",
+        "to": "IAgentIdentity",
+        "kind": "implements"
+      },
+      {
+        "from": "PulsIdentity",
+        "to": "IAgentIdentity",
+        "kind": "implements"
+      },
+      {
+        "from": "ShopsPack",
+        "to": "IAgentPack",
+        "kind": "implements"
+      },
+      {
+        "from": "CustomersPack",
+        "to": "IAgentPack",
+        "kind": "implements"
+      },
+      {
+        "from": "DemoIdentity",
+        "to": "ShopsPack",
+        "kind": "uses",
+        "word": "names shops"
+      },
+      {
+        "from": "PulsIdentity",
+        "to": "ShopsPack",
+        "kind": "uses",
+        "word": "names shops"
+      },
+      {
+        "from": "DemoIdentity",
+        "to": "CustomersPack",
+        "kind": "uses",
+        "word": "names customers"
+      },
+      {
+        "from": "CustomersPack",
+        "to": "CustomerTools",
+        "kind": "uses",
+        "word": "customers toolset"
+      },
+      {
+        "from": "CustomerTools",
+        "to": "ICustomerDirectory",
+        "kind": "holds"
+      },
+      {
+        "from": "CustomerTools",
+        "to": "CustomerToolMessage",
+        "kind": "uses"
+      },
+      {
+        "from": "SampleCustomerDirectory",
+        "to": "ICustomerDirectory",
+        "kind": "implements"
+      },
+      {
+        "from": "ClientDirectory",
+        "to": "ICustomerDirectory",
+        "kind": "implements"
+      },
+      {
+        "from": "ICustomerDirectory",
+        "to": "Customer",
+        "kind": "uses"
+      },
+      {
+        "from": "Plugins",
+        "to": "DemoIdentity",
+        "kind": "uses",
+        "word": "creates"
+      },
+      {
+        "from": "Plugins",
+        "to": "CustomersPack",
+        "kind": "uses",
+        "word": "creates"
+      }
+    ]
+  }
+}

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LouisAgent.Diagrams.Icons;
 
 namespace LouisAgent.Diagrams.Cards;
@@ -8,6 +9,8 @@ namespace LouisAgent.Diagrams.Cards;
 /// </summary>
 public sealed record Card(
     string Id,
+    // Written always, though chip is the first icon: a card's file names its icon.
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     DiagramIcon Icon,
     string Title,
     string? Code,

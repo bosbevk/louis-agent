@@ -1,0 +1,159 @@
+{
+  "kind": "flow",
+  "title": "How the agents talk: the clients, the hosts, the engine and the model",
+  "caption": "One engine, many doors: each client reaches the same AgentEngine through the host that speaks its protocol. The orchestrator opens one session per fix and reads /v1/prices and /v1/rates, and AskAgent (F5, F127.3.1) reaches another agent the same way.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Rider",
+        "icon": "code",
+        "tone": "blue",
+        "label": "JetBrains Rider\nAI chat"
+      },
+      {
+        "id": "Browser",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Web app\n(browser)"
+      },
+      {
+        "id": "Script",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "curl / your program"
+      },
+      {
+        "id": "Orch",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "Orchestrator agent\n(louis-agent.orchestrator)"
+      },
+      {
+        "id": "McpClient",
+        "icon": "cloud",
+        "tone": "blue",
+        "label": "MCP client\n(another agent, Claude\nDesktop)"
+      },
+      {
+        "id": "Acp",
+        "icon": "code",
+        "tone": "green",
+        "label": "louis-agent.acp\nJSON-RPC over stdio"
+      },
+      {
+        "id": "Api",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.api\nHTTP + SSE, serves the web app"
+      },
+      {
+        "id": "Mcp",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "louis-agent.mcp\nMCP over stdio or HTTP"
+      },
+      {
+        "id": "Cli",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "louis-agent.cli\nterminal",
+        "column": 1
+      },
+      {
+        "id": "Engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine\n(louis-agent.core)\ntools + skills + tool loop"
+      },
+      {
+        "id": "Peer",
+        "icon": "server",
+        "tone": "red",
+        "label": "another agent's address\n(this API or a peer)"
+      },
+      {
+        "id": "Model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Model\n(Claude / Ollama /\nOpenAI-compatible)"
+      },
+      {
+        "id": "Repo",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "Workspace\ngit repository"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Rider",
+        "to": "Acp",
+        "word": "ACP (stdio)"
+      },
+      {
+        "from": "Browser",
+        "to": "Api",
+        "word": "REST + SSE"
+      },
+      {
+        "from": "Script",
+        "to": "Api",
+        "word": "REST + SSE"
+      },
+      {
+        "from": "Orch",
+        "to": "Api",
+        "word": "sessions + SSE"
+      },
+      {
+        "from": "McpClient",
+        "to": "Mcp",
+        "word": "tools/list, tools/call"
+      },
+      {
+        "from": "Acp",
+        "to": "Engine"
+      },
+      {
+        "from": "Api",
+        "to": "Engine"
+      },
+      {
+        "from": "Cli",
+        "to": "Engine"
+      },
+      {
+        "from": "Mcp",
+        "to": "Engine",
+        "word": "tools only, no model"
+      },
+      {
+        "from": "Api",
+        "to": "Peer",
+        "word": "AskAgent"
+      },
+      {
+        "from": "Engine",
+        "to": "Model",
+        "word": "IChatClient"
+      },
+      {
+        "from": "Engine",
+        "to": "Repo",
+        "word": "tool calls"
+      },
+      {
+        "from": "Api",
+        "to": "Repo",
+        "word": "/v1/workspace, /v1/git"
+      },
+      {
+        "from": "Orch",
+        "to": "Repo",
+        "word": "verifies: git, replay, tests",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

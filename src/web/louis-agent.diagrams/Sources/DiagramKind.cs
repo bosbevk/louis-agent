@@ -10,5 +10,7 @@ namespace LouisAgent.Diagrams.Sources;
 public enum DiagramKind
 {
     [WireName("flow")] Flow,
-    [WireName("cards")] Cards
+    [WireName("cards")] Cards,
+    [WireName("sequence")] Sequence,
+    [WireName("classes")] Classes
 }

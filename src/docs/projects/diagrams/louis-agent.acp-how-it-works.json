@@ -1,0 +1,90 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.acp: one prompt from Rider",
+  "caption": "Rider asks, the server streams: one JSON-RPC message a line, and the thinking, text and tool cards as they come.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "R",
+        "icon": "code",
+        "tone": "red",
+        "label": "Rider"
+      },
+      {
+        "id": "S",
+        "icon": "server",
+        "tone": "green",
+        "label": "AcpServer"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "initialize"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "R",
+        "text": "capabilities"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "session/new (cwd)"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "R",
+        "text": "sessionId"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "session/prompt (text \u002B resource / resource_link blocks)"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "E",
+        "text": "StreamPromptAsync(history, prompt)"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "as the reply streams",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "S",
+            "to": "R",
+            "text": "session/update: agent_thought_chunk \u00B7 agent_message_chunk \u00B7 tool_call \u00B7 tool_call_update"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "R",
+        "text": "prompt result (stopReason)"
+      },
+      {
+        "step": "message",
+        "from": "R",
+        "to": "S",
+        "text": "session/cancel (optional)"
+      }
+    ]
+  }
+}

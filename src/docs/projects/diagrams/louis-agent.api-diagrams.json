@@ -1,0 +1,150 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.api: a session, and a message to it",
+  "caption": "One turn at a time: a second message while a turn runs gets 409, and a client that disconnects cancels the turn.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "C",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Client"
+      },
+      {
+        "id": "K",
+        "icon": "shield",
+        "tone": "green",
+        "label": "AgentKeyGate"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "green",
+        "label": "SessionHandlers"
+      },
+      {
+        "id": "S",
+        "icon": "users",
+        "tone": "green",
+        "label": "AgentSessions"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "AgentEngineFactory"
+      },
+      {
+        "id": "T",
+        "icon": "message",
+        "tone": "green",
+        "label": "TurnStream"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine"
+      },
+      {
+        "id": "W",
+        "icon": "code",
+        "tone": "teal",
+        "label": "ITurnStreamFormat"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "C",
+        "to": "K",
+        "text": "POST /v1/sessions (toolsets, role, place)"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "H",
+        "text": "the key is right"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "S",
+        "text": "Create"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "F",
+        "text": "the engine for these toolsets, role and level"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "S",
+        "text": "a shared engine, kept for the session\u0027s life"
+      },
+      {
+        "step": "reply",
+        "from": "H",
+        "to": "C",
+        "text": "201 and the session\u0027s id"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "K",
+        "text": "POST /v1/sessions/{id}/messages"
+      },
+      {
+        "step": "message",
+        "from": "K",
+        "to": "H",
+        "text": "the key is right"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "T",
+        "text": "StreamTurnAsync"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "E",
+        "text": "StreamPromptAsync(history, prompt)"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "as the reply comes",
+        "steps": [
+          {
+            "step": "reply",
+            "from": "E",
+            "to": "T",
+            "text": "an update"
+          },
+          {
+            "step": "message",
+            "from": "T",
+            "to": "W",
+            "text": "shape it like Claude\u0027s events"
+          },
+          {
+            "step": "reply",
+            "from": "W",
+            "to": "C",
+            "text": "a Server-Sent Event"
+          }
+        ]
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "C",
+        "text": "the turn\u0027s usage, then the end of the message"
+      }
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "kind": "flow",
+  "title": "Puls's track: between the phases",
+  "caption": "Each step waits for what it needs: an arrow points from what comes first, and a local lookup becomes a pack only when a simulation shows demand.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "spec",
+        "icon": "book",
+        "tone": "blue",
+        "label": "Puls local spec"
+      },
+      {
+        "id": "f35",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F35 Recipe sources"
+      },
+      {
+        "id": "p3",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Phase 3: record and replay"
+      },
+      {
+        "id": "cl16",
+        "icon": "checks",
+        "tone": "green",
+        "label": "CL16 Reusable roles"
+      },
+      {
+        "id": "sources",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Sources as data, ADR 0032"
+      },
+      {
+        "id": "vision",
+        "icon": "book",
+        "tone": "blue",
+        "label": "Vision, question 15"
+      },
+      {
+        "id": "places",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Places"
+      },
+      {
+        "id": "p4",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Phase 4: the area-guide\nsimulation proves it"
+      },
+      {
+        "id": "business",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Local businesses"
+      },
+      {
+        "id": "p9",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Phase 9: accounts"
+      },
+      {
+        "id": "f23",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F23 Credits"
+      },
+      {
+        "id": "lookups",
+        "icon": "search",
+        "label": "Local lookups, each a pack\nwhen a simulation shows demand"
+      }
+    ],
+    "edges": [
+      {
+        "from": "spec",
+        "to": "f35"
+      },
+      {
+        "from": "p3",
+        "to": "f35"
+      },
+      {
+        "from": "f35",
+        "to": "cl16"
+      },
+      {
+        "from": "f35",
+        "to": "sources"
+      },
+      {
+        "from": "f35",
+        "to": "vision"
+      },
+      {
+        "from": "sources",
+        "to": "places"
+      },
+      {
+        "from": "p4",
+        "to": "places"
+      },
+      {
+        "from": "places",
+        "to": "business"
+      },
+      {
+        "from": "p9",
+        "to": "business"
+      },
+      {
+        "from": "p9",
+        "to": "f23"
+      },
+      {
+        "from": "places",
+        "to": "lookups",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

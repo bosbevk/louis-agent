@@ -32,33 +32,11 @@ provider for its mapper and its markers; with no providers it says every name is
 
 ## Diagrams
 
-```mermaid
-flowchart LR
-    program["A program: HostServices(…, Providers: [AnthropicProvider.Instance, …])"] --> host["AgentHost.Build (core)"]
-    host --> factory["LlmClientFactory (core): by LLM_PROVIDER's name"]
-    factory --> provider["AnthropicProvider (this library)"]
-    provider --> sdk["Anthropic SDK: AnthropicClient.AsIChatClient"]
-    provider --> budget["ThinkingBudget (older models)"]
-    provider --> mapper["AnthropicUsageMapper"]
-    provider --> caching["AnthropicPromptCaching"]
-    factory --> wrap["PromptCachingChatClient (core)"]
-```
+![Claude's provider: from a program through the client factory to the SDK and its parts](diagrams/louis-agent.core.anthropic-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant P as Program
-    participant H as AgentHost
-    participant F as LlmClientFactory
-    participant A as AnthropicProvider
-    P->>H: Build(catalog, HostServices(Providers: [AnthropicProvider.Instance]))
-    H->>F: services.ClientFactory()
-    H->>F: Create(llm)
-    F->>A: Create(llm)
-    A-->>F: the SDK's client, with the thinking budget where the model needs it
-    F->>A: CreatePromptCaching(llm)
-    A-->>F: the two markers, the prefix's lifetime from LLM_CACHE_TTL
-    F-->>H: PromptCachingChatClient over the client
-```
+![Making Claude's client: the factory asks the provider for the SDK's client, then wraps the cache markers round it](diagrams/louis-agent.core.anthropic-diagrams-2.svg)
+
+![The types: AnthropicProvider makes core's three seams real, the client, the usage mapper and the cache marks](diagrams/louis-agent.core.anthropic-interface.svg)
 
 ## Structure
 

@@ -1,0 +1,128 @@
+{
+  "kind": "classes",
+  "title": "F106.1 a builder for the common path: the interface design",
+  "caption": "One builder, extended from outside: each dotted project adds its own method, and the builder hands the host what it collected.",
+  "classes": {
+    "types": [
+      {
+        "id": "IServiceCollection",
+        "name": "IServiceCollection"
+      },
+      {
+        "id": "LouisAgentServiceCollectionExtensions",
+        "name": "LouisAgentServiceCollectionExtensions",
+        "members": [
+          "\u002BAddLouisAgent(IServiceCollection, Action\u003CLouisAgentBuilder\u003E) IServiceCollection"
+        ]
+      },
+      {
+        "id": "LouisAgentBuilder",
+        "name": "LouisAgentBuilder",
+        "members": [
+          "\u002BAddProvider(ILlmProvider) LouisAgentBuilder",
+          "\u002BAddPack(IAgentPack) LouisAgentBuilder",
+          "\u002BAddPack\u003CT\u003E() LouisAgentBuilder",
+          "\u002BAddIdentity(IAgentIdentity) LouisAgentBuilder",
+          "\u002BAddIdentity\u003CT\u003E() LouisAgentBuilder",
+          "\u002BAddCatalog(AgentCatalog) LouisAgentBuilder",
+          "\u002BUseWeb(Func) LouisAgentBuilder",
+          "\u002BUseTelemetry(IHostTelemetry) LouisAgentBuilder",
+          "\u002BUseDiscovery(IToolDiscovery) LouisAgentBuilder",
+          "\u002BUseOptions(LlmOptions, AgentOptions) LouisAgentBuilder",
+          "\u002BBuildCatalog() AgentCatalog",
+          "\u002BBuildServices() HostServices",
+          "\u002BBuild() AgentHostContext"
+        ]
+      },
+      {
+        "id": "AnthropicBuilderExtensions",
+        "name": "AnthropicBuilderExtensions",
+        "members": [
+          "\u002BAddAnthropic(LouisAgentBuilder) LouisAgentBuilder"
+        ]
+      },
+      {
+        "id": "WebBuilderExtensions",
+        "name": "WebBuilderExtensions",
+        "members": [
+          "\u002BAddWeb(LouisAgentBuilder) LouisAgentBuilder"
+        ]
+      },
+      {
+        "id": "TelemetryBuilderExtensions",
+        "name": "TelemetryBuilderExtensions",
+        "members": [
+          "\u002BAddTelemetry(LouisAgentBuilder) LouisAgentBuilder"
+        ]
+      },
+      {
+        "id": "AgentHost",
+        "name": "AgentHost",
+        "members": [
+          "\u002BBuild(AgentCatalog, HostServices, ILlmClientFactory?) AgentHostContext"
+        ]
+      },
+      {
+        "id": "AgentCatalog",
+        "name": "AgentCatalog"
+      },
+      {
+        "id": "HostServices",
+        "name": "HostServices"
+      },
+      {
+        "id": "AgentHostContext",
+        "name": "AgentHostContext"
+      }
+    ],
+    "relations": [
+      {
+        "from": "LouisAgentServiceCollectionExtensions",
+        "to": "LouisAgentBuilder",
+        "kind": "uses",
+        "word": "step 3 creates, runs the lambda"
+      },
+      {
+        "from": "LouisAgentBuilder",
+        "to": "AgentCatalog",
+        "kind": "uses",
+        "word": "step 1 BuildCatalog"
+      },
+      {
+        "from": "LouisAgentBuilder",
+        "to": "HostServices",
+        "kind": "uses",
+        "word": "step 2 BuildServices"
+      },
+      {
+        "from": "LouisAgentBuilder",
+        "to": "AgentHost",
+        "kind": "uses",
+        "word": "step 3 Build calls"
+      },
+      {
+        "from": "AgentHost",
+        "to": "AgentHostContext",
+        "kind": "uses"
+      },
+      {
+        "from": "AnthropicBuilderExtensions",
+        "to": "LouisAgentBuilder",
+        "kind": "uses",
+        "word": "step 4, in louis-agent.core.anthropic"
+      },
+      {
+        "from": "WebBuilderExtensions",
+        "to": "LouisAgentBuilder",
+        "kind": "uses",
+        "word": "step 4, in louis-agent.core.web"
+      },
+      {
+        "from": "TelemetryBuilderExtensions",
+        "to": "LouisAgentBuilder",
+        "kind": "uses",
+        "word": "step 4, in louis-agent.core.telemetry"
+      }
+    ]
+  }
+}

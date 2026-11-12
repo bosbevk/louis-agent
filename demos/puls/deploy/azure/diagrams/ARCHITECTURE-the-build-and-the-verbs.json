@@ -1,0 +1,100 @@
+{
+  "kind": "flow",
+  "title": "Puls in Azure: the build and the verbs",
+  "caption": "The template is the record: one deployment, puls-build, creates what is missing and updates what exists, and the verbs do what a template can't. They read its outputs back: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, codingAppIdentityId and vaultUri.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "bicep",
+        "icon": "file",
+        "tone": "amber",
+        "label": "config/azure/main.bicep +\nmain.bicepparam"
+      },
+      {
+        "id": "deployment",
+        "icon": "cloud",
+        "tone": "blue",
+        "label": "deployment puls-build: the\nnetwork, the VM, the\nenvironment, insights, SQL,\nthe two identities, the second\nshare"
+      },
+      {
+        "id": "vm",
+        "icon": "server",
+        "tone": "green",
+        "label": "vm: the compose, SearXNG's\nsettings and the env files to\nthe VM through run-command",
+        "group": "verbs"
+      },
+      {
+        "id": "workspace",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "workspace: the price tables\ninto the app's share",
+        "group": "verbs"
+      },
+      {
+        "id": "secrets",
+        "icon": "shield",
+        "tone": "amber",
+        "label": "secrets: the values into the\nvault (the shared ones with\nPuls's config, an app's own\nwith its, suffixed)",
+        "group": "verbs"
+      },
+      {
+        "id": "release",
+        "icon": "box",
+        "tone": "green",
+        "label": "release: build the image in\nthe registry, then update",
+        "group": "verbs"
+      },
+      {
+        "id": "update",
+        "icon": "settings",
+        "tone": "green",
+        "label": "update: the app's yaml (-App)\nfilled (tag, revision, the\nVM's IP, the environment, the\napp's identity, the vault's\nsecrets, the providers),\ncreate or update",
+        "group": "verbs"
+      },
+      {
+        "id": "domain",
+        "icon": "world",
+        "tone": "green",
+        "label": "domain: the DNS records\nprinted, the hostname added,\nthe certificate asked for",
+        "group": "verbs"
+      }
+    ],
+    "edges": [
+      {
+        "from": "bicep",
+        "to": "deployment",
+        "word": "deploy.ps1 infra\n(what-if first)"
+      },
+      {
+        "from": "deployment",
+        "to": "vm"
+      },
+      {
+        "from": "deployment",
+        "to": "workspace"
+      },
+      {
+        "from": "deployment",
+        "to": "secrets"
+      },
+      {
+        "from": "deployment",
+        "to": "release"
+      },
+      {
+        "from": "deployment",
+        "to": "update"
+      },
+      {
+        "from": "deployment",
+        "to": "domain"
+      }
+    ],
+    "groups": [
+      {
+        "id": "verbs",
+        "label": "the verbs read the outputs back"
+      }
+    ]
+  }
+}

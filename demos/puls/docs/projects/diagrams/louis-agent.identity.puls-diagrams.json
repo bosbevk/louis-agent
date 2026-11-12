@@ -1,0 +1,103 @@
+{
+  "kind": "flow",
+  "title": "The Puls identity: its prompts and packs, its evals and judges",
+  "caption": "One class, and the rest is content: Puls holds no tools. What it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "plugins",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "Plugins, in\nlouis-agent.host-packs"
+      },
+      {
+        "id": "identity",
+        "icon": "user",
+        "tone": "green",
+        "label": "PulsIdentity"
+      },
+      {
+        "id": "prompts",
+        "icon": "file",
+        "tone": "amber",
+        "label": "Prompts: voice, specialists,\nminions"
+      },
+      {
+        "id": "packs",
+        "icon": "box",
+        "tone": "teal",
+        "label": "where-to-buy, shop-prices,\nrecipes, web, calculator"
+      },
+      {
+        "id": "catalog",
+        "icon": "book",
+        "tone": "violet",
+        "label": "AgentCatalog: checks them,\nthen SkillFileSource reads\nthem"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine, per session"
+      },
+      {
+        "id": "evals",
+        "icon": "checks",
+        "tone": "green",
+        "label": "louis-agent.identity.puls.evals:\nits evals and PulsReaders"
+      },
+      {
+        "id": "runner",
+        "icon": "terminal",
+        "tone": "red",
+        "label": "The eval runner only"
+      },
+      {
+        "id": "judges",
+        "icon": "users",
+        "tone": "green",
+        "label": "louis-agent.identity.puls.judges"
+      }
+    ],
+    "edges": [
+      {
+        "from": "plugins",
+        "to": "identity",
+        "word": "IDENTITIES=puls"
+      },
+      {
+        "from": "identity",
+        "to": "prompts",
+        "word": "its prompts"
+      },
+      {
+        "from": "identity",
+        "to": "packs",
+        "word": "the packs it names"
+      },
+      {
+        "from": "prompts",
+        "to": "catalog"
+      },
+      {
+        "from": "packs",
+        "to": "catalog"
+      },
+      {
+        "from": "catalog",
+        "to": "engine"
+      },
+      {
+        "from": "evals",
+        "to": "runner",
+        "style": "dashed"
+      },
+      {
+        "from": "judges",
+        "to": "runner",
+        "style": "dashed"
+      }
+    ],
+    "direction": "down"
+  }
+}

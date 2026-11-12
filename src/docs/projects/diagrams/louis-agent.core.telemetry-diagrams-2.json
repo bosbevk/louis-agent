@@ -1,0 +1,91 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core.telemetry: switching it on",
+  "caption": "Telemetry is opt-in: the host adds the sinks and starts the tracer, and a turn's spans go to the collector.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost"
+      },
+      {
+        "id": "L",
+        "icon": "file",
+        "tone": "violet",
+        "label": "AgentLogging"
+      },
+      {
+        "id": "T",
+        "icon": "chart",
+        "tone": "green",
+        "label": "OtlpTelemetry"
+      },
+      {
+        "id": "C",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "the collector"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "Build(catalog, HostServices(Telemetry: OtlpTelemetry.Instance))"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "L",
+        "text": "Configure(directory, content, telemetry.AddSinks)"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "T",
+        "text": "AddSinks(configuration)"
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "L",
+        "text": "the collector\u0027s sink, when an endpoint is named"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "T",
+        "text": "Start()"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "T",
+        "text": "LastChance.Install(this); the tracer on TurnSpans.Source"
+      },
+      {
+        "step": "note",
+        "over": [
+          "H",
+          "C"
+        ],
+        "text": "a turn runs: TurnSpans.Start, the model\u0027s and tools\u0027 spans"
+      },
+      {
+        "step": "message",
+        "from": "T",
+        "to": "C",
+        "text": "spans over OTLP; log lines through the sink"
+      }
+    ]
+  }
+}

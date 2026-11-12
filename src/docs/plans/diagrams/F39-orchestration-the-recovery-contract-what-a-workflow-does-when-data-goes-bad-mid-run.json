@@ -1,0 +1,144 @@
+{
+  "kind": "flow",
+  "title": "F39 orchestration: the recovery contract",
+  "caption": "When data goes bad mid-run: the workflow classifies it, reconciles after a side effect, recovers only within its policy, and verifies before it resumes.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "exec",
+        "icon": "settings",
+        "tone": "blue",
+        "label": "Execute a step"
+      },
+      {
+        "id": "val",
+        "icon": "search",
+        "label": "Validate: schema, freshness\n(as_of), provenance,\nconsistency, business rules"
+      },
+      {
+        "id": "ok",
+        "icon": "checks",
+        "tone": "green",
+        "label": "Resume the workflow"
+      },
+      {
+        "id": "cls",
+        "icon": "search",
+        "tone": "teal",
+        "label": "Classify: one DataFailure"
+      },
+      {
+        "id": "side",
+        "icon": "search",
+        "label": "Did a side effect happen?"
+      },
+      {
+        "id": "rec",
+        "icon": "search",
+        "tone": "green",
+        "label": "Reconcile: read the real\nexternal state"
+      },
+      {
+        "id": "pol",
+        "icon": "search",
+        "label": "RecoveryPolicy.Allows(failure,\naction, attempt)?"
+      },
+      {
+        "id": "act",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Recover within bounds:\nrefetch, alternative source,\nquarantine, compensate"
+      },
+      {
+        "id": "verify",
+        "icon": "search",
+        "label": "Verify before resuming"
+      },
+      {
+        "id": "esc",
+        "icon": "user",
+        "tone": "red",
+        "label": "Escalate or stop: keep the\nevidence, ask a person"
+      },
+      {
+        "id": "log",
+        "icon": "file",
+        "tone": "amber",
+        "label": "RecoveryRecord: kind, records,\nsource and version, action,\nattempt, result, approval"
+      }
+    ],
+    "edges": [
+      {
+        "from": "exec",
+        "to": "val"
+      },
+      {
+        "from": "val",
+        "to": "ok",
+        "word": "valid"
+      },
+      {
+        "from": "val",
+        "to": "cls",
+        "word": "invalid"
+      },
+      {
+        "from": "cls",
+        "to": "side"
+      },
+      {
+        "from": "side",
+        "to": "rec",
+        "word": "yes"
+      },
+      {
+        "from": "side",
+        "to": "pol",
+        "word": "no"
+      },
+      {
+        "from": "rec",
+        "to": "pol",
+        "word": "done or not done"
+      },
+      {
+        "from": "rec",
+        "to": "esc",
+        "word": "unknown"
+      },
+      {
+        "from": "pol",
+        "to": "act",
+        "word": "allowed"
+      },
+      {
+        "from": "pol",
+        "to": "esc",
+        "word": "refused, or past\nMaxAttempts"
+      },
+      {
+        "from": "act",
+        "to": "verify"
+      },
+      {
+        "from": "verify",
+        "to": "ok",
+        "word": "passes"
+      },
+      {
+        "from": "verify",
+        "to": "cls",
+        "word": "fails"
+      },
+      {
+        "from": "act",
+        "to": "log"
+      },
+      {
+        "from": "esc",
+        "to": "log"
+      }
+    ],
+    "direction": "down"
+  }
+}

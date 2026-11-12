@@ -23,43 +23,7 @@ is the only thing they share.
 
 ## The parts
 
-```mermaid
-flowchart LR
-  subgraph Portal["Portal (louis-agent.puls, Components/Admin)"]
-    Bench["Evals page<br/>evals, runs, live run"]
-    Explorer["Run explorer<br/>conversations, turns, reviews"]
-  end
-  subgraph API["louis-agent.api"]
-    Admin["Admin endpoints<br/>/v1/admin/evals/..."]
-    Proc["EvalProcess<br/>starts the runner"]
-    Rec["EvalRecorder<br/>RunRecording"]
-    Sessions["Session endpoints<br/>POST /v1/sessions"]
-    Replay["ReplayResolution"]
-  end
-  subgraph Runner["louis-agent.evals.runner (child process)"]
-    Cat["EvalCatalog<br/>EvalFolders, RunnerCatalogs"]
-    Harness["EvalRunner<br/>(louis-agent.evals)"]
-    Files["FileEval<br/>eval folders copied beside it"]
-  end
-  Identity["Puls identity<br/>Evals/Cook, Evals/Routing, Evals/Checks"]
-  Agent["The agent under test<br/>(engine, Puls identity, packs)"]
-  Store[("Mongo: runs, conversations,<br/>turns, requests, reviews,<br/>calibrations, notes")]
-  Ledger[("Usage ledger<br/>usage-YYYY-MM.jsonl")]
-  RStore[("Replay store<br/>REPLAY_DIRECTORY")]
-  Judge["Judge model<br/>(EVAL_JUDGE_*)"]
-
-  Bench -->|"start a run"| Admin --> Proc -->|"dotnet runner.dll run puls-cook"| Cat
-  Identity -.->|"files and checks, through the composition"| Files
-  Cat --> Files --> Harness
-  Harness -->|"HttpSessionClient"| Sessions --> Agent
-  Sessions --> Replay --> RStore
-  Agent -->|"every model request"| Ledger
-  Agent -.->|"stream (SSE)"| Harness
-  Harness -->|"model checks"| Judge
-  Harness -->|"protocol v2 on stdout"| Proc --> Rec --> Store
-  Rec -->|"when the run ends"| Ledger
-  Explorer -->|"read"| Admin --> Store
-```
+![The evals: the portal, the API and the runner](diagrams/evals-the-parts.svg)
 
 | Part | Project | Its one job |
 |---|---|---|
@@ -77,99 +41,7 @@ flowchart LR
 
 ## The types
 
-```mermaid
-classDiagram
-  class FileEval {
-    Load(folder, catalog, source) FileEval
-    string Transcripts
-  }
-  class IEval {
-    <<interface>>
-    string Name
-    string Identity
-    int Version
-    string Proves
-    ModesAsync(sessions) EvalMode list
-    IReadOnlyList~EvalScenario~ Scenarios
-    DatasetManifest Dataset
-    IReadOnlyList~ICheck~ Checks
-    IReadOnlyList~LabeledAnswer~ Labels
-    TurnFactsOf(turn, mode) TurnFacts
-  }
-  class ICheck {
-    <<interface>>
-    string Name
-    int Version
-    CheckKind Kind
-    IReadOnlySet~string~ ExpectedKeys
-    bool Required
-    GradeAsync(Trial) Grade
-  }
-  class ICheckType {
-    <<interface>>
-    string Type
-    CheckKind Kind
-    Type Parameters
-    Create(JsonElement) ICheck
-  }
-  class CheckCatalog {
-    Find(type) ICheckType
-    Get(type) ICheckType
-    Listing() ListedCheck list
-  }
-  class Grade {
-    <<record>>
-    string Check
-    int Version
-    double Score
-    GradeOutcome Outcome
-    string Reason
-    GradeJudge Judge
-  }
-  class Trial {
-    <<record>>
-    string RunId
-    EvalMode Mode
-    int Repeat
-    EvalScenario Scenario
-    Transcript Transcript
-  }
-  class ISessionClient {
-    <<interface>>
-  }
-  class EvalRunner {
-    RunAsync(eval, run)
-    RescoreAsync(eval, runId, rescoreOf, lines)
-  }
-  class EvalEvent {
-    <<record>>
-    DateTimeOffset T
-  }
-  IEval <|.. FileEval
-  IEval o-- ICheck
-  FileEval ..> CheckCatalog : builds its checks from
-  ICheck ..> Trial : grades
-  ICheck ..> Grade : returns
-  ICheck <|.. NoErrorCheck
-  ICheck <|.. RoutedToCheck
-  ICheck <|.. CostUnderCheck
-  ICheck <|.. WithinTimeCheck
-  ICheck <|.. ContainsCheck
-  ICheck <|.. ToolUsedCheck
-  ICheck <|.. EvaluatorCheck
-  ICheck <|.. HumanReviewCheck
-  ICheck <|.. PricedAtRetailer
-  ICheckType ..> ICheck : builds
-  CheckCatalog o-- ICheckType
-  ISessionClient <|.. HttpSessionClient
-  ISessionClient <|.. CannedSessionClient
-  EvalRunner ..> IEval
-  EvalRunner ..> ISessionClient
-  EvalRunner ..> ProtocolWriter
-  ProtocolWriter ..> EvalEvent
-  EvalEvent <|-- ProtocolEvent
-  EvalEvent <|-- ConversationEvent
-```
+![The evals' types: an eval is an IEval, each check an ICheck built from its type, and every event a record the writer puts on a line](diagrams/evals-the-types.svg)
 
 The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, as stored runs say):
 
@@ -207,62 +79,11 @@ turns, tokens, seconds, cost) are measured beside the grades and never decide a 
 
 ## One cook run, in memory
 
-```mermaid
-flowchart TB
-  set["demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/eval.json<br/>identity = puls"]
-  eval["FileEval : IEval<br/>Name = puls-cook, Version = 11"]
-  modes["EvalMode puls-cook · EvalMode puls-tools"]
-  data["Dataset puls-cook v7<br/>dev and held-out scenarios, labels"]
-  graders["9 checks: cook-no-error (no-error), routed-to,<br/>within-budget (amount-under · rand-total), estimates-at-shop (· rand-prices), untooled-shops,<br/>recipe-image (image-shown · recipe-photos), serves-as-asked (number-named · servings),<br/>meal-for-people, meal-for-people.human"]
-  trial["Trial<br/>run 5d1fd231c9b1 · puls-cook · repeat 1 · cook-malmesbury"]
-  transcript["Transcript<br/>TurnTranscript per question"]
-  grades["Grade × 9<br/>e.g. untooled-shops 1.0 pass"]
-  conv["ConversationEvent<br/>grades, TrialOutcome, Metrics"]
-  set --> eval
-  eval --> modes
-  eval --> data
-  eval --> graders
-  modes --> trial
-  data --> trial
-  trial --> transcript
-  graders --> grades
-  transcript --> grades
-  grades --> conv
-```
+![The evals: one cook run, in memory](diagrams/evals-one-cook-run-in-memory.svg)
 
 ## How a run talks
 
-```mermaid
-sequenceDiagram
-  actor Admin
-  participant Portal
-  participant API
-  participant Runner as Runner (child process)
-  participant Agent as Agent sessions (same API)
-  participant Judge
-  participant Store as Mongo store
-  participant Ledger as Usage ledger
-
-  Admin->>Portal: Run puls-cook, repeat 3
-  Portal->>API: POST /v1/admin/evals/puls-cook/runs
-  API->>Runner: start: run puls-cook --repeat 3 (BENCHMARK_RUN = run id)
-  Runner-->>API: protocol line (eval, version, graders, dataset)
-  loop each mode, repeat and scenario
-    Runner-->>API: mode, question
-    Runner->>Agent: POST /v1/sessions (role, toolsets, replay), then the message
-    Agent->>Ledger: one row per model request
-    Agent-->>Runner: the turn's stream (SSE)
-    Runner-->>API: sse lines, then turn
-    Runner->>Judge: the answer and the rubric (model checks only)
-    Judge-->>Runner: label and reason
-    Runner-->>API: conversation (grades, outcome, metrics)
-    API->>Store: run, conversation, turn as they arrive
-  end
-  Runner-->>API: mode-done (pass@k, pass^k), summary
-  API->>Ledger: read this run's rows
-  API->>Store: each conversation's tokens and cost, the run's end
-  Portal->>API: GET /v1/admin/evals/runs/current/events (live) and the run's pages
-```
+![How a run talks: the API starts the runner, the runner asks agent sessions and the judge, and every line is stored as it arrives, the cost read from the ledger at the end](diagrams/evals-how-a-run-talks.svg)
 
 The other three conversations use the same pieces:
 
@@ -308,30 +129,7 @@ is the one reader and judge, started as a process for each question, and git is 
 `DraftFolder` writes it out as one folder, with the samples and transcripts kept for it from runs (F49.4), and the
 check, the try, the publish and the promptfoo export all read that folder.
 
-```mermaid
-sequenceDiagram
-  actor P as Person (Studio page)
-  participant A as API (Endpoints/Admin/Studio)
-  participant S as Draft store (eval_drafts)
-  participant R as Runner (child process)
-  participant G as Git (temporary index)
-  P->>A: GET evals/checks
-  A->>R: --checks
-  R-->>A: check types, kinds, schemas, readers
-  P->>A: PUT evals/drafts/{id} (eval.json, rubrics)
-  A->>S: keep the draft
-  P->>A: POST drafts/{id}/verdict
-  A->>A: DraftFolder writes the folder
-  A->>R: --check {folder}
-  R-->>A: one line per problem, then ok
-  P->>A: POST drafts/{id}/try {replay, samples}
-  A->>R: run {eval} --folder --samples --replay {run}
-  R-->>A: protocol lines (a replay, $0)
-  P->>A: POST drafts/{id}/publish
-  A->>R: --check {folder} (must pass)
-  A->>G: hash the files, write a tree, commit on eval/{identity}-{name}
-  A-->>P: the branch (push and pull request are yours) or a zip
-```
+![The studio: a draft is kept, checked by the runner, tried on a replay, and published as a commit on its own branch](diagrams/evals-the-studio.svg)
 
 | Method | Route | Does |
 |---|---|---|

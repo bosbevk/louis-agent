@@ -1,0 +1,84 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.usage-probe: the default job",
+  "caption": "Each request costs real money: with Anthropic the pair runs again with a cache marker, to see a cache write and then a read.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory"
+      },
+      {
+        "id": "C",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "The provider"
+      },
+      {
+        "id": "M",
+        "icon": "chart",
+        "tone": "violet",
+        "label": "IUsageMapper"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "F",
+        "text": "Create, CreateUsageMapper"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "P",
+        "text": "the client and the mapper the agents use"
+      },
+      {
+        "step": "block",
+        "block": "loop",
+        "label": "each request: plain or cached, whole or streamed",
+        "steps": [
+          {
+            "step": "message",
+            "from": "P",
+            "to": "C",
+            "text": "a one-word question, with a long system prompt"
+          },
+          {
+            "step": "reply",
+            "from": "C",
+            "to": "P",
+            "text": "the answer and its usage"
+          },
+          {
+            "step": "message",
+            "from": "P",
+            "to": "P",
+            "text": "prints what the adapter reported"
+          },
+          {
+            "step": "message",
+            "from": "P",
+            "to": "M",
+            "text": "the usage"
+          },
+          {
+            "step": "reply",
+            "from": "M",
+            "to": "P",
+            "text": "prints the ledger: line"
+          }
+        ]
+      }
+    ]
+  }
+}

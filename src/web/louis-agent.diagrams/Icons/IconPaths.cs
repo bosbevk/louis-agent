@@ -98,6 +98,8 @@ public static class IconPaths
             "M21 6l0 13"
         ],
         DiagramIcon.Terminal => ["M5 7l5 5l-5 5", "M12 19l7 0"],
+        DiagramIcon.Stack => ["M12 4l-8 4l8 4l8 -4l-8 -4", "M4 12l8 4l8 -4", "M4 16l8 4l8 -4"],
+        DiagramIcon.Info => ["M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0", "M12 9h.01", "M11 12h1v4h1"],
         _ => []
     };
 }

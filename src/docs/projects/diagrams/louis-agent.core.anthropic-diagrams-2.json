@@ -1,0 +1,83 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core.anthropic: making Claude's client",
+  "caption": "The factory asks the provider: the SDK's client with its thinking budget, then the cache markers wrapped round it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program"
+      },
+      {
+        "id": "H",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory"
+      },
+      {
+        "id": "A",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "AnthropicProvider"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "H",
+        "text": "Build(catalog, HostServices(Providers: [AnthropicProvider.Instance]))"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "F",
+        "text": "services.ClientFactory()"
+      },
+      {
+        "step": "message",
+        "from": "H",
+        "to": "F",
+        "text": "Create(llm)"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "A",
+        "text": "Create(llm)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "F",
+        "text": "the SDK\u0027s client, with the thinking budget where the model needs it"
+      },
+      {
+        "step": "message",
+        "from": "F",
+        "to": "A",
+        "text": "CreatePromptCaching(llm)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "F",
+        "text": "the two markers, the prefix\u0027s lifetime from LLM_CACHE_TTL"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "H",
+        "text": "PromptCachingChatClient over the client"
+      }
+    ]
+  }
+}

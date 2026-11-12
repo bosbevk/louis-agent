@@ -59,44 +59,11 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 
 ## Diagrams
 
-**Architecture:** two tools over one polite map client. It asks the map in code and hands the model a short table.
+![The where-to-buy pack: finding branches on the map](diagrams/louis-agent.pack.where-to-buy-diagrams.svg)
 
-```mermaid
-flowchart TD
-    pack["WhereToBuyPack: the where-to-buy toolset"] --> tools["WhereToBuyTools: FindBranches, FindShopsNear"]
-    tools --> finder["BranchFinder"]
-    finder --> names["ShopNames: PnP is Pick n Pay"]
-    finder --> distance["Distance"]
-    finder --> map["MapSearch: one request a second, an honest User-Agent"]
-    map --> nominatim["OpenStreetMap's Nominatim"]
-    map --> place["MapPlace and MapAddress: what the map answered"]
-    tools --> printer["BranchPrinter"]
-```
+![Finding a shop's branches: the town is found on the map, then ever bigger boxes round it until one holds the shop, and the three nearest are printed](diagrams/louis-agent.pack.where-to-buy-diagrams-2.svg)
 
-**Flow:** finding a shop's branches near a town. The search starts with a small box and widens only when a box finds none, since the map answers at most 20 hits in no order.
-
-```mermaid
-sequenceDiagram
-    participant M as The model
-    participant T as WhereToBuyTools
-    participant F as BranchFinder
-    participant S as MapSearch
-    participant N as Nominatim
-    participant P as BranchPrinter
-    M->>T: FindBranches(shop, town)
-    T->>F: the shop and the town
-    F->>S: TownAsync
-    S->>N: South Africa only, the first answer
-    N-->>F: its centre, municipality and province
-    loop about 16 km, half a degree, a degree and a half, until a box has some
-        F->>S: NearAsync: the shop's name in the box
-        S->>N: one request a second
-        N-->>F: hits
-    end
-    F-->>T: the three nearest
-    T->>P: the town and its branches
-    P-->>M: the province, then a table, framed as untrusted map data
-```
+![The types: two tools over the map, the town first, then the shop's branches around it](diagrams/louis-agent.pack.where-to-buy-interface.svg)
 
 ## Structure
 

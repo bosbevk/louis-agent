@@ -1,0 +1,205 @@
+<svg viewBox="-24 -24 1150 1845" width="1150" height="1845" role="img" aria-label="F40 the sales playground: the evals' interfaces" xmlns="http://www.w3.org/2000/svg">
+  <title>F40 the sales playground: the evals' interfaces</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1150" height="1845" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1102" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F40 the sales playground:</tspan>
+    <tspan class="title-rest">the evals' interfaces</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 445.5 733 L 615.7 733" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 445.5 945 L 477.6 945 Q 501.6 945 501.6 921 L 501.6 757 Q 501.6 733 525.6 733 L 615.7 733" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 97 L 883.9 97 Q 907.9 97 907.9 121 L 907.9 826.9 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 309 L 883.9 309 Q 907.9 309 907.9 333 L 907.9 826.9 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 521 L 883.9 521 Q 907.9 521 907.9 545 L 907.9 826.9 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 1157 L 883.9 1157 Q 907.9 1157 907.9 1133 L 907.9 851.1 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 1369 L 883.9 1369 Q 907.9 1369 907.9 1345 L 907.9 851.1 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 811.7 1581 L 883.9 1581 Q 907.9 1581 907.9 1557 L 907.9 851.1 Q 907.9 839 919.9 839 L 932 839" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 733 L 495.6 733 Q 519.6 733 519.6 709 L 519.6 121 Q 519.6 97 543.6 97 L 615.7 97" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 733 L 495.6 733 Q 519.6 733 519.6 709 L 519.6 333 Q 519.6 309 543.6 309 L 615.7 309" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 733 L 495.6 733 Q 519.6 733 519.6 709 L 519.6 545 Q 519.6 521 543.6 521 L 615.7 521" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 945 L 477.6 945 Q 501.6 945 501.6 969 L 501.6 1133 Q 501.6 1157 525.6 1157 L 615.7 1157" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 945 L 477.6 945 Q 501.6 945 501.6 969 L 501.6 1345 Q 501.6 1369 525.6 1369 L 615.7 1369" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 445.5 945 L 477.6 945 Q 501.6 945 501.6 969 L 501.6 1557 Q 501.6 1581 525.6 1581 L 615.7 1581" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 445.5 733 L 495.6 733 Q 519.6 733 519.6 757 L 519.6 921 Q 519.6 945 543.6 945 L 615.7 945" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 445.5 945 L 615.7 945" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 170 839 L 202.1 839 Q 226.1 839 226.1 815 L 226.1 745.1 Q 226.1 733 238.2 733 L 250.3 733" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 170 839 L 202.1 839 Q 226.1 839 226.1 863 L 226.1 932.9 Q 226.1 945 238.2 945 L 250.3 945" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="528.7" y="711" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="567.7" y="723" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="820.8" y="75" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="859.8" y="87" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="546.2" y="75" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="567.7" y="87" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="452" y="923" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="473.5" y="935" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="542.7" y="923" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="567.7" y="935" text-anchor="middle">proves</text>
+    <rect class="word-chip tone-green" x="176.6" y="817" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="198.1" y="829" text-anchor="middle">holds</text>
+    <rect class="box tone-green" x="0" y="807" width="170" height="64" rx="10" />
+    <text class="label tone-green" x="85" y="835" text-anchor="middle">SimulationCatalog</text>
+    <text class="note" x="85" y="851" text-anchor="middle">Phase 3, a line in step 3</text>
+    <rect class="box tone-green" x="250.3" y="685" width="195.2" height="96" rx="10" />
+    <text class="label tone-green" x="347.9" y="713" text-anchor="middle">InvoiceBatchSimulation</text>
+    <text class="note" x="347.9" y="729" text-anchor="middle">step 3</text>
+    <path class="frame" d="M 250.3 749 L 445.5 749" />
+    <text class="word tone-green" x="264.3" y="767" text-anchor="start">demo-invoice-batch</text>
+    <rect class="box tone-green" x="250.3" y="897" width="195.2" height="96" rx="10" />
+    <text class="label tone-green" x="347.9" y="925" text-anchor="middle">AreaGuideSimulation</text>
+    <text class="note" x="347.9" y="941" text-anchor="middle">step 4</text>
+    <path class="frame" d="M 250.3 961 L 445.5 961" />
+    <text class="word tone-green" x="264.3" y="979" text-anchor="start">demo-area-guide</text>
+    <rect class="box tone-green" x="615.7" y="65" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="93" text-anchor="middle">MatchedRight</text>
+    <text class="note" x="713.7" y="109" text-anchor="middle">code grader, step 3</text>
+    <rect class="box tone-green" x="615.7" y="277" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="305" text-anchor="middle">NoCustomerSaid</text>
+    <text class="note" x="713.7" y="321" text-anchor="middle">code grader, step 3</text>
+    <rect class="box tone-green" x="615.7" y="489" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="517" text-anchor="middle">VatChecked</text>
+    <text class="note" x="713.7" y="533" text-anchor="middle">code grader, step 3</text>
+    <rect class="box tone-teal" x="615.7" y="636" width="196" height="194" rx="10" />
+    <text class="label tone-teal" x="713.7" y="664" text-anchor="middle">ISimulation</text>
+    <text class="note" x="713.7" y="680" text-anchor="middle">interface, Phase 3</text>
+    <path class="frame" d="M 615.7 700 L 811.7 700" />
+    <text class="word tone-teal" x="629.7" y="718" text-anchor="start">+Name</text>
+    <text class="word tone-teal" x="629.7" y="732" text-anchor="start">+Identity</text>
+    <text class="word tone-teal" x="629.7" y="746" text-anchor="start">+Version</text>
+    <text class="word tone-teal" x="629.7" y="760" text-anchor="start">+Proves</text>
+    <text class="word tone-teal" x="629.7" y="774" text-anchor="start">+ModesAsync(sessions)</text>
+    <text class="word tone-teal" x="629.7" y="788" text-anchor="start">+Scenarios</text>
+    <text class="word tone-teal" x="629.7" y="802" text-anchor="start">+Graders</text>
+    <text class="word tone-teal" x="629.7" y="816" text-anchor="start">+ScoresOf(trial, grades)</text>
+    <rect class="box tone-green" x="615.7" y="907" width="196" height="76" rx="10" />
+    <text class="label tone-green" x="713.7" y="935" text-anchor="middle">DemoIdentity</text>
+    <text class="note" x="713.7" y="951" text-anchor="middle">identity, the agent's</text>
+    <text class="note" x="713.7" y="963" text-anchor="middle">picture</text>
+    <rect class="box tone-green" x="615.7" y="1125" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="1153" text-anchor="middle">MunicipalityRight</text>
+    <text class="note" x="713.7" y="1169" text-anchor="middle">code grader, step 4</text>
+    <rect class="box tone-green" x="615.7" y="1337" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="1365" text-anchor="middle">EveryFactSourced</text>
+    <text class="note" x="713.7" y="1381" text-anchor="middle">code grader, step 4</text>
+    <rect class="box tone-green" x="615.7" y="1549" width="196" height="64" rx="10" />
+    <text class="label tone-green" x="713.7" y="1577" text-anchor="middle">NearbyWithinDistance</text>
+    <text class="note" x="713.7" y="1593" text-anchor="middle">code grader, step 4</text>
+    <rect class="box tone-teal" x="932" y="791" width="170" height="96" rx="10" />
+    <text class="label tone-teal" x="1017" y="819" text-anchor="middle">IGrader</text>
+    <text class="note" x="1017" y="835" text-anchor="middle">interface, Phase 3</text>
+    <path class="frame" d="M 932 855 L 1102 855" />
+    <text class="word tone-teal" x="946" y="873" text-anchor="start">+GradeAsync(trial)</text>
+  </g>
+  <rect class="notebar" x="0" y="1760" width="1102" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1770) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1782">
+    <tspan class="note-rest">Each demo eval is one more simulation with its own code graders, and both prove the demo identity.</tspan>
+  </text>
+</svg>

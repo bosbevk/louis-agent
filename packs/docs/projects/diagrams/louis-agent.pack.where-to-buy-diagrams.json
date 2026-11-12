@@ -1,0 +1,98 @@
+{
+  "kind": "flow",
+  "title": "The where-to-buy pack: finding branches on the map",
+  "caption": "Two tools over one polite map client: it asks the map in code and hands the model a short table.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "pack",
+        "icon": "box",
+        "tone": "blue",
+        "label": "WhereToBuyPack: the\nwhere-to-buy toolset"
+      },
+      {
+        "id": "tools",
+        "icon": "settings",
+        "tone": "green",
+        "label": "WhereToBuyTools: FindBranches,\nFindShopsNear"
+      },
+      {
+        "id": "finder",
+        "icon": "search",
+        "tone": "green",
+        "label": "BranchFinder"
+      },
+      {
+        "id": "names",
+        "icon": "book",
+        "tone": "teal",
+        "label": "ShopNames: PnP is Pick n Pay"
+      },
+      {
+        "id": "distance",
+        "icon": "chart",
+        "tone": "green",
+        "label": "Distance"
+      },
+      {
+        "id": "map",
+        "icon": "world",
+        "tone": "green",
+        "label": "MapSearch: one request a\nsecond, an honest User-Agent"
+      },
+      {
+        "id": "nominatim",
+        "icon": "world",
+        "tone": "red",
+        "label": "OpenStreetMap\u0027s Nominatim"
+      },
+      {
+        "id": "place",
+        "icon": "code",
+        "tone": "teal",
+        "label": "MapPlace and MapAddress: what\nthe map answered"
+      },
+      {
+        "id": "printer",
+        "icon": "file",
+        "tone": "green",
+        "label": "BranchPrinter"
+      }
+    ],
+    "edges": [
+      {
+        "from": "pack",
+        "to": "tools"
+      },
+      {
+        "from": "tools",
+        "to": "finder"
+      },
+      {
+        "from": "finder",
+        "to": "names"
+      },
+      {
+        "from": "finder",
+        "to": "distance"
+      },
+      {
+        "from": "finder",
+        "to": "map"
+      },
+      {
+        "from": "map",
+        "to": "nominatim"
+      },
+      {
+        "from": "map",
+        "to": "place"
+      },
+      {
+        "from": "tools",
+        "to": "printer"
+      }
+    ],
+    "direction": "down"
+  }
+}

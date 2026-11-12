@@ -1,0 +1,68 @@
+{
+  "kind": "classes",
+  "title": "Runbooks: the interface design",
+  "caption": "A runbook is a skill file: loaded with core's skill provider into the prompt, its sections read by the model, its method names the only ones it may replay.",
+  "classes": {
+    "types": [
+      {
+        "id": "folder",
+        "name": "Skills/{service}/",
+        "kind": "one folder per watched service",
+        "tone": "amber",
+        "members": [
+          "service.md: teams, deploy and payments policy",
+          "{method}.md: one runbook per API method"
+        ]
+      },
+      {
+        "id": "runbook",
+        "name": "A runbook",
+        "kind": "markdown, ## Method: {name}",
+        "tone": "amber",
+        "members": [
+          "What it does, Data note?",
+          "Expected, Auto-fixable",
+          "Expected behaviour for louis-agent",
+          "Escalate to"
+        ]
+      },
+      {
+        "id": "skills",
+        "name": "OrchestratorSkills",
+        "kind": "static, ORCHESTRATOR_SERVICE",
+        "members": [
+          "+Load(skillsDirectory, service) (Skills, Methods)"
+        ]
+      },
+      {
+        "id": "provider",
+        "name": "MarkdownSkillProvider",
+        "kind": "louis-agent.core, an ISkillProvider",
+        "tone": "violet"
+      },
+      {
+        "id": "voice",
+        "name": "voice-orchestrator.md",
+        "kind": "louis-agent.core: the workflow every error goes through",
+        "tone": "violet"
+      },
+      {
+        "id": "tools",
+        "name": "ServiceTools",
+        "kind": "what a runbook's sections lead to",
+        "members": [
+          "+AcknowledgeError: Expected",
+          "+CallLouisAgentFix: Auto-fixable",
+          "+EscalateToHuman: Escalate to"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "folder", "to": "runbook", "kind": "holds" },
+      { "from": "skills", "to": "folder", "kind": "uses", "word": "reads" },
+      { "from": "skills", "to": "provider", "kind": "creates" },
+      { "from": "skills", "to": "tools", "kind": "uses", "word": "the methods it may replay" },
+      { "from": "provider", "to": "voice", "kind": "uses", "word": "after" }
+    ]
+  }
+}

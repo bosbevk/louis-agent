@@ -1,0 +1,86 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.evals.protocol: the interface design",
+  "caption": "One event contract: every line a run writes is one EvalEvent record, read and written through one options object.",
+  "classes": {
+    "types": [
+      {
+        "id": "json",
+        "name": "EvalProtocolJson",
+        "kind": "static, the one options object",
+        "members": [
+          "+Options",
+          "+Line(EvalEvent) string",
+          "+Read(line) EvalEvent?"
+        ]
+      },
+      {
+        "id": "event",
+        "name": "EvalEvent",
+        "kind": "abstract record, built only here",
+        "members": [
+          "+DateTimeOffset T"
+        ]
+      },
+      {
+        "id": "protocol",
+        "name": "ProtocolEvent",
+        "kind": "record, the run's first line",
+        "members": [
+          "+Version, Eval, EvalVersion, Commit, Split",
+          "+Dataset?, Graders, Models"
+        ]
+      },
+      {
+        "id": "mode",
+        "name": "ModeEvent, ModeDoneEvent",
+        "kind": "records, a mode's start and end",
+        "members": [
+          "+Mode, Repeat, Toolsets, Role?, Llm?",
+          "+RatesInfo? Rates (at the end)"
+        ]
+      },
+      {
+        "id": "turn",
+        "name": "QuestionEvent, SseEvent, TurnEvent",
+        "kind": "records, one turn",
+        "members": [
+          "+Mode, Repeat, Task, Turn, Session",
+          "+Text; Type and Data; Question and Answer"
+        ]
+      },
+      {
+        "id": "conversation",
+        "name": "ConversationEvent",
+        "kind": "record, one conversation graded",
+        "members": [
+          "+Mode, Repeat, Task, Errors, Seconds",
+          "+Grades GradeInfo list",
+          "+TrialOutcome Outcome, Metrics"
+        ]
+      },
+      {
+        "id": "summary",
+        "name": "SummaryEvent",
+        "kind": "record, a slice's totals",
+        "members": [
+          "+Mode, Slice, N, Passed, Failed, Unknown",
+          "+PassRate?, PassAtK?"
+        ]
+      },
+      {
+        "id": "enums",
+        "name": "CheckKind, GradeOutcome, TrialOutcome, RunSplit",
+        "kind": "enums"
+      }
+    ],
+    "relations": [
+      { "from": "json", "to": "event", "kind": "uses", "word": "writes and reads" },
+      { "from": "protocol", "to": "event", "kind": "inherits" },
+      { "from": "mode", "to": "event", "kind": "inherits" },
+      { "from": "turn", "to": "event", "kind": "inherits" },
+      { "from": "conversation", "to": "event", "kind": "inherits" },
+      { "from": "summary", "to": "event", "kind": "inherits" }
+    ]
+  }
+}

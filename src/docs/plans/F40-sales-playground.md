@@ -227,174 +227,23 @@ public sealed class AreaGuideSimulation : ISimulation { public string Name => "d
 
 #### Architecture: the playground, by step
 
-```mermaid
-flowchart TB
-    subgraph screen["The screen we sell from, in either web app"]
-        room["Control room (steps 5-6)<br/>louis-agent.web: runs live, grades, cost"]
-        tryit["Try it (step 7)<br/>a chat in a simulation's mode"]
-    end
-    subgraph stack["The playground: Puls's compose plus docker-compose.demo.yml (step 1)"]
-        api["puls: louis-agent.api<br/>IDENTITIES=demo,puls; the portal's endpoints"]
-        runner["simulation runner, its own process (Phase 3)<br/>demo-invoice-batch (3), demo-get-paid (3b), demo-area-guide (4)"]
-        pagent["puls-agent<br/>Puls's specialists"]
-        dagent["demo-agent (step 1)<br/>IDENTITIES=demo: the clerk (3), the debtors clerk (3b), the area guide (4)<br/>workspace: the made-up invoices and the age analysis, read-only"]
-        store["puls-mongo<br/>the run store (F31)"]
-        ledger["usage ledger<br/>one folder for the three agents"]
-        web["puls-searxng, puls-browser<br/>search and pages"]
-    end
-    subgraph code["What the agents load"]
-        comp["louis-agent.composition<br/>IdentityKind.Demo (1), PackKind.Customers (2)"]
-        demo["identity.demo (step 1)<br/>demo/voice and its three roles"]
-        cust["customers pack (step 2)<br/>FindCustomer; made-up customers embedded"]
-        shops["shops pack (Phase 2)<br/>one instance for the demo and Puls"]
-        puls["identity.puls (Phase 2)"]
-    end
-    sims["simulations.demo (steps 3-4)<br/>graders and answer keys, loaded by the runner only"]
-    room --> api
-    tryit --> api
-    api -->|"starts"| runner
-    runner -->|"POST /sessions, protocol lines"| api
-    runner --> sims
-    api -->|"AskAgent"| dagent
-    api --> pagent
-    api --> store
-    api --> ledger
-    dagent --> ledger
-    dagent --> web
-    api --> comp
-    dagent --> comp
-    comp --> demo
-    comp --> puls
-    demo --> cust
-    demo --> shops
-    puls --> shops
-```
+![The playground by step: the screens call the API, the API runs the two agents and the simulation runner, and they share the shops pack, the run store and the ledger](diagrams/F40-sales-playground-architecture-the-playground-by-step.svg)
 
 #### Interfaces
 
-```mermaid
-classDiagram
-    direction LR
-    class IAgentIdentity { <<interface, Phase 2>> +Name +Prompts +Packs }
-    class IAgentPack { <<interface, Phase 2>> +Name +Toolsets +Prompts +Requires }
-    class DemoIdentity { <<identity, step 1>> Packs: shops, customers }
-    class PulsIdentity { <<identity, Phase 2>> Packs: shops }
-    class ShopsPack { <<pack, Phase 2>> one instance for both }
-    class CustomersPack { <<pack, step 2>> in the demo project }
-    class CustomerTools { <<step 2>> +FindCustomer(query, maxResults) }
-    class ICustomerDirectory { <<interface, step 2>> +FindAsync(query, maxResults) }
-    class SampleCustomerDirectory { <<provider, step 2>> embedded customers.json }
-    class ClientDirectory { <<a client system, its own feature>> their API or MCP server }
-    class Customer { <<record, step 2>> Id Name VatNumber Email Address }
-    class CustomerToolMessage { <<enum, step 2>> }
-    class ISimulation { <<interface, Phase 3>> +Name +Identity +Version +Proves +ModesAsync(sessions) +Scenarios +Graders +ScoresOf(trial, grades) }
-    class IGrader { <<interface, Phase 3>> +GradeAsync(trial) }
-    class InvoiceBatchSimulation { <<step 3>> demo-invoice-batch }
-    class AreaGuideSimulation { <<step 4>> demo-area-guide }
-    class MatchedRight { <<code grader, step 3>> }
-    class NoCustomerSaid { <<code grader, step 3>> }
-    class VatChecked { <<code grader, step 3>> }
-    class MunicipalityRight { <<code grader, step 4>> }
-    class EveryFactSourced { <<code grader, step 4>> }
-    class NearbyWithinDistance { <<code grader, step 4>> }
-    class SimulationCatalog { <<Phase 3, a line in step 3>> }
-    class Plugins { <<composition>> IdentityKind Demo, PackKind Customers }
-    IAgentIdentity <|.. DemoIdentity
-    IAgentIdentity <|.. PulsIdentity
-    IAgentPack <|.. ShopsPack
-    IAgentPack <|.. CustomersPack
-    DemoIdentity ..> ShopsPack : names shops
-    PulsIdentity ..> ShopsPack : names shops
-    DemoIdentity ..> CustomersPack : names customers
-    CustomersPack ..> CustomerTools : customers toolset
-    CustomerTools --> ICustomerDirectory
-    CustomerTools ..> CustomerToolMessage
-    ICustomerDirectory <|.. SampleCustomerDirectory
-    ICustomerDirectory <|.. ClientDirectory
-    ICustomerDirectory ..> Customer
-    ISimulation <|.. InvoiceBatchSimulation
-    ISimulation <|.. AreaGuideSimulation
-    IGrader <|.. MatchedRight
-    IGrader <|.. NoCustomerSaid
-    IGrader <|.. VatChecked
-    IGrader <|.. MunicipalityRight
-    IGrader <|.. EveryFactSourced
-    IGrader <|.. NearbyWithinDistance
-    InvoiceBatchSimulation --> MatchedRight
-    InvoiceBatchSimulation --> NoCustomerSaid
-    InvoiceBatchSimulation --> VatChecked
-    AreaGuideSimulation --> MunicipalityRight
-    AreaGuideSimulation --> EveryFactSourced
-    AreaGuideSimulation --> NearbyWithinDistance
-    InvoiceBatchSimulation ..> DemoIdentity : proves
-    AreaGuideSimulation ..> DemoIdentity : proves
-    SimulationCatalog --> InvoiceBatchSimulation
-    SimulationCatalog --> AreaGuideSimulation
-    Plugins ..> DemoIdentity : creates
-    Plugins ..> CustomersPack : creates
-```
+![The agent's side: identities and packs plug in by interface, the demo is one more identity and its customers one more pack](diagrams/F40-sales-playground-interfaces-the-agent.svg)
+
+![The evals' side: each demo eval is one more simulation with its own code graders, and both prove the demo identity](diagrams/F40-sales-playground-interfaces-the-evals.svg)
 
 #### Objects: what exists in memory with `IDENTITIES=demo,puls`
 
-On `puls`, after step 4. Both identities name `shops`: one `ShopsPack` object, shared. The customers are data inside the
-pack's assembly, never a file on a workspace.
+On `puls`, after step 4:
 
-```mermaid
-flowchart LR
-    cat["catalog : AgentCatalog<br/>Identities = [demo, puls]<br/>Packs = [shops, customers]<br/>Toolsets = core's + shops + customers"]
-    demo["demo : DemoIdentity<br/>Packs = [shops, customers]<br/>Prompts = agent/demo/, specialists/demo-*"]
-    puls["puls : PulsIdentity<br/>Packs = [shops]<br/>Prompts = agent/puls/, specialists/puls-*, minions/puls-*"]
-    shops["shops : ShopsPack<br/>one object, named by both"]
-    cust["customers : CustomersPack<br/>Toolsets = [customers]<br/>Prompts = toolsets/customers.md"]
-    tools["tools : CustomerTools<br/>built per engine"]
-    dir["directory : SampleCustomerDirectory<br/>the embedded, made-up customers.json"]
-    src["SkillFileSource<br/>core's + puls's + demo's + shops' + customers' prompts"]
-    roles["RoleCatalog<br/>puls/voice-af, puls/voice-en, puls-cook,<br/>demo/voice, demo-invoice-clerk, demo-area-guide"]
-    cat --> demo
-    cat --> puls
-    cat --> shops
-    cat --> cust
-    demo -- names --> shops
-    puls -- names --> shops
-    demo -- names --> cust
-    cust --> tools
-    tools --> dir
-    cat -.-> src
-    src -.-> roles
-```
+![Both identities name one shared shops pack, and the customers pack holds its made-up customers as data](diagrams/F40-sales-playground-objects-what-exists-in-memory-with-identities-demo-puls.svg)
 
 #### Communication: one `demo-invoice-batch` run, one invoice shown
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant R as Control room (louis-agent.web)
-    participant A as puls: louis-agent.api
-    participant N as simulation runner (own process)
-    participant V as demo/voice session (on puls)
-    participant D as demo-invoice-clerk (on demo-agent)
-    participant C as CustomerTools (customers pack)
-    participant L as Usage ledger
-    R->>A: start demo-invoice-batch, 1 repeat (on Louis's go)
-    A->>N: dotnet louis-agent.simulation.runner.dll simulate demo-invoice-batch --repeat 1
-    N-->>A: @protocol version 1
-    loop each of the ten invoices
-        N->>A: POST /sessions (role demo/voice, toolsets agents, tag run:mode:repeat)
-        N->>V: Match inv-07.pdf to a customer
-        V->>D: AskAgent(demo.invoice-clerk, brief: inv-07.pdf, attachments)
-        D->>D: ReadDocument(inv-07.pdf): its workspace holds the invoices only
-        D->>C: FindCustomer(the VAT number on the invoice)
-        C-->>D: one customer, framed as data
-        D-->>V: the match, with the VAT number it checked
-        V-->>N: the session stream, the sub-session's events included
-        N->>N: SessionStreamReader, then MatchedRight, NoCustomerSaid, VatChecked against the answer key
-        N-->>A: @sse, @turn, then @conversation with its grades
-        A-->>R: live: the turn as it streams, then each grade
-    end
-    N-->>A: @mode_done
-    A->>L: the run's rows, by its tag
-    A-->>R: the run recorded: its grades and its cost per invoice (BenchmarkTrends)
-```
+![One invoice batch run: for each invoice the runner opens a session, the clerk matches it to a customer, and the runner grades the match; the cost comes from the ledger](diagrams/F40-sales-playground-communication-one-demo-invoice-batch-run-one-invoice-shown.svg)
 
 #### Namespaces (new, moved, changed)
 

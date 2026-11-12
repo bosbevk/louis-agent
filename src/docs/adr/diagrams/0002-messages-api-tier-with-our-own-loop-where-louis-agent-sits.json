@@ -1,0 +1,70 @@
+{
+  "kind": "flow",
+  "title": "ADR 0002: where louis-agent sits",
+  "caption": "Our tier: the engine runs its own loop behind IChatClient, so it never names a provider.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "AE",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine\n(tool loop, skills, approval)",
+        "group": "repo"
+      },
+      {
+        "id": "IC",
+        "icon": "code",
+        "tone": "teal",
+        "label": "IChatClient",
+        "group": "repo"
+      },
+      {
+        "id": "AC",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "AnthropicClient.AsIChatClient()",
+        "group": "repo"
+      },
+      {
+        "id": "OL",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Ollama / other provider",
+        "group": "repo"
+      },
+      {
+        "id": "API",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Claude Messages API"
+      }
+    ],
+    "edges": [
+      {
+        "from": "AE",
+        "to": "IC"
+      },
+      {
+        "from": "IC",
+        "to": "AC"
+      },
+      {
+        "from": "IC",
+        "to": "OL",
+        "word": "pluggable swap",
+        "style": "dashed"
+      },
+      {
+        "from": "AC",
+        "to": "API"
+      }
+    ],
+    "direction": "down",
+    "groups": [
+      {
+        "id": "repo",
+        "label": "louis-agent.core"
+      }
+    ]
+  }
+}

@@ -71,50 +71,11 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 
 ## Diagrams
 
-**Architecture:** one tool over one price book, which the shipped files fill, or Mongo where it's set. The same tables go out as a feed, and new ones come in as an upload.
+![The shop-prices pack: its tools, the prices and the estimate](diagrams/louis-agent.pack.shop-prices-diagrams.svg)
 
-```mermaid
-flowchart TD
-    pack["ShopPricesPack: the shop-prices toolset, feed and upload"] --> tools["ShopPriceTools.EstimatePrices"]
-    pack --> feed["ShopPricesFeed: GET /v1/feeds/shop-prices"]
-    pack --> upload["StatsSaImport: at /admin/imports"]
-    tools --> cache["PriceBookCache: read at most once an hour"]
-    feed --> cache
-    cache --> store["MongoPriceStore, with SHOP_PRICES_MONGO_URL"]
-    cache --> shipped["ShippedPrices: the embedded tables"]
-    upload --> store
-    tools --> basket["BasketEstimate"]
-    basket --> item["BasketItem: reads a line"]
-    basket --> estimator["PriceEstimator"]
-    estimator --> book["PriceBook"]
-    tools --> printer["EstimatePrinter"]
-```
+![Pricing a shopping list: each line is matched to a product in the price book and priced for the province, then printed with the total and the credit](diagrams/louis-agent.pack.shop-prices-diagrams-2.svg)
 
-**Flow:** pricing a shopping list. A line it can't match is `?`, never R0, and the agent copies the credit line under its list.
-
-```mermaid
-sequenceDiagram
-    participant M as The model
-    participant T as ShopPriceTools
-    participant C as PriceBookCache
-    participant A as BasketEstimate
-    participant E as PriceEstimator
-    participant B as PriceBook
-    participant P as EstimatePrinter
-    M->>T: EstimatePrices(items, province, serves)
-    T->>C: the book
-    C-->>T: from the store, or the shipped tables if it fails
-    T->>A: Of(lines, book, region, serves)
-    loop each line
-        A->>E: BasketItem: its words, size and packs
-        E->>B: the product whose name fits best
-        B-->>E: the product
-        E-->>A: the province's price or the national one, from the nearest pack, scaled
-    end
-    A-->>T: the rows, the total and the price per person
-    T->>P: Print
-    P-->>M: the table, the total, what it couldn't price, the credit
-```
+![The types: Stats SA's prices imported into a store, read into a cached book, and a basket estimated from it](diagrams/louis-agent.pack.shop-prices-interface.svg)
 
 ## Structure
 

@@ -1,0 +1,59 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.identity.puls: the interface design",
+  "caption": "Who Puls is: an Afrikaans voice, five packs, five specialists it may ask, and their answers relayed whole.",
+  "classes": {
+    "types": [
+      {
+        "id": "identity",
+        "name": "PulsIdentity",
+        "kind": "implements IAgentIdentity",
+        "members": [
+          "+Name \"puls\"",
+          "+DefaultVoice \"puls/voice-af\"",
+          "+Packs, Calls",
+          "+RelaysAnswersWhole true"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "PulsPack",
+        "kind": "enum",
+        "members": [
+          "WhereToBuy ShopPrices Recipes Web Calculator"
+        ]
+      },
+      {
+        "id": "calls",
+        "name": "PulsCall",
+        "kind": "enum, ADR 0117",
+        "members": [
+          "puls.cook, puls.researcher, puls.analyst",
+          "puls.historian, puls.reader"
+        ]
+      },
+      {
+        "id": "prompts",
+        "name": "prompts/",
+        "kind": "embedded",
+        "tone": "amber",
+        "members": [
+          "agent/puls/voice-af.md",
+          "the specialists' and minions' files"
+        ]
+      },
+      {
+        "id": "iidentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "identity", "to": "iidentity", "kind": "implements" },
+      { "from": "identity", "to": "packs", "kind": "uses" },
+      { "from": "identity", "to": "calls", "kind": "uses" },
+      { "from": "identity", "to": "prompts", "kind": "holds" }
+    ]
+  }
+}

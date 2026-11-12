@@ -1,0 +1,186 @@
+<svg viewBox="-24 -24 1397 965" width="1397" height="965" role="img" aria-label="louis-agent.usage-probe: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.usage-probe: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1397" height="965" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1349" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.usage-probe:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 252 381 L 264.1 381 Q 276.2 381 276.2 368.9 L 276.2 93 Q 276.2 69 300.2 69 L 484.3 69" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 252 381 L 264.1 381 Q 276.2 381 276.2 368.9 L 276.2 249 Q 276.2 225 300.2 225 L 484.3 225" marker-end="url(#arrow-green)" />
+    <path class="edge tone-violet" d="M 792.3 225 L 824.5 225 Q 848.5 225 848.5 249 L 848.5 368.9 Q 848.5 381 860.5 381 L 872.6 381" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-green" d="M 252 381 L 484.3 381" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 252 381 L 264.1 381 Q 276.2 381 276.2 393.1 L 276.2 513 Q 276.2 537 300.2 537 L 484.3 537" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 252 381 L 264.1 381 Q 276.2 381 276.2 393.1 L 276.2 669 Q 276.2 693 300.2 693 L 484.3 693" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="316.7" y="47" width="127" height="18" rx="4" />
+    <text class="word tone-green" x="380.2" y="59" text-anchor="middle">reads config/.env</text>
+    <rect class="word-chip tone-green" x="292.2" y="203" width="176" height="18" rx="4" />
+    <text class="word tone-green" x="380.2" y="215" text-anchor="middle">with the three providers</text>
+    <rect class="word-chip tone-violet" x="798.9" y="203" width="43" height="18" rx="4" />
+    <text class="word tone-violet" x="820.4" y="215" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="323.7" y="359" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="380.2" y="371" text-anchor="middle">the ledger line</text>
+    <rect class="word-chip tone-green" x="348.2" y="515" width="64" height="18" rx="4" />
+    <text class="word tone-green" x="380.2" y="527" text-anchor="middle">--ledger</text>
+    <rect class="word-chip tone-green" x="334.2" y="671" width="92" height="18" rx="4" />
+    <text class="word tone-green" x="380.2" y="683" text-anchor="middle">--cache-gaps</text>
+    <rect class="box tone-green" x="0" y="312" width="252" height="138" rx="10" />
+    <text class="label tone-green" x="126" y="340" text-anchor="middle">Program</text>
+    <text class="note" x="126" y="356" text-anchor="middle">top-level statements</text>
+    <path class="frame" d="M 0 376 L 252 376" />
+    <text class="word tone-green" x="14" y="394" text-anchor="start">(default) probe the provider</text>
+    <text class="word tone-green" x="14" y="408" text-anchor="start">--think, --lines n</text>
+    <text class="word tone-green" x="14" y="422" text-anchor="start">--ledger file, --cache-gaps file</text>
+    <text class="word tone-green" x="14" y="436" text-anchor="start">--host-culture</text>
+    <rect class="box tone-violet" x="484.3" y="21" width="308" height="96" rx="10" />
+    <text class="label tone-violet" x="638.3" y="49" text-anchor="middle">LlmOptions</text>
+    <text class="note" x="638.3" y="65" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 484.3 85 L 792.3 85" />
+    <text class="word tone-violet" x="498.3" y="103" text-anchor="start">+FromEnvironment() (static)</text>
+    <rect class="box tone-violet" x="484.3" y="170" width="308" height="110" rx="10" />
+    <text class="label tone-violet" x="638.3" y="198" text-anchor="middle">LlmClientFactory</text>
+    <text class="note" x="638.3" y="214" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 484.3 234 L 792.3 234" />
+    <text class="word tone-violet" x="498.3" y="252" text-anchor="start">+Create(options) IChatClient</text>
+    <text class="word tone-violet" x="498.3" y="266" text-anchor="start">+CreateUsageMapper(options) IUsageMapper</text>
+    <rect class="box tone-violet" x="484.3" y="327" width="308" height="108" rx="10" />
+    <text class="label tone-violet" x="638.3" y="355" text-anchor="middle">IUsageMapper</text>
+    <text class="note" x="638.3" y="371" text-anchor="middle">interface,</text>
+    <text class="note" x="638.3" y="383" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 484.3 403 L 792.3 403" />
+    <text class="word tone-violet" x="498.3" y="421" text-anchor="start">+Map(usage, raw) UsageTokens</text>
+    <rect class="box tone-violet" x="484.3" y="482" width="308" height="110" rx="10" />
+    <text class="label tone-violet" x="638.3" y="510" text-anchor="middle">UsageReport</text>
+    <text class="note" x="638.3" y="526" text-anchor="middle">static, louis-agent.core</text>
+    <path class="frame" d="M 484.3 546 L 792.3 546" />
+    <text class="word tone-violet" x="498.3" y="564" text-anchor="start">+Read(path), Price(records, prices)</text>
+    <text class="word tone-violet" x="498.3" y="578" text-anchor="start">+Total(rows), Totals(records, by)</text>
+    <rect class="box tone-violet" x="484.3" y="645" width="308" height="96" rx="10" />
+    <text class="label tone-violet" x="638.3" y="673" text-anchor="middle">CacheGaps</text>
+    <text class="note" x="638.3" y="689" text-anchor="middle">static, louis-agent.core</text>
+    <path class="frame" d="M 484.3 709 L 792.3 709" />
+    <text class="word tone-violet" x="498.3" y="727" text-anchor="start">+Analyse(records, prices)</text>
+    <rect class="box tone-violet" x="872.6" y="349" width="476.4" height="64" rx="10" />
+    <text class="label tone-violet" x="1110.8" y="377" text-anchor="middle">AnthropicProvider, OllamaProvider, OpenAiCompatibleProvider</text>
+    <text class="note" x="1110.8" y="393" text-anchor="middle">the three providers</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="844" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="854.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="880" width="1349" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 890) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="902">
+    <tspan class="note-head">No types of its own:</tspan>
+    <tspan class="note-rest">one program over core's model factory, its usage mapper and the ledger's reports, so it measures exactly what the agents use.</tspan>
+  </text>
+</svg>

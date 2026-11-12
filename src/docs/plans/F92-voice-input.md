@@ -76,107 +76,19 @@ transcribe models). A cloud provider's price goes in the dated price table from 
 
 **Interface design**
 
-```mermaid
-classDiagram
-    class ISpeechToTextClient {
-        <<Microsoft.Extensions.AI, reused>>
-        GetTextAsync(Stream audio, SpeechToTextOptions? options, CancellationToken ct) Task~SpeechToTextResponse~
-    }
-    class ISpeechProvider {
-        <<core, step 1>>
-        SpeechProviderName Name
-        ISpeechToTextClient Create(SpeechOptions options)
-    }
-    class SpeechClientFactory {
-        <<core, step 1>>
-        ISpeechToTextClient? Create(SpeechOptions options)
-    }
-    class SpeechOptions {
-        <<record, step 1>>
-        SpeechProviderName? Provider
-        string? Model
-        string? Language
-    }
-    class WhisperSpeechProvider {
-        <<core.whisper, step 2, if C1 = a>>
-    }
-    class TranscriptionEndpoints {
-        <<api, step 3>>
-        Transcribe(id, IFormFile audio) Results~Ok~TranscriptionResult~, BadRequest, NotFound~
-    }
-    class TranscriptionResult {
-        <<api.contracts record, step 3>>
-        string Text
-        string? Language
-        double Seconds
-    }
-    ISpeechProvider <|.. WhisperSpeechProvider
-    SpeechClientFactory o-- ISpeechProvider : registry from HostServices
-    ISpeechProvider ..> ISpeechToTextClient : creates
-    TranscriptionEndpoints ..> SpeechClientFactory : asks
-    TranscriptionEndpoints ..> TranscriptionResult : returns
-```
+![Speech is a provider like a model: one interface per provider, a factory that picks it, and Microsoft's speech client underneath](diagrams/F92-voice-input-diagrams-4.svg)
 
 **Architecture**
 
-```mermaid
-flowchart LR
-    subgraph Browser
-        Mic["Mic button + recorder.js (step 5)"]
-        Box["Message box"]
-    end
-    subgraph API["louis-agent.api"]
-        T["POST /v1/sessions/{id}/transcriptions (step 3)"]
-        S["POST /v1/sessions/{id}/messages (today)"]
-        L["Usage ledger: speech row (step 4)"]
-    end
-    subgraph Core["louis-agent.core"]
-        F["SpeechClientFactory (step 1)"]
-    end
-    W["louis-agent.core.whisper (step 2)"]
-    E["Voice eval + WER check (step 6)"]
-    Mic -- "audio clip" --> T --> F --> W
-    T -- "text" --> Box -- "send" --> S
-    T --> L
-    E --> F
-```
+![The mic sends a clip to the API, a factory picks the speech provider, the text comes back to the message box, and the ledger counts it](diagrams/F92-voice-input-diagrams.svg)
 
 **Communication**
 
-```mermaid
-sequenceDiagram
-    actor P as Person
-    participant B as Browser (recorder.js)
-    participant A as API
-    participant F as SpeechClientFactory
-    participant W as Whisper
-    participant L as Ledger
-    P->>B: holds the mic, talks, lets go
-    B->>A: POST /v1/sessions/{id}/transcriptions (webm clip, language hint)
-    A->>A: checks size and length, else 400 with the reason
-    A->>F: Create(options)
-    F-->>A: ISpeechToTextClient
-    A->>W: GetTextAsync(stream)
-    W-->>A: text
-    A->>L: speech row (seconds, provider, price or null)
-    A-->>B: 200 TranscriptionResult (text, language, seconds)
-    B->>P: text in the box
-    P->>B: fixes a word, presses send
-    B->>A: POST /v1/sessions/{id}/messages (text, as today)
-```
+![One clip to text: the API checks the clip, Whisper turns it into text, the ledger counts it, and the person fixes it before sending](diagrams/F92-voice-input-diagrams-3.svg)
 
 **Objects (one transcription)**
 
-```mermaid
-flowchart TB
-    Host["AgentHostContext"] --> Factory["SpeechClientFactory"]
-    Factory --> Registry["[WhisperSpeechProvider]"]
-    Request["the request"] --> Stream["audio Stream (in memory, dropped after)"]
-    Request --> Client["ISpeechToTextClient (logging + telemetry wrapped)"]
-    Client --> Model["Whisper model (loaded once per process)"]
-    Request --> Result["TranscriptionResult"]
-    Request --> Row["SpeechUsage row"]
-```
+![One transcription in memory: the request holds the audio stream, the speech client, the result and the usage row](diagrams/F92-voice-input-diagrams-2.svg)
 
 ### Namespace map
 

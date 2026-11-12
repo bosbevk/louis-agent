@@ -1,0 +1,143 @@
+{
+  "kind": "flow",
+  "caption": "A site is a small program on top of this library: it says who it is and what it uses, and the framework does the rest.",
+  "title": "The framework's web: a site's pages in the chat's and the admin's frames, and the API they call",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "Program.cs: its words,\nSiteFrames, PackViews",
+        "group": "site"
+      },
+      {
+        "id": "page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Its chat page, with what goes\nin the slots",
+        "group": "site"
+      },
+      {
+        "id": "layout",
+        "icon": "file",
+        "tone": "blue",
+        "label": "Its admin layout, with what\ngoes in the slots",
+        "group": "site"
+      },
+      {
+        "id": "shell",
+        "icon": "message",
+        "tone": "green",
+        "label": "ChatShell"
+      },
+      {
+        "id": "admin",
+        "icon": "settings",
+        "tone": "green",
+        "label": "AdminShell"
+      },
+      {
+        "id": "runner",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "ChatRunner"
+      },
+      {
+        "id": "views",
+        "icon": "box",
+        "tone": "green",
+        "label": "TurnView, DelegationCard,\nWorkPanel"
+      },
+      {
+        "id": "stream",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "TurnStream: events become a\nTurn"
+      },
+      {
+        "id": "store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ChatStore: localStorage"
+      },
+      {
+        "id": "api",
+        "icon": "cloud",
+        "tone": "green",
+        "label": "AgentApi"
+      },
+      {
+        "id": "menu",
+        "icon": "book",
+        "tone": "green",
+        "label": "PackMenu"
+      },
+      {
+        "id": "screen",
+        "icon": "chart",
+        "tone": "green",
+        "label": "Screen page and ScreenTable,\nor a pack\u0027s view from\nPackViews"
+      },
+      {
+        "id": "server",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api"
+      }
+    ],
+    "edges": [
+      {
+        "from": "page",
+        "to": "shell"
+      },
+      {
+        "from": "layout",
+        "to": "admin"
+      },
+      {
+        "from": "shell",
+        "to": "runner"
+      },
+      {
+        "from": "shell",
+        "to": "views"
+      },
+      {
+        "from": "runner",
+        "to": "stream"
+      },
+      {
+        "from": "runner",
+        "to": "store"
+      },
+      {
+        "from": "runner",
+        "to": "api"
+      },
+      {
+        "from": "admin",
+        "to": "menu"
+      },
+      {
+        "from": "admin",
+        "to": "screen"
+      },
+      {
+        "from": "screen",
+        "to": "api"
+      },
+      {
+        "from": "api",
+        "to": "server",
+        "word": "HTTP and SSE, on the same origin"
+      }
+    ],
+    "groups": [
+      {
+        "id": "site",
+        "label": "A site"
+      }
+    ]
+  }
+}

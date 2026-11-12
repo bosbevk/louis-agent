@@ -1,0 +1,106 @@
+{
+  "kind": "flow",
+  "title": "The evals: one cook run, in memory",
+  "caption": "One run, in memory: an eval's folder becomes trials, and each trial's checks grade it into events. The folder is demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook, and its nine checks are cook-no-error, routed-to, within-budget, estimates-at-shop, untooled-shops, recipe-image, serves-as-asked, meal-for-people and meal-for-people.human.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "set",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "Evals/Cook/eval.json\nidentity = puls"
+      },
+      {
+        "id": "eval",
+        "icon": "checks",
+        "tone": "blue",
+        "label": "FileEval : IEval\nName = puls-cook, Version = 11"
+      },
+      {
+        "id": "modes",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "EvalMode puls-cook · EvalMode\npuls-tools"
+      },
+      {
+        "id": "data",
+        "icon": "file",
+        "tone": "amber",
+        "label": "Dataset puls-cook v7\ndev and held-out scenarios,\nlabels"
+      },
+      {
+        "id": "graders",
+        "icon": "checks",
+        "tone": "green",
+        "label": "9 checks, from cook-no-error\nto meal-for-people.human"
+      },
+      {
+        "id": "trial",
+        "icon": "message",
+        "tone": "teal",
+        "label": "Trial\nrun 5d1fd231c9b1 · puls-cook ·\nrepeat 1 · cook-malmesbury"
+      },
+      {
+        "id": "transcript",
+        "icon": "file",
+        "tone": "teal",
+        "label": "Transcript\nTurnTranscript per question"
+      },
+      {
+        "id": "grades",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "Grade × 9\ne.g. untooled-shops 1.0 pass"
+      },
+      {
+        "id": "conv",
+        "icon": "database",
+        "tone": "amber",
+        "label": "ConversationEvent\ngrades, TrialOutcome, Metrics"
+      }
+    ],
+    "edges": [
+      {
+        "from": "set",
+        "to": "eval"
+      },
+      {
+        "from": "eval",
+        "to": "modes"
+      },
+      {
+        "from": "eval",
+        "to": "data"
+      },
+      {
+        "from": "eval",
+        "to": "graders"
+      },
+      {
+        "from": "modes",
+        "to": "trial"
+      },
+      {
+        "from": "data",
+        "to": "trial"
+      },
+      {
+        "from": "trial",
+        "to": "transcript"
+      },
+      {
+        "from": "graders",
+        "to": "grades"
+      },
+      {
+        "from": "transcript",
+        "to": "grades"
+      },
+      {
+        "from": "grades",
+        "to": "conv"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -13,43 +13,11 @@ A test that starts a real process, opens Mongo or needs the Puls stack is an int
 
 ## Diagrams
 
-**Architecture:** where the tests live, and what they share. A test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.
+![The tests: what CI runs, and the two testing libraries they share](diagrams/tests-diagrams.svg)
 
-```mermaid
-flowchart TD
-    shared["louis-agent.testing: FakeChatClient, StubHandler, TestPaths"]
-    web["louis-agent.web.testing: FixtureApi, Snapshots, SassStylesheet"]
-    framework["src/tests: engine, hosts, web, evals"] --> shared
-    framework --> web
-    demos["demos/*/tests: each demo's own"] --> shared
-    demos --> web
-    packs["packs/tests: each pack's own"] --> shared
-    integration["*.integration-tests: start a process, open Mongo, need a tool"] --> shared
-    ci["CI, on Ubuntu"] -->|"Category!=Integration"| framework
-    ci --> demos
-    ci --> packs
-    ci -->|"Category=Integration, INTEGRATION_REQUIRED=1"| integration
-```
+![A golden file: the snapshot is written when you ask, and otherwise the test passes when it's the same and fails when it differs](diagrams/tests-diagrams-2.svg)
 
-**Flow:** a golden file. It pins what a component draws or what the model reads, so a change has to be looked at before it's accepted.
-
-```mermaid
-sequenceDiagram
-    participant T as A test
-    participant S as Snapshots
-    participant G as The .html golden, beside the test
-    participant Y as You
-    T->>S: Match(file, what it rendered)
-    S->>S: normalises what isn't the component's doing
-    alt LOUIS_UPDATE_GOLDEN=1
-        S->>G: writes it
-        G-->>Y: read the diff, then commit it
-    else it's the same
-        S-->>T: passes
-    else it differs
-        S-->>T: fails, with what it rendered in the temp folder
-    end
-```
+![The types: two shared libraries every test project uses, fakes for the model, HTTP, the composition and the web, and fixtures for the web's snapshots](diagrams/tests-interface.svg)
 
 ![The framework's tests: a fake model, golden files, and the integration tests apart](diagrams/tests.svg)
 

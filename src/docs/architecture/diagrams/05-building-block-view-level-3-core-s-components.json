@@ -1,0 +1,100 @@
+{
+  "kind": "flow",
+  "title": "Building blocks, level 3: the engine's parts",
+  "caption": "One concern a folder: hosting, the agent, the model, tools, skills, usage and guards are core's components, each depending only on the ones under it.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "hosting",
+        "icon": "server",
+        "tone": "blue",
+        "label": "Hosting\nAgentHost, AgentEngineFactory"
+      },
+      {
+        "id": "agent",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "Agent\nAgentEngine, ToolRegistry,\nToolCallGuards, ToolsetCatalog"
+      },
+      {
+        "id": "llm",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "Llm\nLlmClientFactory (a registry),\nmiddleware, the ILlmProvider\nseam"
+      },
+      {
+        "id": "tools",
+        "icon": "box",
+        "tone": "green",
+        "label": "Tools\none folder per toolset"
+      },
+      {
+        "id": "skills",
+        "icon": "book",
+        "tone": "amber",
+        "label": "Skills\nmarkdown loaders"
+      },
+      {
+        "id": "usage",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "Usage · Pricing\nledger, prices, rates"
+      },
+      {
+        "id": "guard",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "Guardrails\nworkspace boundary, secrets,\nSSRF"
+      },
+      {
+        "id": "base",
+        "icon": "settings",
+        "tone": "teal",
+        "label": "Config · Messages · Logging"
+      }
+    ],
+    "edges": [
+      {
+        "from": "hosting",
+        "to": "agent"
+      },
+      {
+        "from": "agent",
+        "to": "llm"
+      },
+      {
+        "from": "agent",
+        "to": "tools"
+      },
+      {
+        "from": "agent",
+        "to": "skills"
+      },
+      {
+        "from": "agent",
+        "to": "usage"
+      },
+      {
+        "from": "llm",
+        "to": "guard"
+      },
+      {
+        "from": "tools",
+        "to": "guard"
+      },
+      {
+        "from": "skills",
+        "to": "guard"
+      },
+      {
+        "from": "usage",
+        "to": "guard"
+      },
+      {
+        "from": "guard",
+        "to": "base"
+      }
+    ],
+    "direction": "down"
+  }
+}

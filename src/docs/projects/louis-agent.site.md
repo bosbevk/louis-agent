@@ -17,13 +17,7 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
 
 ## How it runs
 
-```mermaid
-flowchart LR
-    visitor["A visitor"] -->|https louis-agent.dev| host
-    host["louis-agent.site-api: SiteCatalog, MapLouisAgentSite, the API"] --> pages["louis-agent.site: the pages as HTML, then the app"]
-    host --> guide["The guide: docs, leads, site packs"]
-    guide --> model["Anthropic"]
-```
+![louis-agent.site: How it runs](diagrams/louis-agent.site-how-it-runs.svg)
 
 - **The host is a few lines** (`src/site/louis-agent.site-api/Program.cs`): `SiteCatalog` is the guide alone, so it is
   the default, on exactly the three packs it names; the program serves the site's pages as HTML (F121) and the API the
@@ -88,6 +82,12 @@ letter. The detailed film's six slabs inside core are the chat pipeline's middle
 `src/tools/louis-agent.film-export`, which starts this host on a spare port, seeks each animation in a headless Chrome
 and encodes the frames in Docker; `films.sha256` records what each was made of, and `ExportedFilmsTests` fails until a
 changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md)).
+
+## Diagrams
+
+![A visitor opens a page and asks: the page comes prerendered, and the guide's answer streams from the same host](diagrams/louis-agent.site-sequence.svg)
+
+![The types: the site holds its words, places, demos and diagrams, on the framework's shell](diagrams/louis-agent.site-interface.svg)
 
 ## Structure
 

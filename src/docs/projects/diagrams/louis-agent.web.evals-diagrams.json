@@ -1,0 +1,95 @@
+{
+  "kind": "flow",
+  "caption": "The studio's pages are opt-in: a site adds them to its admin frame, and they talk to the API's eval routes.",
+  "title": "The eval studio's pages: from a site's program through the admin frame to the API",
+  "flow": {
+    "nodes": [
+      {
+        "id": "site",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A site\u0027s Program.cs and frame"
+      },
+      {
+        "id": "states",
+        "icon": "users",
+        "tone": "teal",
+        "label": "Scoped states: reviewer,\nreview queue, notes"
+      },
+      {
+        "id": "frame",
+        "icon": "browser",
+        "tone": "violet",
+        "label": "AdminShell, through AdminFrame"
+      },
+      {
+        "id": "pages",
+        "icon": "file",
+        "tone": "green",
+        "label": "Pages: Running, Reviewing,\nBuilding"
+      },
+      {
+        "id": "parts",
+        "icon": "box",
+        "tone": "green",
+        "label": "Components: the parts, markup\nonly"
+      },
+      {
+        "id": "logic",
+        "icon": "code",
+        "tone": "green",
+        "label": "Admin/: plain classes, the\nsums and the words"
+      },
+      {
+        "id": "api",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "AgentApi"
+      },
+      {
+        "id": "server",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api"
+      }
+    ],
+    "edges": [
+      {
+        "from": "site",
+        "to": "states",
+        "word": "EvalPages.AddTo,\nSiteKinds"
+      },
+      {
+        "from": "site",
+        "to": "frame",
+        "word": "EvalLinks, LiveRunStrip"
+      },
+      {
+        "from": "frame",
+        "to": "pages"
+      },
+      {
+        "from": "pages",
+        "to": "parts"
+      },
+      {
+        "from": "parts",
+        "to": "logic"
+      },
+      {
+        "from": "parts",
+        "to": "states"
+      },
+      {
+        "from": "pages",
+        "to": "api"
+      },
+      {
+        "from": "api",
+        "to": "server",
+        "word": "/v1/admin/..."
+      }
+    ],
+    "direction": "down"
+  }
+}

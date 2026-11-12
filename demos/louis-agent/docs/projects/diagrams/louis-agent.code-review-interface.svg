@@ -1,0 +1,182 @@
+<svg viewBox="-24 -24 969 972" width="969" height="972" role="img" aria-label="louis-agent.code-review: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.code-review: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="969" height="972" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="921" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.code-review:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 385 222 L 461.4 222 Q 485.4 222 485.4 198 L 485.4 92 Q 485.4 68 509.4 68 L 573.8 68" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385 222 L 573.8 222" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385 222 L 461.4 222 Q 485.4 222 485.4 246 L 485.4 660 Q 485.4 684 509.4 684 L 573.8 684" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-violet" d="M 385 530 L 425.4 530 Q 449.4 530 449.4 554 L 449.4 660 Q 449.4 684 473.4 684 L 573.8 684" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-green" d="M 385 376 L 573.8 376" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 385 376 L 443.4 376 Q 467.4 376 467.4 400 L 467.4 506 Q 467.4 530 491.4 530 L 573.8 530" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="494.1" y="46" width="71" height="18" rx="4" />
+    <text class="word tone-green" x="529.6" y="58" text-anchor="middle">registers</text>
+    <rect class="word-chip tone-green" x="494.1" y="200" width="71" height="18" rx="4" />
+    <text class="word tone-green" x="529.6" y="212" text-anchor="middle">opts into</text>
+    <rect class="word-chip tone-green" x="501.1" y="662" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="529.6" y="674" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-violet" x="392.2" y="508" width="50" height="18" rx="4" />
+    <text class="word tone-violet" x="417.2" y="520" text-anchor="middle">add to</text>
+    <rect class="word-chip tone-green" x="404.7" y="354" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="426.2" y="366" text-anchor="middle">holds</text>
+    <rect class="box tone-green" x="0" y="154" width="385" height="136" rx="10" />
+    <text class="label tone-green" x="192.5" y="182" text-anchor="middle">Program</text>
+    <text class="note" x="192.5" y="198" text-anchor="middle">top-level, what the app</text>
+    <text class="note" x="192.5" y="210" text-anchor="middle">is made of</text>
+    <path class="frame" d="M 0 230 L 385 230" />
+    <text class="word tone-green" x="14" y="248" text-anchor="start">ChatStore, AgentApi, GitState, GitHistory, ChatText</text>
+    <text class="word tone-green" x="14" y="262" text-anchor="start">AddLouisAgentAccounts(), AddLouisAgentEvals()</text>
+    <text class="word tone-green" x="14" y="276" text-anchor="start">SiteFrames(Admin, Account), PackViews, ChatHandoff</text>
+    <rect class="box tone-green" x="0" y="338" width="385" height="76" rx="10" />
+    <text class="label tone-green" x="192.5" y="366" text-anchor="middle">ChatPage</text>
+    <text class="note" x="192.5" y="382" text-anchor="middle">the coding agent's chat,</text>
+    <text class="note" x="192.5" y="394" text-anchor="middle">in the ChatShell</text>
+    <rect class="box tone-violet" x="0" y="492" width="385" height="76" rx="10" />
+    <text class="label tone-violet" x="192.5" y="520" text-anchor="middle">GitWebViews, FilesWebViews</text>
+    <text class="note" x="192.5" y="536" text-anchor="middle">the git and files packs'</text>
+    <text class="note" x="192.5" y="548" text-anchor="middle">web views</text>
+    <rect class="box tone-violet" x="573.8" y="36" width="347.2" height="64" rx="10" />
+    <text class="label tone-violet" x="747.4" y="64" text-anchor="middle">ChatShell, ChatRunner, ChatStore, AgentApi</text>
+    <text class="note" x="747.4" y="80" text-anchor="middle">louis-agent.web</text>
+    <rect class="box tone-violet" x="573.8" y="184" width="347.2" height="76" rx="10" />
+    <text class="label tone-violet" x="747.4" y="212" text-anchor="middle">AddLouisAgentEvals, AddLouisAgentAccounts</text>
+    <text class="note" x="747.4" y="228" text-anchor="middle">louis-agent.web.evals and</text>
+    <text class="note" x="747.4" y="240" text-anchor="middle">.web.accounts</text>
+    <rect class="box tone-green" x="573.8" y="338" width="347.2" height="76" rx="10" />
+    <text class="label tone-green" x="747.4" y="366" text-anchor="middle">EmptyChat</text>
+    <text class="note" x="747.4" y="382" text-anchor="middle">the first screen of a</text>
+    <text class="note" x="747.4" y="394" text-anchor="middle">chat</text>
+    <rect class="box tone-green" x="573.8" y="498" width="347.2" height="64" rx="10" />
+    <text class="label tone-green" x="747.4" y="526" text-anchor="middle">ThemeSwitcher</text>
+    <text class="note" x="747.4" y="542" text-anchor="middle">the themes in themes.json</text>
+    <rect class="box tone-violet" x="573.8" y="646" width="347.2" height="76" rx="10" />
+    <text class="label tone-violet" x="747.4" y="674" text-anchor="middle">PackViews</text>
+    <text class="note" x="747.4" y="690" text-anchor="middle">louis-agent.web: a pack's</text>
+    <text class="note" x="747.4" y="702" text-anchor="middle">own screens</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="834" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="844.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="870" width="921" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 880) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="892">
+    <tspan class="note-head">A site on the framework's web:</tspan>
+    <tspan class="note-rest">its program names what it uses, its own few components sit in the shared frames, and the</tspan>
+  </text>
+  <text class="notes" x="38" y="909">
+    <tspan class="note-rest">packs' views come in by name.</tspan>
+  </text>
+</svg>

@@ -1,0 +1,24 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.pack.site: one place shown",
+  "caption": "A path of this site or nothing: the tool refuses a scheme, a host or a climb out, and the browser only ever gets a path of its own site.",
+  "sequence": {
+    "participants": [
+      { "id": "model", "label": "The model", "icon": "chip", "tone": "violet" },
+      { "id": "tool", "label": "SiteTools", "icon": "shield", "tone": "green" },
+      { "id": "widget", "label": "The widget", "icon": "browser", "tone": "violet" },
+      { "id": "browser", "label": "The visitor's browser", "icon": "browser", "tone": "blue" }
+    ],
+    "steps": [
+      { "step": "message", "from": "model", "to": "tool", "text": "ShowPage(\"/pricing#plans\")" },
+      { "step": "block", "block": "alt", "label": "a path of this site",
+        "steps": [
+          { "step": "reply", "from": "tool", "to": "model", "text": "shown: say one line about it" },
+          { "step": "note", "over": ["widget"], "text": "hears the call in the stream" },
+          { "step": "message", "from": "widget", "to": "browser", "text": "go to /pricing, then the plans area" }
+        ],
+        "else": [ { "label": "anything else",
+          "steps": [ { "step": "reply", "from": "tool", "to": "model", "text": "refused, with the reason" } ] } ] }
+    ]
+  }
+}

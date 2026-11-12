@@ -20,11 +20,13 @@ ships no SDK.
 a placeholder, since a local server often wants none and the SDK wants something. It reports usage in the standard
 fields and marks no cache, so the seam's defaults hold.
 
-```mermaid
-flowchart LR
-    program["A program: HostServices(…, Providers: [OpenAiCompatibleProvider.Instance, …])"] --> factory["LlmClientFactory (core)"]
-    factory --> provider["OpenAiCompatibleProvider (this library)"] --> sdk["OpenAI SDK: OpenAIClient.GetChatClient(model).AsIChatClient"]
-```
+![louis-agent.core.openai: How it works](diagrams/louis-agent.core.openai-how-it-works.svg)
+
+## Diagrams
+
+![One reply from your endpoint: no endpoint and the provider refuses, with one the engine talks to it through the OpenAI SDK](diagrams/louis-agent.core.openai-sequence.svg)
+
+![The types: OpenAiCompatibleProvider is core's provider seam over the OpenAI SDK](diagrams/louis-agent.core.openai-interface.svg)
 
 ## Structure
 

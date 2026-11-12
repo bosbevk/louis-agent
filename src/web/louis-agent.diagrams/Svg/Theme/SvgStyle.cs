@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Diagrams.Svg.Theme;
 
@@ -24,10 +25,13 @@ internal static class SvgStyle
           .note { fill: var(--quiet); font: 10px var(--mono); }
           .edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
           .arrow { fill: var(--quiet); }
-          .word {
-            fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
-            paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+          .dashed { stroke-dasharray: 5 4; }
+          .group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+          .group-label {
+            fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
           }
+          .word { fill: var(--text); font: 500 10px var(--mono); }
+          .word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
           .caption {
             fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
           }
@@ -39,11 +43,73 @@ internal static class SvgStyle
           .chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
           .code { fill: var(--text); font: 11px var(--mono); }
           .text { fill: var(--quiet); font: 11px var(--mono); }
+          .badge { fill: var(--quiet); }
+          .badge-icon {
+            fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+          }
+          {{ToneRules(theme)}}
           """);
 
-    /// <summary>One palette as the picture's colour variables.</summary>
+    /// <summary>
+    /// The docs' frame's look (<see cref="TitledFrame"/>), added to a framed picture's style only, so a bare
+    /// picture's bytes stay as they were: a system sans font for the bar's and the note's words, the bar's navy and
+    /// its ink in both looks, and one rule per part, the legend's swatches one per tone.
+    /// </summary>
+    public static string Frame(SvgTheme theme) =>
+        $$"""
+
+          svg {
+            --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            {{Banner(theme.Light.Banner)}}
+          }
+          @media (prefers-color-scheme: dark) {
+            svg { {{Banner(theme.Dark.Banner)}} }
+          }
+          .titlebar { fill: var(--banner); }
+          .title-icon {
+            fill: none; stroke: var(--banner-ink); stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+          }
+          .title-rule { fill: var(--banner-line); }
+          .heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+          .title-head { font-weight: 700; }
+          .notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+          .note-icon {
+            fill: none; stroke: var(--accent); stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+          }
+          .notes { fill: var(--quiet); font: 400 12px var(--sans); }
+          .note-head { fill: var(--text); font-weight: 700; }
+          .legend { fill: var(--quiet); font: 400 12px var(--sans); }
+          {{Swatches(theme)}}
+
+          """;
+
+    /// <summary>Each tone's legend swatch: its box's tint and line, small.</summary>
+    private static string Swatches(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
+        .Select(tone => tone.Wire()).Select(name =>
+            $".swatch.tone-{name} {{ fill: var(--{name}-fill); stroke: var(--{name}-line); stroke-width: 1.5; }}"));
+
+    /// <summary>The title bar's colours as the picture's variables.</summary>
+    private static string Banner(SvgTone banner) =>
+        $"--banner: {banner.Fill}; --banner-line: {banner.Line}; --banner-ink: {banner.Ink};";
+
+    /// <summary>One palette as the picture's colour variables, each tone's three among them.</summary>
     private static string Variables(SvgPalette palette) =>
         $"--ground: {palette.Ground}; --panel: {palette.Panel}; --line: {palette.Line}; --text: {palette.Text}; " +
         $"--bright: {palette.Bright}; --quiet: {palette.Quiet}; --chip: {palette.Chip}; " +
-        $"--accent: {palette.Accent}; --tint: {palette.Tint};";
+        $"--accent: {palette.Accent}; --tint: {palette.Tint};" + string.Concat(palette.Tones.Select(tone =>
+            $" --{tone.Key.Wire()}-fill: {tone.Value.Fill}; --{tone.Key.Wire()}-line: {tone.Value.Line};" +
+            $" --{tone.Key.Wire()}-ink: {tone.Value.Ink};"));
+
+    /// <summary>
+    /// What a tone changes, one set of rules per tone the light palette has: a box's tint and line, its badge, its
+    /// label's ink, and the arrows that leave it, their heads, chips and words.
+    /// </summary>
+    private static string ToneRules(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
+        .Select(tone => tone.Wire()).Select(name =>
+            $".box.tone-{name} {{ fill: var(--{name}-fill); stroke: var(--{name}-line); stroke-width: 1.5; }}\n" +
+            $".badge.tone-{name}, .arrow.tone-{name} {{ fill: var(--{name}-line); }}\n" +
+            $".label.tone-{name}, .word.tone-{name} {{ fill: var(--{name}-ink); }}\n" +
+            $".edge.tone-{name}, .word-chip.tone-{name} {{ stroke: var(--{name}-line); }}"));
 }

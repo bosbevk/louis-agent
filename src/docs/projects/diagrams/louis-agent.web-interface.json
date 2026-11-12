@@ -1,0 +1,104 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.web: the interface design",
+  "caption": "What every site shares: shells for its frames, one runner for a chat's turn over the agent API, the chats kept in the browser, and an address for every place.",
+  "classes": {
+    "types": [
+      {
+        "id": "shells",
+        "name": "SiteShell, ChatShell, AdminShell, ShowroomShell",
+        "kind": "the frames a site's pages sit in"
+      },
+      {
+        "id": "runner",
+        "name": "ChatRunner",
+        "kind": "one chat's life: draft, session, stream, save",
+        "members": [
+          "+StartTurnAsync(message, attachments, page?, title?)",
+          "+SendAsync(), StopAsync()",
+          "+DeleteChatAsync(chat)"
+        ]
+      },
+      {
+        "id": "api",
+        "name": "AgentApi",
+        "kind": "the agent API over HTTP",
+        "members": [
+          "+CreateSessionAsync(toolsets, role?) string",
+          "+StreamMessageAsync(...) IAsyncEnumerable<SessionEvent>",
+          "+CancelAsync, DeleteSessionAsync",
+          "+GetAsync<T>, PostAsync<T>, PutAsync<T>"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "ChatStore",
+        "kind": "the browser's storage",
+        "members": [
+          "+LoadAsync(), SaveAsync()",
+          "+Find(sessionId) Chat?",
+          "+SaveApiKeyAsync, SaveAdminKeyAsync"
+        ]
+      },
+      {
+        "id": "addresses",
+        "name": "SiteAddresses",
+        "kind": "ADR 0107: every place its own address",
+        "members": [
+          "+SiteAddresses(home, pages)"
+        ]
+      },
+      {
+        "id": "section",
+        "name": "SectionPage",
+        "kind": "a page of sections, each with an id"
+      },
+      {
+        "id": "graph",
+        "name": "GraphView",
+        "kind": "an animated diagram",
+        "members": [
+          "+GraphSpec Spec"
+        ]
+      },
+      {
+        "id": "menu",
+        "name": "IAccountMenu",
+        "kind": "interface, a site's account corner",
+        "members": [
+          "+Enabled, SignedIn, Name?, Email?",
+          "+LoadAsync(), SignOutAsync()"
+        ]
+      },
+      {
+        "id": "packviews",
+        "name": "IScreenView, IImportView",
+        "kind": "interfaces, a pack's own views",
+        "members": [
+          "+Screen ScreenReply; +Form ImportForm"
+        ]
+      },
+      {
+        "id": "layout",
+        "name": "GraphLayout",
+        "kind": "louis-agent.diagrams",
+        "tone": "violet"
+      },
+      {
+        "id": "contracts",
+        "name": "louis-agent.api.contracts",
+        "kind": "the requests and replies, shared",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "shells", "to": "runner", "kind": "holds", "word": "the chat frame's" },
+      { "from": "shells", "to": "menu", "kind": "uses", "word": "shows" },
+      { "from": "runner", "to": "api", "kind": "holds" },
+      { "from": "runner", "to": "store", "kind": "holds" },
+      { "from": "api", "to": "contracts", "kind": "uses", "word": "reads and sends" },
+      { "from": "section", "to": "addresses", "kind": "uses" },
+      { "from": "graph", "to": "layout", "kind": "uses", "word": "places" }
+    ]
+  }
+}

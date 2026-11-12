@@ -52,16 +52,7 @@ general, and where each fits.
 
 ### Decision tree
 
-```mermaid
-flowchart TD
-    A[Need to call Claude] --> B{Need to swap model providers<br/>Anthropic, Ollama, etc.?}
-    B -->|Yes| C["Messages API + your own loop<br/>(this is louis-agent)"]
-    B -->|No, Claude-only is fine| D{Want Anthropic to host<br/>the tool-execution sandbox?}
-    D -->|Yes| E[Managed Agents]
-    D -->|No, I host it| F{Need Claude Code's built-in<br/>file/bash/grep tools?}
-    F -->|Yes| G[Claude Agent SDK]
-    F -->|No, just a loop over my own tools| H[Tool Runner]
-```
+![ADR 0002: which Claude tier to build on](diagrams/0002-messages-api-tier-with-our-own-loop-decision-tree.svg)
 
 ### Real-world use cases
 
@@ -81,12 +72,4 @@ flowchart TD
 
 ### Where louis-agent sits
 
-```mermaid
-flowchart LR
-    subgraph repo["louis-agent.core"]
-        AE["AgentEngine<br/>(tool loop, skills, approval)"] --> IC["IChatClient"]
-        IC --> AC["AnthropicClient.AsIChatClient()"]
-        IC -.pluggable swap.-> OL["Ollama / other provider"]
-    end
-    AC --> API["Claude Messages API"]
-```
+![ADR 0002: where louis-agent sits](diagrams/0002-messages-api-tier-with-our-own-loop-where-louis-agent-sits.svg)

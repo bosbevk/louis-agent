@@ -1,0 +1,135 @@
+{
+  "kind": "flow",
+  "caption": "One container per chat: Rider starts it, and everything goes over its stdin and stdout.",
+  "title": "Rider's chat: from AcpHost through the prompt handler to Rider, and back",
+  "flow": {
+    "nodes": [
+      {
+        "id": "rider",
+        "icon": "code",
+        "tone": "red",
+        "label": "Rider"
+      },
+      {
+        "id": "server",
+        "icon": "server",
+        "tone": "green",
+        "label": "AcpServer"
+      },
+      {
+        "id": "host",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "AcpHost"
+      },
+      {
+        "id": "engine",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "AgentEngine (core)"
+      },
+      {
+        "id": "handler",
+        "icon": "message",
+        "tone": "green",
+        "label": "PromptHandler"
+      },
+      {
+        "id": "builder",
+        "icon": "settings",
+        "tone": "green",
+        "label": "PromptBuilder"
+      },
+      {
+        "id": "roots",
+        "icon": "branch",
+        "tone": "amber",
+        "label": "GitRoots"
+      },
+      {
+        "id": "paths",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "ContainerPaths"
+      },
+      {
+        "id": "relay",
+        "icon": "message",
+        "tone": "teal",
+        "label": "TurnRelay"
+      },
+      {
+        "id": "cards",
+        "icon": "box",
+        "tone": "teal",
+        "label": "ToolCards"
+      },
+      {
+        "id": "writer",
+        "icon": "terminal",
+        "tone": "green",
+        "label": "JsonRpcWriter"
+      }
+    ],
+    "edges": [
+      {
+        "from": "rider",
+        "to": "server",
+        "word": "stdin: one JSON-RPC\nmessage a line"
+      },
+      {
+        "from": "host",
+        "to": "engine",
+        "word": "AgentHost.Build"
+      },
+      {
+        "from": "host",
+        "to": "server"
+      },
+      {
+        "from": "server",
+        "to": "handler",
+        "word": "session/prompt"
+      },
+      {
+        "from": "handler",
+        "to": "builder"
+      },
+      {
+        "from": "handler",
+        "to": "roots"
+      },
+      {
+        "from": "builder",
+        "to": "paths"
+      },
+      {
+        "from": "handler",
+        "to": "engine",
+        "word": "HandleUserCommand,\nStreamPromptAsync"
+      },
+      {
+        "from": "handler",
+        "to": "relay"
+      },
+      {
+        "from": "relay",
+        "to": "cards"
+      },
+      {
+        "from": "relay",
+        "to": "writer"
+      },
+      {
+        "from": "server",
+        "to": "writer"
+      },
+      {
+        "from": "writer",
+        "to": "rider",
+        "word": "stdout: session/update"
+      }
+    ],
+    "direction": "down"
+  }
+}

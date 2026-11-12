@@ -1,0 +1,98 @@
+{
+  "kind": "flow",
+  "caption": "Behind the seam: core asks for a client by the provider's name, and only this library knows Anthropic's SDK.",
+  "title": "Claude's provider: from a program through the client factory to the SDK and its parts",
+  "flow": {
+    "nodes": [
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A program: HostServices(\u2026,\nProviders:\n[AnthropicProvider.Instance,\n\u2026])"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "violet",
+        "label": "AgentHost.Build (core)"
+      },
+      {
+        "id": "factory",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "LlmClientFactory (core): by\nLLM_PROVIDER\u0027s name"
+      },
+      {
+        "id": "provider",
+        "icon": "chip",
+        "tone": "green",
+        "label": "AnthropicProvider (this\nlibrary)"
+      },
+      {
+        "id": "sdk",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "Anthropic SDK:\nAnthropicClient.AsIChatClient"
+      },
+      {
+        "id": "budget",
+        "icon": "settings",
+        "tone": "green",
+        "label": "ThinkingBudget (older models)"
+      },
+      {
+        "id": "mapper",
+        "icon": "chart",
+        "tone": "green",
+        "label": "AnthropicUsageMapper"
+      },
+      {
+        "id": "caching",
+        "icon": "database",
+        "tone": "green",
+        "label": "AnthropicPromptCaching"
+      },
+      {
+        "id": "wrap",
+        "icon": "box",
+        "tone": "violet",
+        "label": "PromptCachingChatClient (core)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "program",
+        "to": "host"
+      },
+      {
+        "from": "host",
+        "to": "factory"
+      },
+      {
+        "from": "factory",
+        "to": "provider"
+      },
+      {
+        "from": "provider",
+        "to": "sdk"
+      },
+      {
+        "from": "provider",
+        "to": "budget"
+      },
+      {
+        "from": "provider",
+        "to": "mapper"
+      },
+      {
+        "from": "provider",
+        "to": "caching"
+      },
+      {
+        "from": "factory",
+        "to": "wrap"
+      }
+    ],
+    "direction": "down"
+  }
+}

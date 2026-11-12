@@ -1,0 +1,72 @@
+{
+  "kind": "classes",
+  "title": "The general packs: the interface design",
+  "caption": "Every pack the same shape: an IAgentPack lists its toolsets, each toolset builds its tool classes from what the engine hands it, and nothing else.",
+  "classes": {
+    "types": [
+      {
+        "id": "ipack",
+        "name": "IAgentPack",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name, Toolsets, Prompts, Requires",
+          "+ComesBeforeTheEngine",
+          "+Feeds, Imports, Screens"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "FilesPack, GitPack, DotNetPack, ShellPack, WebPack, PaymoPack, DevOpsPack",
+        "kind": "one per pack, each implements IAgentPack",
+        "members": [
+          "+ComesBeforeTheEngine true"
+        ]
+      },
+      {
+        "id": "toolset",
+        "name": "PackToolset",
+        "kind": "record, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name, Description, GuideFile?",
+          "+MissingSettings(context) IReadOnlyList<string>",
+          "+CreateTools(context) IReadOnlyList<object>",
+          "+ToolTypes, ParallelSafe"
+        ]
+      },
+      {
+        "id": "context",
+        "name": "IPackContext",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+WorkspaceRoot",
+          "+Browser?, WebSearch, Renderer, CurrencyRates?",
+          "+NewFetcher() IPageFetcher"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "The tool classes",
+        "kind": "a [Description] on each method the model calls",
+        "members": [
+          "WorkspaceFileTools, GitStatusTools, DotNetTools...",
+          "WebTools, PaymoTools, DevOpsTools"
+        ]
+      },
+      {
+        "id": "prompts",
+        "name": "prompts/toolsets/{name}.md",
+        "kind": "each toolset's guide, embedded",
+        "tone": "amber"
+      }
+    ],
+    "relations": [
+      { "from": "packs", "to": "toolset", "kind": "holds" },
+      { "from": "packs", "to": "prompts", "kind": "holds" },
+      { "from": "toolset", "to": "tools", "kind": "creates" },
+      { "from": "toolset", "to": "context", "kind": "uses", "word": "given" }
+    ]
+  }
+}

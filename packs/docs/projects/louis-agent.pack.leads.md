@@ -43,6 +43,14 @@ after the visitor's yes (the rule is in the guide's voice).
 | `LEADS_FROM` | The verified sender, `guide@louis-agent.dev` by default. |
 | `RESEND_API_KEY` | In the secrets. Unset, the log sender. |
 
+## Diagrams
+
+![How it works: a lead is sent once, on the yes, and the key picks Resend or the log](diagrams/louis-agent.pack.leads-flow.svg)
+
+![One lead sent: a missing part is asked for, a whole one is mailed, and a failure comes back as text](diagrams/louis-agent.pack.leads-sequence.svg)
+
+![The types: one tool, a lead record and the sender seam with its two senders](diagrams/louis-agent.pack.leads-interface.svg)
+
 ## Tests
 
 `packs/tests/louis-agent.pack.leads.tests`: the tool's refusals, its send and its truth about the log, the Resend

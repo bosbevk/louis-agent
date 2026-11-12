@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.identity.showroom: how it works",
+  "caption": "Recorded once, tried live after: a visitor first watches a business's agent on its mock website, then may ask it themselves through the same door.",
+  "flow": {
+    "nodes": [
+      { "id": "script", "label": "record-showroom.sh\nonce per business", "icon": "terminal", "tone": "blue" },
+      { "id": "visitor", "label": "A visitor\nTry it yourself", "icon": "user", "tone": "blue" },
+      { "id": "guide", "label": "The guide\nAskAgent", "icon": "chip", "tone": "violet" },
+      { "id": "door", "label": "louis-agent.site-api\nthe open door", "icon": "server", "tone": "violet" },
+      { "id": "business", "label": "A ShowroomIdentity\nits voice and facts", "icon": "users", "tone": "green" },
+      { "id": "site", "label": "site pack\nShowPage", "icon": "browser", "tone": "violet" },
+      { "id": "leads", "label": "leads pack\nSendLead, marked [demo]", "icon": "mail", "tone": "violet" },
+      { "id": "mock", "label": "The business's\nmock website", "icon": "browser", "tone": "amber" },
+      { "id": "recording", "label": "The recording\nplayed in the showroom", "icon": "file", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "script", "to": "door" },
+      { "from": "visitor", "to": "door" },
+      { "from": "guide", "to": "business", "word": "one level down", "style": "dashed" },
+      { "from": "door", "to": "business" },
+      { "from": "business", "to": "site" },
+      { "from": "business", "to": "leads" },
+      { "from": "site", "to": "mock", "word": "moves" },
+      { "from": "script", "to": "recording", "word": "saves", "style": "dashed" }
+    ]
+  }
+}

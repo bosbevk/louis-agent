@@ -1,0 +1,66 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.identity.guide: the interface design",
+  "caption": "One class and three lists: who it is, the packs it may use, and the businesses it may ask, each list an enum so a name can't be misspelt.",
+  "classes": {
+    "types": [
+      {
+        "id": "identity",
+        "name": "GuideIdentity",
+        "members": [
+          "+Name \"louis-agent-guide\"",
+          "+DefaultVoice \"louis-agent-guide/voice\"",
+          "+Prompts (embedded)",
+          "+Packs, Calls"
+        ]
+      },
+      {
+        "id": "iidentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet"
+      },
+      {
+        "id": "name",
+        "name": "GuideIdentityName",
+        "kind": "enum",
+        "members": [
+          "LouisAgentGuide"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "GuidePack",
+        "kind": "enum",
+        "members": [
+          "Docs Leads Site"
+        ]
+      },
+      {
+        "id": "calls",
+        "name": "GuideCall",
+        "kind": "enum, ADR 0117",
+        "members": [
+          "SeemeeuGuesthouse WheatfieldKitchen KoringlandAttorneys"
+        ]
+      },
+      {
+        "id": "prompts",
+        "name": "prompts/agent/louis-agent-guide/",
+        "kind": "embedded content",
+        "tone": "amber",
+        "members": [
+          "voice.md",
+          "skills/site-pages.md, docs-map.md, site-map.md"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "identity", "to": "iidentity", "kind": "implements" },
+      { "from": "identity", "to": "name", "kind": "uses" },
+      { "from": "identity", "to": "packs", "kind": "uses" },
+      { "from": "identity", "to": "calls", "kind": "uses" },
+      { "from": "identity", "to": "prompts", "kind": "holds" }
+    ]
+  }
+}

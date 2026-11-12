@@ -1,0 +1,306 @@
+<svg viewBox="-24 -24 1440 2035" width="1440" height="2035" role="img" aria-label="F36 MCP servers as packs: one pack, as the host starts" xmlns="http://www.w3.org/2000/svg">
+  <title>F36 MCP servers as packs: one pack, as the host starts</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1440" height="2035" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1392" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F36 MCP servers as packs:</tspan>
+    <tspan class="title-rest">one pack, as the host starts</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-blue" d="M 615 68 L 615 182" marker-end="url(#arrow-blue)" />
+    <path class="edge tone-amber" d="M 615 282 L 615 366" marker-end="url(#arrow-amber)" />
+    <path class="edge" d="M 615 434 L 615 560 L 615 644 L 615 764 L 615 816 L 615 954 L 615 1038 L 615 1176 L 615 1244 L 615 1400 L 615 1500 L 615 1554 Q 615 1578 639 1578 L 750 1578 Q 771 1578 771 1599 L 771 1620" marker-end="url(#arrow)" />
+    <path class="edge" d="M 615 434 L 615 470 Q 615 494 591 494 L 483 494 Q 459 494 459 518 L 459 560" marker-end="url(#arrow)" />
+    <path class="edge tone-green" d="M 459 644 L 459 764 L 459 816 L 459 954 L 459 1038 L 459 1176 L 459 1244 L 459 1334 Q 459 1358 435 1358 L 324 1358 Q 303 1358 303 1379 L 303 1400" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 303 1500 L 303 1572 Q 303 1596 327 1596 L 759 1596 Q 771 1596 771 1608 L 771 1620" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 459 644 L 459 716 Q 459 740 435 740 L 315 740 Q 303 740 303 752 L 303 764" marker-end="url(#arrow-green)" />
+    <path class="edge" d="M 303 816 L 303 954 L 303 1038 L 303 1176 L 303 1244 L 303 1400" marker-end="url(#arrow)" />
+    <path class="edge" d="M 303 816 L 303 888 Q 303 912 327 912 L 750 912 Q 771 912 771 933 L 771 954" marker-end="url(#arrow)" />
+    <path class="edge tone-green" d="M 771 1038 L 771 1176" marker-end="url(#arrow-green)" />
+    <path class="edge" d="M 771 1244 L 771 1280 Q 771 1304 747 1304 L 327 1304 Q 303 1304 303 1328 L 303 1400" marker-end="url(#arrow)" />
+    <path class="edge" d="M 771 1244 L 771 1280 Q 771 1304 795 1304 L 903 1304 Q 927 1304 927 1328 L 927 1400" marker-end="url(#arrow)" />
+    <path class="edge tone-violet" d="M 927 1500 L 927 1536 Q 927 1560 951 1560 L 1059 1560 Q 1083 1560 1083 1584 L 1083 1620" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-violet" d="M 1083 1688 L 1083 1703 Q 1083 1718 1068 1718 L 942 1718 Q 927 1718 927 1733 L 927 1748" marker-end="url(#arrow-violet)" />
+    <path class="edge dashed tone-red" d="M 927 68 L 927 116 Q 927 140 951 140 L 1062 140 Q 1083 140 1083 161 L 1083 182 L 1083 282 L 1083 366 L 1083 434 L 1083 560 L 1083 644 L 1083 764 L 1083 816 L 1083 954 L 1083 1038 L 1083 1176 L 1083 1244 L 1083 1400 L 1083 1500 L 1083 1620" marker-end="url(#arrow-red)" />
+    <path class="edge dashed tone-blue" d="M 1239 68 L 1239 98 Q 1239 122 1215 122 L 1107 122 Q 1083 122 1083 146 L 1083 182 L 1083 282 L 1083 366 L 1083 434 L 1083 560 L 1083 644 L 1083 764 L 1083 816 L 1083 954 L 1083 1038 L 1083 1176 L 1083 1244 L 1083 1400 L 1083 1500 L 1083 1620" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip" x="621" y="498" width="22" height="18" rx="4" />
+    <text class="word" x="632" y="510" text-anchor="middle">no</text>
+    <rect class="word-chip" x="291" y="498" width="162" height="42" rx="4" />
+    <text class="word" x="372" y="510" text-anchor="middle">yes, or an HTTP server</text>
+    <text class="word" x="372" y="522" text-anchor="middle">through SsrfGuard and</text>
+    <text class="word" x="372" y="534" text-anchor="middle">the egress proxy</text>
+    <rect class="word-chip tone-green" x="465" y="648" width="134" height="18" rx="4" />
+    <text class="word tone-green" x="532" y="660" text-anchor="middle">fails or times out</text>
+    <rect class="word-chip" x="309" y="916" width="71" height="18" rx="4" />
+    <text class="word" x="344.5" y="928" text-anchor="middle">no: drift</text>
+    <rect class="word-chip" x="777" y="916" width="29" height="18" rx="4" />
+    <text class="word" x="791.5" y="928" text-anchor="middle">yes</text>
+    <rect class="word-chip" x="309" y="1362" width="22" height="18" rx="4" />
+    <text class="word" x="320" y="1374" text-anchor="middle">no</text>
+    <rect class="word-chip" x="933" y="1362" width="29" height="18" rx="4" />
+    <text class="word" x="947.5" y="1374" text-anchor="middle">yes</text>
+    <rect class="word-chip tone-red" x="933" y="72" width="57" height="18" rx="4" />
+    <text class="word tone-red" x="961.5" y="84" text-anchor="middle">ignored</text>
+    <rect class="word-chip tone-blue" x="1245" y="72" width="141" height="30" rx="4" />
+    <text class="word tone-blue" x="1315.5" y="84" text-anchor="middle">new generation, new</text>
+    <text class="word tone-blue" x="1315.5" y="96" text-anchor="middle">chats only</text>
+    <rect class="box tone-blue" x="506" y="0" width="218" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="534" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(526 26) scale(0.6667)">
+      <path d="M5 7l5 5l-5 5" />
+      <path d="M12 19l7 0" />
+    </g>
+    <text class="label tone-blue" x="558" y="31" text-anchor="start">Host starts,</text>
+    <text class="label tone-blue" x="558" y="47" text-anchor="start">MCP_PACKS=pricerules</text>
+    <rect class="box tone-red" x="791.4" y="0" width="271.2" height="68" rx="10" />
+    <circle class="badge tone-red" cx="819.4" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(811.4 26) scale(0.6667)">
+      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+    </g>
+    <text class="label tone-red" x="843.4" y="31" text-anchor="start">tools/list_changed from the</text>
+    <text class="label tone-red" x="843.4" y="47" text-anchor="start">server</text>
+    <rect class="box tone-blue" x="1118.6" y="0" width="240.8" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="1146.6" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(1138.6 26) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-blue" x="1170.6" y="39" text-anchor="start">admin refresh (step 9a)</text>
+    <rect class="box tone-amber" x="479.4" y="182" width="271.2" height="100" rx="10" />
+    <circle class="badge tone-amber" cx="507.4" cy="232" r="14" />
+    <g class="badge-icon" transform="translate(499.4 224) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-amber" x="531.4" y="213" text-anchor="start">config/mcp/pricerules.json</text>
+    <text class="label tone-amber" x="531.4" y="229" text-anchor="start">read: command or URL,</text>
+    <text class="label tone-amber" x="531.4" y="245" text-anchor="start">allowlist, prefix, trusted,</text>
+    <text class="label tone-amber" x="531.4" y="261" text-anchor="start">effects, pin</text>
+    <rect class="box" x="471.8" y="366" width="286.4" height="68" rx="10" />
+    <circle class="badge" cx="499.8" cy="400" r="14" />
+    <g class="badge-icon" transform="translate(491.8 392) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="523.8" y="397" text-anchor="start">stdio: was this exact command</text>
+    <text class="label" x="523.8" y="413" text-anchor="start">approved?</text>
+    <rect class="box tone-green" x="323.4" y="560" width="271.2" height="84" rx="10" />
+    <circle class="badge tone-green" cx="351.4" cy="602" r="14" />
+    <g class="badge-icon" transform="translate(343.4 594) scale(0.6667)">
+      <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+    </g>
+    <text class="label tone-green" x="375.4" y="591" text-anchor="start">CreateAsync, ListToolsAsync</text>
+    <text class="label tone-green" x="375.4" y="607" text-anchor="start">and the pin, under one</text>
+    <text class="label tone-green" x="375.4" y="623" text-anchor="start">start-up timeout</text>
+    <rect class="box" x="156" y="764" width="294" height="52" rx="10" />
+    <circle class="badge" cx="184" cy="790" r="14" />
+    <g class="badge-icon" transform="translate(176 782) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="208" y="795" text-anchor="start">every allowlisted tool listed?</text>
+    <rect class="box tone-green" x="627.8" y="954" width="286.4" height="84" rx="10" />
+    <circle class="badge tone-green" cx="655.8" cy="996" r="14" />
+    <g class="badge-icon" transform="translate(647.8 988) scale(0.6667)">
+      <path d="M7 8l-4 4l4 4" />
+      <path d="M17 8l4 4l-4 4" />
+      <path d="M14 4l-4 16" />
+    </g>
+    <text class="label tone-green" x="679.8" y="985" text-anchor="start">prefix each name, check it</text>
+    <text class="label tone-green" x="679.8" y="1001" text-anchor="start">against our name rule, refuse</text>
+    <text class="label tone-green" x="679.8" y="1017" text-anchor="start">a clash</text>
+    <rect class="box" x="643" y="1176" width="256" height="68" rx="10" />
+    <circle class="badge" cx="671" cy="1210" r="14" />
+    <g class="badge-icon" transform="translate(663 1202) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="695" y="1207" text-anchor="start">pin matches: version when</text>
+    <text class="label" x="695" y="1223" text-anchor="start">reported, hash always</text>
+    <rect class="box tone-green" x="167.4" y="1400" width="271.2" height="100" rx="10" />
+    <circle class="badge tone-green" cx="195.4" cy="1450" r="14" />
+    <g class="badge-icon" transform="translate(187.4 1442) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-green" x="219.4" y="1447" text-anchor="start">client disposed, so a stdio</text>
+    <text class="label tone-green" x="219.4" y="1463" text-anchor="start">child ends</text>
+    <rect class="box tone-violet" x="787.6" y="1400" width="278.8" height="100" rx="10" />
+    <circle class="badge tone-violet" cx="815.6" cy="1450" r="14" />
+    <g class="badge-icon" transform="translate(807.6 1442) scale(0.6667)">
+      <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+    </g>
+    <text class="label tone-violet" x="839.6" y="1431" text-anchor="start">each tool wrapped in</text>
+    <text class="label tone-violet" x="839.6" y="1447" text-anchor="start">McpToolGuard: frame, size,</text>
+    <text class="label tone-violet" x="839.6" y="1463" text-anchor="start">timeout per call; its effect</text>
+    <text class="label tone-violet" x="839.6" y="1479" text-anchor="start">from settings</text>
+    <rect class="box tone-red" x="639.2" y="1620" width="263.6" height="68" rx="10" />
+    <circle class="badge tone-red" cx="667.2" cy="1654" r="14" />
+    <g class="badge-icon" transform="translate(659.2 1646) scale(0.6667)">
+      <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+    </g>
+    <text class="label tone-red" x="691.2" y="1651" text-anchor="start">pack unavailable, with its</text>
+    <text class="label tone-red" x="691.2" y="1667" text-anchor="start">reason</text>
+    <rect class="box tone-violet" x="936" y="1620" width="294" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="964" cy="1654" r="14" />
+    <g class="badge-icon" transform="translate(956 1646) scale(0.6667)">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </g>
+    <text class="label tone-violet" x="988" y="1651" text-anchor="start">AgentCatalog built, the pack's</text>
+    <text class="label tone-violet" x="988" y="1667" text-anchor="start">listed tools among its names</text>
+    <rect class="box tone-violet" x="783.8" y="1748" width="286.4" height="84" rx="10" />
+    <circle class="badge tone-violet" cx="811.8" cy="1790" r="14" />
+    <g class="badge-icon" transform="translate(803.8 1782) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-violet" x="835.8" y="1779" text-anchor="start">sessions open with it; each</text>
+    <text class="label tone-violet" x="835.8" y="1795" text-anchor="start">chat keeps the list it opened</text>
+    <text class="label tone-violet" x="835.8" y="1811" text-anchor="start">with (FX4)</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="1914" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1924.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="1914" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="1924.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="1914" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="1924.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-red" x="364.8" y="1914" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="1924.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="541.6" y="1914" width="12" height="12" rx="3" />
+  <text class="legend" x="559.6" y="1924.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="1950" width="1392" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1960) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1972">
+    <tspan class="note-head">Their systems, no code:</tspan>
+    <tspan class="note-rest">a server becomes a pack only when its command or address, its tools and its pin all check out, and every one of its tools runs inside a guard.</tspan>
+  </text>
+</svg>

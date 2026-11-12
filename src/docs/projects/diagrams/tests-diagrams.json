@@ -1,0 +1,96 @@
+{
+  "kind": "flow",
+  "caption": "Where the tests live, and what they share: a test project references no other test project, and what the framework's and the demos' tests both need is in the two libraries.",
+  "title": "The tests: what CI runs, and the two testing libraries they share",
+  "flow": {
+    "nodes": [
+      {
+        "id": "shared",
+        "icon": "box",
+        "tone": "teal",
+        "label": "louis-agent.testing:\nFakeChatClient, StubHandler,\nTestPaths"
+      },
+      {
+        "id": "web",
+        "icon": "browser",
+        "tone": "teal",
+        "label": "louis-agent.web.testing:\nFixtureApi, Snapshots,\nSassStylesheet"
+      },
+      {
+        "id": "framework",
+        "icon": "code",
+        "tone": "green",
+        "label": "src/tests: engine, hosts, web,\nevals"
+      },
+      {
+        "id": "demos",
+        "icon": "folder",
+        "tone": "green",
+        "label": "demos/*/tests: each demo\u0027s own"
+      },
+      {
+        "id": "packs",
+        "icon": "box",
+        "tone": "green",
+        "label": "packs/tests: each pack\u0027s own"
+      },
+      {
+        "id": "integration",
+        "icon": "terminal",
+        "tone": "amber",
+        "label": "*.integration-tests: start a\nprocess, open Mongo, need a\ntool"
+      },
+      {
+        "id": "ci",
+        "icon": "cloud",
+        "tone": "blue",
+        "label": "CI, on Ubuntu"
+      }
+    ],
+    "edges": [
+      {
+        "from": "framework",
+        "to": "shared"
+      },
+      {
+        "from": "framework",
+        "to": "web"
+      },
+      {
+        "from": "demos",
+        "to": "shared"
+      },
+      {
+        "from": "demos",
+        "to": "web"
+      },
+      {
+        "from": "packs",
+        "to": "shared"
+      },
+      {
+        "from": "integration",
+        "to": "shared"
+      },
+      {
+        "from": "ci",
+        "to": "framework",
+        "word": "Category!=Integration"
+      },
+      {
+        "from": "ci",
+        "to": "demos"
+      },
+      {
+        "from": "ci",
+        "to": "packs"
+      },
+      {
+        "from": "ci",
+        "to": "integration",
+        "word": "Category=Integration,\nINTEGRATION_REQUIRED=1"
+      }
+    ],
+    "direction": "down"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.pack.site: how it works",
+  "caption": "The tool says, the browser does: the path is checked as data, and only the visitor's own browser moves.",
+  "flow": {
+    "nodes": [
+      { "id": "agent", "label": "An agent\nthe guide or a business", "icon": "chip", "tone": "violet" },
+      { "id": "tool", "label": "SiteTools.ShowPage\npath checked, never run", "icon": "shield", "tone": "green" },
+      { "id": "stream", "label": "The turn's stream\nthe tool call", "icon": "message", "tone": "violet" },
+      { "id": "widget", "label": "The widget\nChatRunner.ToolCalled", "icon": "browser", "tone": "violet" },
+      { "id": "page", "label": "The page and its area\na glow that fades", "icon": "browser", "tone": "blue" }
+    ],
+    "edges": [
+      { "from": "agent", "to": "tool" },
+      { "from": "tool", "to": "stream", "word": "shown, say one line" },
+      { "from": "stream", "to": "widget" },
+      { "from": "widget", "to": "page", "word": "navigates, scrolls" }
+    ]
+  }
+}

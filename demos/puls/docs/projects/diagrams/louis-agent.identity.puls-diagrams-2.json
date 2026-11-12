@@ -1,0 +1,101 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.puls: a cooking question",
+  "caption": "Puls hands cooking to the cook: a session is Puls's prompts and packs, and a role that's off comes back as a tool error Puls must report.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "W",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "The web app"
+      },
+      {
+        "id": "E",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "The engine"
+      },
+      {
+        "id": "V",
+        "icon": "user",
+        "tone": "green",
+        "label": "Puls: principles, voice-af, voice"
+      },
+      {
+        "id": "C",
+        "icon": "user",
+        "tone": "green",
+        "label": "The cook: puls-cook"
+      },
+      {
+        "id": "T",
+        "icon": "box",
+        "tone": "teal",
+        "label": "Its tools"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "W",
+        "to": "E",
+        "text": "opens with puls/voice-af, agents and web"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "V",
+        "text": "reads the principles, then the voice, then the routing"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "V",
+        "text": "a cooking question"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "E",
+        "text": "AskAgent(\u0022puls.cook\u0022)"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "E",
+        "text": "is the role known, and in ROLES_ENABLED?"
+      },
+      {
+        "step": "message",
+        "from": "E",
+        "to": "C",
+        "text": "a sub-session, with only its role and its toolsets\u0027 guides"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "T",
+        "text": "FindRecipes, ReadRecipe, FindBranches, EstimatePrices, Calculate"
+      },
+      {
+        "step": "reply",
+        "from": "T",
+        "to": "C",
+        "text": "the results"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "V",
+        "text": "its answer"
+      },
+      {
+        "step": "reply",
+        "from": "V",
+        "to": "W",
+        "text": "the answer, in the user\u0027s language"
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "kind": "sequence",
+  "title": "F106.3 triage and fix a service: a visitor watches one triage",
+  "caption": "Every step streams to the page as it lands: the roles decide, code checks, and the guide reads the run back in plain words.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "tone": "blue",
+        "label": "Visitor",
+        "actor": true
+      },
+      {
+        "id": "P",
+        "icon": "browser",
+        "tone": "green",
+        "label": "/try (the page)"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "louis-agent.api"
+      },
+      {
+        "id": "W",
+        "icon": "branch",
+        "tone": "violet",
+        "label": "TriageWorkflow"
+      },
+      {
+        "id": "S",
+        "icon": "users",
+        "tone": "green",
+        "label": "Sorter / Manager / Investigator / Reviewer (roles)"
+      },
+      {
+        "id": "C",
+        "icon": "code",
+        "tone": "green",
+        "label": "Coder (the coding identity, a peer)"
+      },
+      {
+        "id": "G",
+        "icon": "message",
+        "tone": "green",
+        "label": "The guide (ExpertChat)"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "P",
+        "text": "Start"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "A",
+        "text": "POST /v1/demos/triage (no key; the door counts the address)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "W",
+        "text": "RunOneAsync(department, next error, events)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "P",
+        "text": "201 {run_id}; the page opens the event stream"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "G",
+        "text": "open the guide\u0027s session with Opening = \u0022run 7f3a on the triage demo\u0022"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "sorter: which department? (typed: Department)"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_step 1 \u0022Sorter: this is the code department\u0027s\u0022 \u002B why"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "V",
+        "text": "popup 1 beside the sorter"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "manager: worth investigating? (typed: CaseDecision)"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_step 2"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "investigator: where and why? (typed: Investigation)"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_step 3"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "W",
+        "text": "in code: Area is ours, Confidence high -\u003E AutoFix; else Person or HandOff"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "C",
+        "text": "fix on a branch (ReportFixResult)"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "W",
+        "text": "in code: commit on the branch, replay passes, tests pass"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_step 4, 5"
+      },
+      {
+        "step": "message",
+        "from": "W",
+        "to": "S",
+        "text": "reviewer: happy? (typed: Review); not happy -\u003E back to the coder, through the manager, within the cap"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_step 6 .. n"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "P",
+        "text": "triage_done {outcome: fixed on branch fix/\u2026, or raised to a person, or handed off}"
+      },
+      {
+        "step": "message",
+        "from": "V",
+        "to": "G",
+        "text": "\u0022what just happened?\u0022"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "A",
+        "text": "ReadTriageRun(run_id)"
+      },
+      {
+        "step": "reply",
+        "from": "G",
+        "to": "V",
+        "text": "the steps, in plain words, naming the agents"
+      }
+    ]
+  }
+}

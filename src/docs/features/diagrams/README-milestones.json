@@ -1,0 +1,219 @@
+{
+  "kind": "flow",
+  "title": "Features: the milestones and what each one needs first",
+  "caption": "Each feature waits for what it needs: an arrow points from what comes first.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "F1",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F1 Usage ledger"
+      },
+      {
+        "id": "F2",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F2 Prices and cost"
+      },
+      {
+        "id": "F15",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F15 Model limits"
+      },
+      {
+        "id": "F9",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F9 Bounded history"
+      },
+      {
+        "id": "F13",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F13 Local models"
+      },
+      {
+        "id": "F4",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F4 Prompt caching"
+      },
+      {
+        "id": "F5",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F5 Toolset profiles"
+      },
+      {
+        "id": "F8",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F8 Reliability"
+      },
+      {
+        "id": "F10",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F10 Route settings"
+      },
+      {
+        "id": "F3",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F3 Show usage"
+      },
+      {
+        "id": "F6",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F6 Estimates"
+      },
+      {
+        "id": "F7",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F7 Budgets"
+      },
+      {
+        "id": "F11",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F11 Usage tab and\nreconciliation"
+      },
+      {
+        "id": "F12",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F12 Response speed"
+      },
+      {
+        "id": "F14",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F14 Display currency"
+      },
+      {
+        "id": "F18",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F18 Evals"
+      },
+      {
+        "id": "F16",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F16 Summariser"
+      },
+      {
+        "id": "F17",
+        "icon": "checks",
+        "tone": "green",
+        "label": "F17 Orchestrator agent"
+      }
+    ],
+    "edges": [
+      {
+        "from": "F1",
+        "to": "F2"
+      },
+      {
+        "from": "F2",
+        "to": "F15"
+      },
+      {
+        "from": "F15",
+        "to": "F9"
+      },
+      {
+        "from": "F15",
+        "to": "F13"
+      },
+      {
+        "from": "F1",
+        "to": "F4"
+      },
+      {
+        "from": "F1",
+        "to": "F5"
+      },
+      {
+        "from": "F1",
+        "to": "F8"
+      },
+      {
+        "from": "F1",
+        "to": "F10"
+      },
+      {
+        "from": "F2",
+        "to": "F3"
+      },
+      {
+        "from": "F2",
+        "to": "F6"
+      },
+      {
+        "from": "F6",
+        "to": "F7"
+      },
+      {
+        "from": "F4",
+        "to": "F9"
+      },
+      {
+        "from": "F3",
+        "to": "F11"
+      },
+      {
+        "from": "F6",
+        "to": "F11"
+      },
+      {
+        "from": "F7",
+        "to": "F11"
+      },
+      {
+        "from": "F1",
+        "to": "F12"
+      },
+      {
+        "from": "F5",
+        "to": "F13"
+      },
+      {
+        "from": "F3",
+        "to": "F14"
+      },
+      {
+        "from": "F1",
+        "to": "F18"
+      },
+      {
+        "from": "F18",
+        "to": "F16"
+      },
+      {
+        "from": "F4",
+        "to": "F16"
+      },
+      {
+        "from": "F16",
+        "to": "F9"
+      },
+      {
+        "from": "F8",
+        "to": "F17"
+      },
+      {
+        "from": "F10",
+        "to": "F17"
+      },
+      {
+        "from": "F18",
+        "to": "F17"
+      }
+    ]
+  }
+}

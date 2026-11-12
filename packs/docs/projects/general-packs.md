@@ -24,41 +24,11 @@ references no other pack.
 
 ## Diagrams
 
-**Architecture:** a pack is only its tools, and the engine stays in charge of what's dangerous. The web pack's calls go through the engine's guards, so a pack can't reach an internal address.
+![The general packs: from a catalogue to their tools and what they reach](diagrams/general-packs-diagrams.svg)
 
-```mermaid
-flowchart TD
-    program["A demo's catalogue: names its packs"] --> catalog["AgentCatalog"]
-    catalog --> general["These packs: ComesBeforeTheEngine"]
-    catalog --> engine["The engine's own tools"]
-    catalog --> product["A product's packs"]
-    general --> toolset["PackToolset: its name, guide, what it needs and its tools"]
-    toolset --> tools["Tool classes: files, git, dotnet, shell, web, paymo, devops"]
-    tools -->|"the web pack"| guards["The engine's browser, search and guards"]
-    tools -->|"files, git, dotnet, shell"| workspace[("The workspace root")]
-    tools -->|"paymo, devops"| outside["Their own services, with their own settings"]
-```
+![A session and a tool call: the factory finds each toolset and builds its tools, and the guards run a call the model makes](diagrams/general-packs-diagrams-2.svg)
 
-**Flow:** a session that names a toolset, and a tool it calls. A toolset that lacks a setting is listed with what it lacks, and a session can't open with it.
-
-```mermaid
-sequenceDiagram
-    participant S as A session
-    participant F as AgentEngineFactory
-    participant C as ToolsetCatalog
-    participant P as The pack's toolset
-    participant M as The model
-    participant G as ToolCallGuards
-    participant O as The tool
-    S->>F: an engine with these toolsets
-    F->>C: finds each by name
-    C->>P: MissingSettings, CreateTools
-    P-->>F: the tools, and the guide for the prompt
-    M->>G: calls a tool, arguments as data
-    G->>O: runs it
-    O-->>G: the result
-    G-->>M: the result, summarised if it's too long
-```
+![The types: every pack the same shape, its toolsets building their tool classes from what the engine hands them](diagrams/general-packs-interface.svg)
 
 **Tests** are in `packs/tests/`, one project per pack, and a `.integration-tests` project where a tool starts a process.
 `APackInstallsAsAPackageTests` proves a pack runs from a NuGet package with no engine in its dependencies.

@@ -1,0 +1,45 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.pack.calculator: the interface design",
+  "caption": "The smallest pack: one toolset, one tool, and the sums worked out in plain C# so the model never does arithmetic in its head.",
+  "classes": {
+    "types": [
+      {
+        "id": "pack",
+        "name": "CalculatorPack",
+        "kind": "implements IAgentPack",
+        "members": [
+          "+Name \"calculator\"",
+          "+Toolsets: calculator"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "CalculatorTools",
+        "kind": "the tool the model calls",
+        "members": [
+          "+Calculate(expression) string"
+        ]
+      },
+      {
+        "id": "arithmetic",
+        "name": "Arithmetic",
+        "kind": "static, plain C#",
+        "members": [
+          "reads and works out an expression"
+        ]
+      },
+      {
+        "id": "toolset",
+        "name": "PackToolset",
+        "kind": "record, louis-agent.composition",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "pack", "to": "toolset", "kind": "holds" },
+      { "from": "toolset", "to": "tools", "kind": "creates" },
+      { "from": "tools", "to": "arithmetic", "kind": "uses" }
+    ]
+  }
+}

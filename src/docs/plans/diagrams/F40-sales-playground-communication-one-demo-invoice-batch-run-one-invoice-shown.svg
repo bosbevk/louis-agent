@@ -1,0 +1,315 @@
+<svg viewBox="-24 -24 2059 1273" width="2059" height="1273" role="img" aria-label="F40 the sales playground: one invoice batch run" xmlns="http://www.w3.org/2000/svg">
+  <title>F40 the sales playground: one invoice batch run</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2059" height="1273" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2011" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F40 the sales playground:</tspan>
+    <tspan class="title-rest">one invoice batch run</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <rect class="group" x="83.6" y="242" width="1620" height="672" rx="8" />
+    <path class="edge dashed" d="M 97.6 68 L 97.6 1070" />
+    <path class="edge dashed" d="M 410.6 68 L 410.6 1070" />
+    <path class="edge dashed" d="M 730.6 68 L 730.6 1070" />
+    <path class="edge dashed" d="M 1067.6 68 L 1067.6 1070" />
+    <path class="edge dashed" d="M 1352.6 68 L 1352.6 1070" />
+    <path class="edge dashed" d="M 1689.6 68 L 1689.6 1070" />
+    <path class="edge dashed" d="M 1932.4 68 L 1932.4 1070" />
+    <rect class="word-chip" x="83.6" y="242" width="44" height="20" rx="6" />
+    <text class="word" x="105.6" y="256" text-anchor="middle">loop</text>
+    <text class="word" x="133.6" y="256" text-anchor="start">each of the ten invoices</text>
+    <path class="edge tone-blue" d="M 97.6 132 L 408.6 132" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="113.1" y="92" width="282" height="36" rx="4" />
+    <text class="word tone-blue" x="254.1" y="106" text-anchor="middle">start demo-invoice-batch, 1 repeat (on</text>
+    <text class="word tone-blue" x="254.1" y="120" text-anchor="middle">Louis's go)</text>
+    <rect class="word-chip tone-blue" x="89.6" y="124" width="16" height="16" rx="8" />
+    <text class="word tone-blue" x="97.6" y="135.5" text-anchor="middle">1</text>
+    <path class="edge tone-violet" d="M 410.6 188 L 728.6 188" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="422.6" y="148" width="296" height="36" rx="4" />
+    <text class="word tone-violet" x="570.6" y="162" text-anchor="middle">dotnet louis-agent.simulation.runner.dll</text>
+    <text class="word tone-violet" x="570.6" y="176" text-anchor="middle">simulate demo-invoice-batch --repeat 1</text>
+    <rect class="word-chip tone-violet" x="402.6" y="180" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="410.6" y="191.5" text-anchor="middle">2</text>
+    <path class="edge dashed tone-green" d="M 730.6 230 L 412.6 230" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="496.1" y="204" width="149" height="22" rx="4" />
+    <text class="word tone-green" x="570.6" y="218" text-anchor="middle">@protocol version 1</text>
+    <rect class="word-chip tone-green" x="722.6" y="222" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="233.5" text-anchor="middle">3</text>
+    <path class="edge tone-green" d="M 730.6 316 L 412.6 316" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="433.1" y="276" width="275" height="36" rx="4" />
+    <text class="word tone-green" x="570.6" y="290" text-anchor="middle">POST /sessions (role demo/voice,</text>
+    <text class="word tone-green" x="570.6" y="304" text-anchor="middle">toolsets agents, tag run:mode:repeat)</text>
+    <rect class="word-chip tone-green" x="722.6" y="308" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="319.5" text-anchor="middle">4</text>
+    <path class="edge tone-green" d="M 730.6 358 L 1065.6 358" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="786.1" y="332" width="226" height="22" rx="4" />
+    <text class="word tone-green" x="899.1" y="346" text-anchor="middle">Match inv-07.pdf to a customer</text>
+    <rect class="word-chip tone-green" x="722.6" y="350" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="361.5" text-anchor="middle">5</text>
+    <path class="edge tone-teal" d="M 1067.6 414 L 1350.6 414" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="1079.6" y="374" width="261" height="36" rx="4" />
+    <text class="word tone-teal" x="1210.1" y="388" text-anchor="middle">AskAgent(demo.invoice-clerk, brief:</text>
+    <text class="word tone-teal" x="1210.1" y="402" text-anchor="middle">inv-07.pdf, attachments)</text>
+    <rect class="word-chip tone-teal" x="1059.6" y="406" width="16" height="16" rx="8" />
+    <text class="word tone-teal" x="1067.6" y="417.5" text-anchor="middle">6</text>
+    <path class="edge tone-green" d="M 1352.6 470 L 1380.6 470 L 1380.6 486 L 1354.6 486" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="1388.6" y="430" width="289" height="36" rx="4" />
+    <text class="word tone-green" x="1396.6" y="444" text-anchor="start">ReadDocument(inv-07.pdf): its workspace</text>
+    <text class="word tone-green" x="1396.6" y="458" text-anchor="start">holds the invoices only</text>
+    <rect class="word-chip tone-green" x="1344.6" y="462" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="1352.6" y="473.5" text-anchor="middle">7</text>
+    <path class="edge tone-green" d="M 1352.6 542 L 1687.6 542" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="1394.1" y="502" width="254" height="36" rx="4" />
+    <text class="word tone-green" x="1521.1" y="516" text-anchor="middle">FindCustomer(the VAT number on the</text>
+    <text class="word tone-green" x="1521.1" y="530" text-anchor="middle">invoice)</text>
+    <rect class="word-chip tone-green" x="1344.6" y="534" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="1352.6" y="545.5" text-anchor="middle">8</text>
+    <path class="edge dashed tone-teal" d="M 1689.6 584 L 1354.6 584" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="1415.1" y="558" width="212" height="22" rx="4" />
+    <text class="word tone-teal" x="1521.1" y="572" text-anchor="middle">one customer, framed as data</text>
+    <rect class="word-chip tone-teal" x="1681.6" y="576" width="16" height="16" rx="8" />
+    <text class="word tone-teal" x="1689.6" y="587.5" text-anchor="middle">9</text>
+    <path class="edge dashed tone-green" d="M 1352.6 640 L 1069.6 640" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="1086.6" y="600" width="247" height="36" rx="4" />
+    <text class="word tone-green" x="1210.1" y="614" text-anchor="middle">the match, with the VAT number it</text>
+    <text class="word tone-green" x="1210.1" y="628" text-anchor="middle">checked</text>
+    <rect class="word-chip tone-green" x="1344.6" y="632" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="1352.6" y="643.5" text-anchor="middle">10</text>
+    <path class="edge dashed tone-teal" d="M 1067.6 696 L 732.6 696" marker-end="url(#arrow-teal)" />
+    <rect class="word-chip tone-teal" x="761.6" y="656" width="275" height="36" rx="4" />
+    <text class="word tone-teal" x="899.1" y="670" text-anchor="middle">the session stream, the sub-session's</text>
+    <text class="word tone-teal" x="899.1" y="684" text-anchor="middle">events included</text>
+    <rect class="word-chip tone-teal" x="1059.6" y="688" width="16" height="16" rx="8" />
+    <text class="word tone-teal" x="1067.6" y="699.5" text-anchor="middle">11</text>
+    <path class="edge tone-green" d="M 730.6 766 L 758.6 766 L 758.6 782 L 732.6 782" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="766.6" y="712" width="289" height="50" rx="4" />
+    <text class="word tone-green" x="774.6" y="726" text-anchor="start">SessionStreamReader, then MatchedRight,</text>
+    <text class="word tone-green" x="774.6" y="740" text-anchor="start">NoCustomerSaid, VatChecked against the</text>
+    <text class="word tone-green" x="774.6" y="754" text-anchor="start">answer key</text>
+    <rect class="word-chip tone-green" x="722.6" y="758" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="769.5" text-anchor="middle">12</text>
+    <path class="edge dashed tone-green" d="M 730.6 838 L 412.6 838" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="422.6" y="798" width="296" height="36" rx="4" />
+    <text class="word tone-green" x="570.6" y="812" text-anchor="middle">@sse, @turn, then @conversation with its</text>
+    <text class="word tone-green" x="570.6" y="826" text-anchor="middle">grades</text>
+    <rect class="word-chip tone-green" x="722.6" y="830" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="841.5" text-anchor="middle">13</text>
+    <path class="edge dashed tone-violet" d="M 410.6 894 L 99.6 894" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="109.6" y="854" width="289" height="36" rx="4" />
+    <text class="word tone-violet" x="254.1" y="868" text-anchor="middle">live: the turn as it streams, then each</text>
+    <text class="word tone-violet" x="254.1" y="882" text-anchor="middle">grade</text>
+    <rect class="word-chip tone-violet" x="402.6" y="886" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="410.6" y="897.5" text-anchor="middle">14</text>
+    <path class="edge dashed tone-green" d="M 730.6 944 L 412.6 944" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="527.6" y="918" width="86" height="22" rx="4" />
+    <text class="word tone-green" x="570.6" y="932" text-anchor="middle">@mode_done</text>
+    <rect class="word-chip tone-green" x="722.6" y="936" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="730.6" y="947.5" text-anchor="middle">15</text>
+    <path class="edge tone-violet" d="M 410.6 986 L 1930.4 986" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="1072.5" y="960" width="198" height="22" rx="4" />
+    <text class="word tone-violet" x="1171.5" y="974" text-anchor="middle">the run's rows, by its tag</text>
+    <rect class="word-chip tone-violet" x="402.6" y="978" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="410.6" y="989.5" text-anchor="middle">16</text>
+    <path class="edge dashed tone-violet" d="M 410.6 1042 L 99.6 1042" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="120.1" y="1002" width="268" height="36" rx="4" />
+    <text class="word tone-violet" x="254.1" y="1016" text-anchor="middle">the run recorded: its grades and its</text>
+    <text class="word tone-violet" x="254.1" y="1030" text-anchor="middle">cost per invoice (BenchmarkTrends)</text>
+    <rect class="word-chip tone-violet" x="402.6" y="1034" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="410.6" y="1045.5" text-anchor="middle">17</text>
+    <rect class="box tone-blue" x="0" y="0" width="195.2" height="68" rx="10" />
+    <circle class="badge tone-blue" cx="28" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(20 26) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-blue" x="52" y="30" text-anchor="start">Control room</text>
+    <text class="label tone-blue" x="52" y="46" text-anchor="start">(louis-agent.web)</text>
+    <rect class="box tone-violet" x="297.8" y="0" width="225.6" height="68" rx="10" />
+    <circle class="badge tone-violet" cx="325.8" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(317.8 26) scale(0.6667)">
+      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M7 8l0 .01" />
+      <path d="M7 16l0 .01" />
+    </g>
+    <text class="label tone-violet" x="349.8" y="38" text-anchor="start">puls: louis-agent.api</text>
+    <rect class="box tone-green" x="614" y="0" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-green" cx="642" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(634 26) scale(0.6667)">
+      <path d="M5 7l5 5l-5 5" />
+      <path d="M12 19l7 0" />
+    </g>
+    <text class="label tone-green" x="666" y="30" text-anchor="start">simulation runner (own</text>
+    <text class="label tone-green" x="666" y="46" text-anchor="start">process)</text>
+    <rect class="box tone-teal" x="951" y="0" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-teal" cx="979" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(971 26) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-teal" x="1003" y="30" text-anchor="start">demo/voice session (on</text>
+    <text class="label tone-teal" x="1003" y="46" text-anchor="start">puls)</text>
+    <rect class="box tone-green" x="1236" y="0" width="233.2" height="68" rx="10" />
+    <circle class="badge tone-green" cx="1264" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(1256 26) scale(0.6667)">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+    </g>
+    <text class="label tone-green" x="1288" y="30" text-anchor="start">demo-invoice-clerk (on</text>
+    <text class="label tone-green" x="1288" y="46" text-anchor="start">demo-agent)</text>
+    <rect class="box tone-teal" x="1565.4" y="0" width="248.4" height="68" rx="10" />
+    <circle class="badge tone-teal" cx="1593.4" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(1585.4 26) scale(0.6667)">
+      <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+      <path d="M12 12l8 -4.5" />
+      <path d="M12 12l0 9" />
+      <path d="M12 12l-8 -4.5" />
+    </g>
+    <text class="label tone-teal" x="1617.4" y="30" text-anchor="start">CustomerTools (customers</text>
+    <text class="label tone-teal" x="1617.4" y="46" text-anchor="start">pack)</text>
+    <rect class="box tone-amber" x="1853.8" y="0" width="157.2" height="68" rx="10" />
+    <circle class="badge tone-amber" cx="1881.8" cy="34" r="14" />
+    <g class="badge-icon" transform="translate(1873.8 26) scale(0.6667)">
+      <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M4 20h14" />
+    </g>
+    <text class="label tone-amber" x="1905.8" y="38" text-anchor="start">Usage ledger</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="1152" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1162.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="1152" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="1162.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="1152" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="1162.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="364.8" y="1152" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="1162.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-amber" x="541.6" y="1152" width="12" height="12" rx="3" />
+  <text class="legend" x="559.6" y="1162.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="1188" width="2011" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1198) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1210">
+    <tspan class="note-head">Ten invoices, each matched by a clerk:</tspan>
+    <tspan class="note-rest">the runner grades each match, and the run's cost comes from the ledger by its tag.</tspan>
+  </text>
+</svg>

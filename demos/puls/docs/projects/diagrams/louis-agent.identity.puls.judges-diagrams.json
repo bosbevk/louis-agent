@@ -1,0 +1,88 @@
+{
+  "kind": "flow",
+  "title": "Puls's judges: from the runner's catalogue to a model's verdict",
+  "caption": "Apart from the identity: a judge is built on the harness, and an identity must never reference it. Only the runner references this.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "catalogs",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "PulsCatalogs, in the runner\u0027s\nprogram"
+      },
+      {
+        "id": "list",
+        "icon": "book",
+        "tone": "green",
+        "label": "PulsJudges.All"
+      },
+      {
+        "id": "check",
+        "icon": "checks",
+        "tone": "green",
+        "label": "MealForPeopleCheck"
+      },
+      {
+        "id": "inner",
+        "icon": "checks",
+        "tone": "violet",
+        "label": "EvaluatorCheck, in the harness"
+      },
+      {
+        "id": "ask",
+        "icon": "message",
+        "tone": "teal",
+        "label": "CookAsk: the people and the\ntown"
+      },
+      {
+        "id": "verdict",
+        "icon": "chart",
+        "tone": "teal",
+        "label": "MealVerdict"
+      },
+      {
+        "id": "rubric",
+        "icon": "file",
+        "tone": "amber",
+        "label": "meal-for-people.md, in the\ncook\u0027s eval folder"
+      },
+      {
+        "id": "model",
+        "icon": "cloud",
+        "tone": "red",
+        "label": "JudgeClients: a model"
+      }
+    ],
+    "edges": [
+      {
+        "from": "catalogs",
+        "to": "list"
+      },
+      {
+        "from": "list",
+        "to": "check"
+      },
+      {
+        "from": "check",
+        "to": "inner"
+      },
+      {
+        "from": "check",
+        "to": "ask"
+      },
+      {
+        "from": "check",
+        "to": "verdict"
+      },
+      {
+        "from": "check",
+        "to": "rubric"
+      },
+      {
+        "from": "inner",
+        "to": "model"
+      }
+    ],
+    "direction": "down"
+  }
+}

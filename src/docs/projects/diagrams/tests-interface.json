@@ -1,0 +1,95 @@
+{
+  "kind": "classes",
+  "title": "The tests: the interface design",
+  "caption": "Two shared libraries, every test project referencing them and none another: fakes for the model, HTTP, identities, packs and the web, and fixtures for the web's snapshots.",
+  "classes": {
+    "types": [
+      {
+        "id": "testing",
+        "name": "louis-agent.testing",
+        "kind": "every test project's global using",
+        "tone": "teal"
+      },
+      {
+        "id": "chat",
+        "name": "FakeChatClient",
+        "kind": "a scripted IChatClient that streams too",
+        "members": [
+          "+FakeChatClient(params script)"
+        ]
+      },
+      {
+        "id": "stub",
+        "name": "StubHandler",
+        "kind": "an HttpMessageHandler",
+        "members": [
+          "+StubHandler(respond)"
+        ]
+      },
+      {
+        "id": "fakes",
+        "name": "FakeIdentity, FakePack, FakePrompts",
+        "kind": "the composition's seams, faked"
+      },
+      {
+        "id": "web",
+        "name": "FakeBrowser, FakeDns, CountingSearch",
+        "kind": "the web's seams, faked"
+      },
+      {
+        "id": "tools",
+        "name": "TestTools",
+        "kind": "static, a fake pack under the real toolset names",
+        "members": [
+          "FakeFileTools, FakeGitTools, FakeShopTools..."
+        ]
+      },
+      {
+        "id": "paths",
+        "name": "TestPaths",
+        "kind": "static",
+        "members": [
+          "+RepoRoot"
+        ]
+      },
+      {
+        "id": "webtesting",
+        "name": "louis-agent.web.testing",
+        "kind": "the web tests' library",
+        "tone": "teal"
+      },
+      {
+        "id": "fixture",
+        "name": "FixtureApi",
+        "kind": "static, a stub API",
+        "members": [
+          "the recorded Puls turn, replayed"
+        ]
+      },
+      {
+        "id": "snapshots",
+        "name": "Snapshots",
+        "kind": "static, a component's markup against its golden",
+        "members": [
+          "LOUIS_UPDATE_GOLDEN=1 writes them anew"
+        ]
+      },
+      {
+        "id": "js",
+        "name": "RecordingJSRuntime",
+        "kind": "an IJSRuntime that lists every call"
+      }
+    ],
+    "relations": [
+      { "from": "testing", "to": "chat", "kind": "holds" },
+      { "from": "testing", "to": "stub", "kind": "holds" },
+      { "from": "testing", "to": "fakes", "kind": "holds" },
+      { "from": "testing", "to": "web", "kind": "holds" },
+      { "from": "testing", "to": "tools", "kind": "holds" },
+      { "from": "testing", "to": "paths", "kind": "holds" },
+      { "from": "webtesting", "to": "fixture", "kind": "holds" },
+      { "from": "webtesting", "to": "snapshots", "kind": "holds" },
+      { "from": "webtesting", "to": "js", "kind": "holds" }
+    ]
+  }
+}

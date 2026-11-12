@@ -50,40 +50,11 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 ## Diagrams
 
-**Architecture:** one class, and the rest is content. Puls holds no tools: what it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.
+![The Puls identity: its prompts and packs, its evals and judges](diagrams/louis-agent.identity.puls-diagrams.svg)
 
-```mermaid
-flowchart TD
-    plugins["Plugins, in louis-agent.host-packs"] -->|"IDENTITIES=puls"| identity["PulsIdentity"]
-    identity -->|"its prompts"| prompts["Prompts: voice, specialists, minions"]
-    identity -->|"the packs it names"| packs["where-to-buy, shop-prices, recipes, web, calculator"]
-    prompts --> catalog["AgentCatalog: checks them, then SkillFileSource reads them"]
-    packs --> catalog
-    catalog --> engine["AgentEngine, per session"]
-    evals["louis-agent.identity.puls.evals: its evals and PulsReaders"] -.-> runner["The eval runner only"]
-    judges["louis-agent.identity.puls.judges"] -.-> runner
-```
+![A cooking question: the session reads Puls's prompts, Puls asks the cook, and the cook's tools answer through it](diagrams/louis-agent.identity.puls-diagrams-2.svg)
 
-**Flow:** what a session is made of, and how a cooking question gets to the cook. A role that's off comes back to Puls as a tool error, which it has to report.
-
-```mermaid
-sequenceDiagram
-    participant W as The web app
-    participant E as The engine
-    participant V as Puls: principles, voice-af, voice
-    participant C as The cook: puls-cook
-    participant T as Its tools
-    W->>E: opens with puls/voice-af, agents and web
-    E->>V: reads the principles, then the voice, then the routing
-    W->>V: a cooking question
-    V->>E: AskAgent("puls.cook")
-    E->>E: is the role known, and in ROLES_ENABLED?
-    E->>C: a sub-session, with only its role and its toolsets' guides
-    C->>T: FindRecipes, ReadRecipe, FindBranches, EstimatePrices, Calculate
-    T-->>C: the results
-    C-->>V: its answer
-    V-->>W: the answer, in the user's language
-```
+![The types: PulsIdentity, its five packs and the five specialists it may ask](diagrams/louis-agent.identity.puls-interface.svg)
 
 ## Design notes
 

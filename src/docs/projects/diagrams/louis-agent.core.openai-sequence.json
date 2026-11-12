@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.core.openai: one reply from your endpoint",
+  "caption": "No endpoint, no client: the provider refuses before anything is sent, and with one the engine talks to it through the OpenAI SDK.",
+  "sequence": {
+    "participants": [
+      { "id": "host", "label": "A host's program", "icon": "terminal", "tone": "blue" },
+      { "id": "factory", "label": "LlmClientFactory", "icon": "chip", "tone": "violet" },
+      { "id": "provider", "label": "OpenAiCompatibleProvider", "icon": "box", "tone": "green" },
+      { "id": "engine", "label": "AgentEngine", "icon": "chip", "tone": "violet" },
+      { "id": "server", "label": "Your endpoint", "icon": "server", "tone": "red" }
+    ],
+    "steps": [
+      { "step": "message", "from": "host", "to": "factory", "text": "Create(options), LLM_PROVIDER=openai-compatible" },
+      { "step": "message", "from": "factory", "to": "provider", "text": "Create(options)" },
+      { "step": "block", "block": "alt", "label": "no LLM_ENDPOINT",
+        "steps": [ { "step": "reply", "from": "provider", "to": "factory", "text": "throws EndpointRequired" } ],
+        "else": [ { "label": "an endpoint",
+          "steps": [ { "step": "reply", "from": "provider", "to": "factory", "text": "the SDK's chat client, the key or \"none\"" } ] } ] },
+      { "step": "reply", "from": "factory", "to": "host", "text": "the IChatClient" },
+      { "step": "message", "from": "host", "to": "engine", "text": "StreamPromptAsync(history, input)" },
+      { "step": "message", "from": "engine", "to": "server", "text": "POST /chat/completions" },
+      { "step": "reply", "from": "server", "to": "engine", "text": "the reply, streamed" },
+      { "step": "reply", "from": "engine", "to": "host", "text": "the updates, the usage in the standard fields" }
+    ]
+  }
+}

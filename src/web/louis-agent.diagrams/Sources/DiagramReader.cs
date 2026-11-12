@@ -1,8 +1,11 @@
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
+using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 
 namespace LouisAgent.Diagrams.Sources;
 
@@ -25,6 +28,8 @@ public static class DiagramReader
         CheckPart(kind, source);
         if (source.Flow is { } flow) CheckFlow(flow);
         if (source.Cards is { } cards) CheckCards(cards);
+        if (source.Sequence is { } sequence) CheckSequence(sequence);
+        if (source.Classes is { } classes) CheckClasses(classes);
         return source;
     }
 
@@ -65,6 +70,11 @@ public static class DiagramReader
         {
             throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
         }
+        // A sequence's step without its "step" field can't be told apart: System.Text.Json says so this way.
+        catch (NotSupportedException ex)
+        {
+            throw Refused(DiagramMessage.Unreadable, new { Reason = ex.Message });
+        }
     }
 
     /// <summary>A kind's own part must be there: a flow its boxes and arrows, cards their rows.</summary>
@@ -74,14 +84,27 @@ public static class DiagramReader
         {
             DiagramKind.Flow => source.Flow is not null,
             DiagramKind.Cards => source.Cards is not null,
+            DiagramKind.Sequence => source.Sequence is not null,
+            DiagramKind.Classes => source.Classes is not null,
             _ => false
         };
         if (!hasPart) throw Refused(DiagramMessage.MissingPart, new { Kind = kind.Wire() });
     }
 
-    /// <summary>Every arrow joins two boxes the flow has.</summary>
+    /// <summary>Every box's group is one the flow declares, and every arrow joins two boxes the flow has.</summary>
     private static void CheckFlow(GraphSpec flow)
     {
+        // A box's group must be one the diagram declares, so its frame has its label.
+        var groups = (flow.Groups ?? []).Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
+        var astray = flow.Nodes.FirstOrDefault(node => node.Group is { } group && !groups.Contains(group));
+        if (astray is not null)
+            throw Refused(DiagramMessage.UnknownGroup,
+                new
+                {
+                    astray.Id,
+                    astray.Group
+                });
+
         var ids = flow.Nodes.Select(node => node.Id).ToHashSet(StringComparer.Ordinal);
         var stray = flow.Edges.FirstOrDefault(edge => !ids.Contains(edge.From) || !ids.Contains(edge.To));
         if (stray is null) return;
@@ -108,6 +131,55 @@ public static class DiagramReader
                 Id = ids.Contains(stray.From) ? stray.To : stray.From
             });
     }
+
+    /// <summary>
+    /// A sequence has a step at least, a note stands over someone, and every step names participants the chart has.
+    /// </summary>
+    private static void CheckSequence(SequenceSpec sequence)
+    {
+        if (sequence.Steps.Count == 0) throw Refused(DiagramMessage.NoSteps, new { });
+        var all = sequence.Steps.SelectMany(step => step.All()).ToList();
+        if (all.OfType<NoteStep>().FirstOrDefault(note => note.Over.Count == 0) is { } bare)
+            throw Refused(DiagramMessage.NoteOverNoOne, new { bare.Text });
+        if (all.OfType<BlockStep>().FirstOrDefault(Empty) is { } empty)
+            throw Refused(DiagramMessage.EmptyBlock,
+                new
+                {
+                    Kind = empty.Block.Wire(),
+                    empty.Label
+                });
+
+        var ids = sequence.Participants.Select(head => head.Id).ToHashSet(StringComparer.Ordinal);
+        var stray = sequence.Steps
+            .SelectMany(step => step.Names().Where(id => !ids.Contains(id)).Select(id => (Step: step, Id: id)))
+            .FirstOrDefault();
+        if (stray == default) return;
+        throw Refused(DiagramMessage.UnknownParticipant,
+            new
+            {
+                stray.Id,
+                Step = stray.Step.ToString()
+            });
+    }
+
+    /// <summary>Every relation joins two types the class chart has.</summary>
+    private static void CheckClasses(ClassesSpec classes)
+    {
+        var ids = classes.Types.Select(type => type.Id).ToHashSet(StringComparer.Ordinal);
+        var stray = classes.Relations.FirstOrDefault(relation => !ids.Contains(relation.From) || !ids.Contains(relation.To));
+        if (stray is null) return;
+        throw Refused(DiagramMessage.UnknownType,
+            new
+            {
+                stray.From,
+                stray.To,
+                Id = ids.Contains(stray.From) ? stray.To : stray.From
+            });
+    }
+
+    /// <summary>A block, or one of its cases, with nothing in it: a frame round nothing.</summary>
+    private static bool Empty(BlockStep block) =>
+        block.Steps.Count == 0 || (block.Else ?? []).Any(@case => @case.Steps.Count == 0);
 
     /// <summary>The refusal, its text from the message enum.</summary>
     private static InvalidDataException Refused(DiagramMessage message, object values) =>

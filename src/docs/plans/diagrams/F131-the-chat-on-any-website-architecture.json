@@ -1,0 +1,81 @@
+{
+  "kind": "flow",
+  "title": "F131 the chat on any website: the architecture",
+  "caption": "One script tag: our widget runs in a frame on the customer's page, with a door per site on the API and its own limits.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Page",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "Customer page, any domain\nembed.js F131.2\nor the WordPress plugin F131.6"
+      },
+      {
+        "id": "Frame",
+        "icon": "box",
+        "tone": "green",
+        "label": "Our frame /embed/site F131.2\nChatWidget, frame-ancestors"
+      },
+      {
+        "id": "API",
+        "icon": "server",
+        "tone": "green",
+        "label": "louis-agent.api\na door per site F131.1\nrate limits F131.1, budget\nF131.5"
+      },
+      {
+        "id": "Store",
+        "icon": "database",
+        "tone": "amber",
+        "label": "Sites in MongoDB\nper tenant F131.4"
+      },
+      {
+        "id": "Ledger",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Usage ledger\nsite:name tag"
+      },
+      {
+        "id": "Admin",
+        "icon": "settings",
+        "tone": "green",
+        "label": "Sites screen F131.4"
+      },
+      {
+        "id": "Sitemap",
+        "icon": "world",
+        "tone": "red",
+        "label": "The site\u0027s sitemap"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Page",
+        "to": "Frame",
+        "word": "postMessage, exact\norigins"
+      },
+      {
+        "from": "Frame",
+        "to": "API",
+        "word": "fetch \u002B SSE, same origin\nGET .../stream to resume\nF131.3"
+      },
+      {
+        "from": "API",
+        "to": "Store"
+      },
+      {
+        "from": "API",
+        "to": "Ledger"
+      },
+      {
+        "from": "Admin",
+        "to": "API"
+      },
+      {
+        "from": "API",
+        "to": "Sitemap",
+        "word": "daily"
+      }
+    ],
+    "direction": "down"
+  }
+}

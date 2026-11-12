@@ -77,32 +77,11 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
 
 ### Diagrams
 
-```mermaid
-flowchart LR
-    browser["Browser app (F61.2)"] -->|"POST /account/login?useCookies=true"| identity["Identity's routes (MapIdentityApi)"]
-    browser -->|"GET /account/me, PUT /profile, POST /logout, DELETE /account"| ours["AccountHandlers"]
-    identity --> managers["UserManager / SignInManager"]
-    ours --> managers
-    managers --> store["AccountUserStore: within CurrentTenant"]
-    tenant["UseTenant: host -> HostTenantResolver -> CurrentTenant"] --> store
-    store --> db["AccountsDbContext: SQL Server"]
-    managers -->|"confirm, reset links"| mail["IEmailSender: LogEmailSender"]
-```
+![Accounts: the browser's calls through Identity's routes and ours to the store](diagrams/louis-agent.accounts-diagrams.svg)
 
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant T as UseTenant
-    participant I as /account/register (Identity)
-    participant S as AccountUserStore
-    participant M as Mail seam
-    B->>T: POST /account/register (host mypuls.co.za)
-    T->>T: CurrentTenant = row for the host, else ACCOUNTS_TENANT
-    T->>I: the request
-    I->>S: FindByEmailAsync (within the tenant), CreateAsync (stamped with it)
-    I->>M: SendConfirmationLinkAsync
-    I-->>B: 200
-```
+![Registering: the host picks the tenant, then Identity's route finds and creates the person within it and sends the confirmation](diagrams/louis-agent.accounts-diagrams-2.svg)
+
+![The types: the host's address names the tenant, the user store works within it, and each outside sign-in is a provider](diagrams/louis-agent.accounts-interface.svg)
 
 ## Structure
 

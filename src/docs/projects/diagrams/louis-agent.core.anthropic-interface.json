@@ -1,0 +1,78 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core.anthropic: the interface design",
+  "caption": "Core's three seams made real for Claude: the client, its usage read whole, and the cache marks on the prompt.",
+  "classes": {
+    "types": [
+      {
+        "id": "seam",
+        "name": "ILlmProvider",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Name",
+          "+Create(LlmOptions) IChatClient",
+          "+CreateUsageMapper() IUsageMapper",
+          "+CreatePromptCaching(options) IPromptCachingStrategy"
+        ]
+      },
+      {
+        "id": "provider",
+        "name": "AnthropicProvider",
+        "kind": "the provider",
+        "members": [
+          "+Create(LlmOptions) IChatClient",
+          "+CreateUsageMapper() IUsageMapper",
+          "+CreatePromptCaching(options) IPromptCachingStrategy"
+        ]
+      },
+      {
+        "id": "budget",
+        "name": "ThinkingBudget",
+        "kind": "static",
+        "members": [
+          "+UsesThinkingBudget(model) bool",
+          "+Budget(ReasoningEffort) long",
+          "+Wrap(client, model) IChatClient"
+        ]
+      },
+      {
+        "id": "mapper",
+        "name": "AnthropicUsageMapper",
+        "kind": "a StandardUsageMapper",
+        "members": [
+          "+Keeps(raw) bool",
+          "+Map(usage, raw) UsageTokens"
+        ]
+      },
+      {
+        "id": "imapper",
+        "name": "IUsageMapper",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet"
+      },
+      {
+        "id": "caching",
+        "name": "AnthropicPromptCaching",
+        "kind": "the cache marks",
+        "members": [
+          "+Prepare(messages, options) (Messages, Options)"
+        ]
+      },
+      {
+        "id": "icaching",
+        "name": "IPromptCachingStrategy",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "provider", "to": "seam", "kind": "implements" },
+      { "from": "provider", "to": "budget", "kind": "uses", "word": "wraps the client" },
+      { "from": "provider", "to": "mapper", "kind": "creates" },
+      { "from": "provider", "to": "caching", "kind": "creates" },
+      { "from": "mapper", "to": "imapper", "kind": "implements" },
+      { "from": "caching", "to": "icaching", "kind": "implements" }
+    ]
+  }
+}

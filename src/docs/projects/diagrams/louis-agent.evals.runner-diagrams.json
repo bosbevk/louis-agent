@@ -1,0 +1,117 @@
+{
+  "kind": "flow",
+  "caption": "The API never references an eval: it starts this program and reads what it writes, so a new eval is a folder of files.",
+  "title": "The eval runner: its host, its commands, and the API that starts it",
+  "flow": {
+    "nodes": [
+      {
+        "id": "api",
+        "icon": "server",
+        "tone": "red",
+        "label": "louis-agent.api: EvalProcess,\nRunnerProcess"
+      },
+      {
+        "id": "host",
+        "icon": "server",
+        "tone": "green",
+        "label": "EvalRunnerHost"
+      },
+      {
+        "id": "program",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A demo\u0027s program: what it\nknows, in RunnerCatalogs"
+      },
+      {
+        "id": "args",
+        "icon": "code",
+        "tone": "green",
+        "label": "CommandLine"
+      },
+      {
+        "id": "catalog",
+        "icon": "book",
+        "tone": "teal",
+        "label": "EvalCatalog"
+      },
+      {
+        "id": "folders",
+        "icon": "folder",
+        "tone": "amber",
+        "label": "EvalFolders: every eval.json\nunder EvalFiles"
+      },
+      {
+        "id": "runner",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "EvalRunner, in the harness"
+      },
+      {
+        "id": "check",
+        "icon": "checks",
+        "tone": "green",
+        "label": "CheckCommand"
+      },
+      {
+        "id": "prompt",
+        "icon": "file",
+        "tone": "green",
+        "label": "PromptfooImport,\nPromptfooExport"
+      },
+      {
+        "id": "judge",
+        "icon": "user",
+        "tone": "green",
+        "label": "LabelSheetCommand,\nCalibrateCommand"
+      }
+    ],
+    "edges": [
+      {
+        "from": "api",
+        "to": "host",
+        "word": "starts it, reads stdout"
+      },
+      {
+        "from": "program",
+        "to": "host"
+      },
+      {
+        "from": "host",
+        "to": "args"
+      },
+      {
+        "from": "host",
+        "to": "catalog"
+      },
+      {
+        "from": "catalog",
+        "to": "folders"
+      },
+      {
+        "from": "host",
+        "to": "runner",
+        "word": "run"
+      },
+      {
+        "from": "host",
+        "to": "check",
+        "word": "--check"
+      },
+      {
+        "from": "host",
+        "to": "prompt",
+        "word": "--import-promptfoo, --export-promptfoo"
+      },
+      {
+        "from": "host",
+        "to": "judge",
+        "word": "--label-sheet, --calibrate"
+      },
+      {
+        "from": "runner",
+        "to": "api",
+        "word": "protocol v2, on stdout"
+      }
+    ]
+  }
+}

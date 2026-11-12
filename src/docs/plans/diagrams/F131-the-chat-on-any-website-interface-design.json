@@ -1,0 +1,127 @@
+{
+  "kind": "classes",
+  "title": "F131 the chat on any website: the interface design",
+  "caption": "A door per site: it reads the site from its store, counts each address, and keeps the budget.",
+  "classes": {
+    "types": [
+      {
+        "id": "SiteRecord",
+        "name": "SiteRecord",
+        "kind": "record",
+        "members": [
+          "Id Tenant Name Key Domains Caps Budget LeadTo Packs Voice Facts PrivatePages ReadsPages (F131.1, Mongo in F131.4)"
+        ]
+      },
+      {
+        "id": "ISiteStore",
+        "name": "ISiteStore",
+        "kind": "interface",
+        "members": [
+          "+FindByKeyAsync(key) SiteRecord?",
+          "+ListAsync(tenant)",
+          "+SaveAsync(site) (F131.1)"
+        ]
+      },
+      {
+        "id": "InMemorySiteStore",
+        "name": "InMemorySiteStore",
+        "members": [
+          "+from the host's settings (F131.1)"
+        ]
+      },
+      {
+        "id": "MongoSiteStore",
+        "name": "MongoSiteStore",
+        "members": [
+          "+IMongoCollection<SiteRecord> (F131.4)"
+        ]
+      },
+      {
+        "id": "SiteDoor",
+        "name": "SiteDoor",
+        "members": [
+          "+Admit(request, key, address) DoorAnswer (F131.1, grows OpenDoor)"
+        ]
+      },
+      {
+        "id": "SiteRateLimits",
+        "name": "SiteRateLimits",
+        "members": [
+          "+AddSiteRateLimits(services) (F131.1, PartitionedRateLimiter)"
+        ]
+      },
+      {
+        "id": "BusinessIdentity",
+        "name": "BusinessIdentity",
+        "kind": "IAgentIdentity",
+        "members": [
+          "voice and facts from SiteRecord (F131.1)"
+        ]
+      },
+      {
+        "id": "EmbedPage",
+        "name": "EmbedPage",
+        "kind": "razor page",
+        "members": [
+          "/embed/site, frame-ancestors (F131.2)"
+        ]
+      },
+      {
+        "id": "EmbedScript",
+        "name": "EmbedScript",
+        "kind": "embed.js",
+        "members": [
+          "button, frame, page reader, ShowPage, open state (F131.2)"
+        ]
+      },
+      {
+        "id": "TurnBuffer",
+        "name": "TurnBuffer",
+        "members": [
+          "+Append(event)",
+          "+ReplayFrom(index) (F131.3)"
+        ]
+      },
+      {
+        "id": "SiteBudget",
+        "name": "SiteBudget",
+        "members": [
+          "+SpentThisMonth(site)",
+          "+IsClosed(site) (F131.5, on F7)"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "InMemorySiteStore",
+        "to": "ISiteStore",
+        "kind": "implements"
+      },
+      {
+        "from": "MongoSiteStore",
+        "to": "ISiteStore",
+        "kind": "implements"
+      },
+      {
+        "from": "SiteDoor",
+        "to": "ISiteStore",
+        "kind": "holds"
+      },
+      {
+        "from": "BusinessIdentity",
+        "to": "SiteRecord",
+        "kind": "holds"
+      },
+      {
+        "from": "EmbedPage",
+        "to": "ISiteStore",
+        "kind": "holds"
+      },
+      {
+        "from": "SiteDoor",
+        "to": "SiteBudget",
+        "kind": "holds"
+      }
+    ]
+  }
+}

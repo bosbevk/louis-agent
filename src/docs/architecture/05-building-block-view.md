@@ -13,40 +13,7 @@ and the evaluation that measures it all.
 
 ## Level 2: containers
 
-```mermaid
-flowchart TB
-    dev(["Developer"])
-    puser(["Puls user"])
-    subgraph la["louis-agent [software system]"]
-        cli["CLI<br/>[.NET console]"]
-        acp["ACP server<br/>[.NET console, one per Rider chat]"]
-        api["HTTP API<br/>[ASP.NET Core, SSE]"]
-        web["Web app / Puls app<br/>[Blazor WebAssembly]"]
-        peer["Specialist API<br/>[the HTTP API, as a peer]"]
-        mcp["MCP server<br/>[.NET, stdio or HTTP]"]
-        orch["Orchestrator<br/>[.NET console, POC]"]
-        comp["Composition root<br/>[class library: IDENTITIES, PACKS]"]
-        core[["louis-agent.core<br/>[class library: the engine, tools, skills, providers]"]]
-        ident["Identities<br/>[puls: voice, modes, roles]"]
-        pack["Packs<br/>[shops: toolsets, guides, settings]"]
-    end
-    llm["Model provider"]
-    ws[("Workspace")]
-    ledger[("logs/: run files, usage ledger")]
-
-    dev --> cli & acp & web
-    puser --> web
-    web -- "HTTP + SSE" --> api
-    api -- "sub-sessions" --> peer
-    orch -- "fix sessions" --> api
-    cli & acp & api & peer & mcp & orch -. "uses" .-> core
-    cli & acp & api & mcp -- "Plugins.FromEnvironment()" --> comp
-    comp --> ident & pack
-    ident & pack -. "uses" .-> core
-    core --> llm
-    core --> ws
-    core --> ledger
-```
+![Building blocks, level 2: the containers](diagrams/05-building-block-view-level-2-containers.svg)
 
 Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
 ([0010](../adr/0010-folders-by-concern.md)). Core is the engine and names no product: who an agent is (its voice, modes,
@@ -130,21 +97,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 
 ## Level 3: core's components
 
-```mermaid
-flowchart TB
-    hosting["Hosting<br/>AgentHost, AgentEngineFactory"]
-    agent["Agent<br/>AgentEngine, ToolRegistry, ToolCallGuards, ToolsetCatalog"]
-    llm["Llm<br/>LlmClientFactory (a registry), middleware, the ILlmProvider seam"]
-    tools["Tools<br/>one folder per toolset"]
-    skills["Skills<br/>markdown loaders"]
-    usage["Usage · Pricing<br/>ledger, prices, rates"]
-    guard["Guardrails<br/>workspace boundary, secrets, SSRF"]
-    base["Config · Messages · Logging"]
-    hosting --> agent
-    agent --> llm & tools & skills & usage
-    llm & tools & skills & usage --> guard
-    guard --> base
-```
+![Building blocks, level 3: the engine's parts](diagrams/05-building-block-view-level-3-core-s-components.svg)
 
 Dependencies point one way, down this picture; `ArchitectureTests` fails on one that points up
 ([0010](../adr/0010-folders-by-concern.md)).

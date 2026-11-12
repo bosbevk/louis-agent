@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.pack.triage: how it works",
+  "caption": "The workflow reads the feed, the roles answer through typed tools, and the run is the steps on disk, read back by the guide, a person or the manager.",
+  "flow": {
+    "nodes": [
+      { "id": "log", "label": "A service's error log\nJSON lines", "icon": "file", "tone": "amber" },
+      { "id": "feed", "label": "JsonLinesErrorFeed\nthe errors not handled yet", "icon": "stack", "tone": "green" },
+      { "id": "workflow", "label": "The triage workflow\nthe demo's", "icon": "branch", "tone": "blue" },
+      { "id": "roles", "label": "The roles\nsorter, investigator, reviewer", "icon": "users", "tone": "violet" },
+      { "id": "tools", "label": "TriageTools, RunTools\ntyped endings, the run read back", "icon": "checks", "tone": "green" },
+      { "id": "recorder", "label": "FileTriageRecorder\nTRIAGE_RUNS", "icon": "folder", "tone": "amber" },
+      { "id": "people", "label": "TRIAGE_PEOPLE\na case for a person", "icon": "user", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "log", "to": "feed" },
+      { "from": "feed", "to": "workflow", "word": "ReadNew" },
+      { "from": "workflow", "to": "roles", "word": "asks each" },
+      { "from": "roles", "to": "tools", "word": "end with" },
+      { "from": "tools", "to": "recorder", "word": "every step" },
+      { "from": "tools", "to": "people", "word": "RaiseToPerson", "style": "dashed" }
+    ]
+  }
+}

@@ -34,37 +34,11 @@ references only `louis-agent.choices`, so each side takes it without the others.
 
 ## Diagrams
 
-**Architecture:** one set of records, used by both sides, so a field one side renames doesn't compile on the other.
+![The eval protocol: written as JSON lines, read by the API and the web](diagrams/louis-agent.evals.protocol-diagrams.svg)
 
-```mermaid
-flowchart LR
-    writer["ProtocolWriter, in louis-agent.evals"] -->|"EvalProtocolJson.Line"| out["stdout: JSON Lines"]
-    out -->|"EvalProtocolJson.Read"| api["louis-agent.api: the store and the export"]
-    out -->|"EvalProtocolJson.Read"| web["louis-agent.web: the live view"]
-    contract["This project: EvalEvent, its parts and kinds"] -.-> writer
-    contract -.-> api
-    contract -.-> web
-```
+![The order of a run's lines: the protocol event first, then each mode's conversations, and the summary last](diagrams/louis-agent.evals.protocol-diagrams-2.svg)
 
-**Flow:** the order a run's lines come in. A line that's no event reads as nothing and shows as a line for people.
-
-```mermaid
-sequenceDiagram
-    participant R as The runner
-    participant A as The API
-    R->>A: ProtocolEvent, the first line
-    loop each mode
-        R->>A: ModeEvent
-        loop each conversation
-            R->>A: QuestionEvent
-            R->>A: SseEvent, for each piece of the stream
-            R->>A: TurnEvent: its figures
-            R->>A: ConversationEvent: its grades and metrics
-        end
-        R->>A: ModeDoneEvent
-    end
-    R->>A: SummaryEvent
-```
+![The types: every line is one EvalEvent record, written and read through one options object](diagrams/louis-agent.evals.protocol-interface.svg)
 
 ## Structure
 

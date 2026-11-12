@@ -1,0 +1,104 @@
+{
+  "kind": "flow",
+  "caption": "The engine: core sits in the middle. What runs it and what picks its packs are above it, what an agent is made from is below, and the contracts they all agree on are at the bottom.",
+  "title": "How the projects depend on each other: a demo's programs, core and what runs on it, identities, packs and the contracts",
+  "flow": {
+    "nodes": [
+      {
+        "id": "Programs",
+        "icon": "terminal",
+        "tone": "blue",
+        "label": "A demo\u0027s programs\ncoding-api, coding-cli,\ncoding-acp, coding-mcp\npuls-api, puls-eval-runner"
+      },
+      {
+        "id": "Hosts",
+        "icon": "server",
+        "tone": "blue",
+        "label": "What runs on core\ncli, acp-server, api,\nmcp-server, evals.runner\norchestrator, usage-probe"
+      },
+      {
+        "id": "Catalogs",
+        "icon": "settings",
+        "tone": "amber",
+        "label": "What picks the packs\ncoding-catalog, host-packs"
+      },
+      {
+        "id": "Core",
+        "icon": "chip",
+        "tone": "violet",
+        "label": "louis-agent.core\nthe engine"
+      },
+      {
+        "id": "OnCore",
+        "icon": "cloud",
+        "tone": "violet",
+        "label": "On core\ncore.web, core.telemetry,\ncore.anthropic, core.ollama,\ncore.openai"
+      },
+      {
+        "id": "Ids",
+        "icon": "users",
+        "tone": "green",
+        "label": "Every identity\nwho an agent is"
+      },
+      {
+        "id": "Packs",
+        "icon": "box",
+        "tone": "green",
+        "label": "Every pack\nwhat an agent can do"
+      },
+      {
+        "id": "Comp",
+        "icon": "code",
+        "tone": "teal",
+        "label": "louis-agent.composition\nthe contracts"
+      }
+    ],
+    "edges": [
+      {
+        "from": "Programs",
+        "to": "Hosts"
+      },
+      {
+        "from": "Programs",
+        "to": "OnCore"
+      },
+      {
+        "from": "OnCore",
+        "to": "Core"
+      },
+      {
+        "from": "Programs",
+        "to": "Catalogs"
+      },
+      {
+        "from": "Hosts",
+        "to": "Core"
+      },
+      {
+        "from": "Catalogs",
+        "to": "Core"
+      },
+      {
+        "from": "Catalogs",
+        "to": "Packs"
+      },
+      {
+        "from": "Catalogs",
+        "to": "Ids"
+      },
+      {
+        "from": "Core",
+        "to": "Comp"
+      },
+      {
+        "from": "Packs",
+        "to": "Comp"
+      },
+      {
+        "from": "Ids",
+        "to": "Comp"
+      }
+    ],
+    "direction": "down"
+  }
+}

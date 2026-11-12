@@ -1,0 +1,119 @@
+{
+  "kind": "sequence",
+  "title": "F92 voice: one clip to text",
+  "caption": "The person stays in charge: the text lands in the box to fix before sending, and only a usage row is kept.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "P",
+        "tone": "blue",
+        "label": "Person",
+        "actor": true
+      },
+      {
+        "id": "B",
+        "icon": "browser",
+        "tone": "green",
+        "label": "Browser (recorder.js)"
+      },
+      {
+        "id": "A",
+        "icon": "server",
+        "tone": "violet",
+        "label": "API"
+      },
+      {
+        "id": "F",
+        "icon": "settings",
+        "tone": "violet",
+        "label": "SpeechClientFactory"
+      },
+      {
+        "id": "W",
+        "icon": "chip",
+        "tone": "red",
+        "label": "Whisper"
+      },
+      {
+        "id": "L",
+        "icon": "chart",
+        "tone": "amber",
+        "label": "Ledger"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "P",
+        "to": "B",
+        "text": "holds the mic, talks, lets go"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "POST /v1/sessions/{id}/transcriptions (webm clip, language hint)"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "A",
+        "text": "checks size and length, else 400 with the reason"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "F",
+        "text": "Create(options)"
+      },
+      {
+        "step": "reply",
+        "from": "F",
+        "to": "A",
+        "text": "ISpeechToTextClient"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "W",
+        "text": "GetTextAsync(stream)"
+      },
+      {
+        "step": "reply",
+        "from": "W",
+        "to": "A",
+        "text": "text"
+      },
+      {
+        "step": "message",
+        "from": "A",
+        "to": "L",
+        "text": "speech row (seconds, provider, price or null)"
+      },
+      {
+        "step": "reply",
+        "from": "A",
+        "to": "B",
+        "text": "200 TranscriptionResult (text, language, seconds)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "P",
+        "text": "text in the box"
+      },
+      {
+        "step": "message",
+        "from": "P",
+        "to": "B",
+        "text": "fixes a word, presses send"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "A",
+        "text": "POST /v1/sessions/{id}/messages (text, as today)"
+      }
+    ]
+  }
+}

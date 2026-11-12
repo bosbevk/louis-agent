@@ -1,0 +1,271 @@
+<svg viewBox="-24 -24 1055 1458" width="1055" height="1458" role="img" aria-label="F39 orchestration: the recovery contract" xmlns="http://www.w3.org/2000/svg">
+  <title>F39 orchestration: the recovery contract</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1055" height="1458" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1007" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F39 orchestration:</tspan>
+    <tspan class="title-rest">the recovery contract</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-blue" d="M 459 52 L 459 112" marker-end="url(#arrow-blue)" />
+    <path class="edge" d="M 459 196 L 459 208 Q 459 220 471 220 L 594 220 Q 615 220 615 241 L 615 262 L 615 314 L 615 380 L 615 432 L 615 444 Q 615 456 627 456 L 747 456 Q 771 456 771 480 L 771 516 L 771 584 L 771 686 L 771 754 L 771 868 L 771 952 L 771 1036 L 771 1120 L 771 1141 Q 771 1162 750 1162 L 471 1162 Q 459 1162 459 1174 L 459 1186" marker-end="url(#arrow)" />
+    <path class="edge" d="M 459 196 L 459 208 Q 459 220 447 220 L 324 220 Q 303 220 303 241 L 303 262" marker-end="url(#arrow)" />
+    <path class="edge tone-teal" d="M 303 314 L 303 380" marker-end="url(#arrow-teal)" />
+    <path class="edge" d="M 303 432 L 303 453 Q 303 474 282 474 L 168 474 Q 147 474 147 495 L 147 516" marker-end="url(#arrow)" />
+    <path class="edge" d="M 303 432 L 303 453 Q 303 474 324 474 L 438 474 Q 459 474 459 495 L 459 516 L 459 584 L 459 686" marker-end="url(#arrow)" />
+    <path class="edge tone-green" d="M 147 584 L 147 620 Q 147 644 171 644 L 438 644 Q 459 644 459 665 L 459 686" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 147 584 L 147 686 L 147 754 L 147 868" marker-end="url(#arrow-green)" />
+    <path class="edge" d="M 459 754 L 459 868" marker-end="url(#arrow)" />
+    <path class="edge" d="M 459 754 L 459 790 Q 459 814 435 814 L 171 814 Q 147 814 147 838 L 147 868" marker-end="url(#arrow)" />
+    <path class="edge tone-green" d="M 459 952 L 459 1036" marker-end="url(#arrow-green)" />
+    <path class="edge" d="M 459 1120 L 459 1186" marker-end="url(#arrow)" />
+    <path class="edge tone-green" d="M 459 952 L 459 988 Q 459 1012 435 1012 L 159 1012 Q 147 1012 147 1024 L 147 1036" marker-end="url(#arrow-green)" />
+    <path class="edge tone-red" d="M 147 952 L 147 1036" marker-end="url(#arrow-red)" />
+    <path class="edge" d="M 575.6 1078 L 924 1078 Q 948 1078 948 1054 L 948 312 Q 948 288 924 288 L 431 288" marker-end="url(#arrow)" />
+    <rect class="word-chip" x="621" y="224" width="43" height="18" rx="4" />
+    <text class="word" x="642.5" y="236" text-anchor="middle">valid</text>
+    <rect class="word-chip" x="309" y="224" width="57" height="18" rx="4" />
+    <text class="word" x="337.5" y="236" text-anchor="middle">invalid</text>
+    <rect class="word-chip" x="153" y="478" width="29" height="18" rx="4" />
+    <text class="word" x="167.5" y="490" text-anchor="middle">yes</text>
+    <rect class="word-chip" x="465" y="478" width="22" height="18" rx="4" />
+    <text class="word" x="476" y="490" text-anchor="middle">no</text>
+    <rect class="word-chip tone-green" x="465" y="648" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="525" y="660" text-anchor="middle">done or not done</text>
+    <rect class="word-chip tone-green" x="153" y="648" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="181.5" y="660" text-anchor="middle">unknown</text>
+    <rect class="word-chip" x="465" y="818" width="57" height="18" rx="4" />
+    <text class="word" x="493.5" y="830" text-anchor="middle">allowed</text>
+    <rect class="word-chip" x="153" y="818" width="120" height="30" rx="4" />
+    <text class="word" x="213" y="830" text-anchor="middle">refused, or past</text>
+    <text class="word" x="213" y="842" text-anchor="middle">MaxAttempts</text>
+    <rect class="word-chip" x="465" y="1124" width="50" height="18" rx="4" />
+    <text class="word" x="490" y="1136" text-anchor="middle">passes</text>
+    <rect class="word-chip" x="958" y="661" width="43" height="18" rx="4" />
+    <text class="word" x="979.5" y="673" text-anchor="middle">fails</text>
+    <rect class="box tone-blue" x="372.8" y="0" width="172.4" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="400.8" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(392.8 18) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-blue" x="424.8" y="31" text-anchor="start">Execute a step</text>
+    <rect class="box" x="323.4" y="112" width="271.2" height="84" rx="10" />
+    <circle class="badge" cx="351.4" cy="154" r="14" />
+    <g class="badge-icon" transform="translate(343.4 146) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="375.4" y="143" text-anchor="start">Validate: schema, freshness</text>
+    <text class="label" x="375.4" y="159" text-anchor="start">(as_of), provenance,</text>
+    <text class="label" x="375.4" y="175" text-anchor="start">consistency, business rules</text>
+    <rect class="box tone-teal" x="175" y="262" width="256" height="52" rx="10" />
+    <circle class="badge tone-teal" cx="203" cy="288" r="14" />
+    <g class="badge-icon" transform="translate(195 280) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label tone-teal" x="227" y="293" text-anchor="start">Classify: one DataFailure</text>
+    <rect class="box" x="175" y="380" width="256" height="52" rx="10" />
+    <circle class="badge" cx="203" cy="406" r="14" />
+    <g class="badge-icon" transform="translate(195 398) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="227" y="411" text-anchor="start">Did a side effect happen?</text>
+    <rect class="box tone-green" x="22.8" y="516" width="248.4" height="68" rx="10" />
+    <circle class="badge tone-green" cx="50.8" cy="550" r="14" />
+    <g class="badge-icon" transform="translate(42.8 542) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label tone-green" x="74.8" y="547" text-anchor="start">Reconcile: read the real</text>
+    <text class="label tone-green" x="74.8" y="563" text-anchor="start">external state</text>
+    <rect class="box" x="312" y="686" width="294" height="68" rx="10" />
+    <circle class="badge" cx="340" cy="720" r="14" />
+    <g class="badge-icon" transform="translate(332 712) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="364" y="717" text-anchor="start">RecoveryPolicy.Allows(failure,</text>
+    <text class="label" x="364" y="733" text-anchor="start">action, attempt)?</text>
+    <rect class="box tone-red" x="15.2" y="868" width="263.6" height="84" rx="10" />
+    <circle class="badge tone-red" cx="43.2" cy="910" r="14" />
+    <g class="badge-icon" transform="translate(35.2 902) scale(0.6667)">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+    </g>
+    <text class="label tone-red" x="67.2" y="907" text-anchor="start">Escalate or stop: keep the</text>
+    <text class="label tone-red" x="67.2" y="923" text-anchor="start">evidence, ask a person</text>
+    <rect class="box tone-green" x="319.6" y="868" width="278.8" height="84" rx="10" />
+    <circle class="badge tone-green" cx="347.6" cy="910" r="14" />
+    <g class="badge-icon" transform="translate(339.6 902) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-green" x="371.6" y="899" text-anchor="start">Recover within bounds:</text>
+    <text class="label tone-green" x="371.6" y="915" text-anchor="start">refetch, alternative source,</text>
+    <text class="label tone-green" x="371.6" y="931" text-anchor="start">quarantine, compensate</text>
+    <rect class="box tone-amber" x="0" y="1036" width="294" height="84" rx="10" />
+    <circle class="badge tone-amber" cx="28" cy="1078" r="14" />
+    <g class="badge-icon" transform="translate(20 1070) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-amber" x="52" y="1067" text-anchor="start">RecoveryRecord: kind, records,</text>
+    <text class="label tone-amber" x="52" y="1083" text-anchor="start">source and version, action,</text>
+    <text class="label tone-amber" x="52" y="1099" text-anchor="start">attempt, result, approval</text>
+    <rect class="box" x="342.4" y="1036" width="233.2" height="84" rx="10" />
+    <circle class="badge" cx="370.4" cy="1078" r="14" />
+    <g class="badge-icon" transform="translate(362.4 1070) scale(0.6667)">
+      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </g>
+    <text class="label" x="394.4" y="1083" text-anchor="start">Verify before resuming</text>
+    <rect class="box tone-green" x="353.8" y="1186" width="210.4" height="52" rx="10" />
+    <circle class="badge tone-green" cx="381.8" cy="1212" r="14" />
+    <g class="badge-icon" transform="translate(373.8 1204) scale(0.6667)">
+      <path d="M7 12l5 5l10 -10" />
+      <path d="M2 12l5 5m5 -5l5 -5" />
+    </g>
+    <text class="label tone-green" x="405.8" y="1217" text-anchor="start">Resume the workflow</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="1320" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1330.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="1320" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="1330.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-teal" x="231.2" y="1320" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="1330.5" text-anchor="start">contracts and state</text>
+  <rect class="swatch tone-red" x="408" y="1320" width="12" height="12" rx="3" />
+  <text class="legend" x="426" y="1330.5" text-anchor="start">outside the process</text>
+  <rect class="swatch tone-amber" x="584.8" y="1320" width="12" height="12" rx="3" />
+  <text class="legend" x="602.8" y="1330.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="1356" width="1007" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 1366) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1378">
+    <tspan class="note-head">When data goes bad mid-run:</tspan>
+    <tspan class="note-rest">the workflow classifies it, reconciles after a side effect, recovers only within its policy, and verifies</tspan>
+  </text>
+  <text class="notes" x="38" y="1395">
+    <tspan class="note-rest">before it resumes.</tspan>
+  </text>
+</svg>
