@@ -57,6 +57,17 @@ public enum GuideCall
     [WireName("koringland-attorneys")] KoringlandAttorneys,
 }
 
+/// <summary>
+/// The parts of the site the guide speaks to (F127.7), each with its own skill, `focus-{name}`: the site names which
+/// part each address is, and the page block says it (ADR 0043).
+/// </summary>
+public enum GuideFocus
+{
+    [WireName("selling")] Selling,
+    [WireName("demos")] Demos,
+    [WireName("framework")] Framework,
+}
+
 /// <summary>This identity's name (ADR 0043).</summary>
 public enum GuideIdentityName
 {
