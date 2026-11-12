@@ -1,5 +1,7 @@
+using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.SessionStream.Wire.Requests;
+using LouisAgent.Testing.Messages;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
@@ -145,6 +147,40 @@ public class TurnStreamPromptTests
                 Does.EndWith($"whose words came with an earlier message\n{open}]"));
         });
     }
+
+    /// <summary>
+    /// F127.7, Louis: one guide for the whole site, selling, the demos or the framework by where the visitor is. The
+    /// page's focus ends its block in one line, the whole page's and a later message's alike, so the guide reads that
+    /// part's rules.
+    /// </summary>
+    [Test]
+    public void APagesFocus_IsSaid_WithTheWholePage_AndLater()
+    {
+        var first = new SendMessageRequest("how does a pack load?", null,
+            new PageRequest("/framework/packs", "Packs", "The packs.", Focus: "framework"));
+        var later = new SendMessageRequest("and this?", null,
+            new PageRequest("/framework/packs", null, null, null, new PageAreaRequest("/framework/packs/web", "Web"),
+                Focus: "framework"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(TurnStream.BuildPrompt(first),
+                Does.EndWith("The page says:\nThe packs.]\n[The part of the site: framework.]"));
+            Assert.That(TurnStream.BuildPrompt(later),
+                Does.EndWith("earlier message]\n[The part of the site: framework.]"));
+        });
+    }
+
+    /// <summary>A page without a focus says none, as before.</summary>
+    [Test]
+    public void APageWithoutAFocus_SaysNone() =>
+        Assert.That(TurnStream.BuildPrompt(new SendMessageRequest("hi", null, new PageRequest("/", "Home", "Hello."))),
+            Does.Not.Contain("part of the site"));
+
+    /// <summary>ADR 0119: each of the API's message records matches its template.</summary>
+    [Test]
+    public void EveryHolesRecord_MatchesItsTemplate() =>
+        Assert.That(MessageHoles.Problems([typeof(ApiModelText), typeof(ApiLogMessage)]), Is.Empty);
 
     /// <summary>Without a page the prompt is the words alone, as before.</summary>
     [Test]

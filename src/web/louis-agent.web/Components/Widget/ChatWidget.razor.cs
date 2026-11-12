@@ -1,5 +1,6 @@
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
@@ -227,6 +228,9 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
     private SiteAddresses? Addresses => Services.GetService<SiteAddresses>();
 
+    /// <summary>The site's parts' focuses (F127.7), if it names any.</summary>
+    private SiteFocuses? Focuses => Services.GetService<SiteFocuses>();
+
     /// <summary>The page the visitor is on, without the place on it.</summary>
     private string PageAddress => Addresses?.Read(Nav.Uri)?.Page ?? new Uri(Nav.Uri).AbsolutePath;
 
@@ -274,6 +278,8 @@ public partial class ChatWidget : IAsyncDisposable
             page = new Page(here, "", "", [], inView, open);
         }
 
+        // The part of the site the page is in (F127.7), so the guide reads that part's rules.
+        if (page is not null && Focuses is { } focuses) page = page with { Focus = focuses.Of(here) };
         // Every place by its own address (ADR 0107), so the guide names what it sends the visitor to as it reads it.
         Runner.Page = page is not null && Addresses is { } addresses
             ? GuidePlaces.Addressed(page, addresses, here)

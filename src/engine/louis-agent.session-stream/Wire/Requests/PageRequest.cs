@@ -5,7 +5,8 @@ namespace LouisAgent.SessionStream.Wire.Requests;
 /// the model sees what they see. The web sends it with the first message of a chat and again after a move to another
 /// page. Every message carries the section on the visitor's screen (F118) and the card open there, if one is
 /// (FX106); a later one from the same page carries only those and the address. The page's links (FX120) come with
-/// its words, each as the address it opens and its text, in an area's shape.
+/// its words, each as the address it opens and its text, in an area's shape. Every message carries the page's focus
+/// (F127.7), the part of the site it is in as the site names it, so the agent reads that part's rules.
 /// </summary>
 public sealed record PageRequest(
     string? Url,
@@ -14,4 +15,5 @@ public sealed record PageRequest(
     List<PageAreaRequest>? Areas = null,
     PageAreaRequest? InView = null,
     PageAreaRequest? Open = null,
-    List<PageAreaRequest>? Links = null);
+    List<PageAreaRequest>? Links = null,
+    string? Focus = null);
