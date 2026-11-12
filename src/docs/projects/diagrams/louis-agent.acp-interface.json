@@ -1,0 +1,109 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.acp: the interface design",
+  "caption": "A JSON-RPC server for Rider's chat: a session per chat, a handler per prompt, the engine's turn relayed back, and Rider's own tools found over MCP.",
+  "classes": {
+    "types": [
+      {
+        "id": "host",
+        "name": "AcpHost",
+        "kind": "static, what your program calls",
+        "members": [
+          "+RunAsync(AgentCatalog, HostServices?)"
+        ]
+      },
+      {
+        "id": "server",
+        "name": "AcpServer",
+        "kind": "reads stdin, writes stdout",
+        "members": [
+          "+AcpServer(agent, usageInChat?)",
+          "+RunAsync(ct)"
+        ]
+      },
+      {
+        "id": "session",
+        "name": "AcpSession",
+        "kind": "one per chat",
+        "members": [
+          "cwd, history, display currency"
+        ]
+      },
+      {
+        "id": "handler",
+        "name": "PromptHandler",
+        "kind": "session/prompt",
+        "members": [
+          "+HandleAsync(id, sessionId, session, parameters)"
+        ]
+      },
+      {
+        "id": "builder",
+        "name": "PromptBuilder",
+        "members": [
+          "+Build(parameters) string",
+          "+ResourceLinkPath(parameters) string? (static)"
+        ]
+      },
+      {
+        "id": "paths",
+        "name": "ContainerPaths",
+        "kind": "Rider's paths to the container's"
+      },
+      {
+        "id": "relay",
+        "name": "TurnRelay",
+        "members": [
+          "+StreamAsync(sessionId, session, prompt)",
+          "+MessageChunkAsync(sessionId, messageId, text)"
+        ]
+      },
+      {
+        "id": "writer",
+        "name": "JsonRpcWriter",
+        "kind": "one line a message"
+      },
+      {
+        "id": "discovery",
+        "name": "RiderToolDiscovery",
+        "members": [
+          "+FromEnvironment() (static)",
+          "+Start(engine)",
+          "+DiscoverAndRegisterAsync(engine)"
+        ]
+      },
+      {
+        "id": "idiscovery",
+        "name": "IToolDiscovery",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet"
+      },
+      {
+        "id": "mcp",
+        "name": "RiderMcpClient",
+        "members": [
+          "+DiscoverToolsAsync() IList<DiscoveredTool>"
+        ]
+      },
+      {
+        "id": "engine",
+        "name": "AgentEngine",
+        "kind": "louis-agent.core",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "host", "to": "server", "kind": "creates" },
+      { "from": "host", "to": "discovery", "kind": "uses", "word": "starts" },
+      { "from": "server", "to": "session", "kind": "holds", "word": "one per chat" },
+      { "from": "server", "to": "handler", "kind": "holds" },
+      { "from": "handler", "to": "builder", "kind": "uses", "word": "the prompt's text" },
+      { "from": "builder", "to": "paths", "kind": "holds" },
+      { "from": "handler", "to": "relay", "kind": "uses", "word": "runs the turn" },
+      { "from": "relay", "to": "engine", "kind": "holds" },
+      { "from": "relay", "to": "writer", "kind": "holds" },
+      { "from": "discovery", "to": "idiscovery", "kind": "implements" },
+      { "from": "discovery", "to": "mcp", "kind": "holds" }
+    ]
+  }
+}

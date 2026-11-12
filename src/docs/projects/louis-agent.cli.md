@@ -41,6 +41,8 @@ You: exit
 
 ![One line typed: a command is answered with no model, a message streams from the engine with its usage at the end](diagrams/louis-agent.cli-diagrams-2.svg)
 
+![The types: CliHost builds the context and runs a ConsoleChat over the engine](diagrams/louis-agent.cli-interface.svg)
+
 ## Structure
 
 | File | What's in it |

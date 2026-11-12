@@ -1,0 +1,222 @@
+<svg viewBox="-24 -24 2475 753" width="2475" height="753" role="img" aria-label="louis-agent.api: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.api: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2475" height="753" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2427" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.api:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 336 204 L 474 204" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 740 204 L 761 204 Q 782 204 782 183 L 782 157 Q 782 133 806 133 L 854 133" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 740 204 L 761 204 Q 782 204 782 225 L 782 251 Q 782 275 806 275 L 854 275" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1260 133 L 1281 133 Q 1302 133 1302 112 L 1302 86 Q 1302 62 1326 62 L 1454 62" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1260 133 L 1281 133 Q 1302 133 1302 154 L 1302 322 Q 1302 346 1326 346 L 1454 346" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1881 62 L 1981 62 Q 2005 62 2005 86 L 2005 251 Q 2005 275 2029 275 L 2077 275" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1881 62 L 1981 62 Q 2005 62 2005 86 L 2005 109 Q 2005 133 2029 133 L 2077 133" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1260 133 L 1281 133 Q 1302 133 1302 154 L 1302 180 Q 1302 204 1326 204 L 1454 204" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1881 204 L 1963 204 Q 1987 204 1987 228 L 1987 393 Q 1987 417 2011 417 L 2077 417" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 336 346 L 408 346 Q 432 346 432 370 L 432 396 Q 432 417 453 417 L 474 417 L 740 417 L 854 417 L 1260 417 L 1454 417 L 1881 417 L 2077 417" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="375" y="182" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="393" y="194" text-anchor="middle">adds</text>
+    <rect class="word-chip tone-green" x="800" y="111" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="818" y="123" text-anchor="middle">maps</text>
+    <rect class="word-chip tone-green" x="789.5" y="253" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="818" y="265" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1360" y="40" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="1378" y="52" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="1314.5" y="324" width="127" height="18" rx="4" />
+    <text class="word tone-green" x="1378" y="336" text-anchor="middle">reads and answers</text>
+    <rect class="word-chip tone-green" x="2019.5" y="253" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="2041" y="265" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="2012.5" y="111" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="2041" y="123" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1318" y="182" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="1378" y="194" text-anchor="middle">streams the turn</text>
+    <rect class="word-chip tone-green" x="1898.5" y="182" width="71" height="18" rx="4" />
+    <text class="word tone-green" x="1934" y="194" text-anchor="middle">writes in</text>
+    <rect class="word-chip tone-green" x="345" y="324" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="384" y="336" text-anchor="middle">implements</text>
+    <rect class="box tone-green" x="0" y="143" width="336" height="122" rx="10" />
+    <text class="label tone-green" x="168" y="171" text-anchor="middle">ApiStartup</text>
+    <text class="note" x="168" y="187" text-anchor="middle">static, what a program</text>
+    <text class="note" x="168" y="199" text-anchor="middle">calls</text>
+    <path class="frame" d="M 0 219 L 336 219" />
+    <text class="word tone-green" x="14" y="237" text-anchor="start">+AddLouisAgentApi(builder, AgentHostContext)</text>
+    <text class="word tone-green" x="14" y="251" text-anchor="start">+UseLouisAgentKey(app)</text>
+    <rect class="box tone-green" x="0" y="302" width="336" height="88" rx="10" />
+    <text class="label tone-green" x="168" y="330" text-anchor="middle">ClaudeStreamFormat</text>
+    <text class="note" x="168" y="346" text-anchor="middle">Claude's events:</text>
+    <text class="note" x="168" y="358" text-anchor="middle">message_start,</text>
+    <text class="note" x="168" y="370" text-anchor="middle">content_block_delta...</text>
+    <rect class="box tone-green" x="474" y="149" width="266" height="110" rx="10" />
+    <text class="label tone-green" x="607" y="177" text-anchor="middle">ApiMap</text>
+    <text class="note" x="607" y="193" text-anchor="middle">static</text>
+    <path class="frame" d="M 474 213 L 740 213" />
+    <text class="word tone-green" x="488" y="231" text-anchor="start">+AddApi(services, host, openDoor?)</text>
+    <text class="word tone-green" x="488" y="245" text-anchor="start">every route, a named handler each</text>
+    <rect class="box tone-green" x="854" y="84" width="406" height="98" rx="10" />
+    <text class="label tone-green" x="1057" y="115" text-anchor="middle">SessionHandlers</text>
+    <path class="frame" d="M 854 136 L 1260 136" />
+    <text class="word tone-green" x="868" y="154" text-anchor="start">+CreateSession(request, sessions, ...) CreatedAnswer</text>
+    <text class="word tone-green" x="868" y="168" text-anchor="start">+SendMessage, GetSession, CancelSession, DeleteSession</text>
+    <rect class="box tone-green" x="854" y="214" width="406" height="122" rx="10" />
+    <text class="label tone-green" x="1057" y="242" text-anchor="middle">OpenDoor</text>
+    <text class="note" x="1057" y="258" text-anchor="middle">the public's sessions a</text>
+    <text class="note" x="1057" y="270" text-anchor="middle">day</text>
+    <path class="frame" d="M 854 290 L 1260 290" />
+    <text class="word tone-green" x="868" y="308" text-anchor="start">+ConsiderAsync(context) OpenDoorAnswer</text>
+    <text class="word tone-green" x="868" y="322" text-anchor="start">+Admit(sessionId)</text>
+    <rect class="box tone-green" x="1454" y="14" width="427" height="96" rx="10" />
+    <text class="label tone-green" x="1667.5" y="42" text-anchor="middle">AgentSessions</text>
+    <text class="note" x="1667.5" y="58" text-anchor="middle">singleton</text>
+    <path class="frame" d="M 1454 78 L 1881 78" />
+    <text class="word tone-green" x="1468" y="96" text-anchor="start">+Create(toolsets?, tags?, depth, role?, ...) AgentSession</text>
+    <rect class="box tone-green" x="1454" y="149" width="427" height="110" rx="10" />
+    <text class="label tone-green" x="1667.5" y="177" text-anchor="middle">TurnStream</text>
+    <text class="note" x="1667.5" y="193" text-anchor="middle">static</text>
+    <path class="frame" d="M 1454 213 L 1881 213" />
+    <text class="word tone-green" x="1468" y="231" text-anchor="start">+BuildPrompt(SendMessageRequest) string</text>
+    <text class="word tone-green" x="1468" y="245" text-anchor="start">+StreamTurnAsync(...) IAsyncEnumerable&lt;SseItem&lt;string&gt;&gt;</text>
+    <rect class="box tone-teal" x="1454" y="308" width="427" height="76" rx="10" />
+    <text class="label tone-teal" x="1667.5" y="336" text-anchor="middle">louis-agent.api.contracts</text>
+    <text class="note" x="1667.5" y="352" text-anchor="middle">the requests and replies,</text>
+    <text class="note" x="1667.5" y="364" text-anchor="middle">shared</text>
+    <rect class="box tone-green" x="2077" y="71" width="350" height="124" rx="10" />
+    <text class="label tone-green" x="2252" y="99" text-anchor="middle">AgentSession</text>
+    <text class="note" x="2252" y="115" text-anchor="middle">one per conversation</text>
+    <path class="frame" d="M 2077 135 L 2427 135" />
+    <text class="word tone-green" x="2091" y="153" text-anchor="start">+TryStartTurn(aborted, out turn) bool</text>
+    <text class="word tone-green" x="2091" y="167" text-anchor="start">+EndTurn(turn)</text>
+    <text class="word tone-green" x="2091" y="181" text-anchor="start">+Remember(name, content)</text>
+    <rect class="box tone-violet" x="2077" y="227" width="350" height="96" rx="10" />
+    <text class="label tone-violet" x="2252" y="255" text-anchor="middle">AgentEngineFactory</text>
+    <text class="note" x="2252" y="271" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 2077 291 L 2427 291" />
+    <text class="word tone-violet" x="2091" y="309" text-anchor="start">+GetOrCreate(toolsets, role?) AgentEngine</text>
+    <rect class="box tone-teal" x="2077" y="355" width="350" height="124" rx="10" />
+    <text class="label tone-teal" x="2252" y="383" text-anchor="middle">ITurnStreamFormat</text>
+    <text class="note" x="2252" y="399" text-anchor="middle">interface</text>
+    <path class="frame" d="M 2077 419 L 2427 419" />
+    <text class="word tone-teal" x="2091" y="437" text-anchor="start">+Start() SseItem</text>
+    <text class="word tone-teal" x="2091" y="451" text-anchor="start">+Content(content), Text(text)</text>
+    <text class="word tone-teal" x="2091" y="465" text-anchor="start">+Stop(reason, usage), Fail(kind, error, usage)</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="632" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="642.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="133.6" y="632" width="12" height="12" rx="3" />
+  <text class="legend" x="151.6" y="642.5" text-anchor="start">contracts and state</text>
+  <rect class="notebar" x="0" y="668" width="2427" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 678) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="690">
+    <tspan class="note-head">Sessions over HTTP:</tspan>
+    <tspan class="note-rest">a program adds the API with the host's context, a session per conversation streams its turn in a format it picks, and the open door counts the public's.</tspan>
+  </text>
+</svg>

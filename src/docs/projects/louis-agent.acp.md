@@ -46,6 +46,8 @@ The flow is under *How it works*; these are the pieces.
 
 ![Rider's chat: from AcpHost through the prompt handler to Rider, and back](diagrams/louis-agent.acp-diagrams.svg)
 
+![The types: the server holds a session per chat, a handler builds each prompt and relays the engine's turn, and Rider's tools are found over MCP](diagrams/louis-agent.acp-interface.svg)
+
 ## Structure
 
 | File | What's in it |

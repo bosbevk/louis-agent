@@ -40,6 +40,8 @@ The architecture is under *How it works*; this is a client using it.
 
 ![A client using the tools: it lists and calls the engine's tools through the SDK's server, hears when they change, and reads a feed](diagrams/louis-agent.mcp-diagrams.svg)
 
+![The types: the host adds the engine's tools kept in step, the feeds as resources and the skills as tools](diagrams/louis-agent.mcp-interface.svg)
+
 ## Structure
 
 | File | What's in it |

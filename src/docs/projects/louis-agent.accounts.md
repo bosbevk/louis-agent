@@ -81,6 +81,8 @@ Without `ACCOUNTS_SQL_URL` each call is a quiet no: one warning, no accounts, no
 
 ![Registering: the host picks the tenant, then Identity's route finds and creates the person within it and sends the confirmation](diagrams/louis-agent.accounts-diagrams-2.svg)
 
+![The types: the host's address names the tenant, the user store works within it, and each outside sign-in is a provider](diagrams/louis-agent.accounts-interface.svg)
+
 ## Structure
 
 ```

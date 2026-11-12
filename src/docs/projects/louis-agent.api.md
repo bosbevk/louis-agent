@@ -124,6 +124,8 @@ The diagram under *How it works* shows the routes; this is the main one, opening
 
 ![A session and a message to it: the key gate, the session with its shared engine, and the turn streamed back as Server-Sent Events](diagrams/louis-agent.api-diagrams.svg)
 
+![The types: a program adds the API, the handlers open a session per conversation, the turn streams in the format it picks, and the open door counts the public's](diagrams/louis-agent.api-interface.svg)
+
 ## Structure
 
 | File | What's in it |

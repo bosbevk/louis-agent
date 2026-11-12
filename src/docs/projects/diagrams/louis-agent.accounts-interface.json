@@ -1,0 +1,112 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.accounts: the interface design",
+  "caption": "ASP.NET Identity per tenant: the host's address names the tenant, every user is stored under it, and each outside sign-in is a provider of its own.",
+  "classes": {
+    "types": [
+      {
+        "id": "startup",
+        "name": "AccountsStartup",
+        "kind": "static, what a program calls",
+        "members": [
+          "+AddLouisAgentAccounts(builder, AccountsOptions)"
+        ]
+      },
+      {
+        "id": "options",
+        "name": "AccountsOptions",
+        "kind": "record",
+        "members": [
+          "+SqlUrl, DefaultTenant, CookieDomain",
+          "+Google, Microsoft, LinkedIn ProviderKeys?"
+        ]
+      },
+      {
+        "id": "routes",
+        "name": "AccountRoutes",
+        "kind": "static",
+        "members": [
+          "+MapAccountRoutes(account)",
+          "/me /profile /logout /providers, passkeys"
+        ]
+      },
+      {
+        "id": "middleware",
+        "name": "TenantMiddleware",
+        "kind": "static",
+        "members": [
+          "+UseTenant(app)"
+        ]
+      },
+      {
+        "id": "iresolver",
+        "name": "ITenantResolver",
+        "kind": "interface",
+        "members": [
+          "+ResolveAsync(host) string"
+        ]
+      },
+      {
+        "id": "resolver",
+        "name": "HostTenantResolver",
+        "kind": "implements ITenantResolver"
+      },
+      {
+        "id": "current",
+        "name": "CurrentTenant",
+        "kind": "scoped, one per request",
+        "members": [
+          "+Id",
+          "+IsSet"
+        ]
+      },
+      {
+        "id": "store",
+        "name": "AccountUserStore",
+        "kind": "a UserStore<AccountUser>",
+        "members": [
+          "+FindByEmailAsync, FindByNameAsync, CreateAsync in the tenant"
+        ]
+      },
+      {
+        "id": "db",
+        "name": "AccountsDbContext",
+        "kind": "an IdentityDbContext, SQL Server",
+        "tone": "amber"
+      },
+      {
+        "id": "user",
+        "name": "AccountUser",
+        "kind": "an IdentityUser",
+        "members": [
+          "+TenantId, DisplayName, CreatedAt",
+          "+New(tenantId, email, now) (static)"
+        ]
+      },
+      {
+        "id": "iprovider",
+        "name": "IExternalProvider",
+        "kind": "interface",
+        "members": [
+          "+AddTo(AuthenticationBuilder)"
+        ]
+      },
+      {
+        "id": "providers",
+        "name": "GoogleProvider, MicrosoftProvider, LinkedInProvider"
+      }
+    ],
+    "relations": [
+      { "from": "startup", "to": "options", "kind": "uses", "word": "takes" },
+      { "from": "startup", "to": "iprovider", "kind": "uses", "word": "adds each with keys" },
+      { "from": "middleware", "to": "iresolver", "kind": "uses", "word": "asks for the tenant" },
+      { "from": "middleware", "to": "current", "kind": "uses", "word": "sets" },
+      { "from": "resolver", "to": "db", "kind": "holds" },
+      { "from": "store", "to": "current", "kind": "holds" },
+      { "from": "store", "to": "db", "kind": "holds" },
+      { "from": "db", "to": "user", "kind": "holds" },
+      { "from": "providers", "to": "iprovider", "kind": "implements" },
+      { "from": "routes", "to": "store", "kind": "uses", "word": "through UserManager" }
+    ]
+  }
+}

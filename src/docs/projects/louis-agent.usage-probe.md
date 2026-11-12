@@ -63,6 +63,8 @@ why its prompt is long.
 
 ![The default job: the probe asks the provider a one-word question each way and prints what the adapter and the ledger report](diagrams/louis-agent.usage-probe-diagrams-2.svg)
 
+![The types: no types of its own, one program over core's model factory, its usage mapper and the ledger's reports](diagrams/louis-agent.usage-probe-interface.svg)
+
 ## Structure
 
 | File | What's in it |

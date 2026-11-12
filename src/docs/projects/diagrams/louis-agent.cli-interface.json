@@ -1,0 +1,63 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.cli: the interface design",
+  "caption": "Two types of its own: the host your program calls, and the chat that reads a line and streams the engine's answer.",
+  "classes": {
+    "types": [
+      {
+        "id": "host",
+        "name": "CliHost",
+        "kind": "static, what your program calls",
+        "members": [
+          "+RunAsync(args, AgentCatalog, HostServices?)"
+        ]
+      },
+      {
+        "id": "chat",
+        "name": "ConsoleChat",
+        "kind": "one per run",
+        "members": [
+          "+RunAsync()",
+          "+RunSinglePromptAsync(input)"
+        ]
+      },
+      {
+        "id": "agenthost",
+        "name": "AgentHost",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Build(catalog, services) AgentHostContext"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "AgentCatalog",
+        "kind": "louis-agent.core",
+        "tone": "violet"
+      },
+      {
+        "id": "services",
+        "name": "HostServices",
+        "kind": "record, louis-agent.core",
+        "tone": "violet"
+      },
+      {
+        "id": "engine",
+        "name": "AgentEngine",
+        "kind": "louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+StreamPromptAsync(history, input)"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "host", "to": "catalog", "kind": "uses", "word": "takes" },
+      { "from": "host", "to": "services", "kind": "uses", "word": "takes" },
+      { "from": "host", "to": "agenthost", "kind": "uses", "word": "builds the context" },
+      { "from": "host", "to": "chat", "kind": "creates" },
+      { "from": "chat", "to": "engine", "kind": "holds" }
+    ]
+  }
+}
