@@ -32,6 +32,12 @@ public sealed class GuideIdentity : IAgentIdentity
     /// The showroom's businesses, each in its own voice (F127.3.1), so the guide can show a visitor one.
     /// </summary>
     public IReadOnlyList<string> Calls { get; } = Enum.GetValues<GuideCall>().Select(call => call.Wire()).ToList();
+
+    /// <summary>
+    /// Every answer ends with choices (FX139, Louis: "the guide should always display options"): the site pack's
+    /// Offer, which the engine asks for when an answer ends without it.
+    /// </summary>
+    public string? EndsEachAnswerWith => "Offer";
 }
 
 /// <summary>

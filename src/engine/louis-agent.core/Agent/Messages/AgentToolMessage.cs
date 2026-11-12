@@ -19,6 +19,10 @@ public enum AgentToolMessage
     ContinueAfterCutOff,
 
     [Description(
+        "[automatic notice] End your answer by calling {Tool} with the person's next choices, another page among them when this one is done. Write no more words.")]
+    EndWithTool,
+
+    [Description(
         "Error: this tool call was cut off by the output limit before its arguments were complete, so it was NOT run. Retrying the same call will fail the same way. Split large content into chunks of at most ~300 lines: WriteWorkspaceFile with the first chunk, then AppendToFile for each following chunk, one call at a time, until done.")]
     TruncatedCall,
 

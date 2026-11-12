@@ -48,4 +48,11 @@ public interface IAgentIdentity
     /// speak for itself, as a guide does, keeps the last word.
     /// </summary>
     bool RelaysAnswersWhole => false;
+
+    /// <summary>
+    /// The tool every answer of this agent ends with, by its name (FX139): a guide that always offers the visitor
+    /// choices names its <c>Offer</c>, and the engine asks for it when an answer ends without it. None unless it says
+    /// so.
+    /// </summary>
+    string? EndsEachAnswerWith => null;
 }

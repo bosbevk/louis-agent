@@ -3,7 +3,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent.Turns;
+namespace LouisAgent.Core.Tests.Agent.Turns.Ending;
 
 /// <summary>
 /// FX138, from Louis on louis-agent.dev: the guide offered the next stop as cards, then ran on to the stop after it

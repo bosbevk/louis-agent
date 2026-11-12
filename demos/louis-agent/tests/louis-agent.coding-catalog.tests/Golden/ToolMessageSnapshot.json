@@ -77,6 +77,7 @@
   "DotNetProjectNotFound": "Error: '<Project>' not found. Use DotNetListProjects to see available projects.",
   "DotNetProjectRequired": "Error: specify the project to run (see DotNetListProjects).",
   "DuckDuckGoRefused": "DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (a licensed search API), or, for development and benchmarks, WEB_SEARCH_PROVIDER=searxng with SEARXNG_URL (the SearXNG we run).",
+  "EndWithTool": "[automatic notice] End your answer by calling <Tool> with the person's next choices, another page among them when this one is done. Write no more words.",
   "ErrorWithReason": "Error: <Reason>",
   "ExitCode": "[Exit Code <Code>] <Output>",
   "ExitCodeError": "[Exit Code <Code>] Error: <Output>",

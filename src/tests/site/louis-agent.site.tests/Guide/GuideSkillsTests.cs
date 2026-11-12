@@ -92,6 +92,14 @@ public class GuideSkillsTests
         });
     }
 
+    /// <summary>
+    /// FX139, Louis: "the guide should always display options, even to go to another page after it was done". The
+    /// guide ends each answer with Offer, the tool the web draws as cards, so the engine asks for it when it's missing.
+    /// </summary>
+    [Test]
+    public void TheGuide_EndsEachAnswerWithChoices() =>
+        Assert.That(new GuideIdentity().EndsEachAnswerWith, Is.EqualTo(LouisAgent.Web.Chats.Calls.OfferCall.Tool));
+
     /// <summary>A prompt's text on one line, so a rule can be found whatever its line breaks.</summary>
     private static string Flat(string text) =>
         string.Join(' ', text.Split((char[])[' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries));

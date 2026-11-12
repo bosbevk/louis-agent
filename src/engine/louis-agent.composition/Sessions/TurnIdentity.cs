@@ -16,7 +16,11 @@ namespace LouisAgent.Composition.Sessions;
 /// <param name="IsDemonstration">
 /// Whether the identity says it's a demonstration (<see cref="IAgentIdentity.IsDemonstration"/>).
 /// </param>
-public sealed record TurnIdentity(string Name, bool IsDemonstration)
+/// <param name="EndsEachAnswerWith">
+/// The tool each answer ends with (<see cref="IAgentIdentity.EndsEachAnswerWith"/>, FX139), if the identity names
+/// one.
+/// </param>
+public sealed record TurnIdentity(string Name, bool IsDemonstration, string? EndsEachAnswerWith = null)
 {
     private static readonly AsyncLocal<TurnIdentity?> CurrentIdentity = new();
 
@@ -24,7 +28,8 @@ public sealed record TurnIdentity(string Name, bool IsDemonstration)
     public static TurnIdentity? Current => CurrentIdentity.Value;
 
     /// <summary>Who a session in this identity runs as.</summary>
-    public static TurnIdentity Of(IAgentIdentity identity) => new(identity.Name, identity.IsDemonstration);
+    public static TurnIdentity Of(IAgentIdentity identity) =>
+        new(identity.Name, identity.IsDemonstration, identity.EndsEachAnswerWith);
 
     /// <summary>Runs what follows as this identity, until the scope ends and the one before comes back.</summary>
     public static IDisposable Use(TurnIdentity? identity)
