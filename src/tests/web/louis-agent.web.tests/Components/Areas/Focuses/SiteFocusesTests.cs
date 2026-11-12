@@ -19,14 +19,14 @@ public class SiteFocusesTests
             .Under("/demos", "demos")
             .Under("/guesthouse-demo", "demos")
             .Under("/framework", "framework")
-            .Under("/framework/how-it-works/web", "web")));
+            .Under("/framework/how-it-works/web", "deeper")));
         return services.BuildServiceProvider().GetRequiredService<SiteFocuses>();
     }
 
     /// <summary>A page takes the focus of its longest matching address, its query and its place in it aside.</summary>
     [TestCase("/framework/packs", "framework")]
     [TestCase("/framework", "framework")]
-    [TestCase("/framework/how-it-works/web/2", "web")]
+    [TestCase("/framework/how-it-works/web/2", "deeper")]
     [TestCase("/demos", "demos")]
     [TestCase("/guesthouse-demo?live=1#stay", "demos")]
     [TestCase("http://site.test/framework/identities", "framework")]
