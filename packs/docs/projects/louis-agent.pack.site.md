@@ -33,9 +33,15 @@ put my name in?", "and then only that card", "see this should also be an input c
 ## How it works
 
 - `Tools/SiteTools.ShowPage(path)`: accepts a path of this site (one leading slash, no scheme, no host, no climb out,
-  no space; an area after `#` is an id in words) and answers that the page is shown and that the model should say one
-  line about it; refuses anything else with the reason. The tool moves nothing itself. Its texts are
-  `Messages/SiteToolMessage`.
+  no space; each word lower-case letters, digits and dashes, a digit first allowed for a piece such as
+  `/home/100-adrs`; a last word that is a number is a paged section's page) and answers that the page is shown and
+  that the model should say one line about it; refuses anything else with the reason. The tool moves nothing itself.
+  Its texts are `Messages/SiteToolMessage`.
+- `SiteTools.FindPlace(words)` (F127.7, [ADR 0121](../../../src/docs/adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)):
+  searches every place on every page of the site (its sections, cards and pieces) through `IPackContext.Places` and
+  lists the best five as `address  heading (kind)`, so the guide can show one from any page. The places come from the
+  host that serves the site, which builds them from its own rendered pages; a host that serves none hands a Null
+  Object, and the tool says there is no site to search.
 - `Tools/CardTools.ShowCard(kicker, title, rows, subtitle?, status?, note?)`: a read-only ticket, one to six rows of
   an icon by name, a label and a value, and a status in a tone. `Offer(question, choices)`: two to four choices, a
   label of up to 40 characters each, a why of up to 80, one suggested at most. Both check what the agent wrote
@@ -71,7 +77,9 @@ put my name in?", "and then only that card", "see this should also be an input c
   windows keep the plain one.
 - **The guide knows the areas**: the page block a message carries (F115, ADR 0104) ends with the page's areas as
   `#id heading`, read by the widget's module from every section with an id; the site's test holds that every section
-  of every page has one.
+  of every page has one. Since F127.7 the pieces are listed too, marked `(piece, selects)`, and the guide's guide says
+  that showing one presses it for the visitor, that a message naming a selected piece is about that piece, and to find
+  a place on another page with `FindPlace` before showing it.
 
 ## Rules it keeps
 
