@@ -122,7 +122,7 @@ public class AskAgentFollowUpTests
         Assert.Multiple(() =>
         {
             Assert.That(answers[0], Does.EndWith("[Answered by testprod, did: no tools]"));
-            Assert.That(answers[1], Does.StartWith("Booked for Friday.").And.EndWith("did: SendLead]"));
+            Assert.That(answers[1], Does.StartWith("Booked for Friday.").And.EndWith("did: SendLead: Sent.]"));
             Assert.That(work.Calls().Select(call => call.Name), Is.EqualTo(new[] { "SendLead" }));
             Assert.That(work.Events.Count(e => e.Type == "message_stop"), Is.EqualTo(2), "both replies");
         });

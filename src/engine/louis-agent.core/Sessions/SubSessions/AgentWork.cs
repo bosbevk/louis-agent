@@ -22,12 +22,13 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
     public AgentWork Then(IReadOnlyList<SubSessionEvent> later) => new([.. Events, .. later]);
 
     /// <summary>
-    /// The tools it called, in order, each marked when it failed; its thinking and its text are not calls.
+    /// The tools it called, in order, each with what came back and marked when it failed; its thinking and its text
+    /// are not calls.
     /// </summary>
     public IReadOnlyList<ToolCall> Calls()
     {
         var calls = new List<(string Id, string Name)>();
-        var failed = new HashSet<string>(StringComparer.Ordinal);
+        var results = new Dictionary<string, (string Content, bool Failed)>(StringComparer.Ordinal);
         foreach (var block in Blocks())
         {
             switch (Field(block, "type"))
@@ -35,15 +36,20 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
                 case "tool_use":
                     calls.Add((Field(block, "id"), Field(block, "name")));
                     break;
-                // A result marks its own call by id, whenever it arrives.
-                case "tool_result" when block.TryGetProperty("is_error", out var error) &&
-                                        error.ValueKind == JsonValueKind.True:
-                    failed.Add(Field(block, "tool_use_id"));
+                // A result belongs to its own call by id, whenever it arrives.
+                case "tool_result":
+                    results[Field(block, "tool_use_id")] = (Field(block, "content"),
+                        block.TryGetProperty("is_error", out var error) && error.ValueKind == JsonValueKind.True);
                     break;
             }
         }
 
-        return [.. calls.Select(call => new ToolCall(call.Name, failed.Contains(call.Id)))];
+        return
+        [
+            .. calls.Select(call => results.TryGetValue(call.Id, out var result)
+                ? new ToolCall(call.Name, result.Failed, result.Content)
+                : new ToolCall(call.Name, false))
+        ];
     }
 
     /// <summary>The blocks the agent itself started.</summary>
@@ -136,8 +142,8 @@ public sealed record AgentWork(IReadOnlyList<SubSessionEvent> Events)
             ? value.GetString() ?? ""
             : "";
 
-    /// <summary>One tool the agent called, and whether it failed.</summary>
-    public sealed record ToolCall(string Name, bool Failed);
+    /// <summary>One tool the agent called, whether it failed, and what came back (empty until it does).</summary>
+    public sealed record ToolCall(string Name, bool Failed, string Result = "");
 
     /// <summary>
     /// One step of the work: what kind, its text (what it said, what it sent a tool, what came back), the tool's name
