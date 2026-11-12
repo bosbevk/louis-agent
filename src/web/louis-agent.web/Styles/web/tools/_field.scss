@@ -1,17 +1,25 @@
+@use "themed" as *;
+
 /* A field of a form: its label over its box. A pack's screen form and the form an agent asks with in the chat (F127.4.3)
-   draw the same, and a scoped rule reaches only its own file's elements, so each includes these rather than copy them. */
-@mixin label {
-    color: var(--bs-secondary-color);
-    font-size: 12.5px;
-    font-weight: 600;
+   draw the same, and a scoped rule reaches only its own file's elements, so each includes these rather than copy them.
+   Given a look's name, a site may set each part (the chat form's: --web-form-label-ink, -size, -weight, -transform,
+   -spacing, and --web-form-input-padding, -border, -radius, -bg, -ink, -size). */
+@mixin label($look: null) {
+    color: themed($look, ink, var(--bs-secondary-color));
+    font-size: themed($look, size, 12.5px);
+    font-weight: themed($look, weight, 600);
+    @if $look != null {
+        text-transform: themed($look, transform, none);
+        letter-spacing: themed($look, spacing, normal);
+    }
 }
 
-@mixin box {
+@mixin box($look: null, $size: 13.5px) {
     min-width: 0;
-    padding: 6px 10px;
-    border: 1px solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius);
-    background: var(--bs-body-bg);
-    color: var(--bs-body-color);
-    font-size: 13.5px;
+    padding: themed($look, padding, 6px 10px);
+    border: themed($look, border, 1px solid var(--bs-border-color));
+    border-radius: themed($look, radius, var(--bs-border-radius));
+    background: themed($look, bg, var(--bs-body-bg));
+    color: themed($look, ink, var(--bs-body-color));
+    font-size: themed($look, size, $size);
 }

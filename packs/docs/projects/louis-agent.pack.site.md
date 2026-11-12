@@ -65,7 +65,10 @@ put my name in?", "and then only that card", "see this should also be an input c
   web's own `AskedKind` (a tested duplicate of `FieldKind`, both sides' tests holding the same names) and `FormCard`
   draws a box per field, suited to its kind, with Send ready once each is filled; `FormAnswer` sends the form as one
   message, each field by its label (`Name: John · Phone: 066 391 2470`), and reads it back, so the form folds to what
-  was sent. A form is the only choice its answer draws (`FormAlone`).
+  was sent. A form is the only choice its answer draws (`FormAlone`). Its whole look, the card, the labels, the boxes
+  and Send, reads `--web-form-*` values (`web/tools/_themed.scss`), so a site makes its own by setting them: the
+  framework's site gives its guide a modern, sleek form (`site/chat/_guide-form.scss`), and the demo businesses'
+  windows keep the plain one.
 - **The guide knows the areas**: the page block a message carries (F115, ADR 0104) ends with the page's areas as
   `#id heading`, read by the widget's module from every section with an id; the site's test holds that every section
   of every page has one.

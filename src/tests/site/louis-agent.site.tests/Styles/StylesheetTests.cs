@@ -19,7 +19,7 @@ public class StylesheetTests
     private static readonly string[] Site =
     [
         "site/settings/tokens", "site/base/elements", "site/landing/live-turn", "site/landing/sections",
-        "site/landing/motion", "site/layout/responsive", .. Films
+        "site/landing/motion", "site/layout/responsive", "site/chat/guide-form", .. Films
     ];
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
@@ -107,6 +107,28 @@ public class StylesheetTests
             .ToList();
 
         Assert.That(offenders, Is.Empty);
+    }
+
+    /// <summary>
+    /// F127.4.3, Louis: "our lead form must be styled differently", "not like demos", "not only colors, I do not want
+    /// a ticket look", "modern and sleek". The framework's form reads its whole look from <c>--web-form-*</c>, and the
+    /// site sets it on its guide's widget only, so the demo businesses' windows keep the plain form.
+    /// </summary>
+    [Test]
+    public void TheGuidesForm_HasTheSitesOwnLook()
+    {
+        string css = Css.Read();
+        string guideForm = Css.Source("site/chat/guide-form");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(css, Does.Contain("var(--web-form-radius").And.Contain("var(--web-form-send-bg")
+                .And.Contain("var(--web-form-label-transform"));
+            Assert.That(guideForm, Does.StartWith("/*").And.Contain(".chat-widget {"));
+            Assert.That(guideForm, Does.Contain("--web-form-radius:").And.Contain("--web-form-send-bg: var(--steel)")
+                .And.Contain("--web-form-label-transform: uppercase"));
+            Assert.That(guideForm, Does.Not.Contain(".site {").And.Not.Contain(".showroom"));
+        });
     }
 
     /// <summary>The triage demo's rules come from the triage pack's web project, so the build found them.</summary>

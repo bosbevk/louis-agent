@@ -1,22 +1,33 @@
 @use "web/tools/chat-card";
 @use "web/tools/field";
+@use "web/tools/themed" as *;
 
 /* A form the agent asked with (F127.4.3): a box per field on a card under the answer, Send in the accent; once sent,
-   the same card holds what was sent, a label over each value. */
+   the same card holds what was sent, a label over each value. Every part reads a --web-form-* value a site may set,
+   so a site's own form is its values, not a copy of these rules; unset, it is the plain card the windows draw. */
 .form-ask { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-width: 420px; animation: rise .35s var(--web-ease) both; }
 .form-question { font-size: 13px; color: var(--bs-secondary-color); }
-.form-card { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; @include chat-card.card; }
+.form-card {
+    display: flex; flex-direction: column; gap: themed(web-form, gap, 10px); padding: themed(web-form, padding, 12px 14px);
+    box-shadow: themed(web-form, shadow, none); @include chat-card.card(web-form);
+}
 .form-field, .form-row { display: flex; flex-direction: column; gap: 4px; }
-.form-label { @include field.label; }
-.form-input { @include field.box; width: 100%; font: inherit; font-size: 14px; }
+.form-label { @include field.label(web-form-label); }
+.form-input { @include field.box(web-form-input, 14px); width: 100%; font-family: inherit; transition: border-color .15s, background .15s; }
 /* A long answer's box grows with what is typed, from three lines. */
 textarea.form-input { resize: vertical; field-sizing: content; min-height: 4.5em; }
-.form-input:focus { outline: none; border-color: var(--bs-primary); }
+.form-input:focus { outline: none; border-color: themed(web-form-input, focus, var(--bs-primary)); }
 .form-input[disabled] { opacity: .6; }
 .form-send {
-    align-self: flex-start; padding: 7px 16px; border: 0; border-radius: 10px; font: inherit; font-weight: 600;
-    background: var(--bs-primary); color: var(--bs-body-bg); cursor: pointer;
+    align-self: flex-start; width: themed(web-form-send, width, auto); padding: themed(web-form-send, padding, 7px 16px);
+    border: 0; border-radius: themed(web-form-send, radius, 10px); font: inherit; font-weight: 600;
+    background: themed(web-form-send, bg, var(--bs-primary)); color: themed(web-form-send, ink, var(--bs-body-bg));
+    box-shadow: themed(web-form-send, shadow, none); cursor: pointer; transition: transform .15s, opacity .15s;
 }
+.form-send:hover:not([disabled]) { transform: translateY(-1px); }
 .form-send[disabled] { opacity: .5; cursor: default; }
-.form-sent { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .08); }
+.form-sent {
+    border-color: themed(web-form-sent, border-color, var(--bs-primary));
+    background: themed(web-form-sent, bg, rgba(var(--bs-primary-rgb), .08));
+}
 .form-value { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
