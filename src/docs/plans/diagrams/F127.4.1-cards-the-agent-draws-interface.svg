@@ -1,0 +1,226 @@
+<svg viewBox="-24 -24 2103 1085" width="2103" height="1085" role="img" aria-label="F127.4.1 cards the agent draws: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>F127.4.1 cards the agent draws: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2103" height="1085" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2055" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F127.4.1 cards the agent draws:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge tone-teal" d="M 1695 441 L 1775 441" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-teal" d="M 1377 531 L 1409 531 Q 1433 531 1433 507 L 1433 453 Q 1433 441 1445 441 L 1457 441" marker-end="url(#arrow-teal)" />
+    <path class="edge dashed tone-green" d="M 969 441 L 1035 441 Q 1059 441 1059 417 L 1059 363 Q 1059 351 1071 351 L 1083 351" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 427 351 L 448 351 Q 469 351 469 330 L 469 285 Q 469 261 493 261 L 605 261" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 427 351 L 448 351 Q 469 351 469 330 L 469 105 Q 469 81 493 81 L 605 81" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 969 621 L 1017 621 Q 1041 621 1041 597 L 1041 552 Q 1041 531 1062 531 L 1083 531" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 427 531 L 439 531 Q 451 531 451 543 L 451 597 Q 451 621 475 621 L 605 621" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 427 531 L 439 531 Q 451 531 451 519 L 451 465 Q 451 441 475 441 L 605 441" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 427 531 L 439 531 Q 451 531 451 543 L 451 777 Q 451 801 475 801 L 605 801" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-teal" x="1701.5" y="419" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1723" y="431" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-teal" x="1383.5" y="509" width="43" height="18" rx="4" />
+    <text class="word tone-teal" x="1405" y="521" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="989" y="419" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="1014" y="431" text-anchor="middle">places</text>
+    <rect class="word-chip tone-green" x="480.5" y="239" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="537" y="251" text-anchor="middle">checks the card</text>
+    <rect class="word-chip tone-green" x="519" y="59" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="537" y="71" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="976.5" y="599" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1005" y="611" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="480.5" y="599" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="537" y="611" text-anchor="middle">reads the block</text>
+    <rect class="word-chip tone-green" x="515.5" y="419" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="537" y="431" text-anchor="middle">draws</text>
+    <rect class="word-chip tone-green" x="487.5" y="779" width="99" height="18" rx="4" />
+    <text class="word tone-green" x="537" y="791" text-anchor="middle">a click sends</text>
+    <rect class="box tone-green" x="0" y="276" width="427" height="150" rx="10" />
+    <text class="label tone-green" x="213.5" y="304" text-anchor="middle">SiteTools</text>
+    <text class="note" x="213.5" y="320" text-anchor="middle">louis-agent.pack.site,</text>
+    <text class="note" x="213.5" y="332" text-anchor="middle">changed</text>
+    <path class="frame" d="M 0 352 L 427 352" />
+    <text class="word tone-green" x="14" y="370" text-anchor="start">+ShowPage(path)</text>
+    <text class="word tone-green" x="14" y="384" text-anchor="start">+ShowCard(kicker, title, subtitle?, status?, rows, note?)</text>
+    <text class="word tone-green" x="14" y="398" text-anchor="start">  step 5</text>
+    <text class="word tone-green" x="14" y="412" text-anchor="start">+Offer(question, choices) step 6</text>
+    <rect class="box tone-green" x="0" y="476" width="427" height="110" rx="10" />
+    <text class="label tone-green" x="213.5" y="504" text-anchor="middle">DrawnCard, OfferCards</text>
+    <text class="note" x="213.5" y="520" text-anchor="middle">components, steps 7 and 8</text>
+    <path class="frame" d="M 0 540 L 427 540" />
+    <text class="word tone-green" x="14" y="558" text-anchor="start">+the card's SVG, shown with the work hidden too</text>
+    <text class="word tone-green" x="14" y="572" text-anchor="start">+Chosen EventCallback&lt;string&gt;, folded once answered</text>
+    <rect class="box tone-teal" x="605" y="33" width="364" height="96" rx="10" />
+    <text class="label tone-teal" x="787" y="61" text-anchor="middle">OfferChoice</text>
+    <text class="note" x="787" y="77" text-anchor="middle">record, step 6</text>
+    <path class="frame" d="M 605 97 L 969 97" />
+    <text class="word tone-teal" x="619" y="115" text-anchor="start">+Label, Why?, Suggested</text>
+    <rect class="box tone-violet" x="605" y="207" width="364" height="108" rx="10" />
+    <text class="label tone-violet" x="787" y="235" text-anchor="middle">DiagramReader</text>
+    <text class="note" x="787" y="251" text-anchor="middle">louis-agent.diagrams,</text>
+    <text class="note" x="787" y="263" text-anchor="middle">kept</text>
+    <path class="frame" d="M 605 283 L 969 283" />
+    <text class="word tone-violet" x="619" y="301" text-anchor="start">+Read(json) DiagramSource</text>
+    <rect class="box tone-green" x="605" y="393" width="364" height="96" rx="10" />
+    <text class="label tone-green" x="787" y="421" text-anchor="middle">TicketRenderer</text>
+    <text class="note" x="787" y="437" text-anchor="middle">IDiagramRenderer, step 4</text>
+    <path class="frame" d="M 605 457 L 969 457" />
+    <text class="word tone-green" x="619" y="475" text-anchor="start">+Render(source) string: colours as CSS variables</text>
+    <rect class="box tone-green" x="605" y="560" width="364" height="122" rx="10" />
+    <text class="label tone-green" x="787" y="588" text-anchor="middle">CardCall, OfferCall</text>
+    <text class="note" x="787" y="604" text-anchor="middle">louis-agent.web, steps 7</text>
+    <text class="note" x="787" y="616" text-anchor="middle">and 8</text>
+    <path class="frame" d="M 605 636 L 969 636" />
+    <text class="word tone-green" x="619" y="654" text-anchor="start">+SourceOf(Block) DiagramSource?</text>
+    <text class="word tone-green" x="619" y="668" text-anchor="start">+ChoicesOf(Block) Offered?</text>
+    <rect class="box tone-violet" x="605" y="753" width="364" height="96" rx="10" />
+    <text class="label tone-violet" x="787" y="781" text-anchor="middle">ChatRunner</text>
+    <text class="note" x="787" y="797" text-anchor="middle">louis-agent.web, kept</text>
+    <path class="frame" d="M 605 817 L 969 817" />
+    <text class="word tone-violet" x="619" y="835" text-anchor="start">+Draft, SendAsync()</text>
+    <rect class="box tone-green" x="1083" y="303" width="294" height="96" rx="10" />
+    <text class="label tone-green" x="1230" y="331" text-anchor="middle">TicketLayout</text>
+    <text class="note" x="1230" y="347" text-anchor="middle">static, step 4</text>
+    <path class="frame" d="M 1083 367 L 1377 367" />
+    <text class="word tone-green" x="1097" y="385" text-anchor="start">+Place(TicketSpec, width) PlacedTicket</text>
+    <rect class="box tone-teal" x="1083" y="476" width="294" height="110" rx="10" />
+    <text class="label tone-teal" x="1230" y="504" text-anchor="middle">DiagramSource</text>
+    <text class="note" x="1230" y="520" text-anchor="middle">record, changed in step 2</text>
+    <path class="frame" d="M 1083 540 L 1377 540" />
+    <text class="word tone-teal" x="1097" y="558" text-anchor="start">+Ticket TicketSpec?</text>
+    <text class="word tone-teal" x="1097" y="572" text-anchor="start">DiagramKind.Ticket</text>
+    <rect class="box tone-teal" x="1457" y="360" width="238" height="162" rx="10" />
+    <text class="label tone-teal" x="1576" y="388" text-anchor="middle">TicketSpec</text>
+    <text class="note" x="1576" y="404" text-anchor="middle">record,</text>
+    <text class="note" x="1576" y="416" text-anchor="middle">louis-agent.diagrams,</text>
+    <text class="note" x="1576" y="428" text-anchor="middle">step 2</text>
+    <path class="frame" d="M 1457 448 L 1695 448" />
+    <text class="word tone-teal" x="1471" y="466" text-anchor="start">+Kicker, Title, Subtitle?</text>
+    <text class="word tone-teal" x="1471" y="480" text-anchor="start">+TicketStatus? Status</text>
+    <text class="word tone-teal" x="1471" y="494" text-anchor="start">+IReadOnlyList&lt;TicketRow&gt; Rows</text>
+    <text class="word tone-teal" x="1471" y="508" text-anchor="start">+Note?</text>
+    <rect class="box tone-teal" x="1775" y="386" width="280" height="110" rx="10" />
+    <text class="label tone-teal" x="1915" y="414" text-anchor="middle">TicketRow, TicketStatus</text>
+    <text class="note" x="1915" y="430" text-anchor="middle">records, step 2</text>
+    <path class="frame" d="M 1775 450 L 2055 450" />
+    <text class="word tone-teal" x="1789" y="468" text-anchor="start">+Row: DiagramIcon Icon, Label, Value</text>
+    <text class="word tone-teal" x="1789" y="482" text-anchor="start">+Status: Label, DiagramTone Tone</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="964" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="974.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="1000" width="2055" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1010) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1022">
+    <tspan class="note-head">A ticket is one more diagram kind:</tspan>
+    <tspan class="note-rest">the site pack's tools check what the agent wrote, and the widget draws what the stream carries.</tspan>
+  </text>
+</svg>
