@@ -51,6 +51,8 @@ chat header draws the guest's menu through the one seam `louis-agent.web` keeps 
 
 ![The profile menu: with no accounts it shows the guest's menu, otherwise it asks /account/me and shows the person](diagrams/louis-agent.web.accounts-diagrams-2.svg)
 
+![The types: one call adds the pages, a client for the accounts API, the state every page reads, and the framework's account corner filled in](diagrams/louis-agent.web.accounts-interface.svg)
+
 ## Structure
 
 ```

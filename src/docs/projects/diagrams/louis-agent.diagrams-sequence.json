@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.diagrams: drawing one picture",
+  "caption": "Only what changed is written: the tool draws every picture and compares it with the one on disk, and --check fails instead of writing.",
+  "sequence": {
+    "participants": [
+      { "id": "sync", "label": "DiagramSync", "icon": "terminal", "tone": "blue" },
+      { "id": "reader", "label": "DiagramReader", "icon": "checks", "tone": "green" },
+      { "id": "renderers", "label": "DiagramRenderers", "icon": "stack", "tone": "green" },
+      { "id": "renderer", "label": "The kind's renderer", "icon": "chart", "tone": "green" },
+      { "id": "disk", "label": "The SVG on disk", "icon": "file", "tone": "amber" }
+    ],
+    "steps": [
+      { "step": "message", "from": "sync", "to": "reader", "text": "Read(json)" },
+      { "step": "reply", "from": "reader", "to": "sync", "text": "a DiagramSource, or the reason it's refused" },
+      { "step": "message", "from": "sync", "to": "renderers", "text": "RenderTitled(source)" },
+      { "step": "message", "from": "renderers", "to": "renderer", "text": "Render(source)" },
+      { "step": "note", "over": ["renderer"], "text": "lays it out, then SvgWriter draws it" },
+      { "step": "reply", "from": "renderer", "to": "renderers", "text": "the bare SVG" },
+      { "step": "reply", "from": "renderers", "to": "sync", "text": "framed: title bar, legend, note" },
+      { "step": "message", "from": "sync", "to": "disk", "text": "the same bytes?" },
+      { "step": "block", "block": "alt", "label": "it changed",
+        "steps": [ { "step": "message", "from": "sync", "to": "disk", "text": "write it, or fail with --check" } ],
+        "else": [ { "label": "the same", "steps": [ { "step": "note", "over": ["sync"], "text": "unchanged" } ] } ] }
+    ]
+  }
+}

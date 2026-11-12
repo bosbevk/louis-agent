@@ -1,0 +1,65 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.identity.showroom: the interface design",
+  "caption": "One base, three made-up businesses: each only says which it is, and the base gives them their voice, two packs and the demonstration mark.",
+  "classes": {
+    "types": [
+      {
+        "id": "base",
+        "name": "ShowroomIdentity",
+        "kind": "abstract",
+        "members": [
+          "+ShowroomIdentity(ShowroomIdentityName)",
+          "+Name, DefaultVoice \"{name}/voice\"",
+          "+Prompts, Packs",
+          "+IsDemonstration true"
+        ]
+      },
+      {
+        "id": "iidentity",
+        "name": "IAgentIdentity",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet"
+      },
+      {
+        "id": "restaurant",
+        "name": "RestaurantIdentity",
+        "kind": "Wheatfield Kitchen"
+      },
+      {
+        "id": "law",
+        "name": "LawPracticeIdentity",
+        "kind": "Koringland Attorneys"
+      },
+      {
+        "id": "guesthouse",
+        "name": "GuesthouseIdentity",
+        "kind": "Seemeeu Guesthouse"
+      },
+      {
+        "id": "names",
+        "name": "ShowroomIdentityName",
+        "kind": "enum",
+        "members": [
+          "WheatfieldKitchen KoringlandAttorneys SeemeeuGuesthouse"
+        ]
+      },
+      {
+        "id": "packs",
+        "name": "ShowroomPack",
+        "kind": "enum",
+        "members": [
+          "Leads Site"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "base", "to": "iidentity", "kind": "implements" },
+      { "from": "restaurant", "to": "base", "kind": "inherits" },
+      { "from": "law", "to": "base", "kind": "inherits" },
+      { "from": "guesthouse", "to": "base", "kind": "inherits" },
+      { "from": "base", "to": "names", "kind": "uses" },
+      { "from": "base", "to": "packs", "kind": "uses" }
+    ]
+  }
+}

@@ -124,6 +124,8 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 
 ![Sending a message: ChatRunner opens the session the first time, applies each event to the turn, redraws the page and saves the chat](diagrams/louis-agent.web-diagrams-2.svg)
 
+![The types: shells for a site's frames, one runner for a chat's turn over the agent API, the chats kept in the browser and an address for every place](diagrams/louis-agent.web-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

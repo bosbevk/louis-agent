@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.guide: one question answered",
+  "caption": "It reads before it speaks: the answer comes from a doc it found, and the place it names opens in the visitor's browser.",
+  "sequence": {
+    "participants": [
+      { "id": "visitor", "label": "A visitor", "actor": true, "tone": "blue" },
+      { "id": "guide", "label": "The guide", "icon": "chip", "tone": "green" },
+      { "id": "docs", "label": "docs pack", "icon": "book", "tone": "violet" },
+      { "id": "site", "label": "site pack", "icon": "browser", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "visitor", "to": "guide", "text": "how much is a website with an agent?" },
+      { "step": "message", "from": "guide", "to": "docs", "text": "docs_search(\"pricing\")" },
+      { "step": "reply", "from": "docs", "to": "guide", "text": "the sections that match" },
+      { "step": "message", "from": "guide", "to": "docs", "text": "docs_fetch(the best one)" },
+      { "step": "reply", "from": "docs", "to": "guide", "text": "its text" },
+      { "step": "message", "from": "guide", "to": "site", "text": "ShowPage(\"/pricing\")" },
+      { "step": "reply", "from": "site", "to": "visitor", "text": "the browser opens the pricing" },
+      { "step": "reply", "from": "guide", "to": "visitor", "text": "R500 to R1,000 a month, and one nudge" },
+      { "step": "block", "block": "opt", "label": "the visitor wants Louis to call, and says yes",
+        "steps": [ { "step": "note", "over": ["guide"], "text": "SendLead, once" } ] }
+    ]
+  }
+}

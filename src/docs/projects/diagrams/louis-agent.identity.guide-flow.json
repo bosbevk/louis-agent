@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.identity.guide: how it works",
+  "caption": "One voice, three packs, three businesses to ask: everything it knows comes from the docs it reads, and nothing else is in reach.",
+  "flow": {
+    "nodes": [
+      { "id": "visitor", "label": "A visitor\nin the site's corner", "icon": "user", "tone": "blue" },
+      { "id": "host", "label": "louis-agent.site-api\nthe open door", "icon": "server", "tone": "violet" },
+      { "id": "guide", "label": "GuideIdentity\nlouis-agent-guide/voice", "icon": "chip", "tone": "green" },
+      { "id": "docs", "label": "docs pack\ndocs_search, docs_fetch", "icon": "book", "tone": "violet" },
+      { "id": "leads", "label": "leads pack\nSendLead on a yes", "icon": "mail", "tone": "violet" },
+      { "id": "site", "label": "site pack\nShowPage", "icon": "browser", "tone": "violet" },
+      { "id": "root", "label": "DOCS_ROOT\nthe repo's docs", "icon": "folder", "tone": "amber" },
+      { "id": "mail", "label": "Louis's inbox", "icon": "mail", "tone": "red" },
+      { "id": "businesses", "label": "The showroom's businesses\nAskAgent", "icon": "users", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "visitor", "to": "host" },
+      { "from": "host", "to": "guide" },
+      { "from": "guide", "to": "docs" },
+      { "from": "guide", "to": "leads" },
+      { "from": "guide", "to": "site" },
+      { "from": "guide", "to": "businesses", "style": "dashed" },
+      { "from": "docs", "to": "root", "word": "reads" },
+      { "from": "leads", "to": "mail", "word": "once" }
+    ]
+  }
+}

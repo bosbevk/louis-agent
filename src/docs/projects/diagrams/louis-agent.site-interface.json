@@ -1,0 +1,91 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.site: the interface design",
+  "caption": "The site holds only its words, places, demos and diagrams: the pages sit on the framework's shell, each diagram is data held to the code by a test.",
+  "classes": {
+    "types": [
+      {
+        "id": "places",
+        "name": "SitePlaces",
+        "kind": "a SectionPage, every page's places"
+      },
+      {
+        "id": "pages",
+        "name": "The pages",
+        "kind": "Razor, a Band per section",
+        "members": [
+          "/, /what-we-build, /pricing, /demos, /contact",
+          "/framework/... , /csharp-ai-agent-framework"
+        ]
+      },
+      {
+        "id": "facts",
+        "name": "SiteFacts",
+        "kind": "static, for search engines",
+        "members": [
+          "+Organization, WebSite, Software",
+          "+All IReadOnlyList<object>"
+        ]
+      },
+      {
+        "id": "doors",
+        "name": "SiteDoors",
+        "kind": "static, which doors are open",
+        "members": [
+          "+CodingAgent bool"
+        ]
+      },
+      {
+        "id": "demos",
+        "name": "SiteDemos",
+        "kind": "static, the showroom's list",
+        "members": [
+          "+All ShowroomDemos"
+        ]
+      },
+      {
+        "id": "business",
+        "name": "BusinessDemo",
+        "kind": "a recorded conversation on a mock website",
+        "members": [
+          "+Accent, Kicker, the recording, the website"
+        ]
+      },
+      {
+        "id": "graphs",
+        "name": "ArchitectureGraph, TurnGraph, IdentityGraph, PacksGraph...",
+        "kind": "static, one diagram each",
+        "members": [
+          "+Spec GraphSpec"
+        ]
+      },
+      {
+        "id": "chat",
+        "name": "ExpertChat",
+        "kind": "the guide in the corner"
+      },
+      {
+        "id": "shell",
+        "name": "SiteShell, SectionPage, GraphView",
+        "kind": "louis-agent.web",
+        "tone": "violet"
+      },
+      {
+        "id": "showroom",
+        "name": "ShowroomDemo",
+        "kind": "record, louis-agent.web",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "pages", "to": "shell", "kind": "uses", "word": "sit on" },
+      { "from": "pages", "to": "facts", "kind": "uses", "word": "PageHead" },
+      { "from": "pages", "to": "graphs", "kind": "uses", "word": "draws" },
+      { "from": "pages", "to": "demos", "kind": "uses" },
+      { "from": "pages", "to": "business", "kind": "holds" },
+      { "from": "pages", "to": "doors", "kind": "uses" },
+      { "from": "demos", "to": "showroom", "kind": "holds" },
+      { "from": "pages", "to": "chat", "kind": "holds" }
+    ]
+  }
+}

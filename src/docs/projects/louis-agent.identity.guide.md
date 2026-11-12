@@ -68,6 +68,14 @@ What stays closed is held in code, not by narrowing what it talks about. Its hos
 no files, git or shell. It sends a lead only on the visitor's yes. It never quotes Louis's own money, numbers, risks or
 notes. A cap limits what a visitor can spend (ADR 0099).
 
+## Diagrams
+
+![How it works: one voice, three packs and three businesses to ask, its knowledge only the docs it reads](diagrams/louis-agent.identity.guide-flow.svg)
+
+![One question answered: it searches the docs, reads the best section, opens the page and answers](diagrams/louis-agent.identity.guide-sequence.svg)
+
+![The types: GuideIdentity and three enums, its name, its packs and the businesses it may ask](diagrams/louis-agent.identity.guide-interface.svg)
+
 ## Tests
 
 `GuideIdentityTests` and `SiteCatalogTests` in `src/tests/site/louis-agent.site.tests` hold its name, its voice's

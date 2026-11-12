@@ -1,0 +1,195 @@
+<svg viewBox="-24 -24 1214 1165" width="1214" height="1165" role="img" aria-label="louis-agent.site: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.site: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1214" height="1165" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1166" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.site:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 563 L 367.1 877 Q 367.1 901 391.1 901 L 447.1 901" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 539 L 367.1 85 Q 367.1 61 391.1 61 L 447.1 61" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 563 L 367.1 597 Q 367.1 621 391.1 621 L 447.1 621" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 539 L 367.1 365 Q 367.1 341 391.1 341 L 447.1 341" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 539 L 367.1 505 Q 367.1 481 391.1 481 L 447.1 481" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 539 L 367.1 225 Q 367.1 201 391.1 201 L 447.1 201" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 915.9 341 L 948 341 Q 972 341 972 365 L 972 469 Q 972 481 984 481 L 996 481" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 343 551 L 355 551 Q 367.1 551 367.1 563 L 367.1 737 Q 367.1 761 391.1 761 L 447.1 761" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="382.1" y="879" width="50" height="18" rx="4" />
+    <text class="word tone-green" x="407.1" y="891" text-anchor="middle">sit on</text>
+    <rect class="word-chip tone-green" x="375.1" y="39" width="64" height="18" rx="4" />
+    <text class="word tone-green" x="407.1" y="51" text-anchor="middle">PageHead</text>
+    <rect class="word-chip tone-green" x="385.6" y="599" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="407.1" y="611" text-anchor="middle">draws</text>
+    <rect class="word-chip tone-green" x="389.1" y="319" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="407.1" y="331" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="385.6" y="459" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="407.1" y="471" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="922.4" y="319" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="943.9" y="331" text-anchor="middle">holds</text>
+    <rect class="box tone-green" x="0" y="373" width="343" height="76" rx="10" />
+    <text class="label tone-green" x="171.5" y="401" text-anchor="middle">SitePlaces</text>
+    <text class="note" x="171.5" y="417" text-anchor="middle">a SectionPage, every</text>
+    <text class="note" x="171.5" y="429" text-anchor="middle">page's places</text>
+    <rect class="box tone-green" x="0" y="496" width="343" height="110" rx="10" />
+    <text class="label tone-green" x="171.5" y="524" text-anchor="middle">The pages</text>
+    <text class="note" x="171.5" y="540" text-anchor="middle">Razor, a Band per section</text>
+    <path class="frame" d="M 0 560 L 343 560" />
+    <text class="word tone-green" x="14" y="578" text-anchor="start">/, /what-we-build, /pricing, /demos, /contact</text>
+    <text class="word tone-green" x="14" y="592" text-anchor="start">/framework/... , /csharp-ai-agent-framework</text>
+    <rect class="box tone-green" x="447.1" y="0" width="468.8" height="122" rx="10" />
+    <text class="label tone-green" x="681.5" y="28" text-anchor="middle">SiteFacts</text>
+    <text class="note" x="681.5" y="44" text-anchor="middle">static, for search</text>
+    <text class="note" x="681.5" y="56" text-anchor="middle">engines</text>
+    <path class="frame" d="M 447.1 76 L 915.9 76" />
+    <text class="word tone-green" x="461.1" y="94" text-anchor="start">+Organization, WebSite, Software</text>
+    <text class="word tone-green" x="461.1" y="108" text-anchor="start">+All IReadOnlyList&lt;object&gt;</text>
+    <rect class="box tone-green" x="447.1" y="147" width="468.8" height="108" rx="10" />
+    <text class="label tone-green" x="681.5" y="175" text-anchor="middle">SiteDoors</text>
+    <text class="note" x="681.5" y="191" text-anchor="middle">static, which doors are</text>
+    <text class="note" x="681.5" y="203" text-anchor="middle">open</text>
+    <path class="frame" d="M 447.1 223 L 915.9 223" />
+    <text class="word tone-green" x="461.1" y="241" text-anchor="start">+CodingAgent bool</text>
+    <rect class="box tone-green" x="447.1" y="287" width="468.8" height="108" rx="10" />
+    <text class="label tone-green" x="681.5" y="315" text-anchor="middle">SiteDemos</text>
+    <text class="note" x="681.5" y="331" text-anchor="middle">static, the showroom's</text>
+    <text class="note" x="681.5" y="343" text-anchor="middle">list</text>
+    <path class="frame" d="M 447.1 363 L 915.9 363" />
+    <text class="word tone-green" x="461.1" y="381" text-anchor="start">+All ShowroomDemos</text>
+    <rect class="box tone-teal" x="447.1" y="427" width="468.8" height="108" rx="10" />
+    <text class="label tone-teal" x="681.5" y="455" text-anchor="middle">BusinessDemo</text>
+    <text class="note" x="681.5" y="471" text-anchor="middle">a recorded conversation</text>
+    <text class="note" x="681.5" y="483" text-anchor="middle">on a mock website</text>
+    <path class="frame" d="M 447.1 503 L 915.9 503" />
+    <text class="word tone-teal" x="461.1" y="521" text-anchor="start">+Accent, Kicker, the recording, the website</text>
+    <rect class="box tone-green" x="447.1" y="573" width="468.8" height="96" rx="10" />
+    <text class="label tone-green" x="681.5" y="601" text-anchor="middle">ArchitectureGraph, TurnGraph, IdentityGraph, PacksGraph...</text>
+    <text class="note" x="681.5" y="617" text-anchor="middle">static, one diagram each</text>
+    <path class="frame" d="M 447.1 637 L 915.9 637" />
+    <text class="word tone-green" x="461.1" y="655" text-anchor="start">+Spec GraphSpec</text>
+    <rect class="box tone-green" x="447.1" y="729" width="468.8" height="64" rx="10" />
+    <text class="label tone-green" x="681.5" y="757" text-anchor="middle">ExpertChat</text>
+    <text class="note" x="681.5" y="773" text-anchor="middle">the guide in the corner</text>
+    <rect class="box tone-violet" x="447.1" y="869" width="468.8" height="64" rx="10" />
+    <text class="label tone-violet" x="681.5" y="897" text-anchor="middle">SiteShell, SectionPage, GraphView</text>
+    <text class="note" x="681.5" y="913" text-anchor="middle">louis-agent.web</text>
+    <rect class="box tone-violet" x="996" y="449" width="170" height="64" rx="10" />
+    <text class="label tone-violet" x="1081" y="477" text-anchor="middle">ShowroomDemo</text>
+    <text class="note" x="1081" y="493" text-anchor="middle">record, louis-agent.web</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="1044" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1054.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="1080" width="1166" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1090) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1102">
+    <tspan class="note-head">The site holds only its words, places, demos and diagrams:</tspan>
+    <tspan class="note-rest">the pages sit on the framework's shell, each diagram is data held to the code by a test.</tspan>
+  </text>
+</svg>

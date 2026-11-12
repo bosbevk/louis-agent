@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.showroom: a booking at the guesthouse",
+  "caption": "Show first, then answer: the agent opens the place the question is about, and a booking is sent only after the customer's yes, marked as a demonstration.",
+  "sequence": {
+    "participants": [
+      { "id": "customer", "label": "A customer", "actor": true, "tone": "blue" },
+      { "id": "agent", "label": "Seemeeu Guesthouse", "icon": "users", "tone": "green" },
+      { "id": "site", "label": "site pack", "icon": "browser", "tone": "violet" },
+      { "id": "leads", "label": "leads pack", "icon": "mail", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "customer", "to": "agent", "text": "can we bring our dog?" },
+      { "step": "message", "from": "agent", "to": "site", "text": "ShowPage(\"/rooms/garden\")" },
+      { "step": "reply", "from": "site", "to": "customer", "text": "the mock website opens the garden room" },
+      { "step": "reply", "from": "agent", "to": "customer", "text": "dogs stay in the garden room" },
+      { "step": "message", "from": "customer", "to": "agent", "text": "book it for Friday" },
+      { "step": "reply", "from": "agent", "to": "customer", "text": "name, contact and what they want, repeated back" },
+      { "step": "message", "from": "customer", "to": "agent", "text": "yes" },
+      { "step": "message", "from": "agent", "to": "leads", "text": "SendLead" },
+      { "step": "reply", "from": "leads", "to": "agent", "text": "sent, marked [demo]" },
+      { "step": "reply", "from": "agent", "to": "customer", "text": "passed on, and it was a demonstration" }
+    ]
+  }
+}

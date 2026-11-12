@@ -83,6 +83,12 @@ letter. The detailed film's six slabs inside core are the chat pipeline's middle
 and encodes the frames in Docker; `films.sha256` records what each was made of, and `ExportedFilmsTests` fails until a
 changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md)).
 
+## Diagrams
+
+![A visitor opens a page and asks: the page comes prerendered, and the guide's answer streams from the same host](diagrams/louis-agent.site-sequence.svg)
+
+![The types: the site holds its words, places, demos and diagrams, on the framework's shell](diagrams/louis-agent.site-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

@@ -1,0 +1,191 @@
+<svg viewBox="-24 -24 2193 1193" width="2193" height="1193" role="img" aria-label="louis-agent.web.accounts: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.web.accounts: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="2193" height="1193" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="2145" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.web.accounts:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 468.8 411 L 534.9 411 Q 558.9 411 558.9 435 L 558.9 471 Q 558.9 495 582.9 495 L 654.9 495 L 933.7 495 L 1125.8 495 L 1295.8 495 L 1375.9 495" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 411 L 534.9 411 Q 558.9 411 558.9 387 L 558.9 267 Q 558.9 243 582.9 243 L 654.9 243 L 933.7 243 L 1125.8 243" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 411 L 534.9 411 Q 558.9 411 558.9 387 L 558.9 99 Q 558.9 75 582.9 75 L 654.9 75" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 411 L 654.9 411" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1295.8 243 L 1327.9 243 Q 1351.9 243 1351.9 267 L 1351.9 483 Q 1351.9 495 1363.9 495 L 1375.9 495" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 933.7 75 L 1077.8 75 Q 1101.8 75 1101.8 99 L 1101.8 231 Q 1101.8 243 1113.8 243 L 1125.8 243" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 933.7 411 L 1125.8 411" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 933.7 411 L 1059.8 411 Q 1083.8 411 1083.8 387 L 1083.8 264 Q 1083.8 243 1104.8 243 L 1125.8 243" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 579 L 516.9 579 Q 540.9 579 540.9 555 L 540.9 519 Q 540.9 495 564.9 495 L 654.9 495 L 933.7 495 L 1125.8 495 L 1295.8 495 L 1375.9 495" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 468.8 579 L 516.9 579 Q 540.9 579 540.9 603 L 540.9 891 Q 540.9 915 564.9 915 L 654.9 915" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1816.9 495 L 1889 495" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="485.3" y="389" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="513.8" y="401" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1302.3" y="221" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1323.8" y="233" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="996.2" y="53" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1017.7" y="65" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="969.7" y="389" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="1008.7" y="401" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="588.9" y="473" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="606.9" y="485" text-anchor="middle">uses</text>
+    <rect class="word-chip tone-green" x="567.9" y="893" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="606.9" y="905" text-anchor="middle">words from</text>
+    <rect class="word-chip tone-green" x="1822.9" y="473" width="36" height="18" rx="4" />
+    <text class="word tone-green" x="1840.9" y="485" text-anchor="middle">uses</text>
+    <rect class="box tone-green" x="0" y="363" width="468.8" height="96" rx="10" />
+    <text class="label tone-green" x="234.4" y="391" text-anchor="middle">AccountServices</text>
+    <text class="note" x="234.4" y="407" text-anchor="middle">static, what a site calls</text>
+    <path class="frame" d="M 0 427 L 468.8 427" />
+    <text class="word tone-green" x="14" y="445" text-anchor="start">+AddLouisAgentAccounts(services)</text>
+    <rect class="box tone-green" x="0" y="541" width="468.8" height="76" rx="10" />
+    <text class="label tone-green" x="234.4" y="569" text-anchor="middle">LoginPage, RegisterPage, ProfilePage, ResetPasswordPage...</text>
+    <text class="note" x="234.4" y="585" text-anchor="middle">the pages, in the</text>
+    <text class="note" x="234.4" y="597" text-anchor="middle">AccountFrame</text>
+    <rect class="box tone-green" x="654.9" y="37" width="278.8" height="76" rx="10" />
+    <text class="label tone-green" x="794.3" y="65" text-anchor="middle">CookieAuthenticationStateProvider</text>
+    <text class="note" x="794.3" y="81" text-anchor="middle">an</text>
+    <text class="note" x="794.3" y="93" text-anchor="middle">AuthenticationStateProvider</text>
+    <rect class="box tone-green" x="654.9" y="385" width="278.8" height="52" rx="10" />
+    <text class="label tone-green" x="794.3" y="416" text-anchor="middle">AccountMenu</text>
+    <rect class="box tone-teal" x="654.9" y="877" width="278.8" height="76" rx="10" />
+    <text class="label tone-teal" x="794.3" y="905" text-anchor="middle">AccountText</text>
+    <text class="note" x="794.3" y="921" text-anchor="middle">record, a site's own</text>
+    <text class="note" x="794.3" y="933" text-anchor="middle">words</text>
+    <rect class="box tone-green" x="1125.8" y="205" width="170" height="76" rx="10" />
+    <text class="label tone-green" x="1210.8" y="233" text-anchor="middle">AccountState</text>
+    <text class="note" x="1210.8" y="249" text-anchor="middle">who is signed in, for</text>
+    <text class="note" x="1210.8" y="261" text-anchor="middle">every page</text>
+    <rect class="box tone-violet" x="1125.8" y="373" width="170" height="76" rx="10" />
+    <text class="label tone-violet" x="1210.8" y="401" text-anchor="middle">IAccountMenu</text>
+    <text class="note" x="1210.8" y="417" text-anchor="middle">interface,</text>
+    <text class="note" x="1210.8" y="429" text-anchor="middle">louis-agent.web</text>
+    <rect class="box tone-green" x="1375.9" y="420" width="441" height="150" rx="10" />
+    <text class="label tone-green" x="1596.4" y="448" text-anchor="middle">AccountApi</text>
+    <text class="note" x="1596.4" y="464" text-anchor="middle">the accounts API over</text>
+    <text class="note" x="1596.4" y="476" text-anchor="middle">HTTP, with its cookie</text>
+    <path class="frame" d="M 1375.9 496 L 1816.9 496" />
+    <text class="word tone-green" x="1389.9" y="514" text-anchor="start">+MeAsync() AccountInfo?</text>
+    <text class="word tone-green" x="1389.9" y="528" text-anchor="start">+RegisterAsync, LoginAsync, LogoutAsync</text>
+    <text class="word tone-green" x="1389.9" y="542" text-anchor="start">+ConfirmEmailAsync, ForgotPasswordAsync, ResetPasswordAsync</text>
+    <text class="word tone-green" x="1389.9" y="556" text-anchor="start">+UpdateProfileAsync, DeleteAccountAsync, passkeys</text>
+    <rect class="box tone-violet" x="1889" y="457" width="256" height="76" rx="10" />
+    <text class="label tone-violet" x="2017" y="485" text-anchor="middle">louis-agent.accounts.contracts</text>
+    <text class="note" x="2017" y="501" text-anchor="middle">the bodies and replies,</text>
+    <text class="note" x="2017" y="513" text-anchor="middle">shared</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="1072" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1082.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="1108" width="2145" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1118) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="1130">
+    <tspan class="note-head">The account pages a site opts into:</tspan>
+    <tspan class="note-rest">one call adds them, a client for the accounts API, the state every page reads, and the framework's account corner filled in.</tspan>
+  </text>
+</svg>

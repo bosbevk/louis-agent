@@ -63,6 +63,14 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   and prints the link for each block, which is swapped by hand. The docs hold no Mermaid now
   ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)); the import stays for a doc someone brings in.
 
+## Diagrams
+
+![How a picture is made: the JSON is read into records, a renderer per kind lays it out, and the docs' frame wraps it](diagrams/louis-agent.diagrams-flow.svg)
+
+![Drawing one picture: the tool reads, renders and frames it, and writes it only when it changed](diagrams/louis-agent.diagrams-sequence.svg)
+
+![The types: the reader makes a DiagramSource, its kind picks a renderer, each renderer has its layout and draws with SvgWriter, and TitledFrame wraps it](diagrams/louis-agent.diagrams-interface.svg)
+
 ## Structure
 
 ```

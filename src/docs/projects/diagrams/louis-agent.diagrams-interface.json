@@ -1,0 +1,108 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.diagrams: the interface design",
+  "caption": "A diagram is a record read from JSON, its kind picks a renderer, each renderer lays it out and writes the SVG, and the docs' frame wraps it.",
+  "classes": {
+    "types": [
+      {
+        "id": "reader",
+        "name": "DiagramReader",
+        "kind": "static",
+        "members": [
+          "+Read(json) DiagramSource",
+          "+Write(DiagramSource) string"
+        ]
+      },
+      {
+        "id": "source",
+        "name": "DiagramSource",
+        "kind": "record",
+        "members": [
+          "+DiagramKind Kind, Title, Caption?",
+          "+Flow, Cards, Sequence, Classes (one set)"
+        ]
+      },
+      {
+        "id": "renderers",
+        "name": "DiagramRenderers",
+        "kind": "static",
+        "members": [
+          "+Render(source) string",
+          "+RenderTitled(source) string"
+        ]
+      },
+      {
+        "id": "irenderer",
+        "name": "IDiagramRenderer",
+        "kind": "interface",
+        "members": [
+          "+Kind",
+          "+Render(DiagramSource) string"
+        ]
+      },
+      {
+        "id": "kinds",
+        "name": "FlowRenderer, CardsRenderer, SequenceRenderer, ClassesRenderer",
+        "kind": "one per kind, each an IDiagramRenderer"
+      },
+      {
+        "id": "graph",
+        "name": "GraphLayout",
+        "kind": "static, ADR 0103's row grid",
+        "members": [
+          "+Place(GraphSpec, width, bend) PlacedGraph"
+        ]
+      },
+      {
+        "id": "cards",
+        "name": "CardLayout",
+        "kind": "static",
+        "members": [
+          "+Place(CardsSpec, width) PlacedCards"
+        ]
+      },
+      {
+        "id": "sequence",
+        "name": "SequenceLayout",
+        "kind": "static",
+        "members": [
+          "+Place(SequenceSpec) PlacedSequence"
+        ]
+      },
+      {
+        "id": "classflow",
+        "name": "ClassFlow",
+        "kind": "static, an Adapter",
+        "members": [
+          "+Of(ClassesSpec) GraphSpec"
+        ]
+      },
+      {
+        "id": "writer",
+        "name": "SvgWriter",
+        "members": [
+          "+Box, Path, Text, Icon, Group",
+          "+Write(theme, title, width, height) string"
+        ]
+      },
+      {
+        "id": "frame",
+        "name": "TitledFrame",
+        "kind": "static, a Decorator",
+        "members": [
+          "+Around(svg, source) string"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "reader", "to": "source", "kind": "creates" },
+      { "from": "renderers", "to": "irenderer", "kind": "uses", "word": "picks by kind" },
+      { "from": "renderers", "to": "frame", "kind": "uses", "word": "titled" },
+      { "from": "kinds", "to": "graph", "kind": "uses", "word": "lays out" },
+      { "from": "kinds", "to": "cards", "kind": "uses" },
+      { "from": "kinds", "to": "sequence", "kind": "uses" },
+      { "from": "kinds", "to": "classflow", "kind": "uses" },
+      { "from": "kinds", "to": "writer", "kind": "uses", "word": "draws with" }
+    ]
+  }
+}

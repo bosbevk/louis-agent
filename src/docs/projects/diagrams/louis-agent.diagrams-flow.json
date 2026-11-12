@@ -1,0 +1,26 @@
+{
+  "kind": "flow",
+  "title": "louis-agent.diagrams: how a picture is made",
+  "caption": "Data in, one SVG out: the docs' tool and the site both start from the same records and the same layouts.",
+  "flow": {
+    "nodes": [
+      { "id": "json", "label": "diagrams/{name}.json\nbeside a doc", "icon": "file", "tone": "amber" },
+      { "id": "tool", "label": "louis-agent.doc-diagrams\nDiagramSync", "icon": "terminal", "tone": "blue" },
+      { "id": "site", "label": "The site's pages\nGraphView", "icon": "browser", "tone": "blue" },
+      { "id": "reader", "label": "DiagramReader\nthe records, refused with a reason", "icon": "checks", "tone": "green" },
+      { "id": "renderer", "label": "A renderer per kind\nflow, cards, sequence, classes", "icon": "stack", "tone": "green" },
+      { "id": "layout", "label": "The layouts\nrow grid, cards, lifelines", "icon": "chart", "tone": "green" },
+      { "id": "frame", "label": "TitledFrame\ntitle, legend, note", "icon": "info", "tone": "green" },
+      { "id": "svg", "label": "{name}.svg\nlight and dark", "icon": "file", "tone": "amber" }
+    ],
+    "edges": [
+      { "from": "json", "to": "tool" },
+      { "from": "tool", "to": "reader", "word": "reads" },
+      { "from": "reader", "to": "renderer" },
+      { "from": "renderer", "to": "layout", "word": "places" },
+      { "from": "renderer", "to": "frame", "word": "the docs only", "style": "dashed" },
+      { "from": "frame", "to": "svg" },
+      { "from": "site", "to": "layout", "word": "the same graph, animated", "style": "dashed" }
+    ]
+  }
+}
