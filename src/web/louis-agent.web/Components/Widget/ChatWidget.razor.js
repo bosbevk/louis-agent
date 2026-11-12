@@ -43,6 +43,21 @@ export function inView() {
     return { id: at.id, heading: fold(at.querySelector(".kicker, h1, h2, h3")?.textContent) };
 }
 
+// A business's window took the guide's ask (F127.4.2): on a narrow screen, where the guide's panel covers the page,
+// the window is brought into view (it may still be drawing, so it is looked for a moment) and the answer is true, so
+// the widget folds to its head; on a wide screen nothing moves.
+export function showWindow(selector) {
+    if (!matchMedia("(max-width: 720px)").matches) return false;
+    const started = performance.now();
+    const attempt = () => {
+        const target = document.querySelector(selector);
+        if (target) target.scrollIntoView({ block: "center", behavior: "smooth" });
+        else if (performance.now() - started < 2000) requestAnimationFrame(attempt);
+    };
+    attempt();
+    return true;
+}
+
 // The card open on the visitor's screen (FX106), by its id and title, or null: what they opened is what "this" means,
 // not a card the guide opened earlier. A deck opens one card at a time, so the first open one is it.
 export function openCard() {

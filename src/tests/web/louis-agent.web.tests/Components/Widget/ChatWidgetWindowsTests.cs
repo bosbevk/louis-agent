@@ -4,6 +4,7 @@ using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Widget;
 using LouisAgent.Web.Components.Widget.Door;
+using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
 using LouisAgent.Web.Usage;
@@ -76,6 +77,37 @@ public class ChatWidgetWindowsTests
                 "the guide's chat says where the answer is");
             Assert.That(heard.SubTurn!.Blocks.Single().Text, Is.EqualTo("The garden room is free."));
             Assert.That(moved, Is.GreaterThan(0));
+        });
+    }
+
+    /// <summary>
+    /// On a narrow screen the guide's panel covers the page (F127.4.2's 390 px check), so once it hands the ask to the
+    /// business's window the module brings that window into view and the guide folds to its head; on a wide one it
+    /// stays open beside the stage.
+    /// </summary>
+    [TestCase(true, true)]
+    [TestCase(false, false)]
+    public void OnANarrowScreen_TheGuideFolds_SoTheWindowShows(bool narrow, bool folded)
+    {
+        using var ctx = Context();
+        var windows = new AgentWindows();
+        ctx.Services.AddSingleton(windows);
+        using var _ = windows.Show("shop");
+        var module = ctx.JSInterop.SetupModule(FrameworkScripts.Widget);
+        module.Setup<bool>("showWindow", _ => true).SetResult(narrow);
+        var cut = ctx.Render<ChatWidget>(parameters => parameters
+            .Add(w => w.Identity, "guide").Add(w => w.Title, "Ask the guide"));
+        cut.Find("button.widget-button").Click();
+
+        cut.Find("#composer-input").Input("Show me the guesthouse live.");
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => cut.FindAll(".turn").Count == 1 && cut.FindAll("button.send").Count == 1,
+            TimeSpan.FromSeconds(10));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(module.Invocations.Count(call => call.Identifier == "showWindow"), Is.EqualTo(1));
+            Assert.That(cut.Find(".widget-panel").ClassList.Contains("is-min"), Is.EqualTo(folded));
         });
     }
 
