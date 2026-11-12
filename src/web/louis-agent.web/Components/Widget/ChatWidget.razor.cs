@@ -29,10 +29,27 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>Where the widget's own chats are kept, apart from the chat page's.</summary>
     private const string ChatsKey = "louis-agent.widget-chats";
 
-    private bool _open;
-    private ChatWindowSize _size;
     private JsModule? _module;
-    private string? _pageSentFor;
+
+    /// <summary>
+    /// What the guide is doing: the site's for this identity when it keeps one (FX135), so a widget in the next
+    /// layout carries the talk on; else this widget's own.
+    /// </summary>
+    private KeptGuide _kept = new();
+
+    /// <summary>Whether the panel is open, kept with the guide.</summary>
+    private bool Open
+    {
+        get => _kept.Open;
+        set => _kept.Open = value;
+    }
+
+    /// <summary>How big the panel is, kept with the guide.</summary>
+    private ChatWindowSize Size
+    {
+        get => _kept.Size;
+        set => _kept.Size = value;
+    }
 
     [Inject] private AgentApi Api { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
@@ -114,10 +131,14 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>The module beside this component that reads the page (F115), imported on first use.</summary>
     private JsModule Module => _module ??= new JsModule(JS, FrameworkScripts.Widget);
 
-    /// <summary>The runner over the site's API, on a store of its own, opening every session as the identity.</summary>
+    /// <summary>
+    /// The runner over the site's API, on a store of its own, opening every session as the identity; the kept one when
+    /// the site keeps its guide, with its panel as it was.
+    /// </summary>
     protected override void OnInitialized()
     {
-        Runner = new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
+        if (Services.GetService<GuideKeeper>() is { } keeper) _kept = keeper.For(Identity);
+        Runner = _kept.Runner ??= new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
         Runner.Changed += OnRunnerChanged;
         Runner.ToolCalled += OnToolCalled;
         Currency.Changed += Redraw;
@@ -133,14 +154,16 @@ public partial class ChatWidget : IAsyncDisposable
     /// </summary>
     private void OnAsked(string question) => InvokeAsync(async () =>
     {
-        _open = true;
-        if (_size == ChatWindowSize.Minimised) _size = ChatWindowSize.Normal;
+        Open = true;
+        if (Size == ChatWindowSize.Minimised) Size = ChatWindowSize.Normal;
         Runner.Draft = question;
         StateHasChanged();
         await SendAsync();
     });
 
-    /// <summary>A card the guide offered was clicked (F127.4.1): its label goes as if the visitor had typed it.</summary>
+    /// <summary>
+    /// A card the guide offered was clicked (F127.4.1): its label goes as if the visitor had typed it.
+    /// </summary>
     private Task ChooseAsync(string label)
     {
         if (Runner.Streaming) return Task.CompletedTask;
@@ -188,7 +211,7 @@ public partial class ChatWidget : IAsyncDisposable
     private async Task FoldForTheWindowAsync()
     {
         if (!await Module.InvokeAsync<bool>("showWindow", ".live-chat")) return;
-        _size = ChatWindowSize.Minimised;
+        Size = ChatWindowSize.Minimised;
         StateHasChanged();
     }
 
@@ -234,7 +257,7 @@ public partial class ChatWidget : IAsyncDisposable
         var open = await Module.InvokeAsync<PageArea?>("openCard");
         string here = PageAddress;
         Page? page = null;
-        if (_pageSentFor != here)
+        if (_kept.PageSentFor != here)
         {
             page = await Module.InvokeAsync<Page?>("pageText");
             page = page is null
@@ -244,7 +267,7 @@ public partial class ChatWidget : IAsyncDisposable
                     InView = inView,
                     Open = open
                 };
-            _pageSentFor = here;
+            _kept.PageSentFor = here;
         }
         else if (inView is not null || open is not null)
         {
@@ -263,12 +286,12 @@ public partial class ChatWidget : IAsyncDisposable
     /// <summary>Opens or folds the panel; a panel that opens again comes as it first did.</summary>
     private void Toggle()
     {
-        _open = !_open;
-        _size = ChatWindowSize.Normal;
+        Open = !Open;
+        Size = ChatWindowSize.Normal;
     }
 
     /// <summary>The panel's classes: its size, as the styles read it (F127.2).</summary>
-    private string PanelClasses => _size switch
+    private string PanelClasses => Size switch
     {
         ChatWindowSize.Minimised => "widget-panel is-min",
         ChatWindowSize.Maximised => "widget-panel is-max",

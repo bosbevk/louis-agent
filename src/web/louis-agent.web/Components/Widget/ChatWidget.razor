@@ -2,15 +2,15 @@
 @* A chat in a corner (F109.3): one button, and a panel with the chat's own list and composer on a runner of its own,
    opened as the identity the page names. The words come in as parameters, so the framework names no site. With a
    tour label, the folded corner also offers a tour of the page in view (F118), which asks the guide to walk it. *@
-<div class="chat-widget @(_open ? "is-open" : "")">
-    @if (_open)
+<div class="chat-widget @(Open ? "is-open" : "")">
+    @if (Open)
     {
         <section class="@PanelClasses" role="dialog" aria-label="@Title">
             <header class="widget-head">
                 <span class="widget-title">@Title</span>
                 @* A chat window's own buttons (F127.2): fold it to its head, or spread it wide; then close. *@
                 <span class="widget-head-tools">
-                    <WindowButtons @bind-Size="_size" />
+                    <WindowButtons @bind-Size="Size" />
                     <button class="icon widget-close" type="button" @onclick="Toggle"
                             aria-label="@CloseLabel">×</button>
                 </span>
@@ -30,20 +30,20 @@
     }
     @* Closed mid-tour, the same button picks the conversation up (FX117): it tells the guide to carry on, and the
        message carries the page the visitor is on now, so the guide goes on where it stopped or walks the new page. *@
-    @if (!_open && TourLabel is not null && CanResume)
+    @if (!Open && TourLabel is not null && CanResume)
     {
         <GuideButton Question="@ResumeQuestion" Class="widget-tour">@ResumeLabel</GuideButton>
     }
-    else if (!_open && TourLabel is not null)
+    else if (!Open && TourLabel is not null)
     {
         <GuideButton Question="@TourQuestion" Class="widget-tour">@TourLabel</GuideButton>
     }
     @* With a tour, the folded corner is the tour alone (FX114): it opens the guide, and this button is its close. *@
-    @if (_open || TourLabel is null)
+    @if (Open || TourLabel is null)
     {
-        <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(_open ? "true" : "false")"
-                aria-label="@(_open ? CloseLabel : OpenLabel)" title="@(_open ? CloseLabel : OpenLabel)">
-            @if (_open)
+        <button class="widget-button" type="button" @onclick="Toggle" aria-expanded="@(Open ? "true" : "false")"
+                aria-label="@(Open ? CloseLabel : OpenLabel)" title="@(Open ? CloseLabel : OpenLabel)">
+            @if (Open)
             {
                 <span aria-hidden="true">×</span>
             }
