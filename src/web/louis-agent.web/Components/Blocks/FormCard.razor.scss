@@ -1,0 +1,22 @@
+@use "web/tools/chat-card";
+@use "web/tools/field";
+
+/* A form the agent asked with (F127.4.3): a box per field on a card under the answer, Send in the accent; once sent,
+   the same card holds what was sent, a label over each value. */
+.form-ask { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-width: 420px; animation: rise .35s var(--web-ease) both; }
+.form-question { font-size: 13px; color: var(--bs-secondary-color); }
+.form-card { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; @include chat-card.card; }
+.form-field, .form-row { display: flex; flex-direction: column; gap: 4px; }
+.form-label { @include field.label; }
+.form-input { @include field.box; width: 100%; font: inherit; font-size: 14px; }
+/* A long answer's box grows with what is typed, from three lines. */
+textarea.form-input { resize: vertical; field-sizing: content; min-height: 4.5em; }
+.form-input:focus { outline: none; border-color: var(--bs-primary); }
+.form-input[disabled] { opacity: .6; }
+.form-send {
+    align-self: flex-start; padding: 7px 16px; border: 0; border-radius: 10px; font: inherit; font-weight: 600;
+    background: var(--bs-primary); color: var(--bs-body-bg); cursor: pointer;
+}
+.form-send[disabled] { opacity: .5; cursor: default; }
+.form-sent { border-color: var(--bs-primary); background: rgba(var(--bs-primary-rgb), .08); }
+.form-value { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }

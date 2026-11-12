@@ -57,6 +57,14 @@ public class AskForTests
         Assert.That(answer?.ToString(), Does.StartWith("Asked:").And.Contain("1 to fill in"));
     }
 
+    /// <summary>
+    /// The kinds the web draws are these, by name: the web's tests hold the same list, since neither may reference
+    /// the other (ADR 0027).
+    /// </summary>
+    [Test]
+    public void TheKinds_AreTheWebs() =>
+        Assert.That(Enum.GetNames<FieldKind>(), Is.EqualTo(new[] { "Name", "Phone", "Email", "Text", "LongText" }));
+
     /// <summary>No field asks nothing, and five crowd the chat: both are refused, saying how many may be.</summary>
     [TestCase(0)]
     [TestCase(5)]
