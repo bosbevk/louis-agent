@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 99 | 85 |
-| Fixes (`FX`) | 131 | 6 |
+| Fixes (`FX`) | 132 | 6 |
 | Cleanups (`CL`) | 32 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -249,6 +249,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX142 | 2026-11-12 | A card's or form's answer draws no bubble: the folded card already shows it, so a chat leaves the visitor's matching message out, a `ChatSettings.ShowCardAnswers` a site may turn on (Louis: "should not have done the bottom part there", "by default it would be off") |
 | FX141 | 2026-11-12 | No choices while a business waits for the visitor: an answer that asked another agent owes no closing tool, and the guide says to answer in the business's window (Louis: "it is waiting for my name, so now no card should display") |
 | FX140 | 2026-11-12 | On Ask it live the guide offers two or three questions to ask the business as cards, each sent as it is, and never a card that only says to type (Louis: "it should have given me a prompt for seemeeu") |
 | FX139 | 2026-11-12 | The guide always ends with choices: an identity names the tool each answer ends with (`EndsEachAnswerWith`, the guide's `Offer`), and when an answer ends without it the engine asks once more with a notice, the tool required and thinking off (Louis: "the guide should always display options, even to go to another page after it was done"; his pick of three: the engine asks for them) |
