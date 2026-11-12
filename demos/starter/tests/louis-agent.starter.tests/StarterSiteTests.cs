@@ -33,7 +33,7 @@ public class StarterSiteTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
-        ctx.Services.AddSiteAreas(StarterAreas.Name);
+        ctx.Services.AddSiteAreas(WebsiteAreas.Name);
         return ctx;
     }
 
@@ -66,7 +66,7 @@ public class StarterSiteTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
         ctx.Services.AddSingleton(api);
-        ctx.Services.AddSiteAreas(StarterAreas.Name);
+        ctx.Services.AddSiteAreas(WebsiteAreas.Name);
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/screens/usage");
 
         var app = ctx.Render<App>();
@@ -91,7 +91,7 @@ public class StarterSiteTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(program, Does.Contain("AddSiteAreas(StarterAreas.Name)"));
+            Assert.That(program, Does.Contain("AddSiteAreas(WebsiteAreas.Name)"));
             Assert.That(program, Does.Not.Contain("new SiteFrames(").And.Not.Contain("new PackViews(")
                 .And.Not.Contain("new ChatHandoff("));
         });
