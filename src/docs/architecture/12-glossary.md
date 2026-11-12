@@ -13,7 +13,7 @@
 | **Language** | A mode in one language (`puls/voice-af`, `puls/voice-en`): only the voice; its product's shared `voice.md` (the routing) loads after it (CL9) |
 | **Ledger** | The usage ledger: one JSON line per model request, with its tokens and cost |
 | **Mode** | What a level-0 session names (CL9, ADR 0019): one file, its voice then its routing, `agent/{product}/{mode}.md`; the default is `louis-agent/voice` |
-| **Peer** | Another louis-agent API this one may ask agents on (`AGENT_PEERS`), itself included |
+| **Peer** | Another louis-agent API this one may ask agents on (`AGENT_PEERS`), itself included (`self`); an address names one before a colon (`partner:shop`) and each is called with its own key (`AGENT_PEER_KEYS`) |
 | **Personality** | A role's name before CL13 (the code) and CL14 (the API); still read in recorded runs and from `PERSONALITIES_ENABLED`; CL20 took it out of the API |
 | **Principles** | `shared/principles.md`: never lie, cheat, steal or murder; first in every agent's prompt (ADR 0020) |
 | **Prefix** | The start of every request (tools, system prompt) that stays the same and is cached |

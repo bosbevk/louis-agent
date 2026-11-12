@@ -175,4 +175,20 @@ public class AgentOptionsTests
             Assert.That(peers["writer"].ToString(), Is.EqualTo("https://w.example/api/"));
         });
     }
+
+    /// <summary>
+    /// AGENT_PEER_KEYS is name=key pairs by commas (F127.3.2), a secret beside AGENT_PEERS: names lower-cased, a key
+    /// kept whole after its first equals sign, and a pair with no name or no key left out.
+    /// </summary>
+    [Test]
+    public void PeerKeys_AreParsedFromAgentPeerKeys()
+    {
+        var keys = AgentOptions.ParsePeerKeys("Partner = k1=x, self=, =nameless, other=k2");
+
+        Assert.That(keys, Is.EquivalentTo(new Dictionary<string, string>
+        {
+            ["partner"] = "k1=x",
+            ["other"] = "k2"
+        }));
+    }
 }

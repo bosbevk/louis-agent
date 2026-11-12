@@ -72,6 +72,20 @@ Louis's picks during the build, each a rule now:
   script instead of being recorded again, and the recipes eval before and after waits for Puls's return (F135).
 - **`StartMinion` stays as it is** until F127.5 puts the minions on the address.
 
+## What F127.3.2 settled (2026-11-12, unattended)
+
+Asking an agent on another server (F127.3 pick 2, C), each a rule now, each Claude's pick of three, agreed by Louis
+the same day:
+
+- **An address may name its server before a colon** (`partner:shop.cook`); without one it is this instance, which
+  is `self` when a host names more than one server. A server is part of the address, so `Calls` allow it exactly.
+- **A key per server:** `AGENT_PEER_KEYS` (a secret, `name=key`), the server's own key on every request to it, this
+  instance's `AGENT_API_KEY` when it has none; never one key for all.
+- **A server's identities are read before an address on it is trusted**, with its key, and kept ten minutes; an
+  unknown server, a refused key, a server that doesn't answer, and an identity it doesn't list are each a reason.
+- **The person is told first:** the agents guide has the model say, before it asks, that the question goes to
+  another company's server. The privacy terms gain their line when a site's agent first asks another server.
+
 ## What F127.4.2 settled (2026-11-12)
 
 The guided live demo (F127.3 picks 7 and 8, F127.4 picks 1, 6 to 8), each a rule now:

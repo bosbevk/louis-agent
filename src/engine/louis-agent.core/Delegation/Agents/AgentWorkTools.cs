@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation.Messages;
 using LouisAgent.Core.Delegation.SubSessions;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -17,14 +18,23 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// work, and the result stays in the asker's history for every later turn.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0005-guard-the-context.md">ADR 0005: guard the context</seealso>
-public sealed class AgentWorkTools(string? apiKey = null, HttpClient? http = null)
+public sealed class AgentWorkTools(
+    string? apiKey = null,
+    HttpClient? http = null,
+    IReadOnlyDictionary<Uri, string>? peerKeys = null)
 {
     /// <summary>The most it gives back: the toolsets' usual cap, the latest part kept.</summary>
     public const int MaxChars = 12_000;
 
+    /// <summary>The toolset as the engine builds it, from the instance's key and its peers' own (F127.3.2).</summary>
+    public AgentWorkTools(AgentOptions options)
+        : this(options.AgentApiKey, peerKeys: PeerHttp.KeysByPeer(options.AgentPeers, options.AgentPeerKeys))
+    {
+    }
+
     /// <summary>Asks the asked session's server for its whole work (F127.4.2).</summary>
     private readonly SessionWorkReader _server =
-        new(new PeerHttp(http ?? PeerHttp.Shared, apiKey), SessionWorkReader.DefaultTimeout);
+        new(new PeerHttp(http ?? PeerHttp.Shared, apiKey, peerKeys), SessionWorkReader.DefaultTimeout);
 
     /// <summary>
     /// What the agent at an address did, as text, without its thinking: its whole session as its server tells it, so

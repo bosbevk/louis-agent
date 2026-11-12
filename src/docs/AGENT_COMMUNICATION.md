@@ -351,25 +351,34 @@ next poll ([FX7](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes
 
 An agent asks another agent by its address ([ADR 0117](adr/0117-one-address-for-every-agent-call.md), F127.3.1):
 `{identity}` for an identity in its own voice (`seemeeu-guesthouse`), `{identity}.{role}` for one of its roles
-(`puls.cook`). An identity lists the addresses it may ask in code (`IAgentIdentity.Calls`), and its prompt lists
+(`puls.cook`), and either on another server with that server's name before a colon (`partner:shop`, F127.3.2). An
+identity lists the addresses it may ask in code (`IAgentIdentity.Calls`), and its prompt lists
 them too, so what the model reads is what the code checks. Its chats load core's `agents` toolset, and the model
 calls `AskAgent(address, message, attachments)`, which:
 
 1. reads the address and refuses one the asker doesn't list, naming the ones it may ask;
-2. opens `POST /v1/sessions` on the peer in `AGENT_PEERS` (`self` for this same API), with the identity, the role,
+2. for an address on another server, finds that server in `AGENT_PEERS` and reads its `GET /v1/identities` with its
+   own key from `AGENT_PEER_KEYS` (kept ten minutes), refusing a server it doesn't know, a key the server refuses,
+   a server that doesn't answer, or an identity it doesn't list, each with the reason;
+3. opens `POST /v1/sessions` on that server, or on `self` for this same API, with the identity, the role,
    `depth: 1`, the parent turn (`{session}#{turn}`) and the user's place; the asked agent's own files decide its
    toolsets, never the asker;
-3. sends the message with the named attachments, which come from the session, never through the model's output;
-4. reads the asked agent's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
+4. sends the message with the named attachments, which come from the session, never through the model's output;
+5. reads the asked agent's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
    tool rounds used), asks once more in the same session (FX11);
-5. returns the answer with a line under it, built in code from the agent's own tool calls:
-   `[Answered by acme, did: SendLead, ShowPlace]` (`no tools` when it only answered, `(failed)` after one that failed).
+6. returns the answer with a line under it, built in code from the agent's own tool calls, each with the first line
+   of what it gave back: `[Answered by acme, did: ShowPlace: Shown; SendLead: Sent]` (`no tools` when it only
+   answered, `failed:` after one that failed).
+
+Every request to a server carries that server's own key, or this instance's `AGENT_API_KEY` when it has none. Before
+an address on another server is asked, the agents guide has the model tell the person their question goes there.
 
 The chat keeps one conversation per address (at most 3; the oldest closed when a fourth starts), so asking the same
 address again carries on where it left off, with its context and cached prefix. If that agent is still answering an
 earlier message (`409`), the asker is told to wait; if its session is gone (`404`), a new one starts in the same call
-and the answer says so. `ReadAgentWork(address)` reads what an asked agent did, step by step (what it said, each tool
-call with what it sent and what came back, never its thinking), the latest 12,000 characters when it is long. The
+and the answer says so. `ReadAgentWork(address)` reads what an asked agent did, step by step (what it was asked, also
+by a person carrying on in its window, what it said, each tool call with what it sent and what came back, never its
+thinking), from its server's `GET /v1/sessions/{id}/work`, the latest 12,000 characters when it is long. The
 chat's session deletes its kept agents on the peer when it is deleted or dropped as idle; `GET /v1/sessions/{id}`
 lists them. Outside a chat (an MCP call) the session is deleted at once.
 

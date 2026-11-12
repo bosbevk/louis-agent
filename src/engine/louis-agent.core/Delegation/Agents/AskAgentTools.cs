@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Delegation.Addresses.Peers;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Sessions;
 using LouisAgent.Core.Config;
@@ -37,7 +38,8 @@ public sealed class AskAgentTools(
     HttpClient? http = null,
     TimeSpan? timeout = null,
     TimeProvider? time = null,
-    IUsageSink? usageSink = null)
+    IUsageSink? usageSink = null,
+    IReadOnlyDictionary<string, string>? peerKeys = null)
 {
     /// <summary>Asks one turn may make; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -49,18 +51,32 @@ public sealed class AskAgentTools(
     private readonly CallSlots _slots = new(MaxPerTurn, CallSlots.NoTurnWindow, time ?? TimeProvider.System);
 
     private readonly PeerSession _session =
-        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
+        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System,
+            PeerHttp.KeysByPeer(peers, peerKeys ?? new Dictionary<string, string>()));
 
-    /// <summary>The toolset as the engine builds it, from the instance's peers, key and identities.</summary>
+    /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
+    public const string Self = "self";
+
+    /// <summary>Another server's identities, read with its key before an address on it is asked (F127.3.2).</summary>
+    private readonly PeerIdentities _identities = new(
+        new PeerHttp(http ?? PeerHttp.Shared, apiKey,
+            PeerHttp.KeysByPeer(peers, peerKeys ?? new Dictionary<string, string>())),
+        time ?? TimeProvider.System);
+
+    /// <summary>
+    /// The toolset as the engine builds it, from the instance's peers, their keys and its identities.
+    /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
-        : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink)
+        : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
+            peerKeys: options.AgentPeerKeys)
     {
     }
 
     /// <summary>Asks the agent at an address and gives back its answer.</summary>
     [Description(
         "Asks another agent by its address and waits for its answer: an agent in its own voice (\"acme\") or one " +
-        "of its roles (\"acme.cook\"), only one the agents guide lists. It sees your message and the files you " +
+        "of its roles (\"acme.cook\"), on another server after its name (\"partner:acme\"), only one the agents " +
+        "guide lists. It sees your message and the files you " +
         "name, never this conversation; asked again in this chat, it carries on the conversation you have with it. " +
         "At most 3 asks per turn, 5 minutes each.")]
     public async Task<string> AskAgent(
@@ -77,7 +93,12 @@ public sealed class AskAgentTools(
         if (Reach(address, out string? refusal) is not { } agent) return refusal!;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
             return unknownAttachment;
-        if (PeerHttp.ResolvePeer(peers, null, out Uri peer, out string name) is { } noPeer) return noPeer;
+        // The server the address names, else this instance: "self" when the host names more than one server.
+        string? server = agent.Address.Peer ?? (peers.ContainsKey(Self) ? Self : null);
+        if (PeerHttp.ResolvePeer(peers, server, out Uri peer, out string name) is { } noPeer) return noPeer;
+        if (agent.Address.Peer is not null &&
+            await _identities.RefusalAsync(name, peer, agent.Address.Identity, cancellationToken) is { } notThere)
+            return notThere;
 
         var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.
@@ -145,9 +166,10 @@ public sealed class AskAgentTools(
             return null;
         }
 
-        return AgentCalls.Allows(asker, parsed, out refusal)
-            ? AgentAddresses.Resolve(parsed, identities, out refusal)
-            : null;
+        if (!AgentCalls.Allows(asker, parsed, out refusal)) return null;
+        // An address on another server is that server's to answer for: its identities are read before it is asked.
+        if (parsed.Peer is not null) return AgentAddresses.OnAnotherServer(parsed);
+        return AgentAddresses.Resolve(parsed, identities, out refusal);
     }
 
     /// <summary>The identity the running turn speaks for, if this instance runs it.</summary>

@@ -60,7 +60,14 @@ internal static class FakePeer
     /// <summary>
     /// A peer that creates sess_child, answers with <paramref name="answer"/> and accepts the delete.
     /// </summary>
-    public static StubHandler Peer(Func<HttpResponseMessage>? answer = null) => new(request =>
+    public static StubHandler Peer(Func<HttpResponseMessage>? answer = null) =>
+        new(request => Answer(request, answer));
+
+    /// <summary>
+    /// How the peer answers one request: sess_child created, a message answered with <paramref name="answer"/>, the
+    /// delete accepted; shared by a stub that plays more than one server (F127.3.2).
+    /// </summary>
+    public static HttpResponseMessage Answer(HttpRequestMessage request, Func<HttpResponseMessage>? answer = null) =>
         request.Method.Method switch
         {
             "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" =>
@@ -71,7 +78,7 @@ internal static class FakePeer
             },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
-        });
+        };
 
     /// <summary>A reply that failed after some work: the API's error event carries what was charged (FX6).</summary>
     public const string FailedStream = """
