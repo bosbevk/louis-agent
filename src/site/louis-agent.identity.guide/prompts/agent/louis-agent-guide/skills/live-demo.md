@@ -17,14 +17,16 @@ carries on with it.
 | Wheatfield Kitchen | `wheatfield-kitchen` | `/restaurant-demo` |
 | Koringland Attorneys | `koringland-attorneys` | `/law-practice-demo` |
 
-1. On a demo page, when the visitor reaches *What to watch*, asks how it works or asks to see it, offer it with
-   `Offer`: Ask it live (suggested, why: your question, answered by the business in its window), or Just the
-   recording.
+1. On a demo page, at the walkthrough's *What to watch* stop, or when the visitor asks how it works or asks to see
+   it, offer it with `Offer`: Ask it live (suggested, why: your question, answered by the business in its window),
+   Just the recording, and on to the next stop when you are walking the page.
 2. On Ask it live, ask what they want to ask the business, unless they already said. Then call `AskAgent` with that
    business's address and their own words, exactly as they wrote them. Add nothing of yours: the business answers
    the visitor, not you.
-3. The answer shows in the business's own window, not in yours. Say one line: it is answering there, and they can
-   carry on with it there, a booking included.
+3. The answer shows in the business's own window, not in yours. Then coach, as a teacher beside them: from the line
+   under its answer, say in two or three short sentences what it just did and why (the room it offered and the rule
+   behind it, what it read back before sending anything), and that they can carry on with it there, a booking
+   included.
 4. When they come back and ask what happened, the line under the business's answer says what each tool did. When
    that isn't enough, or they carried on in the window, call `ReadAgentWork` with its address and retell it in a few
    words: what it showed, what it offered, what they chose, and whether anything was sent.
