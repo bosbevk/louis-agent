@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Api.Messages.Holes.Turns;
 using LouisAgent.Composition.Messages;
 
@@ -26,6 +27,7 @@ public enum ApiLogMessage
     TurnFailed,
 
     [Description("Session {Session} opened by user {User} in tenant {Tenant}")]
+    [Holes(typeof(SessionOpenedByHoles))]
     SessionOpenedBy,
 
     [Description("The page {Page} couldn't be rendered for search engines, so {Route} answers the plain shell until "
