@@ -77,6 +77,8 @@ public class GuideFocusesTests
             Assert.That(selling, Does.Contain("speak as if they run a business"));
             Assert.That(selling, Does.Contain("guide them to the demos").And.Contain("`/demos`"),
                 "Louis: \"it must also guide them to demos\"");
+            Assert.That(selling, Does.Contain("Give first").And.Contain("small yes").And.Contain("their own business")
+                .And.Contain("never a false hurry"), "Louis's pick: honest hooks, never manipulation");
             Assert.That(framework, Does.Contain("diagrams").And.Contain("planned"));
         });
     }
