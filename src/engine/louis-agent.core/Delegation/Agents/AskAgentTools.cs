@@ -25,9 +25,10 @@ namespace LouisAgent.Core.Delegation.Agents;
 /// <remarks>
 /// Every check is in code, before anything is sent: the address is read once (<see cref="AgentAddress"/>), the asker
 /// must name it in its <c>Calls</c> (<see cref="AgentCalls"/>), and it must reach an agent here
-/// (<see cref="AgentAddresses"/>). The child opens one level down, so it can't ask further, on the same path as a
-/// specialist (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the
-/// roll-up and the live events.
+/// (<see cref="AgentAddresses"/>). The child opens one level down, on the same path as a specialist
+/// (<see cref="PeerSession"/>): the key from AGENT_API_KEY, the limit of three a turn, the timeout, the roll-up and the
+/// live events. A minion's address takes one of the asker's tools and goes to <see cref="MinionAsk"/>, on its own
+/// limits (F127.5: one tool for every call an agent makes).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0117-one-address-for-every-agent-call.md">ADR 0117: one address for every agent call</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
@@ -39,7 +40,9 @@ public sealed class AskAgentTools(
     TimeSpan? timeout = null,
     TimeProvider? time = null,
     IUsageSink? usageSink = null,
-    IReadOnlyDictionary<string, string>? peerKeys = null)
+    IReadOnlyDictionary<string, string>? peerKeys = null,
+    IReadOnlyDictionary<string, IReadOnlyList<string>>? minionLlms = null,
+    TimeSpan? minionTimeout = null)
 {
     /// <summary>Asks one turn may make; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -50,9 +53,11 @@ public sealed class AskAgentTools(
     private readonly TimeSpan _timeout = timeout ?? PeerHttp.DefaultTimeout;
     private readonly CallSlots _slots = new(MaxPerTurn, CallSlots.NoTurnWindow, time ?? TimeProvider.System);
 
-    private readonly PeerSession _session =
-        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System,
-            PeerHttp.KeysByPeer(peers, peerKeys ?? new Dictionary<string, string>()));
+    private readonly PeerSession _session = SessionOf(http, apiKey, usageSink, time, peers, peerKeys);
+
+    /// <summary>A minion's address goes here (F127.5), on a path built the same way, with the minion models.</summary>
+    private readonly MinionAsk _minions = new(SessionOf(http, apiKey, usageSink, time, peers, peerKeys),
+        minionLlms ?? new Dictionary<string, IReadOnlyList<string>>(), minionTimeout);
 
     /// <summary>The name this instance goes by among its peers, when the host names more than one (F127.3.1).</summary>
     public const string Self = "self";
@@ -68,9 +73,15 @@ public sealed class AskAgentTools(
     /// </summary>
     public AskAgentTools(AgentOptions options, IReadOnlyList<IAgentIdentity> identities, IUsageSink? usageSink = null)
         : this(options.AgentPeers, identities, options.AgentApiKey, usageSink: usageSink,
-            peerKeys: options.AgentPeerKeys)
+            peerKeys: options.AgentPeerKeys, minionLlms: options.MinionLlms)
     {
     }
+
+    /// <summary>The path to a child: the key for each server, the ledger for the roll-up, the clock.</summary>
+    private static PeerSession SessionOf(HttpClient? http, string? apiKey, IUsageSink? usageSink, TimeProvider? time,
+        IReadOnlyDictionary<string, Uri> peers, IReadOnlyDictionary<string, string>? peerKeys) =>
+        PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System,
+            PeerHttp.KeysByPeer(peers, peerKeys ?? new Dictionary<string, string>()));
 
     /// <summary>Asks the agent at an address and gives back its answer.</summary>
     [Description(
@@ -78,7 +89,8 @@ public sealed class AskAgentTools(
         "of its roles (\"acme.cook\"), on another server after its name (\"partner:acme\"), only one the agents " +
         "guide lists. It sees your message and the files you " +
         "name, never this conversation; asked again in this chat, it carries on the conversation you have with it. " +
-        "At most 3 asks per turn, 5 minutes each.")]
+        "At most 3 asks per turn, 5 minutes each. A minion's address (\"acme.lookup\") also takes one of your own " +
+        "tools, and answers once: at most 16 a user turn, 2 minutes each.")]
     public async Task<string> AskAgent(
         [Description("Who answers: the agent's address, as the agents guide lists it.")]
         string address,
@@ -88,9 +100,17 @@ public sealed class AskAgentTools(
         string message,
         [Description("Names of files the user attached in this conversation that the agent needs.")]
         string[]? attachments = null,
+        [Description(
+            "Only for a minion's address: the one tool of yours it uses, e.g. \"FetchUrl\" (never a delegation or " +
+            "skills tool), as your role file says.")]
+        string? tool = null,
+        [Description(
+            "Only for a minion's address: true to run the same task on the next, stronger model in its list, when " +
+            "the first answer failed your check. Once per task; false the first time.")]
+        bool stronger = false,
         CancellationToken cancellationToken = default)
     {
-        if (Reach(address, out string? refusal) is not { } agent) return refusal!;
+        if (Reach(address, tool, out string? refusal) is not { } agent) return refusal!;
         if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment)
             return unknownAttachment;
         // The server the address names, else this instance: "self" when the host names more than one server.
@@ -99,6 +119,10 @@ public sealed class AskAgentTools(
         if (agent.Address.Peer is not null &&
             await _identities.RefusalAsync(name, peer, agent.Address.Identity, cancellationToken) is { } notThere)
             return notThere;
+        // A minion answers once, on its own limits: it never takes one of the turn's three asks, nor is it kept.
+        if (agent.Kind == AddressKind.Minion)
+            return await _minions.AskAsync(agent, tool, new SendMessageRequest(message, forwarded), stronger, peer,
+                name, cancellationToken);
 
         var ask = new Ask(agent, new SendMessageRequest(message, forwarded), UsageScope.Current,
             // The call that asked, so a host can show the agent's work under it.
@@ -150,17 +174,22 @@ public sealed class AskAgentTools(
         return Answer(footer, address, reply);
     }
 
-    /// <summary>The agent an address reaches for this asker, or the reason the model reads instead.</summary>
-    /// <remarks>Guard clauses (Fowler), one per check, in the order the model can fix them.</remarks>
-    private AddressedAgent? Reach(string address, out string? refusal)
+    /// <summary>
+    /// The agent an address reaches for this asker, a minion when the address names one here (F127.5), or the reason
+    /// the model reads instead.
+    /// </summary>
+    /// <remarks>
+    /// Guard clauses (Fowler), one per check, in the order the model can fix them. A tool says the ask is for a
+    /// minion, so a tool with a server is refused before the server is named in <c>Calls</c>: a minion runs here.
+    /// </remarks>
+    private AddressedAgent? Reach(string address, string? tool, out string? refusal)
     {
         refusal = null;
+        bool withTool = !string.IsNullOrWhiteSpace(tool);
         if (!AgentAddress.TryParse(address, out var parsed))
-        {
-            refusal = MessageText.Format(SubSessionToolMessage.AddressInvalid, new { Address = address });
-            return null;
-        }
-
+            return Refuse(SubSessionToolMessage.AddressInvalid, address, out refusal);
+        if (withTool && parsed.Peer is not null)
+            return Refuse(SubSessionToolMessage.MinionOnAnotherServer, address, out refusal);
         if (Asker() is not { } asker)
         {
             refusal = MessageText.Format(SubSessionToolMessage.AskerNone);
@@ -170,7 +199,16 @@ public sealed class AskAgentTools(
         if (!AgentCalls.Allows(asker, parsed, out refusal)) return null;
         // An address on another server is that server's to answer for: its identities are read before it is asked.
         if (parsed.Peer is not null) return AgentAddresses.OnAnotherServer(parsed);
+        if (AgentAddresses.IsMinion(parsed)) return AgentAddresses.ResolveMinion(parsed, identities, out refusal);
+        if (withTool) return Refuse(SubSessionToolMessage.ToolOnlyForMinion, address, out refusal);
         return AgentAddresses.Resolve(parsed, identities, out refusal);
+    }
+
+    /// <summary>No agent, with the reason naming the address as the model wrote it.</summary>
+    private static AddressedAgent? Refuse(SubSessionToolMessage message, string address, out string? refusal)
+    {
+        refusal = MessageText.Format(message, new { Address = address });
+        return null;
     }
 
     /// <summary>The identity the running turn speaks for, if this instance runs it.</summary>

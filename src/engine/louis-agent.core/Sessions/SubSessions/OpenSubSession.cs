@@ -24,7 +24,7 @@ public sealed record OpenSubSession(
     /// <summary>The chat's name for it (<c>sub-1</c>), given by the registry when it is added.</summary>
     public string Handle { get; init; } = "";
 
-    /// <summary>A minion's kind (F30): what <c>StartMinion</c> keeps; each tool continues only its own kind.</summary>
+    /// <summary>A minion's kind (F30): <c>AskAgent</c> never keeps one (F127.5), so nothing continues it.</summary>
     public const string MinionKind = "minion";
 
     /// <summary>An asked agent's kind (F127.3.1): what <c>AskAgent</c> keeps, by its address.</summary>

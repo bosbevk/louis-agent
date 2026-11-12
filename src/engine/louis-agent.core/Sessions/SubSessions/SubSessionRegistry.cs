@@ -2,9 +2,8 @@ namespace LouisAgent.Core.Sessions.SubSessions;
 
 /// <summary>
 /// A chat's open sub-sessions, by handle (F26): the host (the API's session) owns one and makes it current for each
-/// turn, like <see cref="SessionAttachments"/>; the delegation tools (<c>AskAgent</c>, <c>StartMinion</c>) then
-/// keep a child open instead of deleting it, and find it again for a follow-up. With none current (an MCP call, the
-/// CLI) nothing is kept.
+/// turn, like <see cref="SessionAttachments"/>; <c>AskAgent</c> then keeps a child open instead of deleting it (never a
+/// minion), and finds it again for a follow-up. With none current (an MCP call, the CLI) nothing is kept.
 /// </summary>
 /// <remarks>
 /// The limits are in code: at most <see cref="DefaultCap"/> open per chat (the oldest is closed when another opens),

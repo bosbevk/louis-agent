@@ -56,9 +56,9 @@ public class PulsSessionSnapshotTests
     /// </summary>
     private AgentEngineFactory Factory()
     {
-        // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists and minions
-        // toolsets, the find-recipe minion on the instance's own model (the cook's header asks for `minions`, F35.2
-        // step 2b), and a browser (nothing is connected while an engine is built).
+        // The Puls stack's settings, as far as building an engine reads them: a peer for the agents toolset, the
+        // find-recipe minion on the instance's own model (AskAgent asks it, F127.5), and a browser (nothing is
+        // connected while an engine is built).
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir,
@@ -67,7 +67,7 @@ public class PulsSessionSnapshotTests
             AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionAsk.InstanceLlm]
             },
             BrowserUrl = "http://browser.test:9222"
         };

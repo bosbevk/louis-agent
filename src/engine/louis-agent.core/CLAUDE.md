@@ -22,7 +22,7 @@ toolset's guide names its tools and when to use them, and each tool's `[Descript
 embedded, and loads only when a session has the toolset (`SkillLoader.Load(agent, toolsets)`). **No provider class per
 toolset.**
 
-**Core's own toolsets** are `agents` and `minions` (`Delegation/`, in `Agent/Toolsets/ToolsetCatalog.cs`) and `skills`
+**Core's own toolsets** are `agents` (`Delegation/`, in `Agent/Toolsets/ToolsetCatalog.cs`; it asks minions too) and `skills`
 (`Agent/EngineTools/`, registered by `AgentEngine` because it needs the registry). Only something that needs the engine's own
 insides belongs here; anything else is a pack.
 

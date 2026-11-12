@@ -82,7 +82,7 @@ public class AgentSessionsTests
             AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionAsk.InstanceLlm]
             }
         };
 
@@ -587,13 +587,13 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// A minion works out its toolset from the tool it's handed, and only a specialist can send minions.
+    /// A minion works out its toolset from the tool it's handed.
     /// </summary>
     [Test]
-    public void AMinionSession_DerivesItsToolsetFromItsTool_AndMinionsAreForSpecialistsOnly()
+    public void AMinionSession_DerivesItsToolsetFromItsTool()
     {
-        // F30 step 5: StartMinion sends no toolsets, only the tool; the peer finds the toolset that builds it. The
-        // minions toolset is a specialist's: never the chat's (level 0), never a minion's (the end of the tree).
+        // F30 step 5: AskAgent sends a minion no toolsets, only the tool; the peer finds the toolset that builds it.
+        // F127.5: the minions toolset is gone, since AskAgent asks minions too.
         var sessions = Sessions();
         var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
@@ -601,12 +601,5 @@ public class AgentSessionsTests
             tool: "FetchUrl");
         Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
-
-        Assert.That(() => sessions.Create([CoreToolset.Minions.Wire()]),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("specialist"));
-        Assert.That(
-            () => sessions.Create([CoreToolset.Minions.Wire()], ParentOf(cook), depth: 2,
-                role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
     }
 }

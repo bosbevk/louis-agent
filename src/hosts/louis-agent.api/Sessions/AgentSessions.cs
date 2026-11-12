@@ -36,11 +36,6 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public const int MinionDepth = 2;
 
     /// <summary>
-    /// The toolset a specialist hands minions with (F30): a specialist's only, never the chat's nor a minion's.
-    /// </summary>
-    public static readonly string MinionsToolset = CoreToolset.Minions.Wire();
-
-    /// <summary>
     /// The toolset that asks another agent (F127.3.1); refused below depth 0, so an asked agent asks none.
     /// </summary>
     public static readonly string AgentsToolset = CoreToolset.Agents.Wire();
@@ -64,8 +59,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// (<paramref name="llm"/>, F30; null: its own model), before anything is created. A minion (depth
     /// <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent session's
     /// (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never one of
-    /// <see cref="MinionTools.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
-    /// Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
+    /// <see cref="MinionAsk.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the tool.
+    /// Every other depth refuses a tool.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
         string? role = null,
@@ -89,7 +84,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
                 }));
         // The prompt's level: the depth's, except an identity's voice asked by another agent, which stays a voice.
         var level = LevelOf(role, depth);
-        // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
+        // A minion names its tool; the toolset that builds it is implied (AskAgent sends none for a minion).
         var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
             ?
             [
@@ -104,11 +99,6 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth > 0 && plain.Contains(AgentsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
                 new { Toolset = AgentsToolset }));
-        if (depth == MinionDepth && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
-                new { Toolset = MinionsToolset }));
-        if (depth == 0 && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionsOnlyForSpecialists));
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
@@ -177,7 +167,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (Get(parentId) is not { } parent)
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown,
                 new { Session = parentId }));
-        if (MinionTools.NeverHandedDown.Contains(tool))
+        if (MinionAsk.NeverHandedDown.Contains(tool))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));

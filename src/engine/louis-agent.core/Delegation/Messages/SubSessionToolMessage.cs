@@ -49,9 +49,14 @@ public enum SubSessionToolMessage
 
 
     [Description(
-        "Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists " +
-        "them).")]
-    MinionRoleInvalid,
+        "Error: '{Address}' is a minion, which works with one of your tools: name it in tool, as your role file " +
+        "says.")]
+    MinionNeedsTool,
+
+    [Description(
+        "Error: only a minion takes a tool, and '{Address}' is no minion. Ask it without a tool, or give a minion's " +
+        "address.")]
+    ToolOnlyForMinion,
 
     [Description(
         "Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or " +
@@ -72,7 +77,7 @@ public enum SubSessionToolMessage
     MinionNoStronger,
 
     [Description(
-        "Error: this user turn has already used {Max} minions, the most one turn may across every specialist. " +
+        "Error: this user turn has already used {Max} minions, the most one turn may across every agent. " +
         "Finish with what you have.")]
     MinionLimit,
 
@@ -117,8 +122,8 @@ public enum SubSessionToolMessage
     AddressUnknownMinion,
 
     [Description(
-        "Error: '{Address}' names another server, and a minion runs on this instance only. Give its address " +
-        "without the server.")]
+        "Error: '{Address}' names another server, and only a minion takes a tool, which runs on this instance only. " +
+        "Give a minion's address without the server, or ask the agent there without a tool.")]
     MinionOnAnotherServer,
 
     [Description("Error: {Asker} may not call {Address}. The agents it may call: {Calls}.")]

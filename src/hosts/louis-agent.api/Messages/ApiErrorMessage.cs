@@ -3,8 +3,8 @@ using System.ComponentModel;
 
 namespace LouisAgent.Api.Messages;
 // The message enums (src/docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
+// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are
+// added as code is written or moved; the refactor after F4 moves the existing messages here.
 
 /// <summary>Exception texts for the API area: what is wrong and how to fix it.</summary>
 public enum ApiErrorMessage
@@ -33,10 +33,6 @@ public enum ApiErrorMessage
 
     [Description("The parent session has no '{Tool}' tool: a minion gets one of its specialist's own tools.")]
     ParentLacksTool,
-
-    [Description(
-        "The 'minions' toolset is a specialist's (depth 1): the agent the user talks to delegates to specialists, and a minion delegates to no one.")]
-    MinionsOnlyForSpecialists,
 
     [Description("No toolset builds a '{Tool}' tool.")]
     NoToolsetForTool,

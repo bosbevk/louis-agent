@@ -2,6 +2,7 @@ using LouisAgent.Core.Web;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Composition.Sessions;
 
 namespace LouisAgent.Core.Tests.Delegation;
@@ -21,7 +23,7 @@ namespace LouisAgent.Core.Tests.Delegation;
 /// A specialist hands one task and one of its own tools to a minion on a cheap model (F30 step 5; MinionS: small
 /// single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
 /// </summary>
-public class MinionToolsTests
+public class MinionAskTests
 {
     /// <summary>The minion every test hands work to, by its address (F127.5).</summary>
     private const string Address = "testprod.lookup";
@@ -29,8 +31,9 @@ public class MinionToolsTests
     /// <summary>That minion's role file, which the session opens with.</summary>
     private const string Role = "testprod-minion-lookup";
 
-    /// <summary>The identity the cook's turn runs as, which may start that minion and nothing else.</summary>
-    private static readonly FakeIdentity Testprod = new("testprod", voice: "testprod/voice-en", calls: [Address]);
+    /// <summary>The identity the cook's turn runs as: it may ask that minion and its own voice, nothing else.</summary>
+    private static readonly FakeIdentity Testprod =
+        new("testprod", voice: "testprod/voice-en", calls: [Address, "testprod"]);
 
     /// <summary>This instance as its own peer, where a minion's session opens.</summary>
     private static readonly Dictionary<string, Uri> Self = new()
@@ -83,15 +86,27 @@ public class MinionToolsTests
             };
         });
 
-    /// <summary>The minions toolset on the stub peer, with the default models unless a test gives its own.</summary>
-    private static MinionTools Tools(StubHandler handler,
+    /// <summary>
+    /// <c>AskAgent</c> on the stub peer, as a specialist asks its minion (F127.5: "it should use askagent also"), with
+    /// the default models unless a test gives its own.
+    /// </summary>
+    private static Minions Tools(StubHandler handler,
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
-        new(Self, llms ?? Cascade, "the-key", new HttpClient(handler), timeout, usageSink: sink,
-            identities: [Testprod]);
+        new(new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(handler), usageSink: sink,
+            minionLlms: llms ?? Cascade, minionTimeout: timeout));
+
+    /// <summary>A minion asked through <c>AskAgent</c>, its arguments in the order these tests write them.</summary>
+    private sealed class Minions(AskAgentTools tools)
+    {
+        /// <summary>Asks the minion at the address with one of the caller's tools.</summary>
+        public Task<string> StartMinion(string address, string tool, string task, bool stronger = false) =>
+            tools.AskAgent(address, task, tool: tool, stronger: stronger);
+    }
 
     /// <summary>
-    /// The cook's turn: its tools as the host sets them, run as its identity, under Puls's turn as the parent.
+    /// The cook's turn: its tools as the host sets them, run as its identity one level down, under Puls's turn as the
+    /// parent.
     /// </summary>
     private static IDisposable CooksTurn(string session = "sess_cook", int turn = 2, string parent = "sess_puls#1",
         params string[] tools)
@@ -101,7 +116,7 @@ public class MinionToolsTests
         var mine = AgentTools.Use(tools.Length == 0
             ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ExecuteSkill"]
             : tools);
-        return new All([scope, mine, TurnIdentity.Use(TurnIdentity.Of(Testprod))]);
+        return new All([scope, mine, TurnIdentity.Use(TurnIdentity.Of(Testprod)), TurnDepth.Use(1)]);
     }
 
     /// <summary>Scopes that end together, the last begun first.</summary>
@@ -223,10 +238,25 @@ public class MinionToolsTests
                 Does.StartWith("Error:").And.Contain("never"));
             Assert.That(await tools.StartMinion("testprod.specialist", "FetchUrl", "a page"),
                 Does.StartWith("Error:").And.Contain("testprod.specialist"), "a specialist is no minion");
-            Assert.That(await tools.StartMinion("testprod", "FetchUrl", "a page"), Does.StartWith("Error:"),
-                "an identity alone is no minion");
+            Assert.That(await tools.StartMinion("testprod", "FetchUrl", "a page"),
+                Does.StartWith("Error:").And.Contain("only a minion"), "an identity alone is no minion");
             Assert.That(await tools.StartMinion("not an address", "FetchUrl", "a page"), Does.StartWith("Error:"));
         }
+
+        Assert.That(creates, Is.Empty);
+    }
+
+    /// <summary>A minion's address without a tool is refused before anything is sent: a minion runs one tool.</summary>
+    [Test]
+    public async Task AMinionAskedWithoutATool_IsRefused_WithoutANetworkCall()
+    {
+        var creates = new List<JsonDocument>();
+        var tools = new AskAgentTools(Self, [Testprod], "the-key", new HttpClient(Peer(creates)),
+            minionLlms: Cascade);
+
+        using (CooksTurn())
+            Assert.That(await tools.AskAgent(Address, "a page"),
+                Does.StartWith("Error:").And.Contain(Address).And.Contain("tool"));
 
         Assert.That(creates, Is.Empty);
     }
@@ -311,10 +341,10 @@ public class MinionToolsTests
         // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two specialists
         // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a
         // meal of about eight ingredients at two shops needs sixteen.
-        Assert.That(MinionTools.MaxPerTurn, Is.EqualTo(16));
+        Assert.That(MinionAsk.MaxPerTurn, Is.EqualTo(16));
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
-        int first = MinionTools.MaxPerTurn - 2;
+        int first = MinionAsk.MaxPerTurn - 2;
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#4"))
             for (int i = 0; i < first; i++)
@@ -331,7 +361,7 @@ public class MinionToolsTests
             Assert.That(await tools.StartMinion(Address, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"),
                 "another user turn starts fresh");
 
-        Assert.That(creates, Has.Count.EqualTo(MinionTools.MaxPerTurn + 1));
+        Assert.That(creates, Has.Count.EqualTo(MinionAsk.MaxPerTurn + 1));
     }
 
     /// <summary>A minion that takes too long is stopped after its own timeout and deleted on the peer.</summary>
@@ -364,7 +394,7 @@ public class MinionToolsTests
 
         Assert.That(answer, Does.StartWith("Error:").And.Contain("didn't finish"));
         Assert.That(deleted, Is.True);
-        Assert.That(MinionTools.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
+        Assert.That(MinionAsk.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
     }
 
     /// <summary>Even in a chat a minion is never kept: it's deleted as soon as it answers.</summary>
@@ -400,7 +430,8 @@ public class MinionToolsTests
         Assert.That(answer, Does.StartWith("shop: Checkers").And.Not.Contain("handle"));
         Assert.That(registry.Open, Is.Empty, "the chat's three places stay for its specialists");
         Assert.That(deletes, Is.EqualTo(1));
-        Assert.That(typeof(MinionTools).GetMethod("ContinueMinion"), Is.Null, "nothing to continue");
+        Assert.That(typeof(AskAgentTools).GetMethods().Select(m => m.Name),
+            Has.None.EqualTo("ContinueMinion").And.None.EqualTo("StartMinion"), "AskAgent alone: nothing to continue");
     }
 
     /// <summary>
@@ -442,23 +473,27 @@ public class MinionToolsTests
         }));
     }
 
-    /// <summary>The minions toolset needs peers and models, and a tool names the toolset it belongs to.</summary>
+    /// <summary>
+    /// No minions toolset any more: the agents toolset asks minions too, and needs only its peers (a minion without
+    /// models is refused when it is asked). A tool still names the toolset it belongs to.
+    /// </summary>
     [Test]
-    public void TheMinionsToolset_NeedsPeersAndModels_AndATool_NamesItsToolset()
+    public void TheMinionsToolset_IsGone_TheAgentsToolsetAsksMinions_AndATool_NamesItsToolset()
     {
-        var minions = ToolsetCatalog.Find(CoreToolset.Minions.Wire())!;
+        var agents = ToolsetCatalog.Find(CoreToolset.Agents.Wire())!;
         var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new WebParts(new NoSearch()));
         var with = new ToolsetContext(new AgentOptions
         {
             RatesUrl = null,
-            AgentPeers = Self,
-            MinionLlms = Cascade
+            AgentPeers = Self
         },
             new WebParts(new NoSearch()));
 
-        Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
-        Assert.That(minions.IsAvailable(with), Is.True);
-        Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
+        Assert.That(ToolsetCatalog.All.Select(t => t.Name),
+            Is.EqualTo(new[] { CoreToolset.Agents.Wire(), CoreToolset.Skills.Wire() }));
+        Assert.That(agents.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS" }));
+        Assert.That(agents.IsAvailable(with), Is.True);
+        Assert.That(agents.GuideFile, Is.EqualTo("toolsets/agents.md"));
         Assert.That(TestTools.Catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(TestTools.Catalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(TestToolset.Files.Wire()));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
