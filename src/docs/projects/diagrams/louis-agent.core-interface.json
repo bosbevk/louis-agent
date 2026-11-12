@@ -1,0 +1,131 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core: the interface design",
+  "caption": "One start, one catalogue, one engine per toolset list: a host builds the context, and the model comes from a provider it names.",
+  "classes": {
+    "types": [
+      {
+        "id": "host",
+        "name": "AgentHost",
+        "kind": "static, the start",
+        "members": [
+          "+Build(catalog, services, clientFactory?) AgentHostContext",
+          "+BuildToolHost(catalog, services?) AgentEngine"
+        ]
+      },
+      {
+        "id": "services",
+        "name": "HostServices",
+        "kind": "record",
+        "members": [
+          "+Web Telemetry Discovery",
+          "+IReadOnlyList<ILlmProvider>? Providers"
+        ]
+      },
+      {
+        "id": "context",
+        "name": "AgentHostContext",
+        "kind": "record",
+        "members": [
+          "+AgentEngine Engine",
+          "+AgentEngineFactory Engines",
+          "+LlmOptions Llm, AgentOptions Agent",
+          "+PriceTable Prices, ExchangeRates Rates"
+        ]
+      },
+      {
+        "id": "catalog",
+        "name": "AgentCatalog",
+        "members": [
+          "+Identities, Packs, Toolsets",
+          "+Identity(name) IAgentIdentity?",
+          "+ToolsetsOf(identity) IReadOnlyList<string>"
+        ]
+      },
+      {
+        "id": "identity",
+        "name": "IAgentIdentity",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name, Prompts, Packs, Calls"
+        ]
+      },
+      {
+        "id": "pack",
+        "name": "IAgentPack",
+        "kind": "interface, louis-agent.composition",
+        "tone": "violet",
+        "members": [
+          "+Name, Toolsets, Prompts, Requires"
+        ]
+      },
+      {
+        "id": "factory",
+        "name": "AgentEngineFactory",
+        "members": [
+          "+GetOrCreate(toolsets, role?) AgentEngine",
+          "+Catalog"
+        ]
+      },
+      {
+        "id": "engine",
+        "name": "AgentEngine",
+        "members": [
+          "+StreamPromptAsync(history, input) IAsyncEnumerable<ChatResponseUpdate>",
+          "+ProcessPromptAsync(history, input) Task<string>",
+          "+Tools",
+          "+ToolsChanged"
+        ]
+      },
+      {
+        "id": "skills",
+        "name": "ISkillProvider",
+        "kind": "interface",
+        "members": [
+          "+Skills",
+          "+Documentation"
+        ]
+      },
+      {
+        "id": "clients",
+        "name": "ILlmClientFactory",
+        "kind": "interface",
+        "members": [
+          "+Create(LlmOptions) IChatClient",
+          "+CreateUsageMapper(options)",
+          "+CreatePromptCaching(options)"
+        ]
+      },
+      {
+        "id": "llmfactory",
+        "name": "LlmClientFactory",
+        "kind": "implements ILlmClientFactory"
+      },
+      {
+        "id": "provider",
+        "name": "ILlmProvider",
+        "kind": "interface",
+        "members": [
+          "+Name",
+          "+Create(LlmOptions) IChatClient"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "host", "to": "services", "kind": "uses", "word": "takes" },
+      { "from": "host", "to": "catalog", "kind": "uses", "word": "takes" },
+      { "from": "host", "to": "clients", "kind": "uses", "word": "asks for the model" },
+      { "from": "host", "to": "context", "kind": "creates" },
+      { "from": "context", "to": "factory", "kind": "holds" },
+      { "from": "context", "to": "engine", "kind": "holds", "word": "the default one" },
+      { "from": "factory", "to": "catalog", "kind": "holds" },
+      { "from": "factory", "to": "engine", "kind": "creates", "word": "one per toolset list" },
+      { "from": "catalog", "to": "identity", "kind": "holds" },
+      { "from": "catalog", "to": "pack", "kind": "holds" },
+      { "from": "engine", "to": "skills", "kind": "holds" },
+      { "from": "llmfactory", "to": "provider", "kind": "holds", "word": "one per provider" },
+      { "from": "services", "to": "provider", "kind": "holds" }
+    ]
+  }
+}

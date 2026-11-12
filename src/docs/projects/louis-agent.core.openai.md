@@ -22,6 +22,12 @@ fields and marks no cache, so the seam's defaults hold.
 
 ![louis-agent.core.openai: How it works](diagrams/louis-agent.core.openai-how-it-works.svg)
 
+## Diagrams
+
+![One reply from your endpoint: no endpoint and the provider refuses, with one the engine talks to it through the OpenAI SDK](diagrams/louis-agent.core.openai-sequence.svg)
+
+![The types: OpenAiCompatibleProvider is core's provider seam over the OpenAI SDK](diagrams/louis-agent.core.openai-interface.svg)
+
 ## Structure
 
 ```

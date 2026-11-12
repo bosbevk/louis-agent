@@ -1,0 +1,221 @@
+<svg viewBox="-24 -24 1658 955" width="1658" height="955" role="img" aria-label="louis-agent.core.web: the interface design" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.core.web: the interface design</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1658" height="955" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1610" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">louis-agent.core.web:</tspan>
+    <tspan class="title-rest">the interface design</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 413 376 L 425 376 Q 437 376 437 364 L 437 92 Q 437 68 461 68 L 597 68" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 413 376 L 425 376 Q 437 376 437 364 L 437 246 Q 437 222 461 222 L 597 222" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 413 376 L 597 376" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 413 376 L 425 376 Q 437 376 437 388 L 437 506 Q 437 530 461 530 L 597 530" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 413 376 L 425 376 Q 437 376 437 388 L 437 660 Q 437 684 461 684 L 597 684" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 954 222 L 1080 222 Q 1104 222 1104 198 L 1104 92 Q 1104 68 1128 68 L 1176 68" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 954 376 L 1044 376 Q 1068 376 1068 352 L 1068 246 Q 1068 222 1092 222 L 1176 222" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 954 530 L 1062 530 Q 1086 530 1086 506 L 1086 400 Q 1086 376 1110 376 L 1176 376" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 954 530 L 1176 530" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 954 684 L 1176 684" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="478" y="46" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="517" y="58" text-anchor="middle">implements</text>
+    <rect class="word-chip tone-green" x="457" y="200" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="517" y="212" text-anchor="middle">picks the search</text>
+    <rect class="word-chip tone-green" x="450" y="354" width="134" height="18" rx="4" />
+    <text class="word tone-green" x="517" y="366" text-anchor="middle">picks the renderer</text>
+    <rect class="word-chip tone-green" x="453.5" y="508" width="127" height="18" rx="4" />
+    <text class="word tone-green" x="517" y="520" text-anchor="middle">picks the browser</text>
+    <rect class="word-chip tone-green" x="467.5" y="662" width="99" height="18" rx="4" />
+    <text class="word tone-green" x="517" y="674" text-anchor="middle">one per fetch</text>
+    <rect class="word-chip tone-green" x="1000.5" y="200" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1029" y="212" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="982.5" y="354" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1011" y="366" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1111.5" y="354" width="57" height="18" rx="4" />
+    <text class="word tone-green" x="1140" y="366" text-anchor="middle">creates</text>
+    <rect class="word-chip tone-green" x="1118.5" y="508" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1140" y="520" text-anchor="middle">obeys</text>
+    <rect class="word-chip tone-green" x="963" y="662" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="1002" y="674" text-anchor="middle">implements</text>
+    <rect class="box tone-green" x="0" y="334" width="413" height="84" rx="10" />
+    <text class="label tone-green" x="206.5" y="365" text-anchor="middle">WebAccess</text>
+    <path class="frame" d="M 0 386 L 413 386" />
+    <text class="word tone-green" x="14" y="404" text-anchor="start">+Create(AgentOptions, ReplayStore?) IWebAccess (static)</text>
+    <rect class="box tone-violet" x="597" y="0" width="357" height="136" rx="10" />
+    <text class="label tone-violet" x="775.5" y="28" text-anchor="middle">IWebAccess</text>
+    <text class="note" x="775.5" y="44" text-anchor="middle">interface,</text>
+    <text class="note" x="775.5" y="56" text-anchor="middle">louis-agent.core</text>
+    <path class="frame" d="M 597 76 L 954 76" />
+    <text class="word tone-violet" x="611" y="94" text-anchor="start">+Search, Renderer, Browser?</text>
+    <text class="word tone-violet" x="611" y="108" text-anchor="start">+NewFetcher() IPageFetcher</text>
+    <text class="word tone-violet" x="611" y="122" text-anchor="start">+Setup</text>
+    <rect class="box tone-green" x="597" y="167" width="357" height="110" rx="10" />
+    <text class="label tone-green" x="775.5" y="195" text-anchor="middle">WebSearchProviderFactory</text>
+    <text class="note" x="775.5" y="211" text-anchor="middle">static</text>
+    <path class="frame" d="M 597 231 L 954 231" />
+    <text class="word tone-green" x="611" y="249" text-anchor="start">+Create(options, http?) IWebSearchProvider</text>
+    <text class="word tone-green" x="611" y="263" text-anchor="start">DuckDuckGo, Google, SearXNG, Tavily</text>
+    <rect class="box tone-green" x="597" y="321" width="357" height="110" rx="10" />
+    <text class="label tone-green" x="775.5" y="349" text-anchor="middle">PageRendererFactory</text>
+    <text class="note" x="775.5" y="365" text-anchor="middle">static</text>
+    <path class="frame" d="M 597 385 L 954 385" />
+    <text class="word tone-green" x="611" y="403" text-anchor="start">+Create(options, http?, browser?) IPageRenderer</text>
+    <text class="word tone-green" x="611" y="417" text-anchor="start">Chrome, Tavily</text>
+    <rect class="box tone-green" x="597" y="475" width="357" height="110" rx="10" />
+    <text class="label tone-green" x="775.5" y="503" text-anchor="middle">WebBrowserFactory</text>
+    <text class="note" x="775.5" y="519" text-anchor="middle">static</text>
+    <path class="frame" d="M 597 539 L 954 539" />
+    <text class="word tone-green" x="611" y="557" text-anchor="start">+Create(options, replay?, robots?) IWebBrowser?</text>
+    <text class="word tone-green" x="611" y="571" text-anchor="start">Chrome, behind RobotsWebBrowser</text>
+    <rect class="box tone-green" x="597" y="658" width="357" height="52" rx="10" />
+    <text class="label tone-green" x="775.5" y="689" text-anchor="middle">PageFetcher</text>
+    <rect class="box tone-violet" x="1176" y="7" width="434" height="122" rx="10" />
+    <text class="label tone-violet" x="1393" y="35" text-anchor="middle">IWebSearchProvider</text>
+    <text class="note" x="1393" y="51" text-anchor="middle">interface,</text>
+    <text class="note" x="1393" y="63" text-anchor="middle">louis-agent.composition</text>
+    <path class="frame" d="M 1176 83 L 1610 83" />
+    <text class="word tone-violet" x="1190" y="101" text-anchor="start">+Name</text>
+    <text class="word tone-violet" x="1190" y="115" text-anchor="start">+SearchAsync(query) IReadOnlyList&lt;WebSearchResult&gt;</text>
+    <rect class="box tone-violet" x="1176" y="161" width="434" height="122" rx="10" />
+    <text class="label tone-violet" x="1393" y="189" text-anchor="middle">IPageRenderer</text>
+    <text class="note" x="1393" y="205" text-anchor="middle">interface,</text>
+    <text class="note" x="1393" y="217" text-anchor="middle">louis-agent.composition</text>
+    <path class="frame" d="M 1176 237 L 1610 237" />
+    <text class="word tone-violet" x="1190" y="255" text-anchor="start">+Name</text>
+    <text class="word tone-violet" x="1190" y="269" text-anchor="start">+RenderAsync(url) RenderedPage</text>
+    <rect class="box tone-violet" x="1176" y="322" width="434" height="108" rx="10" />
+    <text class="label tone-violet" x="1393" y="350" text-anchor="middle">IWebBrowser</text>
+    <text class="note" x="1393" y="366" text-anchor="middle">interface,</text>
+    <text class="note" x="1393" y="378" text-anchor="middle">louis-agent.composition</text>
+    <path class="frame" d="M 1176 398 L 1610 398" />
+    <text class="word tone-violet" x="1190" y="416" text-anchor="start">+VisitAsync(url, capture?, session?, script?) BrowserVisit</text>
+    <rect class="box tone-green" x="1176" y="476" width="434" height="108" rx="10" />
+    <text class="label tone-green" x="1393" y="504" text-anchor="middle">RobotsPolicy</text>
+    <text class="note" x="1393" y="520" text-anchor="middle">robots.txt and the page's</text>
+    <text class="note" x="1393" y="532" text-anchor="middle">no-AI signals</text>
+    <path class="frame" d="M 1176 552 L 1610 552" />
+    <text class="word tone-green" x="1190" y="570" text-anchor="start">+the verdict for a URL</text>
+    <rect class="box tone-violet" x="1176" y="623" width="434" height="122" rx="10" />
+    <text class="label tone-violet" x="1393" y="651" text-anchor="middle">IPageFetcher</text>
+    <text class="note" x="1393" y="667" text-anchor="middle">interface,</text>
+    <text class="note" x="1393" y="679" text-anchor="middle">louis-agent.composition</text>
+    <path class="frame" d="M 1176 699 L 1610 699" />
+    <text class="word tone-violet" x="1190" y="717" text-anchor="start">+EnsurePublicAsync(uri)</text>
+    <text class="word tone-violet" x="1190" y="731" text-anchor="start">+GetFollowingRedirectsAsync(uri)</text>
+  </g>
+  <rect class="swatch tone-violet" x="0" y="834" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="844.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="870" width="1610" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 880) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="892">
+    <tspan class="note-head">Core's web seam made real:</tspan>
+    <tspan class="note-rest">one WebAccess holds a search, a renderer and a browser, each picked by a factory from the settings and each behind its own interface.</tspan>
+  </text>
+</svg>

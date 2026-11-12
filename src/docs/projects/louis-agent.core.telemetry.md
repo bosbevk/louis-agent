@@ -40,6 +40,8 @@ seam with its Null Object.
 
 ![Switching telemetry on: the host adds the collector's sink and starts the tracer, and a turn's spans go out over OTLP](diagrams/louis-agent.core.telemetry-diagrams-2.svg)
 
+![The types: OtlpTelemetry is core's telemetry seam, with a filter that keeps its own calls out of the spans](diagrams/louis-agent.core.telemetry-interface.svg)
+
 ## Structure
 
 ```

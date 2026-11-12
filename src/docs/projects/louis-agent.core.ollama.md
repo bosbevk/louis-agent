@@ -20,6 +20,12 @@ Ollama was still writing. It reports usage in the standard fields and marks no c
 
 ![louis-agent.core.ollama: How it works](diagrams/louis-agent.core.ollama-how-it-works.svg)
 
+## Diagrams
+
+![One reply from a local model: the provider builds the client, then the engine talks to Ollama through OllamaSharp](diagrams/louis-agent.core.ollama-sequence.svg)
+
+![The types: OllamaProvider is core's provider seam over OllamaSharp's client](diagrams/louis-agent.core.ollama-interface.svg)
+
 ## Structure
 
 ```

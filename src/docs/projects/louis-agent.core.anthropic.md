@@ -36,6 +36,8 @@ provider for its mapper and its markers; with no providers it says every name is
 
 ![Making Claude's client: the factory asks the provider for the SDK's client, then wraps the cache markers round it](diagrams/louis-agent.core.anthropic-diagrams-2.svg)
 
+![The types: AnthropicProvider makes core's three seams real, the client, the usage mapper and the cache marks](diagrams/louis-agent.core.anthropic-interface.svg)
+
 ## Structure
 
 ```

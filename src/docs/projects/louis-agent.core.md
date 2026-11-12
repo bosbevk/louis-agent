@@ -97,6 +97,8 @@ message.
 
 ![One turn: the engine runs the tool loop, each model request measured and each tool call guarded, and the turn joins the history at the end](diagrams/louis-agent.core-diagrams.svg)
 
+![The types a host meets: AgentHost builds the context from a catalogue of identities and packs, an engine per toolset list, and the model from a provider](diagrams/louis-agent.core-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

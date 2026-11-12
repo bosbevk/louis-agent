@@ -44,6 +44,8 @@ What a pack gets is unchanged: its `IPackContext` (`ToolsetContext`) answers `We
 
 ![Fetching a page: a pack's tool gets a fetcher through the seam, and the fetcher asks the robots policy before it reads](diagrams/louis-agent.core.web-diagrams-2.svg)
 
+![The types: WebAccess is core's web seam, holding a search, a renderer and a browser that factories pick, each behind its interface](diagrams/louis-agent.core.web-interface.svg)
+
 ## Structure
 
 ```

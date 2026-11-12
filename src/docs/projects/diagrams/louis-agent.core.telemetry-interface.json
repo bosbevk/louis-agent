@@ -1,0 +1,50 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core.telemetry: the interface design",
+  "caption": "One tracer per process: core's telemetry seam, its log sink and its spans out to the collector, its own traffic left out.",
+  "classes": {
+    "types": [
+      {
+        "id": "seam",
+        "name": "IHostTelemetry",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+AddSinks(LoggerConfiguration)",
+          "+Start() IDisposable",
+          "+Flush()"
+        ]
+      },
+      {
+        "id": "otlp",
+        "name": "OtlpTelemetry",
+        "kind": "the one instance",
+        "members": [
+          "+Instance",
+          "+AddSinks(LoggerConfiguration)",
+          "+Start() IDisposable",
+          "+Flush()"
+        ]
+      },
+      {
+        "id": "filter",
+        "name": "OwnTrafficFilter",
+        "kind": "internal, a BaseProcessor<Activity>",
+        "members": [
+          "+OnEnd(Activity)"
+        ]
+      },
+      {
+        "id": "collector",
+        "name": "The OTLP collector",
+        "kind": "outside the process",
+        "tone": "red"
+      }
+    ],
+    "relations": [
+      { "from": "otlp", "to": "seam", "kind": "implements" },
+      { "from": "otlp", "to": "filter", "kind": "holds", "word": "drops its own calls" },
+      { "from": "otlp", "to": "collector", "kind": "uses", "word": "sends spans and logs" }
+    ]
+  }
+}

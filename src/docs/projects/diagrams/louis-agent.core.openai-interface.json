@@ -1,0 +1,51 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core.openai: the interface design",
+  "caption": "One class: core's provider seam over the OpenAI SDK, pointed at your endpoint.",
+  "classes": {
+    "types": [
+      {
+        "id": "seam",
+        "name": "ILlmProvider",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Name",
+          "+Create(LlmOptions) IChatClient"
+        ]
+      },
+      {
+        "id": "provider",
+        "name": "OpenAiCompatibleProvider",
+        "kind": "a singleton",
+        "members": [
+          "+Instance",
+          "+Name \"openai-compatible\"",
+          "+Create(LlmOptions) IChatClient"
+        ]
+      },
+      {
+        "id": "message",
+        "name": "OpenAiErrorMessage",
+        "kind": "enum",
+        "members": [
+          "EndpointRequired"
+        ]
+      },
+      {
+        "id": "client",
+        "name": "OpenAIClient",
+        "kind": "the OpenAI SDK",
+        "tone": "red",
+        "members": [
+          "+GetChatClient(model).AsIChatClient()"
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "provider", "to": "seam", "kind": "implements" },
+      { "from": "provider", "to": "client", "kind": "creates", "word": "at LLM_ENDPOINT" },
+      { "from": "provider", "to": "message", "kind": "uses", "word": "no endpoint" }
+    ]
+  }
+}

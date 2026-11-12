@@ -1,0 +1,41 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.core.ollama: the interface design",
+  "caption": "One class: core's provider seam over OllamaSharp's client, with the long timeout a small GPU needs.",
+  "classes": {
+    "types": [
+      {
+        "id": "seam",
+        "name": "ILlmProvider",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet",
+        "members": [
+          "+Name",
+          "+Create(LlmOptions) IChatClient"
+        ]
+      },
+      {
+        "id": "provider",
+        "name": "OllamaProvider",
+        "kind": "a singleton",
+        "members": [
+          "+Instance",
+          "+Name \"ollama\"",
+          "+Create(LlmOptions) IChatClient",
+          "+CreateHttpClient(LlmOptions) HttpClient (static)",
+          "+Timeout ten minutes"
+        ]
+      },
+      {
+        "id": "client",
+        "name": "OllamaApiClient",
+        "kind": "OllamaSharp, an IChatClient",
+        "tone": "red"
+      }
+    ],
+    "relations": [
+      { "from": "provider", "to": "seam", "kind": "implements" },
+      { "from": "provider", "to": "client", "kind": "creates", "word": "over the HttpClient" }
+    ]
+  }
+}
