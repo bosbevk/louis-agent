@@ -118,7 +118,7 @@ public partial class ChatWidget : IAsyncDisposable
     protected override void OnInitialized()
     {
         Runner = new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
-        Runner.Changed += Redraw;
+        Runner.Changed += OnRunnerChanged;
         Runner.ToolCalled += OnToolCalled;
         Currency.Changed += Redraw;
         if (Door is { } door) door.Asked += OnAsked;
@@ -155,6 +155,13 @@ public partial class ChatWidget : IAsyncDisposable
     /// </summary>
     private void OnToolCalled(Block block)
     {
+        // An ask to a business whose window is on the page is that window's to show (F127.4.2).
+        if (Windows?.Take(block) == true)
+        {
+            _ = InvokeAsync(FoldForTheWindowAsync);
+            return;
+        }
+
         if (ShowPageCall.PathOf(block) is not { } path || Addresses is not { } addresses) return;
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
@@ -163,6 +170,35 @@ public partial class ChatWidget : IAsyncDisposable
         if (target.Place is not null)
             _ = Module.InvokeVoidAsync("showArea", target.Place, addresses.Address(target.Page, null),
                 GuidePlaces.AddressOf(target.Place, addresses, target.Page));
+    }
+
+    /// <summary>
+    /// The page's windows, which show a business's talk when the guide asks it (F127.4.2), if the site has them.
+    /// </summary>
+    private AgentWindows? Windows => Services.GetService<AgentWindows>();
+
+    /// <summary>
+    /// On a narrow screen the guide's panel covers the page, so the module brings the business's window into view and
+    /// the guide folds to its head (F127.4.2's 390 px check); on a wide one it stays open beside the stage.
+    /// </summary>
+    /// <remarks>
+    /// Of three: always folding hides the guide's own line on a wide screen, where the stage is in view anyway; only
+    /// saying so leaves a phone's visitor to find the window behind the panel.
+    /// </remarks>
+    private async Task FoldForTheWindowAsync()
+    {
+        if (!await Module.InvokeAsync<bool>("showWindow", ".live-chat")) return;
+        _size = ChatWindowSize.Minimised;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// The guide's stream moved on: the chat draws again, and a window showing an ask's talk does too.
+    /// </summary>
+    private void OnRunnerChanged()
+    {
+        Windows?.Move();
+        Redraw();
     }
 
     /// <summary>The site's addresses (ADR 0107), when the site has them.</summary>
@@ -179,7 +215,7 @@ public partial class ChatWidget : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        Runner.Changed -= Redraw;
+        Runner.Changed -= OnRunnerChanged;
         Runner.ToolCalled -= OnToolCalled;
         Currency.Changed -= Redraw;
         if (Door is { } door) door.Asked -= OnAsked;

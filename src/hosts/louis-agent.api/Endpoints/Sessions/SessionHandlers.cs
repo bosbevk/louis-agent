@@ -11,6 +11,8 @@ using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.Api.Sessions.Work;
+using LouisAgent.SessionStream.Wire.Replies.Work;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting;
@@ -33,6 +35,9 @@ using DeletedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using CancelledAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.SessionCancelledReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using WorkAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.SessionStream.Wire.Replies.Work.SessionWorkReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 using TurnAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,
@@ -109,7 +114,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
             return Bad(ex.Message);
         }
 
-        if (admitted is not null) door.Admit(session.Id);
+        if (admitted is not null) door.Admit(session.Id, context);
         if (opener is not null)
             Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
                 new
@@ -128,6 +133,17 @@ internal sealed class SessionHandlers(AgentHostContext host)
     {
         if (sessions.Get(id) is not { } session) return UnknownSession(id);
         return TypedResults.Json(SessionReply.Of(session), SessionJson.SnakeCase);
+    }
+
+    /// <summary>
+    /// The session's work, step by step (F127.4.2): 404 for an unknown session, 409 while it is still answering, since
+    /// its conversation is being written.
+    /// </summary>
+    public WorkAnswer GetSessionWork(string id, AgentSessions sessions)
+    {
+        if (sessions.Get(id) is not { } session) return UnknownSession(id);
+        if (session.IsBusy) return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, new { Id = id }));
+        return TypedResults.Json(SessionWorkReply.Of(session), SessionJson.SnakeCase);
     }
 
     /// <summary>Removes the session; 404 for one this instance doesn't have.</summary>

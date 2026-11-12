@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text;
 using System.Text.Json;
 using LouisAgent.Composition.Agents;
 using LouisAgent.Core.Delegation.Agents;
@@ -36,8 +38,57 @@ public class AgentWorkToolsTests
         Block("""{"type":"tool_result","tool_use_id":"toolu_a","content":"No email set.","is_error":true}""")
     ];
 
+    /// <summary>
+    /// The session's whole work as its server gives it (F127.4.2): the guide's ask, a turn the visitor had in the
+    /// window, which the guide never streamed, and what the business did then.
+    /// </summary>
+    private const string ServerWork =
+        """
+        {"session_id":"sess_1","steps":[
+          {"kind":"asked","text":"A room for Friday?"},
+          {"kind":"said","text":"Garden room, R150 a dog."},
+          {"kind":"asked","text":"Book it"},
+          {"kind":"called","text":"{\"room\":\"garden\"}","tool":"SendLead"},
+          {"kind":"returned","text":"Sent: the owner has it.","tool":"SendLead","failed":false}
+        ]}
+        """;
+
+    /// <summary>A server that answers the work with this status and body.</summary>
+    private static StubHandler Server(HttpStatusCode status, string body = "") =>
+        new(_ => new HttpResponseMessage(status)
+        {
+            Content = new StringContent(body, Encoding.UTF8, "application/json")
+        });
+
+    /// <summary>
+    /// The whole session is read from its server, so a turn the visitor typed in the window, which never streamed
+    /// through this chat, is read too; the request carries the peer's key.
+    /// </summary>
+    [Test]
+    public async Task TheWork_IsReadFromItsServer_WithTheTurnsTheVisitorHad()
+    {
+        var server = Server(HttpStatusCode.OK, ServerWork);
+
+        string text = await ReadAsync("testprod", Booking, new HttpClient(server));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(text, Does.Contain("Asked: Book it"));
+            Assert.That(text, Does.Contain("SendLead").And.Contain("Sent: the owner has it."));
+            Assert.That(text, Does.Not.Contain("No email set."));
+            Assert.That(server.Requests.Single().Url, Is.EqualTo("http://self.test/v1/sessions/sess_1/work"));
+        });
+    }
+
+    /// <summary>A server that can't give the work leaves what streamed through this chat to read.</summary>
+    [Test]
+    public async Task WhenTheServerCantSay_WhatStreamedIsRead() =>
+        Assert.That(await ReadAsync("testprod", Booking, new HttpClient(Server(HttpStatusCode.Conflict))),
+            Does.Contain("Garden room, R150 a dog.").And.Contain("No email set."));
+
     /// <summary>Reads as the chat whose registry keeps one asked agent, testprod, with this work.</summary>
-    private static async Task<string> ReadAsync(string address, IReadOnlyList<SubSessionEvent> events)
+    private static async Task<string> ReadAsync(string address, IReadOnlyList<SubSessionEvent> events,
+        HttpClient? http = null)
     {
         var chat = new SubSessionRegistry();
         await chat.AddAsync(new OpenSubSession(new Uri("http://self.test/"), "sess_1", "self", [],
@@ -48,7 +99,9 @@ public class AgentWorkToolsTests
             Work = new AgentWork(events)
         });
         using var _ = SubSessionRegistry.Use(chat);
-        return new AgentWorkTools().ReadAgentWork(address);
+        // No server to ask unless the test gives one: a 404, so what streamed is read.
+        var tools = new AgentWorkTools("key", http ?? new HttpClient(Server(HttpStatusCode.NotFound)));
+        return await tools.ReadAgentWork(address);
     }
 
     /// <summary>
@@ -76,8 +129,8 @@ public class AgentWorkToolsTests
 
     /// <summary>Outside a chat nothing was kept, so there is nothing to read.</summary>
     [Test]
-    public void OutsideAChat_ThereIsNothingToRead() =>
-        Assert.That(new AgentWorkTools().ReadAgentWork("testprod"), Does.StartWith("Error"));
+    public async Task OutsideAChat_ThereIsNothingToRead() =>
+        Assert.That(await new AgentWorkTools().ReadAgentWork("testprod"), Does.StartWith("Error"));
 
     /// <summary>A long work keeps its latest part, within the limit, and says how much was cut.</summary>
     [Test]

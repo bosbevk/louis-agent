@@ -119,7 +119,7 @@
       },
       {
         "Name": "ReadAgentWork",
-        "Description": "Reads what an agent you asked in this chat did, step by step: what it said, each tool it called with what it sent, and what came back, without its thinking. The latest 12,000 characters when it is longer.",
+        "Description": "Reads what an agent you asked in this chat did, step by step: what it was asked, also by the visitor in its own window, what it said, each tool it called with what it sent, and what came back, without its thinking. The latest 12,000 characters when it is longer.",
         "Schema": {
           "type": "object",
           "properties": {

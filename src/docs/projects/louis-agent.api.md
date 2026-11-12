@@ -113,7 +113,9 @@ open identities and a cap (`OPEN_IDENTITIES`, by commas, and `OPEN_SESSIONS_PER_
 gate asks `OpenDoor` first, a visitor with no key and no sign-in may open one of those identities' sessions a few
 times a day from one address across them all, the request is narrowed in code to the identity the door admitted and
 its own toolsets and tagged `open-door` on the ledger, the calls on that session pass, and past the
-cap the answer is a 429 ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
+cap the answer is a 429. A session an admitted session's turn asks for (its `parent` tag) counts as that visitor's
+and is admitted for them, so the visitor's window may carry on in it (F127.4.2, ADR 0117); each admitted session
+remembers the visitor it counts for ([ADR 0099](../adr/0099-the-guide-answers-without-a-sign-in-within-a-cap.md),
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)). A session knows who it runs as
 (`AgentSession.Who`), and each turn sets it ambient (`TurnIdentity`, with the user's place and the rest, in
 `Sessions/Streaming/TurnAmbience`), so a pack can tell a demonstration's turn from a real one.
@@ -132,7 +134,7 @@ The diagram under *How it works* shows the routes; this is the main one, opening
 |---|---|
 | `ApiStartup.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
 | `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
-| `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
+| `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `GET /v1/sessions/{id}/work` (its steps from its history, without its thinking; `Sessions/Work/SessionWorkReplyFactory`, F127.4.2), `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
 | `Site/` | A site's pages as HTML (F121): `SitePages.MapLouisAgentSite`, the one call; `SiteRoutes`, the page an address names; `SitePageHandler`, the endpoint with the rendered pages it keeps; `PageShell`, the page put into `index.html`; `Rendering/`, the page rendered with `HtmlRenderer` and a `HeadOutlet` (`PagePrerenderer`, `PrerenderRoot`, `RenderedPage`, and the stand-ins for navigation and scripts) |
 | `Endpoints/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |

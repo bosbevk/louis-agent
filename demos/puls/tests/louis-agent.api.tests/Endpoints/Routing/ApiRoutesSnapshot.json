@@ -25,6 +25,7 @@
   "GET /v1/rates/display (Open)",
   "GET /v1/roles (Key)",
   "GET /v1/sessions/{id} (Key)",
+  "GET /v1/sessions/{id}/work (Key)",
   "GET /v1/toolsets (Key)",
   "GET /v1/workspace/entries (Key)",
   "GET /v1/workspace/file (Key)",

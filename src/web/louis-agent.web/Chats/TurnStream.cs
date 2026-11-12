@@ -109,8 +109,18 @@ public static class TurnStream
         if (call is null || sub.Inner is UnknownEvent { EventType: "" }) return;
         call.SubTurn ??= new Turn();
         if (sub.Data.TryGetProperty("agent", out var peer)) call.SubAgent ??= peer.GetString();
+        // The asked agent's own session, so a page's window can carry the conversation on (F127.4.2).
+        if (sub.Inner is MessageStarted started && SessionIdOf(started.Data) is { } session)
+            call.SubSessionId ??= session;
         Apply(call.SubTurn, sub.Inner);
     }
+
+    /// <summary>The session a <c>message_start</c> names, or none.</summary>
+    private static string? SessionIdOf(JsonElement data) =>
+        data.TryGetProperty("message", out var message) && message.TryGetProperty("session_id", out var id) &&
+        id.ValueKind == JsonValueKind.String
+            ? id.GetString()
+            : null;
 
     /// <summary>Reads the usage record a <c>message_delta</c> carries.</summary>
     private static TurnUsage ReadUsage(JsonElement usage)

@@ -1,9 +1,10 @@
 @* A business's agent, live, in the corner of its mocked website (F127.2, mockup 4): the chat's own list with a first
    question to tap, its notice, the way back to the recording when the demo offers one, and its message box, rounded,
-   with its send button in the business's colour. *@
+   with its send button in the business's colour. When the guide asks the business (F127.4.2), the window shows that
+   talk as it comes and the visitor carries on in it once it ends. *@
 <div class="live-chat">
     @* A customer never sees tokens on a business's website: no work, no usage line (Louis: "hide it in the demo"). *@
-    <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" ShowWork="false"
+    <MessageList Chat="Runner.Chat" Streaming="Busy" Currency="Currency.Current" ShowWork="false"
                  ShowUsage="false" Chosen="ChooseAsync">
         <Empty>
             <button class="live-hint" type="button" @onclick="AskHintAsync">
@@ -21,7 +22,7 @@
     }
     <div class="live-composer">
         <Composer Draft="@Runner.Draft" DraftChanged="draft => Runner.Draft = draft" Attachments="Runner.Attachments"
-                  Streaming="Runner.Streaming" CanSend="Runner.CanSend"
+                  Streaming="Busy" CanSend="Runner.CanSend && !Watching"
                   Placeholder="@(Placeholder ?? Words.AskTheBusiness)" OnSend="SendAsync" OnStop="Runner.StopAsync"
                   SendLabel="↑" StopLabel="■" SendTitle="@Text.SendTitle" StopTitle="@Text.StopTitle" />
     </div>

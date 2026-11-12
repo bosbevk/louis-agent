@@ -121,12 +121,10 @@ public enum SubSessionToolMessage
 
     [Description("no tools")] AgentDidNothing,
 
-    [Description("{Tool} (failed)")] AgentDidFailed,
+    [Description("{Tool}: {Result}")] AgentDidCall,
 
-    [Description("{Tool} ×{Count}")] AgentDidTimes,
-
-    [Description("{Tool} ×{Count} ({Failed} failed)")]
-    AgentDidTimesFailed,
+    [Description("{Tool} failed: {Result}")]
+    AgentDidCallFailed,
 
     [Description(
         "Error: {Agent} is still answering an earlier message in this chat, so this one wasn't sent; it stays open. " +
@@ -135,6 +133,8 @@ public enum SubSessionToolMessage
 
     [Description("--- Answer {Number} ---")]
     AgentWorkBegan,
+
+    [Description("Asked: {Text}")] AgentWorkAsked,
 
     [Description("Said: {Text}")] AgentWorkSaid,
 

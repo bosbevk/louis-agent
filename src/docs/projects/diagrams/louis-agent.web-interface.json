@@ -88,6 +88,15 @@
         ]
       },
       {
+        "id": "windows",
+        "name": "AgentWindows",
+        "kind": "an Observer: which window shows which agent",
+        "members": [
+          "+Show(identity), Take(Block)",
+          "+event Asked, Moved"
+        ]
+      },
+      {
         "id": "layout",
         "name": "GraphLayout, TicketCard",
         "kind": "louis-agent.diagrams",
@@ -108,7 +117,8 @@
       { "from": "api", "to": "contracts", "kind": "uses", "word": "reads and sends" },
       { "from": "section", "to": "addresses", "kind": "uses" },
       { "from": "graph", "to": "layout", "kind": "uses", "word": "places" },
-      { "from": "calls", "to": "layout", "kind": "uses", "word": "reads a ticket" }
+      { "from": "calls", "to": "layout", "kind": "uses", "word": "reads a ticket" },
+      { "from": "shells", "to": "windows", "kind": "uses", "word": "hands an ask to" }
     ]
   }
 }

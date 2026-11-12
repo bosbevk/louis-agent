@@ -31,9 +31,12 @@ public class AgentWorkTests
     public void ThinkingAndText_AreNoCalls() =>
         Assert.That(new AgentWork(ThinkingAndText).Calls(), Is.Empty);
 
-    /// <summary>The calls come in the order made, and a result marked as an error marks its own call.</summary>
+    /// <summary>
+    /// The calls come in the order made, each with what came back (F127.4.2), and a result marked as an error marks its
+    /// own call.
+    /// </summary>
     [Test]
-    public void TheCalls_ComeInOrder_EachMarkedWhenItFailed()
+    public void TheCalls_ComeInOrder_EachWithItsResult_AndMarkedWhenItFailed()
     {
         var work = new AgentWork(
         [
@@ -45,7 +48,11 @@ public class AgentWorkTests
         ]);
 
         Assert.That(work.Calls(),
-            Is.EqualTo(new[] { new AgentWork.ToolCall("SendLead", false), new AgentWork.ToolCall("ShowPlace", true) }));
+            Is.EqualTo(new[]
+            {
+                new AgentWork.ToolCall("SendLead", false, "Sent."),
+                new AgentWork.ToolCall("ShowPlace", true, "No such place.")
+            }));
     }
 
     /// <summary>

@@ -11,6 +11,18 @@ public sealed class Block
 
     public string? ToolUseId { get; init; }
     public string? ToolName { get; init; }
+
+    /// <summary>
+    /// The session an AskAgent call opened or carried on, from its first event (F127.4.2), so a page's window can take
+    /// the conversation over; none for any other call.
+    /// </summary>
+    public string? SubSessionId { get; set; }
+
+    /// <summary>
+    /// Whether a page's window shows this ask's talk (F127.4.2), so the asker's chat says so in one line instead.
+    /// </summary>
+    public bool InWindow { get; set; }
+
     public string? ToolInput { get; init; }
     public string? ToolResult { get; set; }
     public bool ToolFailed { get; set; }

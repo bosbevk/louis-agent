@@ -32,6 +32,10 @@
             <OfferCards Offer="offer" Answer="@Answer" Streaming="Streaming" Chosen="Chosen" />
             break;
 
+        case BlockKind.Tool when block.InWindow:
+            <div class="in-window">@Text.AnswersInItsWindow</div>
+            break;
+
         case BlockKind.Tool when !ShowWork:
             break;
 

@@ -68,6 +68,14 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   runner, which sends the label as the visitor's message; `MessageList` hands each turn the next one's words as its
   `Answer`, and a finished turn draws again when it gets one, so its cards fold to the one chosen. A failed call (the
   pack's refusals start with "Error") draws nothing.
+- **An ask shown in the asked agent's own window** (F127.4.2, ADR 0117). The stream gives an `AskAgent` call its
+  agent's session from the nested `message_start` (`Block.SubSessionId`). `Components/Widget/Door/AgentWindows`, an
+  Observer like `GuideDoor`, lets a page's window say which agent it shows; the guide's widget hands it an ask to that
+  agent (`Take`, which marks the call `InWindow`, so the guide's chat draws one line instead of the talk) and tells it
+  each time its stream moves on (`Moved`); on a narrow screen the widget's module brings the window into view and the
+  guide folds to its head. The showroom's `MockLiveChat` watches the ask (`Chats/Calls/WatchedAsk`: the visitor's
+  words and the answer as one turn, its blocks shared with the guide's stream, the agent's tool calls handed on once
+  each) and, once it ends, holds a chat on that agent's own session, so the visitor carries on there.
 - **Safe markdown.** `Markdown` is the one Markdig pipeline: raw HTML is shown as text, links only `http(s)` and
   `mailto`, images only from the shops' own image hosts, so a model-written image can't send the chat's data elsewhere.
 - **Usage and currency.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event;
@@ -141,7 +149,7 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 | `Api/` | `AgentApi`, `AgentApiException` (an error with its status). The events are the session-stream reader's `SessionEvent`s (`louis-agent.session-stream`) |
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
-| `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1) |
+| `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1); `WatchedAsk`, an ask shown in its agent's window (F127.4.2) |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |

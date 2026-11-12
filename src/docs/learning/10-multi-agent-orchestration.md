@@ -139,6 +139,34 @@ became shared records, so core, the API and the web send and read one shape (ski
 **Where it sits in the skill map:** multi-agent orchestration (skill 10), one way to name every agent call; tool
 design (4), context engineering (7), safety (15) and protocols (11) as above.
 
+## Handing the conversation over (F127.4.2, 2026-11-12)
+
+The guide could ask a demo business and pass its answer on. Louis wanted more: the guide asks the business for the
+visitor, the page shows that talk in the business's own window, and the visitor carries on there, while the guide
+can still say what happened.
+
+**What it means.** One agent opens a conversation with another for a person, then steps aside. The business's
+session is the same one throughout: the guide's ask, the visitor's clicks and words in the window, the booking. Two
+parties talk to one agent, and both can see the whole of it.
+
+**What the build taught.**
+- **The handover needs the conversation's id, not its words.** The business's session id was already in the stream
+  (its `message_start`), so the page could take the conversation over without a new event or the guide relaying it.
+- **The asker must read the whole session, not its own copy.** What the visitor typed in the window never streamed
+  through the guide. So the server serves a session's work, and `ReadAgentWork` reads it there. On the PC the guide
+  retold the visitor's booking it never saw.
+- **Count the person, not the server.** An agent's ask opens the business's session from the server's own address,
+  which the door counted against the server. Now it counts against the visitor whose session asked, under their
+  cap, and admits it for them.
+- **Facts beat names in the did line.** "SendLead" says a tool ran; "SendLead failed: Error: not sent" says what
+  happened. Each call's first result line is enough to retell it right.
+- **Look on the device it runs on.** At 390 px the guide's panel covered the very window the answer was in. On a
+  narrow screen the guide now folds and the window scrolls into view. No test of ours could have seen it.
+
+**Where it sits in the skill map:** multi-agent orchestration (10), a conversation handed from one agent to a person
+and another agent; observability (17), the work of one agent readable by another; safety (15), the cap follows the
+person; human in the loop (16), the visitor takes the wheel. Live checks for the day cost $0.0284.
+
 ## Next
 
 Decide how often Puls should delegate (keep research and long work, answer short read-only questions itself?) and

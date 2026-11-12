@@ -4,6 +4,7 @@ using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Components.Site.Showroom.Mock;
 using LouisAgent.Web.Components.Site.Showroom.Mock.Live;
+using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Scripts;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Text;
@@ -70,7 +71,7 @@ public class MockLiveChatTests
     /// <paramref name="left"/>, it offers the way back to the recording and counts each time it's taken.
     /// </summary>
     private static IRenderedComponent<SiteMock> Mock(BunitContext ctx, List<Block>? shown = null,
-        List<bool>? left = null)
+        List<bool>? left = null, Block? asked = null)
     {
         RenderFragment live = builder =>
         {
@@ -83,6 +84,7 @@ public class MockLiveChatTests
             if (left is not null)
                 builder.AddComponentParameter(5, nameof(MockLiveChat.Left),
                     EventCallback.Factory.Create(new object(), () => left.Add(true)));
+            if (asked is not null) builder.AddComponentParameter(6, nameof(MockLiveChat.Asked), asked);
             builder.CloseComponent();
         };
         return ctx.Render<SiteMock>(parameters => parameters
@@ -91,6 +93,88 @@ public class MockLiveChatTests
             .Add(mock => mock.Colours, new MockColours("#0b3a4a", "#e9dcc3", "#fbf8f2", "#14262d"))
             .Add(mock => mock.HeroLine, "Four rooms by the beach.")
             .Add(mock => mock.Agent, live));
+    }
+
+    /// <summary>
+    /// The guide's ask to the guesthouse as its stream has it so far: the visitor's words, the guesthouse's session,
+    /// and its answer under way, with the place it showed.
+    /// </summary>
+    private static Block GuidesAsk() => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = Delegation.AskToolName,
+        ToolInput = """{"address":"seemeeu-guesthouse","message":"A room for Friday, with our dog?"}""",
+        SubSessionId = "sess_shop",
+        SubTurn = new Turn
+        {
+            Blocks =
+            [
+                new Block
+                {
+                    Kind = BlockKind.Tool,
+                    ToolName = "ShowPage",
+                    ToolInput = """{"path":"/rooms/garden"}""",
+                    ToolResult = "Shown"
+                },
+                new Block
+                {
+                    Kind = BlockKind.Text,
+                    Text = "The garden room takes dogs."
+                }
+            ]
+        }
+    };
+
+    /// <summary>
+    /// While the guide asks the guesthouse (F127.4.2, Louis: "the window shows the talk"), its window shows the
+    /// visitor's words and the answer as it comes, moves the website to the place it shows, and waits for the answer to
+    /// end before the visitor may write.
+    /// </summary>
+    [Test]
+    public void WhileTheGuideAsks_TheWindowShowsTheTalk_AndWaits()
+    {
+        using var ctx = Context(out _);
+        ctx.Services.AddSingleton(new AgentWindows());
+        var shown = new List<Block>();
+
+        var cut = Mock(ctx, shown, asked: GuidesAsk());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.Find(".user-text").TextContent, Is.EqualTo("A room for Friday, with our dog?"));
+            Assert.That(cut.Find(".markdown").TextContent, Does.Contain("The garden room takes dogs."));
+            Assert.That(shown.Select(block => block.ToolName), Is.EqualTo(new[] { "ShowPage" }));
+            Assert.That(cut.FindAll("button.live-hint"), Is.Empty);
+            Assert.That(cut.FindAll("button.send"), Is.Empty, "the answer is still coming");
+        });
+    }
+
+    /// <summary>
+    /// Once the guesthouse has answered, the visitor carries on in its window, in the same session (F127.3, Louis's
+    /// pick L2): their next message goes to that session, and no new one is opened.
+    /// </summary>
+    [Test]
+    public void OnceTheAnswerEnds_TheVisitorCarriesOnInThatSession()
+    {
+        using var ctx = Context(out var handler);
+        var windows = new AgentWindows();
+        ctx.Services.AddSingleton(windows);
+        var ask = GuidesAsk();
+        var cut = Mock(ctx, asked: ask);
+
+        ask.ToolResult = "The garden room takes dogs.";
+        cut.InvokeAsync(windows.Move);
+        cut.WaitForState(() => cut.FindAll("button.send").Count == 1, TimeSpan.FromSeconds(10));
+        cut.Find("#composer-input").Input("Book it");
+        cut.Find("button.send").Click();
+        cut.WaitForState(() => cut.FindAll(".turn").Count == 2, TimeSpan.FromSeconds(10));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(handler.Requests.Select(r => (r.Method.Method, new Uri(r.Url).AbsolutePath)),
+                Does.Contain(("POST", "/v1/sessions/sess_shop/messages")));
+            Assert.That(handler.Requests.Where(r => new Uri(r.Url).AbsolutePath == "/v1/sessions"), Is.Empty);
+        });
     }
 
     /// <summary>

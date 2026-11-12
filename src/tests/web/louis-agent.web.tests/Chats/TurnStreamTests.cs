@@ -196,6 +196,22 @@ public class TurnStreamTests
     }
 
     /// <summary>
+    /// The asked agent's own session is known from its first event (F127.4.2), so a page's window can take the
+    /// conversation over and carry on in it.
+    /// </summary>
+    [Test]
+    public void AnAskedAgentsSession_IsKnownFromItsFirstEvent()
+    {
+        var turn = Apply(
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"AskAgent","input":{"address":"shop","message":"Hi"}}}"""),
+            ("sub_session",
+                """{"type":"sub_session","tool_use_id":"call_1","agent":"shop","event":"message_start","data":{"type":"message_start","message":{"session_id":"sess_shop","role":"assistant","toolsets":[]}}}"""));
+
+        Assert.That(turn.Blocks.Single().SubSessionId, Is.EqualTo("sess_shop"));
+    }
+
+    /// <summary>
     /// The turn's closing event says why it stopped and what it used.
     /// </summary>
     [Test]
