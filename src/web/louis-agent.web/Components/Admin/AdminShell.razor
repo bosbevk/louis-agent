@@ -22,6 +22,12 @@
 
         @Links
 
+        @* Each named area's links, after the site's own (F127.6): the eval studio's on every site that runs it. *@
+        @foreach (var links in AreaLinks)
+        {
+            <DynamicComponent Type="links" />
+        }
+
         <PackMenu />
 
         @if (BackHref is not null)
