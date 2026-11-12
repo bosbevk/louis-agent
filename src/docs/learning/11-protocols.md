@@ -161,6 +161,24 @@ lines into the built server) then read the real 167 KB of tables.
 - **Set up once.** Both transports used to register the tools on their own; `McpPrimitives.Add` is now the one place,
   so the next primitive (a prompt, say) can't be forgotten in one of them.
 
+## An agent on another server (F127.3.2, 2026-11-12)
+
+One agent API asking another is a protocol in miniature: an address, a key, and a directory read first.
+
+- **The address carries the server.** `partner:shop` names who answers and where, read once into a value. Everything
+  after the parse (the allow-list, the key, the directory) works from that value, never from the text again.
+- **A key per server, kept apart from its address.** Addresses are settings anyone may read; keys are secrets. One
+  leaked key opens one server. The key is chosen by where the request goes, so no caller can send the wrong one.
+- **Read the directory before you trust a name.** The other side's `GET /v1/identities` says who it has. Kept ten
+  minutes (Cache-Aside), so a busy chat doesn't ask every time, and a failure is never kept, so a server back up is
+  asked again at once.
+- **Every failure is a sentence.** An unknown server, a refused key, a server that doesn't answer and a name it
+  doesn't list each come back as a reason the model can tell the person, never a crash of the turn.
+- **Prove it with both sides real.** Two API hosts in one test, the partner's key gate and directory and sessions all
+  its own, the asker exactly as an engine builds it: the shape of the directory's reply is checked by the real thing,
+  not by a copy of it. And no model costs anything.
+- **Tell the person first.** Their words leave this hosting; the agent says so before it asks.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·
 [ADR 0039](../adr/0039-api-routes-under-v1.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)
