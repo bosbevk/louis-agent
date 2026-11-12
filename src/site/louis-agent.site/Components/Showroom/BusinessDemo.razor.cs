@@ -204,6 +204,9 @@ public partial class BusinessDemo : IDisposable
     /// <summary>This demo's hold on its business in the page's windows, let go with the demo.</summary>
     private IDisposable? _window;
 
+    /// <summary>The mocked website the business sits in, whose page goes with the guide's ask to it (FX134).</summary>
+    private SiteMock? _mock;
+
     /// <summary>The page's windows, if the site has them.</summary>
     private AgentWindows? Windows => Services.GetService<AgentWindows>();
 
@@ -211,7 +214,8 @@ public partial class BusinessDemo : IDisposable
     protected override void OnInitialized()
     {
         if (Windows is not { } windows) return;
-        _window = windows.Show(Identity);
+        // The window's page is its website's, read as its own message reads it, so the guide's ask can send it on.
+        _window = windows.Show(Identity, () => _mock?.ReadPageAsync() ?? Task.FromResult<Page?>(null));
         windows.Asked += OnAsked;
     }
 

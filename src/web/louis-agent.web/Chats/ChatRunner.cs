@@ -35,6 +35,12 @@ public sealed class ChatRunner(
 
     /// <summary>The page the visitor is reading, sent with the next message and then forgotten (F115).</summary>
     public Page? Page { get; set; }
+
+    /// <summary>
+    /// The pages of the agents' windows on the visitor's screen, sent with every message (FX134), so an ask to one of
+    /// those agents sends it its page.
+    /// </summary>
+    public IReadOnlyList<WindowPage>? Windows { get; set; }
     public bool Streaming { get; private set; }
     public string? Notice { get; set; }
 
@@ -116,7 +122,8 @@ public sealed class ChatRunner(
         var redraw = new RedrawThrottle(_clock, RedrawEvery, () => Changed?.Invoke());
         try
         {
-            await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments, page))
+            await foreach (var streamEvent in api.StreamMessageAsync(chat.SessionId, message, attachments, page,
+                               Windows))
             {
                 // A tool call is one new block the moment it starts; its result later changes that block, adding none.
                 int blocks = turn.Blocks.Count;

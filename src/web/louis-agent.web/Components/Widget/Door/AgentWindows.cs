@@ -1,3 +1,4 @@
+using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Web.Components.Widget.Door;
@@ -15,7 +16,7 @@ namespace LouisAgent.Web.Components.Widget.Door;
 /// </remarks>
 public sealed class AgentWindows
 {
-    private readonly HashSet<string> _shown = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, Func<Task<Page?>>> _shown = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Raised with an ask to an agent a window shows: the window takes the talk.</summary>
     public event Action<Block>? Asked;
@@ -23,15 +24,31 @@ public sealed class AgentWindows
     /// <summary>Raised as the guide's stream moves on, so a window showing an ask's talk draws again.</summary>
     public event Action? Moved;
 
-    /// <summary>A window shows this agent until the returned handle is disposed.</summary>
-    public IDisposable Show(string identity)
+    /// <summary>
+    /// A window shows this agent until the returned handle is disposed; <paramref name="page"/> reads the page it sits
+    /// in, as its own message would send it (FX134).
+    /// </summary>
+    public IDisposable Show(string identity, Func<Task<Page?>>? page = null)
     {
-        _shown.Add(identity);
+        _shown[identity] = page ?? (() => Task.FromResult<Page?>(null));
         return new Shown(() => _shown.Remove(identity));
     }
 
     /// <summary>Whether a window shows this agent.</summary>
-    public bool Shows(string identity) => _shown.Contains(identity);
+    public bool Shows(string identity) => _shown.ContainsKey(identity);
+
+    /// <summary>
+    /// The page each window sits in, read now, for the guide's message to carry (FX134); a window that reads none is
+    /// left out.
+    /// </summary>
+    public async Task<IReadOnlyList<WindowPage>> PagesAsync()
+    {
+        var pages = new List<WindowPage>();
+        foreach (var (identity, read) in _shown.ToList())
+            if (await read() is { } page)
+                pages.Add(new WindowPage(identity, page));
+        return pages;
+    }
 
     /// <summary>
     /// Hands an ask to the window that shows its agent, when one does; any other call stays the guide's.
