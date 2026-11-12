@@ -20,7 +20,9 @@ public sealed record SiteFocuses(string? Default, IReadOnlyList<FocusPart> Parts
         return holding?.Focus ?? Default;
     }
 
-    /// <summary>Whether a part's address holds the page: the same address, or one under it, by whole segments.</summary>
+    /// <summary>
+    /// Whether a part's address holds the page: the same address, or one under it, by whole segments.
+    /// </summary>
     private static bool Holds(string under, string page)
     {
         string part = "/" + under.Trim('/');
