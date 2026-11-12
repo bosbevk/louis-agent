@@ -15,4 +15,11 @@ public class PieceIdTests
     [TestCase("100+ ADRs", "100-adrs")]
     [TestCase("Ask it live: the guide's way in", "ask-it-live-the-guide-s-way-in")]
     public void APiecesId_IsItsTitle(string title, string id) => Assert.That(PieceId.Of(title), Is.EqualTo(id));
+
+    /// <summary>
+    /// A number alone would read as a page of a paged section (<c>/how-it-works/parts/2</c>), so it takes a word.
+    /// </summary>
+    [TestCase("$0", "number-0")]
+    [TestCase("72", "number-72")]
+    public void ANumberAlone_TakesAWord(string title, string id) => Assert.That(PieceId.Of(title), Is.EqualTo(id));
 }

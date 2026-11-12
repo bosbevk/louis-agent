@@ -13,7 +13,8 @@ public class SiteToolsTests
 
     /// <summary>
     /// A page of the site, and a place on it by its own address (F118, ADR 0107): a section, a card (whose id may hold
-    /// digits), the landing's under the home word, a page of a paged section.
+    /// digits), the landing's under the home word, a page of a paged section, and (F127.7) a piece, whose id may start
+    /// with a digit or be a number that took a word.
     /// </summary>
     [TestCase("/identities")]
     [TestCase("/identities/levels")]
@@ -23,13 +24,18 @@ public class SiteToolsTests
     [TestCase("/proof/a-10-fixes")]
     [TestCase("/how-it-works/parts/2")]
     [TestCase("/build-your-own")]
+    [TestCase("/home/100-adrs")]
+    [TestCase("/framework/measured/72-72")]
+    [TestCase("/framework/measured/number-0")]
     public void ASitePath_IsShown(string path)
     {
         Assert.That(_tools.ShowPage(path),
             Is.EqualTo($"Shown: the visitor's browser is now on {path}. Say in one line what to look at there."));
     }
 
-    /// <summary>Not a page of this site: another host, a scheme, a climb out of the site, a space, an empty path, a bad area.</summary>
+    /// <summary>
+    /// Not a page of this site: another host, a scheme, a climb out of the site, a space, an empty path, a bad area.
+    /// </summary>
     [TestCase("https://example.com/")]
     [TestCase("example.com/packs")]
     [TestCase("//evil.example/")]

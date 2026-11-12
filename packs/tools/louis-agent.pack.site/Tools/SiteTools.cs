@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Site.Messages;
+using LouisAgent.Packs.Site.Messages.Holes.Pages;
 
 namespace LouisAgent.Packs.Site.Tools;
 
@@ -22,16 +23,17 @@ public sealed class SiteTools
     [Description(
         "Opens a place of this site in the visitor's browser by its own address, and lights it up: a page, a section " +
         "of one, a card, which opens, or a page of a section paged sideways, which turns to it. Use it when the " +
-        "right place exists for what they ask; then say in one line what to look at. The page you are on lists its places " +
-        "by their addresses.")]
+        "right place exists for what they ask; then say in one line what to look at. The page you are on lists its " +
+        "places by their addresses.")]
     public string ShowPage(
         [Description(
             "The place's address as the page lists it, such as /framework/packs, /framework/identities/levels, " +
             "/framework/identities/puls, /home/rule or /framework/how-it-works/loop/2.")]
         string path)
     {
-        if (!IsSiteAddress(path)) return MessageText.Format(SiteToolMessage.NotASitePage, new { Path = path });
-        return MessageText.Format(SiteToolMessage.Shown, new { Path = path });
+        var place = new PlaceHoles(path);
+        if (!IsSiteAddress(path)) return MessageText.Format(SiteToolMessage.NotASitePage, place);
+        return MessageText.Format(SiteToolMessage.Shown, place);
     }
 
     /// <summary>
@@ -53,7 +55,7 @@ public sealed class SiteTools
 
     /// <summary>A word of an address: a letter or digit first, then letters, digits and dashes.</summary>
     private static bool IsWord(string word) =>
-        word.Length > 0 && char.IsAsciiLetterLower(word[0]) &&
+        word.Length > 0 && (char.IsAsciiLetterLower(word[0]) || char.IsAsciiDigit(word[0])) &&
         word.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '-');
 
     /// <summary>A page of a paged section: a number from one up, written plainly.</summary>

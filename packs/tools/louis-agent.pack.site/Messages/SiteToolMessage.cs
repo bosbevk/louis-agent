@@ -2,6 +2,7 @@ using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Site.Messages.Holes.Cards;
 using LouisAgent.Packs.Site.Messages.Holes.Forms;
+using LouisAgent.Packs.Site.Messages.Holes.Pages;
 
 namespace LouisAgent.Packs.Site.Messages;
 
@@ -10,8 +11,10 @@ namespace LouisAgent.Packs.Site.Messages;
 public enum SiteToolMessage
 {
     [Description("Shown: the visitor's browser is now on {Path}. Say in one line what to look at there.")]
+    [Holes(typeof(PlaceHoles))]
     Shown,
 
+    [Holes(typeof(PlaceHoles))]
     [Description(
         "Not shown: '{Path}' isn't a page of this site. Give an address from the page's list: a page such as " +
         "/framework/packs, or a place on one such as /framework/identities/levels.")]

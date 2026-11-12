@@ -28,6 +28,8 @@ public static class PieceId
             }
         }
 
-        return id.ToString();
+        // A number alone would read as a page of a paged section, so it takes a word.
+        string made = id.ToString();
+        return made.Length > 0 && made.All(char.IsAsciiDigit) ? $"number-{made}" : made;
     }
 }
