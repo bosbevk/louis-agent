@@ -21,7 +21,9 @@ public static class WindowPages
         CurrentPages.Value?.FirstOrDefault(window =>
             string.Equals(window.Identity, identity, StringComparison.OrdinalIgnoreCase))?.Page;
 
-    /// <summary>Runs what follows with these windows' pages, until the scope ends and the ones before come back.</summary>
+    /// <summary>
+    /// Runs what follows with these windows' pages, until the scope ends and the ones before come back.
+    /// </summary>
     public static IDisposable Use(IReadOnlyList<WindowPageRequest>? pages)
     {
         var previous = CurrentPages.Value;
