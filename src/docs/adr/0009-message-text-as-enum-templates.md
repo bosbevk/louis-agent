@@ -1,6 +1,7 @@
 # 0009. Message text lives in enum templates; logging goes through `ILogger`
 
-**Status:** Accepted · **Date:** 2026-10-12 · **Recorded:** 2026-10-14
+**Status:** Accepted, amended by [0119](0119-declare-name-then-pass.md) (a message's holes are a named record, not an
+anonymous object) · **Date:** 2026-10-12 · **Recorded:** 2026-10-14
 
 ## Context
 
