@@ -1,4 +1,5 @@
 using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Delegation.Agents;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Sessions;
@@ -157,8 +158,10 @@ internal sealed class TurnRunner(
     private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options)
     {
         if (TurnIdentity.Current?.EndsEachAnswerWith is not { } tool) return null;
-        if (updates.SelectMany(u => u.Contents).OfType<FunctionCallContent>().Any(call => call.Name == tool))
-            return null;
+        var calls = updates.SelectMany(u => u.Contents).OfType<FunctionCallContent>().ToList();
+        if (calls.Any(call => call.Name == tool)) return null;
+        // An answer that asked another agent owes nothing: that agent may be waiting for the person (FX141).
+        if (calls.Any(call => call.Name == nameof(AskAgentTools.AskAgent))) return null;
         return options.Tools?.Any(t => t.Name == tool) == true ? tool : null;
     }
 

@@ -20,6 +20,9 @@ public class EndsEachAnswerTests
         /// <summary>Asks the person.</summary>
         [EndsTurn]
         public string Ask() => "Offered: 3 choices.";
+
+        /// <summary>Asks another agent, by the engine's own tool's name.</summary>
+        public string AskAgent() => "Booked? What name should I put it under?";
     }
 
     /// <summary>A model reply that only talks.</summary>
@@ -63,6 +66,26 @@ public class EndsEachAnswerTests
                     .And.Property(nameof(ChatMessage.Text)).Contains(nameof(AskingTools.Ask)),
                 "a request ends with the person's message: Anthropic refuses an assistant prefill");
         });
+    }
+
+    /// <summary>
+    /// FX141, Louis: "you see it is waiting for my name, so now no card should display". An answer that asked another
+    /// agent owes no choices: that agent may be waiting for the person, in its own window.
+    /// </summary>
+    [Test]
+    public async Task AnAnswerThatAskedAnotherAgent_OwesNoChoices()
+    {
+        var client = new FakeChatClient(
+            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+            [
+                new FunctionCallContent("call_1", nameof(AskingTools.AskAgent), new Dictionary<string, object?>())
+            ])),
+            _ => Says("It answered in its window: answer its question there."),
+            _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+
+        Assert.That(client.Requests, Has.Count.EqualTo(2), "no third request for choices");
     }
 
     /// <summary>An answer that ends with its tool, or an identity that asks for none, costs no extra request.</summary>

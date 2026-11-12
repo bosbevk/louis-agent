@@ -89,7 +89,7 @@ public class GuideSkillsTests
                 "Louis: drop the card drawn in code, rework the prompt");
             Assert.That(skill, Does.Contain("the walkthrough's *What to watch* stop"));
             Assert.That(skill, Does.Contain("what it just did and why"));
-            Assert.That(skill, Does.Contain("End with `Offer`: two or three questions they could ask it next"),
+            Assert.That(skill, Does.Contain("end with `Offer`: two or three questions they could ask it next"),
                 "Louis: \"when he is the teacher he must give me offers of what I could ask\"");
         });
     }
@@ -115,6 +115,8 @@ public class GuideSkillsTests
         {
             Assert.That(skill, Does.Contain("offer two or three questions to ask the business"));
             Assert.That(skill, Does.Contain("never a card that only says to type"));
+            Assert.That(skill, Does.Contain("answer it in its window, and offer nothing"),
+                "FX141, Louis: \"it is waiting for my name, so now no card should display\"");
         });
     }
 
