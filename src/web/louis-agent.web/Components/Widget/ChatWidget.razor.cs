@@ -191,10 +191,25 @@ public partial class ChatWidget : IAsyncDisposable
         if (GuidePlaces.Target(path, addresses) is not { } target) return;
 
         if (target.Page != PageAddress) Nav.NavigateTo(addresses.Address(target.Page, null));
+        _ = InvokeAsync(() => ShowPlaceAsync(target.Page, target.Place, addresses));
+    }
+
+    /// <summary>
+    /// Shows the place the guide named (FX146): a piece selected before is let go first, unless it is the one shown,
+    /// so a stale chip never goes with the next message; a piece shown is selected again by the page's own event.
+    /// </summary>
+    private async Task ShowPlaceAsync(string page, string? place, SiteAddresses addresses)
+    {
+        if (_piece is not null && _piece.Id != place)
+        {
+            await ClearPieceAsync();
+            StateHasChanged();
+        }
+
         // The bar shows the place's address as the rule writes it, so /parts/1 shows as /parts.
-        if (target.Place is not null)
-            _ = Module.InvokeVoidAsync("showArea", target.Place, addresses.Address(target.Page, null),
-                GuidePlaces.AddressOf(target.Place, addresses, target.Page));
+        if (place is not null)
+            await Module.InvokeVoidAsync("showArea", place, addresses.Address(page, null),
+                GuidePlaces.AddressOf(place, addresses, page));
     }
 
     /// <summary>
