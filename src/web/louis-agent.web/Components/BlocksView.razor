@@ -1,11 +1,11 @@
 @* The blocks of an answer: thinking, text and tool calls, in order. An AskAgent call is drawn as a delegation card,
    with the asked agent's own blocks inside it (F5). Used by TurnView and, nested, by DelegationCard. With its work
-   hidden (F128.1), thinking is its label alone and no tool call is drawn. The cards the agent drew and the choices it
-   offered sit under its words (F127.4.1). *@
+   hidden (F128.1), thinking is its label alone and no tool call is drawn. The cards the agent drew, the choices it
+   offered (F127.4.1) and the form it asked with (F127.4.3) sit under its words, and a form is the only choice drawn. *@
 
 @inject ChatText Text
 
-@foreach (var block in CardsLast.Of(Blocks))
+@foreach (var block in CardsLast.Of(FormAlone.Of(Blocks)))
 {
     switch (block.Kind)
     {
@@ -25,11 +25,15 @@
             break;
 
         case BlockKind.Tool when CardCall.SourceOf(block) is { } card:
-            <DrawnCard Source="card" />
+            <DrawnCard Source="card"/>
+            break;
+
+        case BlockKind.Tool when AskForCall.Of(block) is { } form:
+            <FormCard Form="form" Answer="@Answer" Streaming="Streaming" Sent="Chosen"/>
             break;
 
         case BlockKind.Tool when OfferCall.Of(block) is { } offer:
-            <OfferCards Offer="offer" Answer="@Answer" Streaming="Streaming" Chosen="Chosen" />
+            <OfferCards Offer="offer" Answer="@Answer" Streaming="Streaming" Chosen="Chosen"/>
             break;
 
         case BlockKind.Tool when block.InWindow:
@@ -40,13 +44,14 @@
             break;
 
         case BlockKind.Tool when Delegation.From(block) is { } delegation:
-            <DelegationCard Delegation="delegation" Block="block" Streaming="Streaming" Currency="Currency" Shown="Shown" />
+            <DelegationCard Delegation="delegation" Block="block" Streaming="Streaming" Currency="Currency"
+                            Shown="Shown"/>
             break;
 
         case BlockKind.Tool:
             <details class="tool @(block.ToolFailed ? "failed" : "")">
                 <summary>
-                    <span class="tool-status">@(block.ToolResult is null ? "⋯" : block.ToolFailed ? "✗" : "✓")</span>
+                    <span class="tool-status">@StepMarks.MarkOf(block)</span>
                     <span class="tool-name">@block.ToolName</span>
                     @if (block.ToolInput is not null)
                     {

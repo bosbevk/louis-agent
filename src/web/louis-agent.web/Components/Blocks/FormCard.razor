@@ -1,0 +1,43 @@
+@* A form the agent asked with (F127.4.3): the question, a box per field and Send, which sends what was filled in as
+   the visitor's message; once answered, the form folds to what was sent, or away when the visitor wrote their own
+   words. *@
+@inject ChatText Text
+
+<div class="form-ask">
+    <div class="form-question">@Form.Question</div>
+    @if (Answer is null)
+    {
+        <form class="form-card" @onsubmit="SendAsync">
+            @foreach (var box in Boxes)
+            {
+                <label class="form-field">
+                    <span class="form-label">@box.Field.Label</span>
+                    @if (box.Field.Kind == AskedKind.LongText)
+                    {
+                        <textarea class="form-input" rows="3" disabled="@Waiting" value="@box.Value"
+                                  @oninput="typed => Typed(box.At, typed)"></textarea>
+                    }
+                    else
+                    {
+                        <input class="form-input" type="@InputType(box.Field.Kind)"
+                               autocomplete="@AutoComplete(box.Field.Kind)" disabled="@Waiting" value="@box.Value"
+                               @oninput="typed => Typed(box.At, typed)"/>
+                    }
+                </label>
+            }
+            <button class="form-send" type="submit" disabled="@(!Ready)">@Text.Send</button>
+        </form>
+    }
+    else if (SentRows is { } rows)
+    {
+        <div class="form-card form-sent">
+            @foreach (var row in rows)
+            {
+                <div class="form-row">
+                    <span class="form-label">@row.Label</span>
+                    <span class="form-value">@row.Value</span>
+                </div>
+            }
+        </div>
+    }
+</div>

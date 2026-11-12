@@ -20,7 +20,14 @@ namespace LouisAgent.Composition.Sessions;
 /// The tool each answer ends with (<see cref="IAgentIdentity.EndsEachAnswerWith"/>, FX139), if the identity names
 /// one.
 /// </param>
-public sealed record TurnIdentity(string Name, bool IsDemonstration, string? EndsEachAnswerWith = null)
+/// <param name="StopsOn">
+/// The messages after which an answer owes no closing tool (<see cref="IAgentIdentity.StopsOn"/>), if any.
+/// </param>
+public sealed record TurnIdentity(
+    string Name,
+    bool IsDemonstration,
+    string? EndsEachAnswerWith = null,
+    IReadOnlyList<string>? StopsOn = null)
 {
     private static readonly AsyncLocal<TurnIdentity?> CurrentIdentity = new();
 
@@ -29,7 +36,11 @@ public sealed record TurnIdentity(string Name, bool IsDemonstration, string? End
 
     /// <summary>Who a session in this identity runs as.</summary>
     public static TurnIdentity Of(IAgentIdentity identity) =>
-        new(identity.Name, identity.IsDemonstration, identity.EndsEachAnswerWith);
+        new(identity.Name, identity.IsDemonstration, identity.EndsEachAnswerWith, StopsOf(identity));
+
+    /// <summary>An identity's stops; none stays none, so two turns of an identity without stops stay equal.</summary>
+    private static IReadOnlyList<string>? StopsOf(IAgentIdentity identity) =>
+        identity.StopsOn.Count == 0 ? null : identity.StopsOn;
 
     /// <summary>Runs what follows as this identity, until the scope ends and the one before comes back.</summary>
     public static IDisposable Use(TurnIdentity? identity)

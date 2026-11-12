@@ -1,9 +1,11 @@
+@use "web/tools/chat-card";
+
 /* Choices the agent offered (F127.4.1): a card per choice under the answer, the suggested one in the accent. */
 .offer { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-width: 420px; animation: rise .35s var(--web-ease) both; }
 .offer-question { font-size: 13px; color: var(--bs-secondary-color); }
 .offer-card {
     position: relative; display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 10px 14px;
-    border: 1px solid var(--bs-border-color); border-radius: 12px; background: var(--bs-body-bg); color: var(--bs-body-color);
+    @include chat-card.card;
     font: inherit; transition: border-color .15s, transform .15s;
 }
 button.offer-card { cursor: pointer; }

@@ -121,8 +121,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 **The code** (the how in `.claude/rules/csharp.md`)
 
-- **No message text inline in C#**, and stdout is a protocol: logs go through `ILogger` to stderr.
-  [ADR 0009](adr/0009-message-text-as-enum-templates.md).
+- **No message text inline in C#**, and stdout is a protocol: logs go through `ILogger` to stderr; **no anonymous
+  types or `dynamic`**: a message's holes are a record, an object built for a call a named local first. [ADR 0009](adr/0009-message-text-as-enum-templates.md), [0119](adr/0119-declare-name-then-pass.md).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
   name is an enum too. [ADR 0024](adr/0024-choices-are-enums.md), [ADR 0043](adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static

@@ -1,3 +1,5 @@
+using LouisAgent.Web.Chats.Calls.Forms;
+
 namespace LouisAgent.Web.Chats.Calls;
 
 /// <summary>
@@ -18,7 +20,7 @@ public static class CardsLast
         return all.Where(block => !IsCard(block)).Concat(all.Where(IsCard));
     }
 
-    /// <summary>A call the chat draws as a card: a ShowCard or an Offer.</summary>
+    /// <summary>A call the chat draws as a card: a ShowCard, an Offer or (F127.4.3) an AskFor.</summary>
     private static bool IsCard(Block block) =>
-        block.Kind == BlockKind.Tool && block.ToolName is CardCall.Tool or OfferCall.Tool;
+        block.Kind == BlockKind.Tool && block.ToolName is CardCall.Tool or OfferCall.Tool or AskForCall.Tool;
 }

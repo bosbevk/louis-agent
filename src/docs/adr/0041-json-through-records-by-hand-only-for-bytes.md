@@ -1,6 +1,7 @@
 # 0041. JSON goes through records; build it by hand only when the shape or the bytes need it
 
-**Status:** Accepted · **Date:** 2026-10-25 (F18 step 5.1, Louis on the HTTP session client's body: "or is that the
+**Status:** Accepted, amended by [0119](0119-declare-name-then-pass.md) (no anonymous object for a message's holes
+either) · **Date:** 2026-10-25 (F18 step 5.1, Louis on the HTTP session client's body: "or is that the
 correct way?", "so must we build up the json object?", then "I want an ADR explaining when to build the JsonObject and
 when to use a serialiser") · **Recorded:** 2026-10-25
 

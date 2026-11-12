@@ -1,7 +1,8 @@
 # louis-agent.pack.site — design
 
-> **Explanation.** How an agent takes a visitor to a place on the site (F117), shows them a card it draws, and offers
-> them choices as cards (F127.4.1): tools checked here, acted on and drawn by the web's widget. **Elsewhere:** the guide that calls it in
+> **Explanation.** How an agent takes a visitor to a place on the site (F117), shows them a card it draws, offers
+> them choices as cards (F127.4.1) and asks them with a form (F127.4.3): tools checked here, acted on and drawn by the
+> web's widget. **Elsewhere:** the guide that calls it in
 > [louis-agent.identity.guide](../../../src/docs/projects/louis-agent.identity.guide.md); the widget
 > that hears it in [louis-agent.web](../../../src/docs/projects/louis-agent.web.md); how a pack is shaped in
 > [Build a pack](../../../src/docs/guides/build-a-pack.md).
@@ -24,6 +25,11 @@ as a sentence is easy to miss a wrong date in. So the agent draws: `ShowCard` sh
 and `Offer` puts two to four choices as cards the visitor clicks (Louis, 2026-11-12: "when the guide must give
 options to the user, like you do for me", and "the agents must draw this themselves with our diagram tool").
 
+And what the visitor must write, a name, a way to reach them, a job told in their own words, was asked one thing at a
+time, and answers typed into the wrong chat got lost. So the agent asks with a form: `AskFor` draws a box per field,
+and the filled form comes back as the visitor's message (Louis, 2026-11-12: "can the agent offer a card where I can
+put my name in?", "and then only that card", "see this should also be an input card").
+
 ## How it works
 
 - `Tools/SiteTools.ShowPage(path)`: accepts a path of this site (one leading slash, no scheme, no host, no climb out,
@@ -35,13 +41,19 @@ options to the user, like you do for me", and "the agents must draw this themsel
   label of up to 40 characters each, a why of up to 80, one suggested at most. Both check what the agent wrote
   (`Tools/Cards/CardCheck`, `OfferCheck`) and answer *shown* or *offered*; a refusal starts with "Error", so the
   stream marks the call failed, the widget draws nothing, and the model fixes what the reason names.
+- `AskFor(question, fields)`: one to four fields, a label of up to 30 characters each and no label twice, and a kind
+  (`Tools/Forms/FieldKind`: Name, Phone, Email, Text for one line, LongText for a box that grows), checked by
+  `FormCheck`. `Offer` and `AskFor` are marked `[EndsTurn]`: once they work the engine ends the turn, so the agent
+  waits for the pick or the form, and an answer that ended so owes the guide's closing choices nothing (FX138, FX139,
+  F127.4.3). Each message's holes are a record in `Messages/Holes/`, named by `[Holes]` (ADR 0119).
 - **The checks are a tested duplicate.** The diagrams library under `src/web/` reads and draws the ticket, and a pack
   references no web (ADR 0086), so `CardCheck` holds the library's rules (the icons, the tones, the rows) and
   `CardCheckTests` holds them equal to the library's: a card this calls shown is a card the widget draws.
 - `SitePack`: the one toolset, `site`, always on, both tool classes in it, with its guide `prompts/toolsets/site.md`:
-  when to move the page, when to show a card (before anything goes on the visitor's behalf) and when to offer (a
-  decision, and every walkthrough stop: the next stop, another section, or stop here), and never to act on a choice
-  before it comes back.
+  when to move the page, when to show a card (before anything goes on the visitor's behalf), when to offer (a
+  decision, and every walkthrough stop: the next stop, another section, or stop here), when to ask with a form
+  (whatever the visitor must write, never a choice that only says to type), and never to act on an answer before it
+  comes back.
 - **The widget acts** (`louis-agent.web`): the runner raises `ToolCalled` for every tool call as it arrives in the turn's
   stream; the widget, on `ShowPage`, navigates to the path and, once the page has rendered, scrolls the area into view
   and gives it the class `area-shown` for a few seconds, which the web's styles draw as a glow that fades. A site may
@@ -49,7 +61,14 @@ options to the user, like you do for me", and "the agents must draw this themsel
 - **The widget draws** (`louis-agent.web`): `CardCall` reads a ShowCard call into the library's ticket (through
   `TicketCard.FromCall`) and `DrawnCard` puts its SVG in the chat; `OfferCall` reads an Offer call and `OfferCards`
   draws the buttons. Both draw with the work hidden too, under the answer's words, and a click sends the label as
-  the visitor's message; once answered, the cards fold to the one chosen.
+  the visitor's message; once answered, the cards fold to the one chosen. `AskForCall` reads an AskFor call into the
+  web's own `AskedKind` (a tested duplicate of `FieldKind`, both sides' tests holding the same names) and `FormCard`
+  draws a box per field, suited to its kind, with Send ready once each is filled; `FormAnswer` sends the form as one
+  message, each field by its label (`Name: John · Phone: 066 391 2470`), and reads it back, so the form folds to what
+  was sent. A form is the only choice its answer draws (`FormAlone`). Its whole look, the card, the labels, the boxes
+  and Send, reads `--web-form-*` values (`web/tools/_themed.scss`), so a site makes its own by setting them: the
+  framework's site gives its guide a modern, sleek form (`site/chat/_guide-form.scss`), and the demo businesses'
+  windows keep the plain one.
 - **The guide knows the areas**: the page block a message carries (F115, ADR 0104) ends with the page's areas as
   `#id heading`, read by the widget's module from every section with an id; the site's test holds that every section
   of every page has one.
@@ -75,8 +94,10 @@ options to the user, like you do for me", and "the agents must draw this themsel
 another host, a scheme, a climb out, a space, an empty path and a bad area refused with the reason; a card shown, an
 unknown icon or tone and a card without rows refused (`ShowCardTests`); the card rules held equal to the library's
 (`CardCheckTests`); good choices offered, and too few, too many, a long label or why, two suggested and the same label
-twice refused (`OfferTests`). The widget's side is in `louis-agent.web.tests` (`ChatRunnerTests`, `ChatWidgetTests`,
-`DrawnCardTests`, `OfferCardsTests`).
+twice refused (`OfferTests`); a good form asked, ending the turn, a kind bound by name, and no field, five, a long or
+repeated label and an unknown kind refused (`AskForTests`); every message's holes record equal to its template
+(`SitePackTests`). The widget's side is in `louis-agent.web.tests` (`ChatRunnerTests`, `ChatWidgetTests`,
+`DrawnCardTests`, `OfferCardsTests`, `FormCardTests`, `FormAnswerTests`).
 
 ---
 [Packs' docs](../README.md) · Related: [louis-agent.pack.leads](louis-agent.pack.leads.md) · [louis-agent.pack.docs](louis-agent.pack.docs.md)

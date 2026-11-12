@@ -23,6 +23,19 @@ public class EndsEachAnswerTests
 
         /// <summary>Asks another agent, by the engine's own tool's name.</summary>
         public string AskAgent() => "Booked? What name should I put it under?";
+
+        /// <summary>Asks the person with a form, which also ends the turn; a refused form ends nothing.</summary>
+        [EndsTurn]
+        public string Form(bool good) =>
+            good ? "Asked: 2 to fill in." : "Error: not asked. The form needs its question.";
+    }
+
+    /// <summary>A model reply that asks with a form, a good one or a refused one.</summary>
+    private static ChatResponse CallsForm(bool good)
+    {
+        var formArguments = new Dictionary<string, object?> { ["good"] = good };
+        return new ChatResponse(new ChatMessage(ChatRole.Assistant,
+            [new FunctionCallContent("call_f", nameof(AskingTools.Form), formArguments)]));
     }
 
     /// <summary>A model reply that only talks.</summary>
@@ -32,16 +45,39 @@ public class EndsEachAnswerTests
     private static ChatResponse CallsAsk() => new(new ChatMessage(ChatRole.Assistant,
         [new FunctionCallContent("call_1", nameof(AskingTools.Ask), new Dictionary<string, object?>())]));
 
-    /// <summary>A turn as an identity that ends each answer with <paramref name="endsWith"/>.</summary>
-    private static async Task TurnAsync(IChatClient client, string? endsWith)
+    /// <summary>The guide's stop, as its identity names it.</summary>
+    private static readonly string[] Stops = ["Stop here"];
+
+    /// <summary>
+    /// A turn as an identity that ends each answer with <paramref name="endsWith"/> and stops on
+    /// <see cref="Stops"/>, the visitor saying <paramref name="message"/>.
+    /// </summary>
+    private static async Task TurnAsync(IChatClient client, string? endsWith, string message = "Walk me through")
     {
         var engine = new AgentEngine(new CompositeSkillProvider(), client, TestPaths.Agent(),
             toolsets: [new AskingTools()])
         { Thinking = ReasoningEffort.Low };
-        using var _ = TurnIdentity.Use(new TurnIdentity("guide", false, endsWith));
-        await foreach (var __ in engine.StreamPromptAsync(engine.NewHistory(), "Walk me through"))
+        var guide = new TurnIdentity("guide", false, endsWith, Stops);
+        using var _ = TurnIdentity.Use(guide);
+        await foreach (var __ in engine.StreamPromptAsync(engine.NewHistory(), message))
         {
         }
+    }
+
+    /// <summary>
+    /// Louis, on "Stop here" answered with choices again: "stop should end". After a message that is one of the
+    /// identity's stops, alone or with the page's context after it, the answer owes no choices; any other still does.
+    /// </summary>
+    [TestCase("Stop here", 1)]
+    [TestCase("stop here\n\n[page] /pricing", 1)]
+    [TestCase("Stop here and tell me the pricing", 2)]
+    public async Task AfterAStop_NoChoicesAreOwed(string message, int requests)
+    {
+        var client = new FakeChatClient(_ => Says("Alright, we'll stop here."), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask), message);
+
+        Assert.That(client.Requests, Has.Count.EqualTo(requests));
     }
 
     /// <summary>
@@ -86,6 +122,31 @@ public class EndsEachAnswerTests
         await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
 
         Assert.That(client.Requests, Has.Count.EqualTo(2), "no third request for choices");
+    }
+
+    /// <summary>
+    /// F127.4.3, Louis: "and then only that card". An answer that ended with another tool that ends the turn (a form)
+    /// is closed: it owes no choices beside it.
+    /// </summary>
+    [Test]
+    public async Task AnAnswerThatEndedWithAForm_OwesNoChoices()
+    {
+        var client = new FakeChatClient(_ => CallsForm(good: true), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+
+        Assert.That(client.Requests, Has.Count.EqualTo(1), "no second request for choices");
+    }
+
+    /// <summary>A refused form ended nothing: when the answer then stops in words, it still owes its choices.</summary>
+    [Test]
+    public async Task AnAnswerWhoseFormWasRefused_StillOwesChoices()
+    {
+        var client = new FakeChatClient(_ => CallsForm(good: false), _ => Says("Tell me your name."), _ => CallsAsk());
+
+        await TurnAsync(client, endsWith: nameof(AskingTools.Ask));
+
+        Assert.That(client.Requests, Has.Count.EqualTo(3));
     }
 
     /// <summary>An answer that ends with its tool, or an identity that asks for none, costs no extra request.</summary>

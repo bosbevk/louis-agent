@@ -55,4 +55,10 @@ public interface IAgentIdentity
     /// so.
     /// </summary>
     string? EndsEachAnswerWith => null;
+
+    /// <summary>
+    /// What the person says to stop, such as the guide's "Stop here": after it, an answer owes no
+    /// <see cref="EndsEachAnswerWith"/> tool, so the agent says goodbye and offers nothing. None unless it says so.
+    /// </summary>
+    IReadOnlyList<string> StopsOn => [];
 }

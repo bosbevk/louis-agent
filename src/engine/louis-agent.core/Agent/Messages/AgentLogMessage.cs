@@ -1,6 +1,6 @@
-
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
+using LouisAgent.Core.Agent.Messages.Holes;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Agent.Messages;
@@ -35,6 +35,7 @@ public enum AgentLogMessage
     McpCannotRegister,
 
     [Description("Reply cut off by the output limit ({MaxOutputTokens} tokens); asking the model to continue")]
+    [Holes(typeof(ReplyCutOffHoles))]
     ReplyCutOff,
 
     [Description("Tool '{Name}' already registered; skipping")]

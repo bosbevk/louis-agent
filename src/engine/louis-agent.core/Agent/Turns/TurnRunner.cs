@@ -6,10 +6,9 @@ using LouisAgent.Composition.Sessions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
-using LouisAgent.Core.Llm;
+using LouisAgent.Core.Agent.Messages.Holes;
 using LouisAgent.Core.Llm.Providers;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
@@ -132,18 +131,19 @@ internal sealed class TurnRunner(
             if (!cutOff)
             {
                 // An identity whose answers end with a tool (the guide's choices, FX139) gets it once, if missing.
-                if (owedAsked || OwedTool(updates, chatOptions) is not { } owed) yield break;
+                if (owedAsked || OwedTool(updates, chatOptions, userInput) is not { } owed) yield break;
                 owedAsked = true;
                 // A request must end with the user's message (no prefill), so a notice asks for it, as after a cut-off.
-                history.Add(new ChatMessage(ChatRole.User,
-                    MessageText.Format(AgentToolMessage.EndWithTool, new { Tool = owed })));
+                var owedTool = new EndWithToolHoles(owed);
+                history.Add(new ChatMessage(ChatRole.User, MessageText.Format(AgentToolMessage.EndWithTool, owedTool)));
                 chatOptions = Requiring(chatOptions, owed);
                 continue;
             }
 
             if (continuation >= MaxCutOffContinuations) yield break;
 
-            Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, new { MaxOutputTokens });
+            var outputLimit = new ReplyCutOffHoles(MaxOutputTokens);
+            Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, outputLimit);
             ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
@@ -155,11 +155,16 @@ internal sealed class TurnRunner(
     /// The tool the running identity ends each answer with, when this answer didn't call it and the turn has it
     /// (FX139); none otherwise.
     /// </summary>
-    private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options)
+    private static string? OwedTool(List<ChatResponseUpdate> updates, ChatOptions options, string userInput)
     {
         if (TurnIdentity.Current?.EndsEachAnswerWith is not { } tool) return null;
-        var calls = updates.SelectMany(u => u.Contents).OfType<FunctionCallContent>().ToList();
+        // The person said stop: the answer says goodbye and owes nothing.
+        if (TurnEnding.Stopped(userInput, TurnIdentity.Current.StopsOn)) return null;
+        var answer = updates.SelectMany(u => u.Contents).ToList();
+        var calls = answer.OfType<FunctionCallContent>().ToList();
         if (calls.Any(call => call.Name == tool)) return null;
+        // An answer that ended the turn with another tool, such as a form, is closed: nothing beside it (F127.4.3).
+        if (TurnEnding.Ended(answer, options.Tools)) return null;
         // An answer that asked another agent owes nothing: that agent may be waiting for the person (FX141).
         if (calls.Any(call => call.Name == nameof(AskAgentTools.AskAgent))) return null;
         return options.Tools?.Any(t => t.Name == tool) == true ? tool : null;

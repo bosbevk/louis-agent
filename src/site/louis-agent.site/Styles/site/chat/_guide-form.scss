@@ -1,0 +1,35 @@
+/* The guide's form (F127.4.3, Louis: "our lead form must be styled differently", "not like demos", "not only colors,
+   I do not want a ticket look", "modern and sleek"): the site's own look for what the guide asks with, a glassy card
+   lifted off the dark with a soft glow, small spaced capitals over boxes with no hard edge, and a full-width steel pill
+   to send, the steel of the site's own bubbles. Only the guide's widget sets these; the demo businesses' windows keep
+   the framework's plain form. */
+.chat-widget {
+    --web-form-bg: rgba(var(--web-overlay-rgb), .035);
+    --web-form-border: 1px solid rgba(var(--web-overlay-rgb), .09);
+    --web-form-radius: 18px;
+    --web-form-padding: 20px;
+    --web-form-gap: 14px;
+    --web-form-shadow: 0 24px 48px -30px var(--glow), inset 0 1px 0 rgba(var(--web-overlay-rgb), .06);
+
+    --web-form-label-ink: var(--bs-tertiary-color);
+    --web-form-label-size: 10.5px;
+    --web-form-label-weight: 600;
+    --web-form-label-transform: uppercase;
+    --web-form-label-spacing: .12em;
+
+    --web-form-input-bg: rgba(var(--web-overlay-rgb), .05);
+    --web-form-input-border: 1px solid transparent;
+    --web-form-input-radius: 12px;
+    --web-form-input-padding: 11px 14px;
+    --web-form-input-focus: rgba(var(--web-overlay-rgb), .35);
+
+    --web-form-send-bg: var(--steel);
+    --web-form-send-ink: var(--bs-body-bg);
+    --web-form-send-radius: 999px;
+    --web-form-send-width: 100%;
+    --web-form-send-padding: 11px 18px;
+    --web-form-send-shadow: 0 12px 28px -14px var(--glow);
+
+    --web-form-sent-border-color: rgba(var(--web-overlay-rgb), .16);
+    --web-form-sent-bg: rgba(var(--web-overlay-rgb), .03);
+}

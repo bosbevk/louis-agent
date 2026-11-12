@@ -7,7 +7,7 @@ paths:
 
 Loaded when a `.cs` file is read or edited. The why of each rule is its ADR: 0009 message enums, 0024 and 0043 choices
 are enums, 0034 and 0044 size, 0040 records, 0041 JSON, 0045 typed answers, 0046 UTC, 0048 Mongo, 0050 summaries,
-0051 flat conditionals, 0052 edit never script (`src/docs/adr/`). **Scope of every "fix as you touch" rule:** only the
+0051 flat conditionals, 0052 edit never script, 0119 declare then pass (`src/docs/adr/`). **Scope of every "fix as you touch" rule:** only the
 files in the step's own commit (`git diff --name-only`), each fixed whole, the parts the step didn't change too; a
 file the step only read waits; never a big refactor of its own.
 
@@ -107,7 +107,7 @@ return new Host(app, app.GetTestClient(), store);
   wire, never changed for one caller; `JsonObject` only for a shape decided at run time, `JsonElement` for input we
   don't own (`GetString()`, never `GetRawText()`), `Utf8JsonWriter` only when the bytes are the contract. **Never an
   anonymous object for anything serialized** (`Results.Json(new { … })`): a reply, a body or a stored document is a
-  named record. A message's holes keep theirs (`new { Check = check }`). A record built from another type has a
+  named record, and a message's holes too (0119). A record built from another type has a
   static `Of` (`CheckRow.Of(check, hasManual)`), so a reply reads as a few calls, never rows built inline in a lambda.
 - **MongoDB through records** (0048): a collection of a known shape is a typed `IMongoCollection<T>` over a document
   record beside its store, stored names as `[BsonElement]`, enums by wire name, dates as UTC BSON dates, filters,
@@ -124,6 +124,13 @@ return new Host(app, app.GetTestClient(), store);
   a `[Description]` template, filled by name (`MessageText.Format`); logs go through `ILogger` to stderr, since
   stdout is a protocol for the ACP and MCP servers. Nothing is backward compatible before a sale (0049): no alias,
   lenient reader or second parser for what we store or send between our own parts.
+- **Named types, declared, then passed** (0119): no anonymous types and no `dynamic`, unless one is plainly the best
+  option, with a `//` line saying why. A message's holes are a record named `{Member}Holes` in a `Holes/` folder
+  beside its enum, which the member names: `[Holes(typeof(EndWithToolHoles))]`; a test holds its properties equal
+  to the template's holes. An object built for a call (holes, an initializer) is first a local named for what it
+  is, then passed: `var owedTool = new EndWithToolHoles(owed);` then
+  `MessageText.Format(AgentToolMessage.EndWithTool, owedTool)`, never built inside the call's parentheses.
+  Existing code changes as it is touched.
 
 ## Size and shape (ADR 0010, 0034, 0044)
 

@@ -141,5 +141,27 @@ our diagram tool".
 - **Left out:** the guided live demo, where the guide runs a business's demo and the visitor carries on in its window,
   is F127.4.2; letting the guide draw any docs diagram is F138.
 
+## F127.4.3: what a person must write, they write in a form (2026-11-12)
+
+Choices were cards, but what only the visitor knows was still asked in words, one thing at a time: a name, then a
+contact, then the dates. Louis typed his name into the guide's chat while the guesthouse waited for it in its own
+window, and the guide, made to end every answer with choices (FX139), offered a "Describe the job" card that only
+said to type. Louis: "can the agent offer a card where I can put my name in?", "and then only that card".
+
+- **Ask with the shape of the answer.** `AskFor` draws a box per field, each suited to what it asks (a phone's number
+  pad, an email's keyboard, a box that grows for a job told in their own words), and Send waits until every box is
+  filled. The person sees at once what is needed, and answers it in the window that asked. The agent asks only what it
+  wasn't told: Seemeeu, told the room and the guests, asked for the name, a contact and the dates.
+- **The answer stays a message.** The filled form goes back as the visitor's own words, each field by its label, so the
+  model reads it like anything the visitor types, and the history stays plain text (ADR 0008). The form folds to what
+  was sent. Nothing new crosses the wire: the web reads the call it already streams.
+- **A turn that asks must stop.** Asking ends the turn (`[EndsTurn]`), as offering does, and the engine counts it as the
+  answer's close, so the guide's closing choices don't come under a form (#2, the loop: the engine, not the prompt,
+  decides when a turn is over). A refused form ended nothing, and then the choices are still owed.
+- **The page makes it true again.** The pack's guide says a form is the only card in its answer; the widget holds it,
+  drawing no choices beside a form whatever the model sends, as it holds the cards under the words.
+- **Left out:** the visitor's message repeats what the folded form shows, as a clicked card's label does today; whether
+  either should hide is Louis's call. The 390 px look wasn't checked: the browser window wouldn't resize.
+
 ---
 [Write-ups](README.md) · [Goal](../GOAL.md) · [12 · Evaluation](12-evaluation.md)

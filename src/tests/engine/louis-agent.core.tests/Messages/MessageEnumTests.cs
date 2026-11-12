@@ -2,13 +2,11 @@ using LouisAgent.Core.Web;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Ollama;
 using LouisAgent.Core.OpenAi;
-using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Core.Config;
-using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
-using LouisAgent.Core.Messages;
+using LouisAgent.Testing.Messages;
 
 namespace LouisAgent.Core.Tests.Messages;
 
@@ -91,18 +89,33 @@ public class MessageEnumTests
         foreach (Enum member in AllMembers())
         {
             string template = MessageText.Template(member);
-            string withoutHoles =
-                System.Text.RegularExpressions.Regex.Replace(template, @"\{[A-Za-z][A-Za-z0-9]*\}", "");
+            string withoutHoles = MessageText.Holes(template)
+                .Aggregate(template, (text, hole) => text.Replace($"{{{hole}}}", "", StringComparison.Ordinal));
             Assert.That(withoutHoles, Does.Not.Contain("{").And.Not.Contain("}"),
                 $"{member.GetType().Name}.{member}: \"{template}\"");
         }
     }
 
+    /// <summary>The value for the cache-time message's one hole.</summary>
+    private sealed record CacheTtl(string Value);
+
+    /// <summary>A value under another name than the hole's.</summary>
+    private sealed record OtherValue(string Other);
+
+    /// <summary>
+    /// ADR 0119: every member that names its holes record has the record's properties equal to its template's holes.
+    /// </summary>
+    [Test]
+    public void EveryHolesRecord_MatchesItsTemplate() =>
+        Assert.That(MessageHoles.Problems(MessageEnums), Is.Empty);
+
     /// <summary>A message's holes are filled by name.</summary>
     [Test]
     public void Format_FillsNamedHoles()
     {
-        Assert.That(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = "10m" }),
+        var tenMinutes = new CacheTtl("10m");
+
+        Assert.That(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, tenMinutes),
             Is.EqualTo("Unknown LLM_CACHE_TTL '10m'. Use 5m or 1h."));
     }
 
@@ -110,8 +123,10 @@ public class MessageEnumTests
     [Test]
     public void Format_AMissingValue_Throws()
     {
+        var misnamed = new OtherValue("x");
+
         // A message never goes out with a gap in it.
-        Assert.That(() => MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Other = "x" }),
+        Assert.That(() => MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, misnamed),
             Throws.ArgumentException.With.Message.Contain(
                 "ConfigErrorMessage.UnknownCacheTtl needs a value for '{Value}'"));
     }

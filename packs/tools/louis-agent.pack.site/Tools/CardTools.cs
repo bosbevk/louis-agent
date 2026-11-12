@@ -2,7 +2,10 @@ using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Messages;
+using LouisAgent.Packs.Site.Messages.Holes.Cards;
+using LouisAgent.Packs.Site.Messages.Holes.Forms;
 using LouisAgent.Packs.Site.Tools.Cards;
+using LouisAgent.Packs.Site.Tools.Forms;
 
 namespace LouisAgent.Packs.Site.Tools;
 
@@ -42,9 +45,10 @@ public sealed class CardTools
         [Description("A short line at the card's foot, such as how the business confirms.")]
         string? note = null)
     {
-        if (CardCheck.Problem(title, rows, status) is { } problem)
-            return MessageText.Format(SiteToolMessage.CardRefused, new { Reason = problem });
-        return MessageText.Format(SiteToolMessage.CardShown, new { });
+        if (CardCheck.Problem(title, rows, status) is not { } problem)
+            return MessageText.Format(SiteToolMessage.CardShown);
+        var refused = new CardRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.CardRefused, refused);
     }
 
     /// <summary>
@@ -64,8 +68,40 @@ public sealed class CardTools
             "why of one line under it; and suggested true on the one you recommend, at most one.")]
         IReadOnlyList<OfferChoice> choices)
     {
-        if (OfferCheck.Problem(question, choices) is { } problem)
-            return MessageText.Format(SiteToolMessage.OfferRefused, new { Reason = problem });
-        return MessageText.Format(SiteToolMessage.Offered, new { choices.Count });
+        if (OfferCheck.Problem(question, choices) is not { } problem)
+        {
+            var offered = new OfferedHoles(choices.Count);
+            return MessageText.Format(SiteToolMessage.Offered, offered);
+        }
+
+        var refused = new OfferRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.OfferRefused, refused);
+    }
+
+    /// <summary>
+    /// Asks the visitor for what the agent needs with a form of one to four fields; what they fill in comes back as
+    /// their message. Asking ends the turn, as offering does, so the agent waits for the answer.
+    /// </summary>
+    [EndsTurn]
+    [Description(
+        "Asks the visitor with a form under your words, whenever you need them to write something: their name and " +
+        "how to reach them, or a job told in their own words. They fill it in and send it, and it comes back as " +
+        "their next message, each field by its label. Never offer a choice that only says to type; ask with this.")]
+    public string AskFor(
+        [Description("What the form asks for, as a short question, such as Who shall I put the request under?")]
+        string question,
+        [Description(
+            "One to four fields: a label of up to 30 characters, the words over its box such as Phone or email; " +
+            "and its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.")]
+        IReadOnlyList<FormField> fields)
+    {
+        if (FormCheck.Problem(question, fields) is not { } problem)
+        {
+            var asked = new AskedHoles(fields.Count);
+            return MessageText.Format(SiteToolMessage.Asked, asked);
+        }
+
+        var refused = new AskRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.AskRefused, refused);
     }
 }
