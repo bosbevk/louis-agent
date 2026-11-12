@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "title": "F127.7 one guide, a focus per part: the objects",
+  "caption": "louis-agent.dev's focuses as the builder registers them, and the focus one page of each part gets.",
+  "flow": {
+    "nodes": [
+      { "id": "focuses", "icon": "settings", "tone": "violet", "label": "SiteFocuses\nDefault: selling" },
+      { "id": "demos", "icon": "box", "tone": "teal", "label": "FocusPart\nUnder: /demos\nFocus: demos" },
+      { "id": "demo", "icon": "box", "tone": "teal", "label": "FocusPart\nUnder: /guesthouse-demo\nFocus: demos" },
+      { "id": "fw", "icon": "box", "tone": "teal", "label": "FocusPart\nUnder: /framework\nFocus: framework" },
+      { "id": "home", "icon": "home", "tone": "blue", "label": "/pricing\n→ selling" },
+      { "id": "packs", "icon": "code", "tone": "blue", "label": "/framework/packs\n→ framework" }
+    ],
+    "edges": [
+      { "from": "focuses", "to": "demos" },
+      { "from": "focuses", "to": "demo" },
+      { "from": "focuses", "to": "fw" },
+      { "from": "focuses", "to": "home", "style": "dashed" },
+      { "from": "fw", "to": "packs", "style": "dashed" }
+    ]
+  }
+}
