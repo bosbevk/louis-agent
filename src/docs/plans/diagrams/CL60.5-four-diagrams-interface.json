@@ -1,0 +1,78 @@
+{
+  "kind": "classes",
+  "title": "CL60.5 four diagrams: the interface design",
+  "caption": "One test, no new types: it reads each picture a project doc shows and wants all four kinds, until the doc's name leaves the pending list.",
+  "classes": {
+    "types": [
+      {
+        "id": "tests",
+        "name": "DocsDiagramsTests",
+        "kind": "test fixture, changed in step 2",
+        "members": [
+          "+EveryProjectDoc_ShowsItsFourDiagrams()",
+          "-PendingFour HashSet<string> (shrinks each step)",
+          "-KindsShown(doc) IReadOnlySet<DiagramKind>"
+        ]
+      },
+      {
+        "id": "sync",
+        "name": "DiagramSync",
+        "kind": "the docs' tool, kept",
+        "members": [
+          "+Roots(repoRoot) IEnumerable<string>",
+          "+Folder"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "DiagramReader",
+        "kind": "the library, kept",
+        "members": [
+          "+Read(json) DiagramSource"
+        ]
+      },
+      {
+        "id": "source",
+        "name": "DiagramSource",
+        "kind": "record, kept",
+        "members": [
+          "+Kind DiagramKind",
+          "+Title",
+          "+Flow Cards Sequence Classes"
+        ]
+      },
+      {
+        "id": "kind",
+        "name": "DiagramKind",
+        "kind": "enum, kept",
+        "members": [
+          "Flow Cards Sequence Classes"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "tests",
+        "to": "sync",
+        "kind": "uses",
+        "word": "finds the project docs"
+      },
+      {
+        "from": "tests",
+        "to": "reader",
+        "kind": "uses",
+        "word": "reads each picture"
+      },
+      {
+        "from": "reader",
+        "to": "source",
+        "kind": "creates"
+      },
+      {
+        "from": "source",
+        "to": "kind",
+        "kind": "holds"
+      }
+    ]
+  }
+}

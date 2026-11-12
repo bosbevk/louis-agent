@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "title": "CL60.5 four diagrams: the architecture",
+  "caption": "Nothing new to run: each project doc links four pictures, the tool draws them, and the test reads which kinds a doc shows.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "label": "Claude, per step", "icon": "user", "tone": "blue" },
+      { "id": "json", "label": "diagrams/{project}-interface.json\nand the missing flows and sequences", "icon": "file", "tone": "amber" },
+      { "id": "doc", "label": "A project doc\n## Diagrams", "icon": "book", "tone": "amber" },
+      { "id": "tool", "label": "louis-agent.doc-diagrams", "icon": "terminal", "tone": "green" },
+      { "id": "lib", "label": "louis-agent.diagrams", "icon": "chip", "tone": "violet" },
+      { "id": "svg", "label": "The SVG beside it", "icon": "file", "tone": "amber" },
+      { "id": "test", "label": "DocsDiagramsTests\nfour kinds per doc", "icon": "checks", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "you", "to": "json", "word": "writes from the code" },
+      { "from": "you", "to": "doc", "word": "links the picture" },
+      { "from": "json", "to": "tool" },
+      { "from": "tool", "to": "lib", "word": "draws with", "style": "dashed" },
+      { "from": "tool", "to": "svg", "word": "writes" },
+      { "from": "doc", "to": "test" },
+      { "from": "json", "to": "test", "word": "its kind", "style": "dashed" }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "CL60.5 four diagrams: one test run",
+  "caption": "A doc passes when it shows all four kinds: a missing one fails it, unless its name is still pending, and a pending doc that has them all fails too.",
+  "sequence": {
+    "participants": [
+      { "id": "test", "label": "DocsDiagramsTests", "icon": "checks", "tone": "green" },
+      { "id": "sync", "label": "DiagramSync", "icon": "terminal", "tone": "green" },
+      { "id": "doc", "label": "A project doc", "icon": "book", "tone": "amber" },
+      { "id": "reader", "label": "DiagramReader", "icon": "chip", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "test", "to": "sync", "text": "Roots: every docs folder" },
+      { "step": "reply", "from": "sync", "to": "test", "text": "src/docs, packs/docs, each demo's docs" },
+      { "step": "block", "block": "loop", "label": "each doc in a projects folder",
+        "steps": [
+          { "step": "message", "from": "test", "to": "doc", "text": "the pictures it links" },
+          { "step": "block", "block": "loop", "label": "each picture",
+            "steps": [
+              { "step": "message", "from": "test", "to": "reader", "text": "Read(its JSON)" },
+              { "step": "reply", "from": "reader", "to": "test", "text": "its kind" }
+            ] },
+          { "step": "note", "over": ["test"], "text": "cards, flow, sequence and classes, or pending" }
+        ] }
+    ]
+  }
+}

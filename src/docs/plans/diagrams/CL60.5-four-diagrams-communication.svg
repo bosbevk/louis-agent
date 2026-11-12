@@ -1,0 +1,205 @@
+<svg viewBox="-24 -24 989.9 654" width="989.9" height="654" role="img" aria-label="CL60.5 four diagrams: one test run" xmlns="http://www.w3.org/2000/svg">
+  <title>CL60.5 four diagrams: one test run</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="989.9" height="654" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="941.9" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">CL60.5 four diagrams:</tspan>
+    <tspan class="title-rest">one test run</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <rect class="group" x="0" y="156" width="887.5" height="262" rx="8" />
+    <rect class="group" x="137.5" y="228" width="736" height="122" rx="8" />
+    <path class="edge dashed" d="M 151.5 52 L 151.5 434" />
+    <path class="edge dashed" d="M 457.5 52 L 457.5 434" />
+    <path class="edge dashed" d="M 654.7 52 L 654.7 434" />
+    <path class="edge dashed" d="M 859.5 52 L 859.5 434" />
+    <rect class="word-chip" x="0" y="156" width="44" height="20" rx="6" />
+    <text class="word" x="22" y="170" text-anchor="middle">loop</text>
+    <text class="word" x="50" y="170" text-anchor="start">each doc in a projects folder</text>
+    <rect class="word-chip" x="137.5" y="228" width="44" height="20" rx="6" />
+    <text class="word" x="159.5" y="242" text-anchor="middle">loop</text>
+    <text class="word" x="187.5" y="242" text-anchor="start">each picture</text>
+    <path class="edge tone-green" d="M 151.5 102 L 455.5 102" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="212.5" y="76" width="184" height="22" rx="4" />
+    <text class="word tone-green" x="304.5" y="90" text-anchor="middle">Roots: every docs folder</text>
+    <path class="edge dashed tone-green" d="M 457.5 144 L 153.5 144" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="163.5" y="118" width="282" height="22" rx="4" />
+    <text class="word tone-green" x="304.5" y="132" text-anchor="middle">src/docs, packs/docs, each demo's docs</text>
+    <path class="edge tone-green" d="M 151.5 216 L 652.7 216" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="321.6" y="190" width="163" height="22" rx="4" />
+    <text class="word tone-green" x="403.1" y="204" text-anchor="middle">the pictures it links</text>
+    <path class="edge tone-green" d="M 151.5 288 L 857.5 288" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="448.5" y="262" width="114" height="22" rx="4" />
+    <text class="word tone-green" x="505.5" y="276" text-anchor="middle">Read(its JSON)</text>
+    <path class="edge dashed tone-violet" d="M 859.5 330 L 153.5 330" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="469.5" y="304" width="72" height="22" rx="4" />
+    <text class="word tone-violet" x="505.5" y="318" text-anchor="middle">its kind</text>
+    <rect class="word-chip" x="14" y="354" width="275" height="44" rx="6" />
+    <text class="word" x="151.5" y="372" text-anchor="middle">cards, flow, sequence and classes, or</text>
+    <text class="word" x="151.5" y="386" text-anchor="middle">pending</text>
+    <rect class="box tone-green" x="53.9" y="0" width="195.2" height="52" rx="10" />
+    <circle class="badge tone-green" cx="81.9" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(73.9 18) scale(0.6667)">
+      <path d="M7 12l5 5l10 -10" />
+      <path d="M2 12l5 5m5 -5l5 -5" />
+    </g>
+    <text class="label tone-green" x="105.9" y="30" text-anchor="start">DocsDiagramsTests</text>
+    <rect class="box tone-green" x="382.7" y="0" width="149.6" height="52" rx="10" />
+    <circle class="badge tone-green" cx="410.7" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(402.7 18) scale(0.6667)">
+      <path d="M5 7l5 5l-5 5" />
+      <path d="M12 19l7 0" />
+    </g>
+    <text class="label tone-green" x="434.7" y="30" text-anchor="start">DiagramSync</text>
+    <rect class="box tone-amber" x="572.3" y="0" width="164.8" height="52" rx="10" />
+    <circle class="badge tone-amber" cx="600.3" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(592.3 18) scale(0.6667)">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </g>
+    <text class="label tone-amber" x="624.3" y="30" text-anchor="start">A project doc</text>
+    <rect class="box tone-violet" x="777.1" y="0" width="164.8" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="805.1" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(797.1 18) scale(0.6667)">
+      <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+      <path d="M9 9h6v6h-6z" />
+      <path d="M3 10h2" />
+      <path d="M3 14h2" />
+      <path d="M10 3v2" />
+      <path d="M14 3v2" />
+      <path d="M21 10h-2" />
+      <path d="M21 14h-2" />
+      <path d="M14 21v-2" />
+      <path d="M10 21v-2" />
+    </g>
+    <text class="label tone-violet" x="829.1" y="30" text-anchor="start">DiagramReader</text>
+  </g>
+  <rect class="swatch tone-green" x="0" y="516" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="526.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="126.4" y="516" width="12" height="12" rx="3" />
+  <text class="legend" x="144.4" y="526.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-amber" x="260" y="516" width="12" height="12" rx="3" />
+  <text class="legend" x="278" y="526.5" text-anchor="start">files and data</text>
+  <rect class="notebar" x="0" y="552" width="941.9" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 562) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="574">
+    <tspan class="note-head">A doc passes when it shows all four kinds:</tspan>
+    <tspan class="note-rest">a missing one fails it, unless its name is still pending, and a pending doc that</tspan>
+  </text>
+  <text class="notes" x="38" y="591">
+    <tspan class="note-rest">has them all fails too.</tspan>
+  </text>
+</svg>

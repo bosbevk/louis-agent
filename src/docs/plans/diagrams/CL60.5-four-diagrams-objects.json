@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "title": "CL60.5 four diagrams: one doc in memory",
+  "caption": "One doc, four kinds: the CLI's doc after its step, each picture read to its kind.",
+  "flow": {
+    "nodes": [
+      { "id": "doc", "label": "louis-agent.cli.md", "icon": "book", "tone": "amber" },
+      { "id": "cards", "label": "louis-agent.cli.json\nkind: cards (the overview)", "icon": "stack", "tone": "teal" },
+      { "id": "flow", "label": "louis-agent.cli-diagrams.json\nkind: flow", "icon": "branch", "tone": "teal" },
+      { "id": "seq", "label": "louis-agent.cli-diagrams-2.json\nkind: sequence", "icon": "message", "tone": "teal" },
+      { "id": "classes", "label": "louis-agent.cli-interface.json\nkind: classes (new)", "icon": "code", "tone": "teal" },
+      { "id": "set", "label": "KindsShown\n{ Cards, Flow, Sequence, Classes }", "icon": "checks", "tone": "green" }
+    ],
+    "edges": [
+      { "from": "doc", "to": "cards" },
+      { "from": "doc", "to": "flow" },
+      { "from": "doc", "to": "seq" },
+      { "from": "doc", "to": "classes" },
+      { "from": "cards", "to": "set" },
+      { "from": "flow", "to": "set" },
+      { "from": "seq", "to": "set" },
+      { "from": "classes", "to": "set" }
+    ]
+  }
+}
