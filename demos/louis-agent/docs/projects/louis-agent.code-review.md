@@ -38,6 +38,8 @@ The architecture is under *How it works*; this is reviewing a change, the job it
 
 ![Reviewing a change: the review button builds the prompt and hands it to the chat's message box, and the reviewer sends it](diagrams/louis-agent.code-review-diagrams.svg)
 
+![The types: the program names what the app uses from the framework's web, its own few components, and the packs' views](diagrams/louis-agent.code-review-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

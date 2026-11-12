@@ -29,6 +29,8 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 
 ![Judging one trial: the check asks the judge's model with the rubric and the answer, and turns its verdict into a grade](diagrams/louis-agent.identity.puls.judges-diagrams-2.svg)
 
+![The types: one model-graded check on the harness's contract, its entry, the evaluator and the judge's verdict](diagrams/louis-agent.identity.puls.judges-interface.svg)
+
 ## Extending it
 
 A new judge of Puls's is a class here with a nested `Entry`, listed in `PulsJudges.All`. A judge every identity could

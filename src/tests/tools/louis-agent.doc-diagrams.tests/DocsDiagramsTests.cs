@@ -100,15 +100,6 @@ public class DocsDiagramsTests
     /// <summary>The project docs still to get their four pictures; a step removes the ones it draws.</summary>
     private static readonly HashSet<string> PendingFour =
     [
-        // The demos.
-        "demos/louis-agent/docs/projects/louis-agent.code-review.md",
-        "demos/louis-agent/docs/projects/louis-agent.identity.triage.md",
-        "demos/louis-agent/docs/projects/louis-agent.orchestrator.md",
-        "demos/louis-agent/docs/projects/orchestrator-runbooks.md",
-        "demos/puls/docs/projects/louis-agent.host-packs.md",
-        "demos/puls/docs/projects/louis-agent.identity.puls.judges.md",
-        "demos/puls/docs/projects/louis-agent.identity.puls.md",
-        "demos/puls/docs/projects/louis-agent.puls.md",
     ];
 
     /// <summary>The kinds of picture a doc shows, read from each picture's JSON.</summary>

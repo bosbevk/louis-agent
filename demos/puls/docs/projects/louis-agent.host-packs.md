@@ -33,6 +33,8 @@ thin and never references an identity or a pack; and which agent a host runs is 
 
 ![Start-up: the plugins read the names from the settings, build the identities and packs, and the catalogue checks them before the host builds](diagrams/louis-agent.host-packs-diagrams-2.svg)
 
+![The types: the plugins parse two settings into enums and build the identities, the packs and the catalogue](diagrams/louis-agent.host-packs-interface.svg)
+
 ## Structure
 
 | File | What's in it |

@@ -1,0 +1,23 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.identity.triage: one case through the team",
+  "caption": "A report is a claim until the code checked it: each role's answer is a typed step, and the manager decides from the steps.",
+  "sequence": {
+    "participants": [
+      { "id": "manager", "label": "The manager", "icon": "chip", "tone": "green" },
+      { "id": "sorter", "label": "Sorter", "icon": "search", "tone": "green" },
+      { "id": "investigator", "label": "Investigator", "icon": "code", "tone": "green" },
+      { "id": "pack", "label": "The triage pack", "icon": "box", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "manager", "to": "sorter", "text": "AskAgent(\"triage.sorter\", the case)" },
+      { "step": "message", "from": "sorter", "to": "pack", "text": "SortCase(runId, \"code\", why)" },
+      { "step": "reply", "from": "sorter", "to": "manager", "text": "the department" },
+      { "step": "message", "from": "manager", "to": "investigator", "text": "AskAgent(\"triage.investigator\", the case)" },
+      { "step": "note", "over": ["investigator"], "text": "reads the code, git and the tests, never writes" },
+      { "step": "message", "from": "investigator", "to": "pack", "text": "ReportInvestigation(where, cause, area, confidence)" },
+      { "step": "reply", "from": "investigator", "to": "manager", "text": "the finding" },
+      { "step": "message", "from": "manager", "to": "pack", "text": "DecideCase(runId, kind, reason)" }
+    ]
+  }
+}

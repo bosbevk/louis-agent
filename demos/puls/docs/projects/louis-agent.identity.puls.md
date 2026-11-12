@@ -54,6 +54,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 
 ![A cooking question: the session reads Puls's prompts, Puls asks the cook, and the cook's tools answer through it](diagrams/louis-agent.identity.puls-diagrams-2.svg)
 
+![The types: PulsIdentity, its five packs and the five specialists it may ask](diagrams/louis-agent.identity.puls-interface.svg)
+
 ## Design notes
 
 What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the measured story is

@@ -1,0 +1,103 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.orchestrator: the interface design",
+  "caption": "Code checks the claim: its model decides with three tools, the fix is louis-agent's over the API, and code checks the fix before anything is trusted, every step written down.",
+  "classes": {
+    "types": [
+      {
+        "id": "skills",
+        "name": "OrchestratorSkills",
+        "kind": "static",
+        "members": [
+          "+Load(skillsDirectory, service) (ISkillProvider, Methods)"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "ServiceTools",
+        "kind": "the model's three decisions",
+        "members": [
+          "+AcknowledgeError(...)",
+          "+CallLouisAgentFix(...)",
+          "+EscalateToHuman(...)"
+        ]
+      },
+      {
+        "id": "checks",
+        "name": "FixChecks",
+        "kind": "code checks the fix",
+        "members": [
+          "+VerifyFixCommit(...)",
+          "+ReplayRequest(...)",
+          "+RunServiceTests()"
+        ]
+      },
+      {
+        "id": "conversation",
+        "name": "FixConversation",
+        "kind": "one fix's session",
+        "members": [
+          "+SendAsync(message) AgentReply"
+        ]
+      },
+      {
+        "id": "client",
+        "name": "LouisAgentClient",
+        "kind": "the API's sessions over HTTP",
+        "members": [
+          "+CreateSessionAsync(tags?) string",
+          "+SendAsync(sessionId, message, onProgress?) AgentReply",
+          "+DeleteSessionAsync(sessionId)"
+        ]
+      },
+      {
+        "id": "repo",
+        "name": "ServiceRepository",
+        "members": [
+          "+Verify(commit, branch) (Report, Ok)",
+          "+ReturnToMain()"
+        ]
+      },
+      {
+        "id": "comms",
+        "name": "CommsLog",
+        "kind": "the run in markdown, with its cost",
+        "members": [
+          "+StartRun, StartEvent, Sent, Received, Check",
+          "+EndEvent(outcome, reason, answer) EventUsage"
+        ]
+      },
+      {
+        "id": "state",
+        "name": "StateFiles",
+        "kind": "decisions, fixes, escalations as JSON lines",
+        "members": [
+          "+Append<T>(fileName, record)"
+        ]
+      },
+      {
+        "id": "feed",
+        "name": "JsonLinesErrorFeed",
+        "kind": "louis-agent.pack.triage",
+        "tone": "violet"
+      },
+      {
+        "id": "provider",
+        "name": "ISkillProvider",
+        "kind": "interface, louis-agent.core",
+        "tone": "violet"
+      }
+    ],
+    "relations": [
+      { "from": "skills", "to": "provider", "kind": "creates", "word": "the runbooks" },
+      { "from": "tools", "to": "feed", "kind": "holds", "word": "marks handled" },
+      { "from": "tools", "to": "client", "kind": "holds" },
+      { "from": "tools", "to": "comms", "kind": "holds" },
+      { "from": "tools", "to": "conversation", "kind": "creates", "word": "one per fix" },
+      { "from": "conversation", "to": "client", "kind": "holds" },
+      { "from": "checks", "to": "repo", "kind": "uses", "word": "verifies the commit" },
+      { "from": "checks", "to": "comms", "kind": "holds" },
+      { "from": "tools", "to": "state", "kind": "holds", "word": "writes down" }
+    ]
+  }
+}

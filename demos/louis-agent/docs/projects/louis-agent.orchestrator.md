@@ -40,6 +40,10 @@ The flow is under *How it works*; these are the pieces.
 
 ![The orchestrator: the poll, its engine and tools, and what it writes down](diagrams/louis-agent.orchestrator-diagrams.svg)
 
+![One error fixed: louis-agent claims the fix, and the orchestrator's own checks decide whether to trust it](diagrams/louis-agent.orchestrator-sequence.svg)
+
+![The types: three decisions for the model, a client for the API, code that checks the fix, and the logs it writes](diagrams/louis-agent.orchestrator-interface.svg)
+
 ## Structure
 
 | Path | What's in it |

@@ -1,0 +1,30 @@
+{
+  "kind": "sequence",
+  "title": "louis-agent.orchestrator: one error fixed",
+  "caption": "A claim is not proof: louis-agent says it fixed the bug, and the orchestrator's own checks decide whether it did.",
+  "sequence": {
+    "participants": [
+      { "id": "program", "label": "Program", "icon": "terminal", "tone": "blue" },
+      { "id": "model", "label": "Its model", "icon": "chip", "tone": "violet" },
+      { "id": "tools", "label": "ServiceTools", "icon": "checks", "tone": "green" },
+      { "id": "api", "label": "louis-agent.api", "icon": "server", "tone": "red" },
+      { "id": "checks", "label": "FixChecks", "icon": "shield", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "program", "to": "model", "text": "the event, fenced as data, the runbooks as its prompt" },
+      { "step": "message", "from": "model", "to": "tools", "text": "CallLouisAgentFix(error, expected behaviour)" },
+      { "step": "message", "from": "tools", "to": "api", "text": "open a session, send the fix request" },
+      { "step": "reply", "from": "api", "to": "tools", "text": "the reply streamed, FIX-RESULT at the end" },
+      { "step": "reply", "from": "tools", "to": "model", "text": "the claimed commit and branch" },
+      { "step": "message", "from": "model", "to": "checks", "text": "VerifyFixCommit, ReplayRequest, RunServiceTests" },
+      { "step": "reply", "from": "checks", "to": "model", "text": "each check's result" },
+      { "step": "block", "block": "alt", "label": "every check passed",
+        "steps": [ { "step": "reply", "from": "model", "to": "program", "text": "DECISION: fixed, written to fixes.jsonl" } ],
+        "else": [ { "label": "a check failed",
+          "steps": [
+            { "step": "message", "from": "model", "to": "tools", "text": "EscalateToHuman(team, reason)" },
+            { "step": "reply", "from": "model", "to": "program", "text": "DECISION: escalated" }
+          ] } ] }
+    ]
+  }
+}

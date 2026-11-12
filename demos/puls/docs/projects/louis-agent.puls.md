@@ -42,6 +42,8 @@ as you go: every answer shows what it cost, specialists included.
 
 ![Asking Puls about cooking: the web app opens the session, Puls asks the cook on the server, and the page draws the work and the answer](diagrams/louis-agent.puls-diagrams-2.svg)
 
+![The types: Puls's words, brand and pages on the framework's web, its templates and its sites](diagrams/louis-agent.puls-interface.svg)
+
 ## Structure
 
 | Path | What |

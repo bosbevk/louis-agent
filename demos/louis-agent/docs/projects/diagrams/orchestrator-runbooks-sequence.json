@@ -1,0 +1,27 @@
+{
+  "kind": "sequence",
+  "title": "Runbooks: one error decided",
+  "caption": "The runbook decides which of three: expected is acknowledged, auto-fixable goes to louis-agent with its expected behaviour, and a method with no runbook goes to a person.",
+  "sequence": {
+    "participants": [
+      { "id": "orchestrator", "label": "The orchestrator", "icon": "terminal", "tone": "blue" },
+      { "id": "skills", "label": "OrchestratorSkills", "icon": "book", "tone": "green" },
+      { "id": "model", "label": "Its model", "icon": "chip", "tone": "violet" },
+      { "id": "tools", "label": "ServiceTools", "icon": "checks", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "orchestrator", "to": "skills", "text": "Load(Skills, order-service)" },
+      { "step": "reply", "from": "skills", "to": "orchestrator", "text": "the runbooks as skills, and their methods" },
+      { "step": "message", "from": "orchestrator", "to": "model", "text": "an order-total error, the runbooks in the prompt" },
+      { "step": "note", "over": ["model"], "text": "reads ## Method: order-total" },
+      { "step": "block", "block": "alt", "label": "Expected",
+        "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "AcknowledgeError" } ],
+        "else": [
+          { "label": "Auto-fixable",
+            "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "CallLouisAgentFix, the expected behaviour verbatim" } ] },
+          { "label": "anything else, or no runbook",
+            "steps": [ { "step": "message", "from": "model", "to": "tools", "text": "EscalateToHuman, the runbook's team" } ] }
+        ] }
+    ]
+  }
+}

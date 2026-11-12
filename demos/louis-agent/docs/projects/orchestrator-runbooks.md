@@ -57,6 +57,10 @@ For every new error, the orchestrator follows its workflow (`voice-orchestrator.
 
 ![Runbooks: how the orchestrator uses one to decide](diagrams/orchestrator-runbooks-how-a-runbook-is-used.svg)
 
+![One error decided: the runbook in the prompt leads to acknowledging, a fix, or a person](diagrams/orchestrator-runbooks-sequence.svg)
+
+![The types: a runbook is a skill file, loaded with core's skill provider, its sections leading to the three tools](diagrams/orchestrator-runbooks-interface.svg)
+
 Classification matches on the exception **type** and, where the runbook says so, the **message**. When in doubt, the
 orchestrator escalates — a wrongly escalated error costs a person a minute; a wrongly "fixed" one can cost much more.
 

@@ -28,6 +28,14 @@ voice is the mode, the three are `specialists/triage-*.md`, and the packs are na
 - The triage pack's tools refuse a run id they don't know, so a mistyped id makes no stray run; in an eval's trial
   an unknown run starts with its first step instead, since a trial's fresh session has none behind it (Louis's pick).
 
+## Diagrams
+
+![How it works: the manager asks each role by its address, every role ends with its typed tool, and the manager ends the case](diagrams/louis-agent.identity.triage-flow.svg)
+
+![One case through the team: the sorter names the department, the investigator reports, and the manager decides](diagrams/louis-agent.identity.triage-sequence.svg)
+
+![The types: TriageIdentity, its packs and the roles it may ask, and the role files ending with the pack's tools](diagrams/louis-agent.identity.triage-interface.svg)
+
 ## What proves it
 
 `demos/louis-agent/evals/louis-agent.identity.triage.evals`: one eval per role, folders of files the coding demo's
