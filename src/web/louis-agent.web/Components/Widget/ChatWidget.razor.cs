@@ -101,7 +101,7 @@ public partial class ChatWidget : IAsyncDisposable
 
     /// <summary>What the tour asks the guide.</summary>
     [Parameter]
-    public string TourQuestion { get; set; } = "Walk me through this page, one section at a time.";
+    public string TourQuestion { get; set; } = "Walk me through this page from its top, one section at a time.";
 
     /// <summary>
     /// The words on the tour's button once a conversation has started (FX117), which picks it up again; none, and the

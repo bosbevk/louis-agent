@@ -156,7 +156,8 @@ public class ChatWidgetTests
         Assert.Multiple(() =>
         {
             Assert.That(label, Does.Contain("Tour this page"));
-            Assert.That(sent, Has.Some.Contains("Walk me through this page"));
+            Assert.That(sent, Has.Some.Contains("Walk me through this page from its top"),
+                "FX137, Louis: \"it also skipped the top part\"");
             Assert.That(cut.FindAll(".widget-tour"), Is.Empty, "the tour hides while the chat is open");
             Assert.That(without.FindAll(".widget-tour"), Is.Empty);
         });

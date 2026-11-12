@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 98 | 85 |
-| Fixes (`FX`) | 124 | 6 |
+| Fixes (`FX`) | 127 | 6 |
 | Cleanups (`CL`) | 32 | 26 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -247,7 +247,10 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
-| FX133 | 2026-11-12 | The guide offers a demo live at its *What to watch* stop (Ask it live, Just the recording, the next stop), and after the business answers it coaches: what the business just did and why (Louis: "I do not get the guide to teach me"; his picks: one rule in the walkthrough, run it live and coach) |
+| FX137 | 2026-11-12 | The page's tour asks the guide to start from its top ("Walk me through this page from its top, one section at a time."), so it no longer skips the heading for the section on screen (Louis: "it also skipped the top part") |
+| FX135 | 2026-11-12 | One guide for the whole site: the widget's runner, chat, session, open panel and size are kept per identity (`KeptGuide`, `GuideKeeper`), so a move between the showroom's layout and the site's carries the talk on, even mid-answer (Louis: "the agentsession must be for the whole site", "except the demos"); the guide above both frames comes after |
+| FX134 | 2026-11-12 | The business the guide asks knows the page it sits in: each window's page goes with the guide's message and `AskAgent` sends it to that business's voice, so it shows a room on its first answer (Louis: "the demo agent should know on which page he is on") |
+| FX133 | 2026-11-12 | The guide offers a demo live: the cards gain Ask it live in code where a business's window shows (the prompt rule alone lost to the walkthrough's three choices), and after the business answers it coaches what it did and why, then offers questions to ask next (Louis: "I do not get the guide to teach me", "when he is the teacher he must give me offers of what I could ask") |
 | FX132 | 2026-11-11 | The guesthouse demo is blue and the law practice amber, in the showroom's rail and on their pages (Louis: "guesthouse must be blue") |
 | FX131 | 2026-11-11 | A test that lists the demos skips a dot-folder (`TestPaths.Demos`): the starter's spawn test leaves `demos/.spawn-…` while it runs, and the demos diagram test counted it in the full suite |
 | FX129 | 2026-11-11 | The cook's file names `web` among its toolsets, as its text said: Puls's old hand-over sent it, an `AskAgent` sends none (F127.3.1 step 11c-1) |

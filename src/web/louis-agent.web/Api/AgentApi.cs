@@ -96,7 +96,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// </summary>
     public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments, Page? page = null,
-        IReadOnlyList<WindowPage>? windows = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        IReadOnlyList<WindowPage>? windows = null,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // The browser buffers a reply unless told to stream it, which would hold the whole turn back until its end.
         var request = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{sessionId}/messages")

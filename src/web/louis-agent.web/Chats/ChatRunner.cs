@@ -56,7 +56,9 @@ public sealed class ChatRunner(
     /// <summary>A turn ended, however it ended: a site refreshes whatever the agent may have changed here.</summary>
     public event Action? TurnEnded;
 
-    /// <summary>A tool call arrived in the turn (F117), once per call, so a page can act on it while the turn still streams.</summary>
+    /// <summary>
+    /// A tool call arrived in the turn (F117), once per call, so a page can act on it while the turn still streams.
+    /// </summary>
     public event Action<Block>? ToolCalled;
 
     public bool CanSend => !Streaming && Chat?.Ended != true && (Draft.Trim().Length > 0 || Attachments.Count > 0);
@@ -79,7 +81,8 @@ public sealed class ChatRunner(
     /// One turn: a session is opened for a new chat (<paramref name="title"/> names it, else its first message does),
     /// the turn is added and streamed, and the chat saved when the stream ends, however it ends.
     /// </summary>
-    public async Task StartTurnAsync(string message, List<Attachment> attachments, Page? page = null, string? title = null)
+    public async Task StartTurnAsync(string message, List<Attachment> attachments, Page? page = null,
+        string? title = null)
     {
         Notice = null;
         if (Chat is null)
@@ -128,7 +131,8 @@ public sealed class ChatRunner(
                 // A tool call is one new block the moment it starts; its result later changes that block, adding none.
                 int blocks = turn.Blocks.Count;
                 TurnStream.Apply(turn, streamEvent);
-                if (turn.Blocks.Count > blocks && turn.Blocks[^1] is { Kind: BlockKind.Tool } call) ToolCalled?.Invoke(call);
+                if (turn.Blocks.Count > blocks && turn.Blocks[^1] is { Kind: BlockKind.Tool } call)
+                    ToolCalled?.Invoke(call);
                 redraw.Request();
             }
         }

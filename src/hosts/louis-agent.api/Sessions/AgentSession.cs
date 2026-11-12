@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.SessionStream.Wire.Requests;
+using LouisAgent.SessionStream.Wire.Requests.Windows;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;

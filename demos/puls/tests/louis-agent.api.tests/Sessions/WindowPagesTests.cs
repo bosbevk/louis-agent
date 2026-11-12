@@ -3,6 +3,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream.Wire.Requests;
+using LouisAgent.SessionStream.Wire.Requests.Windows;
 
 namespace LouisAgent.Api.Tests.Sessions;
 

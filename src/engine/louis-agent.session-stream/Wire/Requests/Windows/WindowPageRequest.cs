@@ -1,4 +1,4 @@
-namespace LouisAgent.SessionStream.Wire.Requests;
+namespace LouisAgent.SessionStream.Wire.Requests.Windows;
 
 /// <summary>
 /// The page an agent's own window on the visitor's screen sits in (FX134): a showroom's live window shows a business

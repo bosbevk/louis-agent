@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using LouisAgent.SessionStream.Wire.Requests.Windows;
+
 namespace LouisAgent.SessionStream.Wire.Requests;
 
 /// <summary>
@@ -9,4 +12,5 @@ public sealed record SendMessageRequest(
     string? Message,
     List<AttachmentRequest>? Attachments,
     PageRequest? Page = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     List<WindowPageRequest>? Windows = null);
