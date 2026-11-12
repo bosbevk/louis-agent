@@ -2,29 +2,32 @@
 @inject ChatText Text
 
 <div class="turn @(Streaming ? "streaming" : "")">
-    <div class="user-message">
-        @if (ShowUserText && Turn.UserText.Length > 0)
-        {
-            <div class="user-text">@Turn.UserText</div>
-        }
-        @if (Turn.AttachmentNames.Count > 0)
-        {
-            <div class="attachments">
-                @foreach (var name in Turn.AttachmentNames)
-                {
-                    <span class="chip">📄 @name</span>
-                }
-            </div>
-        }
-    </div>
-    @if (UserActions is not null && !Streaming)
+    @if (HasUserMessage)
     {
-        <div class="message-actions user-actions">@UserActions(Turn)</div>
+        <div class="user-message">
+            @if (ShowsUserText)
+            {
+                <div class="user-text">@Turn.UserText</div>
+            }
+            @if (Turn.AttachmentNames.Count > 0)
+            {
+                <div class="attachments">
+                    @foreach (var name in Turn.AttachmentNames)
+                    {
+                        <span class="chip">📄 @name</span>
+                    }
+                </div>
+            }
+        </div>
+        @if (UserActions is not null && !Streaming)
+        {
+            <div class="message-actions user-actions">@UserActions(Turn)</div>
+        }
     }
 
     <div class="assistant-message" @ref="_answer">
         <BlocksView Blocks="Turn.Blocks" Streaming="Streaming" Currency="Currency" Shown="Shown" ShowWork="ShowWork"
-                    Answer="@Answer" Chosen="Chosen" />
+                    Answer="@Answer" Chosen="Chosen"/>
 
         @if (Streaming && (Turn.Blocks.Count == 0 || Turn.Blocks[^1] is { Kind: BlockKind.Tool }))
         {

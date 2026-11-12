@@ -1,9 +1,9 @@
 @inherits LayoutComponentBase
-@* The framework's admin frame, filled with what's Puls's own: its logo, its live strip, its links and the way back to the chat. *@
+@* The framework's admin frame, filled with what's Puls's own: its logo, its live strip and the way back to the chat.
+   The eval studio's links come from its area (F127.6). *@
 
 <AdminShell BrandTitle="Puls home" BackHref="gesels" BackLabel="Back to Puls">
     <Brand><PulsLogo /></Brand>
     <Top><LiveRunStrip /></Top>
-    <Links><EvalLinks /></Links>
     <ChildContent>@Body</ChildContent>
 </AdminShell>
