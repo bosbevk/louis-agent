@@ -1,0 +1,84 @@
+<svg viewBox="-24 -24 928 372" width="928" height="372" role="img" aria-label="louis-agent.core.telemetry at a glance" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.core.telemetry at a glance</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="372" rx="14" />
+  <rect class="frame" x="0" y="0" width="880" height="324" rx="14" />
+  <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
+  <rect class="card highlight" x="20" y="20" width="840" height="106" rx="10" />
+  <g class="icon" transform="translate(430 36) scale(0.8333)">
+    <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+    <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+    <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+    <path d="M4 20h14" />
+  </g>
+  <text class="title" x="302.7" y="81" text-anchor="start">Telemetry</text>
+  <rect class="chip" x="386.5" y="65" width="190.8" height="20" rx="5" />
+  <text class="code" x="393.5" y="79" text-anchor="start">louis-agent.core.telemetry</text>
+  <text class="text" x="440" y="105" text-anchor="middle">OpenTelemetry on core: a host opts in, and core alone sends nothing anywhere.</text>
+  <rect class="card" x="20" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(36 182) scale(0.8333)">
+    <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M7 8l0 8" />
+    <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
+    <path d="M14 14l3 -3l3 3" />
+  </g>
+  <text class="title" x="36" y="227" text-anchor="start">The tracer</text>
+  <text class="text" x="36" y="251" text-anchor="start">Every turn, model request, tool</text>
+  <text class="text" x="36" y="267" text-anchor="start">call and HTTP call as a span, sent</text>
+  <text class="text" x="36" y="283" text-anchor="start">over OTLP.</text>
+  <rect class="card" x="305.3" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(321.3 182) scale(0.8333)">
+    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+    <path d="M9 9l1 0" />
+    <path d="M9 13l6 0" />
+    <path d="M9 17l6 0" />
+  </g>
+  <text class="title" x="321.3" y="227" text-anchor="start">The log sink</text>
+  <text class="text" x="321.3" y="251" text-anchor="start">Every log line to the collector</text>
+  <text class="text" x="321.3" y="267" text-anchor="start">too, the record files left out.</text>
+  <rect class="card" x="590.7" y="166" width="269.3" height="138" rx="10" />
+  <g class="icon" transform="translate(606.7 182) scale(0.8333)">
+    <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+  </g>
+  <text class="title" x="606.7" y="227" text-anchor="start">Own traffic out</text>
+  <text class="text" x="606.7" y="251" text-anchor="start">Our own calls to the collector are</text>
+  <text class="text" x="606.7" y="267" text-anchor="start">never traced, or every batch would</text>
+  <text class="text" x="606.7" y="283" text-anchor="start">be a span.</text>
+</svg>

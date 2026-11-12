@@ -8,6 +8,8 @@
 > **Kind:** Class library (`net10.0`) · **Path:** `packs/tools/louis-agent.pack.leads/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.coding-catalog`, for the guide
 
+![The leads pack: SendLead, a sender behind a seam, and failures as text](diagrams/louis-agent.pack.leads.svg)
+
 ## Purpose
 
 The guide on louis-agent.dev sells a hosted site with an agent and custom agents. When a visitor is interested, the way

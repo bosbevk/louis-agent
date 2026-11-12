@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web.evals at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "evals", "icon": "checks", "title": "The eval studio's screens", "code": "louis-agent.web.evals",
+          "look": "highlight",
+          "text": "Where someone building an agent works. They read the API's admin routes and nothing else." }
+      ] },
+      { "cards": [
+        { "id": "runs", "icon": "chart", "title": "Evals and their runs",
+          "text": "Every eval, its last pass rate per mode, and its runs down a timeline." },
+        { "id": "review", "icon": "users", "title": "Answers to grade",
+          "text": "The answers waiting for a person's grade." },
+        { "id": "studio", "icon": "code", "title": "The studio and prompts",
+          "text": "Compose an eval, and read every built-in prompt." }
+      ] }
+    ],
+    "links": [
+      { "from": "evals", "to": "runs" },
+      { "from": "evals", "to": "review" },
+      { "from": "evals", "to": "studio" }
+    ]
+  }
+}

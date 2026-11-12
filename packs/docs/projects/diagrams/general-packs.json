@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "The general packs at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "packs", "icon": "box", "title": "The general packs", "code": "packs/tools", "look": "highlight",
+          "text": "The tools any agent may want, one pack each. The guards around them stay in the engine." }
+      ] },
+      { "cards": [
+        { "id": "files", "icon": "folder", "title": "Files",
+          "text": "Read, write and search the workspace. PDF, Word and Excel as text." },
+        { "id": "git", "icon": "branch", "title": "Git",
+          "text": "Status, diffs, branches, commits, merges and history." },
+        { "id": "dotnet", "icon": "code", "title": ".NET",
+          "text": "Build, test, run, restore and list packages." },
+        { "id": "shell", "icon": "terminal", "title": "Shell",
+          "text": "Python, PowerShell and bash, on the composition's runners." }
+      ] },
+      { "cards": [
+        { "id": "web", "icon": "world", "title": "Web",
+          "text": "Search, fetch, read a drawn page, check a quote, convert money." },
+        { "id": "paymo", "icon": "chart", "title": "Paymo",
+          "text": "Time entries, tasks, projects and summaries, on its own key." },
+        { "id": "devops", "icon": "checks", "title": "Azure DevOps",
+          "text": "Work items, sprints and team queries, on its own settings." }
+      ] }
+    ],
+    "links": []
+  }
+}

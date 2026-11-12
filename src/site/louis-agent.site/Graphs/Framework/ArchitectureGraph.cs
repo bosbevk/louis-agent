@@ -1,4 +1,4 @@
-using LouisAgent.Web.Graphs;
+using LouisAgent.Diagrams.Flow;
 
 namespace LouisAgent.Site.Graphs.Framework;
 
@@ -19,7 +19,7 @@ public static class ArchitectureGraph
             new GraphNode("src/tools", "src/tools", "a developer's tools", 1),
             new GraphNode("packs", "packs", "tools, evals, web and tests", 1),
             new GraphNode("demos", "demos", "louis-agent, puls, starter", 2),
-            new GraphNode("src/site", "src/site", "the framework's own site", 2),
+            new GraphNode("src/site", "src/site", "the framework's own site", 2)
         ],
         [
             new GraphEdge("src/engine", "src/hosts"),
@@ -32,6 +32,6 @@ public static class ArchitectureGraph
             new GraphEdge("packs", "demos", "named"),
             new GraphEdge("src/hosts", "src/site"),
             new GraphEdge("src/web", "src/site"),
-            new GraphEdge("packs", "src/site", "named"),
+            new GraphEdge("packs", "src/site", "named")
         ]);
 }

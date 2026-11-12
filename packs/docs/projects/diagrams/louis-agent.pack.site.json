@@ -1,0 +1,22 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.site at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "site", "icon": "browser", "title": "The site", "code": "louis-agent.pack.site", "look": "highlight",
+          "text": "The agent takes a visitor to a page of the site, and to a place on it." }
+      ] },
+      { "cards": [
+        { "id": "tool", "icon": "message", "title": "ShowPage",
+          "text": "A path of this site, a place after the #, checked here: no host, no climb out." },
+        { "id": "widget", "icon": "world", "title": "The widget acts",
+          "text": "The visitor's browser goes there, scrolls to the place and lights it up a moment." }
+      ] }
+    ],
+    "links": [
+      { "from": "site", "to": "tool" },
+      { "from": "site", "to": "widget" }
+    ]
+  }
+}

@@ -6,6 +6,8 @@
 > `demos/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md))
 
+![Puls: its voice, its specialists and the packs it names](diagrams/louis-agent.identity.puls.svg)
+
 ## Purpose
 
 Who Puls is: the South African general assistant's voice in Afrikaans and English, its routing, its specialists and its

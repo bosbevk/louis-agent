@@ -6,6 +6,8 @@
 > [samples](../../../demos/louis-agent/samples/README.md); the orchestrator that read the feed before, in
 > [its doc](../../../demos/louis-agent/docs/projects/louis-agent.orchestrator.md).
 
+![The triage pack: the error feed, a run's steps, typed endings, a person and a run read back, and the departments](diagrams/louis-agent.pack.triage.svg)
+
 An agent team that triages a service's errors needs what every department's workflow needs and no agent should hold
 itself: where the errors come from, where a run's steps are kept, a typed way to say what it found or decided, a
 person to raise a case to, and a way to read a run back. This pack holds those, as tools and records, so the

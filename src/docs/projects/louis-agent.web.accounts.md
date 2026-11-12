@@ -4,6 +4,8 @@
 > **References:** louis-agent.web, louis-agent.accounts.contracts, Microsoft.AspNetCore.Components.Authorization ·
 > **Used by:** a site that has accounts: louis-agent.puls, louis-agent.starter, louis-agent.code-review
 
+![The account pages, and their parts: the pages, the client and passkeys](diagrams/louis-agent.web.accounts.svg)
+
 ## Purpose
 
 What the browser does for accounts, apart from the framework's web (CL30, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md)):

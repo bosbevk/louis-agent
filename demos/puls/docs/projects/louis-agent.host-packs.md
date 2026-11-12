@@ -4,6 +4,8 @@
 > the Puls identity and the packs Puls's programs can load · **Used by:**
 > louis-agent.puls-api, louis-agent.puls-eval-runner
 
+![Puls's composition: one call at start-up, names become enums, a setting not a build](diagrams/louis-agent.host-packs.svg)
+
 ## Purpose
 
 Puls's side of the composition: the one project that knows every identity and pack Puls's programs can load, so that nothing else has to

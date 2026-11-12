@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core.telemetry at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "telemetry", "icon": "chart", "title": "Telemetry", "code": "louis-agent.core.telemetry",
+          "look": "highlight",
+          "text": "OpenTelemetry on core: a host opts in, and core alone sends nothing anywhere." }
+      ] },
+      { "cards": [
+        { "id": "tracer", "icon": "branch", "title": "The tracer",
+          "text": "Every turn, model request, tool call and HTTP call as a span, sent over OTLP." },
+        { "id": "logs", "icon": "file", "title": "The log sink",
+          "text": "Every log line to the collector too, the record files left out." },
+        { "id": "filter", "icon": "shield", "title": "Own traffic out",
+          "text": "Our own calls to the collector are never traced, or every batch would be a span." }
+      ] }
+    ],
+    "links": [
+      { "from": "telemetry", "to": "tracer" },
+      { "from": "telemetry", "to": "logs" },
+      { "from": "telemetry", "to": "filter" }
+    ]
+  }
+}

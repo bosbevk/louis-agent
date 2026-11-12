@@ -58,5 +58,6 @@ The framework's web draws every diagram by these rules, and a site only declares
 
 - [ADR 0084: every site is built on the framework's web](0084-every-site-is-built-on-the-frameworks-web.md)
 - [ADR 0034: code a person can maintain](0034-code-a-person-can-maintain.md)
-- `src/web/louis-agent.web/Graphs/GraphLayout.cs`, `EdgeRouter.cs`, `Components/Graphs/GraphView.razor`
+- `src/web/louis-agent.diagrams/Flow/GraphLayout.cs`, `EdgeRouter.cs` (moved from `louis-agent.web/Graphs/` in
+  CL60.1), `src/web/louis-agent.web/Components/Graphs/GraphView.razor`
 - [FX85](../fixes/README.md) in the fixes list, F111 in the work log

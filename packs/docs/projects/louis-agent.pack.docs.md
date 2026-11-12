@@ -5,6 +5,8 @@
 > [Build a pack](../../../src/docs/guides/build-a-pack.md); who uses it, the guide in the site's corner, in the
 > framework's site's [guide](../../../src/docs/projects/louis-agent.identity.guide.md).
 
+![The docs pack's three tools: ListDocs, SearchDocs and ReadDoc](diagrams/louis-agent.pack.docs.svg)
+
 A guide that answers about a project from memory invents; one that reads the project's docs first answers from what
 was written and can say where. This pack gives a model three read-only tools over one folder of markdown: the index,
 a search, a doc. It never writes and never leaves the folder. Louis's pick for the expert's knowledge (F109.3, B1):

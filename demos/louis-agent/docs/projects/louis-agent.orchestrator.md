@@ -4,6 +4,8 @@
 > louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
 
+![The orchestrator: it watches a log, reads its runbook, and has louis-agent fix it](diagrams/louis-agent.orchestrator.svg)
+
 ## Purpose
 
 A second agent, built on the same core, that watches one microservice's error log, decides what each exception needs

@@ -1,4 +1,4 @@
-using LouisAgent.Web.Graphs;
+using LouisAgent.Diagrams.Flow;
 
 namespace LouisAgent.Site.Graphs.Framework;
 
@@ -17,7 +17,7 @@ public static class PacksGraph
             new GraphNode("tools", "Tools", "typed arguments, never a shell", 2),
             new GraphNode("session", "A session", "loads only the toolsets it names", 2),
             new GraphNode("guards", "The engine's guards", "the fetcher, the browser, the context", 3),
-            new GraphNode("mcp", "MCP", "the same tools, served as they are", 3),
+            new GraphNode("mcp", "MCP", "the same tools, served as they are", 3)
         ],
         [
             new GraphEdge("pack", "toolsets"),
@@ -26,6 +26,6 @@ public static class PacksGraph
             new GraphEdge("toolsets", "session"),
             new GraphEdge("guide", "session", "read"),
             new GraphEdge("tools", "guards", "through"),
-            new GraphEdge("tools", "mcp", "served"),
+            new GraphEdge("tools", "mcp", "served")
         ]);
 }

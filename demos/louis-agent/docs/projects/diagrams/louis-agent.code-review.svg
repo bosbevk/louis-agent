@@ -1,0 +1,78 @@
+<svg viewBox="-24 -24 928 356" width="928" height="356" role="img" aria-label="louis-agent.code-review at a glance" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.code-review at a glance</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.word {
+  fill: var(--text); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round;
+}
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="356" rx="14" />
+  <rect class="frame" x="0" y="0" width="880" height="308" rx="14" />
+  <path class="edge" d="M 440 126 L 440 146 L 154.7 146 L 154.7 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 166" marker-end="url(#arrow)" />
+  <path class="edge" d="M 440 126 L 440 146 L 725.3 146 L 725.3 166" marker-end="url(#arrow)" />
+  <rect class="card highlight" x="20" y="20" width="840" height="106" rx="10" />
+  <g class="icon" transform="translate(430 36) scale(0.8333)">
+    <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+    <path d="M4 8h16" />
+    <path d="M8 4v4" />
+  </g>
+  <text class="title" x="304.7" y="81" text-anchor="start">Code review</text>
+  <rect class="chip" x="404.9" y="65" width="170.4" height="20" rx="5" />
+  <text class="code" x="411.9" y="79" text-anchor="start">louis-agent.code-review</text>
+  <text class="text" x="440" y="105" text-anchor="middle">The coding agent's browser front end, on this PC, a small site on the framework's web.</text>
+  <rect class="card" x="20" y="166" width="269.3" height="122" rx="10" />
+  <g class="icon" transform="translate(36 182) scale(0.8333)">
+    <path d="M8 9h8" />
+    <path d="M8 13h6" />
+    <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+  </g>
+  <text class="title" x="36" y="227" text-anchor="start">Chat</text>
+  <text class="text" x="36" y="251" text-anchor="start">Talk to the coding agent, its work</text>
+  <text class="text" x="36" y="267" text-anchor="start">shown as it happens.</text>
+  <rect class="card" x="305.3" y="166" width="269.3" height="122" rx="10" />
+  <g class="icon" transform="translate(321.3 182) scale(0.8333)">
+    <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+  </g>
+  <text class="title" x="321.3" y="227" text-anchor="start">The workspace</text>
+  <text class="text" x="321.3" y="251" text-anchor="start">Browse its files, review and</text>
+  <text class="text" x="321.3" y="267" text-anchor="start">commit changes.</text>
+  <rect class="card" x="590.7" y="166" width="269.3" height="122" rx="10" />
+  <g class="icon" transform="translate(606.7 182) scale(0.8333)">
+    <path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M17 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M7 8l0 8" />
+    <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
+    <path d="M14 14l3 -3l3 3" />
+  </g>
+  <text class="title" x="606.7" y="227" text-anchor="start">Branches</text>
+  <text class="text" x="606.7" y="251" text-anchor="start">Review a branch and merge it.</text>
+</svg>

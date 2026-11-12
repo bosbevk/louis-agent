@@ -1,0 +1,31 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.triage at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "triage", "icon": "checks", "title": "Triage", "code": "louis-agent.pack.triage", "look": "highlight",
+          "text": "What an agent team needs to triage a service's errors, so its identities stay markdown." }
+      ] },
+      { "cards": [
+        { "id": "feed", "icon": "file", "title": "The error feed",
+          "text": "The errors not handled yet, and the mark that one was, kept beside the log." },
+        { "id": "runs", "icon": "branch", "title": "A run's steps",
+          "text": "Who did what and why, in order, with a typed record behind each decision." },
+        { "id": "tools", "icon": "message", "title": "Typed endings",
+          "text": "An investigation, a review and a case decision, each value parsed and checked." }
+      ] },
+      { "cards": [
+        { "id": "people", "icon": "users", "title": "A person, and a run read back",
+          "text": "A case raised to people with the run so far, and any run read back a line a step." },
+        { "id": "departments", "icon": "settings", "title": "Departments",
+          "text": "Each one's repository, error log and people, as configuration." }
+      ] }
+    ],
+    "links": [
+      { "from": "triage", "to": "feed" },
+      { "from": "triage", "to": "runs" },
+      { "from": "triage", "to": "tools" }
+    ]
+  }
+}

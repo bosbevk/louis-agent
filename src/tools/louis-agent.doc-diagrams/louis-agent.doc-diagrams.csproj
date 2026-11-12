@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Draws every doc's diagram (CL60.1): each diagrams/*.json under the docs becomes the SVG beside it. A person (or
+       Claude) runs it after changing a diagram; nothing ships it. The drawing is louis-agent.diagrams', the same the
+       site's pages use. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.DocDiagrams</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.doc-diagrams.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\web\louis-agent.diagrams\louis-agent.diagrams.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The design doc it shares with the library, and its how-to, shown under docs/ in the IDE's solution explorer;
+         nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.diagrams.md" Link="docs\louis-agent.diagrams.md" />
+    <None Include="..\..\docs\guides\draw-a-diagram.md" Link="docs\draw-a-diagram.md" />
+  </ItemGroup>
+
+</Project>

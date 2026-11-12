@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core.ollama at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "ollama", "icon": "server", "title": "A local model", "code": "louis-agent.core.ollama",
+          "look": "highlight",
+          "text": "The provider a program hands in when its agent may talk to a model through Ollama." }
+      ] },
+      { "cards": [
+        { "id": "client", "icon": "message", "title": "The client",
+          "text": "OllamaSharp at LLM_ENDPOINT, or Ollama's own port on this machine." },
+        { "id": "timeout", "icon": "settings", "title": "A long timeout",
+          "text": "Ten minutes, since a small GPU writes about five tokens a second." }
+      ] }
+    ],
+    "links": [
+      { "from": "ollama", "to": "client" },
+      { "from": "ollama", "to": "timeout" }
+    ]
+  }
+}

@@ -3,6 +3,8 @@
 > **Kind:** library · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
 > `local-agent`
 
+![The terminal host, and what it does: a chat, one prompt for a script, and its local commands](diagrams/louis-agent.cli.svg)
+
 ## Purpose
 
 The simplest way to use the agent: a terminal chat, or a single prompt from a script. It has no protocol of its own,

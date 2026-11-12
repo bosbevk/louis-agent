@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.where-to-buy at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "where", "icon": "world", "title": "Where to buy", "code": "louis-agent.pack.where-to-buy",
+          "look": "highlight",
+          "text": "A shop's branches near the user, asked of the map in code and handed over as a short table." }
+      ] },
+      { "cards": [
+        { "id": "branches", "icon": "search", "title": "FindBranches",
+          "text": "A shop's branches in a place, with their streets, and which is the town's." },
+        { "id": "near", "icon": "folder", "title": "FindShopsNear",
+          "text": "The supermarkets in a town, for someone who named no shop." },
+        { "id": "map", "icon": "server", "title": "One polite map client",
+          "text": "OpenStreetMap's Nominatim, one request a second, as its usage policy asks." }
+      ] }
+    ],
+    "links": [
+      { "from": "where", "to": "branches" },
+      { "from": "where", "to": "near" },
+      { "from": "where", "to": "map" }
+    ]
+  }
+}

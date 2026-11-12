@@ -1,0 +1,29 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core.web at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "web", "icon": "world", "title": "Web access", "code": "louis-agent.core.web", "look": "highlight",
+          "text": "The web on core: what a host hands the engine when its agent may read pages." }
+      ] },
+      { "cards": [
+        { "id": "robots", "icon": "shield", "title": "One robots policy",
+          "text": "Every fetch and every visit obeys robots.txt and a page's no to AI." },
+        { "id": "browser", "icon": "browser", "title": "The browser",
+          "text": "Headless Chrome under its own name, wrapped by the policy and the recorder." },
+        { "id": "search", "icon": "search", "title": "Search and rendering",
+          "text": "The search provider and page renderer the settings name, each one not set up without its keys." }
+      ] },
+      { "cards": [
+        { "id": "replay", "icon": "database", "title": "The recorders",
+          "text": "What the web answered, written once and read back, so an eval's run costs nothing to repeat." }
+      ] }
+    ],
+    "links": [
+      { "from": "web", "to": "robots" },
+      { "from": "web", "to": "browser" },
+      { "from": "web", "to": "search" }
+    ]
+  }
+}

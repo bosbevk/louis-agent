@@ -4,6 +4,8 @@
 > Anthropic (the SDK) · **Used by:** every program whose agent may talk to Claude: the demos' hosts, the eval runners,
 > the orchestrator, the usage probe
 
+![Claude's provider, and its parts: the client, the usage mapper and prompt caching](diagrams/louis-agent.core.anthropic.svg)
+
 ## Purpose
 
 Claude on core (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the provider strategy

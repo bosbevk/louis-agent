@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "Engine, identities and packs",
+  "caption": "The separation ADR 0027 and ADR 0028 document.",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "engine", "icon": "chip", "title": "Engine", "code": "louis-agent.core",
+          "text": "The runtime, tool loop, model integration, skills, and shared agent behaviour." }
+      ] },
+      { "cards": [
+        { "id": "identities", "icon": "user", "title": "Identities",
+          "text": "Who the agent is: voice, modes, roles, and specialist routing." },
+        { "id": "packs", "icon": "box", "title": "Packs",
+          "text": "What the agent can do: tools, guidance, configuration, and capabilities." }
+      ] }
+    ],
+    "links": [
+      { "from": "engine", "to": "identities", "kind": "both" },
+      { "from": "engine", "to": "packs", "kind": "both" }
+    ]
+  }
+}

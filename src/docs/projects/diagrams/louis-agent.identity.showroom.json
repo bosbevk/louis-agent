@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.identity.showroom at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "showroom", "icon": "users", "title": "The showroom's agents", "code": "louis-agent.identity.showroom",
+          "look": "highlight",
+          "text": "Three made-up businesses' agents, each answering a customer and passing a booking on." }
+      ] },
+      { "cards": [
+        { "id": "guesthouse", "icon": "world", "title": "A guesthouse",
+          "text": "Seemeeu, in Yzerfontein. Never promises a room it can't see." },
+        { "id": "restaurant", "icon": "message", "title": "A restaurant",
+          "text": "Wheatfield Kitchen: hours, the menu and a table booked." },
+        { "id": "law", "icon": "shield", "title": "A law practice",
+          "text": "Koringland Attorneys. Never advises, books a consultation." }
+      ] },
+      { "cards": [
+        { "id": "leads", "icon": "mail", "title": "The leads pack",
+          "text": "Passes a booking on, after the customer's yes." },
+        { "id": "site", "icon": "browser", "title": "The site pack",
+          "text": "Shows the place on the business's own website that answers the question." }
+      ] }
+    ],
+    "links": [
+      { "from": "showroom", "to": "guesthouse" },
+      { "from": "showroom", "to": "restaurant" },
+      { "from": "showroom", "to": "law" }
+    ]
+  }
+}

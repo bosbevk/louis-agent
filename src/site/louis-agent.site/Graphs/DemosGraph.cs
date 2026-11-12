@@ -1,4 +1,4 @@
-using LouisAgent.Web.Graphs;
+using LouisAgent.Diagrams.Flow;
 
 namespace LouisAgent.Site.Graphs;
 
@@ -15,11 +15,11 @@ public static class DemosGraph
             new GraphNode("framework", "The framework", "the engine, the hosts, the web, the packs", 0),
             new GraphNode("demos/puls", "Puls", "the South African assistant", 1),
             new GraphNode("demos/louis-agent", "The coding agent", "and this site, with its guide", 1),
-            new GraphNode("demos/starter", "The starter", "the smallest site, from a template", 1),
+            new GraphNode("demos/starter", "The starter", "the smallest site, from a template", 1)
         ],
         [
             new GraphEdge("framework", "demos/puls"),
             new GraphEdge("framework", "demos/louis-agent"),
-            new GraphEdge("framework", "demos/starter"),
+            new GraphEdge("framework", "demos/starter")
         ]);
 }

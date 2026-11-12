@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 92 | 83 |
+| Features (`F`) | 92 | 84 |
 | Fixes (`FX`) | 122 | 6 |
-| Cleanups (`CL`) | 27 | 27 |
+| Cleanups (`CL`) | 28 | 27 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (116 in the TODO)
+## Open (117 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -46,6 +46,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
+| F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F134 | The showroom looks modern (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; his picks: look B, showcase with photos, and Tabler Icons): line icons instead of emoji, one raised surface, a rail with room, a photo on each business's cover, the index in a centred column under a photo hero; five steps | Next |
 | F48 | Recipe maths and a teaching cook | Next |
@@ -367,6 +368,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| CL60.1 | 2026-11-11 | The renderer and the overviews: `louis-agent.diagrams` (plain C#, the flow engine moved in, cards in Louis's style with a highlight and a heading look, 22 Tabler icons, one SVG with a light and a dark look), the `louis-agent.doc-diagrams` tool, `DocsDiagramsTests`, and an overview picture on all 42 project docs and two of Louis's figures |
 | CL58 | 2026-11-07 | A component's styles sit beside it (ADR 0094): `X.razor.scss` scoped and bundled by Blazor's CSS isolation for the accounts, the admin, the studio (64 files) and the chat (21); the globals a site's own pages draw or a theme overrides stay partials; accounts/, web/admin/ and their forwards gone; the snapshot helper and the stylesheet helper know the scope and the bundle |
 | CL31 | 2026-11-07 | The framework's scripts as ES modules beside their components, imported through JsModule (ADR 0093); chat.js and passkeys.js gone from every site's head; the download the framework owns |
 | CL57 | 2026-11-07 | What a project holds (ADR 0092): the API off core.web, the runners' programs hand in services, Rider to the ACP server, the SDKs as core.anthropic/ollama/openai, the eval studio as api.evals and web.evals, the hosts lose -server, a starter API; CL51 with it |

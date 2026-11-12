@@ -4,6 +4,8 @@
 > louis-agent.choices only · **Used by:** louis-agent.evals (the writer), louis-agent.api (the reader and the
 > export), louis-agent.web and louis-agent.puls (the live view)
 
+![The eval protocol: one event per line, the run's and the conversation's events, and its choices as enums](diagrams/louis-agent.evals.protocol.svg)
+
 ## Purpose
 
 The eval protocol's contract, version 2: the records the runner writes on stdout and the API and the portal read

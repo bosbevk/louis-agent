@@ -1,0 +1,23 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core.openai at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "openai", "icon": "cloud", "title": "OpenAI-compatible", "code": "louis-agent.core.openai",
+          "look": "highlight",
+          "text": "The provider for any server that speaks OpenAI's chat API: LM Studio, vLLM, OpenAI itself." }
+      ] },
+      { "cards": [
+        { "id": "endpoint", "icon": "server", "title": "Your endpoint",
+          "text": "LLM_ENDPOINT is required. A server that wants no key gets a placeholder." },
+        { "id": "defaults", "icon": "chart", "title": "Standard usage",
+          "text": "Tokens in the standard fields and no cache markers, so the seam's defaults hold." }
+      ] }
+    ],
+    "links": [
+      { "from": "openai", "to": "endpoint" },
+      { "from": "openai", "to": "defaults" }
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-using LouisAgent.Web.Graphs;
+using LouisAgent.Diagrams.Flow;
 
 namespace LouisAgent.Site.Graphs;
 
@@ -15,12 +15,12 @@ public static class ProofGraph
             new GraphNode("run", "A run", "live, once, at a price", 1),
             new GraphNode("records", "Its records", "what every call read and said", 2),
             new GraphNode("rescore", "A re-score", "from the records, for $0", 3),
-            new GraphNode("ledger", "The ledger", "every request, priced in rand", 3),
+            new GraphNode("ledger", "The ledger", "every request, priced in rand", 3)
         ],
         [
             new GraphEdge("eval", "run", "runs"),
             new GraphEdge("run", "records", "writes"),
             new GraphEdge("records", "rescore", "replays"),
-            new GraphEdge("records", "ledger"),
+            new GraphEdge("records", "ledger")
         ]);
 }

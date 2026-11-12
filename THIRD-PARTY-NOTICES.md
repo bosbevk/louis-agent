@@ -46,6 +46,14 @@ The pages fetch these from a CDN at run time, so no copy is in the repo; their n
 | highlight.js 11.11 (Puls, review web app) | [BSD-3-Clause](https://github.com/highlightjs/highlight.js/blob/main/LICENSE) | both apps' `wwwroot/index.html` |
 | Fonts: Montserrat, JetBrains Mono, IBM Plex Mono, VT323, Geist, Geist Mono | [SIL OFL 1.1](https://openfontlicense.org) | Google Fonts, linked from the pages' CSS |
 
+## Copied into the code
+
+A few pieces of someone else's work are kept in the repo as data, with their notice beside them.
+
+| What | Licence | Where |
+|---|---|---|
+| Tabler Icons: the path data of the icons the docs' diagrams draw on their cards (CL60.1) | [MIT](src/web/louis-agent.diagrams/Icons/LICENSE-tabler-icons.txt) · Paweł Kuna | `src/web/louis-agent.diagrams/Icons/IconPaths.cs` |
+
 ## Container images
 
 The Docker images build on others' images (Microsoft's .NET and Aspire dashboard images, MongoDB, Chromium's

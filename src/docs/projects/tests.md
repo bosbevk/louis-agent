@@ -51,6 +51,8 @@ sequenceDiagram
     end
 ```
 
+![The framework's tests: a fake model, golden files, and the integration tests apart](diagrams/tests.svg)
+
 ## Purpose
 
 Fast, offline checks of the behaviour that matters: tools, skills, the engine's loop and guards, configuration, and the

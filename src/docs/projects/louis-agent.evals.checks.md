@@ -4,6 +4,8 @@
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
 > harness); from F49.3, the packs
 
+![The check contract: it reads a trial, returns a grade, and the checks themselves live elsewhere](diagrams/louis-agent.evals.checks.svg)
+
 ## Purpose
 
 The check contract: what a check reads (a trial and its turns) and what it returns (a grade). It lives outside the

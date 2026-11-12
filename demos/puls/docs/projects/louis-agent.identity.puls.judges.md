@@ -4,6 +4,8 @@
 > louis-agent.evals (the harness), louis-agent.identity.puls (the cook's expectations and messages) · **Used by:**
 > louis-agent.evals.runner only
 
+![Puls's judge: its rubric, on the harness's judge, referenced by the runner only](diagrams/louis-agent.identity.puls.judges.svg)
+
 ## Purpose
 
 Puls's model judge: the cook's `meal-for-people`, which asks a model whether an answer is a meal for the people asked

@@ -3,6 +3,8 @@
 > **Kind:** Class library (`net10.0`) · **Path:** `src/engine/louis-agent.core.ollama/` · **References:** louis-agent.core,
 > OllamaSharp · **Used by:** every program whose agent may talk to a local model through Ollama
 
+![Ollama's provider, and its parts: the client and its long timeout](diagrams/louis-agent.core.ollama.svg)
+
 ## Purpose
 
 Ollama on core (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the provider strategy that

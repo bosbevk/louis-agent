@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.core.anthropic at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "anthropic", "icon": "cloud", "title": "Claude", "code": "louis-agent.core.anthropic",
+          "look": "highlight",
+          "text": "The provider a program hands in when its agent may talk to Claude." }
+      ] },
+      { "cards": [
+        { "id": "client", "icon": "message", "title": "The client",
+          "text": "Built from the key and endpoint the settings give, with a thinking budget for older models." },
+        { "id": "mapper", "icon": "chart", "title": "The usage mapper",
+          "text": "Reads Anthropic's cache writes, which it reports outside the standard fields." },
+        { "id": "caching", "icon": "database", "title": "Prompt caching",
+          "text": "The marker at the end of the system prompt and the one the API moves forward." }
+      ] }
+    ],
+    "links": [
+      { "from": "anthropic", "to": "client" },
+      { "from": "anthropic", "to": "mapper" },
+      { "from": "anthropic", "to": "caching" }
+    ]
+  }
+}

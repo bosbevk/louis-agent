@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.web.accounts at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "accounts", "icon": "users", "title": "Account pages", "code": "louis-agent.web.accounts",
+          "look": "highlight",
+          "text": "What the browser does for accounts. A site without accounts ships none of it." }
+      ] },
+      { "cards": [
+        { "id": "pages", "icon": "browser", "title": "The pages",
+          "text": "Sign-in, registration, confirmation, reset and profile, inside the site's own layout." },
+        { "id": "client", "icon": "server", "title": "The client",
+          "text": "Talks to the API's /account routes, Identity's and ours." },
+        { "id": "passkeys", "icon": "shield", "title": "Passkeys",
+          "text": "A small script module the passkey buttons import." }
+      ] }
+    ],
+    "links": [
+      { "from": "accounts", "to": "pages" },
+      { "from": "accounts", "to": "client" },
+      { "from": "accounts", "to": "passkeys" }
+    ]
+  }
+}

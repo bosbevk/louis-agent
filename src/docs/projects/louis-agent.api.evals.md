@@ -4,6 +4,8 @@
 > louis-agent.core, louis-agent.evals.protocol, louis-agent.evals.checks, MongoDB.Driver · **Used by:** a program that
 > wants the eval studio: the Puls API, the coding API, the starter API
 
+![The eval studio, and its parts: the runner, the stores and the admin routes](diagrams/louis-agent.api.evals.svg)
+
 ## Purpose
 
 The eval studio on the API (CL57, [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)): the runner

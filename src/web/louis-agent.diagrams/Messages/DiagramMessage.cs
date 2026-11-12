@@ -1,0 +1,33 @@
+using System.ComponentModel;
+
+namespace LouisAgent.Diagrams.Messages;
+
+/// <summary>
+/// This library's own texts (ADR 0009: a text is a member of a message enum, its <c>[Description]</c> a template with
+/// named holes). Its own, since it references no part of the engine and so can't use core's <c>MessageText</c>
+/// (Louis's pick, CL60.1 step 2); <see cref="DiagramText"/> fills the holes.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+public enum DiagramMessage
+{
+    [Description("The diagram's file can't be read: {Reason}")]
+    Unreadable,
+
+    [Description("'{Value}' is not a kind of diagram. The kinds are {Kinds}.")]
+    UnknownKind,
+
+    [Description("A {Kind} diagram needs its \"{Kind}\" part.")]
+    MissingPart,
+
+    [Description("A diagram needs its \"title\": the words a reader of the picture is told it shows.")]
+    MissingTitle,
+
+    [Description("The arrow from '{From}' to '{To}' names '{Id}', which no box in the diagram has.")]
+    UnknownBox,
+
+    [Description("The link from '{From}' to '{To}' names '{Id}', which no card in the diagram has.")]
+    UnknownCard,
+
+    [Description("There is no renderer for a {Kind} diagram yet.")]
+    NoRenderer
+}

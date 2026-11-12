@@ -33,6 +33,8 @@
     <ProjectReference Include="..\..\engine\louis-agent.choices\louis-agent.choices.csproj" />
     <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
+    <!-- CL60.1: the diagrams GraphView draws, in their own plain-C# library, which the docs' tool draws with too. -->
+    <ProjectReference Include="..\louis-agent.diagrams\louis-agent.diagrams.csproj" />
 
     <!-- The Sass compiler's settings are read at build time only; published, the three libraries' copies would land
          on one path and dotnet publish refuses (FX62). -->

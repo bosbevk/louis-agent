@@ -9,6 +9,8 @@
 > **Kind:** Class library (`net10.0`) · **Path:** `src/site/louis-agent.identity.showroom/` · **References:**
 > `louis-agent.composition` only · **Used by:** `louis-agent.site-api` (the site's host), behind its key
 
+![The showroom's agents: a guesthouse, a restaurant and a law practice, on the leads and the site packs](diagrams/louis-agent.identity.showroom.svg)
+
 ## Purpose
 
 A business owner understands a website with an agent best by watching one answer a business like theirs (F128.2,

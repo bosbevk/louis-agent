@@ -4,6 +4,8 @@
 > louis-agent.composition, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
 > `PACKS=where-to-buy`, or an identity that names it (Puls) · **Uses:** OpenStreetMap's Nominatim
 
+![The where-to-buy pack: FindBranches, FindShopsNear and one polite map client](diagrams/louis-agent.pack.where-to-buy.svg)
+
 ## Purpose
 
 What an agent can do to say where to buy something: find a shop's branches near the user, with their streets and

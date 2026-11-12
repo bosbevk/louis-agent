@@ -1,0 +1,26 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.pack.shop-prices at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "prices", "icon": "chart", "title": "Shop prices", "code": "louis-agent.pack.shop-prices",
+          "look": "highlight",
+          "text": "Roughly what a shopping list costs, from Stats SA's average prices, always shown as estimates." }
+      ] },
+      { "cards": [
+        { "id": "estimate", "icon": "code", "title": "EstimatePrices",
+          "text": "Each item priced in the user's province, the total and the price per person in code." },
+        { "id": "tables", "icon": "file", "title": "The price tables",
+          "text": "Stats SA's averages shipped with the pack, credited." },
+        { "id": "store", "icon": "database", "title": "The store and the upload",
+          "text": "With its address set, the tables live in MongoDB and a new month's file is uploaded there." }
+      ] }
+    ],
+    "links": [
+      { "from": "prices", "to": "estimate" },
+      { "from": "prices", "to": "tables" },
+      { "from": "prices", "to": "store" }
+    ]
+  }
+}

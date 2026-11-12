@@ -4,6 +4,8 @@
 > louis-agent.composition, louis-agent.choices, PuppeteerSharp · **Used by:** every host that gives its agent the web:
 > the API, the CLI, the ACP and MCP hosts, the demos' programs; the eval runner through the API's settings
 
+![Web access, and its parts: the robots policy, the browser, search and rendering, and the recorders](diagrams/louis-agent.core.web.svg)
+
 ## Purpose
 
 Web access on core (CL33, [ADR 0091](../adr/0091-web-access-and-telemetry-are-libraries-on-core.md)): the

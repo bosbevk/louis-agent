@@ -4,6 +4,8 @@
 > the demo's last run at the [`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) (removed in CL10), the design in
 > [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
 
+![A runbook, and what it can decide: nothing, a fix, or a hand-off](diagrams/orchestrator-runbooks.svg)
+
 A **runbook** is the orchestrator's instruction sheet for one API method of the service it watches. When that method
 throws, the orchestrator reads its runbook to decide what happens: nothing, a fix by louis-agent, or a hand-off to a
 human team. Runbooks are where people set the policy; the agents carry it out.

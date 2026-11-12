@@ -1,0 +1,32 @@
+{
+  "kind": "cards",
+  "title": "louis-agent.site at a glance",
+  "cards": {
+    "rows": [
+      { "cards": [
+        { "id": "site", "icon": "world", "title": "The framework's website", "code": "louis-agent.site",
+          "look": "highlight",
+          "text": "What louis-agent is and what Louis sells, built on the framework's web as a customer's site is." }
+      ] },
+      { "cards": [
+        { "id": "pages", "icon": "browser", "title": "The pages",
+          "text": "Offer first, the framework as the proof, every place on a page with its own address." },
+        { "id": "guide", "icon": "message", "title": "The guide",
+          "text": "The chat in the corner, answering from the docs and nothing else." },
+        { "id": "showroom", "icon": "users", "title": "The showroom",
+          "text": "Made-up businesses' agents, recorded once, then live to try." }
+      ] },
+      { "cards": [
+        { "id": "host", "icon": "server", "title": "Its own host",
+          "text": "A few lines: the pages as HTML and the guide's API, nothing else." },
+        { "id": "deploy", "icon": "cloud", "title": "Its image",
+          "text": "The host, the docs the guide reads and the price tables, run in Azure." }
+      ] }
+    ],
+    "links": [
+      { "from": "site", "to": "pages" },
+      { "from": "site", "to": "guide" },
+      { "from": "site", "to": "showroom" }
+    ]
+  }
+}
