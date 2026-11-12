@@ -47,7 +47,14 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
 
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
     private readonly ConcurrentDictionary<string, int> _opened = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, DateTimeOffset> _admitted = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Each session the door admitted: when, and for which visitor, whose count a session it asks for joins.
+    /// </summary>
+    private readonly ConcurrentDictionary<string, Admitted> _admitted = new(StringComparer.Ordinal);
+
+    /// <summary>The mark on a request the door admitted, holding the visitor it counts for.</summary>
+    private const string VisitorMark = "louis-agent.open-door.visitor";
 
     /// <summary>The settings the door was built with.</summary>
     public OpenDoorOptions Options { get; } = options;
@@ -58,17 +65,21 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
 
     /// <summary>What the door says about this call.</summary>
     /// <remarks>
-    /// Guard clauses: a shut door, a call on an admitted session, then a visitor opening one of the open identities.
+    /// Guard clauses: a shut door, a call on an admitted session, then a session opened in one of the open identities.
+    /// A session an admitted session's turn asks for (its <c>parent</c>, F127.4.2) counts as that visitor's, not the
+    /// address that opened it, which is the server's own: the visitor's window may carry on in it, under their cap.
     /// </remarks>
     internal async Task<OpenDoorAnswer> ConsiderAsync(HttpContext context)
     {
         if (!Options.IsOpen) return OpenDoorAnswer.NotMine;
         if (SessionIdOf(context.Request.Path) is { } id && _admitted.ContainsKey(id)) return OpenDoorAnswer.Pass;
         if (!IsOpeningASession(context.Request)) return OpenDoorAnswer.NotMine;
-        if (await AskedIdentityAsync(context.Request) is not { } identity) return OpenDoorAnswer.NotMine;
+        if (await OpeningAsync(context.Request) is not { Identity: { } identity } opening)
+            return OpenDoorAnswer.NotMine;
 
-        // One more for this address today, unless the day's cap is reached; other days' counts go as they're met.
-        string key = $"{AddressOf(context)}|{_clock.GetUtcNow():yyyy-MM-dd}";
+        // One more for this visitor today, unless the day's cap is reached; other days' counts go as they're met.
+        string visitor = VisitorOf(opening.ParentSession) ?? AddressOf(context);
+        string key = $"{visitor}|{_clock.GetUtcNow():yyyy-MM-dd}";
         foreach (string old in _opened.Keys.Where(k => !k.EndsWith(key[^10..], StringComparison.Ordinal)))
             _opened.TryRemove(old, out _);
         int count = _opened.AddOrUpdate(key, 1, (_, n) => n + 1);
@@ -79,17 +90,27 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         }
 
         context.Items[Mark] = identity;
+        context.Items[VisitorMark] = visitor;
         return OpenDoorAnswer.Pass;
     }
 
-    /// <summary>Remembers a session the door opened, so its own calls pass for a day.</summary>
-    internal void Admit(string sessionId)
+    /// <summary>
+    /// Remembers a session the door opened, and the visitor it counted for, so its own calls pass for a day.
+    /// </summary>
+    internal void Admit(string sessionId, HttpContext context)
     {
         var now = _clock.GetUtcNow();
-        foreach (var (id, _) in _admitted.Where(entry => now - entry.Value > Remembered).ToList())
+        foreach (var (id, _) in _admitted.Where(entry => now - entry.Value.At > Remembered).ToList())
             _admitted.TryRemove(id, out _);
-        _admitted[sessionId] = now;
+        string visitor = context.Items.TryGetValue(VisitorMark, out object? who) && who is string named
+            ? named
+            : AddressOf(context);
+        _admitted[sessionId] = new Admitted(now, visitor);
     }
+
+    /// <summary>The visitor an admitted session counts for; none for a session the door didn't admit.</summary>
+    private string? VisitorOf(string? sessionId) =>
+        sessionId is not null && _admitted.TryGetValue(sessionId, out var admitted) ? admitted.Visitor : null;
 
     /// <summary>The text of the 429 a capped visitor gets.</summary>
     internal string CapReachedText() =>
@@ -106,10 +127,11 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
     }
 
     /// <summary>
-    /// The open identity the body names, as the host names it; none when it names another or none. The body is read
+    /// What the body opens: the open identity it names, as the host names it (none when it names another or none),
+    /// and the session whose turn asked for it, from its <c>parent</c> tag (<c>{session}#{turn}</c>). The body is read
     /// and rewound for the handler.
     /// </summary>
-    private async Task<string?> AskedIdentityAsync(HttpRequest request)
+    private async Task<Opening?> OpeningAsync(HttpRequest request)
     {
         request.EnableBuffering();
         using var reader = new StreamReader(request.Body, Encoding.UTF8, leaveOpen: true);
@@ -119,8 +141,8 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         {
             using var json = JsonDocument.Parse(string.IsNullOrWhiteSpace(text) ? "{}" : text);
             if (json.RootElement.ValueKind != JsonValueKind.Object) return null;
-            if (!json.RootElement.TryGetProperty("identity", out var identity)) return null;
-            return identity.ValueKind == JsonValueKind.String ? Options.Admits(identity.GetString()) : null;
+            return new Opening(Options.Admits(Text(json.RootElement, "identity")),
+                Text(json.RootElement, "parent")?.Split('#')[0]);
         }
         catch (JsonException)
         {
@@ -136,4 +158,14 @@ public sealed class OpenDoor(OpenDoorOptions options, TimeProvider? clock = null
         string first = (forwarded ?? "").Split(',')[0].Trim();
         return first.Length > 0 ? first : context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
     }
+
+    /// <summary>A text field of the body, or none.</summary>
+    private static string? Text(JsonElement body, string name) =>
+        body.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+
+    /// <summary>What a body opens: the open identity it names, and the session whose turn asked for it.</summary>
+    private sealed record Opening(string? Identity, string? ParentSession);
+
+    /// <summary>A session the door admitted: when, and the visitor it counts for.</summary>
+    private sealed record Admitted(DateTimeOffset At, string Visitor);
 }

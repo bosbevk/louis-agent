@@ -114,7 +114,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
             return Bad(ex.Message);
         }
 
-        if (admitted is not null) door.Admit(session.Id);
+        if (admitted is not null) door.Admit(session.Id, context);
         if (opener is not null)
             Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
                 new

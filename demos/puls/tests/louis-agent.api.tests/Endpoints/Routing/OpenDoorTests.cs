@@ -154,6 +154,61 @@ public class OpenDoorTests
     }
 
     /// <summary>
+    /// A session an admitted session asks for (F127.4.2, Louis's pick 7: "the business's session counts as one of the
+    /// visitor's"): the server opens the shop for the guide's turn, from its own address with the key, and the door
+    /// counts it as the visitor's, admits it so the visitor's window may carry on in it, and leaves the server's own
+    /// address uncounted.
+    /// </summary>
+    [Test]
+    public async Task ASessionTheGuideAsksFor_CountsAsTheVisitors_AndIsAdmitted()
+    {
+        await using var app = Host(Door);
+        await app.StartAsync();
+        var client = app.GetTestClient();
+
+        // The visitor opens the guide: one of their two today.
+        using var guide = await OpenFromAsync(client, "203.0.113.5", new { identity = "guide" });
+        string guideId = IdOf(await guide.Content.ReadAsStringAsync());
+
+        // The guide's turn asks the shop: the server's own call, with the key, the guide's turn as its parent.
+        using var asked = new HttpRequestMessage(HttpMethod.Post, "/v1/sessions");
+        asked.Content = JsonContent.Create(new
+        {
+            identity = "shop",
+            parent = $"{guideId}#1"
+        });
+        asked.Headers.Add("x-api-key", Key);
+        asked.Headers.Add("X-Forwarded-For", "127.0.0.1");
+        using var child = await client.SendAsync(asked);
+        string childId = IdOf(await child.Content.ReadAsStringAsync());
+
+        using var childsCall = await client.GetAsync($"/v1/sessions/{childId}");
+        using var third = await OpenFromAsync(client, "203.0.113.5", new { identity = "guide" });
+        using var someoneElse = await OpenFromAsync(client, "127.0.0.1", new { identity = "guide" });
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(child.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            Assert.That(childsCall.StatusCode, Is.EqualTo(HttpStatusCode.OK), "the visitor's window may carry on");
+            Assert.That(third.StatusCode, Is.EqualTo(HttpStatusCode.TooManyRequests), "the shop was the second");
+            Assert.That(someoneElse.StatusCode, Is.EqualTo(HttpStatusCode.Created), "the server's address is free");
+        });
+    }
+
+    /// <summary>Asks the API to open a session with this body, with no key, from this address.</summary>
+    private static async Task<HttpResponseMessage> OpenFromAsync(HttpClient client, string address, object body)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/v1/sessions");
+        request.Content = JsonContent.Create(body);
+        request.Headers.Add("X-Forwarded-For", address);
+        return await client.SendAsync(request);
+    }
+
+    /// <summary>The session id in a created reply.</summary>
+    private static string IdOf(string reply) =>
+        JsonDocument.Parse(reply).RootElement.GetProperty("session_id").GetString()!;
+
+    /// <summary>
     /// A shut door (no identity named, or no cap) changes nothing: the guide is behind the key like the rest.
     /// </summary>
     [TestCase(new[] { "guide" }, 0)]
