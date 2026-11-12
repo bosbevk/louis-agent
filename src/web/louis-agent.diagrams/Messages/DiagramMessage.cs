@@ -55,6 +55,12 @@ public enum DiagramMessage
     [Description("Row {Number} of the ticket needs both its \"label\" and its \"value\".")]
     TicketHalfRow,
 
+    [Description("Row {Number}'s icon '{Icon}' isn't one the library draws; use one of {Icons}.")]
+    UnknownIcon,
+
+    [Description("The status's tone '{Tone}' isn't one there is; use one of {Tones}.")]
+    UnknownTone,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 

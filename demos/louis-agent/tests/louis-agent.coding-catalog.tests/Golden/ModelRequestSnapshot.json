@@ -1600,6 +1600,93 @@
       }
     },
     {
+      "Name": "ShowCard",
+      "Description": "Shows the visitor a read-only card in the chat, such as a booking request or an order, drawn from its parts: a small kicker, a title, rows of facts with an icon each, and an optional subtitle, status and note. The visitor can't change it; to ask them something, offer choices after it. Then say one line, not the card again.",
+      "Schema": {
+        "type": "object",
+        "properties": {
+          "kicker": {
+            "description": "A few words in capitals over the title, such as BOOKING REQUEST.",
+            "type": "string"
+          },
+          "title": {
+            "description": "The card's headline, such as The garden room.",
+            "type": "string"
+          },
+          "rows": {
+            "description": "One to six facts, each an icon by name (calendar, clock, users, user, paw, home, phone, mail, tag, info…), what the fact is (Dates) and what it says (Fri 14 to Sun 16 Nov).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "icon",
+                "label",
+                "value"
+              ]
+            }
+          },
+          "subtitle": {
+            "description": "A line under the title, such as the business and its town.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "status": {
+            "description": "Where it stands, such as Not sent yet in amber, or Sent in green once it went.",
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tone": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "default": null
+          },
+          "note": {
+            "description": "A short line at the card's foot, such as how the business confirms.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "kicker",
+          "title",
+          "rows"
+        ]
+      }
+    },
+    {
       "Name": "ShowCommit",
       "Description": "Show the full details of one commit — its message, author, and a per-file change summary, not a full diff (git show --stat) — for the given reference. Read-only. Use this to inspect a specific commit found via GetLog; use DiffStaged or DiffUnstaged instead if you want the current uncommitted changes rather than a historical commit.",
       "Schema": {
