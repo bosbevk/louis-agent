@@ -1,4 +1,7 @@
 using System.ComponentModel;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Packs.Site.Messages.Holes.Cards;
+using LouisAgent.Packs.Site.Messages.Holes.Forms;
 
 namespace LouisAgent.Packs.Site.Messages;
 
@@ -18,6 +21,7 @@ public enum SiteToolMessage
     CardShown,
 
     [Description("Error: not shown. {Reason} Fix the card and call ShowCard again.")]
+    [Holes(typeof(CardRefusedHoles))]
     CardRefused,
 
     [Description("A card needs its \"title\": the headline on its band.")]
@@ -38,9 +42,11 @@ public enum SiteToolMessage
     [Description(
         "Offered: the visitor sees {Count} choices as cards under your words; their click comes back as their next " +
         "message. The cards end this answer: write nothing more, and wait for it.")]
+    [Holes(typeof(OfferedHoles))]
     Offered,
 
     [Description("Error: not offered. {Reason} Fix the choices and call Offer again.")]
+    [Holes(typeof(OfferRefusedHoles))]
     OfferRefused,
 
     [Description("The cards need their question: what the choices answer.")]
@@ -64,24 +70,30 @@ public enum SiteToolMessage
     [Description(
         "Asked: the visitor sees the form under your words, {Count} to fill in; what they send comes back as their " +
         "next message, each field by its label. The form ends this answer: write nothing more, and wait for it.")]
+    [Holes(typeof(AskedHoles))]
     Asked,
 
     [Description("Error: not asked. {Reason} Fix the form and call AskFor again.")]
+    [Holes(typeof(AskRefusedHoles))]
     AskRefused,
 
     [Description("The form needs its question: what it asks for.")]
     AskWithoutQuestion,
 
     [Description("A form asks one to four fields; this has {Count}.")]
+    [Holes(typeof(AskFieldCountHoles))]
     AskFieldCount,
 
     [Description(
         "Field {Number} needs a label of 1 to {Most} characters, the words over its box; '{Label}' has {Length}.")]
+    [Holes(typeof(AskBadLabelHoles))]
     AskBadLabel,
 
     [Description("Field {Number}'s kind isn't one the form draws; use one of {Kinds}.")]
+    [Holes(typeof(AskUnknownKindHoles))]
     AskUnknownKind,
 
     [Description("Two fields say the same, '{Label}': each needs its own label.")]
+    [Holes(typeof(AskSameLabelHoles))]
     AskSameLabel,
 }

@@ -1,5 +1,7 @@
 using LouisAgent.Choices;
+using LouisAgent.Packs.Site.Messages;
 using LouisAgent.Packs.Site.Tools;
+using LouisAgent.Testing.Messages;
 
 namespace LouisAgent.Packs.Site.Tests;
 
@@ -26,6 +28,11 @@ public class SitePackTests
             Assert.That(guide, Does.Contain("ShowPage").And.Contain("one line"));
         });
     }
+
+    /// <summary>Each message's holes record matches its template (ADR 0119).</summary>
+    [Test]
+    public void EveryHolesRecord_MatchesItsTemplate() =>
+        Assert.That(MessageHoles.Problems([typeof(SiteToolMessage)]), Is.Empty);
 
     /// <summary>It needs no setting and builds its two tool classes, the pages' and (F127.4.1) the cards'.</summary>
     [Test]

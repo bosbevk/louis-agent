@@ -2,6 +2,8 @@ using System.ComponentModel;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Messages;
+using LouisAgent.Packs.Site.Messages.Holes.Cards;
+using LouisAgent.Packs.Site.Messages.Holes.Forms;
 using LouisAgent.Packs.Site.Tools.Cards;
 using LouisAgent.Packs.Site.Tools.Forms;
 
@@ -43,9 +45,10 @@ public sealed class CardTools
         [Description("A short line at the card's foot, such as how the business confirms.")]
         string? note = null)
     {
-        if (CardCheck.Problem(title, rows, status) is { } problem)
-            return MessageText.Format(SiteToolMessage.CardRefused, new { Reason = problem });
-        return MessageText.Format(SiteToolMessage.CardShown, new { });
+        if (CardCheck.Problem(title, rows, status) is not { } problem)
+            return MessageText.Format(SiteToolMessage.CardShown);
+        var refused = new CardRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.CardRefused, refused);
     }
 
     /// <summary>
@@ -65,9 +68,14 @@ public sealed class CardTools
             "why of one line under it; and suggested true on the one you recommend, at most one.")]
         IReadOnlyList<OfferChoice> choices)
     {
-        if (OfferCheck.Problem(question, choices) is { } problem)
-            return MessageText.Format(SiteToolMessage.OfferRefused, new { Reason = problem });
-        return MessageText.Format(SiteToolMessage.Offered, new { choices.Count });
+        if (OfferCheck.Problem(question, choices) is not { } problem)
+        {
+            var offered = new OfferedHoles(choices.Count);
+            return MessageText.Format(SiteToolMessage.Offered, offered);
+        }
+
+        var refused = new OfferRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.OfferRefused, refused);
     }
 
     /// <summary>
@@ -87,8 +95,13 @@ public sealed class CardTools
             "and its kind: Name, Phone, Email, Text for one line, or LongText for a box that grows.")]
         IReadOnlyList<FormField> fields)
     {
-        if (FormCheck.Problem(question, fields) is { } problem)
-            return MessageText.Format(SiteToolMessage.AskRefused, new { Reason = problem });
-        return MessageText.Format(SiteToolMessage.Asked, new { fields.Count });
+        if (FormCheck.Problem(question, fields) is not { } problem)
+        {
+            var asked = new AskedHoles(fields.Count);
+            return MessageText.Format(SiteToolMessage.Asked, asked);
+        }
+
+        var refused = new AskRefusedHoles(problem);
+        return MessageText.Format(SiteToolMessage.AskRefused, refused);
     }
 }
