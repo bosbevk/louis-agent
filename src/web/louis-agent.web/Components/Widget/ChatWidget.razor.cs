@@ -140,6 +140,14 @@ public partial class ChatWidget : IAsyncDisposable
         await SendAsync();
     });
 
+    /// <summary>A card the guide offered was clicked (F127.4.1): its label goes as if the visitor had typed it.</summary>
+    private Task ChooseAsync(string label)
+    {
+        if (Runner.Streaming) return Task.CompletedTask;
+        Runner.Draft = label;
+        return SendAsync();
+    }
+
     /// <summary>
     /// The guide takes the visitor to a place (F117, ADR 0107): on a ShowPage call the address is read into the page
     /// and the place on it; the browser goes to the page only when it is another one, and the module scrolls to the

@@ -30,7 +30,10 @@ public class ShowCardTests
         Assert.That(answer, Does.StartWith("Shown: the visitor sees the card"));
     }
 
-    /// <summary>An icon the card doesn't draw is refused, naming the ones it does.</summary>
+    /// <summary>
+    /// An icon the card doesn't draw is refused, naming the ones it does. A refusal starts with "Error", so the stream
+    /// marks the call failed and the widget draws nothing for it.
+    /// </summary>
     [Test]
     public void AnUnknownIcon_IsRefused_WithTheIcons()
     {
@@ -38,7 +41,7 @@ public class ShowCardTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(answer, Does.StartWith("Not shown:"));
+            Assert.That(answer, Does.StartWith("Error: not shown."));
             Assert.That(answer, Does.Contain("'rocket'").And.Contain("calendar"));
         });
     }
@@ -49,6 +52,6 @@ public class ShowCardTests
     {
         string answer = _tools.ShowCard("K", "T", []);
 
-        Assert.That(answer, Does.StartWith("Not shown:").And.Contain("one to six rows"));
+        Assert.That(answer, Does.StartWith("Error: not shown.").And.Contain("one to six rows"));
     }
 }

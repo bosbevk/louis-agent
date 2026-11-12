@@ -17,7 +17,7 @@ public enum SiteToolMessage
     [Description("Shown: the visitor sees the card. Say one line about it; don't repeat its rows in words.")]
     CardShown,
 
-    [Description("Not shown: {Reason} Fix the card and call ShowCard again.")]
+    [Description("Error: not shown. {Reason} Fix the card and call ShowCard again.")]
     CardRefused,
 
     [Description("A card needs its \"title\": the headline on its band.")]
@@ -40,7 +40,7 @@ public enum SiteToolMessage
         "message. Don't list the choices again, and wait for it.")]
     Offered,
 
-    [Description("Not offered: {Reason} Fix the choices and call Offer again.")]
+    [Description("Error: not offered. {Reason} Fix the choices and call Offer again.")]
     OfferRefused,
 
     [Description("The cards need their question: what the choices answer.")]

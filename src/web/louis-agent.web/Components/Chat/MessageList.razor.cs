@@ -42,6 +42,13 @@ public partial class MessageList : IAsyncDisposable
     [Parameter]
     public bool ShowUsage { get; set; } = true;
 
+    /// <summary>
+    /// What a click on a card the agent offered does with its label (F127.4.1): the chat that owns a runner sends it;
+    /// a recording gives none, and its cards wait.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> Chosen { get; set; }
+
     private ElementReference _messages;
     private ChatModel? _shown;
     private bool _wasStreaming;
@@ -71,6 +78,13 @@ public partial class MessageList : IAsyncDisposable
             _scrollToEnd = false;
             _streamEnded = false;
         }
+    }
+
+    /// <summary>The visitor's message after a turn, once they sent one: the answer to what that turn offered.</summary>
+    private string? AnswerTo(Turn turn)
+    {
+        int at = Chat!.Turns.IndexOf(turn);
+        return at + 1 < Chat.Turns.Count ? Chat.Turns[at + 1].UserText : null;
     }
 
     /// <summary>Lets the module go, if it was ever loaded.</summary>

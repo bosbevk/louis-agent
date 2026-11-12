@@ -27,6 +27,10 @@
             <DrawnCard Source="card" />
             break;
 
+        case BlockKind.Tool when OfferCall.Of(block) is { } offer:
+            <OfferCards Offer="offer" Answer="@Answer" Streaming="Streaming" Chosen="Chosen" />
+            break;
+
         case BlockKind.Tool when !ShowWork:
             break;
 

@@ -35,7 +35,7 @@ public class DrawnCardTests
         Kind = BlockKind.Tool,
         ToolName = tool,
         ToolInput = input,
-        ToolResult = failed ? "Not shown: no." : "Shown: the visitor sees the card.",
+        ToolResult = failed ? "Error: not shown. No." : "Shown: the visitor sees the card.",
         ToolFailed = failed
     };
 

@@ -42,20 +42,31 @@ public partial class TurnView : IAsyncDisposable
     [Parameter]
     public bool ShowUsage { get; set; } = true;
 
+    /// <summary>The visitor's message after this turn, once there is one: what the cards it offered fold to.</summary>
+    [Parameter]
+    public string? Answer { get; set; }
+
+    /// <summary>What a click on a card this turn offered does with its label.</summary>
+    [Parameter]
+    public EventCallback<string> Chosen { get; set; }
+
     private Turn? _renderedTurn;
+    private string? _renderedAnswer;
     private bool _wasStreaming;
     private bool _shouldRender = true;
     private CurrencyChoice? _renderedCurrency;
 
     /// <summary>
     /// Finished turns don't change, so only the streaming one (and its final render) is redrawn; markdown isn't
-    /// re-parsed for the whole conversation on every streamed word.
+    /// re-parsed for the whole conversation on every streamed word. A finished turn draws once more when the visitor
+    /// answers it, so the cards it offered fold.
     /// </summary>
     protected override void OnParametersSet()
     {
         _shouldRender = Streaming || _wasStreaming || !ReferenceEquals(Turn, _renderedTurn) ||
-                        Currency != _renderedCurrency;
+                        Currency != _renderedCurrency || Answer != _renderedAnswer;
         _renderedTurn = Turn;
+        _renderedAnswer = Answer;
         _renderedCurrency = Currency;
         _wasStreaming = Streaming;
     }

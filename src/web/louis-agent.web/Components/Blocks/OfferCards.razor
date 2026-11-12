@@ -1,0 +1,29 @@
+@* Choices the agent offered (F127.4.1): the question, then a card per choice the visitor clicks to send its label;
+   once answered, the cards fold to the one chosen, or away when the visitor wrote their own answer. *@
+@inject ChatText Text
+
+<div class="offer">
+    <div class="offer-question">@Offer.Question</div>
+    @foreach (var choice in Shown)
+    {
+        @if (Answer is null)
+        {
+            <button class="offer-card @(choice.Suggested ? "is-suggested" : "")" type="button" disabled="@Waiting"
+                    @onclick="() => Chosen.InvokeAsync(choice.Label)">
+                <span class="offer-label">@choice.Label</span>
+                @if (choice.Why is not null)
+                {
+                    <span class="offer-why">@choice.Why</span>
+                }
+                @if (choice.Suggested)
+                {
+                    <span class="offer-tag">@Text.Suggested</span>
+                }
+            </button>
+        }
+        else
+        {
+            <div class="offer-card is-chosen"><span class="offer-label">@choice.Label</span></div>
+        }
+    }
+</div>

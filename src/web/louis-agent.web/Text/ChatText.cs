@@ -20,6 +20,9 @@ public sealed record ChatText
 
     public string Stopped { get; init; } = "Stopped";
 
+    /// <summary>The tag on the choice the agent suggests, among the cards it offers (F127.4.1).</summary>
+    public string Suggested { get; init; } = "Suggested";
+
     public string DelegatedTo { get; init; } = "Delegated to";
 
     /// <summary>A minion's card and Werk line (F30): the specialist handed one page to a minion.</summary>

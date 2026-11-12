@@ -4,7 +4,7 @@
 <div class="live-chat">
     @* A customer never sees tokens on a business's website: no work, no usage line (Louis: "hide it in the demo"). *@
     <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" ShowWork="false"
-                 ShowUsage="false">
+                 ShowUsage="false" Chosen="ChooseAsync">
         <Empty>
             <button class="live-hint" type="button" @onclick="AskHintAsync">
                 <span class="live-hint-tap">@Words.TapToAsk</span>

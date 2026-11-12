@@ -100,6 +100,14 @@ public partial class MockLiveChat : IDisposable
         return SendAsync();
     }
 
+    /// <summary>A card the business's agent offered was clicked (F127.4.1): its label goes as if typed.</summary>
+    private Task ChooseAsync(string label)
+    {
+        if (Runner.Streaming) return Task.CompletedTask;
+        Runner.Draft = label;
+        return SendAsync();
+    }
+
     private Task<string> OpenSessionAsync() => Api.CreateSessionAsync([], identity: Identity);
 
     /// <summary>A tool the agent called goes to the demo, on the renderer's thread.</summary>
