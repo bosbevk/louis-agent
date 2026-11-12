@@ -75,6 +75,8 @@ public class GuideFocusesTests
         {
             Assert.That(voice, Does.Not.Contain("speak as if they run a business"));
             Assert.That(selling, Does.Contain("speak as if they run a business"));
+            Assert.That(selling, Does.Contain("guide them to the demos").And.Contain("`/demos`"),
+                "Louis: \"it must also guide them to demos\"");
             Assert.That(framework, Does.Contain("diagrams").And.Contain("planned"));
         });
     }
