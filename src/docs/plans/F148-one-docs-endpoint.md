@@ -110,6 +110,15 @@ header, no pattern, no move and no test reaches them in F148, F150 or F149. The 
 under the docs root, as the tools do today, so the guide loses nothing it can read now; a doc with no header is
 listed with no type. The demos' docs get the same treatment later, as their own row, when Louis asks.
 
+**What the ten feature docs become: A, they fold into six draft plans** (card of 2026-11-13, after "we should also
+go through all features, and look at where they stand"; where each stands is in *The feature docs* below). One kind
+for work not yet built, the plan: F7 takes F6, F11 and today's draft; F9 takes F16; F15 takes F13; F12 becomes
+F44's; F8 and F10 each become their own. `src/docs/features/` goes as `specs/` does, and "feature doc" is not a
+kind. This is the *design doc* or *RFC* way, one proposal per piece of work, kept until it is built
+([Design docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/), Rust's RFCs). Not picked:
+the feature doc kept as a kind beside the plan (two docs to keep in step for one feature, as F7 has today), and
+removing all ten (October's stories would leave the working folder).
+
 ### Open choices (asked one at a time)
 
 1. **Which standards the docs follow.**
@@ -155,18 +164,7 @@ listed with no type. The demos' docs get the same treatment later, as their own 
    own reader with YamlDotNet (recommended), a shared reader below core, or plain string methods.
 7. **How the 252 headers get written** (asked when step 3 starts; the options are in that step): the docs' tool
    writes them once (recommended), by hand a kind at a time, or as each doc is next touched.
-8. **What the ten feature docs become** (F150; where each stands is in *The feature docs* below).
-   - **A. One kind for work not yet built: the plan.** The ten fold into six draft plans in `src/docs/plans/` (F7
-     with F6, F11 and today's draft; F8; F9 with F16; F10; F15 with F13; F44 from F12), and `features/` goes as
-     `specs/` does. This is the *design doc* or *RFC* way: one proposal per piece of work, kept until it is built
-     ([Design docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/), Rust's RFCs). The
-     plans' README already says a feature starts as a plan. One kind and one template fewer. *Recommended.*
-   - **B. The feature doc stays a kind, beside the plan** (a *requirements document*: the what and why apart from
-     the how). The five merged docs fold into the doc that took them, five or six stay in `features/`. Keeps the
-     stories and acceptance criteria as they are; two docs to keep in step for one feature, as F7 has today.
-   - **C. Remove all ten, as the unbuilt specs are removed.** The TODO rows keep the one line and link the tag
-     `pre-f150`. The least to carry; October's stories leave the working folder until the feature is planned.
-9. **Where ADR 0108 and ADR 0111 live** (F150; the two the owner rule does not settle).
+8. **Where ADR 0108 and ADR 0111 live** (F150; the two the owner rule does not settle).
    - **A. Both stay with the framework:** each holds a rule the framework's code or tests keep (the recording
      player; the one place in `src/` that may reference a pack). The site's ADR index links them.
    - **B. Both move to `src/site/docs/adr/`:** each is named for the site. The framework's guide then cites a rule
@@ -224,7 +222,8 @@ src/docs/
   guides/              24                      4  one job: its how-to                 (how-to)
   adr/                112                      5  why: one decision each              (ADR)
   learning/            15                      5  what it taught: a write-up a skill  (write-up)
-  plans/  features/  fixes/  specs/            5  being built: gone when done         (plan, feature, fix)
+  plans/  fixes/                               5  being built: gone when done         (plan, fix)
+  features/  specs/                               going (F150): folded into plans, or rewritten or removed
   templates/                                      new: one template per kind (F150)
 src/site/docs/         new (F150)                 the same layers 4 and 5, for the framework's own website
 packs/docs/            projects/ 9, adr/ 3        the same layers 4 and 5, for the packs
@@ -298,7 +297,7 @@ same subfolders as the framework's, and a doc of any kind goes in its owner's.
 | ADR | `adr/` | The code its *Decision* changes |
 | Project doc | `projects/` | The project it describes |
 | How-to | `guides/` | The thing it changes: a how-to for one site or one pack is that owner's; a how-to for extending the framework (*Build a pack*, *Spawn a site*) is the framework's |
-| Plan, and the feature doc if it stays a kind | `plans/`, `features/` | Where most of its steps land |
+| Plan | `plans/` | Where most of its steps land |
 | Fix doc, and a fix's lesson | `fixes/`, `learning/fixes/` | The code the fix changed, settled as each lesson file is written (F150) |
 
 **Three things stay one for the whole repo**, because each is a single list or a single reader's: the front door
@@ -332,7 +331,7 @@ rule today). **References, not copies:** the framework's indexes (`src/docs/READ
 hears), 0106 (every generic part of a business website is the framework's), 0107, 0109, 0110, 0114, 0115 and 0116
 (the showroom area and its live demos), 0117, 0120, 0121. The plans F125, F131, F133 and F134 stay too: most of
 their steps are in the framework's web, the API or a pack. **Two are not clear and are Louis's pick** (open
-choice 9): 0108 (the public watches the coding agent recorded: the door is the site's, the player is the
+choice 8): 0108 (the public watches the coding agent recorded: the door is the site's, the player is the
 framework's) and 0111 (the framework's website lives in `src/site/`: about the site, but it is the rule that lets
 one place in `src/` reference packs).
 
@@ -366,7 +365,24 @@ is rewritten into its plan when its work starts, as the drafts in `plans/` alrea
 
 **All ten are the framework's**, so by the owner rule they stay under `src/docs/`. The two that are not are already
 with their owner and out of scope: F17 (our demo's orchestrator, merged into F39) and F28 (Puls's team talk, step 1
-built). **What kind of doc they are after F150 is Louis's pick** (open choice 8).
+built).
+
+**What F150 does with them** (Louis's pick A), each its own small commit with its links and its TODO row's *Detail*
+fixed:
+
+| Draft plan in `src/docs/plans/` | Folded from | TODO row |
+|---|---|---|
+| `F07-budgets.md` (there today, as a draft) | `features/F06`, `F07`, `F11` | F7 *Cost you can see and stop* |
+| `F08-reliability.md` | `features/F08` | F8 *Reliability* |
+| `F09-long-chats.md` | `features/F09`, `F16` | F9 *Long chats*; F16-S1 under *Cleanups* keeps its row |
+| `F10-settings-per-role.md` | `features/F10` | F10 *Settings per role and per session* |
+| `F15-model-limits.md` | `features/F15`, `F13` | F15 *Model limits and local models* |
+| `F44-the-engine-as-a-product.md` | `features/F12` | F44 *The engine as a product* |
+
+Each opens with the drafts' line ("Plan draft, not yet approved ... rewritten into the plan Louis approves when the
+work starts") and keeps the stories, the acceptance criteria and the done-when; where two docs say the same thing
+it is said once. `features/README.md`'s *Finishing a feature* list moves to the plans' README, since the
+development guide links it. The old docs stay in git at the tag `pre-f150`.
 
 ### The doc design: one pattern per kind of doc
 
@@ -402,7 +418,7 @@ follows after F150; the count is today's, on `main`. The demos' docs are out of 
 | Pattern (its template) | The standard behind it | Where it is used | Docs | Layer |
 |---|---|---|---|---|
 | Front door (no template: one of each) | GitHub's README convention | `README.md`, `ROADMAP.md`, `TODO.md` at the root | 3 | 1 |
-| Index (`index.md`) | Diátaxis reference; generated by F149 | The `README.md` of every docs folder: `src/docs/`, `adr/`, `projects/`, `guides/`, `learning/`, `plans/`, `features/`, `fixes/`, `architecture/`, and the packs' | 11 | 2 |
+| Index (`index.md`) | Diátaxis reference; generated by F149 | The `README.md` of every docs folder: `src/docs/`, `adr/`, `projects/`, `guides/`, `learning/`, `plans/`, `fixes/`, `architecture/`, and the packs' | 11 | 2 |
 | Standing page (`reference.md`) | Diátaxis reference | `goal.md`, `setup.md`, `work-log.md` | 3 | 2 |
 | Explanation (`explanation.md`) | Diátaxis explanation; C4's containers | `src/docs/architecture/`; joined by the protocols pages (from `AGENT_COMMUNICATION.md`), and the two rewritten specs | 13, then about 19 | 3 |
 | Project design doc (`project.md`) | arc42's sections under plain names; C4's components | `src/docs/projects/` (25), `packs/docs/projects/` (9) | 34 | 4 |
@@ -411,7 +427,7 @@ follows after F150; the count is today's, on `main`. The demos' docs are out of 
 | Lesson (`lesson.md`), new | The blameless postmortem (Google's SRE book): what happened, why, what it taught | `learning/fixes/` in its owner's docs folder, one file a fix | 45 today in one doc, about 150 when the owed ones are written | 5 |
 | Write-up (`write-up.md`) | Ours, from GOAL.md's "a skill counts as learned when": measured, trade-offs, what didn't work | `src/docs/learning/`, one page a skill | 13 | 5 |
 | Plan (`plan.md`) | Ours (the plans' README); the nearest outside name is a design doc or RFC | `src/docs/plans/` | 19 | 5 |
-| Feature doc, fix doc (`feature.md`, `fix.md`) | Ours: user stories and done-whens; symptom, cause, fix | `src/docs/features/` (10), `src/docs/fixes/` (1 open) | 11 | 5 |
+| Fix doc (`fix.md`) | Ours: symptom, cause, fix, tests, confirmed, lesson | `src/docs/fixes/` (1 open) | 1 | 5 |
 | Folder README (`folder-readme.md`) | GitHub's README convention | `src/site/config/README.md`, `packs/tests/README.md`: what is in the folder and how to use it | 2 | with its folder |
 
 **Markdown that is not a doc**, so it gets no doc pattern and the endpoint doesn't list it: the prompts and skills
