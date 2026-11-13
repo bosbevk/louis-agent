@@ -29,7 +29,6 @@ you need otherwise.
 |---|---|---|
 | [Development guide](CLAUDE.md) | How-to | Work with Louis step by step, the rules that always apply (one line each, the why in its ADR, the how in `.claude/rules/`), find your way around the code |
 | [Get started](guides/get-started.md) | How-to | Build and run the agent on your machine for the first time |
-| [Finish a step](guides/finish-a-step.md) | How-to | Build, goldens, docs, formatting with Rider's tools, showing the step, the commit |
 | [Add a skill](guides/add-a-skill.md) | How-to | Give the agent a function skill and approve it |
 | [Debug and logs](guides/debug-and-logs.md) | How-to | The tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |

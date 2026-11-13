@@ -18,7 +18,6 @@
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |
 | [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |
 | [Get started](get-started.md) | Build and run the agent on your machine for the first time: the settings files, the build, the tests, the CLI, the Docker stacks |
-| [Finish a step](finish-a-step.md) | Get a step from "the test passes" to "committed": build, goldens, docs, formatting with Rider's tools in order, showing it, the commit |
 | [Add a skill](add-a-skill.md) | Give the agent a function skill: the file, the pending folder and `/approve`, the `## Skill:` shape |
 | [Debug and logs](debug-and-logs.md) | Find what the agent did: the tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](common-errors.md) | Fix the errors a developer meets most, by their message |

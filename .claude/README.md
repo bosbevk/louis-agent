@@ -33,6 +33,8 @@ Two rules follow from the last row.
 |---|---|
 | `plan-a-feature` | A plan is written, changed or finished |
 | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
+| `do-a-step` | A step starts |
+| `finish-a-step` | A step's test passes, and it is to be shown and committed |
 | `draw-a-diagram` | A picture in the docs is added or changed |
 
 The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md).
@@ -44,4 +46,5 @@ The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md
 - **What holds it.** Every file here is at most 200 lines (`ClaudeMdSizeTests`). Every skill has a name and a
   description, and `CLAUDE.md` names exactly the skills there are (`SkillFilesTests`). Every file here is in the
   solution (`SolutionLayoutTests`).
-- **A new skill is not known to a session that is already open.** Start a new session to try it.
+- **A new skill shows in a session that is already open.** Its description joins the session's list of
+  skills. A skill with `paths` shows only once a matching file is worked on.

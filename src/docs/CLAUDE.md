@@ -38,28 +38,27 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 
 ## Steps, branches and commits
 
-**Doing a step: test first** ([how](guides/write-tests.md#write-the-test-first)): write the test for the step's
-behaviour (a fix: one that reproduces the bug), see it fail for the expected reason and keep the output, then
-implement until it passes and tidy with the tests green. Docs-only and configuration-only steps have no test first.
+**The loop of a step.** One step is one commit. How each part is done is in its skill. The waits in it hold
+whether or not a skill is loaded.
 
-**Finishing a step** ([the how-to](guides/finish-a-step.md)), before rule 5's stop:
+1. **Do it** with `/do-a-step`. The test comes first and is seen failing for the expected reason, then the code.
+   A docs-only or configuration-only step has no test first.
+2. **Finish it** with `/finish-a-step`. Test what the step touches, regenerate the golden files if what the model
+   reads changed, bring the docs and pictures along, and format the commit's C# files.
+3. **Show it, and wait.** The files it changes, the commit message and the explanation, with the test failing
+   before the code and passing after. No commit before Louis's ok.
+4. **Commit it on its own**, test and code together, and stop (rule 5). Never push without asking (rule 7).
 
-1. Build and test only what the step touches (`core.tests` too if it moves files or adds names); the full suite only once the feature is built.
-2. If tools, their descriptions, the tool texts or the prompts changed, regenerate the golden files and review their diff.
-3. Update the feature or fix doc, and the docs and diagrams of each project the step touches; on the last step,
-   *Finishing a feature* or *Finishing a fix* in their READMEs.
-4. Format every C# file in the commit, in order and once: Rider's formatter, Rider's inspections, long comment lines
-   by hand, then `dotnet format … --include <its files>` last (CI checks with it). Only the commit's files, whole.
-5. Show the step before committing: the files it changes, the commit message and the explanation (with the test
-   failing before the code and passing after), and wait for Louis's ok.
-6. Commit the step on its own, test and code together, and stop. Never push without asking (rule 7).
+**Which tests, and when.** Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main
+must be merged and full suite unit tests passes". Before a commit, run only the tests of what the step touched.
+Before a pull request, merge `main` into the branch first, and then the full suite of unit tests must pass.
 
 **In Rider, Rider's tools come first** ([ADR 0052](adr/0052-edit-never-script.md)). A session starts with `/mcp` to see
 what Rider offers, and for any job a Rider tool covers (format, inspect, build, test, rename, find usages, symbol
 info, git status) it uses that tool, never a hand edit, a script (Python, sed, PowerShell) or a search-and-replace
 that does the same thing less well: formatted with Rider's formatter, not re-typed; renamed with Rider's rename, not
 replaced; problems from Rider's inspections, not from re-reading the file. A shell command is for what no Rider tool
-does; *Brave mode* stays off. The tool-to-job table per Rider version is in [Finish a step](guides/finish-a-step.md#riders-tools-by-job).
+does; *Brave mode* stays off. The tool-to-job table per Rider version is in [the skill](../../.claude/skills/finish-a-step/SKILL.md#riders-tools-by-job).
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`, `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
@@ -80,6 +79,7 @@ Never without Louis's word, each time. His yes for one is not a yes for the next
 - **A new package.** Three options first, with what speaks for and against each.
 - **A new ADR, or a new rule in one.** Propose it in a few lines and wait.
 - **A design choice the plan doesn't settle** (rules 10 and 11).
+- **A commit.** Show the step first, and wait for his ok.
 - **The next step.** Stop after each one (rule 5).
 
 Three more ways of working, in his words:
@@ -111,6 +111,8 @@ A skill is a procedure that loads for its job. Use the one that fits. More are a
 |---|---|
 | A plan is written, changed or finished | `/plan-a-feature` |
 | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
+| A step starts | `/do-a-step` |
+| A step's test passes, and it is to be shown and committed | `/finish-a-step` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
 
 ## Development workflow
@@ -129,7 +131,7 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 | `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 
 Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are
-in [guides/](guides/README.md): [Finish a step](guides/finish-a-step.md), [Add a skill](guides/add-a-skill.md),
+in [guides/](guides/README.md): [Add a skill](guides/add-a-skill.md),
 modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 

@@ -154,6 +154,6 @@ way. `FileSizeTests`, `FolderSizeTests` and `ArchitectureTests` hold it.
   ADR 0054). A `//` or `///` line over 120 is wrapped by hand (Rider never wraps a comment), as is every long line
   where no Rider runs. A rename goes through Rider's rename refactoring,
   never search and replace. **In Rider, Rider's tools come first** for any job they cover; the order and the
-  tool-to-job table are in [Finish a step](../../src/docs/guides/finish-a-step.md).
+  tool-to-job table are in the [finish-a-step](../skills/finish-a-step/SKILL.md) skill.
 - **Test first** (0014): a step that changes behaviour starts with its test, run and seen failing for the expected
   reason, then the code; one commit with both. Tests run on Linux too ([Write and run tests](../../src/docs/guides/write-tests.md)).

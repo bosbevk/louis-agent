@@ -274,6 +274,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "put-a-finding", "put-a-find
 		.claude\skills\put-a-finding\SKILL.md = .claude\skills\put-a-finding\SKILL.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "do-a-step", "do-a-step", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C69}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\do-a-step\SKILL.md = .claude\skills\do-a-step\SKILL.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "finish-a-step", "finish-a-step", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6A}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\finish-a-step\SKILL.md = .claude\skills\finish-a-step\SKILL.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
@@ -455,7 +465,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C
 		src\docs\guides\change-the-web.md = src\docs\guides\change-the-web.md
 		src\docs\guides\common-errors.md = src\docs\guides\common-errors.md
 		src\docs\guides\debug-and-logs.md = src\docs\guides\debug-and-logs.md
-		src\docs\guides\finish-a-step.md = src\docs\guides\finish-a-step.md
 		src\docs\guides\get-started.md = src\docs\guides\get-started.md
 		src\docs\guides\run-the-evals.md = src\docs\guides\run-the-evals.md
 		src\docs\guides\write-tests.md = src\docs\guides\write-tests.md
@@ -2565,6 +2574,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C67} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C68} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C69} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}

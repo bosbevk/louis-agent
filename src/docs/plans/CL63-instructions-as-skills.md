@@ -211,6 +211,10 @@ is written where and when it will be read.
   solution, and Rider's tree shows `rules` and `skills` under it, as on disk.
 - **2026-11-13, step 1: the two tests of the instruction files have a folder of their own**,
   `Docs/Instructions/` in core's tests, since the `Docs` folder would have held seven files where six is the most.
+- **2026-11-13: which tests, and when.** Louis, while step 4 was built: "we must also add that before
+  comitting only touched unit tests, before doing a PR main must be merged and full suite unit tests passes".
+  It is in `CLAUDE.md`, so it holds with no skill loaded, and in `do-a-step` and `finish-a-step`. `ship-it`
+  takes it too, in step 5.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md)

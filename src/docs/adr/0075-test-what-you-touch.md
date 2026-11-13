@@ -26,7 +26,7 @@ the touched project's own tests didn't.
 
 ## Links
 
-[0014](0014-test-first.md) · [Finish a step](../guides/finish-a-step.md)
+[0014](0014-test-first.md) · the [finish-a-step](../../../.claude/skills/finish-a-step/SKILL.md) skill
 
 ---
 [Docs index](../README.md) · Related: [Write and run tests](../guides/write-tests.md) · [ADRs](README.md)
