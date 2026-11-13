@@ -2,8 +2,9 @@
 
 **Status:** Accepted · **Date:** 2026-11-12 (Louis, F127.6 step 9: "new ADR nothing is to be handwired from the
 framework to implementation") · **Recorded:** 2026-11-12 · Amended 2026-11-13 (F144: the admin is a frame its areas
-plug into) · Amends [0084](0084-every-site-is-built-on-the-frameworks-web.md)
-and [0111](0111-the-frameworks-website-lives-in-src-site.md)
+plug into; F142: an address under `/admin` is no public page) ·
+Amends [0084](0084-every-site-is-built-on-the-frameworks-web.md) and
+[0111](0111-the-frameworks-website-lives-in-src-site.md)
 
 ## Context
 
@@ -25,6 +26,11 @@ until each was edited.
   `Admin(layout)` names the frame and its home at `/admin`, and nothing else. Every part inside it is an area with its
   pages, its sidebar links and its card on the home: `Overview(counts)`, `Packs(views)`, `Evals()`. An admin area
   named without the frame is refused at start-up.
+- **An address under `/admin` is no public page of a site** (amended 2026-11-13, F142, Louis's pick of three, when
+  louis-agent.dev kept the first admin page in a site's own project): the host's page list (`SiteRoutes`) leaves
+  it out, so it is never rendered for a search engine and never in the list the guide searches. Over the areas
+  telling the host which pages are theirs (more wiring for the same result) and the page in a project of its own
+  (a project for one page).
 - **What an implementation passes in is its own**: its layouts as types, its packs' views in the admin's lambda, its
   words and addresses. It never names a framework part (`SiteFrames`, `PackViews`, `ChatHandoff`, a library's
   `AddLouisAgent…`) and never lists the framework's page assemblies: its router reads `SiteAreas.PageAssemblies`.

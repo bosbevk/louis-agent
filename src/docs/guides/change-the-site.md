@@ -82,7 +82,8 @@ minutes a film. Each re-export adds the films' size to git history, so group cha
 
 ## Change the CV
 
-The CV at `/cv` is data ([ADR 0122](../adr/0122-a-page-of-data-is-one-record-and-its-own-editor.md)), so there are
+The CV at `/cv` is data, and its page is its own editor
+([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md)), so there are
 two ways to change it, and neither is the page's markup.
 
 - **In the admin, without a deploy.** Open `/admin/resume` (the admin's key is asked for once). The page there is

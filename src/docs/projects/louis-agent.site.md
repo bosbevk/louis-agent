@@ -145,8 +145,9 @@ The guide answers questions about buying from this section (FX72), so it holds t
 
 ## The CV, and its editor
 
-Louis's CV is a page at `/cv`, and it is data, not markup
-([ADR 0122](../adr/0122-a-page-of-data-is-one-record-and-its-own-editor.md)).
+Louis's CV is a page at `/cv`, and it is data, not markup. That its page is its own editor is this site's
+decision ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md)).
+The rule that keeps the editor out of the public pages is the framework's ([ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
 
 - **The record.** `Content/cv.json` is in the [JSON Resume](https://jsonresume.org/schema) shape, with two parts of
   our own: `facts` (the row of figures) and `now` (the proof-of-work band). `Resumes/` holds its records and the
