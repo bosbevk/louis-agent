@@ -1,4 +1,5 @@
 using System.Net;
+using System.Reflection;
 using System.Text;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
@@ -470,5 +471,23 @@ public class ChatWidgetTests
 
         Assert.That(handler.Requests.Where(r => r.Method == HttpMethod.Get && r.Url.EndsWith("/v1/rates")),
             Is.Not.Empty);
+    }
+
+    /// <summary>
+    /// A redraw that comes after the page's services are gone throws nothing (FX150): CI's test host crashed on one,
+    /// the stream's throttle firing after a test had let the services go, since the widget looked the business
+    /// windows up in them on every redraw. It takes them once, when it starts.
+    /// </summary>
+    [Test]
+    public void ALateRedraw_AfterThePageIsGone_ThrowsNothing()
+    {
+        var ctx = Context(out _);
+        var widget = Render(ctx).Instance;
+        var redraw = typeof(ChatWidget).GetMethod("OnRunnerChanged", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        // The page goes, as a test's end or a navigation lets it go, before the stream's last catch-up fires.
+        ctx.Services.Dispose();
+
+        Assert.DoesNotThrow(() => redraw.Invoke(widget, null));
     }
 }
