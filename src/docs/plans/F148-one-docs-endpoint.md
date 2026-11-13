@@ -334,6 +334,90 @@ public sealed record DocHit(string Path, int Line, string Text);
 
 ![One DocLibrary per process: the pack makes it, the catalogue hands it to the API, and the tools hold the same one](diagrams/F148-one-docs-endpoint-objects-one-running-site.svg)
 
+### The software patterns, and where each is used in the build
+
+Louis, 2026-11-13: "now also add what software patterns will be used where during the build", "with examples".
+Looked up in Fowler's [catalogue](https://martinfowler.com/eaaCatalog/) (PoEAA), the Gang of Four as
+[Refactoring.Guru](https://refactoring.guru/design-patterns/catalog) tells them, and *Building Evolutionary
+Architectures* for the test. Each names a shape the step already needs (ADR 0055): none is added for its own sake.
+The examples are sketches for the recommended options, not the code to copy; a pattern that hangs on an open choice
+says so, and any design choice the build turns up still goes to Louis with three options (rule 11).
+
+| Step | Where | Pattern | What it does for us |
+|---|---|---|---|
+| 1 | `DocLibrary` | **Repository** (Fowler) | One object that stands for "all the docs". Nobody else walks the folder |
+| 1, 6 | `DocsTools` | **Adapter** (GoF) | Turns the library's answers into the text a model reads; the tools hold no file code any more |
+| 2, 3 | `DocInfo`, `DocSource`, `DocPage`, `DocHit` | **Value Object** (Fowler; our records, ADR 0040) | Small values that are equal when their fields are; nothing can change one after it is made |
+| 2 | `EveryDocHasAHeaderTests` | **Fitness function** as a ratchet (Ford, Parsons, Kua) | A test that holds the rule, with a list of docs still owed that can only shrink |
+| 3 | the stamp the Dockerfile writes | **Build once** (Humble and Farley, *Continuous Delivery*) | The image says which commit it is; nothing works it out later |
+| 4 | `IDocLibrary` in composition, `DocLibrary` in the pack | **Separated Interface** with **Plugin** (Fowler), as `IDataFeed` | The API reads docs without referencing the docs pack (ADR 0027). *Hangs on choice 5* |
+| 4 | `AgentCatalog.Docs` | **Registry** (Fowler), the catalogue we have | The one place a host asks "which pack serves docs?" |
+| 4, 5 | `DocsEndpoints`, `DocsHandlers`, `DocsReply` | **Remote Facade** with a **Data Transfer Object** (Fowler) | A few coarse routes over the library, answering with a record shaped for the wire (ADR 0045) |
+| 7 | `DocResources` | **Adapter** (GoF), as `FeedResources` | Each doc becomes the MCP SDK's own resource type |
+| 7 | `McpPrimitives` | **Facade** (GoF), the one we have | Both transports get the docs through its one call |
+| not used | a Remote Proxy for the tools | (GoF) | Only if choice 4 goes to "the tools call `/v1/docs`"; F125.8 brings it for every tool at once |
+| not yet | a Strategy for search | (GoF) | When F125.1 adds ranked search there are two ways to search; with one, a method is enough |
+
+**Repository** (step 1): the library is the only code that knows the docs are files.
+
+```csharp
+public sealed class DocLibrary(string root) : IDocLibrary
+{
+    public IReadOnlyList<DocInfo> List() => _docs;                       // read once, at start
+    public DocPage? Read(string path) =>
+        _byPath.TryGetValue(path, out var info) ? new DocPage(info, File.ReadAllText(Full(path))) : null;
+}
+```
+
+**Adapter** (steps 1 and 6): the tool only turns the library's answer into what the model reads.
+
+```csharp
+public string ReadDoc(string path) =>
+    library.Read(path) is { } page
+        ? page.Markdown + MessageText.Format(DocsToolMessage.Source, SourceLine.Of(page.Info, library.Source))
+        : MessageText.Format(DocsToolMessage.DocNotFound, new DocPath(path));
+```
+
+**Value Object** (steps 2 and 3): a record, with the one thing it can work out.
+
+```csharp
+public sealed record DocSource(string? Commit, string? Repository)
+{
+    public string? UrlOf(string path) =>
+        Commit is null || Repository is null ? null : $"{Repository}/blob/{Commit}/{path}";
+}
+```
+
+**Separated Interface with Plugin** (step 4): the contract sits where both sides can see it, and the pack plugs in.
+
+```csharp
+// louis-agent.composition: all the API ever sees
+public interface IAgentPack { IDocLibrary? Docs => null; /* ...as today */ }
+
+// louis-agent.pack.docs: the one implementation
+public IDocLibrary? Docs => options.Root is null ? null : _library;
+```
+
+**Remote Facade with a Data Transfer Object** (step 4): a named handler, a typed answer, a record for the wire.
+
+```csharp
+public static Results<JsonHttpResult<DocReply>, NotFound<ApiError>> GetDoc(string path, AgentEngineFactory engines) =>
+    engines.Catalog.Docs?.Read(path) is { } page
+        ? TypedResults.Json(DocReply.Of(page), InfoJson.SnakeCase)
+        : ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownDoc, new DocPath(path)));
+```
+
+**Fitness function as a ratchet** (step 2): the rule fails for a new doc, and the old ones are a shrinking list.
+
+```csharp
+[Test]
+public void EveryDoc_SaysWhatItIs()
+{
+    var without = Docs.All().Where(doc => DocHeader.Read(doc) is null).Select(Docs.Relative);
+    Assert.That(without, Is.EquivalentTo(HeadersOwed));   // a doc may leave HeadersOwed, never join it
+}
+```
+
 ### Namespace map
 
 | Type | Folder | Namespace | Step |
