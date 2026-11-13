@@ -200,8 +200,8 @@ demos/louis-agent/docs/  projects/ 4, guides/ 2, adr/ 3     and for each demo
 demos/puls/docs/         projects/ 4, guides/ 2, adr/ 1
 ```
 
-**What moves** (Louis: "we will move them if needed, and you must show it"). Nine docs sit outside their layer
-today. F150 moves them, each move its own small commit with its links fixed; nothing else changes place.
+**What moves** (Louis: "we will move them if needed, and you must show it"). Ten docs sit outside their layer
+today. F150 moves them, or removes them, each move its own small commit with its links fixed; nothing else changes place.
 
 | Today | After | Why |
 |---|---|---|
@@ -209,15 +209,19 @@ today. F150 moves them, each move its own small commit with its links fixed; not
 | `src/docs/AGENT_COMMUNICATION.md` (how the hosts talk) | `src/docs/architecture/agent-communication.md` | It explains the whole, layer 3 |
 | `demos/louis-agent/docs/QUICK_START_AGENT.md` (a tutorial) | `demos/louis-agent/docs/guides/quick-start.md` | The demo's guides, layer 4 |
 | `demos/louis-agent/docs/demos.md` (an explanation) | `demos/louis-agent/docs/projects/demos.md` | What the demo's parts are, layer 4 |
-| `src/docs/specs/RESPONSE_OPTIMISATION.md`, `USAGE_AND_BUDGETS.md` (in progress) | `src/docs/architecture/` | A spec that explains what is built is an explanation, layer 3 |
-| `src/docs/specs/SESSION_ARCHITECTURE.md`, `PDF_SEARCH.md` (ideas) | `src/docs/plans/` as drafts | A spec that is an idea is a draft plan, layer 5 |
-| `demos/louis-agent/docs/specs/ORCHESTRATOR_DESIGN.md` | `demos/louis-agent/docs/projects/` | A design doc, layer 4 |
-| `demos/puls/docs/specs/PULS_COOK.md` | `demos/puls/docs/plans/` | Still to build, layer 5 |
+| `src/docs/specs/RESPONSE_OPTIMISATION.md`, `USAGE_AND_BUDGETS.md` (in progress: F1 and F2 built) | `src/docs/architecture/`, rewritten to hold only what is built | A spec whose work is partly built is finished as a proper explanation, layer 3; what was never built is dropped from it |
+| `demos/louis-agent/docs/specs/ORCHESTRATOR_DESIGN.md` (partly proven by the POC) | `demos/louis-agent/docs/projects/`, only what is built | The same, as the demo's design doc, layer 4 |
+| `src/docs/specs/SESSION_ARCHITECTURE.md`, `PDF_SEARCH.md` (ideas, nothing built) | removed | An idea nobody is building is not a doc; its TODO row keeps the one line |
+| `demos/puls/docs/specs/PULS_COOK.md` (ideas after F48, nothing built) | removed | The same; F76 and F88 keep their rows |
 
-So the `specs/` folders go: "spec" is not a kind, each one is an explanation or a plan. **What stays:** `SETUP.md`
-and `SITE_OWNERS.md` (standing pages; the second is an address Puls's browser sends to site owners), and a `README.md`
-beside a `config/`, `docker/` or `deploy/` folder, which lives with what it is about (ADR 0074) and only gains its
-header.
+The specs (Louis, 2026-11-13: "specs which is not built can be removed, in-progress ones must be fnished as proper
+docs with only what is built"): so the `specs/` folders go, and "spec" is not a kind. A removed spec stays in git at
+the tag `pre-f150`, where the four TODO rows that link one (F76, F88, the session architecture's and the PDF
+search's) then point, as the rows of CL24's folded docs point at `pre-cl24`.
+
+**What stays:** `SETUP.md` and `SITE_OWNERS.md` (standing pages; the second is an address Puls's browser sends to
+site owners), and a `README.md` beside a `config/`, `docker/` or `deploy/` folder, which lives with what it is
+about (ADR 0074) and only gains its header.
 
 What the layers add to today's folders:
 
