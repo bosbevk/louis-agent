@@ -127,4 +127,4 @@ Each step is one commit with its test, written first and seen failing. Stop afte
 (empty)
 
 ---
-[Docs index](../README.md) · [Plans](README.md) · Previous: [F142 the CV page](F142-the-cv-page.md)
+[Docs index](../README.md) · [Plans](README.md) · Before it: F142, the CV page ([ADR 0122](../adr/0122-a-page-of-data-is-one-record-and-its-own-editor.md))

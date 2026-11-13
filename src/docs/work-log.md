@@ -12,13 +12,13 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 104 | 91 |
+| Features (`F`) | 105 | 90 |
 | Fixes (`FX`) | 140 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (125 in the TODO)
+## Open (124 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -54,7 +54,6 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F134 | The showroom looks modern (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; his picks: look B, showcase with photos, and Tabler Icons): line icons instead of emoji, one raised surface, a rail with room, a photo on each business's cover, the index in a centred column under a photo hero; five steps | Next |
-| F142 | Louis's CV as a page at `/cv`: `cv.json` in the JSON Resume shape, records and a `ResumeView` in the framework's web, the nav's CV mark, Save as PDF, no private details; six steps | Next |
 | F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
@@ -148,10 +147,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (104 done)
+## Features (105 done)
 
 | Id | When | What |
 |---|---|---|
+| F142 | 2026-11-13 | Louis's CV is a page, and the page is its own editor (ADR 0122): one `cv.json` in the JSON Resume shape, read strictly, drawn at `/cv` and kept on the site's API (the built-in copy the fallback, a save checked for what is private); the site's own Resume area in the admin, where the same view is edited where it stands (Louis: "can we not just edit it inline?", click, edit, confirm), a part editable exactly when someone listens for the whole; the framework's web gains the editing pieces (`TextField`, `FieldGroup`, `TagInput`, `InlineEdit`, `InlineForm`, `ItemTools`, `ItemAdd`, `ListEdits`, `PartChanges`), the API a seam for a host's own routes, and an address under `/admin` is no public page; Save as PDF is a print stylesheet |
 | F144 | 2026-11-13 | The admin is a frame its areas plug into (Louis's picks: a home of cards; a packs page; the cards report a refused key): `.Admin(layout)` the frame and its home at `/admin`, a card per area in the order named, Home first in the sidebar; `.Overview(counts)`, `.Packs(views)` (with `/admin/packs`) and `.Evals()` (moved to `/admin/evals`) each an area with its pages, links and card; `AdminCardBase` and `AdminAccess` ask for the key once; an admin area without the frame refused at start-up (`WebErrorMessage`, the web's first message enum); the sidebar's brand keeps its mark beside its name |
 | F127 | 2026-11-13 | A site's areas in the framework, the parent: its eight children built (F127.1 the showroom, F127.2 the demos tried live, F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions on the address, F127.6 a site names its areas, F127.7 one guide with a focus per part, F127.8 the site's admin); ADRs 0115 to 0117, 0120 and 0121 |
 | F127.8 | 2026-11-13 | louis-agent.dev's admin, an overview first (Louis's pick of three designs): a line per turn beside the ledger (`turns-{yyyy-MM}.jsonl`: the page, the part, who answered, the tools, no words), `GET /v1/admin/overview` joining it with the ledger (today and the month, by part and by who answered, the latest talks; an unpriced cost unknown), the tools a site counts named on its admin (`SendLead` as leads), the framework's overview page first in every admin, and the site's own admin layout behind `ADMIN_API_KEY`, which falls back to `AGENT_API_KEY`; `SessionHandlers`' holes became records first |
