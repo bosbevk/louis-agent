@@ -188,6 +188,29 @@ again.
 **Where it sits in the skill map:** observability (skill 17), a turn as an event stream you can replay; and
 human-in-the-loop (skill 16), since the live agent with a shell stays behind the owner's key (ADR 0108).
 
+## What the agents did, without what was said (F127.8, 2026-11-13)
+
+**What it means.** louis-agent.dev's owner now has an admin page that answers: how many people talked to the guide
+today and this month, what it cost in rand, how many leads came of it, which parts of the site and which demo
+businesses they talked on, and the latest talks. Nothing anyone typed is in it.
+
+**What changed.** The ledger already priced every request, but a request doesn't know which page it came from or what
+it did. So each finished turn now writes one more line, beside the ledger: when, the session and turn, who answered,
+the page, the part of the site, and the names of the tools it called. The admin's overview joins the two by session.
+The site decides what counts as a lead (its `SendLead` tool); the framework counts every tool and names none.
+
+**Why this way.** Keeping the conversations would have answered more questions, and it would have meant storing
+people's words, which a site owner then has to protect and explain. A line of where and what, with no words, answers
+the owner's real questions (is it working, what does it cost, does it bring leads) and holds nothing private. The
+cost comes from the ledger, so an unpriced request stays unknown, never 0 (ADR 0007), and the page converts it into
+the reader's currency like every other cost the web shows.
+
+**What to look at.** `Sessions/Log/TurnLog` in the API, `Endpoints/Admin/Overview/OverviewReader` (pure, so its tests
+hand it records), and the page `Pages/Admin/Overview` in the framework's web.
+
+**Where it sits in the skill map:** observability (skill 17), a log designed for the question it answers; and cost
+and token economics (skill 13), what an agent costs per day and per part of the site.
+
 ## Sources
 
 OpenTelemetry, *.NET getting started* and the *GenAI semantic conventions* (`invoke_agent`) · W3C, *Trace Context*

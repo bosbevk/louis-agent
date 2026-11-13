@@ -27,6 +27,12 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
   A site never builds or registers any of these itself; `SitesNameTheirAreasTests` holds it. `Focuses(f => …)`
   (F127.7, `Components/Areas/Focuses/`) names the part of the site each page is (`SiteFocuses.Of(path)`: the longest
   matching address by whole segments, else the default), which the guide's widget sends with every message.
+  `Admin(layout, views, counts: c => c.Tool("SendLead", "leads"))` (F127.8, `Components/Areas/Overview/`) names the
+  tools the admin's overview counts and what it calls each: the API counts every tool and names no pack.
+- **The admin's overview** (F127.8): `Pages/Admin/Overview` at `/admin/overview`, first in every admin's sidebar,
+  draws the API's overview in the reader's currency: `OverviewFigures` (today's and the month's talks, cost and the
+  counted tools), `OverviewBars` (the month's talks by part of the site and by who answered, one colour) and
+  `LatestTalks` (a table that scrolls sideways on a phone), all in `Components/Admin/Overview/`.
 - **Every part is ready for an agent** (F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)).
   A tile with a title or a number and a deck's card are **pieces** (`data-piece`, an id from `Site/Pieces/PieceId`,
   so `/home/100-adrs` opens it). `Widget/Pieces/PieceWatch` and its module hear a click on a piece (it asks the guide

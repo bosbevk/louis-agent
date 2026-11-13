@@ -23,6 +23,10 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
   the default, on exactly the three packs it names; the program serves the site's pages as HTML (F121) and the API the
   guide's chat runs on, behind the key check with the guide's open door, and nothing else: no accounts, no eval
   studio, no coding agent with a shell. `SiteCatalogTests` holds both.
+- **Its admin** (F127.8) is the framework's, named in `LouisAgentDevAreas` with the site's own `Layout/AdminLayout`:
+  `/admin/overview` shows the guide's talks today and this month, their cost in rand, the leads (its `SendLead` calls),
+  the parts of the site and the demo businesses they were on, and the latest talks, from the turn log and the ledger in
+  the log folder. It is behind `ADMIN_API_KEY`, else `AGENT_API_KEY`, and nothing public links there (`SiteAdminTests`).
 - **Its image** (`src/site/docker/Dockerfile`) is the ASP.NET runtime with the host, the docs the guide reads (laid out
   as the repo, without the films) and the site's own price and rate tables, so in Azure the share keeps only the logs.
   `src/site/docker/docker-compose.yml` runs it on 127.0.0.1:5080; `src/site/config/` holds its settings, and
