@@ -29,6 +29,7 @@ public class EvalAreaTests
             Assert.That(areas.Names, Is.EqualTo(new[] { "admin", "evals" }));
             Assert.That(areas.PageAssemblies, Does.Contain(EvalLibrary.Assembly));
             Assert.That(areas.AdminLinks, Is.EqualTo(new[] { typeof(EvalLinks) }));
+            Assert.That(areas.AdminCards, Is.EqualTo(new[] { typeof(EvalsCard) }), "its card on the admin's home");
             Assert.That(services.Any(d => d.ServiceType == typeof(SiteKinds)), Is.True);
         });
     }

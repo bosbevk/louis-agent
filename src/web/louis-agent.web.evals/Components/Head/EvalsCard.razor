@@ -1,0 +1,28 @@
+@* The eval studio's card on the admin's home (F144): how many evals, how many answers wait for a grade, and the
+   last run, with the way to it. *@
+
+<AdminCard Title="Evals" Open="@EvalAddress.Studio">
+    @if (_list is { } list)
+    {
+        <div class="figures">
+            <div class="figure"><span class="figure-value">@list.Evals.Count</span><span class="figure-name">evals</span></div>
+            <div class="figure"><span class="figure-value">@(Queue.Count?.ToString() ?? "–")</span><span class="figure-name">to review</span></div>
+        </div>
+        @if (LastRun(list) is { } last)
+        {
+            <p class="evals-last">Last run: <a href="@RunAddress.Of(last.Run.Id)">@last.Eval</a>, @EvalText.When(last.Run.StartedAt)</p>
+        }
+        else
+        {
+            <p class="evals-last muted">No eval has run yet.</p>
+        }
+    }
+    else if (_notRead)
+    {
+        <span class="muted">Not read: the admin key, or the API.</span>
+    }
+    else
+    {
+        <span class="muted">Loading…</span>
+    }
+</AdminCard>

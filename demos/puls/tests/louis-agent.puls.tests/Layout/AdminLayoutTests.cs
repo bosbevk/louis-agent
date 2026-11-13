@@ -31,7 +31,8 @@ public class AdminLayoutTests
     }
 
     /// <summary>
-    /// The sidebar keeps its links, in their order, to their addresses: the framework's overview first (F127.8).
+    /// The sidebar keeps its links, in their order, to their addresses: the framework's overview first (F127.8), the
+    /// eval studio at admin/evals (F144).
     /// </summary>
     [Test]
     public void TheSidebar_KeepsItsLinks_InOrder()
@@ -41,7 +42,10 @@ public class AdminLayoutTests
         var cut = Render(ctx);
 
         Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "admin/overview", "admin", "admin/review", "admin/studio", "admin/prompts", "gesels" }));
+            Is.EqualTo(new[]
+            {
+                "admin/overview", "admin/evals", "admin/review", "admin/studio", "admin/prompts", "gesels"
+            }));
     }
 
     /// <summary>The way back goes to the chat, and the page shows in the content column.</summary>

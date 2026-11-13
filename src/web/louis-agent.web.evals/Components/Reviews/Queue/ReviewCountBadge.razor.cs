@@ -1,8 +1,6 @@
-using LouisAgent.Api.Contracts.Admin;
-using LouisAgent.Api.Contracts.Admin.Reviews;
+using LouisAgent.Web.Api;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Evals.Admin.Reviews.Queue;
-using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Evals.Components.Reviews.Queue;
@@ -30,29 +28,11 @@ public partial class ReviewCountBadge : IDisposable
     protected override async Task OnInitializedAsync()
     {
         State.Changed += Redraw;
-        await Reviewer.LoadAsync();
-        if (State.Count is not null) return;
-        await ReadAsync();
+        await State.ReadOnceAsync(Api, Reviewer);
     }
 
     /// <summary>Stops listening.</summary>
     public void Dispose() => State.Changed -= Redraw;
-
-    /// <summary>The queue's total for the kept name, asking for no items.</summary>
-    private async Task ReadAsync()
-    {
-        try
-        {
-            string who = Reviewer.Name is { } name ? $"reviewer={Uri.EscapeDataString(name)}&" : "";
-            var reply = await Api.GetAsync<ReviewQueueReply>($"v1/admin/evals/reviews/queue?{who}limit=1",
-                AdminJson.SnakeCase);
-            State.Set(reply.Total);
-        }
-        catch (Exception ex) when (ex is AgentApiException or HttpRequestException)
-        {
-            // No key yet, or no store: the badge stays away until the Review page sets a count.
-        }
-    }
 
     /// <summary>The count changed elsewhere.</summary>
     private void Redraw() => _ = InvokeAsync(StateHasChanged);
