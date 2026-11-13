@@ -44,6 +44,21 @@ public class SiteAdminTests
         Assert.That(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site/App.razor")),
             Does.Contain("AdditionalAssemblies=\"Areas.PageAssemblies\""));
 
+    /// <summary>
+    /// No route is the site's and an area's both: the router refuses two pages on one route, and the whole site fails
+    /// (Louis's /admin/overview: the site's own catch-all and the framework's, once the admin brought its pages).
+    /// </summary>
+    [Test]
+    public void NoRoute_IsTwice()
+    {
+        var assemblies = Areas().GetRequiredService<SiteAreas>().PageAssemblies.Append(typeof(App).Assembly).Distinct();
+        var routes = assemblies.SelectMany(assembly => assembly.GetTypes())
+            .SelectMany(type => type.GetCustomAttributes<RouteAttribute>().Select(route => route.Template));
+
+        Assert.That(routes.GroupBy(route => route).Where(same => same.Count() > 1).Select(same => same.Key),
+            Is.Empty);
+    }
+
     /// <summary>The site's secrets name the admin's own key, which falls back to the API's.</summary>
     [Test]
     public void TheSecrets_NameTheAdminsKey() =>
