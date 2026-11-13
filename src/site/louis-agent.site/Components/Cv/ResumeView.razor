@@ -1,0 +1,29 @@
+@* Louis's CV, drawn from its record (F142), as the approved mockup lays it out: who he is and the facts, the page's own
+   "now" band, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
+<div class="resume">
+    <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv">
+        <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"/>
+        <ResumeFacts Facts="Resume.Facts"/>
+    </Band>
+
+    @Now
+
+    <Band Id="experience" Kicker="Experience">
+        <BandTitle Class="chrome">Where I've worked.</BandTitle>
+        <ResumeJobs Work="Resume.Work"/>
+    </Band>
+
+    <Band Id="skills" Kicker="Skills">
+        <BandTitle Class="chrome">What I work with.</BandTitle>
+        <ResumeSkills Skills="Resume.Skills"/>
+    </Band>
+
+    <Band Id="education" Kicker="Education">
+        <BandTitle Class="chrome">Courses and qualifications.</BandTitle>
+        <ResumeEducation Education="Resume.Education" Certificates="Unchecked"/>
+    </Band>
+
+    <Band Id="also" Kicker="Also">
+        <ResumeAlso Certificates="Checkable" Interests="Resume.Interests"/>
+    </Band>
+</div>

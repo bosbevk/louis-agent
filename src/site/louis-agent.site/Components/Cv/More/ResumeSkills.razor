@@ -1,0 +1,15 @@
+@* The CV's skills (F142): a panel per group, the skills in it as tags, never a rating. *@
+<div class="cv-skills">
+    @foreach (var skill in Skills)
+    {
+        <div class="panel">
+            <h3>@skill.Name</h3>
+            <div class="stack">
+                @foreach (var keyword in skill.Keywords)
+                {
+                    <span>@keyword</span>
+                }
+            </div>
+        </div>
+    }
+</div>

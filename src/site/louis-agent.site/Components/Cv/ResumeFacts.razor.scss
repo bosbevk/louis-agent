@@ -1,0 +1,24 @@
+/* The CV's facts row (F142): cells on a hairline grid, the number big over what it counts. */
+.cv-facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 32px;
+    background: var(--bs-border-color);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.cv-fact { padding: 20px; background: var(--bs-tertiary-bg); }
+.cv-fact b {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+}
+.cv-fact span { font-size: 14px; color: var(--bs-secondary-color); }
+
+@media (max-width: 820px) {
+    .cv-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

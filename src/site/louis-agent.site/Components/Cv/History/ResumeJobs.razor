@@ -1,0 +1,37 @@
+@* The CV's jobs (F142), newest first: when, as what, where, what was shipped and the stack it was built with. *@
+<div class="cv-jobs">
+    @foreach (var job in Work)
+    {
+        <article class="job">
+            <div class="when">
+                @ResumeDates.Span(job.StartDate, job.EndDate, "now")
+                @if (job.EndDate is null)
+                {
+                    <em>current</em>
+                }
+            </div>
+            <div>
+                <h3>@job.Position</h3>
+                <div class="org">@OrgOf(job)</div>
+                @if (job.Highlights.Count > 0)
+                {
+                    <ul>
+                        @foreach (var highlight in job.Highlights)
+                        {
+                            <li>@highlight</li>
+                        }
+                    </ul>
+                }
+                @if (job.Keywords.Count > 0)
+                {
+                    <div class="stack">
+                        @foreach (var keyword in job.Keywords)
+                        {
+                            <span>@keyword</span>
+                        }
+                    </div>
+                }
+            </div>
+        </article>
+    }
+</div>

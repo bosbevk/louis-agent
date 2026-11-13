@@ -1,0 +1,23 @@
+@* The CV's "Also" (F142): the assessments and societies to check, and what he does outside work. *@
+<div class="grid-2 resume-also">
+    @if (Certificates.Count > 0)
+    {
+        <div class="panel">
+            <h3>Assessments and societies</h3>
+            @foreach (var certificate in Certificates)
+            {
+                <p><a href="@certificate.Url" target="_blank" rel="noopener">@certificate.Name</a></p>
+            }
+        </div>
+    }
+    @if (Interests.Count > 0)
+    {
+        <div class="panel">
+            <h3>Outside work</h3>
+            @foreach (var interest in Interests)
+            {
+                <p>@LineOf(interest)</p>
+            }
+        </div>
+    }
+</div>
