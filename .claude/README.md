@@ -9,12 +9,12 @@ page is not one that Claude Code loads by itself.
 An instruction costs room in Claude's context on every turn it is loaded. So each one is loaded only when it is
 needed, and the ones that must never be missed are loaded always.
 
-![Three layers: what is always loaded, what loads with a kind of file, and what loads for a job](../src/docs/plans/diagrams/CL63-instructions-as-skills-architecture.svg)
+![Three layers: what is always loaded, what loads with a kind of file, and what loads for a job](../src/docs/diagrams/claude-instructions-layers.svg)
 
 | Layer | Files | When Claude Code loads it |
 |---|---|---|
 | Always | `src/docs/CLAUDE.md`, which the root `CLAUDE.md` imports. `rules/design-rules.md` and `rules/repo-map.md`, which have no `paths`. | Every session, whole |
-| With a kind of file | `rules/csharp.md`, `rules/csharp-summaries.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, `rules/tests.md`, `rules/hosts-and-web.md`, each with `paths`. A `CLAUDE.md` in a folder. | When a matching file, or a file in that folder, is read or edited |
+| With a kind of file | `rules/csharp.md`, `rules/csharp-summaries.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, `rules/tests.md`, `rules/hosts-and-web.md`, each with `paths`. Core's own `CLAUDE.md`, in its folder. | When a matching file, or a file in that folder, is read or edited |
 | For a job | `skills/{name}/SKILL.md` | Its description is always in view. Its body loads when Claude judges the job matches, or when someone types `/name`. |
 
 Two rules follow from the last row.
@@ -25,7 +25,7 @@ Two rules follow from the last row.
 
 ## One step, and what is loaded when
 
-![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../src/docs/plans/diagrams/CL63-instructions-as-skills-communication-one-step-and-what-is-loaded-when.svg)
+![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../src/docs/diagrams/claude-instructions-one-step.svg)
 
 ## What loads with a kind of file
 
@@ -36,7 +36,7 @@ Two rules follow from the last row.
 | `rules/csharp-summaries.md` | `**/*.cs` | How a summary is written, with its examples |
 | `rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |
 | `rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
-| `rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
+| `rules/css.md` | `**/*.css`, `**/*.scss` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
 | `rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
 | `rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 | `rules/hosts-and-web.md` | `src/hosts/**`, `src/web/**`, `src/site/**`, `packs/web/**`, `demos/*/hosts/**`, `demos/*/web/**` | A host's own texts, a web app's folders, a page and its components, running a host from Rider |
@@ -55,8 +55,6 @@ Two rules follow from the last row.
 | `finish-a-feature` | The last step of a feature or a cleanup |
 | `draw-a-diagram` | A picture in the docs is added or changed |
 
-The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md).
-
 ## Changing an instruction
 
 - **Where it goes.** Must it hold on every turn? `src/docs/CLAUDE.md`. Is it how one kind of file is written? That
@@ -64,5 +62,6 @@ The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md
 - **What holds it.** Every file here is at most 200 lines (`ClaudeMdSizeTests`). Every skill has a name and a
   description, and `CLAUDE.md` names exactly the skills there are (`SkillFilesTests`). Every file here is in the
   solution (`SolutionLayoutTests`).
-- **A new skill shows in a session that is already open.** Its description joins the session's list of
-  skills. A skill with `paths` shows only once a matching file is worked on.
+- **A new file is picked up by a session that is already open.** A new skill's description joins the
+  session's list of skills, and a new rules file loads with the next matching file. A skill with `paths`
+  shows only once a matching file is worked on.

@@ -1,6 +1,6 @@
 {
   "kind": "sequence",
-  "title": "CL63 instructions as skills: one step, and what is loaded when",
+  "title": "Claude's instructions: one step, and what is loaded when",
   "caption": "Nothing is loaded before it is needed: the rules for C# arrive with the first C# file, and each skill with its job.",
   "sequence": {
     "participants": [
@@ -70,7 +70,7 @@
         "step": "reply",
         "from": "R",
         "to": "C",
-        "text": "csharp.md"
+        "text": "csharp.md, csharp-summaries.md"
       },
       {
         "step": "message",

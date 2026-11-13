@@ -1,6 +1,6 @@
 # The design rules every change keeps
 
-Loaded in every session, with `src/docs/CLAUDE.md`. It was that file's *Rules that always apply* until CL63.
+Loaded in every session, with `src/docs/CLAUDE.md`.
 
 The design decisions every change keeps, one line each: the *why* is its ADR in [src/docs/adr/](../../src/docs/adr/README.md), the
 *how* of the C#, Razor, CSS and docs rules loads with the file you edit, from `.claude/rules/`.

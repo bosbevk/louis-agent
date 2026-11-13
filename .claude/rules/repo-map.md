@@ -1,6 +1,6 @@
 # Where things are in the repo
 
-Loaded in every session, with `src/docs/CLAUDE.md`. It was that file's *Project structure* until CL63.
+Loaded in every session, with `src/docs/CLAUDE.md`.
 
 Where things are. What's inside each project is in its design doc in [projects/](../../src/docs/projects/README.md); core's folders
 in [Project layout](../../src/engine/louis-agent.core/CLAUDE.md#project-layout).
@@ -18,5 +18,5 @@ demos/starter/           # The smallest site (web/), its API program (hosts/) an
 src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger. louis-agent.film-export: the site's films to WebP. louis-agent.doc-diagrams: the docs' diagrams from their JSON
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](../../src/docs/projects/tests.md)); a demo holds its own tests/ and packs/tests/ the packs'; the ones that leave their process are *.integration-tests
 src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
-.claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
+.claude/                 # What Claude Code reads: rules/ (the how of a kind of file, loaded by path; the design rules and this map, always), skills/ (a procedure per job), README.md (how they are laid out)
 ```

@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1048.2 795" width="1048.2" height="795" role="img" aria-label="CL63 instructions as skills: one step, and what is loaded when" xmlns="http://www.w3.org/2000/svg">
-  <title>CL63 instructions as skills: one step, and what is loaded when</title>
+<svg viewBox="-24 -24 1048.2 795" width="1048.2" height="795" role="img" aria-label="Claude's instructions: one step, and what is loaded when" xmlns="http://www.w3.org/2000/svg">
+  <title>Claude's instructions: one step, and what is loaded when</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -115,7 +115,7 @@ svg {
   </g>
   <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
   <text class="heading" x="64" y="30">
-    <tspan class="title-head">CL63 instructions as skills:</tspan>
+    <tspan class="title-head">Claude's instructions:</tspan>
     <tspan class="title-rest">one step, and what is loaded when</tspan>
   </text>
   <g class="drawing" transform="translate(0 66)">
@@ -140,8 +140,8 @@ svg {
     <rect class="word-chip tone-blue" x="434.9" y="244" width="128" height="22" rx="4" />
     <text class="word tone-blue" x="498.9" y="258" text-anchor="middle">opens a .cs file</text>
     <path class="edge dashed tone-teal" d="M 757.8 312 L 242 312" marker-end="url(#arrow-teal)" />
-    <rect class="word-chip tone-teal" x="459.4" y="286" width="79" height="22" rx="4" />
-    <text class="word tone-teal" x="498.9" y="300" text-anchor="middle">csharp.md</text>
+    <rect class="word-chip tone-teal" x="385.9" y="286" width="226" height="22" rx="4" />
+    <text class="word tone-teal" x="498.9" y="300" text-anchor="middle">csharp.md, csharp-summaries.md</text>
     <path class="edge tone-blue" d="M 240 354 L 938.2 354" marker-end="url(#arrow-blue)" />
     <rect class="word-chip tone-blue" x="536.6" y="328" width="107" height="22" rx="4" />
     <text class="word tone-blue" x="590.1" y="342" text-anchor="middle">finish-a-step</text>

@@ -1,6 +1,6 @@
 {
   "kind": "flow",
-  "title": "CL63 instructions as skills: the three layers",
+  "title": "Claude's instructions: the three layers",
   "caption": "By when it is needed: what must never be missed is always loaded, the how arrives with a kind of file, and a procedure with its job.",
   "flow": {
     "direction": "down",
@@ -9,19 +9,19 @@
         "id": "always",
         "icon": "shield",
         "tone": "violet",
-        "label": "Always loaded (step 2)\nCLAUDE.md: working with Louis, the hard stops\ndesign-rules.md, repo-map.md"
+        "label": "Always loaded\nCLAUDE.md: working with Louis, the hard stops\ndesign-rules.md, repo-map.md"
       },
       {
         "id": "rules",
         "icon": "file",
         "tone": "teal",
-        "label": "Loaded with a kind of file (steps 7, 8)\ncsharp.md, razor.md, css.md, docs.md, prompts.md\nthe folder files for hosts, tests and core"
+        "label": "Loaded with a kind of file\nrules for C#, summaries, Razor, CSS, docs,\nprompts, tests, hosts and web; core's CLAUDE.md"
       },
       {
         "id": "skills",
         "icon": "stack",
         "tone": "green",
-        "label": "Loaded for a job (steps 1, 3 to 6)\nnine skills: plan, do, finish, finding, fix,\ncheck a page, ship, finish a feature, draw"
+        "label": "Loaded for a job\nnine skills: plan, do, finish, finding, fix,\ncheck a page, ship, finish a feature, draw"
       },
       {
         "id": "claude",

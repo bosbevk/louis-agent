@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 928 876" width="928" height="876" role="img" aria-label="CL63 instructions as skills: what each file holds" xmlns="http://www.w3.org/2000/svg">
-  <title>CL63 instructions as skills: what each file holds</title>
+<svg viewBox="-24 -24 1343 399" width="1343" height="399" role="img" aria-label="Claude's instructions: the three layers" xmlns="http://www.w3.org/2000/svg">
+  <title>Claude's instructions: the three layers</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -93,12 +93,18 @@ svg {
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
     <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="928" height="876" rx="14" />
-  <rect class="titlebar" x="0" y="0" width="880" height="50" rx="10" />
+  <rect class="ground" x="-24" y="-24" width="1343" height="399" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1295" height="50" rx="10" />
   <g class="title-icon" transform="translate(16 14) scale(0.9167)">
     <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
     <path d="M4 12l8 4l8 -4" />
@@ -106,72 +112,75 @@ svg {
   </g>
   <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
   <text class="heading" x="64" y="30">
-    <tspan class="title-head">CL63 instructions as skills:</tspan>
-    <tspan class="title-rest">what each file holds</tspan>
+    <tspan class="title-head">Claude's instructions:</tspan>
+    <tspan class="title-rest">the three layers</tspan>
   </text>
   <g class="drawing" transform="translate(0 66)">
-    <path class="edge dashed tone-green" d="M 364 62 L 494.5 62 Q 518.5 62 518.5 86 L 518.5 251.8 Q 518.5 275 541.8 275 L 565 275" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 364 488 L 476.5 488 Q 500.5 488 500.5 464 L 500.5 299 Q 500.5 275 524.5 275 L 565 275" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 364 630 L 458.5 630 Q 482.5 630 482.5 606 L 482.5 441 Q 482.5 417 506.5 417 L 565 417" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="402.3" y="40" width="78" height="18" rx="4" />
-    <text class="word tone-green" x="441.3" y="52" text-anchor="middle">names each</text>
-    <rect class="word-chip tone-green" x="410.8" y="466" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="432.3" y="478" text-anchor="middle">holds</text>
-    <rect class="word-chip tone-green" x="401.8" y="608" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="423.3" y="620" text-anchor="middle">sizes</text>
-    <rect class="box tone-green" x="0" y="0" width="364" height="124" rx="10" />
-    <text class="label tone-green" x="182" y="28" text-anchor="middle">CLAUDE.md</text>
-    <text class="note" x="182" y="44" text-anchor="middle">always loaded, step 2</text>
-    <path class="frame" d="M 0 64 L 364 64" />
-    <text class="word tone-green" x="14" y="82" text-anchor="start">the eleven working rules</text>
-    <text class="word tone-green" x="14" y="96" text-anchor="start">the hard stops, one list</text>
-    <text class="word tone-green" x="14" y="110" text-anchor="start">the loop of a step, naming a skill for each part</text>
-    <rect class="box tone-green" x="0" y="156" width="364" height="96" rx="10" />
-    <text class="label tone-green" x="182" y="184" text-anchor="middle">design-rules.md</text>
-    <text class="note" x="182" y="200" text-anchor="middle">always loaded, step 2</text>
-    <path class="frame" d="M 0 220 L 364 220" />
-    <text class="word tone-green" x="14" y="238" text-anchor="start">a design rule per line, with its ADR</text>
-    <rect class="box tone-green" x="0" y="298" width="364" height="96" rx="10" />
-    <text class="label tone-green" x="182" y="326" text-anchor="middle">repo-map.md</text>
-    <text class="note" x="182" y="342" text-anchor="middle">always loaded, step 2</text>
-    <path class="frame" d="M 0 362 L 364 362" />
-    <text class="word tone-green" x="14" y="380" text-anchor="start">where things are</text>
-    <rect class="box tone-green" x="0" y="433" width="364" height="110" rx="10" />
-    <text class="label tone-green" x="182" y="461" text-anchor="middle">SkillFilesTests</text>
-    <text class="note" x="182" y="477" text-anchor="middle">a test, step 1</text>
-    <path class="frame" d="M 0 497 L 364 497" />
-    <text class="word tone-green" x="14" y="515" text-anchor="start">every skill CLAUDE.md names exists</text>
-    <text class="word tone-green" x="14" y="529" text-anchor="start">every skill has a description</text>
-    <rect class="box tone-green" x="0" y="582" width="364" height="96" rx="10" />
-    <text class="label tone-green" x="182" y="610" text-anchor="middle">ClaudeMdSizeTests</text>
-    <text class="note" x="182" y="626" text-anchor="middle">a test, step 1</text>
-    <path class="frame" d="M 0 646 L 364 646" />
-    <text class="word tone-green" x="14" y="664" text-anchor="start">every file is at most 200 lines, skills too</text>
-    <rect class="box tone-green" x="565" y="213" width="315" height="124" rx="10" />
-    <text class="label tone-green" x="722.5" y="241" text-anchor="middle">SKILL.md</text>
-    <text class="note" x="722.5" y="257" text-anchor="middle">a skill, steps 1, 3 to 6</text>
-    <path class="frame" d="M 565 277 L 880 277" />
-    <text class="word tone-green" x="579" y="295" text-anchor="start">description: when it applies, always seen</text>
-    <text class="word tone-green" x="579" y="309" text-anchor="start">the must-dos, first</text>
-    <text class="word tone-green" x="579" y="323" text-anchor="start">the procedure</text>
-    <rect class="box tone-green" x="565" y="362" width="315" height="110" rx="10" />
-    <text class="label tone-green" x="722.5" y="390" text-anchor="middle">A rules file</text>
-    <text class="note" x="722.5" y="406" text-anchor="middle">by file type, step 7</text>
-    <path class="frame" d="M 565 426 L 880 426" />
-    <text class="word tone-green" x="579" y="444" text-anchor="start">paths: the files it loads with</text>
-    <text class="word tone-green" x="579" y="458" text-anchor="start">the how of that kind of file</text>
+    <path class="edge tone-violet" d="M 211.6 84 L 211.6 99 Q 211.6 114 226.6 114 L 637.8 114 Q 652.8 114 652.8 129 L 652.8 144" marker-end="url(#arrow-violet)" />
+    <path class="edge tone-teal" d="M 652.8 84 L 652.8 144" marker-end="url(#arrow-teal)" />
+    <path class="edge tone-green" d="M 1094 84 L 1094 99 Q 1094 114 1079 114 L 667.8 114 Q 652.8 114 652.8 129 L 652.8 144" marker-end="url(#arrow-green)" />
+    <rect class="box tone-violet" x="7.6" y="0" width="408" height="84" rx="10" />
+    <circle class="badge tone-violet" cx="35.6" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(27.6 34) scale(0.6667)">
+      <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+    </g>
+    <text class="label tone-violet" x="59.6" y="31" text-anchor="start">Always loaded</text>
+    <text class="label tone-violet" x="59.6" y="47" text-anchor="start">CLAUDE.md: working with Louis, the hard stops</text>
+    <text class="label tone-violet" x="59.6" y="63" text-anchor="start">design-rules.md, repo-map.md</text>
+    <rect class="box tone-teal" x="441.2" y="0" width="423.2" height="84" rx="10" />
+    <circle class="badge tone-teal" cx="469.2" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(461.2 34) scale(0.6667)">
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+      <path d="M9 9l1 0" />
+      <path d="M9 13l6 0" />
+      <path d="M9 17l6 0" />
+    </g>
+    <text class="label tone-teal" x="493.2" y="31" text-anchor="start">Loaded with a kind of file</text>
+    <text class="label tone-teal" x="493.2" y="47" text-anchor="start">rules for C#, summaries, Razor, CSS, docs,</text>
+    <text class="label tone-teal" x="493.2" y="63" text-anchor="start">prompts, tests, hosts and web; core's CLAUDE.md</text>
+    <rect class="box tone-green" x="893.8" y="0" width="400.4" height="84" rx="10" />
+    <circle class="badge tone-green" cx="921.8" cy="42" r="14" />
+    <g class="badge-icon" transform="translate(913.8 34) scale(0.6667)">
+      <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+      <path d="M4 12l8 4l8 -4" />
+      <path d="M4 16l8 4l8 -4" />
+    </g>
+    <text class="label tone-green" x="945.8" y="31" text-anchor="start">Loaded for a job</text>
+    <text class="label tone-green" x="945.8" y="47" text-anchor="start">nine skills: plan, do, finish, finding, fix,</text>
+    <text class="label tone-green" x="945.8" y="63" text-anchor="start">check a page, ship, finish a feature, draw</text>
+    <rect class="box tone-blue" x="543.8" y="144" width="218" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="571.8" cy="170" r="14" />
+    <g class="badge-icon" transform="translate(563.8 162) scale(0.6667)">
+      <path d="M5 5m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+      <path d="M9 9h6v6h-6z" />
+      <path d="M3 10h2" />
+      <path d="M3 14h2" />
+      <path d="M10 3v2" />
+      <path d="M14 3v2" />
+      <path d="M21 10h-2" />
+      <path d="M21 14h-2" />
+      <path d="M14 21v-2" />
+      <path d="M10 21v-2" />
+    </g>
+    <text class="label tone-blue" x="595.8" y="175" text-anchor="start">Claude, in a session</text>
   </g>
-  <rect class="notebar" x="0" y="774" width="880" height="54" rx="8" />
-  <g class="note-icon" transform="translate(12 784) scale(0.6667)">
+  <rect class="swatch tone-blue" x="0" y="278" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="288.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="278" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="288.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="278" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="288.5" text-anchor="start">the framework</text>
+  <rect class="swatch tone-teal" x="364.8" y="278" width="12" height="12" rx="3" />
+  <text class="legend" x="382.8" y="288.5" text-anchor="start">contracts and state</text>
+  <rect class="notebar" x="0" y="314" width="1295" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 324) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="796">
-    <tspan class="note-head">Three kinds of file:</tspan>
-    <tspan class="note-rest">CLAUDE.md names the skills and holds the stops, a rules file loads by path, and a skill has a</tspan>
-  </text>
-  <text class="notes" x="38" y="813">
-    <tspan class="note-rest">description always seen and a body loaded for its job.</tspan>
+  <text class="notes" x="38" y="336">
+    <tspan class="note-head">By when it is needed:</tspan>
+    <tspan class="note-rest">what must never be missed is always loaded, the how arrives with a kind of file, and a procedure with its job.</tspan>
   </text>
 </svg>
