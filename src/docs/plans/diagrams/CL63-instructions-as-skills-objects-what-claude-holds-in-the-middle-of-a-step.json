@@ -1,0 +1,77 @@
+{
+  "kind": "flow",
+  "title": "CL63 instructions as skills: what Claude holds in the middle of a step",
+  "caption": "In the middle of a step: three files that are always there, the rules of the file being edited, and one skill's body.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "ctx",
+        "icon": "chip",
+        "tone": "blue",
+        "label": "Claude's context"
+      },
+      {
+        "id": "c",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "CLAUDE.md\nabout 90 lines"
+      },
+      {
+        "id": "d",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "design-rules.md\nabout 80 lines"
+      },
+      {
+        "id": "m",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "repo-map.md\nabout 25 lines"
+      },
+      {
+        "id": "cs",
+        "icon": "file",
+        "tone": "teal",
+        "label": "csharp.md\na .cs file is open"
+      },
+      {
+        "id": "sk",
+        "icon": "stack",
+        "tone": "green",
+        "label": "do-a-step\nits body"
+      },
+      {
+        "id": "names",
+        "icon": "stack",
+        "tone": "green",
+        "label": "the other eight skills\ntheir descriptions only"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ctx",
+        "to": "c"
+      },
+      {
+        "from": "ctx",
+        "to": "d"
+      },
+      {
+        "from": "ctx",
+        "to": "m"
+      },
+      {
+        "from": "ctx",
+        "to": "cs"
+      },
+      {
+        "from": "ctx",
+        "to": "sk"
+      },
+      {
+        "from": "ctx",
+        "to": "names"
+      }
+    ]
+  }
+}

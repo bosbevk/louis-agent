@@ -14,7 +14,7 @@
 |---|---|---|
 | Features (`F`) | 105 | 93 |
 | Fixes (`FX`) | 142 | 6 |
-| Cleanups (`CL`) | 32 | 28 |
+| Cleanups (`CL`) | 32 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
@@ -147,6 +147,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL54 | A pack can't add itself to a router | Cleanups |
 | CL55 | Does an unanswered request belong in the usage ledger? A cancelled request is a record of 0 toke… | Cleanups |
 | CL62 | A site's own words win only when registered before `AddSiteAreas`: a `Words(…)` builder method so order never matters | Cleanups |
+| CL63 | Claude's instructions, by when they are needed: `CLAUDE.md` for working with Louis and the hard stops, rules files by file type, nine skills for the procedures | Cleanups |
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
