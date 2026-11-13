@@ -18,10 +18,11 @@
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (124 in the TODO)
+## Open (125 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| F148 | One docs endpoint: one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, next |
 | F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now |
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
 | F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
