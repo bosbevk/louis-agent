@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 2023 965" width="2023" height="965" role="img" aria-label="louis-agent.web: the interface design" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 2023 1121" width="2023" height="1121" role="img" aria-label="louis-agent.web: the interface design" xmlns="http://www.w3.org/2000/svg">
   <title>louis-agent.web: the interface design</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -97,7 +97,7 @@ svg {
       <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="2023" height="965" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="2023" height="1121" rx="14" />
   <rect class="titlebar" x="0" y="0" width="1975" height="50" rx="10" />
   <g class="title-icon" transform="translate(16 14) scale(0.9167)">
     <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
@@ -110,31 +110,31 @@ svg {
     <tspan class="title-rest">the interface design</tspan>
   </text>
   <g class="drawing" transform="translate(0 66)">
-    <path class="edge tone-green" d="M 385.2 69 L 711.5 69" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 385.2 69 L 543.3 69 Q 567.3 69 567.3 93 L 567.3 201 Q 567.3 225 591.3 225 L 711.5 225" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1103.5 69 L 1135.6 69 Q 1159.6 69 1159.6 93 L 1159.6 290.9 Q 1159.6 303 1171.7 303 L 1183.7 303" marker-end="url(#arrow-green)" />
-    <path class="edge tone-green" d="M 1103.5 69 L 1135.6 69 Q 1159.6 69 1159.6 93 L 1159.6 446.9 Q 1159.6 459 1171.7 459 L 1183.7 459" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 1596.7 303 L 1708.9 303 Q 1732.9 303 1732.9 327 L 1732.9 368.9 Q 1732.9 381 1744.9 381 L 1757 381" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 385.2 225 L 525.3 225 Q 549.3 225 549.3 249 L 549.3 513 Q 549.3 537 573.3 537 L 711.5 537" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 385.2 381 L 507.3 381 Q 531.3 381 531.3 405 L 531.3 669 Q 531.3 693 555.3 693 L 711.5 693" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 385.2 693 L 711.5 693" marker-end="url(#arrow-green)" />
-    <path class="edge dashed tone-green" d="M 385.2 69 L 543.3 69 Q 567.3 69 567.3 93 L 567.3 357 Q 567.3 381 591.3 381 L 711.5 381" marker-end="url(#arrow-green)" />
-    <rect class="word-chip tone-green" x="579.4" y="47" width="120" height="18" rx="4" />
-    <text class="word tone-green" x="639.4" y="59" text-anchor="middle">the chat frame's</text>
-    <rect class="word-chip tone-green" x="617.9" y="203" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="639.4" y="215" text-anchor="middle">shows</text>
-    <rect class="word-chip tone-green" x="1110" y="47" width="43" height="18" rx="4" />
-    <text class="word tone-green" x="1131.5" y="59" text-anchor="middle">holds</text>
-    <rect class="word-chip tone-green" x="1608.3" y="281" width="113" height="18" rx="4" />
-    <text class="word tone-green" x="1664.8" y="293" text-anchor="middle">reads and sends</text>
+    <path class="edge tone-green" d="M 385.2 69 L 543.3 69 Q 567.3 69 567.3 93 L 567.3 123 Q 567.3 147 591.3 147 L 711.5 147" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385.2 69 L 543.3 69 Q 567.3 69 567.3 93 L 567.3 279 Q 567.3 303 591.3 303 L 711.5 303" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1103.5 147 L 1135.6 147 Q 1159.6 147 1159.6 171 L 1159.6 368.9 Q 1159.6 381 1171.7 381 L 1183.7 381" marker-end="url(#arrow-green)" />
+    <path class="edge tone-green" d="M 1103.5 147 L 1135.6 147 Q 1159.6 147 1159.6 171 L 1159.6 524.9 Q 1159.6 537 1171.7 537 L 1183.7 537" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 1596.7 381 L 1708.9 381 Q 1732.9 381 1732.9 405 L 1732.9 446.9 Q 1732.9 459 1744.9 459 L 1757 459" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385.2 225 L 525.3 225 Q 549.3 225 549.3 249 L 549.3 591 Q 549.3 615 573.3 615 L 711.5 615" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385.2 381 L 507.3 381 Q 531.3 381 531.3 405 L 531.3 747 Q 531.3 771 555.3 771 L 711.5 771" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385.2 693 L 489.3 693 Q 513.3 693 513.3 717 L 513.3 747 Q 513.3 771 537.3 771 L 711.5 771" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 385.2 69 L 543.3 69 Q 567.3 69 567.3 93 L 567.3 435 Q 567.3 459 591.3 459 L 711.5 459" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="579.4" y="125" width="120" height="18" rx="4" />
+    <text class="word tone-green" x="639.4" y="137" text-anchor="middle">the chat frame's</text>
+    <rect class="word-chip tone-green" x="617.9" y="281" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="639.4" y="293" text-anchor="middle">shows</text>
+    <rect class="word-chip tone-green" x="1110" y="125" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="1131.5" y="137" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="1608.3" y="359" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="1664.8" y="371" text-anchor="middle">reads and sends</text>
     <rect class="word-chip tone-green" x="449.3" y="203" width="36" height="18" rx="4" />
     <text class="word tone-green" x="467.3" y="215" text-anchor="middle">uses</text>
     <rect class="word-chip tone-green" x="433.3" y="359" width="50" height="18" rx="4" />
     <text class="word tone-green" x="458.3" y="371" text-anchor="middle">places</text>
     <rect class="word-chip tone-green" x="396.3" y="671" width="106" height="18" rx="4" />
     <text class="word tone-green" x="449.3" y="683" text-anchor="middle">reads a ticket</text>
-    <rect class="word-chip tone-green" x="582.9" y="359" width="113" height="18" rx="4" />
-    <text class="word tone-green" x="639.4" y="371" text-anchor="middle">hands an ask to</text>
+    <rect class="word-chip tone-green" x="582.9" y="437" width="113" height="18" rx="4" />
+    <text class="word tone-green" x="639.4" y="449" text-anchor="middle">hands an ask to</text>
     <rect class="box tone-green" x="0" y="31" width="385.2" height="76" rx="10" />
     <text class="label tone-green" x="192.6" y="59" text-anchor="middle">SiteShell, ChatShell, AdminShell, ShowroomShell</text>
     <text class="note" x="192.6" y="75" text-anchor="middle">the frames a site's pages</text>
@@ -160,66 +160,73 @@ svg {
     <path class="frame" d="M 0 702 L 385.2 702" />
     <text class="word tone-green" x="14" y="720" text-anchor="start">+SourceOf(Block) DiagramSource?</text>
     <text class="word tone-green" x="14" y="734" text-anchor="start">+Of(Block) Offered?</text>
-    <rect class="box tone-green" x="711.5" y="1" width="392" height="136" rx="10" />
-    <text class="label tone-green" x="907.5" y="29" text-anchor="middle">ChatRunner</text>
-    <text class="note" x="907.5" y="45" text-anchor="middle">one chat's life: draft,</text>
-    <text class="note" x="907.5" y="57" text-anchor="middle">session, stream, save</text>
-    <path class="frame" d="M 711.5 77 L 1103.5 77" />
-    <text class="word tone-green" x="725.5" y="95" text-anchor="start">+StartTurnAsync(message, attachments, page?, title?)</text>
-    <text class="word tone-green" x="725.5" y="109" text-anchor="start">+SendAsync(), StopAsync()</text>
-    <text class="word tone-green" x="725.5" y="123" text-anchor="start">+DeleteChatAsync(chat)</text>
-    <rect class="box tone-teal" x="711.5" y="164" width="392" height="122" rx="10" />
-    <text class="label tone-teal" x="907.5" y="192" text-anchor="middle">IAccountMenu</text>
-    <text class="note" x="907.5" y="208" text-anchor="middle">interface, a site's</text>
-    <text class="note" x="907.5" y="220" text-anchor="middle">account corner</text>
-    <path class="frame" d="M 711.5 240 L 1103.5 240" />
-    <text class="word tone-teal" x="725.5" y="258" text-anchor="start">+Enabled, SignedIn, Name?, Email?</text>
-    <text class="word tone-teal" x="725.5" y="272" text-anchor="start">+LoadAsync(), SignOutAsync()</text>
-    <rect class="box tone-green" x="711.5" y="320" width="392" height="122" rx="10" />
-    <text class="label tone-green" x="907.5" y="348" text-anchor="middle">AgentWindows</text>
-    <text class="note" x="907.5" y="364" text-anchor="middle">an Observer: which window</text>
-    <text class="note" x="907.5" y="376" text-anchor="middle">shows which agent</text>
-    <path class="frame" d="M 711.5 396 L 1103.5 396" />
-    <text class="word tone-green" x="725.5" y="414" text-anchor="start">+Show(identity), Take(Block)</text>
-    <text class="word tone-green" x="725.5" y="428" text-anchor="start">+event Asked, Moved</text>
-    <rect class="box tone-green" x="711.5" y="483" width="392" height="108" rx="10" />
-    <text class="label tone-green" x="907.5" y="511" text-anchor="middle">SiteAddresses</text>
-    <text class="note" x="907.5" y="527" text-anchor="middle">ADR 0107: every place its</text>
-    <text class="note" x="907.5" y="539" text-anchor="middle">own address</text>
-    <path class="frame" d="M 711.5 559 L 1103.5 559" />
-    <text class="word tone-green" x="725.5" y="577" text-anchor="start">+SiteAddresses(home, pages)</text>
-    <rect class="box tone-violet" x="711.5" y="661" width="392" height="64" rx="10" />
-    <text class="label tone-violet" x="907.5" y="689" text-anchor="middle">GraphLayout, TicketCard</text>
-    <text class="note" x="907.5" y="705" text-anchor="middle">louis-agent.diagrams</text>
-    <rect class="box tone-green" x="1183.7" y="234" width="413" height="138" rx="10" />
-    <text class="label tone-green" x="1390.2" y="262" text-anchor="middle">AgentApi</text>
-    <text class="note" x="1390.2" y="278" text-anchor="middle">the agent API over HTTP</text>
-    <path class="frame" d="M 1183.7 298 L 1596.7 298" />
-    <text class="word tone-green" x="1197.7" y="316" text-anchor="start">+CreateSessionAsync(toolsets, role?) string</text>
-    <text class="word tone-green" x="1197.7" y="330" text-anchor="start">+StreamMessageAsync(...) IAsyncEnumerable&lt;SessionEvent&gt;</text>
-    <text class="word tone-green" x="1197.7" y="344" text-anchor="start">+CancelAsync, DeleteSessionAsync</text>
-    <text class="word tone-green" x="1197.7" y="358" text-anchor="start">+GetAsync&lt;T&gt;, PostAsync&lt;T&gt;, PutAsync&lt;T&gt;</text>
-    <rect class="box tone-green" x="1183.7" y="397" width="413" height="124" rx="10" />
-    <text class="label tone-green" x="1390.2" y="425" text-anchor="middle">ChatStore</text>
-    <text class="note" x="1390.2" y="441" text-anchor="middle">the browser's storage</text>
-    <path class="frame" d="M 1183.7 461 L 1596.7 461" />
-    <text class="word tone-green" x="1197.7" y="479" text-anchor="start">+LoadAsync(), SaveAsync()</text>
-    <text class="word tone-green" x="1197.7" y="493" text-anchor="start">+Find(sessionId) Chat?</text>
-    <text class="word tone-green" x="1197.7" y="507" text-anchor="start">+SaveApiKeyAsync, SaveAdminKeyAsync</text>
-    <rect class="box tone-violet" x="1757" y="343" width="218" height="76" rx="10" />
-    <text class="label tone-violet" x="1866" y="371" text-anchor="middle">louis-agent.api.contracts</text>
-    <text class="note" x="1866" y="387" text-anchor="middle">the requests and replies,</text>
-    <text class="note" x="1866" y="399" text-anchor="middle">shared</text>
+    <rect class="box tone-green" x="0" y="788" width="385.2" height="122" rx="10" />
+    <text class="label tone-green" x="192.6" y="816" text-anchor="middle">InlineEdit, InlineForm, TextField, TagInput</text>
+    <text class="note" x="192.6" y="832" text-anchor="middle">pieces for a page a</text>
+    <text class="note" x="192.6" y="844" text-anchor="middle">person edits</text>
+    <path class="frame" d="M 0 864 L 385.2 864" />
+    <text class="word tone-green" x="14" y="882" text-anchor="start">+Value, ValueChanged: plain words with no listener</text>
+    <text class="word tone-green" x="14" y="896" text-anchor="start">PartChanges: a part listens when the whole does</text>
+    <rect class="box tone-green" x="711.5" y="79" width="392" height="136" rx="10" />
+    <text class="label tone-green" x="907.5" y="107" text-anchor="middle">ChatRunner</text>
+    <text class="note" x="907.5" y="123" text-anchor="middle">one chat's life: draft,</text>
+    <text class="note" x="907.5" y="135" text-anchor="middle">session, stream, save</text>
+    <path class="frame" d="M 711.5 155 L 1103.5 155" />
+    <text class="word tone-green" x="725.5" y="173" text-anchor="start">+StartTurnAsync(message, attachments, page?, title?)</text>
+    <text class="word tone-green" x="725.5" y="187" text-anchor="start">+SendAsync(), StopAsync()</text>
+    <text class="word tone-green" x="725.5" y="201" text-anchor="start">+DeleteChatAsync(chat)</text>
+    <rect class="box tone-teal" x="711.5" y="242" width="392" height="122" rx="10" />
+    <text class="label tone-teal" x="907.5" y="270" text-anchor="middle">IAccountMenu</text>
+    <text class="note" x="907.5" y="286" text-anchor="middle">interface, a site's</text>
+    <text class="note" x="907.5" y="298" text-anchor="middle">account corner</text>
+    <path class="frame" d="M 711.5 318 L 1103.5 318" />
+    <text class="word tone-teal" x="725.5" y="336" text-anchor="start">+Enabled, SignedIn, Name?, Email?</text>
+    <text class="word tone-teal" x="725.5" y="350" text-anchor="start">+LoadAsync(), SignOutAsync()</text>
+    <rect class="box tone-green" x="711.5" y="398" width="392" height="122" rx="10" />
+    <text class="label tone-green" x="907.5" y="426" text-anchor="middle">AgentWindows</text>
+    <text class="note" x="907.5" y="442" text-anchor="middle">an Observer: which window</text>
+    <text class="note" x="907.5" y="454" text-anchor="middle">shows which agent</text>
+    <path class="frame" d="M 711.5 474 L 1103.5 474" />
+    <text class="word tone-green" x="725.5" y="492" text-anchor="start">+Show(identity), Take(Block)</text>
+    <text class="word tone-green" x="725.5" y="506" text-anchor="start">+event Asked, Moved</text>
+    <rect class="box tone-green" x="711.5" y="561" width="392" height="108" rx="10" />
+    <text class="label tone-green" x="907.5" y="589" text-anchor="middle">SiteAddresses</text>
+    <text class="note" x="907.5" y="605" text-anchor="middle">ADR 0107: every place its</text>
+    <text class="note" x="907.5" y="617" text-anchor="middle">own address</text>
+    <path class="frame" d="M 711.5 637 L 1103.5 637" />
+    <text class="word tone-green" x="725.5" y="655" text-anchor="start">+SiteAddresses(home, pages)</text>
+    <rect class="box tone-violet" x="711.5" y="739" width="392" height="64" rx="10" />
+    <text class="label tone-violet" x="907.5" y="767" text-anchor="middle">GraphLayout, TicketCard</text>
+    <text class="note" x="907.5" y="783" text-anchor="middle">louis-agent.diagrams</text>
+    <rect class="box tone-green" x="1183.7" y="312" width="413" height="138" rx="10" />
+    <text class="label tone-green" x="1390.2" y="340" text-anchor="middle">AgentApi</text>
+    <text class="note" x="1390.2" y="356" text-anchor="middle">the agent API over HTTP</text>
+    <path class="frame" d="M 1183.7 376 L 1596.7 376" />
+    <text class="word tone-green" x="1197.7" y="394" text-anchor="start">+CreateSessionAsync(toolsets, role?) string</text>
+    <text class="word tone-green" x="1197.7" y="408" text-anchor="start">+StreamMessageAsync(...) IAsyncEnumerable&lt;SessionEvent&gt;</text>
+    <text class="word tone-green" x="1197.7" y="422" text-anchor="start">+CancelAsync, DeleteSessionAsync</text>
+    <text class="word tone-green" x="1197.7" y="436" text-anchor="start">+GetAsync&lt;T&gt;, PostAsync&lt;T&gt;, PutAsync&lt;T&gt;</text>
+    <rect class="box tone-green" x="1183.7" y="475" width="413" height="124" rx="10" />
+    <text class="label tone-green" x="1390.2" y="503" text-anchor="middle">ChatStore</text>
+    <text class="note" x="1390.2" y="519" text-anchor="middle">the browser's storage</text>
+    <path class="frame" d="M 1183.7 539 L 1596.7 539" />
+    <text class="word tone-green" x="1197.7" y="557" text-anchor="start">+LoadAsync(), SaveAsync()</text>
+    <text class="word tone-green" x="1197.7" y="571" text-anchor="start">+Find(sessionId) Chat?</text>
+    <text class="word tone-green" x="1197.7" y="585" text-anchor="start">+SaveApiKeyAsync, SaveAdminKeyAsync</text>
+    <rect class="box tone-violet" x="1757" y="421" width="218" height="76" rx="10" />
+    <text class="label tone-violet" x="1866" y="449" text-anchor="middle">louis-agent.api.contracts</text>
+    <text class="note" x="1866" y="465" text-anchor="middle">the requests and replies,</text>
+    <text class="note" x="1866" y="477" text-anchor="middle">shared</text>
   </g>
-  <rect class="swatch tone-violet" x="0" y="844" width="12" height="12" rx="3" />
-  <text class="legend" x="18" y="854.5" text-anchor="start">the framework</text>
-  <rect class="notebar" x="0" y="880" width="1975" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 890) scale(0.6667)">
+  <rect class="swatch tone-violet" x="0" y="1000" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="1010.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="1036" width="1975" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1046) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="902">
+  <text class="notes" x="38" y="1058">
     <tspan class="note-head">What every site shares:</tspan>
     <tspan class="note-rest">shells for its frames, one runner for a chat's turn over the agent API, the chats kept in the browser, and an address for every place.</tspan>
   </text>
