@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LouisAgent.Web.Chats.Calls;
 
@@ -18,7 +19,12 @@ public static class OfferCall
     public const string Tool = "Offer";
 
     /// <summary>A call's names in any case, as a model may send them.</summary>
-    private static readonly JsonSerializerOptions CallJson = new() { PropertyNameCaseInsensitive = true };
+    // A box's kind comes by its name, as a form's fields do (FX147).
+    private static readonly JsonSerializerOptions CallJson = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter(allowIntegerValues: false) }
+    };
 
     /// <summary>What an Offer call offers; none for any other call.</summary>
     public static Offered? Of(Block call)

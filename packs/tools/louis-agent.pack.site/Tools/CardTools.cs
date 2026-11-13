@@ -65,7 +65,10 @@ public sealed class CardTools
         string question,
         [Description(
             "Two to four choices: a label of up to 40 characters, a button's words such as Book it; an optional " +
-            "why of one line under it; and suggested true on the one you recommend, at most one.")]
+            "why of one line under it; suggested true on the one you recommend, at most one; and writes, a kind " +
+            "(Name, Phone, Email, Text or LongText), on a choice that is their own words, such as Tell you my " +
+            "business, which then holds a box they write in and send from the card: never a choice that only says " +
+            "to type.")]
         IReadOnlyList<OfferChoice> choices)
     {
         if (OfferCheck.Problem(question, choices) is not { } problem)

@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 101 | 88 |
-| Fixes (`FX`) | 135 | 6 |
+| Fixes (`FX`) | 136 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -255,6 +255,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX147 | 2026-11-13 | A choice can hold a box: the guide asked a visitor's business and offered a card that only said to type; an offered choice may now name the kind of words it asks for (`writes`), and its card holds a box and a send button, its words sent after the label as a form's answer is, the offer folding to it |
 | FX146 | 2026-11-12 | The selection follows the guide's walk: walking the landing's tiles, the guide showed the section around them, so the first tile stayed pressed and its chip went with every message; the widget now lets a selected piece go when the guide shows another place, and the site toolset's guide shows each piece of a walk by its own address |
 | FX145 | 2026-11-12 | A site spawned from the starter carries no "Starter": the starter's areas' Composition Root, `StarterAreas` (F127.6), kept its name in a spawned site, since the template renames only `LouisAgent.Starter`, and CI's spawn test failed; it is `WebsiteAreas` now |
 | FX144 | 2026-11-12 | The guide reads the business's work whenever the visitor comes back after a live ask: after a booking in the guesthouse's window (its card said Sent) it told the visitor to carry on and book, answering from its last view (Louis: "it should have known"; his pick, a rule to read the work); the live-demo skill now calls `ReadAgentWork` first, every time, and never asks for what is already done |

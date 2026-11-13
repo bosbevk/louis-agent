@@ -19,8 +19,9 @@
                     }
                     else
                     {
-                        <input class="form-input" type="@InputType(box.Field.Kind)"
-                               autocomplete="@AutoComplete(box.Field.Kind)" disabled="@Waiting" value="@box.Value"
+                        <input class="form-input" type="@FieldInputs.InputType(box.Field.Kind)"
+                               autocomplete="@FieldInputs.AutoComplete(box.Field.Kind)" disabled="@Waiting"
+                               value="@box.Value"
                                @oninput="typed => Typed(box.At, typed)"/>
                     }
                 </label>

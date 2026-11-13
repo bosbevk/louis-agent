@@ -1,0 +1,20 @@
+@use "web/tools/field";
+@use "web/tools/themed" as *;
+
+/* A choice that holds a box (FX147): the box and a round send button on one line under the card's words, in the
+   form's own look (the --web-form-* values a site may set), so a site's form and its boxed choice match. */
+.offer-box { display: flex; align-items: flex-end; gap: 8px; margin-top: 8px; }
+.offer-input {
+    @include field.box(web-form-input, 14px); flex: 1; min-width: 0; font-family: inherit;
+    transition: border-color .15s, background .15s;
+}
+textarea.offer-input { resize: vertical; field-sizing: content; min-height: 2.6em; }
+.offer-input:focus { outline: none; border-color: themed(web-form-input, focus, var(--bs-primary)); }
+.offer-input[disabled] { opacity: .6; }
+.offer-send {
+    flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; font: inherit; font-weight: 700;
+    background: themed(web-form-send, bg, var(--bs-primary)); color: themed(web-form-send, ink, var(--bs-body-bg));
+    cursor: pointer; transition: transform .15s, opacity .15s;
+}
+.offer-send:hover:not([disabled]) { transform: translateY(-1px); }
+.offer-send[disabled] { opacity: .5; cursor: default; }

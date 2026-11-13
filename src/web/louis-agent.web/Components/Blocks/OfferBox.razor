@@ -1,0 +1,30 @@
+@* A choice that holds a box (FX147): the card's label and why, a box suited to what it asks, and Send, which sends
+   what was written after the label, as a form's answer does. *@
+@using LouisAgent.Web.Chats.Calls.Forms
+@inject ChatText Text
+
+<div class="offer-card offer-writes @(Choice.Suggested ? "is-suggested" : "")">
+    <span class="offer-label">@Choice.Label</span>
+    @if (Choice.Why is not null)
+    {
+        <span class="offer-why">@Choice.Why</span>
+    }
+    @if (Choice.Suggested)
+    {
+        <span class="offer-tag">@Text.Suggested</span>
+    }
+    <form class="offer-box" @onsubmit="SendAsync">
+        @if (Kind == AskedKind.LongText)
+        {
+            <textarea class="offer-input" rows="2" disabled="@Waiting" value="@_words"
+                      aria-label="@Choice.Label" @oninput="Typed"></textarea>
+        }
+        else
+        {
+            <input class="offer-input" type="@FieldInputs.InputType(Kind)"
+                   autocomplete="@FieldInputs.AutoComplete(Kind)" disabled="@Waiting" value="@_words"
+                   aria-label="@Choice.Label" @oninput="Typed"/>
+        }
+        <button class="offer-send" type="submit" disabled="@(!Ready)" aria-label="@Text.Send">↑</button>
+    </form>
+</div>
