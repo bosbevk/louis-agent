@@ -101,7 +101,7 @@ while the site and the framework come first; the final cook's paid measure is st
 ## The phases
 
 One at a time, in this order; Puls's own track takes its turns between them. Since 2026-11-07 the framework's track comes first, and the [TODO](TODO.md)'s rows are the build order. An id links the TODO's row; a phase is
-done when Louis has written its learning write-up himself, without the code open.
+done when Claude has written its learning write-up and Louis has read it.
 
 | Phase | What | The selling point | Status | Ids |
 |---|---|---|---|---|
@@ -252,7 +252,7 @@ signs; health data not before a partner carries the compliance; (Pty) Ltd before
 | The framework comes before the agents that earn money | The framework's children are small and measured (a builder, docs, an example, the side-by-side); the demand check (F62) runs meanwhile, and its replies decide how long the framework goes first |
 | One person | Ten clients is the first ceiling; checks, budgets and audit keep support under four hours a client; services capped at two days a week; no phase hurried for a sale |
 | A data breach or a POPIA complaint | No hosting for a client before Phase 9's tenants and Phase 7's audit |
-| The pace | One commit a step, reviewed; a phase is done only when Louis has written its write-up himself |
+| The pace | One commit a step, reviewed; a phase is done only when its write-up is written and Louis has read it |
 
 ## What we are looking for
 

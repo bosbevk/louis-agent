@@ -443,6 +443,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | When | What |
 |---|---|
+| 2026-11-13 | Finishing means the write-up, the touched projects' docs and their diagrams, and a test holds the write-ups |
 | 2026-11-07 | The site's two films exported again, so main's CI is green and F109's deploy can follow it |
 | 2026-11-07 | Project diagrams |
 | 2026-11-05 | Directions to the shop |

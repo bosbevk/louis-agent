@@ -34,9 +34,14 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
   error), *Cause* (proved), *Fix*, *Tests*, *Confirmed*, *Lesson*; when the work is done the doc's lasting parts move
   to the project's design doc and its write-up, the fixes table row keeps the symptom and cause, and the doc is
   deleted (*Finishing a feature*, *Finishing a fix* in their READMEs).
-- **Write-ups** (`src/docs/learning/`): when a skill or feature finishes, Claude writes its learning write-up for Louis to
-  read afterwards (Louis, 2026-10-19), naming the GOAL.md skill it teaches; a fix's lesson goes in
-  `fixes-lessons.md`.
+- **Write-ups** (`src/docs/learning/`): every feature and cleanup ends with its section in the write-up of the GOAL.md
+  skill it teaches, and every fix with its lesson under its own heading in `fixes-lessons.md` (Louis, 2026-11-13);
+  Claude writes them for Louis to read afterwards (Louis, 2026-10-19). `WriteUpsTests` holds it, with the ones
+  owed on that day listed so the list can only shrink.
+- **A project's docs move with its code** (Louis, 2026-11-13): a step that changes a project checks that project's
+  design doc and how-to (both show under `docs/` in the project in Rider) and changes what the step made untrue.
+  A picture that no longer shows the code is changed in its JSON and redrawn with the diagrams tool, never by hand
+  ([Draw a diagram](../../src/docs/guides/draw-a-diagram.md)).
 - **ADRs** (`src/docs/adr/`, [its README](../../src/docs/adr/README.md) has the template): a lasting decision gets one in the
   same PR, numbered next free, with *Context*, *Decision* as a rule, *Consequences*, *Links*; the quotes and dates
   that explain a rule live there, not in `src/docs/CLAUDE.md`.

@@ -177,12 +177,17 @@ In the commit that fixes it, or the one right after:
    every fix in the table above has a row).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's
    [Known limitations](../../../TODO.md#known-limitations) (FX4 removes #9).
-4. **Docs:** anything the fix changes for users (settings, MODELS, SETUP), and an [ADR](../adr/README.md) if the fix
-   made a lasting decision (FX1's append-only rule is [0008](../adr/0008-history-is-append-only.md)).
+4. **Docs:** the design doc and the how-to of every project the fix touched, read against the code as it is now, and
+   a picture that no longer shows it redrawn from its JSON ([Draw a diagram](../guides/draw-a-diagram.md)); anything
+   the fix changes for users (settings, MODELS, SETUP); and an [ADR](../adr/README.md) if the fix made a lasting
+   decision (FX1's append-only rule is [0008](../adr/0008-history-is-append-only.md)).
 5. **Fold and delete** (Louis, 2026-10-29): the fix's row in the table above keeps its exact symptom (the error as
-   it was seen) and its cause in a sentence, so a search for the error still finds it; the lesson goes into its
-   write-up in [docs/learning/](../learning/), anything lasting about the code into its project's design doc; then
-   the fix's doc and its plan are deleted. The docs folded on 2026-10-29 are at the tag `pre-cl24`.
+   it was seen) and its cause in a sentence, so a search for the error still finds it; the lesson goes under the
+   fix's own heading in [Lessons from the fixes](../learning/fixes-lessons.md), every fix, however small (Louis,
+   2026-11-13; `WriteUpsTests` fails for a done fix with no heading there, and the lessons owed on that day are
+   listed in it), and at more length in its skill's write-up where it has one; anything lasting about the code goes
+   into its project's design doc; then the fix's doc and its plan are deleted. The docs folded on 2026-10-29 are at
+   the tag `pre-cl24`.
 
 ---
 [Docs index](../README.md) · Related: [Features](../features/README.md) · [Plans](../plans/README.md) · [TODO](../../../TODO.md)
