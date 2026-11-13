@@ -24,6 +24,7 @@ that references it; the full licence texts are at the links.
 | Microsoft.Extensions.FileProviders.Composite, .Embedded | [MIT](https://licenses.nuget.org/MIT) | Microsoft |
 | ModelContextProtocol, ModelContextProtocol.AspNetCore | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | ModelContextProtocol authors |
 | MongoDB.Driver | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | MongoDB Inc. |
+| Net.Codecrete.QrCodeGenerator | [MIT](https://licenses.nuget.org/MIT) | Manuel Bleichenbacher |
 | OllamaSharp | [MIT](https://github.com/awaescher/OllamaSharp/blob/main/LICENSE) | Andreas Wäscher |
 | OpenTelemetry, OpenTelemetry.Exporter.OpenTelemetryProtocol | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | OpenTelemetry Authors |
 | PdfPig | [Apache-2.0](https://licenses.nuget.org/Apache-2.0) | UglyToad |

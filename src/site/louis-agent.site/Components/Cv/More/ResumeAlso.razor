@@ -1,5 +1,6 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Web.Components.Paper
 @using LouisAgent.Site.Resumes.History
 @* The CV's "Also" (F142): the assessments and societies to check, and what he does outside work. When the page is
    edited, an assessment's name is clicked and retyped and its address is behind a small form, an interest is a
@@ -14,7 +15,7 @@
                 // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
                 int at = index;
                 var certificate = Certificates[at];
-                <p>
+                <p class="cv-assessment">
                     <a href="@AddressOf(certificate)" target="_blank" rel="noopener"><InlineEdit
                         Value="@certificate.Name" Label="Assessment" ValueChanged="@NameChanged(at)"/></a>
                     @if (Editable)
@@ -24,6 +25,10 @@
                                    OnRemove="() => RemoveCertificateAsync(at)"/>
                     }
                 </p>
+                @if (!Editable && certificate.Url is { } onPaper)
+                {
+                    <PaperLink Href="@onPaper" Label="@certificate.Name" Small/>
+                }
                 @if (Editable && _open == at)
                 {
                     <InlineForm @key="at" TItem="ResumeCertificate" Item="certificate"

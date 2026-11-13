@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 105 | 93 |
-| Fixes (`FX`) | 141 | 6 |
+| Fixes (`FX`) | 142 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -260,10 +260,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (141 done)
+## Fixes (142 done)
 
 | Id | When | What |
 |---|---|---|
+| FX154 | 2026-11-13 | The CV prints as its page, on white paper, every link a QR code: Save as PDF gave seven pages in the phone's layout with black margins, a grey cast and a 13 MB file; it is now the desktop layout set for A4 in four pages and 238 KB, the framework's grain and dark canvas are off on paper, and a link is printed as its QR code (`PaperLink`, in the framework's web) |
 | FX153 | 2026-11-13 | The CV's editor is behind the admin's key: `/admin/resume` opened for anyone, because it read the CV on the public page's open route and only Save asked for the key; the editor and its card now read it on the admin's own route, so without the key there is only the place to enter it |
 | FX152 | 2026-11-13 | A choice with a box asks in the agent's voice, and its answer draws no bubble: the guide's card read "Tell you my business", the tool's own example, over a line in the guide's voice; the example and the toolset guide now make a written choice the agent's ask ("Tell me about your business"), and words sent from its box leave their bubble out, as a click's and a form's do |
 | FX151 | 2026-11-13 | The section list marks the section you see most of: on a scrolling page with short sections at its end (Louis's CV), a section whose top could never reach the line under the header was never marked; the list now marks the one filling the most of the screen, and the last at the page's end |

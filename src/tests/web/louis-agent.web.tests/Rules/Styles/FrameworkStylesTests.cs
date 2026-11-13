@@ -295,6 +295,37 @@ public partial class FrameworkStylesTests
         Assert.That(string.Concat(Rules().Select(File.ReadAllText)),
             Does.Contain(".site-menu:last-child .site-menu-list { left: auto; right: -14px; }"));
 
+    /// <summary>
+    /// What is right for a screen and wrong for paper is switched off in print (FX154). The grain over every page is
+    /// a layer fixed to the whole window, so it was drawn again on every sheet, margins and all, and it blends with
+    /// what is under it, so the browser turned each page into a picture: a grey cast and a 13 MB file. And a page that
+    /// says it is dark has its sheet painted with the browser's dark canvas, which no background rule reaches, so the
+    /// margins printed black (Louis: "where is the space", "it is still black", "it must be white").
+    /// </summary>
+    [Test]
+    public void OnPaper_ThereIsNoGrain_AndTheSheetIsLight() =>
+        Assert.That(string.Concat(Rules().Select(File.ReadAllText)).ReplaceLineEndings("\n"),
+            Does.Contain("@media print {\n    body::before { display: none; }\n    :root { color-scheme: light; }\n}"));
+
+    /// <summary>
+    /// A link on paper takes the ink of the page it is printed on (FX154, Louis's pick of three: "The page's own
+    /// ink"). It first read two names of its own from the framework's colours, and a name there is one every site
+    /// has to set and one the films are recorded with, so Puls's rule and the films' check both failed.
+    /// </summary>
+    [Test]
+    public void ALinkOnPaper_TakesThePagesInk()
+    {
+        string link = File.ReadAllText(Rules().Single(file => file.EndsWith("PaperLink.razor.scss",
+            StringComparison.Ordinal)));
+        string colours = File.ReadAllText(Path.Combine(Styles, "settings/_colours.scss"));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(link, Does.Contain("color: inherit;"));
+            Assert.That(link + colours, Does.Not.Contain("--web-paper"));
+        });
+    }
+
     /// <summary>No rule in the framework writes a colour as a value.</summary>
     [Test]
     public void NoRule_HoldsAFixedColour()
