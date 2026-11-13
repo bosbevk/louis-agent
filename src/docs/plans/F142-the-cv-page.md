@@ -134,7 +134,12 @@ says; a typed file both read can't. F143 builds on it (skill 4, *Tool design*).
 
 ## Approved during the build
 
-(empty)
+- **The CV is the site's, not the framework's** (Louis, 2026-11-13, at step 1: "this is not a framework feature").
+  The records, the reader and the view move from `louis-agent.web` to the site project: the records and
+  `ResumeReader` in `src/site/louis-agent.site/Resumes/` (namespace `LouisAgent.Site.Resumes`, plural so the
+  namespace doesn't shadow the `Resume` record), the view's sections in `src/site/louis-agent.site/Components/Resume/`,
+  and their tests in `louis-agent.site.tests` (`Resumes/`, `Components/Resume/`). Nothing in `src/web` changes. The
+  records are grouped by concern (`Basics/`, `History/`, `Skills/`) to keep six files a folder.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Next: [F143 the guide drives the CV](F143-the-guide-drives-the-cv.md)

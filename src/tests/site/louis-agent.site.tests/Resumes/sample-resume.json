@@ -1,0 +1,46 @@
+{
+  "basics": {
+    "name": "Ada Sample",
+    "label": "Senior .NET developer",
+    "email": "ada@example.com",
+    "phone": "000 000 0000",
+    "summary": "Builds business software.",
+    "location": { "city": "Malmesbury", "region": "Western Cape", "countryCode": "ZA" },
+    "profiles": [
+      { "network": "LinkedIn", "username": "ada", "url": "https://www.linkedin.com/in/ada" },
+      { "network": "GitHub", "username": "ada", "url": "https://github.com/ada" }
+    ]
+  },
+  "facts": [ { "value": "20 years", "label": "building business software in .NET" } ],
+  "now": {
+    "name": "louis-agent",
+    "url": "https://louis-agent.dev",
+    "description": "An AI agent framework in C#.",
+    "highlights": [ "Evals and a cost ledger" ]
+  },
+  "work": [
+    {
+      "name": "Kohde",
+      "position": "Senior developer",
+      "startDate": "2021-03",
+      "endDate": "2024-06",
+      "highlights": [ "Shipped the price-rule agent" ],
+      "keywords": [ "C#", "Azure" ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Unisa",
+      "area": "Computer science",
+      "studyType": "Diploma",
+      "startDate": "2004",
+      "endDate": "2006"
+    }
+  ],
+  "skills": [ { "name": "AI engineering", "keywords": [ "Evals", "Tool design" ] } ],
+  "certificates": [
+    { "name": "Azure Developer", "issuer": "Microsoft", "date": "2020-05", "url": "https://example.com/cert" }
+  ],
+  "languages": [ { "language": "English", "fluency": "Native" } ],
+  "interests": [ { "name": "Chess", "keywords": [ "Openings" ] } ]
+}
