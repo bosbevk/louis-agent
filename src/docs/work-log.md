@@ -12,32 +12,31 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 104 | 92 |
-| Fixes (`FX`) | 139 | 6 |
+| Features (`F`) | 104 | 91 |
+| Fixes (`FX`) | 140 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (126 in the TODO)
+## Open (125 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now, after F144 |
+| F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now |
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
 | F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
-| F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now, after F127 |
+| F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
-| F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now, after F127 |
-| F138 | The guide explains with drawings: a tool gives the model a docs diagram's JSON and the widget draws it in the chat with `louis-agent.diagrams`; its own plan, after F127.4 | Now, after F127.4 |
+| F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now |
+| F138 | The guide explains with drawings: a tool gives the model a docs diagram's JSON and the widget draws it in the chat with `louis-agent.diagrams`; its own plan, after F127.4 | Now |
 | F132 | Found for the searches business owners make (Louis, 2026-11-10, of a search for "ai agents for my website": "is our seo geared for a search like this?"; his pick of three): a page for "AI agent for your website" (South Africa, from R500, what it does, an FAQ with FAQPage and Service data), the three demos titled for their business searches ("AI agent for a guesthouse website"), and "AI" in the landing's title; the long and local searches first, since the head term is ads and big brands; its own plan | Next, after F127.2 |
-| F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next, after F127.1 |
+| F130 | The subdomains, together (Louis, 2026-11-10: "demos. and framework. together, with a redesign of the framework website"), a parent with three children: F130.1 the host by name (one app answering several host names: DNS and certificates, a page per host, canonical links, sitemap and robots per host, old addresses redirected for good; about 4 steps), F130.2 `demos.louis-agent.dev` (F127.1's showroom at its root, the guide's page index and the links moved; about 3 steps), F130.3 `framework.louis-agent.dev` redesigned (what the framework is, how it works and how to build on it, for developers, while `louis-agent.dev` sells; the framework's sections move there; research, mockups and Louis's picks first); each child its own plan | Next |
 | F106 | The framework's track, before the agents | Now |
 | F74 | Packaging the engine in place, then its own repo after the engine features | Now |
 | F44 | The engine as a product | Now |
 | F39 | Orchestration | Now |
 | F43 | Accounts, tenants and durable sessions | Now |
 | F62 | Validate demand | Now |
-| F18 | F18's leftovers, before F49.1 | Now |
 | F63 | The reference transcripts in git | Now |
 | F64 | The judge check can't see pages | Now |
 | F65 | After F35, the cook's answer | Now |
@@ -124,7 +123,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F104 | Build mode, a side note | Later |
 | CL34 | The work email out of git history | Cleanups |
 | CL35 | `Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body ta… | Cleanups |
-| CL36 | Design docs for the three projects that have none | Cleanups |
+| CL36 | Design docs for the four projects that have none | Cleanups |
 | CL37 | The orchestrator's `Program.cs` up to the rules | Cleanups |
 | F16 | F16-S1: the oversized-results report, and the worst offenders paged | Cleanups |
 | CL38 | `VerifyQuote`'s prices in the host's currency | Cleanups |
@@ -149,7 +148,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (101 done)
+## Features (104 done)
 
 | Id | When | What |
 |---|---|---|
@@ -250,7 +249,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F22 | 2026-10-19 | Role tools |
 | F21 | 2026-10-19 | Personalities |
 | F20 | 2026-10-14 | Puls look |
-| F18 | 2026-10-29 | Evaluation |
+| F18 | 2026-10-29 | Evaluation; its leftover, the judge checked against Louis's own labels, closed on 2026-11-03 (60 answers he graded in the portal, run `cf37574d0f23`) |
 | F14 | 2026-10-11 | Display currency |
 | F5 | 2026-10-14 | follow-up, sub-session usage rolled up |
 | F4 | 2026-10-11 | Prompt caching |
@@ -258,10 +257,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (109 done)
+## Fixes (140 done)
 
 | Id | When | What |
 |---|---|---|
+| FX152 | 2026-11-13 | A choice with a box asks in the agent's voice, and its answer draws no bubble: the guide's card read "Tell you my business", the tool's own example, over a line in the guide's voice; the example and the toolset guide now make a written choice the agent's ask ("Tell me about your business"), and words sent from its box leave their bubble out, as a click's and a form's do |
 | FX151 | 2026-11-13 | The section list marks the section you see most of: on a scrolling page with short sections at its end (Louis's CV), a section whose top could never reach the line under the header was never marked; the list now marks the one filling the most of the screen, and the last at the page's end |
 | FX150 | 2026-11-13 | A late redraw never reaches for a page that is gone: CI's test host crashed when the stream's redraw throttle fired after a test let the page's services go, and the widget looked its business windows up in them; it takes them once when it starts |
 | FX149 | 2026-11-13 | The guide shows every place it explains: on the landing's demos section it explained two proof tiles without showing them, so the page stayed put and the old chip went with every message; the site toolset's guide now shows a section, tile or card before explaining it, wherever it is |

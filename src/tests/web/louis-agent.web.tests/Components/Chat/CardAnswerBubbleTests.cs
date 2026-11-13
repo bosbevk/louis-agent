@@ -61,13 +61,45 @@ public class CardAnswerBubbleTests
         ]
     };
 
+    /// <summary>An answer whose first choice holds a box the visitor writes in.</summary>
+    private static Block OfferWithABox() => new()
+    {
+        Kind = BlockKind.Tool,
+        ToolName = OfferCall.Tool,
+        ToolInput =
+            """
+            { "question": "Where to next?", "choices": [
+              { "label": "Tell me about your business", "writes": "Text" }, { "label": "Stop here" } ] }
+            """,
+        ToolResult = "Offered: the visitor sees 2 choices."
+    };
+
+    /// <summary>A chat whose visitor wrote in a choice's box, then typed words that only look like a card's.</summary>
+    private static ChatModel Written() => new()
+    {
+        SessionId = "sess_test",
+        Turns =
+        [
+            new Turn
+            {
+                UserText = "Just interested",
+                Blocks = [OfferWithABox()]
+            },
+            new Turn
+            {
+                UserText = "Tell me about your business: A guesthouse in Paternoster",
+                Blocks = [OfferWithABox()]
+            },
+            new Turn { UserText = "Stop here: or maybe not" }
+        ]
+    };
+
     /// <summary>The bubbles the chat draws, the setting as a chat that draws cards passes it down.</summary>
-    private static List<string> Bubbles(ChatSettings settings)
+    private static List<string> Bubbles(ChatModel chat, ChatSettings settings)
     {
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new ChatText());
-        var chat = Answered();
 
         var cut = ctx.Render<MessageList>(parameters =>
             parameters.Add(list => list.Chat, chat).Add(list => list.ShowCardAnswers, settings.ShowCardAnswers));
@@ -81,7 +113,22 @@ public class CardAnswerBubbleTests
     {
         var cardsShowIt = new ChatSettings();
 
-        Assert.That(Bubbles(cardsShowIt), Is.EqualTo(new[] { "A room for Friday", "Can I bring two dogs?" }));
+        Assert.That(Bubbles(Answered(), cardsShowIt),
+            Is.EqualTo(new[] { "A room for Friday", "Can I bring two dogs?" }));
+    }
+
+    /// <summary>
+    /// FX152: words sent from a choice's box answer that card too, and it folds to show them, so they draw no bubble.
+    /// The box's label is the agent's ask, and a bubble would have the visitor say it. Words typed after a label
+    /// that holds no box are the visitor's own, and stay.
+    /// </summary>
+    [Test]
+    public void ByDefault_WordsSentFromAChoicesBox_DrawNoBubble()
+    {
+        var cardsShowIt = new ChatSettings();
+
+        Assert.That(Bubbles(Written(), cardsShowIt),
+            Is.EqualTo(new[] { "Just interested", "Stop here: or maybe not" }));
     }
 
     /// <summary>
@@ -108,11 +155,13 @@ public class CardAnswerBubbleTests
     {
         var everything = new ChatSettings { ShowCardAnswers = true };
 
-        Assert.That(Bubbles(everything),
+        Assert.That(Bubbles(Answered(), everything),
             Is.EqualTo(new[] { "A room for Friday", "Book it", "Name: Anna", "Can I bring two dogs?" }));
     }
 
-    /// <summary>The chats that draw cards pass their settings' choice down: the guide's widget and a business's window.</summary>
+    /// <summary>
+    /// The chats that draw cards pass their settings' choice down: the guide's widget and a business's window.
+    /// </summary>
     [TestCase("Widget/ChatWidget.razor")]
     [TestCase("Site/Showroom/Mock/Live/MockLiveChat.razor")]
     public void TheChatsThatDrawCards_PassTheSettingDown(string component)

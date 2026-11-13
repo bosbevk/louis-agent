@@ -41,7 +41,7 @@ you need otherwise.
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts guide](../CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
-| [Deploying Puls to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch Puls on Azure Container Apps, set its secrets, and run the home end of its tunnel to this PC's browser and Mongo |
+| [Deploying to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch the apps on Azure Container Apps, set their secrets, and deploy from GitHub; since 2026-11-09 only louis-agent.dev runs there |
 
 ## 4. The orchestrator
 
@@ -60,7 +60,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, the eval harness, its protocol, runner and Puls's evals, and the tests |
+| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core and the libraries on it, the hosts, the framework's web, the framework's own site and its guide, the eval harness, the tools and the tests, with links to each demo's and each pack's own |
 
 ## 7. What's next: plans and designs
 
@@ -73,7 +73,7 @@ planned, next and in the backlog, and links to the rest.
 | [Roadmap](../../ROADMAP.md) | Plan | See where this is going: what we sell, what exists, the phases with their ids, how it earns money, the numbers and the risks |
 | [TODO](../../TODO.md) | Plan | See what's still open, one row per item: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
 | [Work log](work-log.md) | Reference | See every feature, fix and cleanup as a table: when and what, the counts done and open, and what is still open in the TODO |
-| [Features](features/README.md) | Plan | Follow the features still to build: each with user stories, design and steps; a built feature keeps one row, its doc folded into its project's design doc (CL24) |
+| [Features](features/README.md) | Plan | Find the feature docs still open (user stories, design and steps) and the checklist for finishing a feature; a built feature's doc is folded into its project's design doc (CL24) and its row is in the work log |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
 | [Plans](plans/README.md) | Plan | Read the roadmap and the plans being built now: what each changes from its doc, the steps and how they're checked; a done plan is deleted (the old ones are at the tag `pre-cl24`) |
 | [Fixes](fixes/README.md) | Explanation | Look up an error: what broke and why, one row per fix with its symptom and cause, and the fixes still open; their lessons in [Lessons from the fixes](learning/fixes-lessons.md) |

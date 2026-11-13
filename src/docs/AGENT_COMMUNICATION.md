@@ -250,7 +250,7 @@ louis-agent fix the ones the runbook allows — over the same session API any cl
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
 louis-agent.api's `/v1/prices` and `/v1/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
-(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
+(its own `LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
 
 ![Agent to agent: the orchestrator triages each error, asks louis-agent for a fix through a session, and checks the fix before it counts](diagrams/AGENT_COMMUNICATION-agent-to-agent-the-orchestrator-and-louis-agent.svg)
 
@@ -404,9 +404,8 @@ Planned features change parts of this page; each one's doc lists updating it in 
 
 | Feature | What changes here |
 |---|---|
-| [F8 Reliability](features/F08-reliability.md) (S4) | Results become tool calls: louis-agent reports with a `ReportFixResult` tool and the orchestrator decides with `RecordDecision`, read from the `tool_use` block in the stream; the `FIX-RESULT` and `DECISION` lines stay as a fallback |
+| [F39 Orchestration](plans/F39-orchestration.md) (F8-S4, moved there) | Results become tool calls: louis-agent reports with a `ReportFixResult` tool and the orchestrator decides with `RecordDecision`, read from the `tool_use` block in the stream; the `FIX-RESULT` and `DECISION` lines stay as a fallback |
 | [F10 Route settings](features/F10-route-settings.md) | `POST /v1/sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
-| [F5 Toolset profiles](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md) | The demo's louis-agent.api loads only the coding tools, so each fix session sends a smaller prefix |
 | [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /v1/sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
 | [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /v1/usage`, `GET /v1/usage/sessions/{id}`, `GET /v1/budgets`, `POST /v1/estimates` |
 | [F17 Orchestrator agent](../../demos/louis-agent/docs/features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |

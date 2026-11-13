@@ -34,8 +34,8 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 ## 2. What exists today
 
 - **Recorded (F1, F2):** every model request is one line in the usage ledger (§4.1), priced from `config/prices.json`
-  (§4.2), and tagged with its task and run (§4.3). The M1 baseline is in the features'
-  [Benchmark](../features/README.md#the-benchmark).
+  (§4.2), and tagged with its task and run (§4.3). The M1 baseline is in
+  [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
 - **Shown (F3):** a usage line after every answer (CLI on stderr, the web app with the chat's total, Rider with
   `USAGE_IN_CHAT=true`), `/usage` in every host, `usage` on the API's `message_delta` (Claude's four token fields,
   summed over the turn, plus `requests`, `cost`, `currency`, `unpriced`) and on `error` when a request had returned,
@@ -185,8 +185,8 @@ fixes)"* — never a single figure presented as certain.
 | **Calibration** | After every run | Compare each task's estimate with its actual; show the error in the run summary; the history basis improves itself as the ledger grows |
 
 Defaults for the model-based estimate come from the M1 baseline on Claude Haiku 5.5 (8–16 requests per fix, 11.4 on
-average; a ~48,000-token prefix; see the features' [Benchmark](../features/README.md#the-benchmark)) until history
-replaces them.
+average; a ~48,000-token prefix; see
+[BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md)) until history replaces them.
 
 ### 5.2 Where estimates appear
 

@@ -53,5 +53,15 @@ These are read only by this stack's compose file.
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
 | `API_PORT` | Host port for the API and web app (default `5082`, always bound to `127.0.0.1`; the framework's site has 5080) |
 
+The orchestrator reads its own from the environment when it is run by hand ([its doc](projects/louis-agent.orchestrator.md)):
+
+| Setting | Meaning |
+|---|---|
+| `ORCHESTRATOR_SERVICE_ROOT` | The watched service's repository; required |
+| `ORCHESTRATOR_SERVICE`, `ORCHESTRATOR_SERVICE_PROJECT` | The service's name, which picks its runbook folder (default `order-service`), and its project inside the repository (default `src/OrderService`) |
+| `LOUIS_AGENT_URL`, `LOUIS_AGENT_API_KEY` | The coding agent's API the fixes are asked of (default `http://127.0.0.1:5081`) and its key, a secret (else `AGENT_API_KEY`) |
+| `ORCHESTRATOR_STATE_DIRECTORY`, `ORCHESTRATOR_COMMS_LOG` | Where it keeps what it has handled (default `logs/orchestrator/{service}`), and another file for the conversation log |
+| `ORCHESTRATOR_POLL_SECONDS` | How often it reads the error log (default `15`) |
+
 ---
 [Docs index](README.md) · Related: [Configuration](../../../src/docs/SETUP.md) · [Quick start](QUICK_START_AGENT.md)

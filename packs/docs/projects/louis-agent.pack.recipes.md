@@ -106,7 +106,7 @@ What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blo
 | `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |
 | `Sources/Sites/` | `RecipeSites` (reads the table), `RecipeSite`, the choices `RecipeReadBy` and `RecipeSearch`, and `recipe-sites.md`, the table |
 | `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |
-| `../louis-agent.pack.recipes.checks/Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the list for the check catalogue |
+| `packs/evals/louis-agent.pack.recipes.checks/Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the list for the check catalogue |
 | `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage`, `RecipeCheckMessage` (the check's reasons) |
 | `prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
 

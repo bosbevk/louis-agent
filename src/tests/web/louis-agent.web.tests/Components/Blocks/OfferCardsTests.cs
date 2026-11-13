@@ -212,7 +212,7 @@ public class OfferCardsTests
         {
           "question": "Where to next?",
           "choices": [
-            { "label": "Tell you my business", "why": "So I can show how leads would work for it",
+            { "label": "Tell me about your business", "why": "So I can show how leads would work for it",
               "suggested": true, "writes": "Text" },
             { "label": "Guesthouse demo", "why": "See an agent turn a visitor into a booking" }
           ]
@@ -221,8 +221,8 @@ public class OfferCardsTests
 
     /// <summary>
     /// FX147, Louis on a card that only said to type: "that first card should have had a input with button"; his pick
-    /// of three, a choice can hold a box. That card draws a box and a send button; what they write goes as their message,
-    /// after the card's label, as a form's answer does, and the other cards stay plain.
+    /// of three, a choice can hold a box. That card draws a box and a send button; what they write goes as their
+    /// message, after the card's label, as a form's answer does, and the other cards stay plain.
     /// </summary>
     [Test]
     public void AChoiceThatWrites_HoldsABox_AndSendsWhatIsWritten()
@@ -237,7 +237,7 @@ public class OfferCardsTests
         Assert.Multiple(() =>
         {
             Assert.That(cut.FindAll(".offer-writes"), Has.Count.EqualTo(1), "only the choice that writes has a box");
-            Assert.That(sent, Is.EqualTo("Tell you my business: A guesthouse in Paternoster"));
+            Assert.That(sent, Is.EqualTo("Tell me about your business: A guesthouse in Paternoster"));
         });
     }
 
@@ -247,9 +247,9 @@ public class OfferCardsTests
     {
         using var ctx = Context();
 
-        var cut = Render(ctx, Call(Leads), answer: "Tell you my business: A guesthouse in Paternoster");
+        var cut = Render(ctx, Call(Leads), answer: "Tell me about your business: A guesthouse in Paternoster");
 
         Assert.That(cut.FindAll(".offer-card.is-chosen").Select(card => card.TextContent.Trim()),
-            Is.EqualTo(new[] { "Tell you my business: A guesthouse in Paternoster" }));
+            Is.EqualTo(new[] { "Tell me about your business: A guesthouse in Paternoster" }));
     }
 }
