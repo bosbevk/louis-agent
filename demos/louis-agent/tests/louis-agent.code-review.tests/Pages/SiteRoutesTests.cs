@@ -80,6 +80,27 @@ public class SiteRoutesTests
         }, TimeSpan.FromSeconds(10));
     }
 
+    /// <summary>
+    /// F144: the admin's home draws a card for each of the app's admin areas, the overview, the packs and the evals,
+    /// in the order it names them.
+    /// </summary>
+    [Test]
+    public void TheAdminsHome_DrawsACardPerArea_InOrder()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSiteAreas(CodeReviewAreas.Name);
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin");
+
+        var app = ctx.Render<App>();
+
+        app.WaitForAssertion(() =>
+            Assert.That(app.FindAll(".admin-card-title").Select(title => title.TextContent),
+                Is.EqualTo(new[] { "Overview", "Packs", "Evals" })), TimeSpan.FromSeconds(10));
+    }
+
     /// <summary>The program names the areas the test above draws, through the same method.</summary>
     [Test]
     public void TheProgram_NamesItsAreas()

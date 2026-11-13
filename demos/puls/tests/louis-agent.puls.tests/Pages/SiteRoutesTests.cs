@@ -61,6 +61,29 @@ public class SiteRoutesTests
     }
 
     /// <summary>
+    /// F144: the admin's home draws a card for each of Puls's admin areas, the overview, the packs and the evals, in
+    /// the order it names them.
+    /// </summary>
+    [Test]
+    public void TheAdminsHome_DrawsACardPerArea_InOrder()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
+        ctx.Services.AddSingleton(new ReviewQueueState());
+        ctx.Services.AddSiteAreas(PulsAreas.Name);
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin");
+
+        var app = ctx.Render<App>();
+
+        app.WaitForAssertion(() =>
+            Assert.That(app.FindAll(".admin-card-title").Select(title => title.TextContent),
+                Is.EqualTo(new[] { "Overview", "Packs", "Evals" })), TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
     /// The program names its areas through the same method the tests use, its own words registered first so they
     /// stay (F61.2: the account pages, in Puls's words).
     /// </summary>

@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Web.Components.Admin.Overview;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Pages.Admin;
@@ -23,6 +24,24 @@ public class SiteAdminTests
     public void TheAdmin_CountsTheGuidesLeads() =>
         Assert.That(Areas().GetRequiredService<OverviewCounts>().Tools,
             Is.EqualTo(new[] { new CountedTool("SendLead", "leads") }));
+
+    /// <summary>
+    /// F144: the site's admin plugs in the overview alone, its packs offer no screen, and it runs no evals, so its home
+    /// draws the overview's card and nothing else.
+    /// </summary>
+    [Test]
+    public void TheAdminsHome_IsTheOverviewsCardAlone()
+    {
+        var areas = Areas().GetRequiredService<SiteAreas>();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(areas.AdminCards, Is.EqualTo(new[] { typeof(OverviewCard) }));
+            Assert.That(areas.PageAssemblies.SelectMany(page => page.GetTypes())
+                    .SelectMany(type => type.GetCustomAttributes<RouteAttribute>()).Select(route => route.Template),
+                Does.Contain("/admin"), "the home opens");
+        });
+    }
 
     /// <summary>The router has the framework's admin pages, so /admin/overview opens.</summary>
     [Test]
