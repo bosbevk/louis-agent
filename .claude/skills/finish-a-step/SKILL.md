@@ -27,8 +27,8 @@ The step's test passes. This takes it to a commit. Four stops come first.
    untrue: a renamed class, a moved folder, a new part, a new setting. If one of the doc's pictures no longer shows
    the code, change its JSON and redraw it with the tool, never the SVG by hand
    (`/draw-a-diagram`); `dotnet run --project src/tools/louis-agent.doc-diagrams -- --check`
-   names an SVG that wasn't redrawn after its JSON changed. On the last step, follow *Finishing a feature* or
-   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in
+   names an SVG that wasn't redrawn after its JSON changed. On the last step, use `/finish-a-feature`, or
+   `/fix-a-bug` for a fix. The plan changes only under *Approved during the build*. New text goes in
    the doc of its type.
 4. **Format** every C# file in the commit, in this order and once:
    1. the commit's files (`git diff --name-only`, or Rider's git status tool);

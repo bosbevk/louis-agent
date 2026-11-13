@@ -36,9 +36,9 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     10 says, each naming its pattern in plain words, with the sources and the one you recommend. The pick is named in
     the commit, the explanation and the `<remarks>` of each class that carries it ([ADR 0050](adr/0050-summaries-like-a-person.md)).
 
-## Steps, branches and commits
+## The loop of a step
 
-**The loop of a step.** One step is one commit. How each part is done is in its skill. The waits in it hold
+One step is one commit. How each part is done is in its skill. The waits in it hold
 whether or not a skill is loaded.
 
 1. **Do it** with `/do-a-step`. The test comes first and is seen failing for the expected reason, then the code.
@@ -48,6 +48,7 @@ whether or not a skill is loaded.
 3. **Show it, and wait.** The files it changes, the commit message and the explanation, with the test failing
    before the code and passing after. No commit before Louis's ok.
 4. **Commit it on its own**, test and code together, and stop (rule 5). Never push without asking (rule 7).
+   The branch's name, the commit message and the pull request are in `/ship-it`.
 
 **Which tests, and when.** Louis, 2026-11-13: "before committing only touched unit tests, before doing a PR main
 must be merged and full suite unit tests passes". Before a commit, run only the tests of what the step touched.
@@ -59,14 +60,6 @@ info, git status) it uses that tool, never a hand edit, a script (Python, sed, P
 that does the same thing less well: formatted with Rider's formatter, not re-typed; renamed with Rider's rename, not
 replaced; problems from Rider's inspections, not from re-reading the file. A shell command is for what no Rider tool
 does; *Brave mode* stays off. The tool-to-job table per Rider version is in [the skill](../../.claude/skills/finish-a-step/SKILL.md#riders-tools-by-job).
-
-**Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
-`refactor/CL3-messages-and-logging`, `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
-
-**Commit messages** are `type(scope): step N - what changed` (`feat(f22): step 3 - ReadTable for spreadsheets`,
-`fix(fx14): the prompt budget counts cached tokens`, `docs(f5): review of PR #27 - toolset guides`), and the body says
-why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
-`f49.1`), or the area when there is none (`ollama`, `guide`); `step N -` only on a plan's steps.
 
 ## Hard stops
 
@@ -113,6 +106,9 @@ A skill is a procedure that loads for its job. Use the one that fits. More are a
 | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
 | A step starts | `/do-a-step` |
 | A step's test passes, and it is to be shown and committed | `/finish-a-step` |
+| Something broke, and a fix starts | `/fix-a-bug` |
+| A commit, a push, a pull request or a merge | `/ship-it` |
+| The last step of a feature or a cleanup | `/finish-a-feature` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
 
 ## Development workflow

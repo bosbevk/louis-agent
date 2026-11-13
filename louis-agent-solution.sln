@@ -284,6 +284,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "finish-a-step", "finish-a-s
 		.claude\skills\finish-a-step\SKILL.md = .claude\skills\finish-a-step\SKILL.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fix-a-bug", "fix-a-bug", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6B}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\fix-a-bug\SKILL.md = .claude\skills\fix-a-bug\SKILL.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ship-it", "ship-it", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6C}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\ship-it\SKILL.md = .claude\skills\ship-it\SKILL.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "finish-a-feature", "finish-a-feature", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6D}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\finish-a-feature\SKILL.md = .claude\skills\finish-a-feature\SKILL.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
@@ -2576,6 +2591,9 @@ Global
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C68} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C69} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6B} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6C} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C6D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}

@@ -35,6 +35,9 @@ Two rules follow from the last row.
 | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
 | `do-a-step` | A step starts |
 | `finish-a-step` | A step's test passes, and it is to be shown and committed |
+| `fix-a-bug` | Something broke, and a fix starts |
+| `ship-it` | A commit, a push, a pull request or a merge |
+| `finish-a-feature` | The last step of a feature or a cleanup |
 | `draw-a-diagram` | A picture in the docs is added or changed |
 
 The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md).
