@@ -36,8 +36,24 @@ public partial class PaperLink
     /// The whole address the code holds. A phone that scans it knows nothing of which site the paper came from, so
     /// a place on this site is given the site's address in front.
     /// </summary>
-    private string Target => Navigation.ToAbsoluteUri(Href).ToString();
+    private string Whole => Navigation.ToAbsoluteUri(Href).ToString();
 
     /// <summary>What is written beside the code.</summary>
-    private string Written => Address ?? PaperAddress.Short(Target);
+    private string Written => Address ?? PaperAddress.Short(Whole);
+
+    /// <summary>The link's classes: a small code says so.</summary>
+    private string Class => Small ? "paper-link is-small" : "paper-link";
+
+    /// <summary>Whether the link leaves this site for another on the web.</summary>
+    private bool Leaves => Href.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                           Href.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// A PDF is often read in a browser, where the code is clicked: a link out opens in a new tab, as every link
+    /// out does.
+    /// </summary>
+    private string? Target => Leaves ? "_blank" : null;
+
+    /// <summary>And tells the other site nothing of where it came from.</summary>
+    private string? Rel => Leaves ? "noopener" : null;
 }

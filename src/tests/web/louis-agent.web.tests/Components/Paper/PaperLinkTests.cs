@@ -55,6 +55,29 @@ public class PaperLinkTests
         });
     }
 
+    /// <summary>
+    /// A PDF is often read in a browser, where the code is clicked. A link that leaves the site opens in a new tab
+    /// and tells the other site nothing, as every link out does. A place on this site, or a mail link, opens as it is.
+    /// </summary>
+    [Test]
+    public void ALinkOut_OpensANewTab_WithNoOpener()
+    {
+        using var ctx = new BunitContext();
+
+        var outward = Render(ctx, "https://github.com/bosbevk").Find("a.paper-link");
+        var inward = Render(ctx, "/framework/how-it-works").Find("a.paper-link");
+        var mail = Render(ctx, "mailto:louis@example.org").Find("a.paper-link");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(outward.GetAttribute("target"), Is.EqualTo("_blank"));
+            Assert.That(outward.GetAttribute("rel"), Is.EqualTo("noopener"));
+            Assert.That(inward.HasAttribute("target"), Is.False);
+            Assert.That(mail.HasAttribute("target"), Is.False);
+            Assert.That(outward.GetAttribute("class"), Is.EqualTo("paper-link"), "no stray space in its class");
+        });
+    }
+
     /// <summary>Its owner may say what is written beside the code: a phone number, a name.</summary>
     [Test]
     public void ItsOwner_MaySayWhatIsWritten()

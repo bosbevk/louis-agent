@@ -409,5 +409,19 @@ address a page lives at or the frame drawn around it, so an open route reused in
 And "it is protected" is a claim like any other: the test that proves it is the one that refuses, not the one that
 lets you in. Skill 15 (safety and security: closed by default, and proved by a refusal).
 
+## FX154 · Check the thing itself, not something like it
+
+Save as PDF shipped having been checked on a wide screen with the print rules switched on. That is not a printed
+page. A sheet of A4 is narrower than the site's phone breakpoint, so the real PDF came out in the phone's layout,
+seven pages long. It had black margins and a grey cast, from two things no screen check shows: a grain the
+framework paints as a layer fixed to the window, which print repeats on every sheet and turns into a picture, and
+the browser's own dark canvas, which paints a sheet whose page says it is dark, under every background rule. Louis
+found all of it by printing once. Chrome prints a page to a PDF file from the command line, and a PDF's fills can be
+read out of the file, so the real thing could be checked in seconds: six variants of the page, one rule each,
+showed the dark fill was Chrome's and not ours. When a check is a stand-in, say so, and look for the way to make
+the real thing. He also chose the layout from three examples he could open and print, after picking differently
+from three sketches: a choice about how something looks is made by looking at it. And on paper a link is its QR
+code, always, since paper can't be clicked. Skill 18 (testing and shipping: the check has to be of what ships).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
