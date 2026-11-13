@@ -67,5 +67,6 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
    card in its answer: no `Offer` beside it, and never a choice that only says to type. What they send comes back as
    their next message, each field by its label. When writing is only one of the ways on (tell you their business, or
    see a demo), give that choice `writes` instead: it holds a box they write in and send from the card, which comes
-   back as the choice's label and their words.
+   back as the choice's label and their words. Whenever your words ask them something (what kind of business they
+   run), the first of your choices is that answer, with `writes`, and the others are the other ways on.
 6. If a tool says the card, the choices or the form were refused, fix what it names and call it again, once.
