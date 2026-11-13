@@ -38,7 +38,7 @@ under the first kind it fits, and the chart draws the first kind in green. The A
 They're in English, for the builders, and they show the evals and their stored runs through the API's admin routes, which need the admin key.
 They name no site, so what differs comes in through the call above.
 
-**The pages are organised by job** (F53): `/admin` is the Evals page, one list and one details pane. Something new
+**The pages are organised by job** (F53): `/admin/evals` is the Evals page, one list and one details pane. Something new
 about an eval goes in the details (`EvalDetails`, or a component of its own under `Components/Admin/Evals/EvalsPage/Details/`);
 something the reader needs to *choose* an eval by goes on the list's line (`EvalLine`, worked out in `EvalListView`
 with a test, placed by `EvalListItem`). The chosen eval is in the address (`?eval=`): a link to an eval goes through

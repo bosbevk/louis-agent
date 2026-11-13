@@ -2,7 +2,7 @@
 
 > **Kind:** Razor class library (`net10.0`) · **Path:** `src/web/louis-agent.web.evals/` · **References:** louis-agent.web,
 > louis-agent.evals.protocol · **Used by:** a site that opts into the eval studio (Puls, the code-review app, the starter), at
-> `/admin` · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
+> `/admin/evals`, an area inside the admin's frame (F144) · **How to change them:** [Change the eval pages](../guides/change-the-eval-pages.md)
 
 Since CL57 ([ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md)) the studio is a library on the
 framework's web, not a part of it: a site references it, calls `AddLouisAgentEvals()` and lists
@@ -20,7 +20,7 @@ composes an eval, and every built-in prompt. They read the API's admin routes an
 Almost nothing, which is the point ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)):
 
 - **One call in `Program.cs`:** `EvalPages.AddTo(builder.Services)`. Every site has these addresses, as a router finds every page in the
-  framework, so without the call `/admin` would crash on a missing service.
+  framework, so without the call `/admin/evals` would crash on a missing service.
 - **One name in `app.scss`:** `@forward "evals/pages";`, which forwards the six partials of shared rules in their order;
   what one component draws alone sits beside it in its `X.razor.scss` and travels in the site's styles bundle (CL58,
   [ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md)).
@@ -44,7 +44,7 @@ What happens when someone starts a run and watches it:
 
 ## How it works
 
-**Organised by job** (F53), in English, as they're the builders' screens. `/admin` is the Evals page (F18, CL26, F53.2), in list/details shape:
+**Organised by job** (F53), in English, as they're the builders' screens. `/admin/evals` is the Evals page (F18, CL26, F53.2; under the admin's home since F144, its address written once as `EvalAddress.Studio`), in list/details shape:
 the list pane names every eval the runner has, an eval that never ran included, with its last run's status, when it
 ran and per mode the last pass@k with its move against the mode's run before (`EvalList`, `EvalListItem`; the
 numbers in `EvalListView`, a Presentation Model); the chosen eval is in the address (`?eval=`, `EvalAddress`; none
@@ -95,9 +95,9 @@ Paths are from `src/web/louis-agent.web/`.
 |---|---|
 | `Pages/Reviewing/Review.razor`, `Review.razor.cs` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
 | `Pages/Building/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles in `Styles/web/admin/` |
-| `Pages/Running/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
+| `Pages/Running/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin/evals`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
 | `Components/EvalsPage/`, `List/`, `Details/`, `Admin/Evals/`, `Admin/Evals/List/` | The Evals page's parts: `EvalList` and `EvalListItem` (the list pane; `EvalLine`, `ModeChange`, `EvalListView`, `EvalAddress`), `EvalDetails`, `EvalRunControls` and `ManualDialog` (the details pane), `EvalScorecard`, `EvalRunTimeline`, `EvalRunOrigin`, `EvalChecks` (`EvalCardView`, `RunLine`, `RunOrigin`, `GraderGroup`, `EvalText`) |
-| `Components/LiveRun/`, `Components/Runs/`, `Runs/Table/`, `Components/Head/` | `LiveRunPanel` and `LiveTurnTable` (the run in progress, its turns as they come), `LiveRunStrip` (a run is going, on every page); a stored run's row and its buttons, `RunsList` (the runs table); `StoreBanner` (the store's state) and `EvalLinks` (the sidebar's links) |
+| `Components/LiveRun/`, `Components/Runs/`, `Runs/Table/`, `Components/Head/` | `LiveRunPanel` and `LiveTurnTable` (the run in progress, its turns as they come), `LiveRunStrip` (a run is going, on every page); a stored run's row and its buttons, `RunsList` (the runs table); `StoreBanner` (the store's state), `EvalLinks` (the sidebar's links) and `EvalsCard` (the studio's card on the admin's home: the evals, the answers to review, the last run; F144) |
 | `Components/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level (its place handed in as `Place` and reported on every move as `OnMoved`), a check's trend, a chart's explanation |
 | `Components/RunPage/`, `Admin/RunPage/`, `Admin/Verdict/`, `Admin/Explorer/Place/` | The run page's parts (F53.1): `RunHead`, `RunVerdict` (the card under the head) and `RunTabBar` (a link per tab); `RunTab` and `RunTabs` (the tab, parsed once from `?tab=`, and the bar's entries), `RunAddress` (the one writer of a run's address); `RunVerdictView` and `ModeVerdict` (the verdict's numbers, worked out from the run and its trend) with `VerdictText`; `ExplorerView` and `ExplorerPlace` (where you are in the explorer, written to and read from the address) |
 | `Components/Grades/` | `GradeChips`, `GraderList`: a conversation's outcome and grades, the run's eval and graders, from the standard records (F18 step 4.5c) |
