@@ -9,83 +9,177 @@
 
 ## Purpose
 
-Every picture in the docs and every flow on the site, drawn from data by one renderer (CL60). A diagram is a JSON
-file beside its doc. This library lays it out and writes one SVG that carries a light and a dark look and loads
-nothing from outside, so GitHub, Rider and a browser all show it as it is. Not Mermaid (Louis: "we must not use
-mermaid it must look modern"): our own layouts look like the site, and a test can prove every word fits its box.
+Every picture in the docs and every flow on the site is drawn from data, by one renderer. A diagram is a JSON file
+beside its doc. This library lays it out and writes one SVG that carries a light and a dark look and loads nothing
+from outside, so GitHub, Rider and a browser all show it as it is.
+
+It is not Mermaid. Louis: "we must not use mermaid it must look modern". Our own layouts look like the site, and a
+test can prove that every word fits its box.
+
+*Decided in:* CL60, [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
 ## How it works
 
-- **A diagram is data** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource` through records: a kind
-  (`flow`, `cards`, `sequence`, `classes` or `ticket`, parsed with `SettingChoice`), a title a screen reader is told, an optional caption, and the
-  kind's own part. A misspelt field, an unknown kind, a missing title, or an arrow or a link to an id nothing has is
-  refused with its reason (`Messages/DiagramMessage`, filled by `DiagramText`, the library's own small stand-in for
-  core's `MessageText`).
-- **Flows** (`Flow/`): ADR 0103's row grid. `GraphLayout` puts each box in its column and row (`Ranks` gives a box
-  with no column one past the furthest box pointing at it), `Bands` stands each group's boxes in rows of their own
-  inside a labelled frame, and `Routing/EdgeRouter` draws an arrow as connectors at right angles: a long one through
-  a waypoint in each column it passes, a blocked one round a detour, with bends as soft as the caller asks (the site
-  8 px, the docs `SoftBend`). A chart that runs `down` is laid out turned and `Turn` turns every point back, so one
-  layout and one router serve both. `FlowText` says where a box's badge, label and note sit and where an arrow's word
-  chip stands. A box may list members under a divider in the code font (a class's), as wide as its longest member,
-  which wraps at 60 characters. The site's `GraphView` animates the same placed graph.
-- **Tones** (`Tones/`): a box may carry an icon and a `DiagramTone`, so a colour means the same in every chart
-  (blue starts it, green this project, violet the framework, teal contracts and state, amber files and data, red
-  outside the process). Its arrows and their word chips take its tone.
-- **Sequences** (`Sequence/`): who calls whom, in order. The steps are a Composite of records (`Spec/Steps/`: a
-  message, a reply, a note, a block holding steps of its own), read by their `step` field. `SequenceLayout` stands
-  each lifeline as far from the others as the words between them need (a longest path over the lifelines), and
-  `SequenceRows` walks the steps down the page, framing each block round what it holds, so a nested frame sits
-  inside its parent. `SequenceText` holds the measures: words wrap at 40 characters, a head at 24.
-- **Classes** (`Classes/`): the interface design, its types (a name, a kind, members, an icon, a tone) and their
-  relations (`inherits`, `implements`, `holds`, `uses`, `creates`). `ClassFlow`, an Adapter, turns a class chart into
-  a flow: a type a box with its members, its tone from its kind when none is named (teal for an interface, a record
-  or an enum, green otherwise), a relation an arrow whose style and word say its kind; a word shared by several arrows
-  into or out of one type shows once. So the flows' layout, router, chips and clearance check all serve it.
-- **Cards** (`Cards/`): Louis's overview style. `CardLayout` lays rows of cards in one frame: a row's cards share its
-  width and its tallest card's height, and a card's words wrap to fit. Every word is in the code font, so a line's
-  width is its length times one number and the tests prove it fits. A card is `plain`, `highlight` (centred in the
-  accent's tint) or `heading` (centred with no box), its `CardLook`. A link (`Cards/Links/`) runs from a card's
-  bottom middle to the next row's top middle, at right angles, its arrowheads the way it says.
-- **Tickets** (`Tickets/`, F127.4.1): a read-only card an agent draws in the chat, such as a booking request: a
-  kicker and a title on a band, an optional subtitle and a status pill in a tone, a torn edge, one to six rows of an
-  icon, a label and a value, and a note at the foot. `TicketLayout` places every word (the kicker wraps beside the
-  pill, a long value wraps and the card grows), 320 wide so a phone's chat shrinks it little. `TicketCard` is the one
-  translation from a tool call to a ticket: `Of` builds it from its parts (icons and tones by name, refused with the
-  names there are) and `FromCall` reads a `ShowCard` call's input, so the pack and the page read a call one way.
-- **Icons** (`Icons/`): 38 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
-  them and a row in `THIRD-PARTY-NOTICES.md`. Since F134.1 it is the framework's one set of icons (Louis's pick of
-  three): the web's `LineIconView` draws a page's line icons from it, so a page and a diagram never hold two copies
-  of a drawing.
-- **The SVG** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind (Strategy, `Svg/Renderers/`:
-  `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`, `ClassesRenderer`, which hands `ClassFlow`'s flow to the
-  flow renderer, and `TicketRenderer`). `SvgWriter` builds the file with `XElement`, `\n` line endings and a
-  `<title>`. `Svg/Theme/` holds the site's palette and its light twin as CSS variables in the picture's own style,
-  the dark one under `prefers-color-scheme: dark`, and each tone's fill, line and ink; `TicketStyle` adds a ticket's
-  rules, every colour a `--ticket-*` variable with the site's as its fallback, so a business's window sets its brand.
-- **A drawing for a page** (`Svg/PageSvg`, `DiagramRenderers.RenderForPage`): a page holds the SVG inline, so its
-  colour variables reach it, but a style inside an inline SVG is the whole page's. The page's copy wraps each style in
-  `@scope` with the root named `:scope` (a bare `svg` inside a scope means an svg inside it), drops an arrowhead
-  nothing uses, so two cards hold no id twice, and trims the empty ground round the drawing.
-- **The docs' frame** (`Svg/TitledFrame`, a Decorator): `DiagramRenderers.RenderTitled` draws the picture bare and
-  frames it with a navy title bar, a legend of the tones the chart uses, and a note bar from its caption. Only the
-  docs' tool asks for it, so a bare picture (the site, the chat's tool cards later) is unchanged.
-- **The docs' tool** (`src/tools/louis-agent.doc-diagrams`) finds every `diagrams/*.json` under `src/docs`,
-  `packs/docs` and each demo's folder, and writes the framed SVG beside it when what it draws changed. `--check`
-  writes nothing and fails naming a stale picture. `import <doc>` (`Mermaid/`, its readers in `Mermaid/Readers/`)
-  reads a doc's Mermaid flowcharts, sequences and class diagrams once into JSON, never over a picture already there,
-  and prints the link for each block, which is swapped by hand. The docs hold no Mermaid now
-  ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)); the import stays for a doc someone brings in.
+This section has four parts, to be read in order. Part 1 follows one picture from its file to its SVG. Part 2
+goes through the five kinds of picture, one at a time. Part 3 is what every kind shares, tones and icons. Part 4
+is a drawing held inside a web page, which needs care of its own.
 
-## Diagrams
+### 1. One picture, from its file to its SVG
 
 ![How a picture is made: the JSON is read into records, a renderer per kind lays it out, and the docs' frame wraps it](diagrams/louis-agent.diagrams-flow.svg)
 
+**Step 1: the file is read into records** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource`. It has
+a kind, a title that a screen reader is told, an optional caption, and the kind's own part. The kind is one of
+`flow`, `cards`, `sequence`, `classes` or `ticket`.
+
+The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, or an arrow
+or a link to an id that nothing has. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
+by `DiagramText`, its own small stand-in for core's `MessageText`. That keeps the library from leaning on any part
+of the engine.
+
+**Step 2: the kind picks a renderer** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind, a
+Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`,
+`TicketRenderer`, and `ClassesRenderer`, which turns a class chart into a flow and hands it to the flow renderer.
+Each renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
+
+**How a renderer writes the file** (`SvgWriter`). It is a Builder: a renderer adds boxes, paths and words one by
+one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
+arrowhead every picture needs are written in one place. The file is built with `XElement` and has a `<title>`.
+Every number is written in the invariant culture and every line ends in a plain `\n`, so the same drawing is the
+same bytes on every machine.
+
+**The picture carries both looks** (`Svg/Theme/`). The site's palette and its light twin are CSS variables in the
+picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
+too.
+
+**Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
+the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
+its caption. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's cards draw,
+is unchanged.
+
+#### The tool that draws the docs' pictures
+
 ![Drawing one picture: the tool reads, renders and frames it, and writes it only when it changed](diagrams/louis-agent.diagrams-sequence.svg)
+
+`src/tools/louis-agent.doc-diagrams` finds every `diagrams/*.json` under `src/docs`, `packs/docs` and each demo's
+folder. It writes the framed SVG beside each one, and only when what it draws changed.
+
+It has two more ways to run. `--check` writes nothing and fails, naming any stale picture. `import <doc>` reads a
+doc's Mermaid flowcharts, sequences and class diagrams once into JSON. It never writes over a picture already
+there, and it prints the link for each block, which is swapped into the doc by hand.
+
+The docs hold no Mermaid now. The import stays for a doc someone brings in.
+
+*Decided in:* CL60.1, CL60.2, [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
+
+### 2. The five kinds of picture
+
+#### A flow: boxes and arrows on a grid
+
+A flow (`Flow/`) is drawn on ADR 0103's row grid.
+
+**Placing the boxes.** `GraphLayout` puts each box in its column and row. A box that names no column gets one from
+`Ranks`: one past the furthest box that points at it. `Bands` handles groups: it stands each group's boxes in rows
+of their own, inside a labelled frame.
+
+**Drawing the arrows.** `Routing/EdgeRouter` draws an arrow as connectors at right angles. A long arrow goes
+through a waypoint in each column it passes. A blocked arrow goes round a detour. The bends are as soft as the
+caller asks: the site asks for 8 px, the docs for `SoftBend`.
+
+**A chart that runs down.** It is laid out turned, and `Turn` turns every point back. So one layout and one router
+serve both directions.
+
+**The words.** `FlowText` says where a box's badge, label and note sit, and where an arrow's word chip stands. A
+box may list members under a divider in the code font, as a class's box does. It is then as wide as its longest
+member, and a member wraps at 60 characters.
+
+The site's `GraphView` animates the same placed graph.
+
+#### A sequence: who calls whom, in order
+
+A sequence (`Sequence/`) is made of steps. A step is a message, a reply, a note, or a block that holds steps of
+its own. They are a Composite of records (`Spec/Steps/`), read by their `step` field.
+
+`SequenceLayout` stands each lifeline as far from the others as the words between them need. It works that out as
+a longest path over the lifelines. `SequenceRows` then walks the steps down the page and frames each block round
+what it holds, so a nested frame sits inside its parent. `SequenceText` holds the measures: words wrap at 40
+characters, and a head at 24.
+
+#### A class chart: the interface design
+
+A class chart (`Classes/`) has types and relations. A type has a name, a kind, members, an icon and a tone. A
+relation is one of `inherits`, `implements`, `holds`, `uses` or `creates`.
+
+It has no layout of its own. `ClassFlow`, an Adapter, turns it into a flow. A type becomes a box with its members.
+A type with no tone named takes its kind's: teal for an interface, a record or an enum, and green otherwise. A
+relation becomes an arrow whose style and word say its kind. A word shared by several arrows into or out of one
+type is shown once.
+
+So the flow's layout, router, word chips and clearance check all serve a class chart too.
+
+#### Cards: a project's overview
+
+Cards (`Cards/`) are Louis's overview style. `CardLayout` lays rows of cards in one frame. A row's cards share its
+width and take its tallest card's height, and a card's words wrap to fit.
+
+Every word is in the code font. So a line's width is its length times one number, and the tests can prove it fits.
+
+A card has a look, its `CardLook`: `plain`, `highlight` (centred, in the accent's tint) or `heading` (centred, with
+no box). A link (`Cards/Links/`) runs from a card's bottom middle to the next row's top middle, at right angles,
+with its arrowheads the way it says.
+
+#### A ticket: a card an agent draws in the chat
+
+A ticket (`Tickets/`) is a read-only card an agent draws in the chat, such as a booking request. It has a kicker
+and a title on a band, an optional subtitle, a status pill in a tone, a torn edge, one to six rows of an icon, a
+label and a value, and a note at the foot.
+
+`TicketLayout` places every word. The kicker wraps beside the pill. A long value wraps, and the card grows. It is
+320 wide, so a phone's chat shrinks it little.
+
+`TicketCard` is the one translation from a tool call to a ticket. `Of` builds a ticket from its parts, with icons
+and tones given by name, and a wrong name is refused with the names there are. `FromCall` reads a `ShowCard` call's
+input. So the pack and the page read a call one way.
+
+A ticket's colours are `--ticket-*` CSS variables with the site's as their fallback (`TicketStyle`), so a
+business's window can set its brand on it.
+
+*Decided in:* [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) (flows), CL60.3 (sequences), CL60.4
+(classes), CL60.1 (cards), F127.4.1 (tickets).
+
+### 3. What every kind shares
+
+**Tones** (`Tones/`). A box may carry an icon and a `DiagramTone`, so a colour means the same in every chart. Blue
+starts it. Green is this project. Violet is the framework. Teal is contracts and state. Amber is files and data.
+Red is outside the process. A box's arrows and their word chips take its tone.
+
+**Icons** (`Icons/`). There are 36 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, with
+the licence beside them and a row in `THIRD-PARTY-NOTICES.md`. It is the framework's one set of icons: the web's
+`LineIconView` draws a page's line icons from it too, so a page and a diagram never hold two copies of a drawing.
+
+*Decided in:* CL60.1, CL60.2, F134.1 (the one set).
+
+### 4. A drawing held inside a web page
+
+A page holds a drawing's SVG inline, so the page's colour variables reach it. But that brings a problem: a style
+inside an inline SVG applies to the whole page.
+
+`DiagramRenderers.RenderForPage` makes the page's copy (`Svg/PageSvg`) to deal with it. It does three things. It
+wraps each style in `@scope`, with the root named `:scope`, since a bare `svg` inside a scope means an svg inside
+it and would miss the root. It drops an arrowhead that nothing uses, so two cards on one page hold no id twice. And
+it trims the empty ground round the drawing.
+
+*Decided in:* F127.4.1.
+
+## Diagrams
+
+The flow and the sequence are shown in part 1, where they are explained. This is the interface design.
 
 ![The types: the reader makes a DiagramSource, its kind picks a renderer, each renderer has its layout and draws with SvgWriter, and TitledFrame wraps it](diagrams/louis-agent.diagrams-interface.svg)
 
 ## Structure
+
+This section is for looking a file up.
 
 ```
 src/web/louis-agent.diagrams/
@@ -120,94 +214,6 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   (`EveryProjectDoc_ShowsItsFourDiagrams`), every flow and class chart keeps its
   words and lines clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is
   one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`).
-
-## What the build decided (CL60.1, 2026-11-11, partly unattended)
-
-- **Louis's picks:** our own renderer, a JSON beside each doc, plans drawn with it too; P1 A a plain-C# library the
-  web and the tool share (ADR 0092), P2 A the site's palette with its light twin mirrored (the site has no light
-  theme), P3 A Tabler Icons copied in, P4 A each overview's cards written by hand from its doc; boxes in the site's
-  lighter tint `#1b1d21` and labels in the body text's grey ("a bit lighter gray"); the library's texts through its
-  own `DiagramText`, so it leans on no part of the engine; three `resharper_indent_nested_*` keys in `.editorconfig`,
-  so Rider indents a nested loop as `dotnet format` does.
-- **Louis's figures:** the engine, identities and packs (ADR 0027's picture) and the layers with the core engine
-  highlighted (the building-block view's), which brought the `highlight` and `heading` looks ("we should cater for
-  this alternation"). The accent is the site's blue, `#7fa8e8`, and `#3b6fc4` on a light screen.
-- **Claude's picks while unattended:** a look per card rather than per row or a class per look; 22 icons for what a
-  project's parts usually are; one shape for every overview (the project highlighted on top, its parts under it,
-  a second row for what else it holds, no caption); a doc's links read outside code, since a how-to shows them as
-  examples there.
-
-## What the build decided (CL60.2, 2026-11-11 and 12, unattended)
-
-- **Claude's picks, each of three:** the 75 docs flowcharts converted by a one-time import, each JSON looked at and
-  the block swapped by hand (not every JSON by hand, nor a renderer that reads Mermaid); a chart that runs down laid
-  out turned and turned back (not a second layout); a subgraph a labelled frame with its boxes in a band of their own
-  (swimlanes); the import writes only JSON, never the doc.
-- **The layout grew by what the charts needed:** a long arrow through a waypoint per column (Sugiyama's dummy nodes),
-  straightened by Brandes and Köpf's alignment; several sources into several boxes on tracks of their own; a blocked
-  arrow round a detour; a back arrow from its source's bottom middle; a chart over 1,100 px turned the narrower way
-  on import; a down chart as wide as what it draws. `DocsDiagramsTests`' clearance check came from Louis's "you
-  must look at each one", and every picture was looked at.
-- **Louis's picks:** "Ours plus hand-tuning" (not MSAGL as a package, nor growing the layout until every chart
-  passes): what reads awkwardly is tuned in its JSON, a frame dropped, arrows merged, a word shortened; **the joined
-  look** from the renderer (not ChatGPT-style painted pictures, nor hand-written SVGs): a title bar, an icon badge
-  and a tone per box, arrows and word chips in their box's tone, soft bends, a note bar; "all of them must look like
-  accounts" (every chart toned, by one meaning per colour); a legend ("can we have a legend for the color"); a note
-  on **every** chart, its line moved out of the doc so nothing is said twice; the plans drawn in the full look too.
-- **Claude's picks on findings:** the frame a Decorator (`TitledFrame`), so the cards and the site stay bare; the
-  legend drawn from the tones' fixed meanings, not written in each JSON; violet's legend "the framework"; the
-  README's picture in `src/docs/diagrams/`, linked by its path; the tool scans each demo whole, so a deploy note's
-  pictures are drawn and checked too.
-
-## What the build decided (CL60.3, 2026-11-12, unattended)
-
-- **Claude's picks, each of three:** a step's kinds as a Composite of records read by System.Text.Json's
-  polymorphism (not one record with every field optional, nor separate lists joined by row numbers); a long message
-  wrapped at 40 characters (not one line, nor cut); a participant drawn as a flow's box with its icon and tone (not
-  plain heads, nor heads at the bottom too); a docs-wide check like the flows'.
-- **Found while looking at each chart:** a message's words stand in a chip in its sender's tone, so a lifeline they
-  cross runs behind them; a frame's tabs stand over the lifelines, its panel under them; the import never writes over
-  a picture already there; a block's kind is always written, though loop is the default; a message keeps its
-  generics, since Mermaid reads no tags in one.
-- **Louis's asks during it:** the plan's interface design drawn as a picture too; an interface diagram, then all four
-  diagrams (architecture, flow, sequence, interface), on every project doc, which became CL60.5.
-
-## What the build decided (CL60.4, 2026-11-12, unattended)
-
-- **Claude's picks, each of three:** a class chart drawn as a flow through an Adapter (`ClassFlow`), so the router,
-  tones, chips and checks all apply (not a class layout of its own, nor the card layout); a type's members under a
-  divider in its box (not as its note, nor left out); a relation's kind shown by its arrow's style and a word (not
-  UML's triangles and diamonds); one test that no doc holds Mermaid and an ADR (0118) for the rule.
-- **Found while looking at each chart:** a type with no tone named takes its kind's (teal for contracts and state,
-  green otherwise); a long member wraps at 60 characters; a word shared by several arrows into or out of one type
-  shows once, since the fan-ins piled up identical chips; the evals' nine check classes are one type; F39's and F40's
-  charts are split in two, since whole they were tangles; Mermaid's `%%` comments, `;` and `$` marks the import kept
-  were cleaned by hand in the data.
-
-## What the build decided (CL60.5, 2026-11-12, unattended)
-
-- **Claude's picks, each of three:** the overview counts as a project's architecture, beside a flow, a sequence and a
-  classes picture (not a fifth picture repeating it); the test reads each picture's kind (not a role field, nor fixed
-  headings); a pending list that only shrank, step by step, deleted at the end; an interface of the types a user or
-  extender meets, about twelve at most (not every public type, nor interfaces only).
-- **Found while drawing them:** the overview test had never seen the demos' project docs, since a demo's root is the
-  whole demo; both tests now find any `projects` folder. Two arrows into one interface from the same column stack
-  their word chips; the clearance test catches it and the chart is tuned (the implementer names the interface in its
-  kind line). Each interface was written from the code and checked against it, which caught a picture naming the
-  docs pack's tools by an old plan's names.
-- **What it added:** 42 interface pictures, 8 flows and 13 sequences, all looked at.
-
-## What the build decided (F127.4.1, 2026-11-12, partly unattended)
-
-- **Louis's picks:** the first design's option cards, and the booking summary a read-only ticket "the agents must
-  draw themselves with our diagram tool": a `ticket` kind here, filled through `ShowCard`'s typed parameters (Q1); its
-  colours CSS variables with the site's as fallbacks (Q3); on the 390 px check, the page's copy trimmed and the ticket
-  laid out 320 wide (not a measured width, nor bigger fonts on phones).
-- **Claude's picks, each of three:** one translation from a call to a ticket (`TicketCard`) in the library the pack's
-  tests and the web both use; the page holds the SVG inline with its styles in `@scope` (not an `img`, which keeps the
-  brand's colours out, nor a shadow root, which needs a script per card).
-- **Found on the live check:** inside `@scope` a bare `svg` rule misses the root, so the first card drew black; the
-  page's copy names it `:scope`, and a test holds it.
 
 ## Limits and plans
 

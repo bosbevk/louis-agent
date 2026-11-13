@@ -77,12 +77,6 @@ The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In
 `AcpServer.HandleRequestAsync` with its handler in its concern's folder; an update kind a case in `TurnRelay`; the
 server only translates.
 
-## What the build decided (CL57, 2026-11-07, unattended)
-
-- Rider's discovery, its MCP client and their settings live here, Rider's host, behind core's `IToolDiscovery` seam;
-  before, core started them for every host. The project lost `-server` (`louis-agent.acp`): a project is named for
-  what it is, not what it runs as; the docker service keeps the word.
-
 ## Limits and plans
 
 - Sessions end with the container → [session architecture](../specs/SESSION_ARCHITECTURE.md) (backlog).

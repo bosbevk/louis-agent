@@ -150,7 +150,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   [ADR 0034](adr/0034-code-a-person-can-maintain.md), [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
 - **A doc is true, and it teaches**: every statement is checked against the code and nothing is invented (unsure while
   writing: read the code first); it explains in detail, in the order a reader needs: what it is for, the main path as
-  a story, the why of each part, a name of code after its idea. **One type per doc**; a done plan is deleted. [ADR 0013](adr/0013-documentation-structure.md).
+  a story, the why of each part, a name of code after its idea. **No build history in a doc**: who picked what and how the work went stay in git. **One type per doc**; a done plan is deleted. [ADR 0013](adr/0013-documentation-structure.md).
 
 ## Project structure
 

@@ -77,14 +77,6 @@ the recorders on the shared replay fixtures (`louis-agent.testing/Replay`), and 
 BROWSER_URL names under the policy, none without an address, a host's own search provider recorded only where a
 store is kept). No network.
 
-## What the build decided (CL33, 2026-11-07, unattended)
-
-- The engine's browser is always the guarded one: a test's context used to get bare Chrome when it gave no policy;
-  the library always builds the policy, as production always did.
-- `WebParts`, in core, is web access from whatever parts a test or a host gives; the rest answers "not set up".
-- The shared test library references this library, so a pack's tests and core's build a real `WebAccess` where
-  they need one.
-
 ## Limits and plans
 
 The hand-built shop readers and recipe sources stay in their packs; a new provider or renderer is one setup class

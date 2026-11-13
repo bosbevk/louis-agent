@@ -170,19 +170,6 @@ The rule that keeps the editor out of the public pages is the framework's ([ADR 
   A4, in near-black ink, with its own footer (`Styles/site/cv/_print.scss` for the sheet, each part's paper
   rules beside its component), and every link is a QR code, the framework's `PaperLink` (FX154).
 
-**Picks made unattended** (2026-11-13, steps 7c to 9, Louis: "continue unattended until done"). They are Claude's,
-and open for Louis to overrule:
-
-- Words the page keeps as they are (a title, a point, a name) are retyped in place. What it draws as a composed
-  line (a job's dates and company, a school's two lines) or not at all (a link's address) opens on a small form.
-- Stacks, skills, label words and an interest's words are tags changed on the page, with no tick.
-- The languages are one retyped line, with commas between them.
-- An emptied point is taken out. An emptied name stays, as a blank to fill in.
-- The certificates are one list drawn in two places (those with a link in the last section), so giving one an
-  address moves it there.
-- Step 6's list editor was removed with the forms it was built for. Its operations are `ListEdits`.
-- "Save as PDF" sits above the page's closing line, and its rules reach only a page that holds the CV.
-
 ## Tests
 
 `src/tests/site/louis-agent.site.tests`, NUnit with bUnit: `Pages/*Tests` render the pages and hold them to the repo

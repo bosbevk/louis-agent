@@ -6,7 +6,7 @@
 
 ![The framework's web, and its parts: the chat's frame, the admin's frame, the site's parts, styles and scripts, and the seams](diagrams/louis-agent.web.svg)
 
-## What it is for
+## Purpose
 
 This library is the framework's web: what every site built on the framework shares. That is the chat's frame, the
 admin's frame, the screens a pack brings, the frame of a site's public pages and its showroom of demos. Under them
@@ -21,14 +21,16 @@ Two rules let the same parts fit any site. A component only gives its elements c
 from the site's colours. And a component's words come from one `ChatText`, English by default, which a site can
 replace.
 
-**How this doc is laid out.** Part 1 is how a site says what it has. Parts 2 to 5 each follow one person: someone
-who chats, someone who reads the site, someone who watches a demo, and the owner who opens the admin. Part 6 is
-what a site can opt into, part 7 how it looks and moves, and part 8 the general parts any page can use. After the
-pictures, *Where things are* goes folder by folder, for looking a file up.
-
 *Decided in:* [ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md).
 
-## 1. A site says what it has
+## How it works
+
+This section has eight parts, to be read in order. Part 1 is how a site says what it has. Parts 2 to 5 each
+follow one person: someone who chats, someone who reads the site, someone who watches a demo, and the owner who
+opens the admin. Part 6 is what a site can opt into, part 7 how it looks and moves, and part 8 the general parts
+any page can use. *Structure*, further down, goes folder by folder, for looking a file up.
+
+### 1. A site says what it has
 
 A site never builds or registers the framework's parts itself. It names its **areas**, in one call, and the
 framework does the rest. This is the framework's own site:
@@ -71,9 +73,9 @@ and the focuses in `Components/Areas/Focuses/`.
 
 *Decided in:* F127.6, F127.7, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
 
-## 2. Someone chats: one message, from start to finish
+### 2. Someone chats: one message, from start to finish
 
-### The frame around the chat
+#### The frame around the chat
 
 `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
 and the work panel. A site writes a small page with its addresses and fills the frame's **slots**: `Logo`, `Views`,
@@ -89,7 +91,7 @@ soon.
 What the frame keeps that can be tested without drawing it is a plain class in `Shell/`: renaming a chat, this
 browser's settings, choosing a language, a chat's costs. `ChatShell` holds these and only passes them on.
 
-### What happens when a message is sent
+#### What happens when a message is sent
 
 ![Sending a message: ChatRunner opens the session the first time, applies each event to the turn, redraws the page and saves the chat](diagrams/louis-agent.web-diagrams-2.svg)
 
@@ -115,7 +117,7 @@ Follow one message through four steps.
    `ComposerButtons`, `ChatUsageBar` and `Notice` are the chat pieces both apps lay out, with slots for an app's
    own parts.
 
-### An answer can hold more than words
+#### An answer can hold more than words
 
 **A card, or a set of choices.** The site pack has two tools for this, `ShowCard` and `Offer`. They draw nothing
 themselves. The chat reads each call and draws it, also when the agent's work is hidden. A card is drawn as the
@@ -137,7 +139,7 @@ The showroom's live chat is such a window. It watches the ask as one turn: the v
 blocks shared with the guide's stream, and the agent's tool calls handed on once each. Once the ask ends, it holds
 a chat on that agent's own session, so the visitor carries on there.
 
-### Around every chat: its cost, its safety and where it is kept
+#### Around every chat: its cost, its safety and where it is kept
 
 **The cost is shown.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event.
 `CurrencyState` and `CurrencySwitcher` show the cost in the browser's chosen currency, from the API's rates.
@@ -149,7 +151,7 @@ in the same turn. So a model-written image can't send the chat's data elsewhere.
 **Nothing is kept on the server.** `ChatStore` keeps chats in the browser's `localStorage`. `ChatSettings` keeps
 the API key and the admin key there too.
 
-### The same chat, in a corner of any page
+#### The same chat, in a corner of any page
 
 `ChatWidget` is a chat any page or layout drops in with one tag, `<ChatWidget Identity="…" />`. It is a button
 folded in a corner and a panel with the chat's own message list and composer. It has a runner of its own, opened
@@ -165,7 +167,7 @@ the visitor sees.
 (one agent asking another), FX22 (a tool's own images),
 [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) (currency).
 
-## 3. Someone reads the site: public pages
+### 3. Someone reads the site: public pages
 
 The engine and an agent run without any of this: the command line, Rider, the API and MCP need no web. This part
 is what turns an agent into a website.
@@ -174,9 +176,42 @@ is what turns an agent into a website.
 line, a way back up, and a section index on the left. The index is built from the page's bands: each band puts
 itself on the frame's list as it draws.
 
+The header puts the brand on the left and the menu with the actions on the right. A `SiteMenu` is a group in that
+menu: a label in the bar that opens the links it holds on hover or on focus, with CSS only. The group at the end of
+the bar opens its list right-aligned, so it stays on the screen.
+
+The frame carries its own motion, as a script module beside it that is attached after every render. It moves five
+things: the progress line's width, the header going compact past the top, the section index's active link, an
+in-page link that lands its section centred, and a reveal that each marked block plays once when a quarter of it
+enters. All of it honours the system's less-motion setting, unless the viewer switched motion on. A site marks what
+moves and holds the look (the keyframes, the index, the line) in its own partials, so a site chooses its motion.
+
 **What a page is built of.** A page is built of `Band`s, each a named section, and the framework's `SiteHero`,
 `TileRow` and `Tile`, `CardDeck` and `SiteStrip`, each with the site's words. A `GuideButton` anywhere asks the
 guide a question.
+
+A `Band` is one named area of a page: a section with a required id, an optional kicker and the site's classes. It
+draws no style of its own. The id is required so that every area on every site is named, and the guide can send a
+visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"`, and the frame
+then never pages it sideways.
+
+A `CardDeck` is a row of short cards that open. Each `Card` inside gives a title, a one-line summary, an optional
+tag and, as its content, the story. The cards register with the deck through a cascading value (the tab-set
+pattern) and draw nothing themselves. The deck draws the summaries as buttons in a row and, under the row, the open
+card's story, which slides in once. One card is open at a time, a click on the open one closes it, and a phone
+stacks the row.
+
+**A diagram on a page.** `GraphView` draws a diagram from data. A page declares a `GraphSpec`: nodes with an id, a
+label, a note and a column, and edges between ids, with a word when one helps. The spec is plain C# in the diagrams
+library, which the docs' tool draws with too. `GraphLayout.Place` puts the columns across the width on one row
+grid and orders each by its neighbours. It hands the arrows to `EdgeRouter`, which draws each as a connector:
+right-angle bends, one track per gap, back arrows under the drawing, loops to the right, words on flat pieces with
+room, each gap as wide as the words that cross it, and the bend just after a word. The view writes one SVG that
+scales to its box.
+
+The diagram plays once as it enters the screen: each arrow draws itself and each box rises, a column at a time. At
+rest it is fully drawn. The SVG's text goes out as markup from the code-behind, since Razor keeps the `text` tag
+for itself.
 
 **Slides, or a flowing page.** A site lays its pages out as one or the other, and a page may choose the other with
 one line. On slides every section is a screen tall with its content in the middle, and the page settles on one
@@ -189,8 +224,15 @@ section is `/how-it-works/parts/2`. The landing's places sit under `/home`. `Sit
 opened afresh draws in its own page's layout.
 
 **The guide knows the page, and can go to a place on it.** The guide's widget sends the page it reads with every
-place by its address, and the place on the visitor's screen. The guide's page tool takes an address. The widget
-then scrolls there, opens a card or turns a page, and lights the place with a spotlight that dims the rest.
+place by its address, and the place on the visitor's screen. The guide's page tool, `ShowPage`, takes an address.
+The runner tells the widget of each tool call as it arrives, and the widget goes there.
+
+Going there has a fixed order. The widget waits for the page to have the place, since the router draws a new page
+a moment after the address changes. It scrolls the place to just under the header. Then it puts a spotlight on it:
+a dim over the rest of the page and a ring round the place, in and out over four seconds. The spotlight follows the
+place while it plays, so a page that is still settling, with an image loading or a block revealing, keeps it in
+place. A card is opened as a visitor's click would open it, and the light falls on its whole deck, so the card and
+its story are lit together. If the place never appears, the widget gives up quietly after two seconds.
 
 **Every part is ready for an agent.** A tile with a title or a number, and a deck's card, are **pieces**. Each has
 an id, so `/home/100-adrs` opens it. Three things select a piece: a click on it, which asks the guide about it. A
@@ -203,12 +245,15 @@ and any structured data, in one head, since Blazor keeps only the last one a pag
 records (an organisation, a website, a piece of software, a breadcrumb), written as JSON-LD. The API serves each
 page as HTML with its own head and words, for crawlers that run no script.
 
-*Decided in:* F118, F119, F121, F123, F127.1, F127.7, ADR 0106,
+*Held by:* `SiteShellTests`, `CardDeckTests`, `GraphLayoutTests`, `GraphViewTests`, `FrameworkModulesTests`.
+
+*Decided in:* F110 (the frame's motion), F111 and ADR 0103 (diagrams), F113 (the deck), F117 and ADR 0105 (going to
+a place), F118, F119, F121, F122, F123, F127.1, F127.7, FX73 (the menu), ADR 0106,
 [ADR 0107](../adr/0107-every-section-has-an-address.md), ADR 0109,
 [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md),
 [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md).
 
-## 4. Someone watches a demo: the showroom
+### 4. Someone watches a demo: the showroom
 
 The showroom is the area a site shows its demos in. Its code is under `Components/Site/Showroom/`, in four
 folders, and this part takes them in the order a visitor meets them.
@@ -236,6 +281,15 @@ The mock's header wears its brand. Its font (`MockFont`) sets three faces, `--mo
 small capitals. The faces are the framework's own woff2 files under `wwwroot/fonts/showroom/`, each beside its
 `OFL.txt`. A site lists them, so a page fetches only the faces it wears.
 
+**A recorded session, played back.** `RecordedChat` plays a recorded session in the chat's own view. A site gives
+it a `.sse` file of the stream the API sent, the question it answered, a title, the currency for the bill and an
+ending. A visitor watches the agent think, call its tools and answer, then sees the ending and a play-again button.
+
+It reads the file with the session-stream reader and waits by each event's kind: thinking fast, the answer at
+reading speed, a beat per tool. It folds the events with the same loop the eval studio's replay uses. Its window
+keeps one height: the list gives up room for the ending. The window's look is a Sass mixin of the framework's,
+which a site's own animated panels use too. A site can make the ending's guide button plain.
+
 **The play moves the mock.** A recorded chat tells its page each tool call as it plays. So a mock goes to the
 place its agent showed: a section under the guide's spotlight, or a card pressed.
 
@@ -244,11 +298,13 @@ page's words, every page's places by address and the menu as links with each new
 the hint is a question to tap, the cues wait, and no usage line shows. The mock's chat and the guide's minimise
 and maximise with the same buttons.
 
-*Decided in:* F127.1, F127.2, F134.1 (the icons),
+*Held by:* `RecordedChatTests`, `RecordingPaceTests`, `TurnReplayTests`.
+
+*Decided in:* F120 and ADR 0108 (the recorded session), F127.1, F127.2, F134.1 (the icons),
 [ADR 0115](../adr/0115-a-sites-showroom-is-an-area-of-the-framework.md),
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md).
 
-## 5. The owner looks in: the admin
+### 5. The owner looks in: the admin
 
 **The admin is a frame its areas plug into.** `Admin(layout)` is the frame alone: `AdminShell` around the site's
 layout, and the home at `/admin`. Everything inside is an area with its pages, its sidebar links and its card on
@@ -278,7 +334,7 @@ every site.
 
 *Decided in:* F127.8, F144, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md).
 
-## 6. What a site can opt into
+### 6. What a site can opt into
 
 **Accounts, through one seam.** The account pages and their client are
 [louis-agent.web.accounts](louis-agent.web.accounts.md), a library on top of this one that a site opts into. All
@@ -294,7 +350,7 @@ into the same way. The router lists what a site opted into.
 
 *Decided in:* CL30, CL57, [ADR 0089](../adr/0089-the-account-client-is-a-library-a-site-opts-into.md).
 
-## 7. How it looks and moves
+### 7. How it looks and moves
 
 **A component's styles sit beside it.** A rule that one component draws is in its `X.razor.scss`. The build scopes
 it and bundles it into the site's `{site}.styles.css`, which the site links once. The globals are Sass under
@@ -316,7 +372,7 @@ move although the system asks for less.
 *Decided in:* CL31, CL58, [ADR 0093](../adr/0093-a-script-is-a-module-beside-its-component.md),
 [ADR 0094](../adr/0094-a-components-styles-sit-beside-it.md).
 
-## 8. General parts for any page
+### 8. General parts for any page
 
 Some parts know nothing of chats, demos or admins, so any page of any site can use them.
 
@@ -355,7 +411,7 @@ cross, Enter keeps and Escape drops.
 
 *Decided in:* F134.1 (icons and the stage), FX154 (paper), F142 (editing).
 
-## The pictures
+## Diagrams
 
 The [eval pages](louis-agent.web.evals.md) have pictures of their own.
 
@@ -363,10 +419,9 @@ The [eval pages](louis-agent.web.evals.md) have pictures of their own.
 
 ![The types: shells for a site's frames, one runner for a chat's turn over the agent API, the chats kept in the browser and an address for every place](diagrams/louis-agent.web-interface.svg)
 
-## Where things are
+## Structure
 
-This part is for looking a file up, not for reading through. Each row is a folder and what is in it. The notes
-under the table say more about the larger components.
+This section is for looking a file up, not for reading through. Each row is a folder and what is in it.
 
 | Path | What's in it |
 |---|---|
@@ -397,55 +452,6 @@ under the table say more about the larger components.
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
-
-**`Components/Widget/ChatWidget`** (F109.3): a chat any page or layout drops in with one tag, `<ChatWidget
-Identity="…" />`: a button folded in a corner and a panel with the chat's own `MessageList` and `Composer` on a
-`ChatRunner` of its own, opened as the identity named, its chats kept under a key of their own so a site's chat
-page never lists them; the words (title, greeting, placeholder, the button's text and labels) are parameters.
-A site's frame (`SiteShell`) has a `Corner` slot made for it. It knows the page (F115, ADR 0104): its module beside
-it, `ChatWidget.razor.js`, reads the page's address, title and main text when a message is sent, and the runner
-sends them with the first message written from a page, so the guide answers about what the visitor sees. The block lists the page's areas, and the widget acts on the guide's `ShowPage` call (F117, ADR 0105): `ChatRunner.ToolCalled` tells it of each tool call as it arrives, it navigates to the path and the module's `showArea` scrolls the area into view and lights it up with `.area-shown`, a glow in the web's base styles a site may restyle.
-
-**`Components/Site/Bands/Band`** is one named area of a site's page (F117, ADR 0106): a section with a required id, an optional kicker and the site's classes, drawing no style of its own, so every area on every site is named because the framework insists and the guide can send a visitor to it. A band whose content is one piece, such as a demo that plays, sets `Paged="false"` and the frame's module never pages it sideways (F122).
-
-**`Components/Site/Cards/CardDeck`** is a row of short cards that open (F113): each `Card` inside gives a title, a
-one-line summary, an optional mono tag and, as its content, the story. The cards register with the deck through a
-cascading value (the tab-set pattern) and draw nothing; the deck draws the summaries as buttons in a row and, under
-the row, the open card's story, which the styles beside it slide in once. One open at a time, a click on the open one
-closes it, a phone stacks the row. `CardDeckTests` holds the row, the click, the swap and the golden.
-
-**`Components/Site/Menu/SiteMenu`** is a group in a site's menu (FX73): a label in the bar that opens the links it holds
-on hover or on focus, CSS only; the one at the end of the bar opens its list right-aligned, so it stays on the screen
-(F122).
-
-**`Components/Graphs/GraphView`** draws a diagram from data (F111, the rules in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md)):
-a page declares a `GraphSpec` (in `louis-agent.diagrams`' `Flow/` since CL60.1, plain C# the docs' tool draws with
-too: nodes with an id, a label, a note and a column; edges between ids, with a word when one helps), `GraphLayout.Place` puts the columns across the width on one row grid, orders each by its
-neighbours and hands the arrows to `EdgeRouter`, which draws each as a connector (right-angle bends, one track per
-gap, back arrows under the drawing, loops to the right, words on flat pieces with room, each gap as wide as the words
-that cross it and the bend just after a word, F119), and the view writes one SVG
-that scales to its box. Its root carries `reveal`, so the frame's module adds `.in` as it enters and the styles beside it make each arrow
-draw itself and each box rise, a column at a time, once; fully drawn at rest. The SVG's text goes out as markup from
-the code-behind, since Razor keeps the `text` tag for itself. `GraphLayoutTests` holds the numbers, `GraphViewTests`
-the markup.
-
-**`Components/Recorded/RecordedChat`** plays a recorded session in the chat's own view (F120,
-[ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)): a site gives it a `.sse` file of the stream
-the API sent, the question it answered, a title, the currency for the bill and an ending, and a visitor watches the
-agent think, call its tools and answer, then sees the ending and a play-again button. It reads the file with
-`SessionStreamReader`, waits by each event's kind (`Chats/Replay/RecordingPace`: thinking fast, the answer at reading
-speed, a beat per tool) and folds the events with `Chats/Replay/TurnReplay`, the loop the eval studio's replay shares,
-into a `MessageList`. Its window is the framework's `web/tools/_window` mixin, which a site's own animated panels use
-too, and keeps one height: the list gives up room for the ending, whose guide button a site can make plain
-(`GuideButton Class="is-plain"`, F122). `RecordedChatTests`, `RecordingPaceTests` and `TurnReplayTests` hold it.
-
-**`Components/Site/SiteShell`** puts the brand on the left and the menu with the actions on the right, and carries its own
-motion as a module beside it (F110, `SiteShell.razor.js`, attached after every render): the progress line's width
-(`#site-progress`), the header compact past the top, the section index's active link (`.site-index a`), an in-page link
-that lands its section centred, and a reveal each `.reveal` block plays once when a quarter of it enters, all honouring
-the system's less-motion setting unless the viewer switched motion on. A site marks what moves and holds the look
-(the keyframes, the index, the line) in its own partials, so a site chooses its motion; `SiteShellTests` holds the
-attach and `FrameworkModulesTests` the module's path and exports.
 
 ## Configuration
 

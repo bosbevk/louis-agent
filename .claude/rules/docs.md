@@ -31,6 +31,12 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
   - **A rewrite keeps every fact** of the text it replaces, and checks each one it restates. Simpler words must
     not change what is said: "the chat portal" is not "the handoff from an admin screen to the chat".
   - **Say what is there today.** What is planned or being built belongs in the plan, not the design doc.
+- **No build history in an official doc** (Louis, 2026-11-13, of a design doc's *What the build decided (CL60.4,
+  2026-11-12, unattended)*: "this must be taken out of official docs never ever be there"). A design doc, a guide
+  or an architecture page says what the thing is, how it works and why. It never says how the work went: who
+  picked what, "Claude's picks", "unattended", what a build found or settled on a date. That is in git, in the
+  commit and its pull request. A decision that later work must follow is an ADR, stated as the rule and its
+  reason, not as the story of the build.
 - **Explanatory and detailed** (Louis, 2026-11-13: "it must be explanatory and detailed"). Teaching is not
   thinning. Each part says what happens, how, and why it is built that way, with the particulars a reader needs
   to act: the numbers, the limits, the order things happen in, what a failure does. Shorter sentences, not fewer
@@ -47,6 +53,9 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
   - **A name of code comes after its idea**, only where the reader must find it, never several in a row. The full
     list of types and folders is a table at the end, marked as the place to look things up.
   - **Ids and ADR links close a section** (*Decided in:* F127.6, ADR 0120). They are not wedged into a sentence.
+  - **A project doc keeps its shared sections**, the ones *Each doc covers* lists in the projects' index:
+    *Purpose*, *How it works*, *Diagrams*, *Structure* and the rest, by those names, so every project doc is
+    found the same way. The story is told inside *How it works*, in numbered parts. *Structure* is the lookup.
   - **A robot index fails**: a bold label followed by type names in brackets with ids between them. A doc that
     reads that way is rewritten when it is next touched, the explaining part first.
 - **What Claude loads stays small** (Louis, 2026-10-29, CL25): every `CLAUDE.md` and every file in `.claude/rules/`
@@ -71,6 +80,9 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
   design doc and how-to (both show under `docs/` in the project in Rider) and changes what the step made untrue.
   A picture that no longer shows the code is changed in its JSON and redrawn with the diagrams tool, never by hand
   ([Draw a diagram](../../src/docs/guides/draw-a-diagram.md)).
+- **No new ADR without Louis's approval** (Louis, 2026-11-13: "the agent may not add adrs without my approval").
+  When work turns up a decision that later work must follow, say so, propose the ADR in a few lines (the rule
+  and its reason) and wait for his yes before writing the file. The same holds for a new rule in an existing ADR.
 - **ADRs** (`src/docs/adr/`, [its README](../../src/docs/adr/README.md) has the template): a lasting decision gets one in the
   same PR, numbered next free, with *Context*, *Decision* as a rule, *Consequences*, *Links*; the quotes and dates
   that explain a rule live there, not in `src/docs/CLAUDE.md`.
