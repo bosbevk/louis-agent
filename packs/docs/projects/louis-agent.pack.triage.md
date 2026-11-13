@@ -33,8 +33,9 @@ are the workflow's to read, not the model's, so they are records and readers, ne
 |---|---|
 | `TRIAGE_RUNS` | The folder a run's steps are written under, one file per run |
 | `TRIAGE_PEOPLE` | The folder a case raised to a person is written in, until a department's own endpoint names where its people read |
+| `TRIAGE_DEPARTMENTS` | The departments file (F106.3.2), whose names the sorter may send a case to |
 
-Unset, the toolset reports them missing and stays off. The departments file is the workflow's setting, not the
+Unset, the toolset reports them missing and stays off. The departments file itself is the workflow's, not the
 pack's: `demos/louis-agent/config/departments.yaml` names the code department on the sample service and an ops
 department for the hand-off (F106.3.5).
 

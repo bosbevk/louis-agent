@@ -51,6 +51,7 @@ These are read by this stack or by the packs Puls loads.
 | Setting | Meaning |
 |---|---|
 | `PULS_PORT`, `PULS_WORKSPACE` | Puls (`demos/puls/docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
+| `IDENTITIES`, `PACKS` | Who this instance is and what it can do (ADR 0027), read by Puls's own program (`louis-agent.host-packs`): the identities and the packs it loads at start-up, comma separated, case ignored. An identity's packs load with it, and `PACKS` adds one on its own (`PACKS=shop-prices`); an unknown name is refused. Puls's compose sets `IDENTITIES=puls` |
 | `PULS_MONGO_PORT`, `EVALS_MONGO_DATABASE` | The eval store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (the API's default `evals`; Puls's compose, its Azure app and its Rider profile name `puls_benchmarks`, where its runs are; `BENCHMARKS_MONGO_DATABASE`, the old name, is still read; the Mongo contract tests use `puls_benchmarks_test`) |
 | `SEARXNG_URL` | The SearXNG we run (F32): `http://puls-searxng:8080` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:8888` |
 | `SHOP_PRICES_MONGO_URL` | The MongoDB the `shop-prices` pack keeps its price tables in (F50.2, ADR 0069; a secret, `config/.env.secrets`). Unset, the tables it ships are read from memory |
