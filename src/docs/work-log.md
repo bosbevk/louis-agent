@@ -12,17 +12,18 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 105 | 90 |
+| Features (`F`) | 105 | 92 |
 | Fixes (`FX`) | 141 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (125 in the TODO)
+## Open (126 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F148 | One docs endpoint: one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, next |
+| F148 | One docs endpoint: a small header on every doc, one docs library behind `/v1/docs`, every doc with its path, commit and GitHub address; the guide's tools and `doc://` read the same library; its own plan | Now, next |
+| F149 | The docs' lists are generated: the project tables, the settings table and the indexes written from the code by the docs' tool and checked in CI; its own plan | Now, after F148 |
 | F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now |
 | F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
 | F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
