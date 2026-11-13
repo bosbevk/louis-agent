@@ -166,8 +166,9 @@ The rule that keeps the editor out of the public pages is the framework's ([ADR 
   what the page draws as a composed line opens on a small form. Edits go into a `ResumeDraft` and reach the site on
   Save. `Admin/Forms/OffPageForm` holds the four things the page never draws. The area (`ResumeArea`) brings its
   link and its card to the framework's admin frame.
-- **Save as PDF.** `ResumePrint` opens the browser's print dialog, and `Styles/site/cv/_print.scss` lays the page
-  out on A4, for a page that holds the CV and for paper only.
+- **Save as PDF.** `ResumePrint` opens the browser's print dialog. On paper the CV is its desktop layout set for
+  A4, in near-black ink, with its own footer (`Styles/site/cv/_print.scss` for the sheet, each part's paper
+  rules beside its component), and every link is a QR code, the framework's `PaperLink` (FX154).
 
 **Picks made unattended** (2026-11-13, steps 7c to 9, Louis: "continue unattended until done"). They are Claude's,
 and open for Louis to overrule:

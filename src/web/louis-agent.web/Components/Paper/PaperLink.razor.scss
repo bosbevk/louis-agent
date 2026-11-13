@@ -1,0 +1,35 @@
+/* A link as it is printed (FX154): not there on a screen, and on paper its code with its words beside it, kept
+   whole on one page. Its ink is the page's own, the colour of the words around it and never a link's, so the page
+   that prints it says how dark it is. Its sizes are paper's own, millimetres and points, whatever page prints it. */
+.paper-link { display: none; }
+
+@media print {
+    .paper-link {
+        display: flex;
+        align-items: center;
+        gap: 2.2mm;
+        min-width: 0;
+        color: inherit;
+        text-decoration: none;
+        break-inside: avoid;
+    }
+    .paper-link ::deep .qr-image {
+        flex: none;
+        width: 16mm;
+        height: 16mm;
+    }
+    .paper-link.is-small ::deep .qr-image {
+        width: 12mm;
+        height: 12mm;
+    }
+    .paper-link-words {
+        min-width: 0;
+        font-size: 7.4pt;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+    .paper-link-words b {
+        display: block;
+        font-size: 8.2pt;
+    }
+}

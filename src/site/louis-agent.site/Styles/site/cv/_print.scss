@@ -1,27 +1,48 @@
-/* The CV on paper (F142). "Save as PDF" is the browser's print dialog, and these rules lay the same page out on A4:
-   black on white, without the menu, the guide, the page's own buttons or the section list, and with nothing cut in
-   two where it can be helped. They are for paper only, and only for a page that holds the CV, so no other page and
-   no screen is touched. */
-@page {
+/* The CV on paper (F142, FX154). "Save as PDF" is the browser's print dialog, and these rules set the CV's page for
+   A4 as Louis picked it from three: the page's own desktop layout, in ink dark enough to print, every link a QR
+   code. Here is what belongs to the whole page: the sheet, its colours, the site's frame left off, and the shared
+   classes (bands, kickers, panels, tags). Each part's own layout on paper sits beside its component. All of it is
+   for paper only, and only for a page that holds the CV. */
+
+/* The sheet. Our own footer stands where the browser would print its date, title and address. */
+@page cv {
     size: A4;
-    margin: 14mm 14mm 16mm;
+    margin: 13mm 14mm 15mm;
+
+    @top-left { content: ""; }
+    @top-center { content: ""; }
+    @top-right { content: ""; }
+    @bottom-left {
+        content: "louis-agent.dev/cv";
+        font: 8pt system-ui, "Segoe UI", sans-serif;
+        color: #2a2e33;
+    }
+    @bottom-right {
+        content: counter(page) " of " counter(pages);
+        font: 8pt system-ui, "Segoe UI", sans-serif;
+        color: #2a2e33;
+    }
 }
 
 @media print {
-    /* The page's colours, set for paper where the screen's are set for the dark. */
-    body:has(.resume) {
+    /* The page's colours, set for paper where the screen's are set for the dark: black and near black, since a
+       light grey doesn't survive a printer. They are set on the page's root, whose background is what a sheet's
+       margins are painted with: set lower down, the margins printed black around a white page. */
+    :root:has(.resume) {
         --bs-body-bg: #fff;
-        --bs-body-color: #1a1a1a;
+        --bs-body-color: #111;
         --bs-emphasis-color: #000;
-        --bs-secondary-color: #333;
-        --bs-tertiary-color: #555;
-        --bs-border-color: #cdd1d6;
+        --bs-secondary-color: #1c1f23;
+        --bs-tertiary-color: #2a2e33;
+        --bs-border-color: #6b7079;
+        --line: #6b7079;
         --bs-secondary-bg: #fff;
-        --bs-tertiary-bg: #f5f6f7;
-        --web-ok: #1a7f37;
+        --bs-tertiary-bg: #fff;
+        --web-ok: #0f5c26;
         background: #fff;
-        color: #1a1a1a;
+        color: #111;
     }
+    body:has(.resume) { background: #fff; color: #111; }
 
     /* What is the site's frame and not the CV. */
     body:has(.resume) .site-header,
@@ -34,32 +55,75 @@
     body:has(.resume) .guide-button,
     body:has(.resume) .cv-print { display: none !important; }
 
+    /* The frame's column, without its width, its room or its entrance, which would print half faded. */
     body:has(.resume) .site,
-    body:has(.resume) .site-main { display: block; min-height: 0; padding: 0; background: none; animation: none; }
+    body:has(.resume) .site-main {
+        display: block;
+        min-height: 0;
+        max-width: none;
+        padding: 0;
+        background: none;
+        animation: none;
+        opacity: 1;
+        translate: none;
+    }
+
+    body:has(.resume) .resume {
+        page: cv;
+        font-size: 10.15pt;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 
     /* The silver letters are a gradient clipped to them, which paper draws as nothing: plain black instead. */
-    .resume .chrome {
+    body:has(.resume) .resume .chrome {
+        margin-bottom: 0;
+        padding-bottom: 0;
         background: none;
         color: #000;
         -webkit-text-fill-color: #000;
     }
 
-    /* A band takes the room its words need, not a screen's height. */
-    .resume .band { min-height: 0; padding-block: 8mm 0; }
-    .resume .band:first-child { padding-top: 0; }
+    /* A band takes the room its words need, with a rule over it, and no pager. */
+    body:has(.resume) .resume .band {
+        display: block;
+        min-height: 0;
+        margin-top: 8mm;
+        padding: 6mm 0 0;
+        border-top: 1px solid var(--bs-border-color);
+    }
+    body:has(.resume) .resume .band:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    body:has(.resume) .resume .band-pager { display: none; }
 
-    .resume .cv-hero,
-    .resume .cv-fact,
-    .resume .job,
-    .resume .panel,
-    .resume .edu-row { break-inside: avoid; }
-    .resume h2,
-    .resume h3 { break-after: avoid; }
-
-    /* A link is its words on paper, and a button is a quiet outline. */
-    .resume a { color: inherit; text-decoration: none; }
-    .resume .btn { border: 1px solid #cdd1d6; background: none; color: #1a1a1a; box-shadow: none; }
-    .resume .panel { box-shadow: none; }
-    .resume .cv-photo { max-width: 42mm; }
-    .cv-end { margin-top: 8mm; }
+    /* A kicker stays on the sheet of the heading under it, never alone at the foot of the one before. */
+    body:has(.resume) .resume .kicker {
+        margin-bottom: 3mm;
+        font-size: 7.75pt;
+        font-weight: 600;
+        break-after: avoid;
+    }
+    body:has(.resume) .resume h2 { margin-top: 2mm; font-size: 16.75pt; line-height: 1.15; break-after: avoid; }
+    body:has(.resume) .resume h3 { font-size: 10.75pt; break-after: avoid; }
+    body:has(.resume) .resume .lede { max-width: none; line-height: 1.5; color: var(--bs-body-color); }
+    body:has(.resume) .resume .grid-2 { grid-template-columns: 1fr 1fr; gap: 3mm; margin-top: 4mm; }
+    body:has(.resume) .resume .panel {
+        gap: 1mm;
+        padding: 3.5mm;
+        border-radius: 2.5mm;
+        background: none;
+        box-shadow: none;
+        transition: none;
+        break-inside: avoid;
+    }
+    body:has(.resume) .resume .panel p { font-size: 9.15pt; line-height: 1.45; }
+    body:has(.resume) .resume .when { font-size: 8.35pt; }
+    body:has(.resume) .resume .stack { gap: 1.2mm; margin-top: 2mm; }
+    body:has(.resume) .resume .stack span {
+        padding: .6mm 1.8mm;
+        border-radius: 1.2mm;
+        font-size: 7.95pt;
+        color: var(--bs-body-color);
+    }
+    body:has(.resume) .resume a { color: inherit; text-decoration: none; }
 }

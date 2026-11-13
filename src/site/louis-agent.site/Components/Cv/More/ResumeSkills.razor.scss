@@ -11,3 +11,8 @@
 .cv-skills ::deep .tag-input { margin-top: 12px; }
 .cv-skills ::deep .item-tools { display: flex; margin-top: 10px; }
 .cv-skills ::deep .item-add { justify-self: start; align-self: start; }
+
+/* On paper (FX154): three groups a row whatever the sheet's width. */
+@media print {
+    .cv-skills { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3mm; margin-top: 4mm; }
+}

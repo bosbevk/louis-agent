@@ -15,3 +15,11 @@
 @media (max-width: 820px) {
     .add-certificate, .add-school { padding-left: 0; }
 }
+
+/* On paper (FX154): the dates in the jobs' column whatever the sheet's width, and a row kept whole on a page. */
+@media print {
+    .edu { gap: 0; margin-top: 2mm; }
+    .edu-row { grid-template-columns: 32mm minmax(0, 1fr); gap: 6mm; padding-block: 2.2mm; break-inside: avoid; }
+    .edu-row h3 { font-size: 11.15pt; }
+    .edu-row p { font-size: 9.35pt; }
+}

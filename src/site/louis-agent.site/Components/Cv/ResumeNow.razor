@@ -1,5 +1,6 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Web.Components.Paper
 @* The CV's "now" band (F142): what Louis is building, its headline and words, and a panel per part with its label
    words, its text and the link to where the site shows it. When the page is edited, the headline, the words and a
    panel's name and text are clicked and retyped, its label words are tags, its link opens on a small form and
@@ -33,6 +34,10 @@
             @if (part.Url is { } url)
             {
                 <a class="cv-part-link" href="@AddressOf(url)" target="@TargetOf(url)" rel="@RelOf(url)">@(part.Link ?? part.Name) →</a>
+            }
+            @if (!Editable && part.Url is { } onPaper)
+            {
+                <PaperLink Href="@onPaper" Label="@(part.Link ?? part.Name)" Small/>
             }
             @if (Editable)
             {

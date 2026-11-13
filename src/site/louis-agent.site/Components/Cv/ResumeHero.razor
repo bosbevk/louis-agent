@@ -1,5 +1,6 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Web.Components.Paper
 @using LouisAgent.Site.Resumes.Basics
 @using LouisAgent.Site.Resumes.Skills
 @* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. When
@@ -78,5 +79,20 @@
     @if (Photo is { } photo)
     {
         <img class="cv-photo" src="@photo" alt="@Basics.Name" width="560" height="700"/>
+    }
+    @if (!Editable)
+    {
+        @* On paper a link can't be clicked, so each is drawn as its QR code there, in the buttons' place (FX154). *@
+        <div class="cv-codes">
+            <PaperLink Href="@LiveCv" Label="The live CV"/>
+            @foreach (var profile in Basics.Profiles)
+            {
+                <PaperLink Href="@profile.Url" Label="@profile.Network" Address="@WrittenOf(profile)"/>
+            }
+            @if (Basics.Email is { } address)
+            {
+                <PaperLink Href="@($"mailto:{address}")" Label="Email" Address="@address"/>
+            }
+        </div>
     }
 </div>

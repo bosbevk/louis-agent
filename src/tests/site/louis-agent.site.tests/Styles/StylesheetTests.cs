@@ -211,4 +211,33 @@ public class StylesheetTests
             Assert.That(print, Does.Contain(".site-header").And.Contain(".chat-widget").And.Contain(".cv-print"));
         });
     }
+
+    /// <summary>
+    /// FX154, Louis, on the first PDF: the browser's date and address across the top, the phone's layout (the photo
+    /// over the name, the facts two by two) and text "too light". The CV's sheet is a page of its own with our footer
+    /// where the browser's would be, the frame's entrance is off so nothing prints half faded, and the hero keeps its
+    /// two columns on paper with the row of codes in the buttons' place.
+    /// </summary>
+    [Test]
+    public void OnPaper_TheCvIsItsDesktopLayout_WithItsOwnFooter()
+    {
+        string print = Css.Source("site/cv/print");
+        string hero = File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+            "src/site/louis-agent.site/Components/Cv/ResumeHero.razor.scss")).ReplaceLineEndings("\n");
+        string onPaper = hero[hero.IndexOf("@media print", StringComparison.Ordinal)..];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(print, Does.Contain("@page cv").And.Contain("page: cv;"), "a sheet of the CV's own");
+            Assert.That(print, Does.Contain("@bottom-right").And.Contain("counter(page)"), "our own footer");
+            Assert.That(print, Does.Contain("@top-left { content: \"\"; }"), "and nothing of the browser's on top");
+            Assert.That(print, Does.Contain("animation: none;").And.Contain("opacity: 1;"));
+            Assert.That(print, Does.Contain("--bs-tertiary-color: #2a2e33;"), "the lightest ink is still dark");
+            Assert.That(print, Does.Contain(":root:has(.resume) {"), "white to the sheet's edges, margins too");
+            Assert.That(onPaper, Does.Contain(".cv-hero { grid-template-columns: minmax(0, 1fr) 38mm;"));
+            Assert.That(onPaper, Does.Contain(".cv-photo { max-width: none; order: 0;"), "the photo back on the right");
+            Assert.That(onPaper, Does.Contain(".cv-reach { display: none; }"), "paper can't press a button");
+            Assert.That(hero, Does.Contain(".cv-codes { display: none; }"), "and the codes are for paper alone");
+        });
+    }
 }

@@ -10,3 +10,9 @@
 /* "Save as PDF", on its own line over the closing one. */
 .cv-save { margin-top: 40px; }
 .cv-save + .cv-end { margin-top: 24px; }
+
+/* On paper (FX154): no button, and the closing line small under the last band. */
+@media print {
+    .cv-save { display: none; }
+    .cv-end { margin-top: 7mm; padding-top: 3mm; font-size: 8.55pt; }
+}

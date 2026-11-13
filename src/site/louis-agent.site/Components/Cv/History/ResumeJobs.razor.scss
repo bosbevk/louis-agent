@@ -31,3 +31,17 @@
 .job-points { margin-top: 10px; }
 .job ::deep .tag-input { margin-top: 14px; }
 .cv-jobs ::deep .item-add { justify-self: start; }
+
+/* On paper (FX154): the dates in their column whatever the sheet's width, and a job kept whole on a page. */
+@media print {
+    .cv-jobs { margin-top: 2mm; }
+    .job {
+        grid-template-columns: 32mm minmax(0, 1fr);
+        gap: 6mm;
+        padding-block: 4mm;
+        break-inside: avoid;
+    }
+    .job h3 { font-size: 11.15pt; }
+    .org { margin-top: 0; font-size: 9.35pt; }
+    .job ul { gap: .6mm; margin-top: 1.6mm; padding-left: 4mm; font-size: 9.35pt; color: var(--bs-body-color); }
+}

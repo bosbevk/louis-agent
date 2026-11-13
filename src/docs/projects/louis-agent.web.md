@@ -1,7 +1,7 @@
 # louis-agent.web — design
 
 > **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web/` ·
-> **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
+> **References:** Markdig, Net.Codecrete.QrCodeGenerator, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** every site with a chat:
 > louis-agent.code-review, louis-agent.puls and louis-agent.starter
 
 ![The framework's web, and its parts: the chat's frame, the admin's frame, the site's parts, styles and scripts, and the seams](diagrams/louis-agent.web.svg)
@@ -199,6 +199,7 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 | `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
 | `Styles/web/` | The globals: `settings/_colours.scss`, `tools/` (`_colours.scss`, both forms of a colour from one value; `_screen-answer.scss`, a mixin two screen components include), and the shared rules by concern in `base/`, `layout/`, `chat/`; a component's own rules sit beside it (`Components/Admin/AdminShell.razor.scss`, `Components/Chat/Sidebar/ChatSidebar.razor.scss`, CL58) |
 | `Components/Editing/` | Pieces for a page a person edits (F142). The framework decides nothing about how a site edits its pages. louis-agent.dev builds its CV's editor from them ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md), the site's own): `TextField` and `FieldGroup` (a labelled box, a few under a heading), `TagInput` (words as chips), `ListEdits` (add, take out, replace, move, each a new list) and `EditedItem` (an item with the way to hand back a changed copy). `Inline/` is for a page edited where it stands: `InlineEdit` (click the words, a box with a tick and a cross, Enter keeps, Escape drops, and plain words when nobody listens), `InlineForm` (the same for an item of several fields), `ItemTools` and `ItemAdd` (move, remove, open and add for a list on the page), and `PartChanges`, which gives a part a listener exactly when the whole has one |
+| `Components/Paper/`, `Paper/` | What a page needs when it is printed (FX154, Louis: "in a pdf hyperlinks is qr codes always"): `PaperLink`, a link as it is printed, its QR code with its words and its address written short, drawn on paper only, in the ink of the page that prints it, and still a link in a PDF read on a screen; `QrImage`, a code as a picture; `QrDrawing`, a code as data (the one place that names Net.Codecrete.QrCodeGenerator), and `PaperAddress`, an address written short |
 | `Scripts/` | `JsModule`, the proxy that imports a module once and lets it go; `FrameworkScripts`, the modules' paths named once; `ChatModules`, the frame's three modules on one runtime (CL31) |
 | `wwwroot/js/` | `first-paint.js` (the one script a site lists), `preferences.js`, `dialogs.js`, `download.js` (shared modules); a module beside its component sits with it (`Components/Chat/Shell/ChatShell.razor.js`, `Components/Chat/MessageList.razor.js`, `Components/TurnView.razor.js`) |
 | `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |

@@ -9,3 +9,9 @@
 .cv-interest ::deep .item-tools { display: flex; }
 .resume-also p ::deep .item-tools { margin-left: 8px; }
 .resume-also ::deep .item-add { margin-top: 14px; }
+
+/* On paper (FX154): an assessment's plain link is left out, and its code is drawn in its place. */
+@media print {
+    .cv-assessment { display: none; }
+    .resume-also ::deep .paper-link { margin-top: 2.5mm; }
+}

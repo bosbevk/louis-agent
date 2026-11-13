@@ -13,3 +13,12 @@
 .cv-parts ::deep .tag-input { margin-bottom: 10px; }
 .cv-parts ::deep .item-tools { display: flex; margin-top: 12px; }
 .cv-parts ::deep .item-add { justify-self: start; align-self: start; }
+
+/* On paper (FX154): the band's words a little smaller than the top's, a panel's link left out and its code at the
+   panel's foot in its place. */
+@media print {
+    .lede { margin-top: 2.5mm; font-size: 10.35pt; }
+    .cv-part-label { font-size: 7.15pt; font-weight: 600; }
+    .cv-part-link { display: none; }
+    .cv-parts ::deep .paper-link { margin-top: auto; padding-top: 2.5mm; }
+}

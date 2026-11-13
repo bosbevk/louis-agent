@@ -2,6 +2,7 @@ using LouisAgent.Site.Resumes.Basics;
 using LouisAgent.Site.Resumes.Skills;
 using LouisAgent.Web.Components.Editing;
 using LouisAgent.Web.Components.Editing.Inline;
+using LouisAgent.Web.Paper;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Site.Components.Cv;
@@ -14,6 +15,9 @@ public partial class ResumeHero
 {
     /// <summary>The networks drawn with their own brand's mark and button (ADR 0102).</summary>
     private const string LinkedIn = "LinkedIn", WhatsApp = "WhatsApp";
+
+    /// <summary>Where the CV lives on the site, which a printed copy leads back to.</summary>
+    private const string LiveCv = "cv";
 
     /// <summary>A link to fill in.</summary>
     private static readonly ResumeProfile Blank = new("", "");
@@ -77,6 +81,19 @@ public partial class ResumeHero
 
     /// <summary>What the open link is called, for its form: link 2.</summary>
     private string OpenLabel => $"link {_open + 1}";
+
+    /// <summary>
+    /// What is written beside a profile's code on paper: his number for WhatsApp, as on its button, and for the
+    /// rest who he is there, which is the address without the network's own name, since the label says that.
+    /// </summary>
+    /// <remarks>A switch on the shape, one arm per kind of profile (ADR 0051).</remarks>
+    private string WrittenOf(ResumeProfile profile) => profile switch
+    {
+        { Network: WhatsApp } when Basics.Phone is { } phone => phone,
+        _ when Uri.TryCreate(profile.Url, UriKind.Absolute, out var address) && address.AbsolutePath.Length > 1 =>
+            address.AbsolutePath.Trim('/'),
+        _ => PaperAddress.Short(profile.Url)
+    };
 
     /// <summary>While the page is edited a link leads nowhere, so a click on it doesn't leave the page.</summary>
     private string? AddressOf(ResumeProfile link) => Editable ? null : link.Url;
