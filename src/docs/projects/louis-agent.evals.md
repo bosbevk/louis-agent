@@ -79,8 +79,8 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 
 ## Design notes
 
-What F18 settled while building the harness, and why (the plan, the feature doc with every step's notes and the
-unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md)):
+What F18 settled while building the harness, and why (the plan and the feature doc with every step's notes are at
+the tag [`pre-cl24`](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md)):
 
 - **No parity run against the Python.** Its runs were deleted before they could be exported, so the first C# run is
   the baseline and the trends start there; step 3's tests and reference transcripts that pass every grader hold the

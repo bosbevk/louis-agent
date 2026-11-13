@@ -1,132 +1,107 @@
-# F134: The showroom looks modern
+# F134: The showroom is a stage the agent runs
 
-**Status:** approved 2026-11-11 (Louis: "merge the plan with designs into todo"). **Branch:** `feature/F134-the-showroom-looks-modern`.
-**Mockups:** [F134-mockups/](F134-mockups/), plain HTML: [b-showcase-with-photos.html](F134-mockups/b-showcase-with-photos.html)
-is the look Louis picked; [a-tidy-and-lift.html](F134-mockups/a-tidy-and-lift.html) and
-[c-bento-grid.html](F134-mockups/c-bento-grid.html) are the two he didn't, kept for the record. Open one in a browser
-from the repo so its photos load.
+> **Plan (a parent with six children).** How the showroom is rebuilt: what it becomes, the rules it is built by, and
+> the children in the order they are built. Each child gets its own plan when it starts.
+
+**Status:** approved 2026-11-13 (Louis: "go, commit the plan and start step 1"). **Children's branches:** `feature/F134.n-name`, one pull request each.
+**Mockups:** [F134-mockups/](F134-mockups/), plain HTML, opened in a browser from the repo so the photos load:
+[f-centre-stage.html](F134-mockups/f-centre-stage.html) is the start Louis picked,
+[j-the-agent-runs-the-room.html](F134-mockups/j-the-agent-runs-the-room.html) the start with the agent running it,
+and [k-the-agent-runs-the-demo.html](F134-mockups/k-the-agent-runs-the-demo.html) a demo's page the same way. The
+agent in J and K is simulated. The three older ones (A, B, C) are the looks of 2026-11-11, kept for the record.
 
 ## Context
 
-Louis, 2026-11-11, of the demos index and the guesthouse demo on louis-agent.dev: "I want this redesign to be modern
-this looks off and those icons", and "everything is a bit too flat". F127.1 built the showroom (ADR 0115). Reading its
-code turned up four causes:
+F134 was approved on 2026-11-11 as five steps for look B, "showcase with photos". Nothing of it was built. On
+2026-11-13 Louis asked for more: "can we modernise it even more", "make it very fancy", and picked **F, centre
+stage**, of three new designs. He then widened it: "redesign each demo to fit the new fancy style", "you can look
+for better images", "tour this page can also be redesigned".
 
-1. **The icons are emoji.** `ShowroomDemo.Sign` is a string (`"🛏"`, `"🍽"`, `"⚖"`, `"{ }"`, `"⇄"` in the site's
-   `SiteDemos`). Each system draws emoji in its own font. On Windows they come out as small black glyphs of different
-   sizes and weights, so no two look alike.
-2. **The signs crowd their words.** The rail's sign is a 44px pastel square, only 11px from the name, and the line
-   under the name wraps.
-3. **The index has no column.** `.start-covers` fills the width with 210px tracks, so five small cards sit on the left
-   with empty space to their right. The feature's photo is a 240px-high strip.
-4. **Everything is flat.** The covers are solid pastel fills on a flat card. No surface has a light top edge or a
-   shadow to lift it, and the one photo is small.
+My first tour mockups were a slideshow with Back and Next. Louis: "tour this page is currently done by an agent, how
+will that work in this design?", "the agent must do it all", "we must use the framework in the design", "our agent
+button needs a proper redesign", "think of ways we can integrate the AI into the demo". He said yes to two ideas
+together, with an agent bar: the agent runs the room, and you can see how it did that.
 
-Louis picked **B · Showcase with photos** of three looks (2026-11-11). The other two were A, tidy and lift, and C, a
-bento grid with no rail on the index.
+Three more of his words shape how it is built: "things that can be shared, must go to framework", "like cool
+components we could reuse later in other projects", and "we should have like chatwidget layout type".
+
+This plan replaces the look B plan in this file. Git keeps that one (`66d969379`).
 
 ## Design
 
-**What changes.** Only the showroom's look and one field of its demo record. The stage, the mock website, the
-recordings and the words stay as they are.
+**What it becomes.** The start of the showroom is a stage: one demo at a time as a window in the light, the other
+four waiting behind it in depth, a dock under it. A demo's own page is the same window grown to fill the stage, with
+what to watch as chapters under it. The guide sits in a bar at the foot of every showroom page. When it talks about a
+place it lights that place, its words stand beside it, and its choices are drawn there. Any answer turns over to show
+what it called and what it cost.
 
-- **Line icons, not emoji.** `Sign` becomes `DemoIcon Icon`, an enum (ADR 0024) with one inline SVG per value, drawn
-  by a small `DemoIconView` component in the demo's colour, one stroke width, at any size. The paths come from
-  **[Tabler Icons](https://tabler.io/icons)** (MIT, Louis's pick 2026-11-11), five icons copied in, with no package or icon
-  font (ADR 0055, ADR 0030), and one line in `THIRD-PARTY-NOTICES`.
-- **A cover photo per demo.** `ShowroomDemo` gains `string? Cover`, a photo from the site's own `images/showroom`
-  (the photos are already there). A demo without one (the coding agent, the triage team) shows its icon large on a
-  dark lit panel.
-- **Depth from one surface.** A `surface` mixin in `web/tools` gives a raised card three things: a dark gradient, a
-  light top edge (an inset highlight) and a soft shadow below. The rail's icon tile, the covers and the feature all
-  use it, so depth is decided once.
-- **The index in a column.** The start sits in a centred column (`max-width` about 980px). The feature becomes the
-  guesthouse photo full-bleed under a dark scrim, with the words on it. The covers become three columns: photo on
-  top, icon badge over its edge, then name and line.
-- **The rail breathes.** A 36px icon tile on the surface, 14px from the words, and the line on one line. The current
-  demo gets a thin ring in its colour instead of a full tint.
+**The rules it is built by** (each child keeps them, and the last child writes the lasting ones into an ADR):
 
-**The patterns:**
-- *Card gallery with media*: a photo on top and the words below, as in Material's card anatomy and in template
-  galleries.
-- *Hero image with a gradient scrim*: words over a photo with a dark fade behind them, so they stay readable.
-- *Elevation*: layered surfaces with light from above, as in Material's elevation and Apple's materials.
+1. **What can be shared is the framework's, as a component of its own.** A lit stage, a deck of things in depth, a
+   framed window, a dock, line icons, the agent's orb: each is a general component of `louis-agent.web`, named for
+   what it is and not for the showroom, so a later project uses it without the showroom. The showroom is the first
+   place that puts them together. The site holds only its words, its photos and which demos it has.
+2. **Nothing moves unless an agent's tool call caused it.** The light is `ShowPage`. The choices are `Offer`. A
+   window comes forward because the guide showed its address. There is no scripted tour and no Back or Next.
+3. **The box is always there.** The guide's choices are shortcuts, never the only way to answer: the visitor can
+   type anything, at any time, and every set of choices says so.
+4. **The widget is one engine with a layout.** The chat widget keeps its runner, its list and its composer, and
+   gains a layout the site picks: `Corner`, as today, or `Bar`. No second widget.
+5. **The page keeps clear of the bar.** The frame that draws the bar reserves its height, so no page ends under it.
+6. **Only true numbers.** The work side shows what the framework recorded for that answer: the tools called, the
+   time, the tokens and the cost. Progress says which places the guide has shown, never a promised count.
+7. **Every word a demo's agent says on screen is in its recording**, held by a test.
+8. **Every place has its address** (ADR 0107): a window on the start is `/demos/{its demo}`.
 
-Each class that carries one names it in its `<remarks>` (ADR 0050).
+**Where the reusable parts live.** Three places were weighed:
 
-### Interface design
+| Option | What it means | Cost |
+|---|---|---|
+| **General folders in `louis-agent.web`** (picked for this plan) | `Components/Icons`, `Components/Staging`, and the agent's parts in `Components/Widget`. The showroom composes them. | A few more folders in the framework's web. |
+| Inside the showroom's folder | As the look B plan drew: `Showroom/Icons`, `Showroom/Deck`. | A later project has to take the showroom to get a dock. |
+| A project of its own, `louis-agent.web.kit` | The parts ship apart from the framework's web. | A new project and package for a need no plan names yet (ADR 0055). |
 
-![One icon type for every demo: the site names each demo's icon and cover, and one view draws them](diagrams/F134-the-showroom-looks-modern-interface-design.svg)
+**Louis's picks for the start** (2026-11-13): a window's body is one of two the framework offers and the site fills
+(a website with its chat, panes of work). The agent's words on a window are written in the site and held to the
+recording by a test. The dock is on the start and the rail stays on a demo's page, as a slim dock of icons. On a
+phone the windows are swiped one at a time, with no 3D.
 
 ### Architecture
 
-![The site names each demo's icon and cover, the framework's showroom draws them, and the browser gets inline SVG](diagrams/F134-the-showroom-looks-modern-architecture.svg)
+![The site names its demos and fills their windows, the framework's general parts draw the stage and the bar, and the guide moves them with its tools](diagrams/F134-the-showroom-is-a-stage-architecture.svg)
 
-### Communication (a visitor opens /demos)
+### Communication (the guide walks the start)
 
-![A visitor opens /demos: the start and the rail ask the one icon view, and the page goes out as HTML with inline SVG](diagrams/F134-the-showroom-looks-modern-communication-a-visitor-opens-demos.svg)
+![A visitor asks for a walk: the guide calls ShowPage and Offer, the deck brings a window forward, and the caption stands beside it](diagrams/F134-the-showroom-is-a-stage-communication-the-guide-walks-the-start.svg)
 
-### Objects (the index in memory)
+The interface and object pictures are per child: each child's plan carries its own four.
 
-![The showroom's index: five demos, each with its icon and a cover where it has one](diagrams/F134-the-showroom-looks-modern-objects-the-index-in-memory.svg)
+## The children
 
-### Folder tree (after step 1)
+Built in this order, one pull request each. A child's plan is written and approved when it starts.
 
-```
-src/web/louis-agent.web/Components/Site/Showroom/
-  Icons/                 # new, step 1
-    DemoIcon.cs
-    DemoIconView.razor
-    DemoIconView.razor.cs
-    DemoIconView.razor.scss
-  Shell/ Start/ Stage/ Mock/   # as today
-src/web/louis-agent.web/Styles/web/tools/
-  _surface.scss          # new, step 2
-```
+| Child | What it builds | Done when |
+|---|---|---|
+| **F134.1 The start is a stage** ([plan](F134.1-the-start-is-a-stage.md)) | The general parts (line icons, the lit stage, the deck, the framed window with its two bodies, the dock) and the start built from them, each window at its address, swiped on a phone. The site fills its five windows. | `/demos` is the stage at 1920×1080 and at 390 px, `/demos/restaurant-demo` opens with the restaurant forward, and a test holds each window's words to its recording. |
+| **F134.2 A demo on the stage** | A demo's page as the window grown to fill the stage, what to watch as chapters under it, the rail as a slim dock of icons, and a body for an agent at work. | The five demo pages play as today in the new look, at both widths, and the guide's stops are the same places. |
+| **F134.3 The agent bar** | The chat widget's layout (`Corner`, `Bar`), the orb with its four states, the suggestions as chips, the box that is always there, and the frame keeping the page clear of the bar. | The showroom's guide is the bar, a typed question is answered mid-walk, and no page ends under the bar. |
+| **F134.4 The agent runs the room** | The guide's last answer as a caption beside the place it lights, its `Offer` drawn there, a window coming forward on `ShowPage`, the guide holding a demo's play while it talks about it, and the talk as a drawer. | A live walk of the start and of one demo page, by the real guide, moves the stage only through its tools. |
+| **F134.5 See how it did that** | The caption's other side: the tools called, the time, the tokens and the cost of that answer, the drawer's total, and the pieces of a page ringed so they can be asked about. | Every answer of a live walk turns over to numbers that match the usage ledger. |
+| **F134.6 Better photos** | The photos Louis picks from Pexels, with their record. | The three business demos show the new photos, each listed with its source and licence. |
 
-### Namespace map
-
-| Type or file | Folder | Namespace | Step |
-|---|---|---|---|
-| `DemoIcon` | `Components/Site/Showroom/Icons` | `LouisAgent.Web.Components.Site.Showroom.Icons` | 1 |
-| `DemoIconView` | the same | the same | 1 |
-| `ShowroomDemo` (`Sign` → `Icon`, `+ Cover`) | `Components/Site/Showroom` | `LouisAgent.Web.Components.Site.Showroom` | 1, 4 |
-| `DemoIconViewTests` | `src/tests/web/louis-agent.web.tests/Components/Site/Showroom/Icons` | `LouisAgent.Web.Tests.Components.Site.Showroom.Icons` | 1 |
-| `_surface.scss` | `Styles/web/tools` | (Sass module `web/tools/surface`) | 2 |
-
-## Steps
-
-Each step is one commit with its test, written first and seen failing. Stop after each for Louis's review.
-
-1. **Line icons for the demos.** Add `DemoIcon` and `DemoIconView`. Change `ShowroomDemo.Sign` to `Icon`. The rail,
-   the chips' dot and the start's covers draw the view. `SiteDemos` names the five icons, and the notice gets its line.
-   *Test:* every `DemoIcon` value draws an `svg` with a path and `aria-hidden`. The rail and the covers hold an `svg`
-   and no text sign (`ShowroomShellTests`, `ShowroomStartTests` updated).
-2. **One raised surface.** Add the `surface` mixin: the gradient, the top highlight and the shadow, all from existing
-   colour tokens. The covers and the feature use it in place of their flat fills. *Test:* none first (styles only);
-   the scoped-styles tests stay green.
-3. **The rail breathes.** A 36px icon tile on the surface, 14px gap, the line on one line, and a ring for the current
-   demo. *Test:* the current demo is still marked `aria-current="page"` and lit; the rest of the change is styles.
-4. **Photos on the covers, the index in a column.** Add `ShowroomDemo.Cover`. A cover with a photo shows it with the
-   icon as a badge; one without shows the icon large. The start sits in a centred column, and the feature is the
-   photo full-bleed under a scrim. `SiteDemos` gives the three business photos. *Test:* a cover with `Cover` has an
-   `img` with an empty `alt` (decorative) and the badge; one without has no `img` and a large icon.
-5. **Phones, docs and done.** Check at phone width (the chips, one column of covers, the feature stacked). Update
-   ADR 0115's *Decision* with one line on icons and covers, the showroom's design doc and the work log. Delete this
-   plan. *Test:* none (docs).
+Parked, a feature of its own: **see it as yours**, the visitor's own business on the stage, live.
 
 ## Verification
 
-- `louis-agent.web.tests` for each step, the full suite once after step 4.
-- Free manual checks: `/demos` and `/guesthouse-demo` in Chrome on Windows at full width and at 390px. The icons must
-  look the same on Windows and on a phone, and nothing should crowd. No paid run.
+- Each child runs the tests of what it touches, and the full suite once before its pull request.
+- By eye, in Chrome, at an exact 1920×1080 and at 390 px, every page and every window of the deck.
+- F134.4 and F134.5 need live walks by the real guide. Those spend test credit, and their cost is reported.
 
 ## Concepts
 
-This is front-end craft, not an AI skill. It sits under GOAL.md skill 18 (*Testing and shipping*), as the showroom
-is how the agents are shown and sold: a component's data (an enum, not a free string) decides what it draws, and a
-markup test holds it.
+Skill 18 (testing and shipping) for the parts and their markup tests. From F134.3 on, skill 4 (tool design): an
+agent's tool calls as the only cause of what the screen does. In F134.5, skill 13 (cost and token economics) and
+skill 17 (observability): the framework's own records of an answer, shown to the person who asked.
 
-## Approved during the build
-
-(empty)
+---
+[Docs index](../README.md) · Related: [Plans](README.md) · [F134.1](F134.1-the-start-is-a-stage.md)

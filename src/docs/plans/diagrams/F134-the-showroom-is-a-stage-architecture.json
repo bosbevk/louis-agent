@@ -1,0 +1,71 @@
+{
+  "kind": "flow",
+  "title": "F134 the showroom is a stage: the architecture",
+  "caption": "The site names its demos and fills their windows, the framework's general parts draw the stage and the bar, and the guide moves them with its tools.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "site",
+        "icon": "browser",
+        "tone": "green",
+        "label": "louis-agent.site\nits demos, its five windows (F134.1),\nits photos (F134.6)"
+      },
+      {
+        "id": "show",
+        "icon": "box",
+        "tone": "violet",
+        "label": "louis-agent.web Showroom\nthe start (F134.1), a demo's page (F134.2)"
+      },
+      {
+        "id": "parts",
+        "icon": "box",
+        "tone": "violet",
+        "label": "louis-agent.web general parts\nLineIcon, LitStage, Deck, FramedWindow,\nDock (F134.1)"
+      },
+      {
+        "id": "widget",
+        "icon": "box",
+        "tone": "violet",
+        "label": "louis-agent.web ChatWidget\nlayout Corner or Bar (F134.3), caption (F134.4),\nwork side (F134.5)"
+      },
+      {
+        "id": "guide",
+        "icon": "code",
+        "tone": "blue",
+        "label": "the guide, live\nShowPage, Offer, ReadAgentWork"
+      },
+      {
+        "id": "browser",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "the visitor's browser"
+      }
+    ],
+    "edges": [
+      {
+        "from": "site",
+        "to": "show"
+      },
+      {
+        "from": "show",
+        "to": "parts"
+      },
+      {
+        "from": "show",
+        "to": "widget"
+      },
+      {
+        "from": "guide",
+        "to": "widget"
+      },
+      {
+        "from": "widget",
+        "to": "show"
+      },
+      {
+        "from": "show",
+        "to": "browser"
+      }
+    ]
+  }
+}

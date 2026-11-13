@@ -28,5 +28,5 @@ goes in the step's explanation. Docs-only and configuration-only steps have no t
 
 ## Links
 
-[Tests guide: Test first](../../tests/CLAUDE.md#test-first) ·
-[Steps, branches and commits](../CLAUDE.md#steps-branches-and-commits)
+[Write and run tests: Write the test first](../guides/write-tests.md#write-the-test-first) ·
+[The loop of a step](../CLAUDE.md#the-loop-of-a-step)

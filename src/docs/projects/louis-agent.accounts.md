@@ -136,27 +136,6 @@ out, delete; the route table pinned). The passkey routes are proved with a softw
 two-factor with a TOTP of the tests' own (`Endpoints/TwoFactor/Totp`, RFC 6238), so neither needs a device. CI runs
 the second project against a SQL Server service container.
 
-## What the build decided (F61.1, 2026-11-07, unattended)
-
-- A migration's files aren't sized by `FileSizeTests`: a tool's record, not code a person maintains (ADR 0044).
-- The SQL Server's data is a Docker volume, not a host folder: SQL Server 2025 runs as its own user and crashes on a
-  Windows bind mount it can't own (`Failed to load LSA`).
-- A tenant in a test is never `puls`: it's an identity's wire name, and the names rule flags the string.
-- Identity writes a link for an HTML mail (`&amp;`); the log sender and the test sender decode it.
-- (F61.3) The callback is tested on a scripted provider: a route the test host alone maps writes Identity's external
-  cookie as a provider's handler would, so the callback runs unchanged on the cookie it reads in production.
-- (F61.3) A query parameter a route may be called without is a parameter with a default (`bool link = false`);
-  without one, minimal APIs answer 400 for the missing value.
-- (F61.5) One migration, written again under Identity's schema version 3: the first was written under the default
-  schema, since the design-time factory gave the model no Identity options, and version 3 shortens key columns SQL
-  Server won't alter in place. Nothing was stored yet (ADR 0049), so the migration was deleted and made again; the
-  factory now names the version, and `AccountsStartup` sets the same one.
-- (F61.5) `MakePasskeyCreationOptionsAsync` and `MakePasskeyRequestOptionsAsync` answer JSON strings, passed to the
-  browser as they are; `PerformPasskeyAttestationAsync` throws when no options are under way, caught into a 400.
-  The tests send `Origin: http://localhost`, since Identity refuses a credential whose origin isn't the request's.
-- (F61.5) Two-factor needed no route of ours: Identity's `manage/2fa` does it, and our records mirror its request
-  and response, pinned by tests like the other bodies.
-
 ## Limits and plans
 
 A real mail sender, Facebook and X, the QR code for the authenticator key (today the key as text and an `otpauth://`

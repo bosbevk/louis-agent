@@ -73,9 +73,9 @@ Louis's picks during the build, each a rule now:
   script instead of being recorded again, and the recipes eval before and after waits for Puls's return (F135).
 - **`StartMinion` stayed as it was** until F127.5 put the minions on the address and on `AskAgent`.
 
-## What F127.3.2 settled (2026-11-12, unattended)
+## Settled with F127.3.2 (2026-11-12)
 
-Asking an agent on another server (F127.3 pick 2, C), each a rule now, each Claude's pick of three, agreed by Louis
+Asking an agent on another server (F127.3 pick 2, C), each a rule now, agreed by Louis
 the same day:
 
 - **An address may name its server before a colon** (`partner:shop.cook`); without one it is this instance, which
@@ -89,8 +89,8 @@ the same day:
 
 ## What F127.5 settled (2026-11-12)
 
-The minions on the address, and who may ask whom. Built unattended first with `StartMinion(address, …)`, then
-corrected by Louis: "it should not startminion it should use askagent also". Each a rule now:
+The minions on the address, and who may ask whom. Louis: "it should not startminion it should use askagent also".
+Each a rule now:
 
 - **One tool for every call:** `AskAgent(address, message, attachments, tool?, stronger?)`. A minion's address is its
   identity and its function (`puls.find-recipe`, the file `minions/puls-minion-find-recipe.md`); `tool` (one of the

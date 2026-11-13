@@ -1,7 +1,7 @@
 # 0061. Evals grow from use
 
-**Status:** Accepted · **Date:** 2026-10-31 (the F49.4 plan's findings O and P, Louis's picks during its build on
-2026-11-01, and the picks of its unattended steps 3 to 6 on 2026-11-03, for his review on the pull request) ·
+**Status:** Accepted · **Date:** 2026-10-31 (the F49.4 plan's findings O and P, and Louis's picks during its build on
+2026-11-01) ·
 **Recorded:** 2026-11-03
 
 ## Context

@@ -1,0 +1,10 @@
+@* A framed window (F134.1): a bar like a browser's, with three dots and an address word, then a body. The dots are
+   decoration. Nothing in the body may outgrow the frame or be scrolled inside it: a body that is too long is cut at
+   the frame's edge, never the bar. *@
+<div class="@Classes">
+    <div class="window-bar">
+        <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="window-address">@Address</span>
+    </div>
+    <div class="window-body">@ChildContent</div>
+</div>

@@ -6,12 +6,12 @@ namespace LouisAgent.Web.Testing;
 
 /// <summary>
 /// A component's rendered markup pinned to a golden file beside its test, the way the model's request and the tool
-/// texts are pinned (src/tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run
-/// compares, and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the
-/// diff can be read. Normalised, since none is the component's doing: per-instance SVG ids, <c>@ref</c> element references, the
-/// renderer's event-handler numbers, the seconds a thinking block took, the scope attribute of a component with its
-/// own styles (CL58), and the line breaks beside tags (a page split into components keeps its markup but not its
-/// indentation).
+/// texts are pinned (the Write and run tests guide, <i>Regenerate a golden file</i>): <c>LOUIS_UPDATE_GOLDEN=1</c>
+/// writes it, any other run compares, and a mismatch leaves what was rendered under the temp folder's
+/// <c>louis-agent-snapshots/</c> so the diff can be read. Normalised, since none is the component's doing:
+/// per-instance SVG ids, <c>@ref</c> element references, the renderer's event-handler numbers, the seconds a
+/// thinking block took, the scope attribute of a component with its own styles (CL58), and the line breaks beside
+/// tags (a page split into components keeps its markup but not its indentation).
 /// </summary>
 public static partial class Snapshots
 {

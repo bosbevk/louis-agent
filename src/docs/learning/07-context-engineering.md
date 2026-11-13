@@ -295,5 +295,82 @@ page or a tool, and the prompt keeps only what holds everywhere.
 - Context engineering (skill 7): rules split by where the person is, loaded on change.
 - Retrieval (skill 8): an index from the source, searched by a tool, instead of a list in the prompt.
 
+## Our own instructions, by when they are needed (CL63)
+
+**What it means.** What Claude Code reads to work in this repo is now three layers. What must hold on every turn
+is always loaded. The how of a kind of file loads when such a file is opened. A procedure loads when its job
+comes up. Louis asked for it in two sentences: "rewrite it without losing any functionality, and separate
+functions by skill files", then "whole redesign".
+
+![Three layers: what is always loaded, what loads with a kind of file, and what loads for a job](../diagrams/claude-instructions-layers.svg)
+
+**What was built.**
+
+- **Always loaded:** `CLAUDE.md`, with how to work with Louis and the hard stops in one list, and two rules files
+  with no `paths`, the design rules and the map of the repo.
+- **By kind of file:** eight rules files with `paths`. The test rules and the rules for hosts and web apps were
+  folder files before. A folder file loads only for its own folder, so the test rules reached 26 of the 68 test
+  projects, and the hosts' file loaded for every doc under `src/` and for no demo. As rules files they follow their
+  kind of file wherever it lives. Eight `CLAUDE.md` files became three.
+- **By job:** nine skills, one per procedure, each with its must-dos first, since only the start of a skill is
+  kept when a long session is compacted.
+- **Out of Claude's private notes:** 22 standing instructions, each from something Louis said, moved into the
+  repo in his words with their date, where he can read them and change them.
+
+![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../diagrams/claude-instructions-one-step.svg)
+
+**What was measured.** The guess was that less would be loaded on every turn. The count says more is:
+
+| Always in view | Before | After |
+|---|---|---|
+| `CLAUDE.md` and the always-loaded rules | 2,785 words | 3,187 words |
+| The skills' descriptions | none | 572 words |
+| The index of Claude's private notes | 2,655 words | 1,933 words |
+| **All of it** | **5,440 words** | **5,692 words** |
+
+The procedures are not in that count. They were spread over `CLAUDE.md`, a guide and two READMEs, and are now
+7,360 words in nine skills, each loaded only for its job.
+
+`CLAUDE.md` itself went from 200 lines to 129. The rest grew because the standing instructions moved in from
+the private notes, where they already cost context and nobody else could see them. 28 notes left that index.
+So the gain is not fewer words: it is 5% more. The gain is that every instruction is in one known place, in
+the repo, and held by a test.
+
+**What it taught.**
+
+- **A wait is never loaded on judgement.** A skill's body loads when the model decides the job matches. So
+  "never push without Louis's word" stays in the file that is always there, and the skill holds only the how.
+- **A rule follows a kind of file, not a folder.** The folder files looked right and reached a third of what
+  they were written for.
+- **Saying a thing twice makes one of them wrong.** The tests' folder file and the tests' guide said the same
+  things and had drifted: they disagreed on where the golden files are and on when CI runs. Now one holds the
+  rules and names the part of the other that has the how.
+- **An instruction file drifts like any doc.** Rewriting each one meant checking each name in it against the
+  code. Core's guide had five stale facts, one of them an example of a form a later ADR forbade.
+- **Run the command before you write it down.** The skill for checking a page was written from commands run that
+  day. Three would have been wrong from memory: a site left running across builds still answered 200 and printed
+  one page where there are four, a headless browser asked for 390 pixels laid the page out at 500, and a cold
+  browser profile caught the loading screen in three runs of twelve.
+
+**Trade-offs accepted.**
+
+- About 5% more words are always in view than before, as the table says.
+- A skill loads on the model's judgement. A whole step of real work in a fresh session, to see each skill load
+  when its job comes up, is still to be done.
+- The C# rules are two files, since one would not fit the 200 lines a rules file may hold. Core's guide is four
+  lines under that limit.
+
+**What didn't work.**
+
+- The plan said a new skill is not known to a session that is already open. It is: each new skill and each new
+  rules file was picked up by the session that wrote it.
+- The plan kept the three folder files. Two of them had the wrong reach and became rules files.
+- Two steps were too big to review in ten minutes, and were cut into four and three commits.
+
+**Concepts.**
+- Context engineering (skill 7): an instruction is loaded by when it is needed, and what must never be missed is
+  loaded always.
+- Prompt design (skill 3): an instruction is written where and when it will be read, the rule first.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

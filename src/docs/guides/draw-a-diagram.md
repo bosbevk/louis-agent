@@ -5,16 +5,50 @@
 > diagram is data in [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) and
 > [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md).
 
-A picture in the docs is a JSON file in a `diagrams` folder beside the doc, and an SVG the tool draws from it. You
-write the JSON; the tool writes the SVG; the doc links the SVG. Never edit an SVG by hand: the test compares it with
-what its JSON draws, byte for byte.
+## What you will do
 
-## Write the JSON
+A picture in the docs is two files that sit in a `diagrams` folder beside the doc. One is a JSON file, which you
+write. The other is an SVG, which the tool draws from it. The doc links the SVG.
 
-Put it in `diagrams/` next to the doc, named for what it shows (`src/docs/projects/diagrams/louis-agent.core.json`).
-Every file has a `kind`, a `title` (what a screen reader is told), an optional `caption` and the kind's own part.
+There are four steps, and this guide takes them in order:
 
-**Cards**, the overview style: rows of cards top to bottom, and links between rows.
+1. **Write the JSON.** You say what the picture holds. You never place anything by hand.
+2. **Draw it.** One command draws every picture that changed.
+3. **Link it** in the doc.
+4. **Check it** with the test, and look at it.
+
+One rule comes before all of them: **never edit an SVG by hand.** The test compares each SVG with what its JSON
+draws, byte for byte, so a hand edit fails it.
+
+## Step 1: write the JSON
+
+### Where the file goes, and what every file has
+
+Put the file in `diagrams/` next to the doc, and name it for what it shows. The overview of core's design doc is
+`src/docs/projects/diagrams/louis-agent.core.json`.
+
+Every file has the same four things at the top.
+
+| Field | What it is |
+|---|---|
+| `kind` | Which kind of picture this is. The next part helps you choose. |
+| `title` | What the picture is. A screen reader is told it, and the docs' frame shows it. |
+| `caption` | Optional in the file, but every chart in the docs has one: the one thing to take from the picture. |
+| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `ticket`) that holds the picture. |
+
+### Choose the kind
+
+| Kind | It shows | Use it for |
+|---|---|---|
+| `cards` | Rows of cards, with links between rows | A project's overview: what it is and its parts |
+| `flow` | Boxes and arrows | How something works |
+| `sequence` | Who calls whom, in order | One case, step by step |
+| `classes` | Types, their members and how they relate | An interface design |
+| `ticket` | A read-only card, such as a booking request | What an agent draws in the chat |
+
+The five parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
+
+### Cards: a project's overview
 
 ```json
 {
@@ -39,16 +73,41 @@ Every file has a `kind`, a `title` (what a screen reader is told), an optional `
 }
 ```
 
-- A card's `code` is optional: a project or a type, in a chip beside its title.
-- `look` is `plain` (the default), `highlight` (centred, in the accent's tint) or `heading` (centred, no box).
-- A link's `kind` is `down` (the default), `up` or `both`.
-- `icon` is one of `chip`, `user`, `users`, `box`, `server`, `database`, `world`, `message`, `shield`, `code`,
-  `folder`, `file`, `browser`, `checks`, `chart`, `cloud`, `settings`, `branch`, `mail`, `search`, `book`,
-  `terminal`, `stack`, `info` (the last two are the frame's). Another one is a new member of `DiagramIcon` with Tabler's path data in `IconPaths`.
-- A project doc's overview takes one shape: the project highlighted on top, its main parts under it with an arrow
-  each, and a second row with no arrows for what else it holds.
+**Reading the example.** The picture has two rows. The first holds one card, the project. The second holds two,
+its parts. Two links join the project to each part, and the second has arrowheads both ways.
 
-**Flow**, boxes and arrows on ADR 0103's row grid:
+**A card.** In the example each card has an `id`, an `icon`, a `title` and a `text`. A card may also have a
+`code`, which is a project's or a type's name shown in a chip beside the title. And it may have a `look`:
+
+| `look` | What it draws |
+|---|---|
+| `plain` | An ordinary card. This is the default. |
+| `highlight` | Centred, in the accent's tint. |
+| `heading` | Centred, with no box. |
+
+**A link.** It joins two cards by their ids. Its `kind` says which way its arrowheads
+point: `down` (the default), `up` or `both`.
+
+**The icons.** `icon` names one of the 36 icons the framework holds. They come in five groups.
+
+| Group | The names |
+|---|---|
+| What a project's parts usually are | `chip`, `user`, `users`, `box`, `server`, `database`, `world`, `message`, `shield`, `code`, `folder`, `file`, `browser`, `checks`, `chart`, `cloud`, `settings`, `branch`, `mail`, `search`, `book`, `terminal` |
+| The docs' frame's own | `stack`, `info` |
+| A ticket's facts | `calendar`, `clock`, `phone`, `home`, `tag`, `paw` |
+| What a showroom's demos wear | `bed`, `dining`, `scales`, `exchange` |
+| A deck's arrows | `chevron-left`, `chevron-right` |
+
+To add an icon, add a member to `DiagramIcon` and its Tabler path data to `IconPaths`. This is the framework's one
+set of icons. A page's line icons are drawn from it too, by `LineIconView` in the framework's web.
+
+**The shape of an overview.** Every project doc's overview takes one shape, so they all read alike. The project is
+highlighted on top. Its main parts are under it, with an arrow to each. A second row, with no arrows, holds what
+else the project has.
+
+### Flow: boxes and arrows
+
+A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md).
 
 ```json
 {
@@ -71,19 +130,43 @@ Every file has a `kind`, a `title` (what a screen reader is told), an optional `
 }
 ```
 
-- A box's column comes from its arrows (one past the furthest box that points at it); set `column` only to move it.
-- A `\n` breaks a label over lines. `direction` is `right` (the default) or `down`.
-- A group is a labelled frame round its boxes. An arrow's `style` is `solid` (the default) or `dashed`.
-- **A box's tone says what it is, the same in every chart:** `blue` who starts it (a caller, a program, the browser),
-  `green` this project's own parts, `violet` the framework (the engine, core, the framework's web), `teal`
-  contracts, state and data shapes, `amber` files, databases and logs, `red` what runs outside the process (a model,
-  another server). A decision stays `plain` (the default) with the `search` icon. An arrow takes the tone of the
-  box it leaves.
-- **The frame:** the docs' tool draws a title bar from `title` (its part before the first `: ` in bold), a legend of
-  the tones the chart uses, and a note bar from `caption` (its part before the colon in bold). Every chart has a
-  caption: the one thing to take from it, so the doc doesn't say it again.
+**Reading the example.** There are three boxes and two arrows. The picture runs down the page. The middle box
+belongs to a group, which is drawn as a labelled frame round it. The second arrow is dashed and carries a word.
 
-**Sequence**, who calls whom, in order: its participants, then its steps.
+**Where a box goes.** You don't place boxes. A box's column comes from its arrows: it stands one column past the
+furthest box that points at it. Set `column` on a box only when you want to move it.
+
+**The other fields.**
+
+| Field | Values | What it does |
+|---|---|---|
+| a `\n` in a `label` | | Breaks the label over two lines. |
+| `direction` | `right` (the default), `down` | Which way the chart runs. |
+| `group` on a box, with `groups` | a group's id | Puts a labelled frame round the group's boxes. |
+| `style` on an arrow | `solid` (the default), `dashed` | How the arrow is drawn. |
+| `word` on an arrow | a few words | Shown in a chip on the arrow. |
+
+**A box's tone says what it is, and means the same in every chart.**
+
+| Tone | What the box is |
+|---|---|
+| `blue` | Who starts it: a caller, a program, the browser |
+| `green` | This project's own parts |
+| `violet` | The framework: the engine, core, the framework's web |
+| `teal` | Contracts, state and data shapes |
+| `amber` | Files, databases and logs |
+| `red` | What runs outside the process: a model, another server |
+
+A decision stays `plain`, the default, and takes the `search` icon. An arrow takes the tone of the box it leaves.
+
+**What the docs' frame adds.** The tool draws a frame round every picture in the docs. It has a title bar from
+`title`, with the part before the first `: ` in bold. It has a legend of the tones the chart uses. And it has a
+note bar from `caption`, with the part before the colon in bold. That is why every chart has a caption: it is the
+one thing to take from the picture, so the doc doesn't have to say it again.
+
+### Sequence: who calls whom, in order
+
+A sequence names its participants first, then its steps.
 
 ```json
 {
@@ -109,13 +192,29 @@ Every file has a `kind`, a `title` (what a screen reader is told), an optional `
 }
 ```
 
-- A step is a `message` (a solid arrow), a `reply` (dashed, in the answerer's tone), a `note` over one lifeline or a
-  span, or a `block`: `loop`, `opt` or `alt`, its own `steps`, and for an `alt` each other case in `else`.
-- A message to oneself (the same `from` and `to`) turns back on its lifeline. `numbered` puts 1, 2, 3 on the arrows.
-- A participant takes an icon and a tone as a flow's box does; an `actor` with no icon wears a person's.
+**Reading the example.** There are three participants. The first step is a message from you to the chat. The
+second is a block with two cases: the line is a command, or else it is a message. The last is a note over two
+lifelines.
 
-**Classes**, the interface design: the types, their members, and how they relate. It is drawn as a flow, so a
-type is a box and a relation an arrow.
+**A participant.** It takes an icon and a tone, as a flow's box does. An `actor` with no icon wears a person's
+icon.
+
+**A step.** Each step says what it is in its `step` field.
+
+| `step` | What it draws |
+|---|---|
+| `message` | A solid arrow from one participant to another. |
+| `reply` | A dashed arrow, in the answerer's tone. |
+| `note` | A note over one lifeline, or over a span of them. |
+| `block` | A frame round steps of its own. Its `block` is `loop`, `opt` or `alt`. An `alt` lists each other case in `else`. |
+
+A message to oneself, with the same `from` and `to`, turns back on its own lifeline. Setting `numbered` to true
+puts 1, 2, 3 on the arrows.
+
+### Classes: an interface design
+
+A class chart shows types, their members and how they relate. It is drawn as a flow, so a type is a box and a
+relation is an arrow.
 
 ```json
 {
@@ -137,17 +236,35 @@ type is a box and a relation an arrow.
 }
 ```
 
-- A type's `kind` is the small line under its name: what it is and the step that builds it. Its `members` go under a
-  divider in the code font; a member over 60 characters wraps.
-- A type with no `tone` is `teal` when its kind says interface, record or enum, `green` otherwise; name another tone
-  for a type from elsewhere (`violet` for the framework's).
-- A relation's `kind` is `inherits` (solid, "is a"), `implements` (dashed), `holds` (solid), `uses` or `creates`
-  (dashed). A `word` replaces the arrow's own; when several arrows into one type, or out of one, share a word, it
-  shows once.
-- `direction` and `groups` work as a flow's. Over about twenty types the arrows tangle: split it in two pictures.
+**Reading the example.** There are three types. One implements the interface, with a dashed arrow. The factory
+holds it, with a solid arrow that carries a word.
 
-**Ticket**, a read-only card such as a booking request (F127.4.1). An agent draws one in the chat with the site pack's
-`ShowCard`, which fills these same parts, and a doc may show one too:
+**A type.** Its `kind` is the small line under its name. Say what it is and the step that builds it. Its `members`
+go under a divider, in the code font. A member over 60 characters wraps.
+
+**A type's tone.** With no `tone`, a type is `teal` when its kind says interface, record or enum, and `green`
+otherwise. Name another tone for a type that comes from elsewhere, such as `violet` for the framework's.
+
+**A relation.** Its `kind` says how two types relate, and how the arrow is drawn.
+
+| `kind` | Its arrow |
+|---|---|
+| `inherits` | Solid. Read it as "is a". |
+| `implements` | Dashed. |
+| `holds` | Solid. |
+| `uses` | Dashed. |
+| `creates` | Dashed. |
+
+A `word` on a relation replaces the arrow's own word. When several arrows into one type, or out of one, share a
+word, it is shown once.
+
+`direction` and `groups` work as they do in a flow. Over about twenty types the arrows tangle. Split such a chart
+into two pictures.
+
+### Ticket: a card an agent draws
+
+A ticket is a read-only card, such as a booking request. An agent draws one in the chat with the site pack's
+`ShowCard` tool, which fills these same parts. A doc may show one too.
 
 ```json
 {
@@ -167,58 +284,83 @@ type is a box and a relation an arrow.
 }
 ```
 
-- One to six rows, each with its icon, label and value; a long value wraps and the card grows. The `kicker` wraps
-  beside the status pill, and the `title` takes the band's full width.
-- The status's `tone` is one of the tones (`plain` when left out). The ticket is 320 wide, so a phone's chat shrinks
-  it little; its colours are `--ticket-*` CSS variables with the site's as fallbacks, which a business's window sets
-  for its brand (`--ticket-band`, `--ticket-band-ink`, `--ticket-paper`, `--ticket-ink`, `--ticket-accent`).
-- A page holds a ticket inline through `DiagramRenderers.RenderForPage`, its styles kept to the drawing; the docs'
-  tool draws it like any other picture.
+**Reading the example.** It has a kicker and a title on a band, a subtitle, and a status that is drawn as a pill.
+Two rows follow, each an icon, a label and a value. The note is at the foot.
 
-A misspelt field, a link to an id no card has, or a missing title is refused, and the tool says which.
+**The rows.** There are one to six. A long value wraps, and the card grows.
 
-## Draw it
+**The band.** The `kicker` wraps beside the status pill. The `title` takes the band's full width. The status's
+`tone` is one of the tones, and `plain` when left out.
+
+**Its size and colours.** A ticket is 320 wide, so a phone's chat shrinks it little. Its colours are CSS variables
+with the site's colours as fallbacks, which a business's window sets for its brand: `--ticket-band`,
+`--ticket-band-ink`, `--ticket-paper`, `--ticket-ink` and `--ticket-accent`.
+
+**Where it is drawn.** A page holds a ticket inline, through `DiagramRenderers.RenderForPage`, with its styles
+kept to the drawing. The docs' tool draws it like any other picture.
+
+### What is refused
+
+The reader refuses a file with a misspelt field, a link to an id that no card has, or a missing title. The tool
+says which.
+
+## Step 2: draw it
 
 ```bash
 dotnet run --project src/tools/louis-agent.doc-diagrams
 ```
 
-It draws every `diagrams/*.json` under `src/docs`, `packs/docs` and each demo's folder, and writes only the SVGs that
-changed. `-- --check` writes nothing and fails naming a stale one.
+The tool draws every `diagrams/*.json` under `src/docs`, `packs/docs` and each demo's folder. It writes only the
+SVGs that changed.
 
-**A Mermaid flowchart, sequence or class diagram someone brings in** is read once into JSON: `-- import <doc>`
-writes a JSON beside the doc for each one in it (never over a picture already there), draws it, and prints the lines
-it replaces and the link to put there. Swap the block by hand, then give the JSON its title, caption, icons and tones.
-No doc keeps a Mermaid block ([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)).
+To see whether anything is stale without writing, add `-- --check`. It writes nothing and fails, naming any stale
+picture.
 
-## Link it
+**If someone brings in a doc with a Mermaid diagram.** No doc keeps a Mermaid block
+([ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md)), so it is read once into JSON. Run the tool with
+`-- import <doc>`. For each Mermaid flowchart, sequence or class diagram in the doc, it writes a JSON beside the
+doc, never over a picture already there. It draws it, and prints the lines it replaces and the link to put there.
+Swap the block by hand. Then give the JSON its title, caption, icons and tones.
 
-In the doc, as a markdown image with alt text that says what the picture shows:
+## Step 3: link it
+
+In the doc, link the SVG as a markdown image. Its alt text says what the picture shows:
 
 ```markdown
 ![The engine, and its parts: the loop and the guards](diagrams/louis-agent.core.svg)
 ```
 
-A project doc's overview goes just above its *Purpose*, or after its opening quote when it has none.
+**Where the pictures go in a project doc.** Every project doc shows four pictures:
 
-**Every project doc shows four pictures** (CL60.5): its overview (cards, the project and its parts), a flow of how it
-works, a sequence of its main case, and its interface design (classes: the types someone using or extending it
-meets, about twelve at most). The last three go in its `## Diagrams` section, named `{project}-flow`,
-`{project}-sequence` and `{project}-interface` when new.
+| Picture | Kind | Where it goes |
+|---|---|---|
+| The overview: the project and its parts | `cards` | Just above the doc's *Purpose*, or after its opening quote when it has none |
+| How it works | `flow` | Beside the part of *How it works* that it explains, or in the doc's `## Diagrams` section |
+| Its main case | `sequence` | The same |
+| Its interface design: the types someone using or extending it meets, about twelve at most | `classes` | The same |
 
-## Check it
+Name the last three `{project}-flow`, `{project}-sequence` and `{project}-interface` when they are new.
+
+## Step 4: check it
 
 ```bash
 dotnet test src/tests/tools/louis-agent.doc-diagrams.tests
 ```
 
-`DocsDiagramsTests` fails when a picture isn't what its JSON draws, when no doc shows it, when a doc shows a picture
-that isn't there, when a project doc lacks its overview or one of its four kinds of picture, when a flow's word sits on a box or a line or a line crosses
-a box it doesn't join, when a sequence's words, notes or frames leave its drawing, when a `diagrams` folder sits
-where the tool never looks, or when a doc holds a Mermaid block. Look at the SVG in Rider's markdown preview or a
-browser, in a light and a dark look, before you commit;
-a chart wider than about 1,600 px reads small in a doc's column, so try it the other way round. Commit the JSON and
-the SVG together.
+`DocsDiagramsTests` fails when any of these is true:
+
+- a picture isn't what its JSON draws
+- no doc shows a picture, or a doc shows a picture that isn't there
+- a project doc lacks its overview or one of its four kinds of picture
+- a flow's word sits on a box or a line, or a line crosses a box it doesn't join
+- a sequence's words, notes or frames leave its drawing
+- a `diagrams` folder sits where the tool never looks
+- a doc holds a Mermaid block
+
+Then look at the picture yourself, in Rider's markdown preview or a browser, in a light look and a dark one,
+before you commit. A chart wider than about 1,600 px reads small in a doc's column, so try it the other way round.
+
+Commit the JSON and the SVG together.
 
 ---
 [Docs index](../README.md) · Related: [Guides](README.md) · [louis-agent.diagrams](../projects/louis-agent.diagrams.md)

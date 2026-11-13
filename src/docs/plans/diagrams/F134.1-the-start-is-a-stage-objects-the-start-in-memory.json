@@ -1,0 +1,75 @@
+{
+  "kind": "flow",
+  "title": "F134.1 the start is a stage: the start in memory",
+  "caption": "One list of five demos and one number. The deck and the dock are both drawn from them, so they cannot disagree.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "start",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ShowroomStart\nForward = 1"
+      },
+      {
+        "id": "demos",
+        "icon": "box",
+        "tone": "green",
+        "label": "ShowroomDemos (the site's five)\nguesthouse, restaurant, law practice,\ncoding agent, triage team"
+      },
+      {
+        "id": "deck",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Deck<ShowroomDemo>\nfive FramedWindows at -1, 0, 1, 2, -2"
+      },
+      {
+        "id": "win",
+        "icon": "code",
+        "tone": "green",
+        "label": "WheatfieldWindow (the site's)\na SiteBody filled from WindowTalk"
+      },
+      {
+        "id": "dock",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Dock<ShowroomDemo>\nfive buttons, the restaurant named"
+      },
+      {
+        "id": "stage",
+        "icon": "code",
+        "tone": "violet",
+        "label": "LitStage\nAccent = green, the restaurant's"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "demos"
+      },
+      {
+        "from": "start",
+        "to": "stage"
+      },
+      {
+        "from": "start",
+        "to": "deck"
+      },
+      {
+        "from": "start",
+        "to": "dock"
+      },
+      {
+        "from": "deck",
+        "to": "win"
+      },
+      {
+        "from": "demos",
+        "to": "deck"
+      },
+      {
+        "from": "demos",
+        "to": "dock"
+      }
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "title": "F134 the showroom is a stage: the guide walks the start",
+  "caption": "Nothing moves unless a tool call caused it: ShowPage brings a window forward and lights it, Offer draws the choices beside it.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "V",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Visitor"
+      },
+      {
+        "id": "B",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ChatWidget (Bar)"
+      },
+      {
+        "id": "G",
+        "icon": "code",
+        "tone": "blue",
+        "label": "The guide"
+      },
+      {
+        "id": "S",
+        "icon": "code",
+        "tone": "violet",
+        "label": "ShowroomStart"
+      },
+      {
+        "id": "D",
+        "icon": "code",
+        "tone": "violet",
+        "label": "Deck"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "V",
+        "to": "B",
+        "text": "Walk me through the demos (a chip, or typed)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "G",
+        "text": "the question, with the page's places"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "B",
+        "text": "ShowPage(/demos/restaurant-demo)"
+      },
+      {
+        "step": "message",
+        "from": "B",
+        "to": "S",
+        "text": "go to that place"
+      },
+      {
+        "step": "message",
+        "from": "S",
+        "to": "D",
+        "text": "Forward = the restaurant"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "B",
+        "text": "two sentences, streamed"
+      },
+      {
+        "step": "message",
+        "from": "G",
+        "to": "B",
+        "text": "Offer(next stop, another part, stop here)"
+      },
+      {
+        "step": "reply",
+        "from": "B",
+        "to": "V",
+        "text": "the caption beside the window, its choices, the box still open"
+      }
+    ]
+  }
+}

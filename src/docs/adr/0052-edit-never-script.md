@@ -31,18 +31,18 @@ what the list names.
   Rider tool covers (format, inspect, build, test, rename, find usages, symbol info, git status) it uses that tool,
   never a hand edit, a script or a search-and-replace that does the same thing less well. A shell command is for
   what no Rider tool does. *Brave mode* (terminal commands without a confirmation) stays off. The tool-to-job table
-  per Rider version is a how-to ([Finish a step](../guides/finish-a-step.md)), so a new Rider version changes a
+  per Rider version is a how-to (the [finish-a-step](../../../.claude/skills/finish-a-step/SKILL.md) skill), so a new Rider version changes a
   table, not this rule.
 
 ## Consequences
 
 - A change is as good as the editor that made it: no half-applied rewrite, no missed reference.
 - A cloud session, with no Rider, wraps long lines by hand and runs `dotnet format`; it never writes a script for it.
-- The step list in `docs/CLAUDE.md` is one rule instead of a tool list, and the guide keeps the names.
+- The step list in `docs/CLAUDE.md` is one rule instead of a tool list, and the skill keeps the names.
 
 ## Links
 
-[0034](0034-code-a-person-can-maintain.md) · [Finish a step](../guides/finish-a-step.md) · `research/rider-mcp-tools.md`
+[0034](0034-code-a-person-can-maintain.md) · the [finish-a-step](../../../.claude/skills/finish-a-step/SKILL.md) skill · `research/rider-mcp-tools.md`
 in the Claude project · [JetBrains RSRP-225809](https://youtrack.jetbrains.com/issue/RSRP-225809)
 
 ---

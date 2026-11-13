@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F134 mockup K: The agent runs the demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="stage.css">
+<link rel="stylesheet" href="agent.css">
+<style>
+/* G · The window opens. The window you picked on the start grows to fill the stage: the guesthouse's website and
+   its agent side by side. What to watch sits under it as four chapters that light as the talk reaches them.
+   The tour is the guide itself: an orb in the corner whose ring fills, and a card that stands beside each stop. */
+.show { min-height: 100vh; display: flex; flex-direction: column; padding: 0 28px 150px 96px; }
+.bar { margin: 0 -28px 0 -96px; }
+.head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: end; max-width: 1560px; width: 100%; margin: 4px auto 22px; }
+.crumb { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; font-size: 14px; color: var(--a); }
+.crumb .icon { font-size: 18px; }
+.head h1 { font-size: clamp(34px, 3.7vw, 60px); line-height: 1; letter-spacing: -.04em; font-weight: 700; padding-bottom: .1em; text-wrap: balance; }
+.lede { font-size: 15px; line-height: 1.6; color: var(--soft); }
+.lede span { display: block; margin-top: 6px; font-size: 13px; color: var(--dim); }
+.player { flex: 1; min-height: 430px; max-width: 1560px; width: 100%; margin: 0 auto; display: flex; }
+.player .win { flex: 1; animation: open 1.1s var(--ease) both; }
+@keyframes open { from { opacity: 0; transform: perspective(1800px) rotateX(10deg) scale(.9) translateY(40px); } }
+.win-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 33%; }
+.chat { border-left: 1px solid rgba(255, 255, 255, .07); }
+.chapters { position: relative; max-width: 1560px; width: 100%; margin: 22px auto 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 10px; padding: 12px; border-radius: 22px; overflow: hidden; }
+.chapters .line { position: absolute; inset: 0 0 auto 0; height: 2px; background: rgba(255, 255, 255, .06); }
+.chapters .line i { display: block; height: 100%; background: var(--a); box-shadow: 0 0 16px rgba(var(--a-rgb), .9); transform-origin: 0 50%; transform: scaleX(var(--at, 0)); transition: transform 1.2s var(--ease); }
+.chapters button[data-cue] { display: flex; gap: 12px; align-items: flex-start; text-align: left; padding: 12px 14px; border: 0; border-radius: 14px; font: 400 13.5px/1.45 'Geist', sans-serif; color: var(--dim); background: transparent; cursor: pointer; transition: background-color .4s, color .4s, box-shadow .4s; }
+.chapters button[data-cue] b { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 600 12.5px 'Geist Mono', monospace; color: var(--muted); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); transition: all .4s; }
+.chapters button[data-cue]:hover { background: rgba(255, 255, 255, .05); }
+.chapters button.is-reached { color: var(--text); }
+.chapters button.is-reached b { color: #070708; background: var(--a); box-shadow: 0 0 18px -2px rgba(var(--a-rgb), .9); }
+.chapters button.is-now { background: rgba(var(--a-rgb), .12); box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .5); }
+.ends { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding-left: 8px; }
+.ends .cta, .ends .ghost { justify-content: center; }
+@media (max-width: 900px) {
+    .show { padding: 0 16px 20px; } .bar { margin: 0 -16px; } .head { grid-template-columns: 1fr; gap: 12px; }
+    .win-body { grid-template-columns: 1fr; grid-template-rows: 46% 1fr; } .player { min-height: 640px; }
+    .chapters { grid-template-columns: 1fr; } .tour-card { left: 16px !important; right: 16px; width: auto; }
+}
+</style>
+</head>
+<body class="blue">
+<div class="show">
+    <div class="light"></div><div class="pool"></div><div class="floor"></div>
+    <header class="bar" data-part="bar"></header>
+    <nav class="rail glass" data-part="rail" aria-label="All demos"></nav>
+    <section class="head" data-stop="The story|A couple asks Seemeeu Guesthouse about a weekend away with their dog. The business is made up. The conversation is real.">
+        <div><p class="crumb"><svg class="icon"><use href="#i-bed"/></svg>A guesthouse · Seemeeu Guesthouse</p><h1 class="chrome">A weekend by the beach, with the dog.</h1></div>
+        <p class="lede">A couple asks Seemeeu Guesthouse about a weekend away with their dog. The agent knows which room takes dogs, answers like a local, and passes the booking on.<span>Seemeeu Guesthouse is a made-up business. The conversation is real, recorded once and played back. Nothing runs while you watch.</span></p>
+    </section>
+    <section class="player" data-live data-stop="The demo|The guesthouse's own website, with its agent beside it. Watch the page change as the agent answers.">
+        <div class="win"><div class="win-in">
+            <div class="win-bar"><i></i><i></i><i></i><span>seemeeu.example/rooms/garden</span></div>
+            <div class="win-body"><div class="mock" data-part="mock"></div><div class="chat" data-part="chat"></div></div>
+        </div></div>
+    </section>
+    <section class="chapters glass" data-stop="What to watch|Four moments to look for. Each one lights as the talk reaches it, and a click plays from there.">
+        <div class="line" data-progress><i></i></div>
+        <button data-cue="0"><b>1</b>It shows the garden room: dogs stay there, so it offers that one instead.</button>
+        <button data-cue="1"><b>2</b>It shows the beach, and answers like a local about breakfast on the stoep.</button>
+        <button data-cue="2"><b>3</b>It reads the booking back before it sends anything.</button>
+        <button data-cue="3"><b>4</b>The booking goes to the owner only after the guest says yes.</button>
+        <div class="ends"><a class="cta small" href="#">Try it yourself</a><button class="ghost" data-do="again">Play it again</button></div>
+    </section>
+</div>
+<div class="below" data-part="below"></div>
+<script src="sprite.js"></script>
+<script src="demo.js"></script>
+<script>
+window.AgentPage = {
+    address: '/guesthouse-demo', live: true, placeholder: 'Ask about this demo, or what it would take for your business…',
+    // While the guide talks about a part of the website, the play stops on the page that part is on.
+    hold: el => { const scene = el.closest('.scene'); if (!scene) return; Demo.timers.forEach(clearTimeout); Demo.run = null; Demo.mark([...document.querySelectorAll('.scene')].indexOf(scene), true); },
+    chips: [
+        { label: 'Walk me through this page', suggested: true, go: () => Agent.walk(0, 'Walk me through this page') },
+        { label: 'Why did it offer the garden room?', go: () => Agent.piece(document.querySelector('.room[data-piece]')) },
+        { label: 'Ask the guesthouse live', go: () => Agent.live() },
+    ],
+};
+</script>
+<script src="agent.js"></script>
+</body>
+</html>

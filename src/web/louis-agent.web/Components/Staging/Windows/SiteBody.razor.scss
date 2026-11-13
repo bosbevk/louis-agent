@@ -1,0 +1,92 @@
+@use "web/tools/glow";
+
+/* A website with its chat (F134.1). The website's side is a photo with words over it, in a serif so it reads as
+   someone else's site and not ours (a site may set --site-body-serif). The words stand on the photo, so they are the
+   theme's brightest whatever the photo, over a shade from its top and its foot. The chat's side is ours. */
+.site-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 35%;
+    grid-template-rows: minmax(0, 1fr);
+}
+.body-site { position: relative; overflow: clip; color: var(--web-bright); }
+.body-site img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.body-site::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(0deg, rgba(var(--web-shadow-rgb), .72), transparent 55%),
+        linear-gradient(180deg, rgba(var(--web-shadow-rgb), .45), transparent 26%);
+}
+.body-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 16px 22px;
+    font-size: 13px;
+}
+.body-mark { margin-right: auto; font: 600 17px var(--site-body-serif, Georgia, "Times New Roman", serif); }
+.body-menu { display: flex; gap: 22px; }
+.body-words { position: absolute; z-index: 1; left: 22px; right: 22px; bottom: 22px; }
+.body-line {
+    display: block;
+    font: 400 clamp(24px, 2.6vw, 42px)/1.08 var(--site-body-serif, Georgia, "Times New Roman", serif);
+    letter-spacing: -.01em;
+}
+.body-note { display: block; margin-top: 8px; font-size: 14px; opacity: .85; }
+
+.body-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    padding: 14px;
+    overflow: clip;
+    background: var(--bs-body-bg);
+    border-left: 1px solid rgba(var(--web-overlay-rgb), .07);
+}
+.body-ask {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 10px;
+    font-size: 13px;
+    color: var(--bs-emphasis-color);
+    border-bottom: 1px solid rgba(var(--web-overlay-rgb), .07);
+}
+.body-ask ::deep .line-icon { font-size: 17px; color: var(--accent, var(--web-bright)); }
+.body-ask b { font-weight: 600; }
+.body-ask em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--accent, var(--bs-secondary-color));
+}
+.body-question, .body-answer { max-width: 92%; margin: 0; padding: 9px 12px; font-size: 13px; line-height: 1.45; }
+.body-question {
+    align-self: flex-end;
+    border-radius: 14px 14px 4px 14px;
+    color: var(--web-on-primary);
+    background: var(--bs-body-color);
+}
+.body-answer {
+    align-self: flex-start;
+    border-radius: 14px 14px 14px 4px;
+    color: var(--bs-body-color);
+    background: var(--bs-tertiary-bg);
+    box-shadow: inset 0 0 0 1px glow.tint(var(--accent, var(--web-bright)), 40%);
+}
+.body-shown { align-self: flex-start; max-width: 92%; }
+.body-hint {
+    margin-top: auto;
+    padding: 10px 12px;
+    border-radius: 11px;
+    font-size: 12.5px;
+    color: var(--bs-tertiary-color);
+    background: rgba(var(--web-overlay-rgb), .04);
+    box-shadow: inset 0 0 0 1px rgba(var(--web-overlay-rgb), .08);
+}

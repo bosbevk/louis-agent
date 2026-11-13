@@ -2,7 +2,7 @@
 
 > **Explanation.** The rules every part follows: security, messages, logging, testing, configuration. **Elsewhere:**
 > how to apply them when changing core in the [core guide](../../engine/louis-agent.core/CLAUDE.md); tests in the
-> [tests guide](../../tests/CLAUDE.md).
+> [tests guide](../guides/write-tests.md).
 
 ## Security
 

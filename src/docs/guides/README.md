@@ -3,7 +3,7 @@
 > **How-to.** The step-by-step guides for a developer changing the code: one per project, and one per thing you build
 > across projects (a pack, an identity). Each says what it covers first, then the steps, the tests and a checklist for
 > review. **Elsewhere:** how each project works in its [design doc](../projects/README.md); the rules every change keeps
-> in the [development guide](../CLAUDE.md#rules-that-always-apply).
+> in the [development guide](../../../.claude/rules/design-rules.md).
 
 ## Build something new
 
@@ -18,7 +18,6 @@
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |
 | [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |
 | [Get started](get-started.md) | Build and run the agent on your machine for the first time: the settings files, the build, the tests, the CLI, the Docker stacks |
-| [Finish a step](finish-a-step.md) | Get a step from "the test passes" to "committed": build, goldens, docs, formatting with Rider's tools in order, showing it, the commit |
 | [Add a skill](add-a-skill.md) | Give the agent a function skill: the file, the pending folder and `/approve`, the `## Skill:` shape |
 | [Debug and logs](debug-and-logs.md) | Find what the agent did: the tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](common-errors.md) | Fix the errors a developer meets most, by their message |

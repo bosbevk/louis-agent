@@ -1,0 +1,57 @@
+{
+  "kind": "flow",
+  "title": "F134.1 the start is a stage: the architecture",
+  "caption": "The site names its demos and their windows, the showroom composes the framework's general parts, and the browser gets HTML with inline SVG.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "site",
+        "icon": "browser",
+        "tone": "green",
+        "label": "louis-agent.site\nSiteDemos: icons (1), windows (9)\nfive windows, SiteWindowTalks (9)"
+      },
+      {
+        "id": "show",
+        "icon": "box",
+        "tone": "violet",
+        "label": "louis-agent.web Showroom\nShowroomStart rebuilt (6)\naddresses per window (7)"
+      },
+      {
+        "id": "parts",
+        "icon": "box",
+        "tone": "violet",
+        "label": "louis-agent.web general parts\nLineIcon (1), LitStage (2), Deck (3),\nFramedWindow and bodies (4), Dock (5)"
+      },
+      {
+        "id": "rec",
+        "icon": "box",
+        "tone": "blue",
+        "label": "the recordings\nwhat each window's words are held to (9)"
+      },
+      {
+        "id": "browser",
+        "icon": "browser",
+        "tone": "blue",
+        "label": "the visitor's browser\na stage on a wide screen,\na swiped row on a phone (8)"
+      }
+    ],
+    "edges": [
+      {
+        "from": "site",
+        "to": "show"
+      },
+      {
+        "from": "show",
+        "to": "parts"
+      },
+      {
+        "from": "rec",
+        "to": "site"
+      },
+      {
+        "from": "show",
+        "to": "browser"
+      }
+    ]
+  }
+}

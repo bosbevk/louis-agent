@@ -62,13 +62,6 @@ src/tests/engine/louis-agent.core.anthropic.tests/   # the provider, the budget,
 gives its own mapper and its markers with the lifetime named, and none when caching is off; the budget swap and who
 gets it; the markers on the wire and the cache-write lifetimes, on a stub handler. No network.
 
-## What the build decided (CL57, 2026-11-07, unattended)
-
-- The thinking-budget swap became its own class, `ThinkingBudget`, so the provider stays under the size limit and
-  the swap can be tested without a client.
-- The SDK's `Usage` type is aliased inside the library: its namespace `Anthropic` and core's `Usage` folder would
-  otherwise shadow each other.
-
 ## Limits and plans
 
 A second Anthropic-shaped provider (Bedrock, Vertex) is a second class here on the same seam.

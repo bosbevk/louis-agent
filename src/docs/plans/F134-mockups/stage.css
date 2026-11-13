@@ -1,0 +1,97 @@
+/* Shared by the three demo-page mockups (G, H, I): F's stage carried onto a demo's own page. The light and the floor,
+   the window with the business's website in it, the chat, the rail as a slim dock, and the parts under the stage. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap');
+body { overflow-x: hidden; }
+.glass { background: rgba(21, 23, 26, .66); -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .07), 0 30px 60px -30px #000; }
+.show { position: relative; isolation: isolate; }
+.light, .pool { position: absolute; z-index: -1; pointer-events: none; background-color: rgb(var(--a-rgb)); }
+.light { inset: 0 0 auto 0; height: 100vh; opacity: .2; -webkit-mask-image: radial-gradient(50% 60% at 50% 0%, #000, transparent 72%); mask-image: radial-gradient(50% 60% at 50% 0%, #000, transparent 72%); }
+.pool { left: 14%; right: 14%; top: 62vh; height: 26vh; opacity: .18; filter: blur(60px); border-radius: 50%; }
+.floor { position: absolute; z-index: -2; left: 0; right: 0; top: 56vh; height: 44vh; pointer-events: none; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 120px); -webkit-mask-image: linear-gradient(180deg, transparent, #000 70%); mask-image: linear-gradient(180deg, transparent, #000 70%); transform: perspective(900px) rotateX(62deg); transform-origin: 50% 100%; }
+.bar .tag { color: var(--a); border-color: rgba(var(--a-rgb), .45); }
+
+/* The rail on a demo's page: the same five demos, as a slim dock down the left. The one on screen shows its name. */
+.rail { position: fixed; z-index: 30; left: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 22px; }
+.rail a { position: relative; width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; font-size: 21px; color: var(--a); transition: background-color .3s, transform .3s var(--spring); }
+.rail a:hover { background: rgba(255, 255, 255, .07); transform: scale(1.08); }
+.rail a.is-on { background: rgba(var(--a-rgb), .16); box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .5), 0 0 26px -6px rgba(var(--a-rgb), .7); }
+.rail a span { position: absolute; left: 58px; white-space: nowrap; padding: 7px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 500; color: var(--bright); background: #191b1f; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 14px 30px -14px #000; opacity: 0; transform: translateX(-6px); pointer-events: none; transition: opacity .25s, transform .25s var(--ease); }
+.rail a:hover span { opacity: 1; transform: none; }
+.rail hr { width: 26px; height: 1px; border: 0; margin: 4px auto; background: rgba(255, 255, 255, .12); }
+
+/* The window: a browser's bar, then the business's website and its agent. */
+.win { position: relative; border-radius: 18px; background: #0d0e10; box-shadow: 0 0 0 1px rgba(var(--a-rgb), .6), 0 0 0 6px rgba(var(--a-rgb), .08), 0 70px 140px -50px #000, 0 0 140px -34px rgba(var(--a-rgb), .55); }
+.win-in { border-radius: inherit; overflow: clip; display: flex; flex-direction: column; height: 100%; }
+/* Nothing inside a window may outgrow it or be scrolled: a long chat is cut at the window's edge, never the bar. */
+.win-body { grid-template-rows: minmax(0, 1fr); }
+.win-body > *, .scenes, .scene, .talk { min-height: 0; overflow: clip; }
+.win-bar { flex: none; height: 38px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: #17191c; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.win-bar i { width: 10px; height: 10px; border-radius: 50%; background: #3a3e45; }
+.win-bar span { margin-left: 12px; padding: 4px 14px; border-radius: 8px; font: 400 12px/1.4 'Geist Mono', monospace; color: var(--muted); background: rgba(255, 255, 255, .05); }
+
+/* The made-up business's own website, in its own colours and type, not ours. */
+.mock { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: #fbf8f2; color: #14262d; font-family: 'Geist', sans-serif; }
+.mock-nav { flex: none; display: flex; align-items: center; gap: 26px; padding: 14px 26px; background: #0b3a4a; color: #e9dcc3; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.mock-nav b { margin-right: auto; font: italic 500 26px/1 'Cormorant Garamond', serif; letter-spacing: 0; text-transform: none; }
+.mock-nav b small { display: block; margin-top: 4px; font: 500 9.5px 'Geist', sans-serif; letter-spacing: .22em; text-transform: uppercase; opacity: .7; }
+.mock-nav u { text-decoration: none; padding-bottom: 3px; border-bottom: 1.5px solid transparent; transition: border-color .4s; }
+.mock-nav u.is-on { border-color: #e9dcc3; }
+.scenes { position: relative; flex: 1; min-height: 0; }
+.scene { position: absolute; inset: 0; padding: 22px 26px; opacity: 0; transform: translateY(14px); transition: opacity .6s var(--ease), transform .6s var(--ease); pointer-events: none; overflow: hidden; }
+.scene.is-on { opacity: 1; transform: none; }
+.scene h3 { font: 500 30px/1.1 'Cormorant Garamond', serif; margin-bottom: 4px; }
+.scene > p { font-size: 13px; color: #4a5a60; margin-bottom: 14px; }
+.rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; height: calc(100% - 64px); }
+.room { display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; background: #efe9dc; transition: box-shadow .6s, transform .6s var(--ease), opacity .6s; }
+.room img { flex: 1; min-height: 0; width: 100%; object-fit: cover; }
+.room div { padding: 10px 12px 12px; font-size: 12px; color: #4a5a60; }
+.room div b { display: block; font: 500 19px 'Cormorant Garamond', serif; color: #14262d; }
+.room div em { font-style: normal; font-weight: 600; color: #0b3a4a; }
+/* What the agent shows the visitor is lit on the page, in the demo's colour. */
+.scene.is-on .room.is-shown { box-shadow: 0 0 0 3px rgb(var(--a-rgb)), 0 18px 40px -12px rgba(var(--a-rgb), .8); transform: translateY(-6px); }
+.scene.is-on .room:not(.is-shown) { opacity: .55; }
+.wide { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; height: calc(100% - 64px); }
+.wide img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.wide ul { min-height: 0; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; }
+.wide li { padding: 12px 14px; border-radius: 6px; background: #efe9dc; }
+.wide li b { display: block; font: 500 19px 'Cormorant Garamond', serif; }
+.wide li.pic { flex: 1; min-height: 0; padding: 0; overflow: hidden; } .wide li.pic img { border-radius: 6px; }
+.slip { max-width: 440px; margin: 3% auto 0; padding: 24px 26px; border-radius: 8px; background: #fff; box-shadow: 0 30px 60px -30px rgba(11, 58, 74, .5), 0 0 0 1px rgba(11, 58, 74, .12); font-size: 13.5px; }
+.slip h3 { margin-bottom: 12px; }
+.slip dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 7px 18px; }
+.slip dt { color: #6b7a80; } .slip dd { margin: 0; font-weight: 500; }
+.slip .state { margin-top: 16px; padding: 9px 12px; border-radius: 6px; font-weight: 600; background: #efe9dc; color: #0b3a4a; }
+.slip .state.sent { background: #0b3a4a; color: #e9dcc3; }
+
+/* The agent's chat. */
+.chat { display: flex; flex-direction: column; min-height: 0; background: #101113; color: var(--text); }
+.chat-head { flex: none; display: flex; align-items: center; gap: 9px; padding: 13px 16px; font-size: 13px; font-weight: 600; color: var(--bright); border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.chat-head .icon { font-size: 17px; color: var(--a); }
+.chat-head em { margin-left: auto; font-style: normal; font-weight: 400; font-size: 12px; color: var(--a); }
+.talk { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; padding: 14px; }
+.q, .a { padding: 10px 13px; font-size: 13.5px; line-height: 1.5; max-width: 92%; animation: pop .45s var(--spring) both; }
+.q { align-self: flex-end; border-radius: 15px 15px 4px 15px; background: #e6e8eb; color: #0b0c0e; }
+.a { align-self: flex-start; border-radius: 15px 15px 15px 4px; background: #191b1f; box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .4); }
+.a.is-thinking { color: var(--muted); }
+.a.is-thinking::after { content: " …"; }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+.chat-foot { flex: none; margin: 0 14px 14px; padding: 10px 12px; border-radius: 11px; font-size: 12.5px; color: var(--dim); background: rgba(255, 255, 255, .04); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.ghost { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0; border-radius: 12px; font: 600 14px 'Geist', sans-serif; color: var(--bright); background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13); cursor: pointer; transition: background-color .3s, transform .3s var(--spring); }
+.ghost:hover { background: rgba(var(--a-rgb), .25); transform: translateY(-2px); }
+
+/* Under the stage: what a custom agent could also do, and the offer. */
+.below { max-width: 1280px; margin: 0 auto; padding: 70px 28px 110px 96px; display: flex; flex-direction: column; gap: 22px; }
+.below h2 { font-size: clamp(26px, 2.6vw, 40px); letter-spacing: -.035em; line-height: 1.05; color: var(--bright); }
+.below h2 small { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--a); }
+.also { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.also div { padding: 22px; border-radius: 20px; background: linear-gradient(180deg, #17191c, #0d0e10); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 0 0 1px rgba(255, 255, 255, .05), 0 40px 70px -40px #000; font-size: 14.5px; color: var(--soft); transition: transform .4s var(--ease), box-shadow .4s; }
+.also div:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px rgba(var(--a-rgb), .6), 0 40px 80px -36px rgba(var(--a-rgb), .5); }
+.also b { display: block; margin-bottom: 6px; font-size: 17px; letter-spacing: -.015em; color: var(--bright); }
+.offer { position: relative; overflow: hidden; display: flex; align-items: center; gap: 24px; padding: 30px 34px; border-radius: 24px; background: linear-gradient(180deg, rgba(var(--a-rgb), .22), rgba(var(--a-rgb), .06)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 0 0 1px rgba(var(--a-rgb), .45), 0 50px 100px -50px rgba(var(--a-rgb), .7); }
+.offer p { flex: 1; font-size: clamp(20px, 1.9vw, 28px); letter-spacing: -.025em; line-height: 1.2; font-weight: 600; color: var(--bright); }
+.offer p span { display: block; margin-top: 6px; font-size: 15px; font-weight: 400; letter-spacing: 0; color: var(--soft); }
+
+/* The tour's light: everything dims but the place it is showing. Each mockup draws its own controls. */
+.tour-light { position: fixed; z-index: 60; border-radius: 22px; pointer-events: none; opacity: 0; box-shadow: 0 0 0 200vmax rgba(4, 4, 5, .78), inset 0 0 0 2px rgb(var(--a-rgb)), 0 0 60px -6px rgba(var(--a-rgb), .9); transition: left .7s var(--ease), top .7s var(--ease), width .7s var(--ease), height .7s var(--ease), opacity .4s; }
+body.is-touring .tour-light { opacity: 1; }
+@media (max-width: 900px) { .rail { display: none; } .below { padding-left: 20px; padding-right: 20px; } .also { grid-template-columns: 1fr; } .offer { flex-direction: column; align-items: flex-start; } }

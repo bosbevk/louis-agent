@@ -1,0 +1,113 @@
+{
+  "kind": "sequence",
+  "title": "Claude's instructions: one step, and what is loaded when",
+  "caption": "Nothing is loaded before it is needed: the rules for C# arrive with the first C# file, and each skill with its job.",
+  "sequence": {
+    "participants": [
+      {
+        "id": "L",
+        "icon": "user",
+        "tone": "blue",
+        "label": "Louis"
+      },
+      {
+        "id": "C",
+        "icon": "chip",
+        "tone": "blue",
+        "label": "Claude"
+      },
+      {
+        "id": "A",
+        "icon": "shield",
+        "tone": "violet",
+        "label": "Always loaded"
+      },
+      {
+        "id": "R",
+        "icon": "file",
+        "tone": "teal",
+        "label": "Rules by file"
+      },
+      {
+        "id": "S",
+        "icon": "stack",
+        "tone": "green",
+        "label": "Skills"
+      }
+    ],
+    "steps": [
+      {
+        "step": "message",
+        "from": "A",
+        "to": "C",
+        "text": "CLAUDE.md, design-rules.md, repo-map.md"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "C",
+        "text": "go, start step 3"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "do-a-step"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "test first, see it fail"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "R",
+        "text": "opens a .cs file"
+      },
+      {
+        "step": "reply",
+        "from": "R",
+        "to": "C",
+        "text": "csharp.md, csharp-summaries.md"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "finish-a-step"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "format, show, wait"
+      },
+      {
+        "step": "reply",
+        "from": "C",
+        "to": "L",
+        "text": "the step, for his ok"
+      },
+      {
+        "step": "message",
+        "from": "L",
+        "to": "C",
+        "text": "go"
+      },
+      {
+        "step": "message",
+        "from": "C",
+        "to": "S",
+        "text": "ship-it"
+      },
+      {
+        "step": "reply",
+        "from": "S",
+        "to": "C",
+        "text": "the commit's message, no push"
+      }
+    ]
+  }
+}
