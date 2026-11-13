@@ -1,5 +1,6 @@
-/* A link as it is printed (FX154): not there on a screen, and on paper its code with its words beside it, in black,
-   kept whole on one page. Its sizes are paper's own, millimetres and points, whatever page it is printed from. */
+/* A link as it is printed (FX154): not there on a screen, and on paper its code with its words beside it, kept
+   whole on one page. Its ink is the page's own, the colour of the words around it and never a link's, so the page
+   that prints it says how dark it is. Its sizes are paper's own, millimetres and points, whatever page prints it. */
 .paper-link { display: none; }
 
 @media print {
@@ -8,7 +9,7 @@
         align-items: center;
         gap: 2.2mm;
         min-width: 0;
-        color: var(--web-paper-ink);
+        color: inherit;
         text-decoration: none;
         break-inside: avoid;
     }

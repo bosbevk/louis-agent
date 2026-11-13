@@ -421,7 +421,15 @@ read out of the file, so the real thing could be checked in seconds: six variant
 showed the dark fill was Chrome's and not ours. When a check is a stand-in, say so, and look for the way to make
 the real thing. He also chose the layout from three examples he could open and print, after picking differently
 from three sketches: a choice about how something looks is made by looking at it. And on paper a link is its QR
-code, always, since paper can't be clicked. Skill 18 (testing and shipping: the check has to be of what ships).
+code, always, since paper can't be clicked.
+
+Its pull request then failed two checks nobody had run. To give the printed link black ink, two names went into
+the framework's list of colours, and that list is not one project's file: every site has to set each name on
+it, and the films are recorded with its fingerprint. The site's and the web's tests passed, Puls's and the film
+tool's did not. "Test what you touch" counts what a file reaches, not the folder it sits in, so a change to a
+shared list runs the tests of everything that reads it. The link now takes the ink of the page it is printed on
+(Louis's pick), which is what the CV's own print sheet was already making it do. Skill 18 (testing and
+shipping: the check has to be of what ships).
 
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
