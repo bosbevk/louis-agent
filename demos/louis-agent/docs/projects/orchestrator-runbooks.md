@@ -24,8 +24,8 @@ run. "Skill" names the mechanism; "runbook" names what these skills are for.
 ## Where they live
 
 ```
-src/engine/louis-agent.core/prompts/agent/louis-agent/
-└── voice-orchestrator.md      the workflow every error goes through (the same for all services; built into core, CL9)
+demos/louis-agent/identity/louis-agent.identity.coding/prompts/agent/louis-agent/
+└── voice-orchestrator.md      the workflow every error goes through (the same for all services; the coding identity's)
 
 demos/louis-agent/hosts/louis-agent.orchestrator/Skills/
 └── order-service/             one folder per watched service, selected with ORCHESTRATOR_SERVICE

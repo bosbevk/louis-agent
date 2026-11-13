@@ -53,7 +53,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
 | `Telemetry/` | A turn's span on our own source (`TurnSpans`, F52), the last-chance handler for a crash, and the seam for what a host does with telemetry (CL33): `IHostTelemetry` (the log sinks, start, flush) and `NoTelemetry`. The OpenTelemetry tracer and the collector's sink are `louis-agent.core.telemetry`'s, handed in through `HostServices` |
 | `Pricing/` | `Prices/` (the price table and its loader, a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates and their loader, the display currency; `Mappers/`: a provider's reply into our format) |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, `HostServices` (what a program hands in: web, telemetry, discovery, CL33/CL57), the ledger and the tools-only client at the top; `Discovery/` (the seam for tools found outside the engine, with its Null Object; Rider's is the ACP server's); `Engines/` (the factory's cache and the key it holds engines by), `EnvFiles/` (the .env files a host loads), `prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, `HostServices` (what a program hands in: web, telemetry, discovery, CL33/CL57), the ledger and the tools-only client at the top; `Discovery/` (the seam for tools found outside the engine, with its Null Object; Rider's is the ACP server's); `Engines/` (the factory's cache and the key it holds engines by), `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `SessionLlms/` (the LLM profiles a session may name, `LLM_SESSION_PROFILES`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
@@ -139,7 +139,7 @@ is reviewed by hand). Only a demo's own project under `demos/` knows its identit
 
 Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus `ExecuteSkill`) instead
 of the toolsets a catalogue names, and build its system prompt from your own skill files (`CompositeSkillProvider` +
-`MarkdownSkillProvider`). To record its usage, pass `usageSink: AgentHost.CreateUsageSink(options)` and
+`MarkdownSkillProvider`). To record its usage, pass `usageSink: UsageLedger.Open(options)` and
 `usageMapper: clientFactory.CreateUsageMapper(llm)`, and open a `UsageScope` per turn (with a `UsageTags` run id if it
 has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the example.
 
