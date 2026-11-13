@@ -3,7 +3,7 @@
 > **How-to.** The step-by-step guides for a developer changing the code: one per project, and one per thing you build
 > across projects (a pack, an identity). Each says what it covers first, then the steps, the tests and a checklist for
 > review. **Elsewhere:** how each project works in its [design doc](../projects/README.md); the rules every change keeps
-> in the [development guide](../CLAUDE.md#rules-that-always-apply).
+> in the [development guide](../../../.claude/rules/design-rules.md).
 
 ## Build something new
 

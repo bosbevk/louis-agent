@@ -83,7 +83,7 @@ drift apart. A cleanup (`CL`) finishes by the same list, and so does each child 
    [SETUP](../SETUP.md)), and the lists no single feature owns, when the feature adds a project, a pack, a host or a
    setting: the README's *Where it stands*, the [ROADMAP](../../../ROADMAP.md)'s *What exists*, the indexes
    ([docs](../README.md), [projects](../projects/README.md), [guides](../guides/README.md)) and the project
-   structure in the [development guide](../CLAUDE.md#project-structure).
+   structure in the [development guide](../../../.claude/rules/repo-map.md).
 7. **Decisions:** if the feature made a lasting decision, its [ADR](../adr/README.md) is in the same PR; a decision it
    changed is superseded, not edited.
 8. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature

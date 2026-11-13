@@ -58,4 +58,32 @@ public class SkillFilesTests
 
         Assert.That(wrong, Is.Empty, "a skill's name is its folder's, and its description says when it applies");
     }
+
+    /// <summary>
+    /// The skills <c>CLAUDE.md</c> names and the skills there are, are the same list. <c>CLAUDE.md</c> is loaded on
+    /// every turn and says which skill goes with which job. So a skill it doesn't name is one Claude isn't told to
+    /// use, and a name with no skill behind it sends Claude to nothing. It names a skill as its command, in its
+    /// <c>Skills</c> section: <c>`/draw-a-diagram`</c>.
+    /// </summary>
+    [Test]
+    public void TheSkillsClaudeMdNames_AreTheSkillsThereAre()
+    {
+        string guide = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/docs/CLAUDE.md"));
+
+        // Only its Skills section: the guide names other commands too, such as /mcp, which are not skills.
+        int start = guide.IndexOf("## Skills", StringComparison.Ordinal);
+        Assert.That(start, Is.GreaterThanOrEqualTo(0), "CLAUDE.md has a Skills section");
+        int end = guide.IndexOf("\n## ", start + 1, StringComparison.Ordinal);
+        string section = end < 0 ? guide[start..] : guide[start..end];
+
+        // A skill's command there: a backtick, a slash, the name, a backtick.
+        var named = section.Split('`')
+            .Where(word =>
+                word.StartsWith('/') && word.Length > 1 && word.Skip(1).All(c => char.IsLower(c) || c == '-'))
+            .Select(word => word[1..])
+            .Distinct()
+            .Order();
+
+        Assert.That(named, Is.EqualTo(SkillFolders().Select(Path.GetFileName)));
+    }
 }

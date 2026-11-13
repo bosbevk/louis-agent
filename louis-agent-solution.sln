@@ -243,13 +243,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{53
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".claude", ".claude", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\README.md = .claude\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\rules\csharp.md = .claude\rules\csharp.md
 		.claude\rules\css.md = .claude\rules\css.md
+		.claude\rules\design-rules.md = .claude\rules\design-rules.md
 		.claude\rules\docs.md = .claude\rules\docs.md
 		.claude\rules\razor.md = .claude\rules\razor.md
+		.claude\rules\repo-map.md = .claude\rules\repo-map.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}"
