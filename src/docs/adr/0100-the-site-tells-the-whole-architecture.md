@@ -55,7 +55,7 @@ business behind it.
 
 - [F109.1 to F109.5 in the work log](../work-log.md); the plan's record was in `src/docs/plans/F109-the-site-in-the-demos-web-app.md` until this ADR took its lasting parts
 - [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md), superseded in part · [ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md) · [ADR 0084](0084-every-site-is-built-on-the-frameworks-web.md) · [ADR 0098](0098-the-demos-app-runs-beside-puls-split-later.md) · [ADR 0099](0099-the-guide-answers-without-a-sign-in-within-a-cap.md)
-- [The code-review app](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [The expert identity](../../../demos/louis-agent/docs/projects/louis-agent.identity.expert.md) · [Testing and shipping](../learning/18-testing-and-shipping.md)
+- [The code-review app](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md) · [The expert identity, the guide since F124](../projects/louis-agent.identity.guide.md) · [Testing and shipping](../learning/18-testing-and-shipping.md)
 
 ---
 [Docs index](../README.md) · Related: [ADRs](README.md)

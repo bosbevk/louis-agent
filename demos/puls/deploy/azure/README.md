@@ -218,4 +218,4 @@ the Anthropic key, in the console, is the other half of the bill. The louis-agen
 replica only while someone is on it; its month is written here too, after the first.
 
 ---
-[Docs index](../../../../src/docs/README.md) · Related: [Setup](../../../../src/docs/SETUP.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md) · [The site on Azure](../../../louis-agent/deploy/azure/README.md)
+[Docs index](../../../../src/docs/README.md) · Related: [Setup](../../../../src/docs/SETUP.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md) · [The site on Azure](../../../../src/docs/projects/louis-agent.site.md)

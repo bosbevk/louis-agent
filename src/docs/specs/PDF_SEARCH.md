@@ -1,7 +1,7 @@
 # Design: Searching PDFs
 
 **Status:** idea, not planned yet: investigate much later · **Date:** 2026-10-26 (Louis) · **Part of:**
-[F45 Knowledge and retrieval](../../../TODO.md#later-and-every-goal-missing-item-no-phase-plans-yet) · **GOAL skill:** 8,
+[F45 Knowledge and retrieval](../../../TODO.md) · **GOAL skill:** 8,
 memory and retrieval
 
 This page explains what searching a set of PDFs takes, as the field does it today, and the questions to answer before

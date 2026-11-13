@@ -54,7 +54,7 @@ dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli -- "Your pro
 
 ### HTTP API
 
-See the [README](../../../README.md#http-api): create a session, then POST messages and read the event stream.
+See [How the agents and endpoints talk](../../../src/docs/AGENT_COMMUNICATION.md#the-http-api-louis-agentapi): create a session, then POST messages and read the event stream.
 
 ## Example prompts
 
