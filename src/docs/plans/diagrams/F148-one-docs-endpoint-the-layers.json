@@ -4,45 +4,124 @@
   "caption": "Five layers, read top down: each layer links down to the next and back up to its index, and every kind of doc has its own template.",
   "cards": {
     "rows": [
-      { "cards": [
-        { "id": "door", "icon": "book", "title": "1. The front door", "code": "README · ROADMAP · TODO", "look": "highlight",
-          "text": "What it is, where it is going, what is next. 3 docs at the root." }
-      ] },
-      { "cards": [
-        { "id": "index", "icon": "search", "title": "2. The index and the standing pages", "code": "src/docs/README.md",
-          "text": "Every doc by kind, and the pages that always hold: GOAL, SETUP, MODELS, the work log, the development guide. 7 docs." }
-      ] },
-      { "cards": [
-        { "id": "arch", "icon": "stack", "title": "3. The whole", "code": "architecture/",
-          "text": "How the parts fit, across projects. Kind: explanation. 14 docs." }
-      ] },
-      { "cards": [
-        { "id": "project", "icon": "box", "title": "4. One project", "code": "projects/",
-          "text": "A design doc per project. Kind: project. 43 docs." },
-        { "id": "guide", "icon": "terminal", "title": "4. Doing one job", "code": "guides/",
-          "text": "A how-to per job on a project. Kind: how-to. 28 docs." }
-      ] },
-      { "cards": [
-        { "id": "adr", "icon": "checks", "title": "5. Why", "code": "adr/",
-          "text": "One decision each. Kind: ADR. 119 docs." },
-        { "id": "learn", "icon": "chart", "title": "5. What it taught", "code": "learning/",
-          "text": "A write-up per skill, and the fixes' lessons. Kind: write-up. 15 docs." },
-        { "id": "work", "icon": "settings", "title": "5. Being built", "code": "plans/ · features/ · fixes/",
-          "text": "Kinds: plan, feature doc, fix doc. Deleted when the work is done." }
-      ] },
-      { "cards": [
-        { "id": "areas", "icon": "folder", "title": "The same layers 3 to 5, in three areas", "look": "heading",
-          "text": "src/docs (the framework) · packs/docs (the packs) · demos/{demo}/docs (each demo)" }
-      ] }
+      {
+        "cards": [
+          {
+            "id": "door",
+            "icon": "book",
+            "title": "1. The front door",
+            "code": "README · ROADMAP · TODO",
+            "look": "highlight",
+            "text": "What it is, where it is going, what is next. 3 docs at the root."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "index",
+            "icon": "search",
+            "title": "2. The index and the standing pages",
+            "code": "src/docs/README.md",
+            "text": "Every doc by kind, and the pages that always hold: GOAL, SETUP, MODELS, the work log, the development guide. 7 docs."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "arch",
+            "icon": "stack",
+            "title": "3. The whole",
+            "code": "architecture/",
+            "text": "How the parts fit, across projects. Kind: explanation. 13 docs."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "project",
+            "icon": "box",
+            "title": "4. One project",
+            "code": "projects/",
+            "text": "A design doc per project. Kind: project. 34 docs."
+          },
+          {
+            "id": "guide",
+            "icon": "terminal",
+            "title": "4. Doing one job",
+            "code": "guides/",
+            "text": "A how-to per job on a project. Kind: how-to. 23 docs."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "adr",
+            "icon": "checks",
+            "title": "5. Why",
+            "code": "adr/",
+            "text": "One decision each. Kind: ADR. 114 docs."
+          },
+          {
+            "id": "learn",
+            "icon": "chart",
+            "title": "5. What it taught",
+            "code": "learning/",
+            "text": "A write-up per skill, and a lesson per fix. Kinds: write-up, lesson. 14 docs."
+          },
+          {
+            "id": "work",
+            "icon": "settings",
+            "title": "5. Being built",
+            "code": "plans/ · features/ · fixes/",
+            "text": "Kinds: plan, feature doc, fix doc. Deleted when the work is done."
+          }
+        ]
+      },
+      {
+        "cards": [
+          {
+            "id": "areas",
+            "icon": "folder",
+            "title": "The same layers 3 to 5, in two areas",
+            "look": "heading",
+            "text": "src/docs (the framework) · packs/docs (the packs). The demos' docs are out of scope for now."
+          }
+        ]
+      }
     ],
     "links": [
-      { "from": "door", "to": "index" },
-      { "from": "index", "to": "arch" },
-      { "from": "arch", "to": "project" },
-      { "from": "arch", "to": "guide" },
-      { "from": "project", "to": "adr" },
-      { "from": "project", "to": "learn" },
-      { "from": "guide", "to": "work" }
+      {
+        "from": "door",
+        "to": "index"
+      },
+      {
+        "from": "index",
+        "to": "arch"
+      },
+      {
+        "from": "arch",
+        "to": "project"
+      },
+      {
+        "from": "arch",
+        "to": "guide"
+      },
+      {
+        "from": "project",
+        "to": "adr"
+      },
+      {
+        "from": "project",
+        "to": "learn"
+      },
+      {
+        "from": "guide",
+        "to": "work"
+      }
     ]
   }
 }
