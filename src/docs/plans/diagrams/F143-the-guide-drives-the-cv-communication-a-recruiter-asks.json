@@ -1,0 +1,26 @@
+{
+  "kind": "sequence",
+  "title": "F143 the guide drives the CV: a recruiter asks about Kubernetes",
+  "caption": "Facts from the tool, judgement from the skill: the answer names the job, opens the section and offers an interview.",
+  "sequence": {
+    "participants": [
+      { "id": "you", "label": "Recruiter", "actor": true, "tone": "blue" },
+      { "id": "guide", "label": "Guide", "icon": "message", "tone": "green" },
+      { "id": "model", "label": "Model", "icon": "cloud", "tone": "red" },
+      { "id": "tool", "label": "GetResume", "icon": "box", "tone": "green" },
+      { "id": "site", "label": "Site pack", "icon": "browser", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "you", "to": "guide", "text": "has Louis used Kubernetes?" },
+      { "step": "message", "from": "guide", "to": "model", "text": "message, focus /cv, focus-hiring" },
+      { "step": "message", "from": "model", "to": "tool", "text": "GetResume(work)" },
+      { "step": "reply", "from": "tool", "to": "model", "text": "6 jobs, Kohde: Kubernetes" },
+      { "step": "message", "from": "model", "to": "site", "text": "ShowPage(/cv, the Kohde job)" },
+      { "step": "message", "from": "model", "to": "site", "text": "Offer(ask for an interview, ...)" },
+      { "step": "reply", "from": "guide", "to": "you", "text": "yes, at Kohde since 2022, the job lit up, choices" },
+      { "step": "block", "block": "alt", "label": "asks for his salary",
+        "steps": [ { "step": "reply", "from": "guide", "to": "you", "text": "not on the CV; ask Louis" } ] }
+    ],
+    "numbered": false
+  }
+}

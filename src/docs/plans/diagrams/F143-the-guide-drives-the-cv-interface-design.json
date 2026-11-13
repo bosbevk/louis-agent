@@ -1,0 +1,26 @@
+{
+  "kind": "classes",
+  "title": "F143 the guide drives the CV: the interface design",
+  "caption": "One generic pack with one tool reads the same JSON Resume file the page draws.",
+  "classes": {
+    "types": [
+      { "id": "pack", "name": "ResumePack", "kind": "pack, step 1",
+        "members": [ "ResumeToolset Toolset" ] },
+      { "id": "tool", "name": "GetResume", "kind": "tool, step 1",
+        "members": [ "string Run(string? section)" ] },
+      { "id": "options", "name": "ResumeOptions", "kind": "record, step 1",
+        "members": [ "string File  (RESUME_FILE)" ] },
+      { "id": "resume", "name": "Resume", "kind": "record, F142 (home: open choice 1)" },
+      { "id": "guide", "name": "GuideIdentity", "kind": "identity, step 2", "tone": "violet",
+        "members": [ "Packs: docs, leads, site, resume" ] },
+      { "id": "skill", "name": "focus-hiring.md", "kind": "focus skill, step 3" }
+    ],
+    "relations": [
+      { "from": "pack", "to": "tool", "kind": "holds" },
+      { "from": "tool", "to": "options", "kind": "uses" },
+      { "from": "tool", "to": "resume", "kind": "uses", "word": "reads" },
+      { "from": "guide", "to": "pack", "kind": "uses", "word": "names" },
+      { "from": "guide", "to": "skill", "kind": "holds" }
+    ]
+  }
+}
