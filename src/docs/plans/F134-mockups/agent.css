@@ -1,0 +1,98 @@
+/* The agent runs the room (mockups J and K). The guide is silver wherever it shows, so it never looks like one of the
+   demos: its bar at the foot of the page, its light on the place it is showing, its words as a caption beside that
+   place with its own choices under them, the work behind each answer on the caption's other side, and the whole
+   talk with its cost in a drawer. Every one of these moves only when the agent calls a tool. */
+.agent-light { position: fixed; z-index: 60; border-radius: 22px; pointer-events: none; opacity: 0; box-shadow: 0 0 0 200vmax rgba(4, 4, 5, .66), inset 0 0 0 2px rgba(255, 255, 255, .95), 0 0 70px -4px rgba(255, 255, 255, .55); transition: left .7s var(--ease), top .7s var(--ease), width .7s var(--ease), height .7s var(--ease), opacity .5s; }
+.agent-light.is-on { opacity: 1; }
+
+/* The bar: the guide's orb, what it is doing, a box to type in, and the talk's cost so far. */
+.agent { position: fixed; z-index: 80; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(760px, calc(100vw - 28px)); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.agent-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; transition: opacity .4s, transform .4s var(--ease); }
+.agent.is-busy .agent-chips { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.agent-chips button, .cap-choices button { padding: 9px 15px; border: 0; border-radius: 999px; font: 500 13.5px 'Geist', sans-serif; color: var(--text); background: rgba(21, 23, 26, .78); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); cursor: pointer; transition: background-color .3s, transform .3s var(--spring), color .3s; }
+.agent-chips button:hover, .cap-choices button:hover { transform: translateY(-2px); background: rgba(255, 255, 255, .16); color: #fff; }
+.agent-chips button.is-suggested, .cap-choices button.is-suggested { color: #070708; background: linear-gradient(180deg, #fff, #b9bec6); box-shadow: 0 10px 26px -10px rgba(255, 255, 255, .5); font-weight: 600; }
+.agent-bar { width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 8px; border-radius: 26px; background: rgba(24, 26, 30, .94); -webkit-backdrop-filter: blur(24px) saturate(1.4); backdrop-filter: blur(24px) saturate(1.4); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 30px 70px -24px #000, 0 0 80px -30px rgba(255, 255, 255, .35); }
+.orb { position: relative; flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font: 700 18px 'Geist', sans-serif; color: #070708; background: radial-gradient(circle at 32% 26%, #fff, #c9ccd1 55%, #7f858e); box-shadow: inset 0 -3px 8px rgba(0, 0, 0, .25), 0 0 26px -4px rgba(255, 255, 255, .6); }
+.orb::before, .orb::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; pointer-events: none; }
+/* Idle: it breathes. Thinking: an arc goes round. Showing: rings go out to the page. Speaking: it pulses with the words. */
+.orb::before { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .35); animation: orb-breathe 3.2s ease-in-out infinite; }
+[data-state="thinking"] .orb::before { box-shadow: none; background: conic-gradient(#fff 0 70deg, transparent 70deg); -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px)); mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px)); animation: orb-spin .9s linear infinite; }
+[data-state="showing"] .orb::before, [data-state="showing"] .orb::after { box-shadow: 0 0 0 2px rgba(255, 255, 255, .8); animation: orb-ping 1.1s ease-out infinite; }
+[data-state="showing"] .orb::after { animation-delay: .45s; }
+[data-state="speaking"] .orb { animation: orb-speak .5s ease-in-out infinite alternate; }
+@keyframes orb-breathe { 50% { transform: scale(1.14); opacity: .35; } }
+@keyframes orb-spin { to { transform: rotate(360deg); } }
+@keyframes orb-ping { from { transform: scale(.9); opacity: 1; } to { transform: scale(1.9); opacity: 0; } }
+@keyframes orb-speak { to { transform: scale(1.09); box-shadow: inset 0 -3px 8px rgba(0, 0, 0, .25), 0 0 40px 2px rgba(255, 255, 255, .8); } }
+.agent-box { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.agent-doing { font: 500 11.5px 'Geist Mono', monospace; color: var(--muted); height: 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+[data-state]:not([data-state="idle"]) .agent-doing { color: #fff; }
+.agent-box input { width: 100%; border: 0; outline: 0; padding: 3px 0 2px; font: 400 16px 'Geist', sans-serif; color: var(--bright); background: transparent; }
+.agent-box input::placeholder { color: var(--muted); }
+/* The box is always there to type in: it looks like one, it lights when it is, and the caption can call it. */
+.agent-box { cursor: text; padding: 4px 12px; border-radius: 14px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); transition: background-color .3s, box-shadow .3s; }
+.agent-box:hover { background: rgba(255, 255, 255, .09); }
+.agent-box:focus-within { background: rgba(255, 255, 255, .1); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .85), 0 0 26px -6px rgba(255, 255, 255, .6); }
+.agent-bar.is-called { animation: called .9s var(--ease); }
+@keyframes called { 30% { transform: scale(1.03); box-shadow: inset 0 0 0 1.5px #fff, 0 0 90px -10px rgba(255, 255, 255, .9); } }
+.cap-ask { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; font: 500 13px 'Geist', sans-serif; color: var(--soft); background: none; cursor: pointer; }
+.cap-ask::before { content: ""; width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1.5px currentColor; }
+.cap-ask:hover { color: #fff; }
+.agent-cost { flex: none; text-align: right; padding: 6px 12px; border: 0; border-radius: 14px; font: 500 11.5px/1.4 'Geist Mono', monospace; color: var(--muted); background: rgba(255, 255, 255, .05); cursor: pointer; transition: background-color .3s, color .3s; }
+.agent-cost b { display: block; font-size: 13.5px; color: var(--bright); }
+.agent-cost:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.agent-send { flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; font-size: 20px; color: #070708; background: linear-gradient(180deg, #fff, #b9bec6); cursor: pointer; transition: transform .3s var(--spring); }
+.agent-send:hover { transform: scale(1.1); }
+.agent-note { font-size: 11.5px; color: var(--dim); }
+
+/* The caption: what the guide says, standing beside the place it lights. Its other side is the work behind it. */
+.cap { position: fixed; z-index: 70; left: var(--cap-x, 50%); top: var(--cap-y, 30%); width: 400px; max-width: calc(100vw - 28px); perspective: 1400px; opacity: 0; transform: translateY(14px) scale(.97); pointer-events: none; transition: left .7s var(--ease), top .7s var(--ease), opacity .4s, transform .45s var(--spring); }
+.cap.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.cap-turn { display: grid; transform-style: preserve-3d; transition: transform .8s var(--ease); }
+.cap.is-work .cap-turn { transform: rotateY(180deg); }
+.cap-face { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 14px; border-radius: 22px; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: rgba(19, 21, 24, .9); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 0 0 1px rgba(255, 255, 255, .16), 0 40px 90px -30px #000, 0 0 70px -24px rgba(255, 255, 255, .5); }
+.cap-face.back { transform: rotateY(180deg); }
+.cap-who { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--muted); }
+.cap-who i { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 32% 26%, #fff, #c9ccd1 55%, #7f858e); }
+.cap-who b { color: var(--bright); font-weight: 600; }
+.cap-who span { margin-left: auto; font: 500 11.5px 'Geist Mono', monospace; }
+.cap-title { font-size: 19px; font-weight: 700; letter-spacing: -.02em; color: var(--bright); }
+.cap-says { min-height: 3em; font-size: 15px; line-height: 1.55; color: var(--text); }
+.cap-says.is-typing::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: -2px; border-radius: 2px; background: #fff; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.cap-choices { display: flex; flex-wrap: wrap; gap: 7px; min-height: 0; }
+.cap-choices button { animation: choice .5s var(--spring) both; background: rgba(255, 255, 255, .08); }
+.cap-choices button:nth-child(2) { animation-delay: .07s; } .cap-choices button:nth-child(3) { animation-delay: .14s; } .cap-choices button:nth-child(4) { animation-delay: .21s; }
+@keyframes choice { from { opacity: 0; transform: translateY(8px) scale(.94); } }
+.cap-flip { align-self: flex-start; padding: 4px 0 0; border: 0; font: 500 12.5px 'Geist', sans-serif; color: var(--muted); background: none; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.cap-flip:hover { color: #fff; }
+.work-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font: 500 12.5px/1.5 'Geist Mono', monospace; color: var(--soft); }
+.work-list li { display: flex; gap: 10px; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, .05); }
+.work-list li::before { content: "→"; color: var(--muted); }
+.work-list li.guard::before { content: "✓"; color: #6cbf94; }
+.work-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 11.5px; color: var(--muted); }
+.work-sum b { display: block; font: 600 15px 'Geist Mono', monospace; color: var(--bright); }
+
+/* The drawer: the whole talk, each answer with what it called and what it cost. */
+.talk-drawer { position: fixed; z-index: 90; top: 0; right: 0; bottom: 0; width: min(430px, 100vw); display: flex; flex-direction: column; padding: 22px 20px; background: rgba(13, 14, 16, .94); -webkit-backdrop-filter: blur(26px); backdrop-filter: blur(26px); box-shadow: inset 1px 0 0 rgba(255, 255, 255, .1), -40px 0 90px -30px #000; transform: translateX(105%); transition: transform .6s var(--ease); }
+.talk-drawer.is-open { transform: none; }
+.talk-drawer h2 { display: flex; align-items: center; font-size: 20px; letter-spacing: -.02em; color: var(--bright); }
+.talk-drawer h2 button { margin-left: auto; width: 36px; height: 36px; border: 0; border-radius: 50%; font-size: 18px; color: var(--bright); background: rgba(255, 255, 255, .08); cursor: pointer; }
+.talk-drawer > p { margin: 6px 0 16px; font-size: 13.5px; color: var(--muted); }
+.talk-list { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.talk-list article { padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, .045); font-size: 14px; line-height: 1.5; color: var(--text); }
+.talk-list article.you { align-self: flex-end; background: #e6e8eb; color: #0b0c0e; border-radius: 14px 14px 4px 14px; }
+.talk-list article small { display: block; margin-top: 8px; font: 500 11.5px/1.5 'Geist Mono', monospace; color: var(--muted); }
+.talk-total { margin-top: 14px; padding: 14px; border-radius: 14px; display: flex; justify-content: space-between; font: 500 12.5px 'Geist Mono', monospace; color: var(--muted); background: rgba(255, 255, 255, .06); }
+.talk-total b { color: var(--bright); font-size: 15px; }
+
+/* The page's last part stops above the bar, however tall the bar stands. */
+.below { padding-bottom: var(--agent-room, 220px) !important; }
+.stage, .show { padding-bottom: var(--agent-room, 170px) !important; }
+
+/* A piece of the page the visitor can ask about: it rings when pointed at. */
+[data-piece] { cursor: help; }
+[data-piece]:hover { outline: 2px dashed rgba(255, 255, 255, .85); outline-offset: 4px; }
+body.agent-busy [data-piece]:hover { outline: 0; }
+@media (max-width: 700px) { .agent-cost { display: none; } .cap { left: 14px !important; } }

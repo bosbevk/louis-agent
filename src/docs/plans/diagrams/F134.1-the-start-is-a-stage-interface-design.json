@@ -1,0 +1,219 @@
+{
+  "kind": "classes",
+  "title": "F134.1 the start is a stage: the interface design",
+  "caption": "General parts that know nothing of demos, the showroom that composes them, and the site that fills the windows.",
+  "classes": {
+    "types": [
+      {
+        "id": "LineIcon",
+        "name": "LineIcon",
+        "kind": "enum",
+        "members": [
+          "Bed",
+          "Dining",
+          "Scales",
+          "Code",
+          "Exchange",
+          "Play",
+          "Back",
+          "Next"
+        ]
+      },
+      {
+        "id": "LineIconView",
+        "name": "LineIconView",
+        "members": [
+          "+LineIcon Icon (step 1)"
+        ]
+      },
+      {
+        "id": "LitStage",
+        "name": "LitStage",
+        "members": [
+          "+TileAccent Accent",
+          "+RenderFragment ChildContent (step 2)"
+        ]
+      },
+      {
+        "id": "DeckPlace",
+        "name": "DeckPlace",
+        "members": [
+          "+static int Of(int index, int forward, int count) (step 3)"
+        ]
+      },
+      {
+        "id": "Deck",
+        "name": "Deck<TItem>",
+        "members": [
+          "+IReadOnlyList<TItem> Items",
+          "+int Forward",
+          "+EventCallback<int> ForwardChanged",
+          "+RenderFragment<TItem> Item (step 3)"
+        ]
+      },
+      {
+        "id": "FramedWindow",
+        "name": "FramedWindow",
+        "members": [
+          "+string Address",
+          "+RenderFragment ChildContent (step 4)"
+        ]
+      },
+      {
+        "id": "SiteBody",
+        "name": "SiteBody",
+        "members": [
+          "+string Photo, Name, Line",
+          "+string Question, Answer",
+          "+RenderFragment? Shown (step 4)"
+        ]
+      },
+      {
+        "id": "WorkBody",
+        "name": "WorkBody",
+        "members": [
+          "+IReadOnlyList<WorkPane> Panes (step 4)"
+        ]
+      },
+      {
+        "id": "WorkPane",
+        "name": "WorkPane",
+        "kind": "record",
+        "members": [
+          "+string Heading",
+          "+IReadOnlyList<string> Lines"
+        ]
+      },
+      {
+        "id": "Dock",
+        "name": "Dock<TItem>",
+        "members": [
+          "+IReadOnlyList<TItem> Items",
+          "+TItem? Current",
+          "+EventCallback<TItem> Chosen",
+          "+Func<TItem, LineIcon> Icon (step 5)"
+        ]
+      },
+      {
+        "id": "ShowroomDemo",
+        "name": "ShowroomDemo",
+        "kind": "record",
+        "members": [
+          "+string Address, Name, Line",
+          "+DemoGroup Group",
+          "+TileAccent Accent",
+          "+LineIcon Icon (step 1, was string Sign)",
+          "+Type? Window (step 6)"
+        ]
+      },
+      {
+        "id": "ShowroomStart",
+        "name": "ShowroomStart",
+        "members": [
+          "+string Featured",
+          "+RenderFragment Title, Lede (step 6)"
+        ]
+      },
+      {
+        "id": "SiteDemos",
+        "name": "SiteDemos",
+        "members": [
+          "+ShowroomDemos All (steps 1, 9)"
+        ]
+      },
+      {
+        "id": "SiteWindowTalks",
+        "name": "SiteWindowTalks",
+        "members": [
+          "+WindowTalk Seemeeu, Wheatfield, Koringland (step 9)"
+        ]
+      },
+      {
+        "id": "WindowTalk",
+        "name": "WindowTalk",
+        "kind": "record",
+        "members": [
+          "+string Question",
+          "+string Answer",
+          "+string Recording"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "LineIconView",
+        "to": "LineIcon",
+        "kind": "uses"
+      },
+      {
+        "from": "Deck",
+        "to": "DeckPlace",
+        "kind": "uses",
+        "word": "each item's distance"
+      },
+      {
+        "from": "WorkBody",
+        "to": "WorkPane",
+        "kind": "holds"
+      },
+      {
+        "from": "Dock",
+        "to": "LineIconView",
+        "kind": "uses",
+        "word": "draws"
+      },
+      {
+        "from": "ShowroomDemo",
+        "to": "LineIcon",
+        "kind": "holds"
+      },
+      {
+        "from": "ShowroomStart",
+        "to": "LitStage",
+        "kind": "uses",
+        "word": "draws (step 6)"
+      },
+      {
+        "from": "ShowroomStart",
+        "to": "Deck",
+        "kind": "uses",
+        "word": "draws (step 6)"
+      },
+      {
+        "from": "ShowroomStart",
+        "to": "FramedWindow",
+        "kind": "uses",
+        "word": "one per demo"
+      },
+      {
+        "from": "ShowroomStart",
+        "to": "Dock",
+        "kind": "uses",
+        "word": "draws (step 6)"
+      },
+      {
+        "from": "ShowroomStart",
+        "to": "ShowroomDemo",
+        "kind": "uses",
+        "word": "reads the site's"
+      },
+      {
+        "from": "SiteDemos",
+        "to": "ShowroomDemo",
+        "kind": "holds",
+        "word": "creates the five"
+      },
+      {
+        "from": "SiteWindowTalks",
+        "to": "WindowTalk",
+        "kind": "holds"
+      },
+      {
+        "from": "SiteBody",
+        "to": "WindowTalk",
+        "kind": "uses",
+        "word": "filled from (step 9)"
+      }
+    ]
+  }
+}
