@@ -242,6 +242,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{53
 		packs\docs\projects\louis-agent.pack.docs.md = packs\docs\projects\louis-agent.pack.docs.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".claude", ".claude", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\rules\csharp.md = .claude\rules\csharp.md
+		.claude\rules\css.md = .claude\rules\css.md
+		.claude\rules\docs.md = .claude\rules\docs.md
+		.claude\rules\razor.md = .claude\rules\razor.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "draw-a-diagram", "draw-a-diagram", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\draw-a-diagram\SKILL.md = .claude\skills\draw-a-diagram\SKILL.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
@@ -2531,6 +2548,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{D75EE941-E529-4772-A167-BAB95713163A} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700C2} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{C3300A33-7E1B-4C9A-9F7D-2026110700C1} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}

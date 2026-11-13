@@ -1,8 +1,10 @@
-namespace LouisAgent.Core.Tests.Docs;
+namespace LouisAgent.Core.Tests.Docs.Instructions;
 
 /// <summary>
-/// Keeps what Claude Code loads into its context short: every CLAUDE.md in the repo and every rules file in
-/// .claude/rules/ has at most 200 lines, the size Claude Code's own guidance gives (Louis, 2026-10-29).
+/// Keeps what Claude Code loads into its context short: every CLAUDE.md in the repo, every rules file in
+/// .claude/rules/ and, since CL63, every skill has at most 200 lines, the size Claude Code's own guidance gives for
+/// a CLAUDE.md (Louis, 2026-10-29). A skill may be longer by that guidance, but only its start is kept when a long
+/// session is compacted, so ours stay short.
 /// </summary>
 /// <remarks>
 /// A plain rule, not a ratchet: these files are few, so there is no list to shrink. What doesn't fit goes to an ADR
@@ -31,13 +33,17 @@ public class ClaudeMdSizeTests
             "doesn't fit goes to an ADR, a rules file or a guide (CL25):\n  " + string.Join("\n  ", over));
     }
 
-    /// <summary>The files Claude Code loads as instructions: every CLAUDE.md, and the rules files.</summary>
+    /// <summary>The files Claude Code loads as instructions: every CLAUDE.md, the rules files and the skills.</summary>
     private static IEnumerable<string> ClaudeFiles()
     {
         var claudeMds = Directory.EnumerateFiles(TestPaths.RepoRoot, "CLAUDE.md", SearchOption.AllDirectories)
             .Where(f => !f.Split(Path.DirectorySeparatorChar).Any(p => p is "bin" or "obj" or "node_modules"));
         string rules = Path.Combine(TestPaths.RepoRoot, ".claude", "rules");
         var ruleFiles = Directory.Exists(rules) ? Directory.EnumerateFiles(rules, "*.md") : [];
-        return claudeMds.Concat(ruleFiles);
+        string skills = Path.Combine(TestPaths.RepoRoot, ".claude/skills");
+        var skillFiles = Directory.Exists(skills)
+            ? Directory.EnumerateFiles(skills, "SKILL.md", SearchOption.AllDirectories)
+            : [];
+        return claudeMds.Concat(ruleFiles).Concat(skillFiles);
     }
 }

@@ -201,7 +201,16 @@ is written where and when it will be read.
 
 ## Approved during the build
 
-(empty)
+- **2026-11-13: built on the F134.1 branch, and before its step 6.** This plan said its own branch, after F134.1
+  was merged. Louis: "merge this into this branch", "we need CL on this branch so we have to do it first". So
+  the plan's branch was merged into `feature/F134.1-the-start-is-a-stage`, and the steps are built there, where
+  the docs rules it rewrites already are.
+- **2026-11-13, step 1: `.claude` is a group at the top of the solution.** The solution's rule leaves dot folders
+  out of its top level. Louis's pick of three (let `.claude` in by name, hang the files under the docs group, or
+  attach only a README): let it in by name. So the rule's test names `.claude` as the one dot folder in the
+  solution, and Rider's tree shows `rules` and `skills` under it, as on disk.
+- **2026-11-13, step 1: the two tests of the instruction files have a folder of their own**,
+  `Docs/Instructions/` in core's tests, since the `Docs` folder would have held seven files where six is the most.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md)
