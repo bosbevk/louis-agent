@@ -14,11 +14,11 @@
 |---|---|---|
 | Features (`F`) | 105 | 93 |
 | Fixes (`FX`) | 142 | 6 |
-| Cleanups (`CL`) | 33 | 28 |
+| Cleanups (`CL`) | 33 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (126 in the TODO)
+## Open (128 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
@@ -54,6 +54,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F125 | An agentic site: docs the standard way and public over MCP, buttons and cards in the guide, gaps, live demos, tools over MCP and discovery | Now |
 | F126 | Evals, redesigned: one `.eval.json` of conversations with turns, six facts in code, criteria a judge marks, flips to correct it, its own eval host, six screens; today's evals deleted, not ported | Now |
 | F131 | The chat on any website: one script tag opens our widget in a frame from louis-agent.dev on WordPress, static HTML or any site, nothing lost; a door per site, sites per tenant (after F43), a monthly rand budget (after F7), our own WordPress plugin, an answer that survives a page change; seven children | Now |
+| CL64 | Our prompts in the skill shape: a description that says when, the never-rules first, short numbered steps, detail loaded when needed, held by a test whose list can only shrink; the cook and the guide's voice rewritten and measured before and after; its own plan | Now, after CL63 |
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F134 | The showroom is a stage the agent runs (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; 2026-11-13: "make it very fancy", his pick F, centre stage, then "the agent must do it all", "things that can be shared, must go to framework"), a parent with six children: F134.1 the start is a stage, from general parts of the framework (line icons, a lit stage, a deck, a framed window, a dock), done when `/demos` is the stage at both widths and each window's words are held to its recording; F134.2 a demo on the stage, done when the five demo pages play in the new look; F134.3 the agent bar, the chat widget's `Corner` or `Bar` layout, done when a typed question is answered mid-walk and no page ends under the bar; F134.4 the agent runs the room, done when a live walk moves the stage only through its tools; F134.5 see how it did that, done when every answer turns over to numbers that match the ledger; F134.6 better photos | Next |
