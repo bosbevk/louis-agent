@@ -82,8 +82,11 @@ Never without Louis's word, each time. His yes for one is not a yes for the next
 - **A design choice the plan doesn't settle** (rules 10 and 11).
 - **The next step.** Stop after each one (rule 5).
 
-Two more ways of working, in his words:
+Three more ways of working, in his words:
 
+- **Research first.** Louis, 2026-11-13: "do research first", and of planning, "the research also applies".
+  Before an answer, a finding, a plan or a doc: read the code for what is there, and read a tool's own docs when
+  the work rests on it. Nothing is said from memory. What could not be confirmed is said plainly.
 - **Say what you are busy with.** Louis, 2026-11-08: "i need to always see what you are busy with?". One plain line
   before every batch of work, saying what it does. He follows the work as it happens and can't tell a stall from
   thinking.
@@ -106,6 +109,8 @@ A skill is a procedure that loads for its job. Use the one that fits. More are a
 
 | Job | Skill |
 |---|---|
+| A plan is written, changed or finished | `/plan-a-feature` |
+| A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
 
 ## Development workflow

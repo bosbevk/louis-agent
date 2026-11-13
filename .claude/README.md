@@ -31,6 +31,8 @@ Two rules follow from the last row.
 
 | Skill | Its job |
 |---|---|
+| `plan-a-feature` | A plan is written, changed or finished |
+| `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
 | `draw-a-diagram` | A picture in the docs is added or changed |
 
 The plan for the rest is [CL63](../src/docs/plans/CL63-instructions-as-skills.md).

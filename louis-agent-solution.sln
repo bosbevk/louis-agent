@@ -264,6 +264,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "draw-a-diagram", "draw-a-di
 		.claude\skills\draw-a-diagram\SKILL.md = .claude\skills\draw-a-diagram\SKILL.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plan-a-feature", "plan-a-feature", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C67}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\plan-a-feature\SKILL.md = .claude\skills\plan-a-feature\SKILL.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "put-a-finding", "put-a-finding", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C68}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\put-a-finding\SKILL.md = .claude\skills\put-a-finding\SKILL.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
@@ -2553,6 +2563,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C67} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C68} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C64} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C63}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C66} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0C65}
