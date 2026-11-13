@@ -1,0 +1,12 @@
+@use "web/tools/figures";
+
+/* The Resume area's card on the admin's home (F142): whose CV it is, then its figures drawn as the overview's are. */
+.resume-card-who {
+    margin: 0 0 10px;
+    color: var(--bs-emphasis-color);
+    font-weight: 600;
+}
+.figures { @include figures.row; }
+.figure { @include figures.figure; }
+.figure-value { @include figures.value; }
+.figure-name { @include figures.name; }

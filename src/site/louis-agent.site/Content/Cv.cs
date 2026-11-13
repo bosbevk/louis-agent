@@ -18,6 +18,12 @@ public static class Cv
     /// <summary>The CV, read once.</summary>
     public static Resume Resume { get; } = Read();
 
+    /// <summary>His photo, which is the site's file and not the CV's data.</summary>
+    public const string Photo = "images/louis-marais.jpg";
+
+    /// <summary>Where he'd work, said beside where he lives. The page's own words, as the photo is.</summary>
+    public const string Availability = "open to remote and hybrid";
+
     /// <summary>The embedded file's text.</summary>
     private static string ReadText()
     {

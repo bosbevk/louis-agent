@@ -1,0 +1,31 @@
+@use "web/tools/field";
+
+/* One labelled box of a form (F142): the framework's field label over its box, which lights when it has the focus,
+   and a quiet line of help under it. A box of several lines can be dragged taller. */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+.field-label { @include field.label; }
+.field-box {
+    @include field.box;
+    width: 100%;
+    font-family: inherit;
+    line-height: 1.45;
+    transition: border-color .12s ease, box-shadow .12s ease;
+}
+.field-box:focus {
+    outline: 0;
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .18);
+}
+textarea.field-box {
+    min-height: 5.4em;
+    resize: vertical;
+}
+.field-hint {
+    color: var(--bs-secondary-color);
+    font-size: 12px;
+}

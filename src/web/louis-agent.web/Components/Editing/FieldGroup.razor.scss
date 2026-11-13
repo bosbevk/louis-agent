@@ -1,0 +1,27 @@
+/* A few fields that belong together (F142): a small heading, then the fields in as many columns as fit; a box of
+   several lines, a list and a field of tags each take the whole width. The fieldset's own frame is taken away. */
+.field-group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.field-group + .field-group { margin-top: 22px; }
+.field-group-title {
+    float: none;
+    width: auto;
+    margin: 0 0 10px;
+    padding: 0;
+    color: var(--bs-emphasis-color);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+.field-group-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px 14px;
+}
+.field-group-fields ::deep .field:has(textarea),
+.field-group-fields ::deep .list-editor,
+.field-group-fields ::deep .tag-input { grid-column: 1 / -1; }

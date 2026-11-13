@@ -1,0 +1,24 @@
+@inherits AdminCardBase
+@using LouisAgent.Web.Components.Admin
+@using LouisAgent.Site.Resumes.Sources
+@* The Resume area's card on the admin's home (F142): whose CV the site holds and how much is in it. *@
+
+<AdminCard Title="Resume" Open="@ResumeAddress.Editor">
+    @if (_resume is { } cv)
+    {
+        <p class="resume-card-who">@cv.Basics.Name</p>
+        <div class="figures">
+            <div class="figure"><span class="figure-value">@cv.Work.Count</span><span class="figure-name">jobs</span></div>
+            <div class="figure"><span class="figure-value">@cv.Skills.Count</span><span class="figure-name">skill groups</span></div>
+            <div class="figure"><span class="figure-value">@cv.Certificates.Count</span><span class="figure-name">certificates</span></div>
+        </div>
+    }
+    else if (NotRead)
+    {
+        <span class="muted">Not read: the API isn't answering.</span>
+    }
+    else
+    {
+        <span class="muted">Loading…</span>
+    }
+</AdminCard>

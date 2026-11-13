@@ -1,0 +1,33 @@
+/* The CV's page inside the editor (F142): a framed sheet that scrolls on its own. The page is laid out at a
+   desktop's width at least, and made smaller to fit when the sheet is narrower, so it reads as the real page does. */
+$page-width: 1180px;
+
+.resume-sheet {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+    background: var(--bs-secondary-bg);
+}
+.resume-sheet-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--bs-border-color);
+    font-size: 12.5px;
+}
+.resume-sheet-name { color: var(--bs-emphasis-color); font-weight: 700; }
+.resume-sheet-saved { color: var(--bs-secondary-color); }
+.resume-sheet-saved:hover { color: var(--bs-emphasis-color); }
+.resume-sheet-frame {
+    max-height: calc(100vh - 170px);
+    overflow: hidden auto;
+    container-type: inline-size;
+}
+/* The sheet's width over the page's, as a plain number: the tangent of the angle the two lengths make. Never
+   more than one, so a wide screen shows the page at its real size. */
+.resume-sheet-page {
+    width: max(#{$page-width}, 100%);
+    zoom: min(1, tan(atan2(100cqw, #{$page-width})));
+}

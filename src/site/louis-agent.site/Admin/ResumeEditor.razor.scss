@@ -1,0 +1,39 @@
+/* The CV's editor (F142): the CV's page takes the room, and the small form for what it doesn't draw keeps a narrow
+   column beside it. The draft's state sits beside Save with a dot in its colour. On a narrow screen the form goes
+   under the page. */
+.resume-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+    align-items: start;
+}
+.resume-aside { padding: 18px; }
+
+.draft-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-right: 6px;
+    color: var(--bs-secondary-color);
+    font-size: 13px;
+}
+.draft-state::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bs-border-color);
+}
+.draft-state.is-unsaved::before { background: var(--bs-warning); }
+.draft-state.is-saved::before { background: var(--bs-success); }
+.draft-state.is-busy::before { background: var(--bs-primary); }
+.draft-save:not(:disabled) {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: var(--bs-body-bg);
+}
+.draft-save:disabled, .draft-discard:disabled { opacity: .5; cursor: default; }
+
+@media (max-width: 1100px) {
+    .resume-editor { grid-template-columns: minmax(0, 1fr); }
+}

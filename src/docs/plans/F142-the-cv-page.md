@@ -169,6 +169,24 @@ says; a typed file both read can't. F143 builds on it (skill 4, *Tool design*).
   `ResumeView` redrawn as he types. Presentation Model (Fowler): the form edits a draft copy of the record and Save
   sends it. Over the packs' described screens (no preview, no tailored look) and a raw JSON editor (not friendly).
   With "a polished finished modern look".
+- **A site's own admin page is no public page** (Louis's pick of three, at step 7): an address under `/admin` is
+  never prerendered for a search engine and never in the list the guide searches, by one rule in the server's
+  `SiteRoutes`. The CV's editor is the first admin page a site keeps in its own project. Over the areas telling the
+  server which pages are theirs (more wiring, the same result) and the editor in a project of its own (a project
+  for one page).
+- **The CV is edited on its own page** (Louis, at step 7, having seen the forms: "can we not just edit it inline?").
+  His pick of three replaces the form per section: the editor is the CV's page inside the admin, and a piece of text
+  is changed where it stands. Inline edit, as the design systems call it (Atlassian, PatternFly): click the words,
+  a small box takes their place with a tick and a cross, Enter keeps and Escape drops (his pick of three, over a box
+  dressed as the text and the text itself made editable). What the page doesn't draw (the headline, the phone, the
+  website, the country) has a small form beside the page. The view's components learn no edit mode: each gets its
+  part of the CV and hands a changed copy back, and a piece of text is editable exactly when something listens for
+  its change, so the public page draws plain text as before. The draft (Presentation Model), Save, Discard and the
+  admin area stay as approved.
+- **Step 7 in three** (Louis's pick of three): *7a* the frame: the Resume area with its link and card, the editor's
+  page with the draft, Save and Discard, the CV drawn in it, the form for what the page doesn't draw, and the rule
+  above. *7b* the top and the facts edited in place, with add, remove and move on the links and the facts. *7c* the
+  same for the rest: Now, jobs, skills, education and the last section.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Next: [F143 the guide drives the CV](F143-the-guide-drives-the-cv.md)
