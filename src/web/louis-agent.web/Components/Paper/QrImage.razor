@@ -1,0 +1,5 @@
+@* A QR code as a picture: a white square with the code's dark cells on it, drawn sharp at any size. *@
+<svg class="qr-image" viewBox="@Box" role="img" aria-label="@Label" shape-rendering="crispEdges">
+    <rect width="@_drawing.Size" height="@_drawing.Size" fill="#fff"/>
+    <path d="@_drawing.Path" fill="#000"/>
+</svg>

@@ -1,0 +1,6 @@
+@* A link as it is printed: its QR code, its words and its address written short. The code is the link, so a PDF
+   read on a screen can still be clicked. Drawn on paper only: its style hides it on a screen. *@
+<a class="paper-link @(Small ? "is-small" : null)" href="@Href">
+    <QrImage Value="@Target" Label="@($"QR code: {Label}")"/>
+    <span class="paper-link-words"><b>@Label</b><span class="paper-link-address">@Written</span></span>
+</a>
