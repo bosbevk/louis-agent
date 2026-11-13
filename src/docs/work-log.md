@@ -12,19 +12,19 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 104 | 90 |
+| Features (`F`) | 104 | 92 |
 | Fixes (`FX`) | 138 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (124 in the TODO)
+## Open (126 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F143 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now, after F144 |
-| F142 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F143 |
-| F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F142 |
+| F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now, after F144 |
+| F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
+| F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now, after F127 |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now, after F127 |
@@ -55,6 +55,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F137 | The site's card content as JSON: the demo cards, the pricing, what it does and the custom-agent steps read from JSON beside their pages and drawn by one card component, so an agent that edits the site changes data, not markup; groundwork for F133, after CL60 | Next |
 | F133 | A website with an agent, set up by talking to it (Louis, 2026-11-11: "How about I build a wix with my platform"): not a Wix, but one record per business that draws both its site and its agent, three templates (guesthouse, restaurant, practice), a setup pack that writes the record as the owner talks, preview then checkout then live on its own host name; builds on F131, F43, F130.1 and F7; seven proposed children, four open choices (the record's shape before F131.1 starts) | Next |
 | F134 | The showroom looks modern (Louis, 2026-11-11: "this looks off and those icons", "everything is a bit too flat"; his picks: look B, showcase with photos, and Tabler Icons): line icons instead of emoji, one raised surface, a rail with room, a photo on each business's cover, the index in a centred column under a photo hero; five steps | Next |
+| F142 | Louis's CV as a page at `/cv`: `cv.json` in the JSON Resume shape, records and a `ResumeView` in the framework's web, the nav's CV mark, Save as PDF, no private details; six steps | Next |
+| F143 | The guide drives Louis's CV: a resume pack with `GetResume` over the same `cv.json`, `/cv` in the place index, a hiring focus skill, an eval of eight conversations; after F142 | Next, after F142 |
 | F48 | Recipe maths and a teaching cook | Next |
 | F46 | Localisation | Next |
 | F50 | Puls's local specialists | Next |
