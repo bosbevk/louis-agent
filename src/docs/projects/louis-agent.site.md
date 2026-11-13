@@ -23,6 +23,12 @@ that uses packs and an identity. Nothing else in `src/` references it (`SiteBoun
   the default, on exactly the three packs it names; the program serves the site's pages as HTML (F121) and the API the
   guide's chat runs on, behind the key check with the guide's open door, and nothing else: no accounts, no eval
   studio, no coding agent with a shell. `SiteCatalogTests` holds both.
+- **What a page the host renders asks for is one named list**, `SitePageServices`: the chat's words, an HTTP
+  client, the saved CV, and the site's addresses and areas as the site's own program registers them. With the
+  areas the showroom's start has its demos in the HTML a search engine reads. `PagesForACrawlerTests` draws
+  every page with that list, so a page that can no longer be drawn there fails a test instead of quietly going
+  out as the plain shell. The host draws a page once, at its own route and without its layout, and serves
+  that for every place on the page.
 - **Its admin** (F127.8) is the framework's, named in `LouisAgentDevAreas` with the site's own `Layout/AdminLayout`:
   `/admin/overview` shows the guide's talks today and this month, their cost in rand, the leads (its `SendLead` calls),
   the parts of the site and the demo businesses they were on, and the latest talks, from the turn log and the ledger in

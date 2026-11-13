@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 105 | 93 |
-| Fixes (`FX`) | 142 | 6 |
+| Fixes (`FX`) | 143 | 6 |
 | Cleanups (`CL`) | 33 | 29 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -261,10 +261,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (142 done)
+## Fixes (143 done)
 
 | Id | When | What |
 |---|---|---|
+| FX155 | 2026-11-14 | A search engine's showroom has its demos: the host drew `/demos` for a crawler with no demo in it, since its hand-written list of what a page asks for lacked the site's areas; the list is one named class now, with the site's addresses and areas in it, and a test draws every page with it |
 | FX154 | 2026-11-13 | The CV prints as its page, on white paper, every link a QR code: Save as PDF gave seven pages in the phone's layout with black margins, a grey cast and a 13 MB file; it is now the desktop layout set for A4 in four pages and 238 KB, the framework's grain and dark canvas are off on paper, and a link is printed as its QR code (`PaperLink`, in the framework's web) |
 | FX153 | 2026-11-13 | The CV's editor is behind the admin's key: `/admin/resume` opened for anyone, because it read the CV on the public page's open route and only Save asked for the key; the editor and its card now read it on the admin's own route, so without the key there is only the place to enter it |
 | FX152 | 2026-11-13 | A choice with a box asks in the agent's voice, and its answer draws no bubble: the guide's card read "Tell you my business", the tool's own example, over a line in the guide's voice; the example and the toolset guide now make a written choice the agent's ask ("Tell me about your business"), and words sent from its box leave their bubble out, as a click's and a form's do |

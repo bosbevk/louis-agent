@@ -2,9 +2,9 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using LouisAgent.Api.Site.Rendering;
 using LouisAgent.Site.Pages;
-using LouisAgent.Web.Text;
+using LouisAgent.SiteApi;
+using LouisAgent.SiteApi.Resumes;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Site.Tests.Pages.Meta;
 
@@ -26,11 +26,8 @@ public partial class PageHeadingsTests
     [TestCaseSource(nameof(Pages))]
     public async Task EveryPage_HasOneH1(Type page, string address)
     {
-        var prerenderer = new PagePrerenderer(services =>
-        {
-            services.AddSingleton(new ChatText());
-            services.AddSingleton(new HttpClient());
-        });
+        // The host's own list (FX155), with no folder for the CV, so it is the built-in one.
+        var prerenderer = new PagePrerenderer(services => SitePageServices.Register(services, new ResumeStore(null)));
 
         var rendered = await prerenderer.RenderAsync(page, new Uri(new Uri("https://louis-agent.dev"), address));
 
