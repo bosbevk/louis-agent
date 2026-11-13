@@ -219,7 +219,8 @@ docs with only what is built"): so the `specs/` folders go, and "spec" is not a 
 the tag `pre-f150`, where the four TODO rows that link one (F76, F88, the session architecture's and the PDF
 search's) then point, as the rows of CL24's folded docs point at `pre-cl24`.
 
-**What stays:** `SETUP.md` and `SITE_OWNERS.md` (standing pages; the second is an address Puls's browser sends to
+**What stays:** the plans (Louis: "plans stay"): every plan and draft in a `plans/` folder keeps its place, built
+or not, and is deleted only when its work is done, as now; `SETUP.md` and `SITE_OWNERS.md` (standing pages; the second is an address Puls's browser sends to
 site owners), and a `README.md` beside a `config/`, `docker/` or `deploy/` folder, which lives with what it is
 about (ADR 0074) and only gains its header.
 
