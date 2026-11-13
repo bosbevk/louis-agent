@@ -20,10 +20,14 @@ public partial class ApiRoutesSnapshotTests
         Path.Combine(ApiTestHost.RepoRoot, "demos/puls/tests/louis-agent.api.tests", "Endpoints", "Routing",
             "ApiRoutesSnapshot.json");
 
+    /// <summary>
+    /// The framework's own mapping calls. The last two (F142) hand a host the <c>/v1</c> group for routes of its own,
+    /// which that host's tests hold, as louis-agent.dev's hold its CV's.
+    /// </summary>
     private static readonly string[] AllowedInProgram =
     [
         "MapStaticAssets", "MapLouisAgentSite", "MapApi", "MapLouisAgentApi", "MapAdmin", "MapLouisAgentAccounts",
-        "MapLouisAgentEvals"
+        "MapLouisAgentEvals", "MapHostGroup", "MapLouisAgentHostGroup"
     ];
 
     /// <summary>Every route as "METHOD /pattern (Access)", sorted, as the golden file holds it.</summary>

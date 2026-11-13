@@ -1,0 +1,26 @@
+@* The CV's schooling (F142): the certificates with no link first, newest, then each school or course, with its dates. *@
+<div class="edu">
+    @foreach (var certificate in Certificates)
+    {
+        <div class="edu-row">
+            <div class="when">@certificate.Date</div>
+            <div>
+                <h3>@certificate.Name</h3>
+                @if (certificate.Issuer is { } issuer)
+                {
+                    <p>@issuer</p>
+                }
+            </div>
+        </div>
+    }
+    @foreach (var school in Education)
+    {
+        <div class="edu-row">
+            <div class="when">@ResumeDates.Span(school.StartDate, school.EndDate, "now")</div>
+            <div>
+                <h3>@TitleOf(school)</h3>
+                <p>@WhereOf(school)</p>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,24 @@
+@* The CV's "now" band (F142): what Louis is building, its headline and words, and a panel per part with its label
+   words, its text and the link to where the site shows it. *@
+<BandTitle Class="chrome">@(Project.Headline ?? Project.Name)</BandTitle>
+@if (Project.Description is { } description)
+{
+    <p class="lede">@description</p>
+}
+<div class="grid-2 cv-parts">
+    @foreach (var part in Project.Parts)
+    {
+        <div class="panel">
+            @if (part.Keywords.Count > 0)
+            {
+                <span class="cv-part-label">@string.Join(" · ", part.Keywords)</span>
+            }
+            <h3>@part.Name</h3>
+            <p>@part.Summary</p>
+            @if (part.Url is { } url)
+            {
+                <a class="cv-part-link" href="@url" target="@TargetOf(url)" rel="@RelOf(url)">@(part.Link ?? part.Name) →</a>
+            }
+        </div>
+    }
+</div>

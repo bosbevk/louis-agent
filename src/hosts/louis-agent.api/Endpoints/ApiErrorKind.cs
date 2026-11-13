@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Endpoints;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
-internal enum ApiErrorKind
+public enum ApiErrorKind
 {
     /// <summary>The request asked for something we can't do as asked (a 400, or a 415 for a binary file).</summary>
     [WireName("invalid_request_error")] InvalidRequest,

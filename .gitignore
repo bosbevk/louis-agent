@@ -38,6 +38,8 @@ logs/
 
 # What a demo's running stack keeps (F31: puls-mongo's data folder); a folder named data elsewhere is code's
 /demos/*/data/
+# What the framework's site's host keeps of its own (F142: the CV as the admin's editor saved it)
+/src/site/data/
 
 # Secrets and local configuration, in any demo's config/ (see its .env.secrets.example)
 **/config/.env

@@ -31,6 +31,9 @@
          public"). The engine's own file, embedded here by link, so the page can never drift from it; a test holds the
          two equal. When the engine ships as a package the page reads the package's copy instead. -->
     <EmbeddedResource Include="..\..\engine\louis-agent.core\prompts\shared\principles.md" Link="Content\principles.md" LogicalName="principles.md" />
+    <!-- F142: Louis's CV, the one file the /cv page and the guide read. Embedded, never served as a file of its own. -->
+    <Content Remove="Content\cv.json" />
+    <EmbeddedResource Include="Content\cv.json" LogicalName="cv.json" />
   </ItemGroup>
 
   <ItemGroup>

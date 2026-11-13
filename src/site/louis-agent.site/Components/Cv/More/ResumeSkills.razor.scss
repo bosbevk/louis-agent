@@ -1,0 +1,7 @@
+/* The CV's skills (F142): three panels a row, one on a phone. */
+.cv-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.cv-skills h3 { font-size: 16px; }
+
+@media (max-width: 820px) {
+    .cv-skills { grid-template-columns: minmax(0, 1fr); }
+}

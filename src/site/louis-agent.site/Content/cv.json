@@ -1,0 +1,160 @@
+{
+  "basics": {
+    "name": "Louis Marais",
+    "label": "Senior full-stack developer (.NET and Angular), growing into AI engineering",
+    "email": "louis.marais@live.com",
+    "phone": "066 391 2470",
+    "url": "https://louis-agent.dev",
+    "summary": "Senior full-stack developer (.NET and Angular) with 20 years of building business software, now growing into AI engineering: designing, building and shipping the software that puts large language models to work. I built louis-agent on my own, an AI agent framework in C# with its evals, cost ledger and tracing, live in Azure.",
+    "location": { "city": "Malmesbury", "region": "Western Cape", "countryCode": "ZA" },
+    "profiles": [
+      { "network": "LinkedIn", "username": "louismarais86", "url": "https://www.linkedin.com/in/louismarais86" },
+      { "network": "GitHub", "username": "Louis Marais", "url": "https://github.com/bosbevk" },
+      { "network": "WhatsApp", "url": "https://wa.me/27663912470" }
+    ]
+  },
+  "facts": [
+    { "value": "20 years", "label": "building business software in .NET" },
+    { "value": "327", "label": "merged pull requests on louis-agent, one reviewed step each" },
+    { "value": "−87%", "label": "input cost per benchmark run after prompt caching, quality held" },
+    { "value": "6", "label": "industries: oil & gas, finance, agriculture, government, compliance, eCommerce" }
+  ],
+  "now": {
+    "name": "louis-agent",
+    "url": "https://louis-agent.dev",
+    "headline": "louis-agent: an AI agent framework, built in the open on this site.",
+    "description": "This year I've been learning AI engineering the hands-on way: every skill built, measured before and after, and written up. It runs this site, its guide in the corner and the Puls specialists on mypuls.co.za.",
+    "parts": [
+      {
+        "name": "The engine",
+        "keywords": [ "Agent loop", "Tools", "Multi-agent" ],
+        "summary": "A streaming tool loop on Microsoft.Extensions.AI over Anthropic, OpenAI and Ollama, tools grouped in packs, usable from Rider (ACP), a Blazor app, an HTTP API, a CLI or as an MCP server. An orchestrator watches a service's errors, hands fixes to the coding agent, and checks each one itself: the commit, the failing request replayed, the tests run.",
+        "url": "/framework/how-it-works",
+        "link": "How it works"
+      },
+      {
+        "name": "Evals in C#",
+        "keywords": [ "Evaluation" ],
+        "summary": "One harness for every check: code graders first, an LLM judge only after it agreed with my own labels (35 of 36), replays that re-score for $0, and an eval studio to run them.",
+        "url": "/framework/measured/checks",
+        "link": "Measured, not assumed"
+      },
+      {
+        "name": "Every request measured",
+        "keywords": [ "Cost", "Observability" ],
+        "summary": "A usage ledger priced by a dated price table, shown in rand. Prompt caching took a benchmark run from $0.66 to $0.13. OpenTelemetry traces per turn and tool call.",
+        "url": "/framework/measured/rand",
+        "link": "The numbers"
+      },
+      {
+        "name": "In production",
+        "keywords": [ "Protocols", "Safety", "Shipping" ],
+        "summary": "MCP server and ACP for Rider. Arguments never through a shell, robots.txt obeyed in code. Azure Container Apps from Bicep, deployed by GitHub Actions after green CI.",
+        "url": "/framework/architecture",
+        "link": "Architecture"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Kohde",
+      "position": "Senior Software Developer",
+      "summary": "eCommerce",
+      "startDate": "2022-03",
+      "highlights": [
+        "Lead developer of The Compliance Network (app.compnet.info), a compliance platform, from its start in April 2022.",
+        "Built on AxizDigital, an eCommerce platform, since December 2022.",
+        "Built the Axiz price-rule agent: an MCP server that lets an AI assistant draft price rules from grounded reference data, for a person to approve."
+      ],
+      "keywords": [ ".NET", "ABP", "Web API", "Angular", "Identity Server", "MongoDB", "Kubernetes", "Azure DevOps" ]
+    },
+    {
+      "name": "Western Cape Government",
+      "position": "Senior Software Developer (contract)",
+      "summary": "Roads",
+      "startDate": "2019-02",
+      "endDate": "2022-02",
+      "highlights": [
+        "Rewrote the Pavement Management System and the Gravel Road Management System from Delphi to .NET."
+      ],
+      "keywords": [ ".NET", "ASP.NET MVC", "SQL Server" ]
+    },
+    {
+      "name": "Ceres Fruit Growers",
+      "position": "Systems Analyst / Developer",
+      "startDate": "2016-02",
+      "endDate": "2018-12",
+      "highlights": [
+        "Built a bulk SMS system to send and track messages, and an operations dashboard (cold-room load against temperature, weekly hours per department).",
+        "Built an Outlook ribbon that attaches Reporting Services reports straight into an email, and moved Crystal Reports to SSRS."
+      ],
+      "keywords": [ "ASP.NET MVC", "AngularJS", "SSRS", "SQL Server" ]
+    },
+    {
+      "name": "MES Africa",
+      "position": "Senior Developer",
+      "summary": "at PetroSA, Mossel Bay",
+      "startDate": "2013-02",
+      "endDate": "2016-01",
+      "highlights": [
+        "Team lead: managed and mentored the development team, senior PI developer, and looked after the IIS, PI and SQL environments.",
+        "Upgraded the site access-control database from SQL 2000 to 2008 R2, and three PI interfaces to the OPC standard.",
+        "Rewrote the lab (LIMS) reports in SSRS and built production-accounting reports from SQL and PI data."
+      ],
+      "keywords": [ "ASP.NET MVC", "OSIsoft PI", "SSRS", "SharePoint" ]
+    },
+    {
+      "name": "Alacrity",
+      "position": "Analyst Developer",
+      "summary": "consulting at Old Mutual",
+      "startDate": "2010-08",
+      "endDate": "2013-02",
+      "highlights": [
+        "Shipped OneFM's first release (referrals and quotes) in April 2011 and the rest of policy management, with automated premium collections, in December 2011.",
+        "Owned the premium-collections data in the migration from the old system, November 2012."
+      ],
+      "keywords": [ "ASP.NET MVC", "LINQ", "T-SQL", "jQuery", "SSRS" ]
+    },
+    {
+      "name": "MES Africa",
+      "position": "Analyst Developer",
+      "summary": "at PetroSA",
+      "startDate": "2007-07",
+      "endDate": "2010-08",
+      "highlights": [
+        "Built a systems-monitoring dashboard on SharePoint, and a WCF service that pushes live values and calculations from the PI real-time database to its clients."
+      ],
+      "keywords": [ "WCF", "Silverlight", "SharePoint", "ASP.NET" ]
+    }
+  ],
+  "education": [
+    { "institution": "CTI Education Group, Durbanville", "area": "Comprehensive Programming, with a certificate in Using Linux", "studyType": "Diploma in Information Systems", "startDate": "2005", "endDate": "2006" },
+    { "institution": "Pearson College London (through CTI)", "studyType": "Higher National Diploma, Information Systems", "startDate": "2005", "endDate": "2006" },
+    { "institution": "ViewPoint Training", "area": "IIBA-accredited, 30 CDUs", "studyType": "Business Analysis", "startDate": "2010-04", "endDate": "2010-04" },
+    { "institution": "Hoërskool Swartland", "studyType": "Matric", "endDate": "2004" }
+  ],
+  "skills": [
+    { "name": "AI engineering", "keywords": [ "Agent loops", "Tool design", "Evals & LLM judges", "Prompt caching", "Context engineering", "MCP", "Multi-agent", "Claude Code", "Local LLMs (Ollama)", "Claude · OpenAI" ] },
+    { "name": "Back end", "keywords": [ "C#", ".NET 10", "ASP.NET Core", "Web API", "Entity Framework", "LINQ", "ABP", "DDD" ] },
+    { "name": "Front end", "keywords": [ "Angular", "TypeScript", "Blazor", "JavaScript", "HTML", "CSS / SCSS" ] },
+    { "name": "Data", "keywords": [ "SQL Server", "T-SQL", "MongoDB", "SSRS", "SSIS" ] },
+    { "name": "Cloud & delivery", "keywords": [ "Azure", "Bicep", "Docker", "Kubernetes", "GitHub Actions", "Azure DevOps", "OpenTelemetry" ] },
+    { "name": "Ways of working", "keywords": [ "Business analysis", "Requirements", "Agile / Scrum", "Test first", "ADRs", "Mentoring" ] }
+  ],
+  "certificates": [
+    { "name": "Scope AI Solutions", "date": "2026" },
+    { "name": "Evaluate AI Applications", "date": "2026" },
+    { "name": "Design and Build Agentic Systems", "date": "2026" },
+    { "name": "Betterview results: my assessment highlights", "issuer": "Betterview", "url": "https://betterview.com/public/highlights/f205c1e2c4644890845d1623e7ff8723" },
+    { "name": "Member of the International High IQ Society", "issuer": "International High IQ Society", "url": "https://www.ihiqs.org" }
+  ],
+  "languages": [
+    { "language": "English" },
+    { "language": "Afrikaans" }
+  ],
+  "interests": [
+    { "name": "Philosophy and politics", "keywords": [ "The Stoics", "Kierkegaard" ] },
+    { "name": "Gardening" },
+    { "name": "Soft skills", "keywords": [ "Collaboration", "Resilience", "Drive", "Attention to detail" ] }
+  ]
+}

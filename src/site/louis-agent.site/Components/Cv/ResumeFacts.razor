@@ -1,0 +1,10 @@
+@* The CV's facts row (F142): the few numbers that say the most, each over what it counts. *@
+@if (Facts.Count > 0)
+{
+    <div class="cv-facts">
+        @foreach (var fact in Facts)
+        {
+            <div class="cv-fact"><b>@fact.Value</b><span>@fact.Label</span></div>
+        }
+    </div>
+}

@@ -1,0 +1,37 @@
+@typeparam TItem
+@* A list a person edits in a form: a line per item with its place, its title and a note, which opens on the item's
+   own fields; move up, move down and remove at the line's end, and add under the list. *@
+<div class="list-editor">
+    @for (int index = 0; index < Items.Count; index++)
+    {
+        // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+        int at = index;
+        var item = Items[at];
+        <div class="list-row @(at == _open ? "is-open" : null)">
+            <div class="list-row-head">
+                <button type="button" class="list-row-toggle" aria-expanded="@(at == _open ? "true" : "false")"
+                        @onclick="() => Toggle(at)">
+                    <span class="list-row-place">@(at + 1)</span>
+                    <span class="list-row-title @(HasTitle(item) ? null : "is-new")">@Title(item)</span>
+                    @if (NoteOf?.Invoke(item) is { Length: > 0 } note)
+                    {
+                        <span class="list-row-note">@note</span>
+                    }
+                </button>
+                <div class="list-row-tools">
+                    <button type="button" class="list-tool" aria-label="Move @Noun @(at + 1) up" title="Move up"
+                            disabled="@(at == 0)" @onclick="() => MoveAsync(at, -1)">↑</button>
+                    <button type="button" class="list-tool" aria-label="Move @Noun @(at + 1) down" title="Move down"
+                            disabled="@(at == Items.Count - 1)" @onclick="() => MoveAsync(at, 1)">↓</button>
+                    <button type="button" class="list-tool is-remove" aria-label="Remove @Noun @(at + 1)"
+                            title="Remove" @onclick="() => RemoveAsync(at)">×</button>
+                </div>
+            </div>
+            @if (at == _open)
+            {
+                <div class="list-row-body">@ChildContent(RowAt(at))</div>
+            }
+        </div>
+    }
+    <button type="button" class="list-add" @onclick="AddAsync"><span aria-hidden="true">+</span> @AddLabel</button>
+</div>

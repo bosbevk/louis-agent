@@ -1,10 +1,13 @@
 using LouisAgent.Api;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Site;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Web;
+using LouisAgent.Site.Resumes.Sources;
 using LouisAgent.SiteApi;
+using LouisAgent.SiteApi.Resumes;
 
 // The framework's site's host (F124): the site's pages as HTML, and the API the guide in the corner runs on. It loads
 // the guide and its three packs, so a visitor reaches nothing else.
@@ -23,12 +26,20 @@ app.MapMovedPages();
 
 // The site's files, and any other path loads the app: a page meant for search as its own HTML (F121), rendered with
 // the words its pages read; the landing's sections sit under /home.
+// Louis's CV as the admin's editor saved it (F142), read by its routes and by the pages rendered here.
+var resumes = ResumeStore.FromEnvironment();
+
 app.MapStaticAssets();
 app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly, services =>
 {
     services.AddSingleton(new LouisAgent.Web.Text.ChatText());
     services.AddSingleton(new HttpClient());
+    // A page rendered here reads the CV from the store, where the browser asks the API.
+    services.AddSingleton<IResumeSource>(new StoredResumeSource(resumes));
 }, home: "home");
 
 app.MapLouisAgentApi(host);
+
+// The site's own routes, on the API's group: the CV, read by anyone and saved from the admin.
+app.MapLouisAgentHostGroup().MapSiteResume(resumes, AdminOptions.FromEnvironment().AdminKey);
 app.Run();

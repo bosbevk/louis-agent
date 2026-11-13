@@ -25,6 +25,8 @@ services:
       HOST_CULTURE: en-ZA
       # The usage ledger and the run logs, kept on the host after the container is removed.
       LOG_DIRECTORY: /logs
+      # What the site's host keeps of its own (F142): Louis's CV as the admin's editor saved it. Kept on the host too.
+      SITE_DATA_DIRECTORY: /data
       # The guide's lead mail (F112): RESEND_API_KEY comes from .env.secrets when it is there, else the lead goes to
       # the log and the guide says so. Without these the guide's identity can't open (FX90).
       LEADS_TO: louismarais0@gmail.com
@@ -40,3 +42,4 @@ services:
       - "127.0.0.1:${SITE_PORT:-5080}:8080"
     volumes:
       - ../logs:/logs
+      - ../data:/data

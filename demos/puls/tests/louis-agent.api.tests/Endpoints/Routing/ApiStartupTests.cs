@@ -20,4 +20,18 @@ public class ApiStartupTests
         Assert.That(() => app.MapLouisAgentApi(ApiTestHost.BareHost()),
             Throws.InvalidOperationException.With.Message.Contains("UseLouisAgentKey"));
     }
+
+    /// <summary>
+    /// A host's own routes go on the API's group (F142), which is held to the same rule: no key check, no group.
+    /// </summary>
+    [Test]
+    public async Task AHostsOwnGroup_RefusesToMap_WithoutTheKeyCheck()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseTestServer();
+        await using var app = builder.Build();
+
+        Assert.That(() => app.MapLouisAgentHostGroup(),
+            Throws.InvalidOperationException.With.Message.Contains("UseLouisAgentKey"));
+    }
 }

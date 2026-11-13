@@ -54,6 +54,9 @@ properties:
             value: en-ZA
           - name: LOG_DIRECTORY
             value: /logs
+          # What the site's host keeps of its own (F142): Louis's CV as the admin's editor saved it.
+          - name: SITE_DATA_DIRECTORY
+            value: /data
           - name: USAGE_IN_CHAT
             value: 'true'
           - name: LLM_PROVIDER
@@ -98,11 +101,15 @@ properties:
           # Container Apps ties the disk to the CPU: half a CPU allows 2 GiB.
           ephemeralStorage: 2Gi
         # The share louis-agent-workspace (storage louis-agent-vol on the environment, from the Bicep build): logs/ for
-        # the run files and the usage ledger, kept across revisions. The image carries the rest.
+        # the run files and the usage ledger, and data/ for what the site's host keeps of its own (F142: the saved
+        # CV), both kept across revisions. The image carries the rest.
         volumeMounts:
           - volumeName: louis-agent-vol
             subPath: logs
             mountPath: /logs
+          - volumeName: louis-agent-vol
+            subPath: data
+            mountPath: /data
         probes:
           - type: Startup
             tcpSocket:

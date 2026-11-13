@@ -1,0 +1,35 @@
+@* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. *@
+<div class="cv-hero">
+    <div>
+        <h1 class="chrome">@Basics.Name</h1>
+        @if (Basics.Summary is { } summary)
+        {
+            <p class="lede">@summary</p>
+        }
+        <p class="cv-where">@Where</p>
+        <div class="cv-reach">
+            @foreach (var profile in Basics.Profiles)
+            {
+                <a class="@ButtonOf(profile)" href="@profile.Url" target="_blank" rel="noopener">
+                    @if (profile.Network == LinkedIn)
+                    {
+                        <LinkedInMark/>
+                    }
+                    @if (profile.Network == WhatsApp)
+                    {
+                        <WhatsAppMark/>
+                    }
+                    @LabelOf(profile)
+                </a>
+            }
+            @if (Basics.Email is { } email)
+            {
+                <a class="btn btn-line" href="mailto:@email">@email</a>
+            }
+        </div>
+    </div>
+    @if (Photo is { } photo)
+    {
+        <img class="cv-photo" src="@photo" alt="@Basics.Name" width="560" height="700"/>
+    }
+</div>

@@ -67,6 +67,12 @@ internal static class ApiMap
         return v1;
     }
 
+    /// <summary>
+    /// A <c>/v1</c> group for a host's own routes (F142), beside the API's: the version is still written in this one
+    /// place, and the host marks each route with who may call it, as the API's are marked.
+    /// </summary>
+    public static RouteGroupBuilder MapHostGroup(this WebApplication app) => app.MapGroup(Version);
+
     /// <summary>The 404 for a <c>/v1</c> path no route matches, naming the path.</summary>
     private static JsonHttpResult<ApiError> UnknownRoute(string path) =>
         ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownRoute, new { Path = path }));
