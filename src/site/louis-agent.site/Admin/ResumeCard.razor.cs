@@ -17,7 +17,9 @@ public partial class ResumeCard
 {
     private Resume? _resume;
 
-    /// <summary>The CV the site holds now.</summary>
+    /// <summary>
+    /// The CV the site holds now, read on the admin's own route: without the key the card stays quiet.
+    /// </summary>
     protected override async Task ReadAsync() =>
-        _resume = await Api.GetAsync<Resume>(ResumeAddress.Read, ResumeReader.Options);
+        _resume = await Api.GetAsync<Resume>(ResumeAddress.Admin, ResumeReader.Options);
 }

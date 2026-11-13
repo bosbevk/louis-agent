@@ -20,7 +20,11 @@ public static class ResumeEndpoints
     {
         var handlers = new ResumeHandlers(store);
         v1.MapGet("/site/cv", handlers.Get).WithAccess(RouteAccess.Open);
-        v1.MapAdminGroup(adminKey).MapPut("/cv", handlers.PutAsync);
+
+        // The editor reads its copy here and not on the open route, so it can't open without the admin's key (FX153).
+        var admin = v1.MapAdminGroup(adminKey);
+        admin.MapGet("/cv", handlers.Get);
+        admin.MapPut("/cv", handlers.PutAsync);
         return v1;
     }
 }

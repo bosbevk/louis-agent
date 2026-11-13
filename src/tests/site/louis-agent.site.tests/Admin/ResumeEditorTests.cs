@@ -45,6 +45,48 @@ public class ResumeEditorTests
         });
     }
 
+    /// <summary>
+    /// FX153, Louis, on louis-agent.dev: "this should be behind the key it is not". Without the admin's key the
+    /// editor does not open: no page, no form, only the place to enter the key. The CV is public, but its editor
+    /// is the admin's.
+    /// </summary>
+    [Test]
+    public void WithoutTheKey_TheEditorDoesNotOpen()
+    {
+        var api = new CvApi(Cv.Resume) { Locked = true };
+        using var ctx = api.Context();
+
+        var editor = ctx.Render<ResumeEditor>();
+        editor.WaitForAssertion(() => Assert.That(editor.FindAll(".admin-gate"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(editor.FindAll(".admin-gate input[type=password]"), Has.Count.EqualTo(1),
+                "the key is asked for");
+            Assert.That(editor.FindAll(".resume-editor, .resume-sheet, .field-box, button.draft-save"), Is.Empty);
+        });
+    }
+
+    /// <summary>Once a key the API takes is saved, the editor opens, with no reload of the page.</summary>
+    [Test]
+    public void OnceAKeyIsSaved_TheEditorOpens()
+    {
+        var api = new CvApi(Cv.Resume) { Locked = true };
+        using var ctx = api.Context();
+        var editor = ctx.Render<ResumeEditor>();
+        editor.WaitForAssertion(() => Assert.That(editor.FindAll(".admin-gate"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+
+        api.Locked = false;
+        editor.Find(".admin-gate input[type=password]").Change("the-admin-key");
+        editor.Find(".admin-gate form").Submit();
+
+        editor.WaitForAssertion(() => Assert.That(editor.FindAll(".resume-editor"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+        Assert.That(editor.FindAll(".admin-gate"), Is.Empty);
+    }
+
     /// <summary>It opens on the copy the API holds, drawn as the page draws it, with nothing to save.</summary>
     [Test]
     public void TheEditor_OpensOnTheApisCopy_DrawnAsThePage()

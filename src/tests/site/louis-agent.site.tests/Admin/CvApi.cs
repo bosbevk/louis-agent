@@ -22,6 +22,9 @@ internal sealed class CvApi(Resume held)
     /// <summary>Why the next saves are refused, when they are.</summary>
     public string? Refusal { get; set; }
 
+    /// <summary>Whether the admin's routes refuse the caller, as they do without the admin's key.</summary>
+    public bool Locked { get; set; }
+
     /// <summary>The site's page context, its API being this one.</summary>
     public BunitContext Context()
     {
@@ -31,12 +34,16 @@ internal sealed class CvApi(Resume held)
         return ctx;
     }
 
-    /// <summary>The open read, the save behind the key, and nothing else.</summary>
+    /// <summary>The open read for the public page, the admin's read and save behind the key, and nothing else.</summary>
+    /// <remarks>Guard clauses, one per route (ADR 0051).</remarks>
     private HttpResponseMessage Answer(HttpRequestMessage request)
     {
         string path = request.RequestUri!.AbsolutePath;
         if (request.Method == HttpMethod.Get && path == "/v1/site/cv") return Json(HttpStatusCode.OK, Held);
-        if (request.Method == HttpMethod.Put && path == "/v1/admin/cv") return Save(request);
+        if (path != "/v1/admin/cv") return new HttpResponseMessage(HttpStatusCode.NotFound);
+        if (Locked) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+        if (request.Method == HttpMethod.Get) return Json(HttpStatusCode.OK, Held);
+        if (request.Method == HttpMethod.Put) return Save(request);
         return new HttpResponseMessage(HttpStatusCode.NotFound);
     }
 

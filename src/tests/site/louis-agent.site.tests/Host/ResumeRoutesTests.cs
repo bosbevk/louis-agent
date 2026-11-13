@@ -33,9 +33,13 @@ public class ResumeRoutesTests
         return context.Request;
     }
 
-    /// <summary>Anyone may read the CV, and only the admin key may save it.</summary>
+    /// <summary>
+    /// Anyone may read the CV the page shows. The admin's own route, where the editor reads its copy and saves it,
+    /// is behind the admin key both ways (FX153, Louis: "this should be behind the key it is not"): an editor that
+    /// read the open route opened for anyone.
+    /// </summary>
     [Test]
-    public void TheCv_IsOpenToRead_AndTheAdminsToSave()
+    public void TheCv_IsOpenToRead_AndTheAdminsRouteIsBehindTheKey_BothWays()
     {
         var (store, folder) = NewStore();
         try
@@ -46,12 +50,15 @@ public class ResumeRoutesTests
             app.MapGroup("/v1").MapSiteResume(store, adminKey: "the-admin-key");
 
             var routes = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
-                .OfType<RouteEndpoint>().ToDictionary(route => route.RoutePattern.RawText!);
+                .OfType<RouteEndpoint>().ToList();
+            var open = routes.Single(route => route.RoutePattern.RawText == "/v1/site/cv");
+            var admin = routes.Where(route => route.RoutePattern.RawText == "/v1/admin/cv").ToList();
             Assert.Multiple(() =>
             {
-                Assert.That(RouteAccessExtensions.AccessOf(routes["/v1/site/cv"]), Is.EqualTo(RouteAccess.Open));
-                Assert.That(RouteAccessExtensions.AccessOf(routes["/v1/admin/cv"]),
-                    Is.EqualTo(RouteAccess.AdminKey));
+                Assert.That(RouteAccessExtensions.AccessOf(open), Is.EqualTo(RouteAccess.Open));
+                Assert.That(admin.SelectMany(route => route.Metadata.GetMetadata<HttpMethodMetadata>()!.HttpMethods)
+                    .Order(), Is.EqualTo(new[] { "GET", "PUT" }));
+                Assert.That(admin.Select(RouteAccessExtensions.AccessOf), Has.All.EqualTo(RouteAccess.AdminKey));
             });
         }
         finally
