@@ -1,0 +1,177 @@
+<svg viewBox="-24 -24 928 876" width="928" height="876" role="img" aria-label="CL63 instructions as skills: what each file holds" xmlns="http://www.w3.org/2000/svg">
+  <title>CL63 instructions as skills: what each file holds</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="928" height="876" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="880" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">CL63 instructions as skills:</tspan>
+    <tspan class="title-rest">what each file holds</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed tone-green" d="M 364 62 L 494.5 62 Q 518.5 62 518.5 86 L 518.5 251.8 Q 518.5 275 541.8 275 L 565 275" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 364 488 L 476.5 488 Q 500.5 488 500.5 464 L 500.5 299 Q 500.5 275 524.5 275 L 565 275" marker-end="url(#arrow-green)" />
+    <path class="edge dashed tone-green" d="M 364 630 L 458.5 630 Q 482.5 630 482.5 606 L 482.5 441 Q 482.5 417 506.5 417 L 565 417" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="402.3" y="40" width="78" height="18" rx="4" />
+    <text class="word tone-green" x="441.3" y="52" text-anchor="middle">names each</text>
+    <rect class="word-chip tone-green" x="410.8" y="466" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="432.3" y="478" text-anchor="middle">holds</text>
+    <rect class="word-chip tone-green" x="401.8" y="608" width="43" height="18" rx="4" />
+    <text class="word tone-green" x="423.3" y="620" text-anchor="middle">sizes</text>
+    <rect class="box tone-green" x="0" y="0" width="364" height="124" rx="10" />
+    <text class="label tone-green" x="182" y="28" text-anchor="middle">CLAUDE.md</text>
+    <text class="note" x="182" y="44" text-anchor="middle">always loaded, step 2</text>
+    <path class="frame" d="M 0 64 L 364 64" />
+    <text class="word tone-green" x="14" y="82" text-anchor="start">the eleven working rules</text>
+    <text class="word tone-green" x="14" y="96" text-anchor="start">the hard stops, one list</text>
+    <text class="word tone-green" x="14" y="110" text-anchor="start">the loop of a step, naming a skill for each part</text>
+    <rect class="box tone-green" x="0" y="156" width="364" height="96" rx="10" />
+    <text class="label tone-green" x="182" y="184" text-anchor="middle">design-rules.md</text>
+    <text class="note" x="182" y="200" text-anchor="middle">always loaded, step 2</text>
+    <path class="frame" d="M 0 220 L 364 220" />
+    <text class="word tone-green" x="14" y="238" text-anchor="start">a design rule per line, with its ADR</text>
+    <rect class="box tone-green" x="0" y="298" width="364" height="96" rx="10" />
+    <text class="label tone-green" x="182" y="326" text-anchor="middle">repo-map.md</text>
+    <text class="note" x="182" y="342" text-anchor="middle">always loaded, step 2</text>
+    <path class="frame" d="M 0 362 L 364 362" />
+    <text class="word tone-green" x="14" y="380" text-anchor="start">where things are</text>
+    <rect class="box tone-green" x="0" y="433" width="364" height="110" rx="10" />
+    <text class="label tone-green" x="182" y="461" text-anchor="middle">SkillFilesTests</text>
+    <text class="note" x="182" y="477" text-anchor="middle">a test, step 1</text>
+    <path class="frame" d="M 0 497 L 364 497" />
+    <text class="word tone-green" x="14" y="515" text-anchor="start">every skill CLAUDE.md names exists</text>
+    <text class="word tone-green" x="14" y="529" text-anchor="start">every skill has a description</text>
+    <rect class="box tone-green" x="0" y="582" width="364" height="96" rx="10" />
+    <text class="label tone-green" x="182" y="610" text-anchor="middle">ClaudeMdSizeTests</text>
+    <text class="note" x="182" y="626" text-anchor="middle">a test, step 1</text>
+    <path class="frame" d="M 0 646 L 364 646" />
+    <text class="word tone-green" x="14" y="664" text-anchor="start">every file is at most 200 lines, skills too</text>
+    <rect class="box tone-green" x="565" y="213" width="315" height="124" rx="10" />
+    <text class="label tone-green" x="722.5" y="241" text-anchor="middle">SKILL.md</text>
+    <text class="note" x="722.5" y="257" text-anchor="middle">a skill, steps 1, 3 to 6</text>
+    <path class="frame" d="M 565 277 L 880 277" />
+    <text class="word tone-green" x="579" y="295" text-anchor="start">description: when it applies, always seen</text>
+    <text class="word tone-green" x="579" y="309" text-anchor="start">the must-dos, first</text>
+    <text class="word tone-green" x="579" y="323" text-anchor="start">the procedure</text>
+    <rect class="box tone-green" x="565" y="362" width="315" height="110" rx="10" />
+    <text class="label tone-green" x="722.5" y="390" text-anchor="middle">A rules file</text>
+    <text class="note" x="722.5" y="406" text-anchor="middle">by file type, step 7</text>
+    <path class="frame" d="M 565 426 L 880 426" />
+    <text class="word tone-green" x="579" y="444" text-anchor="start">paths: the files it loads with</text>
+    <text class="word tone-green" x="579" y="458" text-anchor="start">the how of that kind of file</text>
+  </g>
+  <rect class="notebar" x="0" y="774" width="880" height="54" rx="8" />
+  <g class="note-icon" transform="translate(12 784) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="796">
+    <tspan class="note-head">Three kinds of file:</tspan>
+    <tspan class="note-rest">CLAUDE.md names the skills and holds the stops, a rules file loads by path, and a skill has a</tspan>
+  </text>
+  <text class="notes" x="38" y="813">
+    <tspan class="note-rest">description always seen and a body loaded for its job.</tspan>
+  </text>
+</svg>
