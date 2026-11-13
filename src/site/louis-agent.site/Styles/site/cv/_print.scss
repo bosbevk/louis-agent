@@ -1,0 +1,65 @@
+/* The CV on paper (F142). "Save as PDF" is the browser's print dialog, and these rules lay the same page out on A4:
+   black on white, without the menu, the guide, the page's own buttons or the section list, and with nothing cut in
+   two where it can be helped. They are for paper only, and only for a page that holds the CV, so no other page and
+   no screen is touched. */
+@page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+}
+
+@media print {
+    /* The page's colours, set for paper where the screen's are set for the dark. */
+    body:has(.resume) {
+        --bs-body-bg: #fff;
+        --bs-body-color: #1a1a1a;
+        --bs-emphasis-color: #000;
+        --bs-secondary-color: #333;
+        --bs-tertiary-color: #555;
+        --bs-border-color: #cdd1d6;
+        --bs-secondary-bg: #fff;
+        --bs-tertiary-bg: #f5f6f7;
+        --web-ok: #1a7f37;
+        background: #fff;
+        color: #1a1a1a;
+    }
+
+    /* What is the site's frame and not the CV. */
+    body:has(.resume) .site-header,
+    body:has(.resume) .site-footer,
+    body:has(.resume) .site-index,
+    body:has(.resume) .site-progress,
+    body:has(.resume) .site-up,
+    body:has(.resume) .site-corner,
+    body:has(.resume) .chat-widget,
+    body:has(.resume) .guide-button,
+    body:has(.resume) .cv-print { display: none !important; }
+
+    body:has(.resume) .site,
+    body:has(.resume) .site-main { display: block; min-height: 0; padding: 0; background: none; animation: none; }
+
+    /* The silver letters are a gradient clipped to them, which paper draws as nothing: plain black instead. */
+    .resume .chrome {
+        background: none;
+        color: #000;
+        -webkit-text-fill-color: #000;
+    }
+
+    /* A band takes the room its words need, not a screen's height. */
+    .resume .band { min-height: 0; padding-block: 8mm 0; }
+    .resume .band:first-child { padding-top: 0; }
+
+    .resume .cv-hero,
+    .resume .cv-fact,
+    .resume .job,
+    .resume .panel,
+    .resume .edu-row { break-inside: avoid; }
+    .resume h2,
+    .resume h3 { break-after: avoid; }
+
+    /* A link is its words on paper, and a button is a quiet outline. */
+    .resume a { color: inherit; text-decoration: none; }
+    .resume .btn { border: 1px solid #cdd1d6; background: none; color: #1a1a1a; box-shadow: none; }
+    .resume .panel { box-shadow: none; }
+    .resume .cv-photo { max-width: 42mm; }
+    .cv-end { margin-top: 8mm; }
+}

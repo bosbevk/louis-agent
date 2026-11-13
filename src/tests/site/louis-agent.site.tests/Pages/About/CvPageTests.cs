@@ -46,6 +46,7 @@ public class CvPageTests
             Assert.That(page.Find("img.cv-photo").GetAttribute("src"), Is.EqualTo("images/louis-marais.jpg"));
             Assert.That(page.Find(".cv-where").TextContent, Does.Contain("open to remote and hybrid"));
             Assert.That(page.Find(".cv-end").TextContent, Does.Contain("References on request"));
+            Assert.That(page.Find("button.cv-print").TextContent.Trim(), Is.EqualTo("Save as PDF"));
         });
     }
 

@@ -19,7 +19,7 @@ public class StylesheetTests
     private static readonly string[] Site =
     [
         "site/settings/tokens", "site/base/elements", "site/landing/live-turn", "site/landing/sections",
-        "site/landing/motion", "site/layout/responsive", "site/chat/guide-form", .. Films
+        "site/landing/motion", "site/layout/responsive", "site/chat/guide-form", "site/cv/print", .. Films
     ];
 
     /// <summary>Every partial of its own is on the list, and everything on the list is there.</summary>
@@ -192,5 +192,23 @@ public class StylesheetTests
     {
         string tail = name[(name.LastIndexOf('-') + 1)..];
         return tail is ['s' or 'd', ..] && tail[1..].All(char.IsDigit);
+    }
+
+    /// <summary>
+    /// F142: the CV prints on A4, black on white, without the menu, the guide or its own button. The rules are for
+    /// paper only, and only for a page that holds the CV, so no other page and no screen is touched.
+    /// </summary>
+    [Test]
+    public void TheCv_PrintsOnA4_WithoutTheFrame()
+    {
+        string print = Css.Source("site/cv/print");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(print, Does.Contain("@page").And.Contain("A4"));
+            Assert.That(print, Does.Contain("@media print"));
+            Assert.That(print, Does.Contain("body:has(.resume)"), "only the CV's page");
+            Assert.That(print, Does.Contain(".site-header").And.Contain(".chat-widget").And.Contain(".cv-print"));
+        });
     }
 }
