@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Contracts.Admin.Screens;
@@ -28,9 +27,6 @@ public class PackMenuTests
         new ScreenReply("visits", "Visits", "Who came.", [Name], Searchable: false)
     ]);
 
-    /// <summary>What the API says when the key is wrong.</summary>
-    private static readonly ApiError Refusal = new("error", new ApiErrorDetail("authentication_error", "Wrong key."));
-
     /// <summary>What the fake API says: the list, or a refusal until a key is sent.</summary>
     private sealed class FakeScreensApi(ScreensReply reply)
     {
@@ -42,8 +38,8 @@ public class PackMenuTests
         /// <summary>Answers the list of screens or of uploads.</summary>
         public HttpResponseMessage Answer(HttpRequestMessage request)
         {
-            if (Refuses)
-                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = JsonContent.Create(Refusal) };
+            // A wrong key: the menu goes by the status alone, so the refusal needs no body.
+            if (Refuses) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
