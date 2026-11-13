@@ -4,9 +4,11 @@
 > lives. **Elsewhere:** what was finished in the [work log](src/docs/work-log.md); the why of the order in
 > [the roadmap](ROADMAP.md); the goal it all works toward in [GOAL.md](src/docs/GOAL.md).
 
-**The end product:** three offers on one engine, in [the roadmap](ROADMAP.md): **the engine itself**, the application
-framework for AI agents in .NET, for teams that build their own; **a configured agent**, an identity and its packs
-hosted for a business; and **Puls**, the public South African assistant. **The rows are in build order** (Louis,
+**The end product:** four offers on one engine, in [the roadmap](ROADMAP.md): **a website with an agent**, which
+louis-agent.dev sells today (Louis, 2026-11-09: "Our goal is to sell websites with agents, and custom agents, for
+now"); **the engine itself**, the application framework for AI agents in .NET, for teams that build their own;
+**a configured agent**, an identity and its packs hosted for a business; and **Puls**, the public South African
+assistant. **The rows are in build order** (Louis,
 2026-11-07: "focus on the framework first then build the agents"): the framework's track, the demand check that runs
 meanwhile and the small leftovers under *Now*; then the configured agents' phases under *Next*; then *Puls*, *Later*,
 and the *Cleanups* each done when its code is next touched. The work log's open table keeps the same order

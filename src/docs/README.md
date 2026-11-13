@@ -41,7 +41,7 @@ you need otherwise.
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts guide](../CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
-| [Deploying Puls to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch Puls on Azure Container Apps, set its secrets, and run the home end of its tunnel to this PC's browser and Mongo |
+| [Deploying to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch the apps on Azure Container Apps, set their secrets, and deploy from GitHub; since 2026-11-09 only louis-agent.dev runs there |
 
 ## 4. The orchestrator
 
@@ -60,7 +60,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, the eval harness, its protocol, runner and Puls's evals, and the tests |
+| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core and the libraries on it, the hosts, the framework's web, the framework's own site and its guide, the eval harness, the tools and the tests, with links to each demo's and each pack's own |
 
 ## 7. What's next: plans and designs
 
