@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 104 | 92 |
-| Fixes (`FX`) | 138 | 6 |
+| Fixes (`FX`) | 139 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -258,10 +258,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (108 done)
+## Fixes (109 done)
 
 | Id | When | What |
 |---|---|---|
+| FX151 | 2026-11-13 | The section list marks the section you see most of: on a scrolling page with short sections at its end (Louis's CV), a section whose top could never reach the line under the header was never marked; the list now marks the one filling the most of the screen, and the last at the page's end |
 | FX150 | 2026-11-13 | A late redraw never reaches for a page that is gone: CI's test host crashed when the stream's redraw throttle fired after a test let the page's services go, and the widget looked its business windows up in them; it takes them once when it starts |
 | FX149 | 2026-11-13 | The guide shows every place it explains: on the landing's demos section it explained two proof tiles without showing them, so the page stayed put and the old chip went with every message; the site toolset's guide now shows a section, tile or card before explaining it, wherever it is |
 | FX147 | 2026-11-13 | A choice can hold a box: the guide asked a visitor's business and offered a card that only said to type; an offered choice may now name the kind of words it asks for (`writes`), and its card holds a box and a send button, its words sent after the label as a form's answer is, the offer folding to it |

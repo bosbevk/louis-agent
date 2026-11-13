@@ -17,17 +17,24 @@ export function order(ids) {
     return [...present, ...ids.filter(id => !present.includes(id))];
 }
 
-// The link whose section's top has passed the line just under the header is the one in view: the same place a jump
-// lands a section, so a jump always lights what it went to, and at the top of the page the first section is lit. A
-// line halfway down the screen left a short first section never lit on a tall screen (F118, Louis: "that one never
-// activates"). At the page's end the last section can't reach the line, so it is the one in view (FX82).
-const inViewLine = 140;
+// The link whose section fills the most of the screen, under the header, is the one in view (FX151, Louis's pick of
+// three: "check that what you see on the page is marked correctly"): what is lit is what the visitor is looking at.
+// A line the section's top had to pass (F118) never lit a short section near the end of a scrolling page, since the
+// page ran out before its top got there. On a page of slides each section is a screen, so the two rules agree; a
+// short first section at the top of the page still fills the most, so it is lit (F118: "that one never activates").
+// At the page's end the last section is the one in view, however little room it takes (FX82).
+const shownOf = (section, from) => {
+    const r = section.getBoundingClientRect();
+    return Math.min(r.bottom, innerHeight) - Math.max(r.top, from);
+};
 const spy = () => {
     const links = $$(".site-index a");
-    let active = links.length ? 0 : -1;
+    const underHeader = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
+    let active = links.length ? 0 : -1, most = 0;
     links.forEach((a, k) => {
         const s = document.getElementById(a.dataset.section);
-        if (s && s.getBoundingClientRect().top <= inViewLine) active = k;
+        const shown = s ? shownOf(s, underHeader) : 0;
+        if (shown > most) { most = shown; active = k; }
     });
     if (links.length && scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.length - 1;
     links.forEach((a, k) => a.classList.toggle(activeClass, k === active));
