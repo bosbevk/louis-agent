@@ -1,0 +1,253 @@
+<svg viewBox="-24 -24 1575.6 887" width="1575.6" height="887" role="img" aria-label="F148 one docs endpoint: is this the GitHub README?" xmlns="http://www.w3.org/2000/svg">
+  <title>F148 one docs endpoint: is this the GitHub README?</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-blue" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1575.6" height="887" rx="14" />
+  <rect class="titlebar" x="0" y="0" width="1527.6" height="50" rx="10" />
+  <g class="title-icon" transform="translate(16 14) scale(0.9167)">
+    <path d="M12 4l-8 4l8 4l8 -4l-8 -4" />
+    <path d="M4 12l8 4l8 -4" />
+    <path d="M4 16l8 4l8 -4" />
+  </g>
+  <rect class="title-rule" x="50" y="14" width="1" height="22" rx="0" />
+  <text class="heading" x="64" y="30">
+    <tspan class="title-head">F148 one docs endpoint:</tspan>
+    <tspan class="title-rest">is this the GitHub README?</tspan>
+  </text>
+  <g class="drawing" transform="translate(0 66)">
+    <path class="edge dashed" d="M 67.2 52 L 67.2 684" />
+    <path class="edge dashed" d="M 373.2 52 L 373.2 684" />
+    <path class="edge dashed" d="M 665.2 52 L 665.2 684" />
+    <path class="edge dashed" d="M 950.2 52 L 950.2 684" />
+    <path class="edge dashed" d="M 1124.6 52 L 1124.6 684" />
+    <path class="edge dashed" d="M 1437.6 52 L 1437.6 684" />
+    <rect class="word-chip" x="812.7" y="76" width="275" height="44" rx="6" />
+    <text class="word" x="950.2" y="94" text-anchor="middle">at start: every header read once, the</text>
+    <text class="word" x="950.2" y="108" text-anchor="middle">stamp read once</text>
+    <path class="edge tone-blue" d="M 67.2 162 L 371.2 162" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="124.7" y="136" width="191" height="22" rx="4" />
+    <text class="word tone-blue" x="220.2" y="150" text-anchor="middle">is this the github readme</text>
+    <rect class="word-chip tone-blue" x="59.2" y="154" width="16" height="16" rx="8" />
+    <text class="word tone-blue" x="67.2" y="165.5" text-anchor="middle">1</text>
+    <path class="edge tone-violet" d="M 373.2 204 L 663.2 204" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="441.2" y="178" width="156" height="22" rx="4" />
+    <text class="word tone-violet" x="519.2" y="192" text-anchor="middle">ReadDoc("README.md")</text>
+    <rect class="word-chip tone-violet" x="365.2" y="196" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="373.2" y="207.5" text-anchor="middle">2</text>
+    <path class="edge tone-green" d="M 665.2 246 L 948.2 246" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="740.2" y="220" width="135" height="22" rx="4" />
+    <text class="word tone-green" x="807.7" y="234" text-anchor="middle">Read("README.md")</text>
+    <rect class="word-chip tone-green" x="657.2" y="238" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="665.2" y="249.5" text-anchor="middle">3</text>
+    <path class="edge dashed tone-green" d="M 950.2 302 L 667.2 302" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="677.2" y="262" width="261" height="36" rx="4" />
+    <text class="word tone-green" x="807.7" y="276" text-anchor="middle">DocPage: the markdown, type, title,</text>
+    <text class="word tone-green" x="807.7" y="290" text-anchor="middle">GitHubUrl</text>
+    <rect class="word-chip tone-green" x="942.2" y="294" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="950.2" y="305.5" text-anchor="middle">4</text>
+    <path class="edge dashed tone-green" d="M 665.2 372 L 375.2 372" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="385.2" y="318" width="268" height="50" rx="4" />
+    <text class="word tone-green" x="519.2" y="332" text-anchor="middle">the text + "Source: README.md at</text>
+    <text class="word tone-green" x="519.2" y="346" text-anchor="middle">527ab4e,</text>
+    <text class="word tone-green" x="519.2" y="360" text-anchor="middle">github.com/…/blob/527ab4e/README.md"</text>
+    <rect class="word-chip tone-green" x="657.2" y="364" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="665.2" y="375.5" text-anchor="middle">5</text>
+    <path class="edge dashed tone-violet" d="M 373.2 428 L 69.2 428" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="79.2" y="388" width="282" height="36" rx="4" />
+    <text class="word tone-violet" x="220.2" y="402" text-anchor="middle">Yes: README.md at commit 527ab4e, with</text>
+    <text class="word tone-violet" x="220.2" y="416" text-anchor="middle">the link</text>
+    <rect class="word-chip tone-violet" x="365.2" y="420" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="373.2" y="431.5" text-anchor="middle">6</text>
+    <rect class="word-chip" x="1108.6" y="444" width="345" height="30" rx="6" />
+    <text class="word" x="1281.1" y="462" text-anchor="middle">the same doc, through the other door</text>
+    <path class="edge tone-blue" d="M 1437.6 516 L 1126.6 516" marker-end="url(#arrow-blue)" />
+    <rect class="word-chip tone-blue" x="1196.1" y="490" width="170" height="22" rx="4" />
+    <text class="word tone-blue" x="1281.1" y="504" text-anchor="middle">GET /v1/docs/README.md</text>
+    <rect class="word-chip tone-blue" x="1429.6" y="508" width="16" height="16" rx="8" />
+    <text class="word tone-blue" x="1437.6" y="519.5" text-anchor="middle">7</text>
+    <path class="edge tone-violet" d="M 1124.6 558 L 952.2 558" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="969.9" y="532" width="135" height="22" rx="4" />
+    <text class="word tone-violet" x="1037.4" y="546" text-anchor="middle">Read("README.md")</text>
+    <rect class="word-chip tone-violet" x="1116.6" y="550" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="1124.6" y="561.5" text-anchor="middle">8</text>
+    <path class="edge dashed tone-green" d="M 950.2 600 L 1122.6 600" marker-end="url(#arrow-green)" />
+    <rect class="word-chip tone-green" x="973.4" y="574" width="128" height="22" rx="4" />
+    <text class="word tone-green" x="1037.4" y="588" text-anchor="middle">the same DocPage</text>
+    <rect class="word-chip tone-green" x="942.2" y="592" width="16" height="16" rx="8" />
+    <text class="word tone-green" x="950.2" y="603.5" text-anchor="middle">9</text>
+    <path class="edge dashed tone-violet" d="M 1124.6 656 L 1435.6 656" marker-end="url(#arrow-violet)" />
+    <rect class="word-chip tone-violet" x="1136.6" y="616" width="289" height="36" rx="4" />
+    <text class="word tone-violet" x="1281.1" y="630" text-anchor="middle">200: path, type, title, commit, github,</text>
+    <text class="word tone-violet" x="1281.1" y="644" text-anchor="middle">markdown</text>
+    <rect class="word-chip tone-violet" x="1116.6" y="648" width="16" height="16" rx="8" />
+    <text class="word tone-violet" x="1124.6" y="659.5" text-anchor="middle">10</text>
+    <rect class="box tone-blue" x="0" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="28" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(20 18) scale(0.6667)">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+    </g>
+    <text class="label tone-blue" x="52" y="30" text-anchor="start">A visitor</text>
+    <rect class="box tone-violet" x="306" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="334" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(326 18) scale(0.6667)">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+    </g>
+    <text class="label tone-violet" x="358" y="30" text-anchor="start">The guide</text>
+    <rect class="box tone-green" x="598" y="0" width="134.4" height="52" rx="10" />
+    <circle class="badge tone-green" cx="626" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(618 18) scale(0.6667)">
+      <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    </g>
+    <text class="label tone-green" x="650" y="30" text-anchor="start">DocsTools</text>
+    <rect class="box tone-green" x="879.2" y="0" width="142" height="52" rx="10" />
+    <circle class="badge tone-green" cx="907.2" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(899.2 18) scale(0.6667)">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </g>
+    <text class="label tone-green" x="931.2" y="30" text-anchor="start">DocLibrary</text>
+    <rect class="box tone-violet" x="1061.2" y="0" width="126.8" height="52" rx="10" />
+    <circle class="badge tone-violet" cx="1089.2" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1081.2 18) scale(0.6667)">
+      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M7 8l0 .01" />
+      <path d="M7 16l0 .01" />
+    </g>
+    <text class="label tone-violet" x="1113.2" y="30" text-anchor="start">/v1/docs</text>
+    <rect class="box tone-blue" x="1347.6" y="0" width="180" height="52" rx="10" />
+    <circle class="badge tone-blue" cx="1375.6" cy="26" r="14" />
+    <g class="badge-icon" transform="translate(1367.6 18) scale(0.6667)">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M3.6 9h16.8" />
+      <path d="M3.6 15h16.8" />
+      <path d="M11.5 3a17 17 0 0 0 0 18" />
+      <path d="M12.5 3a17 17 0 0 1 0 18" />
+    </g>
+    <text class="label tone-blue" x="1399.6" y="30" text-anchor="start">Another program</text>
+  </g>
+  <rect class="swatch tone-blue" x="0" y="766" width="12" height="12" rx="3" />
+  <text class="legend" x="18" y="776.5" text-anchor="start">starts it</text>
+  <rect class="swatch tone-green" x="104.8" y="766" width="12" height="12" rx="3" />
+  <text class="legend" x="122.8" y="776.5" text-anchor="start">this project</text>
+  <rect class="swatch tone-violet" x="231.2" y="766" width="12" height="12" rx="3" />
+  <text class="legend" x="249.2" y="776.5" text-anchor="start">the framework</text>
+  <rect class="notebar" x="0" y="802" width="1527.6" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 812) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="824">
+    <tspan class="note-head">The answer comes with its source:</tspan>
+    <tspan class="note-rest">the tool's result ends with the commit and the link, so the guide can say yes and show where.</tspan>
+  </text>
+</svg>

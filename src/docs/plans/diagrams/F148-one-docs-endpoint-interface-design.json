@@ -1,0 +1,174 @@
+{
+  "kind": "classes",
+  "title": "F148 one docs endpoint: the interface design",
+  "caption": "One library, three doors: the tools, the API's routes and the MCP resources all read IDocLibrary, and only the docs pack knows the files.",
+  "classes": {
+    "types": [
+      {
+        "id": "ilib",
+        "name": "IDocLibrary",
+        "kind": "interface, step 4",
+        "members": [
+          "DocSource Source",
+          "IReadOnlyList<DocInfo> List()",
+          "DocPage? Read(string path)",
+          "IReadOnlyList<DocHit> Search(string query, int most)"
+        ]
+      },
+      {
+        "id": "info",
+        "name": "DocInfo",
+        "kind": "record, step 2",
+        "members": [
+          "string Path",
+          "DocType Type",
+          "string Title",
+          "string? About",
+          "string? GitHubUrl"
+        ]
+      },
+      {
+        "id": "source",
+        "name": "DocSource",
+        "kind": "record, step 3",
+        "members": [
+          "string? Commit",
+          "string? Repository",
+          "string? UrlOf(string path)"
+        ]
+      },
+      {
+        "id": "page",
+        "name": "DocPage",
+        "kind": "record, step 4",
+        "members": [
+          "DocInfo Info",
+          "string Markdown"
+        ]
+      },
+      {
+        "id": "hit",
+        "name": "DocHit",
+        "kind": "record, step 5",
+        "members": [
+          "string Path",
+          "int Line",
+          "string Text"
+        ]
+      },
+      {
+        "id": "type",
+        "name": "DocType",
+        "kind": "enum, step 2",
+        "members": [
+          "Tutorial, HowTo, Reference, Explanation, Plan, Adr"
+        ]
+      },
+      {
+        "id": "lib",
+        "name": "DocLibrary",
+        "kind": "docs pack, step 1",
+        "members": [
+          "DocLibrary(string root)",
+          "reads each doc's header once"
+        ]
+      },
+      {
+        "id": "tools",
+        "name": "DocsTools",
+        "kind": "docs pack, changed in steps 1 and 6",
+        "members": [
+          "ListDocs, ReadDoc, SearchDocs",
+          "each result ends with its source line"
+        ]
+      },
+      {
+        "id": "pack",
+        "name": "DocsPack",
+        "kind": "docs pack, changed in step 4",
+        "members": [
+          "IDocLibrary? Docs"
+        ]
+      },
+      {
+        "id": "endpoints",
+        "name": "DocsEndpoints",
+        "kind": "the API, steps 4 and 5",
+        "tone": "violet",
+        "members": [
+          "GET /v1/docs",
+          "GET /v1/docs/{path}",
+          "GET /v1/docs/search?q="
+        ]
+      },
+      {
+        "id": "resources",
+        "name": "DocResources",
+        "kind": "the MCP host, step 7",
+        "tone": "violet",
+        "members": [
+          "doc://{path}, one per doc"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "lib",
+        "to": "ilib",
+        "kind": "implements"
+      },
+      {
+        "from": "tools",
+        "to": "lib",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "pack",
+        "to": "lib",
+        "kind": "creates"
+      },
+      {
+        "from": "endpoints",
+        "to": "ilib",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "resources",
+        "to": "ilib",
+        "kind": "uses",
+        "word": "reads"
+      },
+      {
+        "from": "ilib",
+        "to": "info",
+        "kind": "uses",
+        "word": "gives"
+      },
+      {
+        "from": "ilib",
+        "to": "page",
+        "kind": "uses",
+        "word": "gives"
+      },
+      {
+        "from": "ilib",
+        "to": "hit",
+        "kind": "uses",
+        "word": "gives"
+      },
+      {
+        "from": "ilib",
+        "to": "source",
+        "kind": "holds"
+      },
+      {
+        "from": "info",
+        "to": "type",
+        "kind": "holds"
+      }
+    ],
+    "direction": "down"
+  }
+}

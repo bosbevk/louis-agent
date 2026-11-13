@@ -1,0 +1,30 @@
+{
+  "kind": "sequence",
+  "title": "F148 one docs endpoint: is this the GitHub README?",
+  "caption": "The answer comes with its source: the tool's result ends with the commit and the link, so the guide can say yes and show where.",
+  "sequence": {
+    "participants": [
+      { "id": "visitor", "label": "A visitor", "actor": true, "tone": "blue" },
+      { "id": "guide", "label": "The guide", "icon": "message", "tone": "violet" },
+      { "id": "tools", "label": "DocsTools", "icon": "settings", "tone": "green" },
+      { "id": "library", "label": "DocLibrary", "icon": "book", "tone": "green" },
+      { "id": "api", "label": "/v1/docs", "icon": "server", "tone": "violet" },
+      { "id": "client", "label": "Another program", "icon": "world", "tone": "blue" }
+    ],
+    "steps": [
+      { "step": "note", "over": ["library"], "text": "at start: every header read once, the stamp read once" },
+      { "step": "message", "from": "visitor", "to": "guide", "text": "is this the github readme" },
+      { "step": "message", "from": "guide", "to": "tools", "text": "ReadDoc(\"README.md\")" },
+      { "step": "message", "from": "tools", "to": "library", "text": "Read(\"README.md\")" },
+      { "step": "reply", "from": "library", "to": "tools", "text": "DocPage: the markdown, type, title, GitHubUrl" },
+      { "step": "reply", "from": "tools", "to": "guide", "text": "the text + \"Source: README.md at 527ab4e, github.com/…/blob/527ab4e/README.md\"" },
+      { "step": "reply", "from": "guide", "to": "visitor", "text": "Yes: README.md at commit 527ab4e, with the link" },
+      { "step": "note", "over": ["api", "client"], "text": "the same doc, through the other door" },
+      { "step": "message", "from": "client", "to": "api", "text": "GET /v1/docs/README.md" },
+      { "step": "message", "from": "api", "to": "library", "text": "Read(\"README.md\")" },
+      { "step": "reply", "from": "library", "to": "api", "text": "the same DocPage" },
+      { "step": "reply", "from": "api", "to": "client", "text": "200: path, type, title, commit, github, markdown" }
+    ],
+    "numbered": true
+  }
+}

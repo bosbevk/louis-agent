@@ -1,0 +1,29 @@
+{
+  "kind": "flow",
+  "title": "F148 one docs endpoint: one running site in memory",
+  "caption": "One DocLibrary per process: the pack makes it, the catalogue hands it to the API, and the tools hold the same one.",
+  "flow": {
+    "nodes": [
+      { "id": "catalog", "icon": "stack", "tone": "violet", "label": "AgentCatalog\nDocs: the pack's library" },
+      { "id": "pack", "icon": "box", "tone": "green", "label": "DocsPack" },
+      { "id": "tools", "icon": "settings", "tone": "green", "label": "DocsTools\none per engine" },
+      { "id": "handlers", "icon": "server", "tone": "violet", "label": "DocsHandlers\n/v1/docs" },
+      { "id": "library", "icon": "book", "tone": "green", "label": "DocLibrary\nroot /app/docs" },
+      { "id": "source", "icon": "file", "tone": "teal", "label": "DocSource\ncommit 527ab4e" },
+      { "id": "infos", "icon": "file", "tone": "teal", "label": "388 DocInfo\npath, type, title, about" },
+      { "id": "files", "icon": "folder", "tone": "amber", "label": "the markdown files\nread when a doc is asked for" }
+    ],
+    "edges": [
+      { "from": "catalog", "to": "pack" },
+      { "from": "catalog", "to": "handlers", "word": "hands the library" },
+      { "from": "pack", "to": "tools", "word": "creates" },
+      { "from": "pack", "to": "library", "word": "creates" },
+      { "from": "tools", "to": "library" },
+      { "from": "handlers", "to": "library" },
+      { "from": "library", "to": "source" },
+      { "from": "library", "to": "infos" },
+      { "from": "library", "to": "files" }
+    ],
+    "direction": "down"
+  }
+}
