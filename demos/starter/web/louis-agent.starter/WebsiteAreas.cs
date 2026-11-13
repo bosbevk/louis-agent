@@ -17,10 +17,14 @@ namespace LouisAgent.Starter;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
 public static class WebsiteAreas
 {
-    /// <summary>Names the site's areas: a pack's view goes in the admin's, as <c>Admin(layout, views => …)</c>.</summary>
+    /// <summary>
+    /// Names the site's areas: a pack's view goes in the admin's, as <c>Admin(layout, views => …)</c>, and the tools
+    /// the overview counts in its own, as <c>Overview(count => …)</c>.
+    /// </summary>
     public static void Name(SiteAreasBuilder areas) =>
         areas.Chat()
             .Admin(typeof(AdminLayout))
+            .Overview()
             .Accounts(typeof(AccountLayout))
             .Evals();
 }

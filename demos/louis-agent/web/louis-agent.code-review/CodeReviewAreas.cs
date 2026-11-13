@@ -23,6 +23,7 @@ public static class CodeReviewAreas
     public static void Name(SiteAreasBuilder areas) =>
         areas.Chat()
             .Admin(typeof(AdminLayout), PackViewsOf)
+            .Overview()
             .Accounts(typeof(AccountLayout))
             .Evals();
 

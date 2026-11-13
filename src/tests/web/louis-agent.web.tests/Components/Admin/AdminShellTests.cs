@@ -76,10 +76,11 @@ public class AdminShellTests
     }
 
     /// <summary>
-    /// The overview comes first (F127.8), then the site's own links, then a pack's screens.
+    /// The site's own links, then a pack's screens; the frame draws no area's link itself (F144: the overview's is
+    /// the overview area's, on a site that names it).
     /// </summary>
     [Test]
-    public void TheOverviewFirst_ThenTheSitesOwn_ThenAPacksScreens()
+    public void TheSitesOwn_ThenAPacksScreens_AndNoAreaOfItsOwn()
     {
         using var ctx = NewContext();
 
@@ -88,7 +89,7 @@ public class AdminShellTests
 
         cut.WaitForAssertion(() =>
             Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
-                Is.EqualTo(new[] { "admin/overview", "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
+                Is.EqualTo(new[] { "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>

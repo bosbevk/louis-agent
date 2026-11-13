@@ -2,7 +2,7 @@ namespace LouisAgent.Web.Components.Areas.Overview;
 
 /// <summary>
 /// Collects the tools a site's admin overview counts (F127.8): the API counts every tool and names no pack, so the
-/// site says which to show and what to call each. Its areas hand it to <see cref="SiteAreasBuilder.Admin"/>.
+/// site says which to show and what to call each. Its areas hand it to <see cref="SiteAreasBuilder.Overview"/>.
 /// </summary>
 public sealed class OverviewCountsBuilder
 {

@@ -1,0 +1,26 @@
+@* The overview's card on the admin's home (F144): today's talks, their cost and the tools the site counts. *@
+
+<AdminCard Title="Overview" Open="admin/overview">
+    @if (_reply is { } reply)
+    {
+        <div class="figures">
+            <div class="figure"><span class="figure-value">@reply.Today.Talks</span><span class="figure-name">talks today</span></div>
+            <div class="figure">
+                <span class="figure-value">@OverviewMoney.Of(reply.Today.Cost, reply.Currency, Currency.Current)</span>
+                <span class="figure-name">cost</span>
+            </div>
+            @foreach (var counted in Counts.In(reply.Today))
+            {
+                <div class="figure"><span class="figure-value">@counted.Talks</span><span class="figure-name">@counted.Name</span></div>
+            }
+        </div>
+    }
+    else if (_notRead)
+    {
+        <span class="muted">Not read: the admin key, or the API.</span>
+    }
+    else
+    {
+        <span class="muted">Loading…</span>
+    }
+</AdminCard>

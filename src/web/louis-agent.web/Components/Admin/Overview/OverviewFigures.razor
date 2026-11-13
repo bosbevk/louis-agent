@@ -8,7 +8,7 @@
             <span class="figure-value">@OverviewMoney.Of(Period.Cost, Currency, Choice)</span>
             <span class="figure-name">cost</span>
         </div>
-        @foreach (var counted in Counted)
+        @foreach (var counted in Counts.In(Period))
         {
             <div class="figure"><span class="figure-value">@counted.Talks</span><span class="figure-name">@counted.Name</span></div>
         }

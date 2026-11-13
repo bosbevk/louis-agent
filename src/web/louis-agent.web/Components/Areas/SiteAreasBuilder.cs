@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Messages;
+using LouisAgent.Web.Components.Admin.Overview;
 using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Components.Chat.Shell;
@@ -38,24 +39,29 @@ public sealed class SiteAreasBuilder
 
     /// <summary>
     /// The admin portal: the packs' screens and uploads, drawn inside <paramref name="layout"/>, each pack's own view
-    /// set by <paramref name="views"/>, and (F127.8) the tools its overview counts, named by <paramref name="counts"/>.
+    /// set by <paramref name="views"/>. It is the frame the admin's areas plug into (F144).
     /// </summary>
-    public SiteAreasBuilder Admin(Type layout, Action<PackViews>? views = null,
-        Action<OverviewCountsBuilder>? counts = null)
+    public SiteAreasBuilder Admin(Type layout, Action<PackViews>? views = null)
     {
         if (Named("admin")) return this;
         _adminLayout = layout;
         var packViews = new PackViews();
         views?.Invoke(packViews);
-        // The tools its overview counts, by what the site calls them (F127.8); none when it names none.
+        return Add(new SiteArea("admin", services => services.TryAddSingleton(packViews), FrameworkPages.Assemblies));
+    }
+
+    /// <summary>
+    /// The admin's overview (F127.8, an area since F144): what the site's agents did, with its link in the sidebar
+    /// and its card on the home, and the tools it counts, named by <paramref name="counts"/>.
+    /// </summary>
+    public SiteAreasBuilder Overview(Action<OverviewCountsBuilder>? counts = null)
+    {
+        // The tools it counts, by what the site calls them; none when it names none.
         var counted = new OverviewCountsBuilder();
         counts?.Invoke(counted);
         var overview = counted.Build();
-        return Add(new SiteArea("admin", services =>
-        {
-            services.TryAddSingleton(packViews);
-            services.TryAddSingleton(overview);
-        }, FrameworkPages.Assemblies));
+        return Add(new SiteArea("overview", services => services.TryAddSingleton(overview), FrameworkPages.Assemblies,
+            AdminLinks: typeof(OverviewLinks), AdminCard: typeof(OverviewCard)));
     }
 
     /// <summary>

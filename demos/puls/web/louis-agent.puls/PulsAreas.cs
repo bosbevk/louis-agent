@@ -23,6 +23,7 @@ public static class PulsAreas
     /// <summary>Names Puls's areas.</summary>
     public static void Name(SiteAreasBuilder areas) =>
         areas.Admin(typeof(AdminLayout), PackViewsOf)
+            .Overview()
             .Accounts(typeof(AccountLayout))
             .Evals(PulsSites.Kinds);
 
