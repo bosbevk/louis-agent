@@ -37,13 +37,11 @@ public class OverviewTests
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
-        var api = new AgentApi(
-            new HttpClient(new StubHandler(_ =>
-                new HttpResponseMessage(status)
-                {
-                    Content = JsonContent.Create(Evening3, options: AdminJson.SnakeCase)
-                }))
-            { BaseAddress = new Uri("http://localhost/") }, settings);
+        // The overview answers; anything else (the rates) is refused, so the costs stay as the ledger charged them.
+        var stub = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/overview")
+            ? new HttpResponseMessage(status) { Content = JsonContent.Create(Evening3, options: AdminJson.SnakeCase) }
+            : new HttpResponseMessage(HttpStatusCode.NotFound));
+        var api = new AgentApi(new HttpClient(stub) { BaseAddress = new Uri("http://localhost/") }, settings);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));

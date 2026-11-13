@@ -28,13 +28,15 @@
 }
 else if (_reply is { } reply)
 {
-    <div class="overview-grid">
-        <OverviewFigures Title="Today" Period="reply.Today" Counts="Counts" Currency="@reply.Currency"
-                         Choice="Currency.Current"/>
-        <OverviewFigures Title="This month" Period="reply.Month" Counts="Counts" Currency="@reply.Currency"
-                         Choice="Currency.Current"/>
-        <OverviewBars Title="By part of the site" Bars="reply.ByPart"/>
-        <OverviewBars Title="By who answered" Bars="reply.ByIdentity"/>
+    <div class="overview">
+        <div class="overview-grid">
+            <OverviewFigures Title="Today" Period="reply.Today" Counts="Counts" Currency="@reply.Currency"
+                             Choice="Currency.Current"/>
+            <OverviewFigures Title="This month" Period="reply.Month" Counts="Counts" Currency="@reply.Currency"
+                             Choice="Currency.Current"/>
+            <OverviewBars Title="By part of the site" Bars="reply.ByPart"/>
+            <OverviewBars Title="By who answered" Bars="reply.ByIdentity"/>
+        </div>
+        <LatestTalks Talks="reply.Latest" Counts="Counts" Currency="@reply.Currency" Choice="Currency.Current"/>
     </div>
-    <LatestTalks Talks="reply.Latest" Counts="Counts" Currency="@reply.Currency" Choice="Currency.Current"/>
 }

@@ -29,10 +29,12 @@ public partial class Overview
     [Inject] private CurrencyState Currency { get; set; } = null!;
     [Inject] private OverviewCounts Counts { get; set; } = null!;
 
-    /// <summary>Loads the admin key, then the overview.</summary>
+    /// <summary>Loads the admin key and the reader's currency, then the overview.</summary>
     protected override async Task OnInitializedAsync()
     {
         if (!Store.Loaded) await Store.LoadAsync();
+        // The costs show in the reader's currency, as the chat's do; the admin has no widget to load it.
+        await Currency.LoadAsync();
         await LoadAsync();
     }
 
