@@ -148,8 +148,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   place on a page has its own address, `/proof/rand`, never a `#`. [ADR 0084](adr/0084-every-site-is-built-on-the-frameworks-web.md), [0107](adr/0107-every-section-has-an-address.md), [0120](adr/0120-nothing-is-hand-wired-from-the-framework.md).
 - **A `.razor` holds markup only**, a page over about a hundred lines splits, **the web shows the live results**.
   [ADR 0034](adr/0034-code-a-person-can-maintain.md), [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
-- **One type per doc**; plans, feature and fix docs have a lifecycle and a done plan is deleted.
-  [ADR 0013](adr/0013-documentation-structure.md).
+- **A doc is true, and it teaches**: every statement is checked against the code and nothing is invented (unsure while
+  writing: read the code first); it explains in detail, in the order a reader needs: what it is for, the main path as
+  a story, the why of each part, a name of code after its idea. **One type per doc**; a done plan is deleted. [ADR 0013](adr/0013-documentation-structure.md).
 
 ## Project structure
 
