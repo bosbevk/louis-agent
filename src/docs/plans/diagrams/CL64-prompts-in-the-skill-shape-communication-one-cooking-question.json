@@ -1,0 +1,29 @@
+{
+  "kind": "sequence",
+  "title": "CL64 prompts in the skill shape: one cooking question, after step 4",
+  "caption": "Same tools, same order: the cook reads its never-rules and six steps first, and a tool's own cases come with its result.",
+  "sequence": {
+    "participants": [
+      { "id": "puls", "label": "Puls", "icon": "message", "tone": "blue" },
+      { "id": "loader", "label": "SkillLoader", "icon": "chip", "tone": "violet" },
+      { "id": "cook", "label": "The cook", "icon": "users", "tone": "green" },
+      { "id": "model", "label": "Model", "icon": "cloud", "tone": "red" },
+      { "id": "tools", "label": "The packs' tools", "icon": "box", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "puls", "to": "cook", "text": "AskAgent(puls.cook): bobotie for six, Malmesbury" },
+      { "step": "message", "from": "cook", "to": "loader", "text": "the prompt for puls-cook" },
+      { "step": "reply", "from": "loader", "to": "cook", "text": "principles, the cook (Never, Steps, detail, report), five guides" },
+      { "step": "message", "from": "cook", "to": "model", "text": "the prompt and the task" },
+      { "step": "message", "from": "model", "to": "tools", "text": "step 1: GetToday, FindRecipes, FindBranches, together" },
+      { "step": "message", "from": "model", "to": "tools", "text": "step 2: ReadRecipe(the hit that is the dish)" },
+      { "step": "message", "from": "model", "to": "tools", "text": "step 3: ScaleRecipe(link, 6)" },
+      { "step": "reply", "from": "tools", "to": "model", "text": "every line scaled, and what its marks mean" },
+      { "step": "message", "from": "model", "to": "tools", "text": "step 5: EstimatePrices(every row), once" },
+      { "step": "reply", "from": "tools", "to": "model", "text": "the estimates, the total, the credit line" },
+      { "step": "reply", "from": "cook", "to": "puls", "text": "step 6: the report, five sections" },
+      { "step": "note", "over": ["cook", "tools"], "text": "the eval reads this run: each check, the tokens, the tool calls" }
+    ],
+    "numbered": false
+  }
+}
