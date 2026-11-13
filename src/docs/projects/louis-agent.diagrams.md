@@ -53,8 +53,10 @@ mermaid it must look modern"): our own layouts look like the site, and a test ca
   pill, a long value wraps and the card grows), 320 wide so a phone's chat shrinks it little. `TicketCard` is the one
   translation from a tool call to a ticket: `Of` builds it from its parts (icons and tones by name, refused with the
   names there are) and `FromCall` reads a `ShowCard` call's input, so the pack and the page read a call one way.
-- **Icons** (`Icons/`): 30 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
-  them and a row in `THIRD-PARTY-NOTICES.md`.
+- **Icons** (`Icons/`): 36 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, the licence beside
+  them and a row in `THIRD-PARTY-NOTICES.md`. Since F134.1 it is the framework's one set of icons (Louis's pick of
+  three): the web's `LineIconView` draws a page's line icons from it, so a page and a diagram never hold two copies
+  of a drawing.
 - **The SVG** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind (Strategy, `Svg/Renderers/`:
   `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`, `ClassesRenderer`, which hands `ClassFlow`'s flow to the
   flow renderer, and `TicketRenderer`). `SvgWriter` builds the file with `XElement`, `\n` line endings and a

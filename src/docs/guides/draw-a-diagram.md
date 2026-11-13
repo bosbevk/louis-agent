@@ -44,7 +44,10 @@ Every file has a `kind`, a `title` (what a screen reader is told), an optional `
 - A link's `kind` is `down` (the default), `up` or `both`.
 - `icon` is one of `chip`, `user`, `users`, `box`, `server`, `database`, `world`, `message`, `shield`, `code`,
   `folder`, `file`, `browser`, `checks`, `chart`, `cloud`, `settings`, `branch`, `mail`, `search`, `book`,
-  `terminal`, `stack`, `info` (the last two are the frame's). Another one is a new member of `DiagramIcon` with Tabler's path data in `IconPaths`.
+  `terminal`, `stack`, `info` (the last two are the frame's), a ticket's facts `calendar`, `clock`, `phone`, `home`,
+  `tag`, `paw`, and what a showroom's demos wear, `bed`, `dining`, `scales`, `exchange`. Another one is a new member
+  of `DiagramIcon` with Tabler's path data in `IconPaths`. It is the one set: a page's line icons are drawn from it
+  too (`LineIconView` in the framework's web, F134.1).
 - A project doc's overview takes one shape: the project highlighted on top, its main parts under it with an arrow
   each, and a second row with no arrows for what else it holds.
 

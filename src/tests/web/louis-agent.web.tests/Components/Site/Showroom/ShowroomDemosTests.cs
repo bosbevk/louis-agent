@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Tiles;
 
@@ -13,10 +14,11 @@ public class ShowroomDemosTests
     /// <summary>Two demos for a business, one at work, given out of group order on purpose.</summary>
     private static readonly ShowroomDemos Demos = new([
         new ShowroomDemo("/bakery-demo", "A bakery", "Bread at dawn", DemoGroup.ForYourBusiness, TileAccent.Green,
-            "B"),
-        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red, "{ }"),
+            DiagramIcon.Bed),
+        new ShowroomDemo("/coder-demo", "A coder", "Fixes a bug", DemoGroup.AgentsAtWork, TileAccent.Red,
+            DiagramIcon.Code),
         new ShowroomDemo("/florist-demo", "A florist", "Flowers by noon", DemoGroup.ForYourBusiness, TileAccent.Blue,
-            "F"),
+            DiagramIcon.Dining),
     ]);
 
     /// <summary>The groups come in their own order, and the demos in each in the order the site gave them.</summary>
