@@ -149,6 +149,8 @@ public static class IconPaths
             "M21 12l-3 -6l-3 6a3 3 0 0 0 6 0"
         ],
         DiagramIcon.Exchange => ["M7 10h14l-4 -4", "M17 14h-14l4 4"],
+        DiagramIcon.ChevronLeft => ["M15 6l-6 6l6 6"],
+        DiagramIcon.ChevronRight => ["M9 6l6 6l-6 6"],
         _ => []
     };
 }
