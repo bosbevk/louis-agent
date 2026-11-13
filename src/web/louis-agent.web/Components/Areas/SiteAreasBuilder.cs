@@ -1,4 +1,5 @@
 using LouisAgent.Web.Components.Areas.Focuses;
+using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
@@ -34,15 +35,24 @@ public sealed class SiteAreasBuilder
 
     /// <summary>
     /// The admin portal: the packs' screens and uploads, drawn inside <paramref name="layout"/>, each pack's own view
-    /// set by <paramref name="views"/>.
+    /// set by <paramref name="views"/>, and (F127.8) the tools its overview counts, named by <paramref name="counts"/>.
     /// </summary>
-    public SiteAreasBuilder Admin(Type layout, Action<PackViews>? views = null)
+    public SiteAreasBuilder Admin(Type layout, Action<PackViews>? views = null,
+        Action<OverviewCountsBuilder>? counts = null)
     {
         if (Named("admin")) return this;
         _adminLayout = layout;
         var packViews = new PackViews();
         views?.Invoke(packViews);
-        return Add(new SiteArea("admin", services => services.TryAddSingleton(packViews), FrameworkPages.Assemblies));
+        // The tools its overview counts, by what the site calls them (F127.8); none when it names none.
+        var counted = new OverviewCountsBuilder();
+        counts?.Invoke(counted);
+        var overview = counted.Build();
+        return Add(new SiteArea("admin", services =>
+        {
+            services.TryAddSingleton(packViews);
+            services.TryAddSingleton(overview);
+        }, FrameworkPages.Assemblies));
     }
 
     /// <summary>
