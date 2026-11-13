@@ -145,7 +145,7 @@ svg {
     <text class="title" x="36" y="373" text-anchor="start">3. The whole</text>
     <rect class="chip" x="144.4" y="357" width="102.4" height="20" rx="5" />
     <text class="code" x="151.4" y="371" text-anchor="start">architecture/</text>
-    <text class="text" x="36" y="397" text-anchor="start">How the parts fit, across projects. Kind: explanation. 14 docs.</text>
+    <text class="text" x="36" y="397" text-anchor="start">How the parts fit, across projects. Kind: explanation. 13 docs.</text>
     <rect class="card" x="20" y="458" width="412" height="106" rx="10" />
     <g class="icon" transform="translate(36 474) scale(0.8333)">
       <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
@@ -156,7 +156,7 @@ svg {
     <text class="title" x="36" y="519" text-anchor="start">4. One project</text>
     <rect class="chip" x="160.8" y="503" width="75.2" height="20" rx="5" />
     <text class="code" x="167.8" y="517" text-anchor="start">projects/</text>
-    <text class="text" x="36" y="543" text-anchor="start">A design doc per project. Kind: project. 43 docs.</text>
+    <text class="text" x="36" y="543" text-anchor="start">A design doc per project. Kind: project. 34 docs.</text>
     <rect class="card" x="448" y="458" width="412" height="106" rx="10" />
     <g class="icon" transform="translate(464 474) scale(0.8333)">
       <path d="M5 7l5 5l-5 5" />
@@ -165,7 +165,7 @@ svg {
     <text class="title" x="464" y="519" text-anchor="start">4. Doing one job</text>
     <rect class="chip" x="605.2" y="503" width="61.6" height="20" rx="5" />
     <text class="code" x="612.2" y="517" text-anchor="start">guides/</text>
-    <text class="text" x="464" y="543" text-anchor="start">A how-to per job on a project. Kind: how-to. 28 docs.</text>
+    <text class="text" x="464" y="543" text-anchor="start">A how-to per job on a project. Kind: how-to. 23 docs.</text>
     <rect class="card" x="20" y="604" width="269.3" height="148" rx="10" />
     <g class="icon" transform="translate(36 620) scale(0.8333)">
       <path d="M7 12l5 5l10 -10" />
@@ -174,7 +174,7 @@ svg {
     <text class="title" x="36" y="665" text-anchor="start">5. Why</text>
     <rect class="chip" x="95.2" y="649" width="41.2" height="20" rx="5" />
     <text class="code" x="102.2" y="663" text-anchor="start">adr/</text>
-    <text class="text" x="36" y="689" text-anchor="start">One decision each. Kind: ADR. 119</text>
+    <text class="text" x="36" y="689" text-anchor="start">One decision each. Kind: ADR. 114</text>
     <text class="text" x="36" y="705" text-anchor="start">docs.</text>
     <rect class="card" x="305.3" y="604" width="269.3" height="148" rx="10" />
     <g class="icon" transform="translate(321.3 620) scale(0.8333)">
@@ -186,9 +186,9 @@ svg {
     <text class="title" x="321.3" y="665" text-anchor="start">5. What it taught</text>
     <rect class="chip" x="470.7" y="649" width="75.2" height="20" rx="5" />
     <text class="code" x="477.7" y="663" text-anchor="start">learning/</text>
-    <text class="text" x="321.3" y="689" text-anchor="start">A write-up per skill, and the</text>
-    <text class="text" x="321.3" y="705" text-anchor="start">fixes' lessons. Kind: write-up. 15</text>
-    <text class="text" x="321.3" y="721" text-anchor="start">docs.</text>
+    <text class="text" x="321.3" y="689" text-anchor="start">A write-up per skill, and a lesson</text>
+    <text class="text" x="321.3" y="705" text-anchor="start">per fix. Kinds: write-up, lesson.</text>
+    <text class="text" x="321.3" y="721" text-anchor="start">14 docs.</text>
     <rect class="card" x="590.7" y="604" width="269.3" height="148" rx="10" />
     <g class="icon" transform="translate(606.7 620) scale(0.8333)">
       <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
@@ -202,8 +202,8 @@ svg {
     <g class="icon" transform="translate(430 808) scale(0.8333)">
       <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
     </g>
-    <text class="title" x="440" y="853" text-anchor="middle">The same layers 3 to 5, in three areas</text>
-    <text class="text" x="440" y="877" text-anchor="middle">src/docs (the framework) · packs/docs (the packs) · demos/{demo}/docs (each demo)</text>
+    <text class="title" x="440" y="853" text-anchor="middle">The same layers 3 to 5, in two areas</text>
+    <text class="text" x="440" y="877" text-anchor="middle">src/docs (the framework) · packs/docs (the packs). The demos' docs are out of scope for now.</text>
   </g>
   <rect class="notebar" x="0" y="1000" width="880" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 1010) scale(0.6667)">
