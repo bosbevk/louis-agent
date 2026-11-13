@@ -59,6 +59,21 @@ public class DockTests
         });
     }
 
+    /// <summary>
+    /// A card of the page says its name in its title, which is where the page's list for a site's guide reads it. So
+    /// every button's name is its card's title, and the guide can name each one and open it.
+    /// </summary>
+    [Test]
+    public void EveryButton_SaysItsName_AsACardsTitle()
+    {
+        using var ctx = new BunitContext();
+
+        var titles = Dock(ctx, "florist").FindAll("button[data-card][id] .card-title");
+
+        Assert.That(titles.Select(title => title.TextContent),
+            Is.EqualTo(new[] { "A bakery", "A florist", "A coder" }));
+    }
+
     /// <summary>The current one is marked, and open as a card is. The rest are closed.</summary>
     [Test]
     public void TheCurrentOne_IsMarked_AndOpen()

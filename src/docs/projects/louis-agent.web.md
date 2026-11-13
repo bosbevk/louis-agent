@@ -276,6 +276,12 @@ when it names none.
 The start holds one thing, which demo is forward. The deck and the dock are both told, and each only says what
 a visitor asked for, so the arrows and the buttons can't disagree. The demo the site features is forward first.
 
+Each demo's window has its own address under the start's, such as `/demos/restaurant-demo`. The start reads the
+address it was opened at, and if it names a demo, that demo is forward from the first draw. When a visitor
+brings another forward, by the dock, an arrow or a key, the start's own small module puts that demo's address
+in the bar. It replaces the entry, so the back button still leaves the page. On a site whose places have no
+addresses, nothing is read and nothing is written.
+
 **A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
 the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
 The notes say what a custom agent could add. Each part is a section with its own address.
@@ -405,8 +411,9 @@ page and a diagram never hold two copies of a drawing.
   agent showed. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
   nothing of its own to show yet: its icon, large, over its name and a line.
 - `Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group changes. The current
-  button shows its name, and the rest keep theirs for a screen reader. Each button carries an id and is marked
-  as a card of the page.
+  button shows its name, and the rest keep theirs for a screen reader. Each button carries an id, is marked
+  as a card of the page, and says its name as the card's title, which is where the page's list for a site's
+  guide reads it.
 
 The deck and the dock share one idea: **the page owns the choice.** Which item is forward or current comes in from
 the page, and the part only says what the visitor asked for.

@@ -1,7 +1,9 @@
 using LouisAgent.Diagrams.Icons;
+using LouisAgent.Web.Components.Site.Addresses;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Site.Showroom.Start;
 using LouisAgent.Web.Components.Site.Tiles;
+using LouisAgent.Web.Scripts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -232,6 +234,105 @@ public class ShowroomStartTests
             Assert.That(start.FindAll(".deck"), Is.Empty);
             Assert.That(start.FindAll(".start-caption"), Is.Empty);
             Assert.That(start.FindAll("nav.dock"), Is.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The start on a site whose places have addresses, opened at this one, with the bakery featured. The browser
+    /// answers the start's module with nothing and lists what was asked.
+    /// </summary>
+    private static IRenderedComponent<ShowroomStart> StartAt(BunitContext ctx, string address)
+    {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(Demos);
+        ctx.Services.AddSingleton(new SiteAddresses("home", ["/demos"]));
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(address);
+        return ctx.Render<ShowroomStart>(parameters => parameters
+            .Add(start => start.Featured, "/bakery-demo")
+            .Add(start => start.Title, "Watch the agents at work."));
+    }
+
+    /// <summary>The addresses the start asked the address bar to show, in order.</summary>
+    private static List<object?> Shown(BunitContext ctx) =>
+        [.. ctx.JSInterop.Invocations.Where(call => call.Identifier == "show").Select(call => call.Arguments[0])];
+
+    /// <summary>
+    /// Each demo's window has its own address (ADR 0107). Opened at it, that demo is forward from the first draw, so
+    /// the page someone was sent is the page they get, and the bar is not written again.
+    /// </summary>
+    [Test]
+    public void OpenedAtADemosAddress_ThatDemoIsForward()
+    {
+        using var ctx = new BunitContext();
+
+        var start = StartAt(ctx, "/demos/coder-demo");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ForwardAddress(start), Is.EqualTo("/coder-demo"));
+            Assert.That(start.Find(".lit-stage").ClassList, Does.Contain("accent-red"));
+            Assert.That(start.Find(".start-caption h2").TextContent, Is.EqualTo("A coder"));
+            Assert.That(start.Find("nav.dock button#coder-demo").GetAttribute("aria-expanded"), Is.EqualTo("true"));
+            Assert.That(Shown(ctx), Is.Empty);
+        });
+    }
+
+    /// <summary>At the page's own address, or at a place that is no demo, the featured demo is forward.</summary>
+    [TestCase("/demos")]
+    [TestCase("/demos/somewhere-else")]
+    public void OpenedAnywhereElseOnThePage_TheFeaturedDemoIsForward(string address)
+    {
+        using var ctx = new BunitContext();
+
+        Assert.That(ForwardAddress(StartAt(ctx, address)), Is.EqualTo("bakery.example"));
+    }
+
+    /// <summary>
+    /// A press on the dock puts that demo's address in the bar, through the start's own module, so the address a
+    /// visitor copies opens what they see.
+    /// </summary>
+    [Test]
+    public void APressOnTheDock_PutsThatDemosAddressInTheBar()
+    {
+        using var ctx = new BunitContext();
+        var start = StartAt(ctx, "/demos");
+
+        start.Find("nav.dock button#coder-demo").Click();
+
+        start.WaitForAssertion(() => Assert.That(Shown(ctx), Is.EqualTo(new[] { "/demos/coder-demo" })));
+        Assert.That(ctx.JSInterop.Invocations.Where(call => call.Identifier == "import")
+            .Select(call => call.Arguments[0]), Does.Contain(FrameworkScripts.ShowroomStart));
+    }
+
+    /// <summary>An arrow moves the address too, since it brings a demo forward as the dock does.</summary>
+    [Test]
+    public void AnArrow_PutsThatDemosAddressInTheBar()
+    {
+        using var ctx = new BunitContext();
+        var start = StartAt(ctx, "/demos");
+
+        start.Find(".deck button.deck-next").Click();
+
+        start.WaitForAssertion(() => Assert.That(Shown(ctx), Is.EqualTo(new[] { "/demos/florist-demo" })));
+    }
+
+    /// <summary>
+    /// A site whose places have no addresses still has its start: a press brings the demo forward, and no script is
+    /// asked for anything.
+    /// </summary>
+    [Test]
+    public void OnASiteWithNoAddresses_APressWritesNothing()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var start = Start(ctx);
+
+        start.Find("nav.dock button#coder-demo").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ForwardAddress(start), Is.EqualTo("/coder-demo"));
+            Assert.That(ctx.JSInterop.Invocations, Is.Empty);
         });
     }
 
