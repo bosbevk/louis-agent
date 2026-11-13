@@ -216,8 +216,22 @@ today. F150 moves them, or removes them, each move its own small commit with its
 
 The specs (Louis, 2026-11-13: "specs which is not built can be removed, in-progress ones must be fnished as proper
 docs with only what is built"): so the `specs/` folders go, and "spec" is not a kind. A removed spec stays in git at
-the tag `pre-f150`, where the four TODO rows that link one (F76, F88, the session architecture's and the PDF
-search's) then point, as the rows of CL24's folded docs point at `pre-cl24`.
+the tag `pre-f150`, where the TODO's links to one then point (the rows F76, F88 and F94, and the known limitation
+that names the session architecture), as the rows of CL24's folded docs point at `pre-cl24`.
+
+What links to a spec today, so what F150 touches when the spec goes or moves (Louis: "which are affetected"):
+
+| Spec | What happens | What links to it |
+|---|---|---|
+| `PULS_COOK.md` | removed | The plan `F48-cook-and-teacher.md`, the TODO rows F76 and F88, Puls's docs index |
+| `SESSION_ARCHITECTURE.md` | removed | The feature doc F09, the design docs of `louis-agent.acp` and `louis-agent.api`, a known limitation in the TODO, the docs index |
+| `PDF_SEARCH.md` | removed | The TODO row F94, the docs index |
+| `RESPONSE_OPTIMISATION.md` | rewritten in `architecture/` | The feature docs F08, F09, F10, F12, F13, F15 and F16 and their index, write-up 13, the usage probe's design doc and how-to, the docs index |
+| `USAGE_AND_BUDGETS.md` | rewritten in `architecture/` | The feature docs F06, F07, F08, F11 and F12 and their index, the docs index |
+| `ORCHESTRATOR_DESIGN.md` | becomes the demo's design doc | The plan `F39-orchestration.md`, ADR 0012, the feature doc F17, the orchestrator's design doc and runbooks, both docs indexes |
+
+Two plans are touched, F48 and F39, and only in one link each; the solution file lists all six and loses or
+renames those lines.
 
 **What stays:** the plans (Louis: "plans stay"): every plan and draft in a `plans/` folder keeps its place, built
 or not, and is deleted only when its work is done, as now; `SETUP.md` and `SITE_OWNERS.md` (standing pages; the second is an address Puls's browser sends to
