@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 103 | 87 |
-| Fixes (`FX`) | 136 | 6 |
+| Fixes (`FX`) | 137 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -256,6 +256,7 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| FX149 | 2026-11-13 | The guide shows every place it explains: on the landing's demos section it explained two proof tiles without showing them, so the page stayed put and the old chip went with every message; the site toolset's guide now shows a section, tile or card before explaining it, wherever it is |
 | FX147 | 2026-11-13 | A choice can hold a box: the guide asked a visitor's business and offered a card that only said to type; an offered choice may now name the kind of words it asks for (`writes`), and its card holds a box and a send button, its words sent after the label as a form's answer is, the offer folding to it |
 | FX146 | 2026-11-12 | The selection follows the guide's walk: walking the landing's tiles, the guide showed the section around them, so the first tile stayed pressed and its chip went with every message; the widget now lets a selected piece go when the guide shows another place, and the site toolset's guide shows each piece of a walk by its own address |
 | FX145 | 2026-11-12 | A site spawned from the starter carries no "Starter": the starter's areas' Composition Root, `StarterAreas` (F127.6), kept its name in a spawned site, since the template renames only `LouisAgent.Starter`, and CI's spawn test failed; it is `WebsiteAreas` now |
