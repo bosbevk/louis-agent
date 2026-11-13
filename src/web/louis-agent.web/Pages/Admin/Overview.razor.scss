@@ -1,0 +1,10 @@
+/* The admin's overview (F127.8): the two periods and the two splits in a grid of two, one under the other on a phone,
+   the latest talks under them. */
+.overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+/* Each part's title, the same on all three, so it sits here, their common parent, reaching in from the page's one
+   wrapper. */
+.overview ::deep .overview-title { font-size: 13px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: var(--bs-secondary-color); margin: 0 0 10px; }
+
+@media (max-width: 720px) {
+    .overview-grid { grid-template-columns: 1fr; }
+}

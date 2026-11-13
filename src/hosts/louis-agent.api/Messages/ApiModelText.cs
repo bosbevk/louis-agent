@@ -14,6 +14,7 @@ public enum ApiModelText
     Attachment,
 
     [Description("[The user is in {Location}; their time zone is {TimeZone}.]")]
+    [Holes(typeof(UserPlaceHoles))]
     UserPlace,
 
     [Description("\n[Attachment truncated: showing {Shown} of {Length} chars]")]
@@ -37,7 +38,8 @@ public enum ApiModelText
     PageInView,
 
     [Description(
-        "[On their screen now: the section {Id}, \"{Heading}\", of the page {Url}, whose words came with an earlier message{Open}]")]
+        "[On their screen now: the section {Id}, \"{Heading}\", of the page {Url}, whose words came with an earlier " +
+        "message{Open}]")]
     [Holes(typeof(PageInViewOnlyHoles))]
     PageInViewOnly,
 

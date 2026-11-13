@@ -1,5 +1,7 @@
+using System.Reflection;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Composition.Messages;
 using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.Testing.Messages;
 
@@ -196,7 +198,22 @@ public class TurnStreamPromptTests
     /// <summary>ADR 0119: each of the API's message records matches its template.</summary>
     [Test]
     public void EveryHolesRecord_MatchesItsTemplate() =>
-        Assert.That(MessageHoles.Problems([typeof(ApiModelText), typeof(ApiLogMessage)]), Is.Empty);
+        Assert.That(MessageHoles.Problems([typeof(ApiModelText), typeof(ApiLogMessage), typeof(ApiUserText)]),
+            Is.Empty);
+
+    /// <summary>
+    /// ADR 0119, F127.8 step 2a: the messages the sessions' endpoints format each name a holes record, so none is
+    /// filled from an anonymous object.
+    /// </summary>
+    [TestCase(typeof(ApiUserText), nameof(ApiUserText.InvalidTag))]
+    [TestCase(typeof(ApiUserText), nameof(ApiUserText.UnknownTimeZone))]
+    [TestCase(typeof(ApiUserText), nameof(ApiUserText.SessionBusy))]
+    [TestCase(typeof(ApiUserText), nameof(ApiUserText.UnknownSession))]
+    [TestCase(typeof(ApiUserText), nameof(ApiUserText.UnknownStreamFormat))]
+    [TestCase(typeof(ApiModelText), nameof(ApiModelText.UserPlace))]
+    [TestCase(typeof(ApiLogMessage), nameof(ApiLogMessage.SessionOpenedBy))]
+    public void ASessionsMessage_NamesItsHoles(Type messages, string member) =>
+        Assert.That(messages.GetField(member)!.GetCustomAttribute<HolesAttribute>(), Is.Not.Null);
 
     /// <summary>Without a page the prompt is the words alone, as before.</summary>
     [Test]

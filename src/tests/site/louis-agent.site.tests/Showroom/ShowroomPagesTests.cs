@@ -56,7 +56,7 @@ public class ShowroomPagesTests
     [TestCase("guesthouse-demo/ask")]
     public void APlaceOnADemo_DrawsInTheShowroom(string path)
     {
-        var place = new RouteData(typeof(SitePlaces), new Dictionary<string, object?> { ["Path"] = path });
+        var place = new RouteData(typeof(SectionPage), new Dictionary<string, object?> { ["Path"] = path });
 
         Assert.That(PlaceLayout.Of(place, typeof(SiteLayout), SiteAddresses.From("home", typeof(App).Assembly)),
             Is.EqualTo(typeof(ShowroomLayout)));

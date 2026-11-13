@@ -1,0 +1,42 @@
+@page "/admin/overview"
+@layout AdminFrame
+@using LouisAgent.Web.Components.Admin.Overview
+
+@* What the site's agents did (F127.8, Louis's pick, design A), from GET /v1/admin/overview: today's and this month's
+   figures, the month's talks by part and by who answered, and the latest talks. *@
+
+<PageTitle>Overview · Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Overview</h1>
+        <p>What the agents did: talks, what they cost, and what the site counts, today and this month.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
+}
+
+@if (_loading && _reply is null)
+{
+    <section class="card-p overview-loading"><span class="muted">Loading…</span></section>
+}
+else if (_reply is { } reply)
+{
+    <div class="overview">
+        <div class="overview-grid">
+            <OverviewFigures Title="Today" Period="reply.Today" Counts="Counts" Currency="@reply.Currency"
+                             Choice="Currency.Current"/>
+            <OverviewFigures Title="This month" Period="reply.Month" Counts="Counts" Currency="@reply.Currency"
+                             Choice="Currency.Current"/>
+            <OverviewBars Title="By part of the site" Bars="reply.ByPart"/>
+            <OverviewBars Title="By who answered" Bars="reply.ByIdentity"/>
+        </div>
+        <LatestTalks Talks="reply.Latest" Counts="Counts" Currency="@reply.Currency" Choice="Currency.Current"/>
+    </div>
+}

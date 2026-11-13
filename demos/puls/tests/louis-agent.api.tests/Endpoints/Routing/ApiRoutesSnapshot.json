@@ -4,6 +4,7 @@
   "DELETE /v1/sessions/{id} (Key)",
   "GET /health (Open)",
   "GET /v1/admin/imports (AdminKey)",
+  "GET /v1/admin/overview (AdminKey)",
   "GET /v1/admin/prompts (AdminKey)",
   "GET /v1/admin/screens (AdminKey)",
   "GET /v1/admin/screens/{name}/rows (AdminKey)",

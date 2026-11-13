@@ -8,7 +8,10 @@ using LouisAgent.SessionStream.Wire.Replies;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
+using LouisAgent.Api.Messages.Holes.Places;
+using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Log;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Api.Sessions.Work;
@@ -63,6 +66,9 @@ internal sealed class SessionHandlers(AgentHostContext host)
     private readonly WebReplayMode _defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
     private readonly ReplayStore? _recordings = ReplayStore.From(host.Agent);
 
+    // A line per turn beside the ledger, for the admin's overview (F127.8); none when the ledger is off.
+    private readonly TurnLog _turns = new(host.Agent.UsageLedger ? host.Agent.LogDirectory : null);
+
     /// <summary>The API's log, for who opened which session.</summary>
     private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Sessions");
 
@@ -79,14 +85,17 @@ internal sealed class SessionHandlers(AgentHostContext host)
         string? admitted = OpenDoor.AdmittedIdentity(context);
         if (admitted is not null) request = NarrowToTheOpenIdentity(request, admitted, engines);
         if (request?.InvalidTag() is { } invalid)
-            return Bad(MessageText.Format(ApiUserText.InvalidTag,
-                new
-                {
-                    Tag = invalid,
-                    Max = CreateSessionRequestReading.MaxTagLength
-                }));
+        {
+            var tooLong = new InvalidTagHoles(invalid, CreateSessionRequestReading.MaxTagLength);
+            return Bad(MessageText.Format(ApiUserText.InvalidTag, tooLong));
+        }
+
         if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
-            return Bad(MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone }));
+        {
+            var unknownZone = new UnknownTimeZoneHoles(request.TimeZone);
+            return Bad(MessageText.Format(ApiUserText.UnknownTimeZone, unknownZone));
+        }
+
         // "stream" names the format the session's events are written in (F18 step 1f).
         if (FormatOf(request) is not { } format) return UnknownFormat(request!.Stream);
         if (!ReplayResolution.TryResolve(request, _defaultReplay, host.Agent.KeepsRecordings, out var replay,
@@ -116,13 +125,11 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
         if (admitted is not null) door.Admit(session.Id, context);
         if (opener is not null)
-            Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy,
-                new
-                {
-                    Session = session.Id,
-                    User = LogContent.Of(opener.UserId),
-                    Tenant = LogContent.Of(opener.TenantId)
-                }, tag: "API");
+        {
+            var openedBy = new SessionOpenedByHoles(session.Id, LogContent.Of(opener.UserId),
+                LogContent.Of(opener.TenantId));
+            Log.Log(LogLevel.Information, ApiLogMessage.SessionOpenedBy, openedBy, tag: "API");
+        }
 
         return new CreatedJson<SessionCreatedReply>($"{ApiMap.Version}/sessions/{session.Id}",
             SessionCreatedReply.Of(session), SessionJson.SnakeCase);
@@ -142,7 +149,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
     public WorkAnswer GetSessionWork(string id, AgentSessions sessions)
     {
         if (sessions.Get(id) is not { } session) return UnknownSession(id);
-        if (session.IsBusy) return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, new { Id = id }));
+        if (session.IsBusy) return Busy(id);
         return TypedResults.Json(SessionWorkReply.Of(session), SessionJson.SnakeCase);
     }
 
@@ -169,25 +176,25 @@ internal sealed class SessionHandlers(AgentHostContext host)
         if (sessions.Get(id) is not { } session) return UnknownSession(id);
         string prompt = TurnStream.BuildPrompt(request);
         if (string.IsNullOrWhiteSpace(prompt)) return Bad(MessageText.Format(ApiUserText.EmptyMessage));
-        if (!session.TryStartTurn(http.RequestAborted, out var turn))
-            return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" }));
+        if (!session.TryStartTurn(http.RequestAborted, out var turn)) return Busy(id);
 
         // The agents' windows on the visitor's screen, for an ask to one of them this turn (FX134).
         session.Windows = request.Windows ?? [];
+        // The page it came from, for the turn's line in the log; a message that sends none keeps the last one's.
+        session.Page = request.Page ?? session.Page;
         // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
         foreach (var attachment in request.Attachments ?? [])
             session.Remember(attachment.Name, attachment.Content);
 
         // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
         if (session.Turns == 1 && session.Place is { Location: { } location } place)
-            prompt = MessageText.Format(ApiModelText.UserPlace,
-                new
-                {
-                    Location = location,
-                    TimeZone = place.TimeZone ?? host.Agent.HostTimeZone ?? TimeZoneInfo.Local.Id
-                }) + "\n\n" + prompt;
+        {
+            var where = new UserPlaceHoles(location,
+                place.TimeZone ?? host.Agent.HostTimeZone ?? TimeZoneInfo.Local.Id);
+            prompt = MessageText.Format(ApiModelText.UserPlace, where) + "\n\n" + prompt;
+        }
 
-        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn));
+        return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn, _turns));
     }
 
     /// <summary>
@@ -197,17 +204,25 @@ internal sealed class SessionHandlers(AgentHostContext host)
         request is null ? StreamFormat.Claude : request.StreamFormatOrNull();
 
     /// <summary>The 400 for a stream format that isn't one of ours, naming them.</summary>
-    private static JsonHttpResult<ApiError> UnknownFormat(string? format) =>
-        Bad(MessageText.Format(ApiUserText.UnknownStreamFormat,
-            new
-            {
-                Format = format,
-                Supported = string.Join(", ", SettingChoice.Names<StreamFormat>())
-            }));
+    private static JsonHttpResult<ApiError> UnknownFormat(string? format)
+    {
+        var unknown = new UnknownStreamFormatHoles(format, string.Join(", ", SettingChoice.Names<StreamFormat>()));
+        return Bad(MessageText.Format(ApiUserText.UnknownStreamFormat, unknown));
+    }
 
     /// <summary>The 404 for a session this instance doesn't have.</summary>
-    private static JsonHttpResult<ApiError> UnknownSession(string id) =>
-        ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, new { Id = id }));
+    private static JsonHttpResult<ApiError> UnknownSession(string id)
+    {
+        var unknown = new UnknownSessionHoles(id);
+        return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, unknown));
+    }
+
+    /// <summary>The 409 for a session that is still answering, naming it in the address to cancel it.</summary>
+    private static JsonHttpResult<ApiError> Busy(string id)
+    {
+        var busy = new SessionBusyHoles(id);
+        return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, busy));
+    }
 
     /// <summary>A 400 with its reason.</summary>
     private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);

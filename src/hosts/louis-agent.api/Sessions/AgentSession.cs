@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.SessionStream.Wire.Requests;
 using LouisAgent.SessionStream.Wire.Requests.Windows;
 using Microsoft.Extensions.AI;
 
@@ -74,6 +75,11 @@ internal sealed class AgentSession(
     /// those agents sends it its page.
     /// </summary>
     public IReadOnlyList<WindowPageRequest> Windows { get; set; } = [];
+
+    /// <summary>
+    /// The page the latest message came from (F127.8): its address and part of the site go in the turn log.
+    /// </summary>
+    public PageRequest? Page { get; set; }
 
     /// <summary>The role the session chose (F21), or null for the default voice (CL9).</summary>
     public string? Role { get; } = role;

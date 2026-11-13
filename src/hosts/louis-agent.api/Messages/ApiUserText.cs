@@ -1,4 +1,7 @@
 using System.ComponentModel;
+using LouisAgent.Api.Messages.Holes.Admin;
+using LouisAgent.Api.Messages.Holes.Sessions;
+using LouisAgent.Composition.Messages;
 
 namespace LouisAgent.Api.Messages;
 
@@ -13,9 +16,11 @@ public enum ApiUserText
     BinaryFile,
 
     [Description("'{Tag}' must be at most {Max} printable characters.")]
+    [Holes(typeof(InvalidTagHoles))]
     InvalidTag,
 
     [Description("Unknown time zone '{TimeZone}'. Use an IANA name, e.g. Africa/Johannesburg.")]
+    [Holes(typeof(UnknownTimeZoneHoles))]
     UnknownTimeZone,
 
     [Description("Missing or invalid API key (x-api-key or Authorization: Bearer).")]
@@ -61,9 +66,12 @@ public enum ApiUserText
     EmptyMessage,
 
     [Description("This session is still answering a message; wait for it or POST /v1/sessions/{Id}/cancel.")]
+    [Holes(typeof(SessionBusyHoles))]
     SessionBusy,
 
-    [Description("Unknown session: {Id}")] UnknownSession,
+    [Description("Unknown session: {Id}")]
+    [Holes(typeof(UnknownSessionHoles))]
+    UnknownSession,
 
     [Description("Pass the file's workspace-relative 'path'.")]
     PathRequired,
@@ -154,6 +162,7 @@ public enum ApiUserText
     [Description("No stored run '{Id}'.")] NoStoredRun,
 
     [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]
+    [Holes(typeof(UnknownStreamFormatHoles))]
     UnknownStreamFormat,
 
     [Description(
@@ -177,6 +186,11 @@ public enum ApiUserText
     ReplayNeedsOf,
 
     [Description(
-        "The guide answers {Cap} conversations a day from one address, and this address has had them. Try again tomorrow, or sign in.")]
+        "The guide answers {Cap} conversations a day from one address, and this address has had them. Try again " +
+        "tomorrow, or sign in.")]
     OpenDoorCapReached,
+
+    [Description("'{Day}' isn't a day. Use yyyy-MM-dd, e.g. 2026-11-12, or leave it out for today.")]
+    [Holes(typeof(UnknownDayHoles))]
+    UnknownDay,
 }

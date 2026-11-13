@@ -1,0 +1,9 @@
+@inherits LayoutComponentBase
+@using LouisAgent.Web.Components.Admin
+@* The framework's admin frame, filled with what's this site's own (F127.8): its mark and name, and the way back to the
+   site. Behind the admin key; nothing public links here. *@
+
+<AdminShell BrandTitle="louis-agent.dev" BackHref="/" BackLabel="Back to the site">
+    <Brand><img class="site-mark" src="brand/mark.svg" alt="" width="22" height="22" />louis-agent</Brand>
+    <ChildContent>@Body</ChildContent>
+</AdminShell>

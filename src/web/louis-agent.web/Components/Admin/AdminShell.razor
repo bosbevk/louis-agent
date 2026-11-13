@@ -20,6 +20,11 @@
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Close the menu">×</button>
         </div>
 
+        @* The overview first (F127.8): what the site's agents did, on every site with an admin. *@
+        <nav class="side-nav">
+            <NavLink class="side-link" href="admin/overview"><span class="ic i-user" aria-hidden="true"></span>Overview</NavLink>
+        </nav>
+
         @Links
 
         @* Each named area's links, after the site's own (F127.6): the eval studio's on every site that runs it. *@

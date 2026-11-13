@@ -12,17 +12,16 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 101 | 88 |
+| Features (`F`) | 103 | 87 |
 | Fixes (`FX`) | 136 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (117 in the TODO)
+## Open (116 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
-| F127 | A site's areas in the framework: the visitor area (flow or slides, with the guide), a showroom for the demos, the chat portal (Puls's chat layout becomes the framework's), the admin portal (the packs' screens); a site names the areas it uses; an ADR. F127.1 and F127.2 done; F127.3.1 `AskAgent` on this instance done; F127.4 the guide mentors done (F127.4.1 cards, F127.4.2 the guided live demo, F127.4.3 a form); F127.3.2 another server done; F127.5 the minions on the address done; F127.6 a site names its areas done; F127.7 one guide, a focus per part, done; next F127.8 the admin portal, its own plan | Now |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now, after F127 |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now, after F127 |
@@ -149,6 +148,8 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 
 | Id | When | What |
 |---|---|---|
+| F127 | 2026-11-13 | A site's areas in the framework, the parent: its eight children built (F127.1 the showroom, F127.2 the demos tried live, F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions on the address, F127.6 a site names its areas, F127.7 one guide with a focus per part, F127.8 the site's admin); ADRs 0115 to 0117, 0120 and 0121 |
+| F127.8 | 2026-11-13 | louis-agent.dev's admin, an overview first (Louis's pick of three designs): a line per turn beside the ledger (`turns-{yyyy-MM}.jsonl`: the page, the part, who answered, the tools, no words), `GET /v1/admin/overview` joining it with the ledger (today and the month, by part and by who answered, the latest talks; an unpriced cost unknown), the tools a site counts named on its admin (`SendLead` as leads), the framework's overview page first in every admin, and the site's own admin layout behind `ADMIN_API_KEY`, which falls back to `AGENT_API_KEY`; `SessionHandlers`' holes became records first |
 | F127.7 | 2026-11-12 | One guide, a focus per part, ready for an agent (ADR 0121, amends 0114): a site names each page's part with `Focuses(…)` (louis-agent.dev: selling, demos for `/demos` and every demo, framework), sent with every message and said in the page block, and the guide reads that part's skill (`focus-selling`, which guides to the demos and hooks honestly, `focus-demos`, `focus-framework`); tiles and cards are pieces with their own addresses, a click asks the guide about one, a card opened or a piece the guide shows is selected quietly, drawn pressed with a chip, and carried with every message; the number tiles take colours; the API builds an index of every section, card and piece from its own rendered pages (`SitePlaces`, `IPackContext.Places`) and the site pack's `FindPlace` searches it, so the guide shows a piece on any page without a hand-kept map; `ShowPage` takes a piece's digit-first address |
 | F127.6 | 2026-11-12 | A site names its areas (ADR 0120): `AddSiteAreas` and `SiteAreasBuilder` in the framework's web register the chat's plumbing for every site and each area a site names, `Chat()`, `Admin(layout, views)`, `Showroom(demos)`, and a library's own through `Add` (`Evals()`, `Accounts(layout)`), a name twice counting once; `SiteAreas` gives the router its pages and `AdminShell` each area's links; code-review, the starter, Puls and louis-agent.dev each name theirs in one Composition Root (`CodeReviewAreas`, `StarterAreas`, `PulsAreas`, `LouisAgentDevAreas`) that their tests share; Puls's hand-drawn eval links gone; `SitesNameTheirAreasTests` holds every site to it; with it, no empty frame where a card's answer was (FX142's follow-up) |
 | F127.5 | 2026-11-12 | Minions on the address, on `AskAgent` (ADR 0117, Louis's correction): `AskAgent(address, message, tool, stronger)` asks a minion (`puls.find-recipe`, listed in the identity's `Calls`, refused with a server, its model from `MINION_LLMS`, 16 a turn, never kept); `StartMinion` and the `minions` toolset deleted, its guide folded into the agents guide; everyone may ask whom their `Calls` allow but a minion, a session's level its role's folder below the top; no agent twice in a chain of asks (`TurnChain`, the API too); `AGENT_MAX_DEPTH` (default 4); the web's card reads a minion's ask, the dead follow-up chip deleted; a mode's prompt lists only the agents among its `Calls`; Puls lists its two minions; no live run (a local model, Puls paused) |
