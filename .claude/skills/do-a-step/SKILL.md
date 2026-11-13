@@ -61,9 +61,8 @@ suite".
 
 ## Look at the real thing
 
-Something a visitor sees is checked by looking at it, not only by its tests. Louis, 2026-11-08: "can't you test it
-locally first, in the browser". Run it locally and look at the changed page in Chrome, at desktop and at phone
-width, before the step is shown.
+Something a visitor sees is checked by looking at it, not only by its tests. Use `/check-a-page` before the step
+is shown.
 
 ## Then
 

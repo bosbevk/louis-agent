@@ -73,5 +73,5 @@ the unit tests, then the integration tests. A push to a branch with no pull requ
 
 - **Louis merges.** On his "merge", it is a merge commit, so each step stays its own commit on `main`.
 - **The deploy follows the merge at once.** Wait for it to land. Where the change is one a visitor sees, look at
-  the live page.
+  the live page with `/check-a-page`.
 - **Then the next branch starts**, from `origin/main` after a fetch.

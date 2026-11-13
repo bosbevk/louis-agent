@@ -35,6 +35,7 @@ Two rules follow from the last row.
 | `put-a-finding` | A choice comes up that the plan or the brief doesn't settle |
 | `do-a-step` | A step starts |
 | `finish-a-step` | A step's test passes, and it is to be shown and committed |
+| `check-a-page` | Something a visitor sees changed, or was deployed |
 | `fix-a-bug` | Something broke, and a fix starts |
 | `ship-it` | A commit, a push, a pull request or a merge |
 | `finish-a-feature` | The last step of a feature or a cleanup |

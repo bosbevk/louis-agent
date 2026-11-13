@@ -98,7 +98,7 @@ How all of Claude's instructions are laid out is in [.claude/README.md](../../.c
 
 ## Skills
 
-A skill is a procedure that loads for its job. Use the one that fits. More are added as CL63 goes on.
+A skill is a procedure that loads for its job. Use the one that fits.
 
 | Job | Skill |
 |---|---|
@@ -106,6 +106,7 @@ A skill is a procedure that loads for its job. Use the one that fits. More are a
 | A choice comes up that the plan or the brief doesn't settle | `/put-a-finding` |
 | A step starts | `/do-a-step` |
 | A step's test passes, and it is to be shown and committed | `/finish-a-step` |
+| Something a visitor sees changed, or was deployed | `/check-a-page` |
 | Something broke, and a fix starts | `/fix-a-bug` |
 | A commit, a push, a pull request or a merge | `/ship-it` |
 | The last step of a feature or a cleanup | `/finish-a-feature` |
