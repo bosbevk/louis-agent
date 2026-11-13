@@ -23,14 +23,12 @@
 
         @Links
 
-        @* Each named area's links, after the site's own, in the order named (F127.6, F144): the overview's, the eval
-           studio's. *@
+        @* Each named area's links, after the site's own, in the order named (F127.6, F144): the overview's, the packs',
+           the eval studio's. *@
         @foreach (var links in AreaLinks)
         {
             <DynamicComponent Type="links" />
         }
-
-        <PackMenu />
 
         @if (BackHref is not null)
         {

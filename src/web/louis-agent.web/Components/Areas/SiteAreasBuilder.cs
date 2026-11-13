@@ -5,6 +5,7 @@ using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Components.Chat.Shell;
 using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
+using LouisAgent.Web.Components.Screens;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Widget.Door;
 using LouisAgent.Web.Messages;
@@ -38,16 +39,26 @@ public sealed class SiteAreasBuilder
         Add(new SiteArea("chat", services => services.TryAddSingleton(new ChatHandoff(handoff)), []));
 
     /// <summary>
-    /// The admin portal: the packs' screens and uploads, drawn inside <paramref name="layout"/>, each pack's own view
-    /// set by <paramref name="views"/>. It is the frame the admin's areas plug into (F144).
+    /// The admin's frame (F144): the admin pages drawn inside <paramref name="layout"/>, which the admin's areas (the
+    /// overview, the packs, the evals) plug into.
     /// </summary>
-    public SiteAreasBuilder Admin(Type layout, Action<PackViews>? views = null)
+    public SiteAreasBuilder Admin(Type layout)
     {
         if (Named("admin")) return this;
         _adminLayout = layout;
+        return Add(new SiteArea("admin", _ => { }, FrameworkPages.Assemblies));
+    }
+
+    /// <summary>
+    /// The packs' screens and uploads (an area since F144), with their page, their menu in the sidebar and their card
+    /// on the home; each pack's own view is set by <paramref name="views"/>.
+    /// </summary>
+    public SiteAreasBuilder Packs(Action<PackViews>? views = null)
+    {
         var packViews = new PackViews();
         views?.Invoke(packViews);
-        return Add(new SiteArea("admin", services => services.TryAddSingleton(packViews), FrameworkPages.Assemblies));
+        return Add(new SiteArea("packs", services => services.TryAddSingleton(packViews), FrameworkPages.Assemblies,
+            AdminLinks: typeof(PackMenu), AdminCard: typeof(PacksCard)));
     }
 
     /// <summary>

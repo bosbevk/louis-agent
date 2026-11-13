@@ -56,12 +56,15 @@ public class AdminLayoutTests
         Assert.That(cut.FindAll(".admin-main .page"), Has.Count.EqualTo(1));
     }
 
-    /// <summary>Nothing running, nothing to review, and no pack offering a screen.</summary>
+    /// <summary>Nothing running, nothing to review, and no pack offering a screen or an upload.</summary>
+    /// <remarks>Guard clauses, one per address (ADR 0051).</remarks>
     private static string AnswerTo(string path)
     {
         if (path.EndsWith("/current")) return "null";
+        if (path.EndsWith("/screens")) return """{"screens":[]}""";
+        if (path.EndsWith("/imports")) return """{"imports":[]}""";
 
-        return path.EndsWith("/screens") ? """{"screens":[]}""" : """{"items":[],"total":0}""";
+        return """{"items":[],"total":0}""";
     }
 
     /// <summary>The layout with nothing running and nothing to review, once its badge has read the queue.</summary>

@@ -18,13 +18,14 @@ namespace LouisAgent.Starter;
 public static class WebsiteAreas
 {
     /// <summary>
-    /// Names the site's areas: a pack's view goes in the admin's, as <c>Admin(layout, views => …)</c>, and the tools
-    /// the overview counts in its own, as <c>Overview(count => …)</c>.
+    /// Names the site's areas: a pack's view goes in the packs', as <c>Packs(views => …)</c>, and the tools the
+    /// overview counts in its own, as <c>Overview(count => …)</c>.
     /// </summary>
     public static void Name(SiteAreasBuilder areas) =>
         areas.Chat()
             .Admin(typeof(AdminLayout))
             .Overview()
+            .Packs()
             .Accounts(typeof(AccountLayout))
             .Evals();
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Contracts.Admin.Screens;
@@ -27,6 +28,9 @@ public class PackMenuTests
         new ScreenReply("visits", "Visits", "Who came.", [Name], Searchable: false)
     ]);
 
+    /// <summary>What the API says when the key is wrong.</summary>
+    private static readonly ApiError Refusal = new("error", new ApiErrorDetail("authentication_error", "Wrong key."));
+
     /// <summary>What the fake API says: the list, or a refusal until a key is sent.</summary>
     private sealed class FakeScreensApi(ScreensReply reply)
     {
@@ -39,12 +43,13 @@ public class PackMenuTests
         public HttpResponseMessage Answer(HttpRequestMessage request)
         {
             if (Refuses)
-                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = JsonContent.Create(new { }) };
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = JsonContent.Create(Refusal) };
 
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = request.RequestUri!.AbsolutePath.EndsWith("/imports")
-                    ? JsonContent.Create(new ImportsReply([.. Enumerable.Repeat(new ImportRow("prices", "", []), Uploads)]),
+                    ? JsonContent.Create(
+                        new ImportsReply([.. Enumerable.Repeat(new ImportRow("prices", "", []), Uploads)]),
                         options: AdminJson.SnakeCase)
                     : JsonContent.Create(reply, options: AdminJson.SnakeCase)
             };
@@ -65,6 +70,19 @@ public class PackMenuTests
         return (ctx.Render<PackMenu>(), store);
     }
 
+    /// <summary>The packs' own page comes first (F144), then what they offer.</summary>
+    [Test]
+    public void ThePacksPage_IsTheFirstLink()
+    {
+        using var ctx = new BunitContext();
+
+        var (menu, _) = Render(ctx, new FakeScreensApi(TwoScreens));
+
+        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.pack-link"), Has.Count.EqualTo(2)),
+            TimeSpan.FromSeconds(10));
+        Assert.That(menu.Find("a.side-link").GetAttribute("href"), Is.EqualTo("admin/packs"));
+    }
+
     /// <summary>A link per screen, in the packs' order, to the generic page.</summary>
     [Test]
     public void AScreen_GetsALink()
@@ -73,9 +91,9 @@ public class PackMenuTests
 
         var (menu, _) = Render(ctx, new FakeScreensApi(TwoScreens));
 
-        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.side-link"), Has.Count.EqualTo(2)),
+        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.pack-link"), Has.Count.EqualTo(2)),
             TimeSpan.FromSeconds(10));
-        var links = menu.FindAll("a.side-link");
+        var links = menu.FindAll("a.pack-link");
         Assert.That(links.Select(link => link.GetAttribute("href")),
             Is.EqualTo(new[] { "admin/screens/usage", "admin/screens/visits" }));
         Assert.That(links.Select(link => link.TextContent), Is.EqualTo(new[] { "Usage", "Visits" }));
@@ -91,9 +109,12 @@ public class PackMenuTests
         var (taking, _) = Render(with, new FakeScreensApi(TwoScreens) { Uploads = 1 });
         var (none, _) = Render(without, new FakeScreensApi(TwoScreens));
 
-        taking.WaitForAssertion(() => Assert.That(taking.FindAll("a.side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "admin/screens/usage", "admin/screens/visits", "admin/imports" })), TimeSpan.FromSeconds(10));
-        none.WaitForAssertion(() => Assert.That(none.FindAll("a.side-link"), Has.Count.EqualTo(2)), TimeSpan.FromSeconds(10));
+        taking.WaitForAssertion(() =>
+                Assert.That(taking.FindAll("a.pack-link").Select(link => link.GetAttribute("href")),
+                    Is.EqualTo(new[] { "admin/screens/usage", "admin/screens/visits", "admin/imports" })),
+            TimeSpan.FromSeconds(10));
+        none.WaitForAssertion(() => Assert.That(none.FindAll("a.pack-link"), Has.Count.EqualTo(2)),
+            TimeSpan.FromSeconds(10));
     }
 
     /// <summary>A pack's own-view screen is listed only by a site that carries the view.</summary>
@@ -111,9 +132,9 @@ public class PackMenuTests
         var (plain, _) = Render(without, new FakeScreensApi(mixed));
         var (carrying, _) = Render(with, new FakeScreensApi(mixed), new PackViews().UseScreen<ScreenTable>("own"));
 
-        plain.WaitForAssertion(() => Assert.That(plain.FindAll("a.side-link").Select(link => link.TextContent),
+        plain.WaitForAssertion(() => Assert.That(plain.FindAll("a.pack-link").Select(link => link.TextContent),
             Is.EqualTo(new[] { "Usage" })), TimeSpan.FromSeconds(10));
-        carrying.WaitForAssertion(() => Assert.That(carrying.FindAll("a.side-link").Select(link => link.TextContent),
+        carrying.WaitForAssertion(() => Assert.That(carrying.FindAll("a.pack-link").Select(link => link.TextContent),
             Is.EqualTo(new[] { "Usage", "Own" })), TimeSpan.FromSeconds(10));
     }
 
@@ -127,7 +148,7 @@ public class PackMenuTests
         var (menu, _) = Render(ctx, new FakeScreensApi(odd));
 
         menu.WaitForAssertion(
-            () => Assert.That(menu.Find("a.side-link").GetAttribute("href"), Is.EqualTo("admin/screens/a%20b")),
+            () => Assert.That(menu.Find("a.pack-link").GetAttribute("href"), Is.EqualTo("admin/screens/a%20b")),
             TimeSpan.FromSeconds(10));
     }
 
@@ -155,7 +176,7 @@ public class PackMenuTests
         api.Refuses = false;
         menu.InvokeAsync(() => store.SaveAdminKeyAsync("the-key"));
 
-        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.side-link"), Has.Count.EqualTo(2)),
+        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.pack-link"), Has.Count.EqualTo(2)),
             TimeSpan.FromSeconds(10));
     }
 
@@ -166,7 +187,7 @@ public class PackMenuTests
         using var ctx = new BunitContext();
         var api = new FakeScreensApi(TwoScreens);
         var (menu, store) = Render(ctx, api);
-        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.side-link"), Has.Count.EqualTo(2)),
+        menu.WaitForAssertion(() => Assert.That(menu.FindAll("a.pack-link"), Has.Count.EqualTo(2)),
             TimeSpan.FromSeconds(10));
 
         menu.Instance.Dispose();
