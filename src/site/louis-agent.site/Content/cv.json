@@ -22,12 +22,37 @@
   "now": {
     "name": "louis-agent",
     "url": "https://louis-agent.dev",
+    "headline": "louis-agent: an AI agent framework, built in the open on this site.",
     "description": "This year I've been learning AI engineering the hands-on way: every skill built, measured before and after, and written up. It runs this site, its guide in the corner and the Puls specialists on mypuls.co.za.",
-    "highlights": [
-      "The engine: a streaming tool loop on Microsoft.Extensions.AI over Anthropic, OpenAI and Ollama, tools grouped in packs, usable from Rider (ACP), a Blazor app, an HTTP API, a CLI or as an MCP server. An orchestrator watches a service's errors, hands fixes to the coding agent, and checks each one itself: the commit, the failing request replayed, the tests run.",
-      "Evals in C#: one harness for every check, code graders first, an LLM judge only after it agreed with my own labels (35 of 36), replays that re-score for $0, and an eval studio to run them.",
-      "Every request measured: a usage ledger priced by a dated price table, shown in rand; prompt caching took a benchmark run from $0.66 to $0.13. OpenTelemetry traces per turn and tool call.",
-      "In production: an MCP server and ACP for Rider, arguments never through a shell, robots.txt obeyed in code, Azure Container Apps from Bicep, deployed by GitHub Actions after green CI."
+    "parts": [
+      {
+        "name": "The engine",
+        "keywords": [ "Agent loop", "Tools", "Multi-agent" ],
+        "summary": "A streaming tool loop on Microsoft.Extensions.AI over Anthropic, OpenAI and Ollama, tools grouped in packs, usable from Rider (ACP), a Blazor app, an HTTP API, a CLI or as an MCP server. An orchestrator watches a service's errors, hands fixes to the coding agent, and checks each one itself: the commit, the failing request replayed, the tests run.",
+        "url": "/framework/how-it-works",
+        "link": "How it works"
+      },
+      {
+        "name": "Evals in C#",
+        "keywords": [ "Evaluation" ],
+        "summary": "One harness for every check: code graders first, an LLM judge only after it agreed with my own labels (35 of 36), replays that re-score for $0, and an eval studio to run them.",
+        "url": "/framework/measured/checks",
+        "link": "Measured, not assumed"
+      },
+      {
+        "name": "Every request measured",
+        "keywords": [ "Cost", "Observability" ],
+        "summary": "A usage ledger priced by a dated price table, shown in rand. Prompt caching took a benchmark run from $0.66 to $0.13. OpenTelemetry traces per turn and tool call.",
+        "url": "/framework/measured/rand",
+        "link": "The numbers"
+      },
+      {
+        "name": "In production",
+        "keywords": [ "Protocols", "Safety", "Shipping" ],
+        "summary": "MCP server and ACP for Rider. Arguments never through a shell, robots.txt obeyed in code. Azure Container Apps from Bicep, deployed by GitHub Actions after green CI.",
+        "url": "/framework/architecture",
+        "link": "Architecture"
+      }
     ]
   },
   "work": [
@@ -61,7 +86,7 @@
       "endDate": "2018-12",
       "highlights": [
         "Built a bulk SMS system to send and track messages, and an operations dashboard (cold-room load against temperature, weekly hours per department).",
-        "Built an Outlook ribbon that attaches Reporting Services reports straight into an email; moved Crystal Reports to SSRS."
+        "Built an Outlook ribbon that attaches Reporting Services reports straight into an email, and moved Crystal Reports to SSRS."
       ],
       "keywords": [ "ASP.NET MVC", "AngularJS", "SSRS", "SQL Server" ]
     },
@@ -104,8 +129,8 @@
   ],
   "education": [
     { "institution": "CTI Education Group, Durbanville", "area": "Comprehensive Programming, with a certificate in Using Linux", "studyType": "Diploma in Information Systems", "startDate": "2005", "endDate": "2006" },
-    { "institution": "Pearson College London (through CTI)", "area": "Information Systems", "studyType": "Higher National Diploma", "startDate": "2005", "endDate": "2006" },
-    { "institution": "ViewPoint Training", "area": "Business Analysis", "studyType": "IIBA-accredited course, 30 CDUs", "startDate": "2010-04", "endDate": "2010-04" },
+    { "institution": "Pearson College London (through CTI)", "studyType": "Higher National Diploma, Information Systems", "startDate": "2005", "endDate": "2006" },
+    { "institution": "ViewPoint Training", "area": "IIBA-accredited, 30 CDUs", "studyType": "Business Analysis", "startDate": "2010-04", "endDate": "2010-04" },
     { "institution": "Hoërskool Swartland", "studyType": "Matric", "endDate": "2004" }
   ],
   "skills": [
@@ -114,8 +139,7 @@
     { "name": "Front end", "keywords": [ "Angular", "TypeScript", "Blazor", "JavaScript", "HTML", "CSS / SCSS" ] },
     { "name": "Data", "keywords": [ "SQL Server", "T-SQL", "MongoDB", "SSRS", "SSIS" ] },
     { "name": "Cloud & delivery", "keywords": [ "Azure", "Bicep", "Docker", "Kubernetes", "GitHub Actions", "Azure DevOps", "OpenTelemetry" ] },
-    { "name": "Ways of working", "keywords": [ "Business analysis", "Requirements", "Agile / Scrum", "Test first", "ADRs", "Mentoring" ] },
-    { "name": "Soft skills", "keywords": [ "Collaboration", "Resilience", "Drive", "Attention to detail" ] }
+    { "name": "Ways of working", "keywords": [ "Business analysis", "Requirements", "Agile / Scrum", "Test first", "ADRs", "Mentoring" ] }
   ],
   "certificates": [
     { "name": "Scope AI Solutions", "date": "2026" },
@@ -130,6 +154,7 @@
   ],
   "interests": [
     { "name": "Philosophy and politics", "keywords": [ "The Stoics", "Kierkegaard" ] },
-    { "name": "Gardening" }
+    { "name": "Gardening" },
+    { "name": "Soft skills", "keywords": [ "Collaboration", "Resilience", "Drive", "Attention to detail" ] }
   ]
 }

@@ -38,7 +38,10 @@ public class ResumeReaderTests
             Assert.That(resume.Basics.Profiles.Select(profile => profile.Network),
                 Is.EqualTo(new[] { "LinkedIn", "GitHub" }));
             Assert.That(resume.Facts.Single().Value, Is.EqualTo("20 years"));
-            Assert.That(resume.Now!.Highlights, Is.EqualTo(new[] { "Evals and a cost ledger" }));
+            Assert.That(resume.Now!.Headline, Is.EqualTo("louis-agent: an AI agent framework."));
+            Assert.That(resume.Now.Parts.Single().Name, Is.EqualTo("Evals in C#"));
+            Assert.That(resume.Now.Parts.Single().Keywords, Is.EqualTo(new[] { "Evaluation" }));
+            Assert.That(resume.Now.Parts.Single().Link, Is.EqualTo("Measured, not assumed"));
             Assert.That(resume.Work.Single().Highlights, Is.EqualTo(new[] { "Shipped the price-rule agent" }));
             Assert.That(resume.Work.Single().StartDate, Is.EqualTo("2021-03"));
             Assert.That(resume.Education.Single().StudyType, Is.EqualTo("Diploma"));

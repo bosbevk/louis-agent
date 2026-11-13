@@ -1,5 +1,8 @@
 /* The CV's hero (F142): the words on the left and the photo on the right, the photo above them on a phone. */
 .cv-hero { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 40px; align-items: start; }
+/* The name leads the page: larger than a section's heading, with air before the summary. */
+.cv-hero h1 { font-size: clamp(40px, 7vw, 64px); line-height: 1.04; letter-spacing: -.03em; }
+.cv-hero .lede { margin-top: 18px; }
 .cv-where { margin-top: 16px; font-family: var(--bs-font-monospace); font-size: 13px; color: var(--bs-tertiary-color); }
 .cv-reach { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 .cv-photo {

@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Site.Components.Cv;
 
 /// <summary>
-/// Louis's CV, drawn from the record the site reads from <c>cv.json</c> (F142): the hero and facts, the page's own
-/// "now" band, the jobs, the skills, the schooling and the rest, each a band the guide can show.
+/// Louis's CV, drawn from the record the site reads from <c>cv.json</c> (F142): the hero and facts, what he's
+/// building now, the jobs, the skills, the schooling and the rest, each a band the guide can show.
 /// </summary>
 /// <remarks>
 /// Composite View: one component per section, each handed only its part of the record, so a section is changed and
 /// tested on its own; Template View (Fowler) inside each, markup with holes the record fills. The page owns what isn't
-/// the CV's data (the photo, the "now" band, where he'd work), so the data stays the one source the guide reads too.
+/// the CV's data (the photo, where he'd work, its closing words), so the data stays the one source the admin's
+/// editor changes and the guide reads.
 /// </remarks>
 /// <seealso href="https://martinfowler.com/eaaCatalog/templateView.html">Template View (Fowler)</seealso>
 public partial class ResumeView
@@ -28,9 +29,9 @@ public partial class ResumeView
     [Parameter]
     public string? Availability { get; set; }
 
-    /// <summary>The page's own band after the facts: what he's building now, in the page's words.</summary>
+    /// <summary>The page's own closing words, under the last band.</summary>
     [Parameter]
-    public RenderFragment? Now { get; set; }
+    public RenderFragment? End { get; set; }
 
     /// <summary>The certificates with no link to check, which sit with the schooling.</summary>
     private IReadOnlyList<ResumeCertificate> Unchecked => [.. Resume.Certificates.Where(cert => cert.Url is null)];

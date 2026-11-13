@@ -1,0 +1,16 @@
+/* The CV mark in the menu (F142): outlined and in the code face, so it reads as a mark, not one more link. The
+   negative block margin keeps the menu's row as tall as its plain links. */
+.cv-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-block: -6px;
+    padding: 5px 10px;
+    border: 1px solid var(--web-border-hover);
+    border-radius: 8px;
+    font-family: var(--bs-font-monospace);
+    font-size: 12px;
+    letter-spacing: .08em;
+}
+.cv-mark:hover { border-color: var(--bs-emphasis-color); }
+.cv-mark svg { width: 14px; height: 14px; }

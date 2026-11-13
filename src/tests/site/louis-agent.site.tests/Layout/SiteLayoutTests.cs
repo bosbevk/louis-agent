@@ -48,6 +48,27 @@ public class SiteLayoutTests
         });
     }
 
+    /// <summary>
+    /// The menu ends with the CV mark (F142, Louis: "little icon CV there"): a small document and "CV", to /cv, with
+    /// a name a screen reader says.
+    /// </summary>
+    [Test]
+    public void TheMenu_EndsWithTheCvMark()
+    {
+        using var ctx = Context();
+
+        var last = ctx.Render<SiteLayout>().FindAll(".site-nav > a, .site-nav > .site-menu").Last();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(last.GetAttribute("href"), Is.EqualTo("/cv"));
+            Assert.That(last.ClassList, Does.Contain("cv-mark"));
+            Assert.That(last.TextContent.Trim(), Is.EqualTo("CV"));
+            Assert.That(last.GetAttribute("aria-label"), Is.EqualTo("Louis's CV"));
+            Assert.That(last.QuerySelectorAll("svg"), Has.Count.EqualTo(1));
+        });
+    }
+
     /// <summary>The menu leads to each page, from every page.</summary>
     [TestCase("/framework/how-it-works")]
     [TestCase("/framework/architecture")]
@@ -72,7 +93,7 @@ public class SiteLayoutTests
 
     /// <summary>
     /// The menu leads with what the site sells (F128.1, Louis's pick 5A): What we build, Pricing, Demos, Contact, and
-    /// the framework last.
+    /// the framework last of its pages, with the CV mark closing the bar (F142).
     /// </summary>
     [Test]
     public void TheMenu_LeadsWithWhatWeSell()
@@ -83,7 +104,8 @@ public class SiteLayoutTests
 
         var items = cut.Find(".site-nav").Children
             .Select(item => (item.QuerySelector(".site-menu-label") ?? item).TextContent.Trim());
-        Assert.That(items, Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework" }));
+        Assert.That(items,
+            Is.EqualTo(new[] { "What we build", "Pricing", "Demos", "Contact", "The framework", "CV" }));
     }
 
     /// <summary>
@@ -109,7 +131,8 @@ public class SiteLayoutTests
                     "/framework/packs", "/framework/build-your-own", "/framework/measured",
                     "/framework/built-on-it", "/framework/whats-coming", "/csharp-ai-agent-framework"
                 }));
-            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(3), "the rest stand in the bar");
+            Assert.That(cut.FindAll(".site-nav > a"), Has.Count.EqualTo(4),
+                "the rest stand in the bar, the CV mark among them (F142)");
         });
     }
 

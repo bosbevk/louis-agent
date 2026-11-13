@@ -1,12 +1,17 @@
-@* Louis's CV, drawn from its record (F142), as the approved mockup lays it out: who he is and the facts, the page's own
-   "now" band, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
+@* Louis's CV, drawn from its record (F142), as the approved page lays it out: who he is and the facts, what he's
+   building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
 <div class="resume">
-    <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv">
+    <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv" Short="CV">
         <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"/>
         <ResumeFacts Facts="Resume.Facts"/>
     </Band>
 
-    @Now
+    @if (Resume.Now is { } now)
+    {
+        <Band Id="now" Kicker="Now · proof of work">
+            <ResumeNow Project="now"/>
+        </Band>
+    }
 
     <Band Id="experience" Kicker="Experience">
         <BandTitle Class="chrome">Where I've worked.</BandTitle>
@@ -25,5 +30,6 @@
 
     <Band Id="also" Kicker="Also">
         <ResumeAlso Certificates="Checkable" Interests="Resume.Interests"/>
+        @End
     </Band>
 </div>

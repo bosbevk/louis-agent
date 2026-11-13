@@ -54,7 +54,15 @@ public partial class ResumeHero
         _ => "btn btn-line"
     };
 
-    /// <summary>A profile's words: the network, and his name on it when there is one.</summary>
-    private static string LabelOf(ResumeProfile profile) =>
-        profile.Username is { } name ? $"{profile.Network} · {name}" : profile.Network;
+    /// <summary>
+    /// A profile's words: his number on WhatsApp, as a person would look for it; else the network, with his name on
+    /// it when there is one.
+    /// </summary>
+    /// <remarks>A switch on the shape, one arm per kind of label (ADR 0051).</remarks>
+    private string LabelOf(ResumeProfile profile) => profile switch
+    {
+        { Network: WhatsApp } when Basics.Phone is { } phone => phone,
+        { Username: { } name } => $"{profile.Network} · {name}",
+        _ => profile.Network
+    };
 }

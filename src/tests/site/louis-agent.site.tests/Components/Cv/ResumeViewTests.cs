@@ -37,6 +37,40 @@ public class ResumeViewTests
         Snapshots.Match("Components/Cv/ResumeView.html", view.Markup);
     }
 
+    /// <summary>
+    /// The "now" band is drawn from the CV (Louis's pick of three: in cv.json, as panels): its headline and words,
+    /// and a panel per part with its label words, its text and its link into the site.
+    /// </summary>
+    [Test]
+    public void TheNowBand_DrawsAPanelPerPart()
+    {
+        using var ctx = new BunitContext();
+
+        var now = Render(ctx, Sample()).Find("#now");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(now.QuerySelector("h2")!.TextContent, Is.EqualTo("louis-agent: an AI agent framework."));
+            Assert.That(now.QuerySelector(".lede")!.TextContent, Is.EqualTo("An AI agent framework in C#."));
+            Assert.That(now.QuerySelector(".panel .cv-part-label")!.TextContent, Is.EqualTo("Evaluation"));
+            Assert.That(now.QuerySelector(".panel h3")!.TextContent, Is.EqualTo("Evals in C#"));
+            Assert.That(now.QuerySelector(".panel p")!.TextContent, Is.EqualTo("One harness for every check."));
+            Assert.That(now.QuerySelector(".panel a")!.GetAttribute("href"), Is.EqualTo("/framework/measured"));
+            Assert.That(now.QuerySelector(".panel a")!.TextContent, Does.Contain("Measured, not assumed"));
+        });
+    }
+
+    /// <summary>A CV with no "now" project has no such band.</summary>
+    [Test]
+    public void WithNoNowProject_ThereIsNoNowBand()
+    {
+        using var ctx = new BunitContext();
+
+        var view = Render(ctx, Sample() with { Now = null });
+
+        Assert.That(view.FindAll("#now"), Is.Empty);
+    }
+
     /// <summary>A job shows its dates, title, company and what was shipped, and the stack it was built with.</summary>
     [Test]
     public void AJob_ShowsItsDatesTitleCompanyAndHighlights()

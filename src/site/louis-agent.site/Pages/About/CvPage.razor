@@ -1,0 +1,14 @@
+@page "/cv"
+
+@* Louis's CV (F142), one scrolling page as he approved it: the view draws the CV from its record, and the page adds
+   what isn't the CV's data: the photo, where he'd work and the closing line. *@
+
+<PageTitle>Louis Marais · CV · louis-agent</PageTitle>
+<PageHead Description="Louis Marais's CV: a senior full-stack developer (.NET and Angular) with 20 years of business software, now building AI agents. Malmesbury, South Africa." />
+<PageLayoutChoice Layout="PageLayout.Flow" />
+
+<ResumeView Resume="_resume" Photo="images/louis-marais.jpg" Availability="open to remote and hybrid">
+    <End>
+        <p class="cv-end">References on request · notice period one month · this page is built with the louis-agent web framework.</p>
+    </End>
+</ResumeView>

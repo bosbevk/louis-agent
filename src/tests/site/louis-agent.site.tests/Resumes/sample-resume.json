@@ -15,8 +15,17 @@
   "now": {
     "name": "louis-agent",
     "url": "https://louis-agent.dev",
+    "headline": "louis-agent: an AI agent framework.",
     "description": "An AI agent framework in C#.",
-    "highlights": [ "Evals and a cost ledger" ]
+    "parts": [
+      {
+        "name": "Evals in C#",
+        "keywords": [ "Evaluation" ],
+        "summary": "One harness for every check.",
+        "url": "/framework/measured",
+        "link": "Measured, not assumed"
+      }
+    ]
   },
   "work": [
     {

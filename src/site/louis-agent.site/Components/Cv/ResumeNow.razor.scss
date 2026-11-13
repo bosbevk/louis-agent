@@ -1,0 +1,10 @@
+/* The CV's "now" band (F142): each panel's label words small above its name, its link under its text. */
+.cv-parts { margin-top: 28px; }
+.cv-part-label {
+    font-family: var(--bs-font-monospace);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--bs-tertiary-color);
+}
+.cv-part-link { display: inline-block; margin-top: 12px; font-size: 14px; color: var(--bs-body-color); }
