@@ -1,0 +1,31 @@
+{
+  "kind": "flow",
+  "title": "CL64 prompts in the skill shape: the architecture",
+  "caption": "Nothing new runs: the files change their shape, one test holds the shape, and an eval says whether the answers held.",
+  "flow": {
+    "nodes": [
+      { "id": "rule", "icon": "book", "tone": "amber", "label": "The rule (1)\nADR, prompts.md, the guide" },
+      { "id": "files", "icon": "file", "tone": "amber", "label": "prompts/**/*.md\nheaders (2), the cook (3, 4)\nthe guide's voice (5, 6)" },
+      { "id": "test", "icon": "checks", "tone": "green", "label": "PromptShapeTests (1)\nand its list" },
+      { "id": "catalog", "icon": "stack", "tone": "violet", "label": "PromptCatalog\nheaders checked at start" },
+      { "id": "loader", "icon": "chip", "tone": "violet", "label": "SkillLoader\nbuilds the prompt" },
+      { "id": "prompt", "icon": "message", "tone": "teal", "label": "The system prompt\nprinciples, role, skills, guides" },
+      { "id": "golden", "icon": "checks", "tone": "green", "label": "The golden file\nits diff read, every step" },
+      { "id": "model", "icon": "cloud", "tone": "red", "label": "The model" },
+      { "id": "tools", "icon": "box", "tone": "green", "label": "The packs' tools\na tool's own cases (4)" },
+      { "id": "eval", "icon": "chart", "tone": "green", "label": "The eval, live\nbefore and after (3 to 6)" }
+    ],
+    "edges": [
+      { "from": "rule", "to": "files", "word": "says the shape" },
+      { "from": "files", "to": "test", "style": "dashed", "word": "scanned" },
+      { "from": "files", "to": "catalog" },
+      { "from": "catalog", "to": "loader" },
+      { "from": "loader", "to": "prompt" },
+      { "from": "prompt", "to": "golden", "style": "dashed", "word": "pinned" },
+      { "from": "prompt", "to": "model" },
+      { "from": "model", "to": "tools", "word": "calls" },
+      { "from": "model", "to": "eval", "style": "dashed", "word": "answers graded" }
+    ],
+    "direction": "down"
+  }
+}
