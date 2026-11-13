@@ -28,6 +28,10 @@ public partial class ResumeHero
     [Parameter]
     public IReadOnlyList<ResumeLanguage> Languages { get; set; } = [];
 
+    /// <summary>Told the languages with one added or taken out, when the page is edited.</summary>
+    [Parameter]
+    public EventCallback<IReadOnlyList<ResumeLanguage>> LanguagesChanged { get; set; }
+
     /// <summary>Where the photo is served from; with none, there's no photo.</summary>
     [Parameter]
     public string? Photo { get; set; }
@@ -117,15 +121,15 @@ public partial class ResumeHero
         BasicsChanged.InvokeAsync(Basics with { Profiles = links });
 
     /// <summary>A link's network in its form's draft: LinkedIn, GitHub.</summary>
-    private static Task NetworkAsync(ListEditorRow<ResumeProfile> link, string? network) =>
+    private static Task NetworkAsync(EditedItem<ResumeProfile> link, string? network) =>
         link.Changed.InvokeAsync(link.Item with { Network = network ?? "" });
 
     /// <summary>What he is called there, shown on the link's button.</summary>
-    private static Task NameOnItAsync(ListEditorRow<ResumeProfile> link, string? name) =>
+    private static Task NameOnItAsync(EditedItem<ResumeProfile> link, string? name) =>
         link.Changed.InvokeAsync(link.Item with { Username = name });
 
     /// <summary>The address behind the button.</summary>
-    private static Task AddressAsync(ListEditorRow<ResumeProfile> link, string? address) =>
+    private static Task AddressAsync(EditedItem<ResumeProfile> link, string? address) =>
         link.Changed.InvokeAsync(link.Item with { Url = address ?? "" });
 
     /// <summary>The line under the summary: the town and province, the languages, and where he'd work.</summary>
@@ -149,8 +153,12 @@ public partial class ResumeHero
         }
     }
 
-    /// <summary>The same, as it is written after the place when the town and the province are drawn apart.</summary>
-    private string AfterThePlace => string.Concat(TheRest.Select(part => $" · {part}"));
+    /// <summary>Where he'd work, as it is written after the languages when the line's pieces are drawn apart.</summary>
+    private string AfterTheLanguages => string.IsNullOrEmpty(Availability) ? "" : $" · {Availability}";
+
+    /// <summary>The listener for the languages, retyped as one line with commas between them.</summary>
+    private EventCallback<string?> LanguagesTyped => LanguagesChanged.Of<IReadOnlyList<ResumeLanguage>, string?>(
+        this, typed => ResumeLanguages.Typed(typed, Languages));
 
     /// <summary>A profile's button: LinkedIn's and WhatsApp's in their own look, the rest outlined.</summary>
     /// <remarks>A switch on the network, one arm per look (ADR 0051).</remarks>

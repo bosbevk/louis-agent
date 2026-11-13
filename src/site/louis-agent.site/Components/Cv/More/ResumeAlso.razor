@@ -1,22 +1,74 @@
-@* The CV's "Also" (F142): the assessments and societies to check, and what he does outside work. *@
+@using LouisAgent.Web.Components.Editing
+@using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Site.Resumes.History
+@* The CV's "Also" (F142): the assessments and societies to check, and what he does outside work. When the page is
+   edited, an assessment's name is clicked and retyped and its address is behind a small form, an interest is a
+   name with tags, and both are lists. A link leads nowhere while it is edited. *@
 <div class="grid-2 resume-also">
-    @if (Certificates.Count > 0)
+    @if (Certificates.Count > 0 || Editable)
     {
         <div class="panel">
             <h3>Assessments and societies</h3>
-            @foreach (var certificate in Certificates)
+            @for (int index = 0; index < Certificates.Count; index++)
             {
-                <p><a href="@certificate.Url" target="_blank" rel="noopener">@certificate.Name</a></p>
+                // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+                int at = index;
+                var certificate = Certificates[at];
+                <p>
+                    <a href="@AddressOf(certificate)" target="_blank" rel="noopener"><InlineEdit
+                        Value="@certificate.Name" Label="Assessment" ValueChanged="@NameChanged(at)"/></a>
+                    @if (Editable)
+                    {
+                        <ItemTools Noun="assessment" At="at" Count="Certificates.Count" OnOpen="() => Open(at)"
+                                   OnMove="step => MoveCertificateAsync(at, step)"
+                                   OnRemove="() => RemoveCertificateAsync(at)"/>
+                    }
+                </p>
+                @if (Editable && _open == at)
+                {
+                    <InlineForm @key="at" TItem="ResumeCertificate" Item="certificate"
+                                Label="@($"assessment {at + 1}")" OnKeep="kept => KeepCertificateAsync(at, kept)"
+                                OnDrop="Close">
+                        <TextField Label="Address" Value="@context.Item.Url" Placeholder="https://"
+                                   Hint="With none it is drawn with the certificates, under Education."
+                                   ValueChanged="address => AddressAsync(context, address)"/>
+                    </InlineForm>
+                }
+            }
+            @if (Editable)
+            {
+                <ItemAdd Label="Add an assessment" OnAdd="AddCertificateAsync"/>
             }
         </div>
     }
-    @if (Interests.Count > 0)
+    @if (Interests.Count > 0 || Editable)
     {
-        <div class="panel">
+        <div class="@InterestsPanel">
             <h3>Outside work</h3>
-            @foreach (var interest in Interests)
+            @for (int index = 0; index < Interests.Count; index++)
             {
-                <p>@LineOf(interest)</p>
+                int at = index;
+                var interest = Interests[at];
+                @if (Editable)
+                {
+                    <div class="cv-interest">
+                        <span class="cv-interest-name"><InlineEdit Value="@interest.Name" Label="Interest"
+                                                                   ValueChanged="@InterestChanged(at)"/></span>
+                        <TagInput Tags="interest.Keywords" Label="@($"More about {interest.Name}")"
+                                  Placeholder="Add a word" TagsChanged="tags => TagsAsync(at, tags)"/>
+                        <ItemTools Noun="interest" At="at" Count="Interests.Count"
+                                   OnMove="step => MoveInterestAsync(at, step)"
+                                   OnRemove="() => RemoveInterestAsync(at)"/>
+                    </div>
+                }
+                else
+                {
+                    <p>@LineOf(interest)</p>
+                }
+            }
+            @if (Editable)
+            {
+                <ItemAdd Label="Add an interest" OnAdd="AddInterestAsync"/>
             }
         </div>
     }

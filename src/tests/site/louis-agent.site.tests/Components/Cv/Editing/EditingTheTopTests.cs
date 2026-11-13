@@ -79,7 +79,7 @@ public class EditingTheTopTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(pieces, Is.EqualTo(new[] { Top.Location!.City, Top.Location.Region }));
+            Assert.That(pieces, Is.EqualTo(new[] { Top.Location!.City, Top.Location.Region, "English, Afrikaans" }));
             Assert.That(view.Find(".cv-where").TextContent, Does.Contain("open to remote and hybrid"));
             Assert.That(handed.Value!.Basics.Location!.City, Is.EqualTo("Paternoster"));
             Assert.That(handed.Value.Basics.Location.Region, Is.EqualTo(Top.Location.Region));

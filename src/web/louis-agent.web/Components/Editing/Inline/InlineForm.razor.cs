@@ -34,14 +34,14 @@ public partial class InlineForm<TItem>
 
     /// <summary>The item's fields, drawn from the draft.</summary>
     [Parameter, EditorRequired]
-    public RenderFragment<ListEditorRow<TItem>> ChildContent { get; set; } = null!;
+    public RenderFragment<EditedItem<TItem>> ChildContent { get; set; } = null!;
 
     /// <summary>The draft starts as the item, once: a redraw by the owner doesn't take the edits away.</summary>
     protected override void OnInitialized() => _draft = Item;
 
     /// <summary>The draft and where a field sends its changed copy.</summary>
-    private ListEditorRow<TItem> Row =>
-        new(_draft, 0, EventCallback.Factory.Create<TItem>(this, changed => _draft = changed));
+    private EditedItem<TItem> Row =>
+        new(_draft, EventCallback.Factory.Create<TItem>(this, changed => _draft = changed));
 
     /// <summary>Hands the owner the draft.</summary>
     private Task KeepAsync() => OnKeep.InvokeAsync(_draft);

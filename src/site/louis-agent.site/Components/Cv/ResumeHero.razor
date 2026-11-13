@@ -1,6 +1,7 @@
 @using LouisAgent.Web.Components.Editing
 @using LouisAgent.Web.Components.Editing.Inline
 @using LouisAgent.Site.Resumes.Basics
+@using LouisAgent.Site.Resumes.Skills
 @* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. When
    the page is edited, the words are clicked and retyped, and the links are a list: each moves, goes or opens on a
    small form, and a link leads nowhere while it is being edited. *@
@@ -17,7 +18,10 @@
             <p class="cv-where">
                 <span class="cv-town"><InlineEdit Value="@Place.City" Label="Town" ValueChanged="TownChanged"/></span>,
                 <span class="cv-province"><InlineEdit Value="@Place.Region" Label="Province"
-                                                      ValueChanged="ProvinceChanged"/></span>@AfterThePlace
+                                                      ValueChanged="ProvinceChanged"/></span> ·
+                <span class="cv-languages"><InlineEdit Value="@ResumeLanguages.Listed(Languages)"
+                                                       Label="Languages, with commas"
+                                                       ValueChanged="LanguagesTyped"/></span>@AfterTheLanguages
             </p>
         }
         else

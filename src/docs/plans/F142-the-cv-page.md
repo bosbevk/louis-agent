@@ -187,6 +187,19 @@ says; a typed file both read can't. F143 builds on it (skill 4, *Tool design*).
   page with the draft, Save and Discard, the CV drawn in it, the form for what the page doesn't draw, and the rule
   above. *7b* the top and the facts edited in place, with add, remove and move on the links and the facts. *7c* the
   same for the rest: Now, jobs, skills, education and the last section.
+- **Unattended from step 7c** (Louis, 2026-11-13: "continue unattended until done"). The picks below are Claude's,
+  made without him and open for him to overrule:
+  - *What is retyped, and what opens.* Words the page draws as they are kept (a title, a point, a name) are retyped
+    in place. What the page draws as a composed line (a job's dates and its company, a school's two lines) or
+    doesn't draw at all (a link's address) opens on a small form from the item's pencil, kept or dropped as one.
+  - *Tags are changed in place.* A stack, a skill group, a panel's label words and an interest's words are a field
+    of tags on the page, with no tick: adding or taking out a tag is already one deliberate act.
+  - *The languages are one retyped line*, with commas between them, where the page names them.
+  - *An emptied point is a point taken out*, and an emptied name stays as a blank to fill in.
+  - *The list editor of step 6 is removed.* It was built for the forms, which went. Its add, remove, replace and
+    move live on as `ListEdits`, its row type as `EditedItem`, and the tag input is used on the page.
+  - *Certificates are one list drawn in two places* (those with a link in the last section). Each place hands back
+    its own, and the view puts the two back together, so giving one an address moves it to the last section.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Next: [F143 the guide drives the CV](F143-the-guide-drives-the-cv.md)
