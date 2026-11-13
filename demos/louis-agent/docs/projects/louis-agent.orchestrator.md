@@ -49,14 +49,14 @@ The flow is under *How it works*; these are the pieces.
 | Path | What's in it |
 |---|---|
 | `Program.cs` | Start-up, the poll loop, the triage prompt, `Decision` parsing, runbook loading (`OrchestratorSkills`) |
-| `ServiceTools.cs` | The fix and the two decisions: `CallLouisAgentFix`, `EscalateToHuman`, `AcknowledgeError`; the fix prompt; returning to `main` |
+| `Tools/ServiceTools.cs` | The fix and the two decisions: `CallLouisAgentFix`, `EscalateToHuman`, `AcknowledgeError`; the fix prompt; returning to `main` |
 | `Tools/Checks/FixChecks.cs` | The checks of a fix the coding agent claims (F106.3.1, split out by responsibility): `VerifyFixCommit`, `ReplayRequest`, `RunServiceTests` |
-| `LouisAgentClient.cs` | Sessions on louis-agent.api, SSE parsing into `AgentReply` (text, tool calls with inputs and results), `FIX-RESULT` parsing |
+| `Client/LouisAgentClient.cs` | Sessions on louis-agent.api, SSE parsing into `AgentReply` (text, tool calls with inputs and results), `FIX-RESULT` parsing |
 | the triage pack's `Feed/JsonLinesErrorFeed` | Reads the error log, skips handled and malformed events, accepts only plain-token ids; moved out of this project in F106.3.1, so every department's workflow reads the same feed |
-| `CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
+| `Comms/CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
-| `src/engine/louis-agent.core/prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, built into core (CL9) |
+| `demos/louis-agent/identity/louis-agent.identity.coding/prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, one of the coding identity's prompts |
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration

@@ -24,7 +24,11 @@ ships none of it.
 - maps the studio's routes on a gated `/admin` group the API hands out (`AdminGroup.MapAdminGroup`, behind
   `ADMIN_API_KEY`), through `EvalAdminEndpoints.MapEvalAdmin`: the evals and benchmarks lists, a check's manual, the
   stored runs, reviews, notes, rescoring, calibrations, drafts, the studio, a run's start, events and requests, the
-  trends, under `/evals` and the old `/benchmarks` name;
+  trends, under `/evals` and the old `/benchmarks` name. Two of them in detail: `GET runs/{id}/requests` (FX34) gives
+  the ledger's rows of a run the recorder keeps, each on its turn, so the live table prices a turn as it ends (`404`
+  for a run not recorded here, `503` for a ledger read mid-write); `POST runs/{id}/rescore` starts the runner on the
+  stored run's export (`201` with the new run's `Location`, `404` for an unknown run, `400` for a run that is not an
+  eval's, `409` while a run runs, `503` without a store);
 - records with each run what it ran with (`EvalSettings`), the web named by core's `WebSetup` seam, never by the web
   library.
 

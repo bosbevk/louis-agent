@@ -137,7 +137,7 @@ return new Host(app, app.GetTestClient(), store);
 A file holds at most 200 lines of code (a test file 400); blank and comment lines don't count. A folder with two kinds
 of thing or more than about six files gets subfolders by concern. Split a bigger class by responsibility: group its
 methods by the fields they use and the reason they would change, give each group its own class named for what it
-does (`PaymoClient`, `DiffFormatter`); the original keeps the flow, pure logic gets its own tests, I/O stays at the
+does (`GitRunner`, `BranchPrinter`); the original keeps the flow, pure logic gets its own tests, I/O stays at the
 edge. A `partial` class (other than a code-behind or one `[GeneratedRegex]` requires), `#region`, or a
 `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of splitting it. Namespace = folder path; dependencies one
 way. `FileSizeTests`, `FolderSizeTests` and `ArchitectureTests` hold it.

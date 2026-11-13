@@ -170,7 +170,7 @@ title. The eval's name is its check's id.
 
 A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
 `replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both.
-`BenchmarkRunOptions` parses it once, `BenchmarkRunner.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
+`EvalRunOptions` parses it once, `EvalProcess.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
 `web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
 says when to record and when to replay.
 
