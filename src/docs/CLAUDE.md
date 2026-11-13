@@ -20,8 +20,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 5. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
 6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
 7. **Measure, don't assume.** Ask before anything that spends real money (a run against the API) and before pushing.
-8. **Write it up.** When a skill or feature finishes, write its learning write-up in [learning/](learning/) for Louis
-   to read afterwards.
+8. **Write it up, and bring the docs along.** Every feature, fix and cleanup ends with its write-up for Louis to read
+   ([learning/](learning/)) and with the docs and diagrams of every project it touched matching the code again.
 9. **Source of truth:** [TODO.md](../../TODO.md) (what's next), [plans/](plans/README.md) (how we're building it now),
    [fixes/](fixes/README.md) (what broke and why), [projects/](projects/README.md) (how each project works) and
    [adr/](adr/README.md) (why). Update them rather than duplicating them.
@@ -46,8 +46,8 @@ implement until it passes and tidy with the tests green. Docs-only and configura
 
 1. Build and test only what the step touches (`core.tests` too if it moves files or adds names); the full suite only once the feature is built.
 2. If tools, their descriptions, the tool texts or the prompts changed, regenerate the golden files and review their diff.
-3. Update the feature or fix doc with what the step learned; on the last step, *Finishing a feature* or *Finishing a
-   fix* in their READMEs.
+3. Update the feature or fix doc, and the docs and diagrams of each project the step touches; on the last step,
+   *Finishing a feature* or *Finishing a fix* in their READMEs.
 4. Format every C# file in the commit, in order and once: Rider's formatter, Rider's inspections, long comment lines
    by hand, then `dotnet format … --include <its files>` last (CI checks with it). Only the commit's files, whole.
 5. Show the step before committing: the files it changes, the commit message and the explanation (with the test
