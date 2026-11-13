@@ -30,6 +30,10 @@ live results). The C# rules in `csharp.md` apply to the code-behind.
 - **Text from one place:** a host's own texts are its message enums and its `ChatText`
   ([Hosts guide](../../src/CLAUDE.md#each-hosts-own-texts)); F46 moves every text to localisation files, enums stay
   the keys.
+- **No semicolon in words a visitor reads** (Louis, 2026-11-08, of one in the site's text: "we should never do
+  this"): a page's words, a component's, a product's texts. Two clauses become two sentences, or a colon opens
+  a list. The site's page tests refuse one in a page's markup (`DemosPageTests`, `TriagePageTests`,
+  `CodingAgentPageTests`), and the guide's voice tells the model the same for its answers.
 - **A theme** is added as [Hosts guide: Adding a web theme](../../src/CLAUDE.md#adding-a-web-theme) says; a bUnit
   test pins each component's markup to a golden file ([Write and run tests](../../src/docs/guides/write-tests.md)).
 - **A script is a module beside its component** ([ADR 0093](../../src/docs/adr/0093-a-script-is-a-module-beside-its-component.md)):

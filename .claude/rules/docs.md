@@ -83,9 +83,17 @@ type per doc) and the dated decisions below; the index of every doc is [src/docs
 - **No new ADR without Louis's approval** (Louis, 2026-11-13: "the agent may not add adrs without my approval").
   When work turns up a decision that later work must follow, say so, propose the ADR in a few lines (the rule
   and its reason) and wait for his yes before writing the file. The same holds for a new rule in an existing ADR.
+- **An ADR is one decision** (Louis, 2026-11-13: "0122 is not an ADR"): the context that forced a choice, the
+  choice, and what it costs. It says who it binds: the framework, or one site or pack. A list of what a feature
+  built, its routes, its files and its styles, is the project's design doc. A rule found on the way amends the
+  ADR that already owns that part, with his approval as for any new rule.
 - **ADRs** (`src/docs/adr/`, [its README](../../src/docs/adr/README.md) has the template): a lasting decision gets one in the
   same PR, numbered next free, with *Context*, *Decision* as a rule, *Consequences*, *Links*; the quotes and dates
   that explain a rule live there, not in `src/docs/CLAUDE.md`.
+- **A record is a table** (Louis, 2026-11-07, of the work log: "we just need something simple as this"): the
+  work log and the TODO are one row per item, with its id and what it is in a few words. Never a prose column,
+  and the changelog does not come back. The reasoning goes in the plan or an ADR, written when the work starts.
+  A new item takes the next id of its kind (`F`, `FX`, `CL`). It is a fix, never a bug.
 - **Sources of truth:** `TODO.md` (what's next), `src/docs/work-log.md` (what was finished: one row per feature,
   fix or cleanup, when and what, the counts, and the open list; it replaced the changelog on 2026-11-07), the
   design docs, the guides; update them rather than duplicating them. A link to a doc that CL24 deleted points at

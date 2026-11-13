@@ -215,6 +215,11 @@ is written where and when it will be read.
   comitting only touched unit tests, before doing a PR main must be merged and full suite unit tests passes".
   It is in `CLAUDE.md`, so it holds with no skill loaded, and in `do-a-step` and `finish-a-step`. `ship-it`
   takes it too, in step 5.
+- **2026-11-13: step 7 is four commits.** As one step it was 345 lines of rules to rewrite and check, too much
+  to review in ten minutes. Louis's pick of three (four commits with a stop each, only the additions now and
+  the rewrites as their own cleanup, or as planned in one commit): four commits. 7a is `prompts.md` and the
+  standing instructions moved in, with nothing rewritten. 7b rewrites `razor.md` and `css.md`, 7c `docs.md`, 7d
+  `csharp.md`.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md)

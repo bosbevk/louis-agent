@@ -40,6 +40,15 @@ Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../.
   rules to it. A see-through colour reads the numbers, `rgba(var(--bs-primary-rgb), .4)`; `web/tools/_colours.scss` writes both
   forms from one value, so a colour is written once. What a rule reads at run time stays a CSS variable, since a Sass
   variable is fixed when the build runs. A theme stays a file of its own, loaded by the page.
+- **No rainbow** (Louis, 2026-11-10: "no rainbow color", then "glows and gradient works just not rainbow"): one
+  accent to an element. A gradient stays within one colour, white into it or the colour into a lighter shade.
+  Several items may each keep their own colour. Their colours are never blended into one gradient, or set in a
+  row that reads as one element.
+- **On paper every link is a QR code** (Louis, 2026-11-13: "in a pdf hyperlinks is qr codes always"): in anything
+  printed or saved as a PDF, a link is drawn by the framework's `PaperLink`, which prints its QR code, its words
+  and its address written short. It shows on paper only, so the page keeps its ordinary link beside it and hides
+  that one in print. Text on paper is near black, with dark greys only: he found the print's grey text "too
+  light".
 - **A path in `url(…)` is from where the CSS ends up,** `wwwroot/css/app.css`, whichever partial holds the rule.
 - **A class name says what it is and can't clash:** a state or a kind on a shared element takes a prefix
   (`is-replay`, `is-recorded`), since a bare `.replay` was already the landing page's button.

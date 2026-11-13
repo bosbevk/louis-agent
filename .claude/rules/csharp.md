@@ -124,6 +124,8 @@ return new Host(app, app.GetTestClient(), store);
   a `[Description]` template, filled by name (`MessageText.Format`); logs go through `ILogger` to stderr, since
   stdout is a protocol for the ACP and MCP servers. Nothing is backward compatible before a sale (0049): no alias,
   lenient reader or second parser for what we store or send between our own parts.
+- **A text the model reads holds no name and no date of who decided it**: a tool's `[Description]`, a tool's
+  message. The rule and its reason are in `prompts.md`.
 - **Named types, declared, then passed** (0119): no anonymous types and no `dynamic`, unless one is plainly the best
   option, with a `//` line saying why. A message's holes are a record named `{Member}Holes` in a `Holes/` folder
   beside its enum, which the member names: `[Holes(typeof(EndWithToolHoles))]`; a test holds its properties equal

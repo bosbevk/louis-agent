@@ -125,6 +125,7 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 | `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |
 | `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
 | `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
+| `.claude/rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
 | `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 
 Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are
