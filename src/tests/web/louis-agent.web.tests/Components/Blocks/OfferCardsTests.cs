@@ -119,7 +119,9 @@ public class OfferCardsTests
         Assert.That(cut.FindAll(".offer-card"), Is.Empty);
     }
 
-    /// <summary>While the answer still streams, or where nothing can send (a recording), the cards can't be clicked.</summary>
+    /// <summary>
+    /// While the answer still streams, or where nothing can send (a recording), the cards can't be clicked.
+    /// </summary>
     [Test]
     public void WhileStreamingOrWithNothingToSend_TheCardsWait()
     {
@@ -202,5 +204,52 @@ public class OfferCardsTests
         var cut = Render(ctx, Call(Booking), chosen: _ => { });
 
         Snapshots.Match("Components/Blocks/OfferCards.html", cut.Markup);
+    }
+
+    /// <summary>Choices where one asks the visitor to write: their business, in a box of its own.</summary>
+    private const string Leads =
+        """
+        {
+          "question": "Where to next?",
+          "choices": [
+            { "label": "Tell you my business", "why": "So I can show how leads would work for it",
+              "suggested": true, "writes": "Text" },
+            { "label": "Guesthouse demo", "why": "See an agent turn a visitor into a booking" }
+          ]
+        }
+        """;
+
+    /// <summary>
+    /// FX147, Louis on a card that only said to type: "that first card should have had a input with button"; his pick
+    /// of three, a choice can hold a box. That card draws a box and a send button; what they write goes as their message,
+    /// after the card's label, as a form's answer does, and the other cards stay plain.
+    /// </summary>
+    [Test]
+    public void AChoiceThatWrites_HoldsABox_AndSendsWhatIsWritten()
+    {
+        using var ctx = Context();
+        string? sent = null;
+        var cut = Render(ctx, Call(Leads), chosen: label => sent = label);
+
+        cut.Find(".offer-writes input").Input("A guesthouse in Paternoster");
+        cut.Find(".offer-writes form").Submit();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll(".offer-writes"), Has.Count.EqualTo(1), "only the choice that writes has a box");
+            Assert.That(sent, Is.EqualTo("Tell you my business: A guesthouse in Paternoster"));
+        });
+    }
+
+    /// <summary>Once answered, the offer folds to the card that was written in, showing what was sent.</summary>
+    [Test]
+    public void AWrittenAnswer_FoldsToItsCard()
+    {
+        using var ctx = Context();
+
+        var cut = Render(ctx, Call(Leads), answer: "Tell you my business: A guesthouse in Paternoster");
+
+        Assert.That(cut.FindAll(".offer-card.is-chosen").Select(card => card.TextContent.Trim()),
+            Is.EqualTo(new[] { "Tell you my business: A guesthouse in Paternoster" }));
     }
 }

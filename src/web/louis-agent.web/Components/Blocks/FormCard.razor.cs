@@ -44,7 +44,9 @@ public partial class FormCard
     private IEnumerable<(AskedField Field, int At, string Value)> Boxes =>
         Form.Fields.Select((asked, at) => (asked, at, _values[at]));
 
-    /// <summary>Each field and what the visitor sent in it, once they sent the form; none when they wrote their own.</summary>
+    /// <summary>
+    /// Each field and what the visitor sent in it, once they sent the form; none when they wrote their own.
+    /// </summary>
     private IEnumerable<(string Label, string Value)>? SentRows
     {
         get
@@ -66,21 +68,4 @@ public partial class FormCard
 
     /// <summary>Sends the filled form as the visitor's message.</summary>
     private Task SendAsync() => Ready ? Sent.InvokeAsync(FormAnswer.Of(Form, _values)) : Task.CompletedTask;
-
-    /// <summary>The browser's box for a kind, so a phone shows its number pad and an email its keyboard.</summary>
-    private static string InputType(AskedKind kind) => kind switch
-    {
-        AskedKind.Phone => "tel",
-        AskedKind.Email => "email",
-        _ => "text"
-    };
-
-    /// <summary>What the browser may fill in for a kind from what it knows of the visitor.</summary>
-    private static string AutoComplete(AskedKind kind) => kind switch
-    {
-        AskedKind.Name => "name",
-        AskedKind.Phone => "tel",
-        AskedKind.Email => "email",
-        _ => "off"
-    };
 }

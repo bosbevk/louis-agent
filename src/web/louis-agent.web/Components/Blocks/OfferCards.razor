@@ -1,12 +1,17 @@
-@* Choices the agent offered (F127.4.1): the question, then a card per choice the visitor clicks to send its label;
-   once answered, the cards fold to the one chosen, or away when the visitor wrote their own answer. *@
+@* Choices the agent offered (F127.4.1): the question, then a card per choice the visitor clicks to send its label, or
+   (FX147) writes in, when the choice holds a box; once answered, the cards fold to the one chosen, showing what was
+   written in it, or away when the visitor wrote their own answer. *@
 @inject ChatText Text
 
 <div class="offer">
     <div class="offer-question">@Offer.Question</div>
     @foreach (var choice in Shown)
     {
-        @if (Answer is null)
+        @if (Answer is null && choice.Writes is not null)
+        {
+            <OfferBox Choice="choice" Question="@Offer.Question" Waiting="Waiting" Sent="Chosen"/>
+        }
+        else if (Answer is null)
         {
             <button class="offer-card @(choice.Suggested ? "is-suggested" : "")" type="button" disabled="@Waiting"
                     @onclick="() => Chosen.InvokeAsync(choice.Label)">
@@ -23,7 +28,7 @@
         }
         else
         {
-            <div class="offer-card is-chosen"><span class="offer-label">@choice.Label</span></div>
+            <div class="offer-card is-chosen"><span class="offer-label">@ChosenWords(choice)</span></div>
         }
     }
 </div>

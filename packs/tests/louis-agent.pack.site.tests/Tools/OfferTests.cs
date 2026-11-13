@@ -1,6 +1,8 @@
+using System.Reflection;
 using LouisAgent.Composition.Tools;
 using LouisAgent.Packs.Site.Tools;
 using LouisAgent.Packs.Site.Tools.Cards;
+using LouisAgent.Packs.Site.Tools.Forms;
 
 namespace LouisAgent.Packs.Site.Tests.Tools;
 
@@ -22,6 +24,28 @@ public class OfferTests
     ];
 
     /// <summary>Good choices are offered; the model hears the click comes back as the visitor's message.</summary>
+    /// <summary>
+    /// FX147, Louis: "that first card should have had a input with button". A choice may hold a box, by the kind of
+    /// words it asks for, and the tool tells the model so: a choice that asks them to write holds one.
+    /// </summary>
+    [Test]
+    public void AChoiceMayHoldABox()
+    {
+        OfferChoice[] leads =
+        [
+            new("Tell you my business", "So I can show how leads would work for it", true, FieldKind.Text),
+            new("Guesthouse demo", "See an agent turn a visitor into a booking"),
+        ];
+        var described = typeof(CardTools).GetMethod(nameof(CardTools.Offer))!.GetParameters()[1]
+            .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()!.Description;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_tools.Offer("Where to next?", leads), Does.StartWith("Offered:"));
+            Assert.That(described, Does.Contain("writes").And.Contain("never a choice that only says to type"));
+        });
+    }
+
     [Test]
     public void GoodChoices_AreOffered()
     {

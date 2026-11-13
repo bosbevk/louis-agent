@@ -36,5 +36,9 @@ public partial class OfferCards
     private IEnumerable<OfferChoice> Shown => Answer is null
         ? Offer.Choices
         : Offer.Choices.Where(choice => string.Equals(choice.Label.Trim(), Answer.Trim(),
-            StringComparison.OrdinalIgnoreCase));
+            StringComparison.OrdinalIgnoreCase) || OfferWriting.Answers(Offer.Question, choice, Answer));
+
+    /// <summary>What a chosen card shows: its label, or for a box (FX147) the label and what was written.</summary>
+    private string ChosenWords(OfferChoice choice) =>
+        OfferWriting.Answers(Offer.Question, choice, Answer!) ? Answer! : choice.Label;
 }
