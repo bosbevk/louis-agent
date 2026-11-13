@@ -17,7 +17,9 @@ public partial class WorkLogTests
     [GeneratedRegex(@"^\| (FX\d+) \|", RegexOptions.Multiline)]
     private static partial Regex FixesIds();
 
-    /// <summary>A TODO row: matches <c>| F61 | Accounts, tenants … | Next | [plan](…) |</c> and gives <c>F61</c>.</summary>
+    /// <summary>
+    /// A TODO row: matches <c>| F61 | Accounts, tenants … | Next | [plan](…) |</c> and gives <c>F61</c>.
+    /// </summary>
     [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| [^|]+ \| [^|]+ \| [^|]+ \|\r?$", RegexOptions.Multiline)]
     private static partial Regex TodoIds();
 
@@ -28,7 +30,10 @@ public partial class WorkLogTests
     [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| \d{4}-\d{2}-\d{2} \|", RegexOptions.Multiline)]
     private static partial Regex DoneRows();
 
-    /// <summary>An open row, under the Open heading: matches <c>| F61 | Accounts, tenants … | Next |</c> (no date) and gives the id.</summary>
+    /// <summary>
+    /// An open row, under the Open heading: matches <c>| F61 | Accounts, tenants … | Next |</c> (no date) and gives
+    /// the id.
+    /// </summary>
     [GeneratedRegex(@"^\| ((?:FX|F|CL)\d+(?:\.\d+)*) \| [^|\d][^|]* \| [^|]+ \|\r?$", RegexOptions.Multiline)]
     private static partial Regex OpenRows();
 
@@ -36,12 +41,16 @@ public partial class WorkLogTests
     [GeneratedRegex(@"^\| \w+ \(`(F|FX|CL)`\) \| (\d+) \| (\d+) \|", RegexOptions.Multiline)]
     private static partial Regex Counts();
 
-    private static HashSet<string> Done() => [.. DoneRows().Matches(WorkLog).Select(m => m.Groups[1].Value)];
+    /// <summary>Everything the work log says is finished, by id; the write-ups' test reads it too.</summary>
+    internal static HashSet<string> Done() => [.. DoneRows().Matches(WorkLog).Select(m => m.Groups[1].Value)];
 
+    /// <summary>Everything the work log still lists as open, by id.</summary>
     private static HashSet<string> Open() => [.. OpenRows().Matches(WorkLog).Select(m => m.Groups[1].Value)];
 
+    /// <summary>Which of the three counts an id belongs to: a feature, a fix or a cleanup.</summary>
     private static string Kind(string id) => id.StartsWith("FX") ? "FX" : id.StartsWith("CL") ? "CL" : "F";
 
+    /// <summary>A fix can't be in the fixes table without its dated row here.</summary>
     [Test]
     public void EveryFixInTheTable_HasARow()
     {
@@ -66,7 +75,9 @@ public partial class WorkLogTests
         Assert.That(open, Is.EqualTo(todo), "the work log's Open table is the TODO's rows, in the TODO's order");
     }
 
-    /// <summary>Every row has a real date, no id is listed twice, and the counts at the top are the rows below.</summary>
+    /// <summary>
+    /// Every row has a real date, no id is listed twice, and the counts at the top are the rows below.
+    /// </summary>
     [Test]
     public void TheCounts_AreTheRows()
     {

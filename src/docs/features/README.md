@@ -61,7 +61,7 @@ feature is measured with an eval ([Run the evals](../guides/run-the-evals.md)).
 ## Finishing a feature
 
 When a feature's *Done when* is met, do all of this in the same commit, so the TODO, the specs and these docs never
-drift apart:
+drift apart. A cleanup (`CL`) finishes by the same list, and so does each child of a parent (`F49.1`):
 
 1. **TODO and the work log:** delete the feature's row in the TODO, and add its row (id, date, what in a few
    words) under *Features* (or *Cleanups* for a `CL`) in the [work log](../work-log.md), newest first, with the
@@ -75,14 +75,25 @@ drift apart:
    a live run spends money, so on Louis's go). The run is kept in the eval store, so the write-up names the run's id
    and its numbers; the runs before CL10 stay in
    [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
-6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
+6. **The docs of every project it touched** (Louis, 2026-11-13): list the projects the feature's commits changed
+   (`git diff --name-only main...HEAD`, by folder). For each one, read its design doc and its how-to (both show under
+   `docs/` in the project in Rider) against the code as it is now: the parts, the structure table, the settings, how
+   to extend it. Its pictures too: one that no longer shows the code is changed in its JSON and redrawn with the tool
+   ([Draw a diagram](../guides/draw-a-diagram.md)), never by hand. Then what users see (settings in
+   [SETUP](../SETUP.md)), and the lists no single feature owns, when the feature adds a project, a pack, a host or a
+   setting: the README's *Where it stands*, the [ROADMAP](../../../ROADMAP.md)'s *What exists*, the indexes
+   ([docs](../README.md), [projects](../projects/README.md), [guides](../guides/README.md)) and the project
+   structure in the [development guide](../CLAUDE.md#project-structure).
 7. **Decisions:** if the feature made a lasting decision, its [ADR](../adr/README.md) is in the same PR; a decision it
    changed is superseded, not edited.
 8. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature
    delivered into *Have today* and drop it from *Planned* or *Missing*; if it closes a line in the TODO's *Later*, remove
    that line.
-9. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
-   missing (usually at a milestone's last feature), add or update its write-up in [docs/learning/](../learning/).
+9. **Write-up** (Louis, 2026-11-13): every feature and cleanup adds its section to the write-up of the skill it teaches
+   in [docs/learning/](../learning/) (a new file when the skill has none yet), and its words to that write-up's row
+   in the [list](../learning/README.md): what was built, what was measured, the trade-offs, what didn't work. Claude
+   writes it, for Louis to read afterwards. `WriteUpsTests` fails for a done row no write-up names; the ones owed
+   on 2026-11-13 are listed in it, and that list only shrinks.
 10. **Fold and delete** (Louis, 2026-10-28): move what lasts in the feature's plan, and in its doc if it has one (how
     it works, its settings, its limits, its open items), into its project's design doc in
     [docs/projects/](../projects/README.md), its numbers and lessons into the write-up, and any open item into the
