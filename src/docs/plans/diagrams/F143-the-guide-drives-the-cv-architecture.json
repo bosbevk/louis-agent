@@ -1,0 +1,24 @@
+{
+  "kind": "flow",
+  "title": "F143 the guide drives the CV: the architecture",
+  "caption": "The site-api names the file; the resume pack reads it; the guide calls it and opens /cv.",
+  "flow": {
+    "nodes": [
+      { "id": "you", "icon": "user", "tone": "blue", "label": "a recruiter on /cv" },
+      { "id": "api", "icon": "server", "tone": "green", "label": "louis-agent.site-api\nRESUME_FILE (2)" },
+      { "id": "guide", "icon": "message", "tone": "green", "label": "the guide\nfocus-hiring (3)" },
+      { "id": "pack", "icon": "box", "tone": "green", "label": "louis-agent.pack.resume\nGetResume (1)" },
+      { "id": "json", "icon": "file", "tone": "amber", "label": "cv.json\n(F142)" },
+      { "id": "leads", "icon": "mail", "tone": "green", "label": "leads pack\nSendLead" },
+      { "id": "model", "icon": "cloud", "tone": "red", "label": "the model" }
+    ],
+    "edges": [
+      { "from": "you", "to": "api" },
+      { "from": "api", "to": "guide" },
+      { "from": "guide", "to": "model" },
+      { "from": "guide", "to": "pack" },
+      { "from": "pack", "to": "json" },
+      { "from": "guide", "to": "leads", "style": "dashed", "word": "interview" }
+    ]
+  }
+}

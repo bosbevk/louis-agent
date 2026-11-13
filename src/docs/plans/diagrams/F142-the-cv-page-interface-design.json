@@ -1,0 +1,30 @@
+{
+  "kind": "classes",
+  "title": "F142 the CV page: the interface design",
+  "caption": "One JSON Resume file read once into records; one view per section draws its part.",
+  "classes": {
+    "types": [
+      { "id": "resume", "name": "Resume", "kind": "record, step 1",
+        "members": [ "ResumeBasics Basics", "IReadOnlyList<ResumeWork> Work", "IReadOnlyList<ResumeEducation> Education", "IReadOnlyList<ResumeSkill> Skills" ] },
+      { "id": "basics", "name": "ResumeBasics", "kind": "record, step 1",
+        "members": [ "string Name", "string Label", "string Summary", "IReadOnlyList<ResumeProfile> Profiles" ] },
+      { "id": "work", "name": "ResumeWork", "kind": "record, step 1",
+        "members": [ "string Name", "string Position", "string StartDate", "string? EndDate", "IReadOnlyList<string> Highlights" ] },
+      { "id": "reader", "name": "ResumeReader", "kind": "step 1",
+        "members": [ "static Resume Read(Stream json)" ] },
+      { "id": "view", "name": "ResumeView", "kind": "component, step 3",
+        "members": [ "[Parameter] Resume Resume", "[Parameter] string? Photo" ] },
+      { "id": "jobs", "name": "ResumeJobs", "kind": "component, step 3",
+        "members": [ "[Parameter] IReadOnlyList<ResumeWork> Work" ] },
+      { "id": "page", "name": "CvPage", "kind": "site page /cv, step 4" }
+    ],
+    "relations": [
+      { "from": "resume", "to": "basics", "kind": "holds" },
+      { "from": "resume", "to": "work", "kind": "holds" },
+      { "from": "reader", "to": "resume", "kind": "creates" },
+      { "from": "page", "to": "reader", "kind": "uses", "word": "reads cv.json once" },
+      { "from": "page", "to": "view", "kind": "uses" },
+      { "from": "view", "to": "jobs", "kind": "holds", "word": "one per section" }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "title": "F142 the CV page: a visitor opens /cv",
+  "caption": "Static server rendering: the page reads the record once and each section draws its part.",
+  "sequence": {
+    "participants": [
+      { "id": "you", "label": "Visitor", "actor": true, "tone": "blue" },
+      { "id": "page", "label": "CvPage", "icon": "browser", "tone": "green" },
+      { "id": "reader", "label": "ResumeReader", "icon": "file", "tone": "violet" },
+      { "id": "view", "label": "ResumeView", "icon": "box", "tone": "violet" }
+    ],
+    "steps": [
+      { "step": "message", "from": "you", "to": "page", "text": "GET /cv" },
+      { "step": "message", "from": "page", "to": "reader", "text": "Read(cv.json)" },
+      { "step": "reply", "from": "reader", "to": "page", "text": "Resume" },
+      { "step": "message", "from": "page", "to": "view", "text": "Resume, photo" },
+      { "step": "note", "over": ["view"], "text": "hero, facts, jobs, skills, education" },
+      { "step": "reply", "from": "view", "to": "page", "text": "markup" },
+      { "step": "reply", "from": "page", "to": "you", "text": "HTML" },
+      { "step": "block", "block": "opt", "label": "Save as PDF",
+        "steps": [ { "step": "message", "from": "you", "to": "you", "text": "print styles, A4" } ] }
+    ],
+    "numbered": false
+  }
+}

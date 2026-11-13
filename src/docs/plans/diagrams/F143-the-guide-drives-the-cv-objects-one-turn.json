@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "title": "F143 the guide drives the CV: one guide turn in memory",
+  "caption": "The session holds the guide's four packs; the resume pack holds the record read from cv.json.",
+  "flow": {
+    "nodes": [
+      { "id": "session", "icon": "message", "tone": "violet", "label": "the visitor's session\nfocus /cv" },
+      { "id": "engine", "icon": "chip", "tone": "violet", "label": "AgentEngine\nguide's voice + focus-hiring" },
+      { "id": "docs", "icon": "book", "tone": "green", "label": "docs pack" },
+      { "id": "leads", "icon": "mail", "tone": "green", "label": "leads pack" },
+      { "id": "site", "icon": "browser", "tone": "green", "label": "site pack" },
+      { "id": "resume", "icon": "box", "tone": "green", "label": "resume pack" },
+      { "id": "record", "icon": "file", "tone": "teal", "label": "Resume\nread once" }
+    ],
+    "edges": [
+      { "from": "session", "to": "engine" },
+      { "from": "engine", "to": "docs" },
+      { "from": "engine", "to": "leads" },
+      { "from": "engine", "to": "site" },
+      { "from": "engine", "to": "resume" },
+      { "from": "resume", "to": "record" }
+    ],
+    "direction": "down"
+  }
+}
