@@ -16,7 +16,7 @@ Rider sends prompts (with attached files), and the server streams back thinking,
 
 - **One line = one JSON-RPC message** on stdin/stdout. Requests run concurrently; `session/cancel` is handled
   immediately and cancels that session's turn.
-- **Sessions** (`SessionState`: working directory + history) live in memory for the container's lifetime; Rider starts a
+- **Sessions** (`AcpSession`: working directory + history) live in memory for the container's lifetime; Rider starts a
   new container for each new chat (`docker compose run --rm -T acp-server`).
 - **Prompt building:** `text` blocks are used as-is; embedded `resource` blocks are inlined; a `resource_link` is read
   from disk **only when the user attached it** (the file merely open in the editor is not sent). Attachments are capped

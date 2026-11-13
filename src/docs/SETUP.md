@@ -80,6 +80,11 @@ so both can run at once. Secrets still come from `config/.env.secrets`.
 | `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /v1/prices` (the demo's orchestrator uses `http://demo-api:8080/v1/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `USAGE_IN_CHAT` | `true` adds each turn's usage line to the chat in Rider (ACP), after the answer; off by default. The CLI and web app always show it beside the answer |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
+| `LOG_CONTENT` | What a log line shows of the values it was given: `hashed` (the default: a keyed hash and the length, so a log shows what ran and how it ended, never what it was given) or `full` (the values; only on your own machine, never on a hosted instance). An unknown value stops the host ([Debug and logs](guides/debug-and-logs.md)) |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | The standard OpenTelemetry setting: when set, the logs and traces also go to that collector (`http://localhost:4317` for the dashboard); the rest of `OTEL_*` is read as the standard says ([Debug and logs](guides/debug-and-logs.md#traces-and-the-dashboard)) |
+| `HOST_TIME_ZONE` | The time zone `GetToday` and the API's place line use when the user shared none, an IANA name (`Africa/Johannesburg`); one the machine doesn't know stops the host. Unset: the machine's own |
+| `WEB_REPLAY` | The default web of an eval session only (F18): `off` (unset), `record` (save every page the browser reads) or `replay` (answer only from a recording, never opening the network). A live chat is never recorded or replayed ([Run the evals](guides/run-the-evals.md)) |
+| `REPLAY_DIRECTORY` | Where those saved pages live: on the machine that made them, never committed. Unset keeps no recordings, and `record` or `replay` is refused |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
 
@@ -93,6 +98,35 @@ environment by the tools themselves:
 | `PYTHON_PATH` | The Python for `PythonRun`. Default: `py -3`, `python` or `python3` on Windows; `python3` or `python` elsewhere |
 | `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
 | `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
+
+**The eval studio and the eval runner**, read by `louis-agent.api.evals` and by the runner; the store's
+`EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE` are in [Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings):
+
+| Setting | Meaning |
+|---|---|
+| `EVAL_RUNNER` | The eval runner's dll: the API lists the evals with `dotnet {EVAL_RUNNER} --list` and starts one with `run`. Each image sets its own (`/app/evals/louis-agent.puls-eval-runner.dll` in Puls's); set it yourself only outside a container, where a relative path is resolved from the API's working directory |
+| `BENCHMARK_API_URL` | Where a run started from the admin portal reaches this API back. Default: the container's own port, `http://127.0.0.1:8080/` |
+| `EVALS` | Which identities' evals the runner lists and runs, comma separated (`EVALS=puls`). Unset: every eval; a name no eval proves is refused |
+| `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT` | The judge of the evals' model graders. No model: no judge, a model grader's grade is unknown and the run goes on. No provider: a `claude*` model is Anthropic's (paid, so only on purpose), any other is Ollama's; the endpoint is a local server's URL ([Run the evals](guides/run-the-evals.md)) |
+| `EVAL_JUDGE_API_KEY` | A secret, in `.env.secrets`: the judge's key. An Anthropic judge without it uses `ANTHROPIC_API_KEY` |
+| `AGENT_API`, `BENCHMARK_RUN` | The API sets both for a run it starts; by hand only for a command-line run. The agent API the run talks to (default `http://127.0.0.1:5070/`; `PULS_API`, its old name, is still read), and the run's name, which is its tag in the ledger |
+
+**The packs' own settings**; each pack's doc has the detail, and the recipe, Paymo and DevOps ones are in the tables
+above and below:
+
+| Setting | Meaning |
+|---|---|
+| `TRIAGE_RUNS`, `TRIAGE_PEOPLE`, `TRIAGE_DEPARTMENTS` | The triage pack: the folder a run's steps are written under, the folder a case raised to a person is written in, and the departments file. Without all three the `triage` toolset is off ([its doc](../../packs/docs/projects/louis-agent.pack.triage.md#the-settings)) |
+| `LEADS_TO`, `LEADS_FROM` | The leads pack: where a visitor's lead is mailed (unset, the `leads` toolset is off) and the verified sender (default `guide@louis-agent.dev`). `RESEND_API_KEY`, a secret, sends the mail; without it the lead goes to the log ([its doc](../../packs/docs/projects/louis-agent.pack.leads.md#settings)) |
+| `DOCS_ROOT` | The docs pack: the folder the docs are under, which its tools never leave. Unset, the `docs` toolset is off; the images set it to the copy they carry ([its doc](../../packs/docs/projects/louis-agent.pack.docs.md#the-setting)) |
+
+**A demo's own settings** are in that demo's Setup: Puls's `IDENTITIES` and `PACKS` in
+[Puls's Setup](../../demos/puls/docs/SETUP.md#pulss-own-settings); the orchestrator's `ORCHESTRATOR_*`,
+`LOUIS_AGENT_URL` and `LOUIS_AGENT_API_KEY` in
+[the coding agent's Setup](../../demos/louis-agent/docs/SETUP.md#the-coding-agents-own-settings).
+
+**One tool's setting:** `CHROME_PATH` names the browser the film export drives (`src/tools/louis-agent.film-export`);
+without it, a Chrome for Testing is downloaded once.
 
 ### `config/.env.secrets`
 

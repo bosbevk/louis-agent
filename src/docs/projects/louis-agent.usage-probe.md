@@ -84,7 +84,7 @@ running the probe; a misread is a mapper in its provider's folder, chosen in `Ll
 
 ## Tests
 
-None: it exists to call real providers. The mappers it exercises are tested in `UsageMapperTests`, and `--ledger`'s
+None: it exists to call real providers. The mappers it exercises are tested beside their providers (`AnthropicUsageMapperTests`), and `--ledger`'s
 reading, pricing and totals in `UsageReportTests`.
 
 ## Limits and plans
