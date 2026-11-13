@@ -44,7 +44,7 @@
 
 @if (_error is { } error)
 {
-    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="KeySaved" />
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="KeySavedAsync" />
 }
 
 @if (_draft is { } draft)

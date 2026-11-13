@@ -396,5 +396,18 @@ visitor's bubble: the rule that leaves a card's answer out of the bubbles (FX142
 hold a box (FX147) and never learnt it. When a new kind of thing is added, find the rules that list the old kinds.
 Skill 4 (tool design: the description is the prompt) and skill 7 (context engineering: an example beats a rule).
 
+## FX153 · A page is behind the key only if what it reads is
+
+On louis-agent.dev the CV's editor at `/admin/resume` opened for anyone. Nothing could be changed, since the save
+route refused without the key and a test held that. But the page was there, with every edit button on it. The
+admin's frame checks nothing itself: each admin page is closed because its own read is refused. The editor read
+the CV on the route the public page uses, which was already there and is open to anyone, so its read was never
+refused and it drew. Its test held its address and its frame, and its summary said it "sits behind the admin's
+key", a sentence nothing checked. The fix gives the admin its own read, behind the same key as the save, and a
+test in which the API refuses and the editor must not open. Access is decided where the data is read, not by the
+address a page lives at or the frame drawn around it, so an open route reused in a closed place opens the place.
+And "it is protected" is a claim like any other: the test that proves it is the one that refuses, not the one that
+lets you in. Skill 15 (safety and security: closed by default, and proved by a refusal).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

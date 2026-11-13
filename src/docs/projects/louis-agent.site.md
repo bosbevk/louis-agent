@@ -156,7 +156,8 @@ The rule that keeps the editor out of the public pages is the framework's ([ADR 
 - **Where it is kept.** The site's host (`louis-agent.site-api`, `Resumes/`) serves it at `GET v1/site/cv` and keeps
   an edited copy at `PUT v1/admin/cv`, as `cv.json` in the folder `SITE_DATA_DIRECTORY` names (`/data` on the share
   in Azure, `src/site/data` on a PC). The built-in file is the starting copy and the fallback. A save is refused
-  when it doesn't read strictly or holds something private.
+  when it doesn't read strictly or holds something private. The admin reads its copy on its own route too
+  (`GET v1/admin/cv`), behind the same key as the save, so the editor and its card don't open without it (FX153).
 - **The page.** `Pages/About/CvPage` draws `Components/Cv/ResumeView`, a band per part. In the browser it asks the
   API (`ApiResumeSource`), and when the host renders it for a search engine it reads the saved file directly
   (`IResumeSource`, a Strategy picked by where the page runs).

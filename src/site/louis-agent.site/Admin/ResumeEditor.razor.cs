@@ -36,16 +36,24 @@ public partial class ResumeEditor
         await LoadAsync();
     }
 
-    /// <summary>Starts a draft from the copy the API holds; says why when it can't be had.</summary>
+    /// <summary>
+    /// Starts a draft from the copy the API holds. It is read on the admin's own route, so without the admin's key
+    /// there is no draft and nothing is drawn but the place to enter the key (FX153).
+    /// </summary>
     private async Task LoadAsync()
     {
         _error = null;
         try
         {
-            var held = await Api.GetAsync<Resume>(ResumeAddress.Read, ResumeReader.Options);
+            var held = await Api.GetAsync<Resume>(ResumeAddress.Admin, ResumeReader.Options);
             _draft = new ResumeDraft(held);
         }
-        catch (Exception ex) when (ex is AgentApiException or HttpRequestException)
+        catch (AgentApiException ex)
+        {
+            _needsKey = ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            _error = ex.Message;
+        }
+        catch (HttpRequestException ex)
         {
             _needsKey = false;
             _error = ex.Message;
@@ -64,7 +72,7 @@ public partial class ResumeEditor
 
         try
         {
-            var kept = await Api.PutAsync<Resume>(ResumeAddress.Save, draft.Current, ResumeReader.Options);
+            var kept = await Api.PutAsync<Resume>(ResumeAddress.Admin, draft.Current, ResumeReader.Options);
             draft.Kept(kept);
             _saved = true;
         }
@@ -100,6 +108,13 @@ public partial class ResumeEditor
         _saved = false;
     }
 
-    /// <summary>A key was saved: the refusal is gone, and Save can be pressed again.</summary>
-    private void KeySaved() => _error = null;
+    /// <summary>
+    /// A key was saved. With no draft yet, it was the editor that didn't open, so it is opened now. With a draft, it
+    /// was a save that was refused: the refusal goes, and Save can be pressed again.
+    /// </summary>
+    private Task KeySavedAsync()
+    {
+        _error = null;
+        return _draft is null ? LoadAsync() : Task.CompletedTask;
+    }
 }
