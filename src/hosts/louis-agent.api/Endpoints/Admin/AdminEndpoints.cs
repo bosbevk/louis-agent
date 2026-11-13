@@ -1,4 +1,5 @@
 using LouisAgent.Api.Endpoints.Admin.Imports;
+using LouisAgent.Api.Endpoints.Admin.Overview;
 using LouisAgent.Api.Endpoints.Admin.Prompts;
 using LouisAgent.Api.Endpoints.Admin.Screens;
 
@@ -18,5 +19,6 @@ internal static class AdminEndpoints
         admin.MapGet("/prompts", PromptsHandlers.GetPrompts);
         admin.MapImports();
         admin.MapScreens();
+        admin.MapOverview();
     }
 }

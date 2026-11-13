@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using LouisAgent.Api.Messages.Holes.Admin;
 using LouisAgent.Api.Messages.Holes.Sessions;
 using LouisAgent.Composition.Messages;
 
@@ -188,4 +189,8 @@ public enum ApiUserText
         "The guide answers {Cap} conversations a day from one address, and this address has had them. Try again " +
         "tomorrow, or sign in.")]
     OpenDoorCapReached,
+
+    [Description("'{Day}' isn't a day. Use yyyy-MM-dd, e.g. 2026-11-12, or leave it out for today.")]
+    [Holes(typeof(UnknownDayHoles))]
+    UnknownDay,
 }
