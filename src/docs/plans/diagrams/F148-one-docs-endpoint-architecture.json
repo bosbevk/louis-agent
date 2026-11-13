@@ -1,0 +1,149 @@
+{
+  "kind": "flow",
+  "title": "F148 one docs endpoint: the architecture",
+  "caption": "A merge is the only way in: the image carries the docs and their commit, and every reader gets them from the one library.",
+  "flow": {
+    "nodes": [
+      {
+        "id": "github",
+        "label": "GitHub\nmain",
+        "icon": "branch",
+        "tone": "red"
+      },
+      {
+        "id": "deploy",
+        "label": "the deploy on a merge\nbuilds the image",
+        "icon": "cloud",
+        "tone": "red"
+      },
+      {
+        "id": "files",
+        "label": "/app/docs\nthe docs, each with its header (step 3)",
+        "icon": "folder",
+        "tone": "amber",
+        "group": "image"
+      },
+      {
+        "id": "stamp",
+        "label": "the stamp\ncommit + repository (step 4)",
+        "icon": "file",
+        "tone": "amber",
+        "group": "image"
+      },
+      {
+        "id": "library",
+        "label": "DocLibrary\nin the docs pack (step 1)",
+        "icon": "book",
+        "tone": "green",
+        "group": "image"
+      },
+      {
+        "id": "tools",
+        "label": "the docs tools\nname their source (step 8)",
+        "icon": "settings",
+        "tone": "green",
+        "group": "image"
+      },
+      {
+        "id": "api",
+        "label": "/v1/docs\nlist, one doc, search (steps 6, 7)",
+        "icon": "server",
+        "tone": "violet",
+        "group": "image"
+      },
+      {
+        "id": "guide",
+        "label": "the guide\nin the site's corner",
+        "icon": "message",
+        "tone": "violet",
+        "group": "image"
+      },
+      {
+        "id": "mcp",
+        "label": "louis-agent.mcp\ndoc:// resources (step 9)",
+        "icon": "server",
+        "tone": "violet"
+      },
+      {
+        "id": "visitor",
+        "label": "a visitor",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "client",
+        "label": "a site, a script\nor another agent",
+        "icon": "world",
+        "tone": "blue"
+      },
+      {
+        "id": "mcpclient",
+        "label": "an MCP client",
+        "icon": "terminal",
+        "tone": "blue"
+      }
+    ],
+    "edges": [
+      {
+        "from": "github",
+        "to": "deploy",
+        "word": "a merge"
+      },
+      {
+        "from": "deploy",
+        "to": "files",
+        "word": "copies"
+      },
+      {
+        "from": "deploy",
+        "to": "stamp",
+        "word": "writes"
+      },
+      {
+        "from": "files",
+        "to": "library"
+      },
+      {
+        "from": "stamp",
+        "to": "library"
+      },
+      {
+        "from": "library",
+        "to": "tools"
+      },
+      {
+        "from": "library",
+        "to": "api"
+      },
+      {
+        "from": "library",
+        "to": "mcp",
+        "style": "dashed",
+        "word": "its own copy"
+      },
+      {
+        "from": "tools",
+        "to": "guide"
+      },
+      {
+        "from": "guide",
+        "to": "visitor"
+      },
+      {
+        "from": "api",
+        "to": "client"
+      },
+      {
+        "from": "mcp",
+        "to": "mcpclient"
+      }
+    ],
+    "groups": [
+      {
+        "id": "image",
+        "label": "the site's image (louis-agent.site-api)"
+      }
+    ],
+    "direction": "down"
+  }
+}
