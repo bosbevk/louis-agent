@@ -25,7 +25,7 @@ public partial class WriteUpsTests
         "FX102", "FX103", "FX104", "FX105", "FX106", "FX107", "FX108", "FX109", "FX110", "FX111", "FX112", "FX113",
         "FX114", "FX115", "FX116", "FX117", "FX118", "FX119", "FX120", "FX121", "FX122", "FX123", "FX124", "FX125",
         "FX126", "FX127", "FX128", "FX129", "FX131", "FX132", "FX133", "FX134", "FX135", "FX137", "FX138", "FX139",
-        "FX140", "FX141", "FX142", "FX144", "FX145", "FX146", "FX147", "FX149", "FX150", "FX151", "FX152"
+        "FX140", "FX141", "FX142", "FX144", "FX145", "FX146", "FX147", "FX149"
     ];
 
     /// <summary>The done features and cleanups named in no write-up yet; the same rule as the lessons.</summary>

@@ -286,9 +286,6 @@ every selector in it does. Two lessons: a check the browser can switch on is a c
 screenshot with `reducedMotion: 'reduce'` reproduced the PC exactly); and an accessibility rule needs the same
 "what does this mean for the reader" question as any other. Skill 18 (shipping: what the visitor's machine changes).
 
----
-[Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
-
 ## FX37 · A test that races is not a test
 
 A flaky test is a test whose answer depends on timing, not on the code: here the publisher's timeout test set a
@@ -362,3 +359,42 @@ there, which is why the errors never lined up with anything. FX36 could await th
 private to the library, so the only choice was to say what's expected. The filter holds the exception's type and its exact
 words, so a timeout from the same library is still an Error. An error log you've learned to ignore is the expensive part:
 Louis asked about it, and nothing had been lost. Skill 17 (observability: a log line has to mean something).
+
+## FX150 · Work that runs later must hold what it needs from the start
+
+The chat redraws at most every 50 ms, and a catch-up redraw fires up to 50 ms after the last event (FX58). In PR
+#327's CI run a test had already let its page's services go by then. The widget looked its business windows up in
+those services on every redraw, so the late one threw, and it threw on the timer's thread, where nothing catches
+it. That took the whole test host down: every test in the run failed and none was named. The fix takes the windows
+once, when the widget starts. Anything that runs later, on a timer or after a wait, should hold what it needs from
+the start, and not look it up in something whose life it doesn't control. And a test run that dies without naming a
+test is a thread nobody was watching, so look for timers before looking at the tests. Skill 18 (testing and
+shipping: a failure with no name).
+
+## FX151 · A rule that is right for one kind of page can be wrong for the next
+
+The section list marked a section once its top passed a line 140 px under the top of the screen. On the slide
+pages every section is a screen tall, so the rule had never been wrong. Louis's CV was the first scrolling page
+with short sections at its end: the page ran out of scroll 20 px before Education's top reached the line, so
+Education was never marked, and Skills stayed marked while Education filled the screen. Louis's pick of three: mark
+the section you see most of, and the last one at the page's end. A rule proved on the pages you have is proved for
+their shape, so a page of a new shape is the moment to read the old rules again. There is no test runner for the
+scripts, so it was checked by a scroll sweep in Chrome, and the first sweep looked wrong only because the smooth
+scroll hadn't settled: measure after the page stops moving. Skill 18 (testing and shipping: checking by eye, with
+care).
+
+## FX152 · The model copies your example, so the example is the rule
+
+The guide's choice card read "Tell you my business" over "I'll point you to the demo closest to it": two speakers
+on one card. The words are the model's, but it had copied the title from the `Offer` tool's own description, which
+gave exactly that as its example of a choice a visitor writes in, and nothing said whose voice the line under it
+is in. Changing the example, and one line of the toolset's guide, changed what the model wrote: in seven guide
+calls (about R0.22) it offered a box twice, and both times asked "Tell me about your business". An example in a
+tool's description is read on every request and outweighs the rules around it, so it has to be the best version of
+what you want, in the right voice. The same look found the answer drawn twice, on the folded card and as the
+visitor's bubble: the rule that leaves a card's answer out of the bubbles (FX142) was written before a choice could
+hold a box (FX147) and never learnt it. When a new kind of thing is added, find the rules that list the old kinds.
+Skill 4 (tool design: the description is the prompt) and skill 7 (context engineering: an example beats a rule).
+
+---
+[Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
