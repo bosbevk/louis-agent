@@ -14,7 +14,7 @@ needed, and the ones that must never be missed are loaded always.
 | Layer | Files | When Claude Code loads it |
 |---|---|---|
 | Always | `src/docs/CLAUDE.md`, which the root `CLAUDE.md` imports. `rules/design-rules.md` and `rules/repo-map.md`, which have no `paths`. | Every session, whole |
-| With a kind of file | `rules/csharp.md`, `rules/csharp-summaries.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, `rules/tests.md`, each with `paths`. A `CLAUDE.md` in a folder. | When a matching file, or a file in that folder, is read or edited |
+| With a kind of file | `rules/csharp.md`, `rules/csharp-summaries.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, `rules/tests.md`, `rules/hosts-and-web.md`, each with `paths`. A `CLAUDE.md` in a folder. | When a matching file, or a file in that folder, is read or edited |
 | For a job | `skills/{name}/SKILL.md` | Its description is always in view. Its body loads when Claude judges the job matches, or when someone types `/name`. |
 
 Two rules follow from the last row.
@@ -26,6 +26,20 @@ Two rules follow from the last row.
 ## One step, and what is loaded when
 
 ![One step of a feature: the always-loaded files are there from the start, a rules file arrives with the first file touched, and a skill with each job](../src/docs/plans/diagrams/CL63-instructions-as-skills-communication-one-step-and-what-is-loaded-when.svg)
+
+## What loads with a kind of file
+
+| File | Loads for | Holds |
+|---|---|---|
+| [src/engine/louis-agent.core/CLAUDE.md](../src/engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
+| `rules/csharp.md` | `**/*.cs` | The how of every C# rule: conditionals, endpoints, records, enums, size, formatting |
+| `rules/csharp-summaries.md` | `**/*.cs` | How a summary is written, with its examples |
+| `rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |
+| `rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
+| `rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
+| `rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
+| `rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
+| `rules/hosts-and-web.md` | `src/hosts/**`, `src/web/**`, `src/site/**`, `packs/web/**`, `demos/*/hosts/**`, `demos/*/web/**` | A host's own texts, a web app's folders, a page and its components, running a host from Rider |
 
 ## The skills
 

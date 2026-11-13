@@ -254,6 +254,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{7B2E4C10
 		.claude\rules\css.md = .claude\rules\css.md
 		.claude\rules\design-rules.md = .claude\rules\design-rules.md
 		.claude\rules\docs.md = .claude\rules\docs.md
+		.claude\rules\hosts-and-web.md = .claude\rules\hosts-and-web.md
 		.claude\rules\prompts.md = .claude\rules\prompts.md
 		.claude\rules\razor.md = .claude\rules\razor.md
 		.claude\rules\repo-map.md = .claude\rules\repo-map.md

@@ -39,7 +39,7 @@ you need otherwise.
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
 | [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Write and run tests](guides/write-tests.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
-| [Hosts guide](../CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
+| [Hosts and web apps](../../.claude/rules/hosts-and-web.md) | How-to | A host's own message enums, a web app's folders, running a host from Rider |
 | [Deploying to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch the apps on Azure Container Apps, set their secrets, and deploy from GitHub; since 2026-11-09 only louis-agent.dev runs there |
 
 ## 4. The orchestrator

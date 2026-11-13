@@ -54,7 +54,7 @@ A change travels through a scoped state's `Changed` event.
 ## The words on a page
 
 - **Text comes from one place.** A host's own texts are its message enums and its `ChatText`. Where each host
-  keeps them is in the [hosts' guide](../../src/CLAUDE.md#each-hosts-own-texts).
+  keeps them is in [hosts-and-web.md](hosts-and-web.md#each-hosts-own-texts).
 - **No semicolon in words a visitor reads** (Louis, 2026-11-08, of one in the site's text: "we should never do
   this"): a page's words, a component's, a product's texts. Two clauses become two sentences, or a colon opens
   a list. The site's page tests refuse one in a page's markup (`DemosPageTests`, `TriagePageTests`,
@@ -68,8 +68,8 @@ A change travels through a scoped state's `Changed` event.
 - **A script is a module beside its component**: `X.razor.js`, with `export function`s and no global. It is held
   through `Scripts/JsModule` and let go in `DisposeAsync`. A button calls a method with `@onclick`, never a global
   written inline. A site's page lists only `first-paint.js` of ours. `FrameworkModulesTests` holds it.
-- **A theme** is added as the hosts' guide says, under
-  [Adding a web theme](../../src/CLAUDE.md#adding-a-web-theme).
+- **A theme** belongs to the code-review app, and is added as its guide says, under
+  [Add a theme](../../demos/louis-agent/docs/guides/change-the-web-app.md#add-a-theme).
 - **A component's markup is pinned to a golden file** by a bUnit test.
   [Write and run tests](../../src/docs/guides/write-tests.md) says how one is regenerated.
 

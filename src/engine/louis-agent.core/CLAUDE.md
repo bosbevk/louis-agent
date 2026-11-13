@@ -104,7 +104,7 @@ Log.Log(LogLevel.Information, McpLogMessage.ToolNameTaken, new { Name = name }, 
   `{Area}LogMessage` or `{Area}ErrorMessage` (the split by area, F18). A text two areas use stays shared. Each member is named
   for what happened, not for its wording.
 - **Each host keeps its own texts** in its own `Messages/` folder
-  ([src/CLAUDE.md](../../CLAUDE.md#each-hosts-own-texts)).
+  ([hosts-and-web.md](../../../.claude/rules/hosts-and-web.md#each-hosts-own-texts)).
 - **Not messages:** prompts (system prompt and procedures in `prompts/`; the orchestrator's triage and fix prompts),
   keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
   layout, and key=value or table formatting.

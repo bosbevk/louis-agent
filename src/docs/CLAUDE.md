@@ -112,26 +112,14 @@ A skill is a procedure that loads for its job. Use the one that fits.
 | The last step of a feature or a cleanup | `/finish-a-feature` |
 | A picture in the docs is added or changed | `/draw-a-diagram` |
 
-## Development workflow
+## Where the rest is
 
-Start with [Get started](guides/get-started.md). **The how-tos for one folder live in that folder's `CLAUDE.md`**, and
-the how of a kind of file in `.claude/rules/`; Claude Code loads each only when it works on such a file:
+Start with [Get started](guides/get-started.md). The how of a kind of file is a rules file in `.claude/rules/`,
+and core has a `CLAUDE.md` of its own. Claude Code loads each when such a file is worked on.
+[.claude/README.md](../../.claude/README.md) lists them, with what each holds and when it loads.
 
-| Guide | Loads for | Holds |
-|---|---|---|
-| [src/CLAUDE.md](../CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
-| [src/engine/louis-agent.core/CLAUDE.md](../engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
-| `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: conditionals, endpoints, records, enums, size, formatting |
-| `.claude/rules/csharp-summaries.md` | `**/*.cs` | How a summary is written, with its examples |
-| `.claude/rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |
-| `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
-| `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
-| `.claude/rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |
-| `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
-
-Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are
-in [guides/](guides/README.md): [Add a skill](guides/add-a-skill.md),
-modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
+The how-tos are in [guides/](guides/README.md): [Add a skill](guides/add-a-skill.md), modes and roles in
+[Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../../TODO.md#known-limitations); when work removes one, delete it there.
