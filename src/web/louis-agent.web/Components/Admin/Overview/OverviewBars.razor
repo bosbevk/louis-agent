@@ -1,0 +1,13 @@
+@* The month's talks by one thing (F127.8): a bar each, longest first, in the one accent colour. *@
+
+<section class="card-p overview-bars">
+    <h2 class="overview-title">@Title</h2>
+    @foreach (var bar in Bars)
+    {
+        <div class="bar-row">
+            <span class="bar-name">@bar.Name</span>
+            <span class="bar-track"><span class="bar-fill" style="--share: @ShareOf(bar)%"></span></span>
+            <span class="bar-count">@bar.Talks</span>
+        </div>
+    }
+</section>

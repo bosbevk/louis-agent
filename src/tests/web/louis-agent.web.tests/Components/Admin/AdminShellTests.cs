@@ -75,9 +75,11 @@ public class AdminShellTests
         });
     }
 
-    /// <summary>A pack's screens get their links in the sidebar, after the site's own.</summary>
+    /// <summary>
+    /// The overview comes first (F127.8), then the site's own links, then a pack's screens.
+    /// </summary>
     [Test]
-    public void APacksScreens_GetTheirLinks_AfterTheSitesOwn()
+    public void TheOverviewFirst_ThenTheSitesOwn_ThenAPacksScreens()
     {
         using var ctx = NewContext();
 
@@ -86,7 +88,7 @@ public class AdminShellTests
 
         cut.WaitForAssertion(() =>
             Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
-                Is.EqualTo(new[] { "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
+                Is.EqualTo(new[] { "admin/overview", "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
     }
 
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>

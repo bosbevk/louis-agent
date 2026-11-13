@@ -1,0 +1,16 @@
+@* One period of the overview (F127.8): its talks, its cost, and each tool the site counts, by the site's name. *@
+
+<section class="card-p overview-figures">
+    <h2 class="overview-title">@Title</h2>
+    <div class="figures">
+        <div class="figure"><span class="figure-value">@Period.Talks</span><span class="figure-name">talks</span></div>
+        <div class="figure">
+            <span class="figure-value">@OverviewMoney.Of(Period.Cost, Currency, Choice)</span>
+            <span class="figure-name">cost</span>
+        </div>
+        @foreach (var counted in Counted)
+        {
+            <div class="figure"><span class="figure-value">@counted.Talks</span><span class="figure-name">@counted.Name</span></div>
+        }
+    </div>
+</section>

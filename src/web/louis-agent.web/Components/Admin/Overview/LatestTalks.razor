@@ -1,0 +1,24 @@
+@* The month's latest talks (F127.8), newest first: when, where, who, how long, what it cost and what the site counts. *@
+
+<section class="card-p talks-card">
+    <h2 class="overview-title">Latest talks</h2>
+    <table class="latest-talks">
+        <thead>
+        <tr><th>When</th><th>Page</th><th>Part</th><th>Who</th><th>Turns</th><th>Cost</th><th>Counted</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var talk in Talks)
+        {
+            <tr>
+                <td>@WhenOf(talk)</td>
+                <td><code>@talk.Page</code></td>
+                <td>@talk.Part</td>
+                <td>@talk.Identity</td>
+                <td>@talk.Turns</td>
+                <td>@OverviewMoney.Of(talk.Cost, Currency, Choice)</td>
+                <td>@string.Join(", ", CountedIn(talk))</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

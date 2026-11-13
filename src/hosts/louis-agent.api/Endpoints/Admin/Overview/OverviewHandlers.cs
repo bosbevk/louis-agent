@@ -21,7 +21,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Overview;
 
 /// <summary>
 /// The admin's overview of what a site's agents did (F127.8): the day asked for, today by default, read from the
-/// month's turn log and ledger in the host's log folder, costs in its display currency.
+/// month's turn log and ledger in the host's log folder, costs in the currency the ledger charged them in.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class OverviewHandlers
@@ -42,8 +42,9 @@ internal static class OverviewHandlers
         var options = engines.Context.Options;
         string? folder = options.UsageLedger ? options.LogDirectory : null;
         var turns = new TurnLog(folder).Read(asked).ToList();
-        var display = engine.Display ?? DisplayCurrency.Charged("USD");
-        var reply = OverviewReader.Of(asked, turns, LedgerOf(folder, asked), display);
+        // In the currency the ledger charged: the admin's page converts for its reader, as every cost the web shows is.
+        var charged = DisplayCurrency.Charged(engine.Display?.Base ?? "USD");
+        var reply = OverviewReader.Of(asked, turns, LedgerOf(folder, asked), charged);
         return TypedResults.Json(reply, AdminJson.SnakeCase);
     }
 

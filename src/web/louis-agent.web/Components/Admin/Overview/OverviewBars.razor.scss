@@ -1,0 +1,7 @@
+/* The month's talks by one thing on the admin's overview (F127.8): a name, a bar as long as its share of the largest
+   in the one accent colour, and its count. */
+.bar-row { display: grid; grid-template-columns: minmax(90px, 30%) 1fr auto; align-items: center; gap: 10px; padding: 4px 0; font-size: 13.5px; }
+.bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 8px; border-radius: 4px; background: rgba(var(--bs-primary-rgb), .12); }
+.bar-fill { display: block; height: 100%; width: var(--share, 0%); border-radius: 4px; background: var(--bs-primary); }
+.bar-count { font-family: var(--bs-font-monospace); color: var(--bs-secondary-color); }

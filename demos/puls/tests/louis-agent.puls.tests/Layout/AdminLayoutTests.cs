@@ -30,7 +30,9 @@ public class AdminLayoutTests
         Snapshots.Match("Layout/AdminLayout.html", cut.Markup);
     }
 
-    /// <summary>The sidebar keeps its links, in their order, to their addresses.</summary>
+    /// <summary>
+    /// The sidebar keeps its links, in their order, to their addresses: the framework's overview first (F127.8).
+    /// </summary>
     [Test]
     public void TheSidebar_KeepsItsLinks_InOrder()
     {
@@ -39,7 +41,7 @@ public class AdminLayoutTests
         var cut = Render(ctx);
 
         Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "admin", "admin/review", "admin/studio", "admin/prompts", "gesels" }));
+            Is.EqualTo(new[] { "admin/overview", "admin", "admin/review", "admin/studio", "admin/prompts", "gesels" }));
     }
 
     /// <summary>The way back goes to the chat, and the page shows in the content column.</summary>

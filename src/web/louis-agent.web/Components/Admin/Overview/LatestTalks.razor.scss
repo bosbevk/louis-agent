@@ -1,0 +1,7 @@
+/* The latest talks on the admin's overview (F127.8): a plain table that scrolls sideways on a phone rather than
+   squeezing its columns. */
+.talks-card { overflow-x: auto; }
+.latest-talks { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.latest-talks th { text-align: left; font-weight: 600; color: var(--bs-secondary-color); padding: 6px 10px; border-bottom: 1px solid var(--bs-border-color); white-space: nowrap; }
+.latest-talks td { padding: 7px 10px; border-bottom: 1px solid var(--bs-border-color); white-space: nowrap; }
+.latest-talks code { font-size: 12.5px; }
