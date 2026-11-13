@@ -9,6 +9,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "LOG_DIRECTORY": "../logs",
+        "SITE_DATA_DIRECTORY": "../data",
         "CONFIG_DIRECTORY": "../config",
         "PRICES_FILE": "../config/prices.json",
         "RATES_FILE": "../config/rates.json",

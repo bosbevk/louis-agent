@@ -1,10 +1,12 @@
 using LouisAgent.Api;
+using LouisAgent.Api.Config;
 using LouisAgent.Api.Site;
 using LouisAgent.Core.Anthropic;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Web;
 using LouisAgent.SiteApi;
+using LouisAgent.SiteApi.Resumes;
 
 // The framework's site's host (F124): the site's pages as HTML, and the API the guide in the corner runs on. It loads
 // the guide and its three packs, so a visitor reaches nothing else.
@@ -31,4 +33,7 @@ app.MapLouisAgentSite(typeof(LouisAgent.Site.App).Assembly, services =>
 }, home: "home");
 
 app.MapLouisAgentApi(host);
+
+// The site's own routes, on the API's group: Louis's CV, read by anyone and saved from the admin (F142).
+app.MapLouisAgentHostGroup().MapSiteResume(ResumeStore.FromEnvironment(), AdminOptions.FromEnvironment().AdminKey);
 app.Run();

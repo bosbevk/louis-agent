@@ -9,17 +9,29 @@ namespace LouisAgent.Site.Resumes;
 /// </summary>
 /// <remarks>
 /// One options object for this file and nothing else (ADR 0041): JSON Resume writes its names in camelCase
-/// (<c>startDate</c>), and a strict reader keeps the file and the records in step (ADR 0049: no lenient reader).
+/// (<c>startDate</c>), and a strict reader keeps the file and the records in step (ADR 0049: no lenient reader). The
+/// API's routes and the admin's editor write the CV with the same object, so what is saved reads back.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public static class ResumeReader
 {
-    /// <summary>The CV file's names, camelCase as JSON Resume writes them; a field we don't know is an error.</summary>
-    private static readonly JsonSerializerOptions Json =
-        new(JsonSerializerDefaults.Web) { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow };
+    /// <summary>
+    /// The CV file's names, camelCase as JSON Resume writes them: a field we don't know is an error, and so is a
+    /// missing one a record can't do without (a job's company); a part left empty isn't written.
+    /// </summary>
+    public static JsonSerializerOptions Options { get; } = new(JsonSerializerDefaults.Web)
+    {
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        RespectRequiredConstructorParameters = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
     /// <summary>The CV in this stream; a file that is only <c>null</c> is refused as well.</summary>
     public static Resume Read(Stream json) =>
-        JsonSerializer.Deserialize<Resume>(json, Json) ?? throw new JsonException();
+        JsonSerializer.Deserialize<Resume>(json, Options) ?? throw new JsonException();
+
+    /// <summary>The CV in this text, read the same way.</summary>
+    public static Resume Read(string json) =>
+        JsonSerializer.Deserialize<Resume>(json, Options) ?? throw new JsonException();
 }

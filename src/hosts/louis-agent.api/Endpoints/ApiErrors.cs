@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Endpoints;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-internal static class ApiErrors
+public static class ApiErrors
 {
     /// <summary>
     /// The error as a record, for a writer that isn't an endpoint (the key gate, a stream's last line).

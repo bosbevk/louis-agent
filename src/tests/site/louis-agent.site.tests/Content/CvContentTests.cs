@@ -1,17 +1,17 @@
 using LouisAgent.Site.Content;
+using LouisAgent.Site.Resumes;
+using LouisAgent.Site.Resumes.Privacy;
 
 namespace LouisAgent.Site.Tests.Content;
 
 /// <summary>
 /// F142: Louis's CV is the site's <c>cv.json</c>, embedded, read strictly into the records the page draws. It is a
 /// public page, so it holds nothing that is identity-theft material or that weakens a pay talk (POPIA): no ID number,
-/// street address, birth date or salary. A later edit that adds one fails here.
+/// street address, birth date or salary. A later edit that adds one fails here, as a save from the admin's editor
+/// fails on the same check.
 /// </summary>
 public class CvContentTests
 {
-    /// <summary>The file as embedded, for the checks that read its words.</summary>
-    private static string Text() => Cv.Json;
-
     /// <summary>It reads, strictly, as Louis's CV.</summary>
     [Test]
     public void TheCv_Reads_AsLouissCv()
@@ -41,36 +41,8 @@ public class CvContentTests
         });
     }
 
-    /// <summary>No South African ID number: no run of 13 digits anywhere in the file.</summary>
+    /// <summary>It holds no ID number, salary, birth date or street address.</summary>
     [Test]
-    public void TheCv_HoldsNoIdNumber() =>
-        Assert.That(LongestDigitRun(Text()), Is.LessThan(13));
-
-    /// <summary>
-    /// No salary, birth date or street address: the words that would name one are nowhere in the file, and the
-    /// records have no field for them, so the strict read would refuse one too.
-    /// </summary>
-    [Test]
-    public void TheCv_HoldsNoSalaryBirthDateOrAddress()
-    {
-        string text = Text().ToLowerInvariant();
-        string[] personal = ["salary", "per month", "birth", "\"address\"", "street", "id number"];
-
-        Assert.That(personal.Where(text.Contains), Is.Empty);
-    }
-
-    /// <summary>The longest run of digits in the text, spaces between digits counted as part of it.</summary>
-    private static int LongestDigitRun(string text)
-    {
-        int longest = 0, run = 0;
-        foreach (char c in text)
-        {
-            // A digit grows the run, a space keeps it (an ID number written in groups), anything else ends it.
-            if (char.IsDigit(c)) run++;
-            else if (c != ' ') run = 0;
-            longest = Math.Max(longest, run);
-        }
-
-        return longest;
-    }
+    public void TheCv_HoldsNothingAPublicPageMustntShow() =>
+        Assert.That(ResumePrivacy.Problems(Cv.Json), Is.Empty);
 }
