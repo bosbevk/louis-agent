@@ -1,0 +1,53 @@
+@page "/admin/packs"
+@layout AdminFrame
+@using LouisAgent.Web.Components.Screens
+
+@* The packs area's own page (F144, Louis's pick of three): what the site's packs offer, each screen with what it
+   shows and the files they take, each the way to its page. *@
+
+<PageTitle>Packs · Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Packs</h1>
+        <p>What the site's packs offer: their screens, and the files they take.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync"/>
+}
+
+@if (_loading && _offer is null)
+{
+    <section class="card-p packs-loading"><span class="muted">Loading…</span></section>
+}
+else if (_offer is { IsEmpty: true })
+{
+    <section class="card-p packs-none"><span class="muted">No pack on this instance offers a screen or an upload.</span></section>
+}
+else if (_offer is { } offer)
+{
+    <section class="card-p">
+        <ul class="packs-items">
+            @foreach (var screen in offer.Screens)
+            {
+                <li @key="screen.Name" class="packs-item">
+                    <a class="packs-name" href="@PackOffer.AddressOf(screen)">@screen.Title</a>
+                    <span class="muted">@screen.Description</span>
+                </li>
+            }
+            @if (offer.Uploads.Count > 0)
+            {
+                <li class="packs-item">
+                    <a class="packs-name" href="admin/imports">Uploads</a>
+                    <span class="muted">@string.Join(" ", offer.Uploads.Select(upload => upload.Description))</span>
+                </li>
+            }
+        </ul>
+    </section>
+}

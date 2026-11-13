@@ -1,9 +1,9 @@
 # louis-agent.identity.triage
 
 > **Explanation.** Who the triage team is and why it is one identity. **Elsewhere:** the workflow in
-> [the F106.3 plan](../../../src/docs/plans/F106.3-triage-and-fix-a-service.md); the pack it ends its work with in
-> [louis-agent.pack.triage](../../../packs/docs/projects/louis-agent.pack.triage.md); building an identity in
-> [Build an identity](../../../src/docs/guides/build-an-identity.md).
+> [the F106.3 plan](../../../../src/docs/plans/F106.3-triage-and-fix-a-service.md); the pack it ends its work with in
+> [louis-agent.pack.triage](../../../../packs/docs/projects/louis-agent.pack.triage.md); building an identity in
+> [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 
 ![The triage team: the manager, and the sorter, the investigator, the reviewer and the coder who work for it](diagrams/louis-agent.identity.triage.svg)
 
@@ -58,4 +58,4 @@ AGENT_API=http://127.0.0.1:5072 dotnet louis-agent.coding-eval-runner.dll run tr
 reads it, its routing naming its toolsets, and the three evals loaded as the runner loads them.
 
 ---
-[Docs index](../../../src/docs/README.md) · Related: [Projects](../../../src/docs/projects/README.md)
+[Docs index](../../../../src/docs/README.md) · Related: [Projects](../../../../src/docs/projects/README.md)

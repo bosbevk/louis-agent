@@ -1,14 +1,7 @@
-using System.Net;
-using System.Net.Http.Json;
-using LouisAgent.Api.Contracts.Admin;
-using LouisAgent.Api.Contracts.Admin.Screens;
-using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Areas;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using LouisAgent.Web.Components.Packs;
-using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Web.Tests.Components.Admin;
@@ -19,25 +12,14 @@ namespace LouisAgent.Web.Tests.Components.Admin;
 /// </summary>
 public class AdminShellTests
 {
-    /// <summary>A context with what the frame's pack menu asks for, over an API that offers this one screen.</summary>
+    /// <summary>
+    /// A context for the frame alone: it asks for nothing of its own, since each area's links bring what they need
+    /// (F144).
+    /// </summary>
     private static BunitContext NewContext()
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var settings = new ChatSettings();
-        var screens = new ScreensReply(
-        [
-            new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")],
-                Searchable: false)
-        ]);
-        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
-        ctx.Services.AddSingleton(new PackViews());
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ =>
-            new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = JsonContent.Create(screens, options: AdminJson.SnakeCase)
-            }))
-        { BaseAddress = new Uri("http://localhost/") }, settings));
         return ctx;
     }
 
@@ -76,19 +58,19 @@ public class AdminShellTests
     }
 
     /// <summary>
-    /// The overview comes first (F127.8), then the site's own links, then a pack's screens.
+    /// The frame draws its home first, then the site's own links, and no area's of its own (F144): the overview's link
+    /// is the overview area's, and the packs' menu the packs area's, on a site that names them.
     /// </summary>
     [Test]
-    public void TheOverviewFirst_ThenTheSitesOwn_ThenAPacksScreens()
+    public void TheHomeFirst_ThenTheSitesOwnLinks_AndNoAreaOfItsOwn()
     {
         using var ctx = NewContext();
 
         var cut = ctx.Render<AdminShell>(parameters => parameters
             .Add(shell => shell.Links, "<a class=\"side-link my-link\" href=\"x\">X</a>"));
 
-        cut.WaitForAssertion(() =>
-            Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
-                Is.EqualTo(new[] { "admin/overview", "x", "admin/screens/usage" })), TimeSpan.FromSeconds(10));
+        Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
+            Is.EqualTo(new[] { "admin", "x" }));
     }
 
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>

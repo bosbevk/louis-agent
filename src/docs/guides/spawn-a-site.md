@@ -40,7 +40,8 @@ and packs, and reference your site from it.
 | The words in your language | Register your own `ChatText`, and your own `AccountText`, in `Program.cs` before `AddSiteAreas` (the builder only adds its English where nothing is set) |
 | No accounts | Drop `.Accounts(…)` from your `WebsiteAreas.Name`, the `louis-agent.web.accounts` reference, `AccountLayout` and the `accounts/shell` line; the chat's menu draws the guest's ([Change the web](change-the-web.md#change-the-account-pages)) |
 | No eval studio | Drop `.Evals()` from your `WebsiteAreas.Name`, the `louis-agent.web.evals` reference, the `evals/pages` line and the `@using LouisAgent.Web.Evals`; and `MapLouisAgentEvals` from your API program |
-| A pack's screens | Nothing, for a described screen: the sidebar lists it. For a pack's own view, reference its project under `packs/web/`, add `XWebViews.AddTo(views)` in the admin's lambda, `.Admin(typeof(AdminLayout), views => XWebViews.AddTo(views))`, and list its Sass |
+| Your admin | `.Admin(typeof(AdminLayout))` is the frame and its home at `/admin`; each part inside is an area you name after it, which brings its pages, its sidebar links and its card on the home: `.Overview(count => count.Tool("SendLead", "leads"))`, `.Packs()`, `.Evals()`. Drop one and its card and links go with it. An admin area without `.Admin(…)` stops the site at start-up, saying so |
+| A pack's screens | Nothing, for a described screen: the packs' menu and page list it. For a pack's own view, reference its project under `packs/web/`, add `XWebViews.AddTo(views)` in the packs' lambda, `.Packs(views => XWebViews.AddTo(views))`, and list its Sass |
 
 Your site names its areas in one place, `WebsiteAreas.Name`, which `Program.cs` hands to `AddSiteAreas` and your tests
 hand it too; never build or register a framework part yourself ([ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).

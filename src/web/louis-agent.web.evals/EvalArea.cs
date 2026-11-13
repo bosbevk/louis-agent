@@ -6,7 +6,7 @@ namespace LouisAgent.Web.Evals;
 
 /// <summary>
 /// The eval studio as an area a site names (F127.6): <c>.Evals()</c> registers its services and its pages, and gives
-/// the admin frame its links, so every site that runs the evals links them.
+/// the admin frame its links and (F144) its card on the home, so every site that runs the evals links them.
 /// </summary>
 /// <remarks>
 /// An extension on the framework's <see cref="SiteAreasBuilder"/>, from this library, since the framework's web can't
@@ -18,5 +18,5 @@ public static class EvalArea
     /// <summary>The eval studio, for a site of these kinds; none, and the kinds are none.</summary>
     public static SiteAreasBuilder Evals(this SiteAreasBuilder areas, SiteKinds? kinds = null) =>
         areas.Add(new SiteArea("evals", services => services.AddLouisAgentEvals(kinds), [EvalLibrary.Assembly],
-            AdminLinks: typeof(EvalLinks)));
+            AdminLinks: typeof(EvalLinks), AdminCard: typeof(EvalsCard)));
 }

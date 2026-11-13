@@ -80,8 +80,7 @@ public class SiteAreasTests
         {
             Assert.That(areas.Names, Is.EqualTo(new[] { "chat", "admin", "showroom" }));
             Assert.That(areas.PageAssemblies, Is.EqualTo(FrameworkPages.Assemblies));
-            Assert.That(Has<ChatHandoff>(services) && Has<PackViews>(services) && Has<ShowroomDemos>(services),
-                Is.True);
+            Assert.That(Has<ChatHandoff>(services) && Has<ShowroomDemos>(services), Is.True);
             Assert.That(Has<GuideDoor>(services) && Has<AgentWindows>(services) && Has<GuideKeeper>(services), Is.True);
             Assert.That(One<SiteFrames>(services),
                 Is.EqualTo(new SiteFrames(typeof(AdminLayout), typeof(AdminLayout))));

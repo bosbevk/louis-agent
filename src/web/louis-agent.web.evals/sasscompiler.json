@@ -3,5 +3,5 @@
   "Target": "wwwroot/css",
   "Arguments": "--style=expanded --no-error-css --no-source-map",
   "GenerateScopedCss": true,
-  "IncludePaths": [ "Styles" ]
+  "IncludePaths": [ "Styles", "../louis-agent.web/Styles" ]
 }

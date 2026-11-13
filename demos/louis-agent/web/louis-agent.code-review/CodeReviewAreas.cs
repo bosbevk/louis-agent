@@ -22,7 +22,9 @@ public static class CodeReviewAreas
     /// <summary>Names the app's areas: a screen's Review button opens the chat with a draft.</summary>
     public static void Name(SiteAreasBuilder areas) =>
         areas.Chat()
-            .Admin(typeof(AdminLayout), PackViewsOf)
+            .Admin(typeof(AdminLayout))
+            .Overview()
+            .Packs(PackViewsOf)
             .Accounts(typeof(AccountLayout))
             .Evals();
 

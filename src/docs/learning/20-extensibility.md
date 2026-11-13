@@ -609,3 +609,30 @@ copied the list. Two sites registered the eval pages and never linked them, and 
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md): a Builder a library extends without the framework knowing it,
 and a Composition Root per implementation.
+
+## F144: the admin is a frame its areas plug into (2026-11-13)
+
+Louis opened louis-agent.dev's `/admin` and found "not found": the root belonged to the eval studio, on sites that had
+one. `.Admin(layout, views, counts)` mixed three things, the frame, the packs' views and the overview's counts. His
+words set the shape: "admin must be the main admin layout for admin areas to plugin into".
+
+- **One slot, three areas.** An area already brought its pages and its sidebar links; now it can bring a card for the
+  home too (`SiteArea.AdminCard`). The overview, the packs and the evals each became an area of that one shape, and the
+  home at `/admin` draws whatever cards the site named, in its order. The frame knows none of them, so a fourth area is
+  a new card, not a change to the home.
+- **Refuse a wrong setup at start-up.** An area that plugs into the admin with no frame stops the site with the fix in
+  the message, rather than drawing frameless pages later. It is the web's first message enum, with its holes record.
+- **Read once, share the answer.** Three things listed what the packs offer (the menu, the new packs page, the card),
+  and two showed the review count (the badge, the card). Each pair now reads through one place (`PackOffer`,
+  `ReviewQueueState.ReadOnceAsync`), so the numbers can't disagree.
+- **Template Method and Observer, for a refused key.** Every card loads the key, reads, and goes quiet when refused:
+  that is `AdminCardBase`, and a card writes only its read. Louis picked "cards report it": a refused card tells
+  `AdminAccess`, and the home asks for the key once, instead of once per card or with a request of its own.
+- **Moving one part moves the sites with it.** The plan kept the sites for step 7, but each step that changed
+  `.Admin(…)` broke them, so each step carried them along. Step 7 was left with tests that hold the result.
+- **What I'd do differently.** I gave Home an icon only the chat's shell draws; Louis's screenshot showed the blank
+  square. A check of every icon the web uses against the styles that draw them found a second gap (the packs' page
+  icon lived only in Puls). Run that check before using an icon, not after a screenshot.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md): a frame that names none of its parts, each part bringing its own
+slot-fillers, Template Method for the parts' shared steps and Observer for what they report.

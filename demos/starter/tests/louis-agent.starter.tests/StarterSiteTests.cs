@@ -80,6 +80,27 @@ public class StarterSiteTests
     }
 
     /// <summary>
+    /// F144: the admin's home draws a card for each of the starter's admin areas, the overview, the packs and the
+    /// evals, in the order it names them, so a site made from it starts with the home.
+    /// </summary>
+    [Test]
+    public void TheAdminsHome_DrawsACardPerArea_InOrder()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var api = new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") };
+        ctx.Services.AddSingleton(api);
+        ctx.Services.AddSiteAreas(WebsiteAreas.Name);
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin");
+
+        var app = ctx.Render<App>();
+
+        app.WaitForAssertion(() =>
+            Assert.That(app.FindAll(".admin-card-title").Select(title => title.TextContent),
+                Is.EqualTo(new[] { "Overview", "Packs", "Evals" })), TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
     /// The program names its areas through the same method the tests use, so a new site made from it starts with the
     /// builder and no part wired by hand.
     /// </summary>
@@ -108,7 +129,9 @@ public class StarterSiteTests
         Assert.That(claimedTwice, Is.Empty);
     }
 
-    /// <summary>It copies none of the framework's rules, and with no colours of its own it has the framework's.</summary>
+    /// <summary>
+    /// It copies none of the framework's rules, and with no colours of its own it has the framework's.
+    /// </summary>
     [Test]
     public void ItsStyles_AreTheFrameworks()
     {

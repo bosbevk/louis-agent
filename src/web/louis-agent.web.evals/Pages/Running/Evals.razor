@@ -1,11 +1,12 @@
-@page "/admin"
+@page "/admin/evals"
 @layout AdminFrame
 @implements IDisposable
 
 @* F18 step 7b (i): every eval the runner's catalogue has, from GET /v1/admin/evals; one that never ran is listed as
    never run, not hidden. F53.2: the portal's front page, as list and details: the list pane names every eval with its
    last result, the details pane holds the chosen one (the eval in the address, `?eval=`; none opens the eval that ran
-   last) with the controls that run it, and the run in progress above the details. *@
+   last) with the controls that run it, and the run in progress above the details. F144: at /admin/evals, inside the
+   admin's frame, whose root is its home. *@
 
 <PageTitle>Evals · Admin</PageTitle>
 

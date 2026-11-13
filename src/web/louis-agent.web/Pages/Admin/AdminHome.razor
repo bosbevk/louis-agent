@@ -1,0 +1,34 @@
+@page "/admin"
+@layout AdminFrame
+@implements IDisposable
+
+@* The admin's home (F144, Louis's pick, a home of cards): each area the site named draws its card here, in the order
+   named; a refused key, which a card reports, is asked for once, above them. *@
+
+<PageTitle>Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Admin</h1>
+        <p>Each part of the admin, at a glance: open one for the whole of it.</p>
+    </div>
+</div>
+
+@if (Access.Error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="true" OnSaved="Access.Clear"/>
+}
+
+@if (Cards.Count == 0)
+{
+    <section class="card-p admin-home-none"><span class="muted">No area plugs into this admin yet.</span></section>
+}
+else
+{
+    <div class="admin-home-cards">
+        @foreach (var card in Cards)
+        {
+            <DynamicComponent @key="card" Type="card"/>
+        }
+    </div>
+}

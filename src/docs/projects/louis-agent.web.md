@@ -19,20 +19,31 @@ keeps its colours and brand; the rules and scripts of the frames are here. The c
 - **A site names its areas** (F127.6, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
   `AddSiteAreas(areas => …)` (`Components/Areas/`) registers the chat's plumbing for every site (`ChatSettings`,
   `ChatStore`, `AgentApi`, `CurrencyState`, an English `ChatText`, each only where the site set none), then each area
-  the site names: `Chat()` the chat portal's handoff (`ChatHandoff`); `Admin(layout, views)` the admin's frame
-  (`SiteFrames`), its pack views (`PackViews`) and its pages; `Showroom(demos)` the demos, the guide's way in
+  the site names: `Chat()` the chat portal's handoff (`ChatHandoff`); `Admin(layout)` the admin's frame
+  (`SiteFrames`), its home and its pages; `Showroom(demos)` the demos, the guide's way in
   (`GuideDoor`), the demos' windows (`AgentWindows`) and the kept guide (`GuideKeeper`); and a library's own area
   through `Add`, as the eval studio's `Evals()` and the accounts' `Accounts(layout)` do. An area named twice counts
   once. `SiteAreas`, registered once, gives the router its page assemblies and `AdminShell` each area's admin links.
   A site never builds or registers any of these itself; `SitesNameTheirAreasTests` holds it. `Focuses(f => …)`
   (F127.7, `Components/Areas/Focuses/`) names the part of the site each page is (`SiteFocuses.Of(path)`: the longest
   matching address by whole segments, else the default), which the guide's widget sends with every message.
-  `Admin(layout, views, counts: c => c.Tool("SendLead", "leads"))` (F127.8, `Components/Areas/Overview/`) names the
-  tools the admin's overview counts and what it calls each: the API counts every tool and names no pack.
-- **The admin's overview** (F127.8): `Pages/Admin/Overview` at `/admin/overview`, first in every admin's sidebar,
-  draws the API's overview in the reader's currency: `OverviewFigures` (today's and the month's talks, cost and the
-  counted tools), `OverviewBars` (the month's talks by part of the site and by who answered, one colour) and
-  `LatestTalks` (a table that scrolls sideways on a phone), all in `Components/Admin/Overview/`.
+- **The admin is a frame its areas plug into** (F144, [ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
+  `Admin(layout)` is the frame alone: `AdminShell` around the site's layout, and the home at `/admin`
+  (`Pages/Admin/AdminHome`), which draws each admin area's card (`SiteArea.AdminCard`, in `SiteAreas.AdminCards`) in
+  the order the site named them, two columns, one on a phone, with "Home" first in the sidebar. Everything inside is
+  an area with its pages, its sidebar links (`AdminLinks`) and its card: `Overview(count => count.Tool("SendLead",
+  "leads"))` the overview, naming the tools it counts (the API counts every tool and names no pack); `Packs(views =>
+  …)` the packs' screens and uploads, with `PackMenu` and the packs page at `/admin/packs`, all reading one
+  `PackOffer`; and the eval studio's `Evals()`, at `/admin/evals`. An admin area named without the frame is refused at
+  start-up (`WebErrorMessage.AdminAreaWithoutFrame`). Every card is an `AdminCardBase` (Template Method): it loads
+  the key, reads, and when the API refuses tells `AdminAccess` (Observer), so the home asks for the key once, and a
+  saved key makes every card read again. A card draws its frame with `AdminCard` and its figures with the
+  `web/tools/figures` Sass tool.
+- **The admin's overview** (F127.8, an area since F144): `Pages/Admin/Overview` at `/admin/overview` draws the API's
+  overview in the reader's currency: `OverviewFigures` (today's and the month's talks, cost and the counted tools,
+  `OverviewCounts.In`), `OverviewBars` (the month's talks by part of the site and by who answered, one colour) and
+  `LatestTalks` (a table that scrolls sideways on a phone), all in `Components/Admin/Overview/` with `OverviewCard`
+  and `OverviewLinks`.
 - **Every part is ready for an agent** (F127.7, [ADR 0121](../adr/0121-every-part-of-the-web-is-ready-for-an-agent.md)).
   A tile with a title or a number and a deck's card are **pieces** (`data-piece`, an id from `Site/Pieces/PieceId`,
   so `/home/100-adrs` opens it). `Widget/Pieces/PieceWatch` and its module hear a click on a piece (it asks the guide
@@ -175,9 +186,9 @@ The [eval pages](louis-agent.web.evals.md) have diagrams of their own.
 | `Chats/Calls/` | `CardCall`, `OfferCall`, `Offered`, `OfferChoice`, `CardsLast`: the tool calls the chat draws (F127.4.1); `WatchedAsk`, an ask shown in its agent's window (F127.4.2) |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs`; in `Blocks/`, `DrawnCard` and `OfferCards` |
 | `Components/Areas/` | `SiteAreasServices` (`AddSiteAreas`), `SiteAreasBuilder`, `SiteArea` and `SiteAreas`: how a site names its areas (F127.6) |
-| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Admin/`, `Components/Frames/`, `Layout/` | `AdminShell`, `AdminGate`; `AdminCard`, `AdminCardBase` and `AdminAccess`, every area's card on the home and the one ask for a refused key (F144); `SiteFrames`, the site's two layouts; `AdminFrame`, the layout that hands over to the site's |
 | `Components/Chat/Header/Menu/` | `IAccountMenu`, what the profile menu asks of accounts, and `NoAccounts`, the answer when a site has none (CL30); the real side is in [louis-agent.web.accounts](louis-agent.web.accounts.md) |
-| `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the sidebar's link per screen; in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
+| `Components/Packs/`, `Components/Screens/` | `PackViews` and `IScreenView`, which component draws a screen; `PackMenu`, the packs area's sidebar links (the packs page, then a link per screen); `PackOffer`, what the packs offer, which the menu, the packs page and `PacksCard` read (F144); in `Table/`, `ScreenTable`, the default, with its cells; in `Acting/`, `ScreenActionButton`; in `Forms/`, `ScreenForm` and `ScreenRowsEditor` ([ADR 0086](../adr/0086-a-packs-screens-are-described.md)) |
 | `Pages/` | `FrameworkPages`, the list a site's router takes; in `Admin/`, `Screen`, the one page every pack's screen opens on, `ScreenRow`, a row's form, and `Imports`, the Uploads page; in `Admin/Running/`, `Reviewing/` and `Building/`, the eval pages |
 | `Components/Imports/` | `ImportCard`, an upload by default, and `ImportForm`, the rules of when a preview or a save may run |
 | `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |

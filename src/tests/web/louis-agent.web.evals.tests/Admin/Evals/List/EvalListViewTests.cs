@@ -19,8 +19,10 @@ public class EvalListViewTests
     private static EvalRunRow Run(string id, DateTimeOffset at, params (string Mode, double? PassAtK)[] modes) =>
         new(new StoredRunRow(id, "cook", 1, "done", 0, at, at.AddMinutes(9), null, null, null, "cook", 10, null,
                 null, null),
-            [.. modes.Select(m =>
-                new ModeRow(m.Mode, 1, [], null, null, m.PassAtK, m.PassAtK, m.PassAtK is null ? null : 1, 0, 0))]);
+            [
+                .. modes.Select(m =>
+                    new ModeRow(m.Mode, 1, [], null, null, m.PassAtK, m.PassAtK, m.PassAtK is null ? null : 1, 0, 0))
+            ]);
 
     /// <summary>An eval with these runs, newest first, as the API lists them.</summary>
     private static EvalRow Eval(string name, params EvalRunRow[] runs) =>
@@ -87,5 +89,5 @@ public class EvalListViewTests
     /// <summary>An eval's address names it, escaped.</summary>
     [Test]
     public void AnEvalsAddress_NamesIt() =>
-        Assert.That(EvalAddress.Of("puls cook"), Is.EqualTo("admin?eval=puls%20cook"));
+        Assert.That(EvalAddress.Of("puls cook"), Is.EqualTo("admin/evals?eval=puls%20cook"));
 }

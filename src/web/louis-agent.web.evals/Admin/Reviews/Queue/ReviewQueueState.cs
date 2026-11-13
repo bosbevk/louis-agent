@@ -1,3 +1,7 @@
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Reviews;
+using LouisAgent.Web.Api;
+
 namespace LouisAgent.Web.Evals.Admin.Reviews.Queue;
 
 /// <summary>
@@ -23,5 +27,26 @@ public sealed class ReviewQueueState
         if (Count == count) return;
         Count = count;
         Changed?.Invoke();
+    }
+
+    /// <summary>
+    /// Reads the queue's total for the kept name once, if nobody has: the sidebar's badge and the admin home's card
+    /// (F144) both ask, and the first one reads it. An API that refuses (no key yet, no store) leaves it unread.
+    /// </summary>
+    public async Task ReadOnceAsync(AgentApi api, ReviewerState reviewer)
+    {
+        await reviewer.LoadAsync();
+        if (Count is not null) return;
+        try
+        {
+            string who = reviewer.Name is { } name ? $"reviewer={Uri.EscapeDataString(name)}&" : "";
+            var reply = await api.GetAsync<ReviewQueueReply>($"v1/admin/evals/reviews/queue?{who}limit=1",
+                AdminJson.SnakeCase);
+            Set(reply.Total);
+        }
+        catch (Exception ex) when (ex is AgentApiException or HttpRequestException)
+        {
+            // No key yet, or no store: the count stays unread until the Review page sets one.
+        }
     }
 }

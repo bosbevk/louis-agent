@@ -28,7 +28,7 @@ as you go: every answer shows what it cost, specialists included.
   specialist, toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the
   Werk panel slides in; below 992px the sidebar does.
 - **The admin portal** (English, the builders' screen): *Admin* in the profile menu opens `/admin`. The pages are the framework's
-  ([The eval pages](../../../../src/docs/projects/eval-pages.md)); Puls fills their frame in `AdminLayout` with its logo, the live strip and the eval
+  ([The eval pages](../../../../src/docs/projects/louis-agent.web.evals.md)); Puls fills their frame in `AdminLayout` with its logo, the live strip and the eval
   links, and says in `PulsSites` which websites matter to it: South African shops, other South African sites and the map.
 - **Placeholders** (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
   theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
