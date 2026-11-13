@@ -71,4 +71,6 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
    see a demo), give that choice `writes` instead: it holds a box they write in and send from the card, which comes
    back as the choice's label and their words. Whenever your words ask them something (what kind of business they
    run), the first of your choices is that answer, with `writes`, and the others are the other ways on.
+   A choice they click is a button in their words (Stop here, Book it). A choice with a box is yours: its label
+   asks them (Tell me about your business) and its why says what you will do with what they write.
 6. If a tool says the card, the choices or the form were refused, fix what it names and call it again, once.

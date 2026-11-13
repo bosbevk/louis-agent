@@ -23,7 +23,11 @@ public class OfferTests
         new("Not now", "Nothing is sent.")
     ];
 
-    /// <summary>Good choices are offered; the model hears the click comes back as the visitor's message.</summary>
+    /// <summary>What the tool tells the model about the choices it may offer.</summary>
+    private static string ChoicesDescribed() =>
+        typeof(CardTools).GetMethod(nameof(CardTools.Offer))!.GetParameters()[1]
+            .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()!.Description;
+
     /// <summary>
     /// FX147, Louis: "that first card should have had a input with button". A choice may hold a box, by the kind of
     /// words it asks for, and the tool tells the model so: a choice that asks them to write holds one.
@@ -33,19 +37,36 @@ public class OfferTests
     {
         OfferChoice[] leads =
         [
-            new("Tell you my business", "So I can show how leads would work for it", true, FieldKind.Text),
+            new("Tell me about your business", "So I can show how leads would work for it", true, FieldKind.Text),
             new("Guesthouse demo", "See an agent turn a visitor into a booking"),
         ];
-        var described = typeof(CardTools).GetMethod(nameof(CardTools.Offer))!.GetParameters()[1]
-            .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()!.Description;
 
         Assert.Multiple(() =>
         {
             Assert.That(_tools.Offer("Where to next?", leads), Does.StartWith("Offered:"));
-            Assert.That(described, Does.Contain("writes").And.Contain("never a choice that only says to type"));
+            Assert.That(ChoicesDescribed(),
+                Does.Contain("writes").And.Contain("never a choice that only says to type"));
         });
     }
 
+    /// <summary>
+    /// FX152, Louis: "should it not say Tell me about your business?". A choice with a box is a form of one field, so
+    /// its label asks the visitor, in the agent's voice. The model copies the tool's own example, so that is the ask.
+    /// </summary>
+    [Test]
+    public void AChoiceWithABox_IsWordedAsTheAgentsAsk()
+    {
+        string described = ChoicesDescribed();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(described, Does.Contain("its label asks them, in your voice"));
+            Assert.That(described, Does.Contain("Tell me about your business"));
+            Assert.That(described, Does.Not.Contain("Tell you my business"));
+        });
+    }
+
+    /// <summary>Good choices are offered; the model hears the click comes back as the visitor's message.</summary>
     [Test]
     public void GoodChoices_AreOffered()
     {

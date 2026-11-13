@@ -1,11 +1,11 @@
-using LouisAgent.Web.Chats.Calls;
 using LouisAgent.Web.Chats.Calls.Forms;
 
-namespace LouisAgent.Web.Components.Blocks;
+namespace LouisAgent.Web.Chats.Calls.Answers;
 
 /// <summary>
 /// A choice that holds a box, read as a form of one field (FX147): its words go as a form's answer does,
-/// <c>Tell you my business: A guesthouse in Paternoster</c>, and an answer is known as written in it the same way.
+/// <c>Tell me about your business: A guesthouse in Paternoster</c>, and an answer is known as written in it the
+/// same way. Its label is the agent's ask, as a form's is (FX152).
 /// </summary>
 public static class OfferWriting
 {
