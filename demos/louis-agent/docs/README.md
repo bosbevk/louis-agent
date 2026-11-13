@@ -9,7 +9,8 @@
   [the orchestrator](guides/change-the-orchestrator.md)
 - [The demos](demos.md): what each demo on the site shows, how it was made, and what it would mean for a business
 - How it works: [the coding agent's chat and admin](projects/louis-agent.code-review.md), [the framework's site](../../../src/docs/projects/louis-agent.site.md) and [the guide in its corner](../../../src/docs/projects/louis-agent.identity.guide.md),
-  [orchestrator](projects/louis-agent.orchestrator.md), [its runbooks](projects/orchestrator-runbooks.md)
-- Decisions: [ADR 0012](adr/0012-one-orchestrator-per-microservice.md), [ADR 0066](adr/0066-the-site-is-static-razor.md). ADR
+  [the triage team](projects/louis-agent.identity.triage.md), [orchestrator](projects/louis-agent.orchestrator.md), [its runbooks](projects/orchestrator-runbooks.md)
+- Decisions: [ADR 0012](adr/0012-one-orchestrator-per-microservice.md), [ADR 0066](adr/0066-the-site-is-static-razor.md),
+  [ADR 0077](adr/0077-films-on-github-are-rendered-webp.md). ADR
   numbers are shared with the framework's, so a number is never used twice.
 - [The orchestrator's design](specs/ORCHESTRATOR_DESIGN.md), [features](features/)
