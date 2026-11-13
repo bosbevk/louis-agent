@@ -63,7 +63,7 @@ The flow is under *How it works*; these are the pieces.
 
 `src/tests/hosts/louis-agent.acp.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
 `AcpTranscript.json`, with the prompt the model received; the pure parts have their own tests (`ToolCards`, `PromptBuilder`,
-`ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agent.acp.tests)).
+`ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agentacptests)).
 
 ## Configuration
 

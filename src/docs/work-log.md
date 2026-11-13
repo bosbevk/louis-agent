@@ -464,4 +464,4 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | 2026-10-12 | Ollama on the GPU and local triage |
 
 ---
-[Docs index](README.md) · Related: [CHANGELOG](../../CHANGELOG.md) · [Fixes](fixes/README.md) · [TODO](../../TODO.md)
+[Docs index](README.md) · Related: [Fixes](fixes/README.md) · [TODO](../../TODO.md)

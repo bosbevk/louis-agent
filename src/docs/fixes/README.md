@@ -174,8 +174,7 @@ In the commit that fixes it, or the one right after:
    in the [work log](../work-log.md), newest first, with the count above (`WorkLogTests` holds the counts and that
    every fix in the table above has a row).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's
-   [Known limitations](../../../TODO.md#known-limitations); FX4 also removes the note on #9 in
-   [docs/CLAUDE.md](../CLAUDE.md#known-limitations).
+   [Known limitations](../../../TODO.md#known-limitations) (FX4 removes #9).
 4. **Docs:** anything the fix changes for users (settings, MODELS, SETUP), and an [ADR](../adr/README.md) if the fix
    made a lasting decision (FX1's append-only rule is [0008](../adr/0008-history-is-append-only.md)).
 5. **Fold and delete** (Louis, 2026-10-29): the fix's row in the table above keeps its exact symptom (the error as
