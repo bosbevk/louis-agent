@@ -1,10 +1,9 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Contracts.Admin.Runs;
-using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Evals.Admin.Reviews.Queue;
-using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Evals.Components.Head;
@@ -15,46 +14,39 @@ namespace LouisAgent.Web.Evals.Components.Head;
 /// </summary>
 /// <remarks>
 /// It reads the list the studio's page reads and the count the sidebar's badge shows, through the same
-/// <see cref="ReviewQueueState"/>, so the two numbers agree (ADR 0042). When the API says no, the card stays quiet
-/// and the home asks for the key, as the other areas' cards do.
+/// <see cref="ReviewQueueState"/>, so the two numbers agree (ADR 0042); a refused key, a saved one and a lost API are
+/// <see cref="AdminCardBase"/>'s to handle.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
-public partial class EvalsCard : IDisposable
+public partial class EvalsCard
 {
     private EvalListReply? _list;
-    private bool _notRead;
 
-    [Inject] private AgentApi Api { get; set; } = null!;
-    [Inject] private ChatStore Store { get; set; } = null!;
     [Inject] private ReviewerState Reviewer { get; set; } = null!;
     [Inject] private ReviewQueueState Queue { get; set; } = null!;
 
     /// <summary>The last run of any eval: which eval, and the run.</summary>
     private sealed record LatestRun(string Eval, StoredRunRow Run);
 
-    /// <summary>Loads the admin key, then the evals and the count waiting for a grade.</summary>
-    protected override async Task OnInitializedAsync()
+    /// <summary>Listens for the count, then reads as every card does.</summary>
+    protected override Task OnInitializedAsync()
     {
         Queue.Changed += Redraw;
-        if (!Store.Loaded) await Store.LoadAsync();
-        try
-        {
-            _list = await Api.GetAsync<EvalListReply>("v1/admin/evals", AdminJson.SnakeCase);
-        }
-        catch (Exception ex) when (ex is AgentApiException or HttpRequestException)
-        {
-            _notRead = true;
-            return;
-        }
+        return base.OnInitializedAsync();
+    }
 
+    /// <summary>The evals, then the count waiting for a grade.</summary>
+    protected override async Task ReadAsync()
+    {
+        _list = await Api.GetAsync<EvalListReply>("v1/admin/evals", AdminJson.SnakeCase);
         await Queue.ReadOnceAsync(Api, Reviewer);
     }
 
     /// <summary>Stops listening, since the count outlives this card.</summary>
-    public void Dispose()
+    public override void Dispose()
     {
         Queue.Changed -= Redraw;
-        GC.SuppressFinalize(this);
+        base.Dispose();
     }
 
     /// <summary>The newest run of any eval, or none when none has run.</summary>

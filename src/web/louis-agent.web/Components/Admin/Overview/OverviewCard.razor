@@ -1,3 +1,4 @@
+@inherits AdminCardBase
 @* The overview's card on the admin's home (F144): today's talks, their cost and the tools the site counts. *@
 
 <AdminCard Title="Overview" Open="admin/overview">
@@ -15,7 +16,7 @@
             }
         </div>
     }
-    else if (_notRead)
+    else if (NotRead)
     {
         <span class="muted">Not read: the admin key, or the API.</span>
     }

@@ -95,3 +95,7 @@
 .i-folder { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 6h6l2 2h10v11H3z'/></svg>"); }
 .i-archive { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 4h18v5H3zM5 9v11h14V9M10 13h4'/></svg>"); }
 .i-chat { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 5h16v11H9l-5 4z'/></svg>"); }
+/* A page: the packs' screens in the admin's sidebar (F144), and any site's page that lists one. */
+.i-file { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h8l5 5v13H6z'/><path d='M14 3v5h5M9 13h7M9 17h7'/></svg>"); }
+/* The admin's home (F144): a house. */
+.i-home { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6'/></svg>"); }

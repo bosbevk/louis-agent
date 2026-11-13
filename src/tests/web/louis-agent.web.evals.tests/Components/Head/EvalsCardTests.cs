@@ -2,6 +2,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Evals.Admin.Reviews;
 using LouisAgent.Web.Evals.Admin.Reviews.Queue;
 using LouisAgent.Web.Evals.Components.Head;
@@ -41,6 +42,7 @@ public class EvalsCardTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new ReviewQueueState());
+        ctx.Services.AddSingleton(new AdminAccess());
         return ctx;
     }
 

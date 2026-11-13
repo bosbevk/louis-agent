@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Messages;
+using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Admin.Overview;
 using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Areas.Overview;
@@ -46,7 +47,8 @@ public sealed class SiteAreasBuilder
     {
         if (Named("admin")) return this;
         _adminLayout = layout;
-        return Add(new SiteArea("admin", _ => { }, FrameworkPages.Assemblies));
+        // The home's one ask for a refused key, which every area's card reports to.
+        return Add(new SiteArea("admin", services => services.TryAddScoped<AdminAccess>(), FrameworkPages.Assemblies));
     }
 
     /// <summary>

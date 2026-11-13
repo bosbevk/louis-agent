@@ -1,3 +1,4 @@
+@inherits AdminCardBase
 @* The eval studio's card on the admin's home (F144): how many evals, how many answers wait for a grade, and the
    last run, with the way to it. *@
 
@@ -17,7 +18,7 @@
             <p class="evals-last muted">No eval has run yet.</p>
         }
     }
-    else if (_notRead)
+    else if (NotRead)
     {
         <span class="muted">Not read: the admin key, or the API.</span>
     }

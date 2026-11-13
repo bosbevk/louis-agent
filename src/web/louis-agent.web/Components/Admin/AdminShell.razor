@@ -17,9 +17,14 @@
 
     <aside class="sidebar offcanvas-lg offcanvas-start" id="admin-sidebar" tabindex="-1" aria-label="Admin">
         <div class="sidebar-top">
-            <a class="brand brand-stack" href="./" title="@BrandTitle">@Brand<span class="tagline">Admin</span></a>
+            <a class="brand brand-stack" href="./" title="@BrandTitle"><span class="brand-line">@Brand</span><span class="tagline">Admin</span></a>
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Close the menu">×</button>
         </div>
+
+        @* The admin's home first (F144): every area's card, at a glance. *@
+        <nav class="side-nav">
+            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-home" aria-hidden="true"></span>Home</NavLink>
+        </nav>
 
         @Links
 

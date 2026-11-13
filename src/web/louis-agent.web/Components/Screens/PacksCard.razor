@@ -1,3 +1,5 @@
+@using LouisAgent.Web.Components.Admin
+@inherits AdminCardBase
 @* The packs' card on the admin's home (F144): how many screens and uploads they offer, and the way to the packs page. *@
 
 <AdminCard Title="Packs" Open="admin/packs">
@@ -8,7 +10,7 @@
             <div class="figure"><span class="figure-value">@offer.Uploads.Count</span><span class="figure-name">uploads</span></div>
         </div>
     }
-    else if (_notRead)
+    else if (NotRead)
     {
         <span class="muted">Not read: the admin key, or the API.</span>
     }

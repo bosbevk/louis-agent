@@ -58,11 +58,11 @@ public class AdminShellTests
     }
 
     /// <summary>
-    /// The frame draws the site's own links and no area's of its own (F144): the overview's link is the overview
-    /// area's, and the packs' menu the packs area's, on a site that names them.
+    /// The frame draws its home first, then the site's own links, and no area's of its own (F144): the overview's link
+    /// is the overview area's, and the packs' menu the packs area's, on a site that names them.
     /// </summary>
     [Test]
-    public void TheSitesOwnLinks_AndNoAreaOfItsOwn()
+    public void TheHomeFirst_ThenTheSitesOwnLinks_AndNoAreaOfItsOwn()
     {
         using var ctx = NewContext();
 
@@ -70,7 +70,7 @@ public class AdminShellTests
             .Add(shell => shell.Links, "<a class=\"side-link my-link\" href=\"x\">X</a>"));
 
         Assert.That(cut.FindAll(".sidebar a.side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "x" }));
+            Is.EqualTo(new[] { "admin", "x" }));
     }
 
     /// <summary>The brand shows in the phone's top bar and in the sidebar.</summary>

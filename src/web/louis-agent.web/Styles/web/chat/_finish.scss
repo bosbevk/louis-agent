@@ -22,6 +22,8 @@ body::before {
 .messages, .chat-list { scrollbar-gutter: stable; }
 /* The tagline under the logo in the sidebar. */
 .brand-stack { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
+/* A brand of a mark and a name keeps them on one line, the tagline under them (F144). */
+.brand-line { display: inline-flex; align-items: center; gap: 8px; }
 .tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--bs-secondary-color); text-wrap: balance; animation: rise .7s .9s var(--web-ease) both; }
 /* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
    the sidebar, the chat and the composer's fade all sit over the same light. ---- */

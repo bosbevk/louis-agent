@@ -4,6 +4,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Screens;
 using LouisAgent.Web.Pages.Admin;
@@ -45,6 +46,7 @@ public class PacksTests
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(stub) { BaseAddress = new Uri("http://localhost/") },
             settings));
         ctx.Services.AddSingleton(new PackViews());
+        ctx.Services.AddSingleton(new AdminAccess());
 
         var page = ctx.Render<Packs>();
         page.WaitForState(() => page.FindAll(".packs-loading").Count == 0, TimeSpan.FromSeconds(10));

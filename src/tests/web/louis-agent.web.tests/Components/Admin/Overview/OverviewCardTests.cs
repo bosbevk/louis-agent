@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Overview;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
 using LouisAgent.Web.Components.Admin.Overview;
 using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Storage;
@@ -23,20 +24,24 @@ public class OverviewCardTests
         new OverviewPeriod(4, 0.022m, []), [], [], []);
 
     /// <summary>A context over a stub API answering the overview with this, or with the status given.</summary>
-    private static BunitContext Context(HttpStatusCode status = HttpStatusCode.OK)
+    private static BunitContext Context(HttpStatusCode status = HttpStatusCode.OK) => Context(() => status);
+
+    /// <summary>A context over a stub API answering the overview with the status it is given at the time.</summary>
+    private static BunitContext Context(Func<HttpStatusCode> status)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
         // The overview answers; anything else (the rates) is refused, so the cost stays as the ledger charged it.
         var stub = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/overview")
-            ? new HttpResponseMessage(status) { Content = JsonContent.Create(Today, options: AdminJson.SnakeCase) }
+            ? new HttpResponseMessage(status()) { Content = JsonContent.Create(Today, options: AdminJson.SnakeCase) }
             : new HttpResponseMessage(HttpStatusCode.NotFound));
         var api = new AgentApi(new HttpClient(stub) { BaseAddress = new Uri("http://localhost/") }, settings);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new OverviewCounts([new CountedTool("SendLead", "leads")]));
+        ctx.Services.AddSingleton(new AdminAccess());
         return ctx;
     }
 
@@ -60,9 +65,12 @@ public class OverviewCardTests
         });
     }
 
-    /// <summary>A refused overview leaves the card saying so quietly, the way to the overview still there.</summary>
+    /// <summary>
+    /// A refused overview leaves the card quiet, the way to the overview still there, and tells the admin's access, so
+    /// the home asks for the key (F144).
+    /// </summary>
     [Test]
-    public void ARefusedOverview_LeavesTheCardQuiet()
+    public void ARefusedOverview_LeavesTheCardQuiet_AndTellsTheHome()
     {
         using var ctx = Context(HttpStatusCode.Unauthorized);
 
@@ -70,7 +78,28 @@ public class OverviewCardTests
 
         card.WaitForAssertion(() => Assert.That(card.FindAll(".admin-card-body .muted"), Has.Count.EqualTo(1)),
             TimeSpan.FromSeconds(10));
-        Assert.That(card.FindAll("a.admin-card-open"), Has.Count.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(card.FindAll("a.admin-card-open"), Has.Count.EqualTo(1));
+            Assert.That(ctx.Services.GetRequiredService<AdminAccess>().Error, Is.Not.Null);
+        });
+    }
+
+    /// <summary>Once a key is saved, the card reads again and shows what it couldn't (F144).</summary>
+    [Test]
+    public void ASavedKey_ReadsTheCardAgain()
+    {
+        var status = HttpStatusCode.Unauthorized;
+        using var ctx = Context(() => status);
+        var card = ctx.Render<OverviewCard>();
+        card.WaitForAssertion(() => Assert.That(card.FindAll(".admin-card-body .muted"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+
+        status = HttpStatusCode.OK;
+        card.InvokeAsync(() => ctx.Services.GetRequiredService<ChatStore>().SaveAdminKeyAsync("the-key"));
+
+        card.WaitForAssertion(() => Assert.That(card.Find(".admin-card-body").TextContent, Does.Contain("$0.012")),
+            TimeSpan.FromSeconds(10));
     }
 
     /// <summary>The overview's link in the admin's sidebar.</summary>
