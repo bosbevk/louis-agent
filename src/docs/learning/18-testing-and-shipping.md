@@ -348,6 +348,49 @@ can do, and a how-to for the part only a person can.
 Concept: *18 Testing and shipping* in the [goal](../GOAL.md): a test of the parts is not a test of the page, and a
 `curl` of what ships is part of the check. With [ADR 0110](../adr/0110-a-page-says-what-it-is-in-one-head.md).
 
+## One record, and a page that is its own editor (F142, 2026-11-13)
+
+**What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into
+records, and three things read that one record: the page at `/cv`, its editor in the admin, and (in F143) the guide.
+The AI-engineering idea is small and worth keeping: **one source of truth that people and agents both read**. A page
+an agent has to scrape drifts from what the agent says. A typed file both read can't.
+
+**What was built, in order.** The records and the strict reader. The page. The CV kept as a file on the site's API,
+so an edit shows without a deploy, with the built-in copy as the fallback. Then the editor, twice.
+
+**What changed on the way, and why it was right to change.**
+
+- *It was the site's, not the framework's.* The plan put the CV's records in the framework's web because "any site
+  could have a CV". You stopped it at step 1: one site's feature stays in that site. What moved into the framework
+  was only what any edited page needs: a text field, a tag input, the inline pieces.
+- *The editor was a form, then the page.* The first cut was a form for each part beside a live preview, your pick
+  of three. Having seen it you asked "can we not just edit it inline?". A form beside a page is two copies of every
+  field, which is the problem the single record was meant to end. The forms and their tests were thrown away before
+  they were committed, and the cost was an afternoon, because the step was small enough to throw away.
+- *No edit mode.* The page's components don't know they are being edited. Each gets its part and hands a changed
+  copy back up, and a part has a listener exactly when the whole has one (`PartChanges`). Where nobody listens, the
+  inline text draws plain words. The proof is cheap: the public page's golden file didn't change.
+
+**What the tests hold.** The strict read (a misspelt field is an error). What a public page mustn't hold, checked on
+the file and again on every save. Every change a person can make on the page, one test each, through the real view.
+The public page has nothing to click. An address under `/admin` is no public page, so the editor is never rendered
+for a search engine or handed to the guide.
+
+**What didn't work, or cost time.**
+
+- A namespace named like a type hides the type: `Resume`, then `Cv`, each bit once. Folders are `Resumes/` and the
+  tests name the content class by an alias.
+- The site's Sass compiler only read scoped styles from `Pages/` and `Components/`, so the new `Admin/` folder's
+  styles were silently skipped until the folder was named in `sasscompiler.json`. Nothing failed. It only looked wrong.
+- A style file added to a component adds a scope mark to its markup, so a golden file changed with no change to the
+  words. Read the diff before believing it.
+- Two of the shared pieces had their tests written first but run only after the code. One was then broken on
+  purpose to see its test catch it. Seeing a test fail first is cheaper than proving it afterwards.
+
+**Not measured.** No paid run was needed, and nothing here has a before and after in money or tokens. The numbers
+are test counts: the site's tests went from 484 to 589 and the web's from 760 to 802 across the feature. Still to
+do by eye: the page and the editor at phone width, and a real PDF from the print dialog.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site, now the app's](../../../demos/louis-agent/docs/projects/louis-agent.code-review.md)

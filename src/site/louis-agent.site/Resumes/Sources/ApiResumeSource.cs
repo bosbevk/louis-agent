@@ -15,9 +15,6 @@ namespace LouisAgent.Site.Resumes.Sources;
 /// </remarks>
 public sealed class ApiResumeSource(HttpClient http) : IResumeSource
 {
-    /// <summary>The route the site's host serves the CV on.</summary>
-    private const string Address = "v1/site/cv";
-
     /// <summary>The API's copy, or the built-in CV when it can't be had.</summary>
     public async Task<Resume> ReadAsync()
     {
@@ -26,7 +23,7 @@ public sealed class ApiResumeSource(HttpClient http) : IResumeSource
 
         try
         {
-            return await http.GetFromJsonAsync<Resume>(Address, ResumeReader.Options) ?? Cv.Resume;
+            return await http.GetFromJsonAsync<Resume>(ResumeAddress.Read, ResumeReader.Options) ?? Cv.Resume;
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException or OperationCanceledException)
         {

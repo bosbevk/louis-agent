@@ -1,7 +1,15 @@
-@* The CV's jobs (F142), newest first: when, as what, where, what was shipped and the stack it was built with. *@
+@using LouisAgent.Web.Components.Editing
+@using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Site.Resumes.History
+@* The CV's jobs (F142), newest first: when, as what, where, what was shipped and the stack it was built with. When
+   the page is edited, a title and each point are clicked and retyped, the stack is tags, the dates and the company
+   open on a small form, and the jobs and each job's points are lists. *@
 <div class="cv-jobs">
-    @foreach (var job in Work)
+    @for (int index = 0; index < Work.Count; index++)
     {
+        // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+        int at = index;
+        var job = Work[at];
         <article class="job">
             <div class="when">
                 @ResumeDates.Span(job.StartDate, job.EndDate, "now")
@@ -9,20 +17,56 @@
                 {
                     <em>current</em>
                 }
+                @if (Editable)
+                {
+                    <ItemTools Noun="job" At="at" Count="Work.Count" OnOpen="() => Open(at)"
+                               OnMove="step => MoveAsync(at, step)" OnRemove="() => RemoveAsync(at)"/>
+                }
             </div>
             <div>
-                <h3>@job.Position</h3>
+                <h3><InlineEdit Value="@job.Position" Label="Job title" ValueChanged="@TitleChanged(at)"/></h3>
                 <div class="org">@OrgOf(job)</div>
+                @if (Editable && _open == at)
+                {
+                    <InlineForm @key="at" TItem="ResumeWork" Item="job" Label="@($"job {at + 1}")"
+                                OnKeep="kept => KeepAsync(at, kept)" OnDrop="Close">
+                        <TextField Label="Company" Value="@context.Item.Name"
+                                   ValueChanged="company => CompanyAsync(context, company)"/>
+                        <TextField Label="About it" Value="@context.Item.Summary" Hint="A few words after its name."
+                                   ValueChanged="about => AboutAsync(context, about)"/>
+                        <TextField Label="From" Value="@context.Item.StartDate" Placeholder="2021-03"
+                                   ValueChanged="from => FromAsync(context, from)"/>
+                        <TextField Label="To" Value="@context.Item.EndDate" Placeholder="2024-12"
+                                   Hint="Empty while you still work there."
+                                   ValueChanged="to => ToAsync(context, to)"/>
+                    </InlineForm>
+                }
                 @if (job.Highlights.Count > 0)
                 {
                     <ul>
-                        @foreach (var highlight in job.Highlights)
+                        @for (int each = 0; each < job.Highlights.Count; each++)
                         {
-                            <li>@highlight</li>
+                            int point = each;
+                            <li>
+                                <InlineEdit Value="@job.Highlights[point]" Label="Point" Multiline Rows="3"
+                                            ValueChanged="@PointChanged(at, point)"/>
+                                @if (Editable)
+                                {
+                                    <ItemTools Noun="point" At="point" Count="job.Highlights.Count"
+                                               OnMove="step => MovePointAsync(at, point, step)"
+                                               OnRemove="() => RemovePointAsync(at, point)"/>
+                                }
+                            </li>
                         }
                     </ul>
                 }
-                @if (job.Keywords.Count > 0)
+                @if (Editable)
+                {
+                    <div class="job-points"><ItemAdd Label="Add a point" OnAdd="() => AddPointAsync(at)"/></div>
+                    <TagInput Tags="job.Keywords" Label="@($"Stack of job {at + 1}")" Placeholder="Add to the stack"
+                              TagsChanged="tags => StackAsync(at, tags)"/>
+                }
+                else if (job.Keywords.Count > 0)
                 {
                     <div class="stack">
                         @foreach (var keyword in job.Keywords)
@@ -33,5 +77,9 @@
                 }
             </div>
         </article>
+    }
+    @if (Editable)
+    {
+        <ItemAdd Label="Add a job" OnAdd="AddAsync"/>
     }
 </div>

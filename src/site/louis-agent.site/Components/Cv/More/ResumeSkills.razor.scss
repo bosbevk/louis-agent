@@ -5,3 +5,9 @@
 @media (max-width: 820px) {
     .cv-skills { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Edited on the page: a group's skills are a field of tags under its name, its buttons under them, and the button
+   that adds a group keeps its own size in the row. */
+.cv-skills ::deep .tag-input { margin-top: 12px; }
+.cv-skills ::deep .item-tools { display: flex; margin-top: 10px; }
+.cv-skills ::deep .item-add { justify-self: start; align-self: start; }

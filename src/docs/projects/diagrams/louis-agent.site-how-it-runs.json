@@ -1,6 +1,6 @@
 {
   "kind": "flow",
-  "caption": "A few lines: the site's host is the guide alone, on the three packs it names, and it serves each page as HTML first.",
+  "caption": "A few lines: the site's host is the guide alone, on the three packs it names. It serves each page as HTML first, and keeps the CV the admin saves.",
   "title": "louis-agent.site: How it runs",
   "flow": {
     "nodes": [
@@ -29,6 +29,12 @@
         "label": "The guide: docs, leads, site\npacks"
       },
       {
+        "id": "cv",
+        "icon": "file",
+        "tone": "green",
+        "label": "cv.json on the share:\nread by /cv, saved from\nthe admin"
+      },
+      {
         "id": "model",
         "icon": "cloud",
         "tone": "red",
@@ -52,6 +58,10 @@
       {
         "from": "guide",
         "to": "model"
+      },
+      {
+        "from": "host",
+        "to": "cv"
       }
     ],
     "direction": "down"

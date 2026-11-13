@@ -1,0 +1,11 @@
+@using LouisAgent.Web.Components.Editing
+@* The form for what the CV holds and the page never draws (F142). Everything else is edited on the page itself. *@
+
+<FieldGroup Title="Not on the page">
+    <TextField Label="Headline" Value="@Basics.Label" ValueChanged="HeadlineAsync"
+               Hint="One line that sums you up, kept with the CV's data." />
+    <TextField Label="Phone" Value="@Basics.Phone" ValueChanged="PhoneAsync" />
+    <TextField Label="Website" Value="@Basics.Url" ValueChanged="WebsiteAsync" />
+    <TextField Label="Country code" Value="@Location.CountryCode" ValueChanged="CountryAsync" Placeholder="ZA"
+               Hint="Two letters. The page says the town and the province." />
+</FieldGroup>

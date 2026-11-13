@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Site.Admin;
 using LouisAgent.Web.Components.Areas;
 using LouisAgent.Web.Components.Site.Addresses;
 using Microsoft.AspNetCore.Components;
@@ -40,10 +41,12 @@ public class SiteRouterTests
     }
 
     /// <summary>
-    /// The admin's pages are the framework's, behind the admin key (F127.8): the site writes none of its own.
+    /// The admin's pages are the framework's, behind the admin key (F127.8). The site writes one of its own, for the
+    /// one area that is only this site's: the editor for Louis's CV (F142, "this belongs to .site only").
     /// </summary>
     [Test]
-    public void TheAdminsPages_AreTheFrameworks() =>
+    public void TheAdminsPages_AreTheFrameworks_ButForTheCvsEditor() =>
         Assert.That(Routes().Where(route => route.Template.StartsWith("/admin"))
-            .Where(route => route.Page.Assembly == typeof(App).Assembly), Is.Empty);
+                .Where(route => route.Page.Assembly == typeof(App).Assembly).Select(route => route.Page),
+            Is.EqualTo(new[] { typeof(ResumeEditor) }));
 }

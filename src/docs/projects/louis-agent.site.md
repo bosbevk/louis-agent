@@ -101,6 +101,8 @@ changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
 | `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/` |
+| `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
+| `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteDoors`, `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |
 | `Styles/app.scss`, `Styles/site/` | The framework's Sass and the triage pack's demo, then the site's look ([ADR 0085](../adr/0085-styles-are-written-in-sass.md)) |
 | `wwwroot/` | `index.html` with its link card, the brand, the icons, the recordings, `sitemap.xml` and `robots.txt`; the CSS is built, and isn't in git |
@@ -141,15 +143,55 @@ The guide answers questions about buying from this section (FX72), so it holds t
   ([ADR 0102](../adr/0102-third-party-marks-follow-their-owners-guidelines.md)). Say what the agent should do, which
   systems it needs to reach, and where it should run.
 
+## The CV, and its editor
+
+Louis's CV is a page at `/cv`, and it is data, not markup. That its page is its own editor is this site's
+decision ([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md)).
+The rule that keeps the editor out of the public pages is the framework's ([ADR 0120](../adr/0120-nothing-is-hand-wired-from-the-framework.md)).
+
+- **The record.** `Content/cv.json` is in the [JSON Resume](https://jsonresume.org/schema) shape, with two parts of
+  our own: `facts` (the row of figures) and `now` (the proof-of-work band). `Resumes/` holds its records and the
+  strict `ResumeReader`: a misspelt field is an error, not a silent gap. `ResumePrivacy` names what a public page
+  mustn't hold (an ID number, a salary, a birth date, a street address).
+- **Where it is kept.** The site's host (`louis-agent.site-api`, `Resumes/`) serves it at `GET v1/site/cv` and keeps
+  an edited copy at `PUT v1/admin/cv`, as `cv.json` in the folder `SITE_DATA_DIRECTORY` names (`/data` on the share
+  in Azure, `src/site/data` on a PC). The built-in file is the starting copy and the fallback. A save is refused
+  when it doesn't read strictly or holds something private.
+- **The page.** `Pages/About/CvPage` draws `Components/Cv/ResumeView`, a band per part. In the browser it asks the
+  API (`ApiResumeSource`), and when the host renders it for a search engine it reads the saved file directly
+  (`IResumeSource`, a Strategy picked by where the page runs).
+- **The editor is the page.** `Admin/ResumeEditor` at `/admin/resume` draws the same view with someone listening
+  for a change, so its words are clicked and retyped where they stand, its lists move, lose and gain items, and
+  what the page draws as a composed line opens on a small form. Edits go into a `ResumeDraft` and reach the site on
+  Save. `Admin/Forms/OffPageForm` holds the four things the page never draws. The area (`ResumeArea`) brings its
+  link and its card to the framework's admin frame.
+- **Save as PDF.** `ResumePrint` opens the browser's print dialog, and `Styles/site/cv/_print.scss` lays the page
+  out on A4, for a page that holds the CV and for paper only.
+
+**Picks made unattended** (2026-11-13, steps 7c to 9, Louis: "continue unattended until done"). They are Claude's,
+and open for Louis to overrule:
+
+- Words the page keeps as they are (a title, a point, a name) are retyped in place. What it draws as a composed
+  line (a job's dates and company, a school's two lines) or not at all (a link's address) opens on a small form.
+- Stacks, skills, label words and an interest's words are tags changed on the page, with no tick.
+- The languages are one retyped line, with commas between them.
+- An emptied point is taken out. An emptied name stays, as a blank to fill in.
+- The certificates are one list drawn in two places (those with a link in the last section), so giving one an
+  address moves it there.
+- Step 6's list editor was removed with the forms it was built for. Its operations are `ListEdits`.
+- "Save as PDF" sits above the page's closing line, and its rules reach only a page that holds the CV.
+
 ## Tests
 
 `src/tests/site/louis-agent.site.tests`, NUnit with bUnit: `Pages/*Tests` render the pages and hold them to the repo
 (`SiteMapTests`: every project the solution ships is named on a page; `IdentitiesPageTests` and `PacksPageTests`: every
 identity and pack; `BuildYourOwnTests`: the real program; `ProofPageTests`: the rand at the rates file's rate and
-date; `StandsOnTests`: every package named is referenced, and no page links to the private repository;
+date; `StandsOnTests`: every package named is referenced;
 `WhatsComingTests`: every planned feature is an open TODO row); `Components/Guide/GuideKnowsTheSiteTests` holds the
 guide's voice to every page; `Movies/*Tests` pin each film; `Styles/StylesheetTests` reads what the build made;
-`Host/SiteCatalogTests` and `Host/SiteImageTests` hold the host and its image. The framework's site rules
+`Host/SiteCatalogTests` and `Host/SiteImageTests` hold the host and its image. The CV: `Resumes/*Tests` (the strict read, the dates, what is private, the draft),
+`Components/Cv/` (the view's golden file, and `Editing/` for every change made on the page), `Admin/*Tests` (the area,
+the editor against a stub of the API) and `Host/Resume*Tests` (the store and the two routes). The framework's site rules
 (`louis-agent.web.tests`, `Rules/`) hold it like any other site.
 
 ---

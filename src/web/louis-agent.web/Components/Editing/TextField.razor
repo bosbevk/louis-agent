@@ -1,0 +1,19 @@
+@* One labelled box of a form: its label over a line, or over a box of several lines, and a quiet line of help
+   under it. What is typed is handed back as it is typed, and tidied when the person leaves the box. *@
+<label class="field">
+    <span class="field-label">@Label</span>
+    @if (Multiline)
+    {
+        <textarea class="field-box" rows="@Rows" placeholder="@Placeholder" value="@Value"
+                  @oninput="TypedAsync" @onchange="LeftAsync"></textarea>
+    }
+    else
+    {
+        <input class="field-box" type="text" placeholder="@Placeholder" autocomplete="off" value="@Value"
+               @oninput="TypedAsync" @onchange="LeftAsync"/>
+    }
+    @if (Hint is not null)
+    {
+        <span class="field-hint">@Hint</span>
+    }
+</label>

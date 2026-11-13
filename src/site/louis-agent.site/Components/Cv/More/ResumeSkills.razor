@@ -1,15 +1,35 @@
-@* The CV's skills (F142): a panel per group, the skills in it as tags, never a rating. *@
+@using LouisAgent.Web.Components.Editing
+@using LouisAgent.Web.Components.Editing.Inline
+@* The CV's skills (F142): a panel per group, the skills in it as tags, never a rating. When the page is edited, a
+   group's name is clicked and retyped, its skills are tags to add and take out, and the groups are a list. *@
 <div class="cv-skills">
-    @foreach (var skill in Skills)
+    @for (int index = 0; index < Skills.Count; index++)
     {
+        // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+        int at = index;
+        var skill = Skills[at];
         <div class="panel">
-            <h3>@skill.Name</h3>
-            <div class="stack">
-                @foreach (var keyword in skill.Keywords)
-                {
-                    <span>@keyword</span>
-                }
-            </div>
+            <h3><InlineEdit Value="@skill.Name" Label="Group" ValueChanged="@NameChanged(at)"/></h3>
+            @if (Editable)
+            {
+                <TagInput Tags="skill.Keywords" Label="@($"Skills in {skill.Name}")" Placeholder="Add a skill"
+                          TagsChanged="tags => TagsAsync(at, tags)"/>
+                <ItemTools Noun="group" At="at" Count="Skills.Count" OnMove="step => MoveAsync(at, step)"
+                           OnRemove="() => RemoveAsync(at)"/>
+            }
+            else
+            {
+                <div class="stack">
+                    @foreach (var keyword in skill.Keywords)
+                    {
+                        <span>@keyword</span>
+                    }
+                </div>
+            }
         </div>
+    }
+    @if (Editable)
+    {
+        <ItemAdd Label="Add a group" OnAdd="AddAsync"/>
     }
 </div>

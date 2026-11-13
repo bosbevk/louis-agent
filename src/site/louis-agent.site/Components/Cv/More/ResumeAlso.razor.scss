@@ -1,0 +1,11 @@
+/* The CV's "Also", edited on the page (F142): an interest is its name over a field of tags, with its buttons
+   under them, and an assessment's buttons sit after its name. The section's own look is the page's. */
+.cv-interest {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+.cv-interest-name { color: var(--bs-body-color); }
+.cv-interest ::deep .item-tools { display: flex; }
+.resume-also p ::deep .item-tools { margin-left: 8px; }
+.resume-also ::deep .item-add { margin-top: 14px; }

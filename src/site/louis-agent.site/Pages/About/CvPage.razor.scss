@@ -6,3 +6,7 @@
     font-size: 14px;
     color: var(--bs-tertiary-color);
 }
+
+/* "Save as PDF", on its own line over the closing one. */
+.cv-save { margin-top: 40px; }
+.cv-save + .cv-end { margin-top: 24px; }

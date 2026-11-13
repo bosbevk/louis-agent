@@ -1,0 +1,21 @@
+@* The buttons beside an item of a list edited on its page: open it (when it opens), a step earlier, a step later,
+   and out. Each is there only when something listens for it, and each says what it does to which item. *@
+<span class="item-tools">
+    @if (OnOpen.HasDelegate)
+    {
+        <button type="button" class="item-tool" aria-label="Change @Noun @Place" title="Change"
+                @onclick="OnOpen">✎</button>
+    }
+    @if (OnMove.HasDelegate)
+    {
+        <button type="button" class="item-tool" aria-label="Move @Noun @Place earlier" title="Move earlier"
+                disabled="@(At == 0)" @onclick="EarlierAsync">←</button>
+        <button type="button" class="item-tool" aria-label="Move @Noun @Place later" title="Move later"
+                disabled="@(At == Count - 1)" @onclick="LaterAsync">→</button>
+    }
+    @if (OnRemove.HasDelegate)
+    {
+        <button type="button" class="item-tool is-remove" aria-label="Remove @Noun @Place" title="Remove"
+                @onclick="OnRemove">×</button>
+    }
+</span>

@@ -2,34 +2,37 @@
    building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
 <div class="resume">
     <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv" Short="CV">
-        <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"/>
-        <ResumeFacts Facts="Resume.Facts"/>
+        <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"
+                    BasicsChanged="BasicsChanged" LanguagesChanged="LanguagesChanged"/>
+        <ResumeFacts Facts="Resume.Facts" FactsChanged="FactsChanged"/>
     </Band>
 
     @if (Resume.Now is { } now)
     {
         <Band Id="now" Kicker="Now · proof of work">
-            <ResumeNow Project="now"/>
+            <ResumeNow Project="now" ProjectChanged="NowChanged"/>
         </Band>
     }
 
     <Band Id="experience" Kicker="Experience">
         <BandTitle Class="chrome">Where I've worked.</BandTitle>
-        <ResumeJobs Work="Resume.Work"/>
+        <ResumeJobs Work="Resume.Work" WorkChanged="WorkChanged"/>
     </Band>
 
     <Band Id="skills" Kicker="Skills">
         <BandTitle Class="chrome">What I work with.</BandTitle>
-        <ResumeSkills Skills="Resume.Skills"/>
+        <ResumeSkills Skills="Resume.Skills" SkillsChanged="SkillsChanged"/>
     </Band>
 
     <Band Id="education" Kicker="Education">
         <BandTitle Class="chrome">Courses and qualifications.</BandTitle>
-        <ResumeEducation Education="Resume.Education" Certificates="Unchecked"/>
+        <ResumeEducation Education="Resume.Education" Certificates="Unchecked" EducationChanged="EducationChanged"
+                         CertificatesChanged="UncheckedChanged"/>
     </Band>
 
     <Band Id="also" Kicker="Also">
-        <ResumeAlso Certificates="Checkable" Interests="Resume.Interests"/>
+        <ResumeAlso Certificates="Checkable" Interests="Resume.Interests" CertificatesChanged="CheckableChanged"
+                    InterestsChanged="InterestsChanged"/>
         @End
     </Band>
 </div>

@@ -80,6 +80,25 @@ downloaded once into the temp folder. It starts the site's host itself, from the
 minutes a film. Each re-export adds the films' size to git history, so group changes.
 [ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md) says why it works this way.
 
+## Change the CV
+
+The CV at `/cv` is data, and its page is its own editor
+([ADR 0122](../adr/0122-the-sites-cv-is-edited-on-its-own-page.md)), so there are
+two ways to change it, and neither is the page's markup.
+
+- **In the admin, without a deploy.** Open `/admin/resume` (the admin's key is asked for once). The page there is
+  the CV itself: click any words to change them, use the small buttons beside a link, a fact, a job or a point to
+  move it or take it out, and the pencil where the page draws a composed line (a job's dates and company, a school,
+  a link's address). The panel on the right holds what the page never draws. Nothing reaches the site until
+  **Save**, and **Discard** puts the saved CV back. A save is refused, with the reason, when it holds an ID number,
+  a salary, a birth date or a street address.
+- **In the repository.** `Content/cv.json` is the copy the site is built with, and what shows when nothing was
+  saved. Edit it and deploy. It is read strictly, so a misspelt field fails `CvContentTests`, not the page.
+
+A copy saved in the admin wins over the built-in one. To go back to the built-in CV, delete `cv.json` from the
+folder `SITE_DATA_DIRECTORY` names. To give the CV a new kind of thing, add it to its record under `Resumes/`, to
+`ResumeView` where it is drawn, and there to how it is changed. The tests in `Components/Cv/Editing/` show the way.
+
 ## Test it
 
 ```bash

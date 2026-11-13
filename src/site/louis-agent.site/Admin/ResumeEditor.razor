@@ -1,0 +1,62 @@
+@page "/admin/resume"
+@layout AdminFrame
+@using LouisAgent.Web.Layout
+@using LouisAgent.Web.Components.Admin
+@using LouisAgent.Site.Admin.Forms
+
+@* The editor for Louis's CV (F142). His pick: the CV is edited on its own page, here in the admin, so the page is
+   drawn as the site draws it, with a small form beside it for what the page doesn't draw. Every edit goes into a
+   draft, and nothing reaches the site until Save. *@
+
+<PageTitle>Resume · Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Resume</h1>
+        <p>Your CV, as the site shows it. Click any words to change them. Nothing changes on the site until you save.</p>
+    </div>
+    @if (_draft is { } held)
+    {
+        <div class="page-actions">
+            @if (_saving)
+            {
+                <span class="draft-state is-busy" role="status">Saving…</span>
+            }
+            else if (held.Changed)
+            {
+                <span class="draft-state is-unsaved" role="status">Unsaved changes</span>
+            }
+            else if (_saved)
+            {
+                <span class="draft-state is-saved" role="status">Saved. The site shows it now.</span>
+            }
+            else
+            {
+                <span class="draft-state" role="status">No changes</span>
+            }
+            <button class="header-button draft-discard" type="button" disabled="@(!held.Changed || _saving)"
+                    @onclick="Discard">Discard</button>
+            <button class="header-button draft-save" type="button" disabled="@(!held.Changed || _saving)"
+                    @onclick="SaveAsync">Save</button>
+        </div>
+    }
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="KeySaved" />
+}
+
+@if (_draft is { } draft)
+{
+    <div class="resume-editor">
+        <ResumeSheet Resume="draft.Current" ResumeChanged="Edit" />
+        <aside class="card-p resume-aside">
+            <OffPageForm Basics="draft.Current.Basics" BasicsChanged="EditBasics" />
+        </aside>
+    </div>
+}
+else if (_error is null)
+{
+    <section class="card-p"><span class="muted">Loading…</span></section>
+}

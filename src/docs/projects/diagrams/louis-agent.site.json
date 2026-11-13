@@ -14,11 +14,13 @@
         { "id": "guide", "icon": "message", "title": "The guide",
           "text": "The chat in the corner, answering from the docs and nothing else." },
         { "id": "showroom", "icon": "users", "title": "The showroom",
-          "text": "Made-up businesses' agents, recorded once, then live to try." }
+          "text": "Made-up businesses' agents, recorded once, then live to try." },
+        { "id": "cv", "icon": "file", "title": "Louis's CV",
+          "text": "One record the page draws, edited where it stands in the admin." }
       ] },
       { "cards": [
         { "id": "host", "icon": "server", "title": "Its own host",
-          "text": "A few lines: the pages as HTML and the guide's API, nothing else." },
+          "text": "A few lines: the pages as HTML, the guide's API and the CV's file." },
         { "id": "deploy", "icon": "cloud", "title": "Its image",
           "text": "The host, the docs the guide reads and the price tables, run in Azure." }
       ] }
@@ -26,7 +28,8 @@
     "links": [
       { "from": "site", "to": "pages" },
       { "from": "site", "to": "guide" },
-      { "from": "site", "to": "showroom" }
+      { "from": "site", "to": "showroom" },
+      { "from": "site", "to": "cv" }
     ]
   }
 }

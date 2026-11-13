@@ -4,7 +4,9 @@
 .cv-hero h1 { font-size: clamp(40px, 7vw, 64px); line-height: 1.04; letter-spacing: -.03em; }
 .cv-hero .lede { margin-top: 18px; }
 .cv-where { margin-top: 16px; font-family: var(--bs-font-monospace); font-size: 13px; color: var(--bs-tertiary-color); }
-.cv-reach { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.cv-reach { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; }
+/* Edited on the page: a link's buttons sit close after it, with air before the next link. */
+.cv-reach ::deep .item-tools { margin: 0 8px 0 -4px; }
 .cv-photo {
     width: 100%;
     height: auto;

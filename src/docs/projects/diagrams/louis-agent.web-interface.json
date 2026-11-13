@@ -97,6 +97,15 @@
         ]
       },
       {
+        "id": "editing",
+        "name": "InlineEdit, InlineForm, TextField, TagInput",
+        "kind": "pieces for a page a person edits",
+        "members": [
+          "+Value, ValueChanged: plain words with no listener",
+          "PartChanges: a part listens when the whole does"
+        ]
+      },
+      {
         "id": "layout",
         "name": "GraphLayout, TicketCard",
         "kind": "louis-agent.diagrams",

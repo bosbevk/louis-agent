@@ -10,8 +10,8 @@ namespace LouisAgent.Web.Components.Editing;
 /// </summary>
 /// <remarks>
 /// It never changes the list it was given: each add or remove hands back a new list through
-/// <see cref="TagsChanged"/>, as <see cref="ListEditor{TItem}"/> does. A word is trimmed, an empty one is dropped and
-/// one already there (in any case) isn't added twice, so the field can't hold a blank or a repeat.
+/// <see cref="TagsChanged"/>, as <see cref="ListEdits"/> does for any list. A word is trimmed, an empty one is
+/// dropped and one already there (in any case) isn't added twice, so the field can't hold a blank or a repeat.
 /// </remarks>
 public partial class TagInput
 {

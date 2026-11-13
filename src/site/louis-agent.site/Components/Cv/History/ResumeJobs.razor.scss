@@ -23,3 +23,11 @@
 @media (max-width: 820px) {
     .job { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 }
+
+/* Edited on the page: a job's buttons sit under its dates, a point's after its words, the stack is a field of tags,
+   and the buttons that add a point or a job keep their own size. */
+.when ::deep .item-tools { display: flex; margin-top: 10px; }
+.job li ::deep .item-tools { margin-left: 8px; }
+.job-points { margin-top: 10px; }
+.job ::deep .tag-input { margin-top: 14px; }
+.cv-jobs ::deep .item-add { justify-self: start; }

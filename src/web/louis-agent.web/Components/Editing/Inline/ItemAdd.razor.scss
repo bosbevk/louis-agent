@@ -1,0 +1,16 @@
+/* The button under a list edited on its page (F142): a quiet dashed outline that lights when pointed at. Its look
+   is its own, whatever text it sits in. */
+.item-add {
+    align-self: center;
+    padding: 6px 12px;
+    border: 1px dashed var(--bs-border-color);
+    border-radius: 8px;
+    background: none;
+    color: var(--bs-secondary-color);
+    -webkit-text-fill-color: currentColor;
+    font: 600 13px/1.2 system-ui, sans-serif;
+    letter-spacing: 0;
+    cursor: pointer;
+}
+.item-add:hover { border-color: var(--bs-primary); color: var(--bs-body-color); }
+.item-add:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; }

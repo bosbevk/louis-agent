@@ -1,0 +1,9 @@
+@* A few fields of a form that belong together: a small heading over them, and the fields side by side where there
+   is room. A fieldset, so the heading is read out with each field in it. *@
+<fieldset class="field-group">
+    @if (Title is not null)
+    {
+        <legend class="field-group-title">@Title</legend>
+    }
+    <div class="field-group-fields">@ChildContent</div>
+</fieldset>

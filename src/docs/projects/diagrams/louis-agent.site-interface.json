@@ -1,7 +1,7 @@
 {
   "kind": "classes",
   "title": "louis-agent.site: the interface design",
-  "caption": "The site holds only its words, places, demos and diagrams: the pages sit on the framework's shell, each diagram is data held to the code by a test.",
+  "caption": "The site holds only its words, places, demos and diagrams: the pages sit on the framework's shell, each diagram is data held to the code by a test. Its CV is one record, drawn by one view that the admin edits where it stands.",
   "classes": {
     "types": [
       {
@@ -14,7 +14,7 @@
         "name": "The pages",
         "kind": "Razor, a Band per section",
         "members": [
-          "/, /what-we-build, /pricing, /demos, /contact",
+          "/, /what-we-build, /pricing, /demos, /contact, /cv",
           "/framework/... , /csharp-ai-agent-framework"
         ]
       },
@@ -60,6 +60,39 @@
         ]
       },
       {
+        "id": "cv",
+        "name": "Resume",
+        "kind": "record, cv.json read strictly",
+        "members": [
+          "+Basics, Facts, Now, Work, Skills...",
+          "IResumeSource: the API, or the host's file"
+        ]
+      },
+      {
+        "id": "cvview",
+        "name": "ResumeView",
+        "kind": "the CV drawn, a band per part",
+        "members": [
+          "+Resume",
+          "+ResumeChanged: listened for, it is edited in place"
+        ]
+      },
+      {
+        "id": "cveditor",
+        "name": "ResumeEditor",
+        "kind": "the admin's page, /admin/resume",
+        "members": [
+          "a ResumeDraft, sent on Save",
+          "OffPageForm: what the page doesn't draw"
+        ]
+      },
+      {
+        "id": "editing",
+        "name": "InlineEdit, InlineForm, ItemTools",
+        "kind": "louis-agent.web",
+        "tone": "violet"
+      },
+      {
         "id": "chat",
         "name": "ExpertChat",
         "kind": "the guide in the corner"
@@ -85,7 +118,11 @@
       { "from": "pages", "to": "business", "kind": "holds" },
       { "from": "pages", "to": "doors", "kind": "uses" },
       { "from": "demos", "to": "showroom", "kind": "holds" },
-      { "from": "pages", "to": "chat", "kind": "holds" }
+      { "from": "pages", "to": "chat", "kind": "holds" },
+      { "from": "pages", "to": "cvview", "kind": "holds", "word": "/cv" },
+      { "from": "cveditor", "to": "cvview", "kind": "holds", "word": "edits" },
+      { "from": "cvview", "to": "cv", "kind": "uses", "word": "draws" },
+      { "from": "cvview", "to": "editing", "kind": "uses" }
     ]
   }
 }

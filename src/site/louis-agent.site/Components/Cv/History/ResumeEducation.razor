@@ -1,26 +1,86 @@
-@* The CV's schooling (F142): the certificates with no link first, newest, then each school or course, with its dates. *@
+@using LouisAgent.Web.Components.Editing
+@using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Site.Resumes.History
+@* The CV's schooling (F142): the certificates with no link first, newest, then each school or course, with its dates.
+   When the page is edited, a certificate's year, name and giver are clicked and retyped, and its address is behind
+   a small form. A school is drawn as two composed lines, so it opens on a form. Both are lists. *@
 <div class="edu">
-    @foreach (var certificate in Certificates)
+    @for (int index = 0; index < Certificates.Count; index++)
     {
+        // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+        int at = index;
+        var certificate = Certificates[at];
         <div class="edu-row">
-            <div class="when">@certificate.Date</div>
-            <div>
-                <h3>@certificate.Name</h3>
-                @if (certificate.Issuer is { } issuer)
+            <div class="when">
+                <InlineEdit Value="@certificate.Date" Label="Year" ValueChanged="@YearChanged(at)"/>
+                @if (Editable)
                 {
-                    <p>@issuer</p>
+                    <ItemTools Noun="certificate" At="at" Count="Certificates.Count" OnOpen="() => OpenCertificate(at)"
+                               OnMove="step => MoveCertificateAsync(at, step)"
+                               OnRemove="() => RemoveCertificateAsync(at)"/>
+                }
+            </div>
+            <div>
+                <h3><InlineEdit Value="@certificate.Name" Label="Certificate" ValueChanged="@NameChanged(at)"/></h3>
+                @if (certificate.Issuer is not null || Editable)
+                {
+                    <p><InlineEdit Value="@certificate.Issuer" Label="Who gave it" ValueChanged="@GiverChanged(at)"/></p>
+                }
+                @if (Editable && _openCertificate == at)
+                {
+                    <InlineForm @key="at" TItem="ResumeCertificate" Item="certificate"
+                                Label="@($"certificate {at + 1}")" OnKeep="kept => KeepCertificateAsync(at, kept)"
+                                OnDrop="Close">
+                        <TextField Label="Address" Value="@context.Item.Url" Placeholder="https://"
+                                   Hint="With an address it is drawn in the last section, as a link."
+                                   ValueChanged="address => CertificateAddressAsync(context, address)"/>
+                    </InlineForm>
                 }
             </div>
         </div>
     }
-    @foreach (var school in Education)
+    @if (Editable)
     {
+        <div class="add-certificate"><ItemAdd Label="Add a certificate" OnAdd="AddCertificateAsync"/></div>
+    }
+    @for (int index = 0; index < Education.Count; index++)
+    {
+        int at = index;
+        var school = Education[at];
         <div class="edu-row">
-            <div class="when">@ResumeDates.Span(school.StartDate, school.EndDate, "now")</div>
+            <div class="when">
+                @ResumeDates.Span(school.StartDate, school.EndDate, "now")
+                @if (Editable)
+                {
+                    <ItemTools Noun="school" At="at" Count="Education.Count" OnOpen="() => OpenSchool(at)"
+                               OnMove="step => MoveSchoolAsync(at, step)" OnRemove="() => RemoveSchoolAsync(at)"/>
+                }
+            </div>
             <div>
                 <h3>@TitleOf(school)</h3>
                 <p>@WhereOf(school)</p>
+                @if (Editable && _openSchool == at)
+                {
+                    <InlineForm @key="at" TItem="LouisAgent.Site.Resumes.History.ResumeEducation" Item="school"
+                                Label="@($"school {at + 1}")" OnKeep="kept => KeepSchoolAsync(at, kept)"
+                                OnDrop="Close">
+                        <TextField Label="School" Value="@context.Item.Institution"
+                                   ValueChanged="name => SchoolAsync(context, name)"/>
+                        <TextField Label="Qualification" Value="@context.Item.StudyType"
+                                   ValueChanged="type => QualificationAsync(context, type)"/>
+                        <TextField Label="Field" Value="@context.Item.Area"
+                                   ValueChanged="area => FieldAsync(context, area)"/>
+                        <TextField Label="From" Value="@context.Item.StartDate" Placeholder="2005"
+                                   ValueChanged="from => SchoolFromAsync(context, from)"/>
+                        <TextField Label="To" Value="@context.Item.EndDate" Placeholder="2006"
+                                   ValueChanged="to => SchoolToAsync(context, to)"/>
+                    </InlineForm>
+                }
             </div>
         </div>
+    }
+    @if (Editable)
+    {
+        <div class="add-school"><ItemAdd Label="Add a school" OnAdd="AddSchoolAsync"/></div>
     }
 </div>

@@ -8,3 +8,8 @@
     color: var(--bs-tertiary-color);
 }
 .cv-part-link { display: inline-block; margin-top: 12px; font-size: 14px; color: var(--bs-body-color); }
+
+/* Edited on the page: a panel's label words are a field of tags over its name, and its buttons sit under its link. */
+.cv-parts ::deep .tag-input { margin-bottom: 10px; }
+.cv-parts ::deep .item-tools { display: flex; margin-top: 12px; }
+.cv-parts ::deep .item-add { justify-self: start; align-self: start; }

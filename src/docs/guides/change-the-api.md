@@ -37,6 +37,9 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/loui
 4. **Protect it.** A route under `/v1` needs the key unless the code marks it otherwise, so a new one is closed until
    you open it. Mark it `.WithAccess(RouteAccess.Open)` only when it holds nothing private, and say why in a comment,
    as the prices and the rates do. The admin endpoints have their own key (`AdminGate`, `RouteAccess.AdminKey`).
+   A host with a route of its own (louis-agent.dev keeps its CV) doesn't add it here: its program calls
+   `app.MapLouisAgentHostGroup()` after `UseLouisAgentKey` and maps onto the group it gets, which is the same `/v1`
+   with the same key check, so the host's routes are closed until opened, like the framework's own.
 5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
    ApiRoutesSnapshotTests`) and review its diff: one line per route, with its method and who may call it.
    `ApiRouteRuleTests` checks the rule on the real table.
