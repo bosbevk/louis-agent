@@ -82,4 +82,10 @@ public partial class ShowroomShell
     /// it does in <see cref="SiteShell"/>; the showroom; and the colour of the demo on screen or the start's.
     /// </summary>
     private string Classes => $"site showroom accent-{(Current?.Accent ?? StartAccent).Wire()}";
+
+    /// <summary>
+    /// The body's classes. On a demo the rail stands beside the stage. On any other page, such as the start, there
+    /// is no rail, and the stage is marked as standing alone so it takes the whole width.
+    /// </summary>
+    private string BodyClasses => Current is null ? "showroom-body is-alone" : "showroom-body";
 }

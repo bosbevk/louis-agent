@@ -1,38 +1,43 @@
-@* The showroom's start (F127.1, step 9): a big start for the site's main demo in its colour (its kicker, the page's one
-   h1, a line, the way in and a look at its website), then a glowing cover for every demo, grouped as the rail groups
-   them. Each part is a section with a heading, so the guide's tour stops at both. *@
-<section id="top" class="@FeatureClasses">
-    <div class="start-words">
-        <span class="start-kicker">@Kicker</span>
-        <h1 class="start-title">@Title</h1>
-        @if (Lede is not null)
-        {
-            <p class="start-lede">@Lede</p>
-        }
-        <a class="start-play" href="@Featured"><span aria-hidden="true">▶</span> @Play</a>
-    </div>
-    @if (Preview is not null)
-    {
-        <a class="start-preview" href="@Featured" aria-hidden="true" tabindex="-1">
-            <span class="start-dots"><i></i><i></i><i></i></span>
-            @Preview
-        </a>
-    }
-</section>
-<section id="every-demo" class="start-all">
-    <h2 class="start-all-heading">@Text.AllDemos</h2>
-    @foreach (var group in Demos.Groups)
-    {
-        <h3 class="start-group">@Text.NameOf(group.Key)</h3>
-        <div class="start-covers">
-            @foreach (var demo in group)
+@* The showroom's start (F134.1): a stage. The page's one h1 and its line stand over a deck of the site's demos, each
+   a framed window, one forward in the light. Under the deck are the forward demo's name, its line and its way in,
+   and a dock with a button per demo. The stage wears the forward demo's colour, and each window its own. A site
+   with no demos gets the heading alone. *@
+<LitStage Accent="StageAccent">
+    <section id="top" class="start-stage">
+        <div class="start-heading">
+            <h1 class="start-title">@Title</h1>
+            @if (Lede is not null)
             {
-                <a class="@CoverClasses(demo)" href="@demo.Address">
-                    <span class="start-sign" aria-hidden="true"><LineIconView Icon="demo.Icon"/></span>
-                    <span class="start-name">@demo.Name</span>
-                    <span class="start-line">@demo.Line</span>
-                </a>
+                <p class="start-lede">@Lede</p>
             }
         </div>
-    }
-</section>
+        @if (Forward is { } forward)
+        {
+            <Deck TItem="ShowroomDemo" Items="Demos.All" Forward="ForwardAt" ForwardChanged="Bring"
+                  Label="@Text.Demos" BeforeLabel="@Text.TheDemoBefore" NextLabel="@Text.TheNextDemo">
+                <Item Context="demo">
+                    <div class="@WindowClasses(demo)">
+                        <FramedWindow Address="@AddressWordOf(demo)" Lit="@(demo == forward)">
+                            @if (demo.Window is null)
+                            {
+                                <PlainBody Icon="demo.Icon" Name="@demo.Name" Line="@demo.Line"/>
+                            }
+                            else
+                            {
+                                <DynamicComponent Type="demo.Window"/>
+                            }
+                        </FramedWindow>
+                    </div>
+                </Item>
+            </Deck>
+            <div class="start-caption">
+                <h2 class="start-name">@forward.Name</h2>
+                <p class="start-line">@forward.Line</p>
+                <a class="start-play" href="@forward.Address">
+                    <LineIconView Icon="DiagramIcon.Play"/> @Text.WatchThisDemo
+                </a>
+            </div>
+            <Dock Items="DockItems" Current="@IdOf(forward)" Chosen="Choose" Label="@Text.AllDemos"/>
+        }
+    </section>
+</LitStage>

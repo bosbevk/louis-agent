@@ -80,6 +80,8 @@
    so a demo's offer never ends under the guide's button. */
 .showroom { --corner-room: 104px; }
 .showroom-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+/* With no rail, on a page that is no demo, the stage stands alone and takes the whole width (F134.1). */
+.showroom-body.is-alone { grid-template-columns: minmax(0, 1fr); }
 .showroom-stage { min-width: 0; padding-bottom: var(--corner-room); }
 /* On a wide screen the corner sits at the bottom of the rail, where no demo is (Louis: "why is that there?"). It stands
    beside the frame, out of the frame's layer, so it stays above the guide's spotlight as the site's corner does. */
@@ -92,6 +94,8 @@
 @media (min-width: 901px) {
     .showroom:has(~ .showroom-corner .chat-widget.is-open) {
         .showroom-body { grid-template-columns: var(--guide-width) minmax(0, 1fr); }
+        /* Where there is no rail to give its place, the stage steps aside by the guide's width. */
+        .showroom-body.is-alone { grid-template-columns: minmax(0, 1fr); padding-left: var(--guide-width); }
         ::deep .demo-rail { visibility: hidden; }
     }
     .showroom-corner:has(.chat-widget.is-open) {

@@ -174,6 +174,25 @@ public class ShowroomShellTests
             Is.All.EqualTo(1));
     }
 
+    /// <summary>
+    /// The start is every demo at once (F134.1), on a stage with a dock of its own. So on the start the frame draws
+    /// no rail and no chips, which would list the same demos twice. The page still stands in the stage.
+    /// </summary>
+    [Test]
+    public void OnTheStart_ThereIsNoRail_AndNoChips()
+    {
+        using var ctx = new BunitContext();
+
+        var cut = Shell(ctx, "/demos");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cut.FindAll("nav.demo-rail"), Is.Empty);
+            Assert.That(cut.FindAll("nav.demo-chips"), Is.Empty);
+            Assert.That(cut.Find("main.showroom-stage .page").TextContent, Is.EqualTo("The demo"));
+        });
+    }
+
     /// <summary>A site's own words replace the framework's English.</summary>
     [Test]
     public void ASitesWords_ReplaceTheEnglish()

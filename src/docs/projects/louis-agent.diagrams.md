@@ -153,7 +153,7 @@ business's window can set its brand on it.
 starts it. Green is this project. Violet is the framework. Teal is contracts and state. Amber is files and data.
 Red is outside the process. A box's arrows and their word chips take its tone.
 
-**Icons** (`Icons/`). There are 36 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, with
+**Icons** (`Icons/`). There are 37 of Tabler's outline icons (MIT), copied in as path data in `IconPaths`, with
 the licence beside them and a row in `THIRD-PARTY-NOTICES.md`. It is the framework's one set of icons: the web's
 `LineIconView` draws a page's line icons from it too, so a page and a diagram never hold two copies of a drawing.
 

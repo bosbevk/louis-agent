@@ -23,6 +23,15 @@ public sealed record ShowroomText
     /// <summary>The rail's name for a screen reader, and a demo's way back to all of them.</summary>
     public string AllDemos { get; init; } = "All demos";
 
+    /// <summary>The way in to the demo that is forward on the start (F134.1).</summary>
+    public string WatchThisDemo { get; init; } = "Watch this demo";
+
+    /// <summary>The start's arrow to the demo before the one forward, for a screen reader.</summary>
+    public string TheDemoBefore { get; init; } = "The demo before";
+
+    /// <summary>The start's arrow to the next demo, for a screen reader.</summary>
+    public string TheNextDemo { get; init; } = "The next demo";
+
     /// <summary>A mock website's card that opens a page of its own (F127.2).</summary>
     public string ReadMore { get; init; } = "Read more";
 

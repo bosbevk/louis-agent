@@ -73,10 +73,11 @@ public class ShowroomPagesTests
     [Test]
     public void TheDemos_ListTheBusinessesFirst()
     {
-        var links = Render(typeof(DemosPage)).FindAll("a.start-cover").Select(a => a.GetAttribute("href")).ToList();
+        // The start's dock has a button per demo, in the site's order, each with its demo's id (F134.1).
+        var demos = Render(typeof(DemosPage)).FindAll("nav.dock button").Select(button => button.Id).ToList();
 
-        Assert.That(links.Take(3),
-            Is.EqualTo(new[] { "/guesthouse-demo", "/restaurant-demo", "/law-practice-demo" }));
+        Assert.That(demos.Take(3),
+            Is.EqualTo(new[] { "guesthouse-demo", "restaurant-demo", "law-practice-demo" }));
     }
 
     /// <summary>The menu's demos list them first too.</summary>
