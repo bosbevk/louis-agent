@@ -140,6 +140,7 @@ public partial class ChatWidget : IAsyncDisposable
     protected override void OnInitialized()
     {
         if (Services.GetService<GuideKeeper>() is { } keeper) _kept = keeper.For(Identity);
+        Windows = Services.GetService<AgentWindows>();
         Runner = _kept.Runner ??= new ChatRunner(Api, new ChatStore(JS, Settings, ChatsKey), Text, OpenSessionAsync);
         Runner.Changed += OnRunnerChanged;
         Runner.ToolCalled += OnToolCalled;
@@ -213,9 +214,11 @@ public partial class ChatWidget : IAsyncDisposable
     }
 
     /// <summary>
-    /// The page's windows, which show a business's talk when the guide asks it (F127.4.2), if the site has them.
+    /// The page's windows, which show a business's talk when the guide asks it (F127.4.2), if the site has them. Taken
+    /// once, when the widget starts (FX150): the stream's redraws arrive on a timer, which may fire after the page's
+    /// services are gone.
     /// </summary>
-    private AgentWindows? Windows => Services.GetService<AgentWindows>();
+    private AgentWindows? Windows { get; set; }
 
     /// <summary>
     /// On a narrow screen the guide's panel covers the page, so the module brings the business's window into view and

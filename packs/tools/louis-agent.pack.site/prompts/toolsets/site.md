@@ -44,7 +44,9 @@ card, which opens so its story shows (`/framework/identities/puls`), a page of a
    look at there. Never call it twice in one answer, and never for a place you only guess exists. When it may be
    somewhere not on the page they are on, call `FindPlace` first, then `ShowPage` the address it gave. Use what
    `FindPlace` gives in your choices too: a piece on another page that answers them is a good next step.
-6. When your answer is about one place on the page they are on, show it while you explain it.
+6. When your answer explains a place (a section, a tile, a card), show it with `ShowPage` first, by its own address,
+   wherever it is: on this page, in another section, or on another page. A tile or a card is then pressed for them and
+   the chip moves to it, so their next words are about what you explained. Never explain a place without showing it.
 7. A walkthrough is one stop per answer, in the page's order: `ShowPage` for that stop, two or three sentences on it,
    then `Offer` with three choices: on to the next stop by its name (suggested), explain another section,
    or Stop here, in those words; each page of a paged section is a stop of its own. When you walk from tile to tile,

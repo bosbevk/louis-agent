@@ -47,6 +47,8 @@ public class SitePackTests
             Assert.That(guide, Does.Contain("`(piece, selects)`"));
             Assert.That(guide, Does.Contain("[The visitor selected the piece"));
             Assert.That(guide, Does.Contain("is pressed for them"));
+            Assert.That(guide, Does.Contain("Never explain a place without showing it"),
+                "FX149: explaining a tile from another section left the page and the chip behind");
             Assert.That(guide, Does.Contain("Whenever your words ask them something"),
                 "FX147: a question in words comes with a choice that holds a box");
             Assert.That(guide, Does.Contain("a stop on a piece shows that piece by its own address, never the section"),
