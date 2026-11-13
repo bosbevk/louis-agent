@@ -10,8 +10,10 @@
 louis-agent is a framework: the engine (the tool loop, streaming, providers, cost tracking and safety guards, built on
 [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai)), the hosts that serve it, and
 packs of tools. A few lines of your own say who the agent is (an **identity**: its voice, its modes, its roles) and what
-it can do (**packs**: tools and their guides), and start a host. Two agents run on it today: a **coding agent** that works
-on your repository, and **Puls**, a South African assistant in everyday Afrikaans.
+it can do (**packs**: tools and their guides), and start a host. Four kinds of agent run on it today: a **coding agent**
+that works on your repository, **Puls**, a South African assistant in everyday Afrikaans, a **triage team** that sorts
+a service's errors, and the **guide** on [louis-agent.dev](https://louis-agent.dev), the framework's own website, with
+the agents of three made-up businesses in its showroom.
 
 Everything is C#, on purpose. It runs on Claude by default; Ollama and OpenAI-compatible endpoints work too.
 
@@ -28,14 +30,19 @@ own agents.
 
 | Works today | Next |
 |---|---|
-| The engine, with the identities and packs each program names | The cook reads recipes from South African sites, then keeps its own recipe library |
-| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Recipe maths and a cook that teaches |
-| Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Every text from localisation files |
-| A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt` | Twelve local Puls specialists (gardener, braaimaster, weatherman and more), on a shared weather and where-to-buy pack |
-| **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then the sales playground, budgets, orchestration, safety and accounts |
-| An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
+| The engine, with the identities and packs each program names | A host that names its parts with one builder, so a first agent takes a few lines |
+| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Orchestration: one agent delegating to another, with typed results checked in code |
+| Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Conversations that survive a restart, and a tenant on every ledger row |
+| A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt`; its own recipe library, and the maths to scale a recipe in code | Evals redesigned around whole conversations |
+| **One address for every agent call:** `AskAgent("puls.cook", …)` asks a specialist, a cheap one-task minion, or an agent on another server, and an identity lists in code whom it may ask | The chat on any website, from one script tag |
+| A triage team: a manager with a sorter, an investigator and a reviewer, each ending its work with a typed tool | Budgets that warn, ask or stop; drafts a person approves; an audit log |
+| **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then Puls again: a recipe's shopping list with prices, every text from localisation files, twelve local specialists |
+| An admin that is a frame its areas plug into: an overview of the talks and what they cost, the packs' pages, the eval studio with its queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
-| A website for the engine itself, the landing pages of the coding agent's web app (`demos/louis-agent/web/louis-agent.code-review`) | |
+| **louis-agent.dev**, the framework's own website (`src/site`), on the framework's web: a guide in the corner that knows the page you are on, takes you to a section and draws cards and forms in the chat; a showroom of three made-up businesses whose agents you can try live; every page served as HTML so a search engine can read it | |
+| Accounts as a library a site opts into: sign-in, social logins, passkeys, a tenant from the host name | |
+| A new site from a template (`dotnet new louis-site`): a chat and an admin on the framework's web | |
+| louis-agent.dev running in Azure Container Apps, deployed from GitHub on every merge with no stored password | |
 | A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [roadmap](ROADMAP.md); what's finished is in the
@@ -50,10 +57,12 @@ never the engine, and never knows about another pack or an identity. Only a demo
 ([ADR 0027](src/docs/adr/0027-engine-identities-and-packs.md), [ADR 0076](src/docs/adr/0076-core-ships-no-agent.md)).
 
 ```
-src/                 the framework: the engine, the hosts as libraries, the eval harness, its tests and docs
-packs/               what an agent can do, tools only; packs/evals/ proves them, packs/tests/ tests them
-demos/louis-agent/   the coding agent, as your own project would be: identity, programs, web apps, settings, images, a film export tool, tests
+src/                 the framework: the engine, the hosts as libraries, the framework's web, the eval harness, its tools, tests and docs
+src/site/            the framework's own website and its guide: the one place in src/ that uses packs and an identity
+packs/               what an agent can do, tools only; packs/evals/ proves them, packs/tests/ tests them, packs/web/ holds their screens
+demos/louis-agent/   the coding agent and the triage team, as your own project would be: identities, programs, a web app, settings, images, tests
 demos/puls/          Puls, the same way
+demos/starter/       the smallest site, and what `dotnet new louis-site` makes
 ```
 
 A few rules hold everywhere:
@@ -93,13 +102,15 @@ in its own voice.
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
-Open **http://127.0.0.1:5070**. The same app runs on Azure ([demos/puls/deploy/azure](demos/puls/deploy/azure/README.md)). Design:
+Open **http://127.0.0.1:5070**. Puls ran on Azure until 2026-11-09 and is paused there while the framework comes first
+([demos/puls/deploy/azure](demos/puls/deploy/azure/README.md)); `mypuls.co.za` shows a coming-soon page. Design:
 [Puls's identity](demos/puls/docs/projects/louis-agent.identity.puls.md), [Puls's web app](demos/puls/docs/projects/louis-agent.puls.md).
 
 ## The coding agent
 
-It works on your repository with real tools: files, git, `dotnet`, Python, PowerShell, bash, web search, Azure DevOps
-and Paymo. It can write new skills and build its own tools, and those wait for your approval.
+It works on your repository with real tools: files, git, `dotnet`, Python, PowerShell, bash and web search. It can
+write new skills and build its own tools, and those wait for your approval. (The Azure DevOps and Paymo packs are in
+`packs/tools`, but the coding agent no longer loads them.)
 
 | Host | Project | What it is |
 |---|---|---|
