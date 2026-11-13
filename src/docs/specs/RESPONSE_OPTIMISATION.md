@@ -46,8 +46,8 @@ system prompt, and the whole conversation so far.
 | Conversation so far (files read, tool results, answers) | grows each round | 0 → 100,000+ |
 
 \* Characters ÷ 4 — an estimate. **Measured since** (M1 baseline, 2026-10-10, Claude Haiku 5.5, whose tokenizer counts
-more tokens for the same text): the fixed prefix is **~48,000 tokens**, and the largest request 57,710; see the
-features' [Benchmark](../features/README.md#the-benchmark).
+more tokens for the same text): the fixed prefix is **~48,000 tokens**, and the largest request 57,710; see
+[BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
 
 **Consequences:**
 
