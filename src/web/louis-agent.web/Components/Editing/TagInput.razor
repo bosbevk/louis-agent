@@ -1,0 +1,14 @@
+@* A field of short words: the tags are chips inside the field, each with a cross that removes it, and the box
+   after them takes the next one. Enter or a comma adds what was typed. *@
+<div class="tag-input">
+    @foreach (string tag in Tags)
+    {
+        <span class="tag" @key="tag">
+            <span class="tag-word">@tag</span>
+            <button type="button" class="tag-remove" aria-label="Remove @tag" title="Remove"
+                    @onclick="() => RemoveAsync(tag)">×</button>
+        </span>
+    }
+    <input class="tag-entry" type="text" aria-label="@Label" placeholder="@Placeholder" autocomplete="off"
+           value="@_draft" @oninput="TypedAsync" @onkeydown="KeyAsync" @onblur="KeepAsync"/>
+</div>

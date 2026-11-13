@@ -1,0 +1,46 @@
+@use "web/tools/field";
+
+/* A field of short words (F142): the framework's field box, holding the tags as chips and the box that takes the
+   next one; the whole field lights when the box inside it has the focus. */
+.tag-input {
+    @include field.box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 6px;
+    cursor: text;
+}
+.tag-input:focus-within { border-color: var(--bs-primary); box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .18); }
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 2px 2px 9px;
+    border-radius: 6px;
+    background: var(--bs-secondary-bg);
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+.tag-remove {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--bs-secondary-color);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+.tag-remove:hover { background: var(--bs-tertiary-bg); color: var(--bs-danger); }
+.tag-entry {
+    flex: 1;
+    min-width: 8ch;
+    padding: 2px 4px;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+}
