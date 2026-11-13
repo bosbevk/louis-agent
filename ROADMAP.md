@@ -21,15 +21,21 @@ agent engine in C# on .NET, built so Louis learns AI engineering: a learning cho
 
 ## What we sell
 
-Three offers on one engine. Nobody pays for the loop (Microsoft's `FunctionInvokingChatClient` is free); they pay for
+Four offers on one engine. Nobody pays for the loop (Microsoft's `FunctionInvokingChatClient` is free); they pay for
 the **control layer** around it: cost they can see and stop, answers checked in code, guards in code, every agent
 measured, their data on their own model, their systems plugged in without code, configured rather than coded.
 
 | Offer | Who buys | What they get | How it is paid | When |
 |---|---|---|---|---|
+| **A website with an agent** | A small business in South Africa | Its website, hosted, with an agent in the corner that knows the business and takes bookings and questions; a custom agent quoted on a call | Two monthly plans: R500 and R1,000 | Now: louis-agent.dev sells it (Louis, 2026-11-09) |
 | **Puls** | The public in South Africa; local businesses listed beside its answers | A local guide on cloud models, with sources and dates | Credits per question (F23), to be decided | After hosting; a hobby and the showpiece (Louis, 2026-10-30) |
 | **A configured agent, hosted** | A business with no developers | Its own identity and packs, hosted and measured; every request priced by the usage ledger | A monthly fee per agent plus usage | First sale after Phase 9 |
 | **The engine** | A team building its own agents on .NET | The application framework for AI agents in .NET: the package, the two contracts, the control layer, the eval harness | A licence per instance per year | First: the framework before the agents (Louis, 2026-11-07) |
+
+**The site sells first** (Louis, 2026-11-09: "Our goal is to sell websites with agents, and custom agents, for now.
+The framework takes second place to that."; [ADR 0112](src/docs/adr/0112-the-site-sells-first.md)). louis-agent.dev
+offers a website with an agent today, and the framework is its proof. What follows was written two days earlier and
+still orders the engine's own work.
 
 **The framework first, then the agents** (Louis, 2026-11-07: "focus on the framework first then build the agents").
 The framework's track ([draft](src/docs/plans/F106-framework-track.md)) comes before the configured agents: a builder
@@ -43,7 +49,7 @@ agent still does its task, is.
 ## What exists
 
 Phases 0 to 3 are done: the docs, three security doors closed, the engine cut apart from Puls into identities and
-packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-07):
+packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-13):
 
 - **Evals as content** (F49): an eval is files beside its identity, a pack ships its checks, the admin portal has a
   studio, one Evals page, a review queue and the run page (F53), and a paid judge that can tell (FX45).
@@ -58,6 +64,22 @@ packs, every check a C# eval on one harness. Since then (2026-10-30 to 2026-11-0
   starter template (`dotnet new louis-site`), the eval pages; the coding agent's landing page.
 - **Accounts** (F61.1 to F61.5): ASP.NET Core Identity on SQL Server, a tenant from the host name, social logins,
   passkeys and a second factor, as a library a site opts into (CL30).
+- **The framework's website, louis-agent.dev** (F109, F115 to F124, F128): its own project and host in `src/site`
+  (ADR 0111), live in Azure and deployed from GitHub on every merge with no stored password (ADR 0097). A guide in
+  its corner knows the page a visitor reads, takes them to a section, and draws cards and forms in the chat. Every
+  page is served as HTML with its own description, so a search engine can read it (F121, F123). Since 2026-11-09 it
+  sells first and the framework is the proof (ADR 0112).
+- **A site's areas in the framework** (F127, F144): a showroom of three made-up businesses whose agents a visitor
+  tries live; a site names its areas with one builder and wires nothing by hand (ADR 0120); the admin is a frame its
+  areas plug into, with an overview of the talks and what they cost.
+- **One address for every agent call** (F127.3, F127.5, ADR 0117): `AskAgent("puls.cook", …)` asks a specialist, a
+  one-task minion on a cheap model, or an agent on another server, and an identity lists in code whom it may ask.
+- **A triage team, the example outside Puls** (F106.3.1, F106.3.2, F106.3.4): a manager with a sorter, an
+  investigator and a reviewer on a triage pack, each ending its work with a typed tool checked in code; one real
+  triage of a sample service, recorded, plays on the site.
+- **Smaller prompts and pictures from data**: an identity's skills load always or on demand, the guide's fixed
+  prefix 14% smaller, measured live (F129, ADR 0114); every diagram in the docs is data our own renderer draws
+  (CL60, ADR 0118).
 
 The [work log](src/docs/work-log.md) has the counts and every row.
 
@@ -71,8 +93,10 @@ The [work log](src/docs/work-log.md) has the counts and every row.
 | Every agent tested by evals in C# | The cook 23 of 24, the routing 72 of 72, $0.37 together; a replay costs $0 | 2026-10-29 |
 
 Puls is not yet open to the public: the shops refuse automated readers, so the cook gives estimates from Stats SA's
-averages and says where to buy until a retailer says yes (F85). Puls is live from Azure on mypuls.co.za (F61.4, 2026-11-07;
-F58's tunnels from this PC were superseded before they were needed); the final cook's paid measure is still owed.
+averages and says where to buy until a retailer says yes (F85). Puls ran from Azure on mypuls.co.za from 2026-11-07
+(F61.4) until 2026-11-09, when the free SQL offer ran out and took the site down (FX122): since then only
+louis-agent.dev is deployed, with no VM and no databases, and mypuls.co.za shows a coming-soon page. Puls is paused
+while the site and the framework come first; the final cook's paid measure is still owed.
 
 ## The phases
 
@@ -91,8 +115,9 @@ done when Louis has written its learning write-up himself, without the code open
 | 6 | Orchestration, the engine's workflow: one delegation function, hand-off, typed results checked in code (the orchestrator as an identity dropped, 2026-11-07) | Checked, not trusted | Now, after the builder | F39 |
 | 7 | Checked and guarded: append-only history, drafts a person approves, safety and audit | Guards in code | Next | FX4, F41, F42 |
 | 8 | Their systems, no code: someone else's MCP server plugged in as a pack, our guards around it | Their systems | Next | F36 |
-| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts and F61.4 put Puls in Azure; F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
-| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now, before the agents (Louis, 2026-11-07) | F106, F74, F44, F47 |
+| 9 | What a sale needs: accounts and tenants, reliability, local models, the engine as a product, hosting | Your data, your model | Next; F61.1 to F61.5 built the accounts and F61.4 put Puls in Azure, taken down again on 2026-11-09 (louis-agent.dev runs alone); F43's saved conversations come right after the builder (2026-11-07) | F43, F8, F15, F44, F51, F61 |
+| Framework | The framework's track: a builder for the common path, its own docs, an example outside Puls, a side-by-side with Microsoft Agent Framework, packaging in place; its own repo after the engine features | The engine | Now; the example outside Puls has its service, pack, identity and recorded demo (F106.3.1, F106.3.2, F106.3.4), its workflow and second department remain; the builder is next (F140) | F106, F140, F74, F44, F47, F126 |
+| The site | louis-agent.dev: a website that sells websites with agents, its guide, its showroom, then the chat on any website and a site set up by talking to it | The offer, shown | Now, first since 2026-11-09 (ADR 0112); F124, F127, F128 and F144 done | F146, F147, F145, F139, F141, F138, F125, F131, F132, F130, F133, F134, F137, F142, F143 |
 | Puls | Places, local businesses, sources as data, credits, vision, the cook's waves | Puls | Between the phases | the TODO's *Puls* rows |
 | Later | Knowledge and retrieval, long chats, settings per role, the coding identity, and the rest | — | Later | the TODO's *Later* rows |
 
@@ -130,8 +155,8 @@ else's tools, listed once when the host starts; annotations that only tighten ap
 to MCP until then (ADR 0028).
 
 **9, what a sale needs** ([draft plan](src/docs/plans/phase-9-what-a-sale-needs.md)). F61 built sign-in, tenants,
-social logins and passkeys; Puls runs from Azure (F61.4, [ADR 0095](src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md)); the
-framework's site waits for its merge into the louis-agent demo's web app. F43's durable sessions and the tenant on every ledger row, F8's
+social logins and passkeys; Puls ran from Azure (F61.4, [ADR 0095](src/docs/adr/0095-puls-runs-from-azure-and-nothing-points-at-the-pc.md))
+until FX122 took its app down on 2026-11-09, and the framework's site runs there alone, without accounts. F43's durable sessions and the tenant on every ledger row, F8's
 reliability (retries, a fallback model, timeouts), F15's local models given their whole prompt, F44's speed, metrics
 and packages, F51's gateway and uptime remain.
 
@@ -143,13 +168,28 @@ judged by one question, does it make an agent application easier to build, exten
 builder so a first agent takes a few lines (F106.1), the framework's own docs (F106.2), an example outside Puls
 (F106.3), the same application built in Microsoft Agent Framework and compared (F106.4), and packaging in place
 (F74, the [Phase 10 draft](src/docs/plans/phase-10-engine-package.md)'s Stage A). The engine's own repo (Stage B) still
-waits for the engine features; a developer's product, never a business's.
+waits for the engine features; a developer's product, never a business's. Built so far: the example's service and
+pack (F106.3.1), its identity (F106.3.2) and its recorded demo (F106.3.4); its workflow in code (F106.3.3) and its
+second department (F106.3.5) remain. The builder returns as F140, one builder a host names its parts with, and the
+evals are redesigned in F126 ([plan](src/docs/plans/F126-evals-redesigned.md)).
+
+**The site** ([ADR 0112](src/docs/adr/0112-the-site-sells-first.md)). Louis, 2026-11-09: "Our goal is to sell websites
+with agents, and custom agents, for now. The framework takes second place to that." louis-agent.dev is that offer,
+shown: its guide, its showroom and its admin are built (F124, F127, F128, F144). Next, in the TODO's order: a
+business's agent that reports back to the guide (F146), page suggestions (F147), who a talk was with and a privacy
+page (F145), a site's own cards (F139), every part of the web ready for an agent (F141), the guide explaining with
+drawings (F138); then an agentic site ([F125](src/docs/plans/F125-an-agentic-site.md)), the chat on any website from
+one script tag ([F131](src/docs/plans/F131-the-chat-on-any-website.md)), the subdomains (F130), and a website with
+an agent set up by talking to it ([F133 draft](src/docs/plans/F133-self-serve-sites.md)).
 
 **Puls's track** ([draft](src/docs/plans/puls-track.md)). Every source that knows the place answers through a few tools
 whose sites are data: businesses that join, open place data, a site's own JSON-LD, a few hand-built readers where terms
 allow, the open web cited last. Listings and credits are sold only with Phase 9's accounts.
 
 ## How it makes money
+
+> Written 2026-10-30, before the site began selling websites with agents (2026-11-09). The ideas, the path and the
+> prices below are from then and have not been revised.
 
 Every idea is the same product in different clothes: a hosted assistant that does one admin job inside a business's
 own systems, with answers checked in code, cost in rand and a person approving what matters. Ten ideas scored for
