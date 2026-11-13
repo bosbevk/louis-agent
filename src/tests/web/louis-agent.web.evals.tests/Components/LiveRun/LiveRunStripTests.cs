@@ -52,7 +52,7 @@ public class LiveRunStripTests
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".live-run-strip"), Has.Count.EqualTo(1)));
         var strip = cut.Find(".live-run-strip");
         Assert.That(strip.TextContent, Does.Contain(SampleEval.Beta).And.Contain("2 repeats"));
-        Assert.That(strip.GetAttribute("href"), Is.EqualTo($"admin?eval={SampleEval.Beta}"));
+        Assert.That(strip.GetAttribute("href"), Is.EqualTo($"admin/evals?eval={SampleEval.Beta}"));
     }
 
     /// <summary>No run going (the API has none yet): nothing on the page.</summary>

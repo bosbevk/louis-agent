@@ -35,15 +35,14 @@
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- CL60.1: the diagrams GraphView draws, in their own plain-C# library, which the docs' tool draws with too. -->
     <ProjectReference Include="..\louis-agent.diagrams\louis-agent.diagrams.csproj" />
+    <!-- F144: the web's own messages, filled as every project's are (MessageText, [Holes]; ADR 0009, 0119). -->
+    <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
 
     <!-- The Sass compiler's settings are read at build time only; published, the three libraries' copies would land
          on one path and dotnet publish refuses (FX62). -->
     <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <!-- The Sass compiler's settings are read at build time only; published, the three libraries' copies would land
-         on one path and dotnet publish refuses (FX62). -->
-    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" Pack="false" />
     <None Include="..\..\docs\projects\louis-agent.web.md" Link="docs\louis-agent.web.md" />
     <None Include="..\..\docs\guides\change-the-web.md" Link="docs\change-the-web.md" />
   </ItemGroup>

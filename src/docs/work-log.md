@@ -12,16 +12,19 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 103 | 89 |
+| Features (`F`) | 104 | 92 |
 | Fixes (`FX`) | 138 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (118 in the TODO)
+## Open (126 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| F146 | A business's agent reports back by address: its `window` role tells the guide everything with `ReportBack`; the visitor still takes over; its own plan | Now, after F144 |
+| F147 | Page squares under the guide's choices: three grouped "go to" squares the guide picks; its own plan | Now, after F146 |
+| F145 | Who a talk was with: the visitor's IP on the overview, a privacy page, a retention rule, a consent notice if POPIA needs one; its own plan | Now, after F147 |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now, after F127 |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now, after F127 |
@@ -146,10 +149,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | CL61 | `ToolCallGuards` past 200 lines once laid out: split it, holes into records (ADR 0119), and end the turn through `TurnEnding.Ends` | Cleanups |
 | CL59 | The studio's partials hold rules nothing names any more (`.run-report`, `.run-transcript`, `.admin-cols`, `.eval-card`, `.explorer-q`, `.live-chat`, `.tree-node`, `.conv-row`, `.check-script`…), dead since CL10 by the look of them: confirm and delete (found in CL58) | Cleanups |
 
-## Features (100 done)
+## Features (101 done)
 
 | Id | When | What |
 |---|---|---|
+| F144 | 2026-11-13 | The admin is a frame its areas plug into (Louis's picks: a home of cards; a packs page; the cards report a refused key): `.Admin(layout)` the frame and its home at `/admin`, a card per area in the order named, Home first in the sidebar; `.Overview(counts)`, `.Packs(views)` (with `/admin/packs`) and `.Evals()` (moved to `/admin/evals`) each an area with its pages, links and card; `AdminCardBase` and `AdminAccess` ask for the key once; an admin area without the frame refused at start-up (`WebErrorMessage`, the web's first message enum); the sidebar's brand keeps its mark beside its name |
 | F127 | 2026-11-13 | A site's areas in the framework, the parent: its eight children built (F127.1 the showroom, F127.2 the demos tried live, F127.3 one address for every agent call, F127.4 the guide mentors, F127.5 the minions on the address, F127.6 a site names its areas, F127.7 one guide with a focus per part, F127.8 the site's admin); ADRs 0115 to 0117, 0120 and 0121 |
 | F127.8 | 2026-11-13 | louis-agent.dev's admin, an overview first (Louis's pick of three designs): a line per turn beside the ledger (`turns-{yyyy-MM}.jsonl`: the page, the part, who answered, the tools, no words), `GET /v1/admin/overview` joining it with the ledger (today and the month, by part and by who answered, the latest talks; an unpriced cost unknown), the tools a site counts named on its admin (`SendLead` as leads), the framework's overview page first in every admin, and the site's own admin layout behind `ADMIN_API_KEY`, which falls back to `AGENT_API_KEY`; `SessionHandlers`' holes became records first |
 | F127.7 | 2026-11-12 | One guide, a focus per part, ready for an agent (ADR 0121, amends 0114): a site names each page's part with `Focuses(…)` (louis-agent.dev: selling, demos for `/demos` and every demo, framework), sent with every message and said in the page block, and the guide reads that part's skill (`focus-selling`, which guides to the demos and hooks honestly, `focus-demos`, `focus-framework`); tiles and cards are pieces with their own addresses, a click asks the guide about one, a card opened or a piece the guide shows is selected quietly, drawn pressed with a chip, and carried with every message; the number tiles take colours; the API builds an index of every section, card and piece from its own rendered pages (`SitePlaces`, `IPackContext.Places`) and the site pack's `FindPlace` searches it, so the guide shows a piece on any page without a hand-kept map; `ShowPage` takes a piece's digit-first address |

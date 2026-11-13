@@ -1,0 +1,7 @@
+@use "web/tools/figures";
+
+/* The packs' card on the admin's home (F144): its two figures, drawn as the overview's are. */
+.figures { @include figures.row; }
+.figure { @include figures.figure; }
+.figure-value { @include figures.value; }
+.figure-name { @include figures.name; }

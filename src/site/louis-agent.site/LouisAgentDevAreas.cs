@@ -24,7 +24,7 @@ public static class LouisAgentDevAreas
     /// each page is, which tells the guide how to lead (F127.7).
     /// </summary>
     public static void Name(SiteAreasBuilder areas) => areas.Showroom(SiteDemos.All).Focuses(Focuses)
-        .Admin(typeof(AdminLayout), counts: count => count.Tool(LeadTool, "leads"));
+        .Admin(typeof(AdminLayout)).Overview(count => count.Tool(LeadTool, "leads"));
 
     /// <summary>The tool the guide sends a lead with, which the admin's overview counts as leads (F127.8).</summary>
     private const string LeadTool = "SendLead";

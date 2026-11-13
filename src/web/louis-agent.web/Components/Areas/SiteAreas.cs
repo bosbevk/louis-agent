@@ -17,4 +17,7 @@ public sealed class SiteAreas(IReadOnlyList<SiteArea> areas)
 
     /// <summary>The components the admin frame draws under the pack menu, one per area that has links.</summary>
     public IReadOnlyList<Type> AdminLinks { get; } = [.. areas.Select(area => area.AdminLinks).OfType<Type>()];
+
+    /// <summary>The cards the admin's home draws (F144), one per area that has one, in the order named.</summary>
+    public IReadOnlyList<Type> AdminCards { get; } = [.. areas.Select(area => area.AdminCard).OfType<Type>()];
 }

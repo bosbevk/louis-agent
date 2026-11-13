@@ -30,8 +30,4 @@ public partial class OverviewFigures
     /// <summary>The reader's currency, when they chose one.</summary>
     [Parameter]
     public CurrencyChoice? Choice { get; set; }
-
-    /// <summary>Each counted tool by the site's name, with the talks that called it this period.</summary>
-    private IEnumerable<(string Name, int Talks)> Counted => Counts.Tools.Select(counted =>
-        (counted.Name, Period.Tools.FirstOrDefault(used => used.Name == counted.Tool)?.Talks ?? 0));
 }

@@ -31,7 +31,8 @@ public class AdminLayoutTests
     }
 
     /// <summary>
-    /// The sidebar keeps its links, in their order, to their addresses: the framework's overview first (F127.8).
+    /// The sidebar keeps its links, in their order, to their addresses: the admin's home first, then the framework's
+    /// overview (F127.8), the eval studio at admin/evals (F144).
     /// </summary>
     [Test]
     public void TheSidebar_KeepsItsLinks_InOrder()
@@ -41,7 +42,10 @@ public class AdminLayoutTests
         var cut = Render(ctx);
 
         Assert.That(cut.FindAll(".sidebar .side-link").Select(link => link.GetAttribute("href")),
-            Is.EqualTo(new[] { "admin/overview", "admin", "admin/review", "admin/studio", "admin/prompts", "gesels" }));
+            Is.EqualTo(new[]
+            {
+                "admin", "admin/overview", "admin/evals", "admin/review", "admin/studio", "admin/prompts", "gesels"
+            }));
     }
 
     /// <summary>The way back goes to the chat, and the page shows in the content column.</summary>
@@ -56,12 +60,15 @@ public class AdminLayoutTests
         Assert.That(cut.FindAll(".admin-main .page"), Has.Count.EqualTo(1));
     }
 
-    /// <summary>Nothing running, nothing to review, and no pack offering a screen.</summary>
+    /// <summary>Nothing running, nothing to review, and no pack offering a screen or an upload.</summary>
+    /// <remarks>Guard clauses, one per address (ADR 0051).</remarks>
     private static string AnswerTo(string path)
     {
         if (path.EndsWith("/current")) return "null";
+        if (path.EndsWith("/screens")) return """{"screens":[]}""";
+        if (path.EndsWith("/imports")) return """{"imports":[]}""";
 
-        return path.EndsWith("/screens") ? """{"screens":[]}""" : """{"items":[],"total":0}""";
+        return """{"items":[],"total":0}""";
     }
 
     /// <summary>The layout with nothing running and nothing to review, once its badge has read the queue.</summary>

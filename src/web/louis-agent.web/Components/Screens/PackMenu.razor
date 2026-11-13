@@ -1,16 +1,18 @@
 @using Microsoft.AspNetCore.Components.Routing
-@* A sidebar link for each screen the packs offer, and Uploads if one takes a file; with none, no heading is left on its own. *@
-@if (_screens.Count > 0 || _takesUploads)
+@* The packs area's sidebar links (F144): the packs page, then each screen the packs offer, and Uploads if one takes a
+   file; with none, no heading is left on its own. *@
+@if (!_offer.IsEmpty)
 {
     <div class="sidebar-label">Packs</div>
     <nav class="side-nav">
-        @foreach (var screen in _screens)
+        <NavLink class="side-link" href="admin/packs"><span class="ic i-archive" aria-hidden="true"></span>All packs</NavLink>
+        @foreach (var screen in _offer.Screens)
         {
-            <NavLink @key="screen.Name" class="side-link" href="@AddressOf(screen)"><span class="ic i-file" aria-hidden="true"></span>@screen.Title</NavLink>
+            <NavLink @key="screen.Name" class="side-link pack-link" href="@PackOffer.AddressOf(screen)"><span class="ic i-file" aria-hidden="true"></span>@screen.Title</NavLink>
         }
-        @if (_takesUploads)
+        @if (_offer.Uploads.Count > 0)
         {
-            <NavLink class="side-link" href="admin/imports"><span class="ic i-archive" aria-hidden="true"></span>Uploads</NavLink>
+            <NavLink class="side-link pack-link" href="admin/imports"><span class="ic i-archive" aria-hidden="true"></span>Uploads</NavLink>
         }
     </nav>
 }

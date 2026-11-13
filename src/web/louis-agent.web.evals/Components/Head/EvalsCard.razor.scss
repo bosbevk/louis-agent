@@ -1,0 +1,8 @@
+@use "web/tools/figures";
+
+/* The eval studio's card on the admin's home (F144): its figures, drawn as the overview's are, and the last run. */
+.figures { @include figures.row; }
+.figure { @include figures.figure; }
+.figure-value { @include figures.value; }
+.figure-name { @include figures.name; }
+.evals-last { margin: 10px 0 0; font-size: 13.5px; }

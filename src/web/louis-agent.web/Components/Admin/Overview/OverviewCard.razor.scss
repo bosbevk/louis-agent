@@ -1,0 +1,7 @@
+@use "web/tools/figures";
+
+/* The overview's card on the admin's home (F144): today's figures, drawn as the overview's own are. */
+.figures { @include figures.row; }
+.figure { @include figures.figure; }
+.figure-value { @include figures.value; }
+.figure-name { @include figures.name; }

@@ -28,7 +28,8 @@ public partial class EvalsPageTests
     /// Two evals: the first of an identity with a dataset, two graders and one run; the second the stub, never run.
     /// The JSON is the file beside this test, with the sample names filled in.
     /// </summary>
-    private static readonly string Two = Fill(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/tests/web/louis-agent.web.evals.tests", "Pages", "Running", "Evals.two.json")));
+    private static readonly string Two = Fill(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
+        "src/tests/web/louis-agent.web.evals.tests", "Pages", "Running", "Evals.two.json")));
 
     /// <summary>With no evals the page says there are none, rather than showing nothing.</summary>
     [Test]
@@ -64,7 +65,7 @@ public partial class EvalsPageTests
     public void TheEvalInTheAddress_IsTheOpenOne()
     {
         using var ctx = new BunitContext();
-        var cut = Render(ctx, Two, "admin?eval=stub");
+        var cut = Render(ctx, Two, "admin/evals?eval=stub");
 
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".eval-details"), Has.Count.EqualTo(1)),
             TimeSpan.FromSeconds(10));
@@ -73,7 +74,7 @@ public partial class EvalsPageTests
     }
 
     /// <summary>The page at this address over an API that serves this list; it waits for nothing else.</summary>
-    private static IRenderedComponent<EvalsPage> Render(BunitContext ctx, string list, string address = "admin")
+    private static IRenderedComponent<EvalsPage> Render(BunitContext ctx, string list, string address = "admin/evals")
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/v1/admin/evals")
