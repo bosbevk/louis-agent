@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Web.Components.Areas.Focuses;
 using LouisAgent.Web.Components.Areas.Overview;
 using LouisAgent.Web.Components.Chat.Shell;
@@ -5,6 +6,8 @@ using LouisAgent.Web.Components.Frames;
 using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Site.Showroom;
 using LouisAgent.Web.Components.Widget.Door;
+using LouisAgent.Web.Messages;
+using LouisAgent.Web.Messages.Holes;
 using LouisAgent.Web.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -92,6 +95,14 @@ public sealed class SiteAreasBuilder
     /// </summary>
     internal void Register(IServiceCollection services)
     {
+        // An area that plugs into the admin needs its frame (F144): refused here, at start-up, with the cure.
+        if (_adminLayout is null && _areas.FirstOrDefault(area => area.InTheAdmin) is { } stray)
+        {
+            var withoutFrame = new AdminAreaWithoutFrameHoles(stray.Name);
+            throw new InvalidOperationException(
+                MessageText.Format(WebErrorMessage.AdminAreaWithoutFrame, withoutFrame));
+        }
+
         foreach (var area in _areas) area.Services(services);
 
         // Each frame falls back to the other: a site with only one of the two still draws both kinds of page.
