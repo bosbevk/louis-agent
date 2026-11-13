@@ -15,7 +15,7 @@
   50,000 characters get summarised; most toolsets cap their own output at 12,000.
 - **The texts a tool returns are members of its own `{Area}ToolMessage`** (*Messages and logging*), errors and results alike.
   A new tool or text changes the golden files on purpose: regenerate them and review the diff
-  ([golden files](../../tests/CLAUDE.md#golden-files)).
+  ([golden files](../../docs/guides/write-tests.md#regenerate-a-golden-file)).
 
 **Every toolset follows one pattern: guide, then tools, then guide.** A mode's routing sends a task to a toolset, the
 toolset's guide names its tools and when to use them, and each tool's `[Description]` stays short. A guide is plain markdown,
@@ -111,7 +111,7 @@ Log.Log(LogLevel.Information, McpLogMessage.ToolNameTaken, new { Name = name }, 
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `*ToolMessage` enum's template (the shared one
   and each area's) into `Messages/ToolMessageSnapshot.json`, keyed by member name, as the model-request snapshot does for the
   tools and prompt; no two of them share a member name (a test holds that). A deliberate change regenerates it
-  ([golden files](../../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
+  ([golden files](../../docs/guides/write-tests.md#regenerate-a-golden-file)). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`

@@ -119,11 +119,11 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 
 | Guide | Loads for | Holds |
 |---|---|---|
-| [src/tests/CLAUDE.md](../tests/CLAUDE.md) | `src/tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
 | [src/CLAUDE.md](../CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
 | [src/engine/louis-agent.core/CLAUDE.md](../engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
 | `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: conditionals, endpoints, records, enums, size, formatting |
 | `.claude/rules/csharp-summaries.md` | `**/*.cs` | How a summary is written, with its examples |
+| `.claude/rules/tests.md` | `src/tests/**`, `packs/tests/**`, `demos/*/tests/**` | What every test is, which tests run when, the golden files |
 | `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
 | `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
 | `.claude/rules/prompts.md` | `**/prompts/**/*.md`, `**/*ToolMessage.cs` | No name or date in a text the model reads, a prompt's header, the golden files |

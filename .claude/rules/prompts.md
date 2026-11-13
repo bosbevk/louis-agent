@@ -22,7 +22,7 @@ why: [ADR 0011](../../src/docs/adr/0011-prompts-are-content.md) (prompts are con
   that isn't the file's, or a missing description refuses the file and says what to change. `PromptHeadersTests`
   holds it.
 - **A changed prompt or tool text changes a golden file.** What the model reads is pinned. So regenerate the
-  golden files and review their diff before the step is shown. The commands are in `src/tests/CLAUDE.md`, under
-  *Golden files*.
+  golden files and review their diff before the step is shown. The commands are in `src/docs/guides/write-tests.md`,
+  under *Regenerate a golden file*.
 - **A built-in prompt is read only from the assembly** (ADR 0018). A host or a container that is running shows
   a changed prompt only after a build.

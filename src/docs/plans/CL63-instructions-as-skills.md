@@ -224,6 +224,13 @@ is written where and when it will be read.
   hold: 70 of its 161 lines are how a summary is written, mostly examples. Louis's pick of three (two files by
   topic, one file held under 200, or the examples moved to ADR 0050): two files. `csharp-summaries.md` takes the
   summaries, carried over whole, and `csharp.md` keeps the rules of the code. Both load for every `.cs` file.
+- **2026-11-13, step 8: two folder files become rules files, and the step is three commits.** The plan said the
+  three folder files keep their job. Two findings changed that, each Louis's pick of three. The test rules
+  reached 26 of 68 test projects, since a `CLAUDE.md` loads only for its own folder and the three pointer files
+  in the other test folders loaded nothing: they become `.claude/rules/tests.md`, with paths for every test
+  folder. `src/CLAUDE.md` loaded for all of `src/` and not for the demos' hosts and web apps: it becomes
+  `.claude/rules/hosts-and-web.md`. Core's `CLAUDE.md` stays a folder file. As for step 7, each rewrite is its
+  own commit: 8a the tests, 8b hosts and web, 8c core.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md)
