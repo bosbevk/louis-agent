@@ -1,0 +1,58 @@
+/* Words changed where they stand (F142). At rest they look as the page draws them, and a dashed line appears
+   around them when pointed at or reached by the keyboard. Editing, a box in the words' own font takes their place,
+   with the tick and the cross after it. */
+.inline-read {
+    border-radius: 4px;
+    outline: 1px dashed transparent;
+    outline-offset: 4px;
+    cursor: text;
+    transition: outline-color .12s ease;
+}
+.inline-read:hover, .inline-read:focus-visible { outline-color: var(--bs-primary); }
+.inline-read.is-empty { opacity: .55; font-style: italic; }
+
+.inline-editing {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.inline-editing.is-long { display: flex; align-items: flex-start; }
+/* The box takes the words' font. The page may paint its headline's letters with a sheen, which a box can't carry,
+   so the box says its own colour for the letters. */
+.inline-box {
+    flex: 1;
+    min-width: 8ch;
+    padding: 2px 8px;
+    border: 1px solid var(--bs-primary);
+    border-radius: 6px;
+    outline: 0;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    -webkit-text-fill-color: var(--bs-body-color);
+    font: inherit;
+    letter-spacing: inherit;
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .18);
+}
+textarea.inline-box { resize: vertical; }
+.inline-keep, .inline-drop {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 6px;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    -webkit-text-fill-color: currentColor;
+    font: 600 14px/1 system-ui, sans-serif;
+    letter-spacing: 0;
+    cursor: pointer;
+}
+.inline-keep {
+    border-color: var(--bs-primary);
+    background: var(--bs-primary);
+    color: var(--bs-body-bg);
+}
+.inline-drop:hover { color: var(--bs-danger); }
+.inline-keep:focus-visible, .inline-drop:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; }

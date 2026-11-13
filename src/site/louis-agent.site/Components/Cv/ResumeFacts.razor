@@ -1,10 +1,28 @@
-@* The CV's facts row (F142): the few numbers that say the most, each over what it counts. *@
-@if (Facts.Count > 0)
+@using LouisAgent.Web.Components.Editing.Inline
+@* The CV's facts row (F142): the few numbers that say the most, each over what it counts. When the page is edited,
+   a figure and its line are clicked and retyped, each fact can move or go, and one more can be added. *@
+@if (Facts.Count > 0 || Editable)
 {
     <div class="cv-facts">
-        @foreach (var fact in Facts)
+        @for (int index = 0; index < Facts.Count; index++)
         {
-            <div class="cv-fact"><b>@fact.Value</b><span>@fact.Label</span></div>
+            // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+            int at = index;
+            var fact = Facts[at];
+            <div class="cv-fact">
+                <b><InlineEdit Value="@fact.Value" Label="Figure" ValueChanged="@FigureChanged(at)"/></b>
+                <span><InlineEdit Value="@fact.Label" Label="What it counts" Multiline Rows="3"
+                                  ValueChanged="@SayingChanged(at)"/></span>
+                @if (Editable)
+                {
+                    <ItemTools Noun="fact" At="at" Count="Facts.Count" OnMove="step => MoveAsync(at, step)"
+                               OnRemove="() => RemoveAsync(at)"/>
+                }
+            </div>
+        }
+        @if (Editable)
+        {
+            <div class="cv-fact is-add"><ItemAdd Label="Add a fact" OnAdd="AddAsync"/></div>
         }
     </div>
 }

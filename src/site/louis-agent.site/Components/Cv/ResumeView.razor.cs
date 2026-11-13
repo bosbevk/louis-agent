@@ -1,5 +1,7 @@
 using LouisAgent.Site.Resumes;
+using LouisAgent.Site.Resumes.Basics;
 using LouisAgent.Site.Resumes.History;
+using LouisAgent.Web.Components.Editing.Inline;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Site.Components.Cv;
@@ -32,6 +34,21 @@ public partial class ResumeView
     /// <summary>The page's own closing words, under the last band.</summary>
     [Parameter]
     public RenderFragment? End { get; set; }
+
+    /// <summary>
+    /// Told the CV with one thing changed, when it is edited on this page (the admin's editor). With nothing
+    /// listening, as on the public page, the CV is plain words with nothing to click.
+    /// </summary>
+    [Parameter]
+    public EventCallback<Resume> ResumeChanged { get; set; }
+
+    /// <summary>The top's listener: the CV with a changed top, when someone listens for the CV.</summary>
+    private EventCallback<ResumeBasics> BasicsChanged =>
+        ResumeChanged.Of<Resume, ResumeBasics>(this, basics => Resume with { Basics = basics });
+
+    /// <summary>The facts' listener, the same way.</summary>
+    private EventCallback<IReadOnlyList<ResumeFact>> FactsChanged =>
+        ResumeChanged.Of<Resume, IReadOnlyList<ResumeFact>>(this, facts => Resume with { Facts = facts });
 
     /// <summary>The certificates with no link to check, which sit with the schooling.</summary>
     private IReadOnlyList<ResumeCertificate> Unchecked => [.. Resume.Certificates.Where(cert => cert.Url is null)];

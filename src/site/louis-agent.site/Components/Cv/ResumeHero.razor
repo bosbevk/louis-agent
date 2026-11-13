@@ -1,16 +1,36 @@
-@* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. *@
+@using LouisAgent.Web.Components.Editing
+@using LouisAgent.Web.Components.Editing.Inline
+@using LouisAgent.Site.Resumes.Basics
+@* The CV's hero (F142): the name, the summary, where he lives and works, the ways to reach him, and the photo. When
+   the page is edited, the words are clicked and retyped, and the links are a list: each moves, goes or opens on a
+   small form, and a link leads nowhere while it is being edited. *@
 <div class="cv-hero">
     <div>
-        <h1 class="chrome">@Basics.Name</h1>
-        @if (Basics.Summary is { } summary)
+        <h1 class="chrome"><InlineEdit Value="@Basics.Name" Label="Name" ValueChanged="NameChanged"/></h1>
+        @if (Basics.Summary is not null || Editable)
         {
-            <p class="lede">@summary</p>
+            <p class="lede"><InlineEdit Value="@Basics.Summary" Label="Summary" Multiline Rows="6"
+                                        ValueChanged="SummaryChanged"/></p>
         }
-        <p class="cv-where">@Where</p>
+        @if (Editable)
+        {
+            <p class="cv-where">
+                <span class="cv-town"><InlineEdit Value="@Place.City" Label="Town" ValueChanged="TownChanged"/></span>,
+                <span class="cv-province"><InlineEdit Value="@Place.Region" Label="Province"
+                                                      ValueChanged="ProvinceChanged"/></span>@AfterThePlace
+            </p>
+        }
+        else
+        {
+            <p class="cv-where">@Where</p>
+        }
         <div class="cv-reach">
-            @foreach (var profile in Basics.Profiles)
+            @for (int index = 0; index < Basics.Profiles.Count; index++)
             {
-                <a class="@ButtonOf(profile)" href="@profile.Url" target="_blank" rel="noopener">
+                // A copy for the handlers below: the loop's own variable has moved on by the time one runs.
+                int at = index;
+                var profile = Basics.Profiles[at];
+                <a class="@ButtonOf(profile)" href="@AddressOf(profile)" target="_blank" rel="noopener">
                     @if (profile.Network == LinkedIn)
                     {
                         <LinkedInMark/>
@@ -21,12 +41,35 @@
                     }
                     @LabelOf(profile)
                 </a>
+                @if (Editable)
+                {
+                    <ItemTools Noun="link" At="at" Count="Basics.Profiles.Count" OnOpen="() => Open(at)"
+                               OnMove="step => MoveLinkAsync(at, step)" OnRemove="() => RemoveLinkAsync(at)"/>
+                }
             }
-            @if (Basics.Email is { } email)
+            @if (Editable)
+            {
+                <span class="btn btn-line cv-email"><InlineEdit Value="@Basics.Email" Label="Email"
+                                                                ValueChanged="EmailChanged"/></span>
+                <ItemAdd Label="Add a link" OnAdd="AddLinkAsync"/>
+            }
+            else if (Basics.Email is { } email)
             {
                 <a class="btn btn-line" href="mailto:@email">@email</a>
             }
         </div>
+        @if (Editable && OpenLink is { } link)
+        {
+            <InlineForm @key="_open" TItem="ResumeProfile" Item="link" Label="@OpenLabel" OnKeep="KeepLinkAsync"
+                        OnDrop="Close">
+                <TextField Label="Network" Value="@context.Item.Network" Placeholder="LinkedIn"
+                           ValueChanged="network => NetworkAsync(context, network)"/>
+                <TextField Label="Name on it" Value="@context.Item.Username" Hint="Shown on the button."
+                           ValueChanged="name => NameOnItAsync(context, name)"/>
+                <TextField Label="Address" Value="@context.Item.Url" Placeholder="https://"
+                           ValueChanged="address => AddressAsync(context, address)"/>
+            </InlineForm>
+        }
     </div>
     @if (Photo is { } photo)
     {

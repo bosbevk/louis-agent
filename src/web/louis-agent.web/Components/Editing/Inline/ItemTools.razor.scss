@@ -1,0 +1,27 @@
+/* The buttons beside an item of a list edited on its page (F142): a small quiet row, dim until it is pointed at
+   or holds the focus, so the page still reads as the page. Their look is their own, whatever text they sit in. */
+.item-tools {
+    display: inline-flex;
+    gap: 2px;
+    opacity: .45;
+    vertical-align: middle;
+    transition: opacity .12s ease;
+}
+.item-tools:hover, .item-tools:focus-within { opacity: 1; }
+.item-tool {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 6px;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    -webkit-text-fill-color: currentColor;
+    font: 600 13px/1 system-ui, sans-serif;
+    letter-spacing: 0;
+    cursor: pointer;
+}
+.item-tool:hover:not(:disabled) { border-color: var(--bs-primary); }
+.item-tool.is-remove:hover { border-color: var(--bs-danger); color: var(--bs-danger); }
+.item-tool:disabled { opacity: .35; cursor: default; }
+.item-tool:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; }

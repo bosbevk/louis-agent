@@ -1,0 +1,29 @@
+@* Words changed where they stand: the plain words when nothing listens for a change; else the words as a button
+   that swaps them for a box with a tick and a cross. A stand-in says what goes where there are no words yet. *@
+@if (!ValueChanged.HasDelegate)
+{
+    @Value
+}
+else if (_editing)
+{
+    <span class="inline-editing @(Multiline ? "is-long" : null)">
+        @if (Multiline)
+        {
+            <textarea @ref="_box" class="inline-box" rows="@Rows" aria-label="@Label" value="@_draft"
+                      @oninput="Typed" @onkeydown="KeyAsync"></textarea>
+        }
+        else
+        {
+            <input @ref="_box" class="inline-box" type="text" aria-label="@Label" autocomplete="off" value="@_draft"
+                   @oninput="Typed" @onkeydown="KeyAsync"/>
+        }
+        <button type="button" class="inline-keep" aria-label="Keep @Label" title="Keep" @onclick="KeepAsync">✓</button>
+        <button type="button" class="inline-drop" aria-label="Drop the change to @Label" title="Drop"
+                @onclick="DropAsync">×</button>
+    </span>
+}
+else
+{
+    <span class="inline-read @(HasValue ? null : "is-empty")" role="button" tabindex="0" title="Change @Label"
+          @onclick="Open" @onkeydown="OpenByKey">@(HasValue ? Value : Label)</span>
+}

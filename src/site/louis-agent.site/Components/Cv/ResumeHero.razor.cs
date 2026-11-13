@@ -1,5 +1,7 @@
 using LouisAgent.Site.Resumes.Basics;
 using LouisAgent.Site.Resumes.Skills;
+using LouisAgent.Web.Components.Editing;
+using LouisAgent.Web.Components.Editing.Inline;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Site.Components.Cv;
@@ -12,6 +14,11 @@ public partial class ResumeHero
 {
     /// <summary>The networks drawn with their own brand's mark and button (ADR 0102).</summary>
     private const string LinkedIn = "LinkedIn", WhatsApp = "WhatsApp";
+
+    /// <summary>A link to fill in.</summary>
+    private static readonly ResumeProfile Blank = new("", "");
+
+    private int? _open;
 
     /// <summary>Who he is and how to reach him.</summary>
     [Parameter, EditorRequired]
@@ -29,21 +36,121 @@ public partial class ResumeHero
     [Parameter]
     public string? Availability { get; set; }
 
+    /// <summary>
+    /// Told the top with one thing changed, when the page is edited. With nothing listening, the hero is plain words
+    /// and its links lead where they say.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ResumeBasics> BasicsChanged { get; set; }
+
+    /// <summary>Whether the hero is being edited.</summary>
+    private bool Editable => BasicsChanged.HasDelegate;
+
+    /// <summary>Where he lives, or an empty place when the CV says nothing yet.</summary>
+    private ResumeLocation Place => Basics.Location ?? new ResumeLocation();
+
+    /// <summary>The listener for his name, which is never left out: an emptied one is blank.</summary>
+    private EventCallback<string?> NameChanged => Words(name => Basics with { Name = name ?? "" });
+
+    /// <summary>The listener for the summary.</summary>
+    private EventCallback<string?> SummaryChanged => Words(summary => Basics with { Summary = summary });
+
+    /// <summary>The listener for the town, the province kept.</summary>
+    private EventCallback<string?> TownChanged => Words(town => Basics with { Location = Place with { City = town } });
+
+    /// <summary>The listener for the province, the town kept.</summary>
+    private EventCallback<string?> ProvinceChanged =>
+        Words(province => Basics with { Location = Place with { Region = province } });
+
+    /// <summary>The listener for his email.</summary>
+    private EventCallback<string?> EmailChanged => Words(email => Basics with { Email = email });
+
+    /// <summary>A listener for some words of the top, there exactly when someone listens for the top.</summary>
+    private EventCallback<string?> Words(Func<string?, ResumeBasics> changed) => BasicsChanged.Of(this, changed);
+
+    /// <summary>The link whose form is open, if one is and it is still in the list.</summary>
+    private ResumeProfile? OpenLink => _open is { } at && at < Basics.Profiles.Count ? Basics.Profiles[at] : null;
+
+    /// <summary>What the open link is called, for its form: link 2.</summary>
+    private string OpenLabel => $"link {_open + 1}";
+
+    /// <summary>While the page is edited a link leads nowhere, so a click on it doesn't leave the page.</summary>
+    private string? AddressOf(ResumeProfile link) => Editable ? null : link.Url;
+
+    /// <summary>Opens a link's form.</summary>
+    private void Open(int at) => _open = at;
+
+    /// <summary>Closes the form, its edits dropped.</summary>
+    private void Close() => _open = null;
+
+    /// <summary>The open link is kept with its edits, in its place, and its form closes.</summary>
+    private Task KeepLinkAsync(ResumeProfile link)
+    {
+        int at = _open ?? 0;
+        _open = null;
+        return LinksAsync(Basics.Profiles.Replaced(at, link));
+    }
+
+    /// <summary>A link moves a step along the row. An open form closes, since its place has changed.</summary>
+    private Task MoveLinkAsync(int at, int step)
+    {
+        _open = null;
+        return LinksAsync(Basics.Profiles.Moved(at, step));
+    }
+
+    /// <summary>A link is taken out.</summary>
+    private Task RemoveLinkAsync(int at)
+    {
+        _open = null;
+        return LinksAsync(Basics.Profiles.Without(at));
+    }
+
+    /// <summary>One more link, blank, at the end of the row, with its form open to fill it in.</summary>
+    private Task AddLinkAsync()
+    {
+        _open = Basics.Profiles.Count;
+        return LinksAsync(Basics.Profiles.Added(Blank));
+    }
+
+    /// <summary>The top with these links.</summary>
+    private Task LinksAsync(IReadOnlyList<ResumeProfile> links) =>
+        BasicsChanged.InvokeAsync(Basics with { Profiles = links });
+
+    /// <summary>A link's network in its form's draft: LinkedIn, GitHub.</summary>
+    private static Task NetworkAsync(ListEditorRow<ResumeProfile> link, string? network) =>
+        link.Changed.InvokeAsync(link.Item with { Network = network ?? "" });
+
+    /// <summary>What he is called there, shown on the link's button.</summary>
+    private static Task NameOnItAsync(ListEditorRow<ResumeProfile> link, string? name) =>
+        link.Changed.InvokeAsync(link.Item with { Username = name });
+
+    /// <summary>The address behind the button.</summary>
+    private static Task AddressAsync(ListEditorRow<ResumeProfile> link, string? address) =>
+        link.Changed.InvokeAsync(link.Item with { Url = address ?? "" });
+
     /// <summary>The line under the summary: the town and province, the languages, and where he'd work.</summary>
     private string Where
     {
         get
         {
             string?[] place = [Basics.Location?.City, Basics.Location?.Region];
-            string?[] parts =
-            [
-                string.Join(", ", place.OfType<string>()),
-                string.Join(" and ", Languages.Select(language => language.Language)),
-                Availability
-            ];
+            string?[] parts = [string.Join(", ", place.OfType<string>()), .. TheRest];
             return string.Join(" · ", parts.Where(part => !string.IsNullOrEmpty(part)));
         }
     }
+
+    /// <summary>What follows the place on that line: the languages he speaks, and where he'd work.</summary>
+    private IEnumerable<string> TheRest
+    {
+        get
+        {
+            string?[] rest = [string.Join(" and ", Languages.Select(language => language.Language)), Availability];
+            return rest.OfType<string>().Where(part => part.Length > 0);
+        }
+    }
+
+    /// <summary>The same, as it is written after the place when the town and the province are drawn apart.</summary>
+    private string AfterThePlace => string.Concat(TheRest.Select(part => $" · {part}"));
 
     /// <summary>A profile's button: LinkedIn's and WhatsApp's in their own look, the rest outlined.</summary>
     /// <remarks>A switch on the network, one arm per look (ADR 0051).</remarks>

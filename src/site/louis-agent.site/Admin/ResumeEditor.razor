@@ -13,7 +13,7 @@
 <div class="page-head">
     <div>
         <h1>Resume</h1>
-        <p>Your CV, as the site shows it. Nothing changes on the site until you save.</p>
+        <p>Your CV, as the site shows it. Click any words to change them. Nothing changes on the site until you save.</p>
     </div>
     @if (_draft is { } held)
     {
@@ -50,7 +50,7 @@
 @if (_draft is { } draft)
 {
     <div class="resume-editor">
-        <ResumeSheet Resume="draft.Current" />
+        <ResumeSheet Resume="draft.Current" ResumeChanged="Edit" />
         <aside class="card-p resume-aside">
             <OffPageForm Basics="draft.Current.Basics" BasicsChanged="EditBasics" />
         </aside>

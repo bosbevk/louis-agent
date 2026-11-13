@@ -1,0 +1,10 @@
+@typeparam TItem
+@* A small form for an item changed on its page: its fields, drawn from a draft, then the tick that keeps every
+   edit and the cross that drops them. *@
+<div class="inline-form" role="group" aria-label="Change @Label">
+    <div class="inline-form-fields">@ChildContent(Row)</div>
+    <div class="inline-form-ends">
+        <button type="button" class="inline-keep" aria-label="Keep the changes to @Label" @onclick="KeepAsync">✓ Keep</button>
+        <button type="button" class="inline-drop" aria-label="Drop the changes to @Label" @onclick="OnDrop">× Drop</button>
+    </div>
+</div>

@@ -67,14 +67,14 @@ public partial class ListEditor<TItem>
     private Task AddAsync()
     {
         _open = Items.Count;
-        return ItemsChanged.InvokeAsync([.. Items, New()]);
+        return ItemsChanged.InvokeAsync(Items.Added(New()));
     }
 
     /// <summary>Drops the item, and folds the list: the rows after it have moved up.</summary>
     private Task RemoveAsync(int at)
     {
         _open = -1;
-        return ItemsChanged.InvokeAsync([.. Items.Where((_, index) => index != at)]);
+        return ItemsChanged.InvokeAsync(Items.Without(at));
     }
 
     /// <summary>Swaps the item with the one a step up (-1) or down (1); the open row follows its item.</summary>
@@ -83,10 +83,8 @@ public partial class ListEditor<TItem>
         int to = at + step;
         if (to < 0 || to >= Items.Count) return Task.CompletedTask;
 
-        var moved = Items.ToArray();
-        (moved[at], moved[to]) = (moved[to], moved[at]);
         _open = FollowTheSwap(_open, at, to);
-        return ItemsChanged.InvokeAsync(moved);
+        return ItemsChanged.InvokeAsync(Items.Moved(at, step));
     }
 
     /// <summary>Where the open row is after two rows swapped: with its item, if it was one of them.</summary>
@@ -101,5 +99,5 @@ public partial class ListEditor<TItem>
 
     /// <summary>Puts a row's changed copy in its item's place.</summary>
     private Task ReplaceAsync(int at, TItem changed) =>
-        ItemsChanged.InvokeAsync([.. Items.Select((item, index) => index == at ? changed : item)]);
+        ItemsChanged.InvokeAsync(Items.Replaced(at, changed));
 }

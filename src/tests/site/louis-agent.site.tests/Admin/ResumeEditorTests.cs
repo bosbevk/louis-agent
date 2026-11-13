@@ -83,6 +83,29 @@ public class ResumeEditorTests
         });
     }
 
+    /// <summary>
+    /// Step 7b: the page in the editor is the editor. His name is clicked and retyped where it stands, the page shows
+    /// the new name at once, and it is a draft like any other edit.
+    /// </summary>
+    [Test]
+    public void WordsOnThePage_AreRetypedWhereTheyStand()
+    {
+        var api = new CvApi(Cv.Resume);
+        using var ctx = api.Context();
+        var editor = Open(ctx);
+
+        editor.Find(".resume-sheet h1 .inline-read").Click();
+        editor.Find(".resume-sheet h1 .inline-box").Input("Louis J Marais");
+        editor.Find(".resume-sheet h1 .inline-box").KeyDown(Key.Enter);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(editor.Find(".resume-sheet h1").TextContent, Is.EqualTo("Louis J Marais"));
+            Assert.That(editor.Find(".draft-state").TextContent, Is.EqualTo("Unsaved changes"));
+            Assert.That(api.Saves, Is.Empty);
+        });
+    }
+
     /// <summary>Save sends the whole draft to the API, and what the API kept is then the saved CV.</summary>
     [Test]
     public void Save_SendsTheDraft()

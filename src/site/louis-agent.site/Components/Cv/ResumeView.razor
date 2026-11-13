@@ -2,8 +2,9 @@
    building now, the jobs, the skills, the schooling and the rest. Each part is a band, so the guide can show it. *@
 <div class="resume">
     <Band Id="top" Kicker="Curriculum vitae · louis-agent.dev/cv" Short="CV">
-        <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"/>
-        <ResumeFacts Facts="Resume.Facts"/>
+        <ResumeHero Basics="Resume.Basics" Languages="Resume.Languages" Photo="@Photo" Availability="@Availability"
+                    BasicsChanged="BasicsChanged"/>
+        <ResumeFacts Facts="Resume.Facts" FactsChanged="FactsChanged"/>
     </Band>
 
     @if (Resume.Now is { } now)
