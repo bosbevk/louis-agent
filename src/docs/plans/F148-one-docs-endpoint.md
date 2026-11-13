@@ -155,6 +155,24 @@ listed with no type. The demos' docs get the same treatment later, as their own 
    own reader with YamlDotNet (recommended), a shared reader below core, or plain string methods.
 7. **How the 252 headers get written** (asked when step 3 starts; the options are in that step): the docs' tool
    writes them once (recommended), by hand a kind at a time, or as each doc is next touched.
+8. **What the ten feature docs become** (F150; where each stands is in *The feature docs* below).
+   - **A. One kind for work not yet built: the plan.** The ten fold into six draft plans in `src/docs/plans/` (F7
+     with F6, F11 and today's draft; F8; F9 with F16; F10; F15 with F13; F44 from F12), and `features/` goes as
+     `specs/` does. This is the *design doc* or *RFC* way: one proposal per piece of work, kept until it is built
+     ([Design docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/), Rust's RFCs). The
+     plans' README already says a feature starts as a plan. One kind and one template fewer. *Recommended.*
+   - **B. The feature doc stays a kind, beside the plan** (a *requirements document*: the what and why apart from
+     the how). The five merged docs fold into the doc that took them, five or six stay in `features/`. Keeps the
+     stories and acceptance criteria as they are; two docs to keep in step for one feature, as F7 has today.
+   - **C. Remove all ten, as the unbuilt specs are removed.** The TODO rows keep the one line and link the tag
+     `pre-f150`. The least to carry; October's stories leave the working folder until the feature is planned.
+9. **Where ADR 0108 and ADR 0111 live** (F150; the two the owner rule does not settle).
+   - **A. Both stay with the framework:** each holds a rule the framework's code or tests keep (the recording
+     player; the one place in `src/` that may reference a pack). The site's ADR index links them.
+   - **B. Both move to `src/site/docs/adr/`:** each is named for the site. The framework's guide then cites a rule
+     kept in the site's folder.
+   - **C. 0111 stays, 0108 moves:** 0111 is the repo's layout, which the development guide cites; 0108 opens with
+     the site's own door, and the player it names is already in `louis-agent.web`'s design doc. *Recommended.*
 
 ### The standards the docs follow
 
@@ -208,6 +226,7 @@ src/docs/
   learning/            15                      5  what it taught: a write-up a skill  (write-up)
   plans/  features/  fixes/  specs/            5  being built: gone when done         (plan, feature, fix)
   templates/                                      new: one template per kind (F150)
+src/site/docs/         new (F150)                 the same layers 4 and 5, for the framework's own website
 packs/docs/            projects/ 9, adr/ 3        the same layers 4 and 5, for the packs
 demos/*/docs/                                     out of scope for now: left as they are
 ```
@@ -255,6 +274,100 @@ What the layers add to today's folders:
   what goes there. A new doc starts as a copy, and the pattern test reads the same files, so the template and the
   rule can't differ.
 
+### Whose doc it is: one docs folder per owner
+
+Louis, 2026-11-13: "all frameworks docs under src, and refs to relevant projects. So specific ADR's must move out, in
+the case of .site, it will get its own docs folder, of it's stuff and ADR's", and "feature docs for the framework
+under framemwork and .site gets its own, same for puls etc." ADR 0074 already says a doc lives with what it is
+about; this makes it hold for the site, which has no docs folder today, and for the ADRs that are not the
+framework's.
+
+| Owner | Its docs folder | Holds |
+|---|---|---|
+| The framework (engine, hosts, web, evals, tools) | `src/docs/` | Everything in the layers above |
+| The framework's own website (`louis-agent.site`, its guide, its showroom, its host) | `src/site/docs/`, **new** | `adr/`, `projects/`, `guides/`, `plans/`, and a `README.md` index |
+| The packs | `packs/docs/` | `adr/`, `projects/` |
+| Puls | `demos/puls/docs/` | As today |
+| Our own demo (the coding agent, the triage team) | `demos/louis-agent/docs/` | As today |
+
+**Every kind of doc works this way** (Louis, 2026-11-13: "all docs must work like this"): an owner's folder has the
+same subfolders as the framework's, and a doc of any kind goes in its owner's.
+
+| Kind | Folder, under each owner's docs folder | Sorted by |
+|---|---|---|
+| ADR | `adr/` | The code its *Decision* changes |
+| Project doc | `projects/` | The project it describes |
+| How-to | `guides/` | The thing it changes: a how-to for one site or one pack is that owner's; a how-to for extending the framework (*Build a pack*, *Spawn a site*) is the framework's |
+| Plan, and the feature doc if it stays a kind | `plans/`, `features/` | Where most of its steps land |
+| Fix doc, and a fix's lesson | `fixes/`, `learning/fixes/` | The code the fix changed, settled as each lesson file is written (F150) |
+
+**Three things stay one for the whole repo**, because each is a single list or a single reader's: the front door
+and the lists (`TODO.md`, `ROADMAP.md`, the work log, the fixes table, the ADR index), which name every owner's
+items and link to them; the write-ups by skill in `src/docs/learning/`, which are what Louis learned and follow
+GOAL.md's skills, not a project; and the templates in `src/docs/templates/`, one set every owner copies.
+
+**The rule that sorts an ADR:** it lives with the code its *Decision* changes. A decision the site asked for but
+that added a part to the framework (the open door, the showroom area, a message that carries the page) is the
+framework's, and stays. A decision about what one site says, sells or looks like is that site's, and moves.
+**Numbers stay shared**, and `src/docs/adr/README.md` keeps listing every ADR with a link to wherever it lives (the
+rule today). **References, not copies:** the framework's indexes (`src/docs/README.md`, `projects/README.md`,
+`guides/README.md`) link to an owner's docs folder and hold none of its pages.
+
+**What moves out of `src/docs`** (F150, each move its own small commit with its links fixed):
+
+| Today | After | Why |
+|---|---|---|
+| `src/docs/adr/0100` the site tells the whole architecture, `0112` the site sells first, `0113` the guide is Louis and says it is the AI, `0122` the site's CV is edited on its own page | `src/site/docs/adr/` | What louis-agent.dev says and sells; no other site inherits it |
+| `demos/louis-agent/docs/adr/0066` the site is static Razor, `0077` films on GitHub are rendered WebP | `src/site/docs/adr/` | The site left that demo for `src/site/` in F124; its ADRs stayed behind |
+| `src/docs/projects/louis-agent.site.md`, `louis-agent.identity.guide.md`, `louis-agent.identity.showroom.md`, with their diagrams | `src/site/docs/projects/` | The site's own projects |
+| `src/docs/guides/change-the-site.md` | `src/site/docs/guides/` | A how-to for the site only |
+| `src/docs/plans/F143-the-guide-drives-the-cv.md` | `src/site/docs/plans/` | A feature of the site and its guide (the resume pack it adds is named in the packs' docs when built) |
+| `src/docs/adr/0101` a lead is a tool sent once on the visitor's yes | `packs/docs/adr/` | The leads pack's own decision |
+| `src/docs/adr/0095` Puls runs from Azure, `0097` Puls deploys from GitHub without a password, `0098` the demos' app runs beside Puls | `demos/puls/docs/adr/` | Puls's hosting; the files that hold it are `demos/puls/config/azure` and `deploy/azure` |
+| `src/docs/plans/puls-track.md` | `demos/puls/docs/plans/` | Puls's own track |
+
+**Stays in `src/docs/adr` although it names the site or Puls**, since its decision is a part of the framework: 0019
+(modes, one file per product), 0079 (a specialist's report shown whole), 0099 (the open door and its cap), 0102
+(third-party marks), 0104 and 0105 (a message carries the page; a client-side effect is a tool call the client
+hears), 0106 (every generic part of a business website is the framework's), 0107, 0109, 0110, 0114, 0115 and 0116
+(the showroom area and its live demos), 0117, 0120, 0121. The plans F125, F131, F133 and F134 stay too: most of
+their steps are in the framework's web, the API or a pack. **Two are not clear and are Louis's pick** (open
+choice 9): 0108 (the public watches the coding agent recorded: the door is the site's, the player is the
+framework's) and 0111 (the framework's website lives in `src/site/`: about the site, but it is the rule that lets
+one place in `src/` reference packs).
+
+**The site's image reads its own docs too:** step 4's Dockerfile line copies `src/site/docs` beside the others, so
+the guide on louis-agent.dev can still answer about the site it stands on.
+
+### The feature docs: where each stands
+
+Louis, 2026-11-13: "we should also go through all features, and look at where they stand. should they be reemoved
+merged or marked done." Checked against the code on 2026-11-13, by looking for each doc's own implementation steps
+(the classes and settings it names):
+
+| Doc | Says | Built | Verdict |
+|---|---|---|---|
+| F6 Cost estimates | merged into F7 | nothing (`UsageHistory`, `Estimator`: not in the code) | merge into F7's one doc |
+| F7 Budgets | planned | nothing (`BudgetGuard`, `BudgetLedger`) | stays, as F7's one doc; `plans/F07-budgets.md` is a second doc for the same row and folds in |
+| F8 Reliability | planned | nothing (`RetryingChatClient`, `FallbackChatClient`, `AccountLimitException`) | stays |
+| F9 Bounded history | planned | nothing (`ClearStaleToolResults`, `CompactAsync`) | stays, takes F16 in |
+| F10 Settings per route | planned | nothing (`AGENT_MAX_TOOL_ROUNDS`, `ORCHESTRATOR_THINKING`) | stays, but its design predates roles declaring their own settings (ADR 0025) and is rewritten when planned |
+| F11 Usage tab and the bill | merged into F7 | nothing (`UsageQuery`, the reconciliation) | merge into F7's one doc |
+| F12 Response speed | merged into F44 | nothing (no `ttft_ms` on a ledger record) | becomes F44's doc: F44 has none of its own |
+| F13 Local models | merged into F15 | nothing (`num_ctx`, `ContextBudget`, a compact prompt) | merge into F15's one doc |
+| F15 Model limits | planned | nothing (`ModelLimits`, `LLM_CONTEXT_TOKENS`) | stays, takes F13 in |
+| F16 Summariser | merged into F9 | only the oversized-results log it starts from, which is older | merge into F9's one doc; the row F16-S1 under *Cleanups* stays |
+
+**So none is done, none is half built, and none is dead:** every one still has an open row in the TODO. Five say
+"merged into" another but still sit beside it as a doc of their own, which is the one thing wrong: ten docs for
+five pieces of work (six with F44). All ten are October's designs, from before the engine, identity and pack split,
+so the class and file names in them are partly gone (`run-demo.ps1`, `LouisAgentClient`, `Skills/local.md`); each
+is rewritten into its plan when its work starts, as the drafts in `plans/` already say of themselves.
+
+**All ten are the framework's**, so by the owner rule they stay under `src/docs/`. The two that are not are already
+with their owner and out of scope: F17 (our demo's orchestrator, merged into F39) and F28 (Puls's team talk, step 1
+built). **What kind of doc they are after F150 is Louis's pick** (open choice 8).
+
 ### The doc design: one pattern per kind of doc
 
 Louis, 2026-11-13: "Project docs should all follow same pattern", "all docs". A doc's *kind* is the `type` in its
@@ -295,7 +408,7 @@ follows after F150; the count is today's, on `main`. The demos' docs are out of 
 | Project design doc (`project.md`) | arc42's sections under plain names; C4's components | `src/docs/projects/` (25), `packs/docs/projects/` (9) | 34 | 4 |
 | How-to (`how-to.md`) | Diátaxis how-to, and tutorial for a first run | `src/docs/guides/` (23); joined by `choose-a-model.md` | 23, then 24 | 4 |
 | ADR (`adr.md`) | Nygard's ADR as MADR | `src/docs/adr/` (111), `packs/docs/adr/` (3) | 114 | 5 |
-| Lesson (`lesson.md`), new | The blameless postmortem (Google's SRE book): what happened, why, what it taught | `src/docs/learning/fixes/`, one file a fix | 45 today in one doc, about 150 when the owed ones are written | 5 |
+| Lesson (`lesson.md`), new | The blameless postmortem (Google's SRE book): what happened, why, what it taught | `learning/fixes/` in its owner's docs folder, one file a fix | 45 today in one doc, about 150 when the owed ones are written | 5 |
 | Write-up (`write-up.md`) | Ours, from GOAL.md's "a skill counts as learned when": measured, trade-offs, what didn't work | `src/docs/learning/`, one page a skill | 13 | 5 |
 | Plan (`plan.md`) | Ours (the plans' README); the nearest outside name is a design doc or RFC | `src/docs/plans/` | 19 | 5 |
 | Feature doc, fix doc (`feature.md`, `fix.md`) | Ours: user stories and done-whens; symptom, cause, fix | `src/docs/features/` (10), `src/docs/fixes/` (1 open) | 11 | 5 |
