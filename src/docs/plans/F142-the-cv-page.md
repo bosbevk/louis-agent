@@ -140,6 +140,35 @@ says; a typed file both read can't. F143 builds on it (skill 4, *Tool design*).
   namespace doesn't shadow the `Resume` record), the view's sections in `src/site/louis-agent.site/Components/Resume/`,
   and their tests in `louis-agent.site.tests` (`Resumes/`, `Components/Resume/`). Nothing in `src/web` changes. The
   records are grouped by concern (`Basics/`, `History/`, `Skills/`) to keep six files a folder.
+- **The view's folder is `Components/Cv/`** (step 3): a test namespace ending in `Resume` shadowed the `Resume` record,
+  as `Chats/` isn't `Chat/`. Its sections sit in `History/` (jobs, schooling) and `More/` (skills, the rest).
+- **The CV's words follow Louis's revised page** (2026-11-13, pasted in the build): the full-stack summary, the longer
+  engine text, the corrected job dates and titles, Claude Code and local LLMs, the Pearson diploma and the three 2026
+  AI certificates (issuer still to come).
+- **An admin editor for the CV, in this feature** (Louis, 2026-11-13: "can we have a resume area for the admin section
+  where I can edit my resume in a userfriendly manner? any shared components be created in framework", "give it nice
+  styling a polished finished modern look"). His picks of three, twice: **the CV is kept as a file on the API** (the
+  embedded `cv.json` is the starting copy and the fallback; an edit shows at once, with no deploy), and **it is built
+  in F142 now**, not as its own feature. The file goes on the share the Azure site already mounts for its logs, so
+  nothing new runs in Azure. The editor is a Resume area on the admin's frame (F144): its page, its sidebar link and
+  its card on the home.
+- **The steps, as Louis approved them** (2026-11-13, "go"), nine in place of six. Steps 1 to 3 are built.
+  4. *The CV kept on the API.* The site's host serves it, open to read and behind the admin key to save, from a
+     `cv.json` on the share beside the logs; the embedded file is the starting copy and the fallback; a save runs
+     the strict read and the privacy check. *Test:* a read with no saved file gives the embedded CV; a save is read
+     back; a save without the key, with a misspelt field or with an ID number is refused.
+  5. *The page and the nav mark* (the old step 4), reading the API's copy.
+  6. *Shared form pieces in the framework:* a list editor (add, remove, reorder) and a tag input, generic, for the
+     editor and any later form. *Test:* bUnit, each on its own.
+  7. *The Resume admin area* on the admin's frame (F144, so main is merged in first): `/admin/resume`, its sidebar
+     link and its card on the home, the editor. *Test:* the area's link and card; an edit shows in the preview; Save
+     sends the draft.
+  8. *Save as PDF* (the old step 5).
+  9. *Docs and done* (the old step 6).
+- **The editor's shape** (Louis's pick of three, "option 1"): a form per section with a live preview, the real
+  `ResumeView` redrawn as he types. Presentation Model (Fowler): the form edits a draft copy of the record and Save
+  sends it. Over the packs' described screens (no preview, no tailored look) and a raw JSON editor (not friendly).
+  With "a polished finished modern look".
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · Next: [F143 the guide drives the CV](F143-the-guide-drives-the-cv.md)
