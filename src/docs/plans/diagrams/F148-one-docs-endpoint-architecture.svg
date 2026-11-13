@@ -166,7 +166,7 @@ svg {
       <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
     </g>
     <text class="label tone-amber" x="648" y="341" text-anchor="start">/app/docs</text>
-    <text class="label tone-amber" x="648" y="357" text-anchor="start">the docs, each with its header (step 2)</text>
+    <text class="label tone-amber" x="648" y="357" text-anchor="start">the docs, each with its header (step 3)</text>
     <rect class="box tone-amber" x="1018.2" y="310" width="278.8" height="68" rx="10" />
     <circle class="badge tone-amber" cx="1046.2" cy="344" r="14" />
     <g class="badge-icon" transform="translate(1038.2 336) scale(0.6667)">
@@ -177,7 +177,7 @@ svg {
       <path d="M9 17l6 0" />
     </g>
     <text class="label tone-amber" x="1070.2" y="341" text-anchor="start">the stamp</text>
-    <text class="label tone-amber" x="1070.2" y="357" text-anchor="start">commit + repository (step 3)</text>
+    <text class="label tone-amber" x="1070.2" y="357" text-anchor="start">commit + repository (step 4)</text>
     <rect class="box tone-green" x="839.4" y="438" width="256" height="68" rx="10" />
     <circle class="badge tone-green" cx="867.4" cy="472" r="14" />
     <g class="badge-icon" transform="translate(859.4 464) scale(0.6667)">
@@ -198,7 +198,7 @@ svg {
       <path d="M7 16l0 .01" />
     </g>
     <text class="label tone-violet" x="201" y="623" text-anchor="start">louis-agent.mcp</text>
-    <text class="label tone-violet" x="201" y="639" text-anchor="start">doc:// resources (step 7)</text>
+    <text class="label tone-violet" x="201" y="639" text-anchor="start">doc:// resources (step 9)</text>
     <rect class="box tone-green" x="645.4" y="592" width="263.6" height="68" rx="10" />
     <circle class="badge tone-green" cx="673.4" cy="626" r="14" />
     <g class="badge-icon" transform="translate(665.4 618) scale(0.6667)">
@@ -206,7 +206,7 @@ svg {
       <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
     </g>
     <text class="label tone-green" x="697.4" y="623" text-anchor="start">the docs tools</text>
-    <text class="label tone-green" x="697.4" y="639" text-anchor="start">name their source (step 6)</text>
+    <text class="label tone-green" x="697.4" y="639" text-anchor="start">name their source (step 8)</text>
     <rect class="box tone-violet" x="995.4" y="592" width="324.4" height="68" rx="10" />
     <circle class="badge tone-violet" cx="1023.4" cy="626" r="14" />
     <g class="badge-icon" transform="translate(1015.4 618) scale(0.6667)">
@@ -216,7 +216,7 @@ svg {
       <path d="M7 16l0 .01" />
     </g>
     <text class="label tone-violet" x="1047.4" y="623" text-anchor="start">/v1/docs</text>
-    <text class="label tone-violet" x="1047.4" y="639" text-anchor="start">list, one doc, search (steps 4, 5)</text>
+    <text class="label tone-violet" x="1047.4" y="639" text-anchor="start">list, one doc, search (steps 6, 7)</text>
     <rect class="box tone-blue" x="46.2" y="764" width="187.6" height="68" rx="10" />
     <circle class="badge tone-blue" cx="74.2" cy="798" r="14" />
     <g class="badge-icon" transform="translate(66.2 790) scale(0.6667)">

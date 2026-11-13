@@ -143,26 +143,26 @@ svg {
     <rect class="box tone-green" x="52.5" y="0" width="287" height="124" rx="10" />
     <text class="label tone-green" x="196" y="28" text-anchor="middle">DocsTools</text>
     <text class="note" x="196" y="44" text-anchor="middle">docs pack, changed in</text>
-    <text class="note" x="196" y="56" text-anchor="middle">steps 1 and 6</text>
+    <text class="note" x="196" y="56" text-anchor="middle">steps 1 and 8</text>
     <path class="frame" d="M 52.5 76 L 339.5 76" />
     <text class="word tone-green" x="66.5" y="94" text-anchor="start">ListDocs, ReadDoc, SearchDocs</text>
     <text class="word tone-green" x="66.5" y="108" text-anchor="start">each result ends with its source line</text>
     <rect class="box tone-green" x="521" y="0" width="170" height="124" rx="10" />
     <text class="label tone-green" x="606" y="28" text-anchor="middle">DocsPack</text>
     <text class="note" x="606" y="44" text-anchor="middle">docs pack, changed in</text>
-    <text class="note" x="606" y="56" text-anchor="middle">step 4</text>
+    <text class="note" x="606" y="56" text-anchor="middle">step 5</text>
     <path class="frame" d="M 521 76 L 691 76" />
     <text class="word tone-green" x="535" y="94" text-anchor="start">IDocLibrary? Docs</text>
     <rect class="box tone-violet" x="925" y="0" width="182" height="124" rx="10" />
     <text class="label tone-violet" x="1016" y="28" text-anchor="middle">DocsEndpoints</text>
-    <text class="note" x="1016" y="44" text-anchor="middle">the API, steps 4 and 5</text>
+    <text class="note" x="1016" y="44" text-anchor="middle">the API, steps 6 and 7</text>
     <path class="frame" d="M 925 64 L 1107 64" />
     <text class="word tone-violet" x="939" y="82" text-anchor="start">GET /v1/docs</text>
     <text class="word tone-violet" x="939" y="96" text-anchor="start">GET /v1/docs/{path}</text>
     <text class="word tone-violet" x="939" y="110" text-anchor="start">GET /v1/docs/search?q=</text>
     <rect class="box tone-violet" x="1324.5" y="0" width="203" height="124" rx="10" />
     <text class="label tone-violet" x="1426" y="28" text-anchor="middle">DocResources</text>
-    <text class="note" x="1426" y="44" text-anchor="middle">the MCP host, step 7</text>
+    <text class="note" x="1426" y="44" text-anchor="middle">the MCP host, step 9</text>
     <path class="frame" d="M 1324.5 64 L 1527.5 64" />
     <text class="word tone-violet" x="1338.5" y="82" text-anchor="start">doc://{path}, one per doc</text>
     <rect class="box tone-green" x="289" y="244" width="224" height="110" rx="10" />
@@ -173,7 +173,7 @@ svg {
     <text class="word tone-green" x="303" y="340" text-anchor="start">reads each doc's header once</text>
     <rect class="box tone-teal" x="615" y="420" width="392" height="138" rx="10" />
     <text class="label tone-teal" x="811" y="448" text-anchor="middle">IDocLibrary</text>
-    <text class="note" x="811" y="464" text-anchor="middle">interface, step 4</text>
+    <text class="note" x="811" y="464" text-anchor="middle">interface, step 5</text>
     <path class="frame" d="M 615 484 L 1007 484" />
     <text class="word tone-teal" x="629" y="502" text-anchor="start">DocSource Source</text>
     <text class="word tone-teal" x="629" y="516" text-anchor="start">IReadOnlyList&lt;DocInfo&gt; List()</text>
@@ -190,20 +190,20 @@ svg {
     <text class="word tone-teal" x="125" y="762" text-anchor="start">string? GitHubUrl</text>
     <rect class="box tone-teal" x="501" y="624" width="210" height="152" rx="10" />
     <text class="label tone-teal" x="606" y="652" text-anchor="middle">DocSource</text>
-    <text class="note" x="606" y="668" text-anchor="middle">record, step 3</text>
+    <text class="note" x="606" y="668" text-anchor="middle">record, step 4</text>
     <path class="frame" d="M 501 688 L 711 688" />
     <text class="word tone-teal" x="515" y="706" text-anchor="start">string? Commit</text>
     <text class="word tone-teal" x="515" y="720" text-anchor="start">string? Repository</text>
     <text class="word tone-teal" x="515" y="734" text-anchor="start">string? UrlOf(string path)</text>
     <rect class="box tone-teal" x="931" y="624" width="170" height="152" rx="10" />
     <text class="label tone-teal" x="1016" y="652" text-anchor="middle">DocPage</text>
-    <text class="note" x="1016" y="668" text-anchor="middle">record, step 4</text>
+    <text class="note" x="1016" y="668" text-anchor="middle">record, step 5</text>
     <path class="frame" d="M 931 688 L 1101 688" />
     <text class="word tone-teal" x="945" y="706" text-anchor="start">DocInfo Info</text>
     <text class="word tone-teal" x="945" y="720" text-anchor="start">string Markdown</text>
     <rect class="box tone-teal" x="1341" y="624" width="170" height="152" rx="10" />
     <text class="label tone-teal" x="1426" y="652" text-anchor="middle">DocHit</text>
-    <text class="note" x="1426" y="668" text-anchor="middle">record, step 5</text>
+    <text class="note" x="1426" y="668" text-anchor="middle">record, step 7</text>
     <path class="frame" d="M 1341 688 L 1511 688" />
     <text class="word tone-teal" x="1355" y="706" text-anchor="start">string Path</text>
     <text class="word tone-teal" x="1355" y="720" text-anchor="start">int Line</text>

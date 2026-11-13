@@ -18,14 +18,14 @@
       },
       {
         "id": "files",
-        "label": "/app/docs\nthe docs, each with its header (step 2)",
+        "label": "/app/docs\nthe docs, each with its header (step 3)",
         "icon": "folder",
         "tone": "amber",
         "group": "image"
       },
       {
         "id": "stamp",
-        "label": "the stamp\ncommit + repository (step 3)",
+        "label": "the stamp\ncommit + repository (step 4)",
         "icon": "file",
         "tone": "amber",
         "group": "image"
@@ -39,14 +39,14 @@
       },
       {
         "id": "tools",
-        "label": "the docs tools\nname their source (step 6)",
+        "label": "the docs tools\nname their source (step 8)",
         "icon": "settings",
         "tone": "green",
         "group": "image"
       },
       {
         "id": "api",
-        "label": "/v1/docs\nlist, one doc, search (steps 4, 5)",
+        "label": "/v1/docs\nlist, one doc, search (steps 6, 7)",
         "icon": "server",
         "tone": "violet",
         "group": "image"
@@ -60,7 +60,7 @@
       },
       {
         "id": "mcp",
-        "label": "louis-agent.mcp\ndoc:// resources (step 7)",
+        "label": "louis-agent.mcp\ndoc:// resources (step 9)",
         "icon": "server",
         "tone": "violet"
       },
