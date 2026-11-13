@@ -2,7 +2,7 @@
 
 **Status:** draft, written 2026-11-13 (thread "Plan a docs API endpoint", Louis: "can we plan a docs api end point
 all docs must be served from that endpoint. this is next"). **Branch:** `feature/F148-one-docs-endpoint`.
-Louis picked the big one on 2026-11-13: **the words stay markdown, the facts are generated** (*Picked*). Five
+Louis picked the big one on 2026-11-13: **the words stay markdown, the facts are generated** (*Picked*). Six
 smaller choices are open and go to him one at a time, three options each (*Open choices*); the steps, the four
 diagrams and the namespace map are settled after his picks, before step 1.
 
@@ -117,6 +117,19 @@ via json?", and picked from three:
      contract and a route file. *Recommended.*
    - **C. Its own docs host** (a separate small program at its own address, the one F125.2 would make public). The
      cleanest outside door; a second container to deploy and pay for now, before anything needs it.
+
+6. **Where a fix's lesson lives** (Louis, 2026-11-13: "we currently have one learning doc for fixes, should that
+   not be another layer?"). Today `learning/fixes-lessons.md` holds 45 lessons in 413 lines, and 98 more are owed:
+   about 1,300 lines in one doc. It is not a new layer: a lesson is as deep as an ADR (one small thing, layer 5).
+   It is a new *kind*, and the question is how it is filed.
+   - **A. One lesson, one file, as the ADRs are:** `learning/fixes/fx153-a-page-is-behind-the-key.md`, kind
+     `lesson`, its template (*Symptom*, *Cause*, *Lesson*) and its skill in the header, so each skill's write-up
+     lists its lessons by itself (F149). About 150 small files; the guide fetches one lesson, not 1,300 lines.
+     *Recommended.*
+   - **B. The lessons move into their skill's write-up** (`12-evaluation.md` gains *Lessons from the fixes*).
+     Fewer files, the lesson beside the skill; the write-ups grow long, and six skills have no write-up yet.
+   - **C. One doc, as now,** split in two or three when it gets long. Nothing to move; one lesson can't be linked,
+     listed by skill or fetched alone.
 
 ### The standards the docs follow
 
