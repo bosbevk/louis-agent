@@ -35,6 +35,15 @@ public class SiteAdminTests
             Does.Contain("/admin/overview"));
     }
 
+    /// <summary>
+    /// The site's router takes the pages its areas bring, as every site's does (F127.6), so /admin/overview opens
+    /// rather than the site's not-found page (Louis, opening it on the PC).
+    /// </summary>
+    [Test]
+    public void TheRouter_TakesTheAreasPages() =>
+        Assert.That(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/site/louis-agent.site/App.razor")),
+            Does.Contain("AdditionalAssemblies=\"Areas.PageAssemblies\""));
+
     /// <summary>The site's secrets name the admin's own key, which falls back to the API's.</summary>
     [Test]
     public void TheSecrets_NameTheAdminsKey() =>

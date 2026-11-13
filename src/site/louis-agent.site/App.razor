@@ -1,8 +1,11 @@
+@using LouisAgent.Web.Components.Areas
 @using LouisAgent.Web.Components.Site.Addresses
 @inject SiteAddresses Addresses
+@inject SiteAreas Areas
 @* A place's own address is drawn in its page's own frame (F127.1): /restaurant-demo/the-demo, opened afresh, is in
-   the showroom, as the click that wrote it was. *@
-<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Errors.NotFound)">
+   the showroom, as the click that wrote it was. The pages the site's areas bring (its admin, F127.8) join its own. *@
+<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="Areas.PageAssemblies"
+        NotFoundPage="typeof(Errors.NotFound)">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@PlaceLayout.Of(routeData, typeof(SiteLayout), Addresses)"/>
     </Found>
