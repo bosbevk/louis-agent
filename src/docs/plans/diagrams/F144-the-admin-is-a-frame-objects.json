@@ -1,0 +1,18 @@
+{
+  "kind": "flow",
+  "title": "F144 the admin is a frame: code-review's admin",
+  "caption": "The areas code-review names, each with the card and the links it brings to the frame.",
+  "flow": {
+    "nodes": [
+      { "id": "frame", "icon": "browser", "tone": "violet", "label": "Admin(AdminLayout)\nthe frame, /admin" },
+      { "id": "overview", "icon": "chart", "tone": "teal", "label": "SiteArea overview\nAdminCard: OverviewCard\nAdminLinks: OverviewLinks" },
+      { "id": "packs", "icon": "box", "tone": "teal", "label": "SiteArea packs\nAdminCard: PacksCard\nAdminLinks: PackMenu" },
+      { "id": "evals", "icon": "checks", "tone": "teal", "label": "SiteArea evals\nAdminCard: EvalsCard\nAdminLinks: EvalLinks" }
+    ],
+    "edges": [
+      { "from": "frame", "to": "overview" },
+      { "from": "frame", "to": "packs" },
+      { "from": "frame", "to": "evals" }
+    ]
+  }
+}

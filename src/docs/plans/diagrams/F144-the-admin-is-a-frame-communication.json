@@ -1,0 +1,22 @@
+{
+  "kind": "sequence",
+  "title": "F144 the admin is a frame: Louis opens /admin",
+  "caption": "The home reads the cards the site's areas brought, draws each in the frame, and each card fetches what it shows behind the admin key.",
+  "sequence": {
+    "participants": [
+      { "id": "L", "label": "Louis", "actor": true, "tone": "blue" },
+      { "id": "H", "icon": "browser", "tone": "violet", "label": "The home" },
+      { "id": "C", "icon": "chart", "tone": "violet", "label": "An area's card" },
+      { "id": "A", "icon": "server", "tone": "violet", "label": "The API" }
+    ],
+    "steps": [
+      { "step": "message", "from": "L", "to": "H", "text": "opens /admin, the admin key kept in the browser" },
+      { "step": "note", "over": ["H"], "text": "SiteAreas.AdminCards: overview, packs, evals" },
+      { "step": "message", "from": "H", "to": "C", "text": "draws each card in the grid" },
+      { "step": "message", "from": "C", "to": "A", "text": "GET /v1/admin/overview, screens, runs" },
+      { "step": "reply", "from": "A", "to": "C", "text": "what the card shows" },
+      { "step": "reply", "from": "H", "to": "L", "text": "today's talks, the screens, the last run; Open → each area" }
+    ],
+    "numbered": true
+  }
+}

@@ -12,16 +12,17 @@
 
 | Kind | Done | Open in the TODO |
 |---|---|---|
-| Features (`F`) | 103 | 87 |
+| Features (`F`) | 103 | 88 |
 | Fixes (`FX`) | 136 | 6 |
 | Cleanups (`CL`) | 32 | 28 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
 
-## Open (116 in the TODO)
+## Open (117 in the TODO)
 
 | Id | What | Phase |
 |---|---|---|
+| F144 | The admin is a frame its areas plug into: the home of cards at `/admin`, the overview, packs and evals each an area; the studio to `/admin/evals` | Now |
 | F139 | A site draws its own cards: a card, a receipt and a form slot, each site its own SVG; the form turns Sending then Sent in place; its own plan | Now, after F127 |
 | F140 | A host names its parts with one builder: `AddLouisAgent(catalog, agent => …)` and `UseLouisAgent()`, the middleware in its safe order; its own plan | Now, after F139 |
 | F141 | Every part of the framework's web ready for an agent: the account pages, the admin and the studio name their focus and selectable pieces; an admin helper; its own plan | Now, after F127 |

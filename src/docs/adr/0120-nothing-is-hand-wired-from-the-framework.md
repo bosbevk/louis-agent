@@ -1,7 +1,8 @@
 # 0120. Nothing is wired by hand from the framework into an implementation
 
 **Status:** Accepted · **Date:** 2026-11-12 (Louis, F127.6 step 9: "new ADR nothing is to be handwired from the
-framework to implementation") · **Recorded:** 2026-11-12 · Amends [0084](0084-every-site-is-built-on-the-frameworks-web.md)
+framework to implementation") · **Recorded:** 2026-11-12 · Amended 2026-11-13 (F144: the admin is a frame its areas
+plug into) · Amends [0084](0084-every-site-is-built-on-the-frameworks-web.md)
 and [0111](0111-the-frameworks-website-lives-in-src-site.md)
 
 ## Context
@@ -19,6 +20,11 @@ until each was edited.
   registering a part itself. A site names its areas, `builder.Services.AddSiteAreas(areas => …)`: `Chat()`,
   `Admin(layout, views => …)`, `Showroom(demos)`, and a library's own area as an extension (`Evals()`, `Accounts()`).
   The builder registers each area's services, pages, frames and admin links, and the chat's plumbing for every site.
+- **The admin is a frame its areas plug into** (amended 2026-11-13, F144, Louis: "admin must be the main admin layout
+  for admin areas to plugin into, overview is an overview area, evals is the eval area inside admin layout"):
+  `Admin(layout)` names the frame and its home at `/admin`, and nothing else. Every part inside it is an area with its
+  pages, its sidebar links and its card on the home: `Overview(counts)`, `Packs(views)`, `Evals()`. An admin area
+  named without the frame is refused at start-up.
 - **What an implementation passes in is its own**: its layouts as types, its packs' views in the admin's lambda, its
   words and addresses. It never names a framework part (`SiteFrames`, `PackViews`, `ChatHandoff`, a library's
   `AddLouisAgent…`) and never lists the framework's page assemblies: its router reads `SiteAreas.PageAssemblies`.
