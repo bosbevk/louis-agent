@@ -220,6 +220,10 @@ is written where and when it will be read.
   the rewrites as their own cleanup, or as planned in one commit): four commits. 7a is `prompts.md` and the
   standing instructions moved in, with nothing rewritten. 7b rewrites `razor.md` and `css.md`, 7c `docs.md`, 7d
   `csharp.md`.
+- **2026-11-13, step 7d: `csharp.md` is two files.** Rewritten, it would not fit the 200 lines a rules file may
+  hold: 70 of its 161 lines are how a summary is written, mostly examples. Louis's pick of three (two files by
+  topic, one file held under 200, or the examples moved to ADR 0050): two files. `csharp-summaries.md` takes the
+  summaries, carried over whole, and `csharp.md` keeps the rules of the code. Both load for every `.cs` file.
 
 ---
 [Docs index](../README.md) · Related: [Plans](README.md)

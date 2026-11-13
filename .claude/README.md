@@ -14,7 +14,7 @@ needed, and the ones that must never be missed are loaded always.
 | Layer | Files | When Claude Code loads it |
 |---|---|---|
 | Always | `src/docs/CLAUDE.md`, which the root `CLAUDE.md` imports. `rules/design-rules.md` and `rules/repo-map.md`, which have no `paths`. | Every session, whole |
-| With a kind of file | `rules/csharp.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, each with `paths`. A `CLAUDE.md` in a folder. | When a matching file, or a file in that folder, is read or edited |
+| With a kind of file | `rules/csharp.md`, `rules/csharp-summaries.md`, `rules/razor.md`, `rules/css.md`, `rules/docs.md`, `rules/prompts.md`, each with `paths`. A `CLAUDE.md` in a folder. | When a matching file, or a file in that folder, is read or edited |
 | For a job | `skills/{name}/SKILL.md` | Its description is always in view. Its body loads when Claude judges the job matches, or when someone types `/name`. |
 
 Two rules follow from the last row.

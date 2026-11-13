@@ -36,7 +36,7 @@ the pattern and the ADRs in their own parts, on every class and method.
   didn't change too. A file the step only read, or one outside its commit, waits; never a big refactor of its own.
 
 The how, with the robot-against-person table and the `ChromeSetup` and `NotesPanel.AddAsync` examples, is in
-`.claude/rules/csharp.md`, loaded when a `.cs` file is edited.
+`.claude/rules/csharp-summaries.md`, loaded when a `.cs` file is edited.
 
 ## Consequences
 

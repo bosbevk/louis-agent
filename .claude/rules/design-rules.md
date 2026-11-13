@@ -50,7 +50,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Nothing is backward compatible until something is sold** — no migration, alias, lenient reader or second parser
   for what we store or send between our own parts. [ADR 0049](../../src/docs/adr/0049-nothing-is-compatible-before-a-sale.md).
 
-**The code** (the how in `.claude/rules/csharp.md`)
+**The code** (the how in `.claude/rules/csharp.md` and `csharp-summaries.md`)
 
 - **No message text inline in C#**, and stdout is a protocol: logs go through `ILogger` to stderr; **no anonymous
   types or `dynamic`**: a message's holes are a record, an object built for a call a named local first. [ADR 0009](../../src/docs/adr/0009-message-text-as-enum-templates.md), [0119](../../src/docs/adr/0119-declare-name-then-pass.md).
