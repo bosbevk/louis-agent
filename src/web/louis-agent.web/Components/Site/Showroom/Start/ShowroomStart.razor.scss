@@ -79,6 +79,12 @@
 
 .start-stage ::deep .dock { margin: 18px 0 22px; }
 
+/* On a phone the deck is a row of upright windows, as tall as they are, and the title stands alone over it. */
+@media (max-width: 900px) {
+    .start-stage ::deep .deck { height: auto; }
+    .start-lede { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .start-play { transition: none; }
 }

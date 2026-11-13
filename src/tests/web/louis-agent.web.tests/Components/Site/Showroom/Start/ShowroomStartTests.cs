@@ -38,9 +38,13 @@ public class ShowroomStartTests
             builder.AddMarkupContent(0, "<p class=\"bakery-window\">Loaves on a shelf</p>");
     }
 
-    /// <summary>The start with these demos, the florist forward first.</summary>
+    /// <summary>
+    /// The start with these demos, the florist forward first. The browser answers the deck's module with nothing
+    /// and lists what was asked.
+    /// </summary>
     private static IRenderedComponent<ShowroomStart> Start(BunitContext ctx, ShowroomDemos? demos = null)
     {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(demos ?? Demos);
         return ctx.Render<ShowroomStart>(parameters => parameters
             .Add(start => start.Featured, "/florist-demo")
@@ -317,14 +321,13 @@ public class ShowroomStartTests
     }
 
     /// <summary>
-    /// A site whose places have no addresses still has its start: a press brings the demo forward, and no script is
-    /// asked for anything.
+    /// A site whose places have no addresses still has its start: a press brings the demo forward, and the address
+    /// bar is asked to show nothing.
     /// </summary>
     [Test]
     public void OnASiteWithNoAddresses_APressWritesNothing()
     {
         using var ctx = new BunitContext();
-        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var start = Start(ctx);
 
         start.Find("nav.dock button#coder-demo").Click();
@@ -332,7 +335,7 @@ public class ShowroomStartTests
         Assert.Multiple(() =>
         {
             Assert.That(ForwardAddress(start), Is.EqualTo("/coder-demo"));
-            Assert.That(ctx.JSInterop.Invocations, Is.Empty);
+            Assert.That(Shown(ctx), Is.Empty);
         });
     }
 

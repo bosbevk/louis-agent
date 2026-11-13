@@ -17,9 +17,14 @@ public class DeckTests
         public int? Index { get; set; }
     }
 
-    /// <summary>A deck of five letters with this one forward.</summary>
-    private static IRenderedComponent<Deck<string>> Deck(BunitContext ctx, int forward, Asked asked) =>
-        ctx.Render<Deck<string>>(parameters => parameters
+    /// <summary>
+    /// A deck of five letters with this one forward. The browser answers the deck's module with nothing: what the
+    /// deck asks of it is <see cref="DeckOnAPhoneTests"/>'s.
+    /// </summary>
+    private static IRenderedComponent<Deck<string>> Deck(BunitContext ctx, int forward, Asked asked)
+    {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        return ctx.Render<Deck<string>>(parameters => parameters
             .Add(deck => deck.Items, Letters)
             .Add(deck => deck.Forward, forward)
             .Add(deck => deck.ForwardChanged, index => asked.Index = index)
@@ -27,6 +32,7 @@ public class DeckTests
             .Add(deck => deck.Label, "Letters")
             .Add(deck => deck.BeforeLabel, "The letter before")
             .Add(deck => deck.NextLabel, "The next letter"));
+    }
 
     /// <summary>
     /// Every item is drawn through the template, in order, each told how far from the middle it stands. One is

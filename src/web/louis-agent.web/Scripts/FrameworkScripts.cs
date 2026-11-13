@@ -34,6 +34,11 @@ public static class FrameworkScripts
     /// <summary>A showroom's mock website going to the place its agent showed, inside the mock (F127.1).</summary>
     public const string Mock = Content + "Components/Site/Showroom/Mock/SiteMock.razor.js";
 
+    /// <summary>
+    /// A deck as a row on a phone: which item a swipe left in view, and bringing one into view (F134.1).
+    /// </summary>
+    public const string Deck = Content + "Components/Staging/Decks/Deck.razor.js";
+
     /// <summary>The address bar following the demo that is forward on a showroom's start (F134.1).</summary>
     public const string ShowroomStart = Content + "Components/Site/Showroom/Start/ShowroomStart.razor.js";
 

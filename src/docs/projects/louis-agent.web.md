@@ -282,6 +282,10 @@ brings another forward, by the dock, an arrow or a key, the start's own small mo
 in the bar. It replaces the entry, so the back button still leaves the page. On a site whose places have no
 addresses, nothing is read and nothing is written.
 
+On a phone the start is the same page with less on it. The title stands alone, without the lede. The deck is a
+row of upright windows, swiped one at a time, and a swipe brings a demo forward as an arrow does, so the name,
+the dock and the address follow it. The dock shows its icons only.
+
 **A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
 the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
 The notes say what a custom agent could add. Each part is a section with its own address.
@@ -405,13 +409,22 @@ page and a diagram never hold two copies of a drawing.
   An arrow at each side, the keyboard's arrows, or a press on an item behind asks for another to come forward.
   What an item behind holds can't be reached until it is forward. `DeckPlace` is the deck's one rule: how far from
   the middle each item stands, counted the short way round.
+
+  On a screen up to 900 wide there is no room for depth, so the same items are a row. The styles make the row:
+  each item upright, most of the row's width and never wider than a phone's, with its neighbours showing at the
+  sides and no arrows. The browser does the swiping, and is told to stop on each item. The deck's module does
+  the two things styles can't. When a swipe comes to rest it says which item stands in the middle, and the deck
+  asks the page for that one, as an arrow would. When the page puts another item forward, it brings the row to
+  it. On a wide screen nothing scrolls, so the module says and moves nothing. The place that uses the deck lets
+  go of the height it gave, since the row is as tall as its items.
 - `FramedWindow` is a bar like a browser's, with an address word, then a body. The body can't outgrow the frame or
   be scrolled inside it. The framework offers three bodies, which hold no words of their own. `SiteBody` is a
   website with its chat: a photo with a name and a line over it, and one question, its answer and one thing the
   agent showed. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
   nothing of its own to show yet: its icon, large, over its name and a line.
 - `Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group changes. The current
-  button shows its name, and the rest keep theirs for a screen reader. Each button carries an id, is marked
+  button shows its name, and the rest keep theirs for a screen reader. On a screen up to 900 wide the dock is
+  its icons only, so it fits a phone: the current one keeps its tint and ring. Each button carries an id, is marked
   as a card of the page, and says its name as the card's title, which is where the page's list for a site's
   guide reads it.
 

@@ -3,7 +3,8 @@
 /* A deck (F134.1): the items stand in depth around the one forward. Each item's style gives two numbers, --d (how far
    from the middle, and which way) and --abs (how far), and everything about its place is worked out from them here:
    pushed sideways, pushed back, turned towards the middle and dimmed. The place that uses the deck gives it a
-   height, and may set --deck-item-height and --deck-item-ratio for the size of one item. */
+   height, and may set --deck-item-height and --deck-item-ratio for the size of one item. The last block is the
+   deck on a narrow screen, where it is a row. */
 .deck {
     position: relative;
     perspective: 2000px;
@@ -57,6 +58,48 @@
 .deck-arrow:hover { transform: scale(1.1); background: glow.tint(var(--accent, var(--web-bright)), 25%); }
 .deck-before { left: max(20px, 6%); }
 .deck-next { right: max(20px, 6%); }
+
+/* On a narrow screen there is no room for depth. The items are a row the visitor swipes, one at a time, each stopping
+   in the middle with its neighbours showing at the sides. Nothing is pushed back, turned or dimmed, and the arrows
+   are gone, since the swipe does their work. The row is as tall as its items, so the place that uses the deck lets
+   go of the height it gave. */
+@media (max-width: 900px) {
+    /* An item is most of the row's width, and never wider than a phone's, so it stays upright on a tablet too. */
+    .deck { --deck-row-item: min(84%, 360px); --deck-row-gap: 12px; perspective: none; }
+    .deck-items {
+        position: relative;
+        inset: auto;
+        display: flex;
+        gap: var(--deck-row-gap);
+        /* A row that scrolls cuts what stands past its edge. This is the room for an item's ring and shadow. */
+        padding-block: 14px 26px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        transform-style: flat;
+    }
+    /* Room before the first item and after the last, so those two can stop in the middle as well. */
+    .deck-items::before, .deck-items::after {
+        content: "";
+        flex: 0 0 calc((100% - var(--deck-row-item)) / 2 - var(--deck-row-gap));
+    }
+    .deck-item {
+        position: static;
+        flex: 0 0 var(--deck-row-item);
+        height: auto;
+        aspect-ratio: 3 / 4;
+        cursor: default;
+        transform: none;
+        filter: none;
+        transition: none;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        /* Its first value, which is no reflection. Chrome refuses "none" here and keeps the reflection. */
+        -webkit-box-reflect: initial;
+    }
+    .deck-arrow { display: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .deck-item, .deck-arrow { transition: none; }
