@@ -1,0 +1,117 @@
+{
+  "kind": "classes",
+  "title": "CL65.5 the pictures a project needs: the interface design",
+  "caption": "A project doc is read into what it states and what it shows. The floor says what its kind asks for, and the rule holds the two equal.",
+  "classes": {
+    "types": [
+      {
+        "id": "kind",
+        "name": "ProjectKind",
+        "kind": "enum, new in step 2",
+        "members": [
+          "Library, ContractsLibrary, Host, Program",
+          "WebApp, RazorLibrary, ConsoleTool",
+          "TestProjects, Content"
+        ]
+      },
+      {
+        "id": "doc",
+        "name": "ProjectDoc",
+        "kind": "record, new in step 2",
+        "members": [
+          "+ProjectKind? Kind",
+          "+DiagramType[] Own (step 3)",
+          "+DiagramType[] Shown (step 3)",
+          "+bool HasDiagramsSection (step 8)",
+          "+Read(path) ProjectDoc"
+        ]
+      },
+      {
+        "id": "floor",
+        "name": "ProjectFloor",
+        "kind": "static, new in step 3",
+        "members": [
+          "+Of(ProjectKind) DiagramType[]",
+          "+Asked(ProjectDoc) DiagramType[]"
+        ]
+      },
+      {
+        "id": "tests",
+        "name": "ProjectDocsTests",
+        "kind": "class, new in step 2",
+        "members": [
+          "EveryProjectDoc_StatesItsKind",
+          "EveryProjectDoc_ShowsWhatItsKindAsks",
+          "TheGuidesTable_IsTheFloor",
+          "NoProjectDoc_HasADiagramsSection"
+        ]
+      },
+      {
+        "id": "reader",
+        "name": "DiagramReader",
+        "kind": "static",
+        "members": [
+          "+Read(json) DiagramSource"
+        ]
+      },
+      {
+        "id": "types",
+        "name": "DiagramTypes",
+        "kind": "static",
+        "members": [
+          "+Own(DiagramKind) DiagramType?"
+        ]
+      },
+      {
+        "id": "choice",
+        "name": "SettingChoice",
+        "kind": "static",
+        "members": [
+          "+TryParse<T>(text, out value) bool"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "tests",
+        "to": "doc",
+        "kind": "creates",
+        "word": "reads each"
+      },
+      {
+        "from": "tests",
+        "to": "floor",
+        "kind": "uses",
+        "word": "asks"
+      },
+      {
+        "from": "doc",
+        "to": "kind",
+        "kind": "holds"
+      },
+      {
+        "from": "floor",
+        "to": "kind",
+        "kind": "uses"
+      },
+      {
+        "from": "doc",
+        "to": "choice",
+        "kind": "uses",
+        "word": "its kind"
+      },
+      {
+        "from": "doc",
+        "to": "reader",
+        "kind": "uses",
+        "word": "each picture"
+      },
+      {
+        "from": "doc",
+        "to": "types",
+        "kind": "uses",
+        "word": "a kind's own type"
+      }
+    ]
+  }
+}

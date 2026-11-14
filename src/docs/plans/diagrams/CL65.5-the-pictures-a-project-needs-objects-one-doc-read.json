@@ -1,0 +1,64 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL65.5 the pictures a project needs: one doc, read",
+  "caption": "The API's doc in memory: a host, which also shows a component diagram, and the type of each picture it links.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      {
+        "id": "doc",
+        "label": "ProjectDoc\nlouis-agent.api.md",
+        "icon": "file",
+        "tone": "teal"
+      },
+      {
+        "id": "kind",
+        "label": "Kind = Host",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "own",
+        "label": "Own\ncomponent",
+        "icon": "box",
+        "tone": "teal"
+      },
+      {
+        "id": "shown",
+        "label": "Shown\noverview, class, sequence,\ncomponent, deployment",
+        "icon": "chart",
+        "tone": "green"
+      },
+      {
+        "id": "floor",
+        "label": "ProjectFloor.Of(Host)\noverview, class, sequence, deployment",
+        "icon": "box",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "doc",
+        "to": "kind",
+        "word": "holds"
+      },
+      {
+        "from": "doc",
+        "to": "own",
+        "word": "holds"
+      },
+      {
+        "from": "doc",
+        "to": "shown",
+        "word": "holds"
+      },
+      {
+        "from": "kind",
+        "to": "floor",
+        "word": "asks for",
+        "style": "dashed"
+      }
+    ]
+  }
+}
