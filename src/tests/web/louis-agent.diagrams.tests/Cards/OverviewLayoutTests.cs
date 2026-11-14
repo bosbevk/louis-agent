@@ -70,8 +70,8 @@ public class OverviewLayoutTests
     }
 
     /// <summary>
-    /// A rail's ends stand on its cards' edges: on the bottom of the card above it, at its middle, and on the top
-    /// of each card below.
+    /// A rail's ends stand on its cards' edges: under the card above it, at its middle and a little clear of it
+    /// since it is a headline, and on the top of each card below.
     /// </summary>
     [Test]
     public void ARailsEnds_StandOnItsCardsEdges()
@@ -82,7 +82,8 @@ public class OverviewLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That((above.Card, above.X, above.Y), Is.EqualTo(("top", 448d, Card(placed, "top").H)));
+            Assert.That((above.Card, above.X, above.Y),
+                Is.EqualTo(("top", 448d, Card(placed, "top").H + OverviewLayout.HeadlineClear)));
             Assert.That(rail.Ends.Where(end => !end.Above).Select(end => (end.Card, end.X, end.Y)), Is.EqualTo(
                 new[] { "a", "b", "c" }.Select(id => (id, Card(placed, id).X + 142, Card(placed, id).Y))));
             Assert.That((rail.Left, rail.Right), Is.EqualTo((142d, 754d)));
@@ -90,7 +91,8 @@ public class OverviewLayoutTests
     }
 
     /// <summary>
-    /// A drop into a headline ends a little above it, so its arrowhead stands clear of the badge.
+    /// A drop into a headline ends a little above it, so its arrowhead stands clear of the badge. A stem under a
+    /// plain card starts on its bottom edge.
     /// </summary>
     [Test]
     public void ADropIntoAHeadline_EndsALittleAboveIt()
@@ -101,8 +103,13 @@ public class OverviewLayoutTests
 
         var placed = OverviewLayout.Place(spec);
 
-        Assert.That(placed.Rails.Single().Ends.Single(end => !end.Above).Y,
-            Is.EqualTo(Card(placed, "engine").Y - OverviewLayout.HeadlineClear));
+        Assert.Multiple(() =>
+        {
+            Assert.That(placed.Rails.Single().Ends.Single(end => !end.Above).Y,
+                Is.EqualTo(Card(placed, "engine").Y - OverviewLayout.HeadlineClear));
+            Assert.That(placed.Rails.Single().Ends.Where(end => end.Above).Select(end => end.Y),
+                Is.All.EqualTo(Card(placed, "a").H));
+        });
     }
 
     /// <summary>An end has an arrowhead where a link points at its card.</summary>

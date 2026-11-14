@@ -290,7 +290,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/), Theme/ (with Looks/)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Renderers/ (with Parts/, and Parts/Overview/ for a cards picture's new drawing), Theme/ (with Looks/)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/

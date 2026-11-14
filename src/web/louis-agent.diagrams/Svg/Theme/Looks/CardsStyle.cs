@@ -56,7 +56,6 @@ internal static class CardsStyle
           .{{RailPaint}}-3 { stop-color: var(--blue-line); stop-opacity: 0; }
           .crd-line { fill: none; stroke: var(--violet-line); stroke-width: 1.5; stroke-opacity: .85; }
           .crd-node { fill: var(--ground); stroke: var(--violet-line); stroke-width: 1.5; }
-          .crd-arrow { fill: var(--violet-line); }
           .crd-badge { fill: url(#{{BadgePaint}}); }
           .{{BadgePaint}}-0 { stop-color: var(--violet-line); }
           .{{BadgePaint}}-1 { stop-color: var(--blue-line); }

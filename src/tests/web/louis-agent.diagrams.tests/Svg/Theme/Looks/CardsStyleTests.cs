@@ -40,7 +40,6 @@ public partial class CardsStyleTests
     [TestCase(".crd-rail-glow")]
     [TestCase(".crd-line")]
     [TestCase(".crd-node")]
-    [TestCase(".crd-arrow")]
     [TestCase(".crd-badge")]
     [TestCase(".crd-badge-icon")]
     [TestCase(".crd-headline")]

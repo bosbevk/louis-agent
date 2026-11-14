@@ -21,7 +21,10 @@ public static class OverviewLayout
     /// <summary>The room between two cards of a row, and between two rows no link crosses.</summary>
     public const double Gap = 22, RowGap = 26;
 
-    /// <summary>How far above a headline a drop into it ends, so its arrowhead stands clear of the badge.</summary>
+    /// <summary>
+    /// How far clear of a headline a rail's line keeps, above it and under it, so an arrowhead stands clear of its
+    /// badge and of its text. A headline has no box whose edge a line could end on.
+    /// </summary>
     public const double HeadlineClear = 4;
 
     /// <summary>The overview placed across the given width, from the origin.</summary>
@@ -78,7 +81,7 @@ public static class OverviewLayout
 
     /// <summary>
     /// A rail's ends on its cards' edges: the bottom of a card above it and the top of a card below it, a little
-    /// above a headline, each with an arrowhead where a link points at its card.
+    /// clear of a headline, each with an arrowhead where a link points at its card.
     /// </summary>
     private static List<RailEnd> Ends(RailSpan span, Dictionary<string, PlacedCard> cards) =>
     [
@@ -89,8 +92,9 @@ public static class OverviewLayout
     /// <summary>The edge of a card a rail's line runs to.</summary>
     private static double Edge(PlacedCard card, bool above) => (above, card.Card.Look) switch
     {
-        (true, _) => card.Y + card.H,
+        (true, CardLook.Plain) => card.Y + card.H,
         (false, CardLook.Plain) => card.Y,
+        (true, _) => card.Y + card.H + HeadlineClear,
         _ => card.Y - HeadlineClear
     };
 }
