@@ -1,0 +1,26 @@
+{
+  "kind": "sequence",
+  "title": "CL65 the diagrams as an engine: one picture is built",
+  "caption": "The renderer directs and the builder builds: the steps every kind shares are written once.",
+  "sequence": {
+    "participants": [
+      { "id": "tool", "label": "doc-diagrams", "icon": "terminal", "tone": "violet" },
+      { "id": "reader", "label": "DiagramReader", "icon": "code", "tone": "teal" },
+      { "id": "renderer", "label": "FlowRenderer", "icon": "code", "tone": "green" },
+      { "id": "layout", "label": "GraphLayout", "icon": "chart", "tone": "green" },
+      { "id": "builder", "label": "PictureBuilder", "icon": "box", "tone": "green" }
+    ],
+    "steps": [
+      { "step": "message", "from": "tool", "to": "reader", "text": "Read(json)" },
+      { "step": "reply", "from": "reader", "to": "tool", "text": "DiagramSource, with its kind and its type" },
+      { "step": "message", "from": "tool", "to": "renderer", "text": "Render(source)" },
+      { "step": "message", "from": "renderer", "to": "layout", "text": "Place(flow)" },
+      { "step": "reply", "from": "layout", "to": "renderer", "text": "PlacedGraph" },
+      { "step": "message", "from": "renderer", "to": "builder", "text": "Title, Type, Body, Key, Caption, Style" },
+      { "step": "note", "over": [ "builder" ], "text": "the width, the light, the room above, the order of the styles" },
+      { "step": "message", "from": "renderer", "to": "builder", "text": "Build()" },
+      { "step": "reply", "from": "builder", "to": "renderer", "text": "the SVG" },
+      { "step": "reply", "from": "renderer", "to": "tool", "text": "the SVG" }
+    ]
+  }
+}

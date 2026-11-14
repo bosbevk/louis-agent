@@ -1,0 +1,40 @@
+{
+  "kind": "classes",
+  "title": "CL65 the diagrams as an engine: the interface design",
+  "caption": "What a diagram is above, what builds it below: the renderers and the builder know the source, and the source knows neither.",
+  "classes": {
+    "types": [
+      { "id": "source", "name": "DiagramSource", "kind": "record, moves in CL65.1", "group": "diagrams",
+        "members": [ "Kind, Title, Caption", "Type (CL65.3)", "Flow, Cards, Sequence, …" ] },
+      { "id": "reader", "name": "DiagramReader", "kind": "static, as today", "group": "diagrams",
+        "members": [ "Read(json) DiagramSource" ] },
+      { "id": "kind", "name": "DiagramKind", "kind": "enum, as today", "group": "diagrams" },
+      { "id": "type", "name": "DiagramType", "kind": "enum, CL65.3", "group": "diagrams",
+        "members": [ "Class, Sequence, Object, Activity, …", "Overview" ] },
+      { "id": "renderers", "name": "DiagramRenderers", "kind": "static, as today", "group": "engine",
+        "members": [ "Render(source) string" ] },
+      { "id": "irenderer", "name": "IDiagramRenderer", "kind": "interface, as today", "group": "engine",
+        "members": [ "Kind", "Render(source) string" ] },
+      { "id": "flow", "name": "FlowRenderer", "kind": "class, one of seven", "group": "engine" },
+      { "id": "builder", "name": "PictureBuilder", "kind": "class, CL65.2", "group": "engine",
+        "members": [ "Title(title)  Type(type)", "Body(cls, drawn)  Key(drawn)", "Caption(words)  Style(rules)", "Build() string" ] },
+      { "id": "layout", "name": "GraphLayout", "kind": "static, as today", "group": "engine" },
+      { "id": "writer", "name": "SvgWriter", "kind": "class, as today", "group": "engine" }
+    ],
+    "relations": [
+      { "from": "reader", "to": "source", "kind": "creates" },
+      { "from": "source", "to": "kind", "kind": "holds" },
+      { "from": "source", "to": "type", "kind": "holds" },
+      { "from": "renderers", "to": "irenderer", "kind": "uses", "word": "one a kind" },
+      { "from": "flow", "to": "irenderer", "kind": "implements" },
+      { "from": "flow", "to": "layout", "kind": "uses", "word": "its places" },
+      { "from": "flow", "to": "builder", "kind": "uses", "word": "directs" },
+      { "from": "builder", "to": "writer", "kind": "holds" },
+      { "from": "renderers", "to": "source", "kind": "uses", "word": "reads" }
+    ],
+    "groups": [
+      { "id": "diagrams", "label": "louis-agent.diagrams" },
+      { "id": "engine", "label": "louis-agent.diagrams.engine" }
+    ]
+  }
+}
