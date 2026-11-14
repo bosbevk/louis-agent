@@ -155,7 +155,7 @@ public class DocsDiagramsTests
             .Select(pair => (pair.json, flow: FlowOf(pair.source)))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance
-                .Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight))
+                .Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend))
                 .Select(fault => $"{Path.GetFileNameWithoutExtension(pair.json)}: {fault}")).ToList();
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.
@@ -170,11 +170,10 @@ public class DocsDiagramsTests
     [Test]
     public void EveryFlow_LaidOutApart_HasNoTwoLinesOnOneAnother()
     {
-        var rules = FlowRules.Straight;
         var lying = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Select(pair => (pair.json, flow: FlowOf(pair.source)))
             .Where(pair => pair.flow is not null)
-            .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: rules))
+            .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend))
                 .Select(lines => $"{Path.GetFileNameWithoutExtension(pair.json)}: {lines}")).ToList();
 
         // The whole list, one pair a line: a list cut short hides the picture still to fix.

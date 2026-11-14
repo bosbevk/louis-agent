@@ -20,10 +20,10 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 /// where a box's line leaves, and the key that says how to read it.
 /// </summary>
 /// <remarks>
-/// It draws what <see cref="GraphLayout"/> placed by the rules a flow gets, <see cref="FlowRules.Straight"/>, and
-/// decides no place itself. The look is the shared <see cref="PictureLook"/>, drawn with
-/// <see cref="PictureParts"/>, and what <see cref="FlowStyle"/> adds for a flow's own shapes. What stands inside
-/// a box, its badge and its bar, is a box of its own, asked of the geometry the picture is drawn with.
+/// It draws what <see cref="GraphLayout"/> placed, and decides no place itself. The look is the shared
+/// <see cref="PictureLook"/>, drawn with <see cref="PictureParts"/>, and what <see cref="FlowStyle"/> adds for a
+/// flow's own shapes. What stands inside a box, its badge and its bar, is a box of its own, asked of the geometry
+/// the picture is drawn with.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
 internal static class FlowDrawing
@@ -51,7 +51,7 @@ internal static class FlowDrawing
     /// <summary>The flow a source holds, as one SVG file's text, drawn with a geometry.</summary>
     public static string Of(DiagramSource source, IGeometry geometry)
     {
-        var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight,
+        var placed = GraphLayout.Place(source.Flow!, bend: GraphLayout.SoftBend,
             geometry: geometry);
 
         // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.

@@ -21,14 +21,13 @@ internal static class Bands
 
     /// <summary>
     /// Every box placed on the grid, band by band, and the drawing's height. How tall a band's rows are and which
-    /// row a box stands on is what the rows' rule says. The boxes are of the geometry handed in.
+    /// row a box stands on is <see cref="LevelRows"/>'s to say. The boxes are of the geometry handed in.
     /// </summary>
     public static (List<PlacedNode> Nodes, double Height) Place(
         GraphSpec spec,
         List<List<GraphNode>> columns,
         Grid grid,
         bool turned,
-        IRowRule rule,
         IGeometry geometry)
     {
         bool grouped = spec.Groups is { Count: > 0 };
@@ -40,11 +39,10 @@ internal static class Bands
             .Where(at => columns[at].Any(node => Key(node) == key)).ToHashSet()).ToList();
         var rows = keys.Select(key => columns.Max(column => column.Count(node => Key(node) == key))).ToList();
 
-        // How tall the rule makes each band's rows: with the centred rule a band's own tallest box, so a wide box in
-        // one group doesn't spread every other.
+        // How tall each band's rows are.
         var shapes = keys.Select((key, band) => new BandShape(
             spec.Nodes.Where(node => Key(node) == key).Max(grid.Tall), spans[band], rows[band])).ToList();
-        var row = rule.RowHeights(shapes, grid.Gap);
+        var row = LevelRows.RowHeights(shapes, grid.Gap);
         double Tall(int band, int boxes) => boxes * row[band] + grid.Gap * (boxes - 1);
 
         // Each band as tall as its rows. A band stands under the earlier bands it shares a column with, with room for
@@ -68,9 +66,9 @@ internal static class Bands
 
         double y = bottoms.DefaultIfEmpty(0).Max();
 
-        // Each box stands on the row the rule gives it, in the middle of that row.
+        // Each box stands on the row level with what feeds it, in the middle of that row.
         var rowGrid = new RowGrid(columns, node => keys.IndexOf(Key(node)), tops, row, rows, grid.Gap, spec.Edges);
-        var rowTops = rule.RowTops(rowGrid);
+        var rowTops = LevelRows.RowTops(rowGrid);
         var nodes = new List<PlacedNode>();
         for (int at = 0; at < columns.Count; at++)
             for (int band = 0; band < keys.Count; band++)

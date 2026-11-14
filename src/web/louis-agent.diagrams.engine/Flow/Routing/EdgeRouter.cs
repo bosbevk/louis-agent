@@ -11,8 +11,8 @@ namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 /// Draws every arrow as a connector (FX85, Louis: "lines may not cross, have connectors on lines so they still bend
 /// but make direct lines"): straight pieces that turn at right angles, each bend rounded a little. Forward, an arrow
 /// leaves the box's right side, runs to its track between the columns, up or down it and into the target's left
-/// side; which track that is, and where on the side it arrives, is what the <see cref="IArrowRule"/> it was handed
-/// says. Back, it leaves the right side low, drops to a lane under the drawing and climbs into the target's bottom.
+/// side; which track that is, and where on the side it arrives, is <see cref="ApartArrows"/>'s to say. Back, it
+/// leaves the right side low, drops to a lane under the drawing and climbs into the target's bottom.
 /// Inside a column, it drops straight from one box to the next. To its own box, it loops out of the right side.
 /// </summary>
 /// <remarks>
@@ -131,14 +131,13 @@ internal static class EdgeRouter
 
     /// <summary>
     /// Routes the known arrows, their corners rounded by <paramref name="bend"/>; the height and width grow for the
-    /// lanes and loops that run outside the boxes. Where a forward arrow bends and arrives is the rule's to say.
+    /// lanes and loops that run outside the boxes.
     /// </summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
         IReadOnlyList<GraphEdge> edges,
         IReadOnlyDictionary<string, PlacedNode> byId,
         double height,
         double width,
-        IArrowRule rule,
         IGeometry geometry,
         bool turned = false,
         double bend = Bend)
@@ -151,7 +150,7 @@ internal static class EdgeRouter
         var forward = edges.Except(self).Except(back).Except(down).ToList();
 
         var plans = new List<Plan>();
-        plans.AddRange(Forward(forward, byId, turned, rule, geometry));
+        plans.AddRange(Forward(forward, byId, turned, geometry));
         plans.AddRange(down.Select(edge => Down(edge, byId[edge.From].Box, byId[edge.To].Box, geometry)));
         if (back.Count > 0) plans.AddRange(Back(back, byId, height, turned, geometry));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();
@@ -183,14 +182,13 @@ internal static class EdgeRouter
 
     /// <summary>
     /// The forward arrows: each leaves its box's middle, so a box has one line out that branches where it bends, and
-    /// arrives where the rule says, at the middle of its target's side when the rule joins them (Louis: "conformity",
-    /// "alignment is key"). A word sits on the piece by its source, or by its target when the source has more than
-    /// one word out, so two words never share a line. Between neighbouring columns the first track stands where
-    /// <see cref="RoomsFor"/> puts it, the spare room shared either side; an arrow that skips a column bends in the
-    /// middle.
+    /// arrives at a point of its own on its target's side (Louis: "conformity", "alignment is key"). A word sits on
+    /// the piece by its source, or by its target when the source has more than one word out, so two words never
+    /// share a line. Between neighbouring columns the first track stands where <see cref="RoomsFor"/> puts it, the
+    /// spare room shared either side; an arrow that skips a column bends in the middle.
     /// </summary>
     private static IEnumerable<Plan> Forward(List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule, IGeometry geometry)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IGeometry geometry)
     {
         var wordsOut = WordsOut(forward);
         foreach (var edge in forward)
@@ -198,15 +196,15 @@ internal static class EdgeRouter
             var from = byId[edge.From];
             var to = byId[edge.To];
             double x1 = from.Box.Right, y1 = from.Box.Middle.Y;
-            double x2 = to.Box.Left, y2 = rule.EntryOf(edge, forward, byId);
-            var (track, last) = Track(edge, x1, x2, forward, byId, turned, rule);
+            double x2 = to.Box.Left, y2 = ApartArrows.EntryOf(edge, forward, byId);
+            var (track, last) = Track(edge, x1, x2, forward, byId, turned);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
             // An arrow starts and ends on the outline of its boxes' shapes: a decision's end is inside its box
             // everywhere but at its tip.
             double leaves = x1 - NodeShapes.Exit(from, y1, turned), arrives = x2 + NodeShapes.Entry(to, y2, turned);
-            // A word stands by its line, or on it when the rule drops it. Laid out turned it stands beside its line
-            // once turned back, and no drop moves it.
-            double word = (bySource ? y1 : y2) + (turned ? 0 : rule.WordDrop);
+            // A word stands on its line. Laid out turned it stands beside its line once turned back, and no drop
+            // moves it.
+            double word = (bySource ? y1 : y2) + (turned ? 0 : ApartArrows.WordDrop);
             // A word by its target stands past the gap's last track, clear of the other sources' lines.
             double along = bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned);
             yield return new Plan(edge,
@@ -219,10 +217,10 @@ internal static class EdgeRouter
 
     /// <summary>
     /// Where an arrow bends: between neighbouring columns, after the source's room plus half what the gap has to spare,
-    /// then as many steps on as the rule's track for it; across a column between, in the middle.
+    /// then as many steps on as its track; across a column between, in the middle.
     /// </summary>
     private static (double Track, double Last) Track(GraphEdge edge, double x1, double x2, List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned)
     {
         bool Between(PlacedNode node) => node.Box.Left >= x1 && node.Box.Left < x2;
         if (byId.Values.Any(Between)) return ((x1 + x2) / 2, (x1 + x2) / 2);
@@ -233,10 +231,9 @@ internal static class EdgeRouter
         var (words, wordsIn) = RoomsFor(gap, forward, turned);
         var (frameOut, frameIn) = FrameRooms(gap, id => byId[id].Node.Group, turned);
         double source = words + frameOut, target = wordsIn + frameIn;
-        // The rule says how many tracks the gap holds and which one is this arrow's; their room comes off the gap
-        // first.
-        double tracks = rule.TracksRoom(gap, forward, byId), room = x2 - x1 - tracks;
-        double offset = Step * rule.TrackOf(edge, gap, forward, byId);
+        // How many tracks the gap holds and which one is this arrow's; their room comes off the gap first.
+        double tracks = ApartArrows.TracksRoom(gap, forward, byId), room = x2 - x1 - tracks;
+        double offset = Step * ApartArrows.TrackOf(edge, gap, forward, byId);
         // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle; half
         // a pixel's slack, since a gap sized to its rooms exactly can come out a hair short in floating point.
         double first = room + 0.5 < source + target ? x1 + room / 2 : x1 + source + (room - source - target) / 2;

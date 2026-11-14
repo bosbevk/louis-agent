@@ -40,7 +40,7 @@ internal static class CompositeDrawing
     public static string Of(DiagramSource source, IGeometry geometry)
     {
         var spec = source.Composite!;
-        var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight,
+        var placed = GraphLayout.Place(CompositeFlow.Of(spec), bend: GraphLayout.SoftBend,
             geometry: geometry);
         string tone = PictureParts.Tone(spec.Tone);
 

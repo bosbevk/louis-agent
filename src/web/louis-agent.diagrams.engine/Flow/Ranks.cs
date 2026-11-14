@@ -68,13 +68,13 @@ public static class Ranks
     }
 
     /// <summary>
-    /// Every waypoint moved in line with where its arrow arrives, which the arrows' rule says, where no box in its
-    /// column stands in the way, so the arrow runs along and then straight into its target instead of jogging to a
-    /// slot and back (Louis, of the CLI and accounts charts). An arrow that can run neither there nor at the height
-    /// it leaves at the whole way runs at the height it leaves at as far as it must, and in line with where it
-    /// arrives from there (F134.12, Louis: "why is that line not straight"). If that can't be either, it passes the
-    /// boxes in its way between two of a column or beside one, when its rule lets it and that is a shorter way than
-    /// where its waypoints stand (Louis: "why did it take a longer route?").
+    /// Every waypoint moved in line with where its arrow arrives (<see cref="ApartArrows.EntryOf"/>), where no box
+    /// in its column stands in the way, so the arrow runs along and then straight into its target instead of
+    /// jogging to a slot and back (Louis, of the CLI and accounts charts). An arrow that can run neither there nor
+    /// at the height it leaves at the whole way runs at the height it leaves at as far as it must, and in line
+    /// with where it arrives from there (F134.12, Louis: "why is that line not straight"). If that can't be
+    /// either, it passes the boxes in its way between two of a column or beside one, when that is a shorter way
+    /// than where its waypoints stand (Louis: "why did it take a longer route?").
     /// </summary>
     /// <remarks>
     /// The alignment step of layered drawing (Brandes and Köpf straighten long edges the same way): a waypoint is
@@ -82,11 +82,10 @@ public static class Ranks
     /// best first and the first clear one is taken (generate and test, F134.12), on three lines at most. A shortest
     /// path worked out column by column would find ways with more steps too, and no picture in the docs needs one.
     /// </remarks>
-    public static List<PlacedNode> Straightened(List<PlacedNode> nodes, IReadOnlyList<GraphEdge> edges,
-        IArrowRule rule)
+    public static List<PlacedNode> Straightened(List<PlacedNode> nodes, IReadOnlyList<GraphEdge> edges)
     {
         var byId = nodes.ToDictionary(node => node.Node.Id, StringComparer.Ordinal);
-        // The rule places an arrow among the others that run forward into the same box.
+        // An arrow is placed among the others that run forward into the same box.
         var forward = edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)
                                                                       && byId[edge.To].Node.Column >
                                                                       byId[edge.From].Node.Column).ToList();
@@ -101,11 +100,10 @@ public static class Ranks
         // Where a waypoint's middle is now, moved or not.
         double Now(string id) => moved.GetValueOrDefault(id, byId[id].Box).Middle.Y;
 
-        // Whether another box's arrow already runs through this waypoint's column nearer than the rule lets two
-        // lines run. A rule that joins arrows lets them lie on one another, so then nothing is too near.
+        // Whether another box's arrow already runs through this waypoint's column nearer than two lines may run.
         bool Taken(string id, double middle) => startOf.Keys.Any(other =>
             startOf[other] != startOf[id] && InColumnOf(byId[id], byId[other])
-                                          && Math.Abs(Now(other) - middle) < rule.LineGap);
+                                          && Math.Abs(Now(other) - middle) < ApartArrows.LineGap);
 
         // Whether a waypoint can stand on a line: no box of its column in the way, and no other box's arrow.
         bool Open(string id, double middle) => Free(byId[id], middle, nodes) && !Taken(id, middle);
@@ -119,7 +117,7 @@ public static class Ranks
             foreach (var (first, chain, last) in chains)
             {
                 var source = byId[first.From];
-                double leaves = source.Box.Middle.Y, arrives = rule.EntryOf(last, forward, byId);
+                double leaves = source.Box.Middle.Y, arrives = ApartArrows.EntryOf(last, forward, byId);
 
                 // The way up and down an arrow has from where it leaves, through a line, to where it arrives.
                 double Way(params double[] through) =>
@@ -144,7 +142,7 @@ public static class Ranks
                 // Last a line past the boxes in its way, between two or beside one, when that is shorter than where
                 // it stands: the shortest such way, and of two as short the one with fewer steps.
                 var columns = chain.Select(id => byId[id]).ToList();
-                var passes = rule.PassesBetween ? Gaps(columns, nodes).Concat(Beside(columns, nodes)) : [];
+                var passes = Gaps(columns, nodes).Concat(Beside(columns, nodes));
                 var round = passes.SelectMany(line => Enumerable.Range(0, chain.Count).SelectMany(leaving =>
                         Enumerable.Range(0, chain.Count - leaving).Select(arriving => On(leaving, line, arriving))))
                     .Where(option => Way(option) < now - 1).OrderBy(option => Way(option)).ThenBy(Steps);

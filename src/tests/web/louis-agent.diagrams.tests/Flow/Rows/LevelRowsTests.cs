@@ -10,8 +10,6 @@ namespace LouisAgent.Diagrams.Tests.Flow.Rows;
 /// </summary>
 public class LevelRowsTests
 {
-    private static readonly LevelRows Rule = new();
-
     /// <summary>
     /// Columns of boxes named by their ids, in one band of rows 52 tall and 18 apart, with these arrows.
     /// </summary>
@@ -29,7 +27,7 @@ public class LevelRowsTests
     {
         BandShape[] bands = [new(68, new HashSet<int> { 0 }, 3), new(84, new HashSet<int> { 1, 2 }, 4)];
 
-        Assert.That(Rule.RowHeights(bands, 18), Is.EqualTo(new[] { 84.0, 84.0 }));
+        Assert.That(LevelRows.RowHeights(bands, 18), Is.EqualTo(new[] { 84.0, 84.0 }));
     }
 
     /// <summary>
@@ -41,7 +39,7 @@ public class LevelRowsTests
     {
         BandShape[] bands = [new(90, new HashSet<int> { 0 }, 9), new(164, new HashSet<int> { 1 }, 1)];
 
-        Assert.That(Rule.RowHeights(bands, 18), Is.EqualTo(new[] { 90.0, 3 * 90 + 2 * 18.0 }));
+        Assert.That(LevelRows.RowHeights(bands, 18), Is.EqualTo(new[] { 90.0, 3 * 90 + 2 * 18.0 }));
     }
 
     /// <summary>Two bands that share a column stand one under the other, so each keeps its own row height.</summary>
@@ -50,7 +48,7 @@ public class LevelRowsTests
     {
         BandShape[] bands = [new(68, new HashSet<int> { 0, 1 }, 3), new(84, new HashSet<int> { 1, 2 }, 4)];
 
-        Assert.That(Rule.RowHeights(bands, 18), Is.EqualTo(new[] { 68.0, 84.0 }));
+        Assert.That(LevelRows.RowHeights(bands, 18), Is.EqualTo(new[] { 68.0, 84.0 }));
     }
 
     /// <summary>
@@ -65,14 +63,14 @@ public class LevelRowsTests
             new(68, new HashSet<int> { 0 }, 1), new(84, new HashSet<int> { 1 }, 4), new(52, new HashSet<int> { 0 }, 5)
         ];
 
-        Assert.That(Rule.RowHeights(bands, 18), Is.EqualTo(new[] { 84.0, 84.0, 52.0 }));
+        Assert.That(LevelRows.RowHeights(bands, 18), Is.EqualTo(new[] { 84.0, 84.0, 52.0 }));
     }
 
     /// <summary>A box stands on the row of the box that feeds it, not in the middle of its band.</summary>
     [Test]
     public void ABox_StandsLevelWithTheBoxThatFeedsIt()
     {
-        var tops = Rule.RowTops(Grid([["a", "b", "c"], ["x"]], ("c", "x")));
+        var tops = LevelRows.RowTops(Grid([["a", "b", "c"], ["x"]], ("c", "x")));
 
         Assert.That(tops["x"], Is.EqualTo(tops["c"]));
     }
@@ -81,7 +79,7 @@ public class LevelRowsTests
     [Test]
     public void ABoxNothingFeeds_StandsLevelWithWhatItFeeds()
     {
-        var tops = Rule.RowTops(Grid([["s"], ["x", "y", "z"]], ("s", "z")));
+        var tops = LevelRows.RowTops(Grid([["s"], ["x", "y", "z"]], ("s", "z")));
 
         Assert.That(tops["s"], Is.EqualTo(tops["z"]));
     }
@@ -90,7 +88,7 @@ public class LevelRowsTests
     [Test]
     public void TwoBoxesFedByOne_StandLevelAndOnTheRowUnder()
     {
-        var tops = Rule.RowTops(Grid([["a", "b", "c"], ["x", "y"]], ("a", "x"), ("a", "y")));
+        var tops = LevelRows.RowTops(Grid([["a", "b", "c"], ["x", "y"]], ("a", "x"), ("a", "y")));
 
         Assert.Multiple(() =>
         {
@@ -106,7 +104,7 @@ public class LevelRowsTests
     [Test]
     public void AColumn_KeepsItsOrder()
     {
-        var tops = Rule.RowTops(Grid([["a", "b", "c", "d"], ["x", "y"]], ("d", "x"), ("a", "y")));
+        var tops = LevelRows.RowTops(Grid([["a", "b", "c", "d"], ["x", "y"]], ("d", "x"), ("a", "y")));
 
         Assert.That(tops["x"], Is.LessThan(tops["y"]));
     }
@@ -131,13 +129,8 @@ public class LevelRowsTests
             ],
             Groups: [new GraphGroup("site", "A site")]);
 
-        bool Straight(FlowRules rules) => !GraphLayout.Place(spec, rules: rules).Edges
-            .Single(edge => edge.Edge.To == "frame").Way.Text.Contains('Q');
+        string way = GraphLayout.Place(spec).Edges.Single(edge => edge.Edge.To == "frame").Way.Text;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(Straight(FlowRules.Joined), Is.False, "joined, the two bands' rows don't line up");
-            Assert.That(Straight(FlowRules.Straight), Is.True, "level, the page and the frame stand on one row");
-        });
+        Assert.That(way, Does.Not.Contain('Q'), "the page and the frame stand on one row, so the line has no bend");
     }
 }

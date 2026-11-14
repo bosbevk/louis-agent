@@ -156,7 +156,7 @@ public class NodeShapesTests
             [new GraphNode("a", "A"), new GraphNode("b", "B"), Question],
             [new GraphEdge("a", "q"), new GraphEdge("b", "q")], direction);
 
-        var placed = GraphLayout.Place(spec, rules: FlowRules.Straight);
+        var placed = GraphLayout.Place(spec);
         var shape = placed.Nodes.Single(node => node.Node.Id == "q");
 
         Assert.Multiple(() =>

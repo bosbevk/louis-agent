@@ -93,7 +93,7 @@ public class RanksTests
 
     /// <summary>How often the line from one box to another turns.</summary>
     private static int Turns(GraphSpec spec, string from, string to) =>
-        GraphLayout.Place(spec, rules: FlowRules.Straight).Edges
+        GraphLayout.Place(spec).Edges
             .Single(edge => edge.Edge.From == from && edge.Edge.To == to).Way.Text.Count(part => part == 'Q');
 
     /// <summary>
@@ -112,7 +112,7 @@ public class RanksTests
     [Test]
     public void ALongLineNoOneLineLetsThrough_TakesTheShortestWay()
     {
-        var placed = GraphLayout.Place(Packs(), rules: FlowRules.Straight);
+        var placed = GraphLayout.Place(Packs());
         var from = placed.Nodes.Single(node => node.Node.Id == "approved");
         var to = placed.Nodes.Single(node => node.Node.Id == "unavailable");
         string path = placed.Edges.Single(edge => edge.Edge.From == "approved" && edge.Edge.To == "unavailable")

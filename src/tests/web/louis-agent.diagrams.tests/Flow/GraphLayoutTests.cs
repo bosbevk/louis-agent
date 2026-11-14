@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -95,18 +96,18 @@ public class GraphLayoutTests
     }
 
     /// <summary>
-    /// Every arrow between two columns bends at the one track in the middle of the gap (Louis: "conformity"), so arrows
-    /// join where curves would have crossed and the bends line up.
+    /// One box's arrows across a gap bend at one track (Louis: "conformity"), so its line out branches in one place
+    /// and the bends line up. The arrow to the box level with it has no bend at all.
     /// </summary>
     [Test]
-    public void TheArrowsBetweenTwoColumns_ShareOneTrack()
+    public void OneBoxsArrowsAcrossAGap_BendOnOneTrack()
     {
         var spec = new GraphSpec(
             [
                 new GraphNode("a", "A", null, 0), new GraphNode("top", "Top", null, 1),
-                new GraphNode("low", "Low", null, 1)
+                new GraphNode("mid", "Mid", null, 1), new GraphNode("low", "Low", null, 1)
             ],
-            [new GraphEdge("a", "top"), new GraphEdge("a", "low")]);
+            [new GraphEdge("a", "top"), new GraphEdge("a", "mid"), new GraphEdge("a", "low")]);
 
         var placed = GraphLayout.Place(spec);
 
@@ -116,7 +117,7 @@ public class GraphLayoutTests
             .Distinct().ToList();
         Assert.Multiple(() =>
         {
-            Assert.That(bent, Has.Count.EqualTo(2), "both arrows change row");
+            Assert.That(bent, Has.Count.EqualTo(2), "two arrows change row, and the third runs straight");
             Assert.That(tracks, Has.Count.EqualTo(1));
         });
     }
@@ -232,8 +233,8 @@ public class GraphLayoutTests
     }
 
     /// <summary>
-    /// A word sits on a flat piece of its arrow, in the empty ground between the columns, never on a box or on the
-    /// shared track.
+    /// A word stands on a flat piece of its arrow, the line through its pill's middle, in the empty ground between
+    /// the columns, never on a box or on the shared track.
     /// </summary>
     [Test]
     public void AWord_SitsBetweenTheColumns()
@@ -246,8 +247,8 @@ public class GraphLayoutTests
         Assert.Multiple(() =>
         {
             Assert.That(edge.Word.X, Is.GreaterThan(left.Box.Right).And.LessThan(right.Box.Left));
-            Assert.That(edge.Word.Y, Is.EqualTo(left.Box.Middle.Y).Or.EqualTo(right.Box.Middle.Y),
-                "on one of its flat pieces");
+            Assert.That(FlowText.WordBox(edge, Geometries.InUse).Middle.Y,
+                Is.EqualTo(left.Box.Middle.Y).Or.EqualTo(right.Box.Middle.Y), "on one of its flat pieces");
         });
     }
 

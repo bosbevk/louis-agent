@@ -18,7 +18,7 @@ public class CompositeFlowTests
 
     /// <summary>The sample as the flow's layout places it, by the rules a drawing uses.</summary>
     private static PlacedGraph Placed() =>
-        GraphLayout.Place(Flow(), bend: GraphLayout.SoftBend, rules: FlowRules.Straight);
+        GraphLayout.Place(Flow(), bend: GraphLayout.SoftBend);
 
     /// <summary>A placed box, by its id.</summary>
     private static PlacedNode Box(PlacedGraph placed, string id) => placed.Nodes.Single(node => node.Node.Id == id);

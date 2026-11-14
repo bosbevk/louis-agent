@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -151,46 +152,17 @@ public class FlowShapesTests
         var numbers = past.Way.Text.Split(' ').Where(part => double.TryParse(part, out _)).Select(double.Parse)
             .ToList();
         var chat = placed.Nodes.Single(node => node.Node.Id == "chat");
+        var geometry = Geometries.InUse;
+        var through = past.Way.Stretches.Where(stretch => chat.Box.CrossedBy(
+            geometry.Point(stretch.From.X, stretch.From.Y), geometry.Point(stretch.To.X, stretch.To.Y), 1));
         Assert.Multiple(() =>
         {
             Assert.That(placed.Nodes.Select(node => node.Node.Id),
                 Is.EquivalentTo(new[] { "host", "chat", "engine", "out" }));
             Assert.That(placed.Edges.Count(edge => edge.Edge is { From: "host", To: "engine" }), Is.EqualTo(1));
             Assert.That(numbers.Where((_, at) => at % 2 == 1).Max(), Is.LessThan(placed.Height), "no lane under it");
-            Assert.That(numbers.Where((_, at) => at % 2 == 0)
-                .All(x => x < chat.Box.Left || x > chat.Box.Right), Is.True,
-            "it passes beside the box, not through it");
+            Assert.That(through, Is.Empty, "it passes beside the box, not through it");
         });
-    }
-
-    /// <summary>
-    /// Where several boxes feed several others across one gap, each source bends on a track of its own, so a reader
-    /// can follow who feeds whom; where they all feed one box, they join on one track as before.
-    /// </summary>
-    [Test]
-    public void SeveralSourcesToSeveralTargets_BendOnTracksOfTheirOwn()
-    {
-        var spec = new GraphSpec(
-            [
-                new GraphNode("eval", "IEval"), new GraphNode("session", "ISessionClient"),
-                new GraphNode("datasets", "Datasets"), new GraphNode("mode", "EvalMode"),
-                new GraphNode("http", "HttpSessionClient"), new GraphNode("canned", "CannedSessionClient")
-            ],
-            [
-                new GraphEdge("eval", "datasets"), new GraphEdge("eval", "mode"),
-                new GraphEdge("session", "http"), new GraphEdge("session", "canned")
-            ]);
-
-        var placed = GraphLayout.Place(spec);
-
-        // A bent connector's track is its first rounded corner: the point after its first Q.
-        double Track(string from) => placed.Edges.Where(edge => edge.Edge.From == from && edge.Way.Text.Contains('Q'))
-            .Select(edge => edge.Way.Text.Split(' '))
-            .Select(parts => double.Parse(parts[Array.IndexOf(parts, "Q") + 1],
-                System.Globalization.CultureInfo.InvariantCulture))
-            .Distinct().Single();
-
-        Assert.That(Track("eval"), Is.Not.EqualTo(Track("session")));
     }
 
     /// <summary>
@@ -227,7 +199,7 @@ public class FlowShapesTests
 
     /// <summary>
     /// A long arrow whose target's line is blocked drops straight from its source instead, and turns at the end
-    /// (Louis, of the telemetry chart).
+    /// into its own point on its target's side (Louis, of the telemetry chart).
     /// </summary>
     [Test]
     public void ALongArrowBlockedAtItsTarget_DropsStraightFromItsSource()
@@ -252,8 +224,12 @@ public class FlowShapesTests
         var numbers = placed.Edges.Single(edge => edge.Edge.Word == "the sink").Way.Text.Split(' ')
             .Where(part => double.TryParse(part, out _)).Select(double.Parse).ToList();
         var xs = numbers.Where((_, at) => at % 2 == 0).ToList();
-        Assert.That(xs.Where(x => Math.Abs(x - logging.Box.Middle.X) > 10
-                                  && Math.Abs(x - collector.Box.Middle.X) > 10), Is.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(xs.Where(x => Math.Abs(x - logging.Box.Middle.X) > 10 && Math.Abs(x - xs[^1]) > 10),
+                Is.Empty, "straight down from its source, then straight into where it arrives");
+            Assert.That(xs[^1], Is.InRange(collector.Box.Left, collector.Box.Right), "on its target's side");
+        });
     }
 
     /// <summary>

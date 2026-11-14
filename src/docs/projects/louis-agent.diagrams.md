@@ -162,7 +162,7 @@ lifeline, a call's beam either way, an answer's quiet line and the words above t
 letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/Flows/FlowDrawing`). It places nothing itself: it draws what the
-layout placed by `FlowRules.Straight`.
+layout placed.
 
 - *The title.* The picture's whole title as one small line, in the top left corner, on a soft light.
 - *A box.* A panel in its shape, with its icon in a badge in its tone. A shape that means something, a decision,
@@ -206,13 +206,10 @@ A flow (`Flow/`) is drawn on ADR 0103's row grid.
 `Ranks`: one past the furthest box that points at it. `Bands` handles groups: it stands each group's boxes in rows
 of their own, inside a labelled frame.
 
-**The rule the boxes stand by.** A band is one group's rows, or every box's rows when a picture has no groups.
-Two things about a band are not `Bands`' to decide: how tall its rows are, and which row each box stands on. A
-rule answers both (`IRowRule`). `CentredRows` is the one a class chart uses: a band's rows are as tall as its
-own tallest box, and a column's boxes stand one after another, centred in the band.
-
-The other rule is `LevelRows`, which a flow in the docs and a diagram on a site's page are drawn by. With it a box
-stands level with the box that feeds it, so the line between them runs straight:
+**The rows the boxes stand on.** A band is one group's rows, or every box's rows when a picture has no groups.
+Two things about a band are not `Bands`' to decide: how tall its rows are, and which row each box stands on.
+`Rows/LevelRows` answers both. A box stands level with the box that feeds it, so the line between them runs
+straight:
 
 - The columns are taken from the left. In each, the boxes keep their order and take the rows nearest the boxes
   that feed them. Every way to stand them is weighed, and the nearest one overall is taken.
@@ -222,21 +219,13 @@ stands level with the box that feeds it, so the line between them runs straight:
   band whose tallest box is far taller than the rest gets rows that span three of the shared ones, so one tall
   box doesn't make every row beside it as tall. A band under another keeps its own row height.
 
-The rule for the rows and the rule for the arrows, described below, are handed to the layout together, as one
-`FlowRules`. `FlowRules.Joined` is the pair a layout uses when it is handed none: arrows that join, and boxes
-centred. `FlowRules.Straight` is the other pair: arrows apart, and boxes level.
-
 **Drawing the arrows.** `Routing/EdgeRouter` draws an arrow as connectors at right angles. A long arrow goes
 through a waypoint in each column it passes. A blocked arrow goes round a detour. The bends are as soft as the
 caller asks: the site asks for 8 px, the docs for `SoftBend`.
 
-**The rule the arrows run by.** Two things about a forward arrow are not the router's to decide: which track in
-the gap it bends on, and where on its target's side it arrives. A rule answers both (`IArrowRule`), and the
-layout is handed it in its `FlowRules`. Handed none, it uses `JoinedArrows`: the arrows into a box meet at the middle of its
-side, and a gap has a track for each source only when several boxes feed several. So a caller picks how its
-arrows run without the router knowing which rule it has.
-
-The other rule is `ApartArrows`. With it each arrow into a box arrives at a point of its own:
+**Where an arrow bends and arrives.** Two things about a forward arrow are not the router's to decide: which
+track in the gap it bends on, and where on its target's side it arrives. `Routing/ApartArrows` answers both. Each
+arrow into a box arrives at a point of its own:
 
 - The points are 18 apart, spread round the middle of the side, the arrow from the upper box at the upper point.
   One arrow alone arrives at the middle.
@@ -262,7 +251,7 @@ The other rule is `ApartArrows`. With it each arrow into a box arrives at a poin
 - In a picture that runs to the right, an arrow's word stands on its own line, in its pill. Above the line, the
   word of the lower of two arrows into one box would sit on the upper arrow, 18 away.
 
-With `ApartArrows` the lines of a gap also turn on one line:
+The lines of a gap also turn on one line:
 
 - Each box's line has an upright piece in the gap, from the highest of where it leaves and arrives to the lowest.
   Two lines whose upright pieces are clear of each other, by 9 or more, turn on the same line.
@@ -297,8 +286,8 @@ serve both directions.
 box may list members under a divider in the code font, as a class's box does. It is then as wide as its longest
 member, and a member wraps at 60 characters.
 
-The site's `GraphView` animates the same placed graph, laid out by `FlowRules.Straight` as a flow in the docs is,
-in the site's own look.
+The site's `GraphView` animates the same placed graph, laid out as a flow in the docs is, in the site's own
+look.
 
 #### A sequence: who calls whom, in order
 
@@ -615,7 +604,7 @@ src/web/louis-agent.diagrams.engine/
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
 ├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Composite/  # CompositeFlow
-├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Flow/       # Bands, FlowText, GraphLayout, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
 ├── Geometry/   # Geometries, IBox, IGeometry, IPoint; DotNet/ (DotNetBox, DotNetGeometry, DotNetPoint); Generic/ (Box, GenericGeometry, Point)
 ├── Icons/      # IconPaths
 ├── Keys/       # KeyParts, KeyRows

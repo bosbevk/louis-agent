@@ -54,7 +54,7 @@ public partial class GraphView
     /// The diagram, placed by the rules a flow in the docs is (F134.8): a box level with what feeds it, each arrow
     /// into a box at a point of its own.
     /// </summary>
-    private PlacedGraph Placed => GraphLayout.Place(Spec, Width, rules: FlowRules.Straight, geometry: Geometry);
+    private PlacedGraph Placed => GraphLayout.Place(Spec, Width, geometry: Geometry);
 
     /// <summary>
     /// This diagram's own arrowhead id (F119): an id is the page's, so two diagrams on one page each need their own, or

@@ -4,16 +4,19 @@ using LouisAgent.Diagrams.Flow.Spec;
 namespace LouisAgent.Diagrams.Engine.Flow.Routing;
 
 /// <summary>
-/// The rule a flow is drawn by (F134.8): each arrow into a box arrives at a point of its own, a step from the next,
-/// so the lines that end at one box run in beside each other and you can follow which box feeds which. The lines
-/// of a gap turn on one line, and only one that would lie on another turns a step beside it.
+/// How a flow's forward arrows run between two columns (F134.8): each arrow into a box arrives at a point of its
+/// own, a step from the next, so the lines that end at one box run in beside each other and you can follow which
+/// box feeds which. The lines of a gap turn on one line, and only one that would lie on another turns a step
+/// beside it.
 /// </summary>
 /// <remarks>
-/// One of the two strategies behind <see cref="IArrowRule"/>, the one that replaces <see cref="JoinedArrows"/> kind
-/// by kind.
+/// It was one of two strategies while some kinds of picture were still drawn with arrows that join. Every kind is
+/// drawn this way now, so the other is gone, and with one rule left the layout and the router ask this class
+/// itself: an interface with one implementation is a class.
 /// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0055-keep-it-simple.md">ADR 0055: keep it simple</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
-public sealed class ApartArrows : IArrowRule
+public static class ApartArrows
 {
     /// <summary>How far from the end of a side its last point keeps.</summary>
     private const double Margin = 6;
@@ -30,14 +33,14 @@ public sealed class ApartArrows : IArrowRule
     private const int Lying = 100;
 
     /// <summary>A step for each track the gap needs beside the first.</summary>
-    public double TracksRoom(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+    public static double TracksRoom(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId) =>
         EdgeRouter.Step * Tracks(gap, forward, byId).Values.DefaultIfEmpty(0).Max();
 
     /// <summary>
     /// An arrow bends on its source's track. A line that runs straight has no bend, and counts as the first.
     /// </summary>
-    public int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+    public static int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId) => Tracks(gap, forward, byId).GetValueOrDefault(edge.From);
 
     /// <summary>
@@ -49,7 +52,7 @@ public sealed class ApartArrows : IArrowRule
     /// heights, intervals that overlap may not share a track, and taking them in order, each on the first track clear
     /// of the ones before it, uses no more tracks than that order needs.
     /// </remarks>
-    private Dictionary<string, int> Tracks(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+    private static Dictionary<string, int> Tracks(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId)
     {
         // Each source's trunk: where its line leaves, and where its arrows arrive. One with no upright needs no track.
@@ -128,7 +131,7 @@ public sealed class ApartArrows : IArrowRule
     /// others take the points beside it, as long as they then still fit on the side. And no point stands level with
     /// the line out of a box next door that feeds something else: the points then stand half a step aside.
     /// </summary>
-    public double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,
+    public static double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,
         IReadOnlyDictionary<string, PlacedNode> byId)
     {
         var target = byId[edge.To];
@@ -176,22 +179,16 @@ public sealed class ApartArrows : IArrowRule
     /// A side holds its points with a margin at each end, and as many below the middle as above it, so the points
     /// fit whether they are spread round the middle or stand beside a straight arrow at it.
     /// </summary>
-    public double SideFor(int arrows) => arrows < 2 ? 0 : 2 * (arrows / 2) * EdgeRouter.Step + 2 * Margin;
+    public static double SideFor(int arrows) => arrows < 2 ? 0 : 2 * (arrows / 2) * EdgeRouter.Step + 2 * Margin;
 
     /// <summary>Two lines of different boxes keep half a step apart, so neither is taken for the other.</summary>
-    public double LineGap => Near;
+    public const double LineGap = Near;
 
     /// <summary>
     /// A word stands on its own line, the line through the middle of its one-line pill. Above the line, the word of
     /// the lower of two arrows into one box would sit on the upper arrow, a step away.
     /// </summary>
-    public double WordDrop => FlowText.ChipRise - (FlowText.WordStep + FlowText.ChipExtra) / 2;
-
-    /// <summary>
-    /// Boxes that stand level with what feeds them often stand in a long arrow's way at both its heights, and round
-    /// the outside of the column is the long way, so it passes between two of them.
-    /// </summary>
-    public bool PassesBetween => true;
+    public static double WordDrop => FlowText.ChipRise - (FlowText.WordStep + FlowText.ChipExtra) / 2;
 
     /// <summary>
     /// The arrows into a box from the top point down: by the height of the box each comes from, the upper source

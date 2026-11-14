@@ -32,7 +32,7 @@ internal static class ClassesDrawing
     public static string Of(DiagramSource source, IGeometry geometry)
     {
         var spec = source.Classes!;
-        var placed = GraphLayout.Place(ClassFlow.Of(spec), bend: GraphLayout.SoftBend, rules: FlowRules.Straight,
+        var placed = GraphLayout.Place(ClassFlow.Of(spec), bend: GraphLayout.SoftBend,
             geometry: geometry);
 
         // The types and their links are the body, and the key goes across the picture's width under them. Two

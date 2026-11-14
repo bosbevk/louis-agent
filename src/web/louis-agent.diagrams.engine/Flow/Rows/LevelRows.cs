@@ -1,16 +1,18 @@
 namespace LouisAgent.Diagrams.Engine.Flow.Rows;
 
 /// <summary>
-/// The rule a flow's boxes are placed by (F134.8): a box stands on the row level with the box that feeds it, where
-/// that row is free, so the line between them runs straight (Louis: parallel means straight and level).
+/// Which row each box of a flow stands on (F134.8): the row level with the box that feeds it, where that row is
+/// free, so the line between them runs straight (Louis: parallel means straight and level). A band is a group's
+/// rows, or the rows of every box when the picture has no groups.
 /// </summary>
 /// <remarks>
-/// One of the two strategies behind <see cref="IRowRule"/>, the one that replaces <see cref="CentredRows"/> kind by
-/// kind. It is the coordinate assignment step of layered drawing, kept on ADR 0103's row grid: a box only ever
-/// stands on a whole row, so two boxes are level or a row apart, and no line jogs by a few pixels.
+/// It is the coordinate assignment step of layered drawing, kept on ADR 0103's row grid: a box only ever stands on
+/// a whole row, so two boxes are level or a row apart, and no line jogs by a few pixels. It was one of two
+/// strategies while some kinds were still drawn with their boxes centred. With one left, the layout asks this
+/// class itself (ADR 0055).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
-public sealed class LevelRows : IRowRule
+public static class LevelRows
 {
     /// <summary>
     /// What a row away from the middle of its band costs a box, as a part of a row: so little that it only settles
@@ -26,7 +28,7 @@ public sealed class LevelRows : IRowRule
     /// band under another starts wherever that one ends, so its rows can't line up with anyone's, and it keeps its
     /// own row height.
     /// </summary>
-    public IReadOnlyList<double> RowHeights(IReadOnlyList<BandShape> bands, double gap)
+    public static IReadOnlyList<double> RowHeights(IReadOnlyList<BandShape> bands, double gap)
     {
         // A band starts at the top when it shares a column with no band before it.
         var top = bands.Where((band, at) => !bands.Take(at).Any(before => before.Columns.Overlaps(band.Columns)))
@@ -52,7 +54,7 @@ public sealed class LevelRows : IRowRule
     /// nothing feeds stands level with what it feeds. Then from the left once more, for the boxes fed by one that
     /// moved.
     /// </summary>
-    public IReadOnlyDictionary<string, double> RowTops(RowGrid grid)
+    public static IReadOnlyDictionary<string, double> RowTops(RowGrid grid)
     {
         var standing = new Standing(grid);
         var forward = Enumerable.Range(0, grid.Columns.Count).ToList();

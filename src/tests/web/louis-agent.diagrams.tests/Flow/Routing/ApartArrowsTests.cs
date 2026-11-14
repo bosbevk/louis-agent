@@ -3,7 +3,6 @@ using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Routing;
-using LouisAgent.Diagrams.Engine.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Routing;
@@ -14,13 +13,6 @@ namespace LouisAgent.Diagrams.Tests.Flow.Routing;
 /// </summary>
 public class ApartArrowsTests
 {
-    private static readonly ApartArrows Rule = new();
-
-    /// <summary>
-    /// The apart arrows on boxes placed as they always were, so a test here sees the arrows' rule alone.
-    /// </summary>
-    private static readonly FlowRules Rules = new(Rule, new CentredRows());
-
     /// <summary>A box of the site's size at a place.</summary>
     private static PlacedNode Box(string id, double x, double y) =>
         new(new GraphNode(id, id), Geometries.InUse.Box(x, y, 170, 52));
@@ -48,7 +40,7 @@ public class ApartArrowsTests
     {
         GraphEdge[] forward = [new("a", "x")];
 
-        Assert.That(Rule.EntryOf(forward[0], forward, Feeding(50)), Is.EqualTo(76));
+        Assert.That(ApartArrows.EntryOf(forward[0], forward, Feeding(50)), Is.EqualTo(76));
     }
 
     /// <summary>
@@ -63,8 +55,8 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.EntryOf(forward[1], forward, boxes), Is.EqualTo(67), "a is the upper source");
-            Assert.That(Rule.EntryOf(forward[0], forward, boxes), Is.EqualTo(85), "b arrives a step under it");
+            Assert.That(ApartArrows.EntryOf(forward[1], forward, boxes), Is.EqualTo(67), "a is the upper source");
+            Assert.That(ApartArrows.EntryOf(forward[0], forward, boxes), Is.EqualTo(85), "b arrives a step under it");
         });
     }
 
@@ -80,8 +72,8 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.EntryOf(forward[0], forward, boxes), Is.EqualTo(26), "level with a, so straight");
-            Assert.That(Rule.EntryOf(forward[1], forward, boxes), Is.EqualTo(44), "b a step under it");
+            Assert.That(ApartArrows.EntryOf(forward[0], forward, boxes), Is.EqualTo(26), "level with a, so straight");
+            Assert.That(ApartArrows.EntryOf(forward[1], forward, boxes), Is.EqualTo(44), "b a step under it");
         });
     }
 
@@ -95,7 +87,7 @@ public class ApartArrowsTests
         GraphEdge[] forward = [new("a", "x"), new("b", "x"), new("c", "x")];
         var boxes = Feeding(0);
 
-        var entries = forward.Select(edge => Rule.EntryOf(edge, forward, boxes));
+        var entries = forward.Select(edge => ApartArrows.EntryOf(edge, forward, boxes));
 
         Assert.That(entries, Is.EqualTo(new[] { 8.0, 26.0, 44.0 }));
     }
@@ -108,13 +100,14 @@ public class ApartArrowsTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.SideFor(1), Is.Zero, "one arrow asks for nothing");
-            Assert.That(Rule.SideFor(3), Is.LessThanOrEqualTo(52), "three fit the site's box");
-            Assert.That(Rule.SideFor(4), Is.EqualTo(84), "four need two steps either side of the middle, and a margin");
+            Assert.That(ApartArrows.SideFor(1), Is.Zero, "one arrow asks for nothing");
+            Assert.That(ApartArrows.SideFor(3), Is.LessThanOrEqualTo(52), "three fit the site's box");
+            Assert.That(ApartArrows.SideFor(4), Is.EqualTo(84),
+                "four need two steps either side of the middle, and a margin");
         });
     }
 
-    /// <summary>A box four others feed grows to hold its four points, and joined it stays the size it was.</summary>
+    /// <summary>A box four others feed grows to hold its four points.</summary>
     [Test]
     public void ABoxWithMorePointsThanItsSideHolds_Grows()
     {
@@ -122,14 +115,9 @@ public class ApartArrowsTests
             [.. new[] { "a", "b", "c", "d", "x" }.Select(id => new GraphNode(id, id))],
             [.. new[] { "a", "b", "c", "d" }.Select(id => new GraphEdge(id, "x"))]);
 
-        double joined = GraphLayout.Place(spec).Nodes.Single(node => node.Node.Id == "x").Box.Height;
-        double apart = GraphLayout.Place(spec, rules: Rules).Nodes.Single(node => node.Node.Id == "x").Box.Height;
+        double height = GraphLayout.Place(spec).Nodes.Single(node => node.Node.Id == "x").Box.Height;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(joined, Is.EqualTo(52));
-            Assert.That(apart, Is.EqualTo(84));
-        });
+        Assert.That(height, Is.EqualTo(84));
     }
 
     /// <summary>
@@ -150,8 +138,9 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.Zero);
-            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.EqualTo(Rule.TrackOf(gap[1], gap, gap, boxes)));
+            Assert.That(ApartArrows.TracksRoom(gap, gap, boxes), Is.Zero);
+            Assert.That(ApartArrows.TrackOf(gap[0], gap, gap, boxes),
+                Is.EqualTo(ApartArrows.TrackOf(gap[1], gap, gap, boxes)));
         });
     }
 
@@ -165,7 +154,7 @@ public class ApartArrowsTests
         var boxes = Feeding(100);
         GraphEdge[] gap = [new("a", "x"), new("c", "x")];
 
-        Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.Zero);
+        Assert.That(ApartArrows.TracksRoom(gap, gap, boxes), Is.Zero);
     }
 
     /// <summary>An upright that would lie on another's gets the track a step beside it.</summary>
@@ -183,8 +172,9 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.EqualTo(18), "one track beside the first");
-            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Not.EqualTo(Rule.TrackOf(gap[1], gap, gap, boxes)));
+            Assert.That(ApartArrows.TracksRoom(gap, gap, boxes), Is.EqualTo(18), "one track beside the first");
+            Assert.That(ApartArrows.TrackOf(gap[0], gap, gap, boxes),
+                Is.Not.EqualTo(ApartArrows.TrackOf(gap[1], gap, gap, boxes)));
         });
     }
 
@@ -204,7 +194,7 @@ public class ApartArrowsTests
         };
         GraphEdge[] gap = [new("a", "x"), new("b", "x"), new("c", "x")];
 
-        var tracks = gap.Select(edge => Rule.TrackOf(edge, gap, gap, boxes));
+        var tracks = gap.Select(edge => ApartArrows.TrackOf(edge, gap, gap, boxes));
 
         Assert.That(tracks, Is.EqualTo(new[] { 0, 1, 2 }));
     }
@@ -216,7 +206,7 @@ public class ApartArrowsTests
         var boxes = Feeding(300);
         GraphEdge[] gap = [new("a", "x"), new("b", "x"), new("c", "x")];
 
-        var tracks = gap.Select(edge => Rule.TrackOf(edge, gap, gap, boxes));
+        var tracks = gap.Select(edge => ApartArrows.TrackOf(edge, gap, gap, boxes));
 
         Assert.That(tracks, Is.EqualTo(new[] { 2, 1, 0 }));
     }
@@ -238,7 +228,8 @@ public class ApartArrowsTests
         };
         GraphEdge[] forward = [new("a", "y"), new("b", "x")];
 
-        Assert.That(Rule.EntryOf(forward[1], forward, boxes), Is.EqualTo(35), "x is level with a, and b is under it");
+        Assert.That(ApartArrows.EntryOf(forward[1], forward, boxes), Is.EqualTo(35),
+            "x is level with a, and b is under it");
     }
 
     /// <summary>
@@ -259,9 +250,10 @@ public class ApartArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.EntryOf(gap[1], gap, boxes), Is.EqualTo(26), "straight through the waypoint's middle");
-            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Zero, "a's line out is level with that point");
-            Assert.That(Rule.TrackOf(gap[1], gap, gap, boxes), Is.EqualTo(1));
+            Assert.That(ApartArrows.EntryOf(gap[1], gap, boxes), Is.EqualTo(26),
+                "straight through the waypoint's middle");
+            Assert.That(ApartArrows.TrackOf(gap[0], gap, gap, boxes), Is.Zero, "a's line out is level with that point");
+            Assert.That(ApartArrows.TrackOf(gap[1], gap, gap, boxes), Is.EqualTo(1));
         });
     }
 
@@ -284,7 +276,7 @@ public class ApartArrowsTests
                 new GraphEdge("start", "dock"), new GraphEdge("list", "deck"), new GraphEdge("list", "dock")
             ]);
 
-        var placed = GraphLayout.Place(spec, rules: FlowRules.Straight);
+        var placed = GraphLayout.Place(spec);
         var middle = placed.Nodes.Where(node => node.Node.Column == 1).ToList();
         // Where the two long arrows pass the middle column: the points of their paths from its left side to its right.
         var through = placed.Edges.Where(edge => edge.Edge is { From: "start", To: "deck" or "dock" })
@@ -308,7 +300,7 @@ public class ApartArrowsTests
             [new GraphNode("a", "A"), new GraphNode("b", "B"), new GraphNode("x", "X")],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x", "writes")]);
 
-        var worded = GraphLayout.Place(spec, rules: FlowRules.Straight).Edges
+        var worded = GraphLayout.Place(spec).Edges
             .Single(edge => edge.Edge.Word is not null);
         var ground = FlowText.WordBox(worded, Geometries.InUse);
 
@@ -316,24 +308,28 @@ public class ApartArrowsTests
     }
 
     /// <summary>
-    /// An arrow from a level box two columns away stays one straight line, though a second arrow arrives at the same
-    /// box: the second takes the point a step beside it. Spread round the middle, the straight one would kink.
+    /// A box fed from the next column and from two columns away stands level with the nearer one, whose arrow runs
+    /// straight in. The long arrow runs level past that column, and arrives at the point a step beside the straight
+    /// one. Spread round the middle, the straight one would kink.
     /// </summary>
     [Test]
-    public void ALongArrowFromALevelBox_StaysStraight()
+    public void ALongArrowBesideALevelFeeder_ArrivesAStepBesideIt()
     {
         var spec = new GraphSpec(
             [new GraphNode("a", "A", Column: 0), new GraphNode("b", "B", Column: 1), new GraphNode("x", "X", null, 2)],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x")]);
 
-        var placed = GraphLayout.Place(spec, rules: Rules);
-        var straight = placed.Edges.Single(edge => edge.Edge.From == "a");
-        var beside = placed.Edges.Single(edge => edge.Edge.From == "b");
+        var placed = GraphLayout.Place(spec);
+        var straight = placed.Edges.Single(edge => edge.Edge.From == "b");
+        var beside = placed.Edges.Single(edge => edge.Edge.From == "a");
+        var column = placed.Nodes.Single(node => node.Node.Id == "b").Box;
 
         Assert.Multiple(() =>
         {
             Assert.That(Points(straight.Way.Text).Select(point => point.Y).Distinct().Count(), Is.EqualTo(1),
                 "one height from end to end");
+            Assert.That(Points(beside.Way.Text).Where(point => point.X <= column.Right).Select(point => point.Y)
+                .Distinct().Count(), Is.EqualTo(1), "level past the column between");
             Assert.That(Math.Abs(Points(beside.Way.Text)[^1].Y - Points(straight.Way.Text)[^1].Y), Is.EqualTo(18),
                 "the other arrives a step beside it");
         });
@@ -350,7 +346,7 @@ public class ApartArrowsTests
             [new GraphNode("a", "A", Column: 0), new GraphNode("b", "B", Column: 0), new GraphNode("x", "X", null, 2)],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x")]);
 
-        var paths = GraphLayout.Place(spec, rules: Rules).Edges.Select(edge => Points(edge.Way.Text)).ToList();
+        var paths = GraphLayout.Place(spec).Edges.Select(edge => Points(edge.Way.Text)).ToList();
 
         Assert.Multiple(() =>
         {

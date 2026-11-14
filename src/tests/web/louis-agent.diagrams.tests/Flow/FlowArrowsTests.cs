@@ -46,11 +46,12 @@ public class FlowArrowsTests
     }
 
     /// <summary>
-    /// A chip keeps clear of the line it belongs to: above its flat piece when the chart runs right, under the track
-    /// it hangs from when the chart runs down (Louis's runner and usage-probe charts, CL60.2).
+    /// A chip stands where its line is told from the others: on its own line when the chart runs right, the line
+    /// through the chip's middle, and under the track it hangs from when the chart runs down (Louis's runner and
+    /// usage-probe charts, CL60.2).
     /// </summary>
     [Test]
-    public void AChip_KeepsClearOfItsLine()
+    public void AChip_StandsOnItsLine_OrUnderItsTrack()
     {
         var right = GraphLayout.Place(new GraphSpec([new GraphNode("a", "A"), new GraphNode("b", "B")],
             [new GraphEdge("a", "b", "--check")]), bend: GraphLayout.SoftBend).Edges.Single();
@@ -65,8 +66,11 @@ public class FlowArrowsTests
         var ground = FlowText.WordBox(right, Geometries.InUse);
         Assert.Multiple(() =>
         {
-            Assert.That(ground.Bottom, Is.LessThanOrEqualTo(Ys(right.Way.Text).First() - 4), "above its line");
-            foreach (var edge in down)
+            Assert.That(ground.Middle.Y, Is.EqualTo(Ys(right.Way.Text).First()), "on its line");
+            // The arrow to the box right under its source runs straight down and has no track: the other bends.
+            var bent = down.Where(edge => edge.Way.Text.Contains('Q')).ToList();
+            Assert.That(bent, Has.Count.EqualTo(1));
+            foreach (var edge in bent)
                 Assert.That(FlowText.WordBox(edge, Geometries.InUse).Top,
                     Is.GreaterThanOrEqualTo(Track(edge.Way.Text) + 4), "under its track");
         });
