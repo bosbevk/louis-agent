@@ -4,14 +4,14 @@
   "caption": "Nothing new runs: the same tool draws the new kind from a JSON beside the doc, and the same tests hold the picture to its JSON.",
   "flow": {
     "nodes": [
-      { "id": "you", "label": "Whoever writes a doc", "icon": "terminal", "tone": "blue" },
-      { "id": "json", "label": "diagrams/name.json\nkind: components", "icon": "box", "tone": "amber" },
+      { "id": "you", "shape": "terminal", "label": "Whoever writes a doc", "icon": "terminal", "tone": "blue" },
+      { "id": "json", "shape": "data", "label": "diagrams/name.json\nkind: components", "icon": "box", "tone": "amber" },
       { "id": "tool", "label": "louis-agent.doc-diagrams\nas today", "icon": "terminal", "tone": "green" },
       { "id": "reader", "label": "DiagramReader\nthe new part and its checks\nsteps 2 and 3", "icon": "code", "tone": "violet", "group": "diagrams" },
       { "id": "layout", "label": "ComponentLayout\nplaces boxes, pins and lines\nsteps 4 and 6", "icon": "code", "tone": "violet", "group": "diagrams" },
       { "id": "renderer", "label": "ComponentsRenderer\nthe new look\nstep 5", "icon": "code", "tone": "violet", "group": "diagrams" },
-      { "id": "svg", "label": "diagrams/name.svg", "icon": "box", "tone": "amber" },
-      { "id": "doc", "label": "A project's design doc\nsteps 8 to 10", "icon": "box", "tone": "amber" },
+      { "id": "svg", "shape": "data", "label": "diagrams/name.svg", "icon": "box", "tone": "amber" },
+      { "id": "doc", "shape": "data", "label": "A project's design doc\nsteps 8 to 10", "icon": "box", "tone": "amber" },
       { "id": "tests", "label": "DocsDiagramsTests\na project with components\nshows one, step 10", "icon": "search", "tone": "green" }
     ],
     "edges": [

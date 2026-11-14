@@ -18,12 +18,14 @@
       },
       {
         "id": "feed",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "feed\n: JsonLinesErrorFeed\nthe seeded service\u0027s\nlogs/errors.jsonl"
       },
       {
         "id": "rec",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "recorder\n: JsonLinesTriageRecorder\ndecisions.jsonl"

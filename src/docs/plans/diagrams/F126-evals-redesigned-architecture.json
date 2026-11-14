@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "file",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": ".eval.json in a demo"
@@ -65,12 +66,14 @@
       },
       {
         "id": "mongo",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "MongoDB: one document per run"
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "Usage ledger: cost"

@@ -48,6 +48,7 @@
       },
       {
         "id": "store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "puls-mongo\nthe run store (F31)",
@@ -55,6 +56,7 @@
       },
       {
         "id": "ledger",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "usage ledger\none folder for the three\nagents",

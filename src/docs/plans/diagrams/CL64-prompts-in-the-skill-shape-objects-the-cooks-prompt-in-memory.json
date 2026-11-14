@@ -6,9 +6,9 @@
     "nodes": [
       { "id": "session", "icon": "message", "tone": "violet", "label": "The cook's session\nrole puls-cook" },
       { "id": "prompt", "icon": "stack", "tone": "teal", "label": "The system prompt\nbuilt once, then cached" },
-      { "id": "principles", "icon": "shield", "tone": "violet", "label": "principles.md\n184 words" },
-      { "id": "cook", "icon": "file", "tone": "green", "label": "puls-cook.md\n3,217 words today" },
-      { "id": "guides", "icon": "book", "tone": "green", "label": "Five guides\nweb, recipes, where-to-buy,\nshop-prices, calculator\n1,817 words" },
+      { "id": "principles", "shape": "data", "icon": "shield", "tone": "violet", "label": "principles.md\n184 words" },
+      { "id": "cook", "shape": "data", "icon": "file", "tone": "green", "label": "puls-cook.md\n3,217 words today" },
+      { "id": "guides", "shape": "data", "icon": "book", "tone": "green", "label": "Five guides\nweb, recipes, where-to-buy,\nshop-prices, calculator\n1,817 words" },
       { "id": "never", "icon": "shield", "tone": "teal", "label": "Never\nseven lines, first (3)" },
       { "id": "steps", "icon": "checks", "tone": "teal", "label": "Steps\nsix, numbered (3)" },
       { "id": "detail", "icon": "file", "tone": "teal", "label": "The detail\na section a step (3)\nsmaller (4)" },

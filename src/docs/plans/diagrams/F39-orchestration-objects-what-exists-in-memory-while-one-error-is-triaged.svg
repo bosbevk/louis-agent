@@ -209,10 +209,10 @@ svg {
     <g class="flow" transform="translate(0 72)">
       <path class="pic-line pic-edge tone-blue" d="M 263.6 404 L 278.6 404 Q 293.7 404 293.7 389 L 293.7 301 Q 293.7 286 308.7 286 L 323.7 286" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 263.6 404 L 278.6 404 Q 293.7 404 293.7 389 L 293.7 301 Q 293.7 286 308.7 286 L 323.7 286" />
-      <path class="pic-line pic-edge tone-violet" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 65 Q 556.6 50 571.6 50 L 586.6 50" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 65 Q 556.6 50 571.6 50 L 586.6 50" />
-      <path class="pic-line pic-edge tone-violet" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 174 Q 556.6 159 571.6 159 L 586.6 159 L 865.4 159 L 925.5 159" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 174 Q 556.6 159 571.6 159 L 586.6 159 L 865.4 159 L 925.5 159" />
+      <path class="pic-line pic-edge tone-violet" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 69.5 Q 556.6 50 576.1 50 L 595.6 50" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 69.5 Q 556.6 50 576.1 50 L 595.6 50" />
+      <path class="pic-line pic-edge tone-violet" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 174 Q 556.6 159 571.6 159 L 586.6 159 L 865.4 159 L 936.4 159" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 526.5 286 L 541.5 286 Q 556.6 286 556.6 271 L 556.6 174 Q 556.6 159 571.6 159 L 586.6 159 L 865.4 159 L 936.4 159" />
       <path class="pic-line pic-edge tone-blue" d="M 263.6 404 L 323.7 404" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 263.6 404 L 323.7 404" />
       <path class="pic-line pic-edge tone-violet" d="M 526.5 404 L 586.6 404" marker-end="url(#arrow-violet)" />
@@ -237,8 +237,8 @@ svg {
       <path class="pic-march" d="M 865.4 758 L 925.5 758 L 1204.3 758 L 1219.3 758 Q 1234.4 758 1234.4 743 L 1234.4 673 Q 1234.4 658 1249.4 658 L 1264.4 658" />
       <path class="pic-line pic-edge tone-violet" d="M 526.5 404 L 541.5 404 Q 556.6 404 556.6 389 L 556.6 310 Q 556.6 295 571.6 295 L 586.6 295" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 526.5 404 L 541.5 404 Q 556.6 404 556.6 389 L 556.6 310 Q 556.6 295 571.6 295 L 586.6 295" />
-      <path class="pic-line pic-edge tone-teal" d="M 865.4 286 L 880.4 286 Q 895.5 286 895.5 271 L 895.5 192 Q 895.5 177 910.5 177 L 925.5 177" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 865.4 286 L 880.4 286 Q 895.5 286 895.5 271 L 895.5 192 Q 895.5 177 910.5 177 L 925.5 177" />
+      <path class="pic-line pic-edge tone-teal" d="M 865.4 286 L 880.4 286 Q 895.5 286 895.5 271 L 895.5 195.6 Q 895.5 177 914 177 L 932.6 177" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 865.4 286 L 880.4 286 Q 895.5 286 895.5 271 L 895.5 195.6 Q 895.5 177 914 177 L 932.6 177" />
       <rect class="pic-panel depth-2 pic-edge tone-blue" x="0" y="362" width="263.6" height="84" rx="10" />
       <path class="pic-sheen" d="M10 363.5H253.6" />
       <rect class="pic-fill tone-blue" x="7" y="393" width="4" height="22" rx="2" />
@@ -278,21 +278,20 @@ svg {
       </g>
       <text class="flow-name" x="375.7" y="401" text-anchor="start">workflow</text>
       <text class="flow-name" x="375.7" y="417" text-anchor="start">: TriageWorkflow</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="586.6" y="0" width="278.8" height="100" rx="10" />
-      <path class="pic-sheen" d="M596.6 1.5H855.4" />
-      <rect class="pic-fill tone-amber" x="593.6" y="39" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="602.6" y="36" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(608.6 42) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M604.6 0L865.4 0L847.4 100L586.6 100Z" />
+      <rect class="pic-fill tone-amber" x="605.6" y="39" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="614.6" y="36" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(620.6 42) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="638.6" y="31" text-anchor="start">feed</text>
-      <text class="flow-name" x="638.6" y="47" text-anchor="start">: JsonLinesErrorFeed</text>
-      <text class="flow-name" x="638.6" y="63" text-anchor="start">the seeded service's</text>
-      <text class="flow-name" x="638.6" y="79" text-anchor="start">logs/errors.jsonl</text>
+      <text class="flow-name" x="650.6" y="31" text-anchor="start">feed</text>
+      <text class="flow-name" x="650.6" y="47" text-anchor="start">: JsonLinesErrorFeed</text>
+      <text class="flow-name" x="650.6" y="63" text-anchor="start">the seeded service's</text>
+      <text class="flow-name" x="650.6" y="79" text-anchor="start">logs/errors.jsonl</text>
       <rect class="pic-panel depth-2 pic-edge tone-teal" x="586.6" y="252" width="278.8" height="68" rx="10" />
       <path class="pic-sheen" d="M596.6 253.5H855.4" />
       <rect class="pic-fill tone-teal" x="593.6" y="275" width="4" height="22" rx="2" />
@@ -350,18 +349,17 @@ svg {
       <text class="flow-name" x="638.6" y="747" text-anchor="start">confirm</text>
       <text class="flow-name" x="638.6" y="763" text-anchor="start">: ConfirmFix</text>
       <text class="flow-name" x="638.6" y="779" text-anchor="start">CliReplay + DotNetTestRunner</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="925.5" y="126" width="278.8" height="84" rx="10" />
-      <path class="pic-sheen" d="M935.5 127.5H1194.3" />
-      <rect class="pic-fill tone-amber" x="932.5" y="157" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="941.5" y="154" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(947.5 160) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M943.5 126L1204.3 126L1186.3 210L925.5 210Z" />
+      <rect class="pic-fill tone-amber" x="944.5" y="157" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="953.5" y="154" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(959.5 160) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="977.5" y="157" text-anchor="start">recorder</text>
-      <text class="flow-name" x="977.5" y="173" text-anchor="start">: JsonLinesTriageRecorder</text>
-      <text class="flow-name" x="977.5" y="189" text-anchor="start">decisions.jsonl</text>
+      <text class="flow-name" x="989.5" y="157" text-anchor="start">recorder</text>
+      <text class="flow-name" x="989.5" y="173" text-anchor="start">: JsonLinesTriageRecorder</text>
+      <text class="flow-name" x="989.5" y="189" text-anchor="start">decisions.jsonl</text>
       <rect class="pic-panel depth-2 pic-edge tone-teal" x="925.5" y="244" width="278.8" height="84" rx="10" />
       <path class="pic-sheen" d="M935.5 245.5H1194.3" />
       <rect class="pic-fill tone-teal" x="932.5" y="275" width="4" height="22" rx="2" />
@@ -445,8 +443,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="933" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="593.9" y="937" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="627.9" y="945" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M742.1 941H772.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="780.1" y="945" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M760.1 933L772.1 933L754.1 949L742.1 949Z" />
+    <text class="pic-note" x="780.1" y="945" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M894.3 941H924.3" marker-end="url(#arrow)" />
+    <text class="pic-note" x="932.3" y="945" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="970" width="1490" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 980) scale(0.6667)">

@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1380 1163" width="1380" height="1163" role="img" aria-label="F148 one docs endpoint: the architecture" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 1407 1189" width="1407" height="1189" role="img" aria-label="F148 one docs endpoint: the architecture" xmlns="http://www.w3.org/2000/svg">
   <title>F148 one docs endpoint: the architecture</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,45 +201,45 @@ svg {
       <path class="arrow tone-violet" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1380" height="1163" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1407" height="1189" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1332M0 33H1332M0 55H1332M0 77H1332M0 99H1332M0 121H1332M0 143H1332M0 165H1332M0 187H1332M0 209H1332M0 231H1332M0 253H1332M0 275H1332M0 297H1332M0 319H1332M0 341H1332M0 363H1332M0 385H1332M0 407H1332M0 429H1332M0 451H1332M0 473H1332M0 495H1332M0 517H1332M0 539H1332M0 561H1332M0 583H1332M0 605H1332M0 627H1332M0 649H1332M0 671H1332M0 693H1332M0 715H1332M0 737H1332M0 759H1332M0 781H1332M0 803H1332M0 825H1332M0 847H1332M0 869H1332M0 891H1332M0 913H1332M0 935H1332M0 957H1332M0 979H1332M0 1001H1332M0 1023H1332M0 1045H1332M0 1067H1332" />
+    <path class="pic-dots" d="M0 11H1359M0 33H1359M0 55H1359M0 77H1359M0 99H1359M0 121H1359M0 143H1359M0 165H1359M0 187H1359M0 209H1359M0 231H1359M0 253H1359M0 275H1359M0 297H1359M0 319H1359M0 341H1359M0 363H1359M0 385H1359M0 407H1359M0 429H1359M0 451H1359M0 473H1359M0 495H1359M0 517H1359M0 539H1359M0 561H1359M0 583H1359M0 605H1359M0 627H1359M0 649H1359M0 671H1359M0 693H1359M0 715H1359M0 737H1359M0 759H1359M0 781H1359M0 803H1359M0 825H1359M0 847H1359M0 869H1359M0 891H1359M0 913H1359M0 935H1359M0 957H1359M0 979H1359M0 1001H1359M0 1023H1359M0 1045H1359M0 1067H1359M0 1089H1359" />
     <text class="pic-title" x="0" y="24" text-anchor="start">F148 one docs endpoint</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">the architecture</text>
     <g class="flow" transform="translate(0 72)">
-      <rect class="flow-group" x="584" y="276" width="747.8" height="532" rx="14" />
+      <rect class="flow-group" x="584" y="276" width="774.8" height="532" rx="14" />
       <text class="pic-group" x="598" y="295" text-anchor="start">the site's image (louis-agent.site-api)</text>
       <path class="pic-line pic-edge tone-red" d="M 140 68 L 140 134" marker-end="url(#arrow-red)" />
       <path class="pic-march" d="M 140 68 L 140 134" />
-      <path class="pic-line pic-edge tone-red" d="M 140 202 L 140 214 Q 140 226 152 226 L 753.2 226 Q 777.2 226 777.2 250 L 777.2 310" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 140 202 L 140 214 Q 140 226 152 226 L 753.2 226 Q 777.2 226 777.2 250 L 777.2 310" />
-      <path class="pic-line pic-edge tone-red" d="M 140 202 L 140 214 Q 140 226 152 226 L 1133.6 226 Q 1157.6 226 1157.6 250 L 1157.6 310" marker-end="url(#arrow-red)" />
-      <path class="pic-march" d="M 140 202 L 140 214 Q 140 226 152 226 L 1133.6 226 Q 1157.6 226 1157.6 250 L 1157.6 310" />
-      <path class="pic-line pic-edge tone-amber" d="M 777.2 378 L 777.2 438" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 777.2 378 L 777.2 438" />
-      <path class="pic-line pic-edge tone-amber" d="M 1157.6 378 L 1157.6 393 Q 1157.6 408 1142.6 408 L 810.2 408 Q 795.2 408 795.2 423 L 795.2 438" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 1157.6 378 L 1157.6 393 Q 1157.6 408 1142.6 408 L 810.2 408 Q 795.2 408 795.2 423 L 795.2 438" />
-      <path class="pic-line pic-edge tone-green" d="M 777.2 506 L 777.2 592" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 777.2 506 L 777.2 592" />
-      <path class="pic-line pic-edge tone-green" d="M 777.2 506 L 777.2 544 Q 777.2 568 801.2 568 L 1145.6 568 Q 1157.6 568 1157.6 580 L 1157.6 592" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 777.2 506 L 777.2 544 Q 777.2 568 801.2 568 L 1145.6 568 Q 1157.6 568 1157.6 580 L 1157.6 592" />
-      <path class="pic-line pic-edge tone-green reads" d="M 777.2 506 L 777.2 544 Q 777.2 568 753.2 568 L 426 568 Q 414 568 414 580 L 414 592" marker-end="url(#arrow-green)" />
-      <path class="pic-line pic-edge tone-green" d="M 777.2 660 L 777.2 728" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 777.2 660 L 777.2 728" />
-      <path class="pic-line pic-edge tone-violet" d="M 777.2 796 L 777.2 818 Q 777.2 840 755.2 840 L 426 840 Q 414 840 414 852 L 414 864" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 777.2 796 L 777.2 818 Q 777.2 840 755.2 840 L 426 840 Q 414 840 414 852 L 414 864" />
-      <path class="pic-line pic-edge tone-violet" d="M 1157.6 660 L 1157.6 682 Q 1157.6 704 1135.6 704 L 152 704 Q 140 704 140 716 L 140 728" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1157.6 660 L 1157.6 682 Q 1157.6 704 1135.6 704 L 152 704 Q 140 704 140 716 L 140 728" />
+      <path class="pic-line pic-edge tone-red" d="M 140 202 L 140 214 Q 140 226 152 226 L 762.2 226 Q 786.2 226 786.2 250 L 786.2 310" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M 140 202 L 140 214 Q 140 226 152 226 L 762.2 226 Q 786.2 226 786.2 250 L 786.2 310" />
+      <path class="pic-line pic-edge tone-red" d="M 140 202 L 140 214 Q 140 226 152 226 L 1160.6 226 Q 1184.6 226 1184.6 250 L 1184.6 310" marker-end="url(#arrow-red)" />
+      <path class="pic-march" d="M 140 202 L 140 214 Q 140 226 152 226 L 1160.6 226 Q 1184.6 226 1184.6 250 L 1184.6 310" />
+      <path class="pic-line pic-edge tone-amber" d="M 786.2 378 L 786.2 438" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 786.2 378 L 786.2 438" />
+      <path class="pic-line pic-edge tone-amber" d="M 1184.6 378 L 1184.6 393 Q 1184.6 408 1169.6 408 L 819.2 408 Q 804.2 408 804.2 423 L 804.2 438" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 1184.6 378 L 1184.6 393 Q 1184.6 408 1169.6 408 L 819.2 408 Q 804.2 408 804.2 423 L 804.2 438" />
+      <path class="pic-line pic-edge tone-green" d="M 786.2 506 L 786.2 592" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 786.2 506 L 786.2 592" />
+      <path class="pic-line pic-edge tone-green" d="M 786.2 506 L 786.2 544 Q 786.2 568 810.2 568 L 1172.6 568 Q 1184.6 568 1184.6 580 L 1184.6 592" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 786.2 506 L 786.2 544 Q 786.2 568 810.2 568 L 1172.6 568 Q 1184.6 568 1184.6 580 L 1184.6 592" />
+      <path class="pic-line pic-edge tone-green reads" d="M 786.2 506 L 786.2 544 Q 786.2 568 762.2 568 L 426 568 Q 414 568 414 580 L 414 592" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green" d="M 786.2 660 L 786.2 728" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 786.2 660 L 786.2 728" />
+      <path class="pic-line pic-edge tone-violet" d="M 786.2 796 L 786.2 818 Q 786.2 840 764.2 840 L 426 840 Q 414 840 414 852 L 414 864" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 786.2 796 L 786.2 818 Q 786.2 840 764.2 840 L 426 840 Q 414 840 414 852 L 414 864" />
+      <path class="pic-line pic-edge tone-violet" d="M 1184.6 660 L 1184.6 682 Q 1184.6 704 1162.6 704 L 152 704 Q 140 704 140 716 L 140 728" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1184.6 660 L 1184.6 682 Q 1184.6 704 1162.6 704 L 152 704 Q 140 704 140 716 L 140 728" />
       <path class="pic-line pic-edge tone-violet" d="M 414 660 L 414 728" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 414 660 L 414 728" />
       <rect class="flow-chip pic-edge tone-red" x="146" y="72" width="57" height="18" rx="9" />
       <text class="flow-word pic-ink tone-red" x="174.5" y="84" text-anchor="middle">a merge</text>
-      <rect class="flow-chip pic-edge tone-red" x="783.2" y="230" width="50" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-red" x="808.2" y="242" text-anchor="middle">copies</text>
-      <rect class="flow-chip pic-edge tone-red" x="1163.6" y="230" width="50" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-red" x="1188.6" y="242" text-anchor="middle">writes</text>
-      <rect class="flow-chip pic-edge tone-green" x="783.2" y="510" width="92" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="829.2" y="522" text-anchor="middle">its own copy</text>
+      <rect class="flow-chip pic-edge tone-red" x="792.2" y="230" width="50" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-red" x="817.2" y="242" text-anchor="middle">copies</text>
+      <rect class="flow-chip pic-edge tone-red" x="1190.6" y="230" width="50" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-red" x="1215.6" y="242" text-anchor="middle">writes</text>
+      <rect class="flow-chip pic-edge tone-green" x="792.2" y="510" width="92" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="838.2" y="522" text-anchor="middle">its own copy</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="55" y="0" width="170" height="68" rx="10" />
       <path class="pic-sheen" d="M65 1.5H215" />
       <rect class="pic-fill tone-red" x="62" y="23" width="4" height="22" rx="2" />
@@ -263,41 +263,39 @@ svg {
       </g>
       <text class="flow-name" x="79.2" y="165" text-anchor="start">the deploy on a merge</text>
       <text class="flow-name" x="79.2" y="181" text-anchor="start">builds the image</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="596" y="310" width="362.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M606 311.5H948.4" />
-      <rect class="pic-fill tone-amber" x="603" y="333" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="612" y="330" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(618 336) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M614 310L976.4 310L958.4 378L596 378Z" />
+      <rect class="pic-fill tone-amber" x="615" y="333" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="624" y="330" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(630 336) scale(0.6667)">
         <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
       </g>
-      <text class="flow-name" x="648" y="341" text-anchor="start">/app/docs</text>
-      <text class="flow-name" x="648" y="357" text-anchor="start">the docs, each with its header (step 3)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="1018.2" y="310" width="278.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M1028.2 311.5H1287" />
-      <rect class="pic-fill tone-amber" x="1025.2" y="333" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="1034.2" y="330" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1040.2 336) scale(0.6667)">
+      <text class="flow-name" x="660" y="341" text-anchor="start">/app/docs</text>
+      <text class="flow-name" x="660" y="357" text-anchor="start">the docs, each with its header (step 3)</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1054.2 310L1333 310L1315 378L1036.2 378Z" />
+      <rect class="pic-fill tone-amber" x="1055.2" y="333" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="1064.2" y="330" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1070.2 336) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="1070.2" y="341" text-anchor="start">the stamp</text>
-      <text class="flow-name" x="1070.2" y="357" text-anchor="start">commit + repository (step 4)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="649.2" y="438" width="256" height="68" rx="10" />
-      <path class="pic-sheen" d="M659.2 439.5H895.2" />
-      <rect class="pic-fill tone-green" x="656.2" y="461" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="665.2" y="458" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(671.2 464) scale(0.6667)">
+      <text class="flow-name" x="1100.2" y="341" text-anchor="start">the stamp</text>
+      <text class="flow-name" x="1100.2" y="357" text-anchor="start">commit + repository (step 4)</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="658.2" y="438" width="256" height="68" rx="10" />
+      <path class="pic-sheen" d="M668.2 439.5H904.2" />
+      <rect class="pic-fill tone-green" x="665.2" y="461" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="674.2" y="458" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(680.2 464) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="701.2" y="469" text-anchor="start">DocLibrary</text>
-      <text class="flow-name" x="701.2" y="485" text-anchor="start">in the docs pack (step 1)</text>
+      <text class="flow-name" x="710.2" y="469" text-anchor="start">DocLibrary</text>
+      <text class="flow-name" x="710.2" y="485" text-anchor="start">in the docs pack (step 1)</text>
       <rect class="pic-panel depth-2 pic-edge tone-violet" x="286" y="592" width="256" height="68" rx="10" />
       <path class="pic-sheen" d="M296 593.5H532" />
       <rect class="pic-fill tone-violet" x="293" y="615" width="4" height="22" rx="2" />
@@ -310,28 +308,28 @@ svg {
       </g>
       <text class="flow-name" x="338" y="623" text-anchor="start">louis-agent.mcp</text>
       <text class="flow-name" x="338" y="639" text-anchor="start">doc:// resources (step 9)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="645.4" y="592" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M655.4 593.5H899" />
-      <rect class="pic-fill tone-green" x="652.4" y="615" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="661.4" y="612" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(667.4 618) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="654.4" y="592" width="263.6" height="68" rx="10" />
+      <path class="pic-sheen" d="M664.4 593.5H908" />
+      <rect class="pic-fill tone-green" x="661.4" y="615" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="670.4" y="612" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(676.4 618) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="697.4" y="623" text-anchor="start">the docs tools</text>
-      <text class="flow-name" x="697.4" y="639" text-anchor="start">name their source (step 8)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="995.4" y="592" width="324.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M1005.4 593.5H1309.8" />
-      <rect class="pic-fill tone-violet" x="1002.4" y="615" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="1011.4" y="612" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1017.4 618) scale(0.6667)">
+      <text class="flow-name" x="706.4" y="623" text-anchor="start">the docs tools</text>
+      <text class="flow-name" x="706.4" y="639" text-anchor="start">name their source (step 8)</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1022.4" y="592" width="324.4" height="68" rx="10" />
+      <path class="pic-sheen" d="M1032.4 593.5H1336.8" />
+      <rect class="pic-fill tone-violet" x="1029.4" y="615" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="1038.4" y="612" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1044.4 618) scale(0.6667)">
         <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
         <path d="M7 8l0 .01" />
         <path d="M7 16l0 .01" />
       </g>
-      <text class="flow-name" x="1047.4" y="623" text-anchor="start">/v1/docs</text>
-      <text class="flow-name" x="1047.4" y="639" text-anchor="start">list, one doc, search (steps 6, 7)</text>
+      <text class="flow-name" x="1074.4" y="623" text-anchor="start">/v1/docs</text>
+      <text class="flow-name" x="1074.4" y="639" text-anchor="start">list, one doc, search (steps 6, 7)</text>
       <rect class="pic-panel depth-2 pic-edge tone-blue" x="46.2" y="728" width="187.6" height="68" rx="10" />
       <path class="pic-sheen" d="M56.2 729.5H223.8" />
       <rect class="pic-fill tone-blue" x="53.2" y="751" width="4" height="22" rx="2" />
@@ -354,34 +352,34 @@ svg {
         <path d="M12 19l7 0" />
       </g>
       <text class="flow-name" x="381" y="767" text-anchor="start">an MCP client</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="668.2" y="728" width="218" height="68" rx="10" />
-      <path class="pic-sheen" d="M678.2 729.5H876.2" />
-      <rect class="pic-fill tone-violet" x="675.2" y="751" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="684.2" y="748" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(690.2 754) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="677.2" y="728" width="218" height="68" rx="10" />
+      <path class="pic-sheen" d="M687.2 729.5H885.2" />
+      <rect class="pic-fill tone-violet" x="684.2" y="751" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="693.2" y="748" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(699.2 754) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
-      <text class="flow-name" x="720.2" y="759" text-anchor="start">the guide</text>
-      <text class="flow-name" x="720.2" y="775" text-anchor="start">in the site's corner</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="329" y="864" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M339 865.5H489" />
-      <rect class="pic-fill tone-blue" x="336" y="879" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="345" y="876" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(351 882) scale(0.6667)">
+      <text class="flow-name" x="729.2" y="759" text-anchor="start">the guide</text>
+      <text class="flow-name" x="729.2" y="775" text-anchor="start">in the site's corner</text>
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="316" y="864" width="196" height="52" rx="26" />
+      <path class="pic-sheen" d="M342 865.5H486" />
+      <rect class="pic-fill tone-blue" x="335" y="879" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="344" y="876" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(350 882) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="381" y="895" text-anchor="start">a visitor</text>
+      <text class="flow-name" x="380" y="895" text-anchor="start">a visitor</text>
       <circle class="pic-port pic-edge tone-red" cx="140" cy="68" r="4" />
       <circle class="pic-port pic-edge tone-red" cx="140" cy="202" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="777.2" cy="378" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="1157.6" cy="378" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="777.2" cy="506" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="777.2" cy="660" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="777.2" cy="796" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="1157.6" cy="660" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="786.2" cy="378" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="1184.6" cy="378" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="786.2" cy="506" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="786.2" cy="660" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="786.2" cy="796" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="1184.6" cy="660" r="4" />
       <circle class="pic-port pic-edge tone-violet" cx="414" cy="660" r="4" />
     </g>
     <text class="pic-group" x="0" y="1024" text-anchor="start">How to read it</text>
@@ -400,16 +398,20 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="1041" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="593.9" y="1045" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="627.9" y="1053" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M742.1 1049H772.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="780.1" y="1053" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M760.1 1041L772.1 1041L754.1 1057L742.1 1057Z" />
+    <text class="pic-note" x="780.1" y="1053" text-anchor="start">data in or out</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="894.3" y="1041" width="30" height="16" rx="8" />
+    <text class="pic-note" x="932.3" y="1053" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M0 1075H30" marker-end="url(#arrow)" />
+    <text class="pic-note" x="38" y="1079" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1078" width="1332" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1088) scale(0.6667)">
+  <rect class="notebar" x="0" y="1104" width="1359" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1114) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1100">
+  <text class="notes" x="38" y="1126">
     <tspan class="note-head">A merge is the only way in:</tspan>
     <tspan class="note-rest">the image carries the docs and their commit, and every reader gets them from the one library.</tspan>
   </text>

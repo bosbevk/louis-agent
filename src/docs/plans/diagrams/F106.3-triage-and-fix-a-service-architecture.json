@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "visitor",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "A visitor on louis-agent.dev"
@@ -87,6 +88,7 @@
       },
       {
         "id": "mongo",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Mongo: runs and steps (F43)"

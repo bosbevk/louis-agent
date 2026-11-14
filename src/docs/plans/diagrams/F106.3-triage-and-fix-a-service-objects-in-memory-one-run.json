@@ -36,6 +36,7 @@
       },
       {
         "id": "recorder",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "ITriageRecorder: Mongo (F43)\nor a file"

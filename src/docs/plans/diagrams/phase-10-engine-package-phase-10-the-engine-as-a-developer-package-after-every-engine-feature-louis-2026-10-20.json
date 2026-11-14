@@ -62,6 +62,7 @@
       },
       {
         "id": "data",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "prices.json / models.json\nfile or URL, our JSON layout"

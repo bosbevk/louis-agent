@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 928 626" width="928" height="626" role="img" aria-label="Puls's track: one town's answer" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 972 626" width="972" height="626" role="img" aria-label="Puls's track: one town's answer" xmlns="http://www.w3.org/2000/svg">
   <title>Puls's track: one town's answer</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -201,33 +201,33 @@ svg {
       <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="928" height="626" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="972" height="626" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H880M0 33H880M0 55H880M0 77H880M0 99H880M0 121H880M0 143H880M0 165H880M0 187H880M0 209H880M0 231H880M0 253H880M0 275H880M0 297H880M0 319H880M0 341H880M0 363H880M0 385H880M0 407H880M0 429H880M0 451H880M0 473H880M0 495H880M0 517H880" />
+    <path class="pic-dots" d="M0 11H924M0 33H924M0 55H924M0 77H924M0 99H924M0 121H924M0 143H924M0 165H924M0 187H924M0 209H924M0 231H924M0 253H924M0 275H924M0 297H924M0 319H924M0 341H924M0 363H924M0 385H924M0 407H924M0 429H924M0 451H924M0 473H924M0 495H924M0 517H924" />
     <text class="pic-title" x="0" y="24" text-anchor="start">Puls's track</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">one town's answer</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-blue" d="M 271.2 50 L 347.4 50" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 271.2 50 L 347.4 50" />
-      <path class="pic-line pic-edge tone-red reads" d="M 271.2 168 L 290.3 168 Q 309.3 168 309.3 149 L 309.3 87.1 Q 309.3 68 328.4 68 L 347.4 68" marker-end="url(#arrow-red)" />
-      <path class="pic-line pic-edge tone-green" d="M 517.4 50 L 536.5 50 Q 555.5 50 555.5 69.1 L 555.5 140 Q 555.5 159 574.6 159 L 593.6 159" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 517.4 50 L 536.5 50 Q 555.5 50 555.5 69.1 L 555.5 140 Q 555.5 159 574.6 159 L 593.6 159" />
-      <path class="pic-line pic-edge tone-green" d="M 517.4 50 L 593.6 50" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 517.4 50 L 593.6 50" />
-      <path class="pic-line pic-edge tone-teal" d="M 271.2 286 L 290.3 286 Q 309.3 286 309.3 267 L 309.3 196.1 Q 309.3 177 328.4 177 L 347.4 177 L 517.4 177 L 593.6 177" marker-end="url(#arrow-teal)" />
-      <path class="pic-march" d="M 271.2 286 L 290.3 286 Q 309.3 286 309.3 267 L 309.3 196.1 Q 309.3 177 328.4 177 L 347.4 177 L 517.4 177 L 593.6 177" />
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="0" y="16" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M10 17.5H261.2" />
-      <rect class="pic-fill tone-blue" x="7" y="39" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="16" y="36" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(22 42) scale(0.6667)">
+      <path class="pic-line pic-edge tone-blue" d="M 305.2 50 L 365.4 50" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 305.2 50 L 365.4 50" />
+      <path class="pic-line pic-edge tone-red reads" d="M 305.2 168 L 320.3 168 Q 335.3 168 335.3 153 L 335.3 83.1 Q 335.3 68 350.4 68 L 365.4 68" marker-end="url(#arrow-red)" />
+      <path class="pic-line pic-edge tone-green" d="M 535.4 50 L 550.5 50 Q 565.5 50 565.5 65.1 L 565.5 143.5 Q 565.5 159 581 159 L 596.6 159" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 535.4 50 L 550.5 50 Q 565.5 50 565.5 65.1 L 565.5 143.5 Q 565.5 159 581 159 L 596.6 159" />
+      <path class="pic-line pic-edge tone-green" d="M 535.4 50 L 595.6 50" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 535.4 50 L 595.6 50" />
+      <path class="pic-line pic-edge tone-teal" d="M 305.2 286 L 320.3 286 Q 335.3 286 335.3 271 L 335.3 192.1 Q 335.3 177 350.4 177 L 365.4 177 L 535.4 177 L 596.6 177" marker-end="url(#arrow-teal)" />
+      <path class="pic-march" d="M 305.2 286 L 320.3 286 Q 335.3 286 335.3 271 L 335.3 192.1 Q 335.3 177 350.4 177 L 365.4 177 L 535.4 177 L 596.6 177" />
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="0" y="16" width="305.2" height="68" rx="34" />
+      <path class="pic-sheen" d="M34 17.5H271.2" />
+      <rect class="pic-fill tone-blue" x="19" y="39" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="28" y="36" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(34 42) scale(0.6667)">
         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       </g>
-      <text class="flow-name" x="52" y="47" text-anchor="start">Your town: Malmesbury, from</text>
-      <text class="flow-name" x="52" y="63" text-anchor="start">the place you shared</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="0" y="118" width="271.2" height="100" rx="10" />
-      <path class="pic-sheen" d="M10 119.5H261.2" />
+      <text class="flow-name" x="64" y="47" text-anchor="start">Your town: Malmesbury, from</text>
+      <text class="flow-name" x="64" y="63" text-anchor="start">the place you shared</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red" x="0" y="118" width="305.2" height="100" rx="10" />
+      <path class="pic-sheen" d="M10 119.5H295.2" />
       <rect class="pic-fill tone-red" x="7" y="157" width="4" height="22" rx="2" />
       <rect class="pic-fill tone-red" x="16" y="154" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(22 160) scale(0.6667)">
@@ -241,8 +241,8 @@ svg {
       <text class="flow-name" x="52" y="165" text-anchor="start">Wikipedia nearby in English</text>
       <text class="flow-name" x="52" y="181" text-anchor="start">and Afrikaans, the</text>
       <text class="flow-name" x="52" y="197" text-anchor="start">municipality's site</text>
-      <rect class="pic-panel depth-2 pic-edge tone-teal" x="0" y="252" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M10 253.5H261.2" />
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="0" y="252" width="305.2" height="68" rx="10" />
+      <path class="pic-sheen" d="M10 253.5H295.2" />
       <rect class="pic-fill tone-teal" x="7" y="275" width="4" height="22" rx="2" />
       <rect class="pic-fill tone-teal" x="16" y="272" width="28" height="28" rx="8" />
       <g class="flow-icon" transform="translate(22 278) scale(0.6667)">
@@ -251,44 +251,44 @@ svg {
       </g>
       <text class="flow-name" x="52" y="283" text-anchor="start">Puls, the same identity in</text>
       <text class="flow-name" x="52" y="299" text-anchor="start">every town</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="347.4" y="24" width="170" height="52" rx="10" />
-      <path class="pic-sheen" d="M357.4 25.5H507.4" />
-      <rect class="pic-fill tone-green" x="354.4" y="39" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="363.4" y="36" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(369.4 42) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="365.4" y="24" width="170" height="52" rx="10" />
+      <path class="pic-sheen" d="M375.4 25.5H525.4" />
+      <rect class="pic-fill tone-green" x="372.4" y="39" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="381.4" y="36" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(387.4 42) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="399.4" y="55" text-anchor="start">places pack</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="593.6" y="16" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M603.6 17.5H870" />
-      <rect class="pic-fill tone-green" x="600.6" y="39" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="609.6" y="36" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(615.6 42) scale(0.6667)">
+      <text class="flow-name" x="417.4" y="55" text-anchor="start">places pack</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="595.6" y="16" width="328.4" height="68" rx="10" />
+      <path class="pic-sheen" d="M605.6 17.5H914" />
+      <rect class="pic-fill tone-green" x="602.6" y="39" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="611.6" y="36" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(617.6 42) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="flow-name" x="645.6" y="47" text-anchor="start">Swartland's colours: the Puls</text>
-      <text class="flow-name" x="645.6" y="63" text-anchor="start">web app's theme</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="593.6" y="126" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M603.6 127.5H870" />
-      <rect class="pic-fill tone-green" x="600.6" y="157" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="609.6" y="154" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(615.6 160) scale(0.6667)">
+      <text class="flow-name" x="647.6" y="47" text-anchor="start">Swartland's colours: the Puls</text>
+      <text class="flow-name" x="647.6" y="63" text-anchor="start">web app's theme</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green flow-shape" x="595.6" y="126" width="328.4" height="84" rx="42" />
+      <path class="pic-sheen" d="M637.6 127.5H882" />
+      <rect class="pic-fill tone-green" x="614.6" y="157" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="623.6" y="154" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(629.6 160) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
-      <text class="flow-name" x="645.6" y="157" text-anchor="start">Puls answers: Swartland</text>
-      <text class="flow-name" x="645.6" y="173" text-anchor="start">municipality, what's near and</text>
-      <text class="flow-name" x="645.6" y="189" text-anchor="start">how far, each with its source</text>
-      <circle class="pic-port pic-edge tone-blue" cx="271.2" cy="50" r="4" />
-      <circle class="pic-port pic-edge tone-red" cx="271.2" cy="168" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="517.4" cy="50" r="4" />
-      <circle class="pic-port pic-edge tone-teal" cx="271.2" cy="286" r="4" />
+      <text class="flow-name" x="659.6" y="157" text-anchor="start">Puls answers: Swartland</text>
+      <text class="flow-name" x="659.6" y="173" text-anchor="start">municipality, what's near and</text>
+      <text class="flow-name" x="659.6" y="189" text-anchor="start">how far, each with its source</text>
+      <circle class="pic-port pic-edge tone-blue" cx="305.2" cy="50" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="305.2" cy="168" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="535.4" cy="50" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="305.2" cy="286" r="4" />
     </g>
     <text class="pic-group" x="0" y="444" text-anchor="start">How to read it</text>
     <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="461" width="26" height="16" rx="5" />
@@ -303,10 +303,12 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-red" x="444" y="461" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-red" x="448" y="465" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="482" y="473" text-anchor="start">outside the process</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="627.7" y="461" width="30" height="16" rx="8" />
+    <text class="pic-note" x="665.7" y="473" text-anchor="start">a start or an end</text>
     <path class="flow-key pic-line pic-edge" d="M0 495H30" marker-end="url(#arrow)" />
     <text class="pic-note" x="38" y="499" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="524" width="880" height="54" rx="8" />
+  <rect class="notebar" x="0" y="524" width="924" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 534) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
@@ -314,9 +316,9 @@ svg {
   </g>
   <text class="notes" x="38" y="546">
     <tspan class="note-head">The same identity in every town:</tspan>
-    <tspan class="note-rest">the places pack reads the town's own sources, and the answer and the web app's</tspan>
+    <tspan class="note-rest">the places pack reads the town's own sources, and the answer and the web app's colours</tspan>
   </text>
   <text class="notes" x="38" y="563">
-    <tspan class="note-rest">colours follow the town.</tspan>
+    <tspan class="note-rest">follow the town.</tspan>
   </text>
 </svg>

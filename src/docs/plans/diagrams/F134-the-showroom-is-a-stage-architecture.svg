@@ -264,16 +264,16 @@ svg {
       <text class="flow-name" x="905.2" y="31" text-anchor="start">louis-agent.web general parts</text>
       <text class="flow-name" x="905.2" y="47" text-anchor="start">LineIcon, LitStage, Deck, FramedWindow,</text>
       <text class="flow-name" x="905.2" y="63" text-anchor="start">Dock (F134.1)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="853.2" y="118" width="430.8" height="52" rx="10" />
-      <path class="pic-sheen" d="M863.2 119.5H1274" />
-      <rect class="pic-fill tone-blue" x="860.2" y="133" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="869.2" y="130" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(875.2 136) scale(0.6667)">
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="853.2" y="118" width="430.8" height="52" rx="26" />
+      <path class="pic-sheen" d="M879.2 119.5H1258" />
+      <rect class="pic-fill tone-blue" x="872.2" y="133" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="881.2" y="130" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(887.2 136) scale(0.6667)">
         <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
         <path d="M4 8h16" />
         <path d="M8 4v4" />
       </g>
-      <text class="flow-name" x="905.2" y="149" text-anchor="start">the visitor's browser</text>
+      <text class="flow-name" x="917.2" y="149" text-anchor="start">the visitor's browser</text>
       <rect class="pic-panel depth-2 pic-edge tone-violet" x="853.2" y="204" width="430.8" height="84" rx="10" />
       <path class="pic-sheen" d="M863.2 205.5H1274" />
       <rect class="pic-fill tone-violet" x="860.2" y="235" width="4" height="22" rx="2" />
@@ -302,8 +302,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="451" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-violet" x="264.3" y="455" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="298.3" y="463" text-anchor="start">the framework</text>
-    <path class="flow-key pic-line pic-edge" d="M406.2 459H436.2" marker-end="url(#arrow)" />
-    <text class="pic-note" x="444.2" y="463" text-anchor="start">a line has the colour of the box it leaves</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="406.2" y="451" width="30" height="16" rx="8" />
+    <text class="pic-note" x="444.2" y="463" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M577.3 459H607.3" marker-end="url(#arrow)" />
+    <text class="pic-note" x="615.3" y="463" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="488" width="1284" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 498) scale(0.6667)">

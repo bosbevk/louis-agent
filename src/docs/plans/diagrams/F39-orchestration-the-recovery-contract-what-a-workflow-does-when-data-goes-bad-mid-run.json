@@ -6,17 +6,20 @@
     "nodes": [
       {
         "id": "exec",
+        "shape": "terminal",
         "icon": "settings",
         "tone": "blue",
         "label": "Execute a step"
       },
       {
         "id": "val",
+        "shape": "decision",
         "icon": "search",
         "label": "Validate: schema, freshness\n(as_of), provenance,\nconsistency, business rules"
       },
       {
         "id": "ok",
+        "shape": "terminal",
         "icon": "checks",
         "tone": "green",
         "label": "Resume the workflow"
@@ -29,6 +32,7 @@
       },
       {
         "id": "side",
+        "shape": "decision",
         "icon": "search",
         "label": "Did a side effect happen?"
       },
@@ -40,6 +44,7 @@
       },
       {
         "id": "pol",
+        "shape": "decision",
         "icon": "search",
         "label": "RecoveryPolicy.Allows(failure,\naction, attempt)?"
       },
@@ -51,6 +56,7 @@
       },
       {
         "id": "verify",
+        "shape": "decision",
         "icon": "search",
         "label": "Verify before resuming"
       },
@@ -62,6 +68,7 @@
       },
       {
         "id": "log",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "RecoveryRecord: kind, records,\nsource and version, action,\nattempt, result, approval"

@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "town",
+        "shape": "terminal",
         "icon": "user",
         "tone": "blue",
         "label": "Your town: Malmesbury, from\nthe place you shared"
@@ -24,6 +25,7 @@
       },
       {
         "id": "answer",
+        "shape": "terminal",
         "icon": "message",
         "tone": "green",
         "label": "Puls answers: Swartland\nmunicipality, what's near and\nhow far, each with its source"

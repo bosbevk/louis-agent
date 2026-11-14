@@ -42,6 +42,7 @@
       },
       {
         "id": "dir",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "directory :\nSampleCustomerDirectory\nthe embedded, made-up\ncustomers.json"

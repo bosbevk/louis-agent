@@ -222,12 +222,12 @@ svg {
       <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 416 Q 686.5 440 710.5 440 L 766.6 440" />
       <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 766.6 274" marker-end="url(#arrow-green)" />
       <path class="pic-march" d="M 642.5 274 L 766.6 274" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 766.6 606" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 766.6 606" />
-      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 593 Q 1140.6 615 1162.6 615 L 1184.6 615" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 593 Q 1140.6 615 1162.6 615 L 1184.6 615" />
-      <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1184.6 597" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1184.6 597" />
+      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 775.6 606" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 582 Q 686.5 606 710.5 606 L 775.6 606" />
+      <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 591 Q 1140.6 615 1164.6 615 L 1191.7 615" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 313 Q 686.5 337 710.5 337 L 766.6 337 L 1060.6 337 L 1116.6 337 Q 1140.6 337 1140.6 361 L 1140.6 591 Q 1140.6 615 1164.6 615 L 1191.7 615" />
+      <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1195.6 597" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1060.6 440 L 1098.6 440 Q 1122.6 440 1122.6 464 L 1122.6 573 Q 1122.6 597 1146.6 597 L 1195.6 597" />
       <path class="pic-line pic-edge tone-violet" d="M 1060.6 440 L 1184.6 440" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 1060.6 440 L 1184.6 440" />
       <path class="pic-line pic-edge tone-green" d="M 642.5 274 L 664.5 274 Q 686.5 274 686.5 296 L 686.5 927 Q 686.5 951 710.5 951 L 766.6 951 L 1060.6 951 L 1184.6 951" marker-end="url(#arrow-green)" />
@@ -343,17 +343,16 @@ svg {
       <text class="flow-name" x="818.6" y="461" text-anchor="start">workspace: the made-up</text>
       <text class="flow-name" x="818.6" y="477" text-anchor="start">invoices and the age analysis,</text>
       <text class="flow-name" x="818.6" y="493" text-anchor="start">read-only</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="766.6" y="572" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M776.6 573.5H1050.6" />
-      <rect class="pic-fill tone-amber" x="773.6" y="595" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="782.6" y="592" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(788.6 598) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M784.6 572L1060.6 572L1042.6 640L766.6 640Z" />
+      <rect class="pic-fill tone-amber" x="785.6" y="595" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="794.6" y="592" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(800.6 598) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="818.6" y="603" text-anchor="start">puls-mongo</text>
-      <text class="flow-name" x="818.6" y="619" text-anchor="start">the run store (F31)</text>
+      <text class="flow-name" x="830.6" y="603" text-anchor="start">puls-mongo</text>
+      <text class="flow-name" x="830.6" y="619" text-anchor="start">the run store (F31)</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="1184.6" y="406" width="278.8" height="68" rx="10" />
       <path class="pic-sheen" d="M1194.6 407.5H1453.4" />
       <rect class="pic-fill tone-red" x="1191.6" y="429" width="4" height="22" rx="2" />
@@ -367,19 +366,18 @@ svg {
       </g>
       <text class="flow-name" x="1236.6" y="437" text-anchor="start">puls-searxng, puls-browser</text>
       <text class="flow-name" x="1236.6" y="453" text-anchor="start">search and pages</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="1184.6" y="564" width="278.8" height="84" rx="10" />
-      <path class="pic-sheen" d="M1194.6 565.5H1453.4" />
-      <rect class="pic-fill tone-amber" x="1191.6" y="595" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="1200.6" y="592" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1206.6 598) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M1202.6 564L1463.4 564L1445.4 648L1184.6 648Z" />
+      <rect class="pic-fill tone-amber" x="1203.6" y="595" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="1212.6" y="592" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1218.6 598) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="1236.6" y="595" text-anchor="start">usage ledger</text>
-      <text class="flow-name" x="1236.6" y="611" text-anchor="start">one folder for the three</text>
-      <text class="flow-name" x="1236.6" y="627" text-anchor="start">agents</text>
+      <text class="flow-name" x="1248.6" y="595" text-anchor="start">usage ledger</text>
+      <text class="flow-name" x="1248.6" y="611" text-anchor="start">one folder for the three</text>
+      <text class="flow-name" x="1248.6" y="627" text-anchor="start">agents</text>
       <rect class="pic-panel depth-2 pic-edge tone-teal" x="1184.6" y="900" width="278.8" height="84" rx="10" />
       <path class="pic-sheen" d="M1194.6 901.5H1453.4" />
       <rect class="pic-fill tone-teal" x="1191.6" y="931" width="4" height="22" rx="2" />
@@ -473,8 +471,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="652.9" y="1417" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="656.9" y="1421" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="690.9" y="1429" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M805.1 1425H835.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="843.1" y="1429" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M823.1 1417L835.1 1417L817.1 1433L805.1 1433Z" />
+    <text class="pic-note" x="843.1" y="1429" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M957.3 1425H987.3" marker-end="url(#arrow)" />
+    <text class="pic-note" x="995.3" y="1429" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="1454" width="2176" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 1464) scale(0.6667)">

@@ -6,6 +6,7 @@
     "nodes": [
       {
         "id": "V",
+        "shape": "terminal",
         "icon": "browser",
         "tone": "blue",
         "label": "Visitor\u0027s browser\nwidget: ShowPage, Offer,\nShowCard"

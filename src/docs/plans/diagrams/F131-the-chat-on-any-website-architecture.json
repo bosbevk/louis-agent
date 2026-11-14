@@ -24,12 +24,14 @@
       },
       {
         "id": "Store",
+        "shape": "data",
         "icon": "database",
         "tone": "amber",
         "label": "Sites in MongoDB\nper tenant F131.4"
       },
       {
         "id": "Ledger",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "Usage ledger\nsite:name tag"

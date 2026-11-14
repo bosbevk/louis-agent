@@ -24,12 +24,14 @@
       },
       {
         "id": "Request",
+        "shape": "terminal",
         "icon": "message",
         "tone": "blue",
         "label": "the request"
       },
       {
         "id": "Stream",
+        "shape": "data",
         "icon": "file",
         "tone": "amber",
         "label": "audio Stream (in memory,\ndropped after)"
@@ -54,6 +56,7 @@
       },
       {
         "id": "Row",
+        "shape": "data",
         "icon": "chart",
         "tone": "amber",
         "label": "SpeechUsage row"

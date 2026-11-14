@@ -269,29 +269,27 @@ svg {
       <text class="flow-name" x="379.2" y="367" text-anchor="start">a door per site F131.1</text>
       <text class="flow-name" x="379.2" y="383" text-anchor="start">rate limits F131.1, budget</text>
       <text class="flow-name" x="379.2" y="399" text-anchor="start">F131.5</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="49.4" y="486" width="195.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M59.4 487.5H234.6" />
-      <rect class="pic-fill tone-amber" x="56.4" y="509" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="65.4" y="506" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(71.4 512) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M58.4 486L253.6 486L235.6 554L40.4 554Z" />
+      <rect class="pic-fill tone-amber" x="59.4" y="509" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="68.4" y="506" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(74.4 512) scale(0.6667)">
         <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
         <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
         <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
       </g>
-      <text class="flow-name" x="101.4" y="517" text-anchor="start">Sites in MongoDB</text>
-      <text class="flow-name" x="101.4" y="533" text-anchor="start">per tenant F131.4</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="374" y="486" width="170" height="68" rx="10" />
-      <path class="pic-sheen" d="M384 487.5H534" />
-      <rect class="pic-fill tone-amber" x="381" y="509" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="390" y="506" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(396 512) scale(0.6667)">
+      <text class="flow-name" x="104.4" y="517" text-anchor="start">Sites in MongoDB</text>
+      <text class="flow-name" x="104.4" y="533" text-anchor="start">per tenant F131.4</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M383 486L553 486L535 554L365 554Z" />
+      <rect class="pic-fill tone-amber" x="384" y="509" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="393" y="506" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(399 512) scale(0.6667)">
         <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
         <path d="M4 20h14" />
       </g>
-      <text class="flow-name" x="426" y="517" text-anchor="start">Usage ledger</text>
-      <text class="flow-name" x="426" y="533" text-anchor="start">site:name tag</text>
+      <text class="flow-name" x="429" y="517" text-anchor="start">Usage ledger</text>
+      <text class="flow-name" x="429" y="533" text-anchor="start">site:name tag</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="669.6" y="486" width="202.8" height="68" rx="10" />
       <path class="pic-sheen" d="M679.6 487.5H862.4" />
       <rect class="pic-fill tone-red" x="676.6" y="509" width="4" height="22" rx="2" />
@@ -322,6 +320,8 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="444" y="679" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="448" y="683" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="482" y="691" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M614.2 679L626.2 679L608.2 695L596.2 695Z" />
+    <text class="pic-note" x="634.2" y="691" text-anchor="start">data in or out</text>
     <path class="flow-key pic-line pic-edge" d="M0 713H30" marker-end="url(#arrow)" />
     <text class="pic-note" x="38" y="717" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>

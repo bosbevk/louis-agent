@@ -18,6 +18,7 @@
       },
       {
         "id": "files",
+        "shape": "data",
         "label": "/app/docs\nthe docs, each with its header (step 3)",
         "icon": "folder",
         "tone": "amber",
@@ -25,6 +26,7 @@
       },
       {
         "id": "stamp",
+        "shape": "data",
         "label": "the stamp\ncommit + repository (step 4)",
         "icon": "file",
         "tone": "amber",
@@ -66,6 +68,7 @@
       },
       {
         "id": "visitor",
+        "shape": "terminal",
         "label": "a visitor",
         "icon": "user",
         "tone": "blue"

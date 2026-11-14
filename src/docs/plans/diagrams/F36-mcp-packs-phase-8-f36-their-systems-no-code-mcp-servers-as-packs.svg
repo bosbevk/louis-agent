@@ -1,4 +1,4 @@
-<svg viewBox="-24 -24 1590 1683" width="1590" height="1683" role="img" aria-label="F36 MCP servers as packs: one pack, as the host starts" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-24 -24 2463 1739" width="2463" height="1739" role="img" aria-label="F36 MCP servers as packs: one pack, as the host starts" xmlns="http://www.w3.org/2000/svg">
   <title>F36 MCP servers as packs: one pack, as the host starts</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
@@ -204,253 +204,240 @@ svg {
       <path class="arrow tone-red" d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1590" height="1683" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="2463" height="1739" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="pic-dots" d="M0 11H1542M0 33H1542M0 55H1542M0 77H1542M0 99H1542M0 121H1542M0 143H1542M0 165H1542M0 187H1542M0 209H1542M0 231H1542M0 253H1542M0 275H1542M0 297H1542M0 319H1542M0 341H1542M0 363H1542M0 385H1542M0 407H1542M0 429H1542M0 451H1542M0 473H1542M0 495H1542M0 517H1542M0 539H1542M0 561H1542M0 583H1542M0 605H1542M0 627H1542M0 649H1542M0 671H1542M0 693H1542M0 715H1542M0 737H1542M0 759H1542M0 781H1542M0 803H1542M0 825H1542M0 847H1542M0 869H1542M0 891H1542M0 913H1542M0 935H1542M0 957H1542M0 979H1542M0 1001H1542M0 1023H1542M0 1045H1542M0 1067H1542M0 1089H1542M0 1111H1542M0 1133H1542M0 1155H1542M0 1177H1542M0 1199H1542M0 1221H1542M0 1243H1542M0 1265H1542M0 1287H1542M0 1309H1542M0 1331H1542M0 1353H1542M0 1375H1542M0 1397H1542M0 1419H1542M0 1441H1542M0 1463H1542M0 1485H1542M0 1507H1542M0 1529H1542M0 1551H1542M0 1573H1542" />
+    <path class="pic-dots" d="M0 11H2415M0 33H2415M0 55H2415M0 77H2415M0 99H2415M0 121H2415M0 143H2415M0 165H2415M0 187H2415M0 209H2415M0 231H2415M0 253H2415M0 275H2415M0 297H2415M0 319H2415M0 341H2415M0 363H2415M0 385H2415M0 407H2415M0 429H2415M0 451H2415M0 473H2415M0 495H2415M0 517H2415M0 539H2415M0 561H2415M0 583H2415M0 605H2415M0 627H2415M0 649H2415M0 671H2415M0 693H2415M0 715H2415M0 737H2415M0 759H2415M0 781H2415M0 803H2415M0 825H2415M0 847H2415M0 869H2415M0 891H2415M0 913H2415M0 935H2415M0 957H2415M0 979H2415M0 1001H2415M0 1023H2415M0 1045H2415M0 1067H2415M0 1089H2415M0 1111H2415M0 1133H2415M0 1155H2415M0 1177H2415M0 1199H2415M0 1221H2415M0 1243H2415M0 1265H2415M0 1287H2415M0 1309H2415M0 1331H2415M0 1353H2415M0 1375H2415M0 1397H2415M0 1419H2415M0 1441H2415M0 1463H2415M0 1485H2415M0 1507H2415M0 1529H2415M0 1551H2415M0 1573H2415M0 1595H2415M0 1617H2415M0 1639H2415" />
     <text class="pic-title" x="0" y="24" text-anchor="start">F36 MCP servers as packs</text>
     <text class="pic-group" x="0" y="46" text-anchor="start">one pack, as the host starts</text>
     <g class="flow" transform="translate(0 72)">
-      <path class="pic-line pic-edge tone-blue" d="M 459 68 L 459 146" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 459 68 L 459 146" />
-      <path class="pic-line pic-edge tone-amber" d="M 459 246 L 459 306" marker-end="url(#arrow-amber)" />
-      <path class="pic-march" d="M 459 246 L 459 306" />
-      <path class="pic-line pic-edge" d="M 459 374 L 459 464 L 459 548 L 459 584 Q 459 608 483 608 L 759 608 Q 771 608 771 620 L 771 632 L 771 684 L 771 705 Q 771 726 792 726 L 1062 726 Q 1083 726 1083 747 L 1083 768 L 1083 852 L 1083 912 L 1083 980 L 1083 1001 Q 1083 1022 1062 1022 L 792 1022 Q 771 1022 771 1043 L 771 1064 L 771 1164 L 771 1189.5 Q 771 1194 775.5 1194 L 775.5 1194 Q 780 1194 780 1198.5 L 780 1224" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 459 374 L 459 464 L 459 548 L 459 584 Q 459 608 483 608 L 759 608 Q 771 608 771 620 L 771 632 L 771 684 L 771 705 Q 771 726 792 726 L 1062 726 Q 1083 726 1083 747 L 1083 768 L 1083 852 L 1083 912 L 1083 980 L 1083 1001 Q 1083 1022 1062 1022 L 792 1022 Q 771 1022 771 1043 L 771 1064 L 771 1164 L 771 1189.5 Q 771 1194 775.5 1194 L 775.5 1194 Q 780 1194 780 1198.5 L 780 1224" />
-      <path class="pic-line pic-edge" d="M 459 374 L 459 386 Q 459 398 447 398 L 171 398 Q 147 398 147 422 L 147 464" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 459 374 L 459 386 Q 459 398 447 398 L 171 398 Q 147 398 147 422 L 147 464" />
-      <path class="pic-line pic-edge tone-green" d="M 147 548 L 147 569 Q 147 590 168 590 L 420 590 Q 441 590 441 611 L 441 632 L 441 684 L 441 768 L 441 852 L 441 912 L 441 980 L 441 1064" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 548 L 147 569 Q 147 590 168 590 L 420 590 Q 441 590 441 611 L 441 632 L 441 684 L 441 768 L 441 852 L 441 912 L 441 980 L 441 1064" />
-      <path class="pic-line pic-edge tone-green" d="M 459 1164 L 459 1179 Q 459 1194 474 1194 L 747 1194 Q 762 1194 762 1209 L 762 1224" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 459 1164 L 459 1179 Q 459 1194 474 1194 L 747 1194 Q 762 1194 762 1209 L 762 1224" />
-      <path class="pic-line pic-edge tone-green" d="M 147 548 L 147 632" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 147 548 L 147 632" />
-      <path class="pic-line pic-edge" d="M 147 684 L 147 696 Q 147 708 159 708 L 435 708 Q 459 708 459 732 L 459 768 L 459 852 L 459 912 L 459 980 L 459 1064" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 147 684 L 147 696 Q 147 708 159 708 L 435 708 Q 459 708 459 732 L 459 768 L 459 852 L 459 912 L 459 980 L 459 1064" />
-      <path class="pic-line pic-edge" d="M 147 684 L 147 696 Q 147 708 159 708 L 738 708 Q 762 708 762 732 L 762 768" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 147 684 L 147 696 Q 147 708 159 708 L 738 708 Q 762 708 762 732 L 762 768" />
-      <path class="pic-line pic-edge tone-green" d="M 771 852 L 771 912" marker-end="url(#arrow-green)" />
-      <path class="pic-march" d="M 771 852 L 771 912" />
-      <path class="pic-line pic-edge" d="M 771 980 L 771 992 Q 771 1004 759 1004 L 501 1004 Q 477 1004 477 1028 L 477 1064" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 771 980 L 771 992 Q 771 1004 759 1004 L 501 1004 Q 477 1004 477 1028 L 477 1064" />
-      <path class="pic-line pic-edge" d="M 771 980 L 771 992 Q 771 1004 783 1004 L 1050 1004 Q 1074 1004 1074 1028 L 1074 1064" marker-end="url(#arrow)" />
-      <path class="pic-march" d="M 771 980 L 771 992 Q 771 1004 783 1004 L 1050 1004 Q 1074 1004 1074 1028 L 1074 1064" />
-      <path class="pic-line pic-edge tone-violet" d="M 1083 1164 L 1083 1179 Q 1083 1194 1098 1194 L 1362 1194 Q 1377 1194 1377 1209 L 1377 1224" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1083 1164 L 1083 1179 Q 1083 1194 1098 1194 L 1362 1194 Q 1377 1194 1377 1209 L 1377 1224" />
-      <path class="pic-line pic-edge tone-violet" d="M 1395 1292 L 1395 1352" marker-end="url(#arrow-violet)" />
-      <path class="pic-march" d="M 1395 1292 L 1395 1352" />
-      <path class="pic-line pic-edge tone-red reads" d="M 771 68 L 771 146 L 771 246 L 771 306 L 771 374 L 771 464 L 771 548 L 771 569 Q 771 590 792 590 L 1062 590 Q 1083 590 1083 611 L 1083 632 L 1083 684 L 1083 696 Q 1083 708 1095 708 L 1371 708 Q 1395 708 1395 732 L 1395 768 L 1395 852 L 1395 912 L 1395 980 L 1395 1064 L 1395 1164 L 1395 1224" marker-end="url(#arrow-red)" />
-      <path class="pic-line pic-edge tone-blue reads" d="M 1083 68 L 1083 98 Q 1083 122 1107 122 L 1401 122 Q 1413 122 1413 134 L 1413 146 L 1413 246 L 1413 306 L 1413 374 L 1413 464 L 1413 548 L 1413 632 L 1413 684 L 1413 768 L 1413 852 L 1413 912 L 1413 980 L 1413 1064 L 1413 1164 L 1413 1224" marker-end="url(#arrow-blue)" />
-      <rect class="flow-chip pic-edge" x="465" y="402" width="22" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="476" y="414" text-anchor="middle">no</text>
-      <rect class="flow-chip pic-edge" x="153" y="402" width="162" height="42" rx="9" />
-      <text class="flow-word pic-ink" x="234" y="414" text-anchor="middle">yes, or an HTTP server</text>
-      <text class="flow-word pic-ink" x="234" y="426" text-anchor="middle">through SsrfGuard and</text>
-      <text class="flow-word pic-ink" x="234" y="438" text-anchor="middle">the egress proxy</text>
-      <rect class="flow-chip pic-edge tone-green" x="153" y="552" width="134" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-green" x="220" y="564" text-anchor="middle">fails or times out</text>
-      <rect class="flow-chip pic-edge" x="465" y="730" width="71" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="500.5" y="742" text-anchor="middle">no: drift</text>
-      <rect class="flow-chip pic-edge" x="768" y="730" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="782.5" y="742" text-anchor="middle">yes</text>
-      <rect class="flow-chip pic-edge" x="483" y="1026" width="22" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="494" y="1038" text-anchor="middle">no</text>
-      <rect class="flow-chip pic-edge" x="1080" y="1026" width="29" height="18" rx="9" />
-      <text class="flow-word pic-ink" x="1094.5" y="1038" text-anchor="middle">yes</text>
-      <rect class="flow-chip pic-edge tone-red" x="777" y="72" width="57" height="18" rx="9" />
-      <text class="flow-word pic-ink tone-red" x="805.5" y="84" text-anchor="middle">ignored</text>
-      <rect class="flow-chip pic-edge tone-blue" x="1089" y="72" width="141" height="30" rx="9" />
-      <text class="flow-word pic-ink tone-blue" x="1159.5" y="84" text-anchor="middle">new generation, new</text>
-      <text class="flow-word pic-ink tone-blue" x="1159.5" y="96" text-anchor="middle">chats only</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="350" y="0" width="218" height="68" rx="10" />
-      <path class="pic-sheen" d="M360 1.5H558" />
-      <rect class="pic-fill tone-blue" x="357" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="366" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(372 26) scale(0.6667)">
+      <path class="pic-line pic-edge tone-blue" d="M 744 68 L 744 146" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 744 68 L 744 146" />
+      <path class="pic-line pic-edge tone-amber" d="M 744 246 L 744 306" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 744 246 L 744 306" />
+      <path class="pic-line pic-edge" d="M 744 398 L 744 488 L 744 572 L 744 608 Q 744 632 768 632 L 1234 632 Q 1246 632 1246 644 L 1246 656 L 1246 716 L 1246 737 Q 1246 758 1267 758 L 1727 758 Q 1748 758 1748 779 L 1748 800 L 1748 884 L 1748 944 L 1748 1036 L 1748 1057 Q 1748 1078 1727 1078 L 1267 1078 Q 1246 1078 1246 1099 L 1246 1120 L 1246 1220 L 1246 1245.5 Q 1246 1250 1250.5 1250 L 1250.5 1250 Q 1255 1250 1255 1254.5 L 1255 1280" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 744 398 L 744 488 L 744 572 L 744 608 Q 744 632 768 632 L 1234 632 Q 1246 632 1246 644 L 1246 656 L 1246 716 L 1246 737 Q 1246 758 1267 758 L 1727 758 Q 1748 758 1748 779 L 1748 800 L 1748 884 L 1748 944 L 1748 1036 L 1748 1057 Q 1748 1078 1727 1078 L 1267 1078 Q 1246 1078 1246 1099 L 1246 1120 L 1246 1220 L 1246 1245.5 Q 1246 1250 1250.5 1250 L 1250.5 1250 Q 1255 1250 1255 1254.5 L 1255 1280" />
+      <path class="pic-line pic-edge" d="M 744 398 L 744 410 Q 744 422 732 422 L 266 422 Q 242 422 242 446 L 242 488" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 744 398 L 744 410 Q 744 422 732 422 L 266 422 Q 242 422 242 446 L 242 488" />
+      <path class="pic-line pic-edge tone-green" d="M 242 572 L 242 593 Q 242 614 263 614 L 705 614 Q 726 614 726 635 L 726 656 L 726 716 L 726 800 L 726 884 L 726 944 L 726 1036 L 726 1120" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 242 572 L 242 593 Q 242 614 263 614 L 705 614 Q 726 614 726 635 L 726 656 L 726 716 L 726 800 L 726 884 L 726 944 L 726 1036 L 726 1120" />
+      <path class="pic-line pic-edge tone-green" d="M 744 1220 L 744 1235 Q 744 1250 759 1250 L 1222 1250 Q 1237 1250 1237 1265 L 1237 1280" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 744 1220 L 744 1235 Q 744 1250 759 1250 L 1222 1250 Q 1237 1250 1237 1265 L 1237 1280" />
+      <path class="pic-line pic-edge tone-green" d="M 242 572 L 242 656" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 242 572 L 242 656" />
+      <path class="pic-line pic-edge" d="M 242 716 L 242 728 Q 242 740 254 740 L 720 740 Q 744 740 744 764 L 744 800 L 744 884 L 744 944 L 744 1036 L 744 1120" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 242 716 L 242 728 Q 242 740 254 740 L 720 740 Q 744 740 744 764 L 744 800 L 744 884 L 744 944 L 744 1036 L 744 1120" />
+      <path class="pic-line pic-edge" d="M 242 716 L 242 728 Q 242 740 254 740 L 1213 740 Q 1237 740 1237 764 L 1237 800" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 242 716 L 242 728 Q 242 740 254 740 L 1213 740 Q 1237 740 1237 764 L 1237 800" />
+      <path class="pic-line pic-edge tone-green" d="M 1246 884 L 1246 944" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 1246 884 L 1246 944" />
+      <path class="pic-line pic-edge" d="M 1246 1036 L 1246 1048 Q 1246 1060 1234 1060 L 786 1060 Q 762 1060 762 1084 L 762 1120" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 1246 1036 L 1246 1048 Q 1246 1060 1234 1060 L 786 1060 Q 762 1060 762 1084 L 762 1120" />
+      <path class="pic-line pic-edge" d="M 1246 1036 L 1246 1048 Q 1246 1060 1258 1060 L 1715 1060 Q 1739 1060 1739 1084 L 1739 1120" marker-end="url(#arrow)" />
+      <path class="pic-march" d="M 1246 1036 L 1246 1048 Q 1246 1060 1258 1060 L 1715 1060 Q 1739 1060 1739 1084 L 1739 1120" />
+      <path class="pic-line pic-edge tone-violet" d="M 1748 1220 L 1748 1235 Q 1748 1250 1763 1250 L 2217 1250 Q 2232 1250 2232 1265 L 2232 1280" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 1748 1220 L 1748 1235 Q 1748 1250 1763 1250 L 2217 1250 Q 2232 1250 2232 1265 L 2232 1280" />
+      <path class="pic-line pic-edge tone-violet" d="M 2250 1348 L 2250 1408" marker-end="url(#arrow-violet)" />
+      <path class="pic-march" d="M 2250 1348 L 2250 1408" />
+      <path class="pic-line pic-edge tone-red reads" d="M 1246 68 L 1246 146 L 1246 246 L 1246 306 L 1246 398 L 1246 488 L 1246 572 L 1246 593 Q 1246 614 1267 614 L 1727 614 Q 1748 614 1748 635 L 1748 656 L 1748 716 L 1748 728 Q 1748 740 1760 740 L 2226 740 Q 2250 740 2250 764 L 2250 800 L 2250 884 L 2250 944 L 2250 1036 L 2250 1120 L 2250 1220 L 2250 1280" marker-end="url(#arrow-red)" />
+      <path class="pic-line pic-edge tone-blue reads" d="M 1748 68 L 1748 98 Q 1748 122 1772 122 L 2256 122 Q 2268 122 2268 134 L 2268 146 L 2268 246 L 2268 306 L 2268 398 L 2268 488 L 2268 572 L 2268 656 L 2268 716 L 2268 800 L 2268 884 L 2268 944 L 2268 1036 L 2268 1120 L 2268 1220 L 2268 1280" marker-end="url(#arrow-blue)" />
+      <rect class="flow-chip pic-edge" x="750" y="426" width="22" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="761" y="438" text-anchor="middle">no</text>
+      <rect class="flow-chip pic-edge" x="248" y="426" width="162" height="42" rx="9" />
+      <text class="flow-word pic-ink" x="329" y="438" text-anchor="middle">yes, or an HTTP server</text>
+      <text class="flow-word pic-ink" x="329" y="450" text-anchor="middle">through SsrfGuard and</text>
+      <text class="flow-word pic-ink" x="329" y="462" text-anchor="middle">the egress proxy</text>
+      <rect class="flow-chip pic-edge tone-green" x="248" y="576" width="134" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="315" y="588" text-anchor="middle">fails or times out</text>
+      <rect class="flow-chip pic-edge" x="750" y="762" width="71" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="785.5" y="774" text-anchor="middle">no: drift</text>
+      <rect class="flow-chip pic-edge" x="1243" y="762" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="1257.5" y="774" text-anchor="middle">yes</text>
+      <rect class="flow-chip pic-edge" x="768" y="1082" width="22" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="779" y="1094" text-anchor="middle">no</text>
+      <rect class="flow-chip pic-edge" x="1745" y="1082" width="29" height="18" rx="9" />
+      <text class="flow-word pic-ink" x="1759.5" y="1094" text-anchor="middle">yes</text>
+      <rect class="flow-chip pic-edge tone-red" x="1252" y="72" width="57" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-red" x="1280.5" y="84" text-anchor="middle">ignored</text>
+      <rect class="flow-chip pic-edge tone-blue" x="1754" y="72" width="141" height="30" rx="9" />
+      <text class="flow-word pic-ink tone-blue" x="1824.5" y="84" text-anchor="middle">new generation, new</text>
+      <text class="flow-word pic-ink tone-blue" x="1824.5" y="96" text-anchor="middle">chats only</text>
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="618" y="0" width="252" height="68" rx="34" />
+      <path class="pic-sheen" d="M652 1.5H836" />
+      <rect class="pic-fill tone-blue" x="637" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="646" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(652 26) scale(0.6667)">
         <path d="M5 7l5 5l-5 5" />
         <path d="M12 19l7 0" />
       </g>
-      <text class="flow-name" x="402" y="31" text-anchor="start">Host starts,</text>
-      <text class="flow-name" x="402" y="47" text-anchor="start">MCP_PACKS=pricerules</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="635.4" y="0" width="271.2" height="68" rx="10" />
-      <path class="pic-sheen" d="M645.4 1.5H896.6" />
-      <rect class="pic-fill tone-red" x="642.4" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="651.4" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(657.4 26) scale(0.6667)">
+      <text class="flow-name" x="682" y="31" text-anchor="start">Host starts,</text>
+      <text class="flow-name" x="682" y="47" text-anchor="start">MCP_PACKS=pricerules</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="1093.4" y="0" width="305.2" height="68" rx="34" />
+      <path class="pic-sheen" d="M1127.4 1.5H1364.6" />
+      <rect class="pic-fill tone-red" x="1112.4" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="1121.4" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1127.4 26) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="687.4" y="31" text-anchor="start">tools/list_changed from the</text>
-      <text class="flow-name" x="687.4" y="47" text-anchor="start">server</text>
-      <rect class="pic-panel depth-2 pic-edge tone-blue" x="962.6" y="0" width="240.8" height="68" rx="10" />
-      <path class="pic-sheen" d="M972.6 1.5H1193.4" />
-      <rect class="pic-fill tone-blue" x="969.6" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-blue" x="978.6" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(984.6 26) scale(0.6667)">
+      <text class="flow-name" x="1157.4" y="31" text-anchor="start">tools/list_changed from the</text>
+      <text class="flow-name" x="1157.4" y="47" text-anchor="start">server</text>
+      <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="1614.6" y="0" width="266.8" height="68" rx="34" />
+      <path class="pic-sheen" d="M1648.6 1.5H1847.4" />
+      <rect class="pic-fill tone-blue" x="1633.6" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-blue" x="1642.6" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1648.6 26) scale(0.6667)">
         <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
       </g>
-      <text class="flow-name" x="1014.6" y="39" text-anchor="start">admin refresh (step 9a)</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="323.4" y="146" width="271.2" height="100" rx="10" />
-      <path class="pic-sheen" d="M333.4 147.5H584.6" />
-      <rect class="pic-fill tone-amber" x="330.4" y="185" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="339.4" y="182" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(345.4 188) scale(0.6667)">
+      <text class="flow-name" x="1678.6" y="39" text-anchor="start">admin refresh (step 9a)</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M617.4 146L888.6 146L870.6 246L599.4 246Z" />
+      <rect class="pic-fill tone-amber" x="618.4" y="185" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="627.4" y="182" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(633.4 188) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="375.4" y="177" text-anchor="start">config/mcp/pricerules.json</text>
-      <text class="flow-name" x="375.4" y="193" text-anchor="start">read: command or URL,</text>
-      <text class="flow-name" x="375.4" y="209" text-anchor="start">allowlist, prefix, trusted,</text>
-      <text class="flow-name" x="375.4" y="225" text-anchor="start">effects, pin</text>
-      <rect class="pic-panel depth-2 pic-edge" x="315.8" y="306" width="286.4" height="68" rx="10" />
-      <path class="pic-sheen" d="M325.8 307.5H592.2" />
-      <rect class="pic-fill" x="322.8" y="329" width="4" height="22" rx="2" />
-      <rect class="pic-fill" x="331.8" y="326" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(337.8 332) scale(0.6667)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
-      </g>
-      <text class="flow-name" x="367.8" y="337" text-anchor="start">stdio: was this exact command</text>
-      <text class="flow-name" x="367.8" y="353" text-anchor="start">approved?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="11.4" y="464" width="271.2" height="84" rx="10" />
-      <path class="pic-sheen" d="M21.4 465.5H272.6" />
-      <rect class="pic-fill tone-green" x="18.4" y="495" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="27.4" y="492" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(33.4 498) scale(0.6667)">
+      <text class="flow-name" x="663.4" y="177" text-anchor="start">config/mcp/pricerules.json</text>
+      <text class="flow-name" x="663.4" y="193" text-anchor="start">read: command or URL,</text>
+      <text class="flow-name" x="663.4" y="209" text-anchor="start">allowlist, prefix, trusted,</text>
+      <text class="flow-name" x="663.4" y="225" text-anchor="start">effects, pin</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M744 306L978.4 352L744 398L509.6 352Z" />
+      <rect class="pic-fill" x="733" y="325" width="22" height="4" rx="2" />
+      <text class="flow-name" x="744" y="349" text-anchor="middle">stdio: was this exact command</text>
+      <text class="flow-name" x="744" y="365" text-anchor="middle">approved?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="106.4" y="488" width="271.2" height="84" rx="10" />
+      <path class="pic-sheen" d="M116.4 489.5H367.6" />
+      <rect class="pic-fill tone-green" x="113.4" y="519" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="122.4" y="516" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(128.4 522) scale(0.6667)">
         <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
       </g>
-      <text class="flow-name" x="63.4" y="495" text-anchor="start">CreateAsync, ListToolsAsync</text>
-      <text class="flow-name" x="63.4" y="511" text-anchor="start">and the pin, under one</text>
-      <text class="flow-name" x="63.4" y="527" text-anchor="start">start-up timeout</text>
-      <rect class="pic-panel depth-2 pic-edge" x="0" y="632" width="294" height="52" rx="10" />
-      <path class="pic-sheen" d="M10 633.5H284" />
-      <rect class="pic-fill" x="7" y="647" width="4" height="22" rx="2" />
-      <rect class="pic-fill" x="16" y="644" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(22 650) scale(0.6667)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
-      </g>
-      <text class="flow-name" x="52" y="663" text-anchor="start">every allowlisted tool listed?</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="627.8" y="768" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M637.8 769.5H904.2" />
-      <rect class="pic-fill tone-green" x="634.8" y="799" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="643.8" y="796" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(649.8 802) scale(0.6667)">
+      <text class="flow-name" x="158.4" y="519" text-anchor="start">CreateAsync, ListToolsAsync</text>
+      <text class="flow-name" x="158.4" y="535" text-anchor="start">and the pin, under one</text>
+      <text class="flow-name" x="158.4" y="551" text-anchor="start">start-up timeout</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M242 656L484 686L242 716L0 686Z" />
+      <rect class="pic-fill" x="231" y="667" width="22" height="4" rx="2" />
+      <text class="flow-name" x="242" y="691" text-anchor="middle">every allowlisted tool listed?</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="1102.8" y="800" width="286.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M1112.8 801.5H1379.2" />
+      <rect class="pic-fill tone-green" x="1109.8" y="831" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="1118.8" y="828" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1124.8 834) scale(0.6667)">
         <path d="M7 8l-4 4l4 4" />
         <path d="M17 8l4 4l-4 4" />
         <path d="M14 4l-4 16" />
       </g>
-      <text class="flow-name" x="679.8" y="799" text-anchor="start">prefix each name, check it</text>
-      <text class="flow-name" x="679.8" y="815" text-anchor="start">against our name rule, refuse</text>
-      <text class="flow-name" x="679.8" y="831" text-anchor="start">a clash</text>
-      <rect class="pic-panel depth-2 pic-edge" x="643" y="912" width="256" height="68" rx="10" />
-      <path class="pic-sheen" d="M653 913.5H889" />
-      <rect class="pic-fill" x="650" y="935" width="4" height="22" rx="2" />
-      <rect class="pic-fill" x="659" y="932" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(665 938) scale(0.6667)">
-        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-        <path d="M21 21l-6 -6" />
-      </g>
-      <text class="flow-name" x="695" y="943" text-anchor="start">pin matches: version when</text>
-      <text class="flow-name" x="695" y="959" text-anchor="start">reported, hash always</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="323.4" y="1064" width="271.2" height="100" rx="10" />
-      <path class="pic-sheen" d="M333.4 1065.5H584.6" />
-      <rect class="pic-fill tone-green" x="330.4" y="1103" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="339.4" y="1100" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(345.4 1106) scale(0.6667)">
+      <text class="flow-name" x="1154.8" y="831" text-anchor="start">prefix each name, check it</text>
+      <text class="flow-name" x="1154.8" y="847" text-anchor="start">against our name rule, refuse</text>
+      <text class="flow-name" x="1154.8" y="863" text-anchor="start">a clash</text>
+      <path class="pic-panel depth-2 pic-edge flow-shape" d="M1246 944L1450 990L1246 1036L1042 990Z" />
+      <rect class="pic-fill" x="1235" y="963" width="22" height="4" rx="2" />
+      <text class="flow-name" x="1246" y="987" text-anchor="middle">pin matches: version when</text>
+      <text class="flow-name" x="1246" y="1003" text-anchor="middle">reported, hash always</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="608.4" y="1120" width="271.2" height="100" rx="10" />
+      <path class="pic-sheen" d="M618.4 1121.5H869.6" />
+      <rect class="pic-fill tone-green" x="615.4" y="1159" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="624.4" y="1156" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(630.4 1162) scale(0.6667)">
         <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
         <path d="M12 12l8 -4.5" />
         <path d="M12 12l0 9" />
         <path d="M12 12l-8 -4.5" />
       </g>
-      <text class="flow-name" x="375.4" y="1111" text-anchor="start">client disposed, so a stdio</text>
-      <text class="flow-name" x="375.4" y="1127" text-anchor="start">child ends</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="943.6" y="1064" width="278.8" height="100" rx="10" />
-      <path class="pic-sheen" d="M953.6 1065.5H1212.4" />
-      <rect class="pic-fill tone-violet" x="950.6" y="1103" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="959.6" y="1100" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(965.6 1106) scale(0.6667)">
+      <text class="flow-name" x="660.4" y="1167" text-anchor="start">client disposed, so a stdio</text>
+      <text class="flow-name" x="660.4" y="1183" text-anchor="start">child ends</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1608.6" y="1120" width="278.8" height="100" rx="10" />
+      <path class="pic-sheen" d="M1618.6 1121.5H1877.4" />
+      <rect class="pic-fill tone-violet" x="1615.6" y="1159" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="1624.6" y="1156" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1630.6 1162) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="flow-name" x="995.6" y="1095" text-anchor="start">each tool wrapped in</text>
-      <text class="flow-name" x="995.6" y="1111" text-anchor="start">McpToolGuard: frame, size,</text>
-      <text class="flow-name" x="995.6" y="1127" text-anchor="start">timeout per call; its effect</text>
-      <text class="flow-name" x="995.6" y="1143" text-anchor="start">from settings</text>
-      <rect class="pic-panel depth-2 pic-edge tone-red" x="639.2" y="1224" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M649.2 1225.5H892.8" />
-      <rect class="pic-fill tone-red" x="646.2" y="1247" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-red" x="655.2" y="1244" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(661.2 1250) scale(0.6667)">
+      <text class="flow-name" x="1660.6" y="1151" text-anchor="start">each tool wrapped in</text>
+      <text class="flow-name" x="1660.6" y="1167" text-anchor="start">McpToolGuard: frame, size,</text>
+      <text class="flow-name" x="1660.6" y="1183" text-anchor="start">timeout per call; its effect</text>
+      <text class="flow-name" x="1660.6" y="1199" text-anchor="start">from settings</text>
+      <rect class="pic-panel depth-2 pic-edge tone-red flow-shape" x="1097.2" y="1280" width="297.6" height="68" rx="34" />
+      <path class="pic-sheen" d="M1131.2 1281.5H1360.8" />
+      <rect class="pic-fill tone-red" x="1116.2" y="1303" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-red" x="1125.2" y="1300" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1131.2 1306) scale(0.6667)">
         <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
       </g>
-      <text class="flow-name" x="691.2" y="1255" text-anchor="start">pack unavailable, with its</text>
-      <text class="flow-name" x="691.2" y="1271" text-anchor="start">reason</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1248" y="1224" width="294" height="68" rx="10" />
-      <path class="pic-sheen" d="M1258 1225.5H1532" />
-      <rect class="pic-fill tone-violet" x="1255" y="1247" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="1264" y="1244" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1270 1250) scale(0.6667)">
+      <text class="flow-name" x="1161.2" y="1311" text-anchor="start">pack unavailable, with its</text>
+      <text class="flow-name" x="1161.2" y="1327" text-anchor="start">reason</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="2103" y="1280" width="294" height="68" rx="10" />
+      <path class="pic-sheen" d="M2113 1281.5H2387" />
+      <rect class="pic-fill tone-violet" x="2110" y="1303" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="2119" y="1300" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(2125 1306) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="1300" y="1255" text-anchor="start">AgentCatalog built, the pack's</text>
-      <text class="flow-name" x="1300" y="1271" text-anchor="start">listed tools among its names</text>
-      <rect class="pic-panel depth-2 pic-edge tone-violet" x="1251.8" y="1352" width="286.4" height="84" rx="10" />
-      <path class="pic-sheen" d="M1261.8 1353.5H1528.2" />
-      <rect class="pic-fill tone-violet" x="1258.8" y="1383" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-violet" x="1267.8" y="1380" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(1273.8 1386) scale(0.6667)">
+      <text class="flow-name" x="2155" y="1311" text-anchor="start">AgentCatalog built, the pack's</text>
+      <text class="flow-name" x="2155" y="1327" text-anchor="start">listed tools among its names</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet flow-shape" x="2085.8" y="1408" width="328.4" height="84" rx="42" />
+      <path class="pic-sheen" d="M2127.8 1409.5H2372.2" />
+      <rect class="pic-fill tone-violet" x="2104.8" y="1439" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="2113.8" y="1436" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(2119.8 1442) scale(0.6667)">
         <path d="M8 9h8" />
         <path d="M8 13h6" />
         <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
       </g>
-      <text class="flow-name" x="1303.8" y="1383" text-anchor="start">sessions open with it; each</text>
-      <text class="flow-name" x="1303.8" y="1399" text-anchor="start">chat keeps the list it opened</text>
-      <text class="flow-name" x="1303.8" y="1415" text-anchor="start">with (FX4)</text>
-      <circle class="pic-port pic-edge tone-blue" cx="459" cy="68" r="4" />
-      <circle class="pic-port pic-edge tone-amber" cx="459" cy="246" r="4" />
-      <circle class="pic-port pic-edge" cx="459" cy="374" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="147" cy="548" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="459" cy="1164" r="4" />
-      <circle class="pic-port pic-edge" cx="147" cy="684" r="4" />
-      <circle class="pic-port pic-edge tone-green" cx="771" cy="852" r="4" />
-      <circle class="pic-port pic-edge" cx="771" cy="980" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="1083" cy="1164" r="4" />
-      <circle class="pic-port pic-edge tone-violet" cx="1395" cy="1292" r="4" />
-      <circle class="pic-port pic-edge tone-red" cx="771" cy="68" r="4" />
-      <circle class="pic-port pic-edge tone-blue" cx="1083" cy="68" r="4" />
+      <text class="flow-name" x="2149.8" y="1439" text-anchor="start">sessions open with it; each</text>
+      <text class="flow-name" x="2149.8" y="1455" text-anchor="start">chat keeps the list it opened</text>
+      <text class="flow-name" x="2149.8" y="1471" text-anchor="start">with (FX4)</text>
+      <circle class="pic-port pic-edge tone-blue" cx="744" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-amber" cx="744" cy="246" r="4" />
+      <circle class="pic-port pic-edge" cx="744" cy="398" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="242" cy="572" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="744" cy="1220" r="4" />
+      <circle class="pic-port pic-edge" cx="242" cy="716" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="1246" cy="884" r="4" />
+      <circle class="pic-port pic-edge" cx="1246" cy="1036" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="1748" cy="1220" r="4" />
+      <circle class="pic-port pic-edge tone-violet" cx="2250" cy="1348" r="4" />
+      <circle class="pic-port pic-edge tone-red" cx="1246" cy="68" r="4" />
+      <circle class="pic-port pic-edge tone-blue" cx="1748" cy="68" r="4" />
     </g>
-    <text class="pic-group" x="0" y="1544" text-anchor="start">How to read it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1561" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-blue" x="4" y="1565" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="38" y="1573" text-anchor="start">starts it</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1561" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-green" x="124.7" y="1565" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="158.7" y="1573" text-anchor="start">this project</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1561" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-violet" x="264.3" y="1565" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="298.3" y="1573" text-anchor="start">the framework</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-red" x="406.2" y="1561" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-red" x="410.2" y="1565" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="444.2" y="1573" text-anchor="start">outside the process</text>
-    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="1561" width="26" height="16" rx="5" />
-    <rect class="pic-fill tone-amber" x="593.9" y="1565" width="3" height="8" rx="1.5" />
-    <text class="pic-note" x="627.9" y="1573" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M742.1 1569H772.1" marker-end="url(#arrow)" />
-    <text class="pic-note" x="780.1" y="1573" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-group" x="0" y="1600" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-blue" x="0" y="1617" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-blue" x="4" y="1621" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="1629" text-anchor="start">starts it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="120.7" y="1617" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="124.7" y="1621" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="158.7" y="1629" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="260.3" y="1617" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="264.3" y="1621" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="298.3" y="1629" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-red" x="406.2" y="1617" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-red" x="410.2" y="1621" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="444.2" y="1629" text-anchor="start">outside the process</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="589.9" y="1617" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="593.9" y="1621" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="627.9" y="1629" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M757.1 1617L772.1 1625L757.1 1633L742.1 1625Z" />
+    <text class="pic-note" x="780.1" y="1629" text-anchor="start">a decision</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M887.1 1617L899.1 1617L881.1 1633L869.1 1633Z" />
+    <text class="pic-note" x="907.1" y="1629" text-anchor="start">data in or out</text>
+    <rect class="pic-swatch pic-tint pic-edge flow-shape" x="1021.3" y="1617" width="30" height="16" rx="8" />
+    <text class="pic-note" x="1059.3" y="1629" text-anchor="start">a start or an end</text>
+    <path class="flow-key pic-line pic-edge" d="M1192.4 1625H1222.4" marker-end="url(#arrow)" />
+    <text class="pic-note" x="1230.4" y="1629" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
-  <rect class="notebar" x="0" y="1598" width="1542" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1608) scale(0.6667)">
+  <rect class="notebar" x="0" y="1654" width="2415" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1664) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1620">
+  <text class="notes" x="38" y="1676">
     <tspan class="note-head">Their systems, no code:</tspan>
     <tspan class="note-rest">a server becomes a pack only when its command or address, its tools and its pin all check out, and every one of its tools runs inside a guard.</tspan>
   </text>

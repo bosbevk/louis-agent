@@ -36,6 +36,7 @@
       },
       {
         "id": "browser",
+        "shape": "terminal",
         "icon": "browser",
         "tone": "blue",
         "label": "the visitor's browser"

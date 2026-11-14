@@ -340,21 +340,20 @@ svg {
       </g>
       <text class="flow-name" x="691.2" y="599" text-anchor="start">tools : CustomerTools</text>
       <text class="flow-name" x="691.2" y="615" text-anchor="start">built per engine</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="631.6" y="696" width="240.8" height="100" rx="10" />
-      <path class="pic-sheen" d="M641.6 697.5H862.4" />
-      <rect class="pic-fill tone-amber" x="638.6" y="735" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="647.6" y="732" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(653.6 738) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M640.6 696L881.4 696L863.4 796L622.6 796Z" />
+      <rect class="pic-fill tone-amber" x="641.6" y="735" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="650.6" y="732" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(656.6 738) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="683.6" y="727" text-anchor="start">directory :</text>
-      <text class="flow-name" x="683.6" y="743" text-anchor="start">SampleCustomerDirectory</text>
-      <text class="flow-name" x="683.6" y="759" text-anchor="start">the embedded, made-up</text>
-      <text class="flow-name" x="683.6" y="775" text-anchor="start">customers.json</text>
+      <text class="flow-name" x="686.6" y="727" text-anchor="start">directory :</text>
+      <text class="flow-name" x="686.6" y="743" text-anchor="start">SampleCustomerDirectory</text>
+      <text class="flow-name" x="686.6" y="759" text-anchor="start">the embedded, made-up</text>
+      <text class="flow-name" x="686.6" y="775" text-anchor="start">customers.json</text>
       <circle class="pic-port pic-edge tone-violet" cx="752" cy="116" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="752" cy="292" r="4" />
       <circle class="pic-port pic-edge tone-teal" cx="143.2" cy="292" r="4" />
@@ -375,8 +374,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="469.2" y="921" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="473.2" y="925" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="507.2" y="933" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M621.4 929H651.4" marker-end="url(#arrow)" />
-    <text class="pic-note" x="659.4" y="933" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M639.4 921L651.4 921L633.4 937L621.4 937Z" />
+    <text class="pic-note" x="659.4" y="933" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M773.6 929H803.6" marker-end="url(#arrow)" />
+    <text class="pic-note" x="811.6" y="933" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="958" width="1504" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 968) scale(0.6667)">

@@ -232,33 +232,31 @@ svg {
       <text class="flow-word pic-ink tone-red" x="182.1" y="782" text-anchor="middle">calls</text>
       <rect class="flow-chip pic-edge tone-red" x="487.8" y="770" width="106" height="18" rx="9" />
       <text class="flow-word pic-ink tone-red" x="540.8" y="782" text-anchor="middle">answers graded</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="22.8" y="0" width="263.6" height="68" rx="10" />
-      <path class="pic-sheen" d="M32.8 1.5H276.4" />
-      <rect class="pic-fill tone-amber" x="29.8" y="23" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="38.8" y="20" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(44.8 26) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M31.8 0L295.4 0L277.4 68L13.8 68Z" />
+      <rect class="pic-fill tone-amber" x="32.8" y="23" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="41.8" y="20" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(47.8 26) scale(0.6667)">
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
         <path d="M3 6l0 13" />
         <path d="M12 6l0 13" />
         <path d="M21 6l0 13" />
       </g>
-      <text class="flow-name" x="74.8" y="31" text-anchor="start">The rule (1)</text>
-      <text class="flow-name" x="74.8" y="47" text-anchor="start">ADR, prompts.md, the guide</text>
-      <rect class="pic-panel depth-2 pic-edge tone-amber" x="15.2" y="134" width="278.8" height="84" rx="10" />
-      <path class="pic-sheen" d="M25.2 135.5H284" />
-      <rect class="pic-fill tone-amber" x="22.2" y="165" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-amber" x="31.2" y="162" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(37.2 168) scale(0.6667)">
+      <text class="flow-name" x="77.8" y="31" text-anchor="start">The rule (1)</text>
+      <text class="flow-name" x="77.8" y="47" text-anchor="start">ADR, prompts.md, the guide</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M24.2 134L303 134L285 218L6.2 218Z" />
+      <rect class="pic-fill tone-amber" x="25.2" y="165" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="34.2" y="162" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(40.2 168) scale(0.6667)">
         <path d="M14 3v4a1 1 0 0 0 1 1h4" />
         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
         <path d="M9 9l1 0" />
         <path d="M9 13l6 0" />
         <path d="M9 17l6 0" />
       </g>
-      <text class="flow-name" x="67.2" y="165" text-anchor="start">prompts/**/*.md</text>
-      <text class="flow-name" x="67.2" y="181" text-anchor="start">headers (2), the cook (3, 4)</text>
-      <text class="flow-name" x="67.2" y="197" text-anchor="start">the guide's voice (5, 6)</text>
+      <text class="flow-name" x="70.2" y="165" text-anchor="start">prompts/**/*.md</text>
+      <text class="flow-name" x="70.2" y="181" text-anchor="start">headers (2), the cook (3, 4)</text>
+      <text class="flow-name" x="70.2" y="197" text-anchor="start">the guide's voice (5, 6)</text>
       <rect class="pic-panel depth-2 pic-edge tone-green" x="45.6" y="284" width="218" height="68" rx="10" />
       <path class="pic-sheen" d="M55.6 285.5H253.6" />
       <rect class="pic-fill tone-green" x="52.6" y="307" width="4" height="22" rx="2" />
@@ -309,16 +307,15 @@ svg {
       </g>
       <text class="flow-name" x="379.2" y="571" text-anchor="start">The system prompt</text>
       <text class="flow-name" x="379.2" y="587" text-anchor="start">principles, role, skills, guides</text>
-      <rect class="pic-panel depth-2 pic-edge tone-green" x="26.6" y="674" width="256" height="68" rx="10" />
-      <path class="pic-sheen" d="M36.6 675.5H272.6" />
-      <rect class="pic-fill tone-green" x="33.6" y="697" width="4" height="22" rx="2" />
-      <rect class="pic-fill tone-green" x="42.6" y="694" width="28" height="28" rx="8" />
-      <g class="flow-icon" transform="translate(48.6 700) scale(0.6667)">
+      <path class="pic-panel depth-2 pic-edge tone-green flow-shape" d="M35.6 674L291.6 674L273.6 742L17.6 742Z" />
+      <rect class="pic-fill tone-green" x="36.6" y="697" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="45.6" y="694" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(51.6 700) scale(0.6667)">
         <path d="M7 12l5 5l10 -10" />
         <path d="M2 12l5 5m5 -5l5 -5" />
       </g>
-      <text class="flow-name" x="78.6" y="705" text-anchor="start">The golden file</text>
-      <text class="flow-name" x="78.6" y="721" text-anchor="start">its diff read, every step</text>
+      <text class="flow-name" x="81.6" y="705" text-anchor="start">The golden file</text>
+      <text class="flow-name" x="81.6" y="721" text-anchor="start">its diff read, every step</text>
       <rect class="pic-panel depth-2 pic-edge tone-red" x="396.8" y="674" width="170" height="68" rx="10" />
       <path class="pic-sheen" d="M406.8 675.5H556.8" />
       <rect class="pic-fill tone-red" x="403.8" y="697" width="4" height="22" rx="2" />
@@ -374,8 +371,10 @@ svg {
     <rect class="pic-swatch pic-tint pic-edge tone-amber" x="0" y="1027" width="26" height="16" rx="5" />
     <rect class="pic-fill tone-amber" x="4" y="1031" width="3" height="8" rx="1.5" />
     <text class="pic-note" x="38" y="1039" text-anchor="start">files and data</text>
-    <path class="flow-key pic-line pic-edge" d="M152.2 1035H182.2" marker-end="url(#arrow)" />
-    <text class="pic-note" x="190.2" y="1039" text-anchor="start">a line has the colour of the box it leaves</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M170.2 1027L182.2 1027L164.2 1043L152.2 1043Z" />
+    <text class="pic-note" x="190.2" y="1039" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M304.4 1035H334.4" marker-end="url(#arrow)" />
+    <text class="pic-note" x="342.4" y="1039" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="1064" width="637" height="54" rx="8" />
   <g class="note-icon" transform="translate(12 1074) scale(0.6667)">
