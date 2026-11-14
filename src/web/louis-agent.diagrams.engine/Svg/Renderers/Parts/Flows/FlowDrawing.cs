@@ -4,6 +4,7 @@ using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Keys;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Flow.Shapes;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Flow.Shapes;
@@ -39,6 +40,7 @@ internal static class FlowDrawing
 
         // The flow is the body. Its key goes across the picture's width, under a rule the accent's edge fills.
         return PictureBuilder.Titled(source.Title)
+            .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
             .Body("flow", Flow(placed), placed.Width, placed.Height)
             .Key(width =>

@@ -5,7 +5,7 @@ using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
-using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -45,7 +45,7 @@ internal static class CompositeDrawing
         // The class is the body, and the key goes across under it, under a rule the accent's edge fills. Its
         // styles are the looks it borrows, a flow's word and a component's pin and chip, and last its own.
         return PictureBuilder.Titled(source.Title)
-            .Type(DiagramText.Format(DrawingMessage.CompositeType))
+            .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
             .Body("cps", Class(spec, placed), placed.Width, placed.Height)
             .Key(width =>

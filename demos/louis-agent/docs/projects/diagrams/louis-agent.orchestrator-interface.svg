@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a789 190 0 1 0 1578 0a789 190 0 1 0 -1578 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.orchestrator: the interface design</text>
+    <text class="pic-group" x="1530" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 427 838 L 571 838 Q 595 838 595 862 L 595 968 Q 595 992 619 992 L 715 992" marker-end="url(#open)" />
       <path class="cls-line creates" d="M 427 68 L 715 68" marker-end="url(#arrow-blue)" />

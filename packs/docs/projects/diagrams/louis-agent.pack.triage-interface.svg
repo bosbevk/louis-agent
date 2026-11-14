@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a894 190 0 1 0 1788 0a894 190 0 1 0 -1788 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.triage: the interface design</text>
+    <text class="pic-group" x="1740" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 329 537 L 521.3 537" marker-end="url(#open)" />
       <path class="cls-line creates" d="M 329 69 L 425.1 69 Q 449.1 69 449.1 93 L 449.1 201 Q 449.1 225 473.1 225 L 521.3 225" marker-end="url(#arrow-blue)" />

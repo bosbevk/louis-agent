@@ -218,6 +218,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="1130.5" height="1171" rx="14" />
   <path class="mrq-light" d="M-24 84a565.3 170 0 1 0 1130.5 0a565.3 170 0 1 0 -1130.5 0Z" />
   <text class="mrq-title" x="0" y="14" text-anchor="start">One chat turn</text>
+  <text class="pic-group" x="1082.5" y="14" text-anchor="end">Sequence diagram</text>
   <g class="seq-drawing" transform="translate(0 48)">
     <rect class="seq-cover" x="165" y="241" width="688" height="491" rx="14" />
     <rect class="mrq-glass" x="165" y="241" width="688" height="491" rx="14" />

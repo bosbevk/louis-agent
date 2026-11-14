@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a981.5 190 0 1 0 1963 0a981.5 190 0 1 0 -1963 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: the types</text>
+    <text class="pic-group" x="1915" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 378 111 L 720 111" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 1644 351 L 1656 351 Q 1668 351 1668 363 L 1668 567 Q 1668 591 1692 591 L 1740 591" marker-end="url(#open)" />

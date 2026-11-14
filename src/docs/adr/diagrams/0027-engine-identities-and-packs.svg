@@ -226,6 +226,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="944" height="429" rx="14" />
   <g class="drawing" transform="translate(0 0)">
     <text class="mrq-title" x="0" y="14" text-anchor="start">Engine, identities and packs</text>
+    <text class="pic-group" x="896" y="14" text-anchor="end">Overview</text>
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="134.5" y="140" width="627" height="8" rx="0" />
       <rect class="crd-rail" x="134.5" y="143.3" width="627" height="1.5" rx="0" />

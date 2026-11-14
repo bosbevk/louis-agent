@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a674 190 0 1 0 1348 0a674 190 0 1 0 -1348 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Runbooks: the interface design</text>
+    <text class="pic-group" x="1300" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 371 243 L 383 243 Q 395 243 395 231 L 395 99 Q 395 75 419 75 L 611 75" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 371 243 L 383 243 Q 395 243 395 255 L 395 387 Q 395 411 419 411 L 611 411" marker-end="url(#open)" />

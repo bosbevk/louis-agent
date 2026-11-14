@@ -230,6 +230,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <rect class="ground" x="-24" y="-24" width="1381" height="830" rx="14" />
   <path class="mrq-light" d="M-24 74a690.5 190 0 1 0 1381 0a690.5 190 0 1 0 -1381 0Z" />
   <text class="mrq-title" x="0" y="14" text-anchor="start">Speech: the interface design</text>
+  <text class="pic-group" x="1333" y="14" text-anchor="end">Class diagram</text>
   <g class="cls-drawing" transform="translate(0 44)">
     <path class="cls-line uses" d="M 1058 183 L 1082.1 183 Q 1106.1 183 1106.1 207 L 1106.1 290 Q 1106.1 302 1118.2 302 L 1130.2 302" marker-end="url(#open)" />
     <path class="cls-line uses" d="M 225.6 439 L 257.7 439 Q 281.7 439 281.7 463 L 281.7 543 Q 281.7 567 305.7 567 L 395.8 567" marker-end="url(#open)" />

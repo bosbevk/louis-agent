@@ -255,6 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a981 190 0 1 0 1962 0a981 190 0 1 0 -1962 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.1 the start is a stage: the interface design</text>
+    <text class="pic-group" x="1914" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 1672 945 L 1696 945 Q 1720 945 1720 969 L 1720 1136 Q 1720 1148 1732 1148 L 1744 1148" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 1038 521 L 1238 521" marker-end="url(#open)" />

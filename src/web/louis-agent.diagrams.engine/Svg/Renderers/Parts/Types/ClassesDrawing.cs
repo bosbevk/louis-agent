@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Engine.Classes;
 using LouisAgent.Diagrams.Engine.Classes.Keys;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
@@ -36,6 +37,7 @@ internal static class ClassesDrawing
         // of the look's fades are a class chart's to ask for: a contract's top edge with the key's rule, and the
         // glass.
         return PictureBuilder.Titled(source.Title)
+            .Type(TypeNames.Of(source))
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)
             .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
             .Body("cls-drawing", Types(spec, placed), placed.Width, placed.Height)

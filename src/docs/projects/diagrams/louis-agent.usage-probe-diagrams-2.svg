@@ -249,6 +249,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a405.4 170 0 1 0 810.8 0a405.4 170 0 1 0 -810.8 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.usage-probe: the default job</text>
+    <text class="pic-group" x="762.8" y="14" text-anchor="end">Sequence diagram</text>
     <g class="seq-drawing" transform="translate(0 48)">
       <rect class="seq-cover" x="0" y="206" width="728.4" height="349" rx="14" />
       <rect class="mrq-glass" x="0" y="206" width="728.4" height="349" rx="14" />

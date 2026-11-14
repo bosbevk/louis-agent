@@ -246,6 +246,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a409.1 170 0 1 0 818.2 0a409.1 170 0 1 0 -818.2 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.pack.site: a booking</text>
+    <text class="pic-group" x="770.2" y="14" text-anchor="end">Sequence diagram</text>
     <g class="seq-drawing" transform="translate(0 48)">
       <rect class="seq-life" x="129.8" y="84" width="1.5" height="508" rx="0" />
       <rect class="seq-life" x="449.8" y="84" width="1.5" height="508" rx="0" />

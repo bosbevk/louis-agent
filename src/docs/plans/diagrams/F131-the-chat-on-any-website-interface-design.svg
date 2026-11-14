@@ -255,6 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a520 190 0 1 0 1040 0a520 190 0 1 0 -1040 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F131 the chat on any website: the interface design</text>
+    <text class="pic-group" x="992" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line implements" d="M 427 62 L 517 62 Q 541 62 541 86 L 541 298 Q 541 310 553 310 L 565 310" marker-end="url(#triangle-violet)" />
       <path class="cls-line implements" d="M 427 204 L 499 204 Q 523 204 523 228 L 523 307 Q 523 328 544 328 L 565 328" marker-end="url(#triangle-violet)" />

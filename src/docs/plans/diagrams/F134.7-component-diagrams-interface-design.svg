@@ -261,6 +261,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a1172 190 0 1 0 2344 0a1172 190 0 1 0 -2344 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.7 component diagrams: the interface design</text>
+    <text class="pic-group" x="2296" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 294 351 L 414 351" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 294 831 L 306 831 Q 318 831 318 819 L 318 615 Q 318 591 342 591 L 414 591" marker-end="url(#open)" />

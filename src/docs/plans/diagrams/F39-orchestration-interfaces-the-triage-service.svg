@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a814 190 0 1 0 1628 0a814 190 0 1 0 -1628 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: the triage service's interfaces, part B</text>
+    <text class="pic-group" x="1580" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 240.8 695 L 312.8 695 Q 336.8 695 336.8 719 L 336.8 927 Q 336.8 951 360.8 951 L 448.9 951" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 240.8 695 L 312.8 695 Q 336.8 695 336.8 719 L 336.8 1183 Q 336.8 1207 360.8 1207 L 448.9 1207" marker-end="url(#open)" />

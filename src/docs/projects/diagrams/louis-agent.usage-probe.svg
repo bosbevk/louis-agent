@@ -227,6 +227,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-22 126a470 210 0 1 0 940 0a470 210 0 1 0 -940 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.usage-probe at a glance</text>
+    <text class="pic-group" x="896" y="14" text-anchor="end">Overview</text>
     <g class="crd-cards" transform="translate(0 38)">
       <rect class="crd-rail-glow" x="58" y="186" width="780" height="8" rx="0" />
       <rect class="crd-rail" x="58" y="189.3" width="780" height="1.5" rx="0" />

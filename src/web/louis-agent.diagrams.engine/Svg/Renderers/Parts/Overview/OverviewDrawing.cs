@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Engine.Cards;
 using LouisAgent.Diagrams.Engine.Cards.Placed;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Sources;
@@ -34,10 +35,10 @@ internal static class OverviewDrawing
     {
         var placed = OverviewLayout.Place(source.Cards!);
 
-        // A light behind each highlighted card, where another kind has one behind its top. The picture is as
-        // wide as its cards and has no key. Four fades are its own to ask for: the rail, the badge, a card's top
-        // edge, and the glass.
-        return PictureBuilder.Titled(source.Title, Measures).Narrow()
+        // A light behind each highlighted card, where another kind has one behind its top. The picture has no
+        // key. Four fades are its own to ask for: the rail, the badge, a card's top edge, and the glass.
+        return PictureBuilder.Titled(source.Title, Measures)
+            .Type(TypeNames.Of(source))
             .Paint(CardsStyle.RailPaint, PaintRun.Across, 0, 0.2, 0.8, 1)
             .Paint(CardsStyle.BadgePaint, PaintRun.Slant, 0, 1)
             .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, 0.5, 1)

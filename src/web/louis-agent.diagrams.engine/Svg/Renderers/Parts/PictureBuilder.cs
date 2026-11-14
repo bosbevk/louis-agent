@@ -36,7 +36,6 @@ internal sealed class PictureBuilder
     private Action<SvgWriter>? _lights, _body;
     private Func<double, (double Height, Action<SvgWriter, double> Draw)>? _key;
     private double _width, _height;
-    private bool _narrow;
 
     private PictureBuilder(string title, PictureMeasures measures) => (_title, _measures) = (title, measures);
 
@@ -55,7 +54,7 @@ internal sealed class PictureBuilder
 
     /// <summary>
     /// What type of diagram it is, written at the right of the title's line (Louis: "the type of diagram must
-    /// always display"). Nothing for a kind that names none.
+    /// always display"). Nothing for a picture that has none.
     /// </summary>
     public PictureBuilder Type(string? type)
     {
@@ -88,13 +87,6 @@ internal sealed class PictureBuilder
     public PictureBuilder Draw(Action<SvgWriter> draw, double width, double height)
     {
         (_body, _width, _height) = (draw, width, height);
-        return this;
-    }
-
-    /// <summary>The picture is as wide as its body: a longer title does not widen it.</summary>
-    public PictureBuilder Narrow()
-    {
-        _narrow = true;
         return this;
     }
 
@@ -135,8 +127,9 @@ internal sealed class PictureBuilder
     {
         string heading = _heading ?? _title;
 
-        // As wide as the body, or as the title's line when that is wider. The key is laid out for that width.
-        double width = _narrow ? _width : Math.Max(_width, HeadWidth(heading, _type));
+        // As wide as the body, or as the title's line when that is wider, so a type never stands over a title.
+        // The key is laid out for that width.
+        double width = Math.Max(_width, HeadWidth(heading, _type));
         var key = _key?.Invoke(width);
         double keyTop = _measures.Head + _height + _measures.KeyGap;
         double under = key is null ? _measures.Head + _height : keyTop + key.Value.Height;

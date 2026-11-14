@@ -252,6 +252,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a464 190 0 1 0 928 0a464 190 0 1 0 -928 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.ollama: the interface design</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line creates" d="M 371 76 L 407 76 Q 431 76 431 100 L 431 222 Q 431 246 455 246 L 635 246" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 371 76 L 407 76 Q 431 76 431 100 L 431 222 Q 431 246 455 246 L 635 246" />

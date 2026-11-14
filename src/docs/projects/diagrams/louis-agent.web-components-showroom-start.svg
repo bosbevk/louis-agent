@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a687.3 190 0 1 0 1374.5 0a687.3 190 0 1 0 -1374.5 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The showroom's start: what it is made of: louis-agent.web, Components / Site / Showroom / Start</text>
+    <text class="pic-group" x="1326.5" y="14" text-anchor="end">Composite structure diagram</text>
     <text class="pic-group" x="0" y="48" text-anchor="start">Who puts it on a page</text>
     <rect class="pic-panel" x="0" y="58" width="250" height="178" rx="14" />
     <text class="cmp-code-name" x="22" y="87" text-anchor="start">a site's page</text>

@@ -261,6 +261,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a526.5 190 0 1 0 1053 0a526.5 190 0 1 0 -1053 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL65 the diagrams as an engine: the interface design</text>
+    <text class="pic-group" x="1005" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <rect class="cls-group" x="0" y="30" width="1005" height="282" rx="14" />
       <text class="pic-group" x="12" y="48" text-anchor="start">louis-agent.diagrams</text>

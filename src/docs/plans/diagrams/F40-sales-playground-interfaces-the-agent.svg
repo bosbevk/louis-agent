@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a1026.5 190 0 1 0 2053 0a1026.5 190 0 1 0 -2053 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F40 the sales playground: the agent's interfaces</text>
+    <text class="pic-group" x="2005" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 596 537 L 617 537 Q 638 537 638 516 L 638 414 Q 638 390 662 390 L 774 390" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 287 225 L 359 225 Q 383 225 383 249 L 383 360 Q 383 372 395 372 L 407 372 L 596 372 L 774 372" marker-end="url(#open)" />

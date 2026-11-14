@@ -255,6 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a570 190 0 1 0 1140 0a570 190 0 1 0 -1140 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F143 the guide drives the CV: the interface design</text>
+    <text class="pic-group" x="1092" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 809 48 L 889 48" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 809 48 L 821 48 Q 833 48 833 60 L 833 138 Q 833 162 857 162 L 889 162" marker-end="url(#open)" />

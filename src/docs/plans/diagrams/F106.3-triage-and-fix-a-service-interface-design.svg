@@ -255,6 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a574 190 0 1 0 1148 0a574 190 0 1 0 -1148 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F106.3 triage and fix a service: the interface design</text>
+    <text class="pic-group" x="1100" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line implements" d="M 273 91 L 345 91 Q 369 91 369 115 L 369 261 Q 369 282 390 282 L 411 282 L 747 282 L 827 282" marker-end="url(#triangle-violet)" />
       <path class="cls-line implements" d="M 273 291 L 345 291 Q 369 291 369 315 L 369 452 Q 369 473 390 473 L 411 473 L 747 473 L 827 473" marker-end="url(#triangle-violet)" />

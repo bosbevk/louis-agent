@@ -252,6 +252,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a464 190 0 1 0 928 0a464 190 0 1 0 -928 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The tests: the interface design</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line holds" d="M 240.8 432 L 380.9 432 Q 404.9 432 404.9 408 L 404.9 78 Q 404.9 54 428.9 54 L 537 54" marker-start="url(#diamond-violet)" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 240.8 432 L 380.9 432 Q 404.9 432 404.9 408 L 404.9 78 Q 404.9 54 428.9 54 L 537 54" />

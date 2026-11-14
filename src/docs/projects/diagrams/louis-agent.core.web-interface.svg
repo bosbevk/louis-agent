@@ -255,6 +255,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a802 190 0 1 0 1604 0a802 190 0 1 0 -1604 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.web: the interface design</text>
+    <text class="pic-group" x="1556" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 413 376 L 425 376 Q 437 376 437 364 L 437 246 Q 437 222 461 222 L 597 222" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 413 376 L 597 376" marker-end="url(#open)" />

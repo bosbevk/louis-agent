@@ -246,6 +246,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a1089.5 170 0 1 0 2178.9 0a1089.5 170 0 1 0 -2178.9 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: one error fixed and confirmed</text>
+    <text class="pic-group" x="2130.9" y="14" text-anchor="end">Sequence diagram</text>
     <g class="seq-drawing" transform="translate(0 48)">
       <rect class="seq-cover" x="316.4" y="988" width="1723.7" height="532" rx="14" />
       <rect class="mrq-glass" x="316.4" y="988" width="1723.7" height="532" rx="14" />

@@ -249,6 +249,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a998.8 170 0 1 0 1997.5 0a998.8 170 0 1 0 -1997.5 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F40 the sales playground: one invoice batch run</text>
+    <text class="pic-group" x="1949.5" y="14" text-anchor="end">Sequence diagram</text>
     <g class="seq-drawing" transform="translate(0 48)">
       <rect class="seq-cover" x="17.9" y="307" width="1688" height="793" rx="14" />
       <rect class="mrq-glass" x="17.9" y="307" width="1688" height="793" rx="14" />

@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a464 190 0 1 0 928 0a464 190 0 1 0 -928 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.core.telemetry: the interface design</text>
+    <text class="pic-group" x="880" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 238 225 L 340 225 Q 364 225 364 249 L 364 357 Q 364 381 388 381 L 642 381" marker-end="url(#open)" />
       <path class="cls-line implements" d="M 238 225 L 340 225 Q 364 225 364 201 L 364 93 Q 364 69 388 69 L 642 69" marker-end="url(#triangle-violet)" />

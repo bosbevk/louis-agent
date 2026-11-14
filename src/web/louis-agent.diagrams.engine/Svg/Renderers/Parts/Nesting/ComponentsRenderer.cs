@@ -4,6 +4,7 @@ using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Components.Placed.Lines;
 using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Engine.Types;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
@@ -45,8 +46,8 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         string heading = components.Subtitle is { } under ? $"{source.Title}: {under}" : source.Title;
 
         // Its layout stands every box under the title's room already, and holds the key. So the body is drawn
-        // straight in, and the picture is as wide and as tall as the layout says.
-        return PictureBuilder.Titled(source.Title).Heading(heading).Narrow()
+        // straight in, and the picture is as tall as the layout says.
+        return PictureBuilder.Titled(source.Title).Heading(heading).Type(TypeNames.Of(source))
             .Draw(writer => Draw(writer, placed), placed.Width, placed.Height - PictureMeasures.Usual.Head)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, ComponentsStyle.Rules)
             .Build();

@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a758 190 0 1 0 1516 0a758 190 0 1 0 -1516 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL64 prompts in the skill shape: the interface design</text>
+    <text class="pic-group" x="1468" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 185.5 124 L 185.5 145 Q 185.5 166 206.5 166 L 553.5 166 Q 574.5 166 574.5 187 L 574.5 208" marker-end="url(#open)" />
       <path class="cls-line uses" d="M 185.5 360 L 185.5 381 Q 185.5 402 206.5 402 L 544.5 402 Q 556.5 402 556.5 414 L 556.5 426" marker-end="url(#open)" />

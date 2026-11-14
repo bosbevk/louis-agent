@@ -258,6 +258,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a581 190 0 1 0 1162 0a581 190 0 1 0 -1162 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: the engine's interfaces, part A</text>
+    <text class="pic-group" x="1114" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
       <path class="cls-line uses" d="M 210.4 1005 L 242.5 1005 Q 266.5 1005 266.5 981 L 266.5 873 Q 266.5 849 290.5 849 L 362.7 849" marker-end="url(#open)" />
       <path class="cls-line implements" d="M 210.4 69 L 242.5 69 Q 266.5 69 266.5 93 L 266.5 339 Q 266.5 363 290.5 363 L 362.7 363 L 573.1 363 L 653.3 363" marker-end="url(#triangle-violet)" />

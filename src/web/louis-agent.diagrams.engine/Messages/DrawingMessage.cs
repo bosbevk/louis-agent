@@ -17,7 +17,24 @@ public enum DrawingMessage
 
     // The heading over a picture's own key, in any kind that has one.
     [Description("How to read it")] KeyHeading,
-    [Description("Composite structure diagram")] CompositeType,
+
+    // What type of diagram a picture is, at the right of its title's line: UML's names, and our own overview.
+    [Description("Class diagram")] TypeClass,
+    [Description("Composite structure diagram")] TypeCompositeStructure,
+    [Description("Object diagram")] TypeObject,
+    [Description("Component diagram")] TypeComponent,
+    [Description("Deployment diagram")] TypeDeployment,
+    [Description("Package diagram")] TypePackage,
+    [Description("State machine diagram")] TypeStateMachine,
+    [Description("Activity diagram")] TypeActivity,
+    [Description("Use case diagram")] TypeUseCase,
+    [Description("Sequence diagram")] TypeSequence,
+    [Description("Communication diagram")] TypeCommunication,
+    [Description("Interaction overview diagram")] TypeInteractionOverview,
+    [Description("Timing diagram")] TypeTiming,
+    [Description("Overview")] TypeOverview,
+
+    // A composite's key.
     [Description("a port")] CompositePort,
     [Description("asked of the class")] CompositeAsked,
     [Description("what the class needs")] CompositeNeeded,

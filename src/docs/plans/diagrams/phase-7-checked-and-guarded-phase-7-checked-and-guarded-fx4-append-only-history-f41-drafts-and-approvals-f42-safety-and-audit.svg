@@ -246,6 +246,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 84a773.5 170 0 1 0 1546.9 0a773.5 170 0 1 0 -1546.9 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Phase 7: one invoice match, drafted, checked, approved and audited</text>
+    <text class="pic-group" x="1498.9" y="14" text-anchor="end">Sequence diagram</text>
     <g class="seq-drawing" transform="translate(0 48)">
       <rect class="seq-life" x="102.7" y="104" width="1.5" height="672" rx="0" />
       <rect class="seq-life" x="401.7" y="104" width="1.5" height="672" rx="0" />

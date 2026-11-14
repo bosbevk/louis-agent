@@ -43,8 +43,8 @@ public class PictureBuilderTests
         Is.EqualTo(new[] { "mrq-light", "mrq-title", "pic-group", "body", "key", "caption" }));
 
     /// <summary>
-    /// The picture is as wide as its body, or as its title and type side by side when that is wider. A narrow
-    /// picture is as wide as its body whatever its title. The key is laid out for the width the picture has.
+    /// The picture is as wide as its body, or as its title and type side by side when that is wider, whatever
+    /// its kind, so a type never stands over a title. The key is laid out for the width the picture has.
     /// </summary>
     [Test]
     public void TheWidth_IsTheBodys_OrTheTitlesAndTypes()
@@ -60,7 +60,6 @@ public class PictureBuilderTests
             Assert.That(head, Is.GreaterThan(100 * PictureBuilder.TitleChar + "Flow chart".Length * 7));
             Assert.That(Root(Whole(longTitle).Build(), "width"), Is.EqualTo(head + 2 * SvgWriter.Pad).Within(0.11));
             Assert.That((string?)key.Attribute("width"), Is.EqualTo(SvgWriter.N(head)), "the key has that width");
-            Assert.That(Root(Whole(longTitle).Narrow().Build(), "width"), Is.EqualTo(300 + 2 * SvgWriter.Pad));
         });
     }
 
