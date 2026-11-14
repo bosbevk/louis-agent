@@ -1,5 +1,5 @@
-using LouisAgent.Diagrams.Classes.Marks;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Classes.Marks;
 
 namespace LouisAgent.Diagrams.Tests.Classes.Marks;
 

@@ -1,6 +1,7 @@
 using System.Globalization;
-using LouisAgent.Diagrams.Flow;
-using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 

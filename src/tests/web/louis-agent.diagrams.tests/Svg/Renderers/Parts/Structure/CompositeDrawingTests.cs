@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
-using LouisAgent.Diagrams.Svg.Renderers.Parts.Structure;
 using LouisAgent.Diagrams.Tests.Composite;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Structure;

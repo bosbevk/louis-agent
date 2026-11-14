@@ -1,6 +1,6 @@
+using LouisAgent.Diagrams.Engine.Sequence;
+using LouisAgent.Diagrams.Engine.Sequence.Placed;
 using LouisAgent.Diagrams.Icons;
-using LouisAgent.Diagrams.Sequence;
-using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 

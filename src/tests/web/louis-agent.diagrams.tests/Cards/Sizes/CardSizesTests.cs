@@ -1,5 +1,5 @@
 using LouisAgent.Diagrams.Cards;
-using LouisAgent.Diagrams.Cards.Sizes;
+using LouisAgent.Diagrams.Engine.Cards.Sizes;
 using LouisAgent.Diagrams.Icons;
 
 namespace LouisAgent.Diagrams.Tests.Cards.Sizes;

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Sources;
 
@@ -23,11 +24,12 @@ public class DiagramHolesTests
     }
 
     /// <summary>
-    /// The record named for a message, wherever under the messages' holes it is filed. None when there is none.
+    /// The record named for a message, wherever under the messages' holes it is filed, in the project its enum
+    /// is in. None when there is none.
     /// </summary>
-    private static Type? RecordOf(Enum message) => typeof(DiagramReader).Assembly.GetTypes()
+    private static Type? RecordOf(Enum message) => message.GetType().Assembly.GetTypes()
         .FirstOrDefault(type => type.Name == $"{Enum.GetName(message.GetType(), message)}Holes" &&
-                                type.Namespace?.StartsWith("LouisAgent.Diagrams.Messages.Holes") == true);
+                                type.Namespace?.Contains(".Messages.Holes") == true);
 
     /// <summary>
     /// Every message the reader fills has its record, and the record's properties are the message's holes, no more

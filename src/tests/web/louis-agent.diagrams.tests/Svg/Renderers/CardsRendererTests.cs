@@ -1,9 +1,9 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Cards.Links;
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
-using LouisAgent.Diagrams.Svg.Renderers.Parts.Overview;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
 

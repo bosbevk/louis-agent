@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tickets.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Svg;
@@ -100,7 +100,7 @@ public class PageSvgTests
     public void ADrawingWithPaintsAndNoArrow_KeepsItsPaints_AndBringsNoArrowhead()
     {
         string file = new SvgWriter().Paint("fade", PaintRun.Across, 0, 1).Box(0, 0, 10, 10, 2, "filled")
-            .Write(LouisAgent.Diagrams.Svg.Theme.SvgTheme.Site, "A picture", 100, 100);
+            .Write(LouisAgent.Diagrams.Engine.Svg.Theme.SvgTheme.Site, "A picture", 100, 100);
 
         var defined = XElement.Parse(PageSvg.Of(file)).Elements(Svg + "defs").Elements().ToList();
 

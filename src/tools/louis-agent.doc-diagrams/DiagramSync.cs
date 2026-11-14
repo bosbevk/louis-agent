@@ -1,5 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 
 namespace LouisAgent.DocDiagrams;
 

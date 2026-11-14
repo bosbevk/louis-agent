@@ -1,6 +1,6 @@
-using LouisAgent.Diagrams.Composite;
-using LouisAgent.Diagrams.Flow;
-using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Composite;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 

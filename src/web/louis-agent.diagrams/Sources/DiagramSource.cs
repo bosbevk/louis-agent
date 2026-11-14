@@ -3,7 +3,6 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Components.Spec;
 using LouisAgent.Diagrams.Composite.Spec;
-using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Tickets.Spec;

@@ -1,7 +1,8 @@
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Cards.Links;
-using LouisAgent.Diagrams.Cards.Placed;
-using LouisAgent.Diagrams.Cards.Rails;
+using LouisAgent.Diagrams.Engine.Cards;
+using LouisAgent.Diagrams.Engine.Cards.Placed;
+using LouisAgent.Diagrams.Engine.Cards.Rails;
 using LouisAgent.Diagrams.Icons;
 
 namespace LouisAgent.Diagrams.Tests.Cards;

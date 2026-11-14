@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Sequence;
+using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;

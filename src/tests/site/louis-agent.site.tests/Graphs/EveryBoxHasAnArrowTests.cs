@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Site.Graphs;
 using LouisAgent.Site.Graphs.Framework;

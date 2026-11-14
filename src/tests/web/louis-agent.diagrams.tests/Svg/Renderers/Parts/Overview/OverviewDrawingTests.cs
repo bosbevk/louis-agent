@@ -1,7 +1,7 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Overview;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts.Overview;
-using LouisAgent.Diagrams.Svg.Theme.Looks;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Overview;
 

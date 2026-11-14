@@ -1,8 +1,8 @@
-using LouisAgent.Diagrams.Classes;
-using LouisAgent.Diagrams.Composite;
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Classes;
+using LouisAgent.Diagrams.Engine.Composite;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Sequence;
 using LouisAgent.Diagrams.Flow.Spec;
-using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;

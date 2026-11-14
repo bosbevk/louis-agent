@@ -1,9 +1,8 @@
-using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Classes;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Classes;

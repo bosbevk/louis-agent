@@ -1,8 +1,8 @@
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Boxes;

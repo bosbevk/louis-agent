@@ -1,6 +1,7 @@
+using LouisAgent.Diagrams.Engine.Icons;
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Icons;
-using LouisAgent.Diagrams.Svg;
-using LouisAgent.Diagrams.Svg.Theme;
 
 namespace LouisAgent.Diagrams.Tests.Icons;
 
@@ -32,7 +33,7 @@ public class IconPathsTests
     [Test]
     public void TheLicence_TravelsWithTheIcons()
     {
-        string licence = Path.Combine(RepoRoot(), "src/web/louis-agent.diagrams/Icons/LICENSE-tabler-icons.txt");
+        string licence = Path.Combine(RepoRoot(), "src/web/louis-agent.diagrams.engine/Icons/LICENSE-tabler-icons.txt");
 
         Assert.Multiple(() =>
         {

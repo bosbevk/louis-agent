@@ -1,5 +1,5 @@
 using LouisAgent.Diagrams.Cards.Links;
-using LouisAgent.Diagrams.Cards.Rails;
+using LouisAgent.Diagrams.Engine.Cards.Rails;
 
 namespace LouisAgent.Diagrams.Tests.Cards.Rails;
 

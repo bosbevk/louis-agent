@@ -2,12 +2,12 @@ using System.Globalization;
 using System.Xml.Linq;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Svg;

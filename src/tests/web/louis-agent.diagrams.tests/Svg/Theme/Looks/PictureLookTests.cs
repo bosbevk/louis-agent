@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
-using LouisAgent.Diagrams.Svg.Theme;
-using LouisAgent.Diagrams.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
 

@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Flow.Rows;
+using LouisAgent.Diagrams.Engine.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Rows;

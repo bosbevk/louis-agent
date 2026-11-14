@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <ProjectReference Include="..\..\web\louis-agent.diagrams\louis-agent.diagrams.csproj" />
+    <ProjectReference Include="..\..\web\louis-agent.diagrams.engine\louis-agent.diagrams.engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

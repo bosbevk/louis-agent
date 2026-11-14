@@ -1,7 +1,7 @@
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Tickets;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
-using LouisAgent.Diagrams.Tickets;
 using LouisAgent.Diagrams.Tickets.Spec;
 using LouisAgent.Diagrams.Tones;
 

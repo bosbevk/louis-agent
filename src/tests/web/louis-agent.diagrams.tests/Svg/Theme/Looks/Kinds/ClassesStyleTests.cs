@@ -1,6 +1,6 @@
-using LouisAgent.Diagrams.Svg.Theme;
-using LouisAgent.Diagrams.Svg.Theme.Looks;
-using LouisAgent.Diagrams.Svg.Theme.Looks.Kinds;
+using LouisAgent.Diagrams.Engine.Svg.Theme;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks.Kinds;
 

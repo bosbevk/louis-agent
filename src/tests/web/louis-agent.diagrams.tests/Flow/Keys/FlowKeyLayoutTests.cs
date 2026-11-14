@@ -1,5 +1,5 @@
-using LouisAgent.Diagrams.Flow.Keys;
-using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Engine.Flow.Keys;
+using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Tones;

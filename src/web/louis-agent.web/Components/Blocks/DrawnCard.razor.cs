@@ -1,5 +1,5 @@
+using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Blocks;

@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Svg;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
-using LouisAgent.Diagrams.Svg.Renderers.Parts.Types;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers;
 

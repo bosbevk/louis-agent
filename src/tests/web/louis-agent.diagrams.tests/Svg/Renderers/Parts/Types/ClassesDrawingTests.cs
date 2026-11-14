@@ -1,6 +1,6 @@
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Types;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg.Renderers.Parts.Types;
 
 namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts.Types;
 

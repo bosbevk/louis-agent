@@ -1,7 +1,7 @@
-using LouisAgent.Diagrams.Components;
-using LouisAgent.Diagrams.Components.Placed;
-using LouisAgent.Diagrams.Components.Placed.Keys;
-using LouisAgent.Diagrams.Components.Placed.Lines;
+using LouisAgent.Diagrams.Engine.Components;
+using LouisAgent.Diagrams.Engine.Components.Placed;
+using LouisAgent.Diagrams.Engine.Components.Placed.Keys;
+using LouisAgent.Diagrams.Engine.Components.Placed.Lines;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Tones;
 

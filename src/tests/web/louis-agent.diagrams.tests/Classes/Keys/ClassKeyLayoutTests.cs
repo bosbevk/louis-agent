@@ -1,6 +1,6 @@
-using LouisAgent.Diagrams.Classes.Keys;
-using LouisAgent.Diagrams.Classes.Marks;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Engine.Classes.Keys;
+using LouisAgent.Diagrams.Engine.Classes.Marks;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Classes.Keys;

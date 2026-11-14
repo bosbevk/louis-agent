@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Icons;
 using LouisAgent.Diagrams.Icons;
 using Microsoft.AspNetCore.Components;
 

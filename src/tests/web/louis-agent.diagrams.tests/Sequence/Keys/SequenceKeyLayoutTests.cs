@@ -1,4 +1,4 @@
-using LouisAgent.Diagrams.Sequence.Keys;
+using LouisAgent.Diagrams.Engine.Sequence.Keys;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Tones;

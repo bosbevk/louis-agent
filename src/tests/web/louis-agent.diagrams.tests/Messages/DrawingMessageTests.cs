@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Messages;
 
 namespace LouisAgent.Diagrams.Tests.Messages;

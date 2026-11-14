@@ -1,5 +1,5 @@
 using System.Globalization;
-using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Tones;

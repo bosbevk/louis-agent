@@ -1,5 +1,4 @@
 using System.Globalization;
-using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Shapes;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Web.Components.Graphs;
