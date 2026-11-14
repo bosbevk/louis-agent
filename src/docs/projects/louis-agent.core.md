@@ -99,6 +99,12 @@ message.
 
 ![The types a host meets: AgentHost builds the context from a catalogue of identities and packs, an engine per toolset list, and the model from a provider](diagrams/louis-agent.core-interface.svg)
 
+The engine from the inside. It builds six parts once, in its constructor. On the left is what a host asks of it,
+each passed on to the part that does it. On the right is what it is handed from outside. A plain line joins two
+parts where one is built with the other.
+
+![AgentEngine from the inside: what is asked of it on the left, its six parts and which is built with which, and what it is handed on the right](diagrams/louis-agent.core-agent-engine.svg)
+
 ## Structure
 
 | Path | What's in it |

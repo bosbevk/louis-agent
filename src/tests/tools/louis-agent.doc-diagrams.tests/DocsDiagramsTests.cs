@@ -1,5 +1,7 @@
 using LouisAgent.Diagrams.Classes;
+using LouisAgent.Diagrams.Composite;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -112,6 +114,35 @@ public class DocsDiagramsTests
         .Where(doc => Path.GetFileName(doc) != "README.md");
 
     /// <summary>
+    /// The flow a picture is placed as: its own, a class chart's (CL60.4) or a composite's (F134.13), each through
+    /// its adapter. Nothing for a kind that has a layout of its own.
+    /// </summary>
+    private static GraphSpec? FlowOf(DiagramSource source) => source.Kind switch
+    {
+        DiagramKind.Flow => source.Flow,
+        DiagramKind.Classes => ClassFlow.Of(source.Classes!),
+        DiagramKind.Composite => CompositeFlow.Of(source.Composite!),
+        _ => null
+    };
+
+    /// <summary>
+    /// A composite structure diagram is placed by the flow's layout (F134.13), so the docs hold it to what they
+    /// hold a flow to: clear words and lines, and no two lines on one another. And the docs have one to hold.
+    /// </summary>
+    [Test]
+    public void AComposite_IsHeldAsAFlow_AndTheDocsHaveOne()
+    {
+        var composites = Diagrams().Select(json => DiagramReader.Read(File.ReadAllText(json)))
+            .Where(source => source.Kind == DiagramKind.Composite).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(composites, Is.Not.Empty, "the docs have a composite structure diagram");
+            Assert.That(composites.Select(FlowOf), Has.None.Null, "each is laid out as a flow, and so held clear");
+        });
+    }
+
+    /// <summary>
     /// In every flow picture, a class chart's too (CL60.4, drawn as a flow), no word leaves the drawing or sits on a
     /// box, and no line crosses a box it doesn't join. Each is laid out as it is drawn: straight and level
     /// (F134.8), and a class chart with its names wrapped and a badge's room beside each (F134.11).
@@ -120,9 +151,7 @@ public class DocsDiagramsTests
     public void EveryFlow_KeepsItsWordsAndLinesClear()
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
-            .Select(pair => (pair.json,
-                flow: pair.source.Flow ??
-                      (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null)))
+            .Select(pair => (pair.json, flow: FlowOf(pair.source)))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance
                 .Faults(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: FlowRules.Straight))
@@ -142,9 +171,7 @@ public class DocsDiagramsTests
     {
         var rules = FlowRules.Straight;
         var lying = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
-            .Select(pair => (pair.json,
-                flow: pair.source.Flow ??
-                      (pair.source.Classes is { } classes ? ClassFlow.Of(classes) : null)))
+            .Select(pair => (pair.json, flow: FlowOf(pair.source)))
             .Where(pair => pair.flow is not null)
             .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: rules))
                 .Select(lines => $"{Path.GetFileNameWithoutExtension(pair.json)}: {lines}")).ToList();
