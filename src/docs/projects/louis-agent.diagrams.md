@@ -82,13 +82,22 @@ A flow (`Flow/`) is drawn on ADR 0103's row grid.
 `Ranks`: one past the furthest box that points at it. `Bands` handles groups: it stands each group's boxes in rows
 of their own, inside a labelled frame.
 
+**The rule the boxes stand by.** A band is one group's rows, or every box's rows when a picture has no groups.
+Two things about a band are not `Bands`' to decide: how tall its rows are, and which row each box stands on. A
+rule answers both (`IRowRule`). `CentredRows` is the one every picture uses today: a band's rows are as tall as
+its own tallest box, and a column's boxes stand one after another, centred in the band.
+
+The rule for the rows and the rule for the arrows, described below, are handed to the layout together, as one
+`FlowRules`. `FlowRules.Joined` is the pair a layout uses when it is handed none: arrows that join, and boxes
+centred.
+
 **Drawing the arrows.** `Routing/EdgeRouter` draws an arrow as connectors at right angles. A long arrow goes
 through a waypoint in each column it passes. A blocked arrow goes round a detour. The bends are as soft as the
 caller asks: the site asks for 8 px, the docs for `SoftBend`.
 
 **The rule the arrows run by.** Two things about a forward arrow are not the router's to decide: which track in
-the gap it bends on, and where on its target's side it arrives. A rule answers both, and the layout is handed
-the rule (`IArrowRule`). Handed none, it uses `JoinedArrows`: the arrows into a box meet at the middle of its
+the gap it bends on, and where on its target's side it arrives. A rule answers both (`IArrowRule`), and the
+layout is handed it in its `FlowRules`. Handed none, it uses `JoinedArrows`: the arrows into a box meet at the middle of its
 side, and a gap has a track for each source only when several boxes feed several. So a caller picks how its
 arrows run without the router knowing which rule it has.
 
@@ -214,7 +223,7 @@ This section is for looking a file up.
 ```
 src/web/louis-agent.diagrams/
 ├── Sources/        # DiagramSource, DiagramKind, DiagramReader, DiagramJson (the one options object)
-├── Flow/           # GraphLayout, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows)
+├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, RowGrid, CentredRows)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, CardLayout; Links/ (CardLink, CardLinkKind); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceText; Spec/ (Steps/), Placed/
 ├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)

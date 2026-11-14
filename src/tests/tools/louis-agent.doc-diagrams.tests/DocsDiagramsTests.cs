@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Routing;
+using LouisAgent.Diagrams.Flow.Rows;
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -137,10 +138,10 @@ public class DocsDiagramsTests
     [Test]
     public void EveryFlow_LaidOutApart_HasNoTwoLinesOnOneAnother()
     {
-        var rule = new ApartArrows();
+        var rules = new FlowRules(new ApartArrows(), new CentredRows());
         var lying = Diagrams().Select(json => (json, flow: DiagramReader.Read(File.ReadAllText(json)).Flow))
             .Where(pair => pair.flow is not null)
-            .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rule: rule))
+            .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rules: rules))
                 .Select(lines => $"{Path.GetFileNameWithoutExtension(pair.json)}: {lines}")).ToList();
 
         // The whole list, one pair a line: a list cut short hides the picture still to fix.

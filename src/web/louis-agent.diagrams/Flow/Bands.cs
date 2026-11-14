@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Flow.Placed;
+using LouisAgent.Diagrams.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Flow;
@@ -17,27 +18,33 @@ internal static class Bands
     /// <summary>The room inside a frame around its boxes, the room for its label, and between two bands.</summary>
     public const double Pad = 12, LabelRoom = 22, Between = 2 * Pad + LabelRoom + 8;
 
-    /// <summary>Every box placed on the grid, band by band, and the drawing's height.</summary>
+    /// <summary>
+    /// Every box placed on the grid, band by band, and the drawing's height. How tall a band's rows are and which
+    /// row a box stands on is what the rows' rule says.
+    /// </summary>
     public static (List<PlacedNode> Nodes, double Height) Place(
         GraphSpec spec,
         List<List<GraphNode>> columns,
         Grid grid,
-        bool turned)
+        bool turned,
+        IRowRule rule)
     {
         bool grouped = spec.Groups is { Count: > 0 };
         string? Key(GraphNode node) => grouped ? node.Group : null;
 
-        // A band's row is as tall as its own tallest box, so a wide box in one group doesn't spread every other.
+        // The bands, the columns each has boxes in, and how tall the rule makes each one's rows: with the centred
+        // rule a band's own tallest box, so a wide box in one group doesn't spread every other.
         var keys = spec.Nodes.Select(Key).Distinct().ToList();
-        var row = keys.Select(key => spec.Nodes.Where(node => Key(node) == key).Max(grid.Tall)).ToList();
+        var spans = keys.Select(key => Enumerable.Range(0, columns.Count)
+            .Where(at => columns[at].Any(node => Key(node) == key)).ToHashSet()).ToList();
+        var tallest = keys.Select(key => spec.Nodes.Where(node => Key(node) == key).Max(grid.Tall)).ToList();
+        var row = rule.RowHeights(tallest, spans);
         double Tall(int band, int boxes) => boxes * row[band] + grid.Gap * (boxes - 1);
 
         // Each band as tall as its fullest column. A band stands under the earlier bands it shares a column with, with
         // room for their frames; one that shares none starts at the top beside them (Louis, of the checks chart: no
         // empty corner beside a group).
         var rows = keys.Select(key => columns.Max(column => column.Count(node => Key(node) == key))).ToList();
-        var spans = keys.Select(key => Enumerable.Range(0, columns.Count)
-            .Where(at => columns[at].Any(node => Key(node) == key)).ToHashSet()).ToList();
         double start = (grouped, turned) switch
         {
             (false, _) => 0,
@@ -56,20 +63,18 @@ internal static class Bands
 
         double y = bottoms.DefaultIfEmpty(0).Max();
 
-        // In each column a band's boxes stand centred in their band, a box in the middle of its row.
+        // Each box stands on the row the rule gives it, in the middle of that row.
+        var rowGrid = new RowGrid(columns, node => keys.IndexOf(Key(node)), tops, row, rows, grid.Gap, spec.Edges);
+        var rowTops = rule.RowTops(rowGrid);
         var nodes = new List<PlacedNode>();
         for (int at = 0; at < columns.Count; at++)
             for (int band = 0; band < keys.Count; band++)
-            {
-                var members = columns[at].Where(node => Key(node) == keys[band]).ToList();
-                double top = tops[band] + (Tall(band, rows[band]) - Tall(band, members.Count)) / 2;
-                foreach (var node in members)
+                foreach (var node in columns[at].Where(node => Key(node) == keys[band]))
                 {
                     double h = grid.Tall(node);
-                    nodes.Add(new PlacedNode(node, grid.Lefts[at], top + (row[band] - h) / 2, grid.Widths[at], h));
-                    top += row[band] + grid.Gap;
+                    double top = rowTops[node.Id] + (row[band] - h) / 2;
+                    nodes.Add(new PlacedNode(node, grid.Lefts[at], top, grid.Widths[at], h));
                 }
-            }
 
         return (nodes, grouped ? y + Pad : y);
     }

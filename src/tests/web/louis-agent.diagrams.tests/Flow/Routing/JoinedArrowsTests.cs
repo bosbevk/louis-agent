@@ -88,7 +88,7 @@ public class JoinedArrowsTests
             [new GraphEdge("a", "x"), new GraphEdge("b", "x"), new GraphEdge("b", "y")]);
 
         var unnamed = GraphLayout.Place(spec).Edges.Select(edge => edge.Path);
-        var joined = GraphLayout.Place(spec, rule: Rule).Edges.Select(edge => edge.Path);
+        var joined = GraphLayout.Place(spec, rules: FlowRules.Joined).Edges.Select(edge => edge.Path);
 
         Assert.That(joined, Is.EqualTo(unnamed));
     }

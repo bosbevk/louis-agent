@@ -2,6 +2,7 @@ using System.Globalization;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Routing;
+using LouisAgent.Diagrams.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Routing;
@@ -13,6 +14,11 @@ namespace LouisAgent.Diagrams.Tests.Flow.Routing;
 public class ApartArrowsTests
 {
     private static readonly ApartArrows Rule = new();
+
+    /// <summary>
+    /// The apart arrows on boxes placed as they always were, so a test here sees the arrows' rule alone.
+    /// </summary>
+    private static readonly FlowRules Rules = new(Rule, new CentredRows());
 
     /// <summary>A box of the site's size at a place.</summary>
     private static PlacedNode Box(string id, double x, double y) => new(new GraphNode(id, id), x, y, 170, 52);
@@ -115,7 +121,7 @@ public class ApartArrowsTests
             [.. new[] { "a", "b", "c", "d" }.Select(id => new GraphEdge(id, "x"))]);
 
         double joined = GraphLayout.Place(spec).Nodes.Single(node => node.Node.Id == "x").H;
-        double apart = GraphLayout.Place(spec, rule: Rule).Nodes.Single(node => node.Node.Id == "x").H;
+        double apart = GraphLayout.Place(spec, rules: Rules).Nodes.Single(node => node.Node.Id == "x").H;
 
         Assert.Multiple(() =>
         {
@@ -247,7 +253,7 @@ public class ApartArrowsTests
             [new GraphNode("a", "A", Column: 0), new GraphNode("b", "B", Column: 1), new GraphNode("x", "X", null, 2)],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x")]);
 
-        var placed = GraphLayout.Place(spec, rule: Rule);
+        var placed = GraphLayout.Place(spec, rules: Rules);
         var straight = placed.Edges.Single(edge => edge.Edge.From == "a");
         var beside = placed.Edges.Single(edge => edge.Edge.From == "b");
 
@@ -271,7 +277,7 @@ public class ApartArrowsTests
             [new GraphNode("a", "A", Column: 0), new GraphNode("b", "B", Column: 0), new GraphNode("x", "X", null, 2)],
             [new GraphEdge("a", "x"), new GraphEdge("b", "x")]);
 
-        var paths = GraphLayout.Place(spec, rule: Rule).Edges.Select(edge => Points(edge.Path)).ToList();
+        var paths = GraphLayout.Place(spec, rules: Rules).Edges.Select(edge => Points(edge.Path)).ToList();
 
         Assert.Multiple(() =>
         {
