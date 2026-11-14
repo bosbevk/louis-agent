@@ -292,6 +292,12 @@ On a phone the start is the same page with less on it. The title stands alone, w
 row of upright windows, swiped one at a time, and a swipe brings a demo forward as an arrow does, so the name,
 the dock and the address follow it. The dock shows its icons only.
 
+The picture shows the start as its components. A box inside a box is held by it. A pin on a box's top edge is a
+parameter handed down to it, or a callback it says back up. The pill is the one thing the start holds, and the
+lines from it show which pins carry it.
+
+![The start holds which demo is forward. It hands that down to the lit stage, the deck, each framed window and the dock, and hears it back from the deck and the dock. A site's page, three things it reads and two scripts stand around it](diagrams/louis-agent.web-components-showroom-start.svg)
+
 **A demo's page** (`Stage/`). `DemoStage` lays one out: a kicker, the page's one h1, a lede, the player, the cues,
 the notes and the offer. The cues are lit in step with the play, and each is a button that plays from its turn.
 The notes say what a custom agent could add. Each part is a section with its own address.
