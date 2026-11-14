@@ -46,9 +46,14 @@ public static class GraphLayout
     /// </summary>
     public const double SoftBend = 24;
 
-    /// <summary>Places a diagram across the given width, each arrow's corners rounded by the bend asked for.</summary>
-    public static PlacedGraph Place(GraphSpec spec, int width = 880, double bend = EdgeRouter.Bend)
+    /// <summary>
+    /// Places a diagram across the given width, each arrow's corners rounded by the bend asked for. The arrows run by
+    /// the rule you hand it, and joined when you hand it none, as every picture was drawn before F134.8.
+    /// </summary>
+    public static PlacedGraph Place(GraphSpec spec, int width = 880, double bend = EdgeRouter.Bend,
+        IArrowRule? rule = null)
     {
+        rule ??= new JoinedArrows();
         // A box with no column takes the one its arrows give it, so everything below sees a column on every box.
         var ranks = Ranks.Of(spec);
         spec = spec with { Nodes = [.. spec.Nodes.Select(node => node with { Column = ranks[node.Id] })] };
@@ -57,14 +62,14 @@ public static class GraphLayout
 
         // A chart that runs down is laid out to the right with every box turned, at its own size, then turned back.
         return spec.Direction == FlowDirection.Down
-            ? Turn.Back(PlaceRight(spec, 0, turned: true, bend))
-            : PlaceRight(spec, width, turned: false, bend);
+            ? Turn.Back(PlaceRight(spec, 0, turned: true, bend, rule))
+            : PlaceRight(spec, width, turned: false, bend, rule);
     }
 
     /// <summary>
     /// The diagram laid out to the right across the given width; turned, every box's width and height swap places.
     /// </summary>
-    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend)
+    private static PlacedGraph PlaceRight(GraphSpec spec, int width, bool turned, double bend, IArrowRule rule)
     {
         Func<GraphNode, double> wide = turned ? HeightOf : WidthOf, tall = turned ? WidthOf : HeightOf;
 
@@ -73,7 +78,7 @@ public static class GraphLayout
         var columns = Ordered(spec);
         // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
         // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
-        var gaps = Gaps(spec, columns, turned);
+        var gaps = Gaps(spec, columns, turned, rule);
         // A column is as wide as its widest box: a label's longest line, never less than the site's box.
         var widths = columns.Select(column => column.Max(wide)).ToList();
         width = Math.Max(width, (int)Math.Ceiling(widths.Sum() + gaps.Sum()));
@@ -91,7 +96,7 @@ public static class GraphLayout
         // the boxes, for a lane under the drawing or a loop past the last column.
         var byId = nodes.ToDictionary(node => node.Node.Id);
         var known = spec.Edges.Where(edge => byId.ContainsKey(edge.From) && byId.ContainsKey(edge.To)).ToList();
-        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, turned, bend);
+        var (edges, fullHeight, fullWidth) = EdgeRouter.Route(known, byId, fitHeight, fitWidth, rule, turned, bend);
 
         // The waypoints go, and each chain through them is one arrow again.
         return new PlacedGraph((int)Math.Ceiling(fullWidth), (int)Math.Ceiling(fullHeight),
@@ -201,8 +206,9 @@ public static class GraphLayout
     /// words (<see cref="EdgeRouter.RoomsFor"/>), never less than <see cref="MinColumnGap"/>. An arrow that skips a
     /// column bends in the middle, so it needs twice its word in every gap it crosses. Laid out turned, a word stands
     /// beside its arrow once the drawing is turned back, so its room is its lines' height, not its length (CL60.2).
+    /// The room for a gap's tracks is what the arrows' rule asks for.
     /// </summary>
-    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned)
+    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned, IArrowRule rule)
     {
         var groupOf = spec.Nodes.ToDictionary(node => node.Id, node => node.Group);
         var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
@@ -219,7 +225,7 @@ public static class GraphLayout
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
                                                  || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
             return Math.Max(MinColumnGap, Math.Max(source + target + frameOut + frameIn
-                                                   + EdgeRouter.TracksRoom(neighbours),
+                                                   + rule.TracksRoom(neighbours),
                 EdgeRouter.GapFor(skipping, turned)));
         }
 

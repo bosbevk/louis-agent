@@ -7,10 +7,10 @@ namespace LouisAgent.Diagrams.Flow.Routing;
 /// <summary>
 /// Draws every arrow as a connector (FX85, Louis: "lines may not cross, have connectors on lines so they still bend
 /// but make direct lines"): straight pieces that turn at right angles, each bend rounded a little. Forward, an arrow
-/// leaves the box's right side, runs to the one track between the columns, up or down it and into the target's left
-/// side; every arrow between two columns bends there, so they join instead of crossing. Back, it leaves the right side
-/// low, drops to a lane under the drawing and climbs into the target's bottom. Inside a column, it drops straight from
-/// one box to the next. To its own box, it loops out of the right side.
+/// leaves the box's right side, runs to its track between the columns, up or down it and into the target's left
+/// side; which track that is, and where on the side it arrives, is what the <see cref="IArrowRule"/> it was handed
+/// says. Back, it leaves the right side low, drops to a lane under the drawing and climbs into the target's bottom.
+/// Inside a column, it drops straight from one box to the next. To its own box, it loops out of the right side.
 /// </summary>
 /// <remarks>
 /// Orthogonal routing, the drawing style of circuit and org charts. Chosen over curves because curves between a tall
@@ -86,13 +86,14 @@ internal static class EdgeRouter
 
     /// <summary>
     /// Routes the known arrows, their corners rounded by <paramref name="bend"/>; the height and width grow for the
-    /// lanes and loops that run outside the boxes.
+    /// lanes and loops that run outside the boxes. Where a forward arrow bends and arrives is the rule's to say.
     /// </summary>
     public static (List<PlacedEdge> Edges, double Height, double Width) Route(
         IReadOnlyList<GraphEdge> edges,
         IReadOnlyDictionary<string, PlacedNode> byId,
         double height,
         double width,
+        IArrowRule rule,
         bool turned = false,
         double bend = Bend)
     {
@@ -104,7 +105,7 @@ internal static class EdgeRouter
         var forward = edges.Except(self).Except(back).Except(down).ToList();
 
         var plans = new List<Plan>();
-        plans.AddRange(Forward(forward, byId, turned));
+        plans.AddRange(Forward(forward, byId, turned, rule));
         plans.AddRange(down.Select(edge => Down(edge, byId[edge.From], byId[edge.To])));
         if (back.Count > 0) plans.AddRange(Back(back, byId, height));
         int backLanes = back.Select(edge => edge.To).Distinct().Count();
@@ -123,26 +124,27 @@ internal static class EdgeRouter
         if (detours > 0) height = firstFree + Step * (detours - 1) + 8;
 
         // A word reaches along its piece half its length, or laid out turned its lines' height.
-        double Reach(PlacedEdge edge) => edge.Edge.Word is not { } word
-            ? 0
-            : turned
-                ? FlowText.WordStep * FlowText.WordLines(word).Count
-                : 4 * word.Length;
+        double Reach(PlacedEdge edge) => (edge.Edge.Word, turned) switch
+        {
+            (null, _) => 0,
+            ({ } word, true) => FlowText.WordStep * FlowText.WordLines(word).Count,
+            ({ } word, false) => 4 * word.Length
+        };
 
         double reach = placed.Count == 0 ? 0 : placed.Max(edge => Math.Max(edge.WordX + Reach(edge), edge.Right));
         return (placed, height, Math.Max(width, reach + 4));
     }
 
     /// <summary>
-    /// The forward arrows: every arrow between two columns bends at the same place, one track in the gap (Louis:
-    /// "conformity", "alignment is key"), leaves its box's middle and arrives at its target's middle, so a box has one
-    /// line out that branches at the track and the arrows into a box join there. A word sits on the piece by its
-    /// source, or by its target when the source has more than one word out, so two words never share a line. Between
-    /// neighbouring columns the track stands where <see cref="RoomsFor"/> puts it, the spare room shared either side;
-    /// an arrow that skips a column bends in the middle.
+    /// The forward arrows: each leaves its box's middle, so a box has one line out that branches where it bends, and
+    /// arrives where the rule says, at the middle of its target's side when the rule joins them (Louis: "conformity",
+    /// "alignment is key"). A word sits on the piece by its source, or by its target when the source has more than
+    /// one word out, so two words never share a line. Between neighbouring columns the first track stands where
+    /// <see cref="RoomsFor"/> puts it, the spare room shared either side; an arrow that skips a column bends in the
+    /// middle.
     /// </summary>
     private static IEnumerable<Plan> Forward(List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId, bool turned)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule)
     {
         var wordsOut = WordsOut(forward);
         foreach (var edge in forward)
@@ -150,8 +152,8 @@ internal static class EdgeRouter
             var from = byId[edge.From];
             var to = byId[edge.To];
             double x1 = from.X + from.W, y1 = from.Y + from.H / 2;
-            double x2 = to.X, y2 = to.Y + to.H / 2;
-            var (track, last) = Track(edge, x1, x2, forward, byId, turned);
+            double x2 = to.X, y2 = rule.EntryOf(edge, forward, byId);
+            var (track, last) = Track(edge, x1, x2, forward, byId, turned, rule);
             bool bySource = wordsOut.GetValueOrDefault(edge.From) <= 1;
             // A word by its target stands past the gap's last track, clear of the other sources' lines.
             yield return new Plan(edge, [(x1, y1), (track, y1), (track, y2), (x2, y2)],
@@ -161,10 +163,10 @@ internal static class EdgeRouter
 
     /// <summary>
     /// Where an arrow bends: between neighbouring columns, after the source's room plus half what the gap has to spare,
-    /// the same for every arrow of that gap; across a column between, in the middle.
+    /// then as many steps on as the rule's track for it; across a column between, in the middle.
     /// </summary>
     private static (double Track, double Last) Track(GraphEdge edge, double x1, double x2, List<GraphEdge> forward,
-        IReadOnlyDictionary<string, PlacedNode> byId, bool turned)
+        IReadOnlyDictionary<string, PlacedNode> byId, bool turned, IArrowRule rule)
     {
         bool Between(PlacedNode node) => node.X >= x1 && node.X < x2;
         if (byId.Values.Any(Between)) return ((x1 + x2) / 2, (x1 + x2) / 2);
@@ -175,34 +177,14 @@ internal static class EdgeRouter
         var (words, wordsIn) = RoomsFor(gap, forward, turned);
         var (frameOut, frameIn) = FrameRooms(gap, id => byId[id].Node.Group, turned);
         double source = words + frameOut, target = wordsIn + frameIn;
-        // Several sources feeding several boxes each bend on a track of their own, top to bottom (CL60.2), so a
-        // reader can follow who feeds whom; the room for those tracks comes off the gap first.
-        var sources = TrackOrder(gap, byId);
-        double tracks = TracksRoom(gap), room = x2 - x1 - tracks;
-        double offset = tracks == 0 ? 0 : Step * sources.IndexOf(edge.From);
+        // The rule says how many tracks the gap holds and which one is this arrow's; their room comes off the gap
+        // first.
+        double tracks = rule.TracksRoom(gap), room = x2 - x1 - tracks;
+        double offset = Step * rule.TrackOf(edge, gap, byId);
         // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle; half
         // a pixel's slack, since a gap sized to its rooms exactly can come out a hair short in floating point.
         double first = room + 0.5 < source + target ? x1 + room / 2 : x1 + source + (room - source - target) / 2;
         return (first + offset, first + tracks);
-    }
-
-    /// <summary>
-    /// The order of a gap's tracks, nearest the sources first: the bottom source first, and a source level with
-    /// another's target always before that other, so its line out ends before the other's line in starts and the two
-    /// never lie on one another (Louis, of the evals chart).
-    /// </summary>
-    private static List<string> TrackOrder(List<GraphEdge> gap, IReadOnlyDictionary<string, PlacedNode> byId)
-    {
-        double Middle(string id) => byId[id].Y + byId[id].H / 2;
-        var order = gap.Select(edge => edge.From).Distinct().OrderByDescending(Middle).ToList();
-
-        bool Before(string a, string b) => gap.Any(edge => edge.From == b && Math.Abs(Middle(edge.To) - Middle(a)) < 1);
-        // A few passes move each source ahead of any it must come before; a cycle of such rules keeps its order.
-        for (int pass = 0; pass < order.Count; pass++)
-            for (int at = 1; at < order.Count; at++)
-                if (Before(order[at], order[at - 1]) && !Before(order[at - 1], order[at]))
-                    (order[at - 1], order[at]) = (order[at], order[at - 1]);
-        return order;
     }
 
     /// <summary>
@@ -217,17 +199,6 @@ internal static class EdgeRouter
         bool leaves = arrows.Any(edge => groupOf(edge.From) is { } group && group != groupOf(edge.To));
         bool enters = arrows.Any(edge => groupOf(edge.To) is { } group && group != groupOf(edge.From));
         return (leaves ? Bands.Pad + 8 : 0, enters ? Bands.Pad + 8 + (turned ? Bands.LabelRoom : 0) : 0);
-    }
-
-    /// <summary>
-    /// The room a gap's arrows need for tracks of their own: none when one box feeds the rest or all feed one box,
-    /// where they join on one track (Louis: "conformity"); otherwise a step for each source after the first.
-    /// </summary>
-    public static double TracksRoom(IReadOnlyList<GraphEdge> between)
-    {
-        int sources = between.Select(edge => edge.From).Distinct().Count();
-        bool joined = sources <= 1 || between.Select(edge => edge.To).Distinct().Count() == 1;
-        return joined ? 0 : Step * (sources - 1);
     }
 
     /// <summary>
