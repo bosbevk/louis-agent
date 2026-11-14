@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Diagrams.Classes.Marks;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Tones;
@@ -43,19 +44,14 @@ public static class ClassFlow
         }).ToList();
     }
 
-    /// <summary>The words in a type's kind that make it a contract or state rather than a part that does the work.</summary>
-    private static readonly string[] Contracts = ["interface", "record", "enum"];
-
     /// <summary>
     /// A type's tone: the one it names, or its kind's, so a chart reads in colour before anyone tones it: an interface,
     /// a record or an enum is a contract or state (teal), anything else this project's own (green).
     /// </summary>
-    private static DiagramTone ToneOf(ClassType type)
+    internal static DiagramTone ToneOf(ClassType type)
     {
         if (type.Tone != DiagramTone.Plain) return type.Tone;
-        bool contract = type.Kind is { } kind &&
-                        Contracts.Any(word => kind.Contains(word, StringComparison.OrdinalIgnoreCase));
-        return contract ? DiagramTone.Teal : DiagramTone.Green;
+        return TypeMarks.Contract(TypeMarks.Of(type)) ? DiagramTone.Teal : DiagramTone.Green;
     }
 
     /// <summary>
@@ -69,7 +65,8 @@ public static class ClassFlow
             RelationKind.Implements => new GraphEdge(relation.From, relation.To, "implements", EdgeStyle.Dashed),
             RelationKind.Holds => new GraphEdge(relation.From, relation.To, relation.Word ?? "holds"),
             RelationKind.Uses => new GraphEdge(relation.From, relation.To, relation.Word ?? "uses", EdgeStyle.Dashed),
-            RelationKind.Creates => new GraphEdge(relation.From, relation.To, relation.Word ?? "creates", EdgeStyle.Dashed),
+            RelationKind.Creates =>
+                new GraphEdge(relation.From, relation.To, relation.Word ?? "creates", EdgeStyle.Dashed),
             _ => throw new NotSupportedException(relation.Kind.Wire())
         };
 }

@@ -99,6 +99,19 @@ public enum DiagramMessage
     [Description("only if")] SequenceOpt,
     [Description("one case or the other")] SequenceAlt,
 
+    // The words a class chart's key says of a badge's letter and of each kind of link (F134.11).
+    [Description("an interface")] ClassInterface,
+    [Description("a record")] ClassRecord,
+    [Description("an enum")] ClassEnum,
+    [Description("abstract")] ClassAbstract,
+    [Description("static")] ClassStatic,
+    [Description("a class")] ClassPlain,
+    [Description("holds")] LinkHolds,
+    [Description("is a")] LinkInherits,
+    [Description("implements")] LinkImplements,
+    [Description("creates")] LinkCreates,
+    [Description("uses")] LinkUses,
+
     // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
     [Description("reads")] ComponentReads,
     [Description("handed down")] ComponentHandedDown,

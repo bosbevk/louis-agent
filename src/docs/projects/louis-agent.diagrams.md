@@ -263,6 +263,16 @@ type is shown once.
 
 So the flow's layout, router, word chips and clearance check all serve a class chart too.
 
+`TypeMarks` (`Marks/`) says what a type is from the words of its kind: an interface, a record, an enum, abstract,
+static, or a plain class. A kind is words a person wrote, such as "static, a Decorator", so the first mark the
+words name is taken, a contract first: an abstract record is a record. The tone a type takes when it names none
+comes from the same answer.
+
+`ClassKeyLayout` (`Keys/`) places a class chart's key: an item for each tone a type wears, each letter of a mark
+the chart has, and each kind of relation it has, the structure first (holds, is a, implements, then creates and
+uses). The items stand side by side across a width and go on to a new row when one is full. No class chart is
+drawn with a key yet.
+
 #### Cards: a project's overview
 
 Cards (`Cards/`) are the overview a project doc opens with: the project, and under it the parts it is made of. The
@@ -363,7 +373,7 @@ src/web/louis-agent.diagrams/
 ├── Flow/           # GraphLayout, FlowRules, Ranks, Bands, Turn, FlowText; Spec/, Placed/, Routing/ (EdgeRouter, Detours, Plan, IArrowRule, JoinedArrows, ApartArrows), Rows/ (IRowRule, BandShape, RowGrid, CentredRows, LevelRows), Shapes/ (NodeShape, NodeShapes, ShapeSide)
 ├── Cards/          # CardsSpec, CardRow, Card, CardLook, OverviewLayout; Links/ (CardLink, CardLinkKind); Rails/ (Rail, CardRails, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes); Placed/
 ├── Sequence/       # SequenceLayout, SequenceRows, SequenceMeasures; Spec/ (Steps/), Placed/, Keys/ (SequenceKeyLayout, SequenceKeyItem, SequenceKeyKind)
-├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind)
+├── Classes/        # ClassFlow; Spec/ (ClassesSpec, ClassType, ClassRelation, RelationKind), Marks/ (TypeMark, TypeMarks), Keys/ (ClassKeyLayout, ClassKeyItem, ClassKeyKind)
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
