@@ -1,0 +1,72 @@
+{
+  "kind": "flow",
+  "type": "deployment",
+  "title": "louis-agent.evals.runner: where it runs",
+  "caption": "The runner is a console program: the API starts it inside its own container for a run from the portal, or you start it by hand from a terminal.",
+  "flow": {
+    "direction": "right",
+    "nodes": [
+      {
+        "id": "api",
+        "label": "louis-agent.api\nan eval run from the portal",
+        "icon": "server",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "runner",
+        "label": "A demo's eval runner\nEvalRunnerHost.RunAsync",
+        "icon": "terminal",
+        "tone": "green",
+        "group": "app"
+      },
+      {
+        "id": "you",
+        "label": "You, in a terminal\ndotnet …runner.dll run {eval}",
+        "icon": "user",
+        "tone": "blue"
+      },
+      {
+        "id": "models",
+        "label": "A model's server\nAnthropic over HTTPS, or Ollama\non 11434",
+        "icon": "cloud",
+        "tone": "violet"
+      },
+      {
+        "id": "otel",
+        "label": "The telemetry collector\nOTLP on host.docker.internal:4317",
+        "icon": "chart",
+        "tone": "amber"
+      }
+    ],
+    "edges": [
+      {
+        "from": "api",
+        "to": "runner",
+        "word": "a child process, its lines on stdout"
+      },
+      {
+        "from": "you",
+        "to": "runner",
+        "word": "by hand",
+        "style": "dashed"
+      },
+      {
+        "from": "runner",
+        "to": "models",
+        "word": "a run's requests"
+      },
+      {
+        "from": "runner",
+        "to": "otel",
+        "word": "logs and traces"
+      }
+    ],
+    "groups": [
+      {
+        "id": "app",
+        "label": "Docker: the API's container, or your PC"
+      }
+    ]
+  }
+}

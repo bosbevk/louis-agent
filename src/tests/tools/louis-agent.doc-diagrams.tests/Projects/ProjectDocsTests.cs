@@ -20,7 +20,6 @@ public class ProjectDocsTests
     private static readonly Dictionary<string, DiagramType[]> StillMissing = new()
     {
         ["demos/louis-agent/docs/projects/louis-agent.code-review.md"] = [DiagramType.CompositeStructure],
-        ["demos/louis-agent/docs/projects/louis-agent.orchestrator.md"] = [DiagramType.Deployment],
         ["demos/puls/docs/projects/louis-agent.host-packs.md"] = [DiagramType.Activity],
         ["demos/puls/docs/projects/louis-agent.puls.md"] = [DiagramType.CompositeStructure],
         ["packs/docs/projects/general-packs.md"] = [DiagramType.Activity],
@@ -28,11 +27,6 @@ public class ProjectDocsTests
         ["packs/docs/projects/louis-agent.pack.recipes.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.shop-prices.md"] = [DiagramType.Activity],
         ["packs/docs/projects/louis-agent.pack.where-to-buy.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.accounts.md"] = [DiagramType.Deployment],
-        ["src/docs/projects/louis-agent.acp.md"] = [DiagramType.Deployment],
-        ["src/docs/projects/louis-agent.api.evals.md"] = [DiagramType.Deployment],
-        ["src/docs/projects/louis-agent.api.md"] = [DiagramType.Deployment],
-        ["src/docs/projects/louis-agent.cli.md"] = [DiagramType.Deployment],
         ["src/docs/projects/louis-agent.core.anthropic.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.core.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.core.ollama.md"] = [DiagramType.Activity],
@@ -40,8 +34,6 @@ public class ProjectDocsTests
         ["src/docs/projects/louis-agent.core.telemetry.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.core.web.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.evals.md"] = [DiagramType.Activity],
-        ["src/docs/projects/louis-agent.evals.runner.md"] = [DiagramType.Deployment],
-        ["src/docs/projects/louis-agent.mcp.md"] = [DiagramType.Deployment],
         ["src/docs/projects/louis-agent.site.md"] = [DiagramType.CompositeStructure],
         ["src/docs/projects/louis-agent.usage-probe.md"] = [DiagramType.Activity],
         ["src/docs/projects/louis-agent.web.accounts.md"] = [DiagramType.CompositeStructure],

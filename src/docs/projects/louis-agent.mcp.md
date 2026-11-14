@@ -54,6 +54,10 @@ The architecture is under *How it works*; this is a client using it.
 
 ## Configuration
 
+Where it runs: in its program, in the `mcp-server` container, over stdio or on the PC's own address.
+
+![Where the MCP server runs: a client reaches its container over stdio or on 127.0.0.1:5090, and it reaches the collector and its folders](diagrams/louis-agent.mcp-deployment.svg)
+
 Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`, `AGENT_AUTH`. Client entry for Rider:
 `config/rider/rider-mcp-servers.example.json`.
 

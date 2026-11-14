@@ -56,6 +56,10 @@ packs ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
 
 ## Configuration
 
+Where it runs: in its program, in the `local-agent` container, with a terminal attached.
+
+![Where the CLI runs: you type in a terminal, the program in its container answers, reaching a model, the collector and its folders](diagrams/louis-agent.cli-deployment.svg)
+
 The core settings ([Setup](../SETUP.md)); nothing CLI-specific.
 
 ## Extending it

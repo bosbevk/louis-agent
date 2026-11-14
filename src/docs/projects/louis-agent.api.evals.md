@@ -60,6 +60,10 @@ demos/puls/tests/louis-agent.api.evals.tests/   # the studio's tests, beside the
 
 ## Configuration
 
+Where it runs: inside a demo's API program, with the eval runner a child process in the same container.
+
+![Where the eval studio runs: in the API's container, starting the runner as a child process and keeping runs in MongoDB](diagrams/louis-agent.api.evals-deployment.svg)
+
 `EVALS_MONGO_URL`, `EVALS_MONGO_DATABASE`, `EVAL_RUNNER`, `BENCHMARK_API_URL`; the key is the API's `ADMIN_API_KEY`.
 
 ## Tests

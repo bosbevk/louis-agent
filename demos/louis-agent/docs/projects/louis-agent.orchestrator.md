@@ -62,6 +62,10 @@ The flow is under *How it works*; these are the pieces.
 
 ## Configuration
 
+Where it runs: as its own program beside the service it watches, in its own container or on the PC.
+
+![Where the orchestrator runs: beside the watched service, polling its error log, asking louis-agent's API for a fix and writing its records](diagrams/louis-agent.orchestrator-deployment.svg)
+
 `ORCHESTRATOR_SERVICE_ROOT` (required), `ORCHESTRATOR_SERVICE`, `ORCHESTRATOR_SERVICE_PROJECT`, `LOUIS_AGENT_URL`,
 `LOUIS_AGENT_API_KEY` (falls back to `AGENT_API_KEY`), `ORCHESTRATOR_STATE_DIRECTORY`, `ORCHESTRATOR_COMMS_LOG`,
 `ORCHESTRATOR_POLL_SECONDS`; the model from the usual `LLM_*` settings. Its demo compose file, which set them all, was

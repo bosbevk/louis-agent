@@ -114,6 +114,10 @@ model from the code. If it writes the model snapshot under `LouisAgent/Accounts/
 
 ## Configuration
 
+Where it runs: inside a demo's API program, with its people and tenants in SQL Server.
+
+![Where the accounts run: in the API's container, keeping people and tenants in the SQL Server container, and asking an outside provider when its keys are set](diagrams/louis-agent.accounts-deployment.svg)
+
 | Setting | File | Means |
 |---|---|---|
 | `ACCOUNTS_SQL_URL` | `.env.secrets` | The database; unset, no accounts |

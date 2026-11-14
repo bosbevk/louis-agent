@@ -68,6 +68,10 @@ The flow is under *How it works*; these are the pieces.
 
 ## Configuration
 
+Where it runs: Rider starts a fresh `acp-server` container for each chat.
+
+![Where the ACP server runs: Rider starts a container a chat and speaks JSON-RPC to it, and the server asks Rider's MCP server for its tools](diagrams/louis-agent.acp-deployment.svg)
+
 Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider/rider-acp.example.json`.
 
 **stdout carries the protocol:** anything written to `Console.Out` corrupts it — all logging goes to stderr.

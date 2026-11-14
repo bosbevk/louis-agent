@@ -159,6 +159,10 @@ The diagram under *How it works* shows the routes; this is the main one, opening
 
 ## Configuration
 
+Where it runs: inside the program that adds it, one container a demo, reached on the PC's own address.
+
+![Where the API runs: in the demo's program in its container, reached by a browser on 127.0.0.1, reaching a model, the collector and its mounted folders](diagrams/louis-agent.api-deployment.svg)
+
 Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on every `/v1` route but the prices, the rates and the feeds; without it the API
 refuses to start unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in
 Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),

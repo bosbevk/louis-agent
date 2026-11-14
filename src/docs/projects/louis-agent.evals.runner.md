@@ -76,6 +76,10 @@ The one package of its own is **YamlDotNet** (MIT, 18.1.0), for promptfoo's YAML
 
 ## Configuration
 
+Where it runs: started by the API inside its container, or by hand from a terminal.
+
+![Where the eval runner runs: the API starts it as a child process, or you start it from a terminal, and it reaches a model and the collector](diagrams/louis-agent.evals.runner-deployment.svg)
+
 | Setting | What it does |
 |---|---|
 | `EVALS` | The identities whose evals the catalogue lists, by commas, case ignored (`puls` today); an unknown one is refused; unset: all |
