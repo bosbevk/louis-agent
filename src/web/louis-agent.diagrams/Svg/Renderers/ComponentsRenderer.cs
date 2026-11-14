@@ -131,14 +131,16 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     /// </summary>
     private static void DrawLine(SvgWriter writer, PlacedLine line)
     {
-        // A call leaves the box, so its port is where it starts. Every other line arrives, so its port is its end.
+        // A state's line runs from its pill to a pin, and has no port. A neighbour's line has one on the box: a
+        // call leaves the box, so its port is where it starts, and every other line arrives, so its port is its end.
+        bool ofState = line.Kind is LineKind.Down or LineKind.Up;
         bool leaves = line.Kind == LineKind.Calls, reads = line.Kind == LineKind.Reads;
         var port = leaves ? line.Points[0] : line.Points[^1];
-        string data = LinePath.Of(leaves ? line.Points : Shortened(line.Points));
+        string data = LinePath.Of(leaves || ofState ? line.Points : Shortened(line.Points));
         string? tone = line.Tone == DiagramTone.Plain ? null : line.Tone.Wire();
         writer.Path(data, $"cmp-line cmp-edge{Tone(line.Tone)}{(reads ? " reads" : "")}", true, tone: tone);
         if (!reads) writer.Path(data, "cmp-march", false);
-        writer.Circle(port.X, port.Y, 4, $"cmp-port cmp-edge{Tone(line.Tone)}");
+        if (!ofState) writer.Circle(port.X, port.Y, 4, $"cmp-port cmp-edge{Tone(line.Tone)}");
 
         // What a neighbour gives is written in the neighbour. Any other word stands over its line.
         string? word = reads ? DiagramText.Format(DiagramMessage.ComponentReads) : line.Word;

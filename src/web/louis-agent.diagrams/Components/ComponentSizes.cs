@@ -13,8 +13,11 @@ namespace LouisAgent.Diagrams.Components;
 /// </remarks>
 internal static class ComponentSizes
 {
-    /// <summary>The room inside a box's sides, and under the last box it holds.</summary>
-    public const double Pad = 20;
+    /// <summary>
+    /// The room inside a box's sides, and under the last box it holds. At the left it holds the box's marker and the
+    /// two lanes a state's lines run in.
+    /// </summary>
+    public const double Pad = 24;
 
     /// <summary>From a box's top edge to under its name.</summary>
     public const double Header = 44;
@@ -56,6 +59,9 @@ internal static class ComponentSizes
 
     /// <summary>How wide a chip is.</summary>
     public static double ChipWidth(string kind) => kind.Length * ChipChar + 16;
+
+    /// <summary>How wide a few words in a note's face are.</summary>
+    public static double WordsWidth(string words) => words.Length * NoteChar;
 
     /// <summary>How wide a name is.</summary>
     public static double NameWidth(string name) => name.Length * NameChar;

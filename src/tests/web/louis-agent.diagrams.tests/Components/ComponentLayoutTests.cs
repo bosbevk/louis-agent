@@ -231,8 +231,9 @@ public class ComponentLayoutTests
             Assert.That(gives.Select(line => line.Points[0].X), Is.All.EqualTo(page.Right));
             Assert.That(gives.Select(line => line.Points[^1].X), Is.All.EqualTo(start.X));
             Assert.That(placed.Lines.Count(line => line.Kind == LineKind.Reads), Is.EqualTo(1));
-            Assert.That(placed.Lines.Select(line => line.Points[0].Y - line.Points[^1].Y), Is.All.EqualTo(0),
-                "every line is level");
+            Assert.That(placed.Lines.Where(line => line.Kind is not (LineKind.Down or LineKind.Up))
+                    .Select(line => line.Points[0].Y - line.Points[^1].Y), Is.All.EqualTo(0),
+                "every line of a neighbour is level");
             Assert.That((calls.Points[0].X, calls.Points[^1].X), Is.EqualTo((deck.Right, script.X)), "out to it");
             Assert.That((back.Points[0].X, back.Points[^1].X), Is.EqualTo((script.X, deck.Right)), "and back");
             Assert.That((calls.Word, back.Word), Is.EqualTo(("calls", "Viewed")));

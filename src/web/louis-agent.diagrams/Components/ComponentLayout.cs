@@ -1,4 +1,6 @@
 using LouisAgent.Diagrams.Components.Placed;
+using LouisAgent.Diagrams.Components.Placed.Lines;
+using LouisAgent.Diagrams.Components.Routing;
 using LouisAgent.Diagrams.Components.Spec;
 
 namespace LouisAgent.Diagrams.Components;
@@ -35,8 +37,12 @@ public static class ComponentLayout
         var root = boxes[0];
 
         var neighbours = NeighbourLayout.Place(around, boxes, before, root.Right + ColumnGap);
-        var lines = neighbours.SelectMany(neighbour => NeighbourLayout.Lines(neighbour, boxes)).ToList();
         var pins = boxes.SelectMany(Pins).ToList();
+        List<PlacedLine> lines =
+        [
+            .. neighbours.SelectMany(neighbour => NeighbourLayout.Lines(neighbour, boxes)),
+            .. StateRoutes.Of(boxes, pins)
+        ];
         var key = KeyLayout.Of(components, root, neighbours);
 
         double width = neighbours.Select(neighbour => neighbour.Right)
