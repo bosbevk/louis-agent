@@ -121,10 +121,17 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The design is in
     [m-classes.html](F134-mockups/m-classes.html).
-  - **F134.12 Flows and component diagrams in the shared look**
-    ([plan](F134.12-flows-and-components-in-the-shared-look.md)): Louis, 2026-11-14, "make the theme of the
-    flow and component diagrams resemble the others, it is now a bit out of date". Done when the 91 flows and
-    the component diagram are drawn that way.
+  - **F134.12 Flows and component diagrams in the shared look**, built 2026-11-14: Louis, "make the theme of
+    the flow and component diagrams resemble the others, it is now a bit out of date". All 93 flows and the
+    component diagram are drawn that way, a decision is a box with pointed ends, and on a light page the
+    panels and the glass have body. On the way a long line was made to run straight. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The design is in
+    [m-look.html](F134-mockups/m-look.html). Its picks are in its plan as of the commit before this one.
+  - **F134.13 A composite structure diagram**, not planned yet: Louis, 2026-11-14, "then we need 134.13
+    composite diagram", and of my first reading of it, "no do research", with UML's line for it: "the
+    internal parts, ports, and connectors of a structured class". It is a new kind. Research and designs come
+    first, and he picks before a plan is written.
   - **Left for the project refactor Louis asked for after F134.11:** every docs kind is redone now, so what
     the old looks left behind can go in one piece of work with a plan of its own. The old rules for a card's
     frame, a box, a chip and a group are still in the pictures' shared style (`SvgStyle`), and the title bar's
@@ -132,7 +139,9 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     every picture. The older layout rules, arrows that join and boxes centred, are drawn by nothing. The kinds'
     styles stand in two folders, the three keys place their items by the same steps in three classes, and a
     flow and a class chart each have the same two rules for a word's pill. And the class that gives a box its
-    column (`Ranks`) also leads the long lines, at 185 of its 200 lines since F134.12.
+    column (`Ranks`) also leads the long lines, at 185 of its 200 lines since F134.12. A cards picture, a
+    sequence and a class chart each draw the light themselves, by the steps the shared part now has, and each
+    kind's key has a rule of its own for the same faint line.
   - **In that refactor the kinds of picture must match UML's.** Louis, 2026-11-14: "read here when you
     refactor, our graph types must match", with
     [GeeksforGeeks' introduction to UML](https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-introduction/).

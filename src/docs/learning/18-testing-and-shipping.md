@@ -615,6 +615,80 @@ so no other kind changed. All 59 looked at on 14 sheets dark and 7 light. With t
 small general part, a line's ends, added to the shared writer where one kind needed it. Skill 18, testing and
 shipping: real data drawn before the commit, and an old drawing deleted in the step after its last user left.
 
+## A look in one place, and a rule that had to be looked at (F134.12, 2026-11-14)
+
+**What it is.** The flow and the component diagram were the first two kinds redone, and the three kinds after
+them settled on a look these two did not have. You said "make the theme of the flow and component diagrams
+resemble the others, it is now a bit out of date". Now every kind opens the same way: one small title over a
+soft light. A box is a plain panel with a little body. A decision is a box with pointed ends, your pick of three
+after "these look a bit weird". The keys match the other kinds' keys. On a light page nothing is plain white any
+more: "composite diagrams white is too white", then "all whites overall can be a tad darker".
+
+**The idea: a look that lives in one place.** F134.8 moved what a flow and a component diagram share into one
+shared look and one set of shared parts. That paid here. The title, the light and the panel changed in two
+small files, and both kinds changed with them. Neither kind's layout was touched: a look is class names and a
+few shapes, and a layout never reads them.
+
+- *A panel has body, and no depth.* A component diagram nests boxes four or five deep. The old look gave each
+  depth its own colour, by a rule a depth. Now a panel is filled with a little of the page's ink, the same
+  wherever it stands. A panel on a panel is a step deeper by itself, because the two fills add up. Six rules
+  and six variables went, and a box five deep still reads.
+- *One rule, where two kinds show the same thing.* Step 4 wrote the words of a flow's key in the flow's own
+  style. Step 5 needed the same words in a component diagram's key. A second copy would have let them drift,
+  so the rule moved to the shared look, and the 93 flows changed in one class's name.
+- *A style with no theme in it is a constant.* The flow's and the component's styles each took a theme only to
+  write a glow a tone. With the glow gone they are plain text, and say so.
+
+**A test that makes a variable earn its place.** The shared look sets a handful of colours for a light page and
+again for a dark one. A test now holds three things: every variable a rule reads is set, a dark page sets the
+same ones a light page does, and none is set that nothing reads. The third is what removed the old look's
+leftovers. Each step that deleted a rule failed that test until the variable went too.
+
+**The routing fix, which you asked for on the way.** Of one picture you asked "can we fix this here since we are
+here", a dashed line that stepped right, down, right, down, and "why did it take a longer route? and why is
+that line not straight", a line that swung out past its target and back. Both were one method, the one that
+leads a long line past the boxes in its way.
+
+- It looked at each long line once, in the order written. A line was judged taken by a neighbour that had not
+  yet moved to a line of its own. Now the long lines are looked at again while one still moves.
+- It moved a line only when one line was clear the whole way. Now a line may run on the line it leaves on as
+  far as it must and on the line it arrives on from there. Failing that, it runs on a third line past the boxes:
+  between two of a column, or 18 beside one.
+
+The ways are listed best first and the first clear one is taken. A shortest path worked out column by column
+would find ways with more steps, and no picture in the docs needs one, so it was not built.
+
+**What looking found that the tests could not.** The two new tests passed, and the rule that keeps words and
+lines clear passed on all 263 pictures. Then every picture the fix changed was looked at, before beside after.
+One was worse. Two lines from one box had shared a line and forked. Now one of them had taken a line beside a
+box that stood only 8 from the next box, and ran 5 beside its sibling. The rule was tightened: a line beside a
+box keeps 18 from every box of that column. That picture went back to what it was, and the other 18 stayed
+better. No test would have said "worse" there. Both pictures were valid.
+
+**What was measured.**
+
+- 93 flows and 1 component diagram drawn in the new look, each looked at on a sheet after steps 3 and 4, dark
+  and light. The plan counted 91 flows: the other two were its own pictures.
+- 18 pictures changed by the routing fix. In one, a line that crossed four others now crosses two.
+- A style-only change proved by text: with the style taken out, each of the other 169 pictures was the same
+  before and after, at every step.
+- No site page draws a decision, and the site's flows wear the site's own look, so nothing changed on the site.
+  The web's 933 tests and the site's 632 pass.
+
+**What didn't work, or cost time.**
+
+- My first test for the routing fault used a small made-up picture, and it passed before any fix. It proved
+  nothing. The test that failed was built from the real picture's own boxes and arrows.
+- A command over the length limit ran nothing, again. A script goes in a file.
+- I measured a line's distance from a box on a scaled-down screenshot and got it wrong. The numbers are in the
+  picture's file. Read them there.
+- For step 6 I looked at three of six sheets, not all six. The change was one rule, the same in every picture,
+  and the shapes were proved unchanged. That is said in the commit, so nobody takes it for a full look.
+
+**Where it sits.** Skill 20, extensibility: what two kinds share lives in one place, so one change reaches
+both and neither can drift. Skill 18, testing and shipping: a variable that must be read to be set, a style
+change proved by taking the style out, and a rule change judged by looking at every picture it touched.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into
