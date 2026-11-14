@@ -1,0 +1,27 @@
+{
+  "kind": "flow",
+  "title": "CL65.2 the picture builder: the architecture",
+  "caption": "The steps every kind shares are written once: a drawing keeps its layout, its body and its key.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "renderers", "label": "DiagramRenderers\none renderer a kind, as today", "icon": "code", "tone": "green" },
+      { "id": "six", "label": "Six drawings (step 3)\nflow, class chart, sequence,\ncards, composite, components", "icon": "code", "tone": "green" },
+      { "id": "ticket", "label": "TicketRenderer\nits own look, not built this way", "icon": "code", "tone": "green" },
+      { "id": "layouts", "label": "Each kind's layout\nas today", "icon": "chart", "tone": "green" },
+      { "id": "builder", "label": "PictureBuilder (step 2)\ntitle, type, light, body, key, caption", "icon": "box", "tone": "green" },
+      { "id": "rows", "label": "KeyRows (step 4)\na key's items, side by side", "icon": "box", "tone": "green" },
+      { "id": "writer", "label": "SvgWriter\nas today", "icon": "code", "tone": "green" },
+      { "id": "svg", "label": "The SVG\nthe same bytes as before", "icon": "database", "tone": "amber", "shape": "data" }
+    ],
+    "edges": [
+      { "from": "renderers", "to": "six" },
+      { "from": "renderers", "to": "ticket" },
+      { "from": "six", "to": "layouts", "word": "place" },
+      { "from": "six", "to": "builder", "word": "direct" },
+      { "from": "six", "to": "rows", "word": "their keys" },
+      { "from": "builder", "to": "writer" },
+      { "from": "writer", "to": "svg", "word": "writes" }
+    ]
+  }
+}

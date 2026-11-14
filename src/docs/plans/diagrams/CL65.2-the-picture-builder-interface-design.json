@@ -1,0 +1,29 @@
+{
+  "kind": "classes",
+  "title": "CL65.2 the picture builder: the interface design",
+  "caption": "One builder and one placer for a key's rows: a drawing says what is its own and hands the rest over.",
+  "classes": {
+    "types": [
+      { "id": "builder", "name": "PictureBuilder", "kind": "class, step 2",
+        "members": [ "Titled(title, measures)", "Type(type)  Paint(id, run, stops)", "Body(cls, drawn, w, h)  Draw(draw, w, h)", "Key(layout)  Caption(words)  Style(rules)", "Build() string" ] },
+      { "id": "measures", "name": "PictureMeasures", "kind": "record, step 2", "members": [ "Head, KeyGap", "LightDrop, LightDown" ] },
+      { "id": "writer", "name": "SvgWriter", "kind": "class, as today" },
+      { "id": "rows", "name": "KeyRows", "kind": "static, step 4", "members": [ "Place(items, measure, at, width)" ] },
+      { "id": "flow", "name": "FlowDrawing", "kind": "static, step 3", "members": [ "Of(source) string" ] },
+      { "id": "others", "name": "ClassesDrawing, SequenceDrawing,\nOverviewDrawing, CompositeDrawing,\nComponentsRenderer", "kind": "five more directors, step 3" },
+      { "id": "flowkey", "name": "FlowKeyLayout", "kind": "static, step 4", "members": [ "Of(nodes, width)" ] },
+      { "id": "irenderer", "name": "IDiagramRenderer", "kind": "interface, as today" },
+      { "id": "frenderer", "name": "FlowRenderer", "kind": "class, moves in step 5" }
+    ],
+    "relations": [
+      { "from": "builder", "to": "measures", "kind": "holds" },
+      { "from": "builder", "to": "writer", "kind": "holds" },
+      { "from": "flow", "to": "builder", "kind": "uses", "word": "directs" },
+      { "from": "others", "to": "builder", "kind": "uses", "word": "direct" },
+      { "from": "flow", "to": "flowkey", "kind": "uses" },
+      { "from": "flowkey", "to": "rows", "kind": "uses", "word": "placed by" },
+      { "from": "frenderer", "to": "irenderer", "kind": "implements" },
+      { "from": "frenderer", "to": "flow", "kind": "uses" }
+    ]
+  }
+}
