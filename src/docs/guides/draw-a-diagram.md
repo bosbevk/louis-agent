@@ -460,8 +460,8 @@ The picture draws its own key, "how to read it", with a row for each of these it
 | `calls`, `back` | The word on the line from the box out to it, and on the line from it back. |
 
 **The title is in the picture.** A component diagram writes its `title` inside itself as one small line, and
-its `subtitle` after it on the same line, after a colon. So the docs' frame gives it no title bar and no legend,
-only the note bar from `caption`.
+its `subtitle` after it on the same line, after a colon. The docs' frame adds only the note bar from `caption`,
+as it does for every kind.
 
 **What the tool places.** Everything. A box is as wide as its words, its pins and the boxes it holds need. A
 neighbour stands level with the box it talks to. A line from a pill goes straight where it can, and otherwise

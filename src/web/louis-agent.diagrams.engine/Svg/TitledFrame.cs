@@ -72,7 +72,7 @@ public static class TitledFrame
         root.SetAttributeValue("height", outer);
         ground.SetAttributeValue("height", outer);
         var style = root.Elements().First(element => element.Name.LocalName == "style");
-        style.Value += SvgStyle.Frame(SvgTheme.Site);
+        style.Value += SvgStyle.Frame;
         return SvgWriter.Serialize(root);
     }
 

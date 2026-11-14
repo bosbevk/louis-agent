@@ -4,8 +4,8 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Engine.Tones;
 
 /// <summary>
-/// What a tone means, in words (CL60.2): the role a box of that colour plays in every picture. The docs' legend
-/// says it, and so does a component diagram's own key.
+/// What a tone means, in words (CL60.2): the role a box of that colour plays in every picture. Each kind's key
+/// says it, beside a sample in that tone.
 /// </summary>
 internal static class ToneMeanings
 {

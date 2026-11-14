@@ -49,8 +49,8 @@ public static class DiagramRenderers
     public static string RenderForPage(DiagramSource source) => PageSvg.Of(Render(source));
 
     /// <summary>
-    /// The diagram as the docs show it: drawn without its caption, then framed with its title bar on top and the
-    /// caption as a note bar under it (<see cref="TitledFrame"/>).
+    /// The diagram as the docs show it: drawn without its caption, then framed with the caption as a note bar
+    /// under it (<see cref="TitledFrame"/>).
     /// </summary>
     public static string RenderTitled(DiagramSource source, IGeometry? geometry = null)
     {

@@ -133,7 +133,9 @@ same bytes on every machine.
 
 **The picture carries both looks** (`Svg/Theme/`). The site's palette and its light twin are CSS variables in the
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
-too.
+too. That style (`SvgStyle`) holds only what every picture needs whatever look it wears: the ground, an
+arrowhead in each tone and a caption. A rule test holds that each of its rules, and each of the docs' frame's, is
+for a class some drawing writes (`DiagramsProjectTests`).
 
 **The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A component
 diagram and a flow are drawn in the new look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines

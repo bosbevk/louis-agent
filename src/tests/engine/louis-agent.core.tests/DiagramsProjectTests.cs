@@ -97,9 +97,44 @@ public partial class DiagramsProjectTests
     [Test]
     public void EveryFileOfTheEngine_IsInItsNamespace()
     {
-        var astray = ProjectSources.Of(Engine).Where(source => !source.Text.Contains("namespace LouisAgent.Diagrams.Engine"))
+        var astray = ProjectSources.Of(Engine)
+            .Where(source => !source.Text.Contains("namespace LouisAgent.Diagrams.Engine"))
             .Select(source => source.Path).ToList();
 
         Assert.That(astray, Is.Empty, string.Join('\n', astray));
+    }
+
+    /// <summary>
+    /// A class a rule of a style is for. It finds <c>ground</c> in ".ground { fill" and <c>arrow</c> in
+    /// ".arrow.tone-", and nothing in ".Select(" or in "opacity: .78".
+    /// </summary>
+    [GeneratedRegex(@"\.([a-z][a-z-]*[a-z])[ .,{]", RegexOptions.NonBacktracking)]
+    private static partial Regex StyledClass();
+
+    /// <summary>
+    /// A text written in code, which is where a drawing names a shape's classes. It finds <c>pic-line reads</c>
+    /// in <c>"pic-line reads"</c>, and nothing outside quotes.
+    /// </summary>
+    [GeneratedRegex("\"([^\"]*)\"", RegexOptions.NonBacktracking)]
+    private static partial Regex Written();
+
+    /// <summary>
+    /// Every rule of the style every picture carries, and of the docs' frame's, is for a class some drawing writes
+    /// (CL65.4). Every picture's file holds that style, so a rule for a look no kind is drawn in any more is in
+    /// all of them. Each kind was redone in turn, and the rules of the look before stayed behind.
+    /// </summary>
+    [Test]
+    public void EveryRuleOfTheStyleEveryPictureCarries_IsForAClassADrawingWrites()
+    {
+        var sources = ProjectSources.Of(Engine).ToList();
+        string style = sources.Single(source => source.Path.EndsWith("/Svg/Theme/SvgStyle.cs")).Text;
+        var written = sources.Where(source => !source.Path.Contains("/Svg/Theme/"))
+            .SelectMany(source => Written().Matches(source.Text).SelectMany(text => text.Groups[1].Value.Split(' ')))
+            .ToHashSet(StringComparer.Ordinal);
+
+        var unused = StyledClass().Matches(style).Select(rule => rule.Groups[1].Value).Distinct()
+            .Where(name => !written.Contains(name)).Order(StringComparer.Ordinal);
+
+        Assert.That(unused, Is.Empty, "a rule for a class no drawing writes: take it out of the style");
     }
 }

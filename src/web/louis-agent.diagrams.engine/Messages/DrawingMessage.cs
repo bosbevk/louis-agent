@@ -78,7 +78,7 @@ public enum DrawingMessage
     [Description("the one thing it holds")] ComponentHolds,
     [Description("A box inside a box is held by it.")] ComponentHeldBy,
 
-    // What each tone means in the docs' legend (CL60.2): the role a box of that colour plays in every chart.
+    // What each tone means in a picture's key (CL60.2): the role a box of that colour plays in every chart.
     [Description("starts it")] LegendBlue,
     [Description("this project")] LegendGreen,
     [Description("the framework")] LegendViolet,
