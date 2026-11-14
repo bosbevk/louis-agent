@@ -115,14 +115,19 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The designs are in
     [m-sequence.html](F134-mockups/m-sequence.html).
-  - **F134.11 The class chart, redone** ([plan](F134.11-the-class-chart.md)): Louis, 2026-11-14, "next will
-    be F134.11 which will be the redesign of the interface diagram". His approved design: a type a glass card
-    with a badge for its kind, a link's kind in its line. Done when the 58 class charts are drawn that way.
-  - **Left for the next kind that is redone:** the old rules for a card's frame, box, chip and words are still
-    in the pictures' shared style (`SvgStyle`). Every picture's file carries that style, so taking them out
-    rewrites every picture. F134.10 did not open that style: the old sequence wore a flow's own rules, the box,
-    the word's chip and the group's panel, which a class chart still wears. They go when the shared style is
-    next opened, for a class chart or a ticket.
+  - **F134.11 The class chart, redone**, built 2026-11-14: Louis, "next will be F134.11 which will be the
+    redesign of the interface diagram". His approved design: a type a glass card with a badge for its kind, a
+    link's kind in its line. All 58 class charts are drawn that way. How it works is in
+    [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
+    [the write-up](../learning/18-testing-and-shipping.md). The design is in
+    [m-classes.html](F134-mockups/m-classes.html).
+  - **Left for the project refactor Louis asked for after F134.11:** every docs kind is redone now, so what
+    the old looks left behind can go in one piece of work with a plan of its own. The old rules for a card's
+    frame, a box, a chip and a group are still in the pictures' shared style (`SvgStyle`), and the title bar's
+    and the legend's in the frame's. Every picture's file carries those styles, so taking them out rewrites
+    every picture. The older layout rules, arrows that join and boxes centred, are drawn by nothing. The kinds'
+    styles stand in two folders, the three keys place their items by the same steps in three classes, and a
+    flow and a class chart each have the same two rules for a word's pill.
 
 ## Verification
 

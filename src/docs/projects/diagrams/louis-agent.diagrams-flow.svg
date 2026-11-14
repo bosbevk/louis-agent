@@ -288,7 +288,7 @@ svg {
         <path d="M11 12h1v4h1" />
       </g>
       <text class="flow-name" x="1671" y="31" text-anchor="start">TitledFrame</text>
-      <text class="flow-name" x="1671" y="47" text-anchor="start">title, legend, note</text>
+      <text class="flow-name" x="1671" y="47" text-anchor="start">the note bar</text>
       <rect class="pic-panel depth-2 pic-edge tone-green" x="1619" y="86" width="263.6" height="68" rx="10" />
       <path class="pic-sheen" d="M1629 87.5H1872.6" />
       <rect class="pic-fill tone-green" x="1626" y="109" width="4" height="22" rx="2" />

@@ -10,7 +10,7 @@
       { "id": "reader", "label": "DiagramReader\nthe records, refused with a reason", "icon": "checks", "tone": "green" },
       { "id": "renderer", "label": "A renderer per kind\nflow, cards, sequence, classes", "icon": "stack", "tone": "green" },
       { "id": "layout", "label": "The layouts\nrow grid, cards, lifelines", "icon": "chart", "tone": "green" },
-      { "id": "frame", "label": "TitledFrame\ntitle, legend, note", "icon": "info", "tone": "green" },
+      { "id": "frame", "label": "TitledFrame\nthe note bar", "icon": "info", "tone": "green" },
       { "id": "svg", "shape": "data", "label": "{name}.svg\nlight and dark", "icon": "file", "tone": "amber" }
     ],
     "edges": [

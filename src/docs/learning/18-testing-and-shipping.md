@@ -548,6 +548,73 @@ the design. The key is what makes up for it: it says what each badge's tone mean
 proved by identical images. Skill 20, extensibility: one layout that serves any look whose numbers it is handed,
 and one shared look under two kinds of picture.
 
+## An adapter that kept paying, and what a real chart found (F134.11, 2026-11-14)
+
+**What it is.** The class chart, a project's interface design, was redone in the cards' look. A type is a glass
+card with a badge that says what it is. A link's kind is in its line: violet for what holds what and what is
+what, blue for what creates what, thin grey for what only uses what. You approved one design, and shaped it
+while it was built: "should these lines not also be animated like the rest?", then, of a flow's line with its
+word in a pill, "can we do it like this", then "parallel align" of a picture drawn with the old routing.
+
+**The idea: an adapter that kept paying.** A class chart never had a layout. From the day the kind was added,
+`ClassFlow` turns it into a flow, and the flow's layout places it. The reason written on the adapter is that
+every fix a flow gets then reaches a class chart too. It did, three times here:
+
+- The new look needed only a drawing. No layout was written.
+- F134.8 built a routing rule for flows, where the lines of a gap turn on one line. Class charts were left on
+  the old rule then. Switching them was one argument, and all 59 charts kept their words and lines clear by
+  the new rule the first time the check ran.
+- The check that no two lines from different boxes lie on one another held flows only. It took four lines to
+  hold class charts too, and "parallel align" became a test.
+
+**What was built, in order.** A line's ends in the shared writer: a hollow triangle, a diamond, an open
+arrowhead. The class chart's style. What a type is, read from the words of its kind, and the key. The drawing,
+with a golden. The switch, and all the charts redrawn. Then the old flow drawing deleted, since the class chart
+was its last user.
+
+**What a real chart found that the golden's chart could not.** The drawing has to know which placed line is
+which relation, since a flow's arrow doesn't say. I matched them by the arrow object itself. Twelve tests and a
+golden passed. Then I drew core's real chart and it threw: the layout hands back a copy of some arrows, and my
+test chart had none of those. The fix was to match a line by the two types it joins, and the test chart got such
+a link. A golden made from a chart I wrote proves the cases I thought of. Drawing five real charts before the
+commit is what found the one I hadn't.
+
+**What looking found.** A "holds" pill sat on its diamond. A flow stands a word just after a line's start, and
+only a class chart's "holds" has something there. The pill is now moved along its line past the diamond. It is
+the one place this drawing moves something the layout placed, and it is written down as that.
+
+**What the repo's own rules found.**
+
+- The folder rule, twice. `Svg/` and `Svg/Theme/Looks/` each held six source files, the most a folder may, so
+  the new enum and the new style each got a folder of their own. The second leaves one kind's style apart from
+  the other four, which is untidy and is noted for the refactor.
+- The rule against `ToString()` on an enum we declare. A badge's letter was the first letter of the enum's name.
+  It is a switch now.
+
+**What the frame became.** With a class chart writing its own title and key, no kind the docs draw was left to
+get the frame's title bar or legend. Both were deleted from the code with their tests. Their style rules stay,
+because the frame's style is in every framed picture's file and removing two rules rewrites all of them.
+
+**What it did not change.** The layout. A chart is as tall and as empty on the left as before, and a line still
+comes down a row where its target stands lower, which is what you asked about with "why not just straight".
+Packing a chart tighter is a layout change, and was left out on purpose.
+
+**What was measured.** 59 pictures redrawn, the docs' 58 and the plan's own, and each one's JSON says `classes`,
+so no other kind changed. All 59 looked at on 14 sheets dark and 7 light. With the old drawing went 13 tests and
+4 goldens that read its markup.
+
+**What didn't work, or cost time.**
+
+- A Bash command over its length limit ran nothing, again. Long files are written with the file tool.
+- A `\n` inside a line of C# in a scripted swap became a real line break and broke the build, for the third time
+  on this branch. Any line that holds one is edited with the edit tool.
+- I switched the renderer before running its new tests, so they first ran green. I put the old renderer back,
+  saw the three fail, and switched again. The order matters even when the outcome is the same.
+
+**Where it sits.** Skill 20, extensibility: an Adapter that made a new look a drawing and nothing more, and a
+small general part, a line's ends, added to the shared writer where one kind needed it. Skill 18, testing and
+shipping: real data drawn before the commit, and an old drawing deleted in the step after its last user left.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

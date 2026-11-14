@@ -192,10 +192,9 @@ before the first `: ` large, and the rest on a line under it. Under the drawing 
 each tone and each shape the picture uses, and that a line has the colour of the box it leaves. You write none of
 that.
 
-**What the docs' frame adds.** The tool draws a frame round every picture in the docs. Round a flow, a component
-diagram, a cards picture or a sequence, which have their own title, it adds only a note bar from `caption`, with
-the part before the colon in bold. Round a class chart it also has a title bar from `title`, with the part before
-the first `: ` in bold, and a legend of the tones the chart uses. That is why every chart has a caption: it is the one thing to
+**What the docs' frame adds.** The tool draws a frame round every picture in the docs. Every kind writes its own
+title inside the picture, so the frame adds only a note bar from `caption`, with the part before the colon in
+bold. That is why every chart has a caption: it is the one thing to
 take from the picture, so the doc doesn't have to say it again.
 
 ### Sequence: who calls whom, in order
@@ -255,8 +254,8 @@ You write none of that.
 
 ### Classes: an interface design
 
-A class chart shows types, their members and how they relate. It is drawn as a flow, so a type is a box and a
-relation is an arrow.
+A class chart shows types, their members and how they relate. A type is drawn as a card and a relation as a line
+between two cards. The cards stand where a flow's boxes would.
 
 ```json
 {
@@ -278,27 +277,50 @@ relation is an arrow.
 }
 ```
 
-**Reading the example.** There are three types. One implements the interface, with a dashed arrow. The factory
-holds it, with a solid arrow that carries a word.
+**Reading the example.** There are three types. One implements the interface, with a dashed violet line that ends
+in a hollow triangle at the interface. The factory holds it, with a whole violet line that starts in a diamond at
+the factory and carries a word.
 
-**A type.** Its `kind` is the small line under its name. Say what it is and the step that builds it. Its `members`
-go under a divider, in the code font. A member over 60 characters wraps.
+**A type.** It is a glass card with a badge. Its `kind` is the small line under its name: say what it is and the
+step that builds it. The badge shows a letter for the first of these words the kind has, looked for in this order:
+
+| The kind has | The badge shows |
+|---|---|
+| `interface` | I |
+| `record` | R |
+| `enum` | E |
+| `abstract` | A |
+| `static` | S |
+| none of them, or no kind | C, a class |
+
+So write the word: "interface, step 1" shows an I, and "step 1" alone shows a C. An interface, a record and an
+enum also wear an accent line along the top of their card. A type that names an `icon` shows the icon in its badge
+in place of the letter. Its `members` go under a divider, in the code font, without the plus a member may be
+written with. A member over 60 characters wraps, and a `name` over 30 does too.
 
 **A type's tone.** With no `tone`, a type is `teal` when its kind says interface, record or enum, and `green`
 otherwise. Name another tone for a type that comes from elsewhere, such as `violet` for the framework's.
 
-**A relation.** Its `kind` says how two types relate, and how the arrow is drawn.
+**A relation.** Its `kind` says how two types relate, and how the line is drawn. The colour says the kind, and not
+the type the line leaves.
 
-| `kind` | Its arrow |
-|---|---|
-| `inherits` | Solid. Read it as "is a". |
-| `implements` | Dashed. |
-| `holds` | Solid. |
-| `uses` | Dashed. |
-| `creates` | Dashed. |
+| `kind` | Its line | Its ends | Its word |
+|---|---|---|---|
+| `holds` | Whole, violet, with running dots. | A diamond at the holder, an arrowhead at what it holds. | holds |
+| `inherits` | Whole, violet, with running dots. | A hollow triangle at the base type. | is a |
+| `implements` | Dashed, violet. | A hollow triangle at the interface. | implements |
+| `creates` | Dotted, blue, with running dots. | An arrowhead. | creates |
+| `uses` | Dashed, grey and thin. | An open arrowhead. | uses |
 
-A `word` on a relation replaces the arrow's own word. When several arrows into one type, or out of one, share a
-word, it is shown once.
+Choose `holds` for what a type is built of, and `uses` for what it merely calls: the violet lines are what a
+reader sees first, so they should be the chart's structure.
+
+A `word` on a relation replaces the line's own word. It stands in a pill on the line. When several lines into one
+type, or out of one, share a word, it is shown once.
+
+**What the picture says about itself.** A class chart writes its `title` small in its top left corner. Under the
+types it has a key, *How to read it*: each tone its badges wear, each letter, and each kind of relation it has,
+drawn as a short line with its ends. You write none of that.
 
 `direction` and `groups` work as they do in a flow. Over about twenty types the arrows tangle. Split such a chart
 into two pictures.

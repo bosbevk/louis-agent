@@ -46,6 +46,13 @@ A `sequence` shows a tone on a participant's badge and nowhere else: every call 
 blue, and every answer is grey. So give each participant the tone that says what it is, and don't count on a
 call's colour to say who sent it. The picture writes its own title and its own key.
 
+## A class chart's kinds
+
+In a `classes` picture a type's badge shows a letter read from its `kind`: write `interface`, `record`, `enum`,
+`abstract` or `static` in it, or the badge shows C for a class. A relation's `kind` decides its line: `holds`,
+`inherits` and `implements` are the violet structure, `creates` is blue and `uses` is thin grey. Choose `holds`
+for what a type is built of and `uses` for what it only calls.
+
 ## Where a project doc's pictures go
 
 Every project doc shows four: its overview (`cards`) just above its *Purpose*, and a `flow`, a `sequence` and a
