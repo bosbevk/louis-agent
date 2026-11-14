@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F143 the guide drives the CV: one guide turn in memory",
   "caption": "The session holds the guide's four packs; the resume pack holds the record read from cv.json.",
   "flow": {

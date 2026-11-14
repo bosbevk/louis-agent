@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F131 the chat on any website: one embedded session, in memory",
   "caption": "Nothing lost: the site's door limits each address, and the running turn is buffered so a reload picks it up.",
   "flow": {

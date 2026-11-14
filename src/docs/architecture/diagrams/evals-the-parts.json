@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The evals: the portal, the API and the runner",
   "caption": "Three processes: the portal shows, the API records, and the runner runs the evals as a child process.",
   "flow": {

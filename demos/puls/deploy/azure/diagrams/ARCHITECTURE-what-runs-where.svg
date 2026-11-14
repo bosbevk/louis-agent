@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a929.5 190 0 1 0 1859 0a929.5 190 0 1 0 -1859 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Puls in Azure: what runs where</text>
+    <text class="pic-group" x="1811" y="14" text-anchor="end">Deployment diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="0" y="752" width="918.5" height="224" rx="14" />
       <text class="pic-group" x="14" y="771" text-anchor="start">apps subnet 10.0.0.0/23, delegated to Container Apps</text>

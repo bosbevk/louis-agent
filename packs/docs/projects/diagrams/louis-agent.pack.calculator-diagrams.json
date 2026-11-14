@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The calculator pack: one tool over plain arithmetic",
   "caption": "One tool on .NET's own evaluator: a check in front lets only arithmetic reach it.",
   "flow": {

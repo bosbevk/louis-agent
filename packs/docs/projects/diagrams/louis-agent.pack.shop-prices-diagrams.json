@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The shop-prices pack: its tools, the prices and the estimate",
   "caption": "One tool over one price book: the shipped files fill it, or Mongo where it's set. The same tables go out as a feed, and new ones come in as an upload.",
   "flow": {

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "caption": "Code runs the fixed steps and saves after each: the manager decides and checks, the others work, and a branch is left, never a PR.",
   "title": "F106: the framework\u0027s track: the triage workflow, drawn",
   "flow": {

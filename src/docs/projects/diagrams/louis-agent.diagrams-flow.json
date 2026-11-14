@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.diagrams: how a picture is made",
   "caption": "Data in, one SVG out: the docs' tool and the site both start from the same records and the same layouts.",
   "flow": {

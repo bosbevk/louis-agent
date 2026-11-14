@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a517.5 190 0 1 0 1035 0a517.5 190 0 1 0 -1035 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL65 the diagrams as an engine: one flow, being built</text>
+    <text class="pic-group" x="987" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-teal" d="M 493.2 68 L 493.2 80 Q 493.2 92 481.2 92 L 179.4 92 Q 158.4 92 158.4 113 L 158.4 134" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 493.2 68 L 493.2 80 Q 493.2 92 481.2 92 L 179.4 92 Q 158.4 92 158.4 113 L 158.4 134" />

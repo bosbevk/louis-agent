@@ -205,6 +205,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a534 190 0 1 0 1068 0a534 190 0 1 0 -1068 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.api: How it works</text>
+    <text class="pic-group" x="1020" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 486.6 196 L 486.6 208 Q 486.6 220 474.6 220 L 180.2 220 Q 156.2 220 156.2 244 L 156.2 274" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 486.6 196 L 486.6 208 Q 486.6 220 474.6 220 L 180.2 220 Q 156.2 220 156.2 244 L 156.2 274" />

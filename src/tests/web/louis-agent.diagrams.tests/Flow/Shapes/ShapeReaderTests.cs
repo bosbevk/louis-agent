@@ -13,6 +13,7 @@ public class ShapeReaderTests
     private static string Flow(string shape) => $$"""
                                                   {
                                                     "kind": "flow",
+                                                    "type": "activity",
                                                     "title": "A check",
                                                     "flow": {
                                                       "nodes": [ { "id": "ok", "label": "Tests pass?"{{shape}} } ],

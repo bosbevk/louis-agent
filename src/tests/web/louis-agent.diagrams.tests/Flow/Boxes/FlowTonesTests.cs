@@ -33,6 +33,7 @@ public class FlowTonesTests
         const string json = """
                             {
                               "kind": "flow",
+                              "type": "component",
                               "title": "Calls",
                               "flow": {
                                 "nodes": [

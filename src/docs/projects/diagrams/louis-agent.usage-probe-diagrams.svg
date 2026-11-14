@@ -199,6 +199,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a510 190 0 1 0 1020 0a510 190 0 1 0 -1020 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The usage probe: each command and the parts it uses</text>
+    <text class="pic-group" x="972" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 360.6 52 L 360.6 64 Q 360.6 76 348.6 76 L 135.2 76 Q 114.2 76 114.2 97 L 114.2 118" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 360.6 52 L 360.6 64 Q 360.6 76 348.6 76 L 135.2 76 Q 114.2 76 114.2 97 L 114.2 118" />

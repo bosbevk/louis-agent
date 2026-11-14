@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "deployment",
   "title": "Puls in Azure: the build and the verbs",
   "caption": "The template is the record: one deployment, puls-build, creates what is missing and updates what exists, and the verbs do what a template can't. They read its outputs back: vmPrivateIp, environmentId, environmentStaticIp, sqlServerFqdn, appIdentityId, codingAppIdentityId and vaultUri.",
   "flow": {

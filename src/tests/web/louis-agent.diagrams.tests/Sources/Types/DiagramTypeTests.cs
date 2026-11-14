@@ -112,11 +112,22 @@ public class DiagramTypeTests
         });
     }
 
-    /// <summary>Until every flow in the docs says its type, a flow without one still reads, and has none.</summary>
+    /// <summary>
+    /// A flow draws eight types, so one that says none is refused with the eight, where another kind's is filled
+    /// in. A ticket says none and reads, since it has none.
+    /// </summary>
     [Test]
-    public void AFlowWithoutAType_StillReads()
+    public void AFlowWithoutAType_IsRefused_AndATicketWithoutOneReads()
     {
-        Assert.That(DiagramReader.Read(With(Flow)).Type, Is.Null);
+        var refused = Assert.Throws<InvalidDataException>(() => DiagramReader.Read(With(Flow)));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(refused!.Message, Is.EqualTo(
+                """A flow picture must say what type of diagram it is. Its "type" may be: activity, """ +
+                "component, deployment, object, package, state-machine, use-case, communication."));
+            Assert.That(DiagramReader.Read(With(Ticket)).Type, Is.Null);
+        });
     }
 
     /// <summary>A type that is not the kind's is refused, with the kind, the type and what the kind may be.</summary>

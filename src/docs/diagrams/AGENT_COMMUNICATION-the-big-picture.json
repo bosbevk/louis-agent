@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "How the agents talk: the clients, the hosts, the engine and the model",
   "caption": "One engine, many doors: each client reaches the same AgentEngine through the host that speaks its protocol. The orchestrator opens one session per fix and reads /v1/prices and /v1/rates, and AskAgent (F5, F127.3.1) reaches another agent the same way.",
   "flow": {

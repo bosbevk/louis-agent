@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a1345.5 190 0 1 0 2691 0a1345.5 190 0 1 0 -2691 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.7 component diagrams: where the new kind sits</text>
+    <text class="pic-group" x="2643" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="953.5" y="240" width="897" height="130" rx="14" />
       <text class="pic-group" x="967.5" y="259" text-anchor="start">louis-agent.diagrams</text>

@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a747 190 0 1 0 1494 0a747 190 0 1 0 -1494 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F126 evals, redesigned: the architecture</text>
+    <text class="pic-group" x="1446" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="0" y="254" width="1067.5" height="279" rx="14" />
       <text class="pic-group" x="14" y="273" text-anchor="start">Eval host (F126.2, src/hosts)</text>

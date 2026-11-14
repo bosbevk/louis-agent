@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a638.5 190 0 1 0 1277 0a638.5 190 0 1 0 -1277 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The eval studio on the API: what a program maps, and what the studio holds</text>
+    <text class="pic-group" x="1229" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 463.2 68 L 463.2 83 Q 463.2 98 478.2 98 L 1086.8 98 Q 1101.8 98 1101.8 113 L 1101.8 128 L 1101.8 196 L 1101.8 262" />

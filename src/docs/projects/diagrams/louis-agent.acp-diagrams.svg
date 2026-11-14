@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a660.5 190 0 1 0 1321 0a660.5 190 0 1 0 -1321 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Rider's chat: from AcpHost through the prompt handler to Rider, and back</text>
+    <text class="pic-group" x="1273" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 543 52 L 543 73 Q 543 94 564 94 L 760.8 94 Q 772.8 94 772.8 106 L 772.8 118 L 772.8 170 L 772.8 236 L 772.8 288 L 772.8 366" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 543 52 L 543 73 Q 543 94 564 94 L 760.8 94 Q 772.8 94 772.8 106 L 772.8 118 L 772.8 170 L 772.8 236 L 772.8 288 L 772.8 366" />

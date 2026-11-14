@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Puls's judges: from the runner's catalogue to a model's verdict",
   "caption": "Apart from the identity: a judge is built on the harness, and an identity must never reference it. Only the runner references this.",
   "flow": {

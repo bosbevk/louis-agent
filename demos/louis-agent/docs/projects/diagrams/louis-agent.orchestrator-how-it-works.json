@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "The orchestrator: one error, from the feed to a decision",
   "caption": "Every error ends in one decision: ignored, escalated or fixed, written to decisions.jsonl.",
   "flow": {

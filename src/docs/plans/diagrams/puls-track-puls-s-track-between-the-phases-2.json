@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "Puls's track: one town's answer",
   "caption": "The same identity in every town: the places pack reads the town's own sources, and the answer and the web app's colours follow the town.",
   "flow": {

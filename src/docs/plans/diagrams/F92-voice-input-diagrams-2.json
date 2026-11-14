@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F92 voice: one transcription, in memory",
   "caption": "Nothing kept: the audio stays in memory and is dropped after, and only a usage row is written.",
   "flow": {

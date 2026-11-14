@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F143 the guide drives the CV: the architecture",
   "caption": "The site-api names the file; the resume pack reads it; the guide calls it and opens /cv.",
   "flow": {

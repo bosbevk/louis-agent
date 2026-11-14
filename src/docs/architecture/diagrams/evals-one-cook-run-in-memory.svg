@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a492.5 190 0 1 0 985 0a492.5 190 0 1 0 -985 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: one cook run, in memory</text>
+    <text class="pic-group" x="937" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-amber" d="M 474.6 68 L 474.6 128" marker-end="url(#arrow-amber)" />
       <path class="pic-march" d="M 474.6 68 L 474.6 128" />

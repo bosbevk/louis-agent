@@ -199,6 +199,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a652.5 190 0 1 0 1305 0a652.5 190 0 1 0 -1305 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The tests: what CI runs, and the two testing libraries they share</text>
+    <text class="pic-group" x="1257" y="14" text-anchor="end">Package diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-green" d="M 147 214 L 147 235 Q 147 256 168 256 L 723 256 Q 735 256 735 268 L 735 280" marker-end="url(#arrow-green)" />
       <path class="pic-march" d="M 147 214 L 147 235 Q 147 256 168 256 L 723 256 Q 735 256 735 268 L 735 280" />

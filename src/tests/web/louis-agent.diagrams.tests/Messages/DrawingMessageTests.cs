@@ -16,7 +16,7 @@ public class DrawingMessageTests
             ?.Description;
 
     /// <summary>
-    /// The refusals hold no word a drawing writes, and no name is in both: the reader's enum is the 28 things it
+    /// The refusals hold no word a drawing writes, and no name is in both: the reader's enum is the 29 things it
     /// refuses with, and the key's heading and the missing renderer are the drawing's.
     /// </summary>
     [Test]
@@ -26,7 +26,7 @@ public class DrawingMessageTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(refusals, Has.Length.EqualTo(28));
+            Assert.That(refusals, Has.Length.EqualTo(29));
             Assert.That(refusals.Intersect(words), Is.Empty);
             Assert.That(words, Does.Contain("KeyHeading").And.Contain("NoRenderer").And.Contain("LegendGreen"));
             Assert.That(words, Has.Length.EqualTo(56));

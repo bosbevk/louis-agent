@@ -205,6 +205,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a828.5 190 0 1 0 1657 0a828.5 190 0 1 0 -1657 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The eval runner: its host, its commands, and the API that starts it</text>
+    <text class="pic-group" x="1609" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 256 206 L 316.1 206" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 256 206 L 316.1 206" />

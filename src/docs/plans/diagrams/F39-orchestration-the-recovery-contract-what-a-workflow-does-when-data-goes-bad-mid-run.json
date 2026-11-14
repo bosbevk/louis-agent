@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "F39 orchestration: the recovery contract",
   "caption": "When data goes bad mid-run: the workflow classifies it, reconciles after a side effect, recovers only within its policy, and verifies before it resumes.",
   "flow": {

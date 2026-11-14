@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The general packs: from a catalogue to their tools and what they reach",
   "caption": "A pack is only its tools: the engine stays in charge of what's dangerous. The web pack's calls go through the engine's guards, so a pack can't reach an internal address.",
   "flow": {

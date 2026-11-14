@@ -173,6 +173,7 @@ public class MermaidFlowReaderTests
         {
             Assert.That(imported.Json, Is.EqualTo(json));
             Assert.That(DiagramReader.Read(File.ReadAllText(json)).Title, Is.EqualTo("louis-agent.core: How it works"));
+            Assert.That(File.ReadAllText(json), Does.Contain("\"type\": \"activity\""), "what UML calls a flowchart");
             Assert.That(imported.Link,
                 Is.EqualTo("![louis-agent.core: How it works](diagrams/louis-agent.core-how-it-works.svg)"));
             Assert.That((imported.Block.Start, imported.Block.End), Is.EqualTo((5, 8)));

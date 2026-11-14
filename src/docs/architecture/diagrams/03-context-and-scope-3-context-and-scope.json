@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Context and scope: louis-agent, its people and the systems around it",
   "caption": "One system and its neighbours: people use it, and it calls the models, the web and the services it watches.",
   "flow": {

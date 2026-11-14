@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "ADR 0002: which Claude tier to build on",
   "caption": "Our tier: the Messages API, with our own loop behind IChatClient, so any provider fits.",
   "flow": {

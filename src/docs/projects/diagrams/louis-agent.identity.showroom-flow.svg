@@ -199,6 +199,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a756 190 0 1 0 1512 0a756 190 0 1 0 -1512 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.identity.showroom: how it works</text>
+    <text class="pic-group" x="1464" y="14" text-anchor="end">Activity diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 236.8 34 L 340.9 34 Q 364.9 34 364.9 58 L 364.9 90 Q 364.9 102 376.9 102 L 388.9 102" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 236.8 34 L 340.9 34 Q 364.9 34 364.9 58 L 364.9 90 Q 364.9 102 376.9 102 L 388.9 102" />

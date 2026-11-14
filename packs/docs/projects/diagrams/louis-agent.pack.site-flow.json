@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.pack.site: how it works",
   "caption": "The tools say, the browser does: every call is checked as data, a refusal goes back to the model as an error, and only the visitor's own browser moves or draws.",
   "flow": {

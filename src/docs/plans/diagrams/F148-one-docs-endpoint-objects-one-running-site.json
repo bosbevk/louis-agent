@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F148 one docs endpoint: one running site in memory",
   "caption": "One DocLibrary per process: the pack makes it, the catalogue hands it to the API, and the tools hold the same one.",
   "flow": {

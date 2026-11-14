@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "package",
   "title": "Phase 10: the engine as a developer package",
   "caption": "After every engine feature (Louis, 2026-10-20): the engine and its general packs move to their own repo as packages, and the products build on them, never the other way.",
   "flow": {

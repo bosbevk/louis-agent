@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F106.3 triage and fix a service: one run, in memory",
   "caption": "Every step is saved as it lands: the run, its steps and its policy are records, so the page and the guide can read them back.",
   "flow": {

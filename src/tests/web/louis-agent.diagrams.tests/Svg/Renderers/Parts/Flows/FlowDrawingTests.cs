@@ -21,6 +21,7 @@ public class FlowDrawingTests
     private const string Procedure = """
                                      {
                                        "kind": "flow",
+                                       "type": "activity",
                                        "title": "Runbooks: how one is used",
                                        "flow": {
                                          "nodes": [

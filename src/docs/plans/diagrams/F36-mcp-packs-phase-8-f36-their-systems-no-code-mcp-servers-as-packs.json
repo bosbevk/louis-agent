@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "F36 MCP servers as packs: one pack, as the host starts",
   "caption": "Their systems, no code: a server becomes a pack only when its command or address, its tools and its pin all check out, and every one of its tools runs inside a guard.",
   "flow": {

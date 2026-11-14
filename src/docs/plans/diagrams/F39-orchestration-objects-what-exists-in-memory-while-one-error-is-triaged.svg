@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a769 190 0 1 0 1538 0a769 190 0 1 0 -1538 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F39 orchestration: one error triaged, in memory</text>
+    <text class="pic-group" x="1490" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 263.6 404 L 278.6 404 Q 293.7 404 293.7 389 L 293.7 301 Q 293.7 286 308.7 286 L 323.7 286" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 263.6 404 L 278.6 404 Q 293.7 404 293.7 389 L 293.7 301 Q 293.7 286 308.7 286 L 323.7 286" />

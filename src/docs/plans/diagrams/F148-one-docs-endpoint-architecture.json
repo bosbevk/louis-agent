@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F148 one docs endpoint: the architecture",
   "caption": "A merge is the only way in: the image carries the docs and their commit, and every reader gets them from the one library.",
   "flow": {

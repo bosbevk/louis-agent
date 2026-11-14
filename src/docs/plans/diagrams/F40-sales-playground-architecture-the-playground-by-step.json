@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F40 the sales playground: by step",
   "caption": "Two agents, one stack: the demo's clerk and Puls share the shops pack, the run store and the ledger, and the control room shows the runs live.",
   "flow": {

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The orchestrator: the poll, its engine and tools, and what it writes down",
   "caption": "A second agent on the same core: it talks to louis-agent the way anyone would, over HTTP.",
   "flow": {

@@ -202,6 +202,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a690 190 0 1 0 1380 0a690 190 0 1 0 -1380 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Phase 10: the engine as a developer package</text>
+    <text class="pic-group" x="1332" y="14" text-anchor="end">Package diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="3.8" y="0" width="641.4" height="840" rx="14" />
       <text class="pic-group" x="17.8" y="19" text-anchor="start">louis-agent-engine repo (after Stage B)</text>

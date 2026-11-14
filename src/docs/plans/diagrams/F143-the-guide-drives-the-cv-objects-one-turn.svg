@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a581.5 190 0 1 0 1163 0a581.5 190 0 1 0 -1163 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F143 the guide drives the CV: one guide turn in memory</text>
+    <text class="pic-group" x="1115" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-violet" d="M 436.2 68 L 436.2 128" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 436.2 68 L 436.2 128" />

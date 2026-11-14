@@ -127,6 +127,7 @@ A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-i
 ```json
 {
   "kind": "flow",
+  "type": "component",
   "title": "The CLI: from your program to the engine",
   "caption": "One chat, one engine: the console reads a line and the engine answers it.",
   "flow": {

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "deployment",
   "title": "Puls in Azure: what runs where",
   "caption": "Nothing outside reaches the services: everything here sits in rg-puls-za, the VM has no public address (both apps reach it at 10.0.2.4 and send their telemetry through the OpenTelemetry agent), SQL takes TLS only, and every secret is in the vault.",
   "flow": {

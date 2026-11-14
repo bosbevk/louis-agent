@@ -205,6 +205,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a798 190 0 1 0 1596 0a798 190 0 1 0 -1596 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The evals: the portal, the API and the runner</text>
+    <text class="pic-group" x="1548" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="30.4" y="0" width="584.4" height="130" rx="14" />
       <text class="pic-group" x="44.4" y="19" text-anchor="start">Portal (louis-agent.puls, Components/Admin)</text>

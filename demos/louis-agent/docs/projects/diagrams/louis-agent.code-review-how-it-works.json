@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The code-review app: its pages, the framework's shells and the API",
   "caption": "One site on the framework's web: the chat and the admin are the framework's shells, and the packs' views fill their slots.",
   "flow": {

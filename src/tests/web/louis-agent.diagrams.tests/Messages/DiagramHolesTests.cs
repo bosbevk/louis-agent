@@ -41,6 +41,7 @@ public class DiagramHolesTests
     [TestCase(DiagramMessage.UnknownDiagramType)]
     [TestCase(DiagramMessage.WrongDiagramType)]
     [TestCase(DiagramMessage.NoDiagramType)]
+    [TestCase(DiagramMessage.MissingDiagramType)]
     [TestCase(DiagramMessage.MissingPart)]
     [TestCase(DiagramMessage.UnknownBox)]
     [TestCase(DiagramMessage.UnknownGroup)]

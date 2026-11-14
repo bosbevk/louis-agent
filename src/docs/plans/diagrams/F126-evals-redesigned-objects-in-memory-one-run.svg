@@ -193,6 +193,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a468 190 0 1 0 936 0a468 190 0 1 0 -936 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F126 evals, redesigned: one run, in memory</text>
+    <text class="pic-group" x="888" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-teal" d="M 447.6 52 L 447.6 67 Q 447.6 82 432.6 82 L 158.2 82 Q 143.2 82 143.2 97 L 143.2 112" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 447.6 52 L 447.6 67 Q 447.6 82 432.6 82 L 158.2 82 Q 143.2 82 143.2 97 L 143.2 112" />

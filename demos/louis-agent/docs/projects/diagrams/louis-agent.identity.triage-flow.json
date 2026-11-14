@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.identity.triage: how it works",
   "caption": "The manager is the hub: it asks each role by its address, every role ends with its typed tool, and the manager ends the case.",
   "flow": {

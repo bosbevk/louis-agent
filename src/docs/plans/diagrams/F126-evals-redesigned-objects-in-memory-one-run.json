@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F126 evals, redesigned: one run, in memory",
   "caption": "One run, one tree: conversations hold turns, turns hold their facts and marks, and your flips sit beside them.",
   "flow": {

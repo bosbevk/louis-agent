@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F134.7 component diagrams: where the new kind sits",
   "caption": "Nothing new runs: the same tool draws the new kind from a JSON beside the doc, and the same tests hold the picture to its JSON.",
   "flow": {

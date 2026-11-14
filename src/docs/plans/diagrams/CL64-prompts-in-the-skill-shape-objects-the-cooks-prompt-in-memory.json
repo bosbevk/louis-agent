@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "CL64 prompts in the skill shape: what the cook holds in its prompt",
   "caption": "About 5,200 words before the question today, 3,217 of them the cook's own file: steps 3 and 4 change only that file's shape and size.",
   "flow": {

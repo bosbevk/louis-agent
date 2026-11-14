@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "package",
   "title": "Louis Agent: how a program, its hosts, identities and packs sit on the engine",
   "caption": "Built in layers: a program names an identity and its packs, a host carries them, and the engine does the work. That is how it\u0027s built",
   "flow": {

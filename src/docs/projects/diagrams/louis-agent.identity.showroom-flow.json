@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.identity.showroom: how it works",
   "caption": "Recorded once, tried live after: a visitor first watches a business's agent on its mock website, then may ask it themselves through the same door.",
   "flow": {

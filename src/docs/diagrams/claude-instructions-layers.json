@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "package",
   "title": "Claude's instructions: the three layers",
   "caption": "By when it is needed: what must never be missed is always loaded, the how arrives with a kind of file, and a procedure with its job.",
   "flow": {

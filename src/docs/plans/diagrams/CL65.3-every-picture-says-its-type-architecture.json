@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "CL65.3 every picture says its type: the architecture",
   "caption": "The type is data in the small project and words in the engine: reading it needs no drawing code.",
   "flow": {

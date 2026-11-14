@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F39 orchestration: one error triaged, in memory",
   "caption": "One error, one tree: the workflow decides, a child fixes it on the coding peer, and the fix is confirmed before the outcome is written.",
   "flow": {

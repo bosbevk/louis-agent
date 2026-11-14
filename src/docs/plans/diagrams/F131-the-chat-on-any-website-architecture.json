@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F131 the chat on any website: the architecture",
   "caption": "One script tag: our widget runs in a frame on the customer's page, with a door per site on the API and its own limits.",
   "flow": {

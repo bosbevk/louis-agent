@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F134.7 component diagrams: the showroom's start, as the JSON holds it",
   "caption": "A tree, not a list: each box holds the boxes inside it, and what stands around the root points at the box it talks to.",
   "flow": {

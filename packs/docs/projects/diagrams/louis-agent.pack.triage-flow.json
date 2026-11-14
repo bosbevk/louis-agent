@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.pack.triage: how it works",
   "caption": "The workflow reads the feed, the roles answer through typed tools, and the run is the steps on disk, read back by the guide, a person or the manager.",
   "flow": {

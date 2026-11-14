@@ -199,6 +199,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a730 190 0 1 0 1460 0a730 190 0 1 0 -1460 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Context and scope: louis-agent, its people and the systems around it</text>
+    <text class="pic-group" x="1412" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 402 68 L 402 89 Q 402 110 423 110 L 634 110 Q 658 110 658 134 L 658 170 L 658 238 L 658 304" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 402 68 L 402 89 Q 402 110 423 110 L 634 110 Q 658 110 658 134 L 658 170 L 658 238 L 658 304" />

@@ -28,6 +28,9 @@ public enum DiagramMessage
     [Description("A {Kind} is not a diagram of any type. Take its \"type\" out.")]
     NoDiagramType,
 
+    [Description("A {Kind} picture must say what type of diagram it is. Its \"type\" may be: {Types}.")]
+    MissingDiagramType,
+
     [Description("A {Kind} diagram needs its \"{Kind}\" part.")]
     MissingPart,
 

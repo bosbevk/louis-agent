@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "CL64 prompts in the skill shape: the architecture",
   "caption": "Nothing new runs: the files change their shape, one test holds the shape, and an eval says whether the answers held.",
   "flow": {

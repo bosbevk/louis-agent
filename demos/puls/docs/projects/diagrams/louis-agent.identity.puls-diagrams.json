@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "The Puls identity: its prompts and packs, its evals and judges",
   "caption": "One class, and the rest is content: Puls holds no tools. What it can do comes from the engine's toolsets and the packs it names, and what proves it stays apart, so no host carries it.",
   "flow": {

@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "CL65 the diagrams as an engine: one flow, being built",
   "caption": "What is in memory while one flow is built: the source the reader made, what the layout placed, and one builder holding the picture's parts.",
   "flow": {

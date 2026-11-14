@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F125 an agentic site: the architecture",
   "caption": "Tools go over MCP: the guide's tools run in the MCP server, agents elsewhere find us through the registry, and the admin page sees the gaps.",
   "flow": {

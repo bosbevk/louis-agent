@@ -3,6 +3,7 @@ using LouisAgent.Diagrams.Cards.Links;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
+using LouisAgent.Diagrams.Sources.Types;
 
 namespace LouisAgent.Diagrams.Tests.Sources;
 
@@ -16,6 +17,7 @@ public class DiagramReaderTests
     private const string Flow = """
                                 {
                                   "kind": "flow",
+                                  "type": "component",
                                   "title": "A turn",
                                   "flow": {
                                     "nodes": [
@@ -112,7 +114,8 @@ public class DiagramReaderTests
         var flow = new GraphSpec(
             [new GraphNode("a", "A\nfirst", Group: "g"), new GraphNode("b", "B")],
             [new GraphEdge("a", "b", "calls", EdgeStyle.Dashed)], FlowDirection.Down, [new GraphGroup("g", "A group")]);
-        string json = DiagramWriter.Write(new DiagramSource(DiagramKind.Flow, "Written", Flow: flow));
+        var written = new DiagramSource(DiagramKind.Flow, "Written", Flow: flow, Type: DiagramType.Component);
+        string json = DiagramWriter.Write(written);
 
         Assert.Multiple(() =>
         {

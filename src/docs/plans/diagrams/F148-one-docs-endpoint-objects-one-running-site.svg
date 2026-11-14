@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a487.5 190 0 1 0 975 0a487.5 190 0 1 0 -975 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F148 one docs endpoint: one running site in memory</text>
+    <text class="pic-group" x="927" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-violet" d="M 463.2 68 L 463.2 89 Q 463.2 110 442.2 110 L 160.4 110 Q 148.4 110 148.4 122 L 148.4 134" marker-end="url(#arrow-violet)" />
       <path class="pic-march" d="M 463.2 68 L 463.2 89 Q 463.2 110 442.2 110 L 160.4 110 Q 148.4 110 148.4 122 L 148.4 134" />

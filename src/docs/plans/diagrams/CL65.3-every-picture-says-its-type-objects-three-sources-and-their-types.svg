@@ -193,6 +193,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a591.5 190 0 1 0 1183 0a591.5 190 0 1 0 -1183 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">CL65.3 every picture says its type: three sources, and their types</text>
+    <text class="pic-group" x="1135" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-teal" d="M 196.4 68 L 196.4 134" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 196.4 68 L 196.4 134" />

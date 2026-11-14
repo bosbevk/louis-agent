@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a639.5 190 0 1 0 1279 0a639.5 190 0 1 0 -1279 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">Puls in Azure: the build and the verbs</text>
+    <text class="pic-group" x="1231" y="14" text-anchor="end">Deployment diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="920.6" y="24" width="310.4" height="880" rx="14" />
       <text class="pic-group" x="934.6" y="43" text-anchor="start">the verbs read the outputs back</text>

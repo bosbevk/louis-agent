@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F125 an agentic site: one guide turn over MCP, in memory",
   "caption": "Remote and local tools side by side: the MCP tools come through proxies, and the tools that show a page stay in the process.",
   "flow": {

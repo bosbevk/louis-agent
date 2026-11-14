@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.pack.leads: how it works",
   "caption": "A lead is sent once, on the visitor's yes: the key picks the sender, and a demonstration's lead says so in its subject.",
   "flow": {

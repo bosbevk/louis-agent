@@ -205,6 +205,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a748.5 190 0 1 0 1497 0a748.5 190 0 1 0 -1497 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">The recipes pack: its tools, its sources and the library</text>
+    <text class="pic-group" x="1449" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-blue" d="M 733 68 L 733 83 Q 733 98 718 98 L 451.2 98 Q 436.2 98 436.2 113 L 436.2 128" marker-end="url(#arrow-blue)" />
       <path class="pic-march" d="M 733 68 L 733 83 Q 733 98 718 98 L 451.2 98 Q 436.2 98 436.2 113 L 436.2 128" />

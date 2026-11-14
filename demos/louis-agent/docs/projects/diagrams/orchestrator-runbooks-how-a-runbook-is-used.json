@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "Runbooks: how the orchestrator uses one to decide",
   "caption": "A runbook per method: without one, the error goes straight to the service's own team.",
   "flow": {

@@ -196,6 +196,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a641 190 0 1 0 1282 0a641 190 0 1 0 -1282 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F134.7 component diagrams: the showroom's start, as the JSON holds it</text>
+    <text class="pic-group" x="1234" y="14" text-anchor="end">Object diagram</text>
     <g class="flow" transform="translate(0 44)">
       <path class="pic-line pic-edge tone-teal" d="M 641.4 52 L 641.4 64 Q 641.4 76 629.4 76 L 228.8 76 Q 207.8 76 207.8 97 L 207.8 118" marker-end="url(#arrow-teal)" />
       <path class="pic-march" d="M 641.4 52 L 641.4 64 Q 641.4 76 629.4 76 L 228.8 76 Q 207.8 76 207.8 97 L 207.8 118" />

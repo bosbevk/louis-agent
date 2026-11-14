@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "object",
   "title": "F40 the sales playground: in memory with two identities",
   "caption": "One shops pack, shared: with IDENTITIES=demo,puls both identities name it, and the customers are data inside the pack's assembly, never a file on a workspace.",
   "flow": {

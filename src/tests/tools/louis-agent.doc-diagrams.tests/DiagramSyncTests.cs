@@ -14,6 +14,7 @@ public class DiagramSyncTests
     private const string Flow = """
                                 {
                                   "kind": "flow",
+                                  "type": "component",
                                   "title": "Two boxes",
                                   "flow": {
                                     "nodes": [

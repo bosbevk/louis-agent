@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "activity",
   "title": "louis-agent.identity.guide: how it works",
   "caption": "One voice, three packs, three businesses to ask: everything it knows comes from the docs it reads, and nothing else is in reach.",
   "flow": {

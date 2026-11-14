@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "Building blocks, level 2: the containers",
   "caption": "Many hosts, one core: the hosts that load an agent read its identities and packs through the composition root (Plugins.FromEnvironment()), and everything ends in core. A dashed line means uses.",
   "flow": {

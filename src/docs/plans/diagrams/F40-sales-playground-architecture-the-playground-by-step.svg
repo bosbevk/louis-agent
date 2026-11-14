@@ -199,6 +199,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
   <g class="drawing" transform="translate(0 0)">
     <path class="mrq-light" d="M-24 74a1112 190 0 1 0 2224 0a1112 190 0 1 0 -2224 0Z" />
     <text class="mrq-title" x="0" y="14" text-anchor="start">F40 the sales playground: by step</text>
+    <text class="pic-group" x="2176" y="14" text-anchor="end">Component diagram</text>
     <g class="flow" transform="translate(0 44)">
       <rect class="pic-panel" x="0" y="32" width="310.4" height="288" rx="14" />
       <text class="pic-group" x="14" y="51" text-anchor="start">The screen we sell from, in either web app</text>

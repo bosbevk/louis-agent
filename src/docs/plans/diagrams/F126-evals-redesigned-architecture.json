@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "F126 evals, redesigned: the architecture",
   "caption": "One file of conversations: a run reads it, a judge you correct grades it, and the run is one document with its own page.",
   "flow": {

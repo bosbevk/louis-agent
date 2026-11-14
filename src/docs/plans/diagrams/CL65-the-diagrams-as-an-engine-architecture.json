@@ -1,5 +1,6 @@
 {
   "kind": "flow",
+  "type": "component",
   "title": "CL65 the diagrams as an engine: the architecture",
   "caption": "One way: the engine references the diagrams, and the diagrams reference only the enum-name parser.",
   "flow": {
