@@ -2,7 +2,7 @@ namespace LouisAgent.Diagrams.Svg.Theme.Looks;
 
 /// <summary>
 /// What a flow's look adds to the shared one (F134.8): a box's name and the icon in its badge, the thin outline of
-/// a shape that means something, the pill an arrow's word stands in, and the rule and the words of its key.
+/// a shape that means something, the pill an arrow's word stands in, and the rule over its key.
 /// </summary>
 /// <remarks>
 /// Everything a component diagram wears too, the panels, the lines and their marching dots, is
@@ -26,6 +26,5 @@ internal static class FlowStyle
           .flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
           .flow-word { font: 500 10px var(--mono); }
           .flow-rule { fill: url(#{{MarqueeLook.EdgePaint}}); opacity: .7; }
-          .flow-means { fill: var(--text); font: 12px var(--pic-sans); }
           """;
 }

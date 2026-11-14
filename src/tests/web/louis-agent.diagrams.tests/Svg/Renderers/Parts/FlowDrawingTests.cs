@@ -159,7 +159,7 @@ public class FlowDrawingTests
             Assert.That(badges, Has.Count.EqualTo(4), "blue, teal, red and amber");
             Assert.That(badges.Select(badge => badge.Class), Is.All.StartsWith("pic-fill tone-"));
             Assert.That(shapes.Select(shape => shape.Class), Has.None.Contains("pic-swatch"));
-            Assert.That(Words("flow-means"), Does.Contain("a decision").And.Contain("starts it"));
+            Assert.That(Words("pic-means"), Does.Contain("a decision").And.Contain("starts it"));
         });
     }
 

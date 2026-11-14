@@ -35,12 +35,14 @@ public partial class PictureLookTests
     }
 
     /// <summary>
-    /// The shared look carries what any picture in it wears: a panel, a line with its marching dots, and a port.
+    /// The shared look carries what any picture in it wears: a panel, a line with its marching dots, a port, and
+    /// the words of a key.
     /// </summary>
     [TestCase(".pic-panel")]
     [TestCase(".pic-line")]
     [TestCase(".pic-march")]
     [TestCase(".pic-port")]
+    [TestCase(".pic-means")]
     public void TheSharedLook_CarriesWhatEveryPictureWears(string rule)
     {
         Assert.That(Shared, Does.Contain(rule + " "));
@@ -57,6 +59,7 @@ public partial class PictureLookTests
     [TestCase("--pic-tone")]
     [TestCase("--pic-0")]
     [TestCase("drop-shadow")]
+    [TestCase(".pic-swatch")]
     public void TheSharedLook_HasNoRuleForWhatWent(string gone)
     {
         Assert.That(Shared, Does.Not.Contain(gone));
@@ -80,7 +83,7 @@ public partial class PictureLookTests
     [Test]
     public void BothSchemes_SetEveryVariableAnyRuleReads()
     {
-        string every = Shared + FlowStyle.Rules + ComponentsStyle.Of(SvgTheme.Site);
+        string every = Shared + FlowStyle.Rules + ComponentsStyle.Rules;
         var read = Read().Matches(every).Select(match => match.Groups[1].Value).ToHashSet();
         var light = SetIn("svg {");
 
@@ -113,13 +116,15 @@ public partial class PictureLookTests
     [Test]
     public void EachRule_IsWrittenInOnePlace()
     {
-        string components = ComponentsStyle.Of(SvgTheme.Site);
+        string components = ComponentsStyle.Rules;
 
         Assert.Multiple(() =>
         {
             Assert.That(Shared, Does.Not.Contain(".cmp-"), "nothing of a component in the shared look");
             Assert.That(components, Does.Not.Contain(".pic-"), "nothing shared written again for a component");
             Assert.That(components, Does.Contain(".cmp-pin").And.Contain(".cmp-pill").And.Contain(".cmp-ghost"));
+            Assert.That(components, Does.Contain(".cmp-pill { stroke-width: 1.5; }"), "a pill has no glow");
+            Assert.That(components, Does.Not.Contain("drop-shadow"));
         });
     }
 }

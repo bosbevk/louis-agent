@@ -96,12 +96,12 @@ svg {
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
 .pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
-.pic-swatch { stroke-width: 1; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }

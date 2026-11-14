@@ -54,7 +54,7 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
 
         // What every picture in the new look wears, then the title and the light the other kinds wear too, then
         // what is a component's own.
-        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + ComponentsStyle.Of(SvgTheme.Site);
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + ComponentsStyle.Rules;
         return writer.Write(SvgTheme.Site, source.Title, placed.Width, placed.Height, style);
     }
 

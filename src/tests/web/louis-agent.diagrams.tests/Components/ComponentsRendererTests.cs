@@ -85,6 +85,29 @@ public class ComponentsRendererTests
     }
 
     /// <summary>
+    /// The key shows a tone as a small badge filled with it (F134.12, Louis of the three swatches: "old look"),
+    /// as a flow's key does, and says what each thing means in the page's ink. The pill has no glow.
+    /// </summary>
+    [Test]
+    public void TheKey_ShowsATone_AsASmallFilledBadge()
+    {
+        var shapes = XElement.Parse(Drawn()).Descendants().ToList();
+        var badges = shapes.Where(shape => (string?)shape.Attribute("width") == "18")
+            .Select(shape => (string?)shape.Attribute("class")).ToList();
+        var means = shapes.Where(shape => (string?)shape.Attribute("class") == "pic-means")
+            .Select(shape => shape.Value).ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(badges, Has.Count.EqualTo(3), "starts it, this project, contracts and state");
+            Assert.That(badges, Is.All.StartsWith("pic-fill tone-"));
+            Assert.That(Classes(Drawn()), Has.None.Contains("pic-swatch"));
+            Assert.That(means, Does.Contain("this project").And.Contain("the one thing it holds"));
+            Assert.That(Drawn(), Does.Not.Contain("drop-shadow"));
+        });
+    }
+
+    /// <summary>
     /// The dots that march along a line stop for a reader who asked for less motion, and the picture carries both
     /// its light and its dark colours.
     /// </summary>

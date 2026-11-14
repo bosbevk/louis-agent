@@ -68,11 +68,12 @@ it stands. So a panel inside a panel is a step deeper with no rule for its depth
 deep is not white. A tone never tints a panel: a box's badge, its chip or its pins say its tone. What any kind
 in that look wears is `PictureLook`, with class names that start `pic-`, and the parts drawn with it are
 `PictureParts`: the start of a picture, which is the light with the title over it, and a panel. The title and
-the light are `MarqueeLook`'s, so they are the same in every kind.
+the light are `MarqueeLook`'s, so they are the same in every kind. In both kinds' keys a tone's sample is a
+small badge filled with the tone, and what an item means is written by one rule of the shared look.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a box's name and
 icon badge, the thin outline of a shape that means something, the pill an arrow's word stands in, and the rule
-and the words of its key. The shared rules come first in a
+over its key. The shared rules come first in a
 picture's style, so two kinds can't drift apart in what they share.
 
 **The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence

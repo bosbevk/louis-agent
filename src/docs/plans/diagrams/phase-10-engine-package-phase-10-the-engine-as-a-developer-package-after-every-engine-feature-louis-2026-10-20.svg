@@ -126,12 +126,12 @@ svg {
 .pic-fill.tone-amber { fill: var(--amber-line); }
 .pic-ink.tone-amber { fill: var(--amber-ink); }
 .pic-panel { fill: var(--pic-body); stroke: var(--pic-hair); stroke-width: 1; }
-.pic-swatch { stroke-width: 1; }
 .pic-group {
   fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
 }
 .pic-name { fill: var(--text); font: 700 14px var(--pic-sans); letter-spacing: -.1px; }
 .pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-means { fill: var(--text); font: 12px var(--pic-sans); }
 .pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
 .pic-port { fill: var(--ground); stroke-width: 1.25; }
 .pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
@@ -170,8 +170,7 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
 .flow-shape { stroke: var(--quiet); stroke-width: 1.25; stroke-opacity: .8; stroke-linejoin: round; }
 .flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
 .flow-word { font: 500 10px var(--mono); }
-.flow-rule { fill: url(#mrq-edge); opacity: .7; }
-.flow-means { fill: var(--text); font: 12px var(--pic-sans); }</style>
+.flow-rule { fill: url(#mrq-edge); opacity: .7; }</style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
@@ -337,17 +336,17 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
     <rect class="flow-rule" x="0" y="910" width="1332" height="1" rx="0" />
     <text class="pic-group" x="0" y="932" text-anchor="start">How to read it</text>
     <rect class="pic-fill tone-blue" x="0" y="949" width="18" height="18" rx="6" />
-    <text class="flow-means" x="28" y="962.5" text-anchor="start">starts it</text>
+    <text class="pic-means" x="28" y="962.5" text-anchor="start">starts it</text>
     <rect class="pic-fill tone-green" x="117.4" y="949" width="18" height="18" rx="6" />
-    <text class="flow-means" x="145.4" y="962.5" text-anchor="start">this project</text>
+    <text class="pic-means" x="145.4" y="962.5" text-anchor="start">this project</text>
     <rect class="pic-fill tone-violet" x="254.6" y="949" width="18" height="18" rx="6" />
-    <text class="flow-means" x="282.6" y="962.5" text-anchor="start">the framework</text>
+    <text class="pic-means" x="282.6" y="962.5" text-anchor="start">the framework</text>
     <rect class="pic-fill tone-amber" x="398.4" y="949" width="18" height="18" rx="6" />
-    <text class="flow-means" x="426.4" y="962.5" text-anchor="start">files and data</text>
+    <text class="pic-means" x="426.4" y="962.5" text-anchor="start">files and data</text>
     <path class="pic-panel flow-shape pic-edge" d="M566.8 950L578.8 950L560.8 966L548.8 966Z" />
-    <text class="flow-means" x="588.8" y="962.5" text-anchor="start">data in or out</text>
+    <text class="pic-means" x="588.8" y="962.5" text-anchor="start">data in or out</text>
     <path class="flow-key pic-line pic-edge" d="M711.2 958H741.2" marker-end="url(#arrow)" />
-    <text class="flow-means" x="751.2" y="962.5" text-anchor="start">a line has the colour of the box it leaves</text>
+    <text class="pic-means" x="751.2" y="962.5" text-anchor="start">a line has the colour of the box it leaves</text>
   </g>
   <rect class="notebar" x="0" y="988" width="1332" height="37" rx="8" />
   <g class="note-icon" transform="translate(12 998) scale(0.6667)">

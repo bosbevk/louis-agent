@@ -13,12 +13,16 @@ namespace LouisAgent.Diagrams.Svg.Renderers.Parts;
 /// </summary>
 /// <remarks>
 /// A sample is drawn with the same shapes as the real thing, marked <c>cmp-key</c>, so the key can never show a
-/// pin or a line that looks other than the picture's own.
+/// pin or a line that looks other than the picture's own. A tone's sample is a small badge filled with it, as in
+/// a flow's key, since no panel is tinted in its tone (F134.12, Louis of the swatches it had: "old look").
 /// </remarks>
 internal static class ComponentsKey
 {
-    /// <summary>How wide a sample is, and where the words beside a swatch, a line and a pill start.</summary>
-    private const double Sample = 76, SwatchWords = 38, Words = 88;
+    /// <summary>How wide a sample is, and where the words beside a line and a pill start.</summary>
+    private const double Sample = 76, Words = 88;
+
+    /// <summary>A tone's badge, its corner, and how far after it its words start.</summary>
+    private const double Badge = 18, BadgeCorner = 6, BadgeWords = 10;
 
     /// <summary>The key, where the layout put it.</summary>
     public static void Draw(SvgWriter writer, PlacedKey key)
@@ -33,23 +37,21 @@ internal static class ComponentsKey
     {
         double words = row.Kind switch
         {
-            KeyRowKind.Tone => Swatch(writer, row, x, y),
+            KeyRowKind.Tone => ToneBadge(writer, row, x, y),
             KeyRowKind.HandedDown => Pin(writer, DiagramMessage.ComponentHandedDown, false, Tone(row), x, y),
             KeyRowKind.SaidBackUp => Pin(writer, DiagramMessage.ComponentSaidBackUp, true, Tone(row), x, y),
             KeyRowKind.Reads => Read(writer, x, y),
             KeyRowKind.Holds => Pill(writer, Tone(row), x, y),
             _ => 0
         };
-        writer.Text(x + words, y + 4, row.Words, "pic-note", "start");
+        writer.Text(x + words, y + 4.5, row.Words, "pic-means", "start");
     }
 
-    /// <summary>A tone's sample: a small panel in that tone, with its marker. Says where its words start.</summary>
-    private static double Swatch(SvgWriter writer, KeyRow row, double x, double y)
+    /// <summary>A tone's sample: a small badge filled with that tone. Says where its words start.</summary>
+    private static double ToneBadge(SvgWriter writer, KeyRow row, double x, double y)
     {
-        string tone = Tone(row);
-        writer.Box(x, y - 8, 26, 16, 5, $"pic-swatch pic-tint pic-edge{tone}")
-            .Box(x + 4, y - 4, 3, 8, 1.5, $"pic-fill{tone}");
-        return SwatchWords;
+        writer.Box(x, y - Badge / 2, Badge, Badge, BadgeCorner, $"pic-fill{Tone(row)}");
+        return Badge + BadgeWords;
     }
 
     /// <summary>A pin's sample: a real pin with its own word on it. Says where the words beside it start.</summary>

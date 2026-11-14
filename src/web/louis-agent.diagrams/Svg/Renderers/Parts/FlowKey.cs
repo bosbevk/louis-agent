@@ -33,7 +33,7 @@ internal static class FlowKey
         {
             double left = x + item.X, middle = y + item.Y + FlowKeyLayout.Row / 2;
             Sample(writer, item, left, middle);
-            writer.Text(left + item.Sample + FlowKeyLayout.Words, middle + WordDrop, item.Words, "flow-means",
+            writer.Text(left + item.Sample + FlowKeyLayout.Words, middle + WordDrop, item.Words, "pic-means",
                 "start");
         }
     }

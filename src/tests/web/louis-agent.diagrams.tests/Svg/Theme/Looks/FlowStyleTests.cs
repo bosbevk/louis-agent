@@ -18,7 +18,6 @@ public class FlowStyleTests
     [TestCase(".flow-chip")]
     [TestCase(".flow-word")]
     [TestCase(".flow-rule")]
-    [TestCase(".flow-means")]
     public void TheFlowsStyle_HasARuleForEachOfItsOwnParts(string rule) => Assert.That(Own, Does.Contain(rule + " "));
 
     /// <summary>
@@ -32,9 +31,13 @@ public class FlowStyleTests
         Assert.That(Own, Does.Not.Contain("drop-shadow").And.Not.Contain("--flow-glow"));
     });
 
-    /// <summary>A group's frame is a panel like a box, so the flow's style has no rule for one.</summary>
+    /// <summary>
+    /// A group's frame is a panel like a box, so the flow's style has no rule for one. And what a key's item
+    /// means is written the same in a component diagram's key, so that rule is the shared look's.
+    /// </summary>
     [Test]
-    public void AGroupsFrame_IsAPanel_SoTheStyleHasNoRuleForIt() => Assert.That(Own, Does.Not.Contain(".flow-group"));
+    public void AGroupsFrame_IsAPanel_AndAKeysWordsAreShared_SoTheStyleHasNoRuleForThem() =>
+        Assert.That(Own, Does.Not.Contain(".flow-group").And.Not.Contain(".flow-means"));
 
     /// <summary>The rule over the key is filled with the accent's edge, as the other kinds' are.</summary>
     [Test]
