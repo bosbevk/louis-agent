@@ -138,6 +138,31 @@ Each is its own plan, its own done-when and its own write-up, in this order.
   [the write-up](../learning/18-testing-and-shipping.md). What it left for CL65.4: one test project tests both
   projects, and one design doc covers both.
 - **2026-11-14, after CL65.** Louis, while CL65.1 started: "then after this finish F134.1."
+- **2026-11-14, a fifth child: CL65.5, the pictures a project needs, and where they stand.** Louis, during
+  CL65.2: "the project type and requirements must drive which diagrams is required", "if diagrams is missing
+  add them", and "graphs must also be placed where it is used ort needed not a section".
+  - *His pick of three:* the project's type sets the floor, and its requirements add. A fixed table gives each
+    type of project its required diagrams, a doc names what its own requirements add, and a test holds both.
+    The other two were the type alone, and each doc's own list alone.
+  - *The floor proposed to him, which he did not change:* every project an overview and a class diagram; a
+    library with a main path an activity and a sequence diagram; a host or a program a sequence and a
+    deployment diagram; a web app or Razor library a component diagram; a console tool an activity diagram.
+  - *What it replaces:* the one rule that asks every project doc for the same four kinds. Today 39 of 42
+    project docs keep 108 pictures in a *Diagrams* section. That section goes, and each picture stands beside
+    the text it explains. The projects' index and the docs' rules name that section and change with it.
+  - *It follows CL65.3,* since a test can only ask for a type of diagram once every picture states its type.
+  - *Done when* every project doc states its type from a fixed list, shows what its type and its own list
+    ask for, and has no *Diagrams* section.
+- **2026-11-14, a sixth child: CL65.6, the engine's arithmetic as small types.** Louis, stopping CL65.2 to
+  ask: "with all these math in the egine, can we not have something like a calculator which does it neatly."
+  Measured: 275 named numbers in 49 files, text measured by its length in 19 places with 12 different widths
+  of a character, a box's middle or edge worked out inline in 56 places, and 20 path strings built by hand.
+  - *His pick of three:* small types that carry their own sums, a box that knows its middle and edges, a face
+    that knows how wide words are in it, a small writer for a path. The other two were one calculator class,
+    which is the grab-bag our rule forbids, and a layout that works out every place from what stacks under
+    what.
+  - *Done when* no layout or drawing measures words by a number of its own or works out a box's edge inline,
+    and the docs' tool writes no picture.
 
 ---
 [Docs index](../README.md) · Related: [F134](F134-the-showroom-looks-modern.md) ·
