@@ -1,8 +1,8 @@
 {
-  "kind": "components",
+  "kind": "nested",
   "title": "The showroom's start: what it is made of",
   "caption": "The start holds one thing: which demo is forward. Every part is told it, and says back what a visitor asked for, so the arrows and the buttons can't disagree.",
-  "components": {
+  "nested": {
     "subtitle": "louis-agent.web, Components / Site / Showroom / Start",
     "root": {
       "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",

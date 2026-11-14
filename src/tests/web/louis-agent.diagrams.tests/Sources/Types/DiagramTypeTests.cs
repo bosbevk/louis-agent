@@ -61,7 +61,7 @@ public class DiagramTypeTests
     [TestCase(DiagramKind.Sequence, DiagramType.Sequence)]
     [TestCase(DiagramKind.Classes, DiagramType.Class)]
     [TestCase(DiagramKind.Composite, DiagramType.CompositeStructure)]
-    [TestCase(DiagramKind.Components, DiagramType.CompositeStructure)]
+    [TestCase(DiagramKind.Nested, DiagramType.CompositeStructure)]
     [TestCase(DiagramKind.Cards, DiagramType.Overview)]
     public void AKindThatIsOneType_HasItAsItsOwn(DiagramKind kind, DiagramType type)
     {

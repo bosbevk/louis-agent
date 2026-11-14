@@ -19,7 +19,7 @@ public static class DiagramTypes
     {
         DiagramKind.Sequence => DiagramType.Sequence,
         DiagramKind.Classes => DiagramType.Class,
-        DiagramKind.Composite or DiagramKind.Components => DiagramType.CompositeStructure,
+        DiagramKind.Composite or DiagramKind.Nested => DiagramType.CompositeStructure,
         DiagramKind.Cards => DiagramType.Overview,
         _ => null
     };

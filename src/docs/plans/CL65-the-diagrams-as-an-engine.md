@@ -262,6 +262,13 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     docs' frame had a legend. They are a key's words now. And this plan's own picture of a flow being built
     still says `FlowRules.Straight`, which is gone: the layout asks its two rules themselves.
   - *The two names* are put to him under the next heading. Neither is renamed.
+- **2026-11-15, the `components` kind is `nested`.** Louis, of the first finding below: "1, do it now". The
+  wire name and the JSON's field, `DiagramKind.Nested`, `NestedSpec` and its records, the layout, the renderer,
+  the style and the messages are renamed, and the four folders are `Nested`. The classes a drawing writes keep
+  `cmp-`, for the component a box is, so no picture is drawn differently: the docs' tool wrote none.
+- **2026-11-15, unattended to the end.** Louis, while the rename was built: "finish on your own then merge,
+  tell me only when you reach 134.1 again". What is left of CL65 is built with no stop and no question. Each
+  pick made for him is recorded here as open for him to overrule, and the branch is merged at the end.
 
 ## Put to Louis: the names of two kinds
 
@@ -270,6 +277,9 @@ so each waits for his pick. Nothing is backward compatible before a sale (ADR 00
 name beside the new one.
 
 ### 1. The `components` kind
+
+**Picked 2026-11-15: the first.** Louis: "1, do it now". The kind is `nested`. What follows is the finding as it
+was put.
 
 **What it means.** The kind's name promises one UML type and the picture shows another.
 

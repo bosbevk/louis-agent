@@ -35,7 +35,7 @@ Every file has the same things at the top.
 | `type` | What type of diagram it is, by UML's name. Only a `flow` writes it. *Say the type*, below, has the list. |
 | `title` | What the picture is. A screen reader is told it, and the docs' frame shows it. |
 | `caption` | Optional in the file, but every chart in the docs has one: the one thing to take from the picture. |
-| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `components`, `ticket`) that holds the picture. |
+| the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `nested`, `ticket`) that holds the picture. |
 
 ### Choose the kind
 
@@ -45,7 +45,7 @@ Every file has the same things at the top.
 | `flow` | Boxes and arrows | How something works |
 | `sequence` | Who calls whom, in order | One case, step by step |
 | `classes` | Types, their members and how they relate | An interface design |
-| `components` | One component, the boxes it holds, and what stands around it | What a component is made of: what holds what, what is handed down and what is said back up |
+| `nested` | One component, the boxes it holds, and what stands around it | What a component is made of: what holds what, what is handed down and what is said back up |
 | `composite` | One class, its parts, the ports on its edge and what joins them | What a single class is made of |
 | `ticket` | A read-only card, such as a booking request | What an agent draws in the chat |
 
@@ -60,7 +60,7 @@ Most kinds are only ever one type, so their files don't write it.
 |---|---|---|
 | `sequence` | `sequence` | Sequence diagram |
 | `classes` | `class` | Class diagram |
-| `composite`, `components` | `composite-structure` | Composite structure diagram |
+| `composite`, `nested` | `composite-structure` | Composite structure diagram |
 | `cards` | `overview`, a name of our own | Overview |
 | `ticket` | none, since it is a card in a chat | nothing |
 
@@ -362,17 +362,19 @@ drawn as a short line with its ends. You write none of that.
 `direction` and `groups` work as they do in a flow. Over about twenty types the arrows tangle. Split such a chart
 into two pictures.
 
-### Components: what a component is made of
+### Nested: what a component is made of
 
-A component diagram shows one component, everything it holds, and what stands around it. Use it for a project's
-components: a page, a frame or a part that is put together from others.
+A nested picture shows one component, everything it holds, and what stands around it. Use it for a project's
+components: a page, a frame or a part that is put together from others. The kind is named for how it is laid
+out, boxes inside a box. It shows what UML calls a composite structure. UML's component diagram is another
+thing, parts and the calls between them, and is a `flow` whose type is `component`.
 
 ```json
 {
-  "kind": "components",
+  "kind": "nested",
   "title": "The showroom's start: what it is made of",
   "caption": "One thing held: which demo is forward. The deck and the dock are told it, and each says back what a visitor asked for.",
-  "components": {
+  "nested": {
     "subtitle": "louis-agent.web, Components / Site / Showroom / Start",
     "root": {
       "id": "start", "name": "ShowroomStart", "kind": "component", "tone": "green",
@@ -459,7 +461,7 @@ The picture draws its own key, "how to read it", with a row for each of these it
 | `reads` | `true` when its box only reads it. It is drawn as one dashed line. |
 | `calls`, `back` | The word on the line from the box out to it, and on the line from it back. |
 
-**The title is in the picture.** A component diagram writes its `title` inside itself as one small line, and
+**The title is in the picture.** A nested picture writes its `title` inside itself as one small line, and
 its `subtitle` after it on the same line, after a colon. The docs' frame adds only the note bar from `caption`,
 as it does for every kind.
 
@@ -588,7 +590,7 @@ It also holds a picture's type to its kind. It refuses a flow that says no type,
 `sequence` that says `class`), a name that is no type of diagram, and a ticket that says one. Each refusal lists
 what may be written.
 
-In a component diagram it also refuses an id used twice, a state that names a pin its box can't reach (a box
+In a nested picture it also refuses an id used twice, a state that names a pin its box can't reach (a box
 it doesn't hold, or a pin that isn't in that box's `in` for a way down or its `out` for a way up), and a
 neighbour that stands by a box the picture doesn't have.
 
@@ -634,7 +636,7 @@ Name the last three `{project}-flow`, `{project}-sequence` and `{project}-interf
 
 **A project that has components shows them too** (Louis, 2026-11-14: "all projects which has components should
 have an component diagram in their documentation", and of one picture for a whole project: "of it's main
-components? plural"). Each of its main components gets a `components` picture of its own, since one picture is
+components? plural"). Each of its main components gets a `nested` picture of its own, since one picture is
 of one component: a frame, a page that is put together from parts, a part others are built on. Name each
 `{project}-components-{what}`, such as `louis-agent.web-components-showroom-start`, and put it beside the part
 of *How it works* that tells of that component.

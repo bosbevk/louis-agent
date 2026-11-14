@@ -6,7 +6,7 @@ using LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 namespace LouisAgent.Diagrams.Tests.Svg.Theme.Looks;
 
 /// <summary>
-/// The look every picture in the new style shares (F134.8): one style under the component diagram and the flow, so
+/// The look every picture in the new style shares (F134.8): one style under the nested picture and the flow, so
 /// what they share can't drift apart, and each kind adds only what is its own. Since F134.12 it is the others'
 /// look: a panel with a little body and a hairline, and nothing that glows, shines or tints.
 /// </summary>
@@ -90,7 +90,7 @@ public partial class PictureLookTests
     [Test]
     public void BothSchemes_SetEveryVariableAnyRuleReads()
     {
-        string every = Shared + FlowStyle.Rules + ComponentsStyle.Rules;
+        string every = Shared + FlowStyle.Rules + NestedStyle.Rules;
         var read = Read().Matches(every).Select(match => match.Groups[1].Value).ToHashSet();
         var light = SetIn("svg {");
 
@@ -123,7 +123,7 @@ public partial class PictureLookTests
     [Test]
     public void EachRule_IsWrittenInOnePlace()
     {
-        string components = ComponentsStyle.Rules;
+        string components = NestedStyle.Rules;
 
         Assert.Multiple(() =>
         {

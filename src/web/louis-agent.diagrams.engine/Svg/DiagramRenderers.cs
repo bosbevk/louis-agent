@@ -27,7 +27,7 @@ public static class DiagramRenderers
     private static readonly IReadOnlyList<IDiagramRenderer> All =
     [
         new FlowRenderer(), new CardsRenderer(), new SequenceRenderer(), new ClassesRenderer(), new TicketRenderer(),
-        new ComponentsRenderer(), new CompositeRenderer()
+        new NestedRenderer(), new CompositeRenderer()
     ];
 
     /// <summary>

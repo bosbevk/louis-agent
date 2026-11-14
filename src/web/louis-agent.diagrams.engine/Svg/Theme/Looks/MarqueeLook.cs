@@ -5,12 +5,12 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 /// <summary>
 /// What a cards picture and a sequence both wear (F134.9, F134.10, Louis's pick "Marquee" for each): the picture's
 /// small title, the soft light, the glass with the accent along its top, the pill with its code, a node on a
-/// lit line, and the faint rule over a key. A flow and a component diagram wear its title and its light too
+/// lit line, and the faint rule over a key. A flow and a nested picture wear its title and its light too
 /// (F134.12).
 /// </summary>
 /// <remarks>
 /// It was the cards' own until a second kind took the look. Then what the two share moved here, as what a flow and
-/// a component diagram share is <see cref="PictureLook"/>'s, so neither can drift from the other in it. A kind's
+/// a nested picture share is <see cref="PictureLook"/>'s, so neither can drift from the other in it. A kind's
 /// own style comes after it and adds only what is its own. The accent is the palette's violet running to its
 /// blue: in this look neither tone says what a box is. The fades are paints the look fills with by id and whose
 /// stops it colours. Each is named here once, with how it runs, and a drawing asks for it by that name.

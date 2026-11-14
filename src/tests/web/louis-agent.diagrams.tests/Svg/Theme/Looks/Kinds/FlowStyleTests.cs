@@ -28,7 +28,7 @@ public class FlowStyleTests
 
     /// <summary>
     /// A group's frame is a panel like a box, so the flow's style has no rule for one. And what a key's item
-    /// means is written the same in a component diagram's key, so that rule is the shared look's.
+    /// means is written the same in a nested picture's key, so that rule is the shared look's.
     /// </summary>
     [Test]
     public void AGroupsFrame_IsAPanel_AndAKeysWordsAreShared_SoTheStyleHasNoRuleForThem() =>

@@ -10,7 +10,7 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 /// </summary>
 /// <remarks>
 /// One look under every kind that wears it (Louis: "try a new style fancier than we have", then of the flow: "the
-/// same as the component diagram"). A kind adds only what is its own, as <see cref="ComponentsStyle"/> adds a
+/// same as the component diagram"). A kind adds only what is its own, as <see cref="NestedStyle"/> adds a
 /// component's pins and pill, so two kinds can't drift apart in what they share. A panel is filled with a little
 /// of the page's ink, the same wherever it stands, so a panel inside a panel is a step deeper with no rule for
 /// its depth, and on a white page a box four deep is not white (F134.12, Louis: "composite diagrams white is too

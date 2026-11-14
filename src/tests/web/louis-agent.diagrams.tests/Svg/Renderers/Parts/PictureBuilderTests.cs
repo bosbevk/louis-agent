@@ -120,7 +120,7 @@ public class PictureBuilderTests
     }
 
     /// <summary>
-    /// The picture is named by its title. The words in the title's line may say more, as a component diagram's
+    /// The picture is named by its title. The words in the title's line may say more, as a nested picture's
     /// do with what stands under its name. The styles are joined in the order given.
     /// </summary>
     [Test]

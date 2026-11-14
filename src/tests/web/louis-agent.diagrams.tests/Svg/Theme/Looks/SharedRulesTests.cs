@@ -18,7 +18,7 @@ public class SharedRulesTests
         ["classes"] = ClassesStyle.Of(SvgTheme.Site),
         ["sequence"] = SequenceStyle.Of(SvgTheme.Site),
         ["cards"] = CardsStyle.Rules,
-        ["components"] = ComponentsStyle.Rules,
+        ["nested"] = NestedStyle.Rules,
         ["composite"] = CompositeStyle.Rules
     };
 

@@ -55,14 +55,14 @@ web page, which needs care of its own.
 
 **Step 1: the file is read into records** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource`. It has
 a kind, a title that a screen reader is told, an optional caption, and the kind's own part. The kind is one of
-`flow`, `cards`, `sequence`, `classes`, `components`, `composite` or `ticket`.
+`flow`, `cards`, `sequence`, `classes`, `nested`, `composite` or `ticket`.
 
 **A source also has a type** (`Sources/Types/`). A kind is how a picture is laid out: boxes and arrows, lifelines,
 cards. A type is what the picture shows, by UML's name for it. There are UML's thirteen, such as `class`,
 `sequence`, `activity` and `composite-structure`, and one name of our own, `overview`, for a cards picture.
 
 - *A kind that is only ever one type need not write it.* A sequence is a `sequence`, a class chart a `class`, a
-  composite and a component diagram a `composite-structure`, a cards picture an `overview`. `DiagramTypeCheck`
+  composite and a nested picture a `composite-structure`, a cards picture an `overview`. `DiagramTypeCheck`
   fills it in.
 - *A flow writes its own.* Boxes and arrows draw eight of UML's types: `activity`, `component`, `deployment`,
   `object`, `package`, `state-machine`, `use-case` and `communication`. So a flow's file says which, in
@@ -84,7 +84,7 @@ of the engine.
 **Step 2: the kind picks a renderer** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind, a
 Strategy. There is one per kind, and each stands beside its drawing, in a folder of `Svg/Renderers/Parts/`:
 `Flows/`, `Overview/` for cards, `Lifelines/` for a sequence, `Types/` for a class chart, `Structure/` for a
-composite and `Nesting/` for a component diagram. The ticket's stands alone in `Svg/Renderers/`. Each kind has a
+composite and `Nesting/` for a nested picture. The ticket's stands alone in `Svg/Renderers/`. Each kind has a
 layout that places every box and word, and a drawing that draws what was placed. Part 2 explains each layout.
 The renderer is also handed the geometry its boxes and points are made by, which part 3 explains.
 
@@ -142,8 +142,8 @@ too. That style (`SvgStyle`) holds only what every picture needs whatever look i
 arrowhead in each tone and a caption. A rule test holds that each of its rules, and each of the docs' frame's, is
 for a class some drawing writes (`DiagramsProjectTests`).
 
-**The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A component
-diagram and a flow are drawn in the new look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
+**The new look is one shared style** (`Svg/Theme/Looks/`, and each kind's own in `Looks/Kinds/`). A nested
+picture and a flow are drawn in the new look: the picture's small title over a soft light, panels with a little body and a hairline edge, and lines
 whose dots march the way the arrow points. A panel is filled with a little of the page's ink, the same wherever
 it stands. So a panel inside a panel is a step deeper with no rule for its depth, and on a white page a box four
 deep is not white. A tone never tints a panel: a box's badge, its chip or its pins say its tone. What any kind
@@ -151,7 +151,7 @@ in that look wears is `PictureLook`, with class names that start `pic-`, and the
 `PictureParts`: a panel, and a tone as a shape's class. The title and the light are `MarqueeLook`'s and are
 written by the builder, so they are the same in every kind. In both kinds' keys a tone's sample is a
 small badge filled with the tone, and what an item means is written by one rule of the shared look.
-`ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
+`NestedStyle` adds only what is a nested picture's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own: the thin outline of a shape that means something. The shared
 rules come first in a picture's style, so two kinds can't drift apart in what they share.
 
@@ -164,7 +164,7 @@ link. A test holds it (`SharedRulesTests`): no kind's style has a rule a shared 
 styles have the same rule.
 
 **The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence
-wears it as well. A flow and a component diagram wear its title and its light. What both wear has names that
+wears it as well. A flow and a nested picture wear its title and its light. What both wear has names that
 start `mrq-`: the picture's small title, the soft light, the glass with the accent along its top, the pill with
 its code, a node on a lit line, and the rule over a key. Its accent is the palette's
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
@@ -431,7 +431,7 @@ and decides one place itself: the frame.
   pins of what is needed, since a port stands on the class's edge. The class's name, its chip and where it is
   stand along the frame's top.
 - *A part.* A panel with its type large, its role in a chip at the right, and its note under them.
-- *A port.* The component diagram's own pin (`ComponentPins`), its middle on the frame's edge: pointing down for
+- *A port.* The nested picture's own pin (`NestedPins`), its middle on the frame's edge: pointing down for
   what is asked, up for what is needed. Outside the frame stands what is asked or needed, in the code's words.
   A pin wears its port's tone, and a port with none wears the class's.
 - *A line.* What is passed on runs from a pin's end to a part, or from a part to a pin's end, with an arrowhead
@@ -444,6 +444,43 @@ and decides one place itself: the frame.
 
 Its style, `CompositeStyle`, has two rules of its own, with names that start `cps-`: the plain line, and the
 face of the words outside a pin. Everything else it wears is another look's.
+
+#### A nested picture: one component, and what it holds
+
+The `nested` kind shows one component, the boxes it holds, and what stands around it: a page put together from
+parts, with what is handed down to each part and what each says back up. The kind is named for how it is laid
+out, boxes inside a box. Its type is a composite structure. UML's component diagram is another thing, parts and
+the calls between them, and is a flow of type `component`.
+
+**The JSON says what holds what, and no place** (`Nested/Spec`). A `NestedSpec` is a root box and what stands
+around it. A box (`NestedBox`) has its name, a few words of what kind it is, a line of what it does, a tone, and
+the boxes it holds, which are drawn inside it. What is handed down to it is its `in`, and what it says back up
+its `out`: each is a pin on the box's top edge. A box may hold one thing of its own (`NestedState`), such as
+which demo is forward, with the pins that carry it down and the pins that change it. A neighbour
+(`NestedNeighbour`) stands before the root or after it, by the box it talks to: a page that hands the root
+things, a service a box reads, a script a box calls. `NestedCheck` refuses an id used twice, a state that names
+a pin its box can't reach, and a neighbour beside a box the picture doesn't have.
+
+**The layout walks the tree once** (`Nested/NestedLayout`). The boxes are a tree, the Composite pattern's. A box
+is as wide as its own words and the boxes it holds need, and the boxes it holds stretch to its inner width,
+stacked in the JSON's order. Every number of the layout is in `NestedSizes`. `NeighbourLayout` puts each
+neighbour level with its box, or under the neighbour above it when that place is taken, so every line to a
+neighbour runs straight across and none is routed.
+
+**A state's lines are routed** (`Nested/Routing/StateRoutes`). From the pill of the thing a box holds, a line
+goes down to each pin it is handed down through, and one comes back up from each pin that changes it. The ways
+are tried in order and the first clear one is taken: straight down, or level and then down, or round by the left
+side of the box that holds the pin's box and through the gap the layout keeps above every box for its pins.
+Lines down and lines up keep to lanes of their own, so two never run on top of each other. `Obstacles` says
+what stands in a way.
+
+**The key is part of the picture** (`Nested/KeyLayout`). It has a row for each thing the picture really uses, a
+tone, a pin handed down, a pin said back up, the one thing a box holds, so a small picture gets a small key. It
+stands under the column before the root, or under the root when nothing stands before it.
+
+**The drawing** (`Svg/Renderers/Parts/Nesting/`). `NestedRenderer` draws what the layout placed and decides no
+place itself. The look is `PictureLook`, and `NestedStyle` adds the pins, the pill and the dashed box, with class
+names that start `cmp-`, for the component a box is.
 
 #### Cards: a project's overview
 
@@ -611,11 +648,11 @@ This section is for looking a file up.
 src/web/louis-agent.diagrams/
 ├── Cards/      # Card, CardLook, CardRow, CardsSpec; Links/ (CardLink, CardLinkKind)
 ├── Classes/    # Spec/ (ClassRelation, ClassType, ClassesSpec, RelationKind)
-├── Components/ # ComponentsCheck; Spec/ (ComponentBox, ComponentNeighbour, ComponentState, ComponentsSpec, NeighbourSide)
 ├── Composite/  # CompositeCheck; Spec/ (CompositeConnector, CompositePart, CompositePort, CompositeSpec, PortSide)
 ├── Flow/       # Shapes/ (NodeShape); Spec/ (EdgeStyle, FlowDirection, GraphEdge, GraphGroup, GraphNode, GraphSpec)
 ├── Icons/      # DiagramIcon
-├── Messages/   # DiagramMessage; Holes/Components/ (DuplicateComponentHoles, UnknownComponentHoles, UnknownPinHoles); Holes/Composites/ (CompositeNoPartsHoles, DuplicatePartHoles, UnknownPartHoles); Holes/Reading/ (MissingPartHoles, UnknownKindHoles, UnknownShapeHoles, UnreadableHoles); Holes/Shapes/ (EmptyBlockHoles, NoteOverNoOneHoles, TicketHalfRowHoles, TicketRowCountHoles); Holes/Strays/ (LinkNotBetweenRowsHoles, UnknownBoxHoles, UnknownCardHoles, UnknownGroupHoles, UnknownParticipantHoles, UnknownTypeHoles); Holes/Types/ (MissingDiagramTypeHoles, NoDiagramTypeHoles, UnknownDiagramTypeHoles, WrongDiagramTypeHoles)
+├── Messages/   # DiagramMessage; Holes/Composites/ (CompositeNoPartsHoles, DuplicatePartHoles, UnknownPartHoles); Holes/Nested/ (DuplicateNestedIdHoles, UnknownNestedBoxHoles, UnknownPinHoles); Holes/Reading/ (MissingPartHoles, UnknownKindHoles, UnknownShapeHoles, UnreadableHoles); Holes/Shapes/ (EmptyBlockHoles, NoteOverNoOneHoles, TicketHalfRowHoles, TicketRowCountHoles); Holes/Strays/ (LinkNotBetweenRowsHoles, UnknownBoxHoles, UnknownCardHoles, UnknownGroupHoles, UnknownParticipantHoles, UnknownTypeHoles); Holes/Types/ (MissingDiagramTypeHoles, NoDiagramTypeHoles, UnknownDiagramTypeHoles, WrongDiagramTypeHoles)
+├── Nested/     # NestedCheck; Spec/ (NeighbourSide, NestedBox, NestedNeighbour, NestedSpec, NestedState)
 ├── Sequence/   # Spec/ (BlockKind, Participant, SequenceSpec); Spec/Steps/ (BlockStep, ElseCase, MessageStep, NoteStep, ReplyStep, SequenceStep)
 ├── Sources/    # DiagramJson, DiagramKind, DiagramReader, DiagramSource, DiagramWriter, NodeShapeConverter; Types/ (DiagramType, DiagramTypeCheck, DiagramTypeConverter, DiagramTypes)
 ├── Tickets/    # TicketCard; Inputs/ (TicketRowInput, TicketStatusInput); Spec/ (TicketRow, TicketSpec, TicketStatus)
@@ -624,15 +661,15 @@ src/web/louis-agent.diagrams/
 src/web/louis-agent.diagrams.engine/
 ├── Cards/      # OverviewLayout; Placed/ (PlacedCard, PlacedOverview, PlacedRail, RailEnd); Rails/ (CardRails, Rail, RailPlaces, RailSpan, RailSpot); Sizes/ (CardSize, CardSizes)
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
-├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Composite/  # CompositeFlow
 ├── Flow/       # Bands, FlowText, GraphLayout, LongLines, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, Plan); Rows/ (BandShape, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
 ├── Geometry/   # Geometries, IBox, IGeometry, IPoint; DotNet/ (DotNetBox, DotNetGeometry, DotNetPoint); Generic/ (Box, GenericGeometry, Point)
 ├── Icons/      # IconPaths
 ├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
+├── Nested/     # KeyLayout, NeighbourLayout, NestedLayout, NestedSizes; Placed/ (PlacedBox, PlacedNeighbour, PlacedNested, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, ComponentsStyle, CompositeStyle, FlowStyle, SequenceStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, SvgWriter, TitledFrame; Ends/ (LineEnd); Paints/ (Fade, PaintRun); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (NestedChips, NestedKey, NestedPins, NestedRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (MarqueeLook, PictureLook); Theme/Looks/Kinds/ (CardsStyle, ClassesStyle, CompositeStyle, FlowStyle, NestedStyle, SequenceStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames

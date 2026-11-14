@@ -16,6 +16,6 @@ public enum DiagramKind
     [WireName("sequence")] Sequence,
     [WireName("classes")] Classes,
     [WireName("ticket")] Ticket,
-    [WireName("components")] Components,
+    [WireName("nested")] Nested,
     [WireName("composite")] Composite
 }

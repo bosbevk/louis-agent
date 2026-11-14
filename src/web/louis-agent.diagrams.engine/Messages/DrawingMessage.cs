@@ -68,15 +68,15 @@ public enum DrawingMessage
     [Description("creates")] LinkCreates,
     [Description("uses")] LinkUses,
 
-    // The words a component diagram draws itself (F134.7): on a line to a service, and in its key.
-    [Description("reads")] ComponentReads,
-    [Description("handed down")] ComponentHandedDown,
-    [Description("a parameter")] ComponentParameter,
-    [Description("said back up")] ComponentSaidBackUp,
-    [Description("a callback")] ComponentCallback,
-    [Description("reads a service")] ComponentReadsAService,
-    [Description("the one thing it holds")] ComponentHolds,
-    [Description("A box inside a box is held by it.")] ComponentHeldBy,
+    // The words a nested picture draws itself (F134.7): on a line to a service, and in its key.
+    [Description("reads")] NestedReads,
+    [Description("handed down")] NestedHandedDown,
+    [Description("a parameter")] NestedParameter,
+    [Description("said back up")] NestedSaidBackUp,
+    [Description("a callback")] NestedCallback,
+    [Description("reads a service")] NestedReadsAService,
+    [Description("the one thing it holds")] NestedHolds,
+    [Description("A box inside a box is held by it.")] NestedHeldBy,
 
     // What each tone means in a picture's key (CL60.2): the role a box of that colour plays in every chart.
     [Description("starts it")] LegendBlue,

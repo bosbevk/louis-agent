@@ -1,6 +1,6 @@
 using LouisAgent.Diagrams.Composite.Spec;
-using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Flow;
+using LouisAgent.Diagrams.Engine.Nested;
 using LouisAgent.Diagrams.Engine.Words;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Tones;
@@ -69,15 +69,15 @@ public static class CompositeFlow
     /// </summary>
     private static string PartLabel(CompositePart part)
     {
-        double chip = part.Role is { } role ? Beside + ComponentSizes.ChipWidth(role) : 0;
-        return Measured($"{part.Type}   {part.Role}", 2 * Inset + ComponentSizes.NameWidth(part.Type) + chip);
+        double chip = part.Role is { } role ? Beside + NestedSizes.ChipWidth(role) : 0;
+        return Measured($"{part.Type}   {part.Role}", 2 * Inset + NestedSizes.NameWidth(part.Type) + chip);
     }
 
     /// <summary>A port's label: its words and its name, as wide as the words with the pin beside them.</summary>
     private static string PortLabel(CompositePort port)
     {
         double words = PortWords.Width(port.Label ?? "");
-        return Measured($"{port.Label}   {port.Name}", words + Beside + ComponentSizes.PinWidth(port.Name) + Beside);
+        return Measured($"{port.Label}   {port.Name}", words + Beside + NestedSizes.PinWidth(port.Name) + Beside);
     }
 
     /// <summary>

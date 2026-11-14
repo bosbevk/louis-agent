@@ -1,8 +1,8 @@
 using LouisAgent.Diagrams.Composite.Spec;
-using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
+using LouisAgent.Diagrams.Engine.Nested;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
@@ -28,7 +28,7 @@ internal static class CompositeKey
     public static (IReadOnlyList<CompositeKeyItem> Items, double Height) Of(CompositeSpec spec, double width)
     {
         var ports = spec.Ports ?? [];
-        double pin = ComponentSizes.PinWidth(DiagramText.Format(DrawingMessage.CompositePort));
+        double pin = NestedSizes.PinWidth(DiagramText.Format(DrawingMessage.CompositePort));
         var shown = new List<CompositeKeyItem>();
         if (ports.Any(port => port.Side == PortSide.In)) shown.Add(new(DrawingMessage.CompositeAsked, pin));
         if (ports.Any(port => port.Side == PortSide.Out)) shown.Add(new(DrawingMessage.CompositeNeeded, pin));
@@ -63,13 +63,13 @@ internal static class CompositeKey
         {
             // What is asked of the class: a pin that points down, as a real one does.
             case DrawingMessage.CompositeAsked:
-                var asked = ComponentSizes.Pin(geometry, "", word, false, row.Left, row.Middle.Y);
-                ComponentPins.Draw(writer, asked, tone, "cmp-key cmp-pin");
+                var asked = NestedSizes.Pin(geometry, "", word, false, row.Left, row.Middle.Y);
+                NestedPins.Draw(writer, asked, tone, "cmp-key cmp-pin");
                 break;
             // What the class needs: a pin that points up.
             case DrawingMessage.CompositeNeeded:
-                var needed = ComponentSizes.Pin(geometry, "", word, true, row.Left, row.Middle.Y);
-                ComponentPins.Draw(writer, needed, tone, "cmp-key cmp-pin");
+                var needed = NestedSizes.Pin(geometry, "", word, true, row.Left, row.Middle.Y);
+                NestedPins.Draw(writer, needed, tone, "cmp-key cmp-pin");
                 break;
             // Two parts that work together: a plain line.
             case DrawingMessage.CompositeTogether:

@@ -2,8 +2,8 @@ using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Tests.Components;
 using LouisAgent.Diagrams.Tests.Composite;
+using LouisAgent.Diagrams.Tests.Nested;
 using LouisAgent.Diagrams.Tickets.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Svg;
@@ -47,7 +47,7 @@ public class DiagramRenderersTests
     /// </summary>
     private static IEnumerable<DiagramSource> Pictures()
     {
-        yield return DiagramReader.Read(ComponentSamples.Start);
+        yield return DiagramReader.Read(NestedSamples.Start);
         yield return DiagramReader.Read(CompositeSamples.Engine);
         yield return new DiagramSource(DiagramKind.Ticket, "A booking", Ticket: new TicketSpec("BOOKING",
             "The garden room", [new TicketRow(DiagramIcon.Calendar, "Dates", "Fri 14 to Sun 16 Nov")]));

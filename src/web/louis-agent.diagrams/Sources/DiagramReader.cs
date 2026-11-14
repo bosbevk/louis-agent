@@ -2,13 +2,13 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
-using LouisAgent.Diagrams.Components;
 using LouisAgent.Diagrams.Composite;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Messages.Holes.Reading;
 using LouisAgent.Diagrams.Messages.Holes.Shapes;
 using LouisAgent.Diagrams.Messages.Holes.Strays;
+using LouisAgent.Diagrams.Nested;
 using LouisAgent.Diagrams.Sequence.Spec;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources.Types;
@@ -45,7 +45,7 @@ public static class DiagramReader
         if (source.Sequence is { } sequence) CheckSequence(sequence);
         if (source.Classes is { } classes) CheckClasses(classes);
         if (source.Ticket is { } ticket) CheckTicket(ticket);
-        if (source.Components is { } components) ComponentsCheck.Check(components);
+        if (source.Nested is { } components) NestedCheck.Check(components);
         if (source.Composite is { } composite) CompositeCheck.Check(composite);
         return source;
     }
@@ -104,7 +104,7 @@ public static class DiagramReader
             DiagramKind.Sequence => source.Sequence is not null,
             DiagramKind.Classes => source.Classes is not null,
             DiagramKind.Ticket => source.Ticket is not null,
-            DiagramKind.Components => source.Components is not null,
+            DiagramKind.Nested => source.Nested is not null,
             DiagramKind.Composite => source.Composite is not null,
             _ => false
         };

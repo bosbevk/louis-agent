@@ -80,16 +80,16 @@ public enum DiagramMessage
     [Description("The status's tone '{Tone}' isn't one there is; use one of {Tones}.")]
     UnknownTone,
 
-    [Description("The id '{Id}' is used twice in the component diagram. Every box and every neighbour needs an id " +
+    [Description("The id '{Id}' is used twice in the nested diagram. Every box and every neighbour needs an id " +
                  "of its own.")]
-    DuplicateComponent,
+    DuplicateNestedId,
 
     [Description("The state of '{Holder}' names '{Pin}', which is no pin it can reach. Write it as box.Pin, where " +
                  "the box is one that '{Holder}' holds and the pin is in that box's \"{List}\".")]
     UnknownPin,
 
-    [Description("The neighbour '{Neighbour}' stands by '{To}', which no box in the component diagram has.")]
-    UnknownComponent,
+    [Description("The neighbour '{Neighbour}' stands by '{To}', which no box in the nested diagram has.")]
+    UnknownNestedBox,
 
     [Description("The class '{Name}' has no part. A composite structure diagram shows what a class is built " +
                  "from, so give it one part at least.")]

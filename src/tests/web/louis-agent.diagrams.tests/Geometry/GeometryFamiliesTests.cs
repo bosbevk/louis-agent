@@ -164,7 +164,7 @@ public class GeometryFamiliesTests(IGeometry geometry)
 
     /// <summary>
     /// A box holds another that lies within it, and itself, and not one that reaches past any edge, as a box of
-    /// a component diagram holds the boxes drawn inside it.
+    /// a nested picture holds the boxes drawn inside it.
     /// </summary>
     [Test]
     public void ABox_HoldsWhatLiesWithinIt()

@@ -1,11 +1,11 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Composite.Spec;
-using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Arrows;
 using LouisAgent.Diagrams.Engine.Flow.Placed;
 using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Nested;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Flows;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
@@ -26,7 +26,7 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 /// It draws what <see cref="GraphLayout"/> placed for the flow <see cref="CompositeFlow"/> made of the class, and
 /// decides one place itself: the frame. The layout's frame goes round every box, the ports' too. This one goes
 /// round the parts, and its left and right edges run through the middle of the pins, since a port stands on the
-/// class's edge. A pin is the component diagram's own (<see cref="ComponentPins"/>), a line's word the flow's.
+/// class's edge. A pin is the nested picture's own (<see cref="NestedPins"/>), a line's word the flow's.
 /// </remarks>
 internal static class CompositeDrawing
 {
@@ -56,7 +56,7 @@ internal static class CompositeDrawing
                 return (height, (writer, top) => CompositeKey.Draw(writer, items, tone, geometry, top, width));
             })
             .Caption(source.Caption)
-            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, FlowStyle.Rules, ComponentsStyle.Rules,
+            .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, FlowStyle.Rules, NestedStyle.Rules,
                 CompositeStyle.Rules)
             .Build();
     }
@@ -106,16 +106,16 @@ internal static class CompositeDrawing
     private static void Frame(SvgWriter writer, CompositeSpec spec, IBox frame, IGeometry geometry)
     {
         string tone = PictureParts.Tone(spec.Tone);
-        double line = frame.Top + NameLine, name = frame.Left + ComponentSizes.NameIn;
+        double line = frame.Top + NameLine, name = frame.Left + NestedSizes.NameIn;
         PictureParts.Panel(writer, frame).Text(name, line, spec.Name, "pic-name", "start");
         if (spec.Kind is { } kind)
         {
-            double after = name + ComponentSizes.NameWidth(spec.Name) + ComponentSizes.ChipGap;
-            ComponentChips.Draw(writer, geometry, after, line - ComponentSizes.ChipRise, kind, tone);
+            double after = name + NestedSizes.NameWidth(spec.Name) + NestedSizes.ChipGap;
+            NestedChips.Draw(writer, geometry, after, line - NestedSizes.ChipRise, kind, tone);
         }
 
         if (spec.Aside is { } aside)
-            writer.Text(frame.Right - ComponentSizes.AsideIn, line, aside, "pic-note", "end");
+            writer.Text(frame.Right - NestedSizes.AsideIn, line, aside, "pic-note", "end");
     }
 
     /// <summary>
@@ -163,8 +163,8 @@ internal static class CompositeDrawing
         writer.Box(box, Corner, "pic-panel").Text(words, line, part.Type, "pic-name", "start");
         if (part.Role is { } role)
         {
-            double chipLeft = box.Right - CompositeFlow.Inset - ComponentSizes.ChipWidth(role);
-            ComponentChips.Draw(writer, geometry, chipLeft, line - ComponentSizes.ChipRise, role, tone);
+            double chipLeft = box.Right - CompositeFlow.Inset - NestedSizes.ChipWidth(role);
+            NestedChips.Draw(writer, geometry, chipLeft, line - NestedSizes.ChipRise, role, tone);
         }
 
         var note = part.Note is { } said ? GraphLayout.NoteLines(said) : [];
@@ -183,8 +183,8 @@ internal static class CompositeDrawing
         bool needs = port.Side == PortSide.Out;
         string tone = PictureParts.Tone(CompositeFlow.ToneOf(spec, port));
         double y = box.Middle.Y;
-        var pin = ComponentSizes.Pin(geometry, "", port.Name, needs, edge - PinWidth(port) / 2, y);
-        ComponentPins.Draw(writer, pin, tone, "cmp-pin");
+        var pin = NestedSizes.Pin(geometry, "", port.Name, needs, edge - PinWidth(port) / 2, y);
+        NestedPins.Draw(writer, pin, tone, "cmp-pin");
         if (port.Label is not { } label) return;
 
         double beside = needs ? pin.Box.Right + CompositeFlow.Beside : pin.Box.Left - CompositeFlow.Beside;
@@ -192,5 +192,5 @@ internal static class CompositeDrawing
     }
 
     /// <summary>How wide a port's pin is.</summary>
-    private static double PinWidth(CompositePort port) => ComponentSizes.PinWidth(port.Name);
+    private static double PinWidth(CompositePort port) => NestedSizes.PinWidth(port.Name);
 }

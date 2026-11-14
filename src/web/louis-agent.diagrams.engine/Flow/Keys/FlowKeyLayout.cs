@@ -13,7 +13,7 @@ namespace LouisAgent.Diagrams.Engine.Flow.Keys;
 /// width, on to a new row when a row is full.
 /// </summary>
 /// <remarks>
-/// A pure function of the placed boxes, as a component diagram's key is of its boxes, so a key never explains a
+/// A pure function of the placed boxes, as a nested picture's key is of its boxes, so a key never explains a
 /// tone or a shape the picture doesn't have. It runs across the width, where a component's is a column, because a
 /// flow is wide and has no column to put it in.
 /// </remarks>

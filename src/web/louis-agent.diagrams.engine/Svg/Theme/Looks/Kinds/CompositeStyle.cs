@@ -7,7 +7,7 @@ namespace LouisAgent.Diagrams.Engine.Svg.Theme.Looks.Kinds;
 /// <remarks>
 /// Almost nothing is its own, on purpose. The panels and the lines that run are <see cref="PictureLook"/>'s, the
 /// title, the type and the light <see cref="MarqueeLook"/>'s, a line's word and the key's rule
-/// <see cref="FlowStyle"/>'s, and a pin and a chip <see cref="ComponentsStyle"/>'s. So a composite can't drift
+/// <see cref="FlowStyle"/>'s, and a pin and a chip <see cref="NestedStyle"/>'s. So a composite can't drift
 /// from the kinds it borrows from. A plain line has no arrowhead and no dots: it says two parts work together, not
 /// that something moves along it.
 /// </remarks>

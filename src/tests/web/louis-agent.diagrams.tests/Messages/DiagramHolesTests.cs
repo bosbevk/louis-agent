@@ -53,9 +53,9 @@ public class DiagramHolesTests
     [TestCase(DiagramMessage.UnknownType)]
     [TestCase(DiagramMessage.TicketRowCount)]
     [TestCase(DiagramMessage.TicketHalfRow)]
-    [TestCase(DiagramMessage.DuplicateComponent)]
+    [TestCase(DiagramMessage.DuplicateNestedId)]
     [TestCase(DiagramMessage.UnknownPin)]
-    [TestCase(DiagramMessage.UnknownComponent)]
+    [TestCase(DiagramMessage.UnknownNestedBox)]
     [TestCase(DrawingMessage.NoRenderer)]
     public void AMessageTheReaderFills_HasItsRecord_WithItsHoles(object member)
     {
