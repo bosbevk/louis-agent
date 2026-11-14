@@ -270,8 +270,12 @@ comes from the same answer.
 
 `ClassKeyLayout` (`Keys/`) places a class chart's key: an item for each tone a type wears, each letter of a mark
 the chart has, and each kind of relation it has, the structure first (holds, is a, implements, then creates and
-uses). The items stand side by side across a width and go on to a new row when one is full. No class chart is
-drawn with a key yet.
+uses). The items stand side by side across a width and go on to a new row when one is full.
+
+`ClassesDrawing` (`Svg/Renderers/Parts/Types/`) draws a class chart as cards: a type a glass card with a badge
+that says what it is, a relation a line whose colour and ends say its kind. For it the adapter wraps a name at 30
+characters and asks for a badge's room beside every name. The class chart's renderer doesn't hand it a picture
+yet, so the docs' class charts are still drawn the old way.
 
 #### Cards: a project's overview
 
@@ -377,7 +381,7 @@ src/web/louis-agent.diagrams/
 ├── Tickets/        # TicketLayout, TicketCard; Spec/ (TicketSpec, TicketRow, TicketStatus), Inputs/, Placed/
 ├── Tones/          # DiagramTone
 ├── Icons/          # DiagramIcon, IconPaths, LICENSE-tabler-icons.txt
-├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's own style)
+├── Svg/            # IDiagramRenderer, DiagramRenderers, SvgWriter, TitledFrame, PageSvg; Ends/ (LineEnd); Renderers/ (with Parts/, Parts/Overview/ for a cards picture's drawing and Parts/Lifelines/ for a sequence's, Parts/Types/ for a class chart's), Theme/ (with Looks/, and Looks/Kinds/ for a class chart's own style)
 ├── Messages/       # DiagramMessage
 └── DiagramText.cs, TextWrap.cs
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
@@ -392,7 +396,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
   trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
-  `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg` and `Tickets/ticket.svg`
+  `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,

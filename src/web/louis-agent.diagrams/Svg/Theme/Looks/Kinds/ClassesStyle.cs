@@ -20,6 +20,8 @@ internal static class ClassesStyle
     public static string Of(SvgTheme theme) =>
         $$"""
 
+          .cls-cover { fill: var(--ground); }
+          .cls-group { fill: none; stroke: var(--mrq-hair); stroke-width: 1; }
           .cls-badge { fill: var(--quiet); }
           {{Toned(theme, ".cls-badge", "fill")}}
           .cls-badge-icon {

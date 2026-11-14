@@ -13,6 +13,8 @@ public class ClassesStyleTests
     private static readonly string Style = ClassesStyle.Of(SvgTheme.Site);
 
     /// <summary>The style has a rule for every part that is a class chart's own.</summary>
+    [TestCase(".cls-cover")]
+    [TestCase(".cls-group")]
     [TestCase(".cls-badge")]
     [TestCase(".cls-badge-icon")]
     [TestCase(".cls-mark")]

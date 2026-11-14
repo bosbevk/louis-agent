@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Diagrams.Classes.Marks;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
+using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Classes;
@@ -19,13 +20,28 @@ namespace LouisAgent.Diagrams.Classes;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data</seealso>
 public static class ClassFlow
 {
-    /// <summary>The flow a class chart is drawn as.</summary>
-    public static GraphSpec Of(ClassesSpec spec) =>
-        new(spec.Types.Select(type => new GraphNode(type.Id, type.Name, type.Kind, Group: type.Group, Icon: type.Icon,
-                Tone: ToneOf(type), Members: type.Members)).ToList(),
+    /// <summary>
+    /// A type's name breaks at this many characters in a carded chart, so one long name doesn't widen a column.
+    /// </summary>
+    public const int NameWidth = 30;
+
+    /// <summary>
+    /// The flow a class chart is drawn as: a box a type, and an arrow a relation, in the relations' order. For a
+    /// chart drawn as cards (F134.11), a long name is wrapped and every type asks for a badge's room beside its
+    /// name. A flow gives that room to a box that names an icon, so a type that names none is handed one, and the
+    /// drawing shows the letter of what the type is in its place.
+    /// </summary>
+    public static GraphSpec Of(ClassesSpec spec, bool carded = false) =>
+        new(spec.Types.Select(type => new GraphNode(type.Id, carded ? Wrapped(type.Name) : type.Name, type.Kind,
+                Group: type.Group, Icon: type.Icon ?? (carded ? DiagramIcon.Code : null), Tone: ToneOf(type),
+                Members: type.Members)).ToList(),
             Once(spec.Relations.Select(Edge)),
             spec.Direction,
             spec.Groups);
+
+    /// <summary>A name over as many lines as it needs, each written break kept.</summary>
+    private static string Wrapped(string name) =>
+        string.Join('\n', name.Split('\n').SelectMany(part => TextWrap.Lines(part, NameWidth)));
 
     /// <summary>
     /// The arrows, a word shared by several into the same type, or out of it, kept on the first only (CL60.4), so a
