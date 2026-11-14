@@ -6,7 +6,8 @@ using LouisAgent.Diagrams.Tones;
 namespace LouisAgent.Diagrams.Svg.Renderers;
 
 /// <summary>
-/// Draws a flow. Today that is the drawing every flow and class chart has had, <see cref="PlainFlowDrawing"/>.
+/// Draws a flow in the new look (F134.8), <see cref="FlowDrawing"/>: its own title, boxes level with what feeds
+/// them, each arrow at its own point, and a key. A class chart was the same drawing once and keeps the plain one.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
 internal sealed class FlowRenderer : IDiagramRenderer
@@ -15,7 +16,7 @@ internal sealed class FlowRenderer : IDiagramRenderer
     public DiagramKind Kind => DiagramKind.Flow;
 
     /// <summary>The flow as one SVG file's text.</summary>
-    public string Render(DiagramSource source) => PlainFlowDrawing.Of(source);
+    public string Render(DiagramSource source) => FlowDrawing.Of(source);
 
     /// <summary>
     /// The class a shape adds for its tone: none for plain, so a plain shape draws as it always did. The sequences

@@ -181,6 +181,18 @@ public sealed class ApartArrows : IArrowRule
     public double LineGap => Near;
 
     /// <summary>
+    /// A word stands on its own line, the line through the middle of its one-line pill. Above the line, the word of
+    /// the lower of two arrows into one box would sit on the upper arrow, a step away.
+    /// </summary>
+    public double WordDrop => FlowText.ChipRise - (FlowText.WordStep + FlowText.ChipExtra) / 2;
+
+    /// <summary>
+    /// Boxes that stand level with what feeds them often stand in a long arrow's way at both its heights, and round
+    /// the outside of the column is the long way, so it passes between two of them.
+    /// </summary>
+    public bool PassesBetween => true;
+
+    /// <summary>
     /// The arrows into a box from the top point down: by the height of the box each comes from, the upper source
     /// first, so two lines into one box don't cross on the way in. An arrow past a column comes in level with its
     /// target, so it counts as level among the boxes next door, and among the level ones each stands on the side it

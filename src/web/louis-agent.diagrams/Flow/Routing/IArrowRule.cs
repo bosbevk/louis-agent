@@ -38,4 +38,16 @@ public interface IArrowRule
     /// lets them lie on one another.
     /// </summary>
     double LineGap { get; }
+
+    /// <summary>
+    /// How far under its usual place, above the line, an arrow's word stands in a picture that runs to the right.
+    /// Nothing, when the word stays above its line.
+    /// </summary>
+    double WordDrop { get; }
+
+    /// <summary>
+    /// Whether an arrow past a column, which can run neither at the height it arrives at nor at the height it leaves
+    /// at, may pass between two boxes of that column instead of round the outside of them.
+    /// </summary>
+    bool PassesBetween { get; }
 }

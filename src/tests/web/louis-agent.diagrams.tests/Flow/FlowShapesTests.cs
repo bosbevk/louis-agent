@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -62,7 +62,7 @@ public class FlowShapesTests
     [Test]
     public void ADownChart_MatchesTheGoldenFile() =>
         Golden.Match("down.svg",
-            DiagramRenderers.Render(new DiagramSource(DiagramKind.Flow, "A turn, down", Flow: Down())));
+            PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "A turn, down", Flow: Down())));
 
     /// <summary>Down, each rank is a row under the one before, and a rank's boxes stand side by side.</summary>
     [Test]
@@ -345,7 +345,7 @@ public class FlowShapesTests
     {
         var placed = GraphLayout.Place(TwoLines());
         var core = placed.Nodes.Single(node => node.Node.Id == "core");
-        var svg = XDocument.Parse(DiagramRenderers.Render(
+        var svg = XDocument.Parse(PlainFlowDrawing.Of(
             new DiagramSource(DiagramKind.Flow, "Two lines", Flow: TwoLines())));
 
         var lines = svg.Descendants(Svg + "text").Where(text => (string?)text.Attribute("class") == "label")

@@ -264,6 +264,56 @@ public class ApartArrowsTests
     }
 
     /// <summary>
+    /// A long arrow that can run neither at the height it arrives at nor at the height it leaves at, since a box of
+    /// the column it passes stands at both, runs between two boxes of that column, not round the outside of them.
+    /// Here the start stands level with the list it feeds, and its two long arrows pass under the list.
+    /// </summary>
+    [Test]
+    public void ALongArrowWithItsLevelsBlocked_RunsBetweenTwoBoxes()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("start", "Start", Column: 0), new GraphNode("list", "List", Column: 1),
+                new GraphNode("stage", "Stage", Column: 1), new GraphNode("deck", "Deck", Column: 2),
+                new GraphNode("dock", "Dock", Column: 2)
+            ],
+            [
+                new GraphEdge("start", "list"), new GraphEdge("start", "stage"), new GraphEdge("start", "deck"),
+                new GraphEdge("start", "dock"), new GraphEdge("list", "deck"), new GraphEdge("list", "dock")
+            ]);
+
+        var placed = GraphLayout.Place(spec, rules: FlowRules.Straight);
+        var middle = placed.Nodes.Where(node => node.Node.Column == 1).ToList();
+        // Where the two long arrows pass the middle column: the points of their paths from its left side to its right.
+        var through = placed.Edges.Where(edge => edge.Edge is { From: "start", To: "deck" or "dock" })
+            .SelectMany(edge => Points(edge.Path))
+            .Where(point => point.X > middle[0].X - 1 && point.X < middle[0].X + middle[0].W + 1)
+            .Select(point => point.Y).ToList();
+
+        Assert.That(through, Has.Count.EqualTo(4), "each arrow enters the column and leaves it");
+        Assert.That(through, Is.All.InRange(middle.Min(node => node.Y + node.H), middle.Max(node => node.Y)),
+            "between the upper box's bottom and the lower box's top");
+    }
+
+    /// <summary>
+    /// An arrow's word stands on its own line, the line through the middle of its pill. Above the line, as joined
+    /// arrows have it, the word of the lower of two arrows into one box would sit on the upper one, a step away.
+    /// </summary>
+    [Test]
+    public void AWord_StandsOnItsOwnLine()
+    {
+        var spec = new GraphSpec(
+            [new GraphNode("a", "A"), new GraphNode("b", "B"), new GraphNode("x", "X")],
+            [new GraphEdge("a", "x"), new GraphEdge("b", "x", "writes")]);
+
+        var worded = GraphLayout.Place(spec, rules: FlowRules.Straight).Edges
+            .Single(edge => edge.Edge.Word is not null);
+        var (_, top, _, height) = FlowText.WordBox(worded);
+
+        Assert.That(top + height / 2, Is.EqualTo(Points(worded.Path)[0].Y), "level with where its arrow leaves");
+    }
+
+    /// <summary>
     /// An arrow from a level box two columns away stays one straight line, though a second arrow arrives at the same
     /// box: the second takes the point a step beside it. Spread round the middle, the straight one would kink.
     /// </summary>

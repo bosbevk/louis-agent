@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
 
@@ -39,7 +39,7 @@ public class FlowGroupsTests
     /// <summary>The groups, drawn, match their golden file.</summary>
     [Test]
     public void Groups_MatchTheGoldenFile() =>
-        Golden.Match("groups.svg", DiagramRenderers.Render(
+        Golden.Match("groups.svg", PlainFlowDrawing.Of(
             new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
 
     /// <summary>Every group gets one frame, and each of its boxes stands inside it.</summary>
@@ -87,7 +87,7 @@ public class FlowGroupsTests
     [Test]
     public void ADashedArrow_IsDrawnDashed_AndAGroupFramed()
     {
-        var svg = XDocument.Parse(DiagramRenderers.Render(
+        var svg = XDocument.Parse(PlainFlowDrawing.Of(
             new DiagramSource(DiagramKind.Flow, "A system in groups", Flow: System(FlowDirection.Right))));
 
         var edges = svg.Descendants(Svg + "path").Select(path => (string?)path.Attribute("class"))

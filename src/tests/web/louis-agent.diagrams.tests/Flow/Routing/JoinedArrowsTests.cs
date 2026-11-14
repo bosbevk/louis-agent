@@ -1,6 +1,8 @@
+using System.Globalization;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Placed;
 using LouisAgent.Diagrams.Flow.Routing;
+using LouisAgent.Diagrams.Flow.Rows;
 using LouisAgent.Diagrams.Flow.Spec;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Routing;
@@ -91,5 +93,33 @@ public class JoinedArrowsTests
         var joined = GraphLayout.Place(spec, rules: FlowRules.Joined).Edges.Select(edge => edge.Path);
 
         Assert.That(joined, Is.EqualTo(unnamed));
+    }
+
+    /// <summary>
+    /// A joined long arrow never passes between two boxes of the column it crosses, as a flow's does: a class chart
+    /// keeps its lines where they were until it gets the new look. Here the start stands level with the list it
+    /// feeds, so its long arrow can run at neither of its own heights, and stays on its row above the list.
+    /// </summary>
+    [Test]
+    public void ALongArrowWithItsLevelsBlocked_StaysOnItsRow()
+    {
+        var spec = new GraphSpec(
+            [
+                new GraphNode("start", "Start", Column: 0), new GraphNode("list", "List", Column: 1),
+                new GraphNode("stage", "Stage", Column: 1), new GraphNode("deck", "Deck", Column: 2),
+                new GraphNode("dock", "Dock", Column: 2)
+            ],
+            [
+                new GraphEdge("start", "list"), new GraphEdge("start", "stage"), new GraphEdge("start", "deck"),
+                new GraphEdge("start", "dock"), new GraphEdge("list", "deck"), new GraphEdge("list", "dock")
+            ]);
+        var levelRows = new FlowRules(Rule, new LevelRows());
+
+        var placed = GraphLayout.Place(spec, rules: levelRows);
+        double top = placed.Nodes.Min(node => node.Y);
+
+        Assert.That(placed.Edges.Single(edge => edge.Edge is { From: "start", To: "deck" }).Path,
+            Does.Contain($" {(top - 44).ToString(CultureInfo.InvariantCulture)} L"),
+            "it runs along the row above the first box");
     }
 }

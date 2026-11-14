@@ -179,10 +179,10 @@ svg {
     <path class="pic-line pic-edge" d="M 466.6 80 L 478.7 80 Q 490.7 80 490.7 92.1 L 490.7 182 Q 490.7 206 514.7 206 L 550.8 206" marker-end="url(#arrow)" />
     <path class="pic-march" d="M 466.6 80 L 478.7 80 Q 490.7 80 490.7 92.1 L 490.7 182 Q 490.7 206 514.7 206 L 550.8 206" />
     <path class="pic-line pic-edge tone-teal reads" d="M 720.8 206 L 790 206" marker-end="url(#arrow-teal)" />
-    <rect class="flow-chip pic-edge" x="509.8" y="58" width="22" height="18" rx="9" />
-    <text class="flow-word pic-ink" x="520.8" y="70" text-anchor="middle">no</text>
-    <rect class="flow-chip pic-edge" x="506.3" y="184" width="29" height="18" rx="9" />
-    <text class="flow-word pic-ink" x="520.8" y="196" text-anchor="middle">yes</text>
+    <rect class="flow-chip pic-edge" x="509.8" y="71" width="22" height="18" rx="9" />
+    <text class="flow-word pic-ink" x="520.8" y="83" text-anchor="middle">no</text>
+    <rect class="flow-chip pic-edge" x="506.3" y="197" width="29" height="18" rx="9" />
+    <text class="flow-word pic-ink" x="520.8" y="209" text-anchor="middle">yes</text>
     <rect class="pic-panel depth-2 pic-edge tone-blue flow-shape" x="0" y="54" width="196" height="52" rx="26" />
     <path class="pic-sheen" d="M26 55.5H170" />
     <rect class="pic-fill tone-blue" x="19" y="69" width="4" height="22" rx="2" />

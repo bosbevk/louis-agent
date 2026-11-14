@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Svg.Theme;
 using LouisAgent.Diagrams.Tones;
 
@@ -71,7 +71,7 @@ public class FlowTonesTests
     [Test]
     public void AToneBox_WearsItsTone_AndItsBadge()
     {
-        string svg = DiagramRenderers.Render(Calls());
+        string svg = PlainFlowDrawing.Of(Calls());
 
         Assert.Multiple(() =>
         {
@@ -87,7 +87,7 @@ public class FlowTonesTests
     [Test]
     public void EveryTone_HasItsColours_DarkAndLight()
     {
-        string svg = DiagramRenderers.Render(Calls());
+        string svg = PlainFlowDrawing.Of(Calls());
 
         Assert.Multiple(() =>
         {

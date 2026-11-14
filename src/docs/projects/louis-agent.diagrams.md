@@ -42,8 +42,9 @@ Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRende
 `TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. Each
 renderer has a layout that places every box and word, and then draws. Part 2 explains each layout.
 
-A flow and a class chart are drawn by the same drawing, `PlainFlowDrawing`: boxes in their tone with a round
-icon badge, arrows that join, a word in a chip. It has a name of its own so the two renderers can change apart.
+A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow and drawn
+by `PlainFlowDrawing`, the drawing both had before: boxes in their tone with a round icon badge, arrows that join,
+a word in a chip. Each drawing has a name of its own so the two renderers can change apart.
 
 **How a renderer writes the file** (`SvgWriter`). It is a Builder: a renderer adds boxes, paths and words one by
 one and asks for the file at the end. So no renderer writes markup or escapes text by hand, and the style and the
@@ -55,18 +56,31 @@ same bytes on every machine.
 picture's own style, the dark one under `prefers-color-scheme: dark`. Each tone's fill, line and ink are there
 too.
 
-**The new look is one shared style** (`Svg/Theme/Looks/`). A component diagram is drawn in a look of its own: a
-ground of faint dots, the picture's own title, panels tinted in their tone and lifted by a shadow, and lines
-whose dots march the way the arrow points. What any kind in that look wears is `PictureLook`, with class names
-that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
+**The new look is one shared style** (`Svg/Theme/Looks/`). A component diagram and a flow are drawn in the new
+look: a ground of faint dots, the picture's own title, panels tinted in their tone and lifted by a shadow, and
+lines whose dots march the way the arrow points. What any kind in that look wears is `PictureLook`, with class
+names that start `pic-`, and the parts drawn with it are `PictureParts`: the ground, the title and a panel.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
-start `cmp-`. The shared rules come first in a picture's style, so two kinds can't drift apart in what they
-share.
+start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a group's frame, a box's name and
+icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
+picture's style, so two kinds can't drift apart in what they share.
+
+**What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
+layout placed by `FlowRules.Straight`.
+
+- *The title.* The words before the first colon of the picture's title, and the rest on a line under them.
+- *A box.* A panel tinted in its tone, with a colour bar and its icon in a badge, in its shape.
+- *A line.* It has the colour of the box it leaves, and a ring stands where a box's line leaves it. Dots march
+  along it to its head. A dashed arrow has no dots.
+- *The key* (`FlowKey`, placed by `Flow/Keys/FlowKeyLayout`). Across the picture's width, under the drawing: an
+  item for each tone and each shape the picture uses, and one that says a line has the colour of the box it
+  leaves.
 
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
 the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
-its caption. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's cards draw,
-is unchanged.
+its caption. A component diagram and a flow write their own title and their own key inside the picture, so they
+get only the note bar. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
+cards draw, is unchanged.
 
 #### The tool that draws the docs' pictures
 
@@ -95,11 +109,11 @@ of their own, inside a labelled frame.
 
 **The rule the boxes stand by.** A band is one group's rows, or every box's rows when a picture has no groups.
 Two things about a band are not `Bands`' to decide: how tall its rows are, and which row each box stands on. A
-rule answers both (`IRowRule`). `CentredRows` is the one every picture uses today: a band's rows are as tall as
-its own tallest box, and a column's boxes stand one after another, centred in the band.
+rule answers both (`IRowRule`). `CentredRows` is the one a class chart and the site's pages use: a band's rows
+are as tall as its own tallest box, and a column's boxes stand one after another, centred in the band.
 
-The other rule is `LevelRows`. With it a box stands level with the box that feeds it, so the line between them
-runs straight:
+The other rule is `LevelRows`, which a flow in the docs is drawn by. With it a box stands level with the box that
+feeds it, so the line between them runs straight:
 
 - The columns are taken from the left. In each, the boxes keep their order and take the rows nearest the boxes
   that feed them. Every way to stand them is weighed, and the nearest one overall is taken.
@@ -132,9 +146,14 @@ The other rule is `ApartArrows`. With it each arrow into a box arrives at a poin
 - A box's side is at least as long as its points need: two or three arrows fit a box 52 high, and a fourth makes
   it 84.
 - An arrow past a column is led in line with its own point, where no box stands in the way and no other box's
-  long arrow already runs within 9.
+  long arrow already runs within 9. If it can't run there, it runs at the height it leaves at. If a box stands
+  there too, it passes between two boxes of a column it crosses, in the middle of the room between them, when
+  that is a shorter way up and down than the row it was given. It only passes between two boxes of one group, or
+  of none, so it never runs along a group's frame.
 - A point never stands level with the line out of a box in the column before that feeds something else: the
   points then stand 9 aside, towards the boxes their arrows come from.
+- In a picture that runs to the right, an arrow's word stands on its own line, in its pill. Above the line, the
+  word of the lower of two arrows into one box would sit on the upper arrow, 18 away.
 
 With `ApartArrows` the lines of a gap also turn on one line:
 

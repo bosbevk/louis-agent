@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
@@ -9,17 +10,48 @@ namespace LouisAgent.Diagrams.Tests.Svg;
 
 /// <summary>
 /// The docs' frame round a picture (CL60.2, Louis's pick "Both looks"): a navy title bar on top, the title's part
-/// before its colon in bold, and the caption as a note bar under the drawing, the drawing itself as it was.
+/// before its colon in bold, and the caption as a note bar under the drawing, the drawing itself as it was. A
+/// picture that has its own title, a flow or a component diagram, gets the note bar alone (F134.8).
 /// </summary>
 public class TitledFrameTests
 {
     private static readonly XNamespace Svg = "http://www.w3.org/2000/svg";
 
-    /// <summary>Two boxes, a title with a colon and a caption with one.</summary>
+    /// <summary>
+    /// A class chart of two types, a title with a colon and a caption with one: a kind the frame gives its bar.
+    /// </summary>
     private static DiagramSource Accounts(string title = "Accounts: the browser's calls to the store") =>
-        new(DiagramKind.Flow, title, "Multi-tenant by design: every account lives within its tenant.",
-            new GraphSpec([new GraphNode("browser", "Browser app"), new GraphNode("store", "AccountUserStore")],
+        new(DiagramKind.Classes, title, "Multi-tenant by design: every account lives within its tenant.",
+            Classes: new ClassesSpec(
+                [new ClassType("browser", "Browser app"), new ClassType("store", "AccountUserStore")],
+                [new ClassRelation("browser", "store", RelationKind.Uses)], FlowDirection.Down));
+
+    /// <summary>The same picture as a flow, which has its own title.</summary>
+    private static DiagramSource AccountsFlow() =>
+        new(DiagramKind.Flow, "Accounts: the browser's calls to the store",
+            "Multi-tenant by design: every account lives within its tenant.",
+            new GraphSpec(
+                [new GraphNode("browser", "Browser app", Tone: DiagramTone.Blue), new GraphNode("store", "Store")],
                 [new GraphEdge("browser", "store")], FlowDirection.Down));
+
+    /// <summary>
+    /// A flow writes its own title and says in its own key what its tones mean, so the frame gives it no bar and no
+    /// legend, only the note bar under it.
+    /// </summary>
+    [Test]
+    public void AFlow_HasItsOwnTitle_SoNoBarAndNoLegend_OnlyTheNote()
+    {
+        var svg = XDocument.Parse(DiagramRenderers.RenderTitled(AccountsFlow()));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rects(svg, "titlebar"), Is.Empty);
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "legend"), Is.Empty);
+            Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
+            Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "pic-title")
+                .Select(text => text.Value), Is.EqualTo(new[] { "Accounts" }));
+        });
+    }
 
     /// <summary>The title stands in a bar on top, its part before the colon in bold.</summary>
     [Test]
@@ -90,8 +122,7 @@ public class TitledFrameTests
         {
             Assert.That(drawing.Attribute("transform")!.Value, Does.StartWith("translate(0 "));
             Assert.That(Number(drawing, "transform"), Is.GreaterThan(bar));
-            Assert.That(Rects(drawing, "box").Select(rect => rect.ToString()),
-                Is.EqualTo(Rects(plain, "box").Select(rect => rect.ToString())));
+            Assert.That(Boxes(drawing), Is.Not.Empty.And.EqualTo(Boxes(plain)));
         });
     }
 
@@ -122,14 +153,14 @@ public class TitledFrameTests
     {
         var toned = Accounts() with
         {
-            Flow = new GraphSpec(
+            Classes = new ClassesSpec(
                 [
-                    new GraphNode("store", "AccountUserStore", Tone: DiagramTone.Teal),
-                    new GraphNode("browser", "Browser app", Tone: DiagramTone.Blue),
-                    new GraphNode("mail", "IEmailSender", Tone: DiagramTone.Red),
-                    new GraphNode("tenant", "UseTenant", Tone: DiagramTone.Blue)
+                    new ClassType("store", "AccountUserStore", Tone: DiagramTone.Teal),
+                    new ClassType("browser", "Browser app", Tone: DiagramTone.Blue),
+                    new ClassType("mail", "IEmailSender", Tone: DiagramTone.Red),
+                    new ClassType("tenant", "UseTenant", Tone: DiagramTone.Blue)
                 ],
-                [new GraphEdge("browser", "store")], FlowDirection.Down)
+                [new ClassRelation("browser", "store", RelationKind.Uses)], FlowDirection.Down)
         };
 
         var svg = XDocument.Parse(DiagramRenderers.RenderTitled(toned));
@@ -150,6 +181,13 @@ public class TitledFrameTests
     [Test]
     public void AnUntitledPicture_HasNoBar() =>
         Assert.That(Rects(XDocument.Parse(DiagramRenderers.Render(Accounts())), "titlebar"), Is.Empty);
+
+    /// <summary>The boxes drawn under an element, each as its markup, whatever tone a box wears.</summary>
+    private static List<string> Boxes(XContainer under) =>
+        [
+            .. under.Descendants(Svg + "rect").Where(rect => Class(rect)!.StartsWith("box"))
+                .Select(rect => rect.ToString())
+        ];
 
     /// <summary>The rectangles of a class under an element.</summary>
     private static List<XElement> Rects(XContainer under, string cls) =>

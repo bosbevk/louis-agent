@@ -4,7 +4,7 @@ using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Tests.Flow;
@@ -114,7 +114,7 @@ public class FlowArrowsTests
 
     /// <summary>The flow drawn as the docs draw it.</summary>
     private static string Render() =>
-        DiagramRenderers.Render(new DiagramSource(DiagramKind.Flow, "Calls", Flow: Calls()));
+        PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "Calls", Flow: Calls()));
 
     /// <summary>
     /// How far each corner of a path starts from its turn: from the line's end to the curve's corner.

@@ -45,6 +45,12 @@ public sealed class JoinedArrows : IArrowRule
     /// <summary>Arrows that join may lie on one another, so no line is ever too near another.</summary>
     public double LineGap => 0;
 
+    /// <summary>A word stands above its line, where it always stood.</summary>
+    public double WordDrop => 0;
+
+    /// <summary>A long arrow stays on the row it was given, where it always ran.</summary>
+    public bool PassesBetween => false;
+
     /// <summary>
     /// The order of a gap's tracks, nearest the sources first: the bottom source first, and a source level with
     /// another's target always before that other, so its line out ends before the other's line in starts and the two

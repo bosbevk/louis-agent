@@ -69,7 +69,9 @@ public static class Ranks
     /// <summary>
     /// Every waypoint moved in line with where its arrow arrives, which the arrows' rule says, where no box in its
     /// column stands in the way, so the arrow runs along and then straight into its target instead of jogging to a
-    /// slot and back (Louis, of the CLI and accounts charts).
+    /// slot and back (Louis, of the CLI and accounts charts). An arrow that can run neither there nor at the height
+    /// it leaves at passes between two boxes of a column, when its rule lets it and that is a shorter way than where
+    /// its waypoints stand.
     /// </summary>
     /// <remarks>
     /// The alignment step of layered drawing (Brandes and Köpf straighten long edges the same way): a waypoint is
@@ -100,7 +102,7 @@ public static class Ranks
                                           && Math.Abs(Now(other) - middle) < rule.LineGap);
 
         // Each chain from its real source: in line with where it arrives if every waypoint can be, else with its
-        // source.
+        // source, else between two boxes.
         foreach (var first in edges.Where(edge => !IsWaypoint(edge.From) && IsWaypoint(edge.To)))
         {
             var chain = new List<string>();
@@ -112,9 +114,17 @@ public static class Ranks
             }
 
             var source = byId[first.From];
-            var line = new[] { rule.EntryOf(last, forward, byId), source.Y + source.H / 2 }
-                .FirstOrDefault(middle => chain.All(id => Free(byId[id], middle, nodes) && !Taken(id, middle)),
-                    double.NaN);
+            double leaves = source.Y + source.H / 2, arrives = rule.EntryOf(last, forward, byId);
+            bool Open(double middle) => chain.All(id => Free(byId[id], middle, nodes) && !Taken(id, middle));
+
+            // The way up and down an arrow has from where it leaves, through a line, to where it arrives.
+            double Way(params double[] through) =>
+                through.Prepend(leaves).Zip(through.Append(arrives), (a, b) => Math.Abs(a - b)).Sum();
+            double now = Way([.. chain.Select(Now)]);
+            var between = rule.PassesBetween ? Gaps(chain.Select(id => byId[id]), nodes) : [];
+            double line = new[] { arrives, leaves }.Where(Open)
+                .Concat(between.Where(Open).OrderBy(gap => Way(gap)).Where(gap => Way(gap) < now - 1).Take(1))
+                .FirstOrDefault(double.NaN);
             if (double.IsNaN(line)) continue;
             foreach (string id in chain) moved[id] = line - byId[id].H / 2;
         }
@@ -129,6 +139,20 @@ public static class Ranks
 
     /// <summary>How far clear of a box a straightened line keeps.</summary>
     private const double Clear = 6;
+
+    /// <summary>
+    /// The lines a chain could run on between two boxes: the middle of the room between each two boxes that stand
+    /// under one another in a column it passes. Only between two boxes of one group, or of none, so the line never
+    /// runs along a group's frame or over its name.
+    /// </summary>
+    private static IEnumerable<double> Gaps(IEnumerable<PlacedNode> chain, IReadOnlyList<PlacedNode> nodes) =>
+        chain.SelectMany(waypoint =>
+        {
+            var column = nodes.Where(other => !IsWaypoint(other.Node.Id) && other.X == waypoint.X)
+                .OrderBy(other => other.Y).ToList();
+            return column.Zip(column.Skip(1)).Where(pair => pair.First.Node.Group == pair.Second.Node.Group)
+                .Select(pair => (pair.First.Y + pair.First.H + pair.Second.Y) / 2);
+        });
 
     /// <summary>
     /// The arrows with every chain through waypoints made one arrow again: its pieces joined straight across each

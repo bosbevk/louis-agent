@@ -59,12 +59,13 @@ public static class TitledFrame
         var note = source.Caption is { } caption
             ? Lines(caption, width - NoteLeft - NotePad, NoteChar, "note", boldWithoutColon: false)
             : [];
-        // A component diagram writes its own title inside the picture (F134.7), so it gets no bar, only the note.
-        bool ownTitle = source.Kind == DiagramKind.Components;
+        // A component diagram and a flow write their own title inside the picture and say in their own key what
+        // their tones mean (F134.7, F134.8), so they get no bar and no legend, only the note.
+        bool ownTitle = source.Kind is DiagramKind.Components or DiagramKind.Flow;
         double bar = ownTitle ? 0 : 2 * BarPad + TitleLine * title.Count, shift = ownTitle ? 0 : bar + Gap;
         double noteHeight = note.Count == 0 ? 0 : 2 * NotePad + NoteLine * note.Count;
         // The legend names the tones the chart uses, row after row as the width allows.
-        var legend = LegendItems(source, width);
+        var legend = ownTitle ? [] : LegendItems(source, width);
         double legendHeight = legend.Count == 0 ? 0 : Gap + LegendRow * (legend.Max(item => item.Row) + 1);
 
         // Everything the renderer drew on the ground moves down under the bar, whole.

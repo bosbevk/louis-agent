@@ -2,16 +2,17 @@ using System.Text.RegularExpressions;
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Svg.Theme;
 
-namespace LouisAgent.Diagrams.Tests.Svg;
+namespace LouisAgent.Diagrams.Tests.Svg.Renderers.Parts;
 
 /// <summary>
-/// A flow drawn as one SVG file (CL60.1 step 3): the site's boxes and arrows by ADR 0103's rules, in the site's
-/// palette, dark or light as the reader's screen is, with nothing loaded from outside the file.
+/// The plain drawing as one SVG file (CL60.1 step 3), which every flow had before F134.8 and a class chart keeps:
+/// the site's boxes and arrows by ADR 0103's rules, in the site's palette, dark or light as the reader's screen
+/// is, with nothing loaded from outside the file.
 /// </summary>
-public class FlowRendererTests
+public class PlainFlowDrawingTests
 {
     /// <summary>
     /// The site's Turn diagram in small: a host, the engine with a note, the model, and words on arrows.
@@ -28,13 +29,13 @@ public class FlowRendererTests
     /// <summary>The drawing matches its golden file.</summary>
     [Test]
     public void AFlow_MatchesTheGoldenFile() =>
-        Golden.Match("flow.svg", DiagramRenderers.Render(Turn()));
+        Golden.Match("flow.svg", PlainFlowDrawing.Of(Turn()));
 
     /// <summary>One file holds both looks: light by default, dark when the reader's screen is.</summary>
     [Test]
     public void TheStyle_HoldsTheLightAndTheDarkPalette()
     {
-        string svg = DiagramRenderers.Render(Turn());
+        string svg = PlainFlowDrawing.Of(Turn());
 
         Assert.Multiple(() =>
         {
@@ -47,7 +48,7 @@ public class FlowRendererTests
     [Test]
     public void Nothing_LeavesTheFile()
     {
-        string svg = DiagramRenderers.Render(Turn());
+        string svg = PlainFlowDrawing.Of(Turn());
 
         Assert.That(svg, Does.Not.Contain("href=\"http").And.Not.Contain("url(http").And.Not.Contain("@import")
             .And.Not.Contain("<image"));
@@ -57,7 +58,7 @@ public class FlowRendererTests
     [Test]
     public void EveryBoxArrowAndWord_IsDrawn()
     {
-        string svg = DiagramRenderers.Render(Turn());
+        string svg = PlainFlowDrawing.Of(Turn());
 
         Assert.Multiple(() =>
         {
@@ -72,7 +73,7 @@ public class FlowRendererTests
     [Test]
     public void TheTitle_IsSaid_AndTheCaptionDrawn()
     {
-        string svg = DiagramRenderers.Render(Turn());
+        string svg = PlainFlowDrawing.Of(Turn());
 
         Assert.Multiple(() =>
         {

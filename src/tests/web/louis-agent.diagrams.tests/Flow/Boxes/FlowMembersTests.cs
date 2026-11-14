@@ -1,7 +1,7 @@
 using LouisAgent.Diagrams.Flow;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Sources;
-using LouisAgent.Diagrams.Svg;
+using LouisAgent.Diagrams.Svg.Renderers.Parts;
 
 namespace LouisAgent.Diagrams.Tests.Flow.Boxes;
 
@@ -66,10 +66,11 @@ public class FlowMembersTests
     [Test]
     public void EveryMember_IsDrawnUnderADivider()
     {
-        var spec = new GraphSpec([new GraphNode("p", "ISpeechProvider", Members: ["SpeechProviderName Name", LongMember])],
+        var spec = new GraphSpec(
+            [new GraphNode("p", "ISpeechProvider", Members: ["SpeechProviderName Name", LongMember])],
             []);
 
-        string svg = DiagramRenderers.Render(new DiagramSource(DiagramKind.Flow, "Members", Flow: spec));
+        string svg = PlainFlowDrawing.Of(new DiagramSource(DiagramKind.Flow, "Members", Flow: spec));
 
         Assert.Multiple(() =>
         {

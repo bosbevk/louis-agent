@@ -159,9 +159,12 @@ internal static class EdgeRouter
             // An arrow starts and ends on the outline of its boxes' shapes: a diamond's side is inside its box
             // everywhere but at its tip.
             double leaves = x1 - NodeShapes.Exit(from, y1, turned), arrives = x2 + NodeShapes.Entry(to, y2, turned);
+            // A word stands by its line, or on it when the rule drops it. Laid out turned it stands beside its line
+            // once turned back, and no drop moves it.
+            double word = (bySource ? y1 : y2) + (turned ? 0 : rule.WordDrop);
             // A word by its target stands past the gap's last track, clear of the other sources' lines.
             yield return new Plan(edge, [(leaves, y1), (track, y1), (track, y2), (arrives, y2)],
-                bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned), bySource ? y1 : y2);
+                bySource ? WordAlong(x1, track, turned) : WordAlong(last, x2, turned), word);
         }
     }
 

@@ -26,9 +26,15 @@ internal static class Clearance
             foreach (var box in placed.Nodes.Where(box => x < box.X + box.W && box.X < x + w && y < box.Y + box.H
                                                           && box.Y < y + h))
                 yield return $"the word '{word}' sits on {box.Node.Id}";
+            // A word may stand on its own arrow's line (F134.8). Another arrow of the same box shares that line
+            // where the box's one line out has not branched yet, so a piece of it that lies on this arrow's own
+            // is not another line.
+            var own = Segments(edge.Path).ToList();
+            bool Shared(PlacedEdge other, ((double X, double Y) A, (double X, double Y) B) piece) =>
+                other.Edge.From == edge.Edge.From && own.Any(mine => OnOneAnother(mine, piece));
             foreach (var other in placed.Edges.Where(other => other != edge
                                                               && Segments(other.Path).Any(piece =>
-                                                                  Covers(piece, x, y, w, h))))
+                                                                  Covers(piece, x, y, w, h) && !Shared(other, piece))))
                 yield return $"the word '{word}' lies on the line {other.Edge.From}>{other.Edge.To}";
             // Each pair of words once: this word against the words of the arrows after it.
             foreach (var other in placed.Edges.SkipWhile(other => other != edge).Skip(1)

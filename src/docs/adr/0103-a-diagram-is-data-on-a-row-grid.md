@@ -17,19 +17,23 @@ last one is the point: a site author declares data and must get a readable drawi
 
 The framework's web draws every diagram by these rules, and a site only declares the data:
 
-- **Data in.** A page declares a `GraphSpec`: boxes with an id, a label, a note and a column; arrows between ids,
-  with a word when one helps. Nothing else: no coordinates, no hints. The page's own test holds the ids to the
-  parts the page lists.
-- **A row grid.** Every box sits on one grid of rows, each row as tall as the tallest box in the diagram, a shorter
-  column centred on the grid, a shorter box in the middle of its row. Two middles then differ by nothing or by half
-  a row at least, so no connector can ever jog by a few pixels. Notes wrap inside the box, at a fixed width of the
-  code font.
+- **Data in.** A page declares a `GraphSpec`: boxes with an id, a label, a note and a column, and a shape where one
+  means something; arrows between ids, with a word when one helps. Nothing else: no coordinates, no hints. The
+  page's own test holds the ids to the parts the page lists.
+- **A row grid, a box level with what feeds it.** Every box sits on one grid of rows, a shorter box in the middle
+  of its row. In a column each box stands on the row level with the box that feeds it, where that row is free, in
+  the column's order, and a box nothing feeds stands level with what it feeds. A box only ever stands on a whole
+  row, so two middles differ by nothing or by a row, and no connector can jog by a few pixels. Groups that start at
+  the top share one row height, so their rows line up. A kind of picture that has not had its turn still has a
+  shorter column centred on the grid. Notes wrap inside the box, at a fixed width of the code font.
 - **Ordered by neighbours.** Inside a column the boxes stand where their neighbours are (the barycentre heuristic of
   layered drawing), swept by sources then by targets, and the data's order stands when it already has no crossing.
-- **Connectors, one track per gap.** An arrow is straight pieces that turn at right angles, each bend rounded. Every
-  arrow between two columns bends at the one track in the middle of the gap, leaves its box's middle and arrives at
-  its target's middle, so a box has one line out that branches at the track and the arrows into a box join there.
-  Orthogonal routing: a crossing becomes a junction.
+- **Connectors, one bend line a gap and a point for each arrow.** An arrow is straight pieces that turn at right
+  angles, each bend rounded. A box has one line out, which branches where it bends. The lines of a gap bend on the
+  same line where their upright pieces are clear of each other, and one whose upright would lie on another's bends
+  a step beside it. Each arrow into a box arrives at its own point on the box's side, in the order of the boxes it
+  comes from, and an arrow from a box level with its target runs straight in. Two lines that must cross do so at a
+  right angle and share no piece. A kind that has not had its turn is still drawn joined.
 - **An arrow inside a column drops straight** from a box's bottom middle to the next box's top middle, its word
   beside it: a pipeline reads top to bottom. No box stands without an arrow; the site's test holds it.
 - **Back arrows under, loops to the right.** The arrows back to one box share one track past the last column, one
@@ -47,9 +51,7 @@ The framework's web draws every diagram by these rules, and a site only declares
 
 - A site adds a diagram by declaring data beside its page; it gets alignment, no crossings, no overlaps and words
   that fit without doing anything, and a new rule for prettiness goes into the layout once, for every site.
-- Arrows between two columns share a track, so when several sources feed several targets between the same two
-  columns the drawing shows that the group feeds the group, not which one feeds which; the page's words carry that.
-  A diagram that needs to show it splits into two.
+- A gap is as wide as its tracks need and a box as tall as its points need, so a busy picture is larger.
 - A row is as tall as the tallest box, so a diagram with one long note has taller rows throughout; keep notes short.
 - The layout grows in height for lanes and in width for loops and words; the page scales the SVG, so a wide diagram
   reads smaller on a phone. Six columns is the practical limit at 880.
