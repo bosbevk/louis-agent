@@ -33,7 +33,7 @@ public class JoinedArrowsTests
     {
         GraphEdge[] gap = [new("a", "x"), new("a", "y")];
 
-        Assert.That(Rule.TracksRoom(gap), Is.Zero);
+        Assert.That(Rule.TracksRoom(gap, gap, Boxes()), Is.Zero);
     }
 
     /// <summary>When every arrow of a gap feeds the same box, they join on one track.</summary>
@@ -42,7 +42,7 @@ public class JoinedArrowsTests
     {
         GraphEdge[] gap = [new("a", "x"), new("b", "x")];
 
-        Assert.That(Rule.TracksRoom(gap), Is.Zero);
+        Assert.That(Rule.TracksRoom(gap, gap, Boxes()), Is.Zero);
     }
 
     /// <summary>
@@ -57,9 +57,9 @@ public class JoinedArrowsTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(Rule.TracksRoom(gap), Is.EqualTo(18), "one step for the second source");
-            Assert.That(Rule.TrackOf(gap[1], gap, boxes), Is.Zero, "the bottom source bends first");
-            Assert.That(Rule.TrackOf(gap[0], gap, boxes), Is.EqualTo(1), "the top source a step later");
+            Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.EqualTo(18), "one step for the second source");
+            Assert.That(Rule.TrackOf(gap[1], gap, gap, boxes), Is.Zero, "the bottom source bends first");
+            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.EqualTo(1), "the top source a step later");
         });
     }
 

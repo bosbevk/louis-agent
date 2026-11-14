@@ -125,6 +125,118 @@ public class ApartArrowsTests
     }
 
     /// <summary>
+    /// Two lines whose upright pieces are clear of each other turn on the same line (Louis: "parallel"), so the gap
+    /// needs no second track: here each box feeds the one a little under it.
+    /// </summary>
+    [Test]
+    public void LinesWhoseUprightsAreClear_TurnOnOneLine()
+    {
+        var boxes = new Dictionary<string, PlacedNode>
+        {
+            ["a"] = Box("a", 0, 0),
+            ["b"] = Box("b", 0, 200),
+            ["x"] = Box("x", 300, 50),
+            ["y"] = Box("y", 300, 250)
+        };
+        GraphEdge[] gap = [new("a", "x"), new("b", "y")];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.Zero);
+            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.EqualTo(Rule.TrackOf(gap[1], gap, gap, boxes)));
+        });
+    }
+
+    /// <summary>
+    /// Two boxes that feed one, from above it and from under it, turn on one line too: their points keep the two
+    /// uprights a step apart, end to end.
+    /// </summary>
+    [Test]
+    public void TwoBoxesFeedingOne_TurnOnOneLine()
+    {
+        var boxes = Feeding(100);
+        GraphEdge[] gap = [new("a", "x"), new("c", "x")];
+
+        Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.Zero);
+    }
+
+    /// <summary>An upright that would lie on another's gets the track a step beside it.</summary>
+    [Test]
+    public void UprightsThatWouldLieOnOneAnother_GetATrackEach()
+    {
+        var boxes = new Dictionary<string, PlacedNode>
+        {
+            ["a"] = Box("a", 0, 0),
+            ["b"] = Box("b", 0, 100),
+            ["x"] = Box("x", 300, 50),
+            ["y"] = Box("y", 300, 250)
+        };
+        GraphEdge[] gap = [new("a", "y"), new("b", "x")];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule.TracksRoom(gap, gap, boxes), Is.EqualTo(18), "one track beside the first");
+            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Not.EqualTo(Rule.TrackOf(gap[1], gap, gap, boxes)));
+        });
+    }
+
+    /// <summary>
+    /// A fan of boxes into one above them does not cross: the upper box turns first and takes the upper point, so
+    /// each line runs inside the one after it.
+    /// </summary>
+    [Test]
+    public void AFanIntoABoxAboveIt_DoesNotCross()
+    {
+        var boxes = new Dictionary<string, PlacedNode>
+        {
+            ["x"] = Box("x", 300, 0),
+            ["a"] = Box("a", 0, 100),
+            ["b"] = Box("b", 0, 200),
+            ["c"] = Box("c", 0, 300)
+        };
+        GraphEdge[] gap = [new("a", "x"), new("b", "x"), new("c", "x")];
+
+        var tracks = gap.Select(edge => Rule.TrackOf(edge, gap, gap, boxes));
+
+        Assert.That(tracks, Is.EqualTo(new[] { 0, 1, 2 }));
+    }
+
+    /// <summary>A fan into a box under them is the mirror: the lowest box turns first.</summary>
+    [Test]
+    public void AFanIntoABoxUnderIt_DoesNotCross()
+    {
+        var boxes = Feeding(300);
+        GraphEdge[] gap = [new("a", "x"), new("b", "x"), new("c", "x")];
+
+        var tracks = gap.Select(edge => Rule.TrackOf(edge, gap, gap, boxes));
+
+        Assert.That(tracks, Is.EqualTo(new[] { 2, 1, 0 }));
+    }
+
+    /// <summary>
+    /// A box level with the point another's arrow arrives at turns first, so its line out ends before the other's
+    /// line in begins and the two never lie on one another.
+    /// </summary>
+    [Test]
+    public void ABoxLevelWithAnothersPoint_TurnsFirst()
+    {
+        var boxes = new Dictionary<string, PlacedNode>
+        {
+            ["a"] = Box("a", 0, 0),
+            ["b"] = Box("b", 0, 100),
+            ["x"] = Box("x", 300, 0),
+            ["y"] = Box("y", 300, 200)
+        };
+        GraphEdge[] gap = [new("a", "y"), new("b", "x")];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rule.TrackOf(gap[0], gap, gap, boxes), Is.Zero, "a's line out is level with b's point");
+            Assert.That(Rule.TrackOf(gap[1], gap, gap, boxes), Is.EqualTo(1));
+        });
+    }
+
+    /// <summary>
     /// An arrow from a level box two columns away stays one straight line, though a second arrow arrives at the same
     /// box: the second takes the point a step beside it. Spread round the middle, the straight one would kink.
     /// </summary>

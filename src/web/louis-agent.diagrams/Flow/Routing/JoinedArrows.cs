@@ -16,12 +16,14 @@ public sealed class JoinedArrows : IArrowRule
 {
     /// <summary>
     /// The room a gap's arrows need for tracks of their own: none when one box feeds the rest or all feed one box,
-    /// where they join on one track (Louis: "conformity"); otherwise a step for each source after the first.
+    /// where they join on one track (Louis: "conformity"); otherwise a step for each source after the first. How
+    /// high the boxes stand makes no difference to it.
     /// </summary>
-    public double TracksRoom(IReadOnlyList<GraphEdge> between)
+    public double TracksRoom(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId)
     {
-        int sources = between.Select(edge => edge.From).Distinct().Count();
-        bool joined = sources <= 1 || between.Select(edge => edge.To).Distinct().Count() == 1;
+        int sources = gap.Select(edge => edge.From).Distinct().Count();
+        bool joined = sources <= 1 || gap.Select(edge => edge.To).Distinct().Count() == 1;
         return joined ? 0 : EdgeRouter.Step * (sources - 1);
     }
 
@@ -29,8 +31,9 @@ public sealed class JoinedArrows : IArrowRule
     /// An arrow bends on its source's track: several sources feeding several boxes each have one, top to bottom
     /// (CL60.2), so a reader can follow who feeds whom. A gap that needs no second track has them all on the first.
     /// </summary>
-    public int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyDictionary<string, PlacedNode> byId) =>
-        TracksRoom(gap) == 0 ? 0 : TrackOrder(gap, byId).IndexOf(edge.From);
+    public int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId) =>
+        TracksRoom(gap, forward, byId) == 0 ? 0 : TrackOrder(gap, byId).IndexOf(edge.From);
 
     /// <summary>Every arrow arrives at the middle of its target's side, so the arrows into a box join there.</summary>
     public double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward,

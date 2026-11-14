@@ -179,8 +179,8 @@ internal static class EdgeRouter
         double source = words + frameOut, target = wordsIn + frameIn;
         // The rule says how many tracks the gap holds and which one is this arrow's; their room comes off the gap
         // first.
-        double tracks = rule.TracksRoom(gap), room = x2 - x1 - tracks;
-        double offset = Step * rule.TrackOf(edge, gap, byId);
+        double tracks = rule.TracksRoom(gap, forward, byId), room = x2 - x1 - tracks;
+        double offset = Step * rule.TrackOf(edge, gap, forward, byId);
         // A gap narrower than its words' rooms, as a chart that runs down keeps it (CL60.2), bends in its middle; half
         // a pixel's slack, since a gap sized to its rooms exactly can come out a hair short in floating point.
         double first = room + 0.5 < source + target ? x1 + room / 2 : x1 + source + (room - source - target) / 2;

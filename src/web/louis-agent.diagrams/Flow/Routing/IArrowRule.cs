@@ -16,11 +16,16 @@ namespace LouisAgent.Diagrams.Flow.Routing;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0103-a-diagram-is-data-on-a-row-grid.md">ADR 0103: a diagram is data on a row grid</seealso>
 public interface IArrowRule
 {
-    /// <summary>The room the arrows between two neighbouring columns need for tracks beside the first.</summary>
-    double TracksRoom(IReadOnlyList<GraphEdge> between);
+    /// <summary>
+    /// The room the arrows between two neighbouring columns need for tracks beside the first, given how high the
+    /// boxes stand.
+    /// </summary>
+    double TracksRoom(IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId);
 
     /// <summary>Which of its gap's tracks an arrow bends on, counted from the one nearest the sources.</summary>
-    int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyDictionary<string, PlacedNode> byId);
+    int TrackOf(GraphEdge edge, IReadOnlyList<GraphEdge> gap, IReadOnlyList<GraphEdge> forward,
+        IReadOnlyDictionary<string, PlacedNode> byId);
 
     /// <summary>How far down the drawing an arrow arrives at its target's side.</summary>
     double EntryOf(GraphEdge edge, IReadOnlyList<GraphEdge> forward, IReadOnlyDictionary<string, PlacedNode> byId);

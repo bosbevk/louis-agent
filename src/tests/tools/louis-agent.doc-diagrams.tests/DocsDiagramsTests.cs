@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Classes;
 using LouisAgent.Diagrams.Flow;
+using LouisAgent.Diagrams.Flow.Routing;
 using LouisAgent.Diagrams.Sequence;
 using LouisAgent.Diagrams.Sequence.Placed;
 using LouisAgent.Diagrams.Sequence.Spec.Steps;
@@ -127,6 +128,23 @@ public class DocsDiagramsTests
 
         // The whole list, one fault a line: a list cut short hides the picture still to fix.
         Assert.That(faults, Is.Empty, string.Join('\n', faults));
+    }
+
+    /// <summary>
+    /// Laid out with the arrows apart (F134.8), no flow in the docs has two lines from different boxes lying on one
+    /// another: each line can be followed from its box to where it arrives.
+    /// </summary>
+    [Test]
+    public void EveryFlow_LaidOutApart_HasNoTwoLinesOnOneAnother()
+    {
+        var rule = new ApartArrows();
+        var lying = Diagrams().Select(json => (json, flow: DiagramReader.Read(File.ReadAllText(json)).Flow))
+            .Where(pair => pair.flow is not null)
+            .SelectMany(pair => Clearance.Lying(GraphLayout.Place(pair.flow!, bend: GraphLayout.SoftBend, rule: rule))
+                .Select(lines => $"{Path.GetFileNameWithoutExtension(pair.json)}: {lines}")).ToList();
+
+        // The whole list, one pair a line: a list cut short hides the picture still to fix.
+        Assert.That(lying, Is.Empty, string.Join('\n', lying));
     }
 
     /// <summary>

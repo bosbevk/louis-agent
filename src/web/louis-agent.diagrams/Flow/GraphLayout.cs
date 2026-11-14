@@ -40,6 +40,9 @@ public static class GraphLayout
     /// <summary>How many rounds of sweeps, left to right and back, order the columns.</summary>
     private const int Sweeps = 4;
 
+    /// <summary>How far apart the columns stand while the boxes are placed only to learn their heights.</summary>
+    private const double FarApart = 10_000;
+
     /// <summary>
     /// How far from its turn an arrow's corner starts in the docs' pictures (CL60.2, Louis's pick "Both looks"): wide
     /// enough that a jog reads as a soft S. The site keeps <see cref="EdgeRouter.Bend"/>.
@@ -79,11 +82,16 @@ public static class GraphLayout
         // Each column's boxes, ordered so the arrows between neighbouring columns don't cross; the tallest sets the
         // height.
         var columns = Ordered(spec);
-        // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
-        // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
-        var gaps = Gaps(spec, columns, turned, rule);
         // A column is as wide as its widest box: a label's longest line, never less than the site's box.
         var widths = columns.Select(column => column.Max(wide)).ToList();
+        // The boxes placed once with the columns far apart, only to learn how high each stands: how many tracks a
+        // gap needs can depend on whether two lines in it would lie on one another, and that is a matter of heights.
+        var apart = Enumerable.Range(0, columns.Count).Select(at => at * FarApart).ToList();
+        var (rough, _) = Bands.Place(spec, columns, new Bands.Grid(apart, widths, Gap, Tall), turned);
+        var heights = Ranks.Straightened(rough, spec.Edges, rule).ToDictionary(node => node.Node.Id);
+        // Columns never touch, and each gap holds the words that cross it, no more (Louis: "just take these empty
+        // spaces out"): when the width can't hold them, the drawing widens and the page scales it.
+        var gaps = Gaps(spec, columns, turned, rule, heights);
         width = Math.Max(width, (int)Math.Ceiling(widths.Sum() + gaps.Sum()));
         var lefts = Lefts(gaps, widths, width);
         // Every box sits on one row grid, each row as tall as the tallest box of its band, a shorter column centred on
@@ -220,9 +228,10 @@ public static class GraphLayout
     /// words (<see cref="EdgeRouter.RoomsFor"/>), never less than <see cref="MinColumnGap"/>. An arrow that skips a
     /// column bends in the middle, so it needs twice its word in every gap it crosses. Laid out turned, a word stands
     /// beside its arrow once the drawing is turned back, so its room is its lines' height, not its length (CL60.2).
-    /// The room for a gap's tracks is what the arrows' rule asks for.
+    /// The room for a gap's tracks is what the arrows' rule asks for, told how high the boxes stand.
     /// </summary>
-    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned, IArrowRule rule)
+    private static List<double> Gaps(GraphSpec spec, List<List<GraphNode>> columns, bool turned, IArrowRule rule,
+        IReadOnlyDictionary<string, PlacedNode> heights)
     {
         var groupOf = spec.Nodes.ToDictionary(node => node.Id, node => node.Group);
         var columnOf = columns.SelectMany((column, at) => column.Select(node => (node.Id, at)))
@@ -239,7 +248,7 @@ public static class GraphLayout
             var skipping = forward.Where(edge => columnOf[edge.From] <= gap && columnOf[edge.To] > gap + 1
                                                  || columnOf[edge.From] < gap && columnOf[edge.To] > gap).ToList();
             return Math.Max(MinColumnGap, Math.Max(source + target + frameOut + frameIn
-                                                   + rule.TracksRoom(neighbours),
+                                                   + rule.TracksRoom(neighbours, forward, heights),
                 EdgeRouter.GapFor(skipping, turned)));
         }
 

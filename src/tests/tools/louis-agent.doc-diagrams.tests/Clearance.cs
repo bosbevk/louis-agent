@@ -38,6 +38,43 @@ internal static class Clearance
         }
     }
 
+    /// <summary>
+    /// Every pair of forward lines from different boxes that lie on one another for a stretch (F134.8): what arrows
+    /// that join do by design, and what arrows drawn apart may never do. Two arrows of one box share its line out,
+    /// so they are not a pair.
+    /// </summary>
+    public static IEnumerable<string> Lying(PlacedGraph placed)
+    {
+        var column = placed.Nodes.ToDictionary(node => node.Node.Id, node => node.Node.Column);
+        var forward = placed.Edges.Where(edge => column.GetValueOrDefault(edge.Edge.To)
+                                                 > column.GetValueOrDefault(edge.Edge.From)).ToList();
+
+        // Each pair once: a line against the lines after it.
+        foreach (var (line, at) in forward.Select((line, at) => (line, at)))
+            foreach (var other in forward.Skip(at + 1).Where(other => other.Edge.From != line.Edge.From))
+                if (Segments(line.Path).Any(piece => Segments(other.Path).Any(second => OnOneAnother(piece, second))))
+                    yield return $"the line {line.Edge.From}>{line.Edge.To} lies on {other.Edge.From}>{other.Edge.To}";
+    }
+
+    /// <summary>
+    /// Whether two straight pieces run along the same line and share more of it than a rounded corner's width.
+    /// </summary>
+    private static bool OnOneAnother(((double X, double Y) A, (double X, double Y) B) piece,
+        ((double X, double Y) A, (double X, double Y) B) second)
+    {
+        bool flat = Same(piece.A.Y, piece.B.Y) && Same(second.A.Y, second.B.Y) && Same(piece.A.Y, second.A.Y);
+        bool upright = Same(piece.A.X, piece.B.X) && Same(second.A.X, second.B.X) && Same(piece.A.X, second.A.X);
+        return flat && Shared(piece.A.X, piece.B.X, second.A.X, second.B.X) > 2
+               || upright && Shared(piece.A.Y, piece.B.Y, second.A.Y, second.B.Y) > 2;
+    }
+
+    /// <summary>Whether two numbers are the same place on the drawing, to less than a pixel.</summary>
+    private static bool Same(double a, double b) => Math.Abs(a - b) < 1;
+
+    /// <summary>How much of a line two stretches along it share.</summary>
+    private static double Shared(double a1, double a2, double b1, double b2) =>
+        Math.Min(Math.Max(a1, a2), Math.Max(b1, b2)) - Math.Max(Math.Min(a1, a2), Math.Min(b1, b2));
+
     /// <summary>The straight pieces of a path: a curve's corner counts as the point it turns at.</summary>
     private static IEnumerable<((double X, double Y) A, (double X, double Y) B)> Segments(string path)
     {

@@ -102,6 +102,20 @@ The other rule is `ApartArrows`. With it each arrow into a box arrives at a poin
   it 84.
 - An arrow past a column is led in line with its own point, where no box stands in the way.
 
+With `ApartArrows` the lines of a gap also turn on one line:
+
+- Each box's line has an upright piece in the gap, from the highest of where it leaves and arrives to the lowest.
+  Two lines whose upright pieces are clear of each other, by 9 or more, turn on the same line.
+- A line whose upright piece would lie on another's gets the track 18 beside it. The gap is as wide as its
+  tracks need.
+- Of two such lines, the one that turns first is the one that makes fewer crossings that way. So a fan of boxes
+  into a box above them turns top first, each line inside the next, and into a box under them bottom first. A
+  line that arrives level with another's line out never turns before it, since the two would lie on one another.
+
+Whether two upright pieces overlap depends on how high the boxes stand. So `GraphLayout` places the boxes once
+with the columns far apart, only to learn the heights, sizes each gap from them, and then places the boxes
+where they belong.
+
 **A chart that runs down.** It is laid out turned, and `Turn` turns every point back. So one layout and one router
 serve both directions.
 
