@@ -65,6 +65,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   [0044](../../src/docs/adr/0044-the-size-limit-counts-code.md).
 - **Every class and method has a summary**, written like a person, with its pattern and its ADRs; a step inside a
   method gets one plain line. [ADR 0050](../../src/docs/adr/0050-summaries-like-a-person.md).
+- **Ask the type**: what is known about a thing (a sum, a measure, a format, a check) lives on a named type for
+  it, and code calls it, never working it out where it stands; a number with a meaning has a name.
+  [ADR 0123](../../src/docs/adr/0123-ask-the-type.md).
 - **No nested conditionals, and an endpoint is a named method** returning `TypedResults`.
   [ADR 0051](../../src/docs/adr/0051-flat-conditionals-and-named-endpoints.md), [ADR 0045](../../src/docs/adr/0045-typed-answers-and-a-shared-contract.md).
 - **Edit, never a script; layout only through the formatter; a rename through Rider; Rider's tools first.**

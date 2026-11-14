@@ -9,8 +9,8 @@ Loaded when a `.cs` file is read or edited. How a summary is written is in `csha
 beside this file. The ADRs named below are in `src/docs/adr/`.
 
 The rules come in this order: what "fix as you touch" covers, a choice between outcomes, an endpoint, regular
-expressions, values and what is stored or sent, choices and texts, size and shape, layout, and how a file is
-changed.
+expressions, values and what is stored or sent, choices and texts, asking the type, size and shape, layout, and
+how a file is changed.
 
 ## What "fix as you touch" covers
 
@@ -99,6 +99,29 @@ input. An existing one is replaced as the code is touched, never in a sweep.
   - Existing code changes as it is touched.
 
 *Decided in:* ADR 0024, 0043, 0009, 0119.
+
+## Ask the type
+
+What is known about a thing lives on a named type for it, and code asks that type: a sum, a measure, a format, a
+parse, a default, a check. Nothing is worked out where it stands that a type could answer. At review, ask of any
+line: could a type answer this? These shapes say none was asked.
+
+| What you see | Its name | The cure |
+|---|---|---|
+| A bare number or string passed around for a small idea: a width, a price, a range | Primitive Obsession | A value type for the idea, a record (ADR 0040), with what it can work out as its members |
+| A method that works on another type's data more than on its own | Feature Envy | Move the working-out to that type. Where its record stays plain data, to a type beside what uses it |
+| The same sum, measure, format or check written out in two places | Duplicate Code | One member on the type that owns it, and both places call it |
+| One change that needs small edits in many classes | Shotgun Surgery | Move what changes together into one type |
+| A number with a meaning, written as a digit | Magic number | A named constant on the type that owns the meaning. A plain 0 or 1, or a loop's step, needs none |
+
+- **A Strategy is no breach.** Its behaviour stands apart from the data on purpose, so it can be swapped.
+- **No type for knowledge no code asks for** (ADR 0055).
+- **A touched file is always fixed.** Every `.cs` file in a step's commit leaves it with none of these shapes,
+  the parts the step didn't change too (*What "fix as you touch" covers*, above). It is never left for later.
+- A file no step touches waits, or is fixed in a sweep a plan names. Where a breach can be counted, a rule test
+  holds it as a ratchet.
+
+*Decided in:* ADR 0123.
 
 ## Size and shape
 

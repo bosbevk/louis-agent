@@ -184,6 +184,17 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     geometry types, behind the interface, is an ADR, and how such code is written is a part of
     `.claude/rules/csharp.md`. The ADR's wording is put to him in a few lines before its file is written.
     Both are written with this child, and a rule test holds them.
+  - *The rule is wider, and written now.* Of the first wording, which bound the engine's sums: "a rule for all
+    C# not just sums it is for everything". Put to him as three shapes, one rule, a catalogue of the smells we
+    refuse, or an amendment to ADR 0034. His own fourth: "how about one adr and list in csharprules?" So
+    [ADR 0123](../adr/0123-ask-the-type.md) is the one rule, for all C#, and the list of shapes with their
+    cures is the part *Ask the type* in `.claude/rules/csharp.md`. This child is the first code brought under
+    it whole, and its rule test is the first that holds it. Which box is in use, ours or the one on
+    Microsoft's types, stays this child's own question and is not in the ADR.
+  - *A touched file is always fixed, so this child comes next.* Louis: "always fix touched files in
+    csharprules", "for this". CL65.4 and CL65.5 touch engine files, and fixing those whole needs the box and
+    the face that only this child builds. Put to him as three orders. His pick: "1", this child next, before
+    CL65.4 and CL65.5. So the order of what is left is CL65.6, CL65.4, CL65.5.
 - **2026-11-14, found in CL65.3, for CL65.4's list.** A cards picture whose file has no `"links"` is not
   refused: the reader fails on it with .NET's own error, which names nothing a person wrote.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
