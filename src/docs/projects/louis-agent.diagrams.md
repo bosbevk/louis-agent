@@ -62,10 +62,35 @@ by `DiagramText`, its own small stand-in for core's `MessageText`. That keeps th
 of the engine.
 
 **Step 2: the kind picks a renderer** (`Svg/`). `DiagramRenderers.Render` picks the renderer for the kind, a
-Strategy. There is one per kind in `Svg/Renderers/`: `FlowRenderer`, `CardsRenderer`, `SequenceRenderer`,
-`TicketRenderer`, `ComponentsRenderer`, and `ClassesRenderer`, which turns a class chart into a flow. The
-seventh, `CompositeRenderer`, stands beside its drawing in `Svg/Renderers/Parts/Structure/`. Each renderer has a
-layout that places every box and word, and then draws. Part 2 explains each layout.
+Strategy. There is one per kind, and each stands beside its drawing, in a folder of `Svg/Renderers/Parts/`:
+`Flows/`, `Overview/` for cards, `Lifelines/` for a sequence, `Types/` for a class chart, `Structure/` for a
+composite and `Nesting/` for a component diagram. The ticket's stands alone in `Svg/Renderers/`. Each kind has a
+layout that places every box and word, and a drawing that draws what was placed. Part 2 explains each layout.
+
+**One builder puts the picture together** (`Svg/Renderers/Parts/PictureBuilder`). Six kinds are built the same
+way, and only the ticket, a card in a chat, is not. A kind's drawing places with its own layout and then tells
+the builder its parts: its title, its type if it names one, its own fades, its body, its key, its caption and
+its styles. `Build()` then does what every kind needs done the same way.
+
+- *The width.* The picture is as wide as its body, or as its title and type side by side when that is wider. A
+  cards picture and a component diagram are as wide as their body whatever their title.
+- *The key last.* A key's rows wrap at the picture's width. So the key is handed over as a function of the
+  width, and asked for once the width is known. Nothing is written before that.
+- *The height.* The room above, the body, the room before the key, the key, and 34 for a caption.
+- *One order.* The light, the title, the type, the body, the key, the caption.
+- *What differs is said by the kind.* Four numbers differ between kinds, the room above, the room before the
+  key, and how far down and how deep the light is. They are one record, `PictureMeasures`, whose usual values
+  are a flow's. A sequence and a cards picture hand in their own. A cards picture also hands in its own lights,
+  one behind each highlighted card. So the builder never asks which kind it is building.
+
+A rule test holds it (`DiagramsProjectTests`): nothing under the engine's renderers but the builder writes a
+title, a caption or the SVG itself, and only a cards picture a light.
+
+**One placer puts a key's items in rows** (`Keys/KeyRows`): side by side, each after the one before, and on to a
+new row at the left when the width is full. Each kind's key layout says what its items are and how wide each
+sample is.
+
+*Decided in:* CL65.2.
 
 A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow for its
 layout and drawn by `ClassesDrawing`, as cards. Part 2 says what each shows.
@@ -92,8 +117,8 @@ whose dots march the way the arrow points. A panel is filled with a little of th
 it stands. So a panel inside a panel is a step deeper with no rule for its depth, and on a white page a box four
 deep is not white. A tone never tints a panel: a box's badge, its chip or its pins say its tone. What any kind
 in that look wears is `PictureLook`, with class names that start `pic-`, and the parts drawn with it are
-`PictureParts`: the start of a picture, which is the light with the title over it, and a panel. The title and
-the light are `MarqueeLook`'s, so they are the same in every kind. In both kinds' keys a tone's sample is a
+`PictureParts`: a panel, and a tone as a shape's class. The title and the light are `MarqueeLook`'s and are
+written by the builder, so they are the same in every kind. In both kinds' keys a tone's sample is a
 small badge filled with the tone, and what an item means is written by one rule of the shared look.
 `ComponentsStyle` adds only what is a component's own, the pins, the pill and the dashed box, with names that
 start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a box's name and
@@ -112,7 +137,7 @@ lifeline, a call's beam either way, an answer's quiet line and the words above t
 (`Looks/Kinds/`) holds what a class chart adds, with names that start `cls-`: a type's badge in its tone with its
 letter, its name, kind and members, a line for each kind of link, and the colours of a line's ends.
 
-**What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
+**What a flow's drawing shows** (`Svg/Renderers/Parts/Flows/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
 
 - *The title.* The picture's whole title as one small line, in the top left corner, on a soft light.
@@ -385,8 +410,8 @@ and decides one place itself: the frame.
 - *A line.* What is passed on runs from a pin's end to a part, or from a part to a pin's end, with an arrowhead
   and running dots, in the pin's colour. A line between two parts is plain, with no arrowhead and no dots, and
   its word stands in a flow's pill.
-- *The type.* "Composite structure diagram" stands at the right of the title's line. The shared start of a
-  picture writes it (`PictureParts.Open`) when it is handed a type. This kind is the first that hands it one.
+- *The type.* "Composite structure diagram" stands at the right of the title's line. The builder writes it
+  when it is told a type. This kind is the first that tells it one.
 - *The key* (`CompositeKey`) stands under a faint rule: a pin each way, a plain line and a line that runs, each
   only when the picture has one.
 
@@ -508,9 +533,10 @@ src/web/louis-agent.diagrams.engine/
 ├── Composite/  # CompositeFlow
 ├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
 ├── Icons/      # IconPaths, LICENSE-tabler-icons.txt
+├── Keys/       # KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (CardsRenderer, ClassesRenderer, ComponentsRenderer, FlowRenderer, SequenceRenderer, TicketRenderer); Renderers/Parts/ (ComponentPins, ComponentsKey, FlowDrawing, FlowKey, PictureParts); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceSteps); Renderers/Parts/Overview/ (OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords)
 ├── Tones/      # ToneMeanings
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/

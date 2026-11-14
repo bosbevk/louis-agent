@@ -103,7 +103,7 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 | Child | What it does | Done when |
 |---|---|---|
 | **CL65.1 Two projects**, built 2026-11-14 | Moves what builds a diagram into `louis-agent.diagrams.engine`. Splits the one message enum in two. Their tests follow, in two projects. | `louis-agent.diagrams` holds no layout and no drawing, a test holds the direction, and the docs' tool writes no picture. |
-| **CL65.2 The picture builder** | `PictureBuilder`, and the six drawings built through it. The light, drawn in three places, and the keys' placing, written four times, become one each. The renderers get a folder that fits them. | No kind writes its own title, light or caption, and the docs' tool writes no picture. |
+| **CL65.2 The picture builder**, built 2026-11-14 | `PictureBuilder`, and the six drawings built through it. The light, drawn in three places, and the keys' placing, written four times, become one each. The renderers get a folder that fits them. | No kind writes its own title, light or caption, and the docs' tool writes no picture. |
 | **CL65.3 Every picture says its type** | The `type` in the JSON and the reader, the builder's step, each of the 91 flows read and given its type, the guide. | Every picture in the docs shows its type, and a flow without one is refused. |
 | **CL65.4 What the old looks left** | The old rules in the shared style and the frame's. The two layout rules nothing draws by. The long lines out of the class that gives a box its column. One folder for the kinds' styles. One rule for a word's pill. The diagrams' own interface picture. The `components` kind's name, put to Louis. | The list in F134's plan is empty, and the docs' tool writes no picture. |
 
@@ -161,8 +161,18 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     that knows how wide words are in it, a small writer for a path. The other two were one calculator class,
     which is the grab-bag our rule forbids, and a layout that works out every place from what stacks under
     what.
-  - *Done when* no layout or drawing measures words by a number of its own or works out a box's edge inline,
-    and the docs' tool writes no picture.
+  - *Done when* no layout or drawing measures words by a number of its own or works out a box's edge inline.
+  - *Whose types: Microsoft's.* He asked "is there not an arithmic calculator interface in MS". Microsoft's
+    docs were read: generic math gives a type of ours its operators and does no sums itself;
+    `System.Drawing.RectangleF` and `System.Numerics.Vector2` have a box's and a point's sums ready-made, in
+    single precision. His pick of three: those types, over our own in double precision, which I had
+    recommended, and our own generic over the number. Both ship with .NET itself, so no package is added. A
+    number that passes through single precision may change in its last digits, so this child cannot be proved
+    by no picture changing: each picture that changes is compared and looked at. Words still need a type of
+    ours, since nothing of Microsoft's measures them without a font.
+- **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
+  each renderer stands beside its drawing. No picture changed. Its picks are in its plan as of the commit
+  before the one that deleted it, and its lessons in [the write-up](../learning/18-testing-and-shipping.md).
 
 ---
 [Docs index](../README.md) · Related: [F134](F134-the-showroom-looks-modern.md) ·

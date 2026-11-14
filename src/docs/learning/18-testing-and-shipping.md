@@ -795,6 +795,55 @@ follows one picture across all three.
 dependency one way. Skill 18, testing and shipping: a refactor proved by an output that does not change by a
 byte.
 
+## Six methods that did the same thing, and one builder (CL65.2, 2026-11-14)
+
+**What it is.** Six kinds of picture each had a method that put the picture together: work out its width and
+height, draw the light and the title, place the body and the key, write the caption, join the styles. You said
+"then use builder pattern for implementation", and picked one fluent builder with each kind's drawing as its
+director. Now a drawing places with its own layout and tells `PictureBuilder` its parts. The builder does the
+rest, once.
+
+**The idea: write the steps once, and let what differs be said by name.** A Builder puts a complex thing
+together step by step. The trap is a builder full of "if this kind, then". This one has none. I read all six
+methods line by line first and wrote down what differed:
+
+- Four numbers: the room above, the room before the key, how far down the light is, how deep it is. They became
+  one record, with a flow's as the usual. A sequence hands in its own.
+- Each kind's own fades, and the order they are defined in.
+- Whether a long title widens the picture. For a cards picture and a component diagram it does not.
+- Where the light is. A cards picture has one behind each highlighted card, so it hands in its own.
+
+Each of those is something a kind tells the builder. So the builder never needs to know the kind.
+
+**Nothing is written until the end.** A key's rows wrap at the picture's width, and the width depends on the
+title, which may be wider than the body. So the key is handed over as a function of the width, and the builder
+asks for it last. That one fact decided the builder's shape: it holds what it is told, and writes everything in
+`Build`.
+
+**The proof was the same as for the split.** After the six kinds moved onto the builder, the docs' tool redrew
+all 268 pictures and wrote none, and no golden changed. A builder that put one part a pixel off, or defined one
+fade out of order, would have shown as a changed file.
+
+**A rule so it stays.** A test holds that nothing under the engine's renderers but the builder writes a title, a
+caption or the SVG itself, and only a cards picture a light. I wrote it after the drawings had moved, which is
+the wrong order. So I ran it against the drawings as they were, to see it fail, before trusting it.
+
+**Two smaller things in the same child.**
+
+- Four kinds placed their key's items by the same loop with the same five numbers. One placer does it now.
+- Five of seven renderers only handed on to their drawing, in a folder that was full. Each now stands beside its
+  drawing. That move had to come before the builder, not after as planned: the builder's two files were a
+  seventh and eighth in a folder that holds six.
+
+**What you added on the way, for later children.** The pictures a project needs should follow from its type
+and its requirements, and stand where the text needs them. And the engine's arithmetic should be small types
+that carry their own sums, on Microsoft's `RectangleF` and `Vector2`.
+
+**Where it sits.** Skill 20, extensibility: a Builder with a Strategy as its director and a Parameter Object
+for what differs, so a new kind writes a body and a key and gets the rest. Skill 18, testing and shipping: a
+refactor proved by output that does not change by a byte, and a rule test seen failing even when it was written
+late.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into
