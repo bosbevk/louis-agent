@@ -1,0 +1,25 @@
+{
+  "kind": "flow",
+  "type": "object",
+  "title": "CL65.6 the engine asks its types: one placed box, in memory",
+  "caption": "A placed node holds one box where it held four numbers, and the box is of the family that made it.",
+  "flow": {
+    "direction": "down",
+    "nodes": [
+      { "id": "geometry", "label": "GenericGeometry<double>\nthe one in use", "icon": "box", "tone": "teal" },
+      { "id": "graph", "label": "PlacedGraph\nits nodes, edges and groups", "icon": "code", "tone": "green" },
+      { "id": "node", "label": "PlacedNode\nNode = \"The engine\"", "icon": "code", "tone": "green" },
+      { "id": "box", "label": "Box<double>\n120, 40, 200 wide, 64 tall", "icon": "box", "tone": "teal" },
+      { "id": "edge", "label": "PlacedEdge\nits path and its word's place", "icon": "code", "tone": "green" },
+      { "id": "point", "label": "Point<double>\nwhere the word stands", "icon": "box", "tone": "teal" }
+    ],
+    "edges": [
+      { "from": "geometry", "to": "box", "word": "made", "style": "dashed" },
+      { "from": "geometry", "to": "point", "word": "made", "style": "dashed" },
+      { "from": "graph", "to": "node", "word": "holds" },
+      { "from": "graph", "to": "edge", "word": "holds" },
+      { "from": "node", "to": "box", "word": "holds" },
+      { "from": "edge", "to": "point", "word": "holds" }
+    ]
+  }
+}

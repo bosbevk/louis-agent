@@ -1,0 +1,26 @@
+{
+  "kind": "classes",
+  "title": "CL65.6 the engine asks its types: who asks them",
+  "caption": "A layout is handed the geometry and asks a face. What it places holds a box, and a drawing asks that box.",
+  "classes": {
+    "types": [
+      { "id": "layout", "name": "GraphLayout", "kind": "static, one of six layouts, step 5", "members": [ "Place(spec, …, geometry)" ] },
+      { "id": "drawing", "name": "FlowDrawing", "kind": "static, one of six drawings, step 5" },
+      { "id": "node", "name": "PlacedNode", "kind": "record, one of ten, step 5", "members": [ "Node", "Box, where X, Y, W, H were" ] },
+      { "id": "geometry", "name": "IGeometry", "kind": "interface, step 2" },
+      { "id": "box", "name": "IBox", "kind": "interface, step 2" },
+      { "id": "point", "name": "IPoint", "kind": "interface, step 2" },
+      { "id": "face", "name": "Face", "kind": "record, step 4", "members": [ "Width(words) double" ] },
+      { "id": "path", "name": "PathWriter", "kind": "class, step 4", "members": [ "to a point, a line, an arc", "its text" ] }
+    ],
+    "relations": [
+      { "from": "layout", "to": "geometry", "kind": "uses", "word": "is handed one" },
+      { "from": "layout", "to": "face", "kind": "uses", "word": "how wide" },
+      { "from": "layout", "to": "node", "kind": "creates" },
+      { "from": "node", "to": "box", "kind": "holds" },
+      { "from": "drawing", "to": "node", "kind": "uses", "word": "reads" },
+      { "from": "drawing", "to": "path", "kind": "uses" },
+      { "from": "path", "to": "point", "kind": "uses" }
+    ]
+  }
+}

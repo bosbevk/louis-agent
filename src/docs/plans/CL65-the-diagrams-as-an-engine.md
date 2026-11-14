@@ -195,6 +195,12 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     csharprules", "for this". CL65.4 and CL65.5 touch engine files, and fixing those whole needs the box and
     the face that only this child builds. Put to him as three orders. His pick: "1", this child next, before
     CL65.4 and CL65.5. So the order of what is left is CL65.6, CL65.4, CL65.5.
+  - *What the interface covers, and which family is in use.* Put to him as three: a box and a point made by
+    one geometry, a box only, or all four kinds of knowledge behind it. His pick: "1", a box and a point,
+    with a face for words and a path writer as plain types of ours. And while its plan was written: "keep
+    ours and MS's but use ours.", "since we have it". So both families stay behind the interface, ours draws
+    every picture, and a test draws each with Microsoft's too, so the kept one is run. Its plan is
+    [CL65.6](CL65.6-the-engine-asks-its-types.md).
 - **2026-11-14, found in CL65.3, for CL65.4's list.** A cards picture whose file has no `"links"` is not
   refused: the reader fails on it with .NET's own error, which names nothing a person wrote.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
