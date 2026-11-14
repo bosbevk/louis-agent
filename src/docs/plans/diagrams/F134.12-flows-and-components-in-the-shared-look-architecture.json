@@ -1,0 +1,152 @@
+{
+  "kind": "flow",
+  "title": "F134.12 flows and components in the shared look: what the change reaches",
+  "caption": "The JSON stays and the layout stays but for a decision: step 2 changes that shape, steps 3 to 5 the look of 92 pictures, and step 6 a light page's glass in the other three kinds.",
+  "flow": {
+    "direction": "down",
+    "groups": [
+      {
+        "id": "diagrams",
+        "label": "louis-agent.diagrams"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "json",
+        "label": "91 flows and 1 component diagram\ntheir JSON, none edited",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "tool",
+        "label": "louis-agent.doc-diagrams\nas today",
+        "icon": "terminal",
+        "tone": "green"
+      },
+      {
+        "id": "flow",
+        "label": "FlowRenderer, FlowDrawing\nsteps 3 and 4",
+        "icon": "code",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "cmp",
+        "label": "ComponentsRenderer\nsteps 3 and 5",
+        "icon": "code",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "parts",
+        "label": "PictureParts\ntitle, light, panel\nstep 3",
+        "icon": "box",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "look",
+        "label": "PictureLook\na panel's body\nstep 3",
+        "icon": "settings",
+        "tone": "teal",
+        "group": "diagrams"
+      },
+      {
+        "id": "shapes",
+        "label": "NodeShapes\na decision's shape\nstep 2",
+        "icon": "chart",
+        "tone": "green",
+        "group": "diagrams"
+      },
+      {
+        "id": "marquee",
+        "label": "MarqueeLook\na light page's glass\nstep 6",
+        "icon": "settings",
+        "tone": "teal",
+        "group": "diagrams"
+      },
+      {
+        "id": "svg",
+        "label": "92 pictures, redrawn\nsteps 2 to 5",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "others",
+        "label": "167 cards, sequences and class charts\ntheir style only\nstep 6",
+        "icon": "file",
+        "tone": "amber",
+        "shape": "data"
+      },
+      {
+        "id": "site",
+        "label": "The site's GraphView\na decision's shape only\nstep 7",
+        "icon": "browser",
+        "tone": "violet"
+      }
+    ],
+    "edges": [
+      {
+        "from": "json",
+        "to": "tool",
+        "word": "read by"
+      },
+      {
+        "from": "tool",
+        "to": "flow",
+        "word": "RenderTitled"
+      },
+      {
+        "from": "tool",
+        "to": "cmp",
+        "word": "RenderTitled"
+      },
+      {
+        "from": "flow",
+        "to": "parts",
+        "word": "draws with"
+      },
+      {
+        "from": "cmp",
+        "to": "parts",
+        "word": "draws with"
+      },
+      {
+        "from": "flow",
+        "to": "look",
+        "word": "wears",
+        "style": "dashed"
+      },
+      {
+        "from": "cmp",
+        "to": "look",
+        "word": "wears",
+        "style": "dashed"
+      },
+      {
+        "from": "flow",
+        "to": "shapes",
+        "word": "a shape's outline"
+      },
+      {
+        "from": "tool",
+        "to": "svg",
+        "word": "writes what changed"
+      },
+      {
+        "from": "marquee",
+        "to": "others",
+        "word": "restyles",
+        "style": "dashed"
+      },
+      {
+        "from": "shapes",
+        "to": "site",
+        "word": "read by",
+        "style": "dashed"
+      }
+    ]
+  }
+}

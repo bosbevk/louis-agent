@@ -121,6 +121,10 @@ Parked, a feature of its own: **see it as yours**, the visitor's own business on
     [the diagrams' design doc](../projects/louis-agent.diagrams.md), and the lessons in
     [the write-up](../learning/18-testing-and-shipping.md). The design is in
     [m-classes.html](F134-mockups/m-classes.html).
+  - **F134.12 Flows and component diagrams in the shared look**
+    ([plan](F134.12-flows-and-components-in-the-shared-look.md)): Louis, 2026-11-14, "make the theme of the
+    flow and component diagrams resemble the others, it is now a bit out of date". Done when the 91 flows and
+    the component diagram are drawn that way.
   - **Left for the project refactor Louis asked for after F134.11:** every docs kind is redone now, so what
     the old looks left behind can go in one piece of work with a plan of its own. The old rules for a card's
     frame, a box, a chip and a group are still in the pictures' shared style (`SvgStyle`), and the title bar's

@@ -1,0 +1,413 @@
+<svg viewBox="-24 -24 1637 1049" width="1637" height="1049" role="img" aria-label="F134.12 flows and components in the shared look: what the change reaches" xmlns="http://www.w3.org/2000/svg">
+  <title>F134.12 flows and components in the shared look: what the change reaches</title>
+  <style>svg {
+  --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
+  --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --ground: #070708; --panel: #1b1d21; --line: #2c2f35; --text: #e6e8eb; --bright: #ffffff; --quiet: #9aa0a8; --chip: #15171a; --accent: #7fa8e8; --tint: #141b28; --blue-fill: #15213a; --blue-line: #6b9cf0; --blue-ink: #b9d0fa; --green-fill: #13281b; --green-line: #4cc173; --green-ink: #b6ebc6; --violet-fill: #221a35; --violet-line: #a985ec; --violet-ink: #d9c9f8; --teal-fill: #0f2a27; --teal-line: #3cc4b3; --teal-ink: #b3ece4; --red-fill: #2e141c; --red-line: #ef6f8f; --red-ink: #f8c2d0; --amber-fill: #2c2010; --amber-line: #f2ad52; --amber-ink: #f8dcb4; }
+}
+.ground { fill: var(--ground); }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.label { fill: var(--text); font: 600 12px var(--mono); }
+.note { fill: var(--quiet); font: 10px var(--mono); }
+.edge { fill: none; stroke: var(--quiet); stroke-width: 1.5; }
+.arrow { fill: var(--quiet); }
+.dashed { stroke-dasharray: 5 4; }
+.group { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.group-label {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1px; text-transform: uppercase;
+}
+.word { fill: var(--text); font: 500 10px var(--mono); }
+.word-chip { fill: var(--ground); stroke: var(--line); stroke-width: 1; }
+.caption {
+  fill: var(--quiet); font: 600 10.5px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.icon { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1; }
+.card { fill: var(--panel); stroke: var(--line); stroke-width: 1; }
+.highlight { fill: var(--tint); stroke: var(--accent); }
+.title { fill: var(--text); font: 600 13px var(--mono); }
+.chip { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.code { fill: var(--text); font: 11px var(--mono); }
+.text { fill: var(--quiet); font: 11px var(--mono); }
+.badge { fill: var(--quiet); }
+.badge-icon {
+  fill: none; stroke: var(--panel); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.box.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.badge.tone-blue, .arrow.tone-blue { fill: var(--blue-line); }
+.label.tone-blue, .word.tone-blue { fill: var(--blue-ink); }
+.edge.tone-blue, .word-chip.tone-blue { stroke: var(--blue-line); }
+.box.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.badge.tone-green, .arrow.tone-green { fill: var(--green-line); }
+.label.tone-green, .word.tone-green { fill: var(--green-ink); }
+.edge.tone-green, .word-chip.tone-green { stroke: var(--green-line); }
+.box.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.badge.tone-violet, .arrow.tone-violet { fill: var(--violet-line); }
+.label.tone-violet, .word.tone-violet { fill: var(--violet-ink); }
+.edge.tone-violet, .word-chip.tone-violet { stroke: var(--violet-line); }
+.box.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.badge.tone-teal, .arrow.tone-teal { fill: var(--teal-line); }
+.label.tone-teal, .word.tone-teal { fill: var(--teal-ink); }
+.edge.tone-teal, .word-chip.tone-teal { stroke: var(--teal-line); }
+.box.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.badge.tone-red, .arrow.tone-red { fill: var(--red-line); }
+.label.tone-red, .word.tone-red { fill: var(--red-ink); }
+.edge.tone-red, .word-chip.tone-red { stroke: var(--red-line); }
+.box.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+.badge.tone-amber, .arrow.tone-amber { fill: var(--amber-line); }
+.label.tone-amber, .word.tone-amber { fill: var(--amber-ink); }
+.edge.tone-amber, .word-chip.tone-amber { stroke: var(--amber-line); }
+svg {
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --banner: #1f3a68; --banner-line: #5b77a6; --banner-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --banner: #17243d; --banner-line: #3d5378; --banner-ink: #e6e8eb; }
+}
+.titlebar { fill: var(--banner); }
+.title-icon {
+  fill: none; stroke: var(--banner-ink); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.title-rule { fill: var(--banner-line); }
+.heading { fill: var(--banner-ink); font: 400 15px var(--sans); }
+.title-head { font-weight: 700; }
+.notebar { fill: var(--chip); stroke: var(--line); stroke-width: 1; }
+.note-icon {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.notes { fill: var(--quiet); font: 400 12px var(--sans); }
+.note-head { fill: var(--text); font-weight: 700; }
+.legend { fill: var(--quiet); font: 400 12px var(--sans); }
+.swatch.tone-blue { fill: var(--blue-fill); stroke: var(--blue-line); stroke-width: 1.5; }
+.swatch.tone-green { fill: var(--green-fill); stroke: var(--green-line); stroke-width: 1.5; }
+.swatch.tone-violet { fill: var(--violet-fill); stroke: var(--violet-line); stroke-width: 1.5; }
+.swatch.tone-teal { fill: var(--teal-fill); stroke: var(--teal-line); stroke-width: 1.5; }
+.swatch.tone-red { fill: var(--red-fill); stroke: var(--red-line); stroke-width: 1.5; }
+.swatch.tone-amber { fill: var(--amber-fill); stroke: var(--amber-line); stroke-width: 1.5; }
+</style>
+  <style>
+svg {
+  --pic-0: #ffffff; --pic-1: #f4f6f9; --pic-2: #ffffff; --pic-3: #f4f6f9; --pic-4: #ffffff; --pic-5: #f4f6f9; --pic-lift: rgba(27, 42, 74, .14); --pic-dot: rgba(15, 23, 42, .075); --pic-march: rgba(255, 255, 255, .95); --pic-sheen: rgba(255, 255, 255, .9);
+  --pic-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  svg { --pic-0: #11141a; --pic-1: #151920; --pic-2: #191e26; --pic-3: #1d232c; --pic-4: #212832; --pic-5: #262e39; --pic-lift: rgba(0, 0, 0, .5); --pic-dot: rgba(255, 255, 255, .055); --pic-march: rgba(255, 255, 255, .75); --pic-sheen: rgba(255, 255, 255, .09); }
+}
+.pic-dots {
+  fill: none; stroke: var(--pic-dot); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 0 22;
+}
+.pic-edge { stroke: var(--quiet); }
+.pic-tint { fill: var(--chip); }
+.pic-fill { fill: var(--quiet); }
+.pic-ink { fill: var(--text); }
+.pic-edge.tone-blue { stroke: var(--blue-line); }
+.pic-panel.tone-blue { --pic-tone: var(--blue-fill); }
+.pic-tint.tone-blue { fill: var(--blue-fill); }
+.pic-fill.tone-blue { fill: var(--blue-line); }
+.pic-ink.tone-blue { fill: var(--blue-ink); }
+.pic-edge.tone-green { stroke: var(--green-line); }
+.pic-panel.tone-green { --pic-tone: var(--green-fill); }
+.pic-tint.tone-green { fill: var(--green-fill); }
+.pic-fill.tone-green { fill: var(--green-line); }
+.pic-ink.tone-green { fill: var(--green-ink); }
+.pic-edge.tone-violet { stroke: var(--violet-line); }
+.pic-panel.tone-violet { --pic-tone: var(--violet-fill); }
+.pic-tint.tone-violet { fill: var(--violet-fill); }
+.pic-fill.tone-violet { fill: var(--violet-line); }
+.pic-ink.tone-violet { fill: var(--violet-ink); }
+.pic-edge.tone-teal { stroke: var(--teal-line); }
+.pic-panel.tone-teal { --pic-tone: var(--teal-fill); }
+.pic-tint.tone-teal { fill: var(--teal-fill); }
+.pic-fill.tone-teal { fill: var(--teal-line); }
+.pic-ink.tone-teal { fill: var(--teal-ink); }
+.pic-edge.tone-red { stroke: var(--red-line); }
+.pic-panel.tone-red { --pic-tone: var(--red-fill); }
+.pic-tint.tone-red { fill: var(--red-fill); }
+.pic-fill.tone-red { fill: var(--red-line); }
+.pic-ink.tone-red { fill: var(--red-ink); }
+.pic-edge.tone-amber { stroke: var(--amber-line); }
+.pic-panel.tone-amber { --pic-tone: var(--amber-fill); }
+.pic-tint.tone-amber { fill: var(--amber-fill); }
+.pic-fill.tone-amber { fill: var(--amber-line); }
+.pic-ink.tone-amber { fill: var(--amber-ink); }
+.pic-panel {
+  fill: color-mix(in srgb, var(--pic-tone, var(--pic-depth)) 42%, var(--pic-depth));
+  stroke-width: 1; stroke-opacity: .5; filter: drop-shadow(0 8px 9px var(--pic-lift));
+}
+.pic-panel.depth-0 { --pic-depth: var(--pic-0); }
+.pic-panel.depth-1 { --pic-depth: var(--pic-1); }
+.pic-panel.depth-2 { --pic-depth: var(--pic-2); }
+.pic-panel.depth-3 { --pic-depth: var(--pic-3); }
+.pic-panel.depth-4 { --pic-depth: var(--pic-4); }
+.pic-panel.depth-5 { --pic-depth: var(--pic-5); }
+.pic-sheen { fill: none; stroke: var(--pic-sheen); stroke-width: 1; stroke-linecap: round; }
+.pic-swatch { stroke-width: 1; }
+.pic-title { fill: var(--text); font: 700 21px var(--pic-sans); letter-spacing: -.2px; }
+.pic-group {
+  fill: var(--quiet); font: 600 10px var(--mono); letter-spacing: 1.4px; text-transform: uppercase;
+}
+.pic-name { fill: var(--text); font: 600 15px var(--pic-sans); }
+.pic-note { fill: var(--quiet); font: 11.5px var(--pic-sans); }
+.pic-word { fill: var(--quiet); font: 500 10px var(--mono); }
+.pic-port { fill: var(--ground); stroke-width: 1.25; }
+.pic-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+.pic-line.reads { stroke-dasharray: 3 5; }
+.pic-march {
+  fill: none; stroke: var(--pic-march); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 13;
+  animation: pic-march 1.1s linear infinite;
+}
+@keyframes pic-march { to { stroke-dashoffset: -14; } }
+@media (prefers-reduced-motion: reduce) {
+  .pic-march { display: none; }
+}
+.flow-group {
+  fill: var(--pic-1); stroke: var(--line); stroke-width: 1; filter: drop-shadow(0 8px 9px var(--pic-lift));
+}
+.flow-name { fill: var(--text); font: 600 14px var(--pic-sans); }
+.flow-icon {
+  fill: none; stroke: var(--ground); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.flow-shape {
+  stroke-width: 1.5; stroke-opacity: 1; stroke-linejoin: round;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--flow-glow, var(--quiet)) 55%, transparent))
+    drop-shadow(0 8px 9px var(--pic-lift));
+}
+.flow-shape.tone-blue { --flow-glow: var(--blue-line); }
+.flow-shape.tone-green { --flow-glow: var(--green-line); }
+.flow-shape.tone-violet { --flow-glow: var(--violet-line); }
+.flow-shape.tone-teal { --flow-glow: var(--teal-line); }
+.flow-shape.tone-red { --flow-glow: var(--red-line); }
+.flow-shape.tone-amber { --flow-glow: var(--amber-line); }
+.flow-chip { fill: var(--ground); stroke-width: 1; stroke-opacity: .6; }
+.flow-word { font: 500 10px var(--mono); }</style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-amber" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-green" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="arrow tone-teal" d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect class="ground" x="-24" y="-24" width="1637" height="1049" rx="14" />
+  <g class="drawing" transform="translate(0 0)">
+    <path class="pic-dots" d="M0 11H1589M0 33H1589M0 55H1589M0 77H1589M0 99H1589M0 121H1589M0 143H1589M0 165H1589M0 187H1589M0 209H1589M0 231H1589M0 253H1589M0 275H1589M0 297H1589M0 319H1589M0 341H1589M0 363H1589M0 385H1589M0 407H1589M0 429H1589M0 451H1589M0 473H1589M0 495H1589M0 517H1589M0 539H1589M0 561H1589M0 583H1589M0 605H1589M0 627H1589M0 649H1589M0 671H1589M0 693H1589M0 715H1589M0 737H1589M0 759H1589M0 781H1589M0 803H1589M0 825H1589M0 847H1589M0 869H1589M0 891H1589M0 913H1589M0 935H1589M0 957H1589" />
+    <text class="pic-title" x="0" y="24" text-anchor="start">F134.12 flows and components in the shared look</text>
+    <text class="pic-group" x="0" y="46" text-anchor="start">what the change reaches</text>
+    <g class="flow" transform="translate(0 72)">
+      <rect class="flow-group" x="802.4" y="0" width="786.2" height="644" rx="14" />
+      <text class="pic-group" x="816.4" y="19" text-anchor="start">louis-agent.diagrams</text>
+      <path class="pic-line pic-edge tone-amber" d="M 194.6 118 L 194.6 204" marker-end="url(#arrow-amber)" />
+      <path class="pic-march" d="M 194.6 118 L 194.6 204" />
+      <path class="pic-line pic-edge tone-green" d="M 194.6 288 L 194.6 300 Q 194.6 312 206.6 312 L 918.4 312 Q 942.4 312 942.4 336 L 942.4 396" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 194.6 288 L 194.6 300 Q 194.6 312 206.6 312 L 918.4 312 Q 942.4 312 942.4 336 L 942.4 396" />
+      <path class="pic-line pic-edge tone-green" d="M 194.6 288 L 194.6 300 Q 194.6 312 206.6 312 L 1192.4 312 Q 1216.4 312 1216.4 336 L 1216.4 396" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 194.6 288 L 194.6 300 Q 194.6 312 206.6 312 L 1192.4 312 Q 1216.4 312 1216.4 336 L 1216.4 396" />
+      <path class="pic-line pic-edge tone-green" d="M 942.4 464 L 942.4 485 Q 942.4 506 963.4 506 L 1177.4 506 Q 1198.4 506 1198.4 527 L 1198.4 548" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 942.4 464 L 942.4 485 Q 942.4 506 963.4 506 L 1177.4 506 Q 1198.4 506 1198.4 527 L 1198.4 548" />
+      <path class="pic-line pic-edge tone-green" d="M 1216.4 464 L 1216.4 548" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 1216.4 464 L 1216.4 548" />
+      <path class="pic-line pic-edge tone-green reads" d="M 942.4 464 L 942.4 485 Q 942.4 506 963.4 506 L 1460.4 506 Q 1481.4 506 1481.4 527 L 1481.4 548" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green reads" d="M 1216.4 464 L 1216.4 476 Q 1216.4 488 1228.4 488 L 1475.4 488 Q 1499.4 488 1499.4 512 L 1499.4 548" marker-end="url(#arrow-green)" />
+      <path class="pic-line pic-edge tone-green" d="M 942.4 464 L 942.4 548" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 942.4 464 L 942.4 548" />
+      <path class="pic-line pic-edge tone-green" d="M 194.6 288 L 194.6 396" marker-end="url(#arrow-green)" />
+      <path class="pic-march" d="M 194.6 288 L 194.6 396" />
+      <path class="pic-line pic-edge tone-teal reads" d="M 942.4 118 L 942.4 156 Q 942.4 180 918.4 180 L 589.8 180 Q 577.8 180 577.8 192 L 577.8 204" marker-end="url(#arrow-teal)" />
+      <path class="pic-line pic-edge tone-green reads" d="M 942.4 632 L 942.4 670 Q 942.4 694 918.4 694 L 589.8 694 Q 577.8 694 577.8 706 L 577.8 718" marker-end="url(#arrow-green)" />
+      <rect class="flow-chip pic-edge tone-amber" x="200.6" y="122" width="57" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-amber" x="229.1" y="134" text-anchor="middle">read by</text>
+      <rect class="flow-chip pic-edge tone-green" x="948.4" y="316" width="92" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="994.4" y="328" text-anchor="middle">RenderTitled</text>
+      <rect class="flow-chip pic-edge tone-green" x="1222.4" y="316" width="92" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1268.4" y="328" text-anchor="middle">RenderTitled</text>
+      <rect class="flow-chip pic-edge tone-green" x="1114.4" y="510" width="78" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1153.4" y="522" text-anchor="middle">draws with</text>
+      <rect class="flow-chip pic-edge tone-green" x="1222.4" y="510" width="78" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1261.4" y="522" text-anchor="middle">draws with</text>
+      <rect class="flow-chip pic-edge tone-green" x="1432.4" y="510" width="43" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1453.9" y="522" text-anchor="middle">wears</text>
+      <rect class="flow-chip pic-edge tone-green" x="1505.4" y="510" width="43" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1526.9" y="522" text-anchor="middle">wears</text>
+      <rect class="flow-chip pic-edge tone-green" x="948.4" y="510" width="127" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="1011.9" y="522" text-anchor="middle">a shape's outline</text>
+      <rect class="flow-chip pic-edge tone-green" x="200.6" y="316" width="141" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="271.1" y="328" text-anchor="middle">writes what changed</text>
+      <rect class="flow-chip pic-edge tone-teal" x="948.4" y="122" width="64" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-teal" x="980.4" y="134" text-anchor="middle">restyles</text>
+      <rect class="flow-chip pic-edge tone-green" x="948.4" y="636" width="57" height="18" rx="9" />
+      <text class="flow-word pic-ink tone-green" x="976.9" y="648" text-anchor="middle">read by</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M49 34L358.2 34L340.2 118L31 118Z" />
+      <rect class="pic-fill tone-amber" x="50" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="59" y="62" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(65 68) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="flow-name" x="95" y="73" text-anchor="start">91 flows and 1 component diagram</text>
+      <text class="flow-name" x="95" y="89" text-anchor="start">their JSON, none edited</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="833.4" y="34" width="218" height="84" rx="10" />
+      <path class="pic-sheen" d="M843.4 35.5H1041.4" />
+      <rect class="pic-fill tone-teal" x="840.4" y="65" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="849.4" y="62" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(855.4 68) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="flow-name" x="885.4" y="65" text-anchor="start">MarqueeLook</text>
+      <text class="flow-name" x="885.4" y="81" text-anchor="start">a light page's glass</text>
+      <text class="flow-name" x="885.4" y="97" text-anchor="start">step 6</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="70.4" y="204" width="248.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M80.4 205.5H308.8" />
+      <rect class="pic-fill tone-green" x="77.4" y="235" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="86.4" y="232" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(92.4 238) scale(0.6667)">
+        <path d="M5 7l5 5l-5 5" />
+        <path d="M12 19l7 0" />
+      </g>
+      <text class="flow-name" x="122.4" y="243" text-anchor="start">louis-agent.doc-diagrams</text>
+      <text class="flow-name" x="122.4" y="259" text-anchor="start">as today</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M413.2 204L760.4 204L742.4 288L395.2 288Z" />
+      <rect class="pic-fill tone-amber" x="414.2" y="235" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="423.2" y="232" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(429.2 238) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="flow-name" x="459.2" y="235" text-anchor="start">167 cards, sequences and class charts</text>
+      <text class="flow-name" x="459.2" y="251" text-anchor="start">their style only</text>
+      <text class="flow-name" x="459.2" y="267" text-anchor="start">step 6</text>
+      <path class="pic-panel depth-2 pic-edge tone-amber flow-shape" d="M94.6 396L312.6 396L294.6 464L76.6 464Z" />
+      <rect class="pic-fill tone-amber" x="95.6" y="419" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-amber" x="104.6" y="416" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(110.6 422) scale(0.6667)">
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+        <path d="M9 9l1 0" />
+        <path d="M9 13l6 0" />
+        <path d="M9 17l6 0" />
+      </g>
+      <text class="flow-name" x="140.6" y="427" text-anchor="start">92 pictures, redrawn</text>
+      <text class="flow-name" x="140.6" y="443" text-anchor="start">steps 2 to 5</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="814.4" y="396" width="256" height="68" rx="10" />
+      <path class="pic-sheen" d="M824.4 397.5H1060.4" />
+      <rect class="pic-fill tone-green" x="821.4" y="419" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="830.4" y="416" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(836.4 422) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="flow-name" x="866.4" y="427" text-anchor="start">FlowRenderer, FlowDrawing</text>
+      <text class="flow-name" x="866.4" y="443" text-anchor="start">steps 3 and 4</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="1115" y="396" width="202.8" height="68" rx="10" />
+      <path class="pic-sheen" d="M1125 397.5H1307.8" />
+      <rect class="pic-fill tone-green" x="1122" y="419" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="1131" y="416" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1137 422) scale(0.6667)">
+        <path d="M7 8l-4 4l4 4" />
+        <path d="M17 8l4 4l-4 4" />
+        <path d="M14 4l-4 16" />
+      </g>
+      <text class="flow-name" x="1167" y="427" text-anchor="start">ComponentsRenderer</text>
+      <text class="flow-name" x="1167" y="443" text-anchor="start">steps 3 and 5</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="841" y="548" width="202.8" height="84" rx="10" />
+      <path class="pic-sheen" d="M851 549.5H1033.8" />
+      <rect class="pic-fill tone-green" x="848" y="579" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="857" y="576" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(863 582) scale(0.6667)">
+        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+        <path d="M4 20h14" />
+      </g>
+      <text class="flow-name" x="893" y="579" text-anchor="start">NodeShapes</text>
+      <text class="flow-name" x="893" y="595" text-anchor="start">a decision's shape</text>
+      <text class="flow-name" x="893" y="611" text-anchor="start">step 2</text>
+      <rect class="pic-panel depth-2 pic-edge tone-green" x="1111.2" y="548" width="210.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M1121.2 549.5H1311.6" />
+      <rect class="pic-fill tone-green" x="1118.2" y="579" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-green" x="1127.2" y="576" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1133.2 582) scale(0.6667)">
+        <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+        <path d="M12 12l8 -4.5" />
+        <path d="M12 12l0 9" />
+        <path d="M12 12l-8 -4.5" />
+      </g>
+      <text class="flow-name" x="1163.2" y="579" text-anchor="start">PictureParts</text>
+      <text class="flow-name" x="1163.2" y="595" text-anchor="start">title, light, panel</text>
+      <text class="flow-name" x="1163.2" y="611" text-anchor="start">step 3</text>
+      <rect class="pic-panel depth-2 pic-edge tone-teal" x="1404.2" y="548" width="172.4" height="84" rx="10" />
+      <path class="pic-sheen" d="M1414.2 549.5H1566.6" />
+      <rect class="pic-fill tone-teal" x="1411.2" y="579" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-teal" x="1420.2" y="576" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(1426.2 582) scale(0.6667)">
+        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      </g>
+      <text class="flow-name" x="1456.2" y="579" text-anchor="start">PictureLook</text>
+      <text class="flow-name" x="1456.2" y="595" text-anchor="start">a panel's body</text>
+      <text class="flow-name" x="1456.2" y="611" text-anchor="start">step 3</text>
+      <rect class="pic-panel depth-2 pic-edge tone-violet" x="457.4" y="718" width="240.8" height="84" rx="10" />
+      <path class="pic-sheen" d="M467.4 719.5H688.2" />
+      <rect class="pic-fill tone-violet" x="464.4" y="749" width="4" height="22" rx="2" />
+      <rect class="pic-fill tone-violet" x="473.4" y="746" width="28" height="28" rx="8" />
+      <g class="flow-icon" transform="translate(479.4 752) scale(0.6667)">
+        <path d="M4 4m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+        <path d="M4 8h16" />
+        <path d="M8 4v4" />
+      </g>
+      <text class="flow-name" x="509.4" y="749" text-anchor="start">The site's GraphView</text>
+      <text class="flow-name" x="509.4" y="765" text-anchor="start">a decision's shape only</text>
+      <text class="flow-name" x="509.4" y="781" text-anchor="start">step 7</text>
+      <circle class="pic-port pic-edge tone-amber" cx="194.6" cy="118" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="194.6" cy="288" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="942.4" cy="464" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="1216.4" cy="464" r="4" />
+      <circle class="pic-port pic-edge tone-teal" cx="942.4" cy="118" r="4" />
+      <circle class="pic-port pic-edge tone-green" cx="942.4" cy="632" r="4" />
+    </g>
+    <text class="pic-group" x="0" y="910" text-anchor="start">How to read it</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-green" x="0" y="927" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-green" x="4" y="931" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="38" y="939" text-anchor="start">this project</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-violet" x="139.6" y="927" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-violet" x="143.6" y="931" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="177.6" y="939" text-anchor="start">the framework</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-teal" x="285.5" y="927" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-teal" x="289.5" y="931" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="323.5" y="939" text-anchor="start">contracts and state</text>
+    <rect class="pic-swatch pic-tint pic-edge tone-amber" x="469.2" y="927" width="26" height="16" rx="5" />
+    <rect class="pic-fill tone-amber" x="473.2" y="931" width="3" height="8" rx="1.5" />
+    <text class="pic-note" x="507.2" y="939" text-anchor="start">files and data</text>
+    <path class="pic-swatch pic-tint pic-edge flow-shape" d="M639.4 927L651.4 927L633.4 943L621.4 943Z" />
+    <text class="pic-note" x="659.4" y="939" text-anchor="start">data in or out</text>
+    <path class="flow-key pic-line pic-edge" d="M773.6 935H803.6" marker-end="url(#arrow)" />
+    <text class="pic-note" x="811.6" y="939" text-anchor="start">a line has the colour of the box it leaves</text>
+  </g>
+  <rect class="notebar" x="0" y="964" width="1589" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 974) scale(0.6667)">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 9h.01" />
+    <path d="M11 12h1v4h1" />
+  </g>
+  <text class="notes" x="38" y="986">
+    <tspan class="note-head">The JSON stays and the layout stays but for a decision:</tspan>
+    <tspan class="note-rest">step 2 changes that shape, steps 3 to 5 the look of 92 pictures, and step 6 a light page's glass in the other three kinds.</tspan>
+  </text>
+</svg>
