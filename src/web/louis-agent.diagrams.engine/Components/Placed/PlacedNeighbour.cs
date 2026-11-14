@@ -1,4 +1,5 @@
 using LouisAgent.Diagrams.Components.Spec;
+using LouisAgent.Diagrams.Engine.Geometry;
 
 namespace LouisAgent.Diagrams.Engine.Components.Placed;
 
@@ -7,22 +8,6 @@ namespace LouisAgent.Diagrams.Engine.Components.Placed;
 /// box it talks to.
 /// </summary>
 /// <param name="Neighbour">The neighbour as the JSON says it.</param>
-/// <param name="X">Its left edge.</param>
-/// <param name="Y">Its top edge.</param>
-/// <param name="Width">How wide it is.</param>
-/// <param name="Height">How tall it is.</param>
+/// <param name="Box">Where it stands and how large it is.</param>
 /// <param name="NoteLines">Its note, a line at a time.</param>
-public sealed record PlacedNeighbour(
-    ComponentNeighbour Neighbour,
-    double X,
-    double Y,
-    double Width,
-    double Height,
-    IReadOnlyList<string> NoteLines)
-{
-    /// <summary>Its right edge.</summary>
-    public double Right => X + Width;
-
-    /// <summary>Its bottom edge.</summary>
-    public double Bottom => Y + Height;
-}
+public sealed record PlacedNeighbour(ComponentNeighbour Neighbour, IBox Box, IReadOnlyList<string> NoteLines);

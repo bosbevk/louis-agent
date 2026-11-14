@@ -1,6 +1,7 @@
 using LouisAgent.Diagrams.Components.Spec;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Components.Placed.Keys;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Tones;
 using LouisAgent.Diagrams.Tones;
@@ -30,16 +31,21 @@ internal static class KeyLayout
     private const double Above = 40;
 
     /// <summary>The key at its place, with its rows.</summary>
-    public static PlacedKey Of(ComponentsSpec components, PlacedBox root, IReadOnlyList<PlacedNeighbour> neighbours)
+    public static PlacedKey Of(ComponentsSpec components, IBox root, IReadOnlyList<PlacedNeighbour> neighbours,
+        IGeometry geometry)
     {
         var rows = Rows(components).ToList();
         var before = neighbours.Where(neighbour => neighbour.Neighbour.Side == NeighbourSide.Before).ToList();
 
         // Under the column before the root. With no such column, under the root, from its left edge.
-        double over = before.Count == 0 ? root.Bottom : before.Max(neighbour => neighbour.Bottom);
-        double x = before.Count == 0 ? root.X : 0;
-        return new PlacedKey(x, over + Above, Width, Heading + rows.Count * Row, rows);
+        double over = before.Count == 0 ? root.Bottom : before.Max(neighbour => neighbour.Box.Bottom);
+        double x = before.Count == 0 ? root.Left : 0;
+        return new PlacedKey(geometry.Box(x, over + Above, Width, Heading + rows.Count * Row), rows);
     }
+
+    /// <summary>The row a key's thing number so-many stands in: under the heading, as wide as the key.</summary>
+    public static IBox RowBox(PlacedKey key, int at, IGeometry geometry) =>
+        geometry.Box(key.Box.Left, key.Box.Top + Heading + at * Row, key.Box.Width, Row);
 
     /// <summary>
     /// A row for each thing the picture uses: its tones in their order, a pin each way, a read, the one thing a

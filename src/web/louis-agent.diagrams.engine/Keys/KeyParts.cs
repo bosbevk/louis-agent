@@ -2,7 +2,6 @@ using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Svg;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
-using LouisAgent.Diagrams.Messages;
 
 namespace LouisAgent.Diagrams.Engine.Keys;
 
@@ -18,11 +17,11 @@ namespace LouisAgent.Diagrams.Engine.Keys;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0123-ask-the-type.md">ADR 0123: ask the type</seealso>
 internal static class KeyParts
 {
-    /// <summary>
-    /// How tall the rule is, where the heading's words stand under it, and how far under a row's middle line an
-    /// item's words do.
-    /// </summary>
-    private const double Rule = 1, HeadingLine = 22, WordDrop = 4.5;
+    /// <summary>How far under a row's middle line an item's words stand.</summary>
+    public const double WordDrop = 4.5;
+
+    /// <summary>How tall the rule is, and where the heading's words stand under it.</summary>
+    private const double Rule = 1, HeadingLine = 22;
 
     /// <summary>
     /// The start of a key: a thin rule across the picture at the key's top, in the kind's own look, and the

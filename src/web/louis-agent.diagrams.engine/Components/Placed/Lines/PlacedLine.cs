@@ -1,3 +1,4 @@
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Engine.Components.Placed.Lines;
@@ -12,6 +13,6 @@ namespace LouisAgent.Diagrams.Engine.Components.Placed.Lines;
 /// <param name="Tone">Its colour: that of what it comes from. Plain for a call, an answer and a read.</param>
 public sealed record PlacedLine(
     LineKind Kind,
-    IReadOnlyList<LinePoint> Points,
+    IReadOnlyList<IPoint> Points,
     string? Word = null,
     DiagramTone Tone = DiagramTone.Plain);

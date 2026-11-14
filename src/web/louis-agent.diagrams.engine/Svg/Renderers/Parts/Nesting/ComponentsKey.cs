@@ -1,9 +1,9 @@
-using LouisAgent.Choices;
 using LouisAgent.Diagrams.Engine.Components;
-using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Components.Placed.Keys;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
-using LouisAgent.Diagrams.Tones;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 
@@ -18,67 +18,78 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
 /// </remarks>
 internal static class ComponentsKey
 {
-    /// <summary>How wide a sample is, and where the words beside a line and a pill start.</summary>
-    private const double Sample = 76, Words = 88;
+    /// <summary>How wide the sample of a line and of a pill is, and the room between a sample and its words.</summary>
+    private const double Sample = 76, AfterSample = 12;
 
     /// <summary>A tone's badge, its corner, and how far after it its words start.</summary>
     private const double Badge = 18, BadgeCorner = 6, BadgeWords = 10;
 
+    /// <summary>
+    /// How far under the key's top its heading's line is, how tall a pill's sample is, where the pill's dot stands
+    /// from its left, and the dot's size.
+    /// </summary>
+    private const double HeadingLine = 10, PillTall = 20, DotIn = 12, Dot = 3.5;
+
     /// <summary>The key, where the layout put it.</summary>
-    public static void Draw(SvgWriter writer, PlacedKey key)
+    public static void Draw(SvgWriter writer, PlacedKey key, IGeometry geometry)
     {
-        writer.Text(key.X, key.Y + 10, DiagramText.Format(DrawingMessage.KeyHeading), "pic-group", "start");
+        string heading = DiagramText.Format(DrawingMessage.KeyHeading);
+        writer.Text(key.Box.Left, key.Box.Top + HeadingLine, heading, "pic-group", "start");
         foreach (var (row, at) in key.Rows.Select((row, at) => (row, at)))
-            DrawRow(writer, row, key.X, key.Y + KeyLayout.Heading + at * KeyLayout.Row + KeyLayout.Row / 2);
+        {
+            // One row: its sample at the left, and its words beside it, a little under the row's middle line.
+            var line = KeyLayout.RowBox(key, at, geometry);
+            double words = Sampled(writer, row, line, geometry);
+            writer.Text(line.Left + words, line.Middle.Y + KeyParts.WordDrop, row.Words, "pic-means", "start");
+        }
     }
 
-    /// <summary>One row: its sample at the left, by the row's kind, and its words beside it.</summary>
-    private static void DrawRow(SvgWriter writer, KeyRow row, double x, double y)
+    /// <summary>
+    /// A row's sample, by the row's kind, at the left of its line. Says how far from there its words start.
+    /// </summary>
+    /// <remarks>A switch on the row's kind, one arm each (ADR 0051).</remarks>
+    private static double Sampled(SvgWriter writer, KeyRow row, IBox line, IGeometry geometry) => row.Kind switch
     {
-        double words = row.Kind switch
-        {
-            KeyRowKind.Tone => ToneBadge(writer, row, x, y),
-            KeyRowKind.HandedDown => Pin(writer, DrawingMessage.ComponentHandedDown, false, Tone(row), x, y),
-            KeyRowKind.SaidBackUp => Pin(writer, DrawingMessage.ComponentSaidBackUp, true, Tone(row), x, y),
-            KeyRowKind.Reads => Read(writer, x, y),
-            KeyRowKind.Holds => Pill(writer, Tone(row), x, y),
-            _ => 0
-        };
-        writer.Text(x + words, y + 4.5, row.Words, "pic-means", "start");
-    }
+        KeyRowKind.Tone => ToneBadge(writer, row, line, geometry),
+        KeyRowKind.HandedDown => Pin(writer, DrawingMessage.ComponentHandedDown, false, row, line, geometry),
+        KeyRowKind.SaidBackUp => Pin(writer, DrawingMessage.ComponentSaidBackUp, true, row, line, geometry),
+        KeyRowKind.Reads => Read(writer, line),
+        KeyRowKind.Holds => Pill(writer, row, line, geometry),
+        _ => 0
+    };
 
     /// <summary>A tone's sample: a small badge filled with that tone. Says where its words start.</summary>
-    private static double ToneBadge(SvgWriter writer, KeyRow row, double x, double y)
+    private static double ToneBadge(SvgWriter writer, KeyRow row, IBox line, IGeometry geometry)
     {
-        writer.Box(x, y - Badge / 2, Badge, Badge, BadgeCorner, $"pic-fill{Tone(row)}");
+        var badge = KeyParts.Sample(geometry, line, Badge, Badge);
+        writer.Box(badge, BadgeCorner, $"pic-fill{PictureParts.Tone(row.Tone)}");
         return Badge + BadgeWords;
     }
 
     /// <summary>A pin's sample: a real pin with its own word on it. Says where the words beside it start.</summary>
-    private static double Pin(SvgWriter writer, DrawingMessage word, bool up, string tone, double x, double y)
+    private static double Pin(SvgWriter writer, DrawingMessage word, bool up, KeyRow row, IBox line,
+        IGeometry geometry)
     {
-        string name = DiagramText.Format(word);
-        var sample = new PlacedPin("", name, up, x, y, ComponentSizes.PinWidth(name));
-        ComponentPins.Draw(writer, sample, tone, "cmp-key cmp-pin");
-        return sample.Width + 12;
+        var sample = ComponentSizes.Pin(geometry, "", DiagramText.Format(word), up, line.Left, line.Middle.Y);
+        ComponentPins.Draw(writer, sample, PictureParts.Tone(row.Tone), "cmp-key cmp-pin");
+        return sample.Box.Width + AfterSample;
     }
 
     /// <summary>A read's sample: a short dashed line with its arrow. Says where its words start.</summary>
-    private static double Read(SvgWriter writer, double x, double y)
+    private static double Read(SvgWriter writer, IBox line)
     {
-        string line = $"M{SvgWriter.N(x)} {SvgWriter.N(y)}H{SvgWriter.N(x + Sample)}";
-        writer.Path(line, "cmp-key pic-line pic-edge reads", true);
-        return Words;
+        string path = PathWriter.Level(line.Left, line.Left + Sample, line.Middle.Y);
+        writer.Path(path, "cmp-key pic-line pic-edge reads", true);
+        return Sample + AfterSample;
     }
 
     /// <summary>A held thing's sample: a small pill with its dot. Says where its words start.</summary>
-    private static double Pill(SvgWriter writer, string tone, double x, double y)
+    private static double Pill(SvgWriter writer, KeyRow row, IBox line, IGeometry geometry)
     {
-        writer.Box(x, y - 10, Sample, 20, 10, $"cmp-key cmp-pill pic-tint pic-edge{tone}")
-            .Circle(x + 12, y, 3.5, $"pic-fill{tone}");
-        return Words;
+        string tone = PictureParts.Tone(row.Tone);
+        var pill = KeyParts.Sample(geometry, line, Sample, PillTall);
+        writer.Box(pill, pill.HalfHeight, $"cmp-key cmp-pill pic-tint pic-edge{tone}")
+            .Circle(pill.Left + DotIn, line.Middle.Y, Dot, $"pic-fill{tone}");
+        return Sample + AfterSample;
     }
-
-    /// <summary>A row's tone as a shape's class, with the space before it. Nothing for plain.</summary>
-    private static string Tone(KeyRow row) => row.Tone == DiagramTone.Plain ? "" : $" tone-{row.Tone.Wire()}";
 }

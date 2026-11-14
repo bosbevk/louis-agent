@@ -1,5 +1,5 @@
-using System.Globalization;
-using System.Text;
+using LouisAgent.Diagrams.Engine.Geometry;
+using LouisAgent.Diagrams.Engine.Svg.Paths;
 
 namespace LouisAgent.Diagrams.Engine.Components.Placed.Lines;
 
@@ -12,31 +12,17 @@ public static class LinePath
     private const double Turn = 9;
 
     /// <summary>The path's data, such as <c>M10 20L40 20</c>.</summary>
-    public static string Of(IReadOnlyList<LinePoint> points)
+    public static string Of(IReadOnlyList<IPoint> points)
     {
-        var path = new StringBuilder();
-        path.Append(CultureInfo.InvariantCulture, $"M{points[0].X:0.#} {points[0].Y:0.#}");
-        for (int at = 1; at < points.Count; at++)
+        var path = new PathWriter().From(points[0].X, points[0].Y);
+        for (int at = 1; at < points.Count - 1; at++)
         {
-            var point = points[at];
-            if (at == points.Count - 1)
-            {
-                path.Append(CultureInfo.InvariantCulture, $"L{point.X:0.#} {point.Y:0.#}");
-                continue;
-            }
-
             // A corner: stop a little before it, and curve through it to a little after.
-            var before = Toward(point, points[at - 1]);
-            var after = Toward(point, points[at + 1]);
-            path.Append(CultureInfo.InvariantCulture,
-                $"L{before.X:0.#} {before.Y:0.#}Q{point.X:0.#} {point.Y:0.#} {after.X:0.#} {after.Y:0.#}");
+            IPoint corner = points[at], before = corner.Toward(points[at - 1], Turn);
+            var after = corner.Toward(points[at + 1], Turn);
+            path.To(before.X, before.Y).Curve(corner.X, corner.Y, after.X, after.Y);
         }
 
-        return path.ToString();
+        return path.To(points[^1].X, points[^1].Y).Text;
     }
-
-    /// <summary>The point a turn's length from a corner, on the way to its neighbour.</summary>
-    private static LinePoint Toward(LinePoint corner, LinePoint neighbour) => new(
-        corner.X + Turn * Math.Sign(neighbour.X - corner.X),
-        corner.Y + Turn * Math.Sign(neighbour.Y - corner.Y));
 }

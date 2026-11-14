@@ -61,4 +61,13 @@ public interface IBox
 
     /// <summary>The smallest box that holds this one and another.</summary>
     IBox With(IBox other);
+
+    /// <summary>Whether another box lies within this one, or is as big as it.</summary>
+    bool Holds(IBox other);
+
+    /// <summary>
+    /// Whether a level or upright stretch between two points passes through this box, that far inside its edges:
+    /// a stretch that only touches an edge passes through when it is asked with nothing.
+    /// </summary>
+    bool CrossedBy(IPoint from, IPoint to, double inside);
 }

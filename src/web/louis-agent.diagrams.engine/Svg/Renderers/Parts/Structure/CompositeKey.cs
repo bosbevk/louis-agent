@@ -1,11 +1,9 @@
 using LouisAgent.Diagrams.Composite.Spec;
 using LouisAgent.Diagrams.Engine.Components;
-using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Keys;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Nesting;
-using LouisAgent.Diagrams.Messages;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 
@@ -50,26 +48,27 @@ internal static class CompositeKey
         foreach (var item in items)
         {
             var row = KeyParts.Row(geometry, item.X, top + item.Y, item.Sample);
-            Sample(writer, item.Means, tone, row);
+            Sample(writer, item.Means, tone, row, geometry);
             KeyParts.Words(writer, row, DiagramText.Format(item.Means), "pic-means");
         }
     }
 
     /// <summary>An item's sample, by what the item explains, in its row.</summary>
     /// <remarks>A switch on what the item means, one arm each (ADR 0051).</remarks>
-    private static void Sample(SvgWriter writer, DrawingMessage means, string tone, IBox row)
+    private static void Sample(SvgWriter writer, DrawingMessage means, string tone, IBox row,
+        IGeometry geometry)
     {
         string word = DiagramText.Format(DrawingMessage.CompositePort);
         switch (means)
         {
             // What is asked of the class: a pin that points down, as a real one does.
             case DrawingMessage.CompositeAsked:
-                var asked = new PlacedPin("", word, false, row.Left, row.Middle.Y, row.Width);
+                var asked = ComponentSizes.Pin(geometry, "", word, false, row.Left, row.Middle.Y);
                 ComponentPins.Draw(writer, asked, tone, "cmp-key cmp-pin");
                 break;
             // What the class needs: a pin that points up.
             case DrawingMessage.CompositeNeeded:
-                var needed = new PlacedPin("", word, true, row.Left, row.Middle.Y, row.Width);
+                var needed = ComponentSizes.Pin(geometry, "", word, true, row.Left, row.Middle.Y);
                 ComponentPins.Draw(writer, needed, tone, "cmp-key cmp-pin");
                 break;
             // Two parts that work together: a plain line.

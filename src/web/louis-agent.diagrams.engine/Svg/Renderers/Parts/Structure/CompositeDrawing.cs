@@ -1,7 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Composite.Spec;
 using LouisAgent.Diagrams.Engine.Components;
-using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Composite;
 using LouisAgent.Diagrams.Engine.Flow;
 using LouisAgent.Diagrams.Engine.Flow.Arrows;
@@ -32,21 +31,10 @@ namespace LouisAgent.Diagrams.Engine.Svg.Renderers.Parts.Structure;
 internal static class CompositeDrawing
 {
     /// <summary>
-    /// A part's corner, where the class's name stands under the frame's top, a chip's height, and how far the
-    /// frame stands from its parts where it has no pins.
+    /// A part's corner, where the class's name stands under the frame's top, how far the frame stands from its
+    /// parts where it has no pins, and how far under a pin's middle its words' line is.
     /// </summary>
-    private const double Corner = 10, NameLine = 23, ChipHeight = 18, Clear = 12;
-
-    /// <summary>
-    /// How far in from the frame's left its name starts, the room between the name and its chip, how far above
-    /// the name's line a chip's top is, and how far in from the frame's right what stands aside ends.
-    /// </summary>
-    private const double NameIn = 22, ChipGap = 8, ChipRise = 13, AsideIn = 16;
-
-    /// <summary>
-    /// Where a chip's words start in it, across and down, and how far under a pin's middle its words' line is.
-    /// </summary>
-    private const double ChipTextIn = 8, ChipTextLine = 12.5, LabelDrop = 4;
+    private const double Corner = 10, NameLine = 23, Clear = 12, LabelDrop = 4;
 
     /// <summary>The composite a source holds, as one SVG file's text, drawn with a geometry.</summary>
     public static string Of(DiagramSource source, IGeometry geometry)
@@ -107,7 +95,7 @@ internal static class CompositeDrawing
             FlowDrawing.Word(writer, edge, "", geometry);
         foreach (var (part, node) in parts) Part(writer, part, node, PictureParts.Tone(spec.Tone), geometry);
         foreach (var (port, node) in ports)
-            Pin(writer, spec, port, node.Box, port.Side == PortSide.In ? left : right);
+            Pin(writer, spec, port, node.Box, port.Side == PortSide.In ? left : right, geometry);
         return writer;
     }
 
@@ -118,15 +106,16 @@ internal static class CompositeDrawing
     private static void Frame(SvgWriter writer, CompositeSpec spec, IBox frame, IGeometry geometry)
     {
         string tone = PictureParts.Tone(spec.Tone);
-        double line = frame.Top + NameLine;
-        PictureParts.Panel(writer, frame).Text(frame.Left + NameIn, line, spec.Name, "pic-name", "start");
+        double line = frame.Top + NameLine, name = frame.Left + ComponentSizes.NameIn;
+        PictureParts.Panel(writer, frame).Text(name, line, spec.Name, "pic-name", "start");
         if (spec.Kind is { } kind)
         {
-            double after = frame.Left + NameIn + ComponentSizes.NameWidth(spec.Name) + ChipGap;
-            Chip(writer, geometry.Box(after, line - ChipRise, ComponentSizes.ChipWidth(kind), ChipHeight), kind, tone);
+            double after = name + ComponentSizes.NameWidth(spec.Name) + ComponentSizes.ChipGap;
+            ComponentChips.Draw(writer, geometry, after, line - ComponentSizes.ChipRise, kind, tone);
         }
 
-        if (spec.Aside is { } aside) writer.Text(frame.Right - AsideIn, line, aside, "pic-note", "end");
+        if (spec.Aside is { } aside)
+            writer.Text(frame.Right - ComponentSizes.AsideIn, line, aside, "pic-note", "end");
     }
 
     /// <summary>
@@ -174,9 +163,8 @@ internal static class CompositeDrawing
         writer.Box(box, Corner, "pic-panel").Text(words, line, part.Type, "pic-name", "start");
         if (part.Role is { } role)
         {
-            double wide = ComponentSizes.ChipWidth(role);
-            double chipLeft = box.Right - CompositeFlow.Inset - wide;
-            Chip(writer, geometry.Box(chipLeft, line - ChipRise, wide, ChipHeight), role, tone);
+            double chipLeft = box.Right - CompositeFlow.Inset - ComponentSizes.ChipWidth(role);
+            ComponentChips.Draw(writer, geometry, chipLeft, line - ComponentSizes.ChipRise, role, tone);
         }
 
         var note = part.Note is { } said ? GraphLayout.NoteLines(said) : [];
@@ -189,23 +177,19 @@ internal static class CompositeDrawing
     /// A port: its pin, its middle on the frame's edge, down for what is asked and up for what is needed, and
     /// outside the frame what is asked or needed in the code's words.
     /// </summary>
-    private static void Pin(SvgWriter writer, CompositeSpec spec, CompositePort port, IBox box, double edge)
+    private static void Pin(SvgWriter writer, CompositeSpec spec, CompositePort port, IBox box, double edge,
+        IGeometry geometry)
     {
         bool needs = port.Side == PortSide.Out;
         string tone = PictureParts.Tone(CompositeFlow.ToneOf(spec, port));
-        double wide = PinWidth(port), y = box.Middle.Y;
-        var pin = new PlacedPin("", port.Name, needs, edge - wide / 2, y, wide);
+        double y = box.Middle.Y;
+        var pin = ComponentSizes.Pin(geometry, "", port.Name, needs, edge - PinWidth(port) / 2, y);
         ComponentPins.Draw(writer, pin, tone, "cmp-pin");
         if (port.Label is not { } label) return;
 
-        double beside = needs ? pin.X + wide + CompositeFlow.Beside : pin.X - CompositeFlow.Beside;
+        double beside = needs ? pin.Box.Right + CompositeFlow.Beside : pin.Box.Left - CompositeFlow.Beside;
         writer.Text(beside, y + LabelDrop, label, $"cps-words pic-ink{tone}", needs ? "start" : "end");
     }
-
-    /// <summary>A chip: a few words in the class's tone, in a box as round as it is tall.</summary>
-    private static void Chip(SvgWriter writer, IBox chip, string words, string tone) => writer
-        .Box(chip, chip.HalfHeight, $"pic-tint{tone}")
-        .Text(chip.Left + ChipTextIn, chip.Top + ChipTextLine, words, $"cmp-chip-text pic-ink{tone}", "start");
 
     /// <summary>How wide a port's pin is.</summary>
     private static double PinWidth(CompositePort port) => ComponentSizes.PinWidth(port.Name);

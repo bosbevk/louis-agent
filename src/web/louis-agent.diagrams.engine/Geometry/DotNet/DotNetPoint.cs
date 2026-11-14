@@ -36,6 +36,6 @@ public sealed record DotNetPoint(Vector2 Vector) : IPoint
     }
 
     /// <summary>Another point as a vector: its own when it is of this family, read through the seam when not.</summary>
-    private static Vector2 Theirs(IPoint point) =>
+    internal static Vector2 Theirs(IPoint point) =>
         point is DotNetPoint ours ? ours.Vector : new Vector2((float)point.X, (float)point.Y);
 }

@@ -56,6 +56,21 @@ public sealed record DotNetBox(RectangleF Rectangle) : IBox
     /// <summary>The smallest box that holds this one and another.</summary>
     public IBox With(IBox other) => new DotNetBox(RectangleF.Union(Rectangle, Theirs(other)));
 
+    /// <summary>Whether another box lies within this one, or is as big as it.</summary>
+    public bool Holds(IBox other) => Rectangle.Contains(Theirs(other));
+
+    /// <summary>
+    /// Whether a level or upright stretch between two points passes through this box, that far inside its edges.
+    /// The stretch is a rectangle with no width or no height, and Microsoft's own check says whether the two meet.
+    /// </summary>
+    public bool CrossedBy(IPoint from, IPoint to, double inside)
+    {
+        Vector2 start = DotNetPoint.Theirs(from), end = DotNetPoint.Theirs(to);
+        Vector2 first = Vector2.Min(start, end), last = Vector2.Max(start, end);
+        var stretch = RectangleF.FromLTRB(first.X, first.Y, last.X, last.Y);
+        return RectangleF.Inflate(Rectangle, -(float)inside, -(float)inside).IntersectsWith(stretch);
+    }
+
     /// <summary>The box with room added on each side, its own on every one.</summary>
     public IBox Grown(double left, double top, double right, double bottom) => new DotNetBox(new RectangleF(
         Rectangle.Left - (float)left, Rectangle.Top - (float)top, Rectangle.Width + (float)left + (float)right,

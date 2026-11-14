@@ -66,6 +66,18 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
         return new Box<T>(left, top, right - left, bottom - top);
     }
 
+    /// <summary>Whether another box lies within this one, or is as big as it.</summary>
+    public bool Holds(Box<T> other) =>
+        Left <= other.Left && Right >= other.Right && Top <= other.Top && Bottom >= other.Bottom;
+
+    /// <summary>
+    /// Whether a level or upright stretch between two points passes through this box, that far inside its edges.
+    /// </summary>
+    public bool CrossedBy(Point<T> from, Point<T> to, T inside) =>
+        T.Min(from.X, to.X) < Right - inside && T.Max(from.X, to.X) > Left + inside
+                                             && T.Min(from.Y, to.Y) < Bottom - inside
+                                             && T.Max(from.Y, to.Y) > Top + inside;
+
     double IBox.Left => double.CreateChecked(Left);
 
     double IBox.Top => double.CreateChecked(Top);
@@ -87,6 +99,11 @@ public sealed record Box<T>(T Left, T Top, T Width, T Height) : IBox where T : I
     IBox IBox.Moved(double across, double down) => Moved(T.CreateChecked(across), T.CreateChecked(down));
 
     IBox IBox.With(IBox other) => With(Ours(other));
+
+    bool IBox.Holds(IBox other) => Holds(Ours(other));
+
+    bool IBox.CrossedBy(IPoint from, IPoint to, double inside) =>
+        CrossedBy(Point<T>.Ours(from), Point<T>.Ours(to), T.CreateChecked(inside));
 
     IBox IBox.Grown(double left, double top, double right, double bottom) => Grown(T.CreateChecked(left),
         T.CreateChecked(top), T.CreateChecked(right), T.CreateChecked(bottom));

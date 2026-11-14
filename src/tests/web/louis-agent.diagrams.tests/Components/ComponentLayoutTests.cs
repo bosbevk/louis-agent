@@ -21,7 +21,7 @@ public class ComponentLayoutTests
     /// <summary>The box with this id, which the test fails without.</summary>
     private static PlacedBox Box(PlacedComponents placed, string id)
     {
-        var box = placed.Boxes.FirstOrDefault(candidate => candidate.Box.Id == id);
+        var box = placed.Boxes.FirstOrDefault(candidate => candidate.Component.Id == id);
         Assert.That(box, Is.Not.Null, $"the box {id} is placed");
         return box!;
     }
@@ -51,10 +51,10 @@ public class ComponentLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(held.X, Is.GreaterThan(holder.X), "clear of the left edge");
-            Assert.That(held.Right, Is.LessThan(holder.Right), "clear of the right edge");
-            Assert.That(held.Y, Is.GreaterThan(holder.Y + 30), "under the holder's name");
-            Assert.That(held.Bottom, Is.LessThan(holder.Bottom), "clear of the bottom edge");
+            Assert.That(held.Box.Left, Is.GreaterThan(holder.Box.Left), "clear of the left edge");
+            Assert.That(held.Box.Right, Is.LessThan(holder.Box.Right), "clear of the right edge");
+            Assert.That(held.Box.Top, Is.GreaterThan(holder.Box.Top + 30), "under the holder's name");
+            Assert.That(held.Box.Bottom, Is.LessThan(holder.Box.Bottom), "clear of the bottom edge");
             Assert.That(held.Depth, Is.EqualTo(holder.Depth + 1));
         });
     }
@@ -73,9 +73,9 @@ public class ComponentLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(lower.Y, Is.GreaterThanOrEqualTo(upper.Bottom + 18), "room for a pin and a gap");
-            Assert.That(lower.X, Is.EqualTo(upper.X));
-            Assert.That(lower.Width, Is.EqualTo(upper.Width));
+            Assert.That(lower.Box.Top, Is.GreaterThanOrEqualTo(upper.Box.Bottom + 18), "room for a pin and a gap");
+            Assert.That(lower.Box.Left, Is.EqualTo(upper.Box.Left));
+            Assert.That(lower.Box.Width, Is.EqualTo(upper.Box.Width));
         });
     }
 
@@ -89,16 +89,16 @@ public class ComponentLayoutTests
         var placed = Placed();
         var deck = Box(placed, "deck");
 
-        var pins = placed.Pins.Where(pin => pin.Box == "deck").ToList();
+        var pins = placed.Pins.Where(pin => pin.On == "deck").ToList();
 
         Assert.Multiple(() =>
         {
             Assert.That(pins.Select(pin => pin.Name), Is.EqualTo(new[] { "Items", "Forward", "ForwardChanged" }));
             Assert.That(pins.Select(pin => pin.Up), Is.EqualTo(new[] { false, false, true }));
-            Assert.That(pins.Select(pin => pin.Y), Is.All.EqualTo(deck.Y));
-            Assert.That(pins[0].X, Is.GreaterThan(deck.X));
-            Assert.That(pins[^1].X + pins[^1].Width, Is.LessThan(deck.Right));
-            Assert.That(pins.Zip(pins.Skip(1), (left, right) => right.X - (left.X + left.Width)),
+            Assert.That(pins.Select(pin => pin.Edge), Is.All.EqualTo(deck.Box.Top));
+            Assert.That(pins[0].Box.Left, Is.GreaterThan(deck.Box.Left));
+            Assert.That(pins[^1].Box.Right, Is.LessThan(deck.Box.Right));
+            Assert.That(pins.Zip(pins.Skip(1), (left, right) => right.Box.Left - (left.Box.Right)),
                 Is.All.GreaterThan(0), "a gap between pins");
             Assert.That(placed.Pins, Has.Count.EqualTo(9), "every pin of every box");
         });
@@ -119,10 +119,10 @@ public class ComponentLayoutTests
         {
             Assert.That(start.Pill, Is.Not.Null);
             Assert.That(start.Pill?.Says, Is.EqualTo("which demo is forward"));
-            Assert.That(start.Pill?.X, Is.GreaterThan(start.X));
-            Assert.That(start.Pill?.X + start.Pill?.Width, Is.LessThan(start.Right));
-            Assert.That(start.Pill?.Y, Is.GreaterThan(start.Y + 30), "under the name");
-            Assert.That(start.Pill?.Y + start.Pill?.Height, Is.LessThan(stage.Y - 8), "above what it holds, pins too");
+            Assert.That(start.Pill?.Box.Left, Is.GreaterThan(start.Box.Left));
+            Assert.That(start.Pill?.Box.Right, Is.LessThan(start.Box.Right));
+            Assert.That(start.Pill?.Box.Top, Is.GreaterThan(start.Box.Top + 30), "under the name");
+            Assert.That(start.Pill?.Box.Bottom, Is.LessThan(stage.Box.Top - 8), "above what it holds, pins too");
             Assert.That(stage.Pill, Is.Null);
         });
     }
@@ -143,14 +143,15 @@ public class ComponentLayoutTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(page.Right, Is.LessThan(start.X - 30), "before the root, with room for its lines");
-            Assert.That(script.X, Is.GreaterThan(start.Right + 30), "after the root");
-            Assert.That(page.Y, Is.InRange(start.Y, start.Y + 20), "level with the root, under its heading");
-            Assert.That(start.Y, Is.GreaterThanOrEqualTo(ComponentLayout.TitleRoom), "under the picture's title");
-            Assert.That(demos.Y, Is.GreaterThan(page.Bottom), "under the first in its column");
-            Assert.That(script.Y, Is.InRange(deck.Y, deck.Bottom), "level with the deck it talks to");
-            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(script.Right));
-            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(Math.Max(start.Bottom, demos.Bottom)));
+            Assert.That(page.Box.Right, Is.LessThan(start.Box.Left - 30), "before the root, with room for its lines");
+            Assert.That(script.Box.Left, Is.GreaterThan(start.Box.Right + 30), "after the root");
+            Assert.That(page.Box.Top, Is.InRange(start.Box.Top, start.Box.Top + 20),
+                "level with the root, under its heading");
+            Assert.That(start.Box.Top, Is.GreaterThanOrEqualTo(ComponentLayout.TitleRoom), "under the picture's title");
+            Assert.That(demos.Box.Top, Is.GreaterThan(page.Box.Bottom), "under the first in its column");
+            Assert.That(script.Box.Top, Is.InRange(deck.Box.Top, deck.Box.Bottom), "level with the deck it talks to");
+            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(script.Box.Right));
+            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(Math.Max(start.Box.Bottom, demos.Box.Bottom)));
         });
     }
 
@@ -178,9 +179,9 @@ public class ComponentLayoutTests
                 Is.EqualTo(new[] { DiagramTone.Blue, DiagramTone.Green, DiagramTone.Teal }));
             Assert.That(key.Rows.Take(3).Select(row => row.Words),
                 Is.EqualTo(new[] { "starts it", "this project", "contracts and state" }));
-            Assert.That(key.Y, Is.GreaterThan(Neighbour(placed, "demos").Bottom + 16), "under the column");
-            Assert.That(key.X + key.Width, Is.LessThan(start.X), "clear of the root");
-            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(key.Bottom), "inside the picture");
+            Assert.That(key.Box.Top, Is.GreaterThan(Neighbour(placed, "demos").Box.Bottom + 16), "under the column");
+            Assert.That(key.Box.Right, Is.LessThan(start.Box.Left), "clear of the root");
+            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(key.Box.Bottom), "inside the picture");
         });
     }
 
@@ -203,8 +204,8 @@ public class ComponentLayoutTests
         {
             Assert.That(placed.Key.Rows.Select(row => row.Kind),
                 Is.EqualTo(new[] { KeyRowKind.Tone, KeyRowKind.HandedDown }));
-            Assert.That(placed.Key.Y, Is.GreaterThan(placed.Boxes[0].Bottom));
-            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(placed.Key.X + placed.Key.Width));
+            Assert.That(placed.Key.Box.Top, Is.GreaterThan(placed.Boxes[0].Box.Bottom));
+            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(placed.Key.Box.Right));
         });
     }
 
@@ -228,14 +229,16 @@ public class ComponentLayoutTests
         Assert.Multiple(() =>
         {
             Assert.That(gives.Select(line => line.Word), Is.EqualTo(new[] { "Featured", "Group" }));
-            Assert.That(gives.Select(line => line.Points[0].X), Is.All.EqualTo(page.Right));
-            Assert.That(gives.Select(line => line.Points[^1].X), Is.All.EqualTo(start.X));
+            Assert.That(gives.Select(line => line.Points[0].X), Is.All.EqualTo(page.Box.Right));
+            Assert.That(gives.Select(line => line.Points[^1].X), Is.All.EqualTo(start.Box.Left));
             Assert.That(placed.Lines.Count(line => line.Kind == LineKind.Reads), Is.EqualTo(1));
             Assert.That(placed.Lines.Where(line => line.Kind is not (LineKind.Down or LineKind.Up))
                     .Select(line => line.Points[0].Y - line.Points[^1].Y), Is.All.EqualTo(0),
                 "every line of a neighbour is level");
-            Assert.That((calls.Points[0].X, calls.Points[^1].X), Is.EqualTo((deck.Right, script.X)), "out to it");
-            Assert.That((back.Points[0].X, back.Points[^1].X), Is.EqualTo((script.X, deck.Right)), "and back");
+            Assert.That((calls.Points[0].X, calls.Points[^1].X), Is.EqualTo((deck.Box.Right, script.Box.Left)),
+                "out to it");
+            Assert.That((back.Points[0].X, back.Points[^1].X), Is.EqualTo((script.Box.Left, deck.Box.Right)),
+                "and back");
             Assert.That((calls.Word, back.Word), Is.EqualTo(("calls", "Viewed")));
             Assert.That(back.Points[0].Y, Is.GreaterThan(calls.Points[0].Y), "the answer under the call");
         });

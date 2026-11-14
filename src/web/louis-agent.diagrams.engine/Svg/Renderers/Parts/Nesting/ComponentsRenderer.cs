@@ -3,9 +3,9 @@ using LouisAgent.Diagrams.Components.Spec;
 using LouisAgent.Diagrams.Engine.Components;
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Components.Placed.Lines;
+using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Messages;
 using LouisAgent.Diagrams.Engine.Types;
-using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
 using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Sources;
@@ -33,6 +33,27 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     /// </summary>
     private const double Radius = PictureParts.Radius, Short = 5;
 
+    /// <summary>
+    /// Where a box's name stands under its top, and its chip's top, the first line of its note, and how much a
+    /// stand-in's dashed outline is grown: half a pixel inwards, so it is drawn inside the box's edge.
+    /// </summary>
+    private const double NameLine = 29, ChipTop = NameLine - ComponentSizes.ChipRise, NoteTop = 50, GhostGrown = -.5;
+
+    /// <summary>
+    /// A neighbour: how far above it its heading stands, where its chip's top is, how far in from the side the
+    /// root is on a thing it gives is written, how far under a row's middle those words stand, and a port's size.
+    /// </summary>
+    private const double HeadingRise = 10, NeighbourChip = 40, GivenIn = 14, GivenDrop = 3.5, Port = 4;
+
+    /// <summary>
+    /// A pill: where its dot stands from its left, the dot's size, where its words start, and how far under its
+    /// middle their line is.
+    /// </summary>
+    private const double DotIn = 22, Dot = 4.5, PillWordsIn = 38, PillWordDrop = 4.5;
+
+    /// <summary>How far above a line its word stands.</summary>
+    private const double WordRise = 7;
+
     /// <summary>This is the component diagram's.</summary>
     public DiagramKind Kind => DiagramKind.Components;
 
@@ -40,7 +61,8 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     public string Render(DiagramSource source)
     {
         var components = source.Components!;
-        var placed = ComponentLayout.Of(components);
+        var geometry = Geometries.InUse;
+        var placed = ComponentLayout.Of(components, geometry);
 
         // The words in the title's line: the picture's title, and after a colon what the diagram says under it.
         string heading = components.Subtitle is { } under ? $"{source.Title}: {under}" : source.Title;
@@ -48,7 +70,7 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         // Its layout stands every box under the title's room already, and holds the key. So the body is drawn
         // straight in, and the picture is as tall as the layout says.
         return PictureBuilder.Titled(source.Title).Heading(heading).Type(TypeNames.Of(source))
-            .Draw(writer => Draw(writer, placed), placed.Width, placed.Height - PictureMeasures.Usual.Head)
+            .Draw(writer => Draw(writer, placed, geometry), placed.Width, placed.Height - PictureMeasures.Usual.Head)
             .Style(PictureLook.Of(SvgTheme.Site), MarqueeLook.Rules, ComponentsStyle.Rules)
             .Build();
     }
@@ -57,76 +79,80 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
     /// Everything the layout placed, back to front: the neighbours, the boxes, the lines, the pills over them,
     /// the pins, and the key.
     /// </summary>
-    private static void Draw(SvgWriter writer, PlacedComponents placed)
+    private static void Draw(SvgWriter writer, PlacedComponents placed, IGeometry geometry)
     {
-        foreach (var neighbour in placed.Neighbours) DrawNeighbour(writer, neighbour);
-        foreach (var box in placed.Boxes) DrawBox(writer, box);
+        foreach (var neighbour in placed.Neighbours) DrawNeighbour(writer, neighbour, geometry);
+        foreach (var box in placed.Boxes) DrawBox(writer, box, geometry);
         foreach (var line in placed.Lines) DrawLine(writer, line);
         foreach (var box in placed.Boxes.Where(box => box.Pill is not null)) DrawPill(writer, box);
         foreach (var pin in placed.Pins) ComponentPins.Draw(writer, pin, ToneOf(placed, pin), "cmp-pin");
-        ComponentsKey.Draw(writer, placed.Key);
+        ComponentsKey.Draw(writer, placed.Key, geometry);
     }
 
     /// <summary>
     /// A box: its panel, with its name, its chip in its tone, the words at its right and its note. A box that
     /// stands in for another is a dashed outline in its tone, and no panel.
     /// </summary>
-    private static void DrawBox(SvgWriter writer, PlacedBox placed)
+    private static void DrawBox(SvgWriter writer, PlacedBox placed, IGeometry geometry)
     {
-        var box = placed.Box;
-        string tone = Tone(box.Tone), ghost = $"cmp-ghost pic-edge{tone}";
-        if (box.Ghost) writer.Box(placed.X + .5, placed.Y + .5, placed.Width - 1, placed.Height - 1, Radius, ghost);
-        if (!box.Ghost) PictureParts.Panel(writer, placed.X, placed.Y, placed.Width, placed.Height);
+        var box = placed.Component;
+        var at = placed.Box;
+        string tone = Tone(box.Tone);
+        double words = at.Left + ComponentSizes.NameIn, name = at.Top + NameLine;
+        if (box.Ghost) writer.Box(at.Grown(GhostGrown), Radius, $"cmp-ghost pic-edge{tone}");
+        if (!box.Ghost) PictureParts.Panel(writer, at);
 
-        writer.Text(placed.X + 22, placed.Y + 29, box.Name, "pic-name", "start");
+        writer.Text(words, name, box.Name, "pic-name", "start");
         if (box.Kind is { } kind)
-            Chip(writer, placed.X + 22 + ComponentSizes.NameWidth(box.Name) + 8, placed.Y + 16, kind, tone);
-        if (box.Aside is { } aside) writer.Text(placed.Right - 16, placed.Y + 29, aside, "pic-note", "end");
-        foreach (var (line, at) in placed.NoteLines.Select((line, at) => (line, at)))
-            writer.Text(placed.X + 22, placed.Y + 50 + at * ComponentSizes.NoteLine, line, "pic-note", "start");
+        {
+            double after = words + ComponentSizes.NameWidth(box.Name) + ComponentSizes.ChipGap;
+            ComponentChips.Draw(writer, geometry, after, at.Top + ChipTop, kind, tone);
+        }
+
+        if (box.Aside is { } aside) writer.Text(at.Right - ComponentSizes.AsideIn, name, aside, "pic-note", "end");
+        foreach (var (line, row) in placed.NoteLines.Select((line, row) => (line, row)))
+            writer.Text(words, at.Top + NoteTop + row * ComponentSizes.NoteLine, line, "pic-note", "start");
     }
 
     /// <summary>
     /// A neighbour: its heading when it opens a group, then a panel with its name in the code's face, its chip, its
     /// line of code, its note and a row for each thing it gives.
     /// </summary>
-    private static void DrawNeighbour(SvgWriter writer, PlacedNeighbour placed)
+    private static void DrawNeighbour(SvgWriter writer, PlacedNeighbour placed, IGeometry geometry)
     {
         var neighbour = placed.Neighbour;
+        var at = placed.Box;
         string tone = Tone(neighbour.Tone);
         bool before = neighbour.Side == NeighbourSide.Before;
-        if (neighbour.Heading is { } heading) writer.Text(placed.X, placed.Y - 10, heading, "pic-group", "start");
-        PictureParts.Panel(writer, placed.X, placed.Y, placed.Width, placed.Height);
-        writer.Text(placed.X + 22, placed.Y + 29, neighbour.Name, "cmp-code-name", "start");
-        if (neighbour.Kind is { } kind) Chip(writer, placed.X + 22, placed.Y + 40, kind, tone);
+        double words = at.Left + NeighbourLayout.WordsIn;
+        if (neighbour.Heading is { } heading)
+            writer.Text(at.Left, at.Top - HeadingRise, heading, "pic-group", "start");
+        PictureParts.Panel(writer, at).Text(words, at.Top + NameLine, neighbour.Name, "cmp-code-name", "start");
+        if (neighbour.Kind is { } kind)
+            ComponentChips.Draw(writer, geometry, words, at.Top + NeighbourChip, kind, tone);
         if (neighbour.Code is { } code)
-            writer.Text(placed.X + 22, NeighbourLayout.CodeY(placed), code, $"cmp-code pic-ink{tone}", "start");
-        foreach (var (line, at) in placed.NoteLines.Select((line, at) => (line, at)))
-            writer.Text(placed.X + 22, NeighbourLayout.NoteY(placed, at), line, "pic-note", "start");
+            writer.Text(words, NeighbourLayout.CodeY(placed), code, $"cmp-code pic-ink{tone}", "start");
+        foreach (var (line, row) in placed.NoteLines.Select((line, row) => (line, row)))
+            writer.Text(words, NeighbourLayout.NoteY(placed, row), line, "pic-note", "start");
 
         // What it gives: a word a row, at the side the root is on, with a port on that edge.
-        double edge = before ? placed.Right : placed.X, word = before ? placed.Right - 14 : placed.X + 14;
-        foreach (var (given, at) in (neighbour.Gives ?? []).Select((given, at) => (given, at)))
+        double edge = before ? at.Right : at.Left, word = before ? at.Right - GivenIn : at.Left + GivenIn;
+        foreach (var (given, row) in (neighbour.Gives ?? []).Select((given, row) => (given, row)))
         {
-            double y = NeighbourLayout.RowY(placed, at);
-            writer.Text(word, y + 3.5, given, $"cmp-pin-text pic-ink{tone}", before ? "end" : "start")
-                .Circle(edge, y, 4, $"pic-port pic-edge{tone}");
+            double y = NeighbourLayout.RowY(placed, row);
+            writer.Text(word, y + GivenDrop, given, $"cmp-pin-text pic-ink{tone}", before ? "end" : "start")
+                .Circle(edge, y, Port, $"pic-port pic-edge{tone}");
         }
     }
-
-    /// <summary>A chip: a few words in the box's tone.</summary>
-    private static void Chip(SvgWriter writer, double x, double y, string words, string tone) => writer
-        .Box(x, y, ComponentSizes.ChipWidth(words), 18, 9, $"pic-tint{tone}")
-        .Text(x + 8, y + 12.5, words, $"cmp-chip-text pic-ink{tone}", "start");
 
     /// <summary>The pill of the one thing a box holds, with its dot.</summary>
     private static void DrawPill(SvgWriter writer, PlacedBox placed)
     {
-        var pill = placed.Pill!;
-        string tone = Tone(placed.Box.Tone);
-        writer.Box(pill.X, pill.Y, pill.Width, pill.Height, pill.Height / 2, $"cmp-pill pic-tint pic-edge{tone}")
-            .Circle(pill.X + 22, pill.Y + pill.Height / 2, 4.5, $"cmp-pulse pic-fill{tone}")
-            .Text(pill.X + 38, pill.Y + pill.Height / 2 + 4.5, pill.Says, "cmp-pill-text", "start");
+        var pill = placed.Pill!.Box;
+        string tone = Tone(placed.Component.Tone);
+        writer.Box(pill, pill.HalfHeight, $"cmp-pill pic-tint pic-edge{tone}")
+            .Circle(pill.Left + DotIn, pill.Middle.Y, Dot, $"cmp-pulse pic-fill{tone}")
+            .Text(pill.Left + PillWordsIn, pill.Middle.Y + PillWordDrop, placed.Pill.Says, "cmp-pill-text", "start");
     }
 
     /// <summary>
@@ -139,31 +165,26 @@ internal sealed class ComponentsRenderer : IDiagramRenderer
         // call leaves the box, so its port is where it starts, and every other line arrives, so its port is its end.
         bool ofState = line.Kind is LineKind.Down or LineKind.Up;
         bool leaves = line.Kind == LineKind.Calls, reads = line.Kind == LineKind.Reads;
-        var port = leaves ? line.Points[0] : line.Points[^1];
+        IPoint start = line.Points[0], end = line.Points[^1], port = leaves ? start : end;
         string data = LinePath.Of(leaves || ofState ? line.Points : Shortened(line.Points));
         string? tone = line.Tone == DiagramTone.Plain ? null : line.Tone.Wire();
         writer.Path(data, $"pic-line pic-edge{Tone(line.Tone)}{(reads ? " reads" : "")}", true, tone: tone);
         if (!reads) writer.Path(data, "pic-march", false);
-        if (!ofState) writer.Circle(port.X, port.Y, 4, $"pic-port pic-edge{Tone(line.Tone)}");
+        if (!ofState) writer.Circle(port.X, port.Y, Port, $"pic-port pic-edge{Tone(line.Tone)}");
 
         // What a neighbour gives is written in the neighbour. Any other word stands over its line.
         string? word = reads ? DiagramText.Format(DrawingMessage.ComponentReads) : line.Word;
         if (line.Kind == LineKind.Gives || word is null) return;
-        writer.Text((line.Points[0].X + line.Points[^1].X) / 2, line.Points[0].Y - 7, word, "pic-word");
+        writer.Text((start.X + end.X) / 2, start.Y - WordRise, word, "pic-word");
     }
 
     /// <summary>A line's points with the last pulled back a little, so its arrow stops at the port's rim.</summary>
-    private static IReadOnlyList<LinePoint> Shortened(IReadOnlyList<LinePoint> points)
-    {
-        var last = points[^1];
-        var before = points[^2];
-        double x = last.X - Short * Math.Sign(last.X - before.X), y = last.Y - Short * Math.Sign(last.Y - before.Y);
-        return [.. points.Take(points.Count - 1), new LinePoint(x, y)];
-    }
+    private static IReadOnlyList<IPoint> Shortened(IReadOnlyList<IPoint> points) =>
+        [.. points.Take(points.Count - 1), points[^1].Toward(points[^2], Short)];
 
     /// <summary>The tone of the box a pin stands on, as a shape's class.</summary>
     private static string ToneOf(PlacedComponents placed, PlacedPin pin) =>
-        Tone(placed.Boxes.First(box => box.Box.Id == pin.Box).Box.Tone);
+        Tone(placed.Boxes.First(box => box.Component.Id == pin.On).Component.Tone);
 
     /// <summary>
     /// A tone as a shape's class, with the space before it. Nothing for plain, which the look draws grey.

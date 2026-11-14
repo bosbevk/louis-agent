@@ -177,6 +177,43 @@ public class GeometryFamiliesTests(IGeometry geometry)
         });
     }
 
+    /// <summary>
+    /// A box holds another that lies within it, and itself, and not one that reaches past any edge, as a box of
+    /// a component diagram holds the boxes drawn inside it.
+    /// </summary>
+    [Test]
+    public void ABox_HoldsWhatLiesWithinIt()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(Box().Holds(geometry.Box(130, 50, 10, 10)), Is.True);
+            Assert.That(Box().Holds(Box()), Is.True);
+            Assert.That(Box().Holds(geometry.Box(130, 50, 200, 10)), Is.False, "past its right edge");
+            Assert.That(Box().Holds(geometry.Box(130, 30, 10, 20)), Is.False, "above its top edge");
+        });
+    }
+
+    /// <summary>
+    /// A stretch between two points passes through a box when it runs over its inside, whichever way it runs. One
+    /// that runs along an edge does when asked with nothing, and does not when asked a pixel inside.
+    /// </summary>
+    [Test]
+    public void AStretch_PassesThroughABox_OrOnlyAlongItsEdge()
+    {
+        IPoint Left(double y) => geometry.Point(100, y);
+        IPoint Right(double y) => geometry.Point(400, y);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Box().CrossedBy(Left(70), Right(70), 0), Is.True, "through its middle");
+            Assert.That(Box().CrossedBy(Right(70), Left(70), 1), Is.True, "the other way, a pixel inside");
+            Assert.That(Box().CrossedBy(Left(20), Right(20), 0), Is.False, "above it");
+            Assert.That(Box().CrossedBy(geometry.Point(330, 0), geometry.Point(330, 200), 0), Is.False, "beside it");
+            Assert.That(Box().CrossedBy(Left(40.5), Right(40.5), 0), Is.True, "just under its top edge");
+            Assert.That(Box().CrossedBy(Left(40.5), Right(40.5), 1), Is.False, "that is not a pixel inside");
+        });
+    }
+
     /// <summary>A place part of the way along a box, or down it, counts from its left and its top.</summary>
     [Test]
     public void APlaceAlongABox_CountsFromItsLeftAndItsTop()

@@ -40,6 +40,6 @@ public sealed record Point<T>(T X, T Y) : IPoint where T : INumber<T>
     IPoint IPoint.Toward(IPoint other, double by) => Toward(Ours(other), T.CreateChecked(by));
 
     /// <summary>Another point as one of ours: it is one already when the picture is drawn by one geometry.</summary>
-    private static Point<T> Ours(IPoint point) =>
+    internal static Point<T> Ours(IPoint point) =>
         point as Point<T> ?? new Point<T>(T.CreateChecked(point.X), T.CreateChecked(point.Y));
 }

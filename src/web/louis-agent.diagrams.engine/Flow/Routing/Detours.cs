@@ -17,11 +17,7 @@ internal static class Detours
         byId.Values.Where(node => node.Node.Id != plan.Edge.From && node.Node.Id != plan.Edge.To
                                                                  && !Ranks.IsWaypoint(node.Node.Id))
             .Select(node => node.Box).Any(box =>
-                plan.Points.Zip(plan.Points.Skip(1)).Any(piece =>
-                    Math.Min(piece.First.X, piece.Second.X) < box.Right - In
-                    && Math.Max(piece.First.X, piece.Second.X) > box.Left + In
-                    && Math.Min(piece.First.Y, piece.Second.Y) < box.Bottom - In
-                    && Math.Max(piece.First.Y, piece.Second.Y) > box.Top + In));
+                plan.Points.Zip(plan.Points.Skip(1)).Any(piece => box.CrossedBy(piece.First, piece.Second, In)));
 
     /// <summary>
     /// The way round: out of the source's right side into the gap beside it, down to a lane under the drawing, along

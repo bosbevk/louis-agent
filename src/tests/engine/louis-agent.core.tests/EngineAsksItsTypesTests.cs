@@ -64,29 +64,18 @@ public partial class EngineAsksItsTypesTests
     /// <summary>The records that are still a box by four numbers.</summary>
     private static readonly string[] BoxesByNumbers =
     [
-        "Components/Placed/Keys/PlacedKey.cs",
-        "Components/Placed/PlacedBox.cs",
-        "Components/Placed/PlacedNeighbour.cs",
-        "Components/Placed/PlacedPill.cs",
-        "Components/Routing/Block.cs",
         "Tickets/Placed/PlacedPill.cs"
     ];
 
     /// <summary>The files that still work out a box's edge or half its size.</summary>
     private static readonly string[] BoxSums =
     [
-        "Components/ComponentLayout.cs",
-        "Components/Routing/Obstacles.cs",
-        "Components/Routing/StateRoutes.cs",
-        "Svg/Renderers/Parts/Nesting/ComponentsRenderer.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];
 
     /// <summary>The files that still measure words by their length.</summary>
     private static readonly string[] WordsMeasured =
     [
-        "Components/ComponentSizes.cs",
-        "Components/NeighbourLayout.cs",
         "Keys/KeyRows.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
         "Tickets/TicketLayout.cs"
@@ -95,9 +84,6 @@ public partial class EngineAsksItsTypesTests
     /// <summary>The files that still build a path as text.</summary>
     private static readonly string[] PathsAsText =
     [
-        "Components/Placed/Lines/LinePath.cs",
-        "Svg/Renderers/Parts/Nesting/ComponentPins.cs",
-        "Svg/Renderers/Parts/Nesting/ComponentsKey.cs",
         "Svg/Renderers/Parts/PictureBuilder.cs",
         "Svg/Renderers/TicketRenderer.cs"
     ];

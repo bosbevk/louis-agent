@@ -1,5 +1,6 @@
 using LouisAgent.Diagrams.Engine.Components.Placed;
 using LouisAgent.Diagrams.Engine.Components.Placed.Lines;
+using LouisAgent.Diagrams.Engine.Geometry;
 
 namespace LouisAgent.Diagrams.Engine.Components.Routing;
 
@@ -33,22 +34,23 @@ internal static class StateRoutes
     private const double GapDown = 14, GapUp = 20;
 
     /// <summary>
-    /// Half a pin's height, how far from the pill's middle a line leaves or arrives, and how far from the pill's
-    /// rounded ends a line may leave its bottom.
+    /// How far from the pill's middle a line leaves or arrives, and how far from the pill's rounded ends a line may
+    /// leave its bottom.
     /// </summary>
-    private const double PinTop = 9, Apart = 4, PillEnd = 14;
+    private const double Apart = 4, PillEnd = 14;
 
     /// <summary>Every state's lines, for every box that holds one.</summary>
-    public static IEnumerable<PlacedLine> Of(IReadOnlyList<PlacedBox> boxes, IReadOnlyList<PlacedPin> pins) =>
-        boxes.Where(box => box.Pill is not null).SelectMany(holder => OfHolder(holder, boxes, pins));
+    public static IEnumerable<PlacedLine> Of(IReadOnlyList<PlacedBox> boxes, IReadOnlyList<PlacedPin> pins,
+        IGeometry geometry) =>
+        boxes.Where(box => box.Pill is not null).SelectMany(holder => OfHolder(holder, boxes, pins, geometry));
 
     /// <summary>One holder's lines: down to each pin its state names, and up from each.</summary>
     private static IEnumerable<PlacedLine> OfHolder(PlacedBox holder, IReadOnlyList<PlacedBox> boxes,
-        IReadOnlyList<PlacedPin> pins)
+        IReadOnlyList<PlacedPin> pins, IGeometry geometry)
     {
-        var state = holder.Box.State!;
-        foreach (string name in state.Down ?? []) yield return Line(holder, name, false, boxes, pins);
-        foreach (string name in state.Up ?? []) yield return Line(holder, name, true, boxes, pins);
+        var state = holder.Component.State!;
+        foreach (string name in state.Down ?? []) yield return Line(holder, name, false, boxes, pins, geometry);
+        foreach (string name in state.Up ?? []) yield return Line(holder, name, true, boxes, pins, geometry);
     }
 
     /// <summary>
@@ -56,38 +58,39 @@ internal static class StateRoutes
     /// up flows the other way.
     /// </summary>
     private static PlacedLine Line(PlacedBox holder, string name, bool up, IReadOnlyList<PlacedBox> boxes,
-        IReadOnlyList<PlacedPin> pins)
+        IReadOnlyList<PlacedPin> pins, IGeometry geometry)
     {
-        var pin = pins.First(one => one.Up == up && $"{one.Box}.{one.Name}" == name);
-        var own = boxes.First(box => box.Box.Id == pin.Box);
+        var pin = pins.First(one => one.Up == up && $"{one.On}.{one.Name}" == name);
+        var own = boxes.First(box => box.Component.Id == pin.On);
 
         // The boxes from the holder down to the pin's own box: the only ones the line may pass through.
-        var between = boxes.Where(box => Holds(holder, box) && Holds(box, own)).OrderBy(box => box.Depth).ToList();
-        var blocks = Obstacles.For(between, boxes, pins, pin);
+        var between = boxes.Where(box => holder.Box.Holds(box.Box) && box.Box.Holds(own.Box))
+            .OrderBy(box => box.Depth).ToList();
+        var blocks = Obstacles.For(between, boxes, pins, pin, geometry);
 
         // Straight first. Then round, down the deepest side that is clear: the side of the box that holds the
         // pin's box, then of the box that holds that one, and so on out to the holder's own side, which always is.
         var ways = Enumerable.Range(0, between.Count - 1).Reverse()
-            .Select(side => Around(holder.Pill!, pin, between, side, up))
-            .Prepend(Straight(holder.Pill!, pin, up)).ToList();
+            .Select(side => Around(holder.Pill!.Box, pin, between, side, up, geometry))
+            .Prepend(Straight(holder.Pill!.Box, pin, up, geometry)).ToList();
         var points = ways.FirstOrDefault(way => Obstacles.Clear(way, blocks)) ?? ways[^1];
         if (up) points.Reverse();
-        return new PlacedLine(up ? LineKind.Up : LineKind.Down, points, null, holder.Box.Tone);
+        return new PlacedLine(up ? LineKind.Up : LineKind.Down, points, null, holder.Component.Tone);
     }
+
 
     /// <summary>
     /// The straight way: down from the pill's bottom when the pin stands under it, else level from the pill's
     /// nearer end and then down.
     /// </summary>
-    private static List<LinePoint> Straight(PlacedPill pill, PlacedPin pin, bool up)
+    private static List<IPoint> Straight(IBox pill, PlacedPin pin, bool up, IGeometry geometry)
     {
-        double x = pin.Middle, top = pin.Y - PinTop;
-        double y = pill.Y + pill.Height / 2 + (up ? Apart : -Apart);
-        bool under = x > pill.X + PillEnd && x < pill.X + pill.Width - PillEnd;
-        if (under) return [new(x, pill.Y + pill.Height), new(x, top)];
+        double x = pin.Box.Middle.X, top = pin.Box.Top;
+        bool under = x > pill.Left + PillEnd && x < pill.Right - PillEnd;
+        if (under) return [geometry.Point(x, pill.Bottom), geometry.Point(x, top)];
 
-        double end = x < pill.X ? pill.X : pill.X + pill.Width;
-        return [new(end, y), new(x, y), new(x, top)];
+        double y = Leaves(pill, up), end = x < pill.Left ? pill.Left : pill.Right;
+        return [geometry.Point(end, y), geometry.Point(x, y), geometry.Point(x, top)];
     }
 
     /// <summary>
@@ -96,25 +99,26 @@ internal static class StateRoutes
     /// that holds the pin's box, it has no step. Started further out, it steps in once at each box it still has to
     /// enter, through the gap above that box.
     /// </summary>
-    private static List<LinePoint> Around(PlacedPill pill, PlacedPin pin, List<PlacedBox> between, int side,
-        bool up)
+    private static List<IPoint> Around(IBox pill, PlacedPin pin, List<PlacedBox> between, int side, bool up,
+        IGeometry geometry)
     {
-        double lane = up ? LaneUp : LaneDown, gap = up ? GapUp : GapDown;
-        double y = pill.Y + pill.Height / 2 + (up ? Apart : -Apart);
-        List<LinePoint> points = [new(pill.X, y), new(between[side].X + lane, y)];
+        double lane = up ? LaneUp : LaneDown, gap = up ? GapUp : GapDown, y = Leaves(pill, up);
+        List<IPoint> points = [geometry.Point(pill.Left, y), geometry.Point(between[side].Box.Left + lane, y)];
         for (int at = side + 1; at < between.Count; at++)
         {
-            double above = between[at].Y - gap;
-            points.Add(new(between[at - 1].X + lane, above));
-            if (at < between.Count - 1) points.Add(new(between[at].X + lane, above));
+            double above = between[at].Box.Top - gap;
+            points.Add(geometry.Point(between[at - 1].Box.Left + lane, above));
+            if (at < between.Count - 1) points.Add(geometry.Point(between[at].Box.Left + lane, above));
         }
 
-        points.Add(new(pin.Middle, pin.Y - gap));
-        points.Add(new(pin.Middle, pin.Y - PinTop));
+        points.Add(geometry.Point(pin.Box.Middle.X, pin.Edge - gap));
+        points.Add(geometry.Point(pin.Box.Middle.X, pin.Box.Top));
         return points;
     }
 
-    /// <summary>Whether one box holds another: the other lies within it, or is the box itself.</summary>
-    private static bool Holds(PlacedBox holder, PlacedBox held) =>
-        holder.X <= held.X && holder.Right >= held.Right && holder.Y <= held.Y && holder.Bottom >= held.Bottom;
+    /// <summary>
+    /// The height a line leaves the pill's end at, or arrives at it: a little above its middle for a line down, and
+    /// a little under it for a line up, so the two never run on top of each other.
+    /// </summary>
+    private static double Leaves(IBox pill, bool up) => pill.Middle.Y + (up ? Apart : -Apart);
 }
