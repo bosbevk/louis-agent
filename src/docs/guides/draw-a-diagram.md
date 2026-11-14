@@ -27,11 +27,12 @@ draws, byte for byte, so a hand edit fails it.
 Put the file in `diagrams/` next to the doc, and name it for what it shows. The overview of core's design doc is
 `src/docs/projects/diagrams/louis-agent.core.json`.
 
-Every file has the same four things at the top.
+Every file has the same things at the top.
 
 | Field | What it is |
 |---|---|
 | `kind` | Which kind of picture this is. The next part helps you choose. |
+| `type` | What type of diagram it is, by UML's name. Only a `flow` writes it. *Say the type*, below, has the list. |
 | `title` | What the picture is. A screen reader is told it, and the docs' frame shows it. |
 | `caption` | Optional in the file, but every chart in the docs has one: the one thing to take from the picture. |
 | the kind's own part | A field named after the kind (`cards`, `flow`, `sequence`, `classes`, `components`, `ticket`) that holds the picture. |
@@ -47,6 +48,38 @@ Every file has the same four things at the top.
 | `components` | One component, the boxes it holds, and what stands around it | What a component is made of: what holds what, what is handed down and what is said back up |
 | `composite` | One class, its parts, the ports on its edge and what joins them | What a single class is made of |
 | `ticket` | A read-only card, such as a booking request | What an agent draws in the chat |
+
+### Say the type
+
+A kind is how a picture is laid out. A type is what it shows, by UML's name for it. Every picture shows its type
+at the right of its title's line: "Sequence diagram", "Class diagram", "Overview".
+
+Most kinds are only ever one type, so their files don't write it.
+
+| Kind | Its type | The picture says |
+|---|---|---|
+| `sequence` | `sequence` | Sequence diagram |
+| `classes` | `class` | Class diagram |
+| `composite`, `components` | `composite-structure` | Composite structure diagram |
+| `cards` | `overview`, a name of our own | Overview |
+| `ticket` | none, since it is a card in a chat | nothing |
+
+A flow is boxes and arrows, and those draw several types. So a flow writes `"type"`, straight after its `"kind"`.
+Ask what its boxes are.
+
+| `type` | Its boxes are | Its arrows are |
+|---|---|---|
+| `component` | Parts: classes, services, endpoints | Calls, or data handed on |
+| `activity` | The steps of a procedure, with a start, an end or a decision | What comes next |
+| `object` | Instances in memory, in one case | What holds what |
+| `package` | Sets of projects or files | What depends on what |
+| `deployment` | Machines, containers and cloud services | What runs where, and what it reaches |
+| `state-machine` | The states one thing can be in | What moves it from one to the next |
+| `use-case` | People, and what they use the system for | Who uses what |
+| `communication` | Instances that send each other messages | The messages, in order |
+
+A picture titled "how it works" is not always an activity diagram. When its boxes are parts and not steps, it is
+a component diagram.
 
 The seven parts below take one kind each. Each starts with a whole example, then says what its pieces mean.
 
@@ -148,7 +181,8 @@ A flow is boxes and arrows on the row grid of [ADR 0103](../adr/0103-a-diagram-i
 
 **Reading the example.** There are three boxes and two arrows. The picture runs down the page. The first box is a
 pill, since your program is what sets the story off. The middle box belongs to a group, which is drawn as a
-labelled frame round it. The second arrow is dashed and carries a word.
+labelled frame round it. The second arrow is dashed and carries a word. Its type is `component`, since its boxes
+are parts and its arrows are calls, so the picture says "Component diagram".
 
 **Where a box goes.** You don't place boxes. A box's column comes from its arrows: it stands one column past the
 furthest box that points at it. Set `column` on a box only when you want to move it.
@@ -547,6 +581,10 @@ kept to the drawing. The docs' tool draws it like any other picture.
 
 The reader refuses a file with a misspelt field, a link to an id that no card has, or a missing title. The tool
 says which.
+
+It also holds a picture's type to its kind. It refuses a flow that says no type, a type its kind can't be (a
+`sequence` that says `class`), a name that is no type of diagram, and a ticket that says one. Each refusal lists
+what may be written.
 
 In a component diagram it also refuses an id used twice, a state that names a pin its box can't reach (a box
 it doesn't hold, or a pin that isn't in that box's `in` for a way down or its `out` for a way up), and a

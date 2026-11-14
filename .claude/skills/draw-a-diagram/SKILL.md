@@ -20,7 +20,9 @@ before writing a kind you have not written in this session.
 
 1. **Write the JSON** in the `diagrams/` folder beside the doc, named for what it shows. Every file has a `kind`
    (`cards`, `flow`, `sequence`, `classes`, `components`, `composite` or `ticket`), a `title`, a `caption`,
-   and the kind's own part.
+   and the kind's own part. A `flow` also says its `type`, straight after its `kind`: `component` for parts,
+   `activity` for the steps of a procedure, `object` for instances in memory, `package` for sets of projects,
+   `deployment` for what runs where. The guide's *Say the type* has all eight.
 2. **Draw it.** `dotnet run --project src/tools/louis-agent.doc-diagrams` draws every picture that changed.
 3. **Link it** in the doc as a markdown image whose alt text says what the picture shows.
 4. **Check it.** `dotnet test src/tests/tools/louis-agent.doc-diagrams.tests`, then look at the SVG yourself.

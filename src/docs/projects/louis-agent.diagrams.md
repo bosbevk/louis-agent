@@ -54,10 +54,26 @@ is a drawing held inside a web page, which needs care of its own.
 
 **Step 1: the file is read into records** (`Sources/`). `DiagramReader.Read(json)` reads a `DiagramSource`. It has
 a kind, a title that a screen reader is told, an optional caption, and the kind's own part. The kind is one of
-`flow`, `cards`, `sequence`, `classes` or `ticket`.
+`flow`, `cards`, `sequence`, `classes`, `components`, `composite` or `ticket`.
 
-The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, an arrow
-or a link to an id that nothing has, or a link between two cards that are not in neighbouring rows. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
+**A source also has a type** (`Sources/Types/`). A kind is how a picture is laid out: boxes and arrows, lifelines,
+cards. A type is what the picture shows, by UML's name for it. There are UML's thirteen, such as `class`,
+`sequence`, `activity` and `composite-structure`, and one name of our own, `overview`, for a cards picture.
+
+- *A kind that is only ever one type need not write it.* A sequence is a `sequence`, a class chart a `class`, a
+  composite and a component diagram a `composite-structure`, a cards picture an `overview`. `DiagramTypeCheck`
+  fills it in.
+- *A flow writes its own.* Boxes and arrows draw eight of UML's types: `activity`, `component`, `deployment`,
+  `object`, `package`, `state-machine`, `use-case` and `communication`. So a flow's file says which, in
+  `"type"`, and one that does not is refused with the eight.
+- *A ticket has none.* It is a card in a chat.
+
+`DiagramTypes` says which types a kind may be, and the check holds a file to it. The writer leaves a kind's own
+type out again, as it leaves out everything at its default, and writes a flow's straight after its kind.
+
+The reader refuses what is wrong, with the reason: a misspelt field, an unknown kind, a missing title, a type
+that is not the kind's, an arrow or a link to an id that nothing has, or a link between two cards that are not in
+neighbouring rows. The reasons are the library's own messages (`Messages/DiagramMessage`), filled
 by `DiagramText`, its own small stand-in for core's `MessageText`. That keeps the library from leaning on any part
 of the engine.
 
@@ -69,11 +85,14 @@ layout that places every box and word, and a drawing that draws what was placed.
 
 **One builder puts the picture together** (`Svg/Renderers/Parts/PictureBuilder`). Six kinds are built the same
 way, and only the ticket, a card in a chat, is not. A kind's drawing places with its own layout and then tells
-the builder its parts: its title, its type if it names one, its own fades, its body, its key, its caption and
+the builder its parts: its title, its type, its own fades, its body, its key, its caption and
 its styles. `Build()` then does what every kind needs done the same way.
 
-- *The width.* The picture is as wide as its body, or as its title and type side by side when that is wider. A
-  cards picture and a component diagram are as wide as their body whatever their title.
+- *The width.* The picture is as wide as its body, or as its title and type side by side when that is wider, so
+  a type never stands over a title. A body narrower than its picture stands at the left, under the title.
+- *The type.* A drawing asks `Types/TypeNames` for its type's name: the type its source says, or its kind's own
+  for a source built in code. The builder writes it at the right of the title's line. The names are among the
+  drawings' words, in `DrawingMessage`: "Class diagram", "Use case diagram", "Overview".
 - *The key last.* A key's rows wrap at the picture's width. So the key is handed over as a function of the
   width, and asked for once the width is known. Nothing is written before that.
 - *The height.* The room above, the body, the room before the key, the key, and 34 for a caption.
@@ -90,7 +109,7 @@ title, a caption or the SVG itself, and only a cards picture a light.
 new row at the left when the width is full. Each kind's key layout says what its items are and how wide each
 sample is.
 
-*Decided in:* CL65.2.
+*Decided in:* CL65.2, CL65.3.
 
 A flow is drawn by `FlowDrawing`, in the new look described below. A class chart is turned into a flow for its
 layout and drawn by `ClassesDrawing`, as cards. Part 2 says what each shows.
@@ -410,8 +429,8 @@ and decides one place itself: the frame.
 - *A line.* What is passed on runs from a pin's end to a part, or from a part to a pin's end, with an arrowhead
   and running dots, in the pin's colour. A line between two parts is plain, with no arrowhead and no dots, and
   its word stands in a flow's pill.
-- *The type.* "Composite structure diagram" stands at the right of the title's line. The builder writes it
-  when it is told a type. This kind is the first that tells it one.
+- *The type.* "Composite structure diagram" stands at the right of the title's line, as every kind's type
+  does.
 - *The key* (`CompositeKey`) stands under a faint rule: a pin each way, a plain line and a line that runs, each
   only when the picture has one.
 
@@ -520,9 +539,9 @@ src/web/louis-agent.diagrams/
 ├── Composite/  # CompositeCheck; Spec/ (CompositeConnector, CompositePart, CompositePort, CompositeSpec, PortSide)
 ├── Flow/       # Shapes/ (NodeShape); Spec/ (EdgeStyle, FlowDirection, GraphEdge, GraphGroup, GraphNode, GraphSpec)
 ├── Icons/      # DiagramIcon
-├── Messages/   # DiagramMessage; Holes/Components/ (DuplicateComponentHoles, UnknownComponentHoles, UnknownPinHoles); Holes/Composites/ (CompositeNoPartsHoles, DuplicatePartHoles, UnknownPartHoles); Holes/Reading/ (MissingPartHoles, UnknownKindHoles, UnknownShapeHoles, UnreadableHoles); Holes/Shapes/ (EmptyBlockHoles, NoteOverNoOneHoles, TicketHalfRowHoles, TicketRowCountHoles); Holes/Strays/ (LinkNotBetweenRowsHoles, UnknownBoxHoles, UnknownCardHoles, UnknownGroupHoles, UnknownParticipantHoles, UnknownTypeHoles)
+├── Messages/   # DiagramMessage; Holes/Components/ (DuplicateComponentHoles, UnknownComponentHoles, UnknownPinHoles); Holes/Composites/ (CompositeNoPartsHoles, DuplicatePartHoles, UnknownPartHoles); Holes/Reading/ (MissingPartHoles, UnknownKindHoles, UnknownShapeHoles, UnreadableHoles); Holes/Shapes/ (EmptyBlockHoles, NoteOverNoOneHoles, TicketHalfRowHoles, TicketRowCountHoles); Holes/Strays/ (LinkNotBetweenRowsHoles, UnknownBoxHoles, UnknownCardHoles, UnknownGroupHoles, UnknownParticipantHoles, UnknownTypeHoles); Holes/Types/ (MissingDiagramTypeHoles, NoDiagramTypeHoles, UnknownDiagramTypeHoles, WrongDiagramTypeHoles)
 ├── Sequence/   # Spec/ (BlockKind, Participant, SequenceSpec); Spec/Steps/ (BlockStep, ElseCase, MessageStep, NoteStep, ReplyStep, SequenceStep)
-├── Sources/    # DiagramJson, DiagramKind, DiagramReader, DiagramSource, DiagramWriter, NodeShapeConverter
+├── Sources/    # DiagramJson, DiagramKind, DiagramReader, DiagramSource, DiagramWriter, NodeShapeConverter; Types/ (DiagramType, DiagramTypeCheck, DiagramTypeConverter, DiagramTypes)
 ├── Tickets/    # TicketCard; Inputs/ (TicketRowInput, TicketStatusInput); Spec/ (TicketRow, TicketSpec, TicketStatus)
 ├── Tones/      # DiagramTone
 └── DiagramText.cs, TextWrap.cs
@@ -532,13 +551,14 @@ src/web/louis-agent.diagrams.engine/
 ├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, LinePoint, PlacedLine); Routing/ (Block, Obstacles, StateRoutes)
 ├── Composite/  # CompositeFlow
 ├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
-├── Icons/      # IconPaths, LICENSE-tabler-icons.txt
+├── Icons/      # IconPaths
 ├── Keys/       # KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
 ├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords)
 ├── Tones/      # ToneMeanings
+├── Types/      # TypeNames
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
 ```
 
@@ -552,8 +572,9 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   and no other, a chip clear of its line; a sequence's heads apart, its words between their lifelines, its frames
   round their steps and nested inside their parents; a box's members and tones in `Flow/Boxes/`; a class chart's
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
-  icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
-  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/Renderers/Parts/flow-look.svg`,
+  icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a picture's type filled in,
+  kept or refused (`Sources/Types/`) and what it is called (`Types/`), a page's copy scoped, rooted and
+  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/Renderers/Parts/Flows/flow-look.svg`,
   `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
@@ -561,7 +582,8 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   every picture a doc shows is there, every project doc shows its overview and all four kinds of picture
   (`EveryProjectDoc_ShowsItsFourDiagrams`), every flow and class chart keeps its
   words and lines clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is
-  one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`).
+  one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`). `DocsTypesTests` holds that every picture
+  with a type shows its name once, on the title's line, ending at the picture's right edge.
 
 ## Limits and plans
 

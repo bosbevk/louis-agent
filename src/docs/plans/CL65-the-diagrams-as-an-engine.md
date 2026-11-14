@@ -104,7 +104,7 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 |---|---|---|
 | **CL65.1 Two projects**, built 2026-11-14 | Moves what builds a diagram into `louis-agent.diagrams.engine`. Splits the one message enum in two. Their tests follow, in two projects. | `louis-agent.diagrams` holds no layout and no drawing, a test holds the direction, and the docs' tool writes no picture. |
 | **CL65.2 The picture builder**, built 2026-11-14 | `PictureBuilder`, and the six drawings built through it. The light, drawn in three places, and the keys' placing, written four times, become one each. The renderers get a folder that fits them. | No kind writes its own title, light or caption, and the docs' tool writes no picture. |
-| **CL65.3 Every picture says its type** | The `type` in the JSON and the reader, the builder's step, each of the 91 flows read and given its type, the guide. | Every picture in the docs shows its type, and a flow without one is refused. |
+| **CL65.3 Every picture says its type**, built 2026-11-14 | The `type` in the JSON and the reader, the builder's step, each of the 91 flows read and given its type, the guide. | Every picture in the docs shows its type, and a flow without one is refused. |
 | **CL65.4 What the old looks left** | The old rules in the shared style and the frame's. The two layout rules nothing draws by. The long lines out of the class that gives a box its column. One folder for the kinds' styles. One rule for a word's pill. The diagrams' own interface picture. The `components` kind's name, put to Louis. | The list in F134's plan is empty, and the docs' tool writes no picture. |
 
 ## Verification
@@ -189,6 +189,24 @@ Each is its own plan, its own done-when and its own write-up, in this order.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and
   each renderer stands beside its drawing. No picture changed. Its picks are in its plan as of the commit
   before the one that deleted it, and its lessons in [the write-up](../learning/18-testing-and-shipping.md).
+- **2026-11-14, CL65.3 is built.** Every picture shows its type at the right of its title's line, and a flow's
+  file says which of eight it is. Its picks are in its plan as of the commit before the one that deleted it,
+  and its lessons in the same write-up. Three things from it are open for Louis.
+  - *The doubtful types,* of the 95 flows read: 54 component, 16 activity, 16 object, 6 package, 3 deployment.
+    - `03-context-and-scope`: component. It shows people and outside systems round ours. UML's nearest is a
+      use case diagram, but its lines are protocols, not what a person uses it for.
+    - `louis-agent.site-how-it-runs`: component. It could be a deployment diagram, but its boxes are
+      projects, not machines.
+    - `ARCHITECTURE-the-build-and-the-verbs`: deployment. It could be an activity diagram of a deploy.
+    - `puls-track-between-the-phases`: activity, as what comes after what. A roadmap is none of UML's types.
+    - `claude-instructions-layers`, `README-how-it-s-built`, `tests-diagrams` and the `phase-10` picture:
+      package, since their boxes are sets of files or projects.
+    - The four project pictures titled *How it works* whose boxes are parts and not steps, core's, the API's
+      and the two providers': component.
+  - *A body narrower than its picture* stands at the left, under the title, in the seven pictures that grew
+    for their title and type to stand side by side. Whether it should stand in the middle is open.
+  - *Whether "every picture shows its type" is a rule in an ADR.* It is held by a test and said in the design
+    doc. An ADR needs his word, so none is written.
 
 ---
 [Docs index](../README.md) · Related: [F134](F134-the-showroom-looks-modern.md) ·

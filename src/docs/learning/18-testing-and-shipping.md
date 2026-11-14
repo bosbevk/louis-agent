@@ -795,6 +795,60 @@ follows one picture across all three.
 dependency one way. Skill 18, testing and shipping: a refactor proved by an output that does not change by a
 byte.
 
+## A kind is how it is laid out, a type is what it shows (CL65.3, 2026-11-14)
+
+**What it is.** You sent a page of UML's diagram types and said "our graph types must match", and then "the type
+of diagram must always display". Now every picture says what type of diagram it is, at the right of its title's
+line: "Sequence diagram", "Class diagram", "Overview". And a flow's file has to say which type it is.
+
+**The idea: two questions that looked like one.** A picture's `kind` answers "how is this laid out": boxes and
+arrows, lifelines, cards. Its `type` answers "what is this a picture of". For most kinds the two go together.
+Lifelines are always a sequence diagram. For a flow they don't: the same boxes and arrows draw the steps of a
+procedure, the parts of a system, or the objects in memory. Your pick of three was to keep a kind a layout and
+let a picture state its type.
+
+**A default where there is one answer, a refusal where there are several.** That is the rule for data someone
+else writes: fill in what can only be one thing, and refuse what you would have to guess.
+
+- Five kinds are only ever one type, so their files write nothing and the reader fills it in.
+- A flow may be eight, so one that says none is refused, with the eight.
+- A ticket is a card in a chat. It has none, and one that writes a type is told to take it out.
+
+Each refusal says what may be written, so the person who gets it knows the fix without opening the guide.
+
+**Reading 95 flows.** I gave each flow its type by reading it: 54 component, 16 activity, 16 object, 6 package
+and 3 deployment. The surprise was the first number. Most of our pictures titled "how it works" are not
+procedures. Their boxes are parts, and their arrows are calls. Only 16 flows have steps, a start and an end.
+None is a state machine, a use case or a communication diagram. That says something about our docs: we draw
+what a thing is made of far more often than what it does in order, and we leave the order to the sequences.
+
+**Proving a change to every picture.** 267 of the docs' 268 pictures were redrawn, in two steps. The one left
+was the composite, which already said its type. "They all changed" proves nothing, so a script took the type's
+line out of each new picture and held the rest against the commit before. 260 were the same but for that line.
+Seven were also wider, because a title and a type now have to stand side by side. I had counted which pictures
+would grow before changing anything, and the count named those seven.
+
+**What went wrong on the way.**
+
+- The plan put the type's names in the engine's `Messages` folder. A rule test holds that a `Messages` folder has
+  only message enums, so they are in a folder of their own. I wrote the plan's map without asking which rule
+  tests read that folder.
+- The docs' test first looked for the type's line at the top of a picture's file. The docs draw a picture
+  inside a frame, one level down. So the test failed for every picture when the code was already right. Seeing
+  a test fail is not enough. It has to fail for the reason you expect.
+- The import from Mermaid wrote flows with no type. Its own tests found it the moment the refusal landed. It
+  writes `activity` now, which is what UML calls a flowchart.
+- The builder had a step that kept two kinds as wide as their body whatever their title. With a type on the
+  title's line, that would let a type stand over a long title one day. I counted first: none of the 46 pictures
+  of those kinds needed it. So the step is gone, and one rule gives every picture its width.
+
+**What is open for you.** Ten of the flows' types are doubtful, and listed in the parent's plan. A body narrower
+than its picture stands at the left in the seven that grew: whether it should stand in the middle is your call.
+
+**Where it sits.** Skill 5, structured outputs: a default where there is one answer and a refusal that names the
+choices where there are several. Skill 18, testing and shipping: a change to every picture proved by taking the
+change out again, and a count made before the change that says what should differ.
+
 ## Six methods that did the same thing, and one builder (CL65.2, 2026-11-14)
 
 **What it is.** Six kinds of picture each had a method that put the picture together: work out its width and
