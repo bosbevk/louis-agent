@@ -89,4 +89,25 @@ public class SiteBodyTests
             Assert.That(body.FindAll(".body-note, .body-menu, .body-ask em, .body-shown, .body-hint"), Is.Empty);
         });
     }
+
+    /// <summary>
+    /// In a narrow window, such as one on a phone, the website stands over its chat and no longer beside it. The
+    /// body goes by the width of the window it is in, not the screen's, so the frame's body is what it measures.
+    /// </summary>
+    [Test]
+    public void InANarrowWindow_TheWebsiteStandsOverItsChat()
+    {
+        string folder = Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web/Components/Staging/Windows");
+        string body = File.ReadAllText(Path.Combine(folder, "SiteBody.razor.scss")).ReplaceLineEndings("\n");
+        string frame = File.ReadAllText(Path.Combine(folder, "FramedWindow.razor.scss"));
+        int start = body.IndexOf("@container (max-width: 520px) {", StringComparison.Ordinal);
+        string narrow = start < 0 ? "" : body[start..body.IndexOf("\n}", start, StringComparison.Ordinal)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame, Does.Contain("container-type: inline-size;"), "the frame's body is what is measured");
+            Assert.That(narrow, Does.Contain("grid-template-columns: minmax(0, 1fr);"), "one column");
+            Assert.That(narrow, Does.Contain("grid-template-rows: 36% minmax(0, 1fr);"), "the website, then the chat");
+        });
+    }
 }

@@ -16,7 +16,7 @@ someone through one.
 - `/pricing`: the two plans, Starter and Business, and what is quoted on the short call.
 - `/contact`: how to reach the real Louis.
 - `/cv`: the real Louis's CV, his work, skills and schooling, for someone who wants to hire him or someone who wants to know his background.
-- `/demos`: every demo in one place.
+- `/demos`: the three businesses' demos in one place, each a window on a stage.
 - `/guesthouse-demo`, `/restaurant-demo`, `/law-practice-demo`: three made-up businesses' agents at work.
 - `/coding-agent`: the coding agent fixing a real bug, recorded once.
 - `/triage-demo`: the triage team at work on a failed order, recorded once.

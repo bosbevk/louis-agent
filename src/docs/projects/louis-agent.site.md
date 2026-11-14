@@ -67,7 +67,15 @@ with the business's agent in the same corner, the page naming its identity and a
 [ADR 0116](../adr/0116-a-showrooms-demos-can-be-tried-live-through-the-open-door.md)),
 `/coding-agent` (the coding agent fixing a bug, recorded once and played back,
 [ADR 0108](../adr/0108-the-public-watches-the-coding-agent-recorded.md)) and `/triage-demo`, both in the showroom
-since F127.1 on the same stage, in their own players. The framework's own pages
+since F127.1 on the same stage, in their own players. On `/demos` the start shows the three businesses only,
+each as a window: a still look at its website with one moment of its recorded talk, which is the first question
+its demo plays, one whole sentence of the agent's recorded answer, and the place the agent showed. The windows are
+in `Components/Showroom/Windows/`, one small component a business, and `SiteWindowTalks` holds the three talks.
+The talk and the website's words are written a second time there, so `WindowWordsTests` holds each to its
+source: the talk to the demo's page and its recording, and the website's name, line, note, photo and menu, and
+the name of the place shown, to the demo's own mock website. The chat's title, the words in its box and the few
+words under the place's name are the window's own. The coding agent and the triage team have no window on the start. They keep their own pages, and their
+place on the rail beside a demo's page. The framework's own pages
 sit under `/framework` (F128.1), so the site sells first and they can move whole to `framework.louis-agent.dev` (F130):
 `/framework/how-it-works` (the detailed film, one turn through core, the rules every turn keeps),
 `/framework/architecture` (every project that ships, by family, `src/site` among them), `/framework/identities`,
@@ -106,7 +114,7 @@ changed film is re-exported ([ADR 0077](../../../demos/louis-agent/docs/adr/0077
 | `Pages/` | The site's pages; under `Framework/`, architecture, identities, packs, build your own and the comparison; under `Agents/`, the demos (`RecordedChat` plays `wwwroot/recordings/coding-session.sse`; [how to record it again](../../../demos/louis-agent/recordings/README.md)) |
 | `Errors/NotFound.razor` | The page for an address the site has no page for, outside `Pages/` so the page rules don't count it |
 | `Layout/SiteLayout.razor` | The site's frame on the framework's `SiteShell`, the router's default |
-| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/` |
+| `Components/` | `Architecture/` (the Architecture page's families), `Movies/` (the films and `FilmFrame`), `Guide/` (`ExpertChat`, the framework's `ChatWidget` with the guide), `Landing/` (the hero, the proof tiles, the live panels), `Contact/`, `Identity/`, `Showroom/` (a business's demo, each business's mock website in `Websites/`, and the three windows on the start in `Windows/`) |
 | `Resumes/` | The CV's records by concern (`Basics/`, `History/`, `Skills/`, `Privacy/`), `ResumeReader`, `ResumeDates`, where a page gets it (`Sources/`) and the editor's draft (`Drafts/`) |
 | `Admin/` | The site's own area of the admin: `ResumeArea`, its link and card, `ResumeEditor` at `/admin/resume`, the page inside it (`ResumeSheet`) and `Forms/OffPageForm`; outside `Pages/`, so the page rules don't count it |
 | `Content/`, `Graphs/` | `SiteDoors`, `SiteFacts`, the principles shown as the engine holds them; the diagrams' data |

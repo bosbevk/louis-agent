@@ -339,6 +339,61 @@ public class ShowroomStartTests
         });
     }
 
+    /// <summary>
+    /// The start showing one group of the test's demos, the bakery featured, on a site whose places have addresses,
+    /// opened at this one.
+    /// </summary>
+    private static IRenderedComponent<ShowroomStart> StartOf(BunitContext ctx, DemoGroup group, string address)
+    {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(Demos);
+        ctx.Services.AddSingleton(new SiteAddresses("home", ["/demos"]));
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(address);
+        return ctx.Render<ShowroomStart>(parameters => parameters
+            .Add(start => start.Featured, "/bakery-demo")
+            .Add(start => start.Group, group)
+            .Add(start => start.Title, "Watch the agents at work."));
+    }
+
+    /// <summary>
+    /// The page may say which group of the site's demos its start shows (Louis's pick of three: the page says, over
+    /// a mark on each demo or taking them out of the site's list). Then only that group's demos are windows on the
+    /// deck and buttons on the dock, and the arrows go round among them.
+    /// </summary>
+    [Test]
+    public void ToldAGroup_TheStartShowsOnlyItsDemos()
+    {
+        using var ctx = new BunitContext();
+        var start = StartOf(ctx, DemoGroup.ForYourBusiness, "/demos");
+
+        var windows = start.FindAll(".deck .deck-item .framed-window");
+        var buttons = start.FindAll("nav.dock button").Select(button => button.Id).ToList();
+        var dividers = start.FindAll("nav.dock .dock-divider");
+        start.Find(".deck-arrow.deck-before").Click();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(windows, Has.Count.EqualTo(2));
+            Assert.That(buttons, Is.EqualTo(new[] { "bakery-demo", "florist-demo" }));
+            Assert.That(dividers, Is.Empty, "one group, so no divider");
+            Assert.That(ForwardAddress(start), Is.EqualTo("/florist-demo"), "before the first is the group's last");
+        });
+    }
+
+    /// <summary>
+    /// A demo outside the start's group has no window there, so its address is a place the start doesn't have: the
+    /// featured demo is forward.
+    /// </summary>
+    [Test]
+    public void OpenedAtADemoOutsideItsGroup_TheFeaturedOneIsForward()
+    {
+        using var ctx = new BunitContext();
+
+        var start = StartOf(ctx, DemoGroup.ForYourBusiness, "/demos/coder-demo");
+
+        Assert.That(ForwardAddress(start), Is.EqualTo("bakery.example"));
+    }
+
     /// <summary>A site's own words replace the framework's English.</summary>
     [Test]
     public void ASitesWords_ReplaceTheEnglish()

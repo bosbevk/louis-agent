@@ -262,10 +262,10 @@ folders, and this part takes them in the order a visitor meets them.
 and the corner beside the frame. On a phone the rail becomes a row of chips. The whole frame is in the colour of
 the demo on screen. An open guide takes the rail's place. Each demo names its icon, one of the framework's line
 icons, which the rail, the chips and the start draw. On a page that is no demo, such as the start, the frame
-draws no rail and no chips, and the stage takes the whole width: the start shows every demo itself.
+draws no rail and no chips, and the stage takes the whole width: the start shows the demos itself.
 
-**The start** (`Start/`). `ShowroomStart` is the showroom's front page, and it is a stage. Every demo of the
-site is a framed window on a deck, with one forward in the light. Under the deck are the forward demo's name,
+**The start** (`Start/`). `ShowroomStart` is the showroom's front page, and it is a stage. Every demo it
+shows is a framed window on a deck, with one forward in the light. Under the deck are the forward demo's name,
 its line and its way in, and a dock with a button per demo. The stage is lit in the forward demo's colour, and
 each window wears its own.
 
@@ -275,6 +275,12 @@ when it names none.
 
 The start holds one thing, which demo is forward. The deck and the dock are both told, and each only says what
 a visitor asked for, so the arrows and the buttons can't disagree. The demo the site features is forward first.
+
+The page may name one group of the site's demos, such as the ones made for a visitor's own business. The start
+then shows that group alone: its windows on the deck, its buttons on the dock, and its addresses. A demo outside
+the group has no window there, so its address opens the start with the featured demo forward. The site's list
+stays whole, so the rail beside a demo's page still offers every demo. With no group named, the start shows
+them all.
 
 Each demo's window has its own address under the start's, such as `/demos/restaurant-demo`. The start reads the
 address it was opened at, and if it names a demo, that demo is forward from the first draw. When a visitor
@@ -420,7 +426,10 @@ page and a diagram never hold two copies of a drawing.
 - `FramedWindow` is a bar like a browser's, with an address word, then a body. The body can't outgrow the frame or
   be scrolled inside it. The framework offers three bodies, which hold no words of their own. `SiteBody` is a
   website with its chat: a photo with a name and a line over it, and one question, its answer and one thing the
-  agent showed. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
+  agent showed. That thing is drawn as a small card: a photo if the site gives one, a name in bold and a few
+  words. In a window narrower than 520 the website stands over its chat, and only the website's name and line
+  and the chat's question and answer are drawn. The body goes by the width of its window, not the screen's:
+  the frame's body is a container its content can measure. `WorkBody` is panes of work, each a heading over plain lines. `PlainBody` is for a thing with
   nothing of its own to show yet: its icon, large, over its name and a line.
 - `Dock` is a row of icon buttons drawn from `DockItem`s, with a divider where the group changes. The current
   button shows its name, and the rest keep theirs for a screen reader. On a screen up to 900 wide the dock is

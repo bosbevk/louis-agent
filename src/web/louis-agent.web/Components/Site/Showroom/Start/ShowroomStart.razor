@@ -13,7 +13,7 @@
         </div>
         @if (Forward is { } forward)
         {
-            <Deck TItem="ShowroomDemo" Items="Demos.All" Forward="ForwardAt" ForwardChanged="Bring"
+            <Deck TItem="ShowroomDemo" Items="_shown" Forward="ForwardAt" ForwardChanged="Bring"
                   Label="@Text.Demos" BeforeLabel="@Text.TheDemoBefore" NextLabel="@Text.TheNextDemo">
                 <Item Context="demo">
                     <div class="@WindowClasses(demo)">

@@ -10,7 +10,7 @@ using Microsoft.JSInterop;
 namespace LouisAgent.Web.Components.Site.Showroom.Start;
 
 /// <summary>
-/// The showroom's start (F134.1): a stage. Every demo of the site is a framed window on a deck, one forward in the
+/// The showroom's start (F134.1): a stage. Every demo it shows is a framed window on a deck, one forward in the
 /// light. Under it are the forward demo's name, its line and its way in, and a dock with a button per demo.
 /// </summary>
 /// <remarks>
@@ -23,11 +23,17 @@ namespace LouisAgent.Web.Components.Site.Showroom.Start;
 /// <see cref="ShowroomDemos"/>, so a new demo is one line in the site and stands here too.
 /// </para>
 /// <para>
+/// The page may name one group of the site's demos, and then the start shows that group alone. Which demos stand
+/// on the start is the page's choice, handed down as a parameter like which one is forward. Chosen over a mark on
+/// each demo's record, which would put the page's choice in the site's list, and over taking a demo out of that
+/// list, which would take it off the rail beside every demo's page as well.
+/// </para>
+/// <para>
 /// Each demo's window has its own address (ADR 0107). The start reads the address it was opened at, so that demo is
-/// forward from the first draw, and each address is its own page for someone who runs no script. When a visitor
-/// brings another forward, a small module of the start's own puts that demo's address in the bar. Chosen over the
-/// site frame's script, which follows only a card's click, scrolls to the card and opens every address with the
-/// featured demo first, and over navigating through the router, which draws the start afresh on the first press.
+/// forward from the first draw in a browser. When a visitor brings another forward, a small module of the start's
+/// own puts that demo's address in the bar. Chosen over the site frame's script, which follows only a card's click,
+/// scrolls to the card and opens every address with the featured demo first, and over navigating through the
+/// router, which draws the start afresh on the first press.
 /// </para>
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0084-every-site-is-built-on-the-frameworks-web.md">ADR 0084: every site is built on the framework's web</seealso>
@@ -35,8 +41,11 @@ namespace LouisAgent.Web.Components.Site.Showroom.Start;
 /// <seealso href="https://learn.microsoft.com/aspnet/core/blazor/components/event-handling#eventcallback">EventCallback (Microsoft Learn)</seealso>
 public partial class ShowroomStart : IAsyncDisposable
 {
-    /// <summary>What a visitor brought forward, by its place in the site's list. None until they do.</summary>
+    /// <summary>What a visitor brought forward, by its place among the demos shown. None until they do.</summary>
     private int? _brought;
+
+    /// <summary>The demos the start shows, in the site's order.</summary>
+    private IReadOnlyList<ShowroomDemo> _shown = [];
 
     private JsModule? _bar;
 
@@ -51,6 +60,13 @@ public partial class ShowroomStart : IAsyncDisposable
     /// <summary>A line under the title.</summary>
     [Parameter]
     public RenderFragment? Lede { get; set; }
+
+    /// <summary>
+    /// Which group of the site's demos the start shows, such as the ones for a visitor's own business. With none,
+    /// it shows every demo. The site's list stays whole either way, for the rail beside a demo's page.
+    /// </summary>
+    [Parameter]
+    public DemoGroup? Group { get; set; }
 
     [Inject] private IServiceProvider Services { get; set; } = null!;
 
@@ -70,30 +86,34 @@ public partial class ShowroomStart : IAsyncDisposable
     /// <summary>The start's own module: the address bar following the demo that is forward.</summary>
     private JsModule Bar => _bar ??= new JsModule(JS, FrameworkScripts.ShowroomStart);
 
-    /// <summary>The demo that is forward; none when the site has no demos.</summary>
-    private ShowroomDemo? Forward => Demos.All.Count == 0 ? null : Demos.All[ForwardAt];
+    /// <summary>The start shows the group its page named, else every demo the site has.</summary>
+    protected override void OnParametersSet() =>
+        _shown = [.. Demos.All.Where(demo => Group is null || demo.Group == Group)];
+
+    /// <summary>The demo that is forward; none when the start has no demos to show.</summary>
+    private ShowroomDemo? Forward => _shown.Count == 0 ? null : _shown[ForwardAt];
 
     /// <summary>
-    /// Where the forward demo is in the site's list: what the visitor brought forward, else the one whose address
-    /// the page was opened at, else the featured one.
+    /// Where the forward demo is among the demos shown: what the visitor brought forward, else the one whose
+    /// address the page was opened at, else the featured one.
     /// </summary>
     private int ForwardAt => _brought ?? OpenedAt ?? FeaturedAt;
 
     /// <summary>
     /// Where the demo is whose address the page was opened at. None at the page's own address, at a place that is
-    /// no demo, and on a site without addresses.
+    /// no demo shown here, and on a site without addresses.
     /// </summary>
     private int? OpenedAt => Addresses?.Read(Nav.Uri)?.Section is { } place ? PlaceOf(place) : null;
 
     /// <summary>
-    /// Where the featured demo is in the site's list. The first, when the site names one it doesn't have.
+    /// Where the featured demo is among the demos shown. The first, when the page names one that isn't shown.
     /// </summary>
     private int FeaturedAt
     {
         get
         {
             var featured = Demos.At(Featured);
-            return Demos.All.Select((demo, at) => (Demo: demo, At: at)).FirstOrDefault(place => place.Demo == featured)
+            return _shown.Select((demo, at) => (Demo: demo, At: at)).FirstOrDefault(place => place.Demo == featured)
                 .At;
         }
     }
@@ -101,18 +121,18 @@ public partial class ShowroomStart : IAsyncDisposable
     /// <summary>The stage's colour: the forward demo's, the showroom's purple when the site has no demos.</summary>
     private TileAccent StageAccent => Forward?.Accent ?? TileAccent.Purple;
 
-    /// <summary>A button per demo for the dock, in the site's order, grouped as the demos are.</summary>
+    /// <summary>A button per demo shown for the dock, in the site's order, grouped as the demos are.</summary>
     private IReadOnlyList<DockItem> DockItems =>
     [
-        .. Demos.All.Select(demo => new DockItem(IdOf(demo), demo.Name, demo.Icon, demo.Accent, demo.Group.Wire()))
+        .. _shown.Select(demo => new DockItem(IdOf(demo), demo.Name, demo.Icon, demo.Accent, demo.Group.Wire()))
     ];
 
     /// <summary>A demo's id on the page: its address without the slash, such as <c>guesthouse-demo</c>.</summary>
     private static string IdOf(ShowroomDemo demo) => demo.Address.Trim('/');
 
-    /// <summary>Where the demo with this id is in the site's list; none when no demo has it.</summary>
+    /// <summary>Where the demo with this id is among the demos shown; none when none of them has it.</summary>
     private int? PlaceOf(string id) =>
-        Demos.All.Select((demo, at) => (Id: IdOf(demo), At: (int?)at)).FirstOrDefault(place => place.Id == id).At;
+        _shown.Select((demo, at) => (Id: IdOf(demo), At: (int?)at)).FirstOrDefault(place => place.Id == id).At;
 
     /// <summary>The word in a demo's window bar: the one it names, else its own address.</summary>
     private static string AddressWordOf(ShowroomDemo demo) => demo.WindowAddress ?? demo.Address;
@@ -130,7 +150,7 @@ public partial class ShowroomStart : IAsyncDisposable
 
         // The page's own address, whichever place on it was opened, then the forward demo's place on that page.
         string page = addresses.Read(Nav.Uri)?.Page ?? Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
-        string address = addresses.Address(page, IdOf(Demos.All[at]));
+        string address = addresses.Address(page, IdOf(_shown[at]));
         await Bar.InvokeVoidAsync("show", address);
     }
 

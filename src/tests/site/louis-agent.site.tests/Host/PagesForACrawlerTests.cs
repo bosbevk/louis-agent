@@ -5,6 +5,7 @@ using LouisAgent.Site.Pages;
 using LouisAgent.Site.Pages.Agents;
 using LouisAgent.SiteApi;
 using LouisAgent.SiteApi.Resumes;
+using LouisAgent.Web.Components.Site.Showroom;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Site.Tests.Host;
@@ -48,18 +49,22 @@ public class PagesForACrawlerTests
         Assert.That(await BodyAt(page, route), Is.Not.Null, "the page renders with the host's services");
 
     /// <summary>
-    /// The showroom's start reaches a crawler with its demos: every one named, the featured one forward, and the way
-    /// in leading to it.
+    /// The showroom's start reaches a crawler with its demos: each business named, with its window's look at its
+    /// own website, the featured one forward, and the way in leading to it.
     /// </summary>
     [Test]
     public async Task TheStart_HasItsDemos()
     {
+        var onTheStart = SiteDemos.All.All.Where(demo => demo.Group == DemoGroup.ForYourBusiness).ToList();
+
         string? body = await BodyAt(typeof(DemosPage), "/demos");
 
         Assert.Multiple(() =>
         {
-            Assert.That(SiteDemos.All.All.Where(demo => body?.Contains(demo.Name) != true).Select(demo => demo.Name),
+            Assert.That(onTheStart.Where(demo => body?.Contains(demo.Name) != true).Select(demo => demo.Name),
                 Is.Empty, "a demo the crawler's page doesn't name");
+            Assert.That(onTheStart.Where(demo => body?.Contains(demo.WindowAddress ?? "no window") != true)
+                .Select(demo => demo.Name), Is.Empty, "a demo whose window the crawler's page doesn't have");
             Assert.That(body, Does.Match("<h2 class=\"start-name\"[^>]*>A guesthouse</h2>"));
             Assert.That(body, Does.Match("<a class=\"start-play\"[^>]*href=\"/guesthouse-demo\""));
         });
