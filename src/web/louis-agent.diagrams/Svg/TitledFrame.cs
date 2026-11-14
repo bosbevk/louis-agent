@@ -59,10 +59,11 @@ public static class TitledFrame
         var note = source.Caption is { } caption
             ? Lines(caption, width - NoteLeft - NotePad, NoteChar, "note", boldWithoutColon: false)
             : [];
-        // A component diagram and a flow write their own title inside the picture and say in their own key what
-        // their tones mean (F134.7, F134.8), so they get no bar and no legend, only the note. A cards picture
-        // writes its own title too, and has no tones to explain (F134.9).
-        bool ownTitle = source.Kind is DiagramKind.Components or DiagramKind.Flow or DiagramKind.Cards;
+        // A component diagram, a flow and a sequence write their own title inside the picture and say in their
+        // own key what their tones mean (F134.7, F134.8, F134.10), so they get no bar and no legend, only the
+        // note. A cards picture writes its own title too, and has no tones to explain (F134.9).
+        bool ownTitle = source.Kind is DiagramKind.Components or DiagramKind.Flow or DiagramKind.Cards
+            or DiagramKind.Sequence;
         double bar = ownTitle ? 0 : 2 * BarPad + TitleLine * title.Count, shift = ownTitle ? 0 : bar + Gap;
         double noteHeight = note.Count == 0 ? 0 : 2 * NotePad + NoteLine * note.Count;
         // The legend names the tones the chart uses, row after row as the width allows.
@@ -97,17 +98,15 @@ public static class TitledFrame
     }
 
     /// <summary>
-    /// The legend's swatches, one for each tone a flow's boxes or a sequence's heads wear, in the tones' order, each
-    /// with what it means
+    /// The legend's swatches, one for each tone a chart's boxes wear, in the tones' order, each with what it means
     /// (Louis: "can we have a legend for the color"), placed left to right and onto a new row when the drawing's
-    /// width is full; a chart without colours, and the cards, have none. A component diagram has none here either:
-    /// its own key says what its tones mean.
+    /// width is full; a chart without colours, and the cards, have none. A component diagram, a flow and a
+    /// sequence have none here either: each one's own key says what its tones mean.
     /// </summary>
     private static List<(string Tone, string Meaning, double X, int Row)> LegendItems(DiagramSource source,
         double width)
     {
         var tones = (source.Flow?.Nodes ?? []).Select(node => node.Tone)
-            .Concat((source.Sequence?.Participants ?? []).Select(head => head.Tone))
             .Concat((source.Classes?.Types ?? []).Select(type => type.Tone))
             .Where(tone => tone != DiagramTone.Plain).Distinct().Order();
         var items = new List<(string, string, double, int)>();

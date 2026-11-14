@@ -151,26 +151,11 @@ public class DocsDiagramsTests
 
     /// <summary>
     /// In every sequence picture, no message's words, no note and no block's frame reaches past the drawing's edges
-    /// (CL60.3, Claude's pick Q4: the same guard the flows have).
+    /// (CL60.3, Claude's pick Q4: the same guard the flows have), by the measures a sequence is drawn with
+    /// (F134.10): a head with no box, words above their line and a frame that reaches left for its tab.
     /// </summary>
     [Test]
     public void EverySequence_KeepsItsWordsInsideTheDrawing()
-    {
-        var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
-            .Where(pair => pair.source.Sequence is not null)
-            .SelectMany(pair => Outside(pair.source.Sequence!, SequenceMeasures.Boxed)
-                .Select(what => $"{Path.GetFileNameWithoutExtension(pair.json)}: {what} leaves the drawing"))
-            .ToList();
-
-        Assert.That(faults, Is.Empty, string.Join('\n', faults));
-    }
-
-    /// <summary>
-    /// The same holds when every sequence picture is laid out by design C's measures (F134.10), before any is
-    /// drawn that way: a head with no box, words above their line and a frame that reaches left for its tab.
-    /// </summary>
-    [Test]
-    public void EverySequence_LaidOutByTheNewMeasures_KeepsItsWordsInsideTheDrawing()
     {
         var faults = Diagrams().Select(json => (json, source: DiagramReader.Read(File.ReadAllText(json))))
             .Where(pair => pair.source.Sequence is not null)

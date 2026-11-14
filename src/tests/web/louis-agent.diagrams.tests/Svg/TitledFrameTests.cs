@@ -4,6 +4,8 @@ using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Icons;
+using LouisAgent.Diagrams.Sequence.Spec;
+using LouisAgent.Diagrams.Sequence.Spec.Steps;
 using LouisAgent.Diagrams.Sources;
 using LouisAgent.Diagrams.Svg;
 using LouisAgent.Diagrams.Tones;
@@ -75,6 +77,32 @@ public class TitledFrameTests
             Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
             Assert.That(svg.Descendants(Svg + "text").Where(text => Class(text) == "mrq-title")
                 .Select(text => text.Value), Is.EqualTo(new[] { "A project at a glance" }));
+        });
+    }
+
+    /// <summary>
+    /// A sequence writes its own title and says in its own key what its tones mean (F134.10), so the frame gives
+    /// it no bar and no legend, only the note bar under it.
+    /// </summary>
+    [Test]
+    public void ASequence_HasItsOwnTitleAndKey_SoNoBarAndNoLegend_OnlyTheNote()
+    {
+        var chat = new DiagramSource(DiagramKind.Sequence, "One chat turn", "Every request is measured.",
+            Sequence: new SequenceSpec(
+                [new Participant("you", "You", Tone: DiagramTone.Blue), new Participant("api", "The API")],
+                [new MessageStep("you", "api", "ask")]));
+
+        var svg = XDocument.Parse(DiagramRenderers.RenderTitled(chat));
+        List<string> Words(string cls) =>
+            [.. svg.Descendants(Svg + "text").Where(text => Class(text) == cls).Select(text => text.Value)];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Rects(svg, "titlebar"), Is.Empty);
+            Assert.That(Rects(svg, "notebar"), Has.Count.EqualTo(1));
+            Assert.That(Words("mrq-title"), Is.EqualTo(new[] { "One chat turn" }));
+            Assert.That(Words("legend"), Is.Empty, "the frame's legend");
+            Assert.That(Words("seq-key"), Is.EqualTo(new[] { "starts it", "a call" }), "the picture's own key");
         });
     }
 

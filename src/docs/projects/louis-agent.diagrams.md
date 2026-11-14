@@ -67,16 +67,14 @@ start `cmp-`. `FlowStyle` adds a flow's own, with names that start `flow-`: a gr
 icon badge, the glow round a shape, and the pill an arrow's word stands in. The shared rules come first in a
 picture's style, so two kinds can't drift apart in what they share.
 
-**The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence is
-to wear it as well. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
+**The Marquee look is shared too** (`MarqueeLook`). A cards picture is drawn in a second look, and a sequence
+wears it as well. What both wear has names that start `mrq-`: the picture's small title, the soft light, the
 glass with the accent along its top, the pill with its code, and a node on a lit line. Its accent is the palette's
 violet running to its blue, and it sets the few variables of its own for a light page and again for a dark one.
 `CardsStyle` comes after it and adds what is a card's own, with names that start `crd-`: the lit rail and its
 lines, a headline with its badge, a glass card's badge, name and text, and the quiet card. `SequenceStyle` holds
 what a sequence adds, with names that start `seq-`: a participant's badge in its tone and its name, the
-lifeline, a call's beam either way, an answer's quiet line and the words above them. `SequenceDrawing`
-(`Svg/Renderers/Parts/Lifelines/`) draws a sequence with it. The sequence's renderer doesn't hand it a picture
-yet, so the docs' sequences are still drawn the old way.
+lifeline, a call's beam either way, an answer's quiet line and the words above them.
 
 **What a flow's drawing shows** (`Svg/Renderers/Parts/FlowDrawing`). It places nothing itself: it draws what the
 layout placed by `FlowRules.Straight`.
@@ -91,9 +89,10 @@ layout placed by `FlowRules.Straight`.
 
 **Step 3: the docs' frame goes round it** (`Svg/TitledFrame`, a Decorator). `DiagramRenderers.RenderTitled` draws
 the picture bare and then frames it: a navy title bar, a legend of the tones the chart uses, and a note bar from
-its caption. A component diagram and a flow write their own title and their own key inside the picture, so they
-get only the note bar. A cards picture writes its own title too, and has no tones to explain, so it gets only the
-note bar as well. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
+its caption. A component diagram, a flow and a sequence write their own title and their own key inside the
+picture, so they get only the note bar. A cards picture writes its own title too, and has no tones to explain, so
+it gets only the note bar as well. Of the kinds the docs draw, that leaves the bar and the legend to a class
+chart. Only the docs' tool asks for the frame. A bare picture, as the site draws and the chat's
 cards draw, is unchanged.
 
 #### The tool that draws the docs' pictures
@@ -217,8 +216,33 @@ layout is handed: words wrap at 40 characters, and a head at 24.
 `SequenceKeyLayout` (`Keys/`) places a sequence's key: an item for each tone a participant wears, with what the
 tone means, then a call, an answer, a note and each kind of block, each only when the sequence has one. A block's
 item says what its kind does: a `loop` repeats, an `opt` runs only if, an `alt` is one case or the other. The
-items stand side by side across a width and go on to a new row when one is full. `SequenceKey` draws it, each
-sample with the shapes of the real thing.
+items stand side by side across a width and go on to a new row when one is full.
+
+**What a sequence's drawing shows** (`Svg/Renderers/Parts/Lifelines/`). `SequenceDrawing` draws what the layout
+placed and decides no place itself. The look is `PictureLook`, then `MarqueeLook`, then `SequenceStyle`.
+
+- *Its own title*, small, in the top left corner, on a soft light that stands behind the row of participants. A
+  picture is as wide as its title when the title is the wider.
+- *A participant* is a badge filled with its tone, its icon in the badge and its name under it, with no box. A
+  person who names no icon wears a person's. This is the one place a tone is shown, so a tone says what a
+  participant is, as a box's tone does in a flow.
+- *A lifeline* runs down from a node under the name and fades out at the bottom.
+- *A call* is a beam: a line that runs from violet at its sender to blue at its receiver, whichever way it points,
+  with a glow, a node where it leaves and an arrowhead where it arrives. Dots run along it the way it points. Its
+  words stand above it, bold. Every call wears this one accent, so a call does not have its sender's tone.
+- *An answer* is a thin dashed grey line with an arrowhead, and its words above it are grey too. It stands still.
+- *A call a participant makes to itself* leaves its lifeline, turns and comes back a little lower, with its words
+  beside the turn.
+- *A note* is a glass panel over the lifelines it names.
+- *A block* is a glass frame with the accent along its top. Its kind stands in a pill with its label beside it.
+  Each other case of an `alt` stands under a dashed line, with `else` in a grey pill and the case's label. What
+  comes after a block starts 12 under its frame, so a frame never touches the next thing.
+- *A numbered picture* puts each step's number in a small ring where its line starts.
+- *The key* (`SequenceKey`) stands under a faint line across the picture's width. Each sample is drawn with the
+  shapes of the real thing, a call's and an answer's by the same code that draws them in the picture.
+
+A reader who asked their system for less motion sees no dots. The arrowheads stay, so the direction never rests
+on motion alone.
 
 #### A class chart: the interface design
 
@@ -351,7 +375,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a page's copy scoped, rooted and
   trimmed (`Svg/PageSvgTests`), and the goldens `Svg/flow.svg`, `Flow/down.svg`, `Flow/groups.svg`,
-  `Sequence/sequence.svg`, `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg` and `Tickets/ticket.svg`
+  `Classes/classes.svg`, `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
   Mermaid form, and `DocsDiagramsTests` on the real docs: every picture is what its JSON draws, a doc shows it,
