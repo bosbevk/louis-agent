@@ -3,7 +3,7 @@ using LouisAgent.Diagrams.Tones;
 
 namespace LouisAgent.Diagrams.Engine.Tickets.Placed;
 
-/// <summary>The status pill at the band's top right: its box, its words and its tone.</summary>
+/// <summary>The status pill at the head's top right: its box, its words and its tone.</summary>
 /// <param name="Box">Where it stands and how large it is.</param>
 /// <param name="Label">What it says.</param>
 /// <param name="Tone">Its colour.</param>

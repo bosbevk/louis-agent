@@ -446,5 +446,19 @@ page. One request to the running site, read as a crawler reads it, settled each 
 its own route and without its layout, and serves that for every place on the page. So what a crawler gets is asked
 of the server, never worked out from the components. Testing and shipping (skill 18).
 
+## FX156 · A shared look is only shared by what names it
+
+The pictures got one look in steps, a kind at a time: the component diagram, the cards, the sequence, the class
+chart, the flow. Each step moved the kind it was about. The card an agent draws in the chat was built
+before any of them, with a style of its own, and no step was about it, so it stayed a navy band over a torn edge
+beside a page of glass. Nothing was broken and no test could fail: a rule held that every drawing goes through the
+one builder, and it named the ticket as the exception. An exception written into a rule is a place nobody looks
+again. When a look is meant for everything, the check to write is the list of what does not wear it yet, and it
+should be empty or say why.
+
+It was also a look decided by looking. Three drawn options were put, and the pick was made sharper once it was
+on screen: glass, and nothing of a ticket. The words "our theme" would not have settled that. Skill 18 (testing
+and shipping: what a visitor sees is checked by seeing it).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

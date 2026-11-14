@@ -1,61 +1,61 @@
-using LouisAgent.Choices;
-
 namespace LouisAgent.Diagrams.Engine.Svg.Theme;
 
 /// <summary>
-/// A ticket's look (F127.4.1), added after the theme's rules: a sans font, the band in the theme's banner colours,
-/// the rows' and the note's parts, and a pill per tone. No ground behind it, so it sits on a chat as a card.
+/// What a ticket adds to the look every picture wears (FX156): the light behind its head, its words' faces, the
+/// chips its icons stand in and the well its note stands in. No ground behind it, so it sits on a chat as a card.
 /// </summary>
 /// <remarks>
-/// Every colour is the page's variable first, the site's own as the fallback (<c>var(--ticket-band, …)</c>): a ticket
-/// drawn inside a business's window takes the brand that window sets, and on the site it needs nothing (Louis's pick
-/// Q3). The fallbacks are this picture's own variables, light and dark, as the rest of the library's are.
+/// <para>
+/// The card is the look's own glass with the accent along its top, as a cards picture's and a sequence's are
+/// (Louis: "it must follow the theme", "glass but not a ticket"). It had a look of its own, a filled band over a
+/// torn edge, from before the pictures shared one.
+/// </para>
+/// <para>
+/// Every colour is the page's variable first and the look's as the fallback (<c>var(--ticket-ink, …)</c>): a
+/// ticket drawn inside a business's window takes the brand that window sets, and on the site it needs nothing.
+/// The paper under the glass is solid, so the words read whatever page the card lies on.
+/// </para>
 /// </remarks>
 internal static class TicketStyle
 {
-    /// <summary>The ticket's rules, its band's colours in both looks.</summary>
-    public static string Of(SvgTheme theme) =>
+    /// <summary>The id of the fade that is the light behind a card's head.</summary>
+    public const string LightPaint = "tkt-light";
+
+    /// <summary>
+    /// The ticket's rules. They come after the look's and use its variables: the light behind the head is as
+    /// strong as the look's own light behind a picture's top.
+    /// </summary>
+    public const string Rules =
         $$"""
-          svg {
-            --sans: Geist, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
-            {{Band(theme.Light.Banner)}}
-          }
-          @media (prefers-color-scheme: dark) {
-            svg { {{Band(theme.Dark.Banner)}} }
-          }
+
           .ground { fill: none; }
-          .ticket { fill: var(--ticket-paper, var(--panel)); stroke: var(--ticket-line, var(--line)); stroke-width: 1; }
-          .ticket-band { fill: var(--ticket-band, var(--t-band)); }
+          .ticket-paper { fill: var(--ticket-paper, var(--ground)); }
+          .ticket { stroke: var(--ticket-line, var(--mrq-hair)); }
+          .ticket-light { fill: url(#{{LightPaint}}); }
+          .{{LightPaint}}-0 { stop-color: var(--ticket-accent, var(--violet-line)); stop-opacity: var(--mrq-glow); }
+          .{{LightPaint}}-1 { stop-color: var(--ticket-accent, var(--blue-line)); stop-opacity: var(--mrq-glow-far); }
+          .{{LightPaint}}-2 { stop-color: var(--ticket-accent, var(--blue-line)); stop-opacity: 0; }
+          .mrq-edge-0, .mrq-edge-1, .mrq-edge-2 { stop-color: var(--ticket-accent, var(--violet-line)); }
+          .ticket-rule { fill: var(--ticket-line, var(--mrq-hair)); }
           .ticket-kicker {
-            fill: var(--ticket-band-ink, var(--t-band-ink)); fill-opacity: .78;
-            font: 600 10.5px var(--sans); letter-spacing: 1.4px;
+            fill: var(--ticket-accent, var(--violet-ink)); font: 600 10px var(--mono); letter-spacing: 1.4px;
           }
           .ticket-title {
-            fill: var(--ticket-band-ink, var(--t-band-ink)); font: 600 24px var(--ticket-title-font, var(--sans));
+            fill: var(--ticket-ink, var(--text)); font: 700 24px var(--ticket-title-font, var(--pic-sans));
+            letter-spacing: -.3px;
           }
-          .ticket-subtitle {
-            fill: var(--ticket-band-ink, var(--t-band-ink)); fill-opacity: .78; font: 12px var(--sans);
+          .ticket-subtitle { fill: var(--ticket-quiet, var(--quiet)); font: 12px var(--pic-sans); }
+          .ticket-icon-box, .ticket-well {
+            fill: var(--ticket-chip, var(--pic-body)); stroke: var(--ticket-line, var(--pic-hair)); stroke-width: 1;
           }
-          .ticket-tear { fill: none; stroke: var(--ticket-line, var(--line)); stroke-width: 2; stroke-dasharray: 4 4; }
-          .ticket-icon-box { fill: var(--ticket-chip, var(--chip)); }
           .ticket-icon {
-            fill: none; stroke: var(--ticket-accent, var(--accent)); stroke-width: 2;
+            fill: none; stroke: var(--ticket-accent, var(--violet-line)); stroke-width: 2;
             stroke-linecap: round; stroke-linejoin: round;
           }
-          .ticket-label { fill: var(--ticket-quiet, var(--quiet)); font: 11.5px var(--sans); }
-          .ticket-value { fill: var(--ticket-ink, var(--text)); font: 500 14px var(--sans); }
-          .ticket-foot { fill: var(--ticket-chip, var(--chip)); }
-          .ticket-note { fill: var(--ticket-quiet, var(--quiet)); font: 12px var(--sans); }
-          .ticket-pill { fill: var(--ticket-band-ink, var(--t-band-ink)); }
-          .ticket-pill-text { fill: var(--ticket-band, var(--t-band)); font: 600 11.5px var(--sans); }
-          {{PillTones(theme)}}
+          .ticket-label { fill: var(--ticket-quiet, var(--quiet)); font: 11.5px var(--pic-sans); }
+          .ticket-value { fill: var(--ticket-ink, var(--text)); font: 600 14px var(--pic-sans); }
+          .ticket-note { fill: var(--ticket-quiet, var(--quiet)); font: 11.5px var(--pic-sans); }
+          .ticket-pill { stroke-width: 1; }
+          .ticket-pill-text { font: 600 11.5px var(--pic-sans); }
           """;
-
-    /// <summary>The band's colours as the picture's own variables.</summary>
-    private static string Band(SvgTone banner) => $"--t-band: {banner.Fill}; --t-band-ink: {banner.Ink};";
-
-    /// <summary>A toned pill wears its tone's strong colour, its words the band's.</summary>
-    private static string PillTones(SvgTheme theme) => string.Join("\n", theme.Light.Tones.Keys
-        .Select(tone => tone.Wire())
-        .Select(name => $".ticket-pill.tone-{name} {{ fill: var(--{name}-line); }}"));
 }

@@ -481,18 +481,27 @@ drawing defines and the style fills with.
 #### A ticket: a card an agent draws in the chat
 
 A ticket (`Tickets/`) is a read-only card an agent draws in the chat, such as a booking request. It has a kicker
-and a title on a band, an optional subtitle, a status pill in a tone, a torn edge, one to six rows of an icon, a
-label and a value, and a note at the foot.
+and a title in its head, an optional subtitle, a status pill in a tone, one to six rows of an icon, a label and a
+value, and a note at the foot.
 
-`TicketLayout` places every word. The kicker wraps beside the pill. A long value wraps, and the card grows. It is
-320 wide, so a phone's chat shrinks it little.
+It wears the look the other pictures wear, and nothing of a paper ticket. The card is the look's glass, with the
+accent along its top. A soft light falls from the accent down the head and is gone at the hairline under it. Each
+row's icon stands in a small chip, and the note stands in a well, a panel a step deeper inside the card. The
+status pill is tinted and edged in its tone, with its words in the tone's ink. Under the glass the card has solid
+paper, so its words read on whatever page it lies. It has no title and no ground of its own, since it is a card in
+a chat.
+
+`TicketLayout` places every word. The kicker wraps beside the pill. A long value wraps, and the card grows. The
+note wraps inside its well. It is 320 wide, so a phone's chat shrinks it little.
 
 `TicketCard` is the one translation from a tool call to a ticket. `Of` builds a ticket from its parts, with icons
 and tones given by name, and a wrong name is refused with the names there are. `FromCall` reads a `ShowCard` call's
 input. So the pack and the page read a call one way.
 
-A ticket's colours are `--ticket-*` CSS variables with the site's as their fallback (`TicketStyle`), so a
-business's window can set its brand on it.
+A ticket's colours are `--ticket-*` CSS variables with the look's as their fallback (`TicketStyle`), so a
+business's window can set its brand on it: `--ticket-paper` for the paper under the glass, `--ticket-line` for its
+hairlines, `--ticket-ink` and `--ticket-quiet` for its words, `--ticket-chip` for the icons' chips and the note's
+well, `--ticket-accent` for the kicker, the icons, the accent and the light, and `--ticket-title-font`.
 
 *Decided in:* [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) (flows), CL60.3 (sequences), CL60.4
 (classes), CL60.1 (cards), F127.4.1 (tickets).

@@ -2,31 +2,41 @@ using LouisAgent.Diagrams.Engine.Geometry;
 using LouisAgent.Diagrams.Engine.Svg.Paths;
 using LouisAgent.Diagrams.Engine.Svg.Renderers.Parts;
 using LouisAgent.Diagrams.Engine.Svg.Theme;
+using LouisAgent.Diagrams.Engine.Svg.Theme.Looks;
 using LouisAgent.Diagrams.Engine.Tickets;
 using LouisAgent.Diagrams.Engine.Tickets.Placed;
 using LouisAgent.Diagrams.Sources;
 
 namespace LouisAgent.Diagrams.Engine.Svg.Renderers;
 
+
 /// <summary>
-/// Draws a ticket (F127.4.1): the card, its band with rounded top corners, the status pill, the torn edge with a
-/// notch either side, an icon box per row, the note's strip at the foot, and every line of words where the layout
-/// put it.
+/// Draws a ticket (F127.4.1, in the pictures' look since FX156): a glass card with the accent along its top and a
+/// soft light behind its head, the status pill, a hairline under the head, an icon chip per row, the note in a well
+/// at the foot, and every line of words where the layout put it.
 /// </summary>
 /// <remarks>
 /// One more Strategy beside the other kinds' renderers, picked by <see cref="DiagramRenderers"/>: it decides nothing
 /// about where things go, only how they look, so <see cref="TicketLayout"/>'s numbers are the ones its tests check.
+/// It writes its own picture, with no title and no ground, since it is a card in a chat. Its glass, its accent and
+/// its pill are the shared look's (<see cref="MarqueeLook"/>, <see cref="PictureLook"/>).
 /// </remarks>
 internal sealed class TicketRenderer : IDiagramRenderer
 {
-    /// <summary>
-    /// The card's corner, the notch bitten out of each side where the band ends, and how far inside the notches
-    /// the torn edge starts and ends.
-    /// </summary>
-    private const double Radius = 14, Notch = 8, TearIn = 4;
+    /// <summary>The card's corner, which is a panel's, and how thick the hairline under its head is.</summary>
+    private const double Radius = PictureParts.Radius, Rule = 1;
 
-    /// <summary>An icon box's corner, the icon's size, and how far inside its box the icon stands.</summary>
-    private const double IconCorner = 10, IconSize = 16, IconIn = 8;
+    /// <summary>
+    /// Where along their run the fades change: the light behind the head from its first colour to its second,
+    /// and the accent to its full strength, in its middle.
+    /// </summary>
+    private const double LightTurns = 0.55, AccentFull = 0.5;
+
+    /// <summary>
+    /// An icon chip's corner, the icon's size, how far inside its chip the icon stands, and the corner of the
+    /// note's well.
+    /// </summary>
+    private const double IconCorner = 10, IconSize = 16, IconIn = 8, WellCorner = 10;
 
     /// <summary>
     /// The pill: where its dot stands from its left, the dot's size, where its words start, and their line under
@@ -40,64 +50,52 @@ internal sealed class TicketRenderer : IDiagramRenderer
     /// <inheritdoc />
     public string Render(DiagramSource source)
     {
-        var placed = TicketLayout.Place(source.Ticket!, geometry: Geometries.InUse);
-        double w = placed.Width, h = placed.Height, band = placed.BandHeight;
-        var writer = new SvgWriter().Path(Card(w, h, band), "ticket", false);
+        var geometry = Geometries.InUse;
+        var placed = TicketLayout.Place(source.Ticket!, geometry: geometry);
+        var card = placed.Card;
 
-        // The band's top corners round with the card's; its foot is the torn edge, notched at both ends.
-        var bandPath = Bite(TopEdge(w).Down(band - Notch), w - Notch, band).Across(Notch);
-        writer.Path(Closed(Bite(bandPath, 0, band - Notch)), "ticket-band", false);
+        // The card, back to front: its paper, the light behind its head, the glass over both, the accent along
+        // its top, and a hairline under its head.
+        var writer = new SvgWriter()
+            .Paint(TicketStyle.LightPaint, PaintRun.Down, 0, LightTurns, 1)
+            .Paint(MarqueeLook.GlassPaint, PaintRun.Down, 0, 1)
+            .Paint(MarqueeLook.EdgePaint, PaintRun.Across, 0, AccentFull, 1)
+            .Box(card, Radius, "ticket-paper")
+            .Path(HeadLight(placed.Head), "ticket-light", false)
+            .Box(card, Radius, "mrq-glass ticket");
+        PictureParts.Accent(writer, geometry, card, Radius)
+            .Box(geometry.Box(card.Left, placed.Head.Bottom, card.Width, Rule), 0, "ticket-rule");
+
         if (placed.Pill is { } pill) DrawPill(writer, pill);
-        writer.Path(PathWriter.Level(Notch + TearIn, w - Notch - TearIn, band), "ticket-tear", false);
-
         foreach (var row in placed.Rows)
             writer.Box(row.IconBox, IconCorner, "ticket-icon-box")
                 .Icon(row.IconBox.Left + IconIn, row.IconBox.Top + IconIn, IconSize, row.Icon, "ticket-icon");
-
-        // The note's strip runs from its line to the card's foot, its bottom corners round with the card's.
-        if (placed.NoteY is { } top)
-            writer.Path(Foot(new PathWriter().From(0, top).Across(w), w, h).Close().Text, "ticket-foot", false);
+        if (placed.Note is { } well) writer.Box(well, WellCorner, "ticket-well");
 
         foreach (var words in placed.Words)
             writer.Text(words.At.X, words.At.Y, words.Text, words.Kind.Cls, "start");
-        return writer.Write(SvgTheme.Site, source.Title, w, h, TicketStyle.Of(SvgTheme.Site));
+        string style = PictureLook.Of(SvgTheme.Site) + MarqueeLook.Rules + TicketStyle.Rules;
+        return writer.Write(SvgTheme.Site, source.Title, card.Width, card.Height, style);
     }
 
     /// <summary>
-    /// The card's outline: rounded corners, and a half-circle bitten out of each side where the band ends, so
-    /// whatever is behind the card shows through the notches, on a dark page or a light one.
+    /// The shape the light behind the head fills: the head, its top corners round with the card's and its foot
+    /// straight along the hairline.
     /// </summary>
-    private static string Card(double w, double h, double band)
-    {
-        var right = Bite(TopEdge(w).Down(band - Notch), w, band + Notch);
-        var left = Foot(right, w, h).Down(band + Notch);
-        return Closed(Bite(left, 0, band - Notch));
-    }
+    private static string HeadLight(IBox head) => new PathWriter()
+        .From(head.Left + Radius, head.Top).Across(head.Right - Radius)
+        .Arc(Radius, Radius, false, true, head.Right, head.Top + Radius)
+        .Down(head.Bottom).Across(head.Left).Down(head.Top + Radius)
+        .Arc(Radius, Radius, false, true, head.Left + Radius, head.Top).Close().Text;
 
-    /// <summary>An outline's start: along the card's top from after its left corner, and round its right one.</summary>
-    private static PathWriter TopEdge(double w) =>
-        new PathWriter().From(Radius, 0).Across(w - Radius).Arc(Radius, Radius, false, true, w, Radius);
-
-    /// <summary>An outline's end: up the card's left side and round its top left corner, to where it started.</summary>
-    private static string Closed(PathWriter path) =>
-        path.Down(Radius).Arc(Radius, Radius, false, true, Radius, 0).Close().Text;
-
-    /// <summary>
-    /// The card's foot on an outline: down its right side, round its two bottom corners, to its left side.
-    /// </summary>
-    private static PathWriter Foot(PathWriter path, double w, double h) => path.Down(h - Radius)
-        .Arc(Radius, Radius, false, true, w - Radius, h).Across(Radius).Arc(Radius, Radius, false, true, 0, h - Radius);
-
-    /// <summary>A notch on an outline: a part of a circle bitten into the card, to a point.</summary>
-    private static PathWriter Bite(PathWriter path, double x, double y) => path.Arc(Notch, Notch, false, false, x, y);
-
-    /// <summary>The pill: its box in its tone, a dot, and its words.</summary>
+    /// <summary>The pill: its box tinted and edged in its tone, a dot, and its words in the tone's ink.</summary>
     private static void DrawPill(SvgWriter writer, PlacedPill pill)
     {
         var box = pill.Box;
-        string words = TicketWords.Status.Cls;
-        writer.Box(box, box.HalfHeight, $"ticket-pill{PictureParts.Tone(pill.Tone)}")
-            .Circle(box.Left + DotIn, box.Middle.Y, Dot, words)
-            .Text(box.Left + StatusIn, box.Top + StatusLine, pill.Label, words, "start");
+        string tone = PictureParts.Tone(pill.Tone);
+        writer.Box(box, box.HalfHeight, $"ticket-pill pic-tint pic-edge{tone}")
+            .Circle(box.Left + DotIn, box.Middle.Y, Dot, $"pic-fill{tone}")
+            .Text(box.Left + StatusIn, box.Top + StatusLine, pill.Label, $"{TicketWords.Status.Cls} pic-ink{tone}",
+                "start");
     }
 }

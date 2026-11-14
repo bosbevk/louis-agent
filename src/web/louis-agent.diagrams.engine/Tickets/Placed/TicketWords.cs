@@ -18,12 +18,12 @@ public sealed record TicketWords(string Cls, Face Face)
 {
     /// <summary>The small line over the title, the title, and the line under it.</summary>
     public static readonly TicketWords Kicker = new("ticket-kicker", new Face(7.4)),
-        Title = new("ticket-title", new Face(12.2)),
+        Title = new("ticket-title", new Face(13.2)),
         Subtitle = new("ticket-subtitle", new Face(6.6));
 
     /// <summary>A row's label and its value, the note at the foot, and the status in its pill.</summary>
     public static readonly TicketWords Label = new("ticket-label", new Face(6.3)),
         Value = new("ticket-value", new Face(7.8)),
-        Note = new("ticket-note", new Face(6.6)),
+        Note = new("ticket-note", new Face(6.2)),
         Status = new("ticket-pill-text", new Face(6.6));
 }

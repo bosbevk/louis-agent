@@ -13,7 +13,7 @@
 | Kind | Done | Open in the TODO |
 |---|---|---|
 | Features (`F`) | 111 | 93 |
-| Fixes (`FX`) | 143 | 6 |
+| Fixes (`FX`) | 144 | 6 |
 | Cleanups (`CL`) | 36 | 30 |
 
 A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per item.
@@ -268,10 +268,11 @@ A child (`F59.3`) counts as its own row. "Open" is the TODO's table, one row per
 | F2 | 2026-10-10 | Prices and cost |
 | F1 | 2026-10-10 | Usage ledger |
 
-## Fixes (143 done)
+## Fixes (144 done)
 
 | Id | When | What |
 |---|---|---|
+| FX156 | 2026-11-14 | The card an agent draws in the chat is glass, in the look every picture wears: it had a navy band, a torn edge and notched sides of its own from before the pictures shared a look; now the look's glass with the accent along its top, a soft light down its head, icon chips and the note in a well, and the brand's `--ticket-*` colours still reach it |
 | FX155 | 2026-11-14 | A search engine's showroom has its demos: the host drew `/demos` for a crawler with no demo in it, since its hand-written list of what a page asks for lacked the site's areas; the list is one named class now, with the site's addresses and areas in it, and a test draws every page with it |
 | FX154 | 2026-11-13 | The CV prints as its page, on white paper, every link a QR code: Save as PDF gave seven pages in the phone's layout with black margins, a grey cast and a 13 MB file; it is now the desktop layout set for A4 in four pages and 238 KB, the framework's grain and dark canvas are off on paper, and a link is printed as its QR code (`PaperLink`, in the framework's web) |
 | FX153 | 2026-11-13 | The CV's editor is behind the admin's key: `/admin/resume` opened for anyone, because it read the CV on the public page's open route and only Save asked for the key; the editor and its card now read it on the admin's own route, so without the key there is only the place to enter it |

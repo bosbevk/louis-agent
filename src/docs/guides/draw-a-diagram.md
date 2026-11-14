@@ -562,17 +562,18 @@ A ticket is a read-only card, such as a booking request. An agent draws one in t
 }
 ```
 
-**Reading the example.** It has a kicker and a title on a band, a subtitle, and a status that is drawn as a pill.
-Two rows follow, each an icon, a label and a value. The note is at the foot.
+**Reading the example.** It has a kicker and a title in its head, a subtitle, and a status that is drawn as a
+pill. Two rows follow, each an icon, a label and a value. The note is at the foot, in a well of its own.
 
 **The rows.** There are one to six. A long value wraps, and the card grows.
 
-**The band.** The `kicker` wraps beside the status pill. The `title` takes the band's full width. The status's
+**The head.** The `kicker` wraps beside the status pill. The `title` takes the head's full width. The status's
 `tone` is one of the tones, and `plain` when left out.
 
-**Its size and colours.** A ticket is 320 wide, so a phone's chat shrinks it little. Its colours are CSS variables
-with the site's colours as fallbacks, which a business's window sets for its brand: `--ticket-band`,
-`--ticket-band-ink`, `--ticket-paper`, `--ticket-ink` and `--ticket-accent`.
+**Its size and colours.** A ticket is 320 wide, so a phone's chat shrinks it little. It is a glass card in the
+look the other pictures wear. Its colours are CSS variables with the look's colours as fallbacks, which a
+business's window sets for its brand: `--ticket-paper`, `--ticket-line`, `--ticket-ink`, `--ticket-quiet`,
+`--ticket-chip`, `--ticket-accent` and `--ticket-title-font`.
 
 **Where it is drawn.** A page holds a ticket inline, through `DiagramRenderers.RenderForPage`, with its styles
 kept to the drawing. The docs' tool draws it like any other picture.
