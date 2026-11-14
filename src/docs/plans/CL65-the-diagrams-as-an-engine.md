@@ -200,7 +200,21 @@ Each is its own plan, its own done-when and its own write-up, in this order.
     with a face for words and a path writer as plain types of ours. And while its plan was written: "keep
     ours and MS's but use ours.", "since we have it". So both families stay behind the interface, ours draws
     every picture, and a test draws each with Microsoft's too, so the kept one is run. Its plan is
-    [CL65.6](CL65.6-the-engine-asks-its-types.md).
+    CL65.6's own.
+- **2026-11-14, CL65.6 is built.** A box and a point stand behind one geometry, in two families, with ours in
+  use. A face says how wide words are and a path writer writes a path. Every placed record holds a box, and the
+  list of renderers hands a picture its geometry. A rule test holds it. No picture of the docs changed, and a
+  test draws each with both families. Its picks are in its plan as of the commit before the one that deleted
+  it, and its lessons in [the write-up](../learning/18-testing-and-shipping.md). What it left for CL65.4's list:
+  - *One way to write a path.* An arrow the flow's router routes is written with room round every letter, and
+    every other path with none.
+  - *An arrow's numbers* are kept to the one decimal the picture writes, as when an arrow's way was a text.
+  - *The look's glass and its accent* are defined with the same stops in five drawings. One place for them
+    wants a small type for a fade, and the `Svg` folder already holds six files.
+  - *The `ticket` kind's name,* put to Louis: since FX156 it is drawn as a glass card and nothing of a ticket
+    (Louis: "glass but not a ticket"), and the kind, its JSON and its classes still say `ticket`.
+  - *Not for a child, only noted:* drawn in single precision, a few of the docs' flows route an arrow another
+    way. Which of the router's decisions turn on it was not looked into.
 - **2026-11-14, found in CL65.3, for CL65.4's list.** A cards picture whose file has no `"links"` is not
   refused: the reader fails on it with .NET's own error, which names nothing a person wrote.
 - **2026-11-14, CL65.2 is built.** One builder puts six kinds' pictures together, one placer a key's rows, and

@@ -1,0 +1,37 @@
+{
+  "kind": "classes",
+  "title": "louis-agent.diagrams: the geometry and its two families",
+  "caption": "One geometry makes a family: a box and a point of ours, or of Microsoft's, never one of each.",
+  "classes": {
+    "types": [
+      { "id": "inuse", "name": "Geometries", "kind": "static", "group": "seam", "members": [ "InUse IGeometry" ] },
+      { "id": "geometry", "name": "IGeometry", "kind": "interface", "group": "seam", "members": [ "Box(x, y, width, height) IBox", "Point(x, y) IPoint", "Around(boxes) IBox" ] },
+      { "id": "box", "name": "IBox", "kind": "interface", "group": "seam", "members": [ "Left, Top, Right, Bottom", "Width, Height, Middle, HalfHeight", "Grown, Moved, Turned, OnLine", "Across(part), Down(part)", "Holds(box)", "CrossedBy(from, to, inside)" ] },
+      { "id": "point", "name": "IPoint", "kind": "interface", "group": "seam", "members": [ "X, Y", "Moved, Turned", "StepsTo(point)", "Toward(point, by)" ] },
+      { "id": "generic", "name": "GenericGeometry<T>", "kind": "class", "group": "ours" },
+      { "id": "gbox", "name": "Box<T>", "kind": "record", "group": "ours", "members": [ "T is any number", "double in use" ] },
+      { "id": "gpoint", "name": "Point<T>", "kind": "record", "group": "ours" },
+      { "id": "dotnet", "name": "DotNetGeometry", "kind": "class", "group": "theirs" },
+      { "id": "dbox", "name": "DotNetBox", "kind": "record", "group": "theirs", "members": [ "on RectangleF" ] },
+      { "id": "dpoint", "name": "DotNetPoint", "kind": "record", "group": "theirs", "members": [ "on Vector2" ] }
+    ],
+    "relations": [
+      { "from": "inuse", "to": "generic", "kind": "creates" },
+      { "from": "generic", "to": "geometry", "kind": "implements" },
+      { "from": "dotnet", "to": "geometry", "kind": "implements" },
+      { "from": "gbox", "to": "box", "kind": "implements" },
+      { "from": "dbox", "to": "box", "kind": "implements" },
+      { "from": "gpoint", "to": "point", "kind": "implements" },
+      { "from": "dpoint", "to": "point", "kind": "implements" },
+      { "from": "generic", "to": "gbox", "kind": "creates" },
+      { "from": "generic", "to": "gpoint", "kind": "creates" },
+      { "from": "dotnet", "to": "dbox", "kind": "creates" },
+      { "from": "dotnet", "to": "dpoint", "kind": "creates" }
+    ],
+    "groups": [
+      { "id": "seam", "label": "Geometry: the seam" },
+      { "id": "ours", "label": "Geometry/Generic: ours, in use" },
+      { "id": "theirs", "label": "Geometry/DotNet: Microsoft's, kept" }
+    ]
+  }
+}

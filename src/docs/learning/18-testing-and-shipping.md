@@ -898,6 +898,90 @@ for what differs, so a new kind writes a body and a key and gets the rest. Skill
 refactor proved by output that does not change by a byte, and a rule test seen failing even when it was written
 late.
 
+## Sums that live on the thing they are about (CL65.6, 2026-11-14)
+
+**What it is.** You looked at the engine and asked: "with all these math in the egine, can we not have something
+like a calculator which does it neatly." Then: "we cannot write spaghetti code". Now a box knows its own edges
+and middle, a face knows how wide words are, and a path writer writes a path. A layout and a drawing ask them,
+and work nothing out where they stand. The rule behind it is ADR 0123, *Ask the type*, and this was the first
+code brought under it whole.
+
+**The idea: a number with a meaning wants a type.** The engine held a box as four bare numbers, in thirteen
+records, some spelled `W` and `H` and some `Width` and `Height`. Every place that needed its right edge added
+the left to the width again. I counted before planning: a right edge worked out in 33 places, a bottom edge in
+38, half a size in 39, words measured by their length in 20 with 11 different widths of a character, and a path
+built as text in 20. That shape has a name, Primitive Obsession, and its cure is a small value type that carries
+its own sums. Your pick was small types, not one calculator class: a calculator would still be handed the four
+numbers each time.
+
+**Two families behind one seam.** You wanted Microsoft's `RectangleF` tried and ours kept: "our own will be
+Box<T>", then "keep ours and MS's but use ours." So a box and a point are interfaces, and one geometry makes both
+of the same family. That is an Abstract Factory. Ours is written once over any number type, by .NET's generic
+math, and runs in `double`. That choice paid twice. Run in `float`, our own box answers exactly what Microsoft's
+does. So when Microsoft's differs from ours in `double`, we know all of it is single precision and none of it is
+the library.
+
+**The proof was a picture that does not change.** Every step from 5 to 9 moved one kind onto the types. After
+each, the docs' tool redrew every picture and had to write none. It wrote none of the 269, after every one of
+those steps. To keep that, each sum on a box is written in the order the layouts wrote it by hand: `left + width / 2`,
+never `(2 * left + width) / 2`. The two are the same number on paper and can differ in the last digit in a
+computer, and a layout that halves a number and rounds it to one decimal shows that digit.
+
+**A ratchet, and then just a rule.** A test read the engine's source for four shapes and held a list of the
+files that still had each: 13 records, 22 files, 10 files, 16 files. A file new to a list failed it, and so did
+a listed file that had been cleaned and not taken off. So each list could only shrink. It caught its own author:
+in the last kind I wrote "where a line of words ends" as a start plus a width, and the test named my new file.
+With the lists empty the test is four plain rules, and a fifth: no drawing picks its own geometry.
+
+**"Always fix touched files" decided the size of a step.** The flow could not move in two commits. The class
+that turns a picture, the router and two drawings each read a box and also read an arrow's path back as text,
+number by number. Touching one meant fixing it whole, and fixing it whole reached the next. So the flow was one
+commit of 66 files, and an arrow's way became a type of its own, which the plan had not listed.
+
+**Tests moved by the compiler's own word.** The records lost their four numbers, and in the flow's step alone
+268 places in the tests read them. Rider's rename can't resolve a record's positional parameter. So a script built the tests,
+took each place the compiler said no longer compiled, by file, line and column, and replaced the member there
+and nowhere else. A search and replace over `X` and `W` would have changed things that were never a box.
+
+**What both families draw.** A test now draws each of the docs' pictures three ways. There were 269 when it
+was measured, five of them this plan's own, which went with the plan. Microsoft's family
+refuses none. Our own in `float` draws every one exactly as Microsoft's, to the byte. Beside ours in `double`,
+184 pictures are the same, 78 have a few numbers a tenth of a pixel apart, and in 7 flows an arrow takes another
+way. I looked at one of the seven: two arrows that arrive at the same box had swapped places on its top edge,
+and the picture read as well either way. Which of the router's decisions turn on single precision I did not look
+into.
+
+**What went wrong on the way.**
+
+- The moves were not test first. They were held by the pictures, and the tests for the members a box and a
+  point learnt on the way were written after the code. Each commit says so.
+- A member built ahead was thrown away. Step 2 gave a box "joined with another" because a box obviously joins.
+  Nothing ever asked, a group's frame asks the geometry for the box round several, and step 9 took it out. The
+  rule is in the ADR: a member is added by the step that first asks for it.
+- My first count in step 10 said 84 pictures differed in shape. The pictures were fine and the count was wrong.
+  The same comparison with one option of the regular expression taken off said 2, and reading both drawings as
+  XML said every picture has the same shapes in the same order. A measure gets checked like code: by a second
+  way of counting.
+- The ticket wrote its paths a third way, with a space before each letter. I moved it onto the writer the other
+  drawings use, so two golden files changed, by spaces only. A golden that changes in a refactor needs its own
+  proof, so I read each path as letters and numbers before and after and held them equal.
+
+**What is open for you.**
+
+- The names picked unattended: a pin's `On` for the box it stands on and a placed box's `Component`, since
+  `Box` is the box itself now.
+- The ticket's paths on the common writer, which changed its golden by spaces.
+- The bound in the last test, nine pictures in ten the same to a tenth. It is loose on purpose, since the docs'
+  pictures change with every plan.
+- Left for CL65.4's list: one way to write a path where there are two, the look's glass and accent defined with
+  the same numbers in five drawings, and the name of the `ticket` kind now that it is no longer drawn as one.
+
+**Where it sits.** Skill 20, extensibility: an Abstract Factory with two families, and generic math so one type
+does its sums over any number. Skill 19, measuring: what single precision does to a picture, shown by running
+our own type in `float` beside the other. Skill 18, testing and shipping: a ratchet whose lists only shrink, a
+refactor proved by output that does not change by a byte, and a second implementation that is only kept if
+something runs it.
+
 ## One record, and a page that is its own editor (F142, 2026-11-13)
 
 **What it is.** Your CV was a Word file. It is now one JSON file in the JSON Resume shape, read strictly into

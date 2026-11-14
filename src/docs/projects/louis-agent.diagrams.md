@@ -45,8 +45,9 @@ In what follows, a folder is the engine's unless it is `Sources/`, a kind's `Spe
 under *Structure* lists both projects' folders.
 
 This section has four parts, to be read in order. Part 1 follows one picture from its file to its SVG. Part 2
-goes through the five kinds of picture, one at a time. Part 3 is what every kind shares, tones and icons. Part 4
-is a drawing held inside a web page, which needs care of its own.
+goes through the kinds of picture, one at a time. Part 3 is what every kind shares: tones, icons, and the small
+types a layout and a drawing ask for a box's edge, a width of words and a path. Part 4 is a drawing held inside a
+web page, which needs care of its own.
 
 ### 1. One picture, from its file to its SVG
 
@@ -82,6 +83,7 @@ Strategy. There is one per kind, and each stands beside its drawing, in a folder
 `Flows/`, `Overview/` for cards, `Lifelines/` for a sequence, `Types/` for a class chart, `Structure/` for a
 composite and `Nesting/` for a component diagram. The ticket's stands alone in `Svg/Renderers/`. Each kind has a
 layout that places every box and word, and a drawing that draws what was placed. Part 2 explains each layout.
+The renderer is also handed the geometry its boxes and points are made by, which part 3 explains.
 
 **One builder puts the picture together** (`Svg/Renderers/Parts/PictureBuilder`). Six kinds are built the same
 way, and only the ticket, a card in a chat, is not. A kind's drawing places with its own layout and then tells
@@ -518,6 +520,56 @@ the licence beside them and a row in `THIRD-PARTY-NOTICES.md`. It is the framewo
 
 *Decided in:* CL60.1, CL60.2, F134.1 (the one set).
 
+**Boxes and points** (`Geometry/`). A layout works out where things stand, and nearly every sum in it is about
+a box: its right edge, its middle, the same box with a little room round it. Those sums are the box's own. A
+layout asks a geometry for a box or a point, what it places holds that box, and a drawing asks the box for its
+edge. No layout and no drawing adds a left to a width itself. So each sum is written once, and where there was
+`card.X + card.W` a reader finds `card.Box.Right`.
+
+A box answers what the layouts and the drawings ask of it, and no more:
+
+- its edges, its middle and half its height;
+- the same box grown by some room, moved, turned over the picture's diagonal, or set with its middle on a line;
+- a place part of the way along it or down it;
+- whether it holds another box, and whether a level or upright stretch of a line passes through it.
+
+A point answers how far another point is for a line that runs only across and down, and the point a little way
+off towards another. The geometry itself also makes the smallest box round several, which is a group's frame.
+
+![One geometry makes boxes and points in two families, ours and Microsoft's](diagrams/louis-agent.diagrams-geometry.svg)
+
+**Two families stand behind that seam.** The geometry is an Abstract Factory: one geometry makes a box and a
+point of the same family, so a picture is never drawn with a box of one and a point of the other.
+
+- *Ours* (`Geometry/Generic/`): `Box<T>` and `Point<T>`, whose sums are written once over any number type, by
+  .NET's generic math. The engine uses them in `double`.
+- *Microsoft's* (`Geometry/DotNet/`): `DotNetBox` on `RectangleF` and `DotNetPoint` on `Vector2`, which have a
+  box's and a point's sums ready-made, in single precision.
+
+`Geometries.InUse` says which one draws: ours. `DiagramRenderers.Render` hands it to the kind's renderer, unless
+its caller hands it another, and the docs' frame is given the same one. A layout that is told none takes the one
+in use. So which family draws a picture is said in one place, and no drawing names one. Microsoft's is kept and
+not in use, and a test draws every picture of the docs with it too (see *Tests*).
+
+**Faces** (`Words/Face`). No font is measured when a picture is drawn. Words are taken to be as wide as their
+count of characters times a width a character is given, generously. A `Face` is that width for one kind of
+words: a title's, a note's, a chip's. A layout asks it how wide some words are, how wide the longest of several
+lines is, or how many characters a room holds. Each kind names its faces beside its other sizes, as
+`CardSizes.TitleFace` and a ticket's `TicketWords` do.
+
+**Paths** (`Svg/Paths/PathWriter`). A drawing tells the path writer a path's pieces, from a point, a line, a
+curve, an arc, a whole oval, and takes the path's text at the end. So no drawing builds that text by hand, and
+SVG's letters and how a number is written are in one place. A flow's arrow is a type of its own,
+`Flow/Arrows/ArrowPath`: its places in the order the line runs, which knows how it is turned, moved and joined to
+another, and writes its text once.
+
+A rule test holds all of it (`EngineAsksItsTypesTests`). Outside the folders of these types, no record of the
+engine is a box by four numbers, no file works out a box's edge or half its size, none measures words by their
+length, and none builds a path as text. And among the drawings, only the list of renderers names the geometry in
+use.
+
+*Decided in:* CL65.6, [ADR 0123](../adr/0123-ask-the-type.md).
+
 ### 4. A drawing held inside a web page
 
 A page holds a drawing's SVG inline, so the page's colour variables reach it. But that brings a problem: a style
@@ -532,7 +584,8 @@ it trims the empty ground round the drawing.
 
 ## Diagrams
 
-The flow and the sequence are shown in part 1, where they are explained. This is the interface design.
+The flow and the sequence are shown in part 1, where they are explained, and the geometry's two families in part
+3. This is the interface design.
 
 ![The types: the reader makes a DiagramSource, its kind picks a renderer, each renderer has its layout and draws with SvgWriter, and TitledFrame wraps it](diagrams/louis-agent.diagrams-interface.svg)
 
@@ -559,15 +612,17 @@ src/web/louis-agent.diagrams.engine/
 ├── Classes/    # ClassFlow; Keys/ (ClassKeyItem, ClassKeyKind, ClassKeyLayout); Marks/ (TypeMark, TypeMarks)
 ├── Components/ # ComponentLayout, ComponentSizes, KeyLayout, NeighbourLayout; Placed/ (PlacedBox, PlacedComponents, PlacedNeighbour, PlacedPill, PlacedPin); Placed/Keys/ (KeyRow, KeyRowKind, PlacedKey); Placed/Lines/ (LineKind, LinePath, PlacedLine); Routing/ (Obstacles, StateRoutes)
 ├── Composite/  # CompositeFlow
-├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Flow/       # Bands, FlowRules, FlowText, GraphLayout, Ranks, Turn; Arrows/ (ArrowPath, ArrowPiece, ArrowStretch, ArrowTurn); Keys/ (FlowKeyItem, FlowKeyKind, FlowKeyLayout); Placed/ (PlacedEdge, PlacedGraph, PlacedGroup, PlacedNode); Routing/ (ApartArrows, Detours, EdgeRouter, IArrowRule, JoinedArrows, Plan); Rows/ (BandShape, CentredRows, IRowRule, LevelRows, RowGrid); Shapes/ (NodeShapes, ShapeSide)
+├── Geometry/   # Geometries, IBox, IGeometry, IPoint; DotNet/ (DotNetBox, DotNetGeometry, DotNetPoint); Generic/ (Box, GenericGeometry, Point)
 ├── Icons/      # IconPaths
-├── Keys/       # KeyRows
+├── Keys/       # KeyParts, KeyRows
 ├── Messages/   # DrawingMessage; Holes/Reading/ (NoRendererHoles)
 ├── Sequence/   # SequenceLayout, SequenceMeasures, SequenceRows; Keys/ (SequenceKeyItem, SequenceKeyKind, SequenceKeyLayout); Placed/ (PlacedBlock, PlacedCase, PlacedHead, PlacedRow, PlacedSequence)
-├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
+├── Svg/        # DiagramRenderers, IDiagramRenderer, PageSvg, PaintRun, SvgWriter, TitledFrame; Ends/ (LineEnd); Paths/ (PathWriter); Renderers/ (TicketRenderer); Renderers/Parts/ (PictureBuilder, PictureMeasures, PictureParts); Renderers/Parts/Flows/ (FlowDrawing, FlowKey, FlowRenderer); Renderers/Parts/Lifelines/ (SequenceDrawing, SequenceFrames, SequenceHeads, SequenceKey, SequenceRenderer, SequenceSteps); Renderers/Parts/Nesting/ (ComponentChips, ComponentPins, ComponentsKey, ComponentsRenderer); Renderers/Parts/Overview/ (CardsRenderer, OverviewCards, OverviewDrawing, OverviewRails); Renderers/Parts/Structure/ (CompositeDrawing, CompositeKey, CompositeKeyItem, CompositeRenderer); Renderers/Parts/Types/ (ClassesDrawing, ClassesKey, ClassesRenderer, RelationLines, TypeCards); Theme/ (SvgPalette, SvgStyle, SvgTheme, SvgTone, TicketStyle); Theme/Looks/ (CardsStyle, ComponentsStyle, FlowStyle, MarqueeLook, PictureLook, SequenceStyle); Theme/Looks/Kinds/ (ClassesStyle, CompositeStyle)
 ├── Tickets/    # TicketLayout; Placed/ (PlacedPill, PlacedRow, PlacedTicket, PlacedWords, TicketWords)
 ├── Tones/      # ToneMeanings
 ├── Types/      # TypeNames
+├── Words/      # Face
 src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Mermaid/ (the import; Readers/), Messages/
 ```
 
@@ -575,6 +630,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 
 - `src/tests/engine/louis-agent.core.tests`, `DiagramsProjectTests`: the two projects' references, that the small
   one holds nothing that builds a diagram, and that every file of the engine is in the engine's namespace.
+  `EngineAsksItsTypesTests`: the five rules of part 3, read from the engine's source.
 - `src/tests/web/louis-agent.diagrams.tests`, one project that references and tests both: the layouts with
   numbers (no card overlaps another, every card inside
   the frame, every line inside its card; a flow's ranks, a down chart's rows, every group's boxes inside its frame
@@ -583,7 +639,9 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   boxes, arrows and refusals in `Classes/`), the tones and the frame, the reader's refusals, a card's looks, every
   icon drawn, a ticket's refusals, layout and translation from a call (`Tickets/`), a picture's type filled in,
   kept or refused (`Sources/Types/`) and what it is called (`Types/`), a page's copy scoped, rooted and
-  trimmed (`Svg/PageSvgTests`), and the goldens `Svg/Renderers/Parts/Flows/flow-look.svg`,
+  trimmed (`Svg/PageSvgTests`), each sum a box and a point have, run over both families and our own in `float`
+  against Microsoft's (`Geometry/`), a face's widths (`Words/`), a path's text (`Svg/Paths/`), that a picture is
+  drawn with the geometry it is told (`Svg/DiagramRenderersTests`), and the goldens `Svg/Renderers/Parts/Flows/flow-look.svg`,
   `Svg/Renderers/Parts/Overview/overview-look.svg`, `Svg/Renderers/Parts/Lifelines/sequence-look.svg`, `Svg/Renderers/Parts/Types/classes-look.svg` and `Tickets/ticket.svg`
   (`LOUIS_UPDATE_GOLDEN=1` writes them anew).
 - `src/tests/tools/louis-agent.doc-diagrams.tests`: the tool on a temporary folder, the import on samples of each
@@ -593,6 +651,11 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   words and lines clear (`Clearance`), every sequence keeps its words inside its drawing, every `diagrams` folder is
   one the tool draws, and no doc holds Mermaid (`NoDoc_HoldsMermaid`). `DocsTypesTests` holds that every picture
   with a type shows its name once, on the title's line, ending at the picture's right edge.
+  `BothFamiliesDrawTests` draws every picture of the docs three ways: with the geometry in use, with Microsoft's
+  family, and with our own family in `float`. It holds that Microsoft's refuses none and draws the shapes and
+  the words ours does, that our own in `float` draws exactly what Microsoft's draws, and that at least nine
+  pictures in ten are the same to a tenth of a pixel whichever family draws them. It writes out how many are the
+  same, how many a tenth apart, and the names of the rest.
 
 ## Limits and plans
 
@@ -608,6 +671,12 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
   column, since their frames say who owns what.
 - A word's width is reckoned from the code font; a reader whose screen falls back to another font may see a line run
   a little wider.
+- Microsoft's family of boxes and points is kept and not in use. It works in single precision, and that is all
+  that tells its pictures from ours: our own family run in `float` draws the same as it, to the byte. Beside ours
+  in `double` most pictures are the same or have a few numbers a tenth of a pixel apart, and in a few flows an
+  arrow takes another way. Which of the router's decisions turn on single precision is not known.
+- A path is written two ways: an arrow the flow's router routes, a class chart's lines among them, with room
+  round every letter, and every other path with none.
 - F137 takes the same idea to the site: its cards read from JSON.
 
 ## Related docs
@@ -615,6 +684,7 @@ src/tools/louis-agent.doc-diagrams/   # Program, DiagramSync, SyncOutcome, Merma
 [Draw a diagram](../guides/draw-a-diagram.md) · [louis-agent.web](louis-agent.web.md) ·
 [ADR 0103](../adr/0103-a-diagram-is-data-on-a-row-grid.md) ·
 [ADR 0118](../adr/0118-a-diagram-is-data-our-renderer-draws.md) · [ADR 0092](../adr/0092-a-project-holds-what-is-reused-together.md) ·
+[ADR 0123](../adr/0123-ask-the-type.md) ·
 CL60 in the [work log](../work-log.md)
 
 ---

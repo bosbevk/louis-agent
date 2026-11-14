@@ -27,8 +27,8 @@
         "name": "DiagramRenderers",
         "kind": "static",
         "members": [
-          "+Render(source) string",
-          "+RenderTitled(source) string",
+          "+Render(source, geometry?) string",
+          "+RenderTitled(source, geometry?) string",
           "+RenderForPage(source) string"
         ]
       },
@@ -46,7 +46,7 @@
         "name": "TicketLayout",
         "kind": "static",
         "members": [
-          "+Place(TicketSpec, width = 320) PlacedTicket"
+          "+Place(TicketSpec, width = 320, geometry?) PlacedTicket"
         ]
       },
       {
@@ -55,7 +55,7 @@
         "kind": "interface",
         "members": [
           "+Kind",
-          "+Render(DiagramSource) string"
+          "+Render(DiagramSource, IGeometry) string"
         ]
       },
       {

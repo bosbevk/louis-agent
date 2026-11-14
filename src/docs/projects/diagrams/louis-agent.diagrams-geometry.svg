@@ -1,5 +1,5 @@
-<svg viewBox="-24 -24 1142 1101" width="1142" height="1101" role="img" aria-label="CL65.6 the engine asks its types: the geometry and its two families" xmlns="http://www.w3.org/2000/svg">
-  <title>CL65.6 the engine asks its types: the geometry and its two families</title>
+<svg viewBox="-24 -24 1466 1361" width="1466" height="1361" role="img" aria-label="louis-agent.diagrams: the geometry and its two families" xmlns="http://www.w3.org/2000/svg">
+  <title>louis-agent.diagrams: the geometry and its two families</title>
   <style>svg {
   --ground: #ffffff; --panel: #f6f7f8; --line: #d9dce0; --text: #15171a; --bright: #070708; --quiet: #5f656d; --chip: #eceef1; --accent: #3b6fc4; --tint: #eef3fc; --blue-fill: #e3ecfa; --blue-line: #3b78e7; --blue-ink: #1d4ea6; --green-fill: #e2f3e7; --green-line: #2fa354; --green-ink: #17703a; --violet-fill: #ece4f7; --violet-line: #8a55d6; --violet-ink: #5b2fa0; --teal-fill: #def2ef; --teal-line: #22a596; --teal-ink: #116f64; --red-fill: #f9e1e6; --red-line: #e2456c; --red-ink: #a51d42; --amber-fill: #fbeedd; --amber-line: #ef9a2d; --amber-ink: #a35d0c;
   --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -248,123 +248,141 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <stop class="mrq-glass-1" offset="1" />
     </linearGradient>
   </defs>
-  <rect class="ground" x="-24" y="-24" width="1142" height="1101" rx="14" />
+  <rect class="ground" x="-24" y="-24" width="1466" height="1361" rx="14" />
   <g class="drawing" transform="translate(0 0)">
-    <path class="mrq-light" d="M-24 74a571 190 0 1 0 1142 0a571 190 0 1 0 -1142 0Z" />
-    <text class="mrq-title" x="0" y="14" text-anchor="start">CL65.6 the engine asks its types: the geometry and its two families</text>
-    <text class="pic-group" x="1094" y="14" text-anchor="end">Class diagram</text>
+    <path class="mrq-light" d="M-24 74a733 190 0 1 0 1466 0a733 190 0 1 0 -1466 0Z" />
+    <text class="mrq-title" x="0" y="14" text-anchor="start">louis-agent.diagrams: the geometry and its two families</text>
+    <text class="pic-group" x="1418" y="14" text-anchor="end">Class diagram</text>
     <g class="cls-drawing" transform="translate(0 44)">
-      <rect class="cls-group" x="428.9" y="0" width="665.1" height="305" rx="14" />
-      <text class="pic-group" x="440.9" y="18" text-anchor="start">Geometry: the seam</text>
-      <rect class="cls-group" x="0" y="320" width="683.9" height="261" rx="14" />
-      <text class="pic-group" x="12" y="338" text-anchor="start">Geometry/Generic: ours, in use</text>
-      <rect class="cls-group" x="0" y="612" width="683.9" height="256" rx="14" />
-      <text class="pic-group" x="12" y="630" text-anchor="start">Geometry/DotNet: Microsoft's, kept</text>
-      <path class="cls-line creates" d="M 214.8 409 L 440.9 409" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 214.8 409 L 440.9 409" />
-      <path class="cls-line creates" d="M 214.8 409 L 300.9 409 Q 324.9 409 324.9 433 L 324.9 513 Q 324.9 537 348.9 537 L 440.9 537" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 214.8 409 L 300.9 409 Q 324.9 409 324.9 433 L 324.9 513 Q 324.9 537 348.9 537 L 440.9 537" />
-      <path class="cls-line creates" d="M 214.8 694 L 440.9 694" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 214.8 694 L 440.9 694" />
-      <path class="cls-line creates" d="M 214.8 694 L 282.9 694 Q 306.9 694 306.9 718 L 306.9 784 Q 306.9 808 330.9 808 L 440.9 808" marker-end="url(#arrow-blue)" />
-      <path class="pic-march" d="M 214.8 694 L 282.9 694 Q 306.9 694 306.9 718 L 306.9 784 Q 306.9 808 330.9 808 L 440.9 808" />
-      <path class="cls-line implements" d="M 214.8 409 L 300.9 409 Q 324.9 409 324.9 385 L 324.9 253 Q 324.9 229 348.9 229 L 440.9 229" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 214.8 694 L 282.9 694 Q 306.9 694 306.9 670 L 306.9 271 Q 306.9 247 330.9 247 L 440.9 247" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 671.9 409 L 764 409 Q 788 409 788 385 L 788 111 Q 788 87 812 87 L 886 87" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 671.9 694 L 782 694 Q 806 694 806 670 L 806 129 Q 806 105 830 105 L 886 105" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 671.9 537 L 800 537 Q 824 537 824 513 L 824 253 Q 824 229 848 229 L 886 229" marker-end="url(#triangle-violet)" />
-      <path class="cls-line implements" d="M 671.9 808 L 818 808 Q 842 808 842 784 L 842 269 Q 842 247 864 247 L 886 247" marker-end="url(#triangle-violet)" />
-      <rect class="cls-chip implements" x="343.9" y="220" width="78" height="18" rx="9" />
-      <text class="cls-word" x="382.9" y="232" text-anchor="middle">implements</text>
-      <rect class="cls-chip implements" x="690.9" y="400" width="78" height="18" rx="9" />
-      <text class="cls-word" x="729.9" y="412" text-anchor="middle">implements</text>
-      <rect class="cls-chip implements" x="708.9" y="528" width="78" height="18" rx="9" />
-      <text class="cls-word" x="747.9" y="540" text-anchor="middle">implements</text>
-      <rect class="cls-chip creates" x="354.4" y="400" width="57" height="18" rx="9" />
-      <text class="cls-word" x="382.9" y="412" text-anchor="middle">creates</text>
-      <rect class="cls-chip creates" x="232.3" y="685" width="57" height="18" rx="9" />
-      <text class="cls-word" x="260.8" y="697" text-anchor="middle">creates</text>
-      <rect class="cls-cover" x="12" y="377" width="202.8" height="64" rx="14" />
-      <rect class="mrq-glass" x="12" y="377" width="202.8" height="64" rx="14" />
-      <rect class="cls-badge tone-green" x="26" y="395" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="40" y="413.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="64" y="405" text-anchor="start">GenericGeometry&lt;T&gt;</text>
-      <text class="cls-kind" x="64" y="421" text-anchor="start">class, step 2</text>
-      <rect class="cls-cover" x="12" y="662" width="202.8" height="64" rx="14" />
-      <rect class="mrq-glass" x="12" y="662" width="202.8" height="64" rx="14" />
-      <rect class="cls-badge tone-green" x="26" y="680" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="40" y="698.5" text-anchor="middle">C</text>
-      <text class="cls-name" x="64" y="690" text-anchor="start">DotNetGeometry</text>
-      <text class="cls-kind" x="64" y="706" text-anchor="start">class, step 3</text>
-      <rect class="cls-cover" x="440.9" y="183" width="231" height="110" rx="14" />
-      <rect class="mrq-glass" x="440.9" y="183" width="231" height="110" rx="14" />
-      <rect class="mrq-edge" x="464.9" y="182.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="454.9" y="201" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="468.9" y="219.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="492.9" y="211" text-anchor="start">IGeometry</text>
-      <text class="cls-kind" x="492.9" y="227" text-anchor="start">interface, step 2</text>
-      <path class="cls-divide" d="M454.9 247H657.9" />
-      <text class="cls-member" x="454.9" y="265" text-anchor="start">Box(x, y, width, height) IBox</text>
-      <text class="cls-member" x="454.9" y="279" text-anchor="start">Point(x, y) IPoint</text>
-      <rect class="cls-cover" x="440.9" y="354" width="231" height="110" rx="14" />
-      <rect class="mrq-glass" x="440.9" y="354" width="231" height="110" rx="14" />
-      <rect class="mrq-edge" x="464.9" y="353.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="454.9" y="372" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="468.9" y="390.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="492.9" y="382" text-anchor="start">Box&lt;T&gt;</text>
-      <text class="cls-kind" x="492.9" y="398" text-anchor="start">record, step 2</text>
-      <path class="cls-divide" d="M454.9 418H657.9" />
-      <text class="cls-member" x="454.9" y="436" text-anchor="start">T is any number</text>
-      <text class="cls-member" x="454.9" y="450" text-anchor="start">double in use</text>
-      <rect class="cls-cover" x="440.9" y="505" width="231" height="64" rx="14" />
-      <rect class="mrq-glass" x="440.9" y="505" width="231" height="64" rx="14" />
-      <rect class="mrq-edge" x="464.9" y="504.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="454.9" y="523" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="468.9" y="541.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="492.9" y="533" text-anchor="start">Point&lt;T&gt;</text>
-      <text class="cls-kind" x="492.9" y="549" text-anchor="start">record, step 2</text>
-      <rect class="cls-cover" x="440.9" y="646" width="231" height="96" rx="14" />
-      <rect class="mrq-glass" x="440.9" y="646" width="231" height="96" rx="14" />
-      <rect class="mrq-edge" x="464.9" y="645.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="454.9" y="664" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="468.9" y="682.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="492.9" y="674" text-anchor="start">DotNetBox</text>
-      <text class="cls-kind" x="492.9" y="690" text-anchor="start">record, step 3</text>
-      <path class="cls-divide" d="M454.9 710H657.9" />
-      <text class="cls-member" x="454.9" y="728" text-anchor="start">on RectangleF</text>
-      <rect class="cls-cover" x="440.9" y="760" width="231" height="96" rx="14" />
-      <rect class="mrq-glass" x="440.9" y="760" width="231" height="96" rx="14" />
-      <rect class="mrq-edge" x="464.9" y="759.5" width="183" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="454.9" y="778" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="468.9" y="796.5" text-anchor="middle">R</text>
-      <text class="cls-name" x="492.9" y="788" text-anchor="start">DotNetPoint</text>
-      <text class="cls-kind" x="492.9" y="804" text-anchor="start">record, step 3</text>
-      <path class="cls-divide" d="M454.9 824H657.9" />
-      <text class="cls-member" x="454.9" y="842" text-anchor="start">on Vector2</text>
-      <rect class="cls-cover" x="886" y="34" width="196" height="124" rx="14" />
-      <rect class="mrq-glass" x="886" y="34" width="196" height="124" rx="14" />
-      <rect class="mrq-edge" x="910" y="33.5" width="148" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="900" y="52" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="914" y="70.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="938" y="62" text-anchor="start">IBox</text>
-      <text class="cls-kind" x="938" y="78" text-anchor="start">interface, step 2</text>
-      <path class="cls-divide" d="M900 98H1068" />
-      <text class="cls-member" x="900" y="116" text-anchor="start">Left, Top, Right, Bottom</text>
-      <text class="cls-member" x="900" y="130" text-anchor="start">Width, Height, Middle</text>
-      <text class="cls-member" x="900" y="144" text-anchor="start">grown, moved, joined</text>
-      <rect class="cls-cover" x="886" y="183" width="196" height="110" rx="14" />
-      <rect class="mrq-glass" x="886" y="183" width="196" height="110" rx="14" />
-      <rect class="mrq-edge" x="910" y="182.5" width="148" height="1.6" rx="0" />
-      <rect class="cls-badge tone-teal" x="900" y="201" width="28" height="28" rx="9" />
-      <text class="cls-mark" x="914" y="219.5" text-anchor="middle">I</text>
-      <text class="cls-name" x="938" y="211" text-anchor="start">IPoint</text>
-      <text class="cls-kind" x="938" y="227" text-anchor="start">interface, step 2</text>
-      <path class="cls-divide" d="M900 247H1068" />
-      <text class="cls-member" x="900" y="265" text-anchor="start">X, Y</text>
-      <text class="cls-member" x="900" y="279" text-anchor="start">moved, between, how far</text>
+      <rect class="cls-group" x="0" y="0" width="1418" height="382" rx="14" />
+      <text class="pic-group" x="12" y="18" text-anchor="start">Geometry: the seam</text>
+      <rect class="cls-group" x="326.7" y="404" width="636.1" height="261" rx="14" />
+      <text class="pic-group" x="338.7" y="422" text-anchor="start">Geometry/Generic: ours, in use</text>
+      <rect class="cls-group" x="0" y="696" width="553.5" height="256" rx="14" />
+      <text class="pic-group" x="12" y="714" text-anchor="start">Geometry/DotNet: Microsoft's, kept</text>
+      <path class="cls-line creates" d="M 184.4 301 L 270.5 301 Q 294.5 301 294.5 325 L 294.5 470.9 Q 294.5 493 316.6 493 L 338.7 493" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 184.4 301 L 270.5 301 Q 294.5 301 294.5 325 L 294.5 470.9 Q 294.5 493 316.6 493 L 338.7 493" />
+      <path class="cls-line creates" d="M 541.5 493 L 719.7 493" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 541.5 493 L 719.7 493" />
+      <path class="cls-line creates" d="M 541.5 493 L 579.6 493 Q 603.6 493 603.6 517 L 603.6 597 Q 603.6 621 627.6 621 L 719.7 621" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 541.5 493 L 579.6 493 Q 603.6 493 603.6 517 L 603.6 597 Q 603.6 621 627.6 621 L 719.7 621" />
+      <path class="cls-line creates" d="M 184.4 892 L 252.5 892 Q 276.5 892 276.5 868 L 276.5 802 Q 276.5 778 300.5 778 L 338.7 778" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 184.4 892 L 252.5 892 Q 276.5 892 276.5 868 L 276.5 802 Q 276.5 778 300.5 778 L 338.7 778" />
+      <path class="cls-line creates" d="M 184.4 892 L 338.7 892" marker-end="url(#arrow-blue)" />
+      <path class="pic-march" d="M 184.4 892 L 338.7 892" />
+      <path class="cls-line implements" d="M 541.5 493 L 579.6 493 Q 603.6 493 603.6 469 L 603.6 334 Q 603.6 310 627.6 310 L 719.7 310" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 184.4 892 L 252.5 892 Q 276.5 892 276.5 868 L 276.5 316 Q 276.5 292 300.5 292 L 338.7 292 L 541.5 292 L 719.7 292" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 950.7 493 L 1042.9 493 Q 1066.9 493 1066.9 469 L 1066.9 150 Q 1066.9 126 1090.9 126 L 1147 126" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 541.5 778 L 563.5 778 Q 585.6 778 585.6 755.9 L 585.6 132 Q 585.6 108 609.6 108 L 719.7 108 L 950.7 108 L 1147 108" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 950.7 621 L 1078.9 621 Q 1102.9 621 1102.9 597 L 1102.9 332.1 Q 1102.9 310 1124.9 310 L 1147 310" marker-end="url(#triangle-violet)" />
+      <path class="cls-line implements" d="M 541.5 892 L 719.7 892 L 950.7 892 L 1060.9 892 Q 1084.9 892 1084.9 868 L 1084.9 316 Q 1084.9 292 1108.9 292 L 1147 292" marker-end="url(#triangle-violet)" />
+      <rect class="cls-chip creates" x="211" y="292" width="57" height="18" rx="9" />
+      <text class="cls-word" x="239.5" y="304" text-anchor="middle">creates</text>
+      <rect class="cls-chip implements" x="622.7" y="301" width="78" height="18" rx="9" />
+      <text class="cls-word" x="661.7" y="313" text-anchor="middle">implements</text>
+      <rect class="cls-chip implements" x="969.8" y="484" width="78" height="18" rx="9" />
+      <text class="cls-word" x="1008.8" y="496" text-anchor="middle">implements</text>
+      <rect class="cls-chip implements" x="987.8" y="612" width="78" height="18" rx="9" />
+      <text class="cls-word" x="1026.8" y="624" text-anchor="middle">implements</text>
+      <rect class="cls-chip creates" x="633.2" y="484" width="57" height="18" rx="9" />
+      <text class="cls-word" x="661.7" y="496" text-anchor="middle">creates</text>
+      <rect class="cls-chip creates" x="202" y="883" width="57" height="18" rx="9" />
+      <text class="cls-word" x="230.5" y="895" text-anchor="middle">creates</text>
+      <rect class="cls-cover" x="12" y="253" width="172.4" height="96" rx="14" />
+      <rect class="mrq-glass" x="12" y="253" width="172.4" height="96" rx="14" />
+      <rect class="cls-badge tone-green" x="26" y="271" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="40" y="289.5" text-anchor="middle">S</text>
+      <text class="cls-name" x="64" y="281" text-anchor="start">Geometries</text>
+      <text class="cls-kind" x="64" y="297" text-anchor="start">static</text>
+      <path class="cls-divide" d="M26 317H170.4" />
+      <text class="cls-member" x="26" y="335" text-anchor="start">InUse IGeometry</text>
+      <rect class="cls-cover" x="12" y="860" width="172.4" height="64" rx="14" />
+      <rect class="mrq-glass" x="12" y="860" width="172.4" height="64" rx="14" />
+      <rect class="cls-badge tone-green" x="26" y="878" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="40" y="896.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="64" y="888" text-anchor="start">DotNetGeometry</text>
+      <text class="cls-kind" x="64" y="904" text-anchor="start">class</text>
+      <rect class="cls-cover" x="338.7" y="461" width="202.8" height="64" rx="14" />
+      <rect class="mrq-glass" x="338.7" y="461" width="202.8" height="64" rx="14" />
+      <rect class="cls-badge tone-green" x="352.7" y="479" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="366.7" y="497.5" text-anchor="middle">C</text>
+      <text class="cls-name" x="390.7" y="489" text-anchor="start">GenericGeometry&lt;T&gt;</text>
+      <text class="cls-kind" x="390.7" y="505" text-anchor="start">class</text>
+      <rect class="cls-cover" x="338.7" y="730" width="202.8" height="96" rx="14" />
+      <rect class="mrq-glass" x="338.7" y="730" width="202.8" height="96" rx="14" />
+      <rect class="mrq-edge" x="362.7" y="729.5" width="154.8" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="352.7" y="748" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="366.7" y="766.5" text-anchor="middle">R</text>
+      <text class="cls-name" x="390.7" y="758" text-anchor="start">DotNetBox</text>
+      <text class="cls-kind" x="390.7" y="774" text-anchor="start">record</text>
+      <path class="cls-divide" d="M352.7 794H527.5" />
+      <text class="cls-member" x="352.7" y="812" text-anchor="start">on RectangleF</text>
+      <rect class="cls-cover" x="338.7" y="844" width="202.8" height="96" rx="14" />
+      <rect class="mrq-glass" x="338.7" y="844" width="202.8" height="96" rx="14" />
+      <rect class="mrq-edge" x="362.7" y="843.5" width="154.8" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="352.7" y="862" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="366.7" y="880.5" text-anchor="middle">R</text>
+      <text class="cls-name" x="390.7" y="872" text-anchor="start">DotNetPoint</text>
+      <text class="cls-kind" x="390.7" y="888" text-anchor="start">record</text>
+      <path class="cls-divide" d="M352.7 908H527.5" />
+      <text class="cls-member" x="352.7" y="926" text-anchor="start">on Vector2</text>
+      <rect class="cls-cover" x="719.7" y="239" width="231" height="124" rx="14" />
+      <rect class="mrq-glass" x="719.7" y="239" width="231" height="124" rx="14" />
+      <rect class="mrq-edge" x="743.7" y="238.5" width="183" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="733.7" y="257" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="747.7" y="275.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="771.7" y="267" text-anchor="start">IGeometry</text>
+      <text class="cls-kind" x="771.7" y="283" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M733.7 303H936.7" />
+      <text class="cls-member" x="733.7" y="321" text-anchor="start">Box(x, y, width, height) IBox</text>
+      <text class="cls-member" x="733.7" y="335" text-anchor="start">Point(x, y) IPoint</text>
+      <text class="cls-member" x="733.7" y="349" text-anchor="start">Around(boxes) IBox</text>
+      <rect class="cls-cover" x="719.7" y="438" width="231" height="110" rx="14" />
+      <rect class="mrq-glass" x="719.7" y="438" width="231" height="110" rx="14" />
+      <rect class="mrq-edge" x="743.7" y="437.5" width="183" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="733.7" y="456" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="747.7" y="474.5" text-anchor="middle">R</text>
+      <text class="cls-name" x="771.7" y="466" text-anchor="start">Box&lt;T&gt;</text>
+      <text class="cls-kind" x="771.7" y="482" text-anchor="start">record</text>
+      <path class="cls-divide" d="M733.7 502H936.7" />
+      <text class="cls-member" x="733.7" y="520" text-anchor="start">T is any number</text>
+      <text class="cls-member" x="733.7" y="534" text-anchor="start">double in use</text>
+      <rect class="cls-cover" x="719.7" y="589" width="231" height="64" rx="14" />
+      <rect class="mrq-glass" x="719.7" y="589" width="231" height="64" rx="14" />
+      <rect class="mrq-edge" x="743.7" y="588.5" width="183" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="733.7" y="607" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="747.7" y="625.5" text-anchor="middle">R</text>
+      <text class="cls-name" x="771.7" y="617" text-anchor="start">Point&lt;T&gt;</text>
+      <text class="cls-kind" x="771.7" y="633" text-anchor="start">record</text>
+      <rect class="cls-cover" x="1147" y="34" width="259" height="166" rx="14" />
+      <rect class="mrq-glass" x="1147" y="34" width="259" height="166" rx="14" />
+      <rect class="mrq-edge" x="1171" y="33.5" width="211" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1161" y="52" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1175" y="70.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="1199" y="62" text-anchor="start">IBox</text>
+      <text class="cls-kind" x="1199" y="78" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1161 98H1392" />
+      <text class="cls-member" x="1161" y="116" text-anchor="start">Left, Top, Right, Bottom</text>
+      <text class="cls-member" x="1161" y="130" text-anchor="start">Width, Height, Middle, HalfHeight</text>
+      <text class="cls-member" x="1161" y="144" text-anchor="start">Grown, Moved, Turned, OnLine</text>
+      <text class="cls-member" x="1161" y="158" text-anchor="start">Across(part), Down(part)</text>
+      <text class="cls-member" x="1161" y="172" text-anchor="start">Holds(box)</text>
+      <text class="cls-member" x="1161" y="186" text-anchor="start">CrossedBy(from, to, inside)</text>
+      <rect class="cls-cover" x="1147" y="232" width="259" height="138" rx="14" />
+      <rect class="mrq-glass" x="1147" y="232" width="259" height="138" rx="14" />
+      <rect class="mrq-edge" x="1171" y="231.5" width="211" height="1.6" rx="0" />
+      <rect class="cls-badge tone-teal" x="1161" y="250" width="28" height="28" rx="9" />
+      <text class="cls-mark" x="1175" y="268.5" text-anchor="middle">I</text>
+      <text class="cls-name" x="1199" y="260" text-anchor="start">IPoint</text>
+      <text class="cls-kind" x="1199" y="276" text-anchor="start">interface</text>
+      <path class="cls-divide" d="M1161 296H1392" />
+      <text class="cls-member" x="1161" y="314" text-anchor="start">X, Y</text>
+      <text class="cls-member" x="1161" y="328" text-anchor="start">Moved, Turned</text>
+      <text class="cls-member" x="1161" y="342" text-anchor="start">StepsTo(point)</text>
+      <text class="cls-member" x="1161" y="356" text-anchor="start">Toward(point, by)</text>
     </g>
-    <g class="cls-legend" transform="translate(0 938)">
-      <rect class="cls-rule" x="0" y="0" width="1094" height="1" rx="0" />
+    <g class="cls-legend" transform="translate(0 1198)">
+      <rect class="cls-rule" x="0" y="0" width="1418" height="1" rx="0" />
       <text class="pic-group" x="0" y="22" text-anchor="start">How to read it</text>
       <rect class="cls-badge tone-green" x="0" y="39" width="18" height="18" rx="6" />
       <text class="cls-key" x="28" y="52.5" text-anchor="start">this project</text>
@@ -377,21 +395,24 @@ svg { --mrq-glow: .2; --mrq-glow-far: .07; --mrq-sheet: #1b2a4a; --mrq-sheet-top
       <text class="cls-key-letter" x="469.8" y="52" text-anchor="middle">R</text>
       <text class="cls-key" x="489.8" y="52.5" text-anchor="start">a record</text>
       <rect class="cls-key-mark" x="572.6" y="38" width="20" height="20" rx="6" />
-      <text class="cls-key-letter" x="582.6" y="52" text-anchor="middle">C</text>
-      <text class="cls-key" x="602.6" y="52.5" text-anchor="start">a class</text>
-      <path class="cls-line implements" d="M678.8 48H728.8" marker-end="url(#triangle-violet)" />
-      <text class="cls-key" x="738.8" y="52.5" text-anchor="start">implements</text>
-      <path class="cls-line creates" d="M834.8 48H884.8" marker-end="url(#arrow-blue)" />
-      <text class="cls-key" x="894.8" y="52.5" text-anchor="start">creates</text>
+      <text class="cls-key-letter" x="582.6" y="52" text-anchor="middle">S</text>
+      <text class="cls-key" x="602.6" y="52.5" text-anchor="start">static</text>
+      <rect class="cls-key-mark" x="672.2" y="38" width="20" height="20" rx="6" />
+      <text class="cls-key-letter" x="682.2" y="52" text-anchor="middle">C</text>
+      <text class="cls-key" x="702.2" y="52.5" text-anchor="start">a class</text>
+      <path class="cls-line implements" d="M778.4 48H828.4" marker-end="url(#triangle-violet)" />
+      <text class="cls-key" x="838.4" y="52.5" text-anchor="start">implements</text>
+      <path class="cls-line creates" d="M934.4 48H984.4" marker-end="url(#arrow-blue)" />
+      <text class="cls-key" x="994.4" y="52.5" text-anchor="start">creates</text>
     </g>
   </g>
-  <rect class="notebar" x="0" y="1016" width="1094" height="37" rx="8" />
-  <g class="note-icon" transform="translate(12 1026) scale(0.6667)">
+  <rect class="notebar" x="0" y="1276" width="1418" height="37" rx="8" />
+  <g class="note-icon" transform="translate(12 1286) scale(0.6667)">
     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
     <path d="M12 9h.01" />
     <path d="M11 12h1v4h1" />
   </g>
-  <text class="notes" x="38" y="1038">
+  <text class="notes" x="38" y="1298">
     <tspan class="note-head">One geometry makes a family:</tspan>
     <tspan class="note-rest">a box and a point of ours, or of Microsoft's, never one of each.</tspan>
   </text>
