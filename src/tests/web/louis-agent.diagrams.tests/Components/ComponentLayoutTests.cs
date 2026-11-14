@@ -1,0 +1,185 @@
+using LouisAgent.Diagrams.Components;
+using LouisAgent.Diagrams.Components.Placed;
+using LouisAgent.Diagrams.Components.Placed.Lines;
+using LouisAgent.Diagrams.Sources;
+
+namespace LouisAgent.Diagrams.Tests.Components;
+
+/// <summary>
+/// F134.7: no place is written in a component diagram's JSON. The layout puts every box inside the one that holds
+/// it, every pin on its box's top edge, and every neighbour beside the root, level with the box it talks to. It is
+/// a pure function of the data, so it is tested with no browser.
+/// </summary>
+public class ComponentLayoutTests
+{
+    /// <summary>The shared sample, placed.</summary>
+    private static PlacedComponents Placed() =>
+        ComponentLayout.Of(DiagramReader.Read(ComponentSamples.Start).Components!);
+
+    /// <summary>The box with this id, which the test fails without.</summary>
+    private static PlacedBox Box(PlacedComponents placed, string id)
+    {
+        var box = placed.Boxes.FirstOrDefault(candidate => candidate.Box.Id == id);
+        Assert.That(box, Is.Not.Null, $"the box {id} is placed");
+        return box!;
+    }
+
+    /// <summary>The neighbour with this id, which the test fails without.</summary>
+    private static PlacedNeighbour Neighbour(PlacedComponents placed, string id)
+    {
+        var neighbour = placed.Neighbours.FirstOrDefault(candidate => candidate.Neighbour.Id == id);
+        Assert.That(neighbour, Is.Not.Null, $"the neighbour {id} is placed");
+        return neighbour!;
+    }
+
+    /// <summary>
+    /// A box inside a box is held by it: every held box lies within its holder, clear of its edges, and one level
+    /// deeper.
+    /// </summary>
+    [TestCase("start", "stage")]
+    [TestCase("stage", "deck")]
+    [TestCase("stage", "dock")]
+    [TestCase("deck", "window")]
+    [TestCase("deck", "plain")]
+    public void AHeldBox_LiesInsideItsHolder(string holderId, string heldId)
+    {
+        var placed = Placed();
+        var holder = Box(placed, holderId);
+        var held = Box(placed, heldId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(held.X, Is.GreaterThan(holder.X), "clear of the left edge");
+            Assert.That(held.Right, Is.LessThan(holder.Right), "clear of the right edge");
+            Assert.That(held.Y, Is.GreaterThan(holder.Y + 30), "under the holder's name");
+            Assert.That(held.Bottom, Is.LessThan(holder.Bottom), "clear of the bottom edge");
+            Assert.That(held.Depth, Is.EqualTo(holder.Depth + 1));
+        });
+    }
+
+    /// <summary>
+    /// The boxes one holder holds are stacked in the JSON's order, as wide as each other, with room between them
+    /// for the pins on the lower one's edge.
+    /// </summary>
+    [TestCase("deck", "dock")]
+    [TestCase("window", "plain")]
+    public void BoxesOfOneHolder_AreStacked_WithRoomForPins(string upperId, string lowerId)
+    {
+        var placed = Placed();
+        var upper = Box(placed, upperId);
+        var lower = Box(placed, lowerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(lower.Y, Is.GreaterThanOrEqualTo(upper.Bottom + 18), "room for a pin and a gap");
+            Assert.That(lower.X, Is.EqualTo(upper.X));
+            Assert.That(lower.Width, Is.EqualTo(upper.Width));
+        });
+    }
+
+    /// <summary>
+    /// A pin stands on its box's top edge, within the box's width. What is handed down comes before what is said
+    /// back up, and no two pins of a box touch.
+    /// </summary>
+    [Test]
+    public void APin_StandsOnItsBoxsTopEdge()
+    {
+        var placed = Placed();
+        var deck = Box(placed, "deck");
+
+        var pins = placed.Pins.Where(pin => pin.Box == "deck").ToList();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pins.Select(pin => pin.Name), Is.EqualTo(new[] { "Items", "Forward", "ForwardChanged" }));
+            Assert.That(pins.Select(pin => pin.Up), Is.EqualTo(new[] { false, false, true }));
+            Assert.That(pins.Select(pin => pin.Y), Is.All.EqualTo(deck.Y));
+            Assert.That(pins[0].X, Is.GreaterThan(deck.X));
+            Assert.That(pins[^1].X + pins[^1].Width, Is.LessThan(deck.Right));
+            Assert.That(pins.Zip(pins.Skip(1), (left, right) => right.X - (left.X + left.Width)),
+                Is.All.GreaterThan(0), "a gap between pins");
+            Assert.That(placed.Pins, Has.Count.EqualTo(9), "every pin of every box");
+        });
+    }
+
+    /// <summary>
+    /// The one thing a box holds is a pill inside it, under its name and above the boxes it holds. A box that
+    /// holds nothing of its own has none.
+    /// </summary>
+    [Test]
+    public void TheOneThingABoxHolds_IsAPillAboveWhatItHolds()
+    {
+        var placed = Placed();
+        var start = Box(placed, "start");
+        var stage = Box(placed, "stage");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(start.Pill, Is.Not.Null);
+            Assert.That(start.Pill?.Says, Is.EqualTo("which demo is forward"));
+            Assert.That(start.Pill?.X, Is.GreaterThan(start.X));
+            Assert.That(start.Pill?.X + start.Pill?.Width, Is.LessThan(start.Right));
+            Assert.That(start.Pill?.Y, Is.GreaterThan(start.Y + 30), "under the name");
+            Assert.That(start.Pill?.Y + start.Pill?.Height, Is.LessThan(stage.Y - 8), "above what it holds, pins too");
+            Assert.That(stage.Pill, Is.Null);
+        });
+    }
+
+    /// <summary>
+    /// A neighbour stands in a column beside the root: before it on the left, after it on the right, clear of it.
+    /// It is level with the box it talks to, and two in one column never touch.
+    /// </summary>
+    [Test]
+    public void ANeighbour_StandsBesideTheRoot_LevelWithItsBox()
+    {
+        var placed = Placed();
+        var start = Box(placed, "start");
+        var deck = Box(placed, "deck");
+        var page = Neighbour(placed, "page");
+        var demos = Neighbour(placed, "demos");
+        var script = Neighbour(placed, "script");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(page.Right, Is.LessThan(start.X - 30), "before the root, with room for its lines");
+            Assert.That(script.X, Is.GreaterThan(start.Right + 30), "after the root");
+            Assert.That(page.Y, Is.EqualTo(start.Y), "level with the root");
+            Assert.That(demos.Y, Is.GreaterThan(page.Bottom), "under the first in its column");
+            Assert.That(script.Y, Is.InRange(deck.Y, deck.Bottom), "level with the deck it talks to");
+            Assert.That(placed.Width, Is.GreaterThanOrEqualTo(script.Right));
+            Assert.That(placed.Height, Is.GreaterThanOrEqualTo(Math.Max(start.Bottom, demos.Bottom)));
+        });
+    }
+
+    /// <summary>
+    /// A neighbour's lines run straight across to the box it talks to: one for each thing it gives, one for a
+    /// service that is only read, and a call out with its answer back, which flow opposite ways.
+    /// </summary>
+    [Test]
+    public void ANeighboursLines_RunStraightAcrossToItsBox()
+    {
+        var placed = Placed();
+        var start = Box(placed, "start");
+        var deck = Box(placed, "deck");
+        var page = Neighbour(placed, "page");
+        var script = Neighbour(placed, "script");
+
+        var gives = placed.Lines.Where(line => line.Kind == LineKind.Gives).ToList();
+        var calls = placed.Lines.Single(line => line.Kind == LineKind.Calls);
+        var back = placed.Lines.Single(line => line.Kind == LineKind.Back);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(gives.Select(line => line.Word), Is.EqualTo(new[] { "Featured", "Group" }));
+            Assert.That(gives.Select(line => line.Points[0].X), Is.All.EqualTo(page.Right));
+            Assert.That(gives.Select(line => line.Points[^1].X), Is.All.EqualTo(start.X));
+            Assert.That(placed.Lines.Count(line => line.Kind == LineKind.Reads), Is.EqualTo(1));
+            Assert.That(placed.Lines.Select(line => line.Points[0].Y - line.Points[^1].Y), Is.All.EqualTo(0),
+                "every line is level");
+            Assert.That((calls.Points[0].X, calls.Points[^1].X), Is.EqualTo((deck.Right, script.X)), "out to it");
+            Assert.That((back.Points[0].X, back.Points[^1].X), Is.EqualTo((script.X, deck.Right)), "and back");
+            Assert.That((calls.Word, back.Word), Is.EqualTo(("calls", "Viewed")));
+            Assert.That(back.Points[0].Y, Is.GreaterThan(calls.Points[0].Y), "the answer under the call");
+        });
+    }
+}
