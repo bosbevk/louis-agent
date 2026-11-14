@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Diagrams.Cards;
 using LouisAgent.Diagrams.Classes.Spec;
+using LouisAgent.Diagrams.Components;
 using LouisAgent.Diagrams.Flow.Spec;
 using LouisAgent.Diagrams.Messages;
 using LouisAgent.Diagrams.Messages.Holes.Reading;
@@ -36,6 +37,7 @@ public static class DiagramReader
         if (source.Sequence is { } sequence) CheckSequence(sequence);
         if (source.Classes is { } classes) CheckClasses(classes);
         if (source.Ticket is { } ticket) CheckTicket(ticket);
+        if (source.Components is { } components) ComponentsCheck.Check(components);
         return source;
     }
 
@@ -93,6 +95,7 @@ public static class DiagramReader
             DiagramKind.Sequence => source.Sequence is not null,
             DiagramKind.Classes => source.Classes is not null,
             DiagramKind.Ticket => source.Ticket is not null,
+            DiagramKind.Components => source.Components is not null,
             _ => false
         };
         if (hasPart) return;

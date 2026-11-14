@@ -61,6 +61,17 @@ public enum DiagramMessage
     [Description("The status's tone '{Tone}' isn't one there is; use one of {Tones}.")]
     UnknownTone,
 
+    [Description("The id '{Id}' is used twice in the component diagram. Every box and every neighbour needs an id " +
+                 "of its own.")]
+    DuplicateComponent,
+
+    [Description("The state of '{Holder}' names '{Pin}', which is no pin it can reach. Write it as box.Pin, where " +
+                 "the box is one that '{Holder}' holds and the pin is in that box's \"{List}\".")]
+    UnknownPin,
+
+    [Description("The neighbour '{Neighbour}' stands by '{To}', which no box in the component diagram has.")]
+    UnknownComponent,
+
     [Description("There is no renderer for a {Kind} diagram yet.")]
     NoRenderer,
 

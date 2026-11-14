@@ -45,6 +45,9 @@ public class DiagramHolesTests
     [TestCase(DiagramMessage.UnknownType)]
     [TestCase(DiagramMessage.TicketRowCount)]
     [TestCase(DiagramMessage.TicketHalfRow)]
+    [TestCase(DiagramMessage.DuplicateComponent)]
+    [TestCase(DiagramMessage.UnknownPin)]
+    [TestCase(DiagramMessage.UnknownComponent)]
     public void AMessageTheReaderFills_HasItsRecord_WithItsHoles(DiagramMessage message)
     {
         var record = RecordOf(message);
